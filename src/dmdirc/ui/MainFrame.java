@@ -36,7 +36,7 @@ public class MainFrame extends javax.swing.JFrame {
     /**
      * Singleton instance of MainFrame
      */
-    private static MainFrame me = null;
+    private static MainFrame me;
     
     /**
      * Returns the singleton instance of MainFrame
@@ -53,8 +53,6 @@ public class MainFrame extends javax.swing.JFrame {
     public MainFrame() {
         initComponents();
         setVisible(true);
-        ServerFrame test = new ServerFrame();
-        desktopPane.add(test);
         
         miAddServer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {

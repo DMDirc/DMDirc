@@ -51,7 +51,7 @@ public class Server {
     private IRCParser parser;
     
     /** Creates a new instance of Server */
-    public Server() {
+    public Server(String server, int port) {
         
         channels = new Vector(0,1);
         
@@ -60,6 +60,17 @@ public class Server {
         frame = new ServerFrame();
         
         MainFrame.getMainFrame().addChild(frame);
+        
+        parser = new IRCParser();
+        
+        Raw raw = new Raw(this);
+        
+        try {
+            parser.connect(server, port);
+            parser.run();
+        } catch (Exception ex) {
+            frame.addLine("ERROR: "+ex.getMessage());
+        }
     }
     
     /**
@@ -68,5 +79,9 @@ public class Server {
     protected void finalize() throws Throwable {
         ServerManager.getServerManager().unregisterServer(this);
     }
+    
+    public void AddDataIn (Object eMethod) { parser.AddDataIn(eMethod); }
+    public void AddDataOut (Object eMethod) { parser.AddDataOut(eMethod); }
+    public void AddMOTDEnd (Object eMethod) { parser.AddMOTDEnd(eMethod); }
     
 }

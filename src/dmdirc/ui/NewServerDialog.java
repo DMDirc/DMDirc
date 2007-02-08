@@ -27,6 +27,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import javax.swing.InputVerifier;
+import javax.swing.JComponent;
+import javax.swing.JTextField;
 
 /**
  *
@@ -45,6 +48,8 @@ public class NewServerDialog extends javax.swing.JDialog {
             jCheckBox1.setSelected(true);
             jCheckBox1.setEnabled(false);
         }
+        
+        jTextField2.setInputVerifier(new PortVerifier());
         
         addCallbacks();
         
@@ -198,5 +203,19 @@ public class NewServerDialog extends javax.swing.JDialog {
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
+    
+}
+
+class PortVerifier extends InputVerifier {
+    
+    public boolean verify(JComponent jComponent) {
+        JTextField tf = (JTextField)jComponent;
+        try {
+            Integer port = Integer.parseInt(tf.getText());
+            return (port > 0 && port <= 65535);
+        } catch (Exception e) {
+            return false;
+        }
+    }
     
 }

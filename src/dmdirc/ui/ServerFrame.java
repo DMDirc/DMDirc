@@ -36,6 +36,10 @@ public class ServerFrame extends javax.swing.JInternalFrame {
         setVisible(true);
     }
     
+    public void addLine(String line) {
+        jTextArea1.append(line+"\n");
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -47,6 +51,7 @@ public class ServerFrame extends javax.swing.JInternalFrame {
         jTextArea1 = new javax.swing.JTextArea();
         jTextField1 = new javax.swing.JTextField();
 
+        setTitle("Server Frame");
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
