@@ -18,17 +18,23 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
+ * SVN: $Id$
  */
 
 package dmdirc.parser;
 
 /**
- *
- * @author chris
+ * Contains User information.
+ * 
+ * @author            Shane Mc Cormack
+ * @author            Chris Smith
+ * @version $Id$
+ * @see IRCParser
  */
 public class MyInfo {
-    public String sNickname = "IRCParser";
-    public String sAltNickname = "IRC-Parser"; // Alternative nickname, if this fails, we start prepending _ to sNickname
-    public String sRealname = "Java Test IRCParser";
-    public String sUsername = "IRCParser";
+	public String sNickname = "IRCParser";
+	public String sAltNickname = "IRC-Parser"; // Alternative nickname, if this fails, we start prepending _ to sNickname
+	public String sRealname = "Java Test IRCParser";
+	public String sUsername = "IRCParser";
 }

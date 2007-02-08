@@ -18,25 +18,28 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
+ * SVN: $Id$
  */
 
 package dmdirc.parser;
 
 /**
- *
- * @author chris
+ * Contains Server information.
+ * 
+ * @author            Shane Mc Cormack
+ * @author            Chris Smith
+ * @version $Id$
+ * @see IRCParser
  */
 public class ServerInfo {
-    public String sHost = "irc.quakenet.org";
-    public String sPassword = "";
-    public int nPort = 6667;
-    
-    public ServerInfo () {
-        
-    }
-    
-    public ServerInfo (String host, int port) {
-        sHost = host;
-        nPort = port;
-    }
+	public String sHost = "irc.quakenet.org";
+	public String sPassword = "";
+	public int nPort = 6667;
+
+	public ServerInfo () { }
+	public ServerInfo (String host, int port) {
+		sHost = host;
+		nPort = port;
+	}
 }

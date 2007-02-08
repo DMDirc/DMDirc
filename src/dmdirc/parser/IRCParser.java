@@ -18,6 +18,8 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
+ * SVN: $Id$
  */
 
 package dmdirc.parser;
@@ -30,6 +32,12 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
+/**
+ * IRC Parser.
+ *
+ * @author            Shane Mc Cormack
+ * @version $Id$
+ */
 public class IRCParser implements Runnable {
 
 	public static final int ndInfo = 1;
@@ -70,13 +78,23 @@ public class IRCParser implements Runnable {
 		}
 		CallbackList.add(eMethod);
 	}
-	public void DelCallback (Object eMethod, ArrayList CallbackList) {
+	private void DelCallback (Object eMethod, ArrayList CallbackList) {
 		for (int i = 0; i < CallbackList.size(); i++) {
 			if (eMethod.equals(CallbackList.get(i))) { CallbackList.remove(i); break; }
 		}
 	}
 
+/**
+ * Add callback for DebugInfo (onDebug).
+ *
+ * @param eMethod     Reference to object that handles the callback
+ */
 	public void AddDebugInfo(Object eMethod) { AddCallback(eMethod, cbDebugInfo); }
+/**
+ * Delete callback for DebugInfo (onDebug).
+ *
+ * @param eMethod     Reference to object that handles the callback
+ */
 	public void DelDebugInfo(Object eMethod) { DelCallback(eMethod, cbDebugInfo); }
 	private boolean CallDebugInfo(int level, String data) { 
 		boolean bResult = false;
@@ -87,7 +105,17 @@ public class IRCParser implements Runnable {
 		return bResult;
 	}
 
+/**
+ * Add callback for MOTDEnd (onMOTDEnd).
+ *
+ * @param eMethod     Reference to object that handles the callback
+ */
 	public void AddMOTDEnd(Object eMethod) { AddCallback(eMethod, cbEndOfMOTD); }
+/**
+ * Delete callback for MOTDEnd (onMOTDEnd).
+ *
+ * @param eMethod     Reference to object that handles the callback
+ */
 	public void DelMOTDEnd(Object eMethod) { DelCallback(eMethod, cbEndOfMOTD); }
 	private boolean CallMOTDEnd() { 
 		boolean bResult = false;
@@ -98,7 +126,17 @@ public class IRCParser implements Runnable {
 		return bResult;
 	}
 
+/**
+ * Add callback for DataIn (onDataIn).
+ *
+ * @param eMethod     Reference to object that handles the callback
+ */
 	public void AddDataIn(Object eMethod) { AddCallback((IDataIn)eMethod, cbDataIn); }
+/**
+ * Delete callback for DataIn (onDebug).
+ *
+ * @param eMethod     Reference to object that handles the callback
+ */
 	public void DelDataIn(Object eMethod) { DelCallback((IDataIn)eMethod, cbDataIn); }
 	private boolean CallDataIn(String data) { 
 		boolean bResult = false;
@@ -109,7 +147,17 @@ public class IRCParser implements Runnable {
 		return bResult;
 	}
 
+/**
+ * Add callback for DataOut (onDataOut).
+ *
+ * @param eMethod     Reference to object that handles the callback
+ */
 	public void AddDataOut(Object eMethod) { AddCallback((IDataOut)eMethod, cbDataOut); }
+/**
+ * Delete callback for DataOut (onDataOut).
+ *
+ * @param eMethod     Reference to object that handles the callback
+ */
 	public void DelDataOut(Object eMethod) { DelCallback((IDataOut)eMethod, cbDataOut); }
 	private boolean CallDataOut(String data, boolean FromParser) { 
 		boolean bResult = false;
@@ -120,7 +168,17 @@ public class IRCParser implements Runnable {
 		return bResult;
 	}
 
+/**
+ * Add callback for NickInUse (onNickInUse).
+ *
+ * @param eMethod     Reference to object that handles the callback
+ */
 	public void AddNickInUse(Object eMethod) { AddCallback(eMethod, cbNickInUse); }
+/**
+ * Delete callback for NickInUse (onNickInUse).
+ *
+ * @param eMethod     Reference to object that handles the callback
+ */
 	public void DelNickInUse(Object eMethod) { DelCallback(eMethod, cbNickInUse); }
 	private boolean CallNickInUse() { 
 		boolean bResult = false;
@@ -131,10 +189,28 @@ public class IRCParser implements Runnable {
 		return bResult;
 	}
 
-	// Constructors
+/**
+  * Default constructor.
+  */
 	public IRCParser () { }
+/**
+  * Constructor with ServerInfo.
+	* 
+	* @param serverDetails Server information.
+  */
 	public IRCParser (ServerInfo serverDetails) { this(null,serverDetails); }
+/**
+  * Constructor with MyInfo.
+	* 
+	* @param myDetails Client information.|
+  */
 	public IRCParser (MyInfo myDetails) { this(myDetails,null); }
+/**
+  * Constructor with ServerInfo and MyInfo.
+	* 
+	* @param serverDetails Server information.
+	* @param myDetails Client information.|
+  */
 	public IRCParser (MyInfo myDetails, ServerInfo serverDetails) {
 		if (myDetails != null) { this.me = myDetails; }
 		if (serverDetails != null) { this.server = serverDetails; }
@@ -155,6 +231,9 @@ public class IRCParser implements Runnable {
 		} catch (Exception e) { throw e; }
 	}
 
+/**
+  * Begin execution. Connect to server, and start parsing incomming lines
+  */
 	public void run() /*throws Exception*/ {
 		if (HasBegan) { return; } else { HasBegan = true; }
 		try { connect(); } catch (Exception e) { /*throw e;*/ return; }
@@ -206,6 +285,11 @@ public class IRCParser implements Runnable {
 		return tokens;
 	}
 
+/**
+  * Send a line to the server.
+	*
+	* @param line Line to send (\r\n termination is added automatically)
+  */
 	public void SendLine(String line) { CallDataOut(line,false); out.printf("%s\r\n",line);} // This should do some checks on stuff, public event!
 	
 	// Our Method
@@ -272,17 +356,37 @@ public class IRCParser implements Runnable {
 	}
 
 
+/**
+  * Join a Channel.
+	*
+	* @param sChannelName Name of channel to join
+  */
 	public void JoinChannel(String sChannelName) {
 		SendString("JOIN "+sChannelName);
 	}
 
+/**
+  * Set Nickname.
+	*
+	* @param sNewNickName New nickname wanted.
+  */
 	public void SetNickname(String sNewNickName) {
 		sThinkNickname = sNewNickName;
 		SendString("NICK "+sNewNickName);
 	}
 
+/**
+  * Quit server. This method will wait for the server to close the socket.
+	*
+	* @param sReason Reason for quitting.
+  */
 	public void Quit(String sReason) { SendString("QUIT :"+sReason); }
-	// Quit and force Disconnection
+/**
+  * Disconnect from server. This method will quit and automatically close the
+	* socket without waiting for the server
+	*
+	* @param sReason Reason for quitting.
+  */
 	public void Disconnect(String sReason) {
 		Quit(sReason);
 		try { socket.close(); } catch (Exception e) { /* Meh */ };
