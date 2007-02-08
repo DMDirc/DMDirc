@@ -23,6 +23,7 @@
 package dmdirc;
 
 import com.sun.org.apache.xalan.internal.xsltc.compiler.Parser;
+import dmdirc.parser.ServerInfo;
 import dmdirc.ui.MainFrame;
 import dmdirc.ui.ServerFrame;
 import java.util.Vector;
@@ -66,7 +67,9 @@ public class Server {
         
         MainFrame.getMainFrame().addChild(frame);
         
-        parser = new IRCParser();
+        frame.addLine("Connecting to "+server+":"+port);
+              
+        parser = new IRCParser(new ServerInfo(server, port));
         
         Raw raw = new Raw(this);
         
