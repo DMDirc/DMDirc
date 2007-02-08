@@ -44,12 +44,15 @@ public class IRCParser implements Runnable {
 		public String sAltNickname = "IRC-Parser"; // Alternative nickname, if this fails, we start prepending _ to sNickname
 		public String sRealname = "Java Test IRCParser";
 		public String sUsername = "IRCParser";
-		public String sServer = "uk.quakenet.org";
+	}
+	public class ServerInfo {
+		public String sHost = "uk.quakenet.org";
 		public String sPassword = "";
 		public int nPort = 6667;
 	}
 
 	public MyInfo me = new MyInfo(); // This is what the user wants, nickname here is *not* fact.
+	public MyInfo server = new ServerInfo(); // Server Info requested by user
 
 	private String sThinkNickname; // This is what we want the nickname to be.
 	private String sConfirmedNickname; // This is what the nickname actually is.
@@ -141,6 +144,8 @@ public class IRCParser implements Runnable {
 	}
 
 	// Constructors
+	public IRCParser (MyInfo myDetails, ServerInfo serverDetails) { this(myDetails); this(serverDetails); }
+	public IRCParser (ServerInfo serverDetails) { this.server = serverDetails; }
 	public IRCParser (MyInfo myDetails) { this.me = myDetails; }
 	public IRCParser () { }
 
@@ -154,7 +159,7 @@ public class IRCParser implements Runnable {
 	private void connect() throws Exception {
 		try {
 			ResetState();
-			socket = new Socket(me.sServer,me.nPort);
+			socket = new Socket(server.sHost,server.nPort);
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		} catch (Exception e) { throw e; }
