@@ -29,7 +29,7 @@ package dmdirc.parser;
  * 
  * @author            Shane Mc Cormack
  * @author            Chris Smith
- * @version $Id$
+ * @version           $Id$
  * @see IRCParser
  */
 public class ServerInfo {

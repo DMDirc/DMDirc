@@ -36,7 +36,7 @@ import java.util.ArrayList;
  * IRC Parser.
  *
  * @author            Shane Mc Cormack
- * @version $Id$
+ * @version           $Id$
  */
 public class IRCParser implements Runnable {
 
