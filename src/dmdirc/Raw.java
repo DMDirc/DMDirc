@@ -50,7 +50,7 @@ public class Raw {
         });
         
         server.AddDataOut(new IRCParser.IDataOut() {
-            public void onDataOut(IRCParser tparser, String sData) {
+            public void onDataOut(IRCParser tparser, String sData, boolean fromParser) {
                 Raw.this.frame.addLine(">>> "+sData);
             }
         });
