@@ -25,6 +25,11 @@ package dmdirc.ui;
 import dmdirc.Server;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.metal.MetalInternalFrameUI;
 
 /**
  * The ServerFrame is the MDI window that shows server messages to the user
@@ -33,6 +38,7 @@ import java.awt.event.ActionListener;
 public class ServerFrame extends javax.swing.JInternalFrame {
     
     private Server parent;
+    private Border myborder;
     
     /** Creates new form ServerFrame */
     public ServerFrame(Server parent) {
@@ -50,6 +56,18 @@ public class ServerFrame extends javax.swing.JInternalFrame {
                 jTextField1.setText("");
             }
         });
+        
+        addPropertyChangeListener("maximum", new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
+                    ServerFrame.this.myborder = getBorder();
+                    setBorder(new EmptyBorder(0,0,0,0));
+                } else {
+                    setBorder(ServerFrame.this.myborder);
+                }
+            }
+        });
+        
     }
     
     public void addLine(String line) {
