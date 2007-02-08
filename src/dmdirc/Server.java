@@ -22,6 +22,7 @@
 
 package dmdirc;
 
+import com.sun.org.apache.xalan.internal.xsltc.compiler.Parser;
 import dmdirc.ui.MainFrame;
 import dmdirc.ui.ServerFrame;
 import java.util.Vector;
@@ -64,6 +65,14 @@ public class Server {
         parser = new IRCParser();
         
         Raw raw = new Raw(this);
+        
+        parser.AddNickInUse(new IRCParser.INickInUse() {
+            public void onNickInUse(IRCParser tParser) {
+                String newNick = tParser.me.sNickname+"_";
+                frame.addLine("Nickname in use. Trying "+newNick);
+                tParser.SendLine("NICK "+newNick);
+            }
+        });
         
         try {
             parser.connect(server, port);
