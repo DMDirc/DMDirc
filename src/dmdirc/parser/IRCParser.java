@@ -28,10 +28,10 @@ import java.util.ArrayList;
 
 public class IRCParser implements Runnable {
 
-	class MyInfo {
-		String sNickname = "IRCParser";
-		String sRealname = "Java Test IRCParser";
-		String sUsername = "IRCParser";
+	public class MyInfo {
+		public String sNickname = "IRCParser";
+		public String sRealname = "Java Test IRCParser";
+		public String sUsername = "IRCParser";
 	}
 
 	private Socket socket = null;
@@ -92,7 +92,7 @@ public class IRCParser implements Runnable {
 	}
 
 	// Constructor.
-	IRCParser () { }
+	// IRCParser () { }
 
 	public void connect(String sHost) throws Exception {
 		try {
