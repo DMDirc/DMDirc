@@ -54,6 +54,20 @@ public class IRCParser implements Runnable {
 	}
 	public AllEvents cb = new AllEvents();
 
+	private void AddCallback (Object eMethod, ArrayList CallbackList) {
+		for (int i = 0; i < CallbackList.size(); i++) {
+			if (eMethod.equals(CallbackList.get(i))) { return; }
+		}
+		CallbackList.add(eMethod);
+	}
+	public void DelCallback (Object eMethod, ArrayList CallbackList) {
+		for (int i = 0; i < CallbackList.size(); i++) {
+			if (eMethod.equals(CallbackList.get(i))) { CallbackList.remove(i); break; }
+		}
+	}
+
+
+	/*
 	public void AddMOTDEnd(Object eMethod) { cb.EndOfMOTD.add((IMOTDEnd)eMethod); }
 	public void DelMOTDEnd(Object eMethod) { 
 		for (int i = 0; i < cb.EndOfMOTD.size(); i++) {
@@ -62,29 +76,29 @@ public class IRCParser implements Runnable {
 	}
 	private void CallMOTDEnd() { 
 		for (int i = 0; i < cb.EndOfMOTD.size(); i++) {
-			// IMOTDEnd(cb.EndOfMOTD.get(i)).OnMOTDEnd(this);
+			cb.EndOfMOTD.get(i).onMOTDEnd(this);
+		}
+	}
+	*/
+
+	public void AddMOTDEnd(Object eMethod) { AddCallback((IMOTDEnd)eMethod, cb.EndOfMOTD); }
+	public void DelMOTDEnd(Object eMethod) { DelCallback((IMOTDEnd)eMethod, cb.EndOfMOTD); }
+	private void CallMOTDEnd() { 
+		for (int i = 0; i < cb.EndOfMOTD.size(); i++) {
 			cb.EndOfMOTD.get(i).onMOTDEnd(this);
 		}
 	}
 
-	public void AddDataIn(Object eMethod) { cb.DataIn.add((IDataIn)eMethod); }
-	public void DelDataIn(Object eMethod) { 
-		for (int i = 0; i < cb.DataIn.size(); i++) {
-			if (eMethod.equals((Object)cb.DataIn.get(i))) { cb.DataIn.remove(i); break; }
-		}
-	}
+	public void AddDataIn(Object eMethod) { AddCallback((IDataIn)eMethod, cb.DataIn); }
+	public void DelDataIn(Object eMethod) { DelCallback((IDataIn)eMethod, cb.DataIn); }
 	private void CallDataIn(String data) { 
 		for (int i = 0; i < cb.DataIn.size(); i++) {
 			cb.DataIn.get(i).onDataIn(this, data);
 		}
 	}
 
-	public void AddDataOut(Object eMethod) { cb.DataOut.add((IDataOut)eMethod); }
-	public void DelDataOut(Object eMethod) { 
-		for (int i = 0; i < cb.DataOut.size(); i++) {
-			if (eMethod.equals((Object)cb.DataOut.get(i))) { cb.DataOut.remove(i); break; }
-		}
-	}
+	public void AddDataOut(Object eMethod) { AddCallback((IDataOut)eMethod, cb.DataOut); }
+	public void DelDataOut(Object eMethod) { DelCallback((IDataOut)eMethod, cb.DataOut); }
 	private void CallDataOut(String data) { 
 		for (int i = 0; i < cb.DataOut.size(); i++) {
 			cb.DataOut.get(i).onDataOut(this, data);
