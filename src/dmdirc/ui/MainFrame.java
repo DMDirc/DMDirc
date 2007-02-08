@@ -58,7 +58,7 @@ public class MainFrame extends javax.swing.JFrame {
         
         miAddServer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                NewServerDialog nsd = new NewServerDialog();
+                NewServerDialog.showNewServerDialog();
             }
         });
     }

@@ -23,6 +23,10 @@
 package dmdirc.ui;
 
 import dmdirc.ServerManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 /**
  *
@@ -30,13 +34,9 @@ import dmdirc.ServerManager;
  */
 public class NewServerDialog extends javax.swing.JDialog {
     
-    /** Creates new form NewServerDialog */
-    //private NewServerDialog(java.awt.Frame parent, boolean modal) {
-//        super(parent, modal);
-//        initComponents();
-//    }
+    private static NewServerDialog me;
     
-    public NewServerDialog() {
+    private NewServerDialog() {      
         super((java.awt.Frame)MainFrame.getMainFrame(), false);
         
         initComponents();
@@ -46,7 +46,26 @@ public class NewServerDialog extends javax.swing.JDialog {
             jCheckBox1.setEnabled(false);
         }
         
+        addCallbacks();
+        
         setVisible(true);
+    }
+    
+    public static void showNewServerDialog() {
+        if (me == null) {
+            me = new NewServerDialog();
+        } else {
+            me.setVisible(true);
+            me.requestFocus();
+        }
+    }
+   
+    private void addCallbacks() {
+        jButton2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                NewServerDialog.this.setVisible(false);
+            }
+        });
     }
     
     /** This method is called from within the constructor to
@@ -70,7 +89,7 @@ public class NewServerDialog extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Connec t to a new server");
+        setTitle("Connect to a new server");
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("Server:");
 
