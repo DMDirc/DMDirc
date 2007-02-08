@@ -46,7 +46,7 @@ public class IRCParser implements Runnable {
 	// Events
 	public interface IMOTDEnd { public void onMOTDEnd(IRCParser tParser); }
 	public interface IDataIn { public void onDataIn(IRCParser tParser, String sData); }
-	public interface IDataOut { public void onDataOut(IRCParser tParser, String sData); }
+	public interface IDataOut { public void onDataOut(IRCParser tParser, String sData, boolean FromParser); }
 	class AllEvents {
 		ArrayList<IMOTDEnd> EndOfMOTD = new ArrayList<IMOTDEnd>();
 		ArrayList<IDataIn> DataIn = new ArrayList<IDataIn>();
@@ -66,8 +66,7 @@ public class IRCParser implements Runnable {
 		}
 	}
 
-
-	/*
+	/* Old Add/Del Code
 	public void AddMOTDEnd(Object eMethod) { cb.EndOfMOTD.add((IMOTDEnd)eMethod); }
 	public void DelMOTDEnd(Object eMethod) { 
 		for (int i = 0; i < cb.EndOfMOTD.size(); i++) {
@@ -81,8 +80,8 @@ public class IRCParser implements Runnable {
 	}
 	*/
 
-	public void AddMOTDEnd(Object eMethod) { AddCallback((IMOTDEnd)eMethod, cb.EndOfMOTD); }
-	public void DelMOTDEnd(Object eMethod) { DelCallback((IMOTDEnd)eMethod, cb.EndOfMOTD); }
+	public void AddMOTDEnd(Object eMethod) { AddCallback(eMethod, cb.EndOfMOTD); }
+	public void DelMOTDEnd(Object eMethod) { DelCallback(eMethod, cb.EndOfMOTD); }
 	private void CallMOTDEnd() { 
 		for (int i = 0; i < cb.EndOfMOTD.size(); i++) {
 			cb.EndOfMOTD.get(i).onMOTDEnd(this);
@@ -99,14 +98,14 @@ public class IRCParser implements Runnable {
 
 	public void AddDataOut(Object eMethod) { AddCallback((IDataOut)eMethod, cb.DataOut); }
 	public void DelDataOut(Object eMethod) { DelCallback((IDataOut)eMethod, cb.DataOut); }
-	private void CallDataOut(String data) { 
+	private void CallDataOut(String data, boolean FromParser) { 
 		for (int i = 0; i < cb.DataOut.size(); i++) {
-			cb.DataOut.get(i).onDataOut(this, data);
+			cb.DataOut.get(i).onDataOut(this, data, FromParser);
 		}
 	}
 
 	// Constructor.
-	// IRCParser () { }
+	public IRCParser () { }
 
 	public void connect(String sHost) throws Exception {
 		try {
@@ -132,7 +131,7 @@ public class IRCParser implements Runnable {
 	public void run() {
 		if (HasBegan) { return; } else { HasBegan = true; }
 		// :HACK: While true loops really really suck.
-		while(true){
+		while(true) {
 			String line = "";
 			try {
 				line = in.readLine(); // Blocking :/
@@ -141,7 +140,7 @@ public class IRCParser implements Runnable {
 					SendString("USER "+me.sUsername.toLowerCase()+" * * :"+me.sRealname);
 					IsFirst = false;
 				}
-		        ProcessLine(line);
+				ProcessLine(line);
 			} catch (IOException e) {
 				System.out.println("Socket read failed");
 				System.exit(-1);
@@ -150,7 +149,7 @@ public class IRCParser implements Runnable {
 	}
 
 	protected void finalize(){
-		try{
+		try {
 			socket.close();
 		} catch (IOException e) {
 			System.out.println("Could not close socket");
@@ -174,15 +173,14 @@ public class IRCParser implements Runnable {
 		System.arraycopy(tokens, 0, temp, 0, tokens.length);
 		tokens = temp;
 		if (params.length == 2) { tokens[tokens.length-1] = params[1]; }
-
-	    return tokens;
+		return tokens;
 	}
 
-	public void SendLine(String line) {SendString(line);} // This should do some checks on stuff possible, public event!
+	public void SendLine(String line) { CallDataOut(line,false); out.printf("%s\r\n",line);} // This should do some checks on stuff, public event!
 	
 	// Our Method
 	private void SendString(String line) {
-		CallDataOut(line);
+		CallDataOut(line,true);
 		out.printf("%s\r\n",line);
 	}
 
