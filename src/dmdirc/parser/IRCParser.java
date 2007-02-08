@@ -35,17 +35,20 @@ public class IRCParser implements Runnable {
 	public static final int ndInfo = 1;
 //	public static final int ndSomething = 2;
 
+	private Socket socket = null;
+	private PrintWriter out = null;
+	private BufferedReader in = null;
+
 	public class MyInfo {
 		public String sNickname = "IRCParser";
 		public String sAltNickname = "IRC-Parser"; // Alternative nickname, if this fails, we start prepending _ to sNickname
 		public String sRealname = "Java Test IRCParser";
 		public String sUsername = "IRCParser";
+		public String sServer = "uk.quakenet.org";
+		public String sPassword = "";
+		public int nPort = 6667;
 	}
 
-	private Socket socket = null;
-	private PrintWriter out = null;
-	private BufferedReader in = null;
-	
 	public MyInfo me = new MyInfo(); // This is what the user wants, nickname here is *not* fact.
 
 	private String sThinkNickname; // This is what we want the nickname to be.
@@ -59,18 +62,16 @@ public class IRCParser implements Runnable {
 
 	// Events
 	public interface IDebugInfo { public void onDebug(IRCParser tParser, int nLevel, String sData); }
+	ArrayList<IDebugInfo> cbDebugInfo = new ArrayList<IDebugInfo>();
 	public interface IMOTDEnd { public void onMOTDEnd(IRCParser tParser); }
+	ArrayList<IMOTDEnd> cbEndOfMOTD = new ArrayList<IMOTDEnd>();
 	public interface IDataIn { public void onDataIn(IRCParser tParser, String sData); }
+	ArrayList<IDataIn> cbDataIn = new ArrayList<IDataIn>();
 	public interface IDataOut { public void onDataOut(IRCParser tParser, String sData, boolean FromParser); }
+	ArrayList<IDataOut> cbDataOut = new ArrayList<IDataOut>();
 	public interface INickInUse { public void onNickInUse(IRCParser tParser); }
-	class AllEvents {
-		ArrayList<IDebugInfo> DebugInfo = new ArrayList<IDebugInfo>();
-		ArrayList<IMOTDEnd> EndOfMOTD = new ArrayList<IMOTDEnd>();
-		ArrayList<IDataIn> DataIn = new ArrayList<IDataIn>();
-		ArrayList<IDataOut> DataOut = new ArrayList<IDataOut>();
-		ArrayList<INickInUse> NickInUse = new ArrayList<INickInUse>();
-	}
-	public AllEvents cb = new AllEvents();
+	ArrayList<INickInUse> cbNickInUse = new ArrayList<INickInUse>();
+	
 
 	private void AddCallback (Object eMethod, ArrayList CallbackList) {
 		for (int i = 0; i < CallbackList.size(); i++) {
@@ -84,62 +85,63 @@ public class IRCParser implements Runnable {
 		}
 	}
 
-	public void AddDebugInfo(Object eMethod) { AddCallback(eMethod, cb.DebugInfo); }
-	public void DelDebugInfo(Object eMethod) { DelCallback(eMethod, cb.DebugInfo); }
+	public void AddDebugInfo(Object eMethod) { AddCallback(eMethod, cbDebugInfo); }
+	public void DelDebugInfo(Object eMethod) { DelCallback(eMethod, cbDebugInfo); }
 	private boolean CallDebugInfo(int level, String data) { 
 		boolean bResult = false;
-		for (int i = 0; i < cb.DebugInfo.size(); i++) {
-			cb.DebugInfo.get(i).onDebug(this, level, data);
+		for (int i = 0; i < cbDebugInfo.size(); i++) {
+			cbDebugInfo.get(i).onDebug(this, level, data);
 			bResult = true;
 		}
 		return bResult;
 	}
 
-	public void AddMOTDEnd(Object eMethod) { AddCallback(eMethod, cb.EndOfMOTD); }
-	public void DelMOTDEnd(Object eMethod) { DelCallback(eMethod, cb.EndOfMOTD); }
+	public void AddMOTDEnd(Object eMethod) { AddCallback(eMethod, cbEndOfMOTD); }
+	public void DelMOTDEnd(Object eMethod) { DelCallback(eMethod, cbEndOfMOTD); }
 	private boolean CallMOTDEnd() { 
 		boolean bResult = false;
-		for (int i = 0; i < cb.EndOfMOTD.size(); i++) {
-			cb.EndOfMOTD.get(i).onMOTDEnd(this);
+		for (int i = 0; i < cbEndOfMOTD.size(); i++) {
+			cbEndOfMOTD.get(i).onMOTDEnd(this);
 			bResult = true;
 		}
 		return bResult;
 	}
 
-	public void AddDataIn(Object eMethod) { AddCallback((IDataIn)eMethod, cb.DataIn); }
-	public void DelDataIn(Object eMethod) { DelCallback((IDataIn)eMethod, cb.DataIn); }
+	public void AddDataIn(Object eMethod) { AddCallback((IDataIn)eMethod, cbDataIn); }
+	public void DelDataIn(Object eMethod) { DelCallback((IDataIn)eMethod, cbDataIn); }
 	private boolean CallDataIn(String data) { 
 		boolean bResult = false;
-		for (int i = 0; i < cb.DataIn.size(); i++) {
-			cb.DataIn.get(i).onDataIn(this, data);
+		for (int i = 0; i < cbDataIn.size(); i++) {
+			cbDataIn.get(i).onDataIn(this, data);
 			bResult = true;
 		}
 		return bResult;
 	}
 
-	public void AddDataOut(Object eMethod) { AddCallback((IDataOut)eMethod, cb.DataOut); }
-	public void DelDataOut(Object eMethod) { DelCallback((IDataOut)eMethod, cb.DataOut); }
+	public void AddDataOut(Object eMethod) { AddCallback((IDataOut)eMethod, cbDataOut); }
+	public void DelDataOut(Object eMethod) { DelCallback((IDataOut)eMethod, cbDataOut); }
 	private boolean CallDataOut(String data, boolean FromParser) { 
 		boolean bResult = false;
-		for (int i = 0; i < cb.DataOut.size(); i++) {
-			cb.DataOut.get(i).onDataOut(this, data, FromParser);
+		for (int i = 0; i < cbDataOut.size(); i++) {
+			cbDataOut.get(i).onDataOut(this, data, FromParser);
 			bResult = true;
 		}
 		return bResult;
 	}
 
-	public void AddNickInUse(Object eMethod) { AddCallback(eMethod, cb.NickInUse); }
-	public void DelNickInUse(Object eMethod) { DelCallback(eMethod, cb.NickInUse); }
+	public void AddNickInUse(Object eMethod) { AddCallback(eMethod, cbNickInUse); }
+	public void DelNickInUse(Object eMethod) { DelCallback(eMethod, cbNickInUse); }
 	private boolean CallNickInUse() { 
 		boolean bResult = false;
-		for (int i = 0; i < cb.NickInUse.size(); i++) {
-			cb.NickInUse.get(i).onNickInUse(this);
+		for (int i = 0; i < cbNickInUse.size(); i++) {
+			cbNickInUse.get(i).onNickInUse(this);
 			bResult = true;
 		}
 		return bResult;
 	}
 
-	// Constructor.
+	// Constructors
+	public IRCParser (MyInfo myDetails) { this.me = myDetails; }
 	public IRCParser () { }
 
 
@@ -149,33 +151,21 @@ public class IRCParser implements Runnable {
 			Got005 = false;
 	};
 
-	public void connect(String sHost) throws Exception {
+	private void connect() throws Exception {
 		try {
 			ResetState();
-			connect(sHost,6667);
-		} catch (Exception e) {
-			throw e;
-		}
-	}
-
-	public void connect(String sHost, int nPort) throws Exception {
-		if (HasBegan) { return; }
-		try {
-			socket = new Socket(sHost,nPort);
+			socket = new Socket(me.sServer,me.nPort);
 			out = new PrintWriter(socket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		} catch (UnknownHostException e) {
-			throw new Exception("Socket Exception");
-		} catch (Exception e) {
-			throw new Exception("General Exception");
-		}
+		} catch (Exception e) { throw e; }
 	}
 
-	public void run() {
+	public void run() /*throws Exception*/ {
 		if (HasBegan) { return; } else { HasBegan = true; }
+		try { connect(); } catch (Exception e) { /*throw e;*/ return; }
 		// :HACK: While true loops really really suck.
+		String line = "";
 		while(true) {
-			String line = "";
 			try {
 				line = in.readLine(); // Blocking :/
 				if (IsFirst) {
@@ -185,8 +175,8 @@ public class IRCParser implements Runnable {
 				}
 				ProcessLine(line);
 			} catch (IOException e) {
-				System.out.println("Socket read failed");
-				System.exit(-1);
+				// Socket Closed.
+				break;
 			}
 		}
 	}
@@ -212,10 +202,12 @@ public class IRCParser implements Runnable {
 		params = line.split(" :",2);
 		tokens = params[0].split(" ");
 	
-		String[] temp = new String[tokens.length+1];
-		System.arraycopy(tokens, 0, temp, 0, tokens.length);
-		tokens = temp;
-		if (params.length == 2) { tokens[tokens.length-1] = params[1]; }
+		if (params.length == 2) { 
+			String[] temp = new String[tokens.length+1];
+			System.arraycopy(tokens, 0, temp, 0, tokens.length);
+			tokens = temp;
+			tokens[tokens.length-1] = params[1];
+		}
 		return tokens;
 	}
 
