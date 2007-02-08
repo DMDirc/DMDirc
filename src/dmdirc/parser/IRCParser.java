@@ -24,9 +24,7 @@ package dmdirc.parser;
 
 import java.io.*;
 import java.net.*;
-
-interface IDataInEvent { public void onDataIn(IRCParser parser, String data); }
-interface IDataOutEvent { public void onDataOut(IRCParser parser, String data); }
+import java.util.ArrayList;
 
 public class IRCParser implements Runnable {
 
@@ -46,35 +44,59 @@ public class IRCParser implements Runnable {
 	private boolean IsFirst = true;
 
 	// Events
-	public interface GeneralIRCEvent { public void GeneralEvent(String sName); }
-	public interface LogEvent { public void LogEvent(String sName, String sData); }
+	public interface IMOTDEnd { public void onMOTDEnd(IRCParser tParser); }
+	public interface IDataIn { public void onDataIn(IRCParser tParser, String sData); }
+	public interface IDataOut { public void onDataOut(IRCParser tParser, String sData); }
 	class AllEvents {
-		GeneralIRCEvent EndOfMOTD = null;
-		LogEvent DataIn = null;
-		LogEvent DataOut = null;
-
-		String sEndOfMOTD = "";
-		String sDataIn = "";
-		String sDataOut = "";
+		ArrayList<IMOTDEnd> EndOfMOTD = new ArrayList<IMOTDEnd>();
+		ArrayList<IDataIn> DataIn = new ArrayList<IDataIn>();
+		ArrayList<IDataOut> DataOut = new ArrayList<IDataOut>();
 	}
 	public AllEvents cb = new AllEvents();
 
-	public void SetCallback(String sType, Object eMethod) throws Exception { try { SetCallback(sType,sType,eMethod); } catch (Exception e) { throw e; } }
-	public void SetCallback(String sType, String sName, Object eMethod) throws Exception {
-		if (sName.equals("")) { sName = sType; }
-		sType = sType.toLowerCase();
-		if (sType.equals("endofmotd")) { cb.EndOfMOTD = (GeneralIRCEvent)eMethod; cb.sEndOfMOTD = sName; }
-		else if (sType.equals("datain")) { cb.DataIn = (LogEvent)eMethod; cb.sDataIn = sName; }
-		else if (sType.equals("dataout")) { cb.DataOut = (LogEvent)eMethod; cb.sDataOut = sName; }
-		else { throw new Exception("No such callback '"+sType+"'");}
+	public void AddMOTDEnd(Object eMethod) { cb.EndOfMOTD.add((IMOTDEnd)eMethod); }
+	public void DelMOTDEnd(Object eMethod) { 
+		for (int i = 0; i < cb.EndOfMOTD.size(); i++) {
+			if (eMethod.equals((Object)cb.EndOfMOTD.get(i))) { cb.EndOfMOTD.remove(i); break; }
+		}
+	}
+	private void CallMOTDEnd() { 
+		for (int i = 0; i < cb.EndOfMOTD.size(); i++) {
+			// IMOTDEnd(cb.EndOfMOTD.get(i)).OnMOTDEnd(this);
+			cb.EndOfMOTD.get(i).onMOTDEnd(this);
+		}
+	}
+
+	public void AddDataIn(Object eMethod) { cb.DataIn.add((IDataIn)eMethod); }
+	public void DelDataIn(Object eMethod) { 
+		for (int i = 0; i < cb.DataIn.size(); i++) {
+			if (eMethod.equals((Object)cb.DataIn.get(i))) { cb.DataIn.remove(i); break; }
+		}
+	}
+	private void CallDataIn(String data) { 
+		for (int i = 0; i < cb.DataIn.size(); i++) {
+			cb.DataIn.get(i).onDataIn(this, data);
+		}
+	}
+
+	public void AddDataOut(Object eMethod) { cb.DataOut.add((IDataOut)eMethod); }
+	public void DelDataOut(Object eMethod) { 
+		for (int i = 0; i < cb.DataOut.size(); i++) {
+			if (eMethod.equals((Object)cb.DataOut.get(i))) { cb.DataOut.remove(i); break; }
+		}
+	}
+	private void CallDataOut(String data) { 
+		for (int i = 0; i < cb.DataOut.size(); i++) {
+			cb.DataOut.get(i).onDataOut(this, data);
+		}
 	}
 
 	// Constructor.
-	IRCParser () {}
+	IRCParser () { }
 
 	public void connect(String sHost) throws Exception {
 		try {
-			connect(sHost,6667);		
+			connect(sHost,6667);
 		} catch (Exception e) {
 			throw e;
 		}
@@ -146,7 +168,7 @@ public class IRCParser implements Runnable {
 	
 	// Our Method
 	private void SendString(String line) {
-		if (!cb.sDataOut.equals("")) {cb.DataOut.LogEvent(cb.sDataOut,line);} // Ugly++
+		CallDataOut(line);
 		out.printf("%s\r\n",line);
 	}
 
@@ -155,7 +177,7 @@ public class IRCParser implements Runnable {
 		String sParam = token[token.length-1];
 
 		int nParam;
-		if (!cb.sDataIn.equals("")) {cb.DataIn.LogEvent(cb.sDataIn,line);} // Ugly++
+		CallDataIn(line);
 
 		try {nParam = Integer.parseInt(token[1]);} catch (Exception e) { nParam = -1;}
 
@@ -188,7 +210,7 @@ public class IRCParser implements Runnable {
 
 	private void ProcessEndOfMOTD(String sParam,String token[]) {
 		// Process EndOfMOTD
-		if (!cb.sEndOfMOTD.equals("")) {cb.EndOfMOTD.GeneralEvent(cb.sEndOfMOTD);} // Ugly++
+		CallMOTDEnd();
 	}
 
 
