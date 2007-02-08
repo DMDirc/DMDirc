@@ -23,6 +23,8 @@
 package dmdirc.ui;
 
 import dmdirc.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JInternalFrame;
 
 /**
@@ -53,6 +55,12 @@ public class MainFrame extends javax.swing.JFrame {
         setVisible(true);
         ServerFrame test = new ServerFrame();
         desktopPane.add(test);
+        
+        miAddServer.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                NewServerDialog nsd = new NewServerDialog();
+            }
+        });
     }
     
     public void addChild(JInternalFrame frame) {
@@ -70,6 +78,7 @@ public class MainFrame extends javax.swing.JFrame {
         pnSwitchbar = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        miAddServer = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DMDirc");
@@ -88,6 +97,9 @@ public class MainFrame extends javax.swing.JFrame {
 
         jMenu1.setMnemonic('f');
         jMenu1.setText("File");
+        miAddServer.setText("New Server...");
+        jMenu1.add(miAddServer);
+
         jMenuBar1.add(jMenu1);
 
         setJMenuBar(jMenuBar1);
@@ -115,6 +127,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JDesktopPane desktopPane;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem miAddServer;
     private javax.swing.JPanel pnSwitchbar;
     // End of variables declaration//GEN-END:variables
     

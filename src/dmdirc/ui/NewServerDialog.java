@@ -29,9 +29,15 @@ package dmdirc.ui;
 public class NewServerDialog extends javax.swing.JDialog {
     
     /** Creates new form NewServerDialog */
-    public NewServerDialog(java.awt.Frame parent, boolean modal) {
-        super(parent, modal);
+    //private NewServerDialog(java.awt.Frame parent, boolean modal) {
+//        super(parent, modal);
+//        initComponents();
+//    }
+    
+    public NewServerDialog() {
+        super((java.awt.Frame)MainFrame.getMainFrame(), false);
         initComponents();
+        setVisible(true);
     }
     
     /** This method is called from within the constructor to
@@ -55,6 +61,7 @@ public class NewServerDialog extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Connec t to a new server");
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("Server:");
 
@@ -148,18 +155,7 @@ public class NewServerDialog extends javax.swing.JDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new NewServerDialog(new javax.swing.JFrame(), true).setVisible(true);
-            }
-        });
-    }
-    
+      
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
