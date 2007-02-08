@@ -47,10 +47,12 @@ public class IRCParser implements Runnable {
 	public interface IMOTDEnd { public void onMOTDEnd(IRCParser tParser); }
 	public interface IDataIn { public void onDataIn(IRCParser tParser, String sData); }
 	public interface IDataOut { public void onDataOut(IRCParser tParser, String sData, boolean FromParser); }
+	public interface INickInUse { public void onNickInUse(IRCParser tParser); }
 	class AllEvents {
 		ArrayList<IMOTDEnd> EndOfMOTD = new ArrayList<IMOTDEnd>();
 		ArrayList<IDataIn> DataIn = new ArrayList<IDataIn>();
 		ArrayList<IDataOut> DataOut = new ArrayList<IDataOut>();
+		ArrayList<INickInUse> NickInUse = new ArrayList<INickInUse>();
 	}
 	public AllEvents cb = new AllEvents();
 
@@ -65,20 +67,6 @@ public class IRCParser implements Runnable {
 			if (eMethod.equals(CallbackList.get(i))) { CallbackList.remove(i); break; }
 		}
 	}
-
-	/* Old Add/Del Code
-	public void AddMOTDEnd(Object eMethod) { cb.EndOfMOTD.add((IMOTDEnd)eMethod); }
-	public void DelMOTDEnd(Object eMethod) { 
-		for (int i = 0; i < cb.EndOfMOTD.size(); i++) {
-			if (eMethod.equals((Object)cb.EndOfMOTD.get(i))) { cb.EndOfMOTD.remove(i); break; }
-		}
-	}
-	private void CallMOTDEnd() { 
-		for (int i = 0; i < cb.EndOfMOTD.size(); i++) {
-			cb.EndOfMOTD.get(i).onMOTDEnd(this);
-		}
-	}
-	*/
 
 	public void AddMOTDEnd(Object eMethod) { AddCallback(eMethod, cb.EndOfMOTD); }
 	public void DelMOTDEnd(Object eMethod) { DelCallback(eMethod, cb.EndOfMOTD); }
@@ -101,6 +89,14 @@ public class IRCParser implements Runnable {
 	private void CallDataOut(String data, boolean FromParser) { 
 		for (int i = 0; i < cb.DataOut.size(); i++) {
 			cb.DataOut.get(i).onDataOut(this, data, FromParser);
+		}
+	}
+
+	public void AddNickInUse(Object eMethod) { AddCallback(eMethod, cb.NickInUse); }
+	public void DelNickInUse(Object eMethod) { DelCallback(eMethod, cb.NickInUse); }
+	private void CallNickInUse() { 
+		for (int i = 0; i < cb.NickInUse.size(); i++) {
+			cb.NickInUse.get(i).onNickInUse(this);
 		}
 	}
 
@@ -207,6 +203,9 @@ public class IRCParser implements Runnable {
 					case 376: // End of MOTD
 						ProcessEndOfMOTD(sParam,token);
 						break;
+					case 433: // Nick In Use
+						ProcessNickInUse(sParam,token);
+						break;
 					default: // Unknown
 						break;
 				}
@@ -220,10 +219,8 @@ public class IRCParser implements Runnable {
 		// Process a line where the parameter is a string (IE PRIVMSG, NOTICE etc - Not including PING!)
 	}
 
-	private void ProcessEndOfMOTD(String sParam,String token[]) {
-		// Process EndOfMOTD
-		CallMOTDEnd();
-	}
+	private void ProcessEndOfMOTD(String sParam,String token[]) { CallMOTDEnd(); }
+	private void ProcessNickInUse(String sParam,String token[]) { CallNickInUse(); }
 
 
 
