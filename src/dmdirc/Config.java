@@ -23,7 +23,7 @@
 package dmdirc;
 
 /**
- *
+ * Reads/writes the application's config file
  * @author chris
  */
 public class Config {
@@ -32,12 +32,21 @@ public class Config {
     public Config() {
     }
     
+    /**
+     * Returns the full path to the application's config file
+     * @return config file
+     */
     private static String getConfigFile () {
         return getConfigDir()+"dmdirc.xml";
     }
     
+    /**
+     * Returns the application's config directory
+     * @return configuration directory
+     */
     private static String getConfigDir () {
-        return System.getProperty("user.home")+System.getProperty("file.seperator");
+        String fs = System.getProperty("file.seperator");
+        return System.getProperty("user.home")+fs+".DMDirc"+fs;
     }
     
 }
