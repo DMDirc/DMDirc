@@ -39,7 +39,7 @@ public class Raw {
     public Raw(Server server) {
         this.server = server;
         
-        frame = new ServerFrame();
+        frame = new ServerFrame(server);
         
         MainFrame.getMainFrame().addChild(frame);
         

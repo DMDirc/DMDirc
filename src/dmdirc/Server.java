@@ -57,7 +57,7 @@ public class Server {
         
         ServerManager.getServerManager().registerServer(this);
         
-        frame = new ServerFrame();
+        frame = new ServerFrame(this);
         
         MainFrame.getMainFrame().addChild(frame);
         
@@ -85,5 +85,7 @@ public class Server {
     public void AddDataIn (Object eMethod) { parser.AddDataIn(eMethod); }
     public void AddDataOut (Object eMethod) { parser.AddDataOut(eMethod); }
     public void AddMOTDEnd (Object eMethod) { parser.AddMOTDEnd(eMethod); }
+    
+    public void SendRawLine (String line) { parser.SendLine(line); }
     
 }

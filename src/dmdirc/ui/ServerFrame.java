@@ -22,18 +22,34 @@
 
 package dmdirc.ui;
 
+import dmdirc.Server;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 /**
  * The ServerFrame is the MDI window that shows server messages to the user
  * @author chris
  */
 public class ServerFrame extends javax.swing.JInternalFrame {
     
+    private Server parent;
+    
     /** Creates new form ServerFrame */
-    public ServerFrame() {
+    public ServerFrame(Server parent) {
         initComponents();
         setMaximizable(true);
         setClosable(true);
         setVisible(true);
+        setResizable(true);
+        
+        this.parent = parent;
+        
+        jTextField1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                ServerFrame.this.parent.SendRawLine(jTextField1.getText());
+                jTextField1.setText("");
+            }
+        });
     }
     
     public void addLine(String line) {
@@ -55,8 +71,6 @@ public class ServerFrame extends javax.swing.JInternalFrame {
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
-
-        jTextField1.setText("jTextField1");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
