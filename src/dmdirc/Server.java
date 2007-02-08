@@ -74,7 +74,7 @@ public class Server {
             public void onNickInUse(IRCParser tParser) {
                 String newNick = tParser.me.sNickname+"_";
                 frame.addLine("Nickname in use. Trying "+newNick);
-                tParser.SendLine("NICK "+newNick);
+                tParser.SetNickname(newNick);
             }
         });
         
