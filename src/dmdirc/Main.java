@@ -22,6 +22,7 @@
 
 package dmdirc;
 
+import dmdirc.ui.MainFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 

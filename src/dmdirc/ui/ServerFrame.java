@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package dmdirc;
+package dmdirc.ui;
 
 /**
  * The ServerFrame is the MDI window that shows server messages to the user

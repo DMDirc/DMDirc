@@ -22,7 +22,10 @@
 
 package dmdirc;
 
+import dmdirc.ui.MainFrame;
+import dmdirc.ui.ServerFrame;
 import java.util.Vector;
+import dmdirc.parser.IRCParser;
 
 /**
  * The Server class represents the client's view of a server. It maintains
@@ -41,6 +44,11 @@ public class Server {
      * The ServerFrame corresponding to this server
      */
     private ServerFrame frame;
+    
+    /**
+     * The IRC Parser instance handling this server
+     */
+    private IRCParser parser;
     
     /** Creates a new instance of Server */
     public Server() {

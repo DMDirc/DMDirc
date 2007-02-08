@@ -20,8 +20,9 @@
  * SOFTWARE.
  */
 
-package dmdirc;
+package dmdirc.ui;
 
+import dmdirc.*;
 import javax.swing.JInternalFrame;
 
 /**
@@ -54,7 +55,7 @@ public class MainFrame extends javax.swing.JFrame {
         desktopPane.add(test);
     }
     
-    void addChild(JInternalFrame frame) {
+    public void addChild(JInternalFrame frame) {
         desktopPane.add(frame);
     }    
     
