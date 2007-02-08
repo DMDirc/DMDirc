@@ -41,7 +41,8 @@ import java.util.ArrayList;
 public class IRCParser implements Runnable {
 
 	public static final int ndInfo = 1;
-//	public static final int ndSomething = 2;
+	public static final int ndSocket = 2;
+//	public static final int ndSomething = 4;
 
 	private Socket socket = null;
 	private PrintWriter out = null;
@@ -236,8 +237,9 @@ public class IRCParser implements Runnable {
   */
 	public void run() /*throws Exception*/ {
 		if (HasBegan) { return; } else { HasBegan = true; }
-		try { connect(); } catch (Exception e) { /*throw e;*/ return; }
+		try { connect(); } catch (Exception e) { CallDebugInfo(ndSocket,"Error Connecting, Aborted"); return; }
 		// :HACK: While true loops really really suck.
+		CallDebugInfo(ndSocket,"Socket Connected");
 		String line = "";
 		while(true) {
 			try {
@@ -249,7 +251,7 @@ public class IRCParser implements Runnable {
 				}
 				ProcessLine(line);
 			} catch (IOException e) {
-				// Socket Closed.
+				CallDebugInfo(ndSocket,"Socket Closed");
 				break;
 			}
 		}
