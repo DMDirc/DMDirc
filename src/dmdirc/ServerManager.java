@@ -73,4 +73,8 @@ public class ServerManager {
         servers.remove(server);
     }
     
+    public int numServers () {
+        return servers.size();
+    }
+    
 }
