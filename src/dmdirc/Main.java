@@ -56,6 +56,8 @@ public class Main {
             ex.printStackTrace();
         }
         
+        Config.initialise();
+        
         MainFrame frame = MainFrame.getMainFrame();
     }
     
