@@ -52,7 +52,7 @@ public class IRCParser implements Runnable {
 	}
 
 	public MyInfo me = new MyInfo(); // This is what the user wants, nickname here is *not* fact.
-	public MyInfo server = new ServerInfo(); // Server Info requested by user
+	public ServerInfo server = new ServerInfo(); // Server Info requested by user
 
 	private String sThinkNickname; // This is what we want the nickname to be.
 	private String sConfirmedNickname; // This is what the nickname actually is.
@@ -144,11 +144,13 @@ public class IRCParser implements Runnable {
 	}
 
 	// Constructors
-	public IRCParser (MyInfo myDetails, ServerInfo serverDetails) { this(myDetails); this(serverDetails); }
-	public IRCParser (ServerInfo serverDetails) { this.server = serverDetails; }
-	public IRCParser (MyInfo myDetails) { this.me = myDetails; }
 	public IRCParser () { }
-
+	public IRCParser (ServerInfo serverDetails) { this(null,serverDetails); }
+	public IRCParser (MyInfo myDetails) { this(myDetails,null); }
+	public IRCParser (MyInfo myDetails, ServerInfo serverDetails) {
+		if (myDetails != null) { this.me = myDetails; }
+		if (serverDetails != null) { this.server = serverDetails; }
+	}
 
 	private void ResetState() {
 			TriedAlt = false;
