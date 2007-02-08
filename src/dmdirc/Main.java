@@ -57,9 +57,6 @@ public class Main {
         }
         
         MainFrame frame = MainFrame.getMainFrame();
-        
-        Server serv = new Server("irc.quakenet.org", 6667);
-        
     }
     
 }

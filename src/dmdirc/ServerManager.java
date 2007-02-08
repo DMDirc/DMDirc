@@ -39,7 +39,7 @@ public class ServerManager {
     /**
      * All servers that currently exist
      */
-    private Vector servers;
+    private Vector<Server> servers;
     
     /**
      * Returns the singleton instance of ServerManager
@@ -54,7 +54,7 @@ public class ServerManager {
     
     /** Creates a new instance of ServerManager */
     public ServerManager() {
-        servers = new Vector(0, 1);
+        servers = new Vector<Server>(0, 1);
     }
     
     /**
@@ -76,5 +76,5 @@ public class ServerManager {
     public int numServers () {
         return servers.size();
     }
-    
+       
 }

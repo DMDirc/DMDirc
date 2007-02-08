@@ -67,7 +67,9 @@ public class Server {
         
         try {
             parser.connect(server, port);
-            parser.run();
+            
+            Thread thread = new Thread(parser);
+            thread.start();
         } catch (Exception ex) {
             frame.addLine("ERROR: "+ex.getMessage());
         }

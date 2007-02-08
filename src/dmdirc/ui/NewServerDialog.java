@@ -22,6 +22,7 @@
 
 package dmdirc.ui;
 
+import dmdirc.Server;
 import dmdirc.ServerManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,7 +40,7 @@ public class NewServerDialog extends javax.swing.JDialog {
     
     private static NewServerDialog me;
     
-    private NewServerDialog() {      
+    private NewServerDialog() {
         super((java.awt.Frame)MainFrame.getMainFrame(), false);
         
         initComponents();
@@ -64,10 +65,25 @@ public class NewServerDialog extends javax.swing.JDialog {
             me.requestFocus();
         }
     }
-   
+    
     private void addCallbacks() {
         jButton2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
+                NewServerDialog.this.setVisible(false);
+            }
+        });
+        jButton1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                String host = jTextField1.getText();
+                int port = Integer.parseInt(jTextField2.getText());
+                
+                // Open in a new window?
+                if (jCheckBox1.isSelected()) {
+                    Server server = new Server(host, port);
+                } else {
+                    
+                }
+                
                 NewServerDialog.this.setVisible(false);
             }
         });
@@ -97,6 +113,8 @@ public class NewServerDialog extends javax.swing.JDialog {
         setTitle("Connect to a new server");
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("Server:");
+
+        jTextField1.setText("irc.quakenet.org");
 
         jLabel2.setText("To connect to a new IRC server, enter the server name below");
 
