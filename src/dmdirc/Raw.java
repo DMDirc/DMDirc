@@ -27,15 +27,25 @@ import dmdirc.ui.MainFrame;
 import dmdirc.ui.ServerFrame;
 
 /**
- *
+ * Handles the raw window (which shows the user raw data being sent and
+ * received to/from the server)
  * @author chris
  */
 public class Raw {
     
+    /**
+     * The server object that's being monitored
+     */
     private Server server;
+    /**
+     * A serverframe instance used for displaying the raw data
+     */
     private ServerFrame frame;
     
-    /** Creates a new instance of Raw */
+    /**
+     * Creates a new instance of Raw
+     * @param server the server to monitor
+     */
     public Raw(Server server) {
         this.server = server;
         

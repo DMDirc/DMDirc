@@ -31,6 +31,9 @@ import java.util.Properties;
  */
 public class Config {
     
+    /**
+     * The application's current configuration
+     */
     private static Properties properties;
     
     /** Creates a new instance of Config */
@@ -54,6 +57,10 @@ public class Config {
         return System.getProperty("user.home")+fs+".DMDirc"+fs;
     }
     
+    /**
+     * Returns the default settings for DMDirc
+     * @return default settings
+     */
     private static Properties getDefaults() {
         Properties defaults = new Properties();
         
@@ -63,12 +70,24 @@ public class Config {
         return defaults;
     }
     
+    /**
+     * Determines if the specified option exists
+     * @return true iff the option exists, false otherwise
+     * @param domain the domain of the option
+     * @param option the name of the option
+     */
     public static boolean hasOption(String domain, String option) {
         assert(properties != null);
         
         return (properties.getProperty(domain+"."+option) != null);
     }
     
+    /**
+     * Returns the specified option
+     * @return the value of the specified option
+     * @param domain the domain of the option
+     * @param option the name of the option
+     */
     public static String getOption(String domain, String option) {
         assert(properties != null);
         

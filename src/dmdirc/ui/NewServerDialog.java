@@ -33,13 +33,19 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 
 /**
- *
- * @author  chris
+ * Dialog that allows the user to enter details of a new server to connect to
+ * @author chris
  */
 public class NewServerDialog extends javax.swing.JDialog {
     
+    /**
+     * A previously created instance of NewServerDialog
+     */
     private static NewServerDialog me;
     
+    /**
+     * Creates a new instance of the dialog
+     */
     private NewServerDialog() {
         super((java.awt.Frame)MainFrame.getMainFrame(), false);
         
@@ -57,6 +63,9 @@ public class NewServerDialog extends javax.swing.JDialog {
         setVisible(true);
     }
     
+    /**
+     * Creates the new server dialog if one doesn't exist, and displays it.
+     */
     public static void showNewServerDialog() {
         if (me == null) {
             me = new NewServerDialog();
@@ -66,6 +75,9 @@ public class NewServerDialog extends javax.swing.JDialog {
         }
     }
     
+    /**
+     * Adds listeners for various objects in the dialog
+     */
     private void addCallbacks() {
         jButton2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -224,8 +236,16 @@ public class NewServerDialog extends javax.swing.JDialog {
     
 }
 
+/**
+ * Verifies that the port number is a valid port
+ */
 class PortVerifier extends InputVerifier {
     
+    /**
+     * Verifies that the number specified in the textfield is a valid port
+     * @param jComponent The component to be tested
+     * @return true iff the number is a valid port, false otherwise
+     */
     public boolean verify(JComponent jComponent) {
         JTextField tf = (JTextField)jComponent;
         try {
