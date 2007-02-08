@@ -39,18 +39,6 @@ public class IRCParser implements Runnable {
 	private PrintWriter out = null;
 	private BufferedReader in = null;
 
-	public class MyInfo {
-		public String sNickname = "IRCParser";
-		public String sAltNickname = "IRC-Parser"; // Alternative nickname, if this fails, we start prepending _ to sNickname
-		public String sRealname = "Java Test IRCParser";
-		public String sUsername = "IRCParser";
-	}
-	public class ServerInfo {
-		public String sHost = "uk.quakenet.org";
-		public String sPassword = "";
-		public int nPort = 6667;
-	}
-
 	public MyInfo me = new MyInfo(); // This is what the user wants, nickname here is *not* fact.
 	public ServerInfo server = new ServerInfo(); // Server Info requested by user
 

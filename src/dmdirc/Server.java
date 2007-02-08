@@ -78,9 +78,7 @@ public class Server {
             }
         });
         
-        try {
-            parser.connect(server, port);
-            
+        try {           
             Thread thread = new Thread(parser);
             thread.start();
         } catch (Exception ex) {
