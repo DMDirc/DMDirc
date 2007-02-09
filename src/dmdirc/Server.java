@@ -64,6 +64,7 @@ public class Server {
         ServerManager.getServerManager().registerServer(this);
         
         frame = new ServerFrame(this);
+        frame.setTitle(server+":"+port);
         
         MainFrame.getMainFrame().addChild(frame);
         

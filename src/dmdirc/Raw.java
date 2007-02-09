@@ -50,6 +50,7 @@ public class Raw {
         this.server = server;
         
         frame = new ServerFrame(server);
+        frame.setTitle("(Raw log)");
         
         MainFrame.getMainFrame().addChild(frame);
         
