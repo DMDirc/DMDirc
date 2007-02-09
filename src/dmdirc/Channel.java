@@ -22,6 +22,9 @@
 
 package dmdirc;
 
+import dmdirc.ui.ChannelFrame;
+import dmdirc.ui.MainFrame;
+
 /**
  * The Channel class represents the client's view of the channel. It handles
  * callbacks for channel events from the parser, maintains the corresponding
@@ -37,7 +40,7 @@ public class Channel {
     private Server server;
     
     /** The ChannelFrame used for this channel */
-    private int frame;
+    private ChannelFrame frame;
     
     /**
      * Creates a new instance of Channel
@@ -48,8 +51,8 @@ public class Channel {
         this.pChannel = pChannel;
         this.server = server;
         
-        frame = 0;
-        // new ChannelFrame...
+        frame = new ChannelFrame();
+        MainFrame.getMainFrame().addChild(frame);
     }
     
 }
