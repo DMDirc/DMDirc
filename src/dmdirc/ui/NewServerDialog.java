@@ -87,11 +87,12 @@ public class NewServerDialog extends javax.swing.JDialog {
         jButton1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 String host = jTextField1.getText();
+                String pass = jTextField3.getText();
                 int port = Integer.parseInt(jTextField2.getText());
                 
                 // Open in a new window?
                 if (jCheckBox1.isSelected()) {
-                    Server server = new Server(host, port);
+                    Server server = new Server(host, port, pass);
                 } else {
                     
                 }

@@ -38,8 +38,9 @@ public class ServerInfo {
 	public int nPort = 6667;
 
 	public ServerInfo () { }
-	public ServerInfo (String host, int port) {
+	public ServerInfo (String host, int port, String pass) {
 		sHost = host;
 		nPort = port;
+                sPassword = pass;
 	}
 }

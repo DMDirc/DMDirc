@@ -56,8 +56,9 @@ public class Server {
      * Creates a new instance of Server
      * @param server The hostname/ip of the server to connect to
      * @param port The port to connect to
+     * @param password The server password
      */
-    public Server(String server, int port) {
+    public Server(String server, int port, String password) {
         
         channels = new Vector(0,1);
         
@@ -70,7 +71,7 @@ public class Server {
         
         frame.addLine("Connecting to "+server+":"+port);
               
-        parser = new IRCParser(new ServerInfo(server, port));
+        parser = new IRCParser(new ServerInfo(server, port, password));
         
         Raw raw = new Raw(this);
         
