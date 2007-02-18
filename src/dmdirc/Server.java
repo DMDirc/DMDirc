@@ -22,7 +22,6 @@
 
 package dmdirc;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.Parser;
 import dmdirc.parser.ServerInfo;
 import dmdirc.ui.MainFrame;
 import dmdirc.ui.ServerFrame;

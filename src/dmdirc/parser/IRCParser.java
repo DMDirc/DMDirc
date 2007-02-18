@@ -73,6 +73,7 @@ public class IRCParser implements Runnable {
 	ArrayList<INickInUse> cbNickInUse = new ArrayList<INickInUse>();
 	
 
+        @SuppressWarnings("unchecked")
 	private void AddCallback (Object eMethod, ArrayList CallbackList) {
 		for (int i = 0; i < CallbackList.size(); i++) {
 			if (eMethod.equals(CallbackList.get(i))) { return; }

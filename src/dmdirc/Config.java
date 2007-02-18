@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack
+ * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,11 @@
 package dmdirc;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
 /**
@@ -53,7 +58,7 @@ public class Config {
      * @return configuration directory
      */
     private static String getConfigDir() {
-        String fs = System.getProperty("file.seperator");
+        String fs = System.getProperty("file.separator");
         return System.getProperty("user.home")+fs+".DMDirc"+fs;
     }
     
@@ -95,16 +100,45 @@ public class Config {
     }
     
     /**
-     * Loads the config file from disc, if it exists
+     * Loads the config file from disc, if it exists else initialises defaults
+     * and creates file
      */
     public static void initialise() {
-        File dir = new File(getConfigFile());
-        dir.mkdirs();
         
-        properties = new Properties(getDefaults());
+        properties = getDefaults();
         
-        if (dir.exists()) {
-            // read file
+        File file = new File(getConfigFile());
+        
+        if (file.exists()) {
+            try {
+                properties.loadFromXML(new FileInputStream(file));
+            } catch (InvalidPropertiesFormatException ex) {
+                System.out.println("Invalid config file, using defaults");
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            try {
+                (new File(getConfigDir())).mkdirs();
+                file.createNewFile();
+                Config.save();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    
+    public static void save() {
+        assert(properties != null);
+        try {
+            
+            properties.storeToXML(new FileOutputStream(new File(getConfigFile())), null);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
     
