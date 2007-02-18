@@ -245,6 +245,9 @@ public class IRCParser implements Runnable {
 			try {
 				line = in.readLine(); // Blocking :/
 				if (IsFirst) {
+					if (!server.sPassword.equals("")) {
+						SendString("PASS "+server.sPassword);
+                                        }
 					SetNickname(me.sNickname);
 					SendString("USER "+me.sUsername.toLowerCase()+" * * :"+me.sRealname);
 					IsFirst = false;
