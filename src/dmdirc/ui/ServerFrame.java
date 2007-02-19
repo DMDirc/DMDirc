@@ -27,8 +27,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import javax.swing.JComponent;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.plaf.metal.MetalInternalFrameUI;
 
 /**
@@ -45,6 +47,10 @@ public class ServerFrame extends javax.swing.JInternalFrame {
      * The border used when the frame is not maximised
      */
     private Border myborder;
+    /**
+     * The northframe used when the frame is not maximised
+     **/
+    private JComponent myframe;
     
     /**
      * Creates new form ServerFrame
@@ -70,9 +76,12 @@ public class ServerFrame extends javax.swing.JInternalFrame {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
                     ServerFrame.this.myborder = getBorder();
+                    ServerFrame.this.myframe = ((BasicInternalFrameUI)getUI()).getNorthPane();
                     setBorder(new EmptyBorder(0,0,0,0));
+                    ((BasicInternalFrameUI)getUI()).setNorthPane(null);
                 } else {
                     setBorder(ServerFrame.this.myborder);
+                    ((BasicInternalFrameUI)getUI()).setNorthPane(ServerFrame.this.myframe);
                 }
             }
         });
