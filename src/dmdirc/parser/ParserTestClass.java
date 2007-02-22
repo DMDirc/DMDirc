@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id: ServerInfo.java 51 2007-02-14 12:28:53Z chris87 $
+ * SVN: $Id$
  */
 
 package dmdirc.parser;
@@ -28,7 +28,7 @@ package dmdirc.parser;
  * Contains Tests for various parts of the parser.
  * 
  * @author            Shane Mc Cormack
- * @version           $Id: ServerInfo.java 51 2007-02-14 12:28:53Z chris87 $
+ * @version           $Id$
  * @see IRCParser
  */
 public class ParserTestClass {

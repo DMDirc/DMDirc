@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id: ServerInfo.java 51 2007-02-14 12:28:53Z chris87 $
+ * SVN: $Id$
  */
 
 package dmdirc.parser;
@@ -31,7 +31,7 @@ import java.util.Enumeration;
  * 
  * @author            Shane Mc Cormack
  * @author            Chris Smith
- * @version           $Id: ServerInfo.java 51 2007-02-14 12:28:53Z chris87 $
+ * @version           $Id$
  * @see IRCParser
  */
 public class ChannelInfo {
