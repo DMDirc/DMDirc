@@ -19,28 +19,49 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id$
+ * SVN: $Id: ServerInfo.java 51 2007-02-14 12:28:53Z chris87 $
  */
 
 package dmdirc.parser;
 
 /**
- * Contains Server information.
+ * Contains information about known users.
  * 
  * @author            Shane Mc Cormack
  * @author            Chris Smith
- * @version           $Id$
+ * @version           $Id: ServerInfo.java 51 2007-02-14 12:28:53Z chris87 $
  * @see IRCParser
  */
-public class ServerInfo {
-	public String sHost = "irc.quakenet.org";
-	public String sPassword = "";
-	public int nPort = 6667;
+public class ClientInfo {
+	private String sNickname = "";
+	private String sIdent = "";	
+	private String sHost = "";
 
-	public ServerInfo () { }
-	public ServerInfo (String host, int port, String pass) {
-		sHost = host;
-		nPort = port;
-		sPassword = pass;
+	public static String ParseHost(String sWho) {
+		// Get the nickname from the string.
+		String sTemp[] = null;
+		sTemp = sWho.split("@",2);
+		sTemp = sTemp[0].split("!",2);
+		sTemp = sTemp[0].split(":",2);
+		if (sTemp.length != 1) { sWho = sTemp[1]; } else { sWho = sTemp[0]; }
+		return sWho;
 	}
+
+	public ClientInfo (String sHostmask) { 
+		String sTemp[] = null;
+		sTemp = sHostmask.split(":",2);
+		if (sTemp.length != 1) { sHostmask = sTemp[1]; } else { sHostmask = sTemp[0]; }
+
+		sTemp = sHostmask.split("@",2);
+		if (sTemp.length != 1) { sHost = sTemp[1]; }
+		sTemp = sTemp[0].split("!",2);
+		if (sTemp.length != 1) { sIdent = sTemp[1]; }
+		sNickname = sTemp[0];
+	}
+	
+	public String toString() { return "Nickname: "+sNickname+" | Ident: "+sIdent+" | Host: "+sHost; }
+	
+	public String GetNickname() { return sNickname; }
+	public String GetIdent() { return sIdent; }
+	public String GetHost() { return sHost; }
 }

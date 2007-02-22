@@ -19,28 +19,25 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id$
+ * SVN: $Id: ServerInfo.java 51 2007-02-14 12:28:53Z chris87 $
  */
 
 package dmdirc.parser;
+import java.util.Hashtable;
 
 /**
- * Contains Server information.
+ * Contains information about a client on a channel.
  * 
  * @author            Shane Mc Cormack
  * @author            Chris Smith
- * @version           $Id$
+ * @version           $Id: ServerInfo.java 51 2007-02-14 12:28:53Z chris87 $
  * @see IRCParser
  */
-public class ServerInfo {
-	public String sHost = "irc.quakenet.org";
-	public String sPassword = "";
-	public int nPort = 6667;
-
-	public ServerInfo () { }
-	public ServerInfo (String host, int port, String pass) {
-		sHost = host;
-		nPort = port;
-		sPassword = pass;
-	}
+public class ChannelClientInfo {
+	private ClientInfo cClient = null;
+	
+	public ChannelClientInfo (ClientInfo client) { cClient = client; }
+	
+	public ChannelClientInfo GetClient() { return cClient; }
+	public ChannelClientInfo GetNickname() { return cClient.getNickname(); }	
 }
