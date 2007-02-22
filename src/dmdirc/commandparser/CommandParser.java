@@ -22,23 +22,47 @@
 
 package dmdirc.commandparser;
 
+import java.util.Hashtable;
+
 /**
  *
  * @author chris
  */
 abstract public class CommandParser {
     
+    private Hashtable<String,Command> commands;
+    
     /** Creates a new instance of CommandParser */
     public CommandParser() {
+        commands = new Hashtable<String,Command>();
     }
     
     /** Loads the relevant commands into the parser */
-    abstract void LoadCommands();
+    protected abstract void LoadCommands();
     
+    public void registerCommand(Command command) {
+        commands.put(command.getSignature(), command);
+    }
     
     /** Parses the specified string as a command */
-    public void ParseCommand(String command) {
+    public void parseCommand(String line) {
+        String[] args = line.split(" ");
         
+        assert(args.length > 0);
+        
+        String command = args[0];
+        String signature = command+"/"+(args.length-1);
+        
+        // Check the specific signature first, so that polyadic commands can
+        // have error handlers if there are too few arguments (e.g., msg/0 and
+        // msg/1 would return errors, so msg only gets called with 2+ args).
+        if (commands.containsKey(signature)) {
+            
+        } else if (commands.containsKey(command)) {
+            
+        } else {
+            
+        }
     }
     
 }

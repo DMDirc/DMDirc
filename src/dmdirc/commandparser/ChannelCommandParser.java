@@ -26,13 +26,12 @@ package dmdirc.commandparser;
  *
  * @author chris
  */
-public class ChannelCommandParser extends CommandParser {
+public class ChannelCommandParser extends ServerCommandParser {
     
     /** Creates a new instance of ChannelCommandParser */
     public ChannelCommandParser() {
     }
 
-    void LoadCommands() {
-    }
+    
     
 }

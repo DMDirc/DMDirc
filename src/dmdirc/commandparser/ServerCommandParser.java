@@ -32,7 +32,7 @@ public class ServerCommandParser extends CommandParser {
     public ServerCommandParser() {
     }
 
-    void LoadCommands() {
+    protected void LoadCommands() {
     }
     
 }

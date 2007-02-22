@@ -29,15 +29,15 @@ package dmdirc.commandparser;
 public class Command {
     
     private String name;
-    private int arity;
-    private boolean thingy;
+    private int arity = 0;
+    private boolean polyadic;
     
     /** Creates a new instance of Command */
     public Command() {
     }
     
     public String getSignature() {
-        if (thingy) {
+        if (polyadic) {
             return name;
         } else {
             return name+"/"+arity;
