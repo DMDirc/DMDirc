@@ -276,25 +276,28 @@ public class IRCParser implements Runnable {
 	 * @return Boolean result of test. (True only if ALL tests pass)
 	 */	
 	public boolean DoSelfTest(boolean bSilent) {
-		boolean bResult = false;
-		ParserTestClass ptc = new ParserTestClass();
-		if (bSilent) { bResult = ptc.SelfTest(); }
+		if (!bDebug) { return true; }
 		else {
-			System.out.printf(" --------------------\n");
-			System.out.printf("  Beginning Tests\n");
-			System.out.printf(" --------------------\n");
-			ptc.RunTests();
-			System.out.printf(" --------------------\n");
-			System.out.printf("  End\n");
-			System.out.printf(" --------------------\n");		
-			System.out.printf("   Total Tests: %d\n",ptc.GetTotalTests());
-			System.out.printf("  Passed Tests: %d\n",ptc.GetPassedTests());
-			System.out.printf("  Failed Tests: %d\n",ptc.GetFailedTests());
-			System.out.printf(" --------------------\n");			
-			bResult = (ptc.GetTotalTests() == ptc.GetPassedTests());
+			boolean bResult = false;
+			ParserTestClass ptc = new ParserTestClass();
+			if (bSilent) { bResult = ptc.SelfTest(); }
+			else {
+				System.out.printf(" --------------------\n");
+				System.out.printf("  Beginning Tests\n");
+				System.out.printf(" --------------------\n");
+				ptc.RunTests();
+				System.out.printf(" --------------------\n");
+				System.out.printf("  End\n");
+				System.out.printf(" --------------------\n");		
+				System.out.printf("   Total Tests: %d\n",ptc.GetTotalTests());
+				System.out.printf("  Passed Tests: %d\n",ptc.GetPassedTests());
+				System.out.printf("  Failed Tests: %d\n",ptc.GetFailedTests());
+				System.out.printf(" --------------------\n");			
+				bResult = (ptc.GetTotalTests() == ptc.GetPassedTests());
+			}
+			ptc = null;
+			return bResult;
 		}
-		ptc = null;
-		return bResult;
 	}
 	
 	/**
