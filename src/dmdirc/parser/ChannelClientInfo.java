@@ -23,7 +23,6 @@
  */
 
 package dmdirc.parser;
-import java.util.Hashtable;
 
 /**
  * Contains information about a client on a channel.
@@ -35,9 +34,13 @@ import java.util.Hashtable;
  */
 public class ChannelClientInfo {
 	private ClientInfo cClient = null;
+	private int nModes;
 	
-	public ChannelClientInfo (ClientInfo client) { cClient = client; }
+	public ChannelClientInfo(ClientInfo client) { cClient = client; }
 	
-	public ChannelClientInfo GetClient() { return cClient; }
-	public ChannelClientInfo GetNickname() { return cClient.getNickname(); }	
+	public ClientInfo getClient() { return cClient; }
+	public String getNickname() { return cClient.getNickname(); }	
+	
+	public void setChanMode(int nNewMode) { nModes = nNewMode; }
+	public int getChanMode() { return nModes; }
 }

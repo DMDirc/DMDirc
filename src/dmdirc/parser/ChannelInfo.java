@@ -23,6 +23,7 @@
  */
 
 package dmdirc.parser;
+
 import java.util.Hashtable;
 import java.util.Enumeration;
 
@@ -35,25 +36,34 @@ import java.util.Enumeration;
  * @see IRCParser
  */
 public class ChannelInfo {
+	public boolean bAddingNames = true;
+	
+	private String sTopic;
+	private String sTopicUser;
+	private long nTopicTime;
+	
 	private String sName;
-	private Hashtable<String,ChannelClientInfo> hUserList = new Hashtable<String,ChannelClientInfo>();
+	private Hashtable<String,ChannelClientInfo> hChannelUserList = new Hashtable<String,ChannelClientInfo>();
 
 	public ChannelInfo (String name) { sName = name; }
 	
-	public String GetName() { return sName; }
-	public int GetUserCount() { return hUserList.length(); }
+	public String getName() { return sName; }
+	public int getUserCount() { return hChannelUserList.size(); }
 	
-	public ChannelClientInfo GetUser(String sWho) {
+	public void emptyChannel() { hChannelUserList.clear(); }
+	
+	public ChannelClientInfo getUser(String sWho) {
 		sWho = ClientInfo.ParseHost(sWho);
-		if (hUserList.containsKey(sWho)) { return hUserList.get(sWho); } else { return null; }
+		sWho = sWho.toLowerCase();
+		if (hChannelUserList.containsKey(sWho)) { return hChannelUserList.get(sWho); } else { return null; }
 	}	
 	
-	public ChannelClientInfo GetUser(ClientInfo cWho) {
+	public ChannelClientInfo getUser(ClientInfo cWho) {
 		ChannelClientInfo cTemp = null;
-		if (hUserList.containsValue(cWho)) { 
-			for (Enumeration e = hUserList.keys(); e.hasMoreElements();) {
-				cTemp = hUserList.get(e.nextElement());
-				if (cTemp.getClient() = cWho) { return cTemp; }
+		if (hChannelUserList.containsValue(cWho)) { 
+			for (Enumeration e = hChannelUserList.keys(); e.hasMoreElements();) {
+				cTemp = hChannelUserList.get(e.nextElement());
+				if (cTemp.getClient() == cWho) { return cTemp; }
 			}
 			cTemp = null;
 		}
@@ -62,11 +72,33 @@ public class ChannelInfo {
 	
 	public ChannelClientInfo addClient(ClientInfo cClient) {
 		ChannelClientInfo cTemp = null;
-		cTemp = GetUser(cClient);
+		cTemp = getUser(cClient);
 		if (cTemp == null) { 
 			cTemp = new ChannelClientInfo(cClient);
-			hUserList.put(cTemp.GetNickname(),cTemp);
+			hChannelUserList.put(cTemp.getNickname(),cTemp);
 		}
 		return cTemp;
 	}
+	
+	public void delClient(ClientInfo cClient) {
+		ChannelClientInfo cTemp = null;
+		cTemp = getUser(cClient);
+		if (cTemp != null) {
+			hChannelUserList.remove(cTemp);
+		}
+	}	
+	
+	public static boolean isValidChannelName(IRCParser tParser, String sChannelName) {
+		return tParser.hChanPrefix.containsKey(sChannelName.charAt(0));
+	}	
+	
+
+	public void setTopicTime(long nNewTime) { nTopicTime = nNewTime; }
+	public long getTopicTime() { return nTopicTime; }	
+	
+	public void setTopic(String sNewTopic) { sTopic = sNewTopic; }
+	public String getTopic() { return sTopic; }	
+	
+	public void setTopicUser(String sNewUser) { sTopicUser = sNewUser; }
+	public String getTopicUser() { return sTopicUser; }
 }

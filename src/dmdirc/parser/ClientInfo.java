@@ -48,6 +48,9 @@ public class ClientInfo {
 	}
 
 	public ClientInfo (String sHostmask) { 
+		setUserBits(sHostmask,true);
+	}
+	private void setUserBits (String sHostmask, boolean bUpdateNick) {
 		String sTemp[] = null;
 		sTemp = sHostmask.split(":",2);
 		if (sTemp.length != 1) { sHostmask = sTemp[1]; } else { sHostmask = sTemp[0]; }
@@ -56,12 +59,12 @@ public class ClientInfo {
 		if (sTemp.length != 1) { sHost = sTemp[1]; }
 		sTemp = sTemp[0].split("!",2);
 		if (sTemp.length != 1) { sIdent = sTemp[1]; }
-		sNickname = sTemp[0];
+		if (bUpdateNick) { sNickname = sTemp[0]; }
 	}
 	
 	public String toString() { return "Nickname: "+sNickname+" | Ident: "+sIdent+" | Host: "+sHost; }
 	
-	public String GetNickname() { return sNickname; }
-	public String GetIdent() { return sIdent; }
-	public String GetHost() { return sHost; }
+	public String getNickname() { return sNickname; }
+	public String getIdent() { return sIdent; }
+	public String getHost() { return sHost; }
 }
