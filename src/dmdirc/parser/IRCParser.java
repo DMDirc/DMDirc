@@ -31,6 +31,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Enumeration;
 
@@ -55,6 +56,8 @@ public class IRCParser implements Runnable {
 	
 	// Development Debugging info - Outputs directly to console.
 	// This is used for debugging info that is generally of no use to most people
+	// If this is set to false, self-test and any the "useless" debugging that relies on 
+	// this being true are not compiled.
 	protected static final boolean bDebug = true;
 	
 	private Socket socket = null;
@@ -124,6 +127,8 @@ public class IRCParser implements Runnable {
 	ArrayList<IChannelQuit> cbChannelQuit = new ArrayList<IChannelQuit>();
 	public interface IChannelTopic { public void onTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsNewTopic); }
 	ArrayList<IChannelTopic> cbChannelTopic = new ArrayList<IChannelTopic>();
+	public interface IChannelModesChanged { public void onModeChange(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient); }
+	ArrayList<IChannelModesChanged> cbChannelModesChanged = new ArrayList<IChannelModesChanged>();
 	public interface IChannelMessage { public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost ); }
 	ArrayList<IChannelMessage> cbChannelMessage = new ArrayList<IChannelMessage>();
 	public interface IChannelAction { public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost ); }
@@ -406,6 +411,27 @@ public class IRCParser implements Runnable {
 		}
 		return bResult;
 	}
+	
+	/**
+	 * Add callback for ChannelModesChanged (onModeChange).
+	 *
+	 * @param eMethod     Reference to object that handles the callback
+	 */
+	public void AddModesChanged(Object eMethod) { AddCallback(eMethod, cbChannelModesChanged); }
+	/**
+	 * Delete callback for ChannelModesChanged (onModeChange).
+	 *
+	 * @param eMethod     Reference to object that handles the callback
+	 */
+	public void DelModesChanged(Object eMethod) { DelCallback(eMethod, cbChannelModesChanged); }
+	protected boolean CallModesChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
+		boolean bResult = false;
+		for (int i = 0; i < cbChannelModesChanged.size(); i++) {
+			cbChannelModesChanged.get(i).onModeChange(this, cChannel, cChannelClient);
+			bResult = true;
+		}
+		return bResult;
+	}	
 	
 	/**
 	 * Add callback for ChannelMessage (onChannelMessage).
@@ -988,6 +1014,11 @@ public class IRCParser implements Runnable {
 						case 366: // End of Names
 							ProcessNames(nParam,token);
 							break;
+						case 324: // Modes
+							ProcessMode(sParam,token);
+						case 329: // Channel Time
+						case 368: // End of ban list
+							break;
 						case 376: // End of MOTD
 						case 422: // No MOTD
 							ProcessEndOfMOTD(nParam,token);
@@ -1012,7 +1043,106 @@ public class IRCParser implements Runnable {
 		else if (sParam.equalsIgnoreCase("PART")) { ProcessPartChannel(sParam,token); }
 		else if (sParam.equalsIgnoreCase("QUIT")) { ProcessQuit(sParam,token); }
 		else if (sParam.equalsIgnoreCase("TOPIC")) { ProcessTopic(sParam,token); }
+		else if (sParam.equalsIgnoreCase("MODE")) { ProcessMode(sParam,token); }
 	}
+	
+	private void ProcessMode(String sParam, String token[]) {
+		String[] sModestr;
+		String sChannelName;
+		String sModeParam;
+		int nCurrent = 0, nParam = 1, nValue = 0;
+		boolean bPositive = true, bBooleanMode = true;
+		ChannelInfo iChannel;
+		ChannelClientInfo iChannelClientInfo;
+		ClientInfo iClient;
+		
+		if (sParam.equals("324")) {
+			sChannelName = token[3];
+			sModestr = Arrays.copyOfRange(token,4,token.length);
+		} else {
+			sChannelName = token[3];
+			sModestr = Arrays.copyOfRange(token,3,token.length);
+		}
+		
+		if (!ChannelInfo.isValidChannelName(this, sChannelName)) { ProcessUserMode(sParam, token); return; }
+		
+		iChannel = GetChannelInfo(sChannelName);
+		if (iChannel == null) { 
+			CallErrorInfo(errWarning+errCanContinue, "Got modes for channel ("+sChannelName+") that I am not on.");
+			iChannel = new ChannelInfo(this, sChannelName);
+			hChannelList.put(iChannel.getName().toLowerCase(),iChannel);
+		}
+		if (!sParam.equals("324")) { nCurrent = iChannel.getMode(); }
+		
+		for (int i = 0; i < sModestr[0].length(); ++i) {
+			Character cMode = sModestr[0].charAt(i);
+			if (cMode.equals("+".charAt(0))) { bPositive = true; }
+			else if (cMode.equals("-".charAt(0))) { bPositive = false; }
+			else if (cMode.equals(":".charAt(0))) { continue; }
+			else {
+				if (hChanModesBool.containsKey(cMode)) { nValue = hChanModesBool.get(cMode); bBooleanMode = true; }
+				else if (hChanModesOther.containsKey(cMode)) { nValue = hChanModesOther.get(cMode); bBooleanMode = false; }
+				else if (hPrefixModes.containsKey(cMode)) { 
+					// (de) OP/Voice someone
+					sModeParam = sModestr[nParam++];
+					nValue = hPrefixModes.get(cMode);
+					if (bDebug) { System.out.printf("User Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
+					iChannelClientInfo = iChannel.getUser(sModeParam);
+					if (iChannelClientInfo == null) {
+						// Client not known?
+						CallErrorInfo(errWarning+errCanContinue, "Got mode for client not known on channel - Added");
+						iClient = GetClientInfo(sModeParam);
+						if (iClient == null) { 
+							CallErrorInfo(errWarning+errCanContinue, "Got mode for client not known at all - Added");
+							iClient = new ClientInfo(this, sModeParam);
+							hClientList.put(iClient.getNickname().toLowerCase(),iClient);
+						}
+						iChannelClientInfo = iChannel.addClient(iClient);
+					}
+					if (bPositive) { iChannelClientInfo.setChanMode(iChannelClientInfo.getChanMode() + nValue); }
+					else { iChannelClientInfo.setChanMode(iChannelClientInfo.getChanMode() - nValue); }
+					continue;
+				} else {
+					CallErrorInfo(errWarning+errCanContinue, "Got unknown mode "+cMode+" - Added as boolean mode");
+					hChanModesBool.put(cMode,nNextKeyCMBool);
+					nValue = nNextKeyCMBool;
+					bBooleanMode = true;
+					nNextKeyCMBool = nNextKeyCMBool*2;
+				}
+				
+				if (bBooleanMode) {
+					if (bDebug) { System.out.printf("Boolean Mode: %c [%d] {Positive: %b}\n",cMode, nValue, bPositive); }
+					if (bPositive) { nCurrent = nCurrent + nValue; }
+					else { nCurrent = nCurrent - nValue; }
+				} else {
+					if (nValue == cmList) {
+						sModeParam = sModestr[nParam++];
+						iChannel.setListModeParam(cMode, sModeParam, bPositive);
+						if (bDebug) { System.out.printf("List Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
+					} else {
+						if (bPositive) { 
+							sModeParam = sModestr[nParam++];
+							if (bDebug) { System.out.printf("Set Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
+							iChannel.setModeParam(cMode,sModeParam);
+						} else {
+							if ((nValue & cmUnset) == cmUnset) { sModeParam = sModestr[nParam++]; } else { sModeParam = ""; }
+							if (bDebug) { System.out.printf("Unset Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
+							iChannel.setModeParam(cMode,"");
+						}
+					}
+				}
+			}
+		}
+		
+		iChannel.setMode(nCurrent);
+		if (sParam.equals("324")) { CallModesChanged(iChannel, null); }
+		else { CallModesChanged(iChannel, iChannel.getUser(token[0])); }
+	}
+	
+	// This isn't implemented yet.
+	private void ProcessUserMode(String sParam, String token[]) {
+		return;
+	}	
 	
 	private void ProcessNames(int nParam, String token[]) {
 		ChannelInfo iChannel;
@@ -1033,7 +1163,7 @@ public class IRCParser implements Runnable {
 		
 			if (iChannel == null) { 
 				CallErrorInfo(errWarning+errCanContinue, "Got names for channel ("+token[4]+") that I am not on.");
-				iChannel = new ChannelInfo(token[4]);
+				iChannel = new ChannelInfo(this, token[4]);
 				hChannelList.put(iChannel.getName().toLowerCase(),iChannel);
 			}
 			
@@ -1059,7 +1189,7 @@ public class IRCParser implements Runnable {
 				System.out.printf("Name: %s Modes: \"%s\" [%d]\n",sName,sModes,nPrefix);
 				
 				iClient = GetClientInfo(sName);
-				if (iClient == null) { iClient = new ClientInfo(sName); hClientList.put(iClient.getNickname().toLowerCase(),iClient); }
+				if (iClient == null) { iClient = new ClientInfo(this, sName); hClientList.put(iClient.getNickname().toLowerCase(),iClient); }
 				iChannelClient = iChannel.addClient(iClient);
 				iChannelClient.setChanMode(nPrefix);
 
@@ -1195,12 +1325,12 @@ public class IRCParser implements Runnable {
 		iClient = GetClientInfo(token[0]);
 		iChannel = GetChannelInfo(token[token.length-1]);
 		
-		if (iClient == null) { iClient = new ClientInfo(token[0]); hClientList.put(iClient.getNickname().toLowerCase(),iClient); }
+		if (iClient == null) { iClient = new ClientInfo(this, token[0]); hClientList.put(iClient.getNickname().toLowerCase(),iClient); }
 		if (iChannel == null) { 
 			if (iClient != cMyself) {
 				CallErrorInfo(errWarning+errCanContinue, "Got join for channel ("+token[token.length-1]+") that I am not on. [User: "+token[0]+"]");
 			}
-			iChannel = new ChannelInfo(token[token.length-1]);
+			iChannel = new ChannelInfo(this, token[token.length-1]);
 			hChannelList.put(iChannel.getName().toLowerCase(),iChannel);
 			SendString("MODE "+iChannel.getName());
 			
@@ -1452,7 +1582,7 @@ public class IRCParser implements Runnable {
 		sNick = temp[0];  /* */
 		
 		cMyself = GetClientInfo(sNick);
-		if (cMyself == null) { cMyself = new ClientInfo(sNick); }
+		if (cMyself == null) { cMyself = new ClientInfo(this, sNick); }
 	}
 
 	private void ProcessNickInUse(int nParam, String token[]) {

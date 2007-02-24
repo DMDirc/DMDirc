@@ -36,6 +36,8 @@ public class ClientInfo {
 	private String sNickname = "";
 	private String sIdent = "";	
 	private String sHost = "";
+	
+	private IRCParser myParser; // Reference to parser object that owns this channel. Used for Modes
 
 	/**
 	 * Get a nickname of a user from a hostmask.
@@ -56,11 +58,13 @@ public class ClientInfo {
 	/**
 	 * Create a new client object from a hostmask.
 	 *
+ 	 * @param tParser Refernce to parser that owns this channelclient (used for modes)	 
+	 * @param sHostmask Hostmask parsed by ParseHost to get nickname
 	 * @see ParseHost
-	 * @return String representation of the user.
 	 */
-	public ClientInfo (String sHostmask) { 
+	public ClientInfo (IRCParser tParser, String sHostmask) { 
 		setUserBits(sHostmask,true);
+		myParser = tParser;
 	}
 	private void setUserBits (String sHostmask, boolean bUpdateNick) {
 		String sTemp[] = null;

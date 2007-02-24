@@ -46,18 +46,23 @@ public class ChannelInfo {
 	private String sTopicUser;
 	private long nTopicTime;
 	
+	private int nModes;
+	private IRCParser myParser; // Reference to parser object that owns this channel. Used for Modes
+	
 	private String sName;
 	private Hashtable<String,ChannelClientInfo> hChannelUserList = new Hashtable<String,ChannelClientInfo>();
+	private Hashtable<Character,String> hParamModes = new Hashtable<Character,String>();
 
 	/**
-	 * Create a new channel object
+	 * Create a new channel object.
 	 *
+	 * @param tParser Refernce to parser that owns this channelclient (used for modes)	 
 	 * @param name Channel name.
 	 */
-	public ChannelInfo (String name) { sName = name; }
+	public ChannelInfo (IRCParser tParser, String name) { myParser = tParser; sName = name; }
 	
 	/**
-	 * Get the name of this channel object
+	 * Get the name of this channel object.
 	 *
 	 * @return Channel name.
 	 */	
@@ -69,12 +74,12 @@ public class ChannelInfo {
 	 */
 	public int getUserCount() { return hChannelUserList.size(); }
 	/**
-	 * Empty the channel (Remove all known channelclients)
+	 * Empty the channel (Remove all known channelclients).
 	 */
 	public void emptyChannel() { hChannelUserList.clear(); }
 
 	/**
-	 * Get the ChannelClientInfo object associated with a nickname
+	 * Get the ChannelClientInfo object associated with a nickname.
 	 *
 	 * @return ChannelClientInfo object requested, or null if not found
 	 */
@@ -84,7 +89,7 @@ public class ChannelInfo {
 		if (hChannelUserList.containsKey(sWho)) { return hChannelUserList.get(sWho); } else { return null; }
 	}	
 	/**
-	 * Get the ChannelClientInfo object associated with a ClientInfo object
+	 * Get the ChannelClientInfo object associated with a ClientInfo object.
 	 *
 	 * @return ChannelClientInfo object requested, or null if not found
 	 */	
@@ -101,7 +106,7 @@ public class ChannelInfo {
 	}
 	
 	/**
-	 * Get the ChannelClientInfo object associated with a ClientInfo object
+	 * Get the ChannelClientInfo object associated with a ClientInfo object.
 	 *
 	 * @param cClient Client object to be added to channel
 	 * @return ChannelClientInfo object added, or an existing object if already known on channel
@@ -110,14 +115,14 @@ public class ChannelInfo {
 		ChannelClientInfo cTemp = null;
 		cTemp = getUser(cClient);
 		if (cTemp == null) { 
-			cTemp = new ChannelClientInfo(cClient);
+			cTemp = new ChannelClientInfo(myParser,cClient);
 			hChannelUserList.put(cTemp.getNickname(),cTemp);
 		}
 		return cTemp;
 	}
 	
 	/**
-	 * Remove ChannelClientInfo object associated with a ClientInfo object
+	 * Remove ChannelClientInfo object associated with a ClientInfo object.
 	 *
 	 * @param cClient Client object to be removed from channel
 	 */	
@@ -130,7 +135,7 @@ public class ChannelInfo {
 	}	
 	
 	/**
-	 * Check if a channel name is valid in a certain parser object
+	 * Check if a channel name is valid in a certain parser object.
 	 *
 	 * @param tParser Reference to parser instance that the channelname is requested for
 	 * @param sChannelName Channel name to test
@@ -140,41 +145,119 @@ public class ChannelInfo {
 	}	
 	
 	/**
-	 * Set the topic time
+	 * Set the topic time.
 	 *
 	 * @param nNewTime New unixtimestamp time for the topic (Seconds sinse epoch, not milliseconds)
 	 */
 	public void setTopicTime(long nNewTime) { nTopicTime = nNewTime; }
 	/**
-	 * Get the topic time
+	 * Get the topic time.
 	 *
 	 * @return Unixtimestamp time for the topic (Seconds sinse epoch, not milliseconds)
 	 */
 	public long getTopicTime() { return nTopicTime; }	
 	
 	/**
-	 * Set the topic
+	 * Set the topic.
 	 *
 	 * @param sNewTopic New contents of topic
 	 */	
 	public void setTopic(String sNewTopic) { sTopic = sNewTopic; }
 	/**
-	 * Get the topic
+	 * Get the topic.
 	 *
 	 * @return contents of topic
 	 */	
 	public String getTopic() { return sTopic; }	
 
 	/**
-	 * Set the topic creator
+	 * Set the topic creator.
 	 *
 	 * @param sNewUser New user who set the topic (nickname if gotten on connect, full host if seen by parser)
 	 */	
 	public void setTopicUser(String sNewUser) { sTopicUser = sNewUser; }
 	/**
-	 * Get the topic creator
+	 * Get the topic creator.
 	 *
 	 * @return user who set the topic (nickname if gotten on connect, full host if seen by parser)
 	 */	
 	public String getTopicUser() { return sTopicUser; }
+	
+	/**
+	 * Set the channel modes (as an integer).
+	 *
+	 * @param nNewMode new integer representing channel modes. (Boolean only)
+	 */	
+	public void setMode(int nNewMode) { nModes = nNewMode; }
+	/**
+	 * Get the channel modes (as an integer).
+	 *
+	 * @return integer representing channel modes. (Boolean only)
+	 */	
+	public int getMode() { return nModes; }	
+	
+	/**
+	 * Get the channel modes (as a string representation).
+	 *
+	 * @return string representing modes. (boolean and non-list)
+	 */	
+	public String getModeStr() { 
+		String sModes = "+", sModeParams = "", sTemp = "";
+		Character cTemp;
+		int nTemp = 0, nModes = this.getMode();
+		
+		for (Enumeration e = myParser.hChanModesBool.keys(); e.hasMoreElements();) {
+			cTemp = (Character)e.nextElement();
+			nTemp = myParser.hChanModesBool.get(cTemp);
+			if ((nModes & nTemp) == nTemp) { sModes = sModes+cTemp; }
+		}
+		for (Enumeration e = hParamModes.keys(); e.hasMoreElements();) {
+			cTemp = (Character)e.nextElement();
+			sTemp = hParamModes.get(cTemp);
+			if (!sTemp.equals("")) {
+				sModes = sModes+cTemp;
+				sModeParams = sModeParams+" "+this.getModeParam(cTemp);
+ 			}
+		}
+		
+		return sModes+sModeParams;
+	}	
+	
+	/**
+	 * Set a channel mode that requires a parameter.
+	 *
+	 * @param cMode Character representing mode
+	 * @param sValue String repreenting value (if "" mode is unset)
+	 */	
+	public void setModeParam(Character cMode, String sValue) { 
+		if (sValue == "") {
+			if (hParamModes.containsKey(cMode)) {
+				hParamModes.remove(cMode);
+			}
+		} else {
+			hParamModes.put(cMode,sValue);
+		}
+	}
+	/**
+	 * Get the value of a mode that requires a parameter.
+	 *
+	 * @param cMode Character representing mode
+	 * @return string representing the value of the mode ("" if mode not set)
+	 */	
+	public String getModeParam(Character cMode) { 
+		if (hParamModes.containsKey(cMode)) { return hParamModes.get(cMode); }
+		else { return ""; }
+	}
+	
+	/**
+	 * Add/Remove a value to a channel list.
+	 * This is not implemented yet
+	 *
+	 * @param cMode Character representing mode
+	 * @param sValue String repreenting value
+	 * @param bAdd Add or remove the value. (true for add, false for remove)
+	 */
+	public void setListModeParam(Character cMode, String sValuem, boolean bAdd) { 
+		return;
+	}
 }

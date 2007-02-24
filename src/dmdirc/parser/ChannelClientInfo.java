@@ -24,6 +24,8 @@
 
 package dmdirc.parser;
 
+import java.util.Enumeration;
+
 /**
  * Contains information about a client on a channel.
  * 
@@ -35,13 +37,15 @@ package dmdirc.parser;
 public class ChannelClientInfo {
 	private ClientInfo cClient = null;
 	private int nModes;
+	private IRCParser myParser; // Reference to parser object that owns this channel. Used for Modes
 	
 	/**
 	 * Create a ChannelClient instance of a CLient.
 	 *
+	 * @param tParser Refernce to parser that owns this channelclient (used for modes)
 	 * @param client Client that this channelclient represents
 	 */	
-	public ChannelClientInfo(ClientInfo client) { cClient = client; }
+	public ChannelClientInfo(IRCParser tParser, ClientInfo client) { myParser = tParser; cClient = client; }
 	
 	/**
 	 * Get the client object represented by this channelclient.
@@ -68,4 +72,35 @@ public class ChannelClientInfo {
 	 * @return integer representing the modes this client has.
 	 */
 	public int getChanMode() { return nModes; }
+	
+	/**
+	 * Get the modes this client has (Prefix modes) as a string.
+	 * Returns all known modes that the client has.
+	 * getChanModeStr(false).charAt(0) can be used to get the highest mode (o)
+	 * getChanModeStr(true).charAt(0) can be used to get the highest prefix (@)
+	 *
+	 * @return String representing the modes this client has.
+	 */
+	public String getChanModeStr(boolean bPrefix) {
+		String sModes = "", sTemp = "";
+		Character cTemp;
+		int nTemp = 0, nModes = this.getChanMode();
+
+		for (int i = 1; i < myParser.nNextKeyPrefix; i = i*2) {
+			if ((nModes & i) == i) {
+				// Fixme - There must be a better alternative?
+				for (Enumeration e = myParser.hPrefixModes.keys(); e.hasMoreElements();) {
+					cTemp = (Character)e.nextElement();
+					nTemp = (Integer)myParser.hPrefixModes.get(cTemp);
+					if (nTemp == i) {
+						if (bPrefix) { cTemp = myParser.hPrefixMap.get(cTemp); }
+						sModes = sModes+cTemp;
+						break;
+					}
+				}
+			}
+		}
+		
+		return sModes;
+	}	
 }
