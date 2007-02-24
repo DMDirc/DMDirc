@@ -1029,11 +1029,11 @@ public class IRCParser implements Runnable {
 			ClientInfo iClient;
 			ChannelClientInfo iChannelClient;
 			
-			iChannel = GetChannelInfo(token[2]);
+			iChannel = GetChannelInfo(token[4]);
 		
 			if (iChannel == null) { 
-				CallErrorInfo(errWarning+errCanContinue, "Got names for channel ("+token[2]+") that I am not on.");
-				iChannel = new ChannelInfo(token[2]);
+				CallErrorInfo(errWarning+errCanContinue, "Got names for channel ("+token[4]+") that I am not on.");
+				iChannel = new ChannelInfo(token[4]);
 				hChannelList.put(iChannel.getName().toLowerCase(),iChannel);
 			}
 			
@@ -1158,9 +1158,6 @@ public class IRCParser implements Runnable {
 				}
 			}
 		}
-		
-		// 			
-		// sParam.equalsIgnoreCase("NOTICE")
 	}
 	
 	private void ProcessTopic(String sParam, String token[]) {
@@ -1188,6 +1185,8 @@ public class IRCParser implements Runnable {
 	
 	private void ProcessJoinChannel(String sParam, String token[]) {
 		// :nick!ident@host JOIN (:)#Channel
+		Character cTemp;
+		Byte nTemp;
 		if (token.length < 3) { return; }
 		ClientInfo iClient;
 		ChannelInfo iChannel;
@@ -1201,8 +1200,16 @@ public class IRCParser implements Runnable {
 			if (iClient != cMyself) {
 				CallErrorInfo(errWarning+errCanContinue, "Got join for channel ("+token[token.length-1]+") that I am not on. [User: "+token[0]+"]");
 			}
-			iChannel = new ChannelInfo(token[2]);
+			iChannel = new ChannelInfo(token[token.length-1]);
 			hChannelList.put(iChannel.getName().toLowerCase(),iChannel);
+			SendString("MODE "+iChannel.getName());
+			
+			for (Enumeration e = hChanModesOther.keys(); e.hasMoreElements();) {
+				cTemp = (Character)e.nextElement();
+				nTemp = hChanModesOther.get(cTemp);
+				if (nTemp == cmList) { SendString("MODE "+iChannel.getName()+" "+cTemp); }
+			}
+			
 		} else {
 			// This is only done if we are on the channel. Else we wait for names.
 			iChannelClient = iChannel.addClient(iClient);
@@ -1471,8 +1478,21 @@ public class IRCParser implements Runnable {
 	 * @param sChannelName Name of channel to join
 	 */
 	public void JoinChannel(String sChannelName) {
+		if (!ChannelInfo.isValidChannelName(this,sChannelName)) { return; }
 		SendString("JOIN "+sChannelName);
 	}
+	
+	
+	/**
+	 * Leave a Channel.
+	 *
+	 * @param sChannelName Name of channel to join
+	 */
+	public void PartChannel(String sChannelName, String sReason) {
+		if (!ChannelInfo.isValidChannelName(this,sChannelName)) { return; }
+		if (sReason.equals("")) { SendString("PART "+sChannelName); }
+		else { SendString("PART "+sChannelName+" :"+sReason); }
+	}	
 	
 	/**
 	 * Set Nickname.
@@ -1489,7 +1509,10 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param sReason Reason for quitting.
 	 */
-	public void Quit(String sReason) { SendString("QUIT :"+sReason); }
+	public void Quit(String sReason) { 
+		if (sReason.equals("")) { SendString("QUIT"); }
+		else { SendString("QUIT :"+sReason); }	
+	}
 	/**
 	 * Disconnect from server. This method will quit and automatically close the
 	 * socket without waiting for the server
@@ -1502,4 +1525,4 @@ public class IRCParser implements Runnable {
 	}
 }
 
-// eo
+// eof

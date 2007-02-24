@@ -37,6 +37,12 @@ public class ClientInfo {
 	private String sIdent = "";	
 	private String sHost = "";
 
+	/**
+	 * Get a nickname of a user from a hostmask.
+	 * Hostmask must match (?:)nick(?!ident)(?@host)
+	 *
+	 * @return nickname of user
+	 */
 	public static String ParseHost(String sWho) {
 		// Get the nickname from the string.
 		String sTemp[] = null;
@@ -47,6 +53,12 @@ public class ClientInfo {
 		return sWho;
 	}
 
+	/**
+	 * Create a new client object from a hostmask.
+	 *
+	 * @see ParseHost
+	 * @return String representation of the user.
+	 */
 	public ClientInfo (String sHostmask) { 
 		setUserBits(sHostmask,true);
 	}
@@ -61,10 +73,30 @@ public class ClientInfo {
 		if (sTemp.length != 1) { sIdent = sTemp[1]; }
 		if (bUpdateNick) { sNickname = sTemp[0]; }
 	}
-	
+
+	/**
+	 * Get a string representation of the user
+	 *
+	 * @return String representation of the user.
+	 */
 	public String toString() { return "Nickname: "+sNickname+" | Ident: "+sIdent+" | Host: "+sHost; }
 	
+	/**
+	 * Get the nickname for this user
+	 *
+	 * @return Known nickname for user.
+	 */
 	public String getNickname() { return sNickname; }
+	/**
+	 * Get the ident for this user
+	 *
+	 * @return Known ident for user. (May be "")
+	 */		
 	public String getIdent() { return sIdent; }
+	/**
+	 * Get the hostname for this user
+	 *
+	 * @return Known host for user. (May be "")
+	 */		
 	public String getHost() { return sHost; }
 }

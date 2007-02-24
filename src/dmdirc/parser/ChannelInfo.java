@@ -36,6 +36,10 @@ import java.util.Enumeration;
  * @see IRCParser
  */
 public class ChannelInfo {
+	/**
+	 * Boolean repreenting the status of names requests.
+	 * When this is false, any new names reply will cause current known channelclients to be removed.
+	 */
 	public boolean bAddingNames = true;
 	
 	private String sTopic;
@@ -45,19 +49,45 @@ public class ChannelInfo {
 	private String sName;
 	private Hashtable<String,ChannelClientInfo> hChannelUserList = new Hashtable<String,ChannelClientInfo>();
 
+	/**
+	 * Create a new channel object
+	 *
+	 * @param name Channel name.
+	 */
 	public ChannelInfo (String name) { sName = name; }
 	
+	/**
+	 * Get the name of this channel object
+	 *
+	 * @return Channel name.
+	 */	
 	public String getName() { return sName; }
+	/**
+	 * Get the number of users known on this channel.
+	 *
+	 * @return Channel user count.
+	 */
 	public int getUserCount() { return hChannelUserList.size(); }
-	
+	/**
+	 * Empty the channel (Remove all known channelclients)
+	 */
 	public void emptyChannel() { hChannelUserList.clear(); }
-	
+
+	/**
+	 * Get the ChannelClientInfo object associated with a nickname
+	 *
+	 * @return ChannelClientInfo object requested, or null if not found
+	 */
 	public ChannelClientInfo getUser(String sWho) {
 		sWho = ClientInfo.ParseHost(sWho);
 		sWho = sWho.toLowerCase();
 		if (hChannelUserList.containsKey(sWho)) { return hChannelUserList.get(sWho); } else { return null; }
 	}	
-	
+	/**
+	 * Get the ChannelClientInfo object associated with a ClientInfo object
+	 *
+	 * @return ChannelClientInfo object requested, or null if not found
+	 */	
 	public ChannelClientInfo getUser(ClientInfo cWho) {
 		ChannelClientInfo cTemp = null;
 		if (hChannelUserList.containsValue(cWho)) { 
@@ -70,6 +100,12 @@ public class ChannelInfo {
 		return cTemp;
 	}
 	
+	/**
+	 * Get the ChannelClientInfo object associated with a ClientInfo object
+	 *
+	 * @param cClient Client object to be added to channel
+	 * @return ChannelClientInfo object added, or an existing object if already known on channel
+	 */		
 	public ChannelClientInfo addClient(ClientInfo cClient) {
 		ChannelClientInfo cTemp = null;
 		cTemp = getUser(cClient);
@@ -80,6 +116,11 @@ public class ChannelInfo {
 		return cTemp;
 	}
 	
+	/**
+	 * Remove ChannelClientInfo object associated with a ClientInfo object
+	 *
+	 * @param cClient Client object to be removed from channel
+	 */	
 	public void delClient(ClientInfo cClient) {
 		ChannelClientInfo cTemp = null;
 		cTemp = getUser(cClient);
@@ -88,17 +129,52 @@ public class ChannelInfo {
 		}
 	}	
 	
+	/**
+	 * Check if a channel name is valid in a certain parser object
+	 *
+	 * @param tParser Reference to parser instance that the channelname is requested for
+	 * @param sChannelName Channel name to test
+	 */
 	public static boolean isValidChannelName(IRCParser tParser, String sChannelName) {
 		return tParser.hChanPrefix.containsKey(sChannelName.charAt(0));
 	}	
 	
-
+	/**
+	 * Set the topic time
+	 *
+	 * @param nNewTime New unixtimestamp time for the topic (Seconds sinse epoch, not milliseconds)
+	 */
 	public void setTopicTime(long nNewTime) { nTopicTime = nNewTime; }
+	/**
+	 * Get the topic time
+	 *
+	 * @return Unixtimestamp time for the topic (Seconds sinse epoch, not milliseconds)
+	 */
 	public long getTopicTime() { return nTopicTime; }	
 	
+	/**
+	 * Set the topic
+	 *
+	 * @param sNewTopic New contents of topic
+	 */	
 	public void setTopic(String sNewTopic) { sTopic = sNewTopic; }
+	/**
+	 * Get the topic
+	 *
+	 * @return contents of topic
+	 */	
 	public String getTopic() { return sTopic; }	
-	
+
+	/**
+	 * Set the topic creator
+	 *
+	 * @param sNewUser New user who set the topic (nickname if gotten on connect, full host if seen by parser)
+	 */	
 	public void setTopicUser(String sNewUser) { sTopicUser = sNewUser; }
+	/**
+	 * Get the topic creator
+	 *
+	 * @return user who set the topic (nickname if gotten on connect, full host if seen by parser)
+	 */	
 	public String getTopicUser() { return sTopicUser; }
 }

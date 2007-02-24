@@ -36,11 +36,36 @@ public class ChannelClientInfo {
 	private ClientInfo cClient = null;
 	private int nModes;
 	
+	/**
+	 * Create a ChannelClient instance of a CLient.
+	 *
+	 * @param client Client that this channelclient represents
+	 */	
 	public ChannelClientInfo(ClientInfo client) { cClient = client; }
 	
+	/**
+	 * Get the client object represented by this channelclient.
+	 *
+	 * @return Client object represented by this channelclient
+	 */
 	public ClientInfo getClient() { return cClient; }
+	/**
+	 * Get the nickname of the client object represented by this channelclient.
+	 *
+	 * @return Nickname of the Client object represented by this channelclient
+	 */	
 	public String getNickname() { return cClient.getNickname(); }	
 	
+	/**
+	 * Set the modes this client has (Prefix modes).
+	 *
+	 * @param nNewMode integer representing the modes this client has.
+	 */	
 	public void setChanMode(int nNewMode) { nModes = nNewMode; }
+	/**
+	 * Get the modes this client has (Prefix modes).
+	 *
+	 * @return integer representing the modes this client has.
+	 */
 	public int getChanMode() { return nModes; }
 }
