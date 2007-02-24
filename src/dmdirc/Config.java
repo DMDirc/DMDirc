@@ -41,8 +41,19 @@ public class Config {
      */
     private static Properties properties;
     
-    /** Creates a new instance of Config */
+    /** Disallow creation of a new instance of Config */
     private Config() {
+    }
+    
+    /**
+     * Returns the singleton instance of ServerManager
+     * @return Instance of ServerManager
+     */
+    public static Properties getConfig() {
+	if (properties == null) {
+	    initialise();
+	}
+	return properties;
     }
     
     /**
@@ -50,7 +61,7 @@ public class Config {
      * @return config file
      */
     private static String getConfigFile() {
-        return getConfigDir()+"dmdirc.xml";
+	return getConfigDir()+"dmdirc.xml";
     }
     
     /**
@@ -58,8 +69,8 @@ public class Config {
      * @return configuration directory
      */
     private static String getConfigDir() {
-        String fs = System.getProperty("file.separator");
-        return System.getProperty("user.home")+fs+".DMDirc"+fs;
+	String fs = System.getProperty("file.separator");
+	return System.getProperty("user.home")+fs+".DMDirc"+fs;
     }
     
     /**
@@ -67,12 +78,12 @@ public class Config {
      * @return default settings
      */
     private static Properties getDefaults() {
-        Properties defaults = new Properties();
-        
-        defaults.setProperty("general.commandchar","/");
-        defaults.setProperty("ui.maximisewindows","true");
-        
-        return defaults;
+	Properties defaults = new Properties();
+	
+	defaults.setProperty("general.commandchar","/");
+	defaults.setProperty("ui.maximisewindows","true");
+	
+	return defaults;
     }
     
     /**
@@ -82,9 +93,9 @@ public class Config {
      * @param option the name of the option
      */
     public static boolean hasOption(String domain, String option) {
-        assert(properties != null);
-        
-        return (properties.getProperty(domain+"."+option) != null);
+	assert(properties != null);
+	
+	return (properties.getProperty(domain+"."+option) != null);
     }
     
     /**
@@ -94,9 +105,21 @@ public class Config {
      * @param option the name of the option
      */
     public static String getOption(String domain, String option) {
-        assert(properties != null);
-        
-        return properties.getProperty(domain+"."+option);
+	assert(properties != null);
+	
+	return properties.getProperty(domain+"."+option);
+    }
+    
+    /**
+     * Sets a specified option
+     * @param domain domain of the option
+     * @param option name of the option
+     * @param value value of the option
+     */
+    public static void setOption(String domain, String option, String value) {
+	assert(properties != null);
+	
+	properties.setProperty(domain+"."+option, value);
     }
     
     /**
@@ -104,42 +127,46 @@ public class Config {
      * and creates file
      */
     public static void initialise() {
-        
-        properties = getDefaults();
-        
-        File file = new File(getConfigFile());
-        
-        if (file.exists()) {
-            try {
-                properties.loadFromXML(new FileInputStream(file));
-            } catch (InvalidPropertiesFormatException ex) {
-                System.out.println("Invalid config file, using defaults");
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            try {
-                (new File(getConfigDir())).mkdirs();
-                file.createNewFile();
-                Config.save();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+	
+	properties = getDefaults();
+	
+	File file = new File(getConfigFile());
+	
+	if (file.exists()) {
+	    try {
+		properties.loadFromXML(new FileInputStream(file));
+	    } catch (InvalidPropertiesFormatException ex) {
+		//Do nothing, defaults used
+	    } catch (FileNotFoundException ex) {
+		//Do nothing, defaults used
+	    } catch (IOException ex) {
+		//Do nothing, defaults used
+	    }
+	} else {
+	    try {
+		(new File(getConfigDir())).mkdirs();
+		file.createNewFile();
+		Config.save();
+	    } catch (IOException ex) {
+		//TODO Alert user, use defaults, saving will fail
+		ex.printStackTrace();
+	    }
+	}
     }
     
+    
+    /**
+     * Saves the config file to disc
+     */
     public static void save() {
-        assert(properties != null);
-        try {
-            
-            properties.storeToXML(new FileOutputStream(new File(getConfigFile())), null);
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+	assert(properties != null);
+	try {
+	    properties.storeToXML(new FileOutputStream(new File(getConfigFile())), null);
+	} catch (FileNotFoundException ex) {
+	    //Do nothing, shouldnt be able to happen
+	} catch (IOException ex) {
+	    //Do nothing
+	}
     }
     
 }
