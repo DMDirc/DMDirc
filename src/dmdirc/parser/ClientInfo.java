@@ -24,6 +24,8 @@
 
 package dmdirc.parser;
 
+import java.util.Enumeration;
+
 /**
  * Contains information about known users.
  * 
@@ -36,6 +38,7 @@ public class ClientInfo {
 	private String sNickname = "";
 	private String sIdent = "";	
 	private String sHost = "";
+	private int nModes = 0;
 	
 	private IRCParser myParser; // Reference to parser object that owns this channel. Used for Modes
 
@@ -66,7 +69,13 @@ public class ClientInfo {
 		setUserBits(sHostmask,true);
 		myParser = tParser;
 	}
-	private void setUserBits (String sHostmask, boolean bUpdateNick) {
+	/**
+	 * Get a string representation of the user
+	 *
+	 * @param sHostmask takes a host (?:)nick(?!ident)(?@host) and sets nick/host/ident variables
+	 * @param bUpdateNick if this is false, only host/ident will be updated.
+	 */	
+	public void setUserBits (String sHostmask, boolean bUpdateNick) {
 		String sTemp[] = null;
 		sTemp = sHostmask.split(":",2);
 		if (sTemp.length != 1) { sHostmask = sTemp[1]; } else { sHostmask = sTemp[0]; }
@@ -103,6 +112,57 @@ public class ClientInfo {
 	 * @return Known host for user. (May be "")
 	 */		
 	public String getHost() { return sHost; }
+	
+	/**
+	 * Set the user modes (as an integer).
+	 *
+	 * @param nNewMode new integer representing channel modes. (Boolean only)
+	 */	
+	public void setUserMode(int nNewMode) { nModes = nNewMode; }
+	/**
+	 * Get the user modes (as an integer).
+	 *
+	 * @return integer representing channel modes. (Boolean only)
+	 */	
+	public int getUserMode() { return nModes; }	
+	
+	/**
+	 * Get the user modes (as a string representation).
+	 *
+	 * @return string representing modes. (boolean and non-list)
+	 */	
+	public String geUserModeStr() { 
+		String sModes = "+", sTemp = "";
+		Character cTemp;
+		int nTemp = 0, nModes = this.getUserMode();
+		
+		for (Enumeration e = myParser.hUserModes.keys(); e.hasMoreElements();) {
+			cTemp = (Character)e.nextElement();
+			nTemp = myParser.hUserModes.get(cTemp);
+			if ((nModes & nTemp) == nTemp) { sModes = sModes+cTemp; }
+		}
+		
+		return sModes;
+	}
+	
+	/**
+	 * Get the user modes (as a string representation).
+	 *
+	 * @return Boolean to see if client is still visable.
+	 */	
+	public boolean checkVisability() {
+		boolean bCanSee = false;
+		ChannelInfo iChannel;
+		ChannelClientInfo iChannelClient;
+		
+		for (Enumeration e = myParser.hChannelList.keys(); e.hasMoreElements();) {
+			iChannel = myParser.hChannelList.get(e.nextElement());
+			iChannelClient = iChannel.getUser(this);
+			if (iChannelClient != null) {	bCanSee = true; break; }
+		}
+
+		return bCanSee;
+	}
 	
 	/**
 	 * Get SVN Version information

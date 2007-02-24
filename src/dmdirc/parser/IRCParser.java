@@ -127,8 +127,14 @@ public class IRCParser implements Runnable {
 	ArrayList<IChannelQuit> cbChannelQuit = new ArrayList<IChannelQuit>();
 	public interface IChannelTopic { public void onTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsNewTopic); }
 	ArrayList<IChannelTopic> cbChannelTopic = new ArrayList<IChannelTopic>();
-	public interface IChannelModesChanged { public void onModeChange(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient); }
+	public interface IChannelModesChanged { public void onModeChange(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost); }
 	ArrayList<IChannelModesChanged> cbChannelModesChanged = new ArrayList<IChannelModesChanged>();
+	public interface IUserModesChanged { public void onUserModeChange(IRCParser tParser, ClientInfo cClient, String sSetBy); }
+	ArrayList<IUserModesChanged> cbUserModesChanged = new ArrayList<IUserModesChanged>();
+	public interface INickChanged { public void onNickChanged(IRCParser tParser, ClientInfo cClient, String sOldNick); }
+	ArrayList<INickChanged> cbNickChanged = new ArrayList<INickChanged>();
+	public interface IChannelKick { public void onChannelKick(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost); }
+	ArrayList<IChannelKick> cbChannelKick = new ArrayList<IChannelKick>();
 	public interface IChannelMessage { public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost ); }
 	ArrayList<IChannelMessage> cbChannelMessage = new ArrayList<IChannelMessage>();
 	public interface IChannelAction { public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost ); }
@@ -160,7 +166,7 @@ public class IRCParser implements Runnable {
 	public interface IUnknownCTCPReply { public void onUnknownCTCPReply(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sHost ); }
 	ArrayList<IUnknownCTCPReply> cbUnknownCTCPReply = new ArrayList<IUnknownCTCPReply>();
 	public interface IQuit { public void onQuit(IRCParser tParser, ClientInfo cClient, String sReason ); }
-	ArrayList<IQuit> cbQuit = new ArrayList<IQuit>();	
+	ArrayList<IQuit> cbQuit = new ArrayList<IQuit>();
 	public interface IGotNames { public void onGotNames(IRCParser tParser, ChannelInfo cChannel); }	
 	ArrayList<IGotNames> cbGotNames = new ArrayList<IGotNames>();
 	
@@ -424,10 +430,73 @@ public class IRCParser implements Runnable {
 	 * @param eMethod     Reference to object that handles the callback
 	 */
 	public void DelModesChanged(Object eMethod) { DelCallback(eMethod, cbChannelModesChanged); }
-	protected boolean CallModesChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
+	protected boolean CallModesChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbChannelModesChanged.size(); i++) {
-			cbChannelModesChanged.get(i).onModeChange(this, cChannel, cChannelClient);
+			cbChannelModesChanged.get(i).onModeChange(this, cChannel, cChannelClient, sHost);
+			bResult = true;
+		}
+		return bResult;
+	}	
+	
+	/**
+	 * Add callback for UserModesChanged (onUserModeChange).
+	 *
+	 * @param eMethod     Reference to object that handles the callback
+	 */
+	public void AddUserModesChanged(Object eMethod) { AddCallback(eMethod, cbUserModesChanged); }
+	/**
+	 * Delete callback for UserModesChanged (onUserModeChange).
+	 *
+	 * @param eMethod     Reference to object that handles the callback
+	 */
+	public void DelUserModesChanged(Object eMethod) { DelCallback(eMethod, cbUserModesChanged); }
+	protected boolean CallUserModesChanged(ClientInfo cClient, String sSetby) {
+		boolean bResult = false;
+		for (int i = 0; i < cbUserModesChanged.size(); i++) {
+			cbUserModesChanged.get(i).onUserModeChange(this, cClient, sSetby);
+			bResult = true;
+		}
+		return bResult;
+	}	
+	
+	/**
+	 * Add callback for UserNickChanged (onNickChanged).
+	 *
+	 * @param eMethod     Reference to object that handles the callback
+	 */
+	public void AddNickChanged(Object eMethod) { AddCallback(eMethod, cbNickChanged); }
+	/**
+	 * Delete callback for UserNickChanged (onNickChanged).
+	 *
+	 * @param eMethod     Reference to object that handles the callback
+	 */
+	public void DelNickChanged(Object eMethod) { DelCallback(eMethod, cbNickChanged); }
+	protected boolean CallNickChanged(ClientInfo cClient, String sOldNick) {
+		boolean bResult = false;
+		for (int i = 0; i < cbNickChanged.size(); i++) {
+			cbNickChanged.get(i).onNickChanged(this, cClient, sOldNick);
+			bResult = true;
+		}
+		return bResult;
+	}	
+	
+	/**
+	 * Add callback for ChannelKick (onChannelKick).
+	 *
+	 * @param eMethod     Reference to object that handles the callback
+	 */
+	public void AddChannelKick(Object eMethod) { AddCallback(eMethod, cbChannelKick); }
+	/**
+	 * Delete callback for ChannelKick (onChannelKick).
+	 *
+	 * @param eMethod     Reference to object that handles the callback
+	 */
+	public void DelChannelKick(Object eMethod) { DelCallback(eMethod, cbChannelKick); }
+	protected boolean CallChannelKick(ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost) {
+		boolean bResult = false;
+		for (int i = 0; i < cbChannelKick.size(); i++) {
+			cbChannelKick.get(i).onChannelKick(this, cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost);
 			bResult = true;
 		}
 		return bResult;
@@ -1040,10 +1109,60 @@ public class IRCParser implements Runnable {
 		// Process a line where the parameter is a string (IE PRIVMSG, NOTICE etc - Not including PING!)
 		if (sParam.equalsIgnoreCase("PRIVMSG") || sParam.equalsIgnoreCase("NOTICE")) { ProcessIRCMessage(sParam,token); }
 		else if (sParam.equalsIgnoreCase("JOIN")) { ProcessJoinChannel(sParam,token); }
+		else if (sParam.equalsIgnoreCase("NICK")) { ProcessNickChange(sParam,token); }
+		else if (sParam.equalsIgnoreCase("KICK")) { ProcessKickChannel(sParam,token); }
 		else if (sParam.equalsIgnoreCase("PART")) { ProcessPartChannel(sParam,token); }
 		else if (sParam.equalsIgnoreCase("QUIT")) { ProcessQuit(sParam,token); }
 		else if (sParam.equalsIgnoreCase("TOPIC")) { ProcessTopic(sParam,token); }
 		else if (sParam.equalsIgnoreCase("MODE")) { ProcessMode(sParam,token); }
+	}
+	
+	private void ProcessNickChange(String sParam, String token[]) {
+		ClientInfo iClient;
+		
+		iClient = GetClientInfo(token[0]);
+		if (iClient != null) {
+			if (iClient.getHost().equals("")) { iClient.setUserBits(token[0],false); }
+			hClientList.remove(iClient.getNickname().toLowerCase());
+			iClient.setUserBits(token[2],true);
+			hClientList.put(iClient.getNickname().toLowerCase(),iClient);
+			CallNickChanged(iClient, ClientInfo.ParseHost(token[0]));
+		}
+	}
+	
+	private void ProcessKickChannel(String sParam, String token[]) {
+		ChannelClientInfo iChannelClient;
+		ChannelClientInfo iChannelKicker;
+		ChannelInfo iChannel;
+		ClientInfo iClient;
+		ClientInfo iKicker;
+		String sReason = "";
+		
+		iClient = GetClientInfo(token[3]);
+		iKicker = GetClientInfo(token[0]);
+		iChannel = GetChannelInfo(token[2]);
+		
+		if (iClient == null) { return; }
+		if (iChannel == null) { 
+			if (iClient != cMyself) {
+				CallErrorInfo(errWarning+errCanContinue, "Got kick for channel ("+token[2]+") that I am not on. [User: "+token[3]+"]");
+			}
+			return;
+		} else {
+			if (token.length > 4) { sReason = token[token.length-1]; }
+			iChannelClient = iChannel.getUser(iClient);
+			iChannelKicker = iChannel.getUser(iClient);
+			CallChannelKick(iChannel,iChannelClient,iChannelKicker,sReason,token[0]);
+			iChannel.delClient(iClient);
+			if (iClient == cMyself) {
+				iChannel.emptyChannel();
+				hChannelList.remove(iChannel.getName().toLowerCase());
+			} else { 
+				if (!iClient.checkVisability()) {
+					hClientList.remove(iClient.getNickname().toLowerCase());
+				}
+			}
+		}
 	}
 	
 	private void ProcessMode(String sParam, String token[]) {
@@ -1060,11 +1179,11 @@ public class IRCParser implements Runnable {
 			sChannelName = token[3];
 			sModestr = Arrays.copyOfRange(token,4,token.length);
 		} else {
-			sChannelName = token[3];
+			sChannelName = token[2];
 			sModestr = Arrays.copyOfRange(token,3,token.length);
 		}
 		
-		if (!ChannelInfo.isValidChannelName(this, sChannelName)) { ProcessUserMode(sParam, token); return; }
+		if (!ChannelInfo.isValidChannelName(this, sChannelName)) { ProcessUserMode(sParam, token, sModestr); return; }
 		
 		iChannel = GetChannelInfo(sChannelName);
 		if (iChannel == null) { 
@@ -1135,13 +1254,44 @@ public class IRCParser implements Runnable {
 		}
 		
 		iChannel.setMode(nCurrent);
-		if (sParam.equals("324")) { CallModesChanged(iChannel, null); }
-		else { CallModesChanged(iChannel, iChannel.getUser(token[0])); }
+		if (sParam.equals("324")) { CallModesChanged(iChannel, null, ""); }
+		else { CallModesChanged(iChannel, iChannel.getUser(token[0]), token[0]); }
 	}
 	
 	// This isn't implemented yet.
-	private void ProcessUserMode(String sParam, String token[]) {
-		return;
+	private void ProcessUserMode(String sParam, String token[], String sModestr[]) {
+		int nCurrent = 0, nValue = 0;
+		boolean bPositive = true;
+		
+		ClientInfo iClient;
+		
+		iClient = GetClientInfo(token[2]);
+		if (iClient == null) { return; }
+		
+		nCurrent = iClient.getUserMode();
+		
+		for (int i = 0; i < sModestr[0].length(); ++i) {
+			Character cMode = sModestr[0].charAt(i);
+			if (cMode.equals("+".charAt(0))) { bPositive = true; }
+			else if (cMode.equals("-".charAt(0))) { bPositive = false; }
+			else if (cMode.equals(":".charAt(0))) { continue; }
+			else {
+				if (hUserModes.containsKey(cMode)) { nValue = hUserModes.get(cMode); }
+				else {
+					CallErrorInfo(errWarning+errCanContinue, "Got unknown user mode "+cMode+" - Added");
+					hUserModes.put(cMode,nNextKeyUser);
+					nValue = nNextKeyUser;
+					nNextKeyUser = nNextKeyUser*2;
+				}
+				
+				if (bDebug) { System.out.printf("User Mode: %c [%d] {Positive: %b}\n",cMode, nValue, bPositive); }
+				if (bPositive) { nCurrent = nCurrent + nValue; }
+				else { nCurrent = nCurrent - nValue; }
+			}
+		}
+		
+		iClient.setUserMode(nCurrent);
+		CallUserModesChanged(iClient, token[0]);
 	}	
 	
 	private void ProcessNames(int nParam, String token[]) {
@@ -1372,8 +1522,8 @@ public class IRCParser implements Runnable {
 			iChannel.delClient(iClient);
 			if (iClient == cMyself) {
 				iChannel.emptyChannel();
-				hChannelList.remove(iChannel);
-			}
+				hChannelList.remove(iChannel.getName().toLowerCase());
+			} else { iClient.checkVisability(); }
 		}
 	}
 	
@@ -1399,7 +1549,7 @@ public class IRCParser implements Runnable {
 				CallChannelQuit(iChannel,iChannelClient,sReason);
 				if (iClient == cMyself) {
 					iChannel.emptyChannel();
-					hChannelList.remove(iChannel);
+					hChannelList.remove(iChannel.getName().toLowerCase());
 				} else {
 					iChannel.delClient(iClient);
 				}
@@ -1410,7 +1560,7 @@ public class IRCParser implements Runnable {
 		if (iClient == cMyself) {
 			hClientList.clear();
 		} else {
-			hClientList.remove(iClient);
+			hClientList.remove(iClient.getNickname().toLowerCase());
 		}
 	}	
 
