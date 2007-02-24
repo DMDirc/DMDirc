@@ -37,4 +37,11 @@ public class MyInfo {
 	public String sAltNickname = "IRC-Parser"; // Alternative nickname, if this fails, we start prepending _ to sNickname
 	public String sRealname = "Java Test IRCParser";
 	public String sUsername = "IRCParser";
+	
+	/**
+	 * Get SVN Version information
+	 *
+	 * @return SVN Version String
+	 */
+	public static String getSvnInfo () { return "$Id$"; }	
 }

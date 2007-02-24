@@ -260,4 +260,11 @@ public class ChannelInfo {
 	public void setListModeParam(Character cMode, String sValuem, boolean bAdd) { 
 		return;
 	}
+	
+	/**
+	 * Get SVN Version information
+	 *
+	 * @return SVN Version String
+	 */
+	public static String getSvnInfo () { return "$Id$"; }	
 }

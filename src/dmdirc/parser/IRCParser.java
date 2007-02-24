@@ -1653,6 +1653,13 @@ public class IRCParser implements Runnable {
 		Quit(sReason);
 		try { socket.close(); } catch (Exception e) { /* Meh */ };
 	}
+	
+	/**
+	 * Get SVN Version information
+	 *
+	 * @return SVN Version String
+	 */
+	public static String getSvnInfo () { return "$Id$"; }	
 }
 
 // eof

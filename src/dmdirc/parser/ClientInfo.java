@@ -103,4 +103,11 @@ public class ClientInfo {
 	 * @return Known host for user. (May be "")
 	 */		
 	public String getHost() { return sHost; }
+	
+	/**
+	 * Get SVN Version information
+	 *
+	 * @return SVN Version String
+	 */
+	public static String getSvnInfo () { return "$Id$"; }	
 }
