@@ -2015,7 +2015,7 @@ public class IRCParser implements Runnable {
 				}
 			} else if (sParam.equalsIgnoreCase("NOTICE")) {
 				if (isCTCP) {
-					CallUnknownCTCPReply(iClient, sCTCP sMessage, token[2], token[0]);
+					CallUnknownCTCPReply(iClient, sCTCP, sMessage, token[2], token[0]);
 				} else {
 					CallUnknownNotice(iClient, sMessage, token[2], token[0]);
 				}
