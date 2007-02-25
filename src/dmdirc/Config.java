@@ -68,7 +68,7 @@ public class Config {
      * Returns the application's config directory
      * @return configuration directory
      */
-    private static String getConfigDir() {
+    public static String getConfigDir() {
 	String fs = System.getProperty("file.separator");
 	return System.getProperty("user.home")+fs+".DMDirc"+fs;
     }
@@ -126,7 +126,7 @@ public class Config {
      * Loads the config file from disc, if it exists else initialises defaults
      * and creates file
      */
-    public static void initialise() {
+    private static void initialise() {
 	
 	properties = getDefaults();
 	
