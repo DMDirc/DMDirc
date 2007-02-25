@@ -20,43 +20,33 @@
  * SOFTWARE.
  */
 
-package dmdirc;
+package dmdirc.plugins;
 
-import dmdirc.ui.MainFrame;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
-/**
- * Main class, handles initialisation
- * @author chris
- */
-public class Main {
+public abstract class AbstractPlugin {
     
-    /**
-     * Creates a new instance of Main
-     */
-    public Main() {
+    private boolean running = false;
+    
+    private PluginManager pm = null;
+
+    public AbstractPlugin(PluginManager pm) {
+	this.pm = pm;
     }
     
-    /**
-     * Entry procedure.
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (InstantiationException ex) {
-            ex.printStackTrace();
-        } catch (UnsupportedLookAndFeelException ex) {
-            ex.printStackTrace();
-        }
-        
-        MainFrame frame = MainFrame.getMainFrame();
+    void start() {
+	running = true;
+	while (running) {
+	    //Do stuff
+	}
+	pm.removePlugin(this);
+    }
+
+    void onLoad() {
     }
     
+    void onUnload() {
+    }
+    
+    void stopPlugin() {
+	running = false;
+    }    
 }

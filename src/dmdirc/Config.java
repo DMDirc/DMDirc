@@ -93,7 +93,9 @@ public class Config {
      * @param option the name of the option
      */
     public static boolean hasOption(String domain, String option) {
-	assert(properties != null);
+	if (properties == null) {
+	    initialise();
+	}
 	
 	return (properties.getProperty(domain+"."+option) != null);
     }
@@ -105,7 +107,9 @@ public class Config {
      * @param option the name of the option
      */
     public static String getOption(String domain, String option) {
-	assert(properties != null);
+	if (properties == null) {
+	    initialise();
+	}
 	
 	return properties.getProperty(domain+"."+option);
     }
@@ -117,7 +121,9 @@ public class Config {
      * @param value value of the option
      */
     public static void setOption(String domain, String option, String value) {
-	assert(properties != null);
+	if (properties == null) {
+	    initialise();
+	}
 	
 	properties.setProperty(domain+"."+option, value);
     }
@@ -159,7 +165,9 @@ public class Config {
      * Saves the config file to disc
      */
     public static void save() {
-	assert(properties != null);
+	if (properties == null) {
+	    initialise();
+	}
 	try {
 	    properties.storeToXML(new FileOutputStream(new File(getConfigFile())), null);
 	} catch (FileNotFoundException ex) {
