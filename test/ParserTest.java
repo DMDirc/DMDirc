@@ -1,5 +1,5 @@
 import java.lang.Thread;
-import dmdirc.parser.*;
+import org.ownage.dmdirc.parser.*;
 
 public class ParserTest {
 	public static void main(String args[]) {

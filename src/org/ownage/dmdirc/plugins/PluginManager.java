@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 
-package dmdirc.plugins;
+package org.ownage.dmdirc.plugins;
 
-import dmdirc.parser.IRCParser;
+import org.ownage.dmdirc.parser.IRCParser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

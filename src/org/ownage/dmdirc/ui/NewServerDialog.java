@@ -20,10 +20,10 @@
  * SOFTWARE.
  */
 
-package dmdirc.ui;
+package org.ownage.dmdirc.ui;
 
-import dmdirc.Server;
-import dmdirc.ServerManager;
+import org.ownage.dmdirc.Server;
+import org.ownage.dmdirc.ServerManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;

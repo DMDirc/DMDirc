@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package dmdirc.ui;
+package org.ownage.dmdirc.ui;
 
 /**
  *

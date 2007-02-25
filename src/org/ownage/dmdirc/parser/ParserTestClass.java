@@ -22,7 +22,7 @@
  * SVN: $Id$
  */
 
-package dmdirc.parser;
+package org.ownage.dmdirc.parser;
 
 /**
  * Contains Tests for various parts of the parser.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -18,30 +18,36 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
+ * SVN: $Id$
  */
 
-package dmdirc.commandparser;
+package org.ownage.dmdirc.parser;
 
 /**
- *
- * @author chris
+ * Contains Server information.
+ * 
+ * @author            Shane Mc Cormack
+ * @author            Chris Smith
+ * @version           $Id$
+ * @see IRCParser
  */
-public class Command {
-    
-    private String name;
-    private int arity = 0;
-    private boolean polyadic;
-    
-    /** Creates a new instance of Command */
-    public Command() {
-    }
-    
-    public String getSignature() {
-        if (polyadic) {
-            return name;
-        } else {
-            return name+"/"+arity;
-        }
-    }
-    
+public class ServerInfo {
+	public String sHost = "irc.quakenet.org";
+	public String sPassword = "";
+	public int nPort = 6667;
+
+	public ServerInfo () { }
+	public ServerInfo (String host, int port, String pass) {
+		sHost = host;
+		nPort = port;
+		sPassword = pass;
+	}
+	
+	/**
+	 * Get SVN Version information
+	 *
+	 * @return SVN Version String
+	 */
+	public static String getSvnInfo () { return "$Id$"; }	
 }

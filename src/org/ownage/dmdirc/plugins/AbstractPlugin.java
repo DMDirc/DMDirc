@@ -20,19 +20,33 @@
  * SOFTWARE.
  */
 
-package dmdirc.commandparser;
+package org.ownage.dmdirc.plugins;
 
-/**
- *
- * @author chris
- */
-public class ServerCommandParser extends CommandParser {
+public abstract class AbstractPlugin {
     
-    /** Creates a new instance of ServerCommandParser */
-    public ServerCommandParser() {
-    }
+    private boolean running = false;
+    
+    private PluginManager pm = null;
 
-    protected void LoadCommands() {
+    public AbstractPlugin(PluginManager pm) {
+	this.pm = pm;
     }
     
+    void start() {
+	running = true;
+	while (running) {
+	    //Do stuff
+	}
+	pm.removePlugin(this);
+    }
+
+    void onLoad() {
+    }
+    
+    void onUnload() {
+    }
+    
+    void stopPlugin() {
+	running = false;
+    }    
 }

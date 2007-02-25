@@ -20,39 +20,51 @@
  * SOFTWARE.
  */
 
-package dmdirc;
+package org.ownage.dmdirc;
 
-import dmdirc.ui.ChannelFrame;
-import dmdirc.ui.MainFrame;
+import org.ownage.dmdirc.parser.IRCParser;
+import org.ownage.dmdirc.ui.MainFrame;
+import org.ownage.dmdirc.ui.ServerFrame;
 
 /**
- * The Channel class represents the client's view of the channel. It handles
- * callbacks for channel events from the parser, maintains the corresponding
- * ChannelFrame, and handles user input to a ChannelFrame
+ * Handles the raw window (which shows the user raw data being sent and
+ * received to/from the server)
  * @author chris
  */
-public class Channel {
-    
-    /** The parser's pChannel class */
-    private int pChannel;
-    
-    /** The server this channel is on */
-    private Server server;
-    
-    /** The ChannelFrame used for this channel */
-    private ChannelFrame frame;
+public class Raw {
     
     /**
-     * Creates a new instance of Channel
-     * @param server The server object that this channel belongs to
-     * @param pChannel The parser's channel object that corresponds to this channel
+     * The server object that's being monitored
      */
-    public Channel(Server server, int pChannel) {
-        this.pChannel = pChannel;
+    private Server server;
+    /**
+     * A serverframe instance used for displaying the raw data
+     */
+    private ServerFrame frame;
+    
+    /**
+     * Creates a new instance of Raw
+     * @param server the server to monitor
+     */
+    public Raw(Server server) {
         this.server = server;
         
-        frame = new ChannelFrame();
+        frame = new ServerFrame(server);
+        frame.setTitle("(Raw log)");
+        
         MainFrame.getMainFrame().addChild(frame);
+        
+        server.AddDataIn(new IRCParser.IDataIn() {
+            public void onDataIn(IRCParser tParser, String sData) {
+                Raw.this.frame.addLine("<<< "+sData);
+            }
+        });
+        
+        server.AddDataOut(new IRCParser.IDataOut() {
+            public void onDataOut(IRCParser tparser, String sData, boolean fromParser) {
+                Raw.this.frame.addLine(">>> "+sData);
+            }
+        });
     }
     
 }

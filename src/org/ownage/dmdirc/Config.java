@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package dmdirc;
+package org.ownage.dmdirc;
 
 import java.io.File;
 import java.io.FileInputStream;

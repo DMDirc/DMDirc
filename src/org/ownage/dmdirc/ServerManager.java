@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package dmdirc;
+package org.ownage.dmdirc;
 
 import java.util.Vector;
 

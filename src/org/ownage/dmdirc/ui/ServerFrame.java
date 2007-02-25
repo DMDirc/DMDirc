@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 
-package dmdirc.ui;
+package org.ownage.dmdirc.ui;
 
-import dmdirc.Server;
+import org.ownage.dmdirc.Server;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;

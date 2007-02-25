@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package dmdirc.commandparser;
+package org.ownage.dmdirc.commandparser;
 
 import java.util.Hashtable;
 

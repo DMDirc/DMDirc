@@ -20,43 +20,39 @@
  * SOFTWARE.
  */
 
-package dmdirc;
+package org.ownage.dmdirc;
 
-import dmdirc.ui.MainFrame;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import org.ownage.dmdirc.ui.ChannelFrame;
+import org.ownage.dmdirc.ui.MainFrame;
 
 /**
- * Main class, handles initialisation
+ * The Channel class represents the client's view of the channel. It handles
+ * callbacks for channel events from the parser, maintains the corresponding
+ * ChannelFrame, and handles user input to a ChannelFrame
  * @author chris
  */
-public class Main {
+public class Channel {
+    
+    /** The parser's pChannel class */
+    private int pChannel;
+    
+    /** The server this channel is on */
+    private Server server;
+    
+    /** The ChannelFrame used for this channel */
+    private ChannelFrame frame;
     
     /**
-     * Creates a new instance of Main
+     * Creates a new instance of Channel
+     * @param server The server object that this channel belongs to
+     * @param pChannel The parser's channel object that corresponds to this channel
      */
-    public Main() {
-    }
-    
-    /**
-     * Entry procedure.
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
+    public Channel(Server server, int pChannel) {
+        this.pChannel = pChannel;
+        this.server = server;
         
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (InstantiationException ex) {
-            ex.printStackTrace();
-        } catch (UnsupportedLookAndFeelException ex) {
-            ex.printStackTrace();
-        }
-        
-        MainFrame frame = MainFrame.getMainFrame();
+        frame = new ChannelFrame();
+        MainFrame.getMainFrame().addChild(frame);
     }
     
 }

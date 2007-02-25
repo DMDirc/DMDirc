@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack
+ * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -18,30 +18,21 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- *
- * SVN: $Id$
  */
 
-package dmdirc.parser;
+package org.ownage.dmdirc.commandparser;
 
 /**
- * Contains User information.
- * 
- * @author            Shane Mc Cormack
- * @author            Chris Smith
- * @version           $Id$
- * @see IRCParser
+ *
+ * @author chris
  */
-public class MyInfo {
-	public String sNickname = "IRCParser";
-	public String sAltNickname = "IRC-Parser"; // Alternative nickname, if this fails, we start prepending _ to sNickname
-	public String sRealname = "Java Test IRCParser";
-	public String sUsername = "IRCParser";
-	
-	/**
-	 * Get SVN Version information
-	 *
-	 * @return SVN Version String
-	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+public class ServerCommandParser extends CommandParser {
+    
+    /** Creates a new instance of ServerCommandParser */
+    public ServerCommandParser() {
+    }
+
+    protected void LoadCommands() {
+    }
+    
 }

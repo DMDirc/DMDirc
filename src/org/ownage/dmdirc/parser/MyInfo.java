@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -18,35 +18,30 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
+ * SVN: $Id$
  */
 
-package dmdirc.plugins;
+package org.ownage.dmdirc.parser;
 
-public abstract class AbstractPlugin {
-    
-    private boolean running = false;
-    
-    private PluginManager pm = null;
-
-    public AbstractPlugin(PluginManager pm) {
-	this.pm = pm;
-    }
-    
-    void start() {
-	running = true;
-	while (running) {
-	    //Do stuff
-	}
-	pm.removePlugin(this);
-    }
-
-    void onLoad() {
-    }
-    
-    void onUnload() {
-    }
-    
-    void stopPlugin() {
-	running = false;
-    }    
+/**
+ * Contains User information.
+ * 
+ * @author            Shane Mc Cormack
+ * @author            Chris Smith
+ * @version           $Id$
+ * @see IRCParser
+ */
+public class MyInfo {
+	public String sNickname = "IRCParser";
+	public String sAltNickname = "IRC-Parser"; // Alternative nickname, if this fails, we start prepending _ to sNickname
+	public String sRealname = "Java Test IRCParser";
+	public String sUsername = "IRCParser";
+	
+	/**
+	 * Get SVN Version information
+	 *
+	 * @return SVN Version String
+	 */
+	public static String getSvnInfo () { return "$Id$"; }	
 }

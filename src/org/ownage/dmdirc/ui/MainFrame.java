@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 
-package dmdirc.ui;
+package org.ownage.dmdirc.ui;
 
-import dmdirc.*;
+import org.ownage.dmdirc.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JInternalFrame;

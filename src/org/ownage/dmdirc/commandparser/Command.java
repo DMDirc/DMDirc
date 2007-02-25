@@ -20,18 +20,28 @@
  * SOFTWARE.
  */
 
-package dmdirc.commandparser;
+package org.ownage.dmdirc.commandparser;
 
 /**
  *
  * @author chris
  */
-public class ChannelCommandParser extends ServerCommandParser {
+public class Command {
     
-    /** Creates a new instance of ChannelCommandParser */
-    public ChannelCommandParser() {
+    private String name;
+    private int arity = 0;
+    private boolean polyadic;
+    
+    /** Creates a new instance of Command */
+    public Command() {
     }
-
     
+    public String getSignature() {
+        if (polyadic) {
+            return name;
+        } else {
+            return name+"/"+arity;
+        }
+    }
     
 }

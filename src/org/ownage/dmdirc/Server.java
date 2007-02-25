@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-package dmdirc;
+package org.ownage.dmdirc;
 
-import dmdirc.parser.ServerInfo;
-import dmdirc.ui.MainFrame;
-import dmdirc.ui.ServerFrame;
+import org.ownage.dmdirc.parser.ServerInfo;
+import org.ownage.dmdirc.ui.MainFrame;
+import org.ownage.dmdirc.ui.ServerFrame;
 import java.util.Vector;
-import dmdirc.parser.IRCParser;
+import org.ownage.dmdirc.parser.IRCParser;
 
 /**
  * The Server class represents the client's view of a server. It maintains

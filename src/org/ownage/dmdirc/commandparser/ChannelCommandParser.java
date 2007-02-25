@@ -20,51 +20,18 @@
  * SOFTWARE.
  */
 
-package dmdirc;
-
-import dmdirc.parser.IRCParser;
-import dmdirc.ui.MainFrame;
-import dmdirc.ui.ServerFrame;
+package org.ownage.dmdirc.commandparser;
 
 /**
- * Handles the raw window (which shows the user raw data being sent and
- * received to/from the server)
+ *
  * @author chris
  */
-public class Raw {
+public class ChannelCommandParser extends ServerCommandParser {
     
-    /**
-     * The server object that's being monitored
-     */
-    private Server server;
-    /**
-     * A serverframe instance used for displaying the raw data
-     */
-    private ServerFrame frame;
-    
-    /**
-     * Creates a new instance of Raw
-     * @param server the server to monitor
-     */
-    public Raw(Server server) {
-        this.server = server;
-        
-        frame = new ServerFrame(server);
-        frame.setTitle("(Raw log)");
-        
-        MainFrame.getMainFrame().addChild(frame);
-        
-        server.AddDataIn(new IRCParser.IDataIn() {
-            public void onDataIn(IRCParser tParser, String sData) {
-                Raw.this.frame.addLine("<<< "+sData);
-            }
-        });
-        
-        server.AddDataOut(new IRCParser.IDataOut() {
-            public void onDataOut(IRCParser tparser, String sData, boolean fromParser) {
-                Raw.this.frame.addLine(">>> "+sData);
-            }
-        });
+    /** Creates a new instance of ChannelCommandParser */
+    public ChannelCommandParser() {
     }
+
+    
     
 }
