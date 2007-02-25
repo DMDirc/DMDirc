@@ -36,6 +36,7 @@ public class ServerInfo {
 	public String sHost = "irc.quakenet.org";
 	public String sPassword = "";
 	public int nPort = 6667;
+	public boolean bSSL = false;	
 
 	public ServerInfo () { }
 	public ServerInfo (String host, int port, String pass) {

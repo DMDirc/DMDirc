@@ -257,7 +257,7 @@ public class ChannelInfo {
 	 * @param sValue String repreenting value
 	 * @param bAdd Add or remove the value. (true for add, false for remove)
 	 */
-	public void setListModeParam(Character cMode, String sValuem, boolean bAdd) { 
+	public void setListModeParam(Character cMode, String sValue, boolean bAdd) { 
 		return;
 	}
 	
