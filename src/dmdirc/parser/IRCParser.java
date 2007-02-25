@@ -1174,15 +1174,20 @@ public class IRCParser implements Runnable {
 		ChannelInfo iChannel;
 		ChannelClientInfo iChannelClientInfo;
 		ClientInfo iClient;
-		
 		if (sParam.equals("324")) {
 			sChannelName = token[3];
-			sModestr = Arrays.copyOfRange(token,4,token.length);
+			// Java 6 Only
+			// sModestr = Arrays.copyOfRange(token,4,token.length);
+			sModestr = new String[token.length-4];
+			System.arraycopy(token, 4, sModestr, 0, token.length-4);
 		} else {
 			sChannelName = token[2];
-			sModestr = Arrays.copyOfRange(token,3,token.length);
+			// Java 6 Only
+			// sModestr = Arrays.copyOfRange(token,3,token.length);
+			sModestr = new String[token.length-3];
+			System.arraycopy(token, 3, sModestr, 0, token.length-3);
 		}
-		
+
 		if (!ChannelInfo.isValidChannelName(this, sChannelName)) { ProcessUserMode(sParam, token, sModestr); return; }
 		
 		iChannel = GetChannelInfo(sChannelName);

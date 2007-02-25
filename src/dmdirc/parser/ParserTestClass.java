@@ -35,6 +35,7 @@ public class ParserTestClass {
 	private int nTotalTests;
 	private int nPassedTests;
 	private int nFailedTests;
+	private IRCParser myParser = null;
 	private boolean bCanOutput = true;
 	private class TestResult {
 		boolean bResult;
@@ -46,7 +47,7 @@ public class ParserTestClass {
 	// sExpected is Case Sensitive.
 	private TestResult TestClientInfo(String sInput, String sExpected) {
 		++nTotalTests;
-		ClientInfo cTemp = new ClientInfo(sInput);
+		ClientInfo cTemp = new ClientInfo(myParser, sInput);
 		TestResult tResult = new TestResult();
 		tResult.sInput = sInput;
 		tResult.sExpected = sExpected;
@@ -65,7 +66,6 @@ public class ParserTestClass {
 		
 		return tResult;
 	}
-	
 	
 	public void RunTests(String args[]) { RunTests(); }
 	public void RunTests() {
