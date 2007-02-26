@@ -287,8 +287,7 @@ public class ChannelInfo {
 	 * Get the list object representing a channel mode.
 	 *
 	 * @param cMode Character representing mode
-	 * @param sValue String repreenting value
-	 * @param bAdd Add or remove the value. (true for add, false for remove)
+	 * @return ArrayList containing items in the list, or null if mode is invalid
 	 */
 	public ArrayList setListModeParam(Character cMode) { 
 		if (!myParser.hChanModesOther.containsKey(cMode)) { return null; }
