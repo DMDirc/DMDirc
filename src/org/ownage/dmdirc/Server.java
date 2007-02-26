@@ -74,11 +74,11 @@ public class Server {
         
         Raw raw = new Raw(this);
         
-        parser.AddNickInUse(new IRCParser.INickInUse() {
+        parser.addNickInUse(new IRCParser.INickInUse() {
             public void onNickInUse(IRCParser tParser) {
                 String newNick = tParser.me.sNickname+"_";
                 frame.addLine("Nickname in use. Trying "+newNick);
-                tParser.SetNickname(newNick);
+                tParser.setNickname(newNick);
             }
         });
         
@@ -102,23 +102,23 @@ public class Server {
      * Adds a listener for the DataIn event for this server's connection
      * @param eMethod the listener to notify
      */
-    public void AddDataIn(Object eMethod) { parser.AddDataIn(eMethod); }
+    public void addDataIn(Object eMethod) { parser.addDataIn(eMethod); }
     /**
      * Adds a listener for the DataOut event for this server's connection
      * @param eMethod the listener to notify
      */
-    public void AddDataOut(Object eMethod) { parser.AddDataOut(eMethod); }
+    public void addDataOut(Object eMethod) { parser.addDataOut(eMethod); }
     /**
      * Adds a listener for the EndOfMOTD event for this server's connection
      * @param eMethod The listener to notify
      */
-    public void AddMOTDEnd(Object eMethod) { parser.AddMOTDEnd(eMethod); }
+    public void addMOTDEnd(Object eMethod) { parser.addMOTDEnd(eMethod); }
     
     /**
      * Sends a raw line directly to the server
      * @param line The line of text to send to the server
-     * @see IRCParser.SendLine(java.lang.String)
+     * @see IRCParser.sendLine(java.lang.String)
      */
-    public void SendRawLine(String line) { parser.SendLine(line); }
+    public void sendRawLine(String line) { parser.sendLine(line); }
     
 }

@@ -54,13 +54,13 @@ public class Raw {
         
         MainFrame.getMainFrame().addChild(frame);
         
-        server.AddDataIn(new IRCParser.IDataIn() {
+        server.addDataIn(new IRCParser.IDataIn() {
             public void onDataIn(IRCParser tParser, String sData) {
                 Raw.this.frame.addLine("<<< "+sData);
             }
         });
         
-        server.AddDataOut(new IRCParser.IDataOut() {
+        server.addDataOut(new IRCParser.IDataOut() {
             public void onDataOut(IRCParser tparser, String sData, boolean fromParser) {
                 Raw.this.frame.addLine(">>> "+sData);
             }
