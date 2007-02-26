@@ -90,7 +90,7 @@ public class ChannelInfo {
 	 *
 	 * @return ArrayList of ChannelClients
 	 */
-	public ArrayList getChannelClients() {
+	public ArrayList<ChannelClientInfo> getChannelClients() {
 		ArrayList<ChannelClientInfo> lClients = new ArrayList<ChannelClientInfo>();
 		for (Enumeration e = hChannelUserList.keys(); e.hasMoreElements();) {
 			lClients.add(hChannelUserList.get(e.nextElement()));
