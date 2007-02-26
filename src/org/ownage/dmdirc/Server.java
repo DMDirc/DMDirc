@@ -91,26 +91,11 @@ public class Server {
     }
     
     /**
-     * Adds a listener for the DataIn event for this server's connection
-     * @param eMethod the listener to notify
+     * Retrieves the parser used for this connection
+     * @returns IRCParser this connection's parser
      */
-    public void addDataIn(Object eMethod) { parser.addDataIn(eMethod); }
-    /**
-     * Adds a listener for the DataOut event for this server's connection
-     * @param eMethod the listener to notify
-     */
-    public void addDataOut(Object eMethod) { parser.addDataOut(eMethod); }
-    /**
-     * Adds a listener for the EndOfMOTD event for this server's connection
-     * @param eMethod The listener to notify
-     */
-    public void addMOTDEnd(Object eMethod) { parser.addMOTDEnd(eMethod); }
-    
-    /**
-     * Sends a raw line directly to the server
-     * @param line The line of text to send to the server
-     * @see IRCParser.sendLine(java.lang.String)
-     */
-    public void sendRawLine(String line) { parser.sendLine(line); }
+    public IRCParser getParser() {
+        return parser;
+    }
     
 }
