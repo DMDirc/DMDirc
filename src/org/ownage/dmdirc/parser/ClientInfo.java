@@ -124,13 +124,13 @@ public class ClientInfo {
 	 *
 	 * @param bNewState Boolean representing state. true = away, false = here
 	 */	
-	public void setAwayState(int bNewState) { bIsAway = bNewState; }
+	public void setAwayState(boolean bNewState) { bIsAway = bNewState; }
 	/**
 	 * Get the away state of a user.
 	 *
 	 * @return Boolean representing state. true = away, false = here
 	 */	
-	public int getAwayState() { return bIsAway; }
+	public boolean getAwayState() { return bIsAway; }
 	
 	/**
 	 * Set the user modes (as an integer).

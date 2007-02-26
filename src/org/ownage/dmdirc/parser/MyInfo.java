@@ -49,7 +49,7 @@ public class MyInfo {
 	/** Username to use, this doesn't matter when an ident server is running (Default: IRCParser). */
 	public String sUsername = "IRCParser";
 	/** Character to prepend to nickname if in use (Default "_"). */
-	public char cPrepend = "_";
+	public char cPrepend = '_';	
 	
 	/**
 	 * Get SVN Version information

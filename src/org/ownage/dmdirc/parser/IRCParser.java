@@ -176,9 +176,9 @@ public class IRCParser implements Runnable {
 		 * @param tParser Reference to the parser object that made the callback.
 		 * @param nLevel Debugging Level (ndInfo, ndSocket etc)
 		 * @param sData Debugging Information
-		 * @see IRCParser#AddDebugInfo
-		 * @see IRCParser#DelDebugInfo
-		 * @see IRCParser#CallDebugInfo
+		 * @see IRCParser#addDebugInfo
+		 * @see IRCParser#delDebugInfo
+		 * @see IRCParser#callDebugInfo
 		 */
 		public void onDebug(IRCParser tParser, int nLevel, String sData);
 	}
@@ -197,9 +197,9 @@ public class IRCParser implements Runnable {
 		 * Called when "End of MOTD" or "No MOTD".
 		 * 
 		 * @param tParser Reference to the parser object that made the callback.
-		 * @see IRCParser#AddMOTDEnd
-		 * @see IRCParser#DelMOTDEnd
-		 * @see IRCParser#CallMOTDEnd
+		 * @see IRCParser#addMOTDEnd
+		 * @see IRCParser#delMOTDEnd
+		 * @see IRCParser#callMOTDEnd
 		 */
 		public void onMOTDEnd(IRCParser tParser);
 	}
@@ -218,9 +218,9 @@ public class IRCParser implements Runnable {
 		 * Called after 001.
 		 * 
 		 * @param tParser Reference to the parser object that made the callback.
-		 * @see IRCParser#AddServerReady
-		 * @see IRCParser#DelServerReady
-		 * @see IRCParser#CallServerReady
+		 * @see IRCParser#addServerReady
+		 * @see IRCParser#delServerReady
+		 * @see IRCParser#callServerReady
 		 */
 		public void onServerReady(IRCParser tParser);
 	}
@@ -240,9 +240,9 @@ public class IRCParser implements Runnable {
 		 * 
 		 * @param tParser Reference to the parser object that made the callback.
 		 * @param sData Incomming Line.
-		 * @see IRCParser#AddDataIn
-		 * @see IRCParser#DelDataIn
-		 * @see IRCParser#CallDataIn
+		 * @see IRCParser#addDataIn
+		 * @see IRCParser#delDataIn
+		 * @see IRCParser#callDataIn
 		 */
 		public void onDataIn(IRCParser tParser, String sData);
 	}
@@ -262,10 +262,10 @@ public class IRCParser implements Runnable {
 		 * 
 		 * @param tParser Reference to the parser object that made the callback.
 		 * @param sData Outgoing Data
-		 * @param FromParser True if parser sent the data, false if sent using .SendLine
-		 * @see IRCParser#AddDataOut
-		 * @see IRCParser#DelDataOut
-		 * @see IRCParser#CallDataOut
+		 * @param FromParser True if parser sent the data, false if sent using .sendLine
+		 * @see IRCParser#addDataOut
+		 * @see IRCParser#delDataOut
+		 * @see IRCParser#callDataOut
 		 */
 		public void onDataOut(IRCParser tParser, String sData, boolean FromParser);
 	}
@@ -284,9 +284,9 @@ public class IRCParser implements Runnable {
 		 * Called when requested nickname is in use.
 		 * 
 		 * @param tParser Reference to the parser object that made the callback.
-		 * @see IRCParser#AddNickInUse
-		 * @see IRCParser#DelNickInUse
-		 * @see IRCParser#CallNickInUse
+		 * @see IRCParser#addNickInUse
+		 * @see IRCParser#delNickInUse
+		 * @see IRCParser#callNickInUse
 		 */
 		public void onNickInUse(IRCParser tParser);
 	}
@@ -307,9 +307,9 @@ public class IRCParser implements Runnable {
 		 * @param tParser Reference to the parser object that made the callback.
 		 * @param nLevel Debugging Level (errFatal, errWarning etc)
 		 * @param sData Error Information
-		 * @see IRCParser#AddErrorInfo
-		 * @see IRCParser#DelErrorInfo
-		 * @see IRCParser#CallErrorInfo
+		 * @see IRCParser#addErrorInfo
+		 * @see IRCParser#delErrorInfo
+		 * @see IRCParser#callErrorInfo
 		 */
 		public void onError(IRCParser tParser, int nLevel, String sData);
 	}
@@ -332,9 +332,9 @@ public class IRCParser implements Runnable {
 		 * @param tParser Reference to the parser object that made the callback.
 		 * @param cChannel Channel Object
 		 * @param cChannelClient ChannelClient object for new person
-		 * @see IRCParser#AddChannelJoin
-		 * @see IRCParser#DelChannelJoin
-		 * @see IRCParser#CallChannelJoin
+		 * @see IRCParser#addChannelJoin
+		 * @see IRCParser#delChannelJoin
+		 * @see IRCParser#callChannelJoin
 		 */
 		public void onJoinChannel(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient );
 	}
@@ -358,9 +358,9 @@ public class IRCParser implements Runnable {
 		 * @param cChannel Channel that the user parted
 		 * @param cChannelClient Client that parted
 		 * @param sReason Reason given for parting (May be "")
-		 * @see IRCParser#AddChannelPart
-		 * @see IRCParser#DelChannelPart
-		 * @see IRCParser#CallChannelPart
+		 * @see IRCParser#addChannelPart
+		 * @see IRCParser#delChannelPart
+		 * @see IRCParser#callChannelPart
 		 */
 		public void onPartChannel(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );
 	}
@@ -384,9 +384,9 @@ public class IRCParser implements Runnable {
 		 * @param cChannel Channel that user was on
 		 * @param cChannelClient User thats quitting
 		 * @param sReason Quit reason
-		 * @see IRCParser#AddChannelQuit
-		 * @see IRCParser#DelChannelQuit
-		 * @see IRCParser#CallChannelQuit
+		 * @see IRCParser#addChannelQuit
+		 * @see IRCParser#delChannelQuit
+		 * @see IRCParser#callChannelQuit
 		 */
 		public void onQuitChannel(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );
 	}
@@ -409,9 +409,9 @@ public class IRCParser implements Runnable {
 		 * @param tParser Reference to the parser object that made the callback.
 		 * @param cChannel Channel that topic was set on
 		 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
-		 * @see IRCParser#AddTopic
-		 * @see IRCParser#DelTopic
-		 * @see IRCParser#CallTopic
+		 * @see IRCParser#addTopic
+		 * @see IRCParser#delTopic
+		 * @see IRCParser#callTopic
 		 */
 		public void onTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsJoinTopic);
 	}
@@ -437,9 +437,9 @@ public class IRCParser implements Runnable {
 		 * @param cChannel Channel where modes were changed
 		 * @param cChannelClient Client chaning the modes (null if server)
 		 * @param sHost Host doing the mode changing (User host or server name)
-		 * @see IRCParser#AddModesChanged
-		 * @see IRCParser#DelModesChanged
-		 * @see IRCParser#CallModesChanged
+		 * @see IRCParser#addModesChanged
+		 * @see IRCParser#delModesChanged
+		 * @see IRCParser#callModesChanged
 		 */
 		public void onModeChange(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost);
 	}
@@ -464,9 +464,9 @@ public class IRCParser implements Runnable {
 		 * @param tParser Reference to the parser object that made the callback.
 		 * @param cClient Client that had the mode changed (almost always us)
 		 * @param sSetBy Host that set the mode (us or servername)
-		 * @see IRCParser#AddUserModesChanged
-		 * @see IRCParser#DelUserModesChanged
-		 * @see IRCParser#CallUserModesChanged
+		 * @see IRCParser#addUserModesChanged
+		 * @see IRCParser#delUserModesChanged
+		 * @see IRCParser#callUserModesChanged
 		 */
 		public void onUserModeChange(IRCParser tParser, ClientInfo cClient, String sSetBy);
 	}
@@ -489,9 +489,9 @@ public class IRCParser implements Runnable {
 		 * @param tParser Reference to the parser object that made the callback.
 		 * @param cClient Client changing nickname
 		 * @param sOldNick Nickname before change
-		 * @see IRCParser#AddNickChanged
-		 * @see IRCParser#DelNickChanged
-		 * @see IRCParser#CallNickChanged
+		 * @see IRCParser#addNickChanged
+		 * @see IRCParser#delNickChanged
+		 * @see IRCParser#callNickChanged
 		 */
 		public void onNickChanged(IRCParser tParser, ClientInfo cClient, String sOldNick);
 	}
@@ -517,9 +517,9 @@ public class IRCParser implements Runnable {
 		 * @param cKickedByClient ChannelClient that did the kicking (may be null if server)
 		 * @param sReason Reason for kick (may be "")
 		 * @param sKickedByHost Hostname of Kicker (or servername)
-		 * @see IRCParser#AddChannelKick
-		 * @see IRCParser#DelChannelKick
-		 * @see IRCParser#CallChannelKick
+		 * @see IRCParser#addChannelKick
+		 * @see IRCParser#delChannelKick
+		 * @see IRCParser#callChannelKick
 		 */
 		public void onChannelKick(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost);
 	}
@@ -546,9 +546,9 @@ public class IRCParser implements Runnable {
 		 * @param cChannelClient ChannelClient who sent the message (may be null if server)
 		 * @param sMessage Message contents
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddChannelMessage
-		 * @see IRCParser#DelChannelMessage
-		 * @see IRCParser#CallChannelMessage
+		 * @see IRCParser#addChannelMessage
+		 * @see IRCParser#delChannelMessage
+		 * @see IRCParser#callChannelMessage
 		 */
 		public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
 	}
@@ -575,9 +575,9 @@ public class IRCParser implements Runnable {
 		 * @param cChannelClient ChannelClient who sent the action (may be null if server)
 		 * @param sMessage action contents
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddChannelAction
-		 * @see IRCParser#DelChannelAction
-		 * @see IRCParser#CallChannelAction
+		 * @see IRCParser#addChannelAction
+		 * @see IRCParser#delChannelAction
+		 * @see IRCParser#callChannelAction
 		 */
 		public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
 	}
@@ -604,9 +604,9 @@ public class IRCParser implements Runnable {
 		 * @param cChannelClient ChannelClient who sent the notice (may be null if server)
 		 * @param sMessage notice contents
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddChannelNotice
-		 * @see IRCParser#DelChannelNotice
-		 * @see IRCParser#CallChannelNotice
+		 * @see IRCParser#addChannelNotice
+		 * @see IRCParser#delChannelNotice
+		 * @see IRCParser#callChannelNotice
 		 */
 		public void onChannelNotice(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
 	}
@@ -632,9 +632,9 @@ public class IRCParser implements Runnable {
 		 * @param cClient Client who sent the message (may be null if no common channels or server)
 		 * @param sMessage Message contents
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddPrivateMessage
-		 * @see IRCParser#DelPrivateMessage
-		 * @see IRCParser#CallPrivateMessage
+		 * @see IRCParser#addPrivateMessage
+		 * @see IRCParser#delPrivateMessage
+		 * @see IRCParser#callPrivateMessage
 		 */
 		public void onPrivateMessage(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );
 	}
@@ -660,9 +660,9 @@ public class IRCParser implements Runnable {
 	 	 * @param cClient Client who sent the action (may be null if no common channels or server)
 		 * @param sMessage action contents
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddPrivateAction
-		 * @see IRCParser#DelPrivateAction
-		 * @see IRCParser#CallPrivateAction
+		 * @see IRCParser#addPrivateAction
+		 * @see IRCParser#delPrivateAction
+		 * @see IRCParser#callPrivateAction
 		 */
 		public void onPrivateAction(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );
 	}
@@ -688,9 +688,9 @@ public class IRCParser implements Runnable {
 		 * @param cClient Client who sent the notice (may be null if no common channels or server)
 		 * @param sMessage Notice contents
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddPrivateNotice
-		 * @see IRCParser#DelPrivateNotice
-		 * @see IRCParser#CallPrivateNotice
+		 * @see IRCParser#addPrivateNotice
+		 * @see IRCParser#delPrivateNotice
+		 * @see IRCParser#callPrivateNotice
 		 */
 		public void onPrivateNotice(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );
 	}
@@ -717,9 +717,9 @@ public class IRCParser implements Runnable {
 		 * @param sMessage Message contents
 		 * @param sTarget Actual target of message
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddUnknownMessage
-		 * @see IRCParser#DelUnknownMessage
-		 * @see IRCParser#CallUnknownMessage
+		 * @see IRCParser#addUnknownMessage
+		 * @see IRCParser#delUnknownMessage
+		 * @see IRCParser#callUnknownMessage
 		 */
 		public void onUnknownMessage(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );
 	}
@@ -746,9 +746,9 @@ public class IRCParser implements Runnable {
 		 * @param sMessage Action contents
 		 * @param sTarget Actual target of action
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddUnknownAction
-		 * @see IRCParser#DelUnknownAction
-		 * @see IRCParser#CallUnknownAction
+		 * @see IRCParser#addUnknownAction
+		 * @see IRCParser#delUnknownAction
+		 * @see IRCParser#callUnknownAction
 		 */
 		public void onUnknownAction(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );
 	}
@@ -775,9 +775,9 @@ public class IRCParser implements Runnable {
 		 * @param sMessage Notice contents
 		 * @param sTarget Actual target of notice
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddUnknownNotice
-		 * @see IRCParser#DelUnknownNotice
-		 * @see IRCParser#CallUnknownNotice
+		 * @see IRCParser#addUnknownNotice
+		 * @see IRCParser#delUnknownNotice
+		 * @see IRCParser#callUnknownNotice
 		 */
 		public void onUnknownNotice(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );
 	}
@@ -805,9 +805,9 @@ public class IRCParser implements Runnable {
 		 * @param sType Type of CTCP (VERSION, TIME etc)
 		 * @param sMessage Additional contents
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddChannelCTCP
-		 * @see IRCParser#DelChannelCTCP
-		 * @see IRCParser#CallChannelCTCP
+		 * @see IRCParser#addChannelCTCP
+		 * @see IRCParser#delChannelCTCP
+		 * @see IRCParser#callChannelCTCP
 		 */
 		public void onChannelCTCP(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost );
 	}
@@ -834,9 +834,9 @@ public class IRCParser implements Runnable {
 		 * @param sType Type of CTCP (VERSION, TIME etc)
 		 * @param sMessage Additional contents
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddPrivateCTCP
-		 * @see IRCParser#DelPrivateCTCP
-		 * @see IRCParser#CallPrivateCTCP
+		 * @see IRCParser#addPrivateCTCP
+		 * @see IRCParser#delPrivateCTCP
+		 * @see IRCParser#callPrivateCTCP
 		 */
 		public void onPrivateCTCP(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sHost );
 	}
@@ -864,9 +864,9 @@ public class IRCParser implements Runnable {
 		 * @param sMessage Additional contents
 		 * @param sTarget Actual Target of CTCP
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddUnknownCTCP
-		 * @see IRCParser#DelUnknownCTCP
-		 * @see IRCParser#CallUnknownCTCP
+		 * @see IRCParser#addUnknownCTCP
+		 * @see IRCParser#delUnknownCTCP
+		 * @see IRCParser#callUnknownCTCP
 		 */
 		public void onUnknownCTCP(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost );
 	}
@@ -894,9 +894,9 @@ public class IRCParser implements Runnable {
 		 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 		 * @param sMessage Reply Contents
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddChannelCTCPReply
-		 * @see IRCParser#DelChannelCTCPReply
-		 * @see IRCParser#CallChannelCTCPReply
+		 * @see IRCParser#addChannelCTCPReply
+		 * @see IRCParser#delChannelCTCPReply
+		 * @see IRCParser#callChannelCTCPReply
 		 */
 		public void onChannelCTCPReply(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost );
 	}
@@ -923,9 +923,9 @@ public class IRCParser implements Runnable {
 		 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 		 * @param sMessage Reply Contents
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddPrivateCTCPReply
-		 * @see IRCParser#DelPrivateCTCPReply
-		 * @see IRCParser#CallPrivateCTCPReply
+		 * @see IRCParser#addPrivateCTCPReply
+		 * @see IRCParser#delPrivateCTCPReply
+		 * @see IRCParser#callPrivateCTCPReply
 		 */
 		public void onPrivateCTCPReply(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sHost );
 	}
@@ -953,9 +953,9 @@ public class IRCParser implements Runnable {
 		 * @param sMessage Reply Contents
 		 * @param sTarget Actual Target of CTCPReply
 		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#AddUnknownCTCPReply
-		 * @see IRCParser#DelUnknownCTCPReply
-		 * @see IRCParser#CallUnknownCTCPReply
+		 * @see IRCParser#addUnknownCTCPReply
+		 * @see IRCParser#delUnknownCTCPReply
+		 * @see IRCParser#callUnknownCTCPReply
 		 */
 		public void onUnknownCTCPReply(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost );
 	}
@@ -978,9 +978,9 @@ public class IRCParser implements Runnable {
 		 * @param tParser Reference to the parser object that made the callback.
 		 * @param cClient Client Quitting
 		 * @param sReason Reason for quitting (may be "")
-		 * @see IRCParser#AddQuit
-		 * @see IRCParser#DelQuit
-		 * @see IRCParser#CallQuit
+		 * @see IRCParser#addQuit
+		 * @see IRCParser#delQuit
+		 * @see IRCParser#callQuit
 		 */
 		public void onQuit(IRCParser tParser, ClientInfo cClient, String sReason );
 	}
@@ -1000,9 +1000,9 @@ public class IRCParser implements Runnable {
 		 *
 		 * @param tParser Reference to the parser object that made the callback.
 		 * @param cChannel Channel which the names reply is for
-		 * @see IRCParser#AddGotNames
-		 * @see IRCParser#DelGotNames
-		 * @see IRCParser#CallGotNames
+		 * @see IRCParser#addGotNames
+		 * @see IRCParser#delGotNames
+		 * @see IRCParser#callGotNames
 		 */
 		public void onGotNames(IRCParser tParser, ChannelInfo cChannel);
 	}
@@ -1016,14 +1016,14 @@ public class IRCParser implements Runnable {
 
 	/** Add a callback pointer to the appropriate ArrayList. */
 	@SuppressWarnings("unchecked")
-	private void AddCallback(Object eMethod, ArrayList CallbackList) {
+	private void addCallback(Object eMethod, ArrayList CallbackList) {
 		for (int i = 0; i < CallbackList.size(); i++) {
 			if (eMethod.equals(CallbackList.get(i))) { return; }
 		}
 		CallbackList.add(eMethod);
 	}
 	/** Delete a callback pointer from the appropriate ArrayList. */
-	private void DelCallback(Object eMethod, ArrayList CallbackList) {
+	private void delCallback(Object eMethod, ArrayList CallbackList) {
 		for (int i = 0; i < CallbackList.size(); i++) {
 			if (eMethod.equals(CallbackList.get(i))) { CallbackList.remove(i); break; }
 		}
@@ -1035,14 +1035,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IDebugInfo
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddDebugInfo(Object eMethod) { AddCallback(eMethod, cbDebugInfo); }
+	public void addDebugInfo(Object eMethod) { addCallback(eMethod, cbDebugInfo); }
 	/**
 	 * Delete callback for DebugInfo (onDebug).
 	 *
 	 * @see IRCParser.IDebugInfo
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelDebugInfo(Object eMethod) { DelCallback(eMethod, cbDebugInfo); }
+	public void delDebugInfo(Object eMethod) { delCallback(eMethod, cbDebugInfo); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IDebugInfo Interface.
 	 *
@@ -1050,7 +1050,7 @@ public class IRCParser implements Runnable {
 	 * @param level Debugging Level (ndInfo, ndSocket etc)
 	 * @param data Debugging Information
 	 */
-	protected boolean CallDebugInfo(int level, String data) {
+	protected boolean callDebugInfo(int level, String data) {
 		if (bDebug) { System.out.printf("[DEBUG] {%d} %s\n", level, data); }
 		boolean bResult = false;
 		for (int i = 0; i < cbDebugInfo.size(); i++) {
@@ -1066,20 +1066,20 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IMOTDEnd
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddMOTDEnd(Object eMethod) { AddCallback(eMethod, cbEndOfMOTD); }
+	public void addMOTDEnd(Object eMethod) { addCallback(eMethod, cbEndOfMOTD); }
 	/**
 	 * Delete callback for MOTDEnd (onMOTDEnd).
 	 *
 	 * @see IRCParser.IMOTDEnd
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelMOTDEnd(Object eMethod) { DelCallback(eMethod, cbEndOfMOTD); }
+	public void delMOTDEnd(Object eMethod) { delCallback(eMethod, cbEndOfMOTD); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IMotdEnd Interface.
 	 *
 	 * @see IRCParser.IMOTDEnd
 	 */
-	protected boolean CallMOTDEnd() {
+	protected boolean callMOTDEnd() {
 		boolean bResult = false;
 		for (int i = 0; i < cbEndOfMOTD.size(); i++) {
 			cbEndOfMOTD.get(i).onMOTDEnd(this);
@@ -1094,20 +1094,20 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IServerReady
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddServerReady(Object eMethod) { AddCallback(eMethod, cbServerReady); }
+	public void addServerReady(Object eMethod) { addCallback(eMethod, cbServerReady); }
 	/**
 	 * Delete callback for ServerReady (onServerReady).
 	 *
 	 * @see IRCParser.IServerReady
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelServerReady(Object eMethod) { DelCallback(eMethod, cbServerReady); }
+	public void delServerReady(Object eMethod) { delCallback(eMethod, cbServerReady); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IServerReady Interface.
 	 *
 	 * @see IRCParser.IServerReady
 	 */	
-	protected boolean CallServerReady() {
+	protected boolean callServerReady() {
 		boolean bResult = false;
 		for (int i = 0; i < cbServerReady.size(); i++) {
 			cbServerReady.get(i).onServerReady(this);
@@ -1122,21 +1122,21 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IDataIn
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddDataIn(Object eMethod) { AddCallback((IDataIn)eMethod, cbDataIn); }
+	public void addDataIn(Object eMethod) { addCallback((IDataIn)eMethod, cbDataIn); }
 	/**
 	 * Delete callback for DataIn (onDebug).
 	 *
 	 * @see IRCParser.IDataIn
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelDataIn(Object eMethod) { DelCallback((IDataIn)eMethod, cbDataIn); }
+	public void delDataIn(Object eMethod) { delCallback((IDataIn)eMethod, cbDataIn); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IDataIn Interface.
 	 *
 	 * @see IRCParser.IDataIn
 	 * @param data Incomming Line.
 	 */
-	protected boolean CallDataIn(String data) {
+	protected boolean callDataIn(String data) {
 		boolean bResult = false;
 		for (int i = 0; i < cbDataIn.size(); i++) {
 			cbDataIn.get(i).onDataIn(this, data);
@@ -1151,22 +1151,22 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IDataOut
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddDataOut(Object eMethod) { AddCallback((IDataOut)eMethod, cbDataOut); }
+	public void addDataOut(Object eMethod) { addCallback((IDataOut)eMethod, cbDataOut); }
 	/**
 	 * Delete callback for DataOut (onDataOut).
 	 *
 	 * @see IRCParser.IDataOut
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelDataOut(Object eMethod) { DelCallback((IDataOut)eMethod, cbDataOut); }
+	public void delDataOut(Object eMethod) { delCallback((IDataOut)eMethod, cbDataOut); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IDataOut Interface.
 	 *
 	 * @see IRCParser.IDataOut
 	 * @param data Outgoing Data
-	 * @param FromParser True if parser sent the data, false if sent using .SendLine	 
+	 * @param FromParser True if parser sent the data, false if sent using .sendLine	 
 	 */
-	protected boolean CallDataOut(String data, boolean FromParser) {
+	protected boolean callDataOut(String data, boolean FromParser) {
 		boolean bResult = false;
 		for (int i = 0; i < cbDataOut.size(); i++) {
 			cbDataOut.get(i).onDataOut(this, data, FromParser);
@@ -1181,20 +1181,20 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.INickInUse
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddNickInUse(Object eMethod) { AddCallback(eMethod, cbNickInUse); }
+	public void addNickInUse(Object eMethod) { addCallback(eMethod, cbNickInUse); }
 	/**
 	 * Delete callback for NickInUse (onNickInUse).
 	 *
 	 * @see IRCParser.INickInUse
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelNickInUse(Object eMethod) { DelCallback(eMethod, cbNickInUse); }
+	public void delNickInUse(Object eMethod) { delCallback(eMethod, cbNickInUse); }
 	/**
 	 * Callback to all objects implementing the IRCParser.INickInUse Interface.
 	 *
 	 * @see IRCParser.INickInUse
 	 */
-	protected boolean CallNickInUse() {
+	protected boolean callNickInUse() {
 		boolean bResult = false;
 		for (int i = 0; i < cbNickInUse.size(); i++) {
 			cbNickInUse.get(i).onNickInUse(this);
@@ -1209,14 +1209,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IErrorInfo
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddErrorInfo(Object eMethod) { AddCallback(eMethod, cbErrorInfo); }
+	public void addErrorInfo(Object eMethod) { addCallback(eMethod, cbErrorInfo); }
 	/**
 	 * Delete callback for ErrorInfo (onError).
 	 *
 	 * @see IRCParser.IErrorInfo
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelErrorInfo(Object eMethod) { DelCallback(eMethod, cbErrorInfo); }
+	public void delErrorInfo(Object eMethod) { delCallback(eMethod, cbErrorInfo); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IErrorInfo Interface.
 	 *
@@ -1224,7 +1224,7 @@ public class IRCParser implements Runnable {
 	 * @param level Debugging Level (errFatal, errWarning etc)
 	 * @param data Error Information
 	 */
-	protected boolean CallErrorInfo(int level, String data) {
+	protected boolean callErrorInfo(int level, String data) {
 		if (bDebug) { System.out.printf("[ERROR] {%d} %s\n", level, data); }
 		boolean bResult = false;
 		for (int i = 0; i < cbErrorInfo.size(); i++) {
@@ -1240,14 +1240,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelJoin
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddChannelJoin(Object eMethod) { AddCallback(eMethod, cbChannelJoin); }
+	public void addChannelJoin(Object eMethod) { addCallback(eMethod, cbChannelJoin); }
 	/**
 	 * Delete callback for ChannelJoin (onJoinChannel).
 	 *
 	 * @see IRCParser.IChannelJoin
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelChannelJoin(Object eMethod) { DelCallback(eMethod, cbChannelJoin); }
+	public void delChannelJoin(Object eMethod) { delCallback(eMethod, cbChannelJoin); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelJoin Interface.
 	 *
@@ -1255,7 +1255,7 @@ public class IRCParser implements Runnable {
 	 * @param cChannel Channel Object
 	 * @param cChannelClient ChannelClient object for new person
 	 */
-	protected boolean CallChannelJoin(ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
+	protected boolean callChannelJoin(ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
 		boolean bResult = false;
 		for (int i = 0; i < cbChannelJoin.size(); i++) {
 			cbChannelJoin.get(i).onJoinChannel(this, cChannel, cChannelClient);
@@ -1271,14 +1271,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelPart
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddChannelPart(Object eMethod) { AddCallback(eMethod, cbChannelPart); }
+	public void addChannelPart(Object eMethod) { addCallback(eMethod, cbChannelPart); }
 	/**
 	 * Delete callback for ChannelPart (onPartChannel).
 	 *
 	 * @see IRCParser.IChannelPart
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelChannelPart(Object eMethod) { DelCallback(eMethod, cbChannelPart); }
+	public void delChannelPart(Object eMethod) { delCallback(eMethod, cbChannelPart); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelPart Interface.
 	 *
@@ -1287,7 +1287,7 @@ public class IRCParser implements Runnable {
 	 * @param cChannelClient Client that parted
 	 * @param sReason Reason given for parting (May be "")
 	 */
-	protected boolean CallChannelPart(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
+	protected boolean callChannelPart(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
 		boolean bResult = false;
 		for (int i = 0; i < cbChannelPart.size(); i++) {
 			cbChannelPart.get(i).onPartChannel(this, cChannel, cChannelClient, sReason);
@@ -1302,14 +1302,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelQuit
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddChannelQuit(Object eMethod) { AddCallback(eMethod, cbChannelQuit); }
+	public void addChannelQuit(Object eMethod) { addCallback(eMethod, cbChannelQuit); }
 	/**
 	 * Delete callback for ChannelQuit (onQuitChannel).
 	 *
 	 * @see IRCParser.IChannelQuit
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelChannelQuit(Object eMethod) { DelCallback(eMethod, cbChannelQuit); }
+	public void delChannelQuit(Object eMethod) { delCallback(eMethod, cbChannelQuit); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelQuit Interface.
 	 *
@@ -1318,7 +1318,7 @@ public class IRCParser implements Runnable {
 	 * @param cChannelClient User thats quitting
 	 * @param sReason Quit reason
 	 */
-	protected boolean CallChannelQuit(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
+	protected boolean callChannelQuit(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
 		boolean bResult = false;
 		for (int i = 0; i < cbChannelQuit.size(); i++) {
 			cbChannelQuit.get(i).onQuitChannel(this, cChannel, cChannelClient, sReason);
@@ -1333,14 +1333,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IQuit
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddQuit(Object eMethod) { AddCallback(eMethod, cbQuit); }
+	public void addQuit(Object eMethod) { addCallback(eMethod, cbQuit); }
 	/**
 	 * Delete callback for Quit (onQuit).
 	 *
 	 * @see IRCParser.IQuit
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelQuit(Object eMethod) { DelCallback(eMethod, cbQuit); }
+	public void delQuit(Object eMethod) { delCallback(eMethod, cbQuit); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IQuit Interface.
 	 *
@@ -1348,7 +1348,7 @@ public class IRCParser implements Runnable {
 	 * @param cClient Client Quitting
 	 * @param sReason Reason for quitting (may be "")
 	 */
-	protected boolean CallQuit(ClientInfo cClient, String sReason) {
+	protected boolean callQuit(ClientInfo cClient, String sReason) {
 		boolean bResult = false;
 		for (int i = 0; i < cbQuit.size(); i++) {
 			cbQuit.get(i).onQuit(this, cClient, sReason);
@@ -1363,14 +1363,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelTopic
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddTopic(Object eMethod) { AddCallback(eMethod, cbChannelTopic); }
+	public void addTopic(Object eMethod) { addCallback(eMethod, cbChannelTopic); }
 	/**
 	 * Delete callback for ChannelTopic (onTopic).
 	 *
 	 * @see IRCParser.IChannelTopic
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelTopic(Object eMethod) { DelCallback(eMethod, cbChannelTopic); }
+	public void delTopic(Object eMethod) { delCallback(eMethod, cbChannelTopic); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelTopic Interface.
 	 *
@@ -1378,7 +1378,7 @@ public class IRCParser implements Runnable {
 	 * @param cChannel Channel that topic was set on
 	 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
 	 */
-	protected boolean CallTopic(ChannelInfo cChannel, boolean bIsJoinTopic) {
+	protected boolean callTopic(ChannelInfo cChannel, boolean bIsJoinTopic) {
 		boolean bResult = false;
 		for (int i = 0; i < cbChannelTopic.size(); i++) {
 			cbChannelTopic.get(i).onTopic(this, cChannel, bIsJoinTopic);
@@ -1393,14 +1393,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelModesChanged
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddModesChanged(Object eMethod) { AddCallback(eMethod, cbChannelModesChanged); }
+	public void addModesChanged(Object eMethod) { addCallback(eMethod, cbChannelModesChanged); }
 	/**
 	 * Delete callback for ChannelModesChanged (onModeChange).
 	 *
 	 * @see IRCParser.IChannelModesChanged
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelModesChanged(Object eMethod) { DelCallback(eMethod, cbChannelModesChanged); }
+	public void delModesChanged(Object eMethod) { delCallback(eMethod, cbChannelModesChanged); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelModesChanged Interface.
 	 *
@@ -1409,7 +1409,7 @@ public class IRCParser implements Runnable {
 	 * @param cChannelClient Client chaning the modes (null if server)
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 */
-	protected boolean CallModesChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost) {
+	protected boolean callModesChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbChannelModesChanged.size(); i++) {
 			cbChannelModesChanged.get(i).onModeChange(this, cChannel, cChannelClient, sHost);
@@ -1424,14 +1424,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IUserModesChanged
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddUserModesChanged(Object eMethod) { AddCallback(eMethod, cbUserModesChanged); }
+	public void addUserModesChanged(Object eMethod) { addCallback(eMethod, cbUserModesChanged); }
 	/**
 	 * Delete callback for UserModesChanged (onUserModeChange).
 	 *
 	 * @see IRCParser.IUserModesChanged
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelUserModesChanged(Object eMethod) { DelCallback(eMethod, cbUserModesChanged); }
+	public void delUserModesChanged(Object eMethod) { delCallback(eMethod, cbUserModesChanged); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IUserModesChanged Interface.
 	 *
@@ -1439,7 +1439,7 @@ public class IRCParser implements Runnable {
 	 * @param cClient Client that had the mode changed (almost always us)
 	 * @param sSetby Host that set the mode (us or servername)
 	 */
-	protected boolean CallUserModesChanged(ClientInfo cClient, String sSetby) {
+	protected boolean callUserModesChanged(ClientInfo cClient, String sSetby) {
 		boolean bResult = false;
 		for (int i = 0; i < cbUserModesChanged.size(); i++) {
 			cbUserModesChanged.get(i).onUserModeChange(this, cClient, sSetby);
@@ -1454,14 +1454,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.INickChanged
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddNickChanged(Object eMethod) { AddCallback(eMethod, cbNickChanged); }
+	public void addNickChanged(Object eMethod) { addCallback(eMethod, cbNickChanged); }
 	/**
 	 * Delete callback for UserNickChanged (onNickChanged).
 	 *
 	 * @see IRCParser.INickChanged
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelNickChanged(Object eMethod) { DelCallback(eMethod, cbNickChanged); }
+	public void delNickChanged(Object eMethod) { delCallback(eMethod, cbNickChanged); }
 	/**
 	 * Callback to all objects implementing the IRCParser.INickChanged Interface.
 	 *
@@ -1469,7 +1469,7 @@ public class IRCParser implements Runnable {
 	 * @param cClient Client changing nickname
 	 * @param sOldNick Nickname before change
 	 */
-	protected boolean CallNickChanged(ClientInfo cClient, String sOldNick) {
+	protected boolean callNickChanged(ClientInfo cClient, String sOldNick) {
 		boolean bResult = false;
 		for (int i = 0; i < cbNickChanged.size(); i++) {
 			cbNickChanged.get(i).onNickChanged(this, cClient, sOldNick);
@@ -1484,14 +1484,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelKick
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddChannelKick(Object eMethod) { AddCallback(eMethod, cbChannelKick); }
+	public void addChannelKick(Object eMethod) { addCallback(eMethod, cbChannelKick); }
 	/**
 	 * Delete callback for ChannelKick (onChannelKick).
 	 *
 	 * @see IRCParser.IChannelKick
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelChannelKick(Object eMethod) { DelCallback(eMethod, cbChannelKick); }
+	public void delChannelKick(Object eMethod) { delCallback(eMethod, cbChannelKick); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelKick Interface.
 	 *
@@ -1502,7 +1502,7 @@ public class IRCParser implements Runnable {
 	 * @param sReason Reason for kick (may be "")
 	 * @param sKickedByHost Hostname of Kicker (or servername)
 	 */
-	protected boolean CallChannelKick(ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost) {
+	protected boolean callChannelKick(ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbChannelKick.size(); i++) {
 			cbChannelKick.get(i).onChannelKick(this, cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost);
@@ -1517,14 +1517,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelMessage
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddChannelMessage(Object eMethod) { AddCallback(eMethod, cbChannelMessage); }
+	public void addChannelMessage(Object eMethod) { addCallback(eMethod, cbChannelMessage); }
 	/**
 	 * Delete callback for ChannelMessage (onChannelMessage).
 	 *
 	 * @see IRCParser.IChannelMessage
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelChannelMessage(Object eMethod) { DelCallback(eMethod, cbChannelMessage); }
+	public void delChannelMessage(Object eMethod) { delCallback(eMethod, cbChannelMessage); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelMessage Interface.
 	 *
@@ -1534,7 +1534,7 @@ public class IRCParser implements Runnable {
 	 * @param sMessage Message contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallChannelMessage(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
+	protected boolean callChannelMessage(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbChannelMessage.size(); i++) {
 			cbChannelMessage.get(i).onChannelMessage(this, cChannel, cChannelClient, sMessage, sHost);
@@ -1549,14 +1549,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelAction
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddChannelAction(Object eMethod) { AddCallback(eMethod, cbChannelAction); }
+	public void addChannelAction(Object eMethod) { addCallback(eMethod, cbChannelAction); }
 	/**
 	 * Delete callback for ChannelAction (onChannelAction).
 	 *
 	 * @see IRCParser.IChannelAction
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelChannelAction(Object eMethod) { DelCallback(eMethod, cbChannelAction); }
+	public void delChannelAction(Object eMethod) { delCallback(eMethod, cbChannelAction); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelAction Interface.
 	 *
@@ -1566,7 +1566,7 @@ public class IRCParser implements Runnable {
 	 * @param sMessage action contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallChannelAction(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
+	protected boolean callChannelAction(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbChannelAction.size(); i++) {
 			cbChannelAction.get(i).onChannelAction(this, cChannel, cChannelClient, sMessage, sHost);
@@ -1581,14 +1581,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelNotice
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddChannelNotice(Object eMethod) { AddCallback(eMethod, cbChannelNotice); }
+	public void addChannelNotice(Object eMethod) { addCallback(eMethod, cbChannelNotice); }
 	/**
 	 * Delete callback for ChannelNotice (onChannelNotice).
 	 *
 	 * @see IRCParser.IChannelNotice
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelChannelNotice(Object eMethod) { DelCallback(eMethod, cbChannelNotice); }
+	public void delChannelNotice(Object eMethod) { delCallback(eMethod, cbChannelNotice); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelNotice Interface.
 	 *
@@ -1598,7 +1598,7 @@ public class IRCParser implements Runnable {
 	 * @param sMessage notice contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallChannelNotice(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
+	protected boolean callChannelNotice(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbChannelNotice.size(); i++) {
 			cbChannelNotice.get(i).onChannelNotice(this, cChannel, cChannelClient, sMessage, sHost);
@@ -1613,14 +1613,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IPrivateMessage
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddPrivateMessage(Object eMethod) { AddCallback(eMethod, cbPrivateMessage); }
+	public void addPrivateMessage(Object eMethod) { addCallback(eMethod, cbPrivateMessage); }
 	/**
 	 * Delete callback for PrivateMessage (onPrivateMessage).
 	 *
 	 * @see IRCParser.IPrivateMessage
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelPrivateMessage(Object eMethod) { DelCallback(eMethod, cbPrivateMessage); }
+	public void delPrivateMessage(Object eMethod) { delCallback(eMethod, cbPrivateMessage); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IPrivateMessage Interface.
 	 *
@@ -1629,7 +1629,7 @@ public class IRCParser implements Runnable {
 	 * @param sMessage Message contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallPrivateMessage(ClientInfo cClient, String sMessage, String sHost) {
+	protected boolean callPrivateMessage(ClientInfo cClient, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbPrivateMessage.size(); i++) {
 			cbPrivateMessage.get(i).onPrivateMessage(this, cClient, sMessage, sHost);
@@ -1644,14 +1644,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IPrivateAction
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddPrivateAction(Object eMethod) { AddCallback(eMethod, cbPrivateAction); }
+	public void addPrivateAction(Object eMethod) { addCallback(eMethod, cbPrivateAction); }
 	/**
 	 * Delete callback for PrivateAction (onPrivateAction).
 	 *
 	 * @see IRCParser.IPrivateAction
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelPrivateAction(Object eMethod) { DelCallback(eMethod, cbPrivateAction); }
+	public void delPrivateAction(Object eMethod) { delCallback(eMethod, cbPrivateAction); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IPrivateAction Interface.
 	 *
@@ -1660,7 +1660,7 @@ public class IRCParser implements Runnable {
 	 * @param sMessage action contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallPrivateAction(ClientInfo cClient, String sMessage, String sHost) {
+	protected boolean callPrivateAction(ClientInfo cClient, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbPrivateAction.size(); i++) {
 			cbPrivateAction.get(i).onPrivateAction(this, cClient, sMessage, sHost);
@@ -1675,14 +1675,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IPrivateNotice
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddPrivateNotice(Object eMethod) { AddCallback(eMethod, cbPrivateNotice); }
+	public void addPrivateNotice(Object eMethod) { addCallback(eMethod, cbPrivateNotice); }
 	/**
 	 * Delete callback for PrivateNotice (onPrivateNotice).
 	 *
 	 * @see IRCParser.IPrivateNotice
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelPrivateNotice(Object eMethod) { DelCallback(eMethod, cbPrivateNotice); }
+	public void delPrivateNotice(Object eMethod) { delCallback(eMethod, cbPrivateNotice); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IPrivateNotice Interface.
 	 *
@@ -1691,7 +1691,7 @@ public class IRCParser implements Runnable {
 	 * @param sMessage Notice contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallPrivateNotice(ClientInfo cClient, String sMessage, String sHost) {
+	protected boolean callPrivateNotice(ClientInfo cClient, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbPrivateNotice.size(); i++) {
 			cbPrivateNotice.get(i).onPrivateNotice(this, cClient, sMessage, sHost);
@@ -1706,14 +1706,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IUnknownMessage
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddUnknownMessage(Object eMethod) { AddCallback(eMethod, cbUnknownMessage); }
+	public void addUnknownMessage(Object eMethod) { addCallback(eMethod, cbUnknownMessage); }
 	/**
 	 * Delete callback for UnknownMessage (onUnknownMessage).
 	 *
 	 * @see IRCParser.IUnknownMessage
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelUnknownMessage(Object eMethod) { DelCallback(eMethod, cbUnknownMessage); }
+	public void delUnknownMessage(Object eMethod) { delCallback(eMethod, cbUnknownMessage); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IUnknownMessage Interface.
 	 *
@@ -1723,7 +1723,7 @@ public class IRCParser implements Runnable {
 	 * @param sTarget Actual target of message
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallUnknownMessage(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
+	protected boolean callUnknownMessage(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbUnknownMessage.size(); i++) {
 			cbUnknownMessage.get(i).onUnknownMessage(this, cClient, sMessage, sTarget, sHost);
@@ -1738,14 +1738,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IUnknownAction
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddUnknownAction(Object eMethod) { AddCallback(eMethod, cbUnknownAction); }
+	public void addUnknownAction(Object eMethod) { addCallback(eMethod, cbUnknownAction); }
 	/**
 	 * Delete callback for UnknownAction (onUnknownAction).
 	 *
 	 * @see IRCParser.IUnknownAction
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelUnknownAction(Object eMethod) { DelCallback(eMethod, cbUnknownAction); }
+	public void delUnknownAction(Object eMethod) { delCallback(eMethod, cbUnknownAction); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IUnknownAction Interface.
 	 *
@@ -1755,7 +1755,7 @@ public class IRCParser implements Runnable {
 	 * @param sTarget Actual target of action
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallUnknownAction(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
+	protected boolean callUnknownAction(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbUnknownAction.size(); i++) {
 			cbUnknownAction.get(i).onUnknownAction(this, cClient, sMessage, sTarget, sHost);
@@ -1770,14 +1770,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IUnknownNotice
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddUnknownNotice(Object eMethod) { AddCallback(eMethod, cbUnknownNotice); }
+	public void addUnknownNotice(Object eMethod) { addCallback(eMethod, cbUnknownNotice); }
 	/**
 	 * Delete callback for UnknownNotice (onUnknownNotice).
 	 *
 	 * @see IRCParser.IUnknownNotice
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelUnknownNotice(Object eMethod) { DelCallback(eMethod, cbUnknownNotice); }
+	public void delUnknownNotice(Object eMethod) { delCallback(eMethod, cbUnknownNotice); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IUnknownNotice Interface.
 	 *
@@ -1787,7 +1787,7 @@ public class IRCParser implements Runnable {
 	 * @param sTarget Actual target of notice
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallUnknownNotice(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
+	protected boolean callUnknownNotice(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbUnknownNotice.size(); i++) {
 			cbUnknownNotice.get(i).onUnknownNotice(this, cClient, sMessage, sTarget, sHost);
@@ -1802,14 +1802,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelCTCP
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddChannelCTCP(Object eMethod) { AddCallback(eMethod, cbChannelCTCP); }
+	public void addChannelCTCP(Object eMethod) { addCallback(eMethod, cbChannelCTCP); }
 	/**
 	 * Delete callback for ChannelCTCP (onChannelCTCP).
 	 *
 	 * @see IRCParser.IChannelCTCP
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelChannelCTCP(Object eMethod) { DelCallback(eMethod, cbChannelCTCP); }
+	public void delChannelCTCP(Object eMethod) { delCallback(eMethod, cbChannelCTCP); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelCTCP Interface.
 	 *
@@ -1820,7 +1820,7 @@ public class IRCParser implements Runnable {
 	 * @param sMessage Additional contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallChannelCTCP(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost) {
+	protected boolean callChannelCTCP(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbChannelCTCP.size(); i++) {
 			cbChannelCTCP.get(i).onChannelCTCP(this, cChannel, cChannelClient, sType, sMessage, sHost);
@@ -1835,14 +1835,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IPrivateCTCP
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddPrivateCTCP(Object eMethod) { AddCallback(eMethod, cbPrivateCTCP); }
+	public void addPrivateCTCP(Object eMethod) { addCallback(eMethod, cbPrivateCTCP); }
 	/**
 	 * Delete callback for PrivateCTCP (onPrivateCTCP).
 	 *
 	 * @see IRCParser.IPrivateCTCP
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelPrivateCTCP(Object eMethod) { DelCallback(eMethod, cbPrivateCTCP); }
+	public void delPrivateCTCP(Object eMethod) { delCallback(eMethod, cbPrivateCTCP); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IPrivateCTCP Interface.
 	 *
@@ -1852,7 +1852,7 @@ public class IRCParser implements Runnable {
 	 * @param sMessage Additional contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallPrivateCTCP(ClientInfo cClient, String sType, String sMessage, String sHost) {
+	protected boolean callPrivateCTCP(ClientInfo cClient, String sType, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbPrivateCTCP.size(); i++) {
 			cbPrivateCTCP.get(i).onPrivateCTCP(this, cClient, sType, sMessage, sHost);
@@ -1867,14 +1867,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IUnknownCTCP
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddUnknownCTCP(Object eMethod) { AddCallback(eMethod, cbUnknownCTCP); }
+	public void addUnknownCTCP(Object eMethod) { addCallback(eMethod, cbUnknownCTCP); }
 	/**
 	 * Delete callback for UnknownCTCP (onUnknownCTCP).
 	 *
 	 * @see IRCParser.IUnknownCTCP
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelUnknownCTCP(Object eMethod) { DelCallback(eMethod, cbUnknownCTCP); }
+	public void delUnknownCTCP(Object eMethod) { delCallback(eMethod, cbUnknownCTCP); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IUnknownCTCP Interface.
 	 *
@@ -1885,7 +1885,7 @@ public class IRCParser implements Runnable {
 	 * @param sTarget Actual Target of CTCP
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallUnknownCTCP(ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost) {
+	protected boolean callUnknownCTCP(ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbUnknownCTCP.size(); i++) {
 			cbUnknownCTCP.get(i).onUnknownCTCP(this, cClient, sType, sMessage, sTarget, sHost);
@@ -1900,14 +1900,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelCTCPReply
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddChannelCTCPReply(Object eMethod) { AddCallback(eMethod, cbChannelCTCPReply); }
+	public void addChannelCTCPReply(Object eMethod) { addCallback(eMethod, cbChannelCTCPReply); }
 	/**
 	 * Delete callback for ChannelCTCPReply (onChannelCTCPReply).
 	 *
 	 * @see IRCParser.IChannelCTCPReply
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelChannelCTCPReply(Object eMethod) { DelCallback(eMethod, cbChannelCTCPReply); }
+	public void delChannelCTCPReply(Object eMethod) { delCallback(eMethod, cbChannelCTCPReply); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelCTCPReply Interface.
 	 *
@@ -1918,7 +1918,7 @@ public class IRCParser implements Runnable {
 	 * @param sMessage Reply Contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallChannelCTCPReply(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost) {
+	protected boolean callChannelCTCPReply(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbChannelCTCPReply.size(); i++) {
 			cbChannelCTCPReply.get(i).onChannelCTCPReply(this, cChannel, cChannelClient, sType, sMessage, sHost);
@@ -1933,14 +1933,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IPrivateCTCPReply
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddPrivateCTCPReply(Object eMethod) { AddCallback(eMethod, cbPrivateCTCPReply); }
+	public void addPrivateCTCPReply(Object eMethod) { addCallback(eMethod, cbPrivateCTCPReply); }
 	/**
 	 * Delete callback for PrivateCTCPReply (onPrivateCTCPReply).
 	 *
 	 * @see IRCParser.IPrivateCTCPReply
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelPrivateCTCPReply(Object eMethod) { DelCallback(eMethod, cbPrivateCTCPReply); }
+	public void delPrivateCTCPReply(Object eMethod) { delCallback(eMethod, cbPrivateCTCPReply); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IPrivateCTCPReply Interface.
 	 *
@@ -1950,7 +1950,7 @@ public class IRCParser implements Runnable {
 	 * @param sMessage Reply Contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallPrivateCTCPReply(ClientInfo cClient, String sType, String sMessage, String sHost) {
+	protected boolean callPrivateCTCPReply(ClientInfo cClient, String sType, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbPrivateCTCPReply.size(); i++) {
 			cbPrivateCTCPReply.get(i).onPrivateCTCPReply(this, cClient, sType, sMessage, sHost);
@@ -1965,14 +1965,14 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IUnknownCTCPReply
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddUnknownCTCPReply(Object eMethod) { AddCallback(eMethod, cbUnknownCTCPReply); }
+	public void addUnknownCTCPReply(Object eMethod) { addCallback(eMethod, cbUnknownCTCPReply); }
 	/**
 	 * Delete callback for UnknownCTCPReply (onUnknownCTCPReply).
 	 *
 	 * @see IRCParser.IUnknownCTCPReply
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelUnknownCTCPReply(Object eMethod) { DelCallback(eMethod, cbUnknownCTCPReply); }
+	public void delUnknownCTCPReply(Object eMethod) { delCallback(eMethod, cbUnknownCTCPReply); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IUnknownCTCPReply Interface.
 	 *
@@ -1983,7 +1983,7 @@ public class IRCParser implements Runnable {
 	 * @param sTarget Actual Target of CTCPReply
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean CallUnknownCTCPReply(ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost) {
+	protected boolean callUnknownCTCPReply(ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbUnknownCTCPReply.size(); i++) {
 			cbUnknownCTCPReply.get(i).onUnknownCTCPReply(this, cClient, sType, sMessage, sTarget, sHost);
@@ -1998,21 +1998,21 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IGotNames
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void AddGotNames(Object eMethod) { AddCallback(eMethod, cbGotNames); }
+	public void addGotNames(Object eMethod) { addCallback(eMethod, cbGotNames); }
 	/**
 	 * Delete callback for GotNames (onGotNames).
 	 *
 	 * @see IRCParser.IGotNames
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void DelGotNames(Object eMethod) { DelCallback(eMethod, cbGotNames); }
+	public void delGotNames(Object eMethod) { delCallback(eMethod, cbGotNames); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IGotNames Interface.
 	 *
 	 * @see IRCParser.IGotNames
 	 * @param cChannel Channel which the names reply is for
 	 */
-	protected boolean CallGotNames(ChannelInfo cChannel) {
+	protected boolean callGotNames(ChannelInfo cChannel) {
 		boolean bResult = false;
 		for (int i = 0; i < cbGotNames.size(); i++) {
 			cbGotNames.get(i).onGotNames(this, cChannel);
@@ -2026,8 +2026,8 @@ public class IRCParser implements Runnable {
 	 *
 	 * @return Boolean result of test. (True only if ALL tests pass)
 	 */
-	public boolean DoSelfTest() {
-		return DoSelfTest(true);
+	public boolean doSelfTest() {
+		return doSelfTest(true);
 	} 
 	
 	/**
@@ -2036,7 +2036,7 @@ public class IRCParser implements Runnable {
 	 * @param bSilent Should output be given? (Sent to Console)
 	 * @return Boolean result of test. (True only if ALL tests pass)
 	 */	
-	public boolean DoSelfTest(boolean bSilent) {
+	public boolean doSelfTest(boolean bSilent) {
 		if (bDebug) {
 			boolean bResult = false;
 			ParserTestClass ptc = new ParserTestClass();
@@ -2090,7 +2090,7 @@ public class IRCParser implements Runnable {
 	}
 	
 	/** Reset internal state (use before connect). */
-	private void ResetState() {
+	private void resetState() {
 		// Reset General State info
 		TriedAlt = false;
 		Got001 = false;
@@ -2113,8 +2113,8 @@ public class IRCParser implements Runnable {
 	/** Connect to IRC. */
 	private void connect() throws Exception {
 		try {
-			ResetState();
-			CallDebugInfo(ndSocket,"Connecting to "+server.sHost+":"+server.nPort);
+			resetState();
+			callDebugInfo(ndSocket,"Connecting to "+server.sHost+":"+server.nPort);
 
 			if (server.bSSL) {
 				SocketFactory socketFactory = SSLSocketFactory.getDefault();
@@ -2135,35 +2135,35 @@ public class IRCParser implements Runnable {
 	 * Connect to server, and start parsing incomming lines
 	 */
 	public void run() {
-		CallDebugInfo(ndInfo,"Begin Thread Execution");
+		callDebugInfo(ndInfo,"Begin Thread Execution");
 		if (HasBegan) { return; } else { HasBegan = true; }
-		try { connect(); } catch (Exception e) { CallDebugInfo(ndSocket,"Error Connecting, Aborted"); return; }
+		try { connect(); } catch (Exception e) { callDebugInfo(ndSocket,"Error Connecting, Aborted"); return; }
 		// :HACK: While true loops really really suck.
-		CallDebugInfo(ndSocket,"Socket Connected");
+		callDebugInfo(ndSocket,"Socket Connected");
 		String line = "";
 		while(true) {
 			try {
 				line = in.readLine(); // Blocking :/
 				if (line == null) {
-					CallDebugInfo(ndSocket,"Socket Closed");
+					callDebugInfo(ndSocket,"Socket Closed");
 					break;
 				} else {
 					if (IsFirst) {
 						if (!server.sPassword.equals("")) {
-							SendString("PASS "+server.sPassword);
+							sendString("PASS "+server.sPassword);
 						}
-						SetNickname(me.sNickname);
-						SendString("USER "+me.sUsername.toLowerCase()+" * * :"+me.sRealname);
+						setNickname(me.sNickname);
+						sendString("USER "+me.sUsername.toLowerCase()+" * * :"+me.sRealname);
 						IsFirst = false;
 					}
-					ProcessLine(line);
+					processLine(line);
 				}
 			} catch (IOException e) {
-				CallDebugInfo(ndSocket,"Socket Closed");
+				callDebugInfo(ndSocket,"Socket Closed");
 				break;
 			}
 		}
-		CallDebugInfo(ndInfo,"End Thread Execution");
+		callDebugInfo(ndInfo,"End Thread Execution");
 	}
 	
 	/** Close socket on destroy. */
@@ -2171,7 +2171,7 @@ public class IRCParser implements Runnable {
 		try {
 			socket.close();
 		} catch (IOException e) {
-			CallDebugInfo(ndInfo,"Could not close socket");
+			callDebugInfo(ndInfo,"Could not close socket");
 		}
 	}
 
@@ -2182,7 +2182,7 @@ public class IRCParser implements Runnable {
 	 * @param line Line to get parameter for
 	 * @return Parameter of the line
 	 */
-	protected String GetParam(String line) {
+	protected String getParam(String line) {
 		String[] params = null;
 		params = line.split(" :",2);
 		return params[params.length-1];
@@ -2195,7 +2195,7 @@ public class IRCParser implements Runnable {
 	 * @param line Line to tokenise
 	 * @return Array of tokens
 	 */
-	protected String[] IRCTokenise(String line) {
+	protected String[] doIRCTokenise(String line) {
 		if (line == null) {
 			String[] tokens = new String[1];
 			tokens[0] = "";
@@ -2220,7 +2220,7 @@ public class IRCParser implements Runnable {
 	 * @param sWho Who can be any valid identifier for a client as long as it contains a nickname (?:)nick(?!ident)(?@host)
 	 * @return ClientInfo Object for the client, or null
 	 */
-	public ClientInfo GetClientInfo(String sWho) {
+	public ClientInfo getClientInfo(String sWho) {
 		if (bDebug) { System.out.printf("\t\tInput: %s | ",sWho); }
 		sWho = ClientInfo.ParseHost(sWho);
 		if (bDebug) { System.out.printf("Client Name: %s\n",sWho); }
@@ -2234,7 +2234,7 @@ public class IRCParser implements Runnable {
 	 * @param sWhat This is the name of the channel.
 	 * @return ChannelInfo Object for the channel, or null
 	 */
-	public ChannelInfo GetChannelInfo(String sWhat) {
+	public ChannelInfo getChannelInfo(String sWhat) {
 		sWhat = sWhat.toLowerCase();
 		if (hChannelList.containsKey(sWhat)) { return hChannelList.get(sWhat); } else { return null; }
 	}	
@@ -2245,11 +2245,11 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param line Line to send (\r\n termination is added automatically)
 	 */
-	public void SendLine(String line) { CallDataOut(line,false); out.printf("%s\r\n",line);}
+	public void sendLine(String line) { callDataOut(line,false); out.printf("%s\r\n",line);}
 	
 	/** Send a line to the server and add proper line ending. */
-	protected void SendString(String line) {
-		CallDataOut(line,true);
+	protected void sendString(String line) {
+		callDataOut(line,true);
 		out.printf("%s\r\n",line);
 	}
 	
@@ -2258,57 +2258,57 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param line IRC Line to process
 	 */
-	private void ProcessLine(String line) {
-		String[] token = IRCTokenise(line);
+	private void processLine(String line) {
+		String[] token = doIRCTokenise(line);
 //		String mainParam = token[token.length-1];
 		
 		int nParam;
-		CallDataIn(line);
+		callDataIn(line);
 		String sParam = token[1];
 		try {nParam = Integer.parseInt(token[1]);} catch (Exception e) { nParam = -1;}
 		
 		try {
-			if (token[0].equals("PING") || token[1].equals("PING")) { SendString("PONG :"+sParam); }
+			if (token[0].equals("PING") || token[1].equals("PING")) { sendString("PONG :"+sParam); }
 			else {
 				if (token[0].substring(0,1).equals(":")) {
 					// Post Connect
 					switch (nParam) {
 						case -1:
-							ProcessStringParam(sParam,token);
+							processStringParam(sParam,token);
 							break;
 						case 1: // 001 - Welcome to IRC
 							Got001 = true;
-							Process001(nParam,token);
+							process001(nParam,token);
 							break;
 						case 4: // 004 - ISUPPORT
 						case 5: // 005 - ISUPPORT
-							Process004_005(nParam,token);
+							process004_005(nParam,token);
 							break;
 						case 305: // No longer away
 						case 306: // Away
-							ProcessAway(nParam,token);
+							processAway(nParam,token);
 							break;
 						case 332: // Topic on Join
 						case 333: // Topic Setter On Join
-							ProcessTopic(sParam,token);
+							processTopic(sParam,token);
 							break;
 						case 375: // MOTD Start
 							break;
 						case 353: // Names
 						case 366: // End of Names
-							ProcessNames(nParam,token);
+							processNames(nParam,token);
 							break;
 						case 324: // Modes
-							ProcessMode(sParam,token);
+							processMode(sParam,token);
 						case 329: // Channel Time
 						case 368: // End of ban list
 							break;
 						case 376: // End of MOTD
 						case 422: // No MOTD
-							ProcessEndOfMOTD(nParam,token);
+							processEndOfMOTD(nParam,token);
 							break;
 						case 433: // Nick In Use
-							ProcessNickInUse(nParam,token);
+							processNickInUse(nParam,token);
 							break;
 						default: // Unknown
 							break;
@@ -2317,43 +2317,43 @@ public class IRCParser implements Runnable {
 					// Pre Connect
 				}
 			}
-		} catch (Exception e) { CallErrorInfo(errFatal,"Exception in Parser. {"+line+"} ["+e.getMessage()+"]"); e.getStackTrace(); }
+		} catch (Exception e) { callErrorInfo(errFatal,"Exception in Parser. {"+line+"} ["+e.getMessage()+"]"); e.getStackTrace(); }
 	}
 		
 	/**
 	 * Process an IRC Line with a string parameter rather than a Numeric.
 	 *
 	 * @param sParam String representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */
-	private void ProcessStringParam(String sParam, String token[]) {
+	private void processStringParam(String sParam, String token[]) {
 		// Process a line where the parameter is a string (IE PRIVMSG, NOTICE etc - Not including PING!)
-		if (sParam.equalsIgnoreCase("PRIVMSG") || sParam.equalsIgnoreCase("NOTICE")) { ProcessIRCMessage(sParam,token); }
-		else if (sParam.equalsIgnoreCase("JOIN")) { ProcessJoinChannel(sParam,token); }
-		else if (sParam.equalsIgnoreCase("NICK")) { ProcessNickChange(sParam,token); }
-		else if (sParam.equalsIgnoreCase("KICK")) { ProcessKickChannel(sParam,token); }
-		else if (sParam.equalsIgnoreCase("PART")) { ProcessPartChannel(sParam,token); }
-		else if (sParam.equalsIgnoreCase("QUIT")) { ProcessQuit(sParam,token); }
-		else if (sParam.equalsIgnoreCase("TOPIC")) { ProcessTopic(sParam,token); }
-		else if (sParam.equalsIgnoreCase("MODE")) { ProcessMode(sParam,token); }
+		if (sParam.equalsIgnoreCase("PRIVMSG") || sParam.equalsIgnoreCase("NOTICE")) { processIRCMessage(sParam,token); }
+		else if (sParam.equalsIgnoreCase("JOIN")) { processJoinChannel(sParam,token); }
+		else if (sParam.equalsIgnoreCase("NICK")) { processNickChange(sParam,token); }
+		else if (sParam.equalsIgnoreCase("KICK")) { processKickChannel(sParam,token); }
+		else if (sParam.equalsIgnoreCase("PART")) { processPartChannel(sParam,token); }
+		else if (sParam.equalsIgnoreCase("QUIT")) { processQuit(sParam,token); }
+		else if (sParam.equalsIgnoreCase("TOPIC")) { processTopic(sParam,token); }
+		else if (sParam.equalsIgnoreCase("MODE")) { processMode(sParam,token); }
 	}
 	
 	/**
 	 * Process a Nickname change.
 	 *
 	 * @param sParam String representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */	
-	private void ProcessNickChange(String sParam, String token[]) {
+	private void processNickChange(String sParam, String token[]) {
 		ClientInfo iClient;
 		
-		iClient = GetClientInfo(token[0]);
+		iClient = getClientInfo(token[0]);
 		if (iClient != null) {
 			if (iClient.getHost().equals("")) { iClient.setUserBits(token[0],false); }
 			hClientList.remove(iClient.getNickname().toLowerCase());
 			iClient.setUserBits(token[2],true);
 			hClientList.put(iClient.getNickname().toLowerCase(),iClient);
-			CallNickChanged(iClient, ClientInfo.ParseHost(token[0]));
+			callNickChanged(iClient, ClientInfo.ParseHost(token[0]));
 		}
 	}
 	
@@ -2361,9 +2361,9 @@ public class IRCParser implements Runnable {
 	 * Process a kick.
 	 *
 	 * @param sParam String representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */	
-	private void ProcessKickChannel(String sParam, String token[]) {
+	private void processKickChannel(String sParam, String token[]) {
 		ChannelClientInfo iChannelClient;
 		ChannelClientInfo iChannelKicker;
 		ChannelInfo iChannel;
@@ -2371,21 +2371,21 @@ public class IRCParser implements Runnable {
 		ClientInfo iKicker;
 		String sReason = "";
 		
-		iClient = GetClientInfo(token[3]);
-		iKicker = GetClientInfo(token[0]);
-		iChannel = GetChannelInfo(token[2]);
+		iClient = getClientInfo(token[3]);
+		iKicker = getClientInfo(token[0]);
+		iChannel = getChannelInfo(token[2]);
 		
 		if (iClient == null) { return; }
 		if (iChannel == null) { 
 			if (iClient != cMyself) {
-				CallErrorInfo(errWarning+errCanContinue, "Got kick for channel ("+token[2]+") that I am not on. [User: "+token[3]+"]");
+				callErrorInfo(errWarning+errCanContinue, "Got kick for channel ("+token[2]+") that I am not on. [User: "+token[3]+"]");
 			}
 			return;
 		} else {
 			if (token.length > 4) { sReason = token[token.length-1]; }
 			iChannelClient = iChannel.getUser(iClient);
 			iChannelKicker = iChannel.getUser(iClient);
-			CallChannelKick(iChannel,iChannelClient,iChannelKicker,sReason,token[0]);
+			callChannelKick(iChannel,iChannelClient,iChannelKicker,sReason,token[0]);
 			iChannel.delClient(iClient);
 			if (iClient == cMyself) {
 				iChannel.emptyChannel();
@@ -2402,9 +2402,9 @@ public class IRCParser implements Runnable {
 	 * Process a Mode change (hands off to ProcessUserMode for usermodes).
 	 *
 	 * @param sParam String representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */	
-	private void ProcessMode(String sParam, String token[]) {
+	private void processMode(String sParam, String token[]) {
 		String[] sModestr;
 		String sChannelName;
 		String sModeParam;
@@ -2427,11 +2427,11 @@ public class IRCParser implements Runnable {
 			System.arraycopy(token, 3, sModestr, 0, token.length-3);
 		}
 
-		if (!ChannelInfo.isValidChannelName(this, sChannelName)) { ProcessUserMode(sParam, token, sModestr); return; }
+		if (!ChannelInfo.isValidChannelName(this, sChannelName)) { processUserMode(sParam, token, sModestr); return; }
 		
-		iChannel = GetChannelInfo(sChannelName);
+		iChannel = getChannelInfo(sChannelName);
 		if (iChannel == null) { 
-			CallErrorInfo(errWarning+errCanContinue, "Got modes for channel ("+sChannelName+") that I am not on.");
+			callErrorInfo(errWarning+errCanContinue, "Got modes for channel ("+sChannelName+") that I am not on.");
 			iChannel = new ChannelInfo(this, sChannelName);
 			hChannelList.put(iChannel.getName().toLowerCase(),iChannel);
 		}
@@ -2453,10 +2453,10 @@ public class IRCParser implements Runnable {
 					iChannelClientInfo = iChannel.getUser(sModeParam);
 					if (iChannelClientInfo == null) {
 						// Client not known?
-						CallErrorInfo(errWarning+errCanContinue, "Got mode for client not known on channel - Added");
-						iClient = GetClientInfo(sModeParam);
+						callErrorInfo(errWarning+errCanContinue, "Got mode for client not known on channel - Added");
+						iClient = getClientInfo(sModeParam);
 						if (iClient == null) { 
-							CallErrorInfo(errWarning+errCanContinue, "Got mode for client not known at all - Added");
+							callErrorInfo(errWarning+errCanContinue, "Got mode for client not known at all - Added");
 							iClient = new ClientInfo(this, sModeParam);
 							hClientList.put(iClient.getNickname().toLowerCase(),iClient);
 						}
@@ -2466,7 +2466,7 @@ public class IRCParser implements Runnable {
 					else { iChannelClientInfo.setChanMode(iChannelClientInfo.getChanMode() - nValue); }
 					continue;
 				} else {
-					CallErrorInfo(errWarning+errCanContinue, "Got unknown mode "+cMode+" - Added as boolean mode");
+					callErrorInfo(errWarning+errCanContinue, "Got unknown mode "+cMode+" - Added as boolean mode");
 					hChanModesBool.put(cMode,nNextKeyCMBool);
 					nValue = nNextKeyCMBool;
 					bBooleanMode = true;
@@ -2498,23 +2498,23 @@ public class IRCParser implements Runnable {
 		}
 		
 		iChannel.setMode(nCurrent);
-		if (sParam.equals("324")) { CallModesChanged(iChannel, null, ""); }
-		else { CallModesChanged(iChannel, iChannel.getUser(token[0]), token[0]); }
+		if (sParam.equals("324")) { callModesChanged(iChannel, null, ""); }
+		else { callModesChanged(iChannel, iChannel.getUser(token[0]), token[0]); }
 	}
 	
 	/**
 	 * Process user modes.
 	 *
 	 * @param sParam String representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */	
-	private void ProcessUserMode(String sParam, String token[], String sModestr[]) {
+	private void processUserMode(String sParam, String token[], String sModestr[]) {
 		int nCurrent = 0, nValue = 0;
 		boolean bPositive = true;
 		
 		ClientInfo iClient;
 		
-		iClient = GetClientInfo(token[2]);
+		iClient = getClientInfo(token[2]);
 		if (iClient == null) { return; }
 		
 		nCurrent = iClient.getUserMode();
@@ -2527,7 +2527,7 @@ public class IRCParser implements Runnable {
 			else {
 				if (hUserModes.containsKey(cMode)) { nValue = hUserModes.get(cMode); }
 				else {
-					CallErrorInfo(errWarning+errCanContinue, "Got unknown user mode "+cMode+" - Added");
+					callErrorInfo(errWarning+errCanContinue, "Got unknown user mode "+cMode+" - Added");
 					hUserModes.put(cMode,nNextKeyUser);
 					nValue = nNextKeyUser;
 					nNextKeyUser = nNextKeyUser*2;
@@ -2540,16 +2540,16 @@ public class IRCParser implements Runnable {
 		}
 		
 		iClient.setUserMode(nCurrent);
-		CallUserModesChanged(iClient, token[0]);
+		callUserModesChanged(iClient, token[0]);
 	}	
 	
 	/**
 	 * Process an Away/Back message.
 	 *
 	 * @param nParam Integer representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */
-	private void ProcessAway(int nParam, String token[]) {
+	private void processAway(int nParam, String token[]) {
 		cMyself.setAwayState(nParam == 306);
 	}
 	
@@ -2557,16 +2557,16 @@ public class IRCParser implements Runnable {
 	 * Process a Names reply.
 	 *
 	 * @param nParam Integer representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */	
-	private void ProcessNames(int nParam, String token[]) {
+	private void processNames(int nParam, String token[]) {
 		ChannelInfo iChannel;
 		if (nParam == 366) {
 			// End of names
-			iChannel = GetChannelInfo(token[2]);
+			iChannel = getChannelInfo(token[2]);
 			if (iChannel != null) {
 				iChannel.bAddingNames = false;
-				CallGotNames(iChannel);
+				callGotNames(iChannel);
 			}
 		} else {
 			// Names
@@ -2574,10 +2574,10 @@ public class IRCParser implements Runnable {
 			ClientInfo iClient;
 			ChannelClientInfo iChannelClient;
 			
-			iChannel = GetChannelInfo(token[4]);
+			iChannel = getChannelInfo(token[4]);
 		
 			if (iChannel == null) { 
-				CallErrorInfo(errWarning+errCanContinue, "Got names for channel ("+token[4]+") that I am not on.");
+				callErrorInfo(errWarning+errCanContinue, "Got names for channel ("+token[4]+") that I am not on.");
 				iChannel = new ChannelInfo(this, token[4]);
 				hChannelList.put(iChannel.getName().toLowerCase(),iChannel);
 			}
@@ -2603,7 +2603,7 @@ public class IRCParser implements Runnable {
 				}
 				System.out.printf("Name: %s Modes: \"%s\" [%d]\n",sName,sModes,nPrefix);
 				
-				iClient = GetClientInfo(sName);
+				iClient = getClientInfo(sName);
 				if (iClient == null) { iClient = new ClientInfo(this, sName); hClientList.put(iClient.getNickname().toLowerCase(),iClient); }
 				iChannelClient = iChannel.addClient(iClient);
 				iChannelClient.setChanMode(nPrefix);
@@ -2624,9 +2624,9 @@ public class IRCParser implements Runnable {
 	 * Each type has 5 Calls, making 15 callbacks handled here.
 	 *
 	 * @param sParam String representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */	
-	private void ProcessIRCMessage(String sParam, String token[]) {
+	private void processIRCMessage(String sParam, String token[]) {
 		ChannelClientInfo iChannelClient = null;
 		ChannelInfo iChannel = null;
 		ClientInfo iClient = null;
@@ -2637,7 +2637,7 @@ public class IRCParser implements Runnable {
 		boolean isAction = false;
 		boolean isCTCP = false;
 		
-		iClient = GetClientInfo(token[0]);
+		iClient = getClientInfo(token[0]);
 
 		if (sParam.equalsIgnoreCase("PRIVMSG")) {
 			if (bits[0].equalsIgnoreCase(Char1+"ACTION") && Character.valueOf(sMessage.charAt(sMessage.length()-1)).equals(Char1)) {
@@ -2652,41 +2652,41 @@ public class IRCParser implements Runnable {
 		}
 
 		if (ChannelInfo.isValidChannelName(this, token[2])) {
-			iChannel = GetChannelInfo(token[2]);
+			iChannel = getChannelInfo(token[2]);
 			if (iClient != null && iChannel != null) { iChannelClient = iChannel.getUser(iClient); }
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
 				if (!isAction) {
 					if (isCTCP) {
-						CallChannelCTCP(iChannel, iChannelClient, sCTCP, sMessage, token[0]);
+						callChannelCTCP(iChannel, iChannelClient, sCTCP, sMessage, token[0]);
 					} else {
-						CallChannelMessage(iChannel, iChannelClient, sMessage, token[0]);
+						callChannelMessage(iChannel, iChannelClient, sMessage, token[0]);
 					}
 				} else {
-					CallChannelAction(iChannel, iChannelClient, sMessage, token[0]);
+					callChannelAction(iChannel, iChannelClient, sMessage, token[0]);
 				}
 			} else if (sParam.equalsIgnoreCase("NOTICE")) {
 				if (isCTCP) {
-					CallChannelCTCPReply(iChannel, iChannelClient, sCTCP, sMessage, token[0]);
+					callChannelCTCPReply(iChannel, iChannelClient, sCTCP, sMessage, token[0]);
 				} else {
-					CallChannelNotice(iChannel, iChannelClient, sMessage, token[0]);
+					callChannelNotice(iChannel, iChannelClient, sMessage, token[0]);
 				}
 			}
 		} else if (token[2].equalsIgnoreCase(cMyself.getNickname())) {
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
 				if (!isAction) {
 					if (isCTCP) {
-						CallPrivateCTCP(iClient, sCTCP, sMessage, token[0]);
+						callPrivateCTCP(iClient, sCTCP, sMessage, token[0]);
 					} else {
-						CallPrivateMessage(iClient, sMessage, token[0]);
+						callPrivateMessage(iClient, sMessage, token[0]);
 					}
 				} else {
-					CallPrivateAction(iClient, sMessage, token[0]);
+					callPrivateAction(iClient, sMessage, token[0]);
 				}
 			} else if (sParam.equalsIgnoreCase("NOTICE")) {
 				if (isCTCP) {
-					CallPrivateCTCPReply(iClient, sCTCP, sMessage, token[0]);
+					callPrivateCTCPReply(iClient, sCTCP, sMessage, token[0]);
 				} else {
-					CallPrivateNotice(iClient, sMessage, token[0]);
+					callPrivateNotice(iClient, sMessage, token[0]);
 				}
 			}
 		} else {
@@ -2694,18 +2694,18 @@ public class IRCParser implements Runnable {
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
 				if (!isAction) {
 					if (isCTCP) {
-						CallUnknownCTCP(iClient, sCTCP, sMessage, token[2], token[0]);
+						callUnknownCTCP(iClient, sCTCP, sMessage, token[2], token[0]);
 					} else {
-						CallUnknownMessage(iClient, sMessage, token[2], token[0]);
+						callUnknownMessage(iClient, sMessage, token[2], token[0]);
 					}
 				} else {
-					CallUnknownAction(iClient, sMessage, token[2], token[0]);
+					callUnknownAction(iClient, sMessage, token[2], token[0]);
 				}
 			} else if (sParam.equalsIgnoreCase("NOTICE")) {
 				if (isCTCP) {
-					CallUnknownCTCPReply(iClient, sCTCP, sMessage, token[2], token[0]);
+					callUnknownCTCPReply(iClient, sCTCP, sMessage, token[2], token[0]);
 				} else {
-					CallUnknownNotice(iClient, sMessage, token[2], token[0]);
+					callUnknownNotice(iClient, sMessage, token[2], token[0]);
 				}
 			}
 		}
@@ -2715,28 +2715,28 @@ public class IRCParser implements Runnable {
 	 * Process a topic change.
 	 *
 	 * @param sParam String representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */	
-	private void ProcessTopic(String sParam, String token[]) {
+	private void processTopic(String sParam, String token[]) {
 		ChannelInfo iChannel;
 		if (sParam.equals("332")) {
-			iChannel = GetChannelInfo(token[3]);
+			iChannel = getChannelInfo(token[3]);
 			if (iChannel == null) { return; };
 			iChannel.setTopic(token[token.length-1]);
 		} else if (sParam.equals("333")) {
-			iChannel = GetChannelInfo(token[3]);
+			iChannel = getChannelInfo(token[3]);
 			if (iChannel == null) { return; };
 			iChannel.setTopicTime(Long.parseLong(token[5]));
 			iChannel.setTopicUser(token[5]);
-			CallTopic(iChannel,false);
+			callTopic(iChannel,false);
 		} else {
-			iChannel = GetChannelInfo(token[2]);
+			iChannel = getChannelInfo(token[2]);
 			if (iChannel == null) { return; };
 			iChannel.setTopicTime(java.util.Calendar.getInstance().getTimeInMillis() / 1000);
 			String sTemp[] = token[0].split(":",2);
 			if (sTemp.length > 1) { token[0] = sTemp[1]; }
 			iChannel.setTopicUser(token[0]);
-			CallTopic(iChannel,true);
+			callTopic(iChannel,true);
 		}
 	}
 	
@@ -2744,9 +2744,9 @@ public class IRCParser implements Runnable {
 	 * Process a channel join.
 	 *
 	 * @param sParam String representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */	
-	private void ProcessJoinChannel(String sParam, String token[]) {
+	private void processJoinChannel(String sParam, String token[]) {
 		// :nick!ident@host JOIN (:)#Channel
 		Character cTemp;
 		Byte nTemp;
@@ -2755,28 +2755,28 @@ public class IRCParser implements Runnable {
 		ChannelInfo iChannel;
 		ChannelClientInfo iChannelClient;
 		
-		iClient = GetClientInfo(token[0]);
-		iChannel = GetChannelInfo(token[token.length-1]);
+		iClient = getClientInfo(token[0]);
+		iChannel = getChannelInfo(token[token.length-1]);
 		
 		if (iClient == null) { iClient = new ClientInfo(this, token[0]); hClientList.put(iClient.getNickname().toLowerCase(),iClient); }
 		if (iChannel == null) { 
 			if (iClient != cMyself) {
-				CallErrorInfo(errWarning+errCanContinue, "Got join for channel ("+token[token.length-1]+") that I am not on. [User: "+token[0]+"]");
+				callErrorInfo(errWarning+errCanContinue, "Got join for channel ("+token[token.length-1]+") that I am not on. [User: "+token[0]+"]");
 			}
 			iChannel = new ChannelInfo(this, token[token.length-1]);
 			hChannelList.put(iChannel.getName().toLowerCase(),iChannel);
-			SendString("MODE "+iChannel.getName());
+			sendString("MODE "+iChannel.getName());
 			
 			for (Enumeration e = hChanModesOther.keys(); e.hasMoreElements();) {
 				cTemp = (Character)e.nextElement();
 				nTemp = hChanModesOther.get(cTemp);
-				if (nTemp == cmList) { SendString("MODE "+iChannel.getName()+" "+cTemp); }
+				if (nTemp == cmList) { sendString("MODE "+iChannel.getName()+" "+cTemp); }
 			}
 			
 		} else {
 			// This is only done if we are on the channel. Else we wait for names.
 			iChannelClient = iChannel.addClient(iClient);
-			CallChannelJoin(iChannel, iChannelClient);	
+			callChannelJoin(iChannel, iChannelClient);	
 		}
 	}	
 	
@@ -2784,9 +2784,9 @@ public class IRCParser implements Runnable {
 	 * Process a channel part.
 	 *
 	 * @param sParam String representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */	
-	private void ProcessPartChannel(String sParam, String token[]) {
+	private void processPartChannel(String sParam, String token[]) {
 		// :nick!ident@host PART #Channel
 		// :nick!ident@host PART #Channel :reason
 		if (token.length < 3) { return; }
@@ -2794,20 +2794,20 @@ public class IRCParser implements Runnable {
 		ChannelInfo iChannel;
 		ChannelClientInfo iChannelClient;
 		
-		iClient = GetClientInfo(token[0]);
-		iChannel = GetChannelInfo(token[2]);
+		iClient = getClientInfo(token[0]);
+		iChannel = getChannelInfo(token[2]);
 		
 		if (iClient == null) { return; }
 		if (iChannel == null) { 
 			if (iClient != cMyself) {
-				CallErrorInfo(errWarning+errCanContinue, "Got part for channel ("+token[2]+") that I am not on. [User: "+token[0]+"]");
+				callErrorInfo(errWarning+errCanContinue, "Got part for channel ("+token[2]+") that I am not on. [User: "+token[0]+"]");
 			}
 			return;
 		} else {
 			String sReason = "";
 			if (token.length > 3) { sReason = token[token.length-1]; }
 			iChannelClient = iChannel.getUser(iClient);
-			CallChannelPart(iChannel,iChannelClient,sReason);
+			callChannelPart(iChannel,iChannelClient,sReason);
 			iChannel.delClient(iClient);
 			if (iClient == cMyself) {
 				iChannel.emptyChannel();
@@ -2820,9 +2820,9 @@ public class IRCParser implements Runnable {
 	 * Process a Quit message.
 	 *
 	 * @param sParam String representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */	
-	private void ProcessQuit(String sParam, String token[]) {
+	private void processQuit(String sParam, String token[]) {
 		// :nick!ident@host QUIT
 		// :nick!ident@host QUIT :reason
 		if (token.length < 2) { return; }
@@ -2830,7 +2830,7 @@ public class IRCParser implements Runnable {
 		ChannelInfo iChannel;
 		ChannelClientInfo iChannelClient;
 		
-		iClient = GetClientInfo(token[0]);
+		iClient = getClientInfo(token[0]);
 		
 		if (iClient == null) { return; }
 
@@ -2841,7 +2841,7 @@ public class IRCParser implements Runnable {
 			iChannel = hChannelList.get(e.nextElement());
 			iChannelClient = iChannel.getUser(iClient);
 			if (iChannelClient != null) {
-				CallChannelQuit(iChannel,iChannelClient,sReason);
+				callChannelQuit(iChannel,iChannelClient,sReason);
 				if (iClient == cMyself) {
 					iChannel.emptyChannel();
 					hChannelList.remove(iChannel.getName().toLowerCase());
@@ -2851,7 +2851,7 @@ public class IRCParser implements Runnable {
 			}
 		}
 
-		CallQuit(iClient,sReason);
+		callQuit(iClient,sReason);
 		if (iClient == cMyself) {
 			hClientList.clear();
 		} else {
@@ -2863,9 +2863,9 @@ public class IRCParser implements Runnable {
 	 * Process a 004 or 005 message.
 	 *
 	 * @param nParam Integer representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */	
-	private void Process004_005(int nParam, String token[]) {
+	private void process004_005(int nParam, String token[]) {
 		if (nParam == 4) {
 			// 004
 			h005Info.put("USERMODES",token[5]);
@@ -2886,7 +2886,7 @@ public class IRCParser implements Runnable {
 	/**
 	 * Process CHANMODES from 005.
 	 */	
-	protected void ParseChanModes() {
+	protected void parseChanModes() {
 		final String sDefaultModes = "b,k,l,imnpstrc";
 		String[] Bits = null;
 		String ModeStr;
@@ -2895,12 +2895,12 @@ public class IRCParser implements Runnable {
 		Bits = ModeStr.split(",",4);
 		if (Bits.length != 4) {
 			ModeStr = sDefaultModes;
-			CallErrorInfo(errError+errCanContinue, "CHANMODES String not valid. Using default string of \""+ModeStr+"\"");
+			callErrorInfo(errError+errCanContinue, "CHANMODES String not valid. Using default string of \""+ModeStr+"\"");
 			h005Info.put("CHANMODES",ModeStr);
 			Bits = ModeStr.split(",",4);
 		}
 		
-		// ResetState
+		// resetState
 		hChanModesOther.clear();
 		hChanModesBool.clear();
 		nNextKeyCMBool = 1;
@@ -2941,14 +2941,14 @@ public class IRCParser implements Runnable {
 	/**
 	 * Process USERMODES from 004.
 	 */	
-	protected void ParseUserModes() {
+	protected void parseUserModes() {
 		final String sDefaultModes = "nwdoi";
 		String[] Bits = null;
 		String ModeStr;
 		if (h005Info.containsKey("USERMODES")) { ModeStr = h005Info.get("USERMODES");	}
 		else { ModeStr = sDefaultModes; h005Info.put("USERMODES", sDefaultModes); }
 		
-		// ResetState
+		// resetState
 		hUserModes.clear();
 		nNextKeyUser = 1;
 		
@@ -2966,14 +2966,14 @@ public class IRCParser implements Runnable {
 	/**
 	 * Process CHANTYPES from 005.
 	 */	
-	protected void ParseChanPrefix() {
+	protected void parseChanPrefix() {
 		final String sDefaultModes = "#&";
 		String[] Bits = null;
 		String ModeStr;
 		if (h005Info.containsKey("CHANTYPES")) { ModeStr = h005Info.get("CHANTYPES");	}
 		else { ModeStr = sDefaultModes; h005Info.put("CHANTYPES", sDefaultModes); }
 		
-		// ResetState
+		// resetState
 		hChanPrefix.clear();
 		
 		// Boolean Mode
@@ -2987,7 +2987,7 @@ public class IRCParser implements Runnable {
 	/**
 	 * Process PREFIX from 005.
 	 */	
-	protected void ParsePrefixModes() {
+	protected void parsePrefixModes() {
 		final String sDefaultModes = "(ohv)@%+";
 		String[] Bits = null;
 		String ModeStr;
@@ -2999,13 +2999,13 @@ public class IRCParser implements Runnable {
 		Bits = ModeStr.split("\\)",2);
 		if (Bits.length != 2 || Bits[0].length() != Bits[1].length()) {
 			ModeStr = sDefaultModes;
-			CallErrorInfo(errError+errCanContinue, "PREFIX String not valid. Using default string of \""+ModeStr+"\"");
+			callErrorInfo(errError+errCanContinue, "PREFIX String not valid. Using default string of \""+ModeStr+"\"");
 			h005Info.put("PREFIX",ModeStr);
 			ModeStr = ModeStr.substring(1);
 			Bits = ModeStr.split("\\)",2);
 		}
 
-		// ResetState
+		// resetState
 		hPrefixModes.clear();
 		hPrefixMap.clear();
 		nNextKeyPrefix = 1;
@@ -3028,23 +3028,23 @@ public class IRCParser implements Runnable {
 	 * Process an EndOfMOTD or No MOTD Found.
 	 *
 	 * @param nParam Integer representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */	
-	private void ProcessEndOfMOTD(int nParam, String token[]) {
-		ParseChanModes();
-		ParseChanPrefix();
-		ParsePrefixModes();
-		ParseUserModes();
-		CallMOTDEnd();
+	private void processEndOfMOTD(int nParam, String token[]) {
+		parseChanModes();
+		parseChanPrefix();
+		parsePrefixModes();
+		parseUserModes();
+		callMOTDEnd();
 	}
 
 	/**
 	 * Process a 001 message.
 	 *
 	 * @param nParam Integer representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */	
-	private void Process001(int nParam, String token[]) {
+	private void process001(int nParam, String token[]) {
 		// << :demon1.uk.quakenet.org 001 Java-Test :Welcome to the QuakeNet IRC Network, Java-Test
 		String sNick;
 		sServerName = token[0].substring(1,token[0].length());
@@ -3056,35 +3056,35 @@ public class IRCParser implements Runnable {
 		temp = sNick.split("!",2);
 		sNick = temp[0];  /* */
 		
-		cMyself = GetClientInfo(sNick);
+		cMyself = getClientInfo(sNick);
 		if (cMyself == null) { cMyself = new ClientInfo(this, sNick); }
 		
-		CallServerReady();
+		callServerReady();
 	}
 
 	/**
 	 * Process a NickInUse message.
 	 * Parser implements handling of this if Pre-001 and no other handler found,
-	 * adding the NickInUse handler (AddNickInUse) after 001 is prefered over before.<br><br>
+	 * adding the NickInUse handler (addNickInUse) after 001 is prefered over before.<br><br>
 	 * <br>
 	 * If the first nickname is in use, and a NickInUse message is recieved before 001, we
 	 * will attempt to use the altnickname instead.<br>
 	 * If this also fails, we will start prepending _ (or the value of me.cPrepend) to the main nickname.
 	 *
 	 * @param nParam Integer representation of parameter to parse
-	 * @param token[] IRCTokenised verison of the incomming line
+	 * @param token IRCTokenised Array of the incomming line
 	 */	
-	private void ProcessNickInUse(int nParam, String token[]) {
-		if (!CallNickInUse()) {
+	private void processNickInUse(int nParam, String token[]) {
+		if (!callNickInUse()) {
 			// Manually handle nick in use.
-			CallDebugInfo(ndInfo,"No Nick in use Handler.");
+			callDebugInfo(ndInfo,"No Nick in use Handler.");
 			if (!Got001) {
-				CallDebugInfo(ndInfo,"Using inbuilt handler");
+				callDebugInfo(ndInfo,"Using inbuilt handler");
 				// If this is before 001 we will try and get a nickname, else we will leave the nick as-is
-				if (!TriedAlt) { SetNickname(me.sAltNickname); TriedAlt = true; }
+				if (!TriedAlt) { setNickname(me.sAltNickname); TriedAlt = true; }
 				else {
 					if (sThinkNickname.equalsIgnoreCase(me.sAltNickname)) { sThinkNickname = me.sNickname; }
-					SetNickname(me.cPrepend+sThinkNickname);
+					setNickname(me.cPrepend+sThinkNickname);
 				}
 			}
 		}
@@ -3102,9 +3102,9 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param sChannelName Name of channel to join
 	 */
-	public void JoinChannel(String sChannelName) {
+	public void joinChannel(String sChannelName) {
 		if (!ChannelInfo.isValidChannelName(this,sChannelName)) { return; }
-		SendString("JOIN "+sChannelName);
+		sendString("JOIN "+sChannelName);
 	}
 	
 	
@@ -3114,10 +3114,10 @@ public class IRCParser implements Runnable {
 	 * @param sChannelName Name of channel to part
 	 * @param sReason Reason for leaving (Nothing sent if sReason is "")
 	 */
-	public void PartChannel(String sChannelName, String sReason) {
+	public void partChannel(String sChannelName, String sReason) {
 		if (!ChannelInfo.isValidChannelName(this,sChannelName)) { return; }
-		if (sReason.equals("")) { SendString("PART "+sChannelName); }
-		else { SendString("PART "+sChannelName+" :"+sReason); }
+		if (sReason.equals("")) { sendString("PART "+sChannelName); }
+		else { sendString("PART "+sChannelName+" :"+sReason); }
 	}	
 	
 	/**
@@ -3125,9 +3125,12 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param sNewNickName New nickname wanted.
 	 */
-	public void SetNickname(String sNewNickName) {
+	public void setNickname(String sNewNickName) {
+		if (cMyself != null) {
+			if (cMyself.getNickname().equals(sNewNickName)) { return; }
+		}
 		sThinkNickname = sNewNickName;
-		SendString("NICK "+sNewNickName);
+		sendString("NICK "+sNewNickName);
 	}
 	
 	/**
@@ -3135,9 +3138,9 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param sReason Reason for quitting.
 	 */
-	public void Quit(String sReason) { 
-		if (sReason.equals("")) { SendString("QUIT"); }
-		else { SendString("QUIT :"+sReason); }	
+	public void quit(String sReason) { 
+		if (sReason.equals("")) { sendString("QUIT"); }
+		else { sendString("QUIT :"+sReason); }	
 	}
 	/**
 	 * Disconnect from server. This method will quit and automatically close the
@@ -3145,8 +3148,8 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param sReason Reason for quitting.
 	 */
-	public void Disconnect(String sReason) {
-		Quit(sReason);
+	public void disconnect(String sReason) {
+		quit(sReason);
 		try { socket.close(); } catch (Exception e) { /* Meh */ };
 	}
 	
