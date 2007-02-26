@@ -1165,7 +1165,9 @@ public class IRCParser implements Runnable {
 		if (bDebug) { System.out.printf("[DEBUG] {%d} %s\n", level, data); }
 		boolean bResult = false;
 		for (int i = 0; i < cbDebugInfo.size(); i++) {
-			cbDebugInfo.get(i).onDebug(this, level, data);
+			try {
+				cbDebugInfo.get(i).onDebug(this, level, data);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1193,7 +1195,9 @@ public class IRCParser implements Runnable {
 	protected boolean callMOTDEnd() {
 		boolean bResult = false;
 		for (int i = 0; i < cbEndOfMOTD.size(); i++) {
-			cbEndOfMOTD.get(i).onMOTDEnd(this);
+			try {
+				cbEndOfMOTD.get(i).onMOTDEnd(this);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1221,7 +1225,9 @@ public class IRCParser implements Runnable {
 	protected boolean callServerReady() {
 		boolean bResult = false;
 		for (int i = 0; i < cbServerReady.size(); i++) {
-			cbServerReady.get(i).onServerReady(this);
+			try {
+				cbServerReady.get(i).onServerReady(this);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1250,7 +1256,9 @@ public class IRCParser implements Runnable {
 	protected boolean callDataIn(String data) {
 		boolean bResult = false;
 		for (int i = 0; i < cbDataIn.size(); i++) {
-			cbDataIn.get(i).onDataIn(this, data);
+			try {
+				cbDataIn.get(i).onDataIn(this, data);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1280,7 +1288,9 @@ public class IRCParser implements Runnable {
 	protected boolean callDataOut(String data, boolean FromParser) {
 		boolean bResult = false;
 		for (int i = 0; i < cbDataOut.size(); i++) {
-			cbDataOut.get(i).onDataOut(this, data, FromParser);
+			try {
+				cbDataOut.get(i).onDataOut(this, data, FromParser);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1308,7 +1318,9 @@ public class IRCParser implements Runnable {
 	protected boolean callNickInUse() {
 		boolean bResult = false;
 		for (int i = 0; i < cbNickInUse.size(); i++) {
-			cbNickInUse.get(i).onNickInUse(this);
+			try {
+				cbNickInUse.get(i).onNickInUse(this);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1339,7 +1351,9 @@ public class IRCParser implements Runnable {
 		if (bDebug) { System.out.printf("[ERROR] {%d} %s\n", level, data); }
 		boolean bResult = false;
 		for (int i = 0; i < cbErrorInfo.size(); i++) {
-			cbErrorInfo.get(i).onError(this, level, data);
+			try {
+				cbErrorInfo.get(i).onError(this, level, data);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1375,7 +1389,9 @@ public class IRCParser implements Runnable {
 			if (hChannelJoinChan.containsKey(eMethod)) { 
 				if (!cChannel.getName().equalsIgnoreCase(hChannelJoinChan.get(eMethod))) { continue; }
 			}
-			eMethod.onJoinChannel(this, cChannel, cChannelClient);
+			try {
+				eMethod.onJoinChannel(this, cChannel, cChannelClient);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1405,7 +1421,9 @@ public class IRCParser implements Runnable {
 	protected boolean callSelfChannelJoin(ChannelInfo cChannel) {
 		boolean bResult = false;
 		for (int i = 0; i < cbSelfChannelJoin.size(); i++) {
-			cbSelfChannelJoin.get(i).onSelfJoinChannel(this, cChannel);
+			try {
+				cbSelfChannelJoin.get(i).onSelfJoinChannel(this, cChannel);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1442,7 +1460,9 @@ public class IRCParser implements Runnable {
 			if (hChannelPartChan.containsKey(eMethod)) { 
 				if (!cChannel.getName().equalsIgnoreCase(hChannelPartChan.get(eMethod))) { continue; }
 			}
-			eMethod.onPartChannel(this, cChannel, cChannelClient, sReason);
+			try {
+				eMethod.onPartChannel(this, cChannel, cChannelClient, sReason);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1479,7 +1499,9 @@ public class IRCParser implements Runnable {
 			if (hChannelQuitChan.containsKey(eMethod)) { 
 				if (!cChannel.getName().equalsIgnoreCase(hChannelQuitChan.get(eMethod))) { continue; }
 			}
-			eMethod.onQuitChannel(this, cChannel, cChannelClient, sReason);
+			try {
+				eMethod.onQuitChannel(this, cChannel, cChannelClient, sReason);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1509,7 +1531,9 @@ public class IRCParser implements Runnable {
 	protected boolean callQuit(ClientInfo cClient, String sReason) {
 		boolean bResult = false;
 		for (int i = 0; i < cbQuit.size(); i++) {
-			cbQuit.get(i).onQuit(this, cClient, sReason);
+			try {
+				cbQuit.get(i).onQuit(this, cClient, sReason);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1545,7 +1569,9 @@ public class IRCParser implements Runnable {
 			if (hChannelTopicChan.containsKey(eMethod)) { 
 				if (!cChannel.getName().equalsIgnoreCase(hChannelTopicChan.get(eMethod))) { continue; }
 			}
-			eMethod.onTopic(this, cChannel, bIsJoinTopic);
+			try {
+				eMethod.onTopic(this, cChannel, bIsJoinTopic);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1582,7 +1608,9 @@ public class IRCParser implements Runnable {
 			if (hChannelModesChangedChan.containsKey(eMethod)) { 
 				if (!cChannel.getName().equalsIgnoreCase(hChannelModesChangedChan.get(eMethod))) { continue; }
 			}
-			eMethod.onModeChange(this, cChannel, cChannelClient, sHost);
+			try {
+				eMethod.onModeChange(this, cChannel, cChannelClient, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1612,7 +1640,9 @@ public class IRCParser implements Runnable {
 	protected boolean callUserModesChanged(ClientInfo cClient, String sSetby) {
 		boolean bResult = false;
 		for (int i = 0; i < cbUserModesChanged.size(); i++) {
-			cbUserModesChanged.get(i).onUserModeChange(this, cClient, sSetby);
+			try {
+				cbUserModesChanged.get(i).onUserModeChange(this, cClient, sSetby);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1642,7 +1672,9 @@ public class IRCParser implements Runnable {
 	protected boolean callNickChanged(ClientInfo cClient, String sOldNick) {
 		boolean bResult = false;
 		for (int i = 0; i < cbNickChanged.size(); i++) {
-			cbNickChanged.get(i).onNickChanged(this, cClient, sOldNick);
+			try {
+				cbNickChanged.get(i).onNickChanged(this, cClient, sOldNick);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1681,7 +1713,9 @@ public class IRCParser implements Runnable {
 			if (hChannelKickChan.containsKey(eMethod)) { 
 				if (!cChannel.getName().equalsIgnoreCase(hChannelKickChan.get(eMethod))) { continue; }
 			}
-			eMethod.onChannelKick(this, cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost);
+			try {
+				eMethod.onChannelKick(this, cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1719,7 +1753,9 @@ public class IRCParser implements Runnable {
 			if (hChannelMessageChan.containsKey(eMethod)) { 
 				if (!cChannel.getName().equalsIgnoreCase(hChannelMessageChan.get(eMethod))) { continue; }
 			}
-			eMethod.onChannelMessage(this, cChannel, cChannelClient, sMessage, sHost);
+			try {
+				eMethod.onChannelMessage(this, cChannel, cChannelClient, sMessage, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1757,7 +1793,9 @@ public class IRCParser implements Runnable {
 			if (hChannelActionChan.containsKey(eMethod)) { 
 				if (!cChannel.getName().equalsIgnoreCase(hChannelActionChan.get(eMethod))) { continue; }
 			}
-			eMethod.onChannelAction(this, cChannel, cChannelClient, sMessage, sHost);
+			try {
+				eMethod.onChannelAction(this, cChannel, cChannelClient, sMessage, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1795,7 +1833,9 @@ public class IRCParser implements Runnable {
 			if (hChannelNoticeChan.containsKey(eMethod)) { 
 				if (!cChannel.getName().equalsIgnoreCase(hChannelNoticeChan.get(eMethod))) { continue; }
 			}
-			eMethod.onChannelNotice(this, cChannel, cChannelClient, sMessage, sHost);
+			try {
+				eMethod.onChannelNotice(this, cChannel, cChannelClient, sMessage, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1826,7 +1866,9 @@ public class IRCParser implements Runnable {
 	protected boolean callPrivateMessage(ClientInfo cClient, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbPrivateMessage.size(); i++) {
-			cbPrivateMessage.get(i).onPrivateMessage(this, cClient, sMessage, sHost);
+			try {
+				cbPrivateMessage.get(i).onPrivateMessage(this, cClient, sMessage, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1857,7 +1899,9 @@ public class IRCParser implements Runnable {
 	protected boolean callPrivateAction(ClientInfo cClient, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbPrivateAction.size(); i++) {
-			cbPrivateAction.get(i).onPrivateAction(this, cClient, sMessage, sHost);
+			try {
+				cbPrivateAction.get(i).onPrivateAction(this, cClient, sMessage, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1888,7 +1932,9 @@ public class IRCParser implements Runnable {
 	protected boolean callPrivateNotice(ClientInfo cClient, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbPrivateNotice.size(); i++) {
-			cbPrivateNotice.get(i).onPrivateNotice(this, cClient, sMessage, sHost);
+			try {
+				cbPrivateNotice.get(i).onPrivateNotice(this, cClient, sMessage, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1920,7 +1966,9 @@ public class IRCParser implements Runnable {
 	protected boolean callUnknownMessage(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbUnknownMessage.size(); i++) {
-			cbUnknownMessage.get(i).onUnknownMessage(this, cClient, sMessage, sTarget, sHost);
+			try {
+				cbUnknownMessage.get(i).onUnknownMessage(this, cClient, sMessage, sTarget, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1952,7 +2000,9 @@ public class IRCParser implements Runnable {
 	protected boolean callUnknownAction(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbUnknownAction.size(); i++) {
-			cbUnknownAction.get(i).onUnknownAction(this, cClient, sMessage, sTarget, sHost);
+			try {
+				cbUnknownAction.get(i).onUnknownAction(this, cClient, sMessage, sTarget, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -1984,7 +2034,9 @@ public class IRCParser implements Runnable {
 	protected boolean callUnknownNotice(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbUnknownNotice.size(); i++) {
-			cbUnknownNotice.get(i).onUnknownNotice(this, cClient, sMessage, sTarget, sHost);
+			try {
+				cbUnknownNotice.get(i).onUnknownNotice(this, cClient, sMessage, sTarget, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -2023,7 +2075,9 @@ public class IRCParser implements Runnable {
 			if (hChannelCTCPChan.containsKey(eMethod)) { 
 				if (!cChannel.getName().equalsIgnoreCase(hChannelCTCPChan.get(eMethod))) { continue; }
 			}
-			eMethod.onChannelCTCP(this, cChannel, cChannelClient, sType, sMessage, sHost);
+			try {
+				eMethod.onChannelCTCP(this, cChannel, cChannelClient, sType, sMessage, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -2055,7 +2109,9 @@ public class IRCParser implements Runnable {
 	protected boolean callPrivateCTCP(ClientInfo cClient, String sType, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbPrivateCTCP.size(); i++) {
-			cbPrivateCTCP.get(i).onPrivateCTCP(this, cClient, sType, sMessage, sHost);
+			try {
+				cbPrivateCTCP.get(i).onPrivateCTCP(this, cClient, sType, sMessage, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -2088,7 +2144,9 @@ public class IRCParser implements Runnable {
 	protected boolean callUnknownCTCP(ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbUnknownCTCP.size(); i++) {
-			cbUnknownCTCP.get(i).onUnknownCTCP(this, cClient, sType, sMessage, sTarget, sHost);
+			try {
+				cbUnknownCTCP.get(i).onUnknownCTCP(this, cClient, sType, sMessage, sTarget, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -2127,7 +2185,9 @@ public class IRCParser implements Runnable {
 			if (hChannelCTCPReplyChan.containsKey(eMethod)) { 
 				if (!cChannel.getName().equalsIgnoreCase(hChannelCTCPReplyChan.get(eMethod))) { continue; }
 			}
-			eMethod.onChannelCTCPReply(this, cChannel, cChannelClient, sType, sMessage, sHost);
+			try {
+				eMethod.onChannelCTCPReply(this, cChannel, cChannelClient, sType, sMessage, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -2159,7 +2219,9 @@ public class IRCParser implements Runnable {
 	protected boolean callPrivateCTCPReply(ClientInfo cClient, String sType, String sMessage, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbPrivateCTCPReply.size(); i++) {
-			cbPrivateCTCPReply.get(i).onPrivateCTCPReply(this, cClient, sType, sMessage, sHost);
+			try {
+				cbPrivateCTCPReply.get(i).onPrivateCTCPReply(this, cClient, sType, sMessage, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -2192,7 +2254,9 @@ public class IRCParser implements Runnable {
 	protected boolean callUnknownCTCPReply(ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < cbUnknownCTCPReply.size(); i++) {
-			cbUnknownCTCPReply.get(i).onUnknownCTCPReply(this, cClient, sType, sMessage, sTarget, sHost);
+			try {
+				cbUnknownCTCPReply.get(i).onUnknownCTCPReply(this, cClient, sType, sMessage, sTarget, sHost);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -2227,7 +2291,9 @@ public class IRCParser implements Runnable {
 			if (hGotNamesChan.containsKey(eMethod)) { 
 				if (!cChannel.getName().equalsIgnoreCase(hGotNamesChan.get(eMethod))) { continue; }
 			}
-			eMethod.onGotNames(this, cChannel);
+			try {
+				eMethod.onGotNames(this, cChannel);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
@@ -2529,7 +2595,7 @@ public class IRCParser implements Runnable {
 					// Pre Connect
 				}
 			}
-		} catch (Exception e) { callErrorInfo(errFatal,"Exception in Parser. {"+line+"} ["+e.getMessage()+"]"); e.getStackTrace(); }
+		} catch (Exception e) { callErrorInfo(errFatal,"Exception in Parser. {"+line+"} ["+e.getMessage()+"]"); e.printStackTrace(); }
 	}
 		
 	/**
