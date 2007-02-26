@@ -1084,30 +1084,30 @@ public class IRCParser implements Runnable {
 	/**
 	 * Called when a names reply is parsed.
 	 */
-	public interface IGotNames {
+	public interface IChannelGotNames {
 		/**
 		 * Called when a names reply is parsed.
 		 *
 		 * @param tParser Reference to the parser object that made the callback.
 		 * @param cChannel Channel which the names reply is for
-		 * @see IRCParser#addGotNames
-		 * @see IRCParser#delGotNames
-		 * @see IRCParser#callGotNames
+		 * @see IRCParser#addChannelGotNames
+		 * @see IRCParser#delChannelGotNames
+		 * @see IRCParser#callChannelGotNames
 		 */
-		public void onGotNames(IRCParser tParser, ChannelInfo cChannel);
+		public void onChannelGotNames(IRCParser tParser, ChannelInfo cChannel);
 	}
 	/**
-	 * Arraylist for storing callback information for GotNames.
+	 * Arraylist for storing callback information for ChannelGotNames.
 	 *
-	 * @see IRCParser.IGotNames
+	 * @see IRCParser.IChannelGotNames
 	 */	
-	private ArrayList<IGotNames> cbGotNames = new ArrayList<IGotNames>();
+	private ArrayList<IChannelGotNames> cbChannelGotNames = new ArrayList<IChannelGotNames>();
 	/**
-	 * Hashtable for storing callback channel-specific information for GotNames.
+	 * Hashtable for storing callback channel-specific information for ChannelGotNames.
 	 *
-	 * @see IRCParser.IGotNames
+	 * @see IRCParser.IChannelGotNames
 	 */	
-	protected Hashtable<IGotNames,String> hGotNamesChan = new Hashtable<IGotNames,String>();
+	protected Hashtable<IChannelGotNames,String> hChannelGotNamesChan = new Hashtable<IChannelGotNames,String>();
 	
 	/** Add a callback pointer to the appropriate ArrayList, and make callback channel specific. */
 	@SuppressWarnings("unchecked")
@@ -2263,36 +2263,36 @@ public class IRCParser implements Runnable {
 	}		
 	
 	/**
-	 * Add callback for GotNames (onGotNames).
+	 * Add callback for ChannelGotNames (onChannelGotNames).
 	 *
-	 * @see IRCParser.IGotNames
+	 * @see IRCParser.IChannelGotNames
 	 * @param eMethod     Reference to object that handles the callback
 	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
 	 */
-	public void addGotNames(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hGotNamesChan, eMethod, cbGotNames); }
+	public void addChannelGotNames(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelGotNamesChan, eMethod, cbChannelGotNames); }
 	/**
-	 * Delete callback for GotNames (onGotNames).
+	 * Delete callback for ChannelGotNames (onChannelGotNames).
 	 *
-	 * @see IRCParser.IGotNames
+	 * @see IRCParser.IChannelGotNames
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void delGotNames(Object eMethod) { delChannelCallback(hGotNamesChan, eMethod, cbGotNames); }
+	public void delChannelGotNames(Object eMethod) { delChannelCallback(hChannelGotNamesChan, eMethod, cbChannelGotNames); }
 	/**
-	 * Callback to all objects implementing the IRCParser.IGotNames Interface.
+	 * Callback to all objects implementing the IRCParser.IChannelGotNames Interface.
 	 *
-	 * @see IRCParser.IGotNames
+	 * @see IRCParser.IChannelGotNames
 	 * @param cChannel Channel which the names reply is for
 	 */
-	protected boolean callGotNames(ChannelInfo cChannel) {
+	protected boolean callChannelGotNames(ChannelInfo cChannel) {
 		boolean bResult = false;
-		IGotNames eMethod = null;
-		for (int i = 0; i < cbGotNames.size(); i++) {
-			eMethod = cbGotNames.get(i);
-			if (hGotNamesChan.containsKey(eMethod)) { 
-				if (!cChannel.getName().equalsIgnoreCase(hGotNamesChan.get(eMethod))) { continue; }
+		IChannelGotNames eMethod = null;
+		for (int i = 0; i < cbChannelGotNames.size(); i++) {
+			eMethod = cbChannelGotNames.get(i);
+			if (hChannelGotNamesChan.containsKey(eMethod)) { 
+				if (!cChannel.getName().equalsIgnoreCase(hChannelGotNamesChan.get(eMethod))) { continue; }
 			}
 			try {
-				eMethod.onGotNames(this, cChannel);
+				eMethod.onChannelGotNames(this, cChannel);
 			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
@@ -2844,7 +2844,7 @@ public class IRCParser implements Runnable {
 			iChannel = getChannelInfo(token[2]);
 			if (iChannel != null) {
 				iChannel.bAddingNames = false;
-				callGotNames(iChannel);
+				callChannelGotNames(iChannel);
 			}
 		} else {
 			// Names
