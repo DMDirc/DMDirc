@@ -84,7 +84,7 @@ public class IRCParser implements Runnable {
 	/**
 	 * This is what the user wants settings to be. 
 	 * Nickname here is *not* always accurate.<br><br>
-	 * ClientInfo variable cMyself should be used for accurate info.
+	 * ClientInfo variable tParser.getMyself() should be used for accurate info.
 	 */
 	public MyInfo me = new MyInfo();
 	/**	Server Info requested by user. */
@@ -3152,6 +3152,13 @@ public class IRCParser implements Runnable {
 		quit(sReason);
 		try { socket.close(); } catch (Exception e) { /* Meh */ };
 	}
+	
+	/**
+	 * Get a reference to the cMyself object.
+	 *
+	 * @return cMyself reference
+	 */
+	public ClientInfo getMyself() { return cMyself; }
 	
 	/**
 	 * Get SVN Version information

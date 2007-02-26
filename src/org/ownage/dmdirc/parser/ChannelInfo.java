@@ -26,6 +26,7 @@ package org.ownage.dmdirc.parser;
 
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.ArrayList;
 
 /**
  * Contains Channel information.
@@ -60,6 +61,8 @@ public class ChannelInfo {
 	private Hashtable<String,ChannelClientInfo> hChannelUserList = new Hashtable<String,ChannelClientInfo>();
 	/** Hashtable storing values for modes set in the channel that use parameters. */
 	private Hashtable<Character,String> hParamModes = new Hashtable<Character,String>();
+	/** Hashtable storing list modes */
+	private Hashtable<Character,ArrayList<String>> hListModes = new Hashtable<Character,ArrayList<String>>();
 
 	/**
 	 * Create a new channel object.
@@ -259,14 +262,40 @@ public class ChannelInfo {
 	
 	/**
 	 * Add/Remove a value to a channel list.
-	 * This is not implemented yet
 	 *
 	 * @param cMode Character representing mode
 	 * @param sValue String repreenting value
 	 * @param bAdd Add or remove the value. (true for add, false for remove)
 	 */
 	public void setListModeParam(Character cMode, String sValue, boolean bAdd) { 
+		if (!myParser.hChanModesOther.containsKey(cMode)) { return; }
+		else if (myParser.hChanModesOther.get(cMode) != myParser.cmList) { return; }
+		
+		if (!hListModes.containsKey(cMode)) { hListModes.put(cMode, new ArrayList<String>());	}
+		ArrayList<String> lModes = hListModes.get(cMode);
+		for (int i = 0; i < lModes.size(); i++) {
+			if (lModes.get(i).equalsIgnoreCase("")) { 
+				if (bAdd) { return; }
+				else { lModes.remove(i); }
+			}
+		}
+		if (bAdd) { lModes.add(sValue); }
 		return;
+	}
+	
+	/**
+	 * Get the list object representing a channel mode.
+	 *
+	 * @param cMode Character representing mode
+	 * @param sValue String repreenting value
+	 * @param bAdd Add or remove the value. (true for add, false for remove)
+	 */
+	public ArrayList setListModeParam(Character cMode) { 
+		if (!myParser.hChanModesOther.containsKey(cMode)) { return null; }
+		else if (myParser.hChanModesOther.get(cMode) != myParser.cmList) { return null; }
+		
+		if (!hListModes.containsKey(cMode)) { hListModes.put(cMode, new ArrayList<String>());	}
+		return hListModes.get(cMode);
 	}
 	
 	/**
