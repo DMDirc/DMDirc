@@ -66,11 +66,26 @@ public class Channel {
                 new IRCParser.IChannelMessage() {
             public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel,
                     ChannelClientInfo cChannelClient, String sMessage, String sHost) {
-                Channel.this.frame.addLine("<"+sHost+"> "+sMessage);
+                if (cChannelClient != null) {
+                    Channel.this.frame.addLine("<"+cChannelClient.getNickname()+"> "+sMessage);
+                }
             }
             
-        }
-        , channelInfo.getName());
+        },
+                channelInfo.getName());
+        
+        server.getParser().addChannelGotNames(
+                new IRCParser.IChannelGotNames() {
+            public void onChannelGotNames(IRCParser tParser, ChannelInfo cChannel) {
+                Channel.this.updateNames();
+            }
+        },
+                channelInfo.getName()
+                );
     }
-       
+
+    private void updateNames() {
+        frame.updateNames(channelInfo.getChannelClients());
+    }
+    
 }

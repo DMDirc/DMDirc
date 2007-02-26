@@ -22,8 +22,10 @@
 
 package org.ownage.dmdirc.ui;
 
+import java.util.ArrayList;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
+import org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /**
  *
@@ -52,6 +54,10 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
             ex.printStackTrace();
         }
     }    
+    
+    public void updateNames(ArrayList<ChannelClientInfo> newNames) {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
     
     /** This method is called from within the constructor to
      * initialize the form.
