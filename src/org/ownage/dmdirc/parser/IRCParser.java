@@ -455,7 +455,7 @@ public class IRCParser implements Runnable {
 		 * @see IRCParser#delTopic
 		 * @see IRCParser#callTopic
 		 */
-		public void onTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsJoinTopic);
+		public void onChannelTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsJoinTopic);
 	}
 	/**
 	 * Arraylist for storing callback information for ChannelTopic.
@@ -1540,7 +1540,7 @@ public class IRCParser implements Runnable {
 	}
 	
 	/**
-	 * Add callback for ChannelTopic (onTopic).
+	 * Add callback for ChannelTopic (onChannelTopic).
 	 *
 	 * @see IRCParser.IChannelTopic
 	 * @param eMethod     Reference to object that handles the callback
@@ -1548,7 +1548,7 @@ public class IRCParser implements Runnable {
 	 */
 	public void addTopic(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelTopicChan, eMethod, cbChannelTopic); }
 	/**
-	 * Delete callback for ChannelTopic (onTopic).
+	 * Delete callback for ChannelTopic (onChannelTopic).
 	 *
 	 * @see IRCParser.IChannelTopic
 	 * @param eMethod     Reference to object that handles the callback
@@ -1570,7 +1570,7 @@ public class IRCParser implements Runnable {
 				if (!cChannel.getName().equalsIgnoreCase(hChannelTopicChan.get(eMethod))) { continue; }
 			}
 			try {
-				eMethod.onTopic(this, cChannel, bIsJoinTopic);
+				eMethod.onChannelTopic(this, cChannel, bIsJoinTopic);
 			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
