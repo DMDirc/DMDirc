@@ -41,7 +41,7 @@ public class ChannelInfo {
 	 * Boolean repreenting the status of names requests.
 	 * When this is false, any new names reply will cause current known channelclients to be removed.
 	 */
-	public boolean bAddingNames = true;
+	protected boolean bAddingNames = true;
 	
 	/** Current known topic in the channel. */
 	private String sTopic;

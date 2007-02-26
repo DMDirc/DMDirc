@@ -326,7 +326,7 @@ public class IRCParser implements Runnable {
 	 */
 	public interface IChannelJoin {
 		/**
-		 * Called When we, or another client joins a channel.
+		 * Called When another client joins a channel.
 		 * This is called AFTER client has been added to channel as a ChannelClientInfo
 		 * 
 		 * @param tParser Reference to the parser object that made the callback.
@@ -344,6 +344,36 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelJoin
 	 */	
 	private ArrayList<IChannelJoin> cbChannelJoin = new ArrayList<IChannelJoin>();
+	/**
+	 * Hashtable for storing callback channel-specific information for ChannelJoin.
+	 *
+	 * @see IRCParser.IChannelJoin
+	 */	
+	protected Hashtable<IChannelJoin,String> hChannelJoinChan = new Hashtable<IChannelJoin,String>();
+	
+	/** 
+	 * Called When we join a channel.
+	 * We are NOT added as a channelclient until after the names reply
+	 */
+	public interface ISelfChannelJoin {
+		/**
+		 * Called When we join a channel.
+		 * We are NOT added as a channelclient until after the names reply
+		 * 
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cChannel Channel Object
+		 * @see IRCParser#addSelfChannelJoin
+		 * @see IRCParser#delSelfChannelJoin
+		 * @see IRCParser#callSelfChannelJoin
+		 */
+		public void onSelfJoinChannel(IRCParser tParser, ChannelInfo cChannel);
+	}
+	/**
+	 * Arraylist for storing callback information for SelfChannelJoin.
+	 *
+	 * @see IRCParser.ISelfChannelJoin
+	 */
+	private ArrayList<ISelfChannelJoin> cbSelfChannelJoin = new ArrayList<ISelfChannelJoin>();
 	
 	/** 
 	 * Called When we, or another client parts a channel.
@@ -370,6 +400,12 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelPart
 	 */	
 	private ArrayList<IChannelPart> cbChannelPart = new ArrayList<IChannelPart>();
+	/**
+	 * Hashtable for storing callback channel-specific information for ChannelPart.
+	 *
+	 * @see IRCParser.IChannelPart
+	 */	
+	protected Hashtable<IChannelPart,String> hChannelPartChan = new Hashtable<IChannelPart,String>();
 	
 	/** 
 	 * Called When we, or another client quits IRC (Called once per channel the user was on).
@@ -396,6 +432,12 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelQuit
 	 */	
 	private ArrayList<IChannelQuit> cbChannelQuit = new ArrayList<IChannelQuit>();
+	/**
+	 * Hashtable for storing callback channel-specific information for ChannelQuit.
+	 *
+	 * @see IRCParser.IChannelQuit
+	 */	
+	protected Hashtable<IChannelQuit,String> hChannelQuitChan = new Hashtable<IChannelQuit,String>();	
 	
 	/** 
 	 * Called when the topic is changed or discovered for the first time.
@@ -421,6 +463,12 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelTopic
 	 */	
 	private ArrayList<IChannelTopic> cbChannelTopic = new ArrayList<IChannelTopic>();
+	/**
+	 * Hashtable for storing callback channel-specific information for ChannelTopic.
+	 *
+	 * @see IRCParser.IChannelTopic
+	 */	
+	protected Hashtable<IChannelTopic,String> hChannelTopicChan = new Hashtable<IChannelTopic,String>();
 	
 	/** 
 	 * Called when the channel modes are changed or discovered.
@@ -449,6 +497,12 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelModesChanged
 	 */	
 	private ArrayList<IChannelModesChanged> cbChannelModesChanged = new ArrayList<IChannelModesChanged>();
+/**
+	 * Hashtable for storing callback channel-specific information for ChannelModesChanged.
+	 *
+	 * @see IRCParser.IChannelModesChanged
+	 */	
+	protected Hashtable<IChannelModesChanged,String> hChannelModesChangedChan = new Hashtable<IChannelModesChanged,String>();
 	
 	/** 
 	 * Called when user modes are changed.
@@ -529,6 +583,12 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelKick
 	 */	
 	private ArrayList<IChannelKick> cbChannelKick = new ArrayList<IChannelKick>();
+	/**
+	 * Hashtable for storing callback channel-specific information for ChannelKick.
+	 *
+	 * @see IRCParser.IChannelKick
+	 */	
+	protected Hashtable<IChannelKick,String> hChannelKickChan = new Hashtable<IChannelKick,String>();
 	
 	/**
 	 * Called when a person sends a message to a channel.
@@ -558,6 +618,12 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelMessage
 	 */	
 	private ArrayList<IChannelMessage> cbChannelMessage = new ArrayList<IChannelMessage>();
+/**
+	 * Hashtable for storing callback channel-specific information for ChannelMessage.
+	 *
+	 * @see IRCParser.IChannelMessage
+	 */	
+	protected Hashtable<IChannelMessage,String> hChannelMessageChan = new Hashtable<IChannelMessage,String>();	
 	
 	/**
 	 * Called when a person does an action in a channel.
@@ -587,6 +653,12 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelAction
 	 */	
 	private ArrayList<IChannelAction> cbChannelAction = new ArrayList<IChannelAction>();
+	/**
+	 * Hashtable for storing callback channel-specific information for ChannelAction.
+	 *
+	 * @see IRCParser.IChannelAction
+	 */	
+	protected Hashtable<IChannelAction,String> hChannelActionChan = new Hashtable<IChannelAction,String>();
 	
 	/**
 	 * Called when a person sends a notice to a channel.
@@ -616,6 +688,12 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelNotice
 	 */	
 	private ArrayList<IChannelNotice> cbChannelNotice = new ArrayList<IChannelNotice>();
+	/**
+	 * Hashtable for storing callback channel-specific information for ChannelNotice.
+	 *
+	 * @see IRCParser.IChannelNotice
+	 */	
+	protected Hashtable<IChannelNotice,String> hChannelNoticeChan = new Hashtable<IChannelNotice,String>();
 	
 	/**
 	 * Called when a person sends a message to you directly (PM). 
@@ -817,6 +895,12 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelCTCP
 	 */	
 	private ArrayList<IChannelCTCP> cbChannelCTCP = new ArrayList<IChannelCTCP>();
+	/**
+	 * Hashtable for storing callback channel-specific information for ChannelCTCP.
+	 *
+	 * @see IRCParser.IChannelCTCP
+	 */	
+	protected Hashtable<IChannelCTCP,String> hChannelCTCPChan = new Hashtable<IChannelCTCP,String>();
 	
 	/**
 	 * Called when a person sends a CTCP to you directly.
@@ -906,6 +990,12 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelCTCPReply
 	 */	
 	private ArrayList<IChannelCTCPReply> cbChannelCTCPReply = new ArrayList<IChannelCTCPReply>();
+	/**
+	 * Hashtable for storing callback channel-specific information for ChannelCTCPReply.
+	 *
+	 * @see IRCParser.IChannelCTCPReply
+	 */	
+	protected Hashtable<IChannelCTCPReply,String> hChannelCTCPReplyChan = new Hashtable<IChannelCTCPReply,String>();
 	
 	/**
 	 * Called when a person sends a CTCPRReply to you directly.
@@ -1012,7 +1102,28 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IGotNames
 	 */	
 	private ArrayList<IGotNames> cbGotNames = new ArrayList<IGotNames>();
+	/**
+	 * Hashtable for storing callback channel-specific information for GotNames.
+	 *
+	 * @see IRCParser.IGotNames
+	 */	
+	protected Hashtable<IGotNames,String> hGotNamesChan = new Hashtable<IGotNames,String>();
 	
+	/** Add a callback pointer to the appropriate ArrayList, and make callback channel specific. */
+	@SuppressWarnings("unchecked")
+	private void addChannelCallback(String sChannelName, Hashtable cbHashtable, Object eMethod, ArrayList CallbackList) {
+		addCallback(eMethod, CallbackList);
+		if (sChannelName.equals("")) { return; }
+		if (cbHashtable.containsKey(eMethod)) { cbHashtable.remove(eMethod); }
+		cbHashtable.put(eMethod,sChannelName);
+	}
+
+	/** Delete a callback pointer from the appropriate ArrayList, and delete any channel specificness */
+	private void delChannelCallback(Hashtable cbHashtable, Object eMethod, ArrayList CallbackList) {
+		delCallback(eMethod, CallbackList);
+		if (cbHashtable.containsKey(eMethod)) { cbHashtable.remove(eMethod); }
+	}
+
 
 	/** Add a callback pointer to the appropriate ArrayList. */
 	@SuppressWarnings("unchecked")
@@ -1239,15 +1350,16 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IRCParser.IChannelJoin
 	 * @param eMethod     Reference to object that handles the callback
+	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
 	 */
-	public void addChannelJoin(Object eMethod) { addCallback(eMethod, cbChannelJoin); }
+	public void addChannelJoin(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelJoinChan, eMethod, cbChannelJoin); }
 	/**
 	 * Delete callback for ChannelJoin (onJoinChannel).
 	 *
 	 * @see IRCParser.IChannelJoin
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void delChannelJoin(Object eMethod) { delCallback(eMethod, cbChannelJoin); }
+	public void delChannelJoin(Object eMethod) { delChannelCallback(hChannelJoinChan, eMethod, cbChannelJoin); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelJoin Interface.
 	 *
@@ -1257,28 +1369,63 @@ public class IRCParser implements Runnable {
 	 */
 	protected boolean callChannelJoin(ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
 		boolean bResult = false;
+		IChannelJoin eMethod = null;
 		for (int i = 0; i < cbChannelJoin.size(); i++) {
-			cbChannelJoin.get(i).onJoinChannel(this, cChannel, cChannelClient);
+			eMethod = cbChannelJoin.get(i);
+			if (hChannelJoinChan.containsKey(eMethod)) { 
+				if (!cChannel.getName().equalsIgnoreCase(hChannelJoinChan.get(eMethod))) { continue; }
+			}
+			eMethod.onJoinChannel(this, cChannel, cChannelClient);
 			bResult = true;
 		}
 		return bResult;
 	}	
 	
+	/**
+	 * Add callback for SelfChannelJoin (onSelfJoinChannel).
+	 *
+	 * @see IRCParser.ISelfChannelJoin
+	 * @param eMethod     Reference to object that handles the callback
+	 */
+	public void addSelfChannelJoin(Object eMethod) { addCallback(eMethod, cbSelfChannelJoin); }
+	/**
+	 * Delete callback for SelfChannelJoin (onSelfJoinChannel).
+	 *
+	 * @see IRCParser.ISelfChannelJoin
+	 * @param eMethod     Reference to object that handles the callback
+	 */
+	public void delSelfChannelJoin(Object eMethod) { delCallback(eMethod, cbSelfChannelJoin); }
+	/**
+	 * Callback to all objects implementing the IRCParser.ISelfChannelJoin Interface.
+	 *
+	 * @see IRCParser.ISelfChannelJoin
+	 * @param cChannel Channel Object
+	 * @param cChannelClient ChannelClient object for new person
+	 */
+	protected boolean callSelfChannelJoin(ChannelInfo cChannel) {
+		boolean bResult = false;
+		for (int i = 0; i < cbSelfChannelJoin.size(); i++) {
+			cbSelfChannelJoin.get(i).onSelfJoinChannel(this, cChannel);
+			bResult = true;
+		}
+		return bResult;
+	}	
 	
 	/**
 	 * Add callback for ChannelPart (onPartChannel).
 	 *
 	 * @see IRCParser.IChannelPart
 	 * @param eMethod     Reference to object that handles the callback
+	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
 	 */
-	public void addChannelPart(Object eMethod) { addCallback(eMethod, cbChannelPart); }
+	public void addChannelPart(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelPartChan, eMethod, cbChannelPart); }
 	/**
 	 * Delete callback for ChannelPart (onPartChannel).
 	 *
 	 * @see IRCParser.IChannelPart
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void delChannelPart(Object eMethod) { delCallback(eMethod, cbChannelPart); }
+	public void delChannelPart(Object eMethod) { delChannelCallback(hChannelPartChan, eMethod, cbChannelPart); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelPart Interface.
 	 *
@@ -1289,8 +1436,13 @@ public class IRCParser implements Runnable {
 	 */
 	protected boolean callChannelPart(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
 		boolean bResult = false;
+		IChannelPart eMethod = null;
 		for (int i = 0; i < cbChannelPart.size(); i++) {
-			cbChannelPart.get(i).onPartChannel(this, cChannel, cChannelClient, sReason);
+			eMethod = cbChannelPart.get(i);
+			if (hChannelPartChan.containsKey(eMethod)) { 
+				if (!cChannel.getName().equalsIgnoreCase(hChannelPartChan.get(eMethod))) { continue; }
+			}
+			eMethod.onPartChannel(this, cChannel, cChannelClient, sReason);
 			bResult = true;
 		}
 		return bResult;
@@ -1301,15 +1453,16 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IRCParser.IChannelQuit
 	 * @param eMethod     Reference to object that handles the callback
+	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
 	 */
-	public void addChannelQuit(Object eMethod) { addCallback(eMethod, cbChannelQuit); }
+	public void addChannelQuit(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelQuitChan, eMethod, cbChannelQuit); }
 	/**
 	 * Delete callback for ChannelQuit (onQuitChannel).
 	 *
 	 * @see IRCParser.IChannelQuit
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void delChannelQuit(Object eMethod) { delCallback(eMethod, cbChannelQuit); }
+	public void delChannelQuit(Object eMethod) { delChannelCallback(hChannelQuitChan, eMethod, cbChannelQuit); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelQuit Interface.
 	 *
@@ -1320,8 +1473,13 @@ public class IRCParser implements Runnable {
 	 */
 	protected boolean callChannelQuit(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
 		boolean bResult = false;
+		IChannelQuit eMethod = null;
 		for (int i = 0; i < cbChannelQuit.size(); i++) {
-			cbChannelQuit.get(i).onQuitChannel(this, cChannel, cChannelClient, sReason);
+			eMethod = cbChannelQuit.get(i);
+			if (hChannelQuitChan.containsKey(eMethod)) { 
+				if (!cChannel.getName().equalsIgnoreCase(hChannelQuitChan.get(eMethod))) { continue; }
+			}
+			eMethod.onQuitChannel(this, cChannel, cChannelClient, sReason);
 			bResult = true;
 		}
 		return bResult;
@@ -1362,15 +1520,16 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IRCParser.IChannelTopic
 	 * @param eMethod     Reference to object that handles the callback
+	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
 	 */
-	public void addTopic(Object eMethod) { addCallback(eMethod, cbChannelTopic); }
+	public void addTopic(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelTopicChan, eMethod, cbChannelTopic); }
 	/**
 	 * Delete callback for ChannelTopic (onTopic).
 	 *
 	 * @see IRCParser.IChannelTopic
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void delTopic(Object eMethod) { delCallback(eMethod, cbChannelTopic); }
+	public void delTopic(Object eMethod) { delChannelCallback(hChannelTopicChan, eMethod, cbChannelTopic); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelTopic Interface.
 	 *
@@ -1380,8 +1539,13 @@ public class IRCParser implements Runnable {
 	 */
 	protected boolean callTopic(ChannelInfo cChannel, boolean bIsJoinTopic) {
 		boolean bResult = false;
+		IChannelTopic eMethod = null;
 		for (int i = 0; i < cbChannelTopic.size(); i++) {
-			cbChannelTopic.get(i).onTopic(this, cChannel, bIsJoinTopic);
+			eMethod = cbChannelTopic.get(i);
+			if (hChannelTopicChan.containsKey(eMethod)) { 
+				if (!cChannel.getName().equalsIgnoreCase(hChannelTopicChan.get(eMethod))) { continue; }
+			}
+			eMethod.onTopic(this, cChannel, bIsJoinTopic);
 			bResult = true;
 		}
 		return bResult;
@@ -1392,15 +1556,16 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IRCParser.IChannelModesChanged
 	 * @param eMethod     Reference to object that handles the callback
+	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
 	 */
-	public void addModesChanged(Object eMethod) { addCallback(eMethod, cbChannelModesChanged); }
+	public void addModesChanged(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelModesChangedChan, eMethod, cbChannelModesChanged); }
 	/**
 	 * Delete callback for ChannelModesChanged (onModeChange).
 	 *
 	 * @see IRCParser.IChannelModesChanged
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void delModesChanged(Object eMethod) { delCallback(eMethod, cbChannelModesChanged); }
+	public void delModesChanged(Object eMethod) { delChannelCallback(hChannelModesChangedChan, eMethod, cbChannelModesChanged); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelModesChanged Interface.
 	 *
@@ -1411,8 +1576,13 @@ public class IRCParser implements Runnable {
 	 */
 	protected boolean callModesChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost) {
 		boolean bResult = false;
+		IChannelModesChanged eMethod = null;
 		for (int i = 0; i < cbChannelModesChanged.size(); i++) {
-			cbChannelModesChanged.get(i).onModeChange(this, cChannel, cChannelClient, sHost);
+			eMethod = cbChannelModesChanged.get(i);
+			if (hChannelModesChangedChan.containsKey(eMethod)) { 
+				if (!cChannel.getName().equalsIgnoreCase(hChannelModesChangedChan.get(eMethod))) { continue; }
+			}
+			eMethod.onModeChange(this, cChannel, cChannelClient, sHost);
 			bResult = true;
 		}
 		return bResult;
@@ -1483,15 +1653,16 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IRCParser.IChannelKick
 	 * @param eMethod     Reference to object that handles the callback
+	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
 	 */
-	public void addChannelKick(Object eMethod) { addCallback(eMethod, cbChannelKick); }
+	public void addChannelKick(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelKickChan, eMethod, cbChannelKick); }
 	/**
 	 * Delete callback for ChannelKick (onChannelKick).
 	 *
 	 * @see IRCParser.IChannelKick
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void delChannelKick(Object eMethod) { delCallback(eMethod, cbChannelKick); }
+	public void delChannelKick(Object eMethod) { delChannelCallback(hChannelKickChan, eMethod, cbChannelKick); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelKick Interface.
 	 *
@@ -1504,8 +1675,13 @@ public class IRCParser implements Runnable {
 	 */
 	protected boolean callChannelKick(ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost) {
 		boolean bResult = false;
+		IChannelKick eMethod = null;
 		for (int i = 0; i < cbChannelKick.size(); i++) {
-			cbChannelKick.get(i).onChannelKick(this, cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost);
+			eMethod = cbChannelKick.get(i);
+			if (hChannelKickChan.containsKey(eMethod)) { 
+				if (!cChannel.getName().equalsIgnoreCase(hChannelKickChan.get(eMethod))) { continue; }
+			}
+			eMethod.onChannelKick(this, cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost);
 			bResult = true;
 		}
 		return bResult;
@@ -1516,15 +1692,16 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IRCParser.IChannelMessage
 	 * @param eMethod     Reference to object that handles the callback
+	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
 	 */
-	public void addChannelMessage(Object eMethod) { addCallback(eMethod, cbChannelMessage); }
+	public void addChannelMessage(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelMessageChan, eMethod, cbChannelMessage); }
 	/**
 	 * Delete callback for ChannelMessage (onChannelMessage).
 	 *
 	 * @see IRCParser.IChannelMessage
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void delChannelMessage(Object eMethod) { delCallback(eMethod, cbChannelMessage); }
+	public void delChannelMessage(Object eMethod) { delChannelCallback(hChannelMessageChan, eMethod, cbChannelMessage); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelMessage Interface.
 	 *
@@ -1536,8 +1713,13 @@ public class IRCParser implements Runnable {
 	 */
 	protected boolean callChannelMessage(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
 		boolean bResult = false;
+		IChannelMessage eMethod = null;
 		for (int i = 0; i < cbChannelMessage.size(); i++) {
-			cbChannelMessage.get(i).onChannelMessage(this, cChannel, cChannelClient, sMessage, sHost);
+			eMethod = cbChannelMessage.get(i);
+			if (hChannelMessageChan.containsKey(eMethod)) { 
+				if (!cChannel.getName().equalsIgnoreCase(hChannelMessageChan.get(eMethod))) { continue; }
+			}
+			eMethod.onChannelMessage(this, cChannel, cChannelClient, sMessage, sHost);
 			bResult = true;
 		}
 		return bResult;
@@ -1548,15 +1730,16 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IRCParser.IChannelAction
 	 * @param eMethod     Reference to object that handles the callback
+	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
 	 */
-	public void addChannelAction(Object eMethod) { addCallback(eMethod, cbChannelAction); }
+	public void addChannelAction(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelActionChan, eMethod, cbChannelAction); }
 	/**
 	 * Delete callback for ChannelAction (onChannelAction).
 	 *
 	 * @see IRCParser.IChannelAction
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void delChannelAction(Object eMethod) { delCallback(eMethod, cbChannelAction); }
+	public void delChannelAction(Object eMethod) { delChannelCallback(hChannelActionChan, eMethod, cbChannelAction); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelAction Interface.
 	 *
@@ -1568,8 +1751,13 @@ public class IRCParser implements Runnable {
 	 */
 	protected boolean callChannelAction(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
 		boolean bResult = false;
+		IChannelAction eMethod = null;
 		for (int i = 0; i < cbChannelAction.size(); i++) {
-			cbChannelAction.get(i).onChannelAction(this, cChannel, cChannelClient, sMessage, sHost);
+			eMethod = cbChannelAction.get(i);
+			if (hChannelActionChan.containsKey(eMethod)) { 
+				if (!cChannel.getName().equalsIgnoreCase(hChannelActionChan.get(eMethod))) { continue; }
+			}
+			eMethod.onChannelAction(this, cChannel, cChannelClient, sMessage, sHost);
 			bResult = true;
 		}
 		return bResult;
@@ -1580,15 +1768,16 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IRCParser.IChannelNotice
 	 * @param eMethod     Reference to object that handles the callback
+	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
 	 */
-	public void addChannelNotice(Object eMethod) { addCallback(eMethod, cbChannelNotice); }
+	public void addChannelNotice(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelNoticeChan, eMethod, cbChannelNotice); }
 	/**
 	 * Delete callback for ChannelNotice (onChannelNotice).
 	 *
 	 * @see IRCParser.IChannelNotice
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void delChannelNotice(Object eMethod) { delCallback(eMethod, cbChannelNotice); }
+	public void delChannelNotice(Object eMethod) { delChannelCallback(hChannelNoticeChan, eMethod, cbChannelNotice); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelNotice Interface.
 	 *
@@ -1600,8 +1789,13 @@ public class IRCParser implements Runnable {
 	 */
 	protected boolean callChannelNotice(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
 		boolean bResult = false;
+		IChannelNotice eMethod = null;
 		for (int i = 0; i < cbChannelNotice.size(); i++) {
-			cbChannelNotice.get(i).onChannelNotice(this, cChannel, cChannelClient, sMessage, sHost);
+			eMethod = cbChannelNotice.get(i);
+			if (hChannelNoticeChan.containsKey(eMethod)) { 
+				if (!cChannel.getName().equalsIgnoreCase(hChannelNoticeChan.get(eMethod))) { continue; }
+			}
+			eMethod.onChannelNotice(this, cChannel, cChannelClient, sMessage, sHost);
 			bResult = true;
 		}
 		return bResult;
@@ -1801,15 +1995,16 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IRCParser.IChannelCTCP
 	 * @param eMethod     Reference to object that handles the callback
+	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
 	 */
-	public void addChannelCTCP(Object eMethod) { addCallback(eMethod, cbChannelCTCP); }
+	public void addChannelCTCP(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelCTCPChan, eMethod, cbChannelCTCP); }
 	/**
 	 * Delete callback for ChannelCTCP (onChannelCTCP).
 	 *
 	 * @see IRCParser.IChannelCTCP
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void delChannelCTCP(Object eMethod) { delCallback(eMethod, cbChannelCTCP); }
+	public void delChannelCTCP(Object eMethod) { delChannelCallback(hChannelCTCPChan, eMethod, cbChannelCTCP); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelCTCP Interface.
 	 *
@@ -1822,8 +2017,13 @@ public class IRCParser implements Runnable {
 	 */
 	protected boolean callChannelCTCP(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost) {
 		boolean bResult = false;
+		IChannelCTCP eMethod = null;
 		for (int i = 0; i < cbChannelCTCP.size(); i++) {
-			cbChannelCTCP.get(i).onChannelCTCP(this, cChannel, cChannelClient, sType, sMessage, sHost);
+			eMethod = cbChannelCTCP.get(i);
+			if (hChannelCTCPChan.containsKey(eMethod)) { 
+				if (!cChannel.getName().equalsIgnoreCase(hChannelCTCPChan.get(eMethod))) { continue; }
+			}
+			eMethod.onChannelCTCP(this, cChannel, cChannelClient, sType, sMessage, sHost);
 			bResult = true;
 		}
 		return bResult;
@@ -1899,15 +2099,16 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IRCParser.IChannelCTCPReply
 	 * @param eMethod     Reference to object that handles the callback
+	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
 	 */
-	public void addChannelCTCPReply(Object eMethod) { addCallback(eMethod, cbChannelCTCPReply); }
+	public void addChannelCTCPReply(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelCTCPReplyChan, eMethod, cbChannelCTCPReply); }
 	/**
 	 * Delete callback for ChannelCTCPReply (onChannelCTCPReply).
 	 *
 	 * @see IRCParser.IChannelCTCPReply
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void delChannelCTCPReply(Object eMethod) { delCallback(eMethod, cbChannelCTCPReply); }
+	public void delChannelCTCPReply(Object eMethod) { delChannelCallback(hChannelCTCPReplyChan, eMethod, cbChannelCTCPReply); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IChannelCTCPReply Interface.
 	 *
@@ -1920,8 +2121,13 @@ public class IRCParser implements Runnable {
 	 */
 	protected boolean callChannelCTCPReply(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost) {
 		boolean bResult = false;
+		IChannelCTCPReply eMethod = null;
 		for (int i = 0; i < cbChannelCTCPReply.size(); i++) {
-			cbChannelCTCPReply.get(i).onChannelCTCPReply(this, cChannel, cChannelClient, sType, sMessage, sHost);
+			eMethod = cbChannelCTCPReply.get(i);
+			if (hChannelCTCPReplyChan.containsKey(eMethod)) { 
+				if (!cChannel.getName().equalsIgnoreCase(hChannelCTCPReplyChan.get(eMethod))) { continue; }
+			}
+			eMethod.onChannelCTCPReply(this, cChannel, cChannelClient, sType, sMessage, sHost);
 			bResult = true;
 		}
 		return bResult;
@@ -1997,15 +2203,16 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IRCParser.IGotNames
 	 * @param eMethod     Reference to object that handles the callback
+	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
 	 */
-	public void addGotNames(Object eMethod) { addCallback(eMethod, cbGotNames); }
+	public void addGotNames(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hGotNamesChan, eMethod, cbGotNames); }
 	/**
 	 * Delete callback for GotNames (onGotNames).
 	 *
 	 * @see IRCParser.IGotNames
 	 * @param eMethod     Reference to object that handles the callback
 	 */
-	public void delGotNames(Object eMethod) { delCallback(eMethod, cbGotNames); }
+	public void delGotNames(Object eMethod) { delChannelCallback(hGotNamesChan, eMethod, cbGotNames); }
 	/**
 	 * Callback to all objects implementing the IRCParser.IGotNames Interface.
 	 *
@@ -2014,8 +2221,13 @@ public class IRCParser implements Runnable {
 	 */
 	protected boolean callGotNames(ChannelInfo cChannel) {
 		boolean bResult = false;
+		IGotNames eMethod = null;
 		for (int i = 0; i < cbGotNames.size(); i++) {
-			cbGotNames.get(i).onGotNames(this, cChannel);
+			eMethod = cbGotNames.get(i);
+			if (hGotNamesChan.containsKey(eMethod)) { 
+				if (!cChannel.getName().equalsIgnoreCase(hGotNamesChan.get(eMethod))) { continue; }
+			}
+			eMethod.onGotNames(this, cChannel);
 			bResult = true;
 		}
 		return bResult;
@@ -2772,11 +2984,11 @@ public class IRCParser implements Runnable {
 				nTemp = hChanModesOther.get(cTemp);
 				if (nTemp == cmList) { sendString("MODE "+iChannel.getName()+" "+cTemp); }
 			}
-			
+			callSelfChannelJoin(iChannel);
 		} else {
 			// This is only done if we are on the channel. Else we wait for names.
 			iChannelClient = iChannel.addClient(iClient);
-			callChannelJoin(iChannel, iChannelClient);	
+			callChannelJoin(iChannel, iChannelClient);
 		}
 	}	
 	
