@@ -56,7 +56,7 @@ public class Channel {
         this.channelInfo = channelInfo;
         this.server = server;
         
-        frame = new ChannelFrame();
+        frame = new ChannelFrame(this);
         MainFrame.getMainFrame().addChild(frame);
         
         frame.setTitle(channelInfo.getName()+" - "+channelInfo.getTopic());
@@ -83,7 +83,12 @@ public class Channel {
                 channelInfo.getName()
                 );
     }
-
+    
+    public void sendLine(String line) {
+        // TODO: Use proper method
+        server.getParser().sendLine("PRIVMSG "+channelInfo.getName()+" :"+line);
+    }
+    
     private void updateNames() {
         frame.updateNames(channelInfo.getChannelClients());
     }
