@@ -84,10 +84,24 @@ public class ChannelInfo {
 	 * @return Channel user count.
 	 */
 	public int getUserCount() { return hChannelUserList.size(); }
+	
+	/**
+	 * Get the channel users
+	 *
+	 * @return ArrayList of ChannelClients
+	 */
+	public ArrayList getChannelClients() {
+		ArrayList<ChannelClientInfo> lClients = new ArrayList<ChannelClientInfo>();
+		for (Enumeration e = hChannelUserList.keys(); e.hasMoreElements();) {
+			lClients.add(hChannelUserList.get(e.nextElement()));
+		}
+		return lClients;
+	}
+	
 	/**
 	 * Empty the channel (Remove all known channelclients).
 	 */
-	public void emptyChannel() { hChannelUserList.clear(); }
+	protected void emptyChannel() { hChannelUserList.clear(); }
 
 	/**
 	 * Get the ChannelClientInfo object associated with a nickname.
