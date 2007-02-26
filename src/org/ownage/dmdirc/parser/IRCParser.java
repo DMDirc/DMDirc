@@ -163,190 +163,619 @@ public class IRCParser implements Runnable {
 	// Callbacks
 	// TODO: This would probably be more efficient (for deleting anyway) as hashtables
 	// with the key being the callback-to object?
-	/** Used to give Debug Information. */
-	public interface IDebugInfo { public void onDebug(IRCParser tParser, int nLevel, String sData); }
+	/**
+	 * Used to give Debug Information.
+	 */
+	public interface IDebugInfo { 
+		/**
+		 * This callback is used to provide occasional debug information from the parser.
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param nLevel Debugging Level (ndInfo, ndSocket etc)
+		 * @param sData Debugging Information
+		 * @see AddDebugInfo
+		 * @see DelDebugInfo
+		 * @see CallDebugInfo
+		 */
+		public void onDebug(IRCParser tParser, int nLevel, String sData);
+	}
 	private ArrayList<IDebugInfo> cbDebugInfo = new ArrayList<IDebugInfo>();
-	/** Called when "End of MOTD" or "No MOTD". */
-	public interface IMOTDEnd { public void onMOTDEnd(IRCParser tParser); }
+	
+	/**
+	 * Called when "End of MOTD" or "No MOTD".
+	 */
+	public interface IMOTDEnd {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @see AddMOTDEnd
+		 * @see DelMOTDEnd
+		 * @see CallMOTDEnd
+		 */
+		public void onMOTDEnd(IRCParser tParser);
+	}
 	private ArrayList<IMOTDEnd> cbEndOfMOTD = new ArrayList<IMOTDEnd>();
-	/** Called after 001. */
-	public interface IServerReady { public void onServerReady(IRCParser tParser); }
+	
+	/**
+	 * Called after 001.
+	 */
+	public interface IServerReady {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @see AddServerReady
+		 * @see DelServerReady
+		 * @see CallServerReady
+		 */
+		public void onServerReady(IRCParser tParser);
+	}
 	private ArrayList<IServerReady> cbServerReady = new ArrayList<IServerReady>();	
-	/** Called on every incomming line BEFORE parsing. */
-	public interface IDataIn { public void onDataIn(IRCParser tParser, String sData); }
+	
+	/** 
+	 * Called on every incomming line BEFORE parsing.
+	 */
+	public interface IDataIn { 
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param data Incomming Line.
+		 * @see AddDataIn
+		 * @see DelDataIn
+		 * @see CallDataIn
+		 */
+		public void onDataIn(IRCParser tParser, String sData);
+	}
 	private ArrayList<IDataIn> cbDataIn = new ArrayList<IDataIn>();
-	/** Called on every incomming line BEFORE being sent. */
-	public interface IDataOut { public void onDataOut(IRCParser tParser, String sData, boolean FromParser); }
+	
+	/**
+	 * Called on every incomming line BEFORE being sent.
+	 */
+	public interface IDataOut {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param data Outgoing Data
+		 * @param FromParser True if parser sent the data, false if sent using .SendLine
+		 * @see AddDataOut
+		 * @see DelDataOut
+		 * @see CallDataOut
+		 */
+		public void onDataOut(IRCParser tParser, String sData, boolean FromParser);
+	}
 	private ArrayList<IDataOut> cbDataOut = new ArrayList<IDataOut>();
-	/** Called when requested nickname is in use. */
-	public interface INickInUse { public void onNickInUse(IRCParser tParser); }
+	
+	/**
+	 * Called when requested nickname is in use.
+	 */
+	public interface INickInUse {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @see AddNickInUse
+		 * @see DelNickInUse
+		 * @see CallNickInUse
+		 */
+		public void onNickInUse(IRCParser tParser);
+	}
 	private ArrayList<INickInUse> cbNickInUse = new ArrayList<INickInUse>();
-	/** Called to give Error Information. */
-	public interface IErrorInfo { public void onError(IRCParser tParser, int nLevel, String sData); }
+	
+	/**
+	 * Called to give Error Information.
+	 */
+	public interface IErrorInfo {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param level Debugging Level (errFatal, errWarning etc)
+		 * @param data Error Information
+		 * @see AddErrorInfo
+		 * @see DelErrorInfo
+		 * @see CallErrorInfo
+		 */
+		public void onError(IRCParser tParser, int nLevel, String sData);
+	}
 	private ArrayList<IErrorInfo> cbErrorInfo = new ArrayList<IErrorInfo>();
+	
 	/** 
 	 * Called When we, or another client joins a channel.
 	 * This is called AFTER client has been added to channel as a ChannelClientInfo
 	 */
-	public interface IChannelJoin { public void onJoinChannel(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient ); }
+	public interface IChannelJoin {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cChannel Channel Object
+		 * @param cChannelClient ChannelClient object for new person
+		 * @see AddChannelJoin
+		 * @see DelChannelJoin
+		 * @see CallChannelJoin
+		 */
+		public void onJoinChannel(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient );
+	}
 	private ArrayList<IChannelJoin> cbChannelJoin = new ArrayList<IChannelJoin>();
+	
 	/** 
 	 * Called When we, or another client parts a channel.
 	 * This is called BEFORE client has been removed from the channel.
 	 */
-	public interface IChannelPart { public void onPartChannel(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason ); }
+	public interface IChannelPart {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cChannel Channel that the user parted
+		 * @param cChannelClient Client that parted
+		 * @param sReason Reason given for parting (May be "")
+		 * @see AddChannelPart
+		 * @see DelChannelPart
+		 * @see CallChannelPart
+		 */
+		public void onPartChannel(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );
+	}
 	private ArrayList<IChannelPart> cbChannelPart = new ArrayList<IChannelPart>();
+	
 	/** 
 	 * Called When we, or another client quits IRC (Called once per channel the user was on).
 	 * This is called BEFORE client has been removed from the channel.
 	 */
-	public interface IChannelQuit { public void onQuitChannel(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason ); }
+	public interface IChannelQuit {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cChannel Channel that user was on
+		 * @param cChannelClient User thats quitting
+		 * @param sReason Quit reason
+		 * @see AddChannelQuit
+		 * @see DelChannelQuit
+		 * @see CallChannelQuit
+		 */
+		public void onQuitChannel(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );
+	}
 	private ArrayList<IChannelQuit> cbChannelQuit = new ArrayList<IChannelQuit>();
+	
 	/** 
 	 * Called when the topic is changed or discovered for the first time.
 	 * bIsNewTopic is true if someone sets the topic, false if the topic is discovered on join
 	 */
-	public interface IChannelTopic { public void onTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsNewTopic); }
+	public interface IChannelTopic {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cChannel Channel that topic was set on
+		 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
+		 * @see AddTopic
+		 * @see DelTopic
+		 * @see CallTopic
+		 */
+		public void onTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsNewTopic);
+	}
 	private ArrayList<IChannelTopic> cbChannelTopic = new ArrayList<IChannelTopic>();
+	
 	/** 
 	 * Called when the channel modes are changed or discovered.
 	 * cChannelClient is null if the modes were found from raw 324 (/MODE #Chan reply) or if a server set the mode<br>
 	 * If a Server set the mode, sHost is the servers name, else it is the full host of the user who set it
 	 */
-	public interface IChannelModesChanged { public void onModeChange(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost); }
+	public interface IChannelModesChanged {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cChannel Channel where modes were changed
+		 * @param cChannelClient Client chaning the modes (null if server)
+		 * @param sHost Host doing the mode changing (User host or server name)
+		 * @see AddModesChanged
+		 * @see DelModesChanged
+		 * @see CallModesChanged
+		 */
+		public void onModeChange(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost);
+	}
 	private ArrayList<IChannelModesChanged> cbChannelModesChanged = new ArrayList<IChannelModesChanged>();
+	
 	/** 
 	 * Called when user modes are changed.
 	 * cClient represents the user who's modes were changed (should ALWAYS be us)<br>
 	 * sSetby is the host of the person who set the mode (usually us, may be an oper or server in some cases)
 	 */
-	public interface IUserModesChanged { public void onUserModeChange(IRCParser tParser, ClientInfo cClient, String sSetBy); }
+	public interface IUserModesChanged {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cClient Client that had the mode changed (almost always us)
+		 * @param sSetby Host that set the mode (us or servername)
+		 * @see AddUserModesChanged
+		 * @see DelUserModesChanged
+		 * @see CallUserModesChanged
+		 */
+		public void onUserModeChange(IRCParser tParser, ClientInfo cClient, String sSetBy);
+	}
 	private ArrayList<IUserModesChanged> cbUserModesChanged = new ArrayList<IUserModesChanged>();
+	
 	/**
 	 * Called when we or another user change nickname.
 	 * This is called after the nickname change has been done internally
 	 */
-	public interface INickChanged { public void onNickChanged(IRCParser tParser, ClientInfo cClient, String sOldNick); }
+	public interface INickChanged {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cClient Client changing nickname
+		 * @param sOldNick Nickname before change
+		 * @see AddNickChanged
+		 * @see DelNickChanged
+		 * @see CallNickChanged
+		 */
+		public void onNickChanged(IRCParser tParser, ClientInfo cClient, String sOldNick);
+	}
 	private ArrayList<INickChanged> cbNickChanged = new ArrayList<INickChanged>();
+	
 	/**
 	 * Called when a person is kicked.
 	 * cKickedByClient can be null if kicked by a server. sKickedByHost is the hostname of the person/server doing the kicking.
 	 */
-	public interface IChannelKick { public void onChannelKick(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost); }
+	public interface IChannelKick {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cChannel Channel where the kick took place
+		 * @param cKickedClient ChannelClient that got kicked
+		 * @param cKickedByClient ChannelClient that did the kicking (may be null if server)
+		 * @param sReason Reason for kick (may be "")
+		 * @param sKickedByHost Hostname of Kicker (or servername)
+		 * @see AddChannelKick
+		 * @see DelChannelKick
+		 * @see CallChannelKick
+		 */
+		public void onChannelKick(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost);
+	}
 	private ArrayList<IChannelKick> cbChannelKick = new ArrayList<IChannelKick>();
+	
 	/**
 	 * Called when a person sends a message to a channel.
 	 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
 	 * cChannelClient is null if user is a server, or not on the channel.
 	 */
-	public interface IChannelMessage { public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost ); }
+	public interface IChannelMessage {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cChannel Channel where the message was sent to
+		 * @param cChannelClient ChannelClient who sent the message (may be null if server)
+		 * @param sMessage Message contents
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddChannelMessage
+		 * @see DelChannelMessage
+		 * @see CallChannelMessage
+		 */
+		public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
+	}
 	private ArrayList<IChannelMessage> cbChannelMessage = new ArrayList<IChannelMessage>();
+	
 	/**
 	 * Called when a person does an action in a channel.
 	 * sHost is the hostname of the person sending the action. (Can be a server or a person)<br>
 	 * cChannelClient is null if user is a server, or not on the channel.
 	 */
-	public interface IChannelAction { public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost ); }
+	public interface IChannelAction {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cChannel Channel where the action was sent to
+		 * @param cChannelClient ChannelClient who sent the action (may be null if server)
+		 * @param sMessage action contents
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddChannelAction
+		 * @see DelChannelAction
+		 * @see CallChannelAction
+		 */
+		public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
+	}
 	private ArrayList<IChannelAction> cbChannelAction = new ArrayList<IChannelAction>();
+	
 	/**
 	 * Called when a person sends a notice to a channel.
 	 * sHost is the hostname of the person sending the notice. (Can be a server or a person)<br>
 	 * cChannelClient is null if user is a server, or not on the channel.
 	 */
-	public interface IChannelNotice { public void onChannelNotice(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost ); }
+	public interface IChannelNotice {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cChannel Channel where the notice was sent to
+		 * @param cChannelClient ChannelClient who sent the notice (may be null if server)
+		 * @param sMessage notice contents
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddChannelNotice
+		 * @see DelChannelNotice
+		 * @see CallChannelNotice
+		 */
+		public void onChannelNotice(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
+	}
 	private ArrayList<IChannelNotice> cbChannelNotice = new ArrayList<IChannelNotice>();
+	
 	/**
 	 * Called when a person sends a message to you directly (PM). 
 	 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
 	 * cClient is null if user is a server, or not on any common channel.
 	 */
-	public interface IPrivateMessage { public void onPrivateMessage(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost ); }
+	public interface IPrivateMessage {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cClient Client who sent the message (may be null if no common channels or server)
+		 * @param sMessage Message contents
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddPrivateMessage
+		 * @see DelPrivateMessage
+		 * @see CallPrivateMessage
+		 */
+		public void onPrivateMessage(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );
+	}
 	private ArrayList<IPrivateMessage> cbPrivateMessage = new ArrayList<IPrivateMessage>();
+	
 	/**
 	 * Called when a person does an action to you (PM).
 	 * sHost is the hostname of the person sending the action. (Can be a server or a person)<br>
 	 * cClient is null if user is a server, or not on any common channel.
 	 */
-	public interface IPrivateAction { public void onPrivateAction(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost ); }
+	public interface IPrivateAction {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+	 	 * @param cClient Client who sent the action (may be null if no common channels or server)
+		 * @param sMessage action contents
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddPrivateAction
+		 * @see DelPrivateAction
+		 * @see CallPrivateAction
+		 */
+		public void onPrivateAction(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );
+	}
 	private ArrayList<IPrivateAction> cbPrivateAction = new ArrayList<IPrivateAction>();
+	
 	/**
 	 * Called when a person sends a notice to you.
 	 * sHost is the hostname of the person sending the notice. (Can be a server or a person)<br>
 	 * cClient is null if user is a server, or not on any common channel.
 	 */
-	public interface IPrivateNotice { public void onPrivateNotice(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost ); }
+	public interface IPrivateNotice {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cClient Client who sent the notice (may be null if no common channels or server)
+		 * @param sMessage Notice contents
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddPrivateNotice
+		 * @see DelPrivateNotice
+		 * @see CallPrivateNotice
+		 */
+		public void onPrivateNotice(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );
+	}
 	private ArrayList<IPrivateNotice> cbPrivateNotice = new ArrayList<IPrivateNotice>();
+	
 	/**
 	 * Called when a person sends a message not aimed specifically at you or a channel (ie $*).
 	 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
 	 * cClient is null if user is a server, or not on any common channel.
 	 */
-	public interface IUnknownMessage { public void onUnknownMessage(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost ); }
+	public interface IUnknownMessage {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cClient Client who sent the message (may be null if no common channels or server)
+		 * @param sMessage Message contents
+		 * @param sTarget Actual target of message
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddUnknownMessage
+		 * @see DelUnknownMessage
+		 * @see CallUnknownMessage
+		 */
+		public void onUnknownMessage(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );
+	}
 	private ArrayList<IUnknownMessage> cbUnknownMessage = new ArrayList<IUnknownMessage>();
+	
 	/**
 	 * Called when a person sends an action not aimed specifically at you or a channel (ie $*).
 	 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
 	 * cClient is null if user is a server, or not on any common channel.
 	 */
-	public interface IUnknownAction { public void onUnknownAction(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost ); }
+	public interface IUnknownAction {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cClient Client who sent the action (may be null if no common channels or server)
+		 * @param sMessage Action contents
+		 * @param sTarget Actual target of action
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddUnknownAction
+		 * @see DelUnknownAction
+		 * @see CallUnknownAction
+		 */
+		public void onUnknownAction(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );
+	}
 	private ArrayList<IUnknownAction> cbUnknownAction = new ArrayList<IUnknownAction>();
+	
 	/**
 	 * Called when a person sends a notice not aimed specifically at you or a channel (ie $*).
 	 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
 	 * cClient is null if user is a server, or not on any common channel.
 	 */
-	public interface IUnknownNotice { public void onUnknownNotice(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost ); }
+	public interface IUnknownNotice { 
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cClient Client who sent the notice (may be null if no common channels or server)
+		 * @param sMessage Notice contents
+		 * @param sTarget Actual target of notice
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddUnknownNotice
+		 * @see DelUnknownNotice
+		 * @see CallUnknownNotice
+		 */
+		public void onUnknownNotice(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );
+	}
 	private ArrayList<IUnknownNotice> cbUnknownNotice = new ArrayList<IUnknownNotice>();
+	
 	/**
 	 * Called when a person sends a CTCP to a channel.
 	 * sHost is the hostname of the person sending the CTCP. (Can be a server or a person)<br>
 	 * cChannelClient is null if user is a server.
 	 */
-	public interface IChannelCTCP { public void onChannelCTCP(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost ); }
+	public interface IChannelCTCP {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cChannel Channel where CTCP was sent
+		 * @param cChannelClient ChannelClient who sent the message (may be null if server)
+		 * @param sType Type of CTCP (VERSION, TIME etc)
+		 * @param sMessage Additional contents
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddChannelCTCP
+		 * @see DelChannelCTCP
+		 * @see CallChannelCTCP
+		 */
+		public void onChannelCTCP(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost );
+	}
 	private ArrayList<IChannelCTCP> cbChannelCTCP = new ArrayList<IChannelCTCP>();
+	
 	/**
 	 * Called when a person sends a CTCP to you directly.
 	 * sHost is the hostname of the person sending the CTCP. (Can be a server or a person)<br>
 	 * cClient is null if user is a server, or not on any common channels.
 	 */
-	public interface IPrivateCTCP { public void onPrivateCTCP(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sHost ); }
+	public interface IPrivateCTCP {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+	 	 * @param cClient Client who sent the CTCP (may be null if no common channels or server)
+		 * @param sType Type of CTCP (VERSION, TIME etc)
+		 * @param sMessage Additional contents
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddPrivateCTCP
+		 * @see DelPrivateCTCP
+		 * @see CallPrivateCTCP
+		 */
+		public void onPrivateCTCP(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sHost );
+	}
 	private ArrayList<IPrivateCTCP> cbPrivateCTCP = new ArrayList<IPrivateCTCP>();
+	
 	/**
 	 * Called when a person sends a CTCP not aimed at you or a channel (ie $*).
 	 * sHost is the hostname of the person sending the CTCP. (Can be a server or a person)<br>
 	 * cClient is null if user is a server, or not on any common channels.
 	 */
-	public interface IUnknownCTCP { public void onUnknownCTCP(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost ); }
+	public interface IUnknownCTCP {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+	 	 * @param cClient Client who sent the CTCP (may be null if no common channels or server)
+		 * @param sType Type of CTCP (VERSION, TIME etc)
+		 * @param sMessage Additional contents
+		 * @param sTarget Actual Target of CTCP
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddUnknownCTCP
+		 * @see DelUnknownCTCP
+		 * @see CallUnknownCTCP
+		 */
+		public void onUnknownCTCP(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost );
+	}
 	private ArrayList<IUnknownCTCP> cbUnknownCTCP = new ArrayList<IUnknownCTCP>();
+	
 	/**
 	 * Called when a person sends a CTCPRReply to a channel.
 	 * sHost is the hostname of the person sending the CTCPReply. (Can be a server or a person)<br>
 	 * cChannelClient is null if user is a server.
 	 */
-	public interface IChannelCTCPReply { public void onChannelCTCPReply(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost ); }
+	public interface IChannelCTCPReply {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cChannel Channel where CTCPReply was sent
+		 * @param cChannelClient ChannelClient who sent the message (may be null if server)
+		 * @param sType Type of CTCPRReply (VERSION, TIME etc)
+		 * @param sMessage Reply Contents
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddChannelCTCPReply
+		 * @see DelChannelCTCPReply
+		 * @see CallChannelCTCPReply
+		 */
+		public void onChannelCTCPReply(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost );
+	}
 	private ArrayList<IChannelCTCPReply> cbChannelCTCPReply = new ArrayList<IChannelCTCPReply>();
+	
 	/**
 	 * Called when a person sends a CTCPRReply to you directly.
 	 * sHost is the hostname of the person sending the CTCPRReply. (Can be a server or a person)<br>
 	 * cClient is null if user is a server, or not on any common channels.
 	 */
-	public interface IPrivateCTCPReply { public void onPrivateCTCPReply(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sHost ); }
+	public interface IPrivateCTCPReply {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cClient Client who sent the CTCPReply (may be null if no common channels or server)
+		 * @param sType Type of CTCPRReply (VERSION, TIME etc)
+		 * @param sMessage Reply Contents
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddPrivateCTCPReply
+		 * @see DelPrivateCTCPReply
+		 * @see CallPrivateCTCPReply
+		 */
+		public void onPrivateCTCPReply(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sHost );
+	}
 	private ArrayList<IPrivateCTCPReply> cbPrivateCTCPReply = new ArrayList<IPrivateCTCPReply>();
+	
 	/**
 	 * Called when a person sends a CTCP not aimed at you or a channel (ie $*).
 	 * sHost is the hostname of the person sending the CTCP. (Can be a server or a person)<br>
 	 * cClient is null if user is a server, or not on any common channels.
 	 */
-	public interface IUnknownCTCPReply { public void onUnknownCTCPReply(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost ); }
+	public interface IUnknownCTCPReply {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cClient Client who sent the CTCPReply (may be null if no common channels or server)
+		 * @param sType Type of CTCPRReply (VERSION, TIME etc)
+		 * @param sMessage Reply Contents
+		 * @param sTarget Actual Target of CTCPReply
+		 * @param sHost Hostname of sender (or servername)
+		 * @see AddUnknownCTCPReply
+		 * @see DelUnknownCTCPReply
+		 * @see CallUnknownCTCPReply
+		 */
+		public void onUnknownCTCPReply(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost );
+	}
 	private ArrayList<IUnknownCTCPReply> cbUnknownCTCPReply = new ArrayList<IUnknownCTCPReply>();
+	
 	/** 
 	 * Called When we, or another client quits IRC (Called once in total).
 	 * This is called BEFORE client has been removed from the channel.
 	 */
-	public interface IQuit { public void onQuit(IRCParser tParser, ClientInfo cClient, String sReason ); }
+	public interface IQuit {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cClient Client Quitting
+		 * @param sReason Reason for quitting (may be "")
+		 * @see AddQuit
+		 * @see DelQuit
+		 * @see CallQuit
+		 */
+		public void onQuit(IRCParser tParser, ClientInfo cClient, String sReason );
+	}
 	private ArrayList<IQuit> cbQuit = new ArrayList<IQuit>();
-	/** Called when a names reply is parsed */
-	public interface IGotNames { public void onGotNames(IRCParser tParser, ChannelInfo cChannel); }	
+	
+	/**
+	 * Called when a names reply is parsed
+	 */
+	public interface IGotNames {
+		/**
+		 *
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cChannel Channel which the names reply is for
+		 * @see AddGotNames
+		 * @see DelGotNames
+		 * @see CallGotNames
+		 */
+		public void onGotNames(IRCParser tParser, ChannelInfo cChannel);
+	}
 	private ArrayList<IGotNames> cbGotNames = new ArrayList<IGotNames>();
 	
 
@@ -500,6 +929,7 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IRCParser.IDataOut
 	 * @param data Outgoing Data
+	 * @param FromParser True if parser sent the data, false if sent using .SendLine	 
 	 */
 	protected boolean CallDataOut(String data, boolean FromParser) {
 		boolean bResult = false;
