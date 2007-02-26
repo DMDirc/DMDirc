@@ -82,6 +82,7 @@ public class Config {
 	
 	defaults.setProperty("general.commandchar","/");
 	defaults.setProperty("ui.maximisewindows","true");
+        defaults.setProperty("logging.dateFormat","EEE, d MMM yyyy HH:mm:ss Z");
 	
 	return defaults;
     }
