@@ -35,11 +35,17 @@ import java.util.Enumeration;
  * @see IRCParser
  */
 public class ClientInfo {
+	/** Known nickname of client. */
 	private String sNickname = "";
+	/** Known ident of client. */
 	private String sIdent = "";	
+	/** Known host of client. */
 	private String sHost = "";
+	/** Known user modes of client. */
 	private int nModes = 0;
-	
+	/** Known away state for client. */
+	private boolean bIsAway = false;
+	/** Reference to the parser object that owns this channel, Used for modes. */
 	private IRCParser myParser; // Reference to parser object that owns this channel. Used for Modes
 
 	/**
@@ -112,6 +118,19 @@ public class ClientInfo {
 	 * @return Known host for user. (May be "")
 	 */		
 	public String getHost() { return sHost; }
+	
+	/**
+	 * Set the away state of a user.
+	 *
+	 * @param bNewState Boolean representing state. true = away, false = here
+	 */	
+	public void setAwayState(int bNewState) { bIsAway = bNewState; }
+	/**
+	 * Get the away state of a user.
+	 *
+	 * @return Boolean representing state. true = away, false = here
+	 */	
+	public int getAwayState() { return bIsAway; }
 	
 	/**
 	 * Set the user modes (as an integer).

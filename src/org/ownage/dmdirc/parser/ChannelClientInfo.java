@@ -35,9 +35,12 @@ import java.util.Enumeration;
  * @see IRCParser
  */
 public class ChannelClientInfo {
+	/** Reference to ClientInfo object this represents. */
 	private ClientInfo cClient = null;
+	/** Integer representation of the channel modes assocated with this user. */
 	private int nModes;
-	private IRCParser myParser; // Reference to parser object that owns this channel. Used for Modes
+	/** Reference to the parser object that owns this channel, Used for modes. */
+	private IRCParser myParser;
 	
 	/**
 	 * Create a ChannelClient instance of a CLient.

@@ -74,8 +74,11 @@ public class IRCParser implements Runnable {
 	 */
 	protected static final boolean bDebug = true;
 	
+	/** This is the socket used for reading from/writing to the IRC server. */
 	private Socket socket = null;
+	/** Used for writing to the server. */
 	private PrintWriter out = null;
+	/** Used for reading from the server. */
 	private BufferedReader in = null;
 	
 	/**
@@ -179,6 +182,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onDebug(IRCParser tParser, int nLevel, String sData);
 	}
+	/**
+	 * Arraylist for storing callback information for DebugInfo.
+	 *
+	 * @see IRCParser.IDebugInfo
+	 */
 	private ArrayList<IDebugInfo> cbDebugInfo = new ArrayList<IDebugInfo>();
 	
 	/**
@@ -195,6 +203,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onMOTDEnd(IRCParser tParser);
 	}
+	/**
+	 * Arraylist for storing callback information for EndOfMOTD/NoMOTD.
+	 *
+	 * @see IRCParser.IMOTDEnd
+	 */	
 	private ArrayList<IMOTDEnd> cbEndOfMOTD = new ArrayList<IMOTDEnd>();
 	
 	/**
@@ -211,6 +224,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onServerReady(IRCParser tParser);
 	}
+	/**
+	 * Arraylist for storing callback information for Server Ready (001).
+	 *
+	 * @see IRCParser.IServerReady
+	 */	
 	private ArrayList<IServerReady> cbServerReady = new ArrayList<IServerReady>();	
 	
 	/** 
@@ -228,6 +246,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onDataIn(IRCParser tParser, String sData);
 	}
+	/**
+	 * Arraylist for storing callback information for DataIn
+	 *
+	 * @see IRCParser.IDataIn
+	 */	
 	private ArrayList<IDataIn> cbDataIn = new ArrayList<IDataIn>();
 	
 	/**
@@ -246,6 +269,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onDataOut(IRCParser tParser, String sData, boolean FromParser);
 	}
+	/**
+	 * Arraylist for storing callback information for DataOut.
+	 *
+	 * @see IRCParser.IDataOut
+	 */	
 	private ArrayList<IDataOut> cbDataOut = new ArrayList<IDataOut>();
 	
 	/**
@@ -262,6 +290,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onNickInUse(IRCParser tParser);
 	}
+	/**
+	 * Arraylist for storing callback information for Nick in Use.
+	 *
+	 * @see IRCParser.INickInUse
+	 */	
 	private ArrayList<INickInUse> cbNickInUse = new ArrayList<INickInUse>();
 	
 	/**
@@ -280,6 +313,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onError(IRCParser tParser, int nLevel, String sData);
 	}
+	/**
+	 * Arraylist for storing callback information for ErrorInfo.
+	 *
+	 * @see IRCParser.IErrorInfo
+	 */	
 	private ArrayList<IErrorInfo> cbErrorInfo = new ArrayList<IErrorInfo>();
 	
 	/** 
@@ -300,6 +338,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onJoinChannel(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient );
 	}
+	/**
+	 * Arraylist for storing callback information for ChannelJoin.
+	 *
+	 * @see IRCParser.IChannelJoin
+	 */	
 	private ArrayList<IChannelJoin> cbChannelJoin = new ArrayList<IChannelJoin>();
 	
 	/** 
@@ -321,6 +364,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onPartChannel(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );
 	}
+	/**
+	 * Arraylist for storing callback information for ChannelPart.
+	 *
+	 * @see IRCParser.IChannelPart
+	 */	
 	private ArrayList<IChannelPart> cbChannelPart = new ArrayList<IChannelPart>();
 	
 	/** 
@@ -342,6 +390,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onQuitChannel(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );
 	}
+	/**
+	 * Arraylist for storing callback information for ChannelQuit.
+	 *
+	 * @see IRCParser.IChannelQuit
+	 */	
 	private ArrayList<IChannelQuit> cbChannelQuit = new ArrayList<IChannelQuit>();
 	
 	/** 
@@ -362,6 +415,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsJoinTopic);
 	}
+	/**
+	 * Arraylist for storing callback information for ChannelTopic.
+	 *
+	 * @see IRCParser.IChannelTopic
+	 */	
 	private ArrayList<IChannelTopic> cbChannelTopic = new ArrayList<IChannelTopic>();
 	
 	/** 
@@ -385,6 +443,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onModeChange(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost);
 	}
+	/**
+	 * Arraylist for storing callback information for ChannelModesChanged.
+	 *
+	 * @see IRCParser.IChannelModesChanged
+	 */	
 	private ArrayList<IChannelModesChanged> cbChannelModesChanged = new ArrayList<IChannelModesChanged>();
 	
 	/** 
@@ -407,6 +470,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onUserModeChange(IRCParser tParser, ClientInfo cClient, String sSetBy);
 	}
+	/**
+	 * Arraylist for storing callback information for UserModesChanged.
+	 *
+	 * @see IRCParser.IUserModesChanged
+	 */	
 	private ArrayList<IUserModesChanged> cbUserModesChanged = new ArrayList<IUserModesChanged>();
 	
 	/**
@@ -427,6 +495,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onNickChanged(IRCParser tParser, ClientInfo cClient, String sOldNick);
 	}
+	/**
+	 * Arraylist for storing callback information for NickChanged.
+	 *
+	 * @see IRCParser.INickChanged
+	 */	
 	private ArrayList<INickChanged> cbNickChanged = new ArrayList<INickChanged>();
 	
 	/**
@@ -450,6 +523,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onChannelKick(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost);
 	}
+	/**
+	 * Arraylist for storing callback information for ChannelKick.
+	 *
+	 * @see IRCParser.IChannelKick
+	 */	
 	private ArrayList<IChannelKick> cbChannelKick = new ArrayList<IChannelKick>();
 	
 	/**
@@ -474,6 +552,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for ChannelMessage.
+	 *
+	 * @see IRCParser.IChannelMessage
+	 */	
 	private ArrayList<IChannelMessage> cbChannelMessage = new ArrayList<IChannelMessage>();
 	
 	/**
@@ -498,6 +581,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for ChannelAction.
+	 *
+	 * @see IRCParser.IChannelAction
+	 */	
 	private ArrayList<IChannelAction> cbChannelAction = new ArrayList<IChannelAction>();
 	
 	/**
@@ -522,6 +610,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onChannelNotice(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for ChannelNotice.
+	 *
+	 * @see IRCParser.IChannelNotice
+	 */	
 	private ArrayList<IChannelNotice> cbChannelNotice = new ArrayList<IChannelNotice>();
 	
 	/**
@@ -545,6 +638,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onPrivateMessage(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for PrivateMessage.
+	 *
+	 * @see IRCParser.IPrivateMessage
+	 */	
 	private ArrayList<IPrivateMessage> cbPrivateMessage = new ArrayList<IPrivateMessage>();
 	
 	/**
@@ -568,6 +666,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onPrivateAction(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for PrivateAction.
+	 *
+	 * @see IRCParser.IPrivateAction
+	 */	
 	private ArrayList<IPrivateAction> cbPrivateAction = new ArrayList<IPrivateAction>();
 	
 	/**
@@ -591,6 +694,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onPrivateNotice(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for PrivateNotice.
+	 *
+	 * @see IRCParser.IPrivateNotice
+	 */	
 	private ArrayList<IPrivateNotice> cbPrivateNotice = new ArrayList<IPrivateNotice>();
 	
 	/**
@@ -615,6 +723,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onUnknownMessage(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for UnknownMessage.
+	 *
+	 * @see IRCParser.IUnknownMessage
+	 */	
 	private ArrayList<IUnknownMessage> cbUnknownMessage = new ArrayList<IUnknownMessage>();
 	
 	/**
@@ -639,6 +752,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onUnknownAction(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for UnknownAction.
+	 *
+	 * @see IRCParser.IUnknownAction
+	 */	
 	private ArrayList<IUnknownAction> cbUnknownAction = new ArrayList<IUnknownAction>();
 	
 	/**
@@ -663,6 +781,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onUnknownNotice(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for UnknownNotice.
+	 *
+	 * @see IRCParser.IUnknownNotice
+	 */	
 	private ArrayList<IUnknownNotice> cbUnknownNotice = new ArrayList<IUnknownNotice>();
 	
 	/**
@@ -688,6 +811,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onChannelCTCP(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for ChannelCTCP.
+	 *
+	 * @see IRCParser.IChannelCTCP
+	 */	
 	private ArrayList<IChannelCTCP> cbChannelCTCP = new ArrayList<IChannelCTCP>();
 	
 	/**
@@ -712,6 +840,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onPrivateCTCP(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for PrivateCTCP.
+	 *
+	 * @see IRCParser.IPrivateCTCP
+	 */	
 	private ArrayList<IPrivateCTCP> cbPrivateCTCP = new ArrayList<IPrivateCTCP>();
 	
 	/**
@@ -737,6 +870,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onUnknownCTCP(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for UnknownCTCP.
+	 *
+	 * @see IRCParser.IUnknownCTCP
+	 */	
 	private ArrayList<IUnknownCTCP> cbUnknownCTCP = new ArrayList<IUnknownCTCP>();
 	
 	/**
@@ -762,6 +900,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onChannelCTCPReply(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for ChannelCTCPReply.
+	 *
+	 * @see IRCParser.IChannelCTCPReply
+	 */	
 	private ArrayList<IChannelCTCPReply> cbChannelCTCPReply = new ArrayList<IChannelCTCPReply>();
 	
 	/**
@@ -786,6 +929,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onPrivateCTCPReply(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for PrivateCTCPReply.
+	 *
+	 * @see IRCParser.IPrivateCTCPReply
+	 */	
 	private ArrayList<IPrivateCTCPReply> cbPrivateCTCPReply = new ArrayList<IPrivateCTCPReply>();
 	
 	/**
@@ -811,6 +959,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onUnknownCTCPReply(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost );
 	}
+	/**
+	 * Arraylist for storing callback information for UnknownCTCPReply.
+	 *
+	 * @see IRCParser.IUnknownCTCPReply
+	 */	
 	private ArrayList<IUnknownCTCPReply> cbUnknownCTCPReply = new ArrayList<IUnknownCTCPReply>();
 	
 	/** 
@@ -831,6 +984,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onQuit(IRCParser tParser, ClientInfo cClient, String sReason );
 	}
+	/**
+	 * Arraylist for storing callback information for Quit.
+	 *
+	 * @see IRCParser.IQuit
+	 */	
 	private ArrayList<IQuit> cbQuit = new ArrayList<IQuit>();
 	
 	/**
@@ -848,6 +1006,11 @@ public class IRCParser implements Runnable {
 		 */
 		public void onGotNames(IRCParser tParser, ChannelInfo cChannel);
 	}
+	/**
+	 * Arraylist for storing callback information for GotNames.
+	 *
+	 * @see IRCParser.IGotNames
+	 */	
 	private ArrayList<IGotNames> cbGotNames = new ArrayList<IGotNames>();
 	
 
@@ -2121,6 +2284,10 @@ public class IRCParser implements Runnable {
 						case 5: // 005 - ISUPPORT
 							Process004_005(nParam,token);
 							break;
+						case 305: // No longer away
+						case 306: // Away
+							ProcessAway(nParam,token);
+							break;
 						case 332: // Topic on Join
 						case 333: // Topic Setter On Join
 							ProcessTopic(sParam,token);
@@ -2377,9 +2544,19 @@ public class IRCParser implements Runnable {
 	}	
 	
 	/**
+	 * Process an Away/Back message.
+	 *
+	 * @param nParam Integer representation of parameter to parse
+	 * @param token[] IRCTokenised verison of the incomming line
+	 */
+	private void ProcessAway(int nParam, String token[]) {
+		cMyself.setAwayState(nParam == 306);
+	}
+	
+	/**
 	 * Process a Names reply.
 	 *
-	 * @param sParam String representation of parameter to parse
+	 * @param nParam Integer representation of parameter to parse
 	 * @param token[] IRCTokenised verison of the incomming line
 	 */	
 	private void ProcessNames(int nParam, String token[]) {
@@ -2892,7 +3069,7 @@ public class IRCParser implements Runnable {
 	 * <br>
 	 * If the first nickname is in use, and a NickInUse message is recieved before 001, we
 	 * will attempt to use the altnickname instead.<br>
-	 * If this also fails, we will start prepending _ to the main nickname.
+	 * If this also fails, we will start prepending _ (or the value of me.cPrepend) to the main nickname.
 	 *
 	 * @param nParam Integer representation of parameter to parse
 	 * @param token[] IRCTokenised verison of the incomming line
@@ -2907,7 +3084,7 @@ public class IRCParser implements Runnable {
 				if (!TriedAlt) { SetNickname(me.sAltNickname); TriedAlt = true; }
 				else {
 					if (sThinkNickname.equalsIgnoreCase(me.sAltNickname)) { sThinkNickname = me.sNickname; }
-					SetNickname('_'+sThinkNickname);
+					SetNickname(me.cPrepend+sThinkNickname);
 				}
 			}
 		}

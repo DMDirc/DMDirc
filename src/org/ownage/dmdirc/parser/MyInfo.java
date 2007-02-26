@@ -33,19 +33,23 @@ package org.ownage.dmdirc.parser;
  * @see IRCParser
  */
 public class MyInfo {
-	/** Nickname to attempt to use on IRC. */
+	/** Nickname to attempt to use on IRC (Default: IRCParser). */
 	public String sNickname = "IRCParser";
 	/**
-	 * Alternative nickname to attempt to use on IRC.
+	 * Alternative nickname to attempt to use on IRC (Default: IRC-Parser).
 	 * If the first nickname is in use, and a NickInUse message is recieved before 001, we
 	 * will attempt to use this nickname instead.<br>
-	 * If this also fails, we will start prepending _ to the main nickname
+	 * If this also fails, we will start prepending the cPrepend character (_) to the main nickname
+	 *
+	 * @see MyInfo#cPrepend
 	 */
 	public String sAltNickname = "IRC-Parser";
-	/** Realname string to use. */
-	public String sRealname = "Java Test IRCParser";
-	/** Username to use, this doesn't matter when an ident server is running. */
+	/** Realname string to use (Default: "DMDIRC IRCParser"). */
+	public String sRealname = "DMDIRC IRCParser";
+	/** Username to use, this doesn't matter when an ident server is running (Default: IRCParser). */
 	public String sUsername = "IRCParser";
+	/** Character to prepend to nickname if in use (Default "_"). */
+	public char cPrepend = "_";
 	
 	/**
 	 * Get SVN Version information

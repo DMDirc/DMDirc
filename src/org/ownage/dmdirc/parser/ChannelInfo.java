@@ -42,15 +42,23 @@ public class ChannelInfo {
 	 */
 	public boolean bAddingNames = true;
 	
+	/** Current known topic in the channel. */
 	private String sTopic;
+	/** Last known user to set the topic (Full host where possible). */
 	private String sTopicUser;
+	/** Unixtimestamp representing time when the topic was set. */
 	private long nTopicTime;
 	
+	/** Known boolean-modes for channel. */
 	private int nModes;
+	/** Reference to the parser object that owns this channel, Used for modes. */
 	private IRCParser myParser; // Reference to parser object that owns this channel. Used for Modes
 	
+	/** Channel Name. */
 	private String sName;
+	/** Hashtable containing references to ChannelClients. */
 	private Hashtable<String,ChannelClientInfo> hChannelUserList = new Hashtable<String,ChannelClientInfo>();
+	/** Hashtable storing values for modes set in the channel that use parameters. */
 	private Hashtable<Character,String> hParamModes = new Hashtable<Character,String>();
 
 	/**
