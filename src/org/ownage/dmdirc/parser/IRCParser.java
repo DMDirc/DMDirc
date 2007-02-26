@@ -2195,7 +2195,7 @@ public class IRCParser implements Runnable {
 	 * @param line Line to tokenise
 	 * @return Array of tokens
 	 */
-	protected String[] doIRCTokenise(String line) {
+	protected String[] tokeniseLine(String line) {
 		if (line == null) {
 			String[] tokens = new String[1];
 			tokens[0] = "";
@@ -2259,7 +2259,7 @@ public class IRCParser implements Runnable {
 	 * @param line IRC Line to process
 	 */
 	private void processLine(String line) {
-		String[] token = doIRCTokenise(line);
+		String[] token = tokeniseLine(line);
 //		String mainParam = token[token.length-1];
 		
 		int nParam;
