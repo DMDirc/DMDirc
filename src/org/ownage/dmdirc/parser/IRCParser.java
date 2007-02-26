@@ -59,17 +59,17 @@ public class IRCParser implements Runnable {
 	public static final int errWarning = 4;
 	/**
 	 * Used in Error Reporting.
-	 * If an Error has this flag, it means the parser is able to continue running<br>
-	 * Most errWarnings should have this flag. if Fatal or Error are not accomanied<br>
-	 * with this flag, you should disconnect or risk problems further on.	 
+	 * If an Error has this flag, it means the parser is able to continue running,
+	 * Most errWarnings should have this flag. if Fatal or Error are not accompanied
+	 * by this flag, you should disconnect or risk problems further on.
 	 */
 	public static final int errCanContinue = 8;
 	
 	/**
 	 * Enable Development Debugging info - Outputs directly to console.
 	 *
-	 * This is used for debugging info that is generally of no use to most people<br>
-	 * If this is set to false, self-test and any the "useless" debugging that relies on <br>
+	 * This is used for debugging info that is generally of no use to most people.<br>
+	 * If this is set to false, self-test and any the "useless" debugging that relies on
 	 * this being true are not compiled.
 	 */
 	protected static final boolean bDebug = true;
@@ -80,8 +80,8 @@ public class IRCParser implements Runnable {
 	
 	/**
 	 * This is what the user wants settings to be. 
-	 * Nickname here is *not* always accurate.<br>
-	 * ClientInfo variable cMyself should be used for accurate info.<br>
+	 * Nickname here is *not* always accurate.<br><br>
+	 * ClientInfo variable cMyself should be used for accurate info.
 	 */
 	public MyInfo me = new MyInfo();
 	/**	Server Info requested by user. */
@@ -119,10 +119,10 @@ public class IRCParser implements Runnable {
 	protected int nNextKeyUser = 1;
 	/**
 	 * Hashtable storing known boolean chan modes (cntmi etc).
-	 * Valid Boolean Modes are stored as Hashtable.pub('m',1); where 'm' is the mode and 1 is a numeric value<br>
-	 * Numeric values are powers of 2. This allows up to 32 modes at present (expandable to 64)<br>
-	 * ChannelInfo/ChannelClientInfo etc provide methods to view the modes in a human way.<br>
-	 *<br>
+	 * Valid Boolean Modes are stored as Hashtable.pub('m',1); where 'm' is the mode and 1 is a numeric value.<br><br>
+	 * Numeric values are powers of 2. This allows up to 32 modes at present (expandable to 64)<br><br>
+	 * ChannelInfo/ChannelClientInfo etc provide methods to view the modes in a human way.<br><br>
+	 * <br>
 	 * Channel modes discovered but not listed in 005 are stored as boolean modes automatically (and a errWarning Error is called)
 	 */
 	protected Hashtable<Character,Integer> hChanModesBool = new Hashtable<Character,Integer>();
@@ -131,8 +131,8 @@ public class IRCParser implements Runnable {
 	
 	/**
 	 * Hashtable storing known non-boolean chan modes (klbeI etc).
-	 * Non Boolean Modes (for Channels) are stored together in this arraylist, the value param<br>
-	 * is used to show the type of variable. (List (1), Param just for set (2), Param for Set and Unset (2+4=6))<br>
+	 * Non Boolean Modes (for Channels) are stored together in this arraylist, the value param
+	 * is used to show the type of variable. (List (1), Param just for set (2), Param for Set and Unset (2+4=6))<br><br>
 	 *<br>
 	 * see cmList<br>
 	 * see cmSet<br>
@@ -366,13 +366,13 @@ public class IRCParser implements Runnable {
 	
 	/** 
 	 * Called when the channel modes are changed or discovered.
-	 * cChannelClient is null if the modes were found from raw 324 (/MODE #Chan reply) or if a server set the mode<br>
+	 * cChannelClient is null if the modes were found from raw 324 (/MODE #Chan reply) or if a server set the mode.<br>
 	 * If a Server set the mode, sHost is the servers name, else it is the full host of the user who set it
 	 */
 	public interface IChannelModesChanged {
 		/**
 		 * Called when the channel modes are changed or discovered.
-		 * cChannelClient is null if the modes were found from raw 324 (/MODE #Chan reply) or if a server set the mode<br>
+		 * cChannelClient is null if the modes were found from raw 324 (/MODE #Chan reply) or if a server set the mode.<br>
 		 * If a Server set the mode, sHost is the servers name, else it is the full host of the user who set it
 		 * 
 		 * @param tParser Reference to the parser object that made the callback.
@@ -2887,8 +2887,12 @@ public class IRCParser implements Runnable {
 
 	/**
 	 * Process a NickInUse message.
-	 * Parser implements handling of this if Pre-001 and no other handler found,<br>
-	 * adding the NickInUse handler (AddNickInUse) after 001 is prefered over before.
+	 * Parser implements handling of this if Pre-001 and no other handler found,
+	 * adding the NickInUse handler (AddNickInUse) after 001 is prefered over before.<br><br>
+	 * <br>
+	 * If the first nickname is in use, and a NickInUse message is recieved before 001, we
+	 * will attempt to use the altnickname instead.<br>
+	 * If this also fails, we will start prepending _ to the main nickname.
 	 *
 	 * @param nParam Integer representation of parameter to parse
 	 * @param token[] IRCTokenised verison of the incomming line
@@ -2909,6 +2913,12 @@ public class IRCParser implements Runnable {
 		}
 	}
 	
+	/**
+	 * Check if server is ready.
+	 *
+	 * @return true if 001 has been recieved, false otherwise.
+	 */
+	public boolean isReady() { return Got001; }	
 	
 	/**
 	 * Join a Channel.

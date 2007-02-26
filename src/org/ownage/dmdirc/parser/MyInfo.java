@@ -33,9 +33,18 @@ package org.ownage.dmdirc.parser;
  * @see IRCParser
  */
 public class MyInfo {
+	/** Nickname to attempt to use on IRC. */
 	public String sNickname = "IRCParser";
-	public String sAltNickname = "IRC-Parser"; // Alternative nickname, if this fails, we start prepending _ to sNickname
+	/**
+	 * Alternative nickname to attempt to use on IRC.
+	 * If the first nickname is in use, and a NickInUse message is recieved before 001, we
+	 * will attempt to use this nickname instead.<br>
+	 * If this also fails, we will start prepending _ to the main nickname
+	 */
+	public String sAltNickname = "IRC-Parser";
+	/** Realname string to use. */
 	public String sRealname = "Java Test IRCParser";
+	/** Username to use, this doesn't matter when an ident server is running. */
 	public String sUsername = "IRCParser";
 	
 	/**

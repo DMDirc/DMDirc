@@ -33,12 +33,18 @@ package org.ownage.dmdirc.parser;
  * @see IRCParser
  */
 public class ServerInfo {
+	/** Server to connect to (Default: "irc.quakenet.org"). */
 	public String sHost = "irc.quakenet.org";
+	/** Optional password needed to connect to server (Default: ""). */
 	public String sPassword = "";
+	/** Port server listens on for client connections (Default: 6667). */
 	public int nPort = 6667;
+	/** Is this an ssl-enabled server (Default: false). */
 	public boolean bSSL = false;	
-
+	
+	/** Constructor using Default values. */
 	public ServerInfo () { }
+	/** Constructor using specifed host, port and password, SSL must be specifed separately. */
 	public ServerInfo (String host, int port, String pass) {
 		sHost = host;
 		nPort = port;
