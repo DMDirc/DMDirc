@@ -63,7 +63,7 @@ public class ClientInfo {
 	 *
  	 * @param tParser Refernce to parser that owns this channelclient (used for modes)	 
 	 * @param sHostmask Hostmask parsed by ParseHost to get nickname
-	 * @see ParseHost
+	 * @see ClientInfo#ParseHost
 	 */
 	public ClientInfo (IRCParser tParser, String sHostmask) { 
 		setUserBits(sHostmask,true);
