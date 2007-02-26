@@ -22,6 +22,7 @@
 
 package org.ownage.dmdirc;
 
+import org.ownage.dmdirc.parser.ChannelInfo;
 import org.ownage.dmdirc.ui.ChannelFrame;
 import org.ownage.dmdirc.ui.MainFrame;
 
@@ -34,7 +35,7 @@ import org.ownage.dmdirc.ui.MainFrame;
 public class Channel {
     
     /** The parser's pChannel class */
-    private int pChannel;
+    private ChannelInfo pChannel;
     
     /** The server this channel is on */
     private Server server;
@@ -47,7 +48,7 @@ public class Channel {
      * @param server The server object that this channel belongs to
      * @param pChannel The parser's channel object that corresponds to this channel
      */
-    public Channel(Server server, int pChannel) {
+    public Channel(Server server, ChannelInfo pChannel) {
         this.pChannel = pChannel;
         this.server = server;
         

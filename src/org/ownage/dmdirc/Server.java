@@ -73,15 +73,7 @@ public class Server {
         parser = new IRCParser(new ServerInfo(server, port, password));
         
         Raw raw = new Raw(this);
-        
-        parser.addNickInUse(new IRCParser.INickInUse() {
-            public void onNickInUse(IRCParser tParser) {
-                String newNick = tParser.me.sNickname+"_";
-                frame.addLine("Nickname in use. Trying "+newNick);
-                tParser.setNickname(newNick);
-            }
-        });
-        
+              
         try {           
             Thread thread = new Thread(parser);
             thread.start();

@@ -22,6 +22,8 @@
 
 package org.ownage.dmdirc.ui;
 
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledDocument;
 import org.ownage.dmdirc.Server;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,7 +64,7 @@ public class ServerFrame extends javax.swing.JInternalFrame {
         setClosable(true);
         setVisible(true);
         setResizable(true);
-        
+               
         this.parent = parent;
         
         jTextField1.addActionListener(new ActionListener() {
@@ -93,7 +95,12 @@ public class ServerFrame extends javax.swing.JInternalFrame {
      * @param line text to add
      */
     public void addLine(String line) {
-        jTextPane1.setText(jTextPane1.getText()+line+"\n");
+        StyledDocument doc = jTextPane1.getStyledDocument();
+        try {
+            doc.insertString(doc.getLength(), line+"\n", null);
+        } catch (BadLocationException ex) {
+            ex.printStackTrace();
+        }
     }
     
     /** This method is called from within the constructor to

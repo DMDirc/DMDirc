@@ -22,6 +22,9 @@
 
 package org.ownage.dmdirc.ui;
 
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledDocument;
+
 /**
  *
  * @author  chris
@@ -32,6 +35,19 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
     public ChannelFrame() {
         initComponents();
     }
+    
+    /**
+     * Adds a line of text to the main text area
+     * @param line text to add
+     */
+    public void addLine(String line) {
+        StyledDocument doc = jTextPane1.getStyledDocument();
+        try {
+            doc.insertString(doc.getLength(), line+"\n", null);
+        } catch (BadLocationException ex) {
+            ex.printStackTrace();
+        }
+    }    
     
     /** This method is called from within the constructor to
      * initialize the form.
