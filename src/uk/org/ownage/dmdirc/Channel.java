@@ -85,8 +85,8 @@ public class Channel {
     }
     
     public void sendLine(String line) {
-        // TODO: Use proper method
-        server.getParser().sendLine("PRIVMSG "+channelInfo.getName()+" :"+line);
+        channelInfo.sendMessage(line);
+        frame.addLine("> "+line);
     }
     
     private void updateNames() {
