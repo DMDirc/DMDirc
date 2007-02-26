@@ -34,6 +34,10 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
     /** Creates new form ChannelFrame */
     public ChannelFrame() {
         initComponents();
+        setMaximizable(true);
+        setClosable(true);
+        setVisible(true);
+        setResizable(true);        
     }
     
     /**

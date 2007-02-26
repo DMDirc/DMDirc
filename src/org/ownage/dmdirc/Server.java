@@ -22,6 +22,8 @@
 
 package org.ownage.dmdirc;
 
+import java.util.Hashtable;
+import org.ownage.dmdirc.parser.ChannelInfo;
 import org.ownage.dmdirc.parser.ServerInfo;
 import org.ownage.dmdirc.ui.MainFrame;
 import org.ownage.dmdirc.ui.ServerFrame;
@@ -39,7 +41,7 @@ public class Server {
     /**
      * Open channels that currently exist on the server
      */
-    private Vector channels;
+    private Hashtable<String,Channel> channels  = new Hashtable<String,Channel>();
     
     /**
      * The ServerFrame corresponding to this server
@@ -59,8 +61,6 @@ public class Server {
      */
     public Server(String server, int port, String password) {
         
-        channels = new Vector(0,1);
-        
         ServerManager.getServerManager().registerServer(this);
         
         frame = new ServerFrame(this);
@@ -71,6 +71,13 @@ public class Server {
         frame.addLine("Connecting to "+server+":"+port);
               
         parser = new IRCParser(new ServerInfo(server, port, password));
+        
+        parser.addSelfChannelJoin(new IRCParser.ISelfChannelJoin() {
+            public void onSelfJoinChannel(IRCParser tParser, ChannelInfo cChannel) {
+                Server.this.addChannel(cChannel);
+            }
+            
+        });
         
         Raw raw = new Raw(this);
               
@@ -96,6 +103,10 @@ public class Server {
      */
     public IRCParser getParser() {
         return parser;
+    }
+
+    private void addChannel(ChannelInfo chan) {
+        channels.put(chan.getName(), new Channel(this, chan));
     }
     
 }

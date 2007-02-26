@@ -22,7 +22,11 @@
 
 package org.ownage.dmdirc;
 
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledDocument;
+import org.ownage.dmdirc.parser.ChannelClientInfo;
 import org.ownage.dmdirc.parser.ChannelInfo;
+import org.ownage.dmdirc.parser.IRCParser;
 import org.ownage.dmdirc.ui.ChannelFrame;
 import org.ownage.dmdirc.ui.MainFrame;
 
@@ -35,7 +39,7 @@ import org.ownage.dmdirc.ui.MainFrame;
 public class Channel {
     
     /** The parser's pChannel class */
-    private ChannelInfo pChannel;
+    private ChannelInfo channelInfo;
     
     /** The server this channel is on */
     private Server server;
@@ -46,14 +50,25 @@ public class Channel {
     /**
      * Creates a new instance of Channel
      * @param server The server object that this channel belongs to
-     * @param pChannel The parser's channel object that corresponds to this channel
+     * @param channelInfo The parser's channel object that corresponds to this channel
      */
-    public Channel(Server server, ChannelInfo pChannel) {
-        this.pChannel = pChannel;
+    public Channel(Server server, ChannelInfo channelInfo) {
+        this.channelInfo = channelInfo;
         this.server = server;
         
         frame = new ChannelFrame();
         MainFrame.getMainFrame().addChild(frame);
+        
+        // I have no idea what's going on with the indentation here.
+        server.getParser().addChannelMessage(
+                new IRCParser.IChannelMessage() {
+            public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel,
+                    ChannelClientInfo cChannelClient, String sMessage, String sHost) {
+                Channel.this.frame.addLine("<"+cChannelClient.getNickname()+"> "+sMessage);
+            }
+            
+        }
+        , channelInfo.getName());
     }
-    
+       
 }
