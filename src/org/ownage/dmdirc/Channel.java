@@ -59,12 +59,14 @@ public class Channel {
         frame = new ChannelFrame();
         MainFrame.getMainFrame().addChild(frame);
         
+        frame.setTitle(channelInfo.getName()+" - "+channelInfo.getTopic());
+        
         // I have no idea what's going on with the indentation here.
         server.getParser().addChannelMessage(
                 new IRCParser.IChannelMessage() {
             public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel,
                     ChannelClientInfo cChannelClient, String sMessage, String sHost) {
-                Channel.this.frame.addLine("<"+cChannelClient.getNickname()+"> "+sMessage);
+                Channel.this.frame.addLine("<"+sHost+"> "+sMessage);
             }
             
         }
