@@ -3415,6 +3415,69 @@ public class IRCParser implements Runnable {
 	}
 	
 	/**
+	 * Send a private message to a target.
+	 *
+	 * @param sTarget Target
+	 * @param sMessage Message to send
+	 */
+	public void sendMessage(String sTarget, String sMessage) { 
+		if (sTarget.equals("") || sMessage.equals("")) { return; }
+		
+		sendString("PRIVMSG "+sTarget+" :"+sMessage);	
+	}
+	
+	/**
+	 * Send a notice message to a target.
+	 *
+	 * @param sTarget Target
+	 * @param sMessage Message to send
+	 */
+	public void sendNotice(String sTarget, String sMessage) { 
+		if (sTarget.equals("") || sMessage.equals("")) { return; }
+		
+		sendString("NOTICE "+sTarget+" :"+sMessage);	
+	}
+
+	/**
+	 * Send a private message to a target.
+	 *
+	 * @param sTarget Target
+	 * @param sMessage Message to send
+	 */
+	public void sendAction(String sTarget, String sMessage) { 
+		if (sTarget.equals("") || sMessage.equals("")) { return; }
+		sendCTCP(sTarget, "ACTION", sMessage);
+	}
+	
+	/**
+	 * Send a CTCP to a target.
+	 *
+	 * @param sTarget Target
+	 * @param sType Type of CTCP
+	 * @param sMessage Optional Additional Parameters
+	 */
+	public void sendCTCP(String sTarget, String sType, String sMessage) { 
+		if (sTarget.equals("") || sType.equals("")) { return; }
+		Character Char1 = Character.valueOf((char)1);
+		if (!sMessage.equals("")) { sMessage = " "+sMessage; }
+		sendString("PRIVMSG "+sTarget+" :"+Char1+sType.toUpperCase()+sMessage+Char1);	
+	}
+	
+	/**
+	 * Send a CTCPReply to a target.
+	 *
+	 * @param sTarget Target
+	 * @param sType Type of CTCP
+	 * @param sMessage Optional Additional Parameters
+	 */
+	public void sendCTCPReply(String sTarget, String sType, String sMessage) { 
+		if (sTarget.equals("") || sType.equals("")) { return; }
+		Character Char1 = Character.valueOf((char)1);
+		if (!sMessage.equals("")) { sMessage = " "+sMessage; }
+		sendString("NOTICE "+sTarget+" :"+Char1+sType.toUpperCase()+sMessage+Char1);	
+	}
+	
+	/**
 	 * Quit server. This method will wait for the server to close the socket.
 	 *
 	 * @param sReason Reason for quitting.

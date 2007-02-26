@@ -310,6 +310,64 @@ public class ChannelInfo {
 	}
 	
 	/**
+	 * Send a private message to the channel.
+	 *
+	 * @param sMessage Message to send
+	 */
+	public void sendMessage(String sMessage) { 
+		if (sMessage.equals("")) { return; }
+		
+		myParser.sendString("PRIVMSG "+sName+" :"+sMessage);	
+	}
+	
+	/**
+	 * Send a notice message to a target.
+	 *
+	 * @param sMessage Message to send
+	 */
+	public void sendNotice(String sMessage) { 
+		if (sMessage.equals("")) { return; }
+		
+		myParser.sendString("NOTICE "+sName+" :"+sMessage);	
+	}
+
+	/**
+	 * Send a private message to a target.
+	 *
+	 * @param sMessage Message to send
+	 */
+	public void sendAction(String sMessage) { 
+		if (sMessage.equals("")) { return; }
+		sendCTCP("ACTION", sMessage);
+	}
+	
+	/**
+	 * Send a CTCP to a target.
+	 *
+	 * @param sType Type of CTCP
+	 * @param sMessage Optional Additional Parameters
+	 */
+	public void sendCTCP(String sType, String sMessage) { 
+		if (sType.equals("")) { return; }
+		Character Char1 = Character.valueOf((char)1);
+		if (!sMessage.equals("")) { sMessage = " "+sMessage; }
+		myParser.sendString("PRIVMSG "+sName+" :"+Char1+sType.toUpperCase()+sMessage+Char1);	
+	}
+	
+	/**
+	 * Send a CTCPReply to a target.
+	 *
+	 * @param sType Type of CTCP
+	 * @param sMessage Optional Additional Parameters
+	 */
+	public void sendCTCPReply(String sType, String sMessage) { 
+		if (sType.equals("")) { return; }
+		Character Char1 = Character.valueOf((char)1);
+		if (!sMessage.equals("")) { sMessage = " "+sMessage; }
+		myParser.sendString("NOTICE "+sName+" :"+Char1+sType.toUpperCase()+sMessage+Char1);	
+	}
+	
+	/**
 	 * Get SVN Version information
 	 *
 	 * @return SVN Version String
