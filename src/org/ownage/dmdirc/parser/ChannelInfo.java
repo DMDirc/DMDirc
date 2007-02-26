@@ -106,13 +106,11 @@ public class ChannelInfo {
 	 */	
 	public ChannelClientInfo getUser(ClientInfo cWho) {
 		ChannelClientInfo cTemp = null;
-		if (hChannelUserList.containsValue(cWho)) { 
-			for (Enumeration e = hChannelUserList.keys(); e.hasMoreElements();) {
-				cTemp = hChannelUserList.get(e.nextElement());
-				if (cTemp.getClient() == cWho) { return cTemp; }
-			}
-			cTemp = null;
+		for (Enumeration e = hChannelUserList.keys(); e.hasMoreElements();) {
+			cTemp = hChannelUserList.get(e.nextElement());
+			if (cTemp.getClient() == cWho) { return cTemp; }
 		}
+		cTemp = null;
 		return cTemp;
 	}
 	
