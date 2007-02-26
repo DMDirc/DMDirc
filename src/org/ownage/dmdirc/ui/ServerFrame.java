@@ -67,7 +67,7 @@ public class ServerFrame extends javax.swing.JInternalFrame {
         
         jTextField1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                ServerFrame.this.parent.SendRawLine(jTextField1.getText());
+                ServerFrame.this.parent.sendRawLine(jTextField1.getText());
                 jTextField1.setText("");
             }
         });
