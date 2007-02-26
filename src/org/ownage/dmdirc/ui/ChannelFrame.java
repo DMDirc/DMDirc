@@ -22,9 +22,12 @@
 
 package org.ownage.dmdirc.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
+import org.ownage.dmdirc.Channel;
 import org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /**
@@ -33,13 +36,24 @@ import org.ownage.dmdirc.parser.ChannelClientInfo;
  */
 public class ChannelFrame extends javax.swing.JInternalFrame {
     
+    private Channel parent;
+    
     /** Creates new form ChannelFrame */
-    public ChannelFrame() {
+    public ChannelFrame(Channel parent) {
+        this.parent = parent;
+        
         initComponents();
         setMaximizable(true);
         setClosable(true);
         setVisible(true);
         setResizable(true);        
+        
+        jTextField1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                ChannelFrame.this.parent.sendLine(jTextField1.getText());
+                jTextField1.setText("");
+            }
+        });        
     }
     
     /**
