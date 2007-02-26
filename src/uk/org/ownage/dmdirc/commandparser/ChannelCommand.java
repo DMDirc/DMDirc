@@ -22,28 +22,21 @@
 
 package uk.org.ownage.dmdirc.commandparser;
 
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+
 /**
  *
  * @author chris
  */
-public abstract class Command {
+public abstract class ChannelCommand extends Command {
     
-    protected String name;
-    protected int arity = 0;
-    protected boolean polyadic;
+    protected ChannelInfo channel;
     
-    /** Creates a new instance of Command */
-    public Command() {
+    /** Creates a new instance of ChannelCommand */
+    public ChannelCommand(ChannelInfo channel) {
+        super();
+        
+        this.channel = channel;
     }
-    
-    public String getSignature() {
-        if (polyadic) {
-            return name;
-        } else {
-            return name+"/"+arity;
-        }
-    }
-    
-    public abstract void Execute(String... args);
-    
+        
 }
