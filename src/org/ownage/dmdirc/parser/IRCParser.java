@@ -3335,7 +3335,10 @@ public class IRCParser implements Runnable {
 		sNick = temp[0];  /* */
 		
 		cMyself = getClientInfo(sNick);
-		if (cMyself == null) { cMyself = new ClientInfo(this, sNick); }
+		if (cMyself == null) {
+			cMyself = new ClientInfo(this, sNick);
+			hClientList.put(cMyself.getNickname().toLowerCase(),cMyself);
+		}
 		
 		callServerReady();
 	}

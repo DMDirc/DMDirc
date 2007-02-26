@@ -120,7 +120,7 @@ public class ChannelInfo {
 	 * @param cClient Client object to be added to channel
 	 * @return ChannelClientInfo object added, or an existing object if already known on channel
 	 */		
-	public ChannelClientInfo addClient(ClientInfo cClient) {
+	protected ChannelClientInfo addClient(ClientInfo cClient) {
 		ChannelClientInfo cTemp = null;
 		cTemp = getUser(cClient);
 		if (cTemp == null) { 
@@ -135,7 +135,7 @@ public class ChannelInfo {
 	 *
 	 * @param cClient Client object to be removed from channel
 	 */	
-	public void delClient(ClientInfo cClient) {
+	protected void delClient(ClientInfo cClient) {
 		ChannelClientInfo cTemp = null;
 		cTemp = getUser(cClient);
 		if (cTemp != null) {
