@@ -2522,10 +2522,15 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param line Line to send (\r\n termination is added automatically)
 	 */
-	public void sendLine(String line) { callDataOut(line,false); out.printf("%s\r\n",line);}
+	public void sendLine(String line) {
+		if (out == null) { return; }
+		callDataOut(line,false);
+		out.printf("%s\r\n",line);
+	}
 	
 	/** Send a line to the server and add proper line ending. */
 	protected void sendString(String line) {
+		if (out == null) { return; }
 		callDataOut(line,true);
 		out.printf("%s\r\n",line);
 	}
