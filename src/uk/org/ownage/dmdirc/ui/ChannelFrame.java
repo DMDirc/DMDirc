@@ -72,7 +72,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
     }    
     
     public void updateNames(ArrayList<ChannelClientInfo> newNames) {
-        nicklistModel.add(newNames);
+        nicklistModel.replace(newNames);
     }
     
     /** This method is called from within the constructor to
