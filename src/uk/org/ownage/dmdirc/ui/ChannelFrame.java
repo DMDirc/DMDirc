@@ -127,6 +127,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
         jTextPane1.setEditable(false);
         jScrollPane1.setViewportView(jTextPane1);
 
+        jList1.setModel(nicklistModel);
         jScrollPane2.setViewportView(jList1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
