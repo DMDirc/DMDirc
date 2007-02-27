@@ -116,7 +116,7 @@ public class ChannelClientInfo {
 	 */
 	public int getImportantMode() {
 //		for (int i = 1; i < myParser.nNextKeyPrefix; i = i*2) {
-		for (int i = myParser.nNextKeyPrefix; i > 1; i = i/2) {
+		for (int i = myParser.nNextKeyPrefix; i < 1; i = i/2) {
 			if ((nModes & i) == i) { return i; }
 		}
 		return 0;
