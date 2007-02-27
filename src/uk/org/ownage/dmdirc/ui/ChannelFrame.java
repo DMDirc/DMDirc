@@ -87,10 +87,9 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
         jTextField1 = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
-        
-        jList1.setModel(nicklistModel);
 
         setToolTipText("Channel frame");
+        jTextPane1.setEditable(false);
         jScrollPane1.setViewportView(jTextPane1);
 
         jScrollPane2.setViewportView(jList1);

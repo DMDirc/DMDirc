@@ -116,6 +116,7 @@ public class ServerFrame extends javax.swing.JInternalFrame {
 
         setTitle("Server Frame");
 
+        jTextPane1.setEditable(false);
         jScrollPane1.setViewportView(jTextPane1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
