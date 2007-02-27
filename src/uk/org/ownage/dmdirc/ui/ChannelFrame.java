@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.JScrollBar;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import uk.org.ownage.dmdirc.Channel;
@@ -69,6 +70,10 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
         } catch (BadLocationException ex) {
             ex.printStackTrace();
         }
+        
+        jScrollPane1.invalidate();
+        JScrollBar bar = jScrollPane1.getVerticalScrollBar();
+        bar.setValue(bar.getMaximum());
     }    
     
     public void updateNames(ArrayList<ChannelClientInfo> newNames) {
@@ -89,6 +94,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
         jList1 = new javax.swing.JList();
 
         setToolTipText("Channel frame");
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         jTextPane1.setEditable(false);
         jScrollPane1.setViewportView(jTextPane1);
 

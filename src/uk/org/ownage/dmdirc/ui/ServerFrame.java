@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import javax.swing.JScrollBar;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import uk.org.ownage.dmdirc.Server;
@@ -91,7 +92,8 @@ public class ServerFrame extends javax.swing.JInternalFrame {
     }
     
     /**
-     * Adds a line of text to the main text area
+     * Adds a line of text to the main text area, and scrolls the text pane
+     * down so that it's visible
      * @param line text to add
      */
     public void addLine(String line) {
@@ -101,6 +103,10 @@ public class ServerFrame extends javax.swing.JInternalFrame {
         } catch (BadLocationException ex) {
             ex.printStackTrace();
         }
+        
+        jScrollPane1.invalidate();
+        JScrollBar bar = jScrollPane1.getVerticalScrollBar();
+        bar.setValue(bar.getMaximum());
     }
     
     /** This method is called from within the constructor to
@@ -116,6 +122,7 @@ public class ServerFrame extends javax.swing.JInternalFrame {
 
         setTitle("Server Frame");
 
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         jTextPane1.setEditable(false);
         jScrollPane1.setViewportView(jTextPane1);
 
