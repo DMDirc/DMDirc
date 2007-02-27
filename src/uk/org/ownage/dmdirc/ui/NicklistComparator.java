@@ -26,19 +26,29 @@ import java.util.Comparator;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /**
- *
- * @author greboid
+ * Compares nicklist entries to each other, for sorting purposes
  */
 public class NicklistComparator implements Comparator<ChannelClientInfo> {
     private boolean sortByMode = true;
     private boolean sortByCase = false;
     
-    /** Creates a new instance of NicklistComparator */
+    /**
+     * Creates a new instance of NicklistComparator
+     * @param sortByMode sorts by channel mode of the user
+     * @param sortByCase sorts by nickname case
+     */
     public NicklistComparator(boolean sortByMode, boolean sortByCase) {
         this.sortByMode = sortByMode;
         this.sortByCase = sortByCase;
     }
     
+    /**
+     * Compares two ChannelClient objects based on the settings the comparator was 
+     * initialised with
+     * @param client1 the first client to be compared
+     * @param client2 the second client to be compared
+     * @return a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
+     */
     public int compare(ChannelClientInfo client1, ChannelClientInfo client2) {
         String nickname1 = client1.getNickname();
         String nickname2 = client2.getNickname();

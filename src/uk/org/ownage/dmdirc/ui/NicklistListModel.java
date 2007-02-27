@@ -28,26 +28,51 @@ import javax.swing.AbstractListModel;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
+/**
+ * Stores and provides means to modify nicklist data for a channel
+ */
 public class NicklistListModel extends AbstractListModel {
-    public static final long serialVersionUID = 1l;
-    ArrayList<ChannelClientInfo> nicknames;
+    private static final long serialVersionUID = 1l;
     
+    private ArrayList<ChannelClientInfo> nicknames;
+    
+    /**
+     * Creates a new empty model
+     */
     public NicklistListModel() {
         nicknames = new ArrayList<ChannelClientInfo>();
     }
     
+    /**
+     * Creates a new model and initiliases it with the data provided
+     * @param nicknames list of nicknames used for initialisation
+     */
     public NicklistListModel(ArrayList<ChannelClientInfo> nicknames) {
         this.nicknames = nicknames;
+        this.sort();
     }
     
+    /**
+     * Returns the size of the current nicklist
+     * @return nicklist size
+     */
     public int getSize() {
         return nicknames.size();
     }
     
+    /**
+     * Returns the element at the specified place in the nicklist
+     * @param index index of nick required
+     * @return nicklist entry requested
+     */
     public ChannelClientInfo getElementAt(int index) {
         return nicknames.get(index);
     }
     
+    /**
+     * Sorts the nicklist based on settings in the Config, only needed if the sort 
+     * method changes
+     */
     public void sort() {
         boolean sortByMode = true;
         boolean sortByCase = false;
@@ -59,37 +84,45 @@ public class NicklistListModel extends AbstractListModel {
         }
         NicklistComparator comparator = new NicklistComparator(sortByMode, sortByCase);
         Collections.sort(nicknames, comparator);
+        this.fireContentsChanged(this,0,nicknames.size());
     }
     
-    public boolean add(ArrayList<ChannelClientInfo> clients) {
+    /**
+     * Replaces the entire nicklist with the arraylist specified
+     * @param clients replacement nicklist
+     * @return boolean success
+     */
+    public boolean replace(ArrayList<ChannelClientInfo> clients) {
         boolean returnValue = false;
         
         nicknames.clear();
         returnValue = nicknames.addAll(clients);
         
         this.sort();
-        this.fireIntervalAdded(this, 0, nicknames.size());
 
         return returnValue;
     }
     
+    /**
+     * Adds the specified client to the nicklist
+     * @param client client to add to the nicklist
+     * @return boolean success
+     */
     public boolean add(ChannelClientInfo client) {
         boolean returnValue = false;
         
         returnValue = nicknames.add(client);
         
         this.sort();
-        this.fireIntervalAdded(this, 0, nicknames.size());
 
         return returnValue;
     }
     
-    public void add(int index, ChannelClientInfo client) {
-        nicknames.add(index, client);
-        this.sort();
-        this.fireIntervalAdded(this, 0, nicknames.size());
-    }
-    
+    /**
+     * Removes the specified client from the nicklist
+     * @param client client to remove
+     * @return boolean success
+     */
     public boolean remove(ChannelClientInfo client) {
         boolean returnValue;
         returnValue = nicknames.remove(client);
@@ -97,6 +130,11 @@ public class NicklistListModel extends AbstractListModel {
         return returnValue;
     }
     
+    /**
+     * Removes the specified index from the nicklist
+     * @param index index to remove
+     * @return ChannelClientInfo client removed
+     */
     public ChannelClientInfo remove(int index) {
         ChannelClientInfo returnValue;
         returnValue = nicknames.remove(index);
