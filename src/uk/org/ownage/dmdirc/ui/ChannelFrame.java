@@ -52,9 +52,17 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
      */
     private Border myborder;
     /**
-     * The northframe used when the frame is not maximised
+     * The dimensions of the titlebar of the frame
      **/
-    private Dimension titlebarSize;    
+    private Dimension titlebarSize;
+    /**
+     * whether to auto scroll the textarea when adding text
+     */
+    private boolean autoScroll = true;
+    /**
+     * holds the scrollbar for the frame
+     */
+    private JScrollBar scrollBar;
     
     /** Creates new form ChannelFrame */
     public ChannelFrame(Channel parent) {
@@ -65,14 +73,16 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
         setMaximizable(true);
         setClosable(true);
         setVisible(true);
-        setResizable(true);        
+        setResizable(true);
+        
+        scrollBar = jScrollPane1.getVerticalScrollBar();
         
         jTextField1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 ChannelFrame.this.parent.sendLine(jTextField1.getText());
                 jTextField1.setText("");
             }
-        });        
+        });
         
         addPropertyChangeListener("maximum", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
@@ -91,7 +101,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
                     .setPreferredSize(ChannelFrame.this.titlebarSize);
                 }
             }
-        });        
+        });
     }
     
     /**
@@ -106,10 +116,12 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
             ex.printStackTrace();
         }
         
-        jScrollPane1.invalidate();
-        JScrollBar bar = jScrollPane1.getVerticalScrollBar();
-        bar.setValue(bar.getMaximum());
-    }    
+        autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
+        != scrollBar.getMaximum());
+        if(autoScroll) {
+            jTextPane1.setCaretPosition(doc.getLength());
+        }
+    }
     
     public void updateNames(ArrayList<ChannelClientInfo> newNames) {
         nicklistModel.replace(newNames);

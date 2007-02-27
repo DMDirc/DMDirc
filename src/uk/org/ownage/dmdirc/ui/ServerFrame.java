@@ -52,9 +52,17 @@ public class ServerFrame extends javax.swing.JInternalFrame {
      */
     private Border myborder;
     /**
-     * The northframe used when the frame is not maximised
+     * The dimensions of the titlebar of the frame
      **/
     private Dimension titlebarSize;
+    /**
+     * whether to auto scroll the textarea when adding text
+     */
+    private boolean autoScroll = true;
+    /**
+     * holds the scrollbar for the frame
+     */
+    private JScrollBar scrollBar;
     
     private ServerCommandParser commandParser;
     
@@ -70,6 +78,7 @@ public class ServerFrame extends javax.swing.JInternalFrame {
         setResizable(true);
         
         this.parent = parent;
+        scrollBar = jScrollPane1.getVerticalScrollBar();
         
         commandParser = new ServerCommandParser(parent);
         
@@ -103,7 +112,7 @@ public class ServerFrame extends javax.swing.JInternalFrame {
     
     /**
      * Adds a line of text to the main text area, and scrolls the text pane
-     * down so that it's visible
+     * down so that it's visible if the scrollbar is already at the bottom
      * @param line text to add
      */
     public void addLine(String line) {
@@ -114,9 +123,15 @@ public class ServerFrame extends javax.swing.JInternalFrame {
             ex.printStackTrace();
         }
         
-        jScrollPane1.invalidate();
-        JScrollBar bar = jScrollPane1.getVerticalScrollBar();
-        bar.setValue(bar.getMaximum());
+        autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
+        != scrollBar.getMaximum());
+        System.out.println("Value: \t\t"+scrollBar.getValue()+
+                "\r\nVisible \t"+scrollBar.getVisibleAmount()+
+                "\r\nMax: \t\t"+scrollBar.getMaximum()+
+                "\r\nAutoScrolling: \t"+autoScroll);
+        if(autoScroll) { 
+            jTextPane1.setCaretPosition(doc.getLength());
+        }
     }
     
     /** This method is called from within the constructor to
