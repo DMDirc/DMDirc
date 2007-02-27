@@ -26,7 +26,7 @@ import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 
 /**
- *
+ * Represents a command which can be performed only in the context of a channel
  * @author chris
  */
 public abstract class ChannelCommand extends Command {
@@ -36,5 +36,11 @@ public abstract class ChannelCommand extends Command {
         super();
     }
     
+    /**
+     * Executes this command
+     * @param server The server instance that this command is being executed on
+     * @param channel The channel instance that this command is being executed on
+     * @param args Arguments passed to this command
+     */    
     public abstract void execute(Server server, Channel channel, String... args);    
 }

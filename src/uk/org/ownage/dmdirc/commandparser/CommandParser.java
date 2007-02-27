@@ -26,11 +26,16 @@ import java.util.Hashtable;
 import uk.org.ownage.dmdirc.Config;
 
 /**
- *
+ * Represents a generic command parser. A command parser takes a line of input
+ * from the user, determines if it is an attempt at executing a command (based
+ * on the character at the start of the string), and handles it appropriately.
  * @author chris
  */
 abstract public class CommandParser {
     
+    /**
+     * Commands that are associated with this parser
+     */
     private Hashtable<String,Command> commands;
     
     /** Creates a new instance of CommandParser */
@@ -42,11 +47,18 @@ abstract public class CommandParser {
     /** Loads the relevant commands into the parser */
     protected abstract void loadCommands();
     
+    /**
+     * Registers the specified command with this parser
+     * @param command Command to be registered
+     */
     public void registerCommand(Command command) {
         commands.put(command.getSignature(), command);
     }
     
-    /** Parses the specified string as a command */
+    /**
+     * Parses the specified string as a command
+     * @param line The line to be parsed
+     */
     public void parseCommand(String line) {
         if (line.charAt(0) == Config.getOption("general","commandchar").charAt(0)) {
             String[] args = line.split(" ");
@@ -72,9 +84,26 @@ abstract public class CommandParser {
         }
     }
     
+    /**
+     * Executes the specified command with the given arguments.
+     * @param command The command to be executed
+     * @param args The arguments to the command
+     */
     abstract protected void executeCommand(Command command, String... args);
     
+    /**
+     * Called when the user attempted to issue a command (i.e., used the command
+     * character) that wasn't found. It could be that the command has a different
+     * arity, or that it plain doesn't exist.
+     * @param command The command the user tried to execute
+     * @param args The arguments passed to the command
+     */
     abstract protected void handleInvalidCommand(String command, String... args);
 
+    /**
+     * Called when the input was a line of text that was not a command. This normally
+     * means it is sent to the server/channel/user as-is, with no further processing.
+     * @param line The line input by the user
+     */
     abstract protected void handleNonCommand(String line);
 }

@@ -25,21 +25,48 @@ package uk.org.ownage.dmdirc.commandparser;
 import uk.org.ownage.dmdirc.Server;
 
 /**
- *
+ * Represents a generic command
  * @author chris
  */
 public abstract class Command {
     
+    /**
+     * The name of this command (i.e., the string used by the user to execute it)
+     */
     protected String name;
+    /**
+     * The arity of this command
+     */
     protected int arity = 0;
+    /**
+     * Whether this command is polyadic or not
+     */
     protected boolean polyadic;
+    /**
+     * Whether this command should be shown in help output
+     */
     protected boolean show = true;
+    /**
+     * A textual description of this command's arguments
+     */
     protected String arguments = "<unknown>";
+    /**
+     * A description of this command
+     */
     protected String description = "unknown";
     
+    /**
+     * Creates a new instance of Command
+     */
     public Command() {
     }
     
+    /**
+     * Returns the signature of this command. For polyadic commands, the signature
+     * is simply the name. For other commands, the signature is a concatenation of
+     * the name, a literal "/", and the arity.
+     * @return The signature of this command
+     */
     public String getSignature() {
         if (polyadic) {
             return name;
@@ -48,10 +75,18 @@ public abstract class Command {
         }
     }
     
+    /**
+     * Returns whether or not this command should be shown in help messages
+     * @return True iff the command should be shown, false otherwise
+     */
     public boolean showInHelp() {
         return show;
     }
     
+    /**
+     * Returns a string representing the help message for this command
+     * @return the help message for this command
+     */
     public String getHelp() {
         return name+" "+arguments+" - "+description;
     }

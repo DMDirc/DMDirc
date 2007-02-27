@@ -26,17 +26,29 @@ import java.util.Vector;
 import uk.org.ownage.dmdirc.commandparser.commands.*;
 
 /**
- *
+ * The command manager creates and manages a single instance of all commands,
+ * and provides methods to load each group of commands into a parser instance
  * @author chris
  */
 public class CommandManager {
     
+    /**
+     * The commands that have been instansiated
+     */
     private static Vector<Command> serverCommands;
            
+    /**
+     * Loads all channel commands into the specified parser
+     * @param parser The parser to load commands into
+     */
     public static void loadChannelCommands(CommandParser parser) {
         throw new UnsupportedOperationException("Not implemented yet");        
     }
     
+    /**
+     * Loads all server commands into the specified parser
+     * @param parser The parser to load commands into
+     */
     public static void loadServerCommands(CommandParser parser) {
         if (serverCommands == null) {
             serverCommands = new Vector<Command>(0,1);

@@ -27,7 +27,8 @@ import uk.org.ownage.dmdirc.commandparser.Command;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
 /**
- *
+ * A sample command. Takes no arguments, and merely prints the SVN ID string of 
+ * the IRC parser.
  * @author chris
  */
 public class Test extends ServerCommand {
@@ -42,6 +43,11 @@ public class Test extends ServerCommand {
         show = true;
     }
 
+    /**
+     * Executes this command
+     * @param server The server instance that this command is being executed on
+     * @param args Arguments passed to this command
+     */
     public void execute(Server server, String... args) {
         server.addLine(server.getParser().getSvnInfo());
     }

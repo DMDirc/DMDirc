@@ -26,34 +26,63 @@ import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 
 /**
- *
+ * A command parser that is tailored for use in a channel environment. Handles
+ * both channel and server commands.
  * @author chris
  */
 public class ChannelCommandParser extends CommandParser {
     
+    /**
+     * The server instance that this parser is attached to
+     */
     private Server server;
+    /**
+     * The channel instance that this parser is attached to
+     */
     private Channel channel;
     
-    /** Creates a new instance of ChannelCommandParser */
+    /**
+     * Creates a new instance of ChannelCommandParser
+     * @param server The server instance that this parser is attached to
+     * @param channel The channel instance that this parser is attached to
+     */
     public ChannelCommandParser(Server server, Channel channel) {
         super();
         
         this.server = server;
         this.channel = channel;
     }
-
+    
+    /** Loads the relevant commands into the parser */
     protected void loadCommands() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
-
+    
+    /**
+     * Executes the specified command with the given arguments.
+     * @param command The command to be executed
+     * @param args The arguments to the command
+     */    
     protected void executeCommand(Command command, String... args) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
-
+    
+    /**
+     * Called when the user attempted to issue a command (i.e., used the command
+     * character) that wasn't found. It could be that the command has a different
+     * arity, or that it plain doesn't exist.
+     * @param command The command the user tried to execute
+     * @param args The arguments passed to the command
+     */    
     protected void handleInvalidCommand(String command, String... args) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
-
+    
+    /**
+     * Called when the input was a line of text that was not a command. This normally
+     * means it is sent to the server/channel/user as-is, with no further processing.
+     * @param line The line input by the user
+     */    
     protected void handleNonCommand(String line) {
         throw new UnsupportedOperationException("Not implemented yet");
     }

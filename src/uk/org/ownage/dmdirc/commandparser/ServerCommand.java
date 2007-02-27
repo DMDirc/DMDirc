@@ -26,7 +26,8 @@ import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 
 /**
- *
+ * Represents a generic server command. Server commands are associated with 
+ * a server instance.
  * @author chris
  */
 public abstract class ServerCommand extends Command {
@@ -36,5 +37,10 @@ public abstract class ServerCommand extends Command {
         super();
     }
     
+    /**
+     * Executes this command
+     * @param server The server instance that this command is being executed on
+     * @param args Arguments passed to this command
+     */    
     public abstract void execute(Server server, String... args);
 }
