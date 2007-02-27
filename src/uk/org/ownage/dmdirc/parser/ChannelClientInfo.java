@@ -110,7 +110,7 @@ public class ChannelClientInfo {
 
 	/**
 	 * Get the value of the most important mode this client has (Prefix modes).
-	 * A lower value is a higher mode, with the exception of 0 being the lowest
+	 * A higher value, is a more important mode, 0 = no modes.
 	 *
 	 * @return integer representing the value of the mose important mode.
 	 */
@@ -121,6 +121,20 @@ public class ChannelClientInfo {
 		}
 		return 0;
 	}
+	
+	/**
+	 * Get the String Value of ChannelClientInfo (ie @Nickname).
+	 *
+	 * @return String Value of user (inc prefix) (ie @Nickname)
+	 */
+	public static String toString() { return this.getChanModeStr(true).charAt(0)+this.getNickname(); }	
+	
+	/**
+	 * Get the "Complete" String Value of ChannelClientInfo (ie @+Nickname).
+	 *
+	 * @return String Value of user (inc prefix) (ie @+Nickname)
+	 */
+	public static String toFullString() { return this.getChanModeStr(true)+this.getNickname(); }	
 	
 	/**
 	 * Get SVN Version information
