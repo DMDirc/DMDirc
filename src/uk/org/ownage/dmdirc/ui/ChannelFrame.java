@@ -24,8 +24,14 @@ package uk.org.ownage.dmdirc.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import javax.swing.JComponent;
 import javax.swing.JScrollBar;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
+import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import uk.org.ownage.dmdirc.Channel;
@@ -39,6 +45,15 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
     
     private Channel parent;
     private NicklistListModel nicklistModel;
+    
+    /**
+     * The border used when the frame is not maximised
+     */
+    private Border myborder;
+    /**
+     * The northframe used when the frame is not maximised
+     **/
+    private JComponent myframe;    
     
     /** Creates new form ChannelFrame */
     public ChannelFrame(Channel parent) {
@@ -55,6 +70,20 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
             public void actionPerformed(ActionEvent actionEvent) {
                 ChannelFrame.this.parent.sendLine(jTextField1.getText());
                 jTextField1.setText("");
+            }
+        });        
+        
+        addPropertyChangeListener("maximum", new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+                if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
+                    ChannelFrame.this.myborder = getBorder();
+                    ChannelFrame.this.myframe = ((BasicInternalFrameUI)getUI()).getNorthPane();
+                    setBorder(new EmptyBorder(0,0,0,0));
+                    ((BasicInternalFrameUI)getUI()).setNorthPane(null);
+                } else {
+                    setBorder(ChannelFrame.this.myborder);
+                    ((BasicInternalFrameUI)getUI()).setNorthPane(ChannelFrame.this.myframe);
+                }
             }
         });        
     }
