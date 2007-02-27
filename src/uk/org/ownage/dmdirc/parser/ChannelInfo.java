@@ -158,16 +158,6 @@ public class ChannelInfo {
 	}	
 	
 	/**
-	 * Check if a channel name is valid in a certain parser object.
-	 *
-	 * @param tParser Reference to parser instance that the channelname is requested for
-	 * @param sChannelName Channel name to test
-	 */
-	public static boolean isValidChannelName(IRCParser tParser, String sChannelName) {
-		return tParser.hChanPrefix.containsKey(sChannelName.charAt(0));
-	}	
-	
-	/**
 	 * Set the topic time.
 	 *
 	 * @param nNewTime New unixtimestamp time for the topic (Seconds sinse epoch, not milliseconds)

@@ -2709,7 +2709,7 @@ public class IRCParser implements Runnable {
 			System.arraycopy(token, 3, sModestr, 0, token.length-3);
 		}
 
-		if (!ChannelInfo.isValidChannelName(this, sChannelName)) { processUserMode(sParam, token, sModestr); return; }
+		if (!isValidChannelName(sChannelName)) { processUserMode(sParam, token, sModestr); return; }
 		
 		iChannel = getChannelInfo(sChannelName);
 		if (iChannel == null) { 
@@ -2933,7 +2933,7 @@ public class IRCParser implements Runnable {
 			}
 		}
 
-		if (ChannelInfo.isValidChannelName(this, token[2])) {
+		if (isValidChannelName(token[2])) {
 			iChannel = getChannelInfo(token[2]);
 			if (iClient != null && iChannel != null) { iChannelClient = iChannel.getUser(iClient); }
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
@@ -3389,7 +3389,7 @@ public class IRCParser implements Runnable {
 	 * @param sChannelName Name of channel to join
 	 */
 	public void joinChannel(String sChannelName) {
-		if (!ChannelInfo.isValidChannelName(this,sChannelName)) { return; }
+		if (!isValidChannelName(sChannelName)) { return; }
 		sendString("JOIN "+sChannelName);
 	}
 	
@@ -3401,7 +3401,7 @@ public class IRCParser implements Runnable {
 	 * @param sReason Reason for leaving (Nothing sent if sReason is "")
 	 */
 	public void partChannel(String sChannelName, String sReason) {
-		if (!ChannelInfo.isValidChannelName(this,sChannelName)) { return; }
+		if (!isValidChannelName(sChannelName)) { return; }
 		if (sReason.equals("")) { sendString("PART "+sChannelName); }
 		else { sendString("PART "+sChannelName+" :"+sReason); }
 	}	
@@ -3501,6 +3501,15 @@ public class IRCParser implements Runnable {
 		quit(sReason);
 		try { socket.close(); } catch (Exception e) { /* Meh */ };
 	}
+	
+	/**
+	 * Check if a channel name is valid in a certain parser object.
+	 *
+	 * @param sChannelName Channel name to test
+	 */
+	public boolean isValidChannelName(String sChannelName) {
+		return hChanPrefix.containsKey(sChannelName.charAt(0));
+	}	
 	
 	/**
 	 * Get a reference to the cMyself object.
