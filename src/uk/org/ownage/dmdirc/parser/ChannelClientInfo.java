@@ -127,14 +127,14 @@ public class ChannelClientInfo {
 	 *
 	 * @return String Value of user (inc prefix) (ie @Nickname)
 	 */
-	public static String toString() { return this.getChanModeStr(true).charAt(0)+this.getNickname(); }	
+	public String toString() { return this.getChanModeStr(true).charAt(0)+this.getNickname(); }	
 	
 	/**
 	 * Get the "Complete" String Value of ChannelClientInfo (ie @+Nickname).
 	 *
 	 * @return String Value of user (inc prefix) (ie @+Nickname)
 	 */
-	public static String toFullString() { return this.getChanModeStr(true)+this.getNickname(); }	
+	public String toFullString() { return this.getChanModeStr(true)+this.getNickname(); }	
 	
 	/**
 	 * Get SVN Version information
