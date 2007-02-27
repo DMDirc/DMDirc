@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -53,7 +54,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
     /**
      * The northframe used when the frame is not maximised
      **/
-    private JComponent myframe;    
+    private Dimension titlebarSize;    
     
     /** Creates new form ChannelFrame */
     public ChannelFrame(Channel parent) {
@@ -77,12 +78,17 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
                     ChannelFrame.this.myborder = getBorder();
-                    ChannelFrame.this.myframe = ((BasicInternalFrameUI)getUI()).getNorthPane();
+                    ChannelFrame.this.titlebarSize =
+                            ((BasicInternalFrameUI)getUI())
+                            .getNorthPane().getPreferredSize();
+                    
+                    ((BasicInternalFrameUI)getUI()).getNorthPane()
+                    .setPreferredSize(new Dimension(0,0));
                     setBorder(new EmptyBorder(0,0,0,0));
-                    ((BasicInternalFrameUI)getUI()).setNorthPane(null);
                 } else {
                     setBorder(ChannelFrame.this.myborder);
-                    ((BasicInternalFrameUI)getUI()).setNorthPane(ChannelFrame.this.myframe);
+                    ((BasicInternalFrameUI)getUI()).getNorthPane()
+                    .setPreferredSize(ChannelFrame.this.titlebarSize);
                 }
             }
         });        

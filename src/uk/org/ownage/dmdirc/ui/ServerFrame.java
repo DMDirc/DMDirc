@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.awt.Dimension;
 import javax.swing.JScrollBar;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
@@ -34,7 +35,6 @@ import javax.swing.JComponent;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
-import javax.swing.plaf.metal.MetalInternalFrameUI;
 
 /**
  * The ServerFrame is the MDI window that shows server messages to the user
@@ -53,7 +53,7 @@ public class ServerFrame extends javax.swing.JInternalFrame {
     /**
      * The northframe used when the frame is not maximised
      **/
-    private JComponent myframe;
+    private Dimension titlebarSize;
     
     /**
      * Creates new form ServerFrame
@@ -65,7 +65,7 @@ public class ServerFrame extends javax.swing.JInternalFrame {
         setClosable(true);
         setVisible(true);
         setResizable(true);
-               
+        
         this.parent = parent;
         
         jTextField1.addActionListener(new ActionListener() {
@@ -79,12 +79,17 @@ public class ServerFrame extends javax.swing.JInternalFrame {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
                     ServerFrame.this.myborder = getBorder();
-                    ServerFrame.this.myframe = ((BasicInternalFrameUI)getUI()).getNorthPane();
+                    ServerFrame.this.titlebarSize =
+                            ((BasicInternalFrameUI)getUI())
+                            .getNorthPane().getPreferredSize();
+                    
+                    ((BasicInternalFrameUI)getUI()).getNorthPane()
+                    .setPreferredSize(new Dimension(0,0));
                     setBorder(new EmptyBorder(0,0,0,0));
-                    ((BasicInternalFrameUI)getUI()).setNorthPane(null);
                 } else {
                     setBorder(ServerFrame.this.myborder);
-                    ((BasicInternalFrameUI)getUI()).setNorthPane(ServerFrame.this.myframe);
+                    ((BasicInternalFrameUI)getUI()).getNorthPane()
+                    .setPreferredSize(ServerFrame.this.titlebarSize);
                 }
             }
         });
