@@ -22,6 +22,9 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.beans.PropertyVetoException;
 import uk.org.ownage.dmdirc.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -59,6 +62,23 @@ public class MainFrame extends javax.swing.JFrame {
                 NewServerDialog.showNewServerDialog();
             }
         });
+        
+        windowMenu.addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent itemEvent) {
+                checkWindowState();
+            }
+        });
+        
+        toggleStateMenuItem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    getActiveFrame().setMaximum(!getActiveFrame().isMaximum());
+                } catch (PropertyVetoException ex) {
+                    // TODO: Handle error properly
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
     
     /**
@@ -67,6 +87,33 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public void addChild(JInternalFrame frame) {
         desktopPane.add(frame);
+    }
+    
+    /**
+     * Returns the JInternalFrame that is currently active
+     * @return The active JInternalFrame
+     */
+    public JInternalFrame getActiveFrame() {
+        return desktopPane.getSelectedFrame();
+    }
+    
+    private void checkWindowState() {
+        if (getActiveFrame() == null) {
+            toggleStateMenuItem.setEnabled(false);
+            return;
+        }
+        
+        toggleStateMenuItem.setEnabled(true);
+        
+        if (getActiveFrame().isMaximum()) {
+            toggleStateMenuItem.setText("Restore");
+            toggleStateMenuItem.setMnemonic('r');
+            toggleStateMenuItem.invalidate();
+        } else {
+            toggleStateMenuItem.setText("Maximise");
+            toggleStateMenuItem.setMnemonic('m');
+            toggleStateMenuItem.invalidate();
+        }
     }
     
     /** This method is called from within the constructor to
@@ -78,18 +125,28 @@ public class MainFrame extends javax.swing.JFrame {
     private void initComponents() {
         desktopPane = new javax.swing.JDesktopPane();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        fileMenu = new javax.swing.JMenu();
         miAddServer = new javax.swing.JMenuItem();
+        windowMenu = new javax.swing.JMenu();
+        toggleStateMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DMDirc");
 
-        jMenu1.setMnemonic('f');
-        jMenu1.setText("File");
+        fileMenu.setMnemonic('f');
+        fileMenu.setText("File");
         miAddServer.setText("New Server...");
-        jMenu1.add(miAddServer);
+        fileMenu.add(miAddServer);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(fileMenu);
+
+        windowMenu.setMnemonic('w');
+        windowMenu.setText("Window");
+        toggleStateMenuItem.setMnemonic('m');
+        toggleStateMenuItem.setText("Maximise");
+        windowMenu.add(toggleStateMenuItem);
+
+        jMenuBar1.add(windowMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -108,9 +165,11 @@ public class MainFrame extends javax.swing.JFrame {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane desktopPane;
-    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem miAddServer;
+    private javax.swing.JMenuItem toggleStateMenuItem;
+    private javax.swing.JMenu windowMenu;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -4,7 +4,7 @@
   <NonVisualComponents>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
+        <Menu class="javax.swing.JMenu" name="fileMenu">
           <Properties>
             <Property name="mnemonic" type="int" value="102"/>
             <Property name="text" type="java.lang.String" value="File"/>
@@ -13,6 +13,20 @@
             <MenuItem class="javax.swing.JMenuItem" name="miAddServer">
               <Properties>
                 <Property name="text" type="java.lang.String" value="New Server..."/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
+        </Menu>
+        <Menu class="javax.swing.JMenu" name="windowMenu">
+          <Properties>
+            <Property name="mnemonic" type="int" value="119"/>
+            <Property name="text" type="java.lang.String" value="Window"/>
+          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="toggleStateMenuItem">
+              <Properties>
+                <Property name="mnemonic" type="int" value="109"/>
+                <Property name="text" type="java.lang.String" value="Maximise"/>
               </Properties>
             </MenuItem>
           </SubComponents>

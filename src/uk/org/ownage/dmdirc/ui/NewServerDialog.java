@@ -90,14 +90,14 @@ public class NewServerDialog extends javax.swing.JDialog {
                 String pass = jTextField3.getText();
                 int port = Integer.parseInt(jTextField2.getText());
                 
+                NewServerDialog.this.setVisible(false);
+                
                 // Open in a new window?
                 if (jCheckBox1.isSelected()) {
                     Server server = new Server(host, port, pass);
                 } else {
-                    
+                    // TODO: Find active server, disconnect, and reconnect
                 }
-                
-                NewServerDialog.this.setVisible(false);
             }
         });
     }
@@ -134,7 +134,7 @@ public class NewServerDialog extends javax.swing.JDialog {
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel3.setText("Port:");
 
-        jTextField2.setText("6667");
+        jTextField2.setText("7000");
 
         jLabel4.setText("Password:");
 
