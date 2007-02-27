@@ -2841,7 +2841,7 @@ public class IRCParser implements Runnable {
 		ChannelInfo iChannel;
 		if (nParam == 366) {
 			// End of names
-			iChannel = getChannelInfo(token[2]);
+			iChannel = getChannelInfo(token[3]);
 			if (iChannel != null) {
 				iChannel.bAddingNames = false;
 				callChannelGotNames(iChannel);
