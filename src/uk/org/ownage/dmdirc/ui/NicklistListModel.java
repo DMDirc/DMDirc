@@ -61,7 +61,7 @@ public class NicklistListModel extends AbstractListModel {
         
         returnValue = nicknames.add(client);
         
-        NicklistComparator<ChannelClientInfo> comparator = new NicklistComparator<ChannelClientInfo>(sortByMode, sortByCase);
+        NicklistComparator comparator = new NicklistComparator(sortByMode, sortByCase);
         Collections.sort(nicknames, comparator);
         
         return returnValue;

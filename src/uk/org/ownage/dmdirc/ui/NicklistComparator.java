@@ -23,12 +23,13 @@
 package uk.org.ownage.dmdirc.ui;
 
 import java.util.Comparator;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /**
  *
  * @author greboid
  */
-public class NicklistComparator<ChannelClientInfo> implements Comparator {
+public class NicklistComparator implements Comparator<ChannelClientInfo> {
     boolean sortByMode = true;
     boolean sortByCase = false;
     
@@ -38,12 +39,7 @@ public class NicklistComparator<ChannelClientInfo> implements Comparator {
         this.sortByCase = sortByCase;
     }
     
-    public int compare(Object o1, Object o2) 
-    throws ClassCastException {
-        if (o1 instanceof uk.org.ownage.dmdirc.parser.ChannelClientInfo
-                || o2 instanceof uk.org.ownage.dmdirc.parser.ChannelClientInfo) {
-            throw new ClassCastException("Unsupported types");
-        }
+    public int compare(ChannelClientInfo o1, ChannelClientInfo o2) {
         return -1;
     }
 }
