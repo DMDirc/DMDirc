@@ -1416,7 +1416,6 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IRCParser.ISelfChannelJoin
 	 * @param cChannel Channel Object
-	 * @param cChannelClient ChannelClient object for new person
 	 */
 	protected boolean callSelfChannelJoin(ChannelInfo cChannel) {
 		boolean bResult = false;

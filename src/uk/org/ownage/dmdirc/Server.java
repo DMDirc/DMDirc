@@ -99,7 +99,7 @@ public class Server {
     
     /**
      * Retrieves the parser used for this connection
-     * @returns IRCParser this connection's parser
+     * @return IRCParser this connection's parser
      */
     public IRCParser getParser() {
         return parser;
