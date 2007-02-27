@@ -22,16 +22,40 @@
 
 package uk.org.ownage.dmdirc.commandparser;
 
+import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.Server;
+
 /**
  *
  * @author chris
  */
-public class ChannelCommandParser extends ServerCommandParser {
+public class ChannelCommandParser extends CommandParser {
+    
+    private Server server;
+    private Channel channel;
     
     /** Creates a new instance of ChannelCommandParser */
-    public ChannelCommandParser() {
+    public ChannelCommandParser(Server server, Channel channel) {
+        super();
+        
+        this.server = server;
+        this.channel = channel;
     }
 
-    
+    protected void LoadCommands() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    protected void executeCommand(Command command, String... args) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    protected void handleInvalidCommand(String command, String... args) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    protected void handleNonCommand(String line) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
     
 }

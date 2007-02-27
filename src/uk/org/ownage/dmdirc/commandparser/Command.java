@@ -22,17 +22,23 @@
 
 package uk.org.ownage.dmdirc.commandparser;
 
+import uk.org.ownage.dmdirc.Server;
+
 /**
  *
  * @author chris
  */
 public abstract class Command {
     
+    protected static Command instance;
+    
     protected String name;
     protected int arity = 0;
     protected boolean polyadic;
+    protected boolean show = true;
+    protected String arguments = "<unknown>";
+    protected String description = "unknown";
     
-    /** Creates a new instance of Command */
     public Command() {
     }
     
@@ -44,6 +50,16 @@ public abstract class Command {
         }
     }
     
-    public abstract void Execute(String... args);
+    public boolean showInHelp() {
+        return show;
+    }
+    
+    public String getHelp() {
+        return name+" "+arguments+" - "+description;
+    }
+    
+    public static Command getInstance() {
+        return instance;
+    }
     
 }

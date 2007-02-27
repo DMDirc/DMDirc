@@ -22,17 +22,37 @@
 
 package uk.org.ownage.dmdirc.commandparser;
 
+import uk.org.ownage.dmdirc.Server;
+
 /**
  *
  * @author chris
  */
 public class ServerCommandParser extends CommandParser {
     
+    private Server server;
+    
     /** Creates a new instance of ServerCommandParser */
-    public ServerCommandParser() {
+    public ServerCommandParser(Server server) {
+        super();
+        
+        this.server = server;
     }
 
     protected void LoadCommands() {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    protected void executeCommand(Command command, String... args) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    protected void handleInvalidCommand(String command, String... args) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    protected void handleNonCommand(String line) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
     
 }

@@ -20,21 +20,32 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser;
+package uk.org.ownage.dmdirc.commandparser.commands;
 
-import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.Command;
+import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
 /**
  *
  * @author chris
  */
-public abstract class ChannelCommand extends Command {
-       
-    /** Creates a new instance of ChannelCommand */
-    public ChannelCommand() {
-        super();
+public class Test extends ServerCommand {
+    
+    protected static Command instance = new Test();
+    
+    /** Creates a new instance of Test */
+    public Test() {
+        description = "a test command";
+        arguments = "";
+        polyadic = false;
+        arity = 0;            
+        name = "test";        
+        show = true;
+    }
+
+    public void Execute(Server server, String... args) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
     
-    public abstract void Execute(Server server, Channel channel, String... args);    
 }

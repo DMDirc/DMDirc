@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser;
 
 import java.util.Hashtable;
+import uk.org.ownage.dmdirc.Config;
 
 /**
  *
@@ -46,23 +47,33 @@ abstract public class CommandParser {
     
     /** Parses the specified string as a command */
     public void parseCommand(String line) {
-        String[] args = line.split(" ");
-        
-        assert(args.length > 0);
-        
-        String command = args[0];
-        String signature = command+"/"+(args.length-1);
-        
-        // Check the specific signature first, so that polyadic commands can
-        // have error handlers if there are too few arguments (e.g., msg/0 and
-        // msg/1 would return errors, so msg only gets called with 2+ args).
-        if (commands.containsKey(signature)) {
+        if (line.charAt(0) == Config.getOption("general","commandchar").charAt(0)) {
+            String[] args = line.split(" ");
             
-        } else if (commands.containsKey(command)) {
+            assert(args.length > 0);
             
+            String command = args[0];
+            
+            String signature = command+"/"+(args.length-1);
+            
+            // Check the specific signature first, so that polyadic commands can
+            // have error handlers if there are too few arguments (e.g., msg/0 and
+            // msg/1 would return errors, so msg only gets called with 2+ args).
+            if (commands.containsKey(signature)) {
+                executeCommand(commands.get(signature), args);
+            } else if (commands.containsKey(command)) {
+                executeCommand(commands.get(command), args);
+            } else {
+                handleInvalidCommand(command, args);
+            }
         } else {
-            
+            handleNonCommand(line);
         }
     }
     
+    abstract protected void executeCommand(Command command, String... args);
+    
+    abstract protected void handleInvalidCommand(String command, String... args);
+
+    abstract protected void handleNonCommand(String line);
 }

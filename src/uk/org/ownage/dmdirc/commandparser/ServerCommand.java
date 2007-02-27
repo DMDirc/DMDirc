@@ -29,12 +29,12 @@ import uk.org.ownage.dmdirc.Server;
  *
  * @author chris
  */
-public abstract class ChannelCommand extends Command {
+public abstract class ServerCommand extends Command {
        
     /** Creates a new instance of ChannelCommand */
-    public ChannelCommand() {
+    public ServerCommand() {
         super();
     }
     
-    public abstract void Execute(Server server, Channel channel, String... args);    
+    public abstract void Execute(Server server, String... args);
 }
