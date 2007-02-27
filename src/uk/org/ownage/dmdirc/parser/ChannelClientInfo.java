@@ -127,7 +127,11 @@ public class ChannelClientInfo {
 	 *
 	 * @return String Value of user (inc prefix) (ie @Nickname)
 	 */
-	public String toString() { return this.getChanModeStr(true).charAt(0)+this.getNickname(); }	
+	public String toString() { 
+		String sModes = this.getChanModeStr(true);
+		if (!sModes.equals("")) { sModes = ""+sModes.charAt(0); }
+		return sModes+this.getNickname();
+	}	
 	
 	/**
 	 * Get the "Complete" String Value of ChannelClientInfo (ie @+Nickname).
