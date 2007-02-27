@@ -22,61 +22,41 @@
 
 package uk.org.ownage.dmdirc.ui;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import javax.swing.AbstractListModel;
-import uk.org.ownage.dmdirc.Config;
+import java.util.Comparator;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
-public class NicklistListModel extends AbstractListModel {
-    public static final long serialVersionUID = 1l;
-    ArrayList<ChannelClientInfo> nicknames;
+/**
+ *
+ * @author greboid
+ */
+public class NicklistComparator implements Comparator<ChannelClientInfo> {
+    private boolean sortByMode = true;
+    private boolean sortByCase = false;
     
-    public NicklistListModel() {
-        nicknames = new ArrayList<ChannelClientInfo>();        
+    /** Creates a new instance of NicklistComparator */
+    public NicklistComparator(boolean sortByMode, boolean sortByCase) {
+        this.sortByMode = sortByMode;
+        this.sortByCase = sortByCase;
     }
     
-    public NicklistListModel(ArrayList<ChannelClientInfo> nicknames) {
-        this.nicknames = nicknames;
-    }
-    
-    public int getSize() {
-        return nicknames.size();
-    }
-
-    public ChannelClientInfo getElementAt(int index) {
-        return nicknames.get(index);
-    }
-    
-    public boolean add(ChannelClientInfo client) {
-        boolean returnValue = false;
-        boolean sortByMode = true;
-        boolean sortByCase = false;
-        if (Config.hasOption("ui","sortByMode")) {
-            Config.getOption("ui","sortByMode");
+    public int compare(ChannelClientInfo client1, ChannelClientInfo client2) {
+        String nickname1 = client1.getNickname();
+        String nickname2 = client2.getNickname();
+        if (sortByCase) {
+            if (sortByMode) {
+                if (client1.getImportantMode() >= client2.getImportantMode()) {
+                    return nickname1.compareTo(nickname2);
+                }
+                return 1;
+            }
+            return nickname1.compareTo(nickname2);
         }
-        if (Config.hasOption("ui","sortByCase")) {
-            Config.getOption("ui","sortByCase");
+        if (sortByMode) {
+            if (client1.getImportantMode() >= client2.getImportantMode()) {
+                return nickname1.compareToIgnoreCase(nickname2);
+            }
+            return 1;
         }
-        
-        returnValue = nicknames.add(client);
-        
-        NicklistComparator comparator = new NicklistComparator(sortByMode, sortByCase);
-        Collections.sort(nicknames, comparator);
-        
-        return returnValue;
+        return nickname1.compareToIgnoreCase(nickname2);
     }
-    
-    public void add(int index, ChannelClientInfo client) {
-        nicknames.add(index, client);
-    }
-    
-    public boolean remove(ChannelClientInfo client) {
-        return nicknames.remove(client);
-    }
-    
-    public ChannelClientInfo remove(int index) {
-        return nicknames.remove(index);
-    }
-    
 }

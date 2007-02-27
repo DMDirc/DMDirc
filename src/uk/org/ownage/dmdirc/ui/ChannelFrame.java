@@ -37,11 +37,13 @@ import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 public class ChannelFrame extends javax.swing.JInternalFrame {
     
     private Channel parent;
+    private NicklistListModel nicklistModel;
     
     /** Creates new form ChannelFrame */
     public ChannelFrame(Channel parent) {
         this.parent = parent;
         
+        nicklistModel = new NicklistListModel();
         initComponents();
         setMaximizable(true);
         setClosable(true);
@@ -70,7 +72,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
     }    
     
     public void updateNames(ArrayList<ChannelClientInfo> newNames) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        nicklistModel.add(newNames);
     }
     
     /** This method is called from within the constructor to
@@ -85,6 +87,8 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
         jTextField1 = new javax.swing.JTextField();
         jScrollPane2 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
+        
+        jList1.setModel(nicklistModel);
 
         setToolTipText("Channel frame");
         jScrollPane1.setViewportView(jTextPane1);

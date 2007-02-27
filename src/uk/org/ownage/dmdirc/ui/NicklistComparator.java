@@ -30,8 +30,8 @@ import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
  * @author greboid
  */
 public class NicklistComparator implements Comparator<ChannelClientInfo> {
-    boolean sortByMode = true;
-    boolean sortByCase = false;
+    private boolean sortByMode = true;
+    private boolean sortByCase = false;
     
     /** Creates a new instance of NicklistComparator */
     public NicklistComparator(boolean sortByMode, boolean sortByCase) {
@@ -39,7 +39,24 @@ public class NicklistComparator implements Comparator<ChannelClientInfo> {
         this.sortByCase = sortByCase;
     }
     
-    public int compare(ChannelClientInfo o1, ChannelClientInfo o2) {
-        return -1;
+    public int compare(ChannelClientInfo client1, ChannelClientInfo client2) {
+        String nickname1 = client1.getNickname();
+        String nickname2 = client2.getNickname();
+        if (sortByCase) {
+            if (sortByMode) {
+                if (client1.getImportantMode() >= client2.getImportantMode()) {
+                    return nickname1.compareTo(nickname2);
+                }
+                return 1;
+            }
+            return nickname1.compareTo(nickname2);
+        }
+        if (sortByMode) {
+            if (client1.getImportantMode() >= client2.getImportantMode()) {
+                return nickname1.compareToIgnoreCase(nickname2);
+            }
+            return 1;
+        }
+        return nickname1.compareToIgnoreCase(nickname2);
     }
 }
