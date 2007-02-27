@@ -72,8 +72,8 @@ public class Server {
               
         parser = new IRCParser(new ServerInfo(server, port, password));
         
-        parser.addSelfChannelJoin(new IRCParser.ISelfChannelJoin() {
-            public void onSelfJoinChannel(IRCParser tParser, ChannelInfo cChannel) {
+        parser.addChannelSelfJoin(new IRCParser.IChannelSelfJoin() {
+            public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
                 Server.this.addChannel(cChannel);
             }
             
