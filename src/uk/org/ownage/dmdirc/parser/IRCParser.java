@@ -3265,7 +3265,7 @@ public class IRCParser implements Runnable {
 	/**
 	 * Process PREFIX from 005.
 	 */	
-	protected void parsePrefixModes() {
+	public void parsePrefixModes() {
 		final String sDefaultModes = "(ohv)@%+";
 		String[] Bits = null;
 		String ModeStr;
@@ -3288,7 +3288,8 @@ public class IRCParser implements Runnable {
 		hPrefixMap.clear();
 		nNextKeyPrefix = 1;
 
-		for (int i = 0; i < Bits[0].length(); ++i) {
+//		for (int i = 0; i < Bits[0].length(); ++i) {
+		for (int i = Bits[0].length()-1; i > -1; --i) {
 			Character cMode = Bits[0].charAt(i);
 			Character cPrefix = Bits[1].charAt(i);
 			if (bDebug) { System.out.printf("Prefix Mode: %c => %c [%d]\n",cMode,cPrefix,nNextKeyPrefix); }

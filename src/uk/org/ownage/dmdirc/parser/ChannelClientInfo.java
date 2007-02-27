@@ -89,7 +89,8 @@ public class ChannelClientInfo {
 		Character cTemp;
 		int nTemp = 0, nModes = this.getChanMode();
 
-		for (int i = 1; i < myParser.nNextKeyPrefix; i = i*2) {
+//		for (int i = 1; i < myParser.nNextKeyPrefix; i = i*2) {
+		for (int i = myParser.nNextKeyPrefix; i > 1; i = i/2) {
 			if ((nModes & i) == i) {
 				// There may be a better alternative to this, but this works well. (Gets the prefix modes in order)
 				for (Enumeration e = myParser.hPrefixModes.keys(); e.hasMoreElements();) {
@@ -114,9 +115,11 @@ public class ChannelClientInfo {
 	 * @return integer representing the value of the mose important mode.
 	 */
 	public int getImportantMode() {
-		for (int i = 1; i < myParser.nNextKeyPrefix; i = i*2) {
+//		for (int i = 1; i < myParser.nNextKeyPrefix; i = i*2) {
+		for (int i = myParser.nNextKeyPrefix; i > 1; i = i/2) {
 			if ((nModes & i) == i) { return i; }
 		}
+		return 0;
 	}
 	
 	/**
