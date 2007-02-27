@@ -22,41 +22,86 @@
 
 package uk.org.ownage.dmdirc.ui;
 
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.Collections;
+import javax.swing.AbstractListModel;
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
-/**
- *
- * @author greboid
- */
-public class NicklistComparator implements Comparator<ChannelClientInfo> {
-    private boolean sortByMode = true;
-    private boolean sortByCase = false;
+public class NicklistListModel extends AbstractListModel {
+    public static final long serialVersionUID = 1l;
+    ArrayList<ChannelClientInfo> nicknames;
     
-    /** Creates a new instance of NicklistComparator */
-    public NicklistComparator(boolean sortByMode, boolean sortByCase) {
-        this.sortByMode = sortByMode;
-        this.sortByCase = sortByCase;
+    public NicklistListModel() {
+        nicknames = new ArrayList<ChannelClientInfo>();
     }
     
-    public int compare(ChannelClientInfo client1, ChannelClientInfo client2) {
-        String nickname1 = client1.getNickname();
-        String nickname2 = client2.getNickname();
-        if (sortByCase) {
-            if (sortByMode) {
-                if (client1.getImportantMode() >= client2.getImportantMode()) {
-                    return nickname1.compareTo(nickname2);
-                }
-                return 1;
-            }
-            return nickname1.compareTo(nickname2);
-        }
-        if (sortByMode) {
-            if (client1.getImportantMode() >= client2.getImportantMode()) {
-                return nickname1.compareToIgnoreCase(nickname2);
-            }
-            return 1;
-        }
-        return nickname1.compareToIgnoreCase(nickname2);
+    public NicklistListModel(ArrayList<ChannelClientInfo> nicknames) {
+        this.nicknames = nicknames;
     }
+    
+    public int getSize() {
+        return nicknames.size();
+    }
+    
+    public ChannelClientInfo getElementAt(int index) {
+        return nicknames.get(index);
+    }
+    
+    public void sort() {
+        boolean sortByMode = true;
+        boolean sortByCase = false;
+        if (Config.hasOption("ui","sortByMode")) {
+            Config.getOption("ui","sortByMode");
+        }
+        if (Config.hasOption("ui","sortByCase")) {
+            Config.getOption("ui","sortByCase");
+        }
+        NicklistComparator comparator = new NicklistComparator(sortByMode, sortByCase);
+        Collections.sort(nicknames, comparator);
+    }
+    
+    public boolean add(ArrayList<ChannelClientInfo> clients) {
+        boolean returnValue = false;
+        
+        nicknames.clear();
+        returnValue = nicknames.addAll(clients);
+        
+        this.sort();
+        this.fireIntervalAdded(this, 0, nicknames.size());
+
+        return returnValue;
+    }
+    
+    public boolean add(ChannelClientInfo client) {
+        boolean returnValue = false;
+        
+        returnValue = nicknames.add(client);
+        
+        this.sort();
+        this.fireIntervalAdded(this, 0, nicknames.size());
+
+        return returnValue;
+    }
+    
+    public void add(int index, ChannelClientInfo client) {
+        nicknames.add(index, client);
+        this.sort();
+        this.fireIntervalAdded(this, 0, nicknames.size());
+    }
+    
+    public boolean remove(ChannelClientInfo client) {
+        boolean returnValue;
+        returnValue = nicknames.remove(client);
+        this.fireIntervalRemoved(this, 0, nicknames.size());
+        return returnValue;
+    }
+    
+    public ChannelClientInfo remove(int index) {
+        ChannelClientInfo returnValue;
+        returnValue = nicknames.remove(index);
+        this.fireIntervalRemoved(this, 0, nicknames.size());
+        return returnValue;
+    }
+    
 }
