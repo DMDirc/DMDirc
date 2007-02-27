@@ -150,7 +150,7 @@ public class ClientInfo {
 	 *
 	 * @return string representing modes. (boolean and non-list)
 	 */	
-	public String geUserModeStr() { 
+	public String getUserModeStr() { 
 		String sModes = "+", sTemp = "";
 		Character cTemp;
 		int nTemp = 0, nModes = this.getUserMode();

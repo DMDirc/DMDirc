@@ -105,7 +105,19 @@ public class ChannelClientInfo {
 		}
 		
 		return sModes;
-	}	
+	}
+
+	/**
+	 * Get the value of the most important mode this client has (Prefix modes).
+	 * A lower value is a higher mode, with the exception of 0 being the lowest
+	 *
+	 * @return integer representing the value of the mose important mode.
+	 */
+	public int getImportantMode() {
+		for (int i = 1; i < myParser.nNextKeyPrefix; i = i*2) {
+			if ((nModes & i) == i) { return i; }
+		}
+	}
 	
 	/**
 	 * Get SVN Version information
