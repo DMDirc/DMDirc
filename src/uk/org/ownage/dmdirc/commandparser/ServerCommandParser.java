@@ -39,20 +39,20 @@ public class ServerCommandParser extends CommandParser {
         this.server = server;
     }
 
-    protected void LoadCommands() {
-        throw new UnsupportedOperationException("Not implemented yet");
+    protected void loadCommands() {
+        CommandManager.loadServerCommands(this);
     }
 
     protected void executeCommand(Command command, String... args) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        ((ServerCommand)command).execute(server, args);
     }
 
     protected void handleInvalidCommand(String command, String... args) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        server.addLine("Unknown command: "+command+"/"+(args.length-1));
     }
 
     protected void handleNonCommand(String line) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        server.getParser().sendLine(line);
     }
     
 }

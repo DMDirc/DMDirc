@@ -36,5 +36,5 @@ public abstract class ChannelCommand extends Command {
         super();
     }
     
-    public abstract void Execute(Server server, Channel channel, String... args);    
+    public abstract void execute(Server server, Channel channel, String... args);    
 }

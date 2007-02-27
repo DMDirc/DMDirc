@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc;
 
 import java.util.Hashtable;
+import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ServerInfo;
 import uk.org.ownage.dmdirc.ui.MainFrame;
@@ -103,6 +104,10 @@ public class Server {
      */
     public IRCParser getParser() {
         return parser;
+    }
+    
+    public void addLine(String line) {
+        frame.addLine(line);
     }
 
     private void addChannel(ChannelInfo chan) {

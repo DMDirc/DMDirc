@@ -42,7 +42,7 @@ public class ChannelCommandParser extends CommandParser {
         this.channel = channel;
     }
 
-    protected void LoadCommands() {
+    protected void loadCommands() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 

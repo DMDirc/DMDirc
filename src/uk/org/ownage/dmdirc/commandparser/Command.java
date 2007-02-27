@@ -30,8 +30,6 @@ import uk.org.ownage.dmdirc.Server;
  */
 public abstract class Command {
     
-    protected static Command instance;
-    
     protected String name;
     protected int arity = 0;
     protected boolean polyadic;
@@ -56,10 +54,6 @@ public abstract class Command {
     
     public String getHelp() {
         return name+" "+arguments+" - "+description;
-    }
-    
-    public static Command getInstance() {
-        return instance;
     }
     
 }

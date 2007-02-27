@@ -35,6 +35,7 @@ import javax.swing.JComponent;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 
 /**
  * The ServerFrame is the MDI window that shows server messages to the user
@@ -55,6 +56,8 @@ public class ServerFrame extends javax.swing.JInternalFrame {
      **/
     private Dimension titlebarSize;
     
+    private ServerCommandParser commandParser;
+    
     /**
      * Creates new form ServerFrame
      * @param parent The server instance that owns this frame
@@ -68,9 +71,11 @@ public class ServerFrame extends javax.swing.JInternalFrame {
         
         this.parent = parent;
         
+        commandParser = new ServerCommandParser(parent);
+        
         jTextField1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                ServerFrame.this.parent.getParser().sendLine(jTextField1.getText());
+                ServerFrame.this.commandParser.parseCommand(jTextField1.getText());
                 jTextField1.setText("");
             }
         });

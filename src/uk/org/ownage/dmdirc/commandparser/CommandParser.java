@@ -36,10 +36,11 @@ abstract public class CommandParser {
     /** Creates a new instance of CommandParser */
     public CommandParser() {
         commands = new Hashtable<String,Command>();
+        loadCommands();
     }
     
     /** Loads the relevant commands into the parser */
-    protected abstract void LoadCommands();
+    protected abstract void loadCommands();
     
     public void registerCommand(Command command) {
         commands.put(command.getSignature(), command);
@@ -52,7 +53,7 @@ abstract public class CommandParser {
             
             assert(args.length > 0);
             
-            String command = args[0];
+            String command = args[0].substring(1);
             
             String signature = command+"/"+(args.length-1);
             

@@ -22,18 +22,31 @@
 
 package uk.org.ownage.dmdirc.commandparser;
 
+import java.util.Vector;
+import uk.org.ownage.dmdirc.commandparser.commands.*;
+
 /**
  *
  * @author chris
  */
 public class CommandManager {
+    
+    private static Vector<Command> serverCommands;
            
     public static void loadChannelCommands(CommandParser parser) {
         throw new UnsupportedOperationException("Not implemented yet");        
     }
     
     public static void loadServerCommands(CommandParser parser) {
-        throw new UnsupportedOperationException("Not implemented yet");        
+        if (serverCommands == null) {
+            serverCommands = new Vector<Command>(0,1);
+
+            serverCommands.add(new Test());
+        }
+
+        for (Command com : serverCommands) {
+            parser.registerCommand(com);
+        }
     }    
     
 }

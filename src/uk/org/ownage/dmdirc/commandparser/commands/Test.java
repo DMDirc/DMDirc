@@ -32,8 +32,6 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommand;
  */
 public class Test extends ServerCommand {
     
-    protected static Command instance = new Test();
-    
     /** Creates a new instance of Test */
     public Test() {
         description = "a test command";
@@ -44,8 +42,8 @@ public class Test extends ServerCommand {
         show = true;
     }
 
-    public void Execute(Server server, String... args) {
-        throw new UnsupportedOperationException("Not implemented yet");
+    public void execute(Server server, String... args) {
+        server.addLine(server.getParser().getSvnInfo());
     }
     
 }

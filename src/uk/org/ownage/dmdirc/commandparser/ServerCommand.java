@@ -36,5 +36,5 @@ public abstract class ServerCommand extends Command {
         super();
     }
     
-    public abstract void Execute(Server server, String... args);
+    public abstract void execute(Server server, String... args);
 }
