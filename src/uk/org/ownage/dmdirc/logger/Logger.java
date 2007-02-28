@@ -86,6 +86,7 @@ public class Logger {
                 break;
             default:
                 logWriter.println(format.format(new Date())+": ERROR: "+level+" :"+message);
+                System.err.println(format.format(new Date())+": ERROR: "+level+" :"+message);
                 break;
         }
     }
@@ -128,6 +129,7 @@ public class Logger {
                 for (StackTraceElement traceElement: stacktrace) {
                     logWriter.println("\t\t\t\t"+traceElement);
                 }
+                System.err.println(format.format(new Date())+": ERROR: "+level+" :"+exception.getMessage());
                 break;
         }
     }
