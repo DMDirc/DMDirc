@@ -146,5 +146,9 @@ public class Channel implements IRCParser.IChannelMessage,
         }
         frame.addLine("* "+source+" "+sMessage);
     }
+
+    public Server getServer() {
+        return server;
+    }
     
 }

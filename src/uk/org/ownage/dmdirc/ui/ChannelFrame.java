@@ -35,6 +35,7 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -66,6 +67,8 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      */
     private JScrollBar scrollBar;
     
+    private ChannelCommandParser commandParser;
+    
     /** Creates new form ChannelFrame */
     public ChannelFrame(Channel parent) {
         this.parent = parent;
@@ -77,12 +80,14 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         setVisible(true);
         setResizable(true);
         
+        commandParser = new ChannelCommandParser(parent.getServer(), parent);
+        
         scrollBar = jScrollPane1.getVerticalScrollBar();
         
         jTextField1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-                    ChannelFrame.this.parent.sendLine(jTextField1.getText());
+                    ChannelFrame.this.commandParser.parseCommand(ChannelFrame.this, jTextField1.getText());
                 } catch (Exception e) {
                     Logger.error(ErrorLevel.ERROR, e);
                 }

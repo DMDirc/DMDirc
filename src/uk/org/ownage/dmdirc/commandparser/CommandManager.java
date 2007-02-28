@@ -34,16 +34,27 @@ import uk.org.ownage.dmdirc.commandparser.commands.server.*;
 public class CommandManager {
     
     /**
-     * The commands that have been instansiated
+     * The server commands that have been instansiated
      */
     private static Vector<Command> serverCommands;
-           
+    /**
+     * The channel commands that have been instansiated
+     */
+    private static Vector<Command> channelCommands;
+    
     /**
      * Loads all channel commands into the specified parser
      * @param parser The parser to load commands into
      */
     public static void loadChannelCommands(CommandParser parser) {
-        throw new UnsupportedOperationException("Not implemented yet");        
+        if (channelCommands == null) {
+            channelCommands = new Vector<Command>(0,1);
+            
+        }
+        
+        for (Command com : channelCommands) {
+            parser.registerCommand(com);
+        }
     }
     
     /**
@@ -53,17 +64,23 @@ public class CommandManager {
     public static void loadServerCommands(CommandParser parser) {
         if (serverCommands == null) {
             serverCommands = new Vector<Command>(0,1);
-
+            
             serverCommands.add(new Test());
             serverCommands.add(new Quit());
             serverCommands.add(new QuitDefault());
         }
-
+        
         for (Command com : serverCommands) {
             parser.registerCommand(com);
         }
-    }    
+    }
     
+    /**
+     * Retrieves the server command identified by the specified signature
+     * @param signature The signature to look for
+     * @return A server command with a matching signature, or null if none
+     * were found.
+     */
     public static ServerCommand getServerCommad(String signature) {
         if (serverCommands == null) {
             return null;
@@ -73,7 +90,7 @@ public class CommandManager {
             if (com.getSignature().equals(signature)) {
                 return (ServerCommand) com;
             }
-        }        
+        }
         
         return null;
     }
