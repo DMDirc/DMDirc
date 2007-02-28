@@ -24,12 +24,15 @@ package uk.org.ownage.dmdirc;
 
 import java.util.Hashtable;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.ParserError;
 import uk.org.ownage.dmdirc.parser.ServerInfo;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
 import java.util.Vector;
 import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
  * The Server class represents the client's view of a server. It maintains
@@ -37,7 +40,7 @@ import uk.org.ownage.dmdirc.parser.IRCParser;
  * to the server
  * @author chris
  */
-public class Server {
+public class Server implements IRCParser.IChannelSelfJoin, IRCParser.IErrorInfo {
     
     /**
      * Open channels that currently exist on the server
@@ -73,13 +76,9 @@ public class Server {
               
         parser = new IRCParser(new ServerInfo(server, port, password));
         
-        parser.addChannelSelfJoin(new IRCParser.IChannelSelfJoin() {
-            public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
-                Server.this.addChannel(cChannel);
-            }
-            
-        });
-        
+        parser.addChannelSelfJoin(this);
+        parser.addErrorInfo(this);
+                
         Raw raw = new Raw(this);
               
         try {           
@@ -112,6 +111,30 @@ public class Server {
 
     private void addChannel(ChannelInfo chan) {
         channels.put(chan.getName(), new Channel(this, chan));
+    }
+
+    public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
+        addChannel(cChannel);
+    }
+
+    public void onErrorInfo(IRCParser tParser, ParserError errorInfo) {
+        ErrorLevel errorLevel;
+        if (errorInfo.isFatal()) {
+            errorLevel = ErrorLevel.FATAL;
+        } else if (errorInfo.isError()) {
+            errorLevel = ErrorLevel.ERROR;
+        } else if (errorInfo.isWarning()) {
+            errorLevel = ErrorLevel.WARNING;
+        } else {
+            Logger.error(ErrorLevel.WARNING, "Unknown error level for parser error: "+errorInfo.getData());
+            return;
+        }
+        
+        if (errorInfo.isException()) {
+            Logger.error(errorLevel, errorInfo.getException());
+        } else {
+            Logger.error(errorLevel, errorInfo.getData());
+        }
     }
     
 }
