@@ -74,6 +74,14 @@ public class ServerManager {
     }
     
     /**
+     * Makes all servers disconnected with the specified quit message
+     * @param message The quit message to send to the IRC servers
+     */
+    public void disconnectAll(String message) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+    
+    /**
      * Returns the number of servers that are registered with the manager
      * @return number of registered servers
      */

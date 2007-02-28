@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.commandparser;
 
 import java.util.Vector;
 import uk.org.ownage.dmdirc.commandparser.commands.*;
+import uk.org.ownage.dmdirc.commandparser.commands.server.*;
 
 /**
  * The command manager creates and manages a single instance of all commands,
@@ -54,11 +55,27 @@ public class CommandManager {
             serverCommands = new Vector<Command>(0,1);
 
             serverCommands.add(new Test());
+            serverCommands.add(new Quit());
+            serverCommands.add(new QuitDefault());
         }
 
         for (Command com : serverCommands) {
             parser.registerCommand(com);
         }
     }    
+    
+    public static ServerCommand getServerCommad(String signature) {
+        if (serverCommands == null) {
+            return null;
+        }
+        
+        for (Command com : serverCommands) {
+            if (com.getSignature().equals(signature)) {
+                return (ServerCommand) com;
+            }
+        }        
+        
+        return null;
+    }
     
 }

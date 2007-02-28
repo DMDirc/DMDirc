@@ -36,6 +36,7 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.Logger;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
@@ -80,7 +81,11 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         
         jTextField1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                ChannelFrame.this.parent.sendLine(jTextField1.getText());
+                try {
+                    ChannelFrame.this.parent.sendLine(jTextField1.getText());
+                } catch (Exception e) {
+                    Logger.error(Logger.errorLevel.ERROR, e);
+                }
                 jTextField1.setText("");
             }
         });
@@ -174,7 +179,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-      
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;

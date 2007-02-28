@@ -27,6 +27,7 @@ import javax.swing.JScrollBar;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.Logger;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -85,7 +86,11 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
         
         jTextField1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                ServerFrame.this.commandParser.parseCommand(ServerFrame.this, jTextField1.getText());
+                try {
+                    ServerFrame.this.commandParser.parseCommand(ServerFrame.this, jTextField1.getText());
+                } catch (Exception e) {
+                    Logger.error(Logger.errorLevel.ERROR, e);
+                }
                 jTextField1.setText("");
             }
         });
