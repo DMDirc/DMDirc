@@ -27,17 +27,18 @@ import javax.swing.JScrollBar;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.Logger;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import javax.swing.JComponent;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
+import uk.org.ownage.dmdirc.logger.DebugLevel;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
  * The ServerFrame is the MDI window that shows server messages to the user
@@ -89,7 +90,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
                 try {
                     ServerFrame.this.commandParser.parseCommand(ServerFrame.this, jTextField1.getText());
                 } catch (Exception e) {
-                    Logger.error(Logger.errorLevel.ERROR, e);
+                    Logger.error(ErrorLevel.ERROR, e);
                 }
                 jTextField1.setText("");
             }

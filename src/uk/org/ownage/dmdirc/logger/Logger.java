@@ -59,7 +59,7 @@ public class Logger {
         if (logWriter == null ) createWriter();
         switch (level) {
             case FATAL:
-                logWriter.println(format.format(new Date())+": ERROR: "+": "+level+" :"+message);
+                logWriter.println(format.format(new Date())+": ERROR: "+level+" :"+message);
                 optionPane = new JOptionPane(message, JOptionPane.ERROR_MESSAGE,
                         JOptionPane.DEFAULT_OPTION);
                 dialog = new JDialog(MainFrame.getMainFrame(), "Fatal Error",
@@ -85,7 +85,7 @@ public class Logger {
                 dialog.setVisible(true);
                 break;
             default:
-                logWriter.println(format.format(new Date())+": ERROR: "+": "+level+" :"+message);
+                logWriter.println(format.format(new Date())+": ERROR: "+level+" :"+message);
                 break;
         }
     }
@@ -95,7 +95,7 @@ public class Logger {
         StackTraceElement[] stacktrace = exception.getStackTrace();
         switch (level) {
             case FATAL:
-                logWriter.println(format.format(new Date())+": ERROR: "+": "+level+" :"+exception.getMessage());
+                logWriter.println(format.format(new Date())+": ERROR: "+level+" :"+exception.getMessage());
                 for (StackTraceElement traceElement: stacktrace) {
                     logWriter.println("\t\t\t\t"+traceElement);
                 }
@@ -124,7 +124,7 @@ public class Logger {
                 dialog.setVisible(true);
                 break;
             default:
-                logWriter.println(format.format(new Date())+": ERROR: "+": "+level+" :"+exception.getMessage());
+                logWriter.println(format.format(new Date())+": ERROR: "+level+" :"+exception.getMessage());
                 for (StackTraceElement traceElement: stacktrace) {
                     logWriter.println("\t\t\t\t"+traceElement);
                 }
@@ -136,8 +136,8 @@ public class Logger {
         if (logWriter == null ) createWriter();
         switch(level) {
             default:
-                System.out.println(format.format(new Date())+": DEBUG: "+": "+level+" :"+message);
-                logWriter.println(format.format(new Date())+": DEBUG: "+": "+level+" :"+message);
+                System.out.println(format.format(new Date())+": DEBUG: "+level+" :"+message);
+                logWriter.println(format.format(new Date())+": DEBUG: "+level+" :"+message);
                 break;
         }
     }
@@ -146,7 +146,7 @@ public class Logger {
         if (logWriter == null ) createWriter();
         switch(level) {
             default:
-                logWriter.println(format.format(new Date())+": LOG: "+": "+level+" :"+message);
+                logWriter.println(format.format(new Date())+": LOG: "+level+" :"+message);
                 break;
         }
     }

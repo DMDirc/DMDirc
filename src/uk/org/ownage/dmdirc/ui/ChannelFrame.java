@@ -28,7 +28,6 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -36,8 +35,9 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Logger;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /**
@@ -84,7 +84,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
                 try {
                     ChannelFrame.this.parent.sendLine(jTextField1.getText());
                 } catch (Exception e) {
-                    Logger.error(Logger.errorLevel.ERROR, e);
+                    Logger.error(ErrorLevel.ERROR, e);
                 }
                 jTextField1.setText("");
             }
