@@ -1225,9 +1225,14 @@ public class IRCParser implements Runnable {
 	
 	/**
 	 * Used for generalDebug stuff, when bDebug is false, this is never used.
+	 *
+	 * @param data Data string to log (in printf style)
+	 * @param args Args to go with printf
 	 */
 	protected boolean doDebug(String data, Object... args) {
-		return callDebugInfo(ndGeneral, String.format(data, args));
+		try {
+			return callDebugInfo(ndGeneral, String.format(data, args));
+		} catch (Exception e) { return false; }
 	}
 	
 	/**
