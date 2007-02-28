@@ -65,6 +65,23 @@ public class IRCParser implements Runnable {
 	 */
 	public static final int errCanContinue = 8;
 	
+	/** Socket is not created yet. */
+	public static final byte stateNull = 0;
+	/** Socket is closed. */	
+	public static final byte stateClosed = 1;
+	/** Socket is Open. */	
+	public static final byte stateOpen = 2;
+
+	/** Current Socket State */
+	private byte nSocketState = 0;
+	
+	/**
+	 * Get the current socket State.
+	 *
+	 * @return Current SocketState (stateNull, stateClosed or stateOpen)
+	 */
+	public byte getSocketState() { return nSocketState; }
+	
 	/**
 	 * Enable Development Debugging info - Outputs directly to console.
 	 *
@@ -2401,6 +2418,7 @@ public class IRCParser implements Runnable {
 			}
 			if (bDebug) { System.out.printf("\t\t-> 1\n"); }
 			out = new PrintWriter(socket.getOutputStream(), true);
+			nSocketState = stateOpen;
 			if (bDebug) { System.out.printf("\t\t-> 2\n"); }
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			if (bDebug) { System.out.printf("\t\t-> 3\n"); }
@@ -2423,6 +2441,7 @@ public class IRCParser implements Runnable {
 				line = in.readLine(); // Blocking :/
 				if (line == null) {
 					callDebugInfo(ndSocket,"Socket Closed");
+					nSocketState = stateClosed;
 					break;
 				} else {
 					if (IsFirst) {
@@ -2437,6 +2456,7 @@ public class IRCParser implements Runnable {
 				}
 			} catch (IOException e) {
 				callDebugInfo(ndSocket,"Socket Closed");
+				nSocketState = stateClosed;
 				break;
 			}
 		}
