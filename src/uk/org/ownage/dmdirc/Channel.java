@@ -36,7 +36,8 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
  * ChannelFrame, and handles user input to a ChannelFrame
  * @author chris
  */
-public class Channel {
+public class Channel implements IRCParser.IChannelMessage,
+        IRCParser.IChannelGotNames, IRCParser.IChannelTopic {
     
     /** The parser's pChannel class */
     private ChannelInfo channelInfo;
@@ -59,29 +60,11 @@ public class Channel {
         frame = new ChannelFrame(this);
         MainFrame.getMainFrame().addChild(frame);
         
-        frame.setTitle(channelInfo.getName()+" - "+channelInfo.getTopic());
+        server.getParser().addChannelMessage(this, channelInfo.getName());
+        server.getParser().addChannelTopic(this, channelInfo.getName());
+        server.getParser().addChannelGotNames(this, channelInfo.getName());
         
-        // I have no idea what's going on with the indentation here.
-        server.getParser().addChannelMessage(
-                new IRCParser.IChannelMessage() {
-            public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel,
-                    ChannelClientInfo cChannelClient, String sMessage, String sHost) {
-                if (cChannelClient != null) {
-                    Channel.this.frame.addLine("<"+cChannelClient.getNickname()+"> "+sMessage);
-                }
-            }
-            
-        },
-                channelInfo.getName());
-        
-        server.getParser().addChannelGotNames(
-                new IRCParser.IChannelGotNames() {
-            public void onChannelGotNames(IRCParser tParser, ChannelInfo cChannel) {
-                Channel.this.updateNames();
-            }
-        },
-                channelInfo.getName()
-                );
+        updateTitle();
     }
     
     public void sendLine(String line) {
@@ -89,8 +72,30 @@ public class Channel {
         frame.addLine("> "+line);
     }
     
-    private void updateNames() {
+    public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel,
+            ChannelClientInfo cChannelClient, String sMessage, String sHost) {
+        if (cChannelClient != null) {
+            frame.addLine("<"+cChannelClient.getNickname()+"> "+sMessage);
+        }
+    }
+    
+    public void onChannelGotNames(IRCParser tParser, ChannelInfo cChannel) {
         frame.updateNames(channelInfo.getChannelClients());
+    }
+    
+    public void onChannelTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsJoinTopic) {
+        if (bIsJoinTopic) {
+            frame.addLine("* Topic is '"+cChannel.getTopic()+"'.");
+            frame.addLine("* Set by "+cChannel.getTopicUser()+".");
+        } else {
+            frame.addLine("* "+cChannel.getTopicUser()+" has changed the topic to '"+cChannel.getTopic()+"'");
+        }
+        
+        updateTitle();
+    }
+    
+    private void updateTitle() {
+        frame.setTitle(channelInfo.getName()+" - "+channelInfo.getTopic());
     }
     
 }
