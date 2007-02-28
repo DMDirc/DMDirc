@@ -142,4 +142,10 @@ public class NicklistListModel extends AbstractListModel {
         return returnValue;
     }
     
+    /**
+     *Fires the model changed event forcing the model to re-render
+     */
+    public void reRender() {
+        this.fireContentsChanged(this, 0, nicknames.size());
+    }
 }
