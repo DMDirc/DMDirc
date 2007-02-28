@@ -57,7 +57,7 @@ public class ServerCommandParser extends CommandParser {
      * @param args The arguments to the command
      */
     protected void executeCommand(CommandWindow origin, Command command, String... args) {
-        ((ServerCommand)command).execute(server, args);
+        ((ServerCommand)command).execute(origin, server, args);
     }
     
     /**

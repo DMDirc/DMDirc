@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.commandparser.commands;
 
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.Command;
+import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
 /**
@@ -45,11 +46,12 @@ public class Test extends ServerCommand {
 
     /**
      * Executes this command
+     * @param origin The window in which the command was typed
      * @param server The server instance that this command is being executed on
      * @param args Arguments passed to this command
      */
-    public void execute(Server server, String... args) {
-        server.addLine(server.getParser().getSvnInfo());
+    public void execute(CommandWindow origin, Server server, String... args) {
+        origin.addLine(server.getParser().getSvnInfo());
     }
     
 }

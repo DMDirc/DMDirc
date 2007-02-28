@@ -23,11 +23,17 @@
 package uk.org.ownage.dmdirc.commandparser;
 
 /**
- *
+ * A command window is a window that allows the user to input a command (that's
+ * passed to a command parser). This interface includes methods that are required
+ * to allow the commands to interact with the user via the window.
  * @author chris
  */
 public interface CommandWindow {
     
+    /**
+     * Adds a line of text to the main text area of the window
+     * @param line The line to be added
+     */
     public void addLine(String line);
     
 }
