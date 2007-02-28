@@ -43,7 +43,7 @@ public class ParserError {
 	/** Store the Error level */
 	protected int errorLevel = 0;
 	/** Store the Error Information */
-	protected int errorData = "";
+	protected String errorData = "";
 	/** Store the Exception object */
 	protected Exception exceptionInfo = null;
 
@@ -64,7 +64,7 @@ public class ParserError {
 	 * @return Returns true for a fatal error, false for a non-fatal error
 	 */
 	public boolean isFatal() {
-		return ((errorLevel & errFatal) = errFatal);
+		return ((errorLevel & errFatal) == errFatal);
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public class ParserError {
 	 * @return Returns true for an "Error" level error, else false.
 	 */
 	public boolean isError() {
-		return ((errorLevel & errFatal) = errFatal);
+		return ((errorLevel & errError) == errError);
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public class ParserError {
 	 * @return Returns true for a warning, else false.
 	 */
 	public boolean isWarning() {
-		return ((errorLevel & errFatal) = errFatal);
+		return ((errorLevel & errWarning) == errWarning);
 	}
 	
 	/**
@@ -91,7 +91,7 @@ public class ParserError {
 	 * @return Returns true if getException will return an exception.
 	 */
 	public boolean isException() {
-		return ((errorLevel & errException) = errException);
+		return ((errorLevel & errException) == errException);
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class ParserError {
 	 */
 	public boolean setException(Exception newException) {
 		exceptionInfo = newException;
-		if (!this.isException) {
+		if (!this.isException()) {
 			this.errorLevel = this.errorLevel+errException;
 		}
 	}
