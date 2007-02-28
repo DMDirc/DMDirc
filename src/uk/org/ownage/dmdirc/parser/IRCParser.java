@@ -502,11 +502,12 @@ public class IRCParser implements Runnable {
 		 * @param cChannel Channel where modes were changed
 		 * @param cChannelClient Client chaning the modes (null if server)
 		 * @param sHost Host doing the mode changing (User host or server name)
+		 * @param sModes String showing the exact mode change parsed.
 		 * @see IRCParser#addChannelModeChanged
 		 * @see IRCParser#delChannelModeChanged
 		 * @see IRCParser#callChannelModeChanged
 		 */
-		public void onChannelModeChanged(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost);
+		public void onChannelModeChanged(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes);
 	}
 	/**
 	 * Arraylist for storing callback information for ChannelModeChanged.
@@ -520,6 +521,40 @@ public class IRCParser implements Runnable {
 	 * @see IRCParser.IChannelModeChanged
 	 */	
 	protected Hashtable<IChannelModeChanged,String> hChannelModeChangedChan = new Hashtable<IChannelModeChanged,String>();
+	
+	/** 
+	 * Called when a users channel mode is changed.
+	 */
+	public interface IChannelUserModeChanged {
+		/**
+		 * Called when a users channel mode is changed.
+		 * cChannelClient is null if the modes were found from raw 324 (/MODE #Chan reply) or if a server set the mode.<br>
+		 * If a Server set the mode, sHost is the servers name, else it is the full host of the user who set it
+		 * 
+		 * @param tParser Reference to the parser object that made the callback.
+		 * @param cChannel Channel where modes were changed
+		 * @param cChangedClient Client being changed
+		 * @param cSetByClient Client chaning the modes (null if server)
+		 * @param sHost Host doing the mode changing (User host or server name)
+		 * @param sMode String representing mode change (ie +o)
+		 * @see IRCParser#addChannelUserModeChanged
+		 * @see IRCParser#delChannelUserModeChanged
+		 * @see IRCParser#callChannelUserModeChanged
+		 */
+		public void onChannelUserModeChanged(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode);
+	}
+	/**
+	 * Arraylist for storing callback information for ChannelUserModeChanged.
+	 *
+	 * @see IRCParser.IChannelUserModeChanged
+	 */	
+	private ArrayList<IChannelUserModeChanged> cbChannelUserModeChanged = new ArrayList<IChannelUserModeChanged>();
+/**
+	 * Hashtable for storing callback channel-specific information for ChannelUserModeChanged.
+	 *
+	 * @see IRCParser.IChannelUserModeChanged
+	 */	
+	protected Hashtable<IChannelUserModeChanged,String> hChannelUserModeChangedChan = new Hashtable<IChannelUserModeChanged,String>();
 	
 	/** 
 	 * Called when user modes are changed.
@@ -1615,8 +1650,9 @@ public class IRCParser implements Runnable {
 	 * @param cChannel Channel where modes were changed
 	 * @param cChannelClient Client chaning the modes (null if server)
 	 * @param sHost Host doing the mode changing (User host or server name)
+	 * @param sModes Exact String parsed
 	 */
-	protected boolean callChannelModeChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost) {
+	protected boolean callChannelModeChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes) {
 		boolean bResult = false;
 		IChannelModeChanged eMethod = null;
 		for (int i = 0; i < cbChannelModeChanged.size(); i++) {
@@ -1625,12 +1661,54 @@ public class IRCParser implements Runnable {
 				if (!cChannel.getName().equalsIgnoreCase(hChannelModeChangedChan.get(eMethod))) { continue; }
 			}
 			try {
-				eMethod.onChannelModeChanged(this, cChannel, cChannelClient, sHost);
+				eMethod.onChannelModeChanged(this, cChannel, cChannelClient, sHost, sModes);
 			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
 		return bResult;
 	}	
+	
+	/**
+	 * Add callback for ChannelUserModeChanged (onChannelUserModeChanged).
+	 *
+	 * @see IRCParser.IChannelUserModeChanged
+	 * @param eMethod     Reference to object that handles the callback
+	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
+	 */
+	public void addChannelUserModeChanged(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelUserModeChangedChan, eMethod, cbChannelUserModeChanged); }
+	/**
+	 * Delete callback for ChannelUserModeChanged (onChannelUserModeChanged).
+	 *
+	 * @see IRCParser.IChannelUserModeChanged
+	 * @param eMethod     Reference to object that handles the callback
+	 */
+	public void delChannelUserModeChanged(Object eMethod) { delChannelCallback(hChannelUserModeChangedChan, eMethod, cbChannelUserModeChanged); }
+	/**
+	 * Callback to all objects implementing the IRCParser.IChannelUserModeChanged Interface.
+	 *
+	 * @see IRCParser.IChannelUserModeChanged
+	 * @param cChannel Channel where modes were changed
+	 * @param cChangedClient Client being changed
+	 * @param cSetByClient Client chaning the modes (null if server)
+	 * @param sMode String representing mode change (ie +o)
+	 * @param sHost Host doing the mode changing (User host or server name)
+	 */
+	protected boolean callChannelUserModeChanged(ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode) {
+		boolean bResult = false;
+		IChannelUserModeChanged eMethod = null;
+		for (int i = 0; i < cbChannelUserModeChanged.size(); i++) {
+			eMethod = cbChannelUserModeChanged.get(i);
+			if (hChannelUserModeChangedChan.containsKey(eMethod)) { 
+				if (!cChannel.getName().equalsIgnoreCase(hChannelUserModeChangedChan.get(eMethod))) { continue; }
+			}
+			try {
+				eMethod.onChannelUserModeChanged(this, cChannel, cChangedClient, cSetByClient, sHost, sMode);
+			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
+			bResult = true;
+		}
+		return bResult;
+	}	
+
 	
 	/**
 	 * Add callback for UserModeChanged (onUserModeChanged).
@@ -2708,8 +2786,10 @@ public class IRCParser implements Runnable {
 	 */	
 	private void processMode(String sParam, String token[]) {
 		String[] sModestr;
+		String sFullModeStr;
 		String sChannelName;
 		String sModeParam;
+		String sTemp;
 		int nCurrent = 0, nParam = 1, nValue = 0;
 		boolean bPositive = true, bBooleanMode = true;
 		ChannelInfo iChannel;
@@ -2764,8 +2844,11 @@ public class IRCParser implements Runnable {
 						}
 						iChannelClientInfo = iChannel.addClient(iClient);
 					}
-					if (bPositive) { iChannelClientInfo.setChanMode(iChannelClientInfo.getChanMode() + nValue); }
-					else { iChannelClientInfo.setChanMode(iChannelClientInfo.getChanMode() - nValue); }
+					if (bPositive) { iChannelClientInfo.setChanMode(iChannelClientInfo.getChanMode() + nValue); sTemp = "+"; }
+					else { iChannelClientInfo.setChanMode(iChannelClientInfo.getChanMode() - nValue); sTemp = "-"; }
+					sTemp = sTemp+cMode+" "+iChannelClientInfo.getNickname();
+					
+					callChannelUserModeChanged(iChannel, iChannelClientInfo, iChannel.getUser(token[0]), token[0], sTemp);
 					continue;
 				} else {
 					callErrorInfo(errWarning+errCanContinue, "Got unknown mode "+cMode+" - Added as boolean mode");
@@ -2799,9 +2882,12 @@ public class IRCParser implements Runnable {
 			}
 		}
 		
+		sFullModeStr = "";
+		for (int i = 0; i < sModestr.length; ++i) { sFullModeStr = sFullModeStr+sModestr[i]+" "; }
+		
 		iChannel.setMode(nCurrent);
-		if (sParam.equals("324")) { callChannelModeChanged(iChannel, null, ""); }
-		else { callChannelModeChanged(iChannel, iChannel.getUser(token[0]), token[0]); }
+		if (sParam.equals("324")) { callChannelModeChanged(iChannel, null, "", sFullModeStr); }
+		else { callChannelModeChanged(iChannel, iChannel.getUser(token[0]), token[0], sFullModeStr); }
 	}
 	
 	/**
@@ -2946,7 +3032,7 @@ public class IRCParser implements Runnable {
 				isAction = true;
 				if (bits.length > 1) {
 					sMessage = bits[1];
-					bits = sMessage.subString(0, sMessage.length);
+					sMessage = sMessage.substring(0, sMessage.length());
 				} else { sMessage = ""; }
 			} else if (Character.valueOf(sMessage.charAt(0)).equals(Char1) && Character.valueOf(sMessage.charAt(sMessage.length()-1)).equals(Char1)) {
 				isCTCP = true;
