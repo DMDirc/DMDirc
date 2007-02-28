@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc;
+package uk.org.ownage.dmdirc.logger;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -34,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 
 /**
@@ -41,10 +42,6 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
  * @author greboid
  */
 public class Logger {
-    
-    public enum errorLevel {FATAL, ERROR, WARNING, INFO}
-    public enum debugLevel {NORMAL, FINE, FINER, FINEST}
-    public enum logLevel {CORE, COMMAND, PARSER, PLUGIN, UI}
     
     private static PrintWriter logWriter = null;
     
@@ -58,7 +55,7 @@ public class Logger {
     private Logger() {
     }
     
-    public static void error(Logger.errorLevel level, String message) {
+    public static void error(ErrorLevel level, String message) {
         if (logWriter == null ) createWriter();
         switch (level) {
             case FATAL:
@@ -93,12 +90,16 @@ public class Logger {
         }
     }
     
-    public static void error(Logger.errorLevel level, Exception message) {
+    public static void error(ErrorLevel level, Exception exception) {
         if (logWriter == null ) createWriter();
+        StackTraceElement[] stacktrace = exception.getStackTrace();
         switch (level) {
             case FATAL:
-                logWriter.println(format.format(new Date())+": ERROR: "+": "+level+" :"+message);
-                optionPane = new JOptionPane(message, JOptionPane.ERROR_MESSAGE,
+                logWriter.println(format.format(new Date())+": ERROR: "+": "+level+" :"+exception.getMessage());
+                for (StackTraceElement traceElement: stacktrace) {
+                    logWriter.println("\t\t\t\t"+traceElement);
+                }
+                optionPane = new JOptionPane(exception.getMessage(), JOptionPane.ERROR_MESSAGE,
                         JOptionPane.DEFAULT_OPTION);
                 dialog = new JDialog(MainFrame.getMainFrame(), "Fatal Error",
                         true);
@@ -123,12 +124,15 @@ public class Logger {
                 dialog.setVisible(true);
                 break;
             default:
-                logWriter.println(format.format(new Date())+": ERROR: "+": "+level+" :"+message);
+                logWriter.println(format.format(new Date())+": ERROR: "+": "+level+" :"+exception.getMessage());
+                for (StackTraceElement traceElement: stacktrace) {
+                    logWriter.println("\t\t\t\t"+traceElement);
+                }
                 break;
         }
     }
     
-    public static void debug(Logger.debugLevel level, String message) {
+    public static void debug(DebugLevel level, String message) {
         if (logWriter == null ) createWriter();
         switch(level) {
             default:
@@ -138,7 +142,7 @@ public class Logger {
         }
     }
     
-    public static void log(Logger.logLevel level, String message) {
+    public static void log(LogLevel level, String message) {
         if (logWriter == null ) createWriter();
         switch(level) {
             default:
@@ -151,7 +155,7 @@ public class Logger {
         try {
             logWriter = new PrintWriter(new BufferedWriter(new FileWriter(Config.getConfigDir()+"errors.log")));
         } catch (IOException ex) {
-            Logger.error(Logger.errorLevel.FATAL, "Oh god, i cant open the error log.");
+            Logger.error(ErrorLevel.FATAL, "Oh god, i cant open the error log.");
         }
         if (Config.hasOption("logging", "dateFormat")) {
             format = new SimpleDateFormat(Config.getOption("logging", "dateFormat"));
