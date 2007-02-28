@@ -2944,6 +2944,10 @@ public class IRCParser implements Runnable {
 		if (sParam.equalsIgnoreCase("PRIVMSG")) {
 			if (bits[0].equalsIgnoreCase(Char1+"ACTION") && Character.valueOf(sMessage.charAt(sMessage.length()-1)).equals(Char1)) {
 				isAction = true;
+				if (bits.length > 1) {
+					sMessage = bits[1];
+					bits = sMessage.subString(0, sMessage.length);
+				} else { sMessage = ""; }
 			} else if (Character.valueOf(sMessage.charAt(0)).equals(Char1) && Character.valueOf(sMessage.charAt(sMessage.length()-1)).equals(Char1)) {
 				isCTCP = true;
 				if (bits.length > 1) { sMessage = bits[1]; } else { sMessage = ""; }
@@ -3029,8 +3033,8 @@ public class IRCParser implements Runnable {
 			iChannel = getChannelInfo(token[3]);
 			if (iChannel == null) { return; };
 			iChannel.setTopicTime(Long.parseLong(token[5]));
-			iChannel.setTopicUser(token[5]);
-			callChannelTopic(iChannel,false);
+			iChannel.setTopicUser(token[4]);
+			callChannelTopic(iChannel,true);
 		} else {
 			iChannel = getChannelInfo(token[2]);
 			if (iChannel == null) { return; };
@@ -3038,7 +3042,7 @@ public class IRCParser implements Runnable {
 			String sTemp[] = token[0].split(":",2);
 			if (sTemp.length > 1) { token[0] = sTemp[1]; }
 			iChannel.setTopicUser(token[0]);
-			callChannelTopic(iChannel,true);
+			callChannelTopic(iChannel,false);
 		}
 	}
 	
@@ -3432,11 +3436,15 @@ public class IRCParser implements Runnable {
 	 * @param sNewNickName New nickname wanted.
 	 */
 	public void setNickname(String sNewNickName) {
-		if (cMyself != null) {
-			if (cMyself.getNickname().equals(sNewNickName)) { return; }
+		if (this.getSocketState() != stateOpen) {
+			me.sNickname = sNewNickName;
+		} else {
+			if (cMyself != null) {
+				if (cMyself.getNickname().equals(sNewNickName)) { return; }
+			}
+			sendString("NICK "+sNewNickName);
 		}
 		sThinkNickname = sNewNickName;
-		sendString("NICK "+sNewNickName);
 	}
 	
 	/**
