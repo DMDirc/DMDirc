@@ -50,6 +50,8 @@ public class IRCParser implements Runnable {
 	/** Socket Debug Information. */	
 	public static final int ndSocket = 2; // Socket Errors
 //	public static final int ndSomething = 4; //Next thingy
+	/** Socket Debug Information. */	
+	public static final int ndGeneral = 4096; // General Debug Info. This will never be used if bDebug is false.
 
 	/** Used in Error Reporting, Error is potentially Fatal, Desync 99% Guarenteed! */
 	public static final int errFatal = 1;
@@ -1207,7 +1209,7 @@ public class IRCParser implements Runnable {
 	 * @param data Debugging Information
 	 */
 	protected boolean callDebugInfo(int level, String data) {
-		if (bDebug) { System.out.printf("[DEBUG] {%d} %s\n", level, data); }
+		// if (bDebug) { System.out.printf("[DEBUG] {%d} %s\n", level, data); }
 		boolean bResult = false;
 		for (int i = 0; i < cbDebugInfo.size(); i++) {
 			try {
@@ -1220,6 +1222,13 @@ public class IRCParser implements Runnable {
 			bResult = true;
 		}
 		return bResult;
+	}
+	
+	/**
+	 * Used for generalDebug stuff, when bDebug is false, this is never used.
+	 */
+	protected boolean doDebug(String data, Object... args) {
+		return callDebugInfo(ndGeneral, String.format(data, args));
 	}
 	
 	/**
@@ -1417,7 +1426,7 @@ public class IRCParser implements Runnable {
 	 * @param data Error Information
 	 */
 	protected boolean callErrorInfo(ParserError errorInfo) {
-		if (bDebug) { System.out.printf("[ERROR] {%d} %s\n", errorInfo.getLevel(), errorInfo.getData()); }
+		if (bDebug) { doDebug("[ERROR] {%d} %s\n", errorInfo.getLevel(), errorInfo.getData()); }
 		boolean bResult = false;
 		for (int i = 0; i < cbErrorInfo.size(); i++) {
 			try {
@@ -2623,12 +2632,12 @@ public class IRCParser implements Runnable {
 			} else {
 				socket = new Socket(server.sHost,server.nPort);
 			}
-			if (bDebug) { System.out.printf("\t\t-> 1\n"); }
+			if (bDebug) { doDebug("\t\t-> 1\n"); }
 			out = new PrintWriter(socket.getOutputStream(), true);
 			nSocketState = stateOpen;
-			if (bDebug) { System.out.printf("\t\t-> 2\n"); }
+			if (bDebug) { doDebug("\t\t-> 2\n"); }
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			if (bDebug) { System.out.printf("\t\t-> 3\n"); }
+			if (bDebug) { doDebug("\t\t-> 3\n"); }
 		} catch (Exception e) { throw e; }
 	}
 	
@@ -2725,9 +2734,9 @@ public class IRCParser implements Runnable {
 	 * @return ClientInfo Object for the client, or null
 	 */
 	public ClientInfo getClientInfo(String sWho) {
-		if (bDebug) { System.out.printf("\t\tInput: %s | ",sWho); }
+		if (bDebug) { doDebug("\t\tInput: %s | ",sWho); }
 		sWho = ClientInfo.ParseHost(sWho);
-		if (bDebug) { System.out.printf("Client Name: %s\n",sWho); }
+		if (bDebug) { doDebug("Client Name: %s\n",sWho); }
 		sWho = sWho.toLowerCase();
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); } else { return null; }
 	}
@@ -2964,7 +2973,7 @@ public class IRCParser implements Runnable {
 					// (de) OP/Voice someone
 					sModeParam = sModestr[nParam++];
 					nValue = hPrefixModes.get(cMode);
-					if (bDebug) { System.out.printf("User Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
+					if (bDebug) { doDebug("User Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
 					iChannelClientInfo = iChannel.getUser(sModeParam);
 					if (iChannelClientInfo == null) {
 						// Client not known?
@@ -2992,22 +3001,22 @@ public class IRCParser implements Runnable {
 				}
 				
 				if (bBooleanMode) {
-					if (bDebug) { System.out.printf("Boolean Mode: %c [%d] {Positive: %b}\n",cMode, nValue, bPositive); }
+					if (bDebug) { doDebug("Boolean Mode: %c [%d] {Positive: %b}\n",cMode, nValue, bPositive); }
 					if (bPositive) { nCurrent = nCurrent + nValue; }
 					else { nCurrent = nCurrent - nValue; }
 				} else {
 					if (nValue == cmList) {
 						sModeParam = sModestr[nParam++];
 						iChannel.setListModeParam(cMode, sModeParam, bPositive);
-						if (bDebug) { System.out.printf("List Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
+						if (bDebug) { doDebug("List Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
 					} else {
 						if (bPositive) { 
 							sModeParam = sModestr[nParam++];
-							if (bDebug) { System.out.printf("Set Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
+							if (bDebug) { doDebug("Set Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
 							iChannel.setModeParam(cMode,sModeParam);
 						} else {
 							if ((nValue & cmUnset) == cmUnset) { sModeParam = sModestr[nParam++]; } else { sModeParam = ""; }
-							if (bDebug) { System.out.printf("Unset Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
+							if (bDebug) { doDebug("Unset Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
 							iChannel.setModeParam(cMode,"");
 						}
 					}
@@ -3054,7 +3063,7 @@ public class IRCParser implements Runnable {
 					nNextKeyUser = nNextKeyUser*2;
 				}
 				
-				if (bDebug) { System.out.printf("User Mode: %c [%d] {Positive: %b}\n",cMode, nValue, bPositive); }
+				if (bDebug) { doDebug("User Mode: %c [%d] {Positive: %b}\n",cMode, nValue, bPositive); }
 				if (bPositive) { nCurrent = nCurrent + nValue; }
 				else { nCurrent = nCurrent - nValue; }
 			}
@@ -3172,7 +3181,7 @@ public class IRCParser implements Runnable {
 				if (bits.length > 1) { sMessage = bits[1]; } else { sMessage = ""; }
 				bits = bits[0].split(Char1.toString());
 				sCTCP = bits[1];
-				if (bDebug) { System.out.printf("CTCP: \"%s\" \"%s\"\n",sCTCP,sMessage); }
+				if (bDebug) { doDebug("CTCP: \"%s\" \"%s\"\n",sCTCP,sMessage); }
 			}
 		}
 
@@ -3215,7 +3224,7 @@ public class IRCParser implements Runnable {
 				}
 			}
 		} else {
-			if (bDebug) { System.out.printf("Message for Other ("+token[2]+")\n"); }
+			if (bDebug) { doDebug("Message for Other ("+token[2]+")\n"); }
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
 				if (!isAction) {
 					if (isCTCP) {
@@ -3402,7 +3411,7 @@ public class IRCParser implements Runnable {
 				Bits = token[i].split("=",2);
 				sKey = Bits[0].toUpperCase();
 				if (Bits.length == 2) { sValue = Bits[1]; } else { sValue = ""; }
-				if (bDebug) { System.out.printf("%s => %s \r\n",sKey,sValue); }
+				if (bDebug) { doDebug("%s => %s \r\n",sKey,sValue); }
 				h005Info.put(sKey,sValue);
 			}
 		}
@@ -3433,7 +3442,7 @@ public class IRCParser implements Runnable {
 		// List modes.
 		for (int i = 0; i < Bits[0].length(); ++i) {
 			Character cMode = Bits[0].charAt(i);
-			if (bDebug) { System.out.printf("List Mode: %c\n",cMode); }
+			if (bDebug) { doDebug("List Mode: %c\n",cMode); }
 			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode,cmList); }
 		}
 		
@@ -3441,21 +3450,21 @@ public class IRCParser implements Runnable {
 		Byte nBoth = (cmSet+cmUnset);
 		for (int i = 0; i < Bits[1].length(); ++i) {
 			Character cMode = Bits[1].charAt(i);
-			if (bDebug) { System.out.printf("Set/Unset Mode: %c\n",cMode); }
+			if (bDebug) { doDebug("Set/Unset Mode: %c\n",cMode); }
 			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode,nBoth); }
 		}
 		
 		// Param just for Set
 		for (int i = 0; i < Bits[2].length(); ++i) {
 			Character cMode = Bits[2].charAt(i);
-			if (bDebug) { System.out.printf("Set Only Mode: %c\n",cMode); }
+			if (bDebug) { doDebug("Set Only Mode: %c\n",cMode); }
 			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode,cmSet); }
 		}
 		
 		// Boolean Mode
 		for (int i = 0; i < Bits[3].length(); ++i) {
 			Character cMode = Bits[3].charAt(i);
-			if (bDebug) { System.out.printf("Boolean Mode: %c [%d]\n",cMode,nNextKeyCMBool); }
+			if (bDebug) { doDebug("Boolean Mode: %c [%d]\n",cMode,nNextKeyCMBool); }
 			if (!hChanModesBool.containsKey(cMode)) {
 				hChanModesBool.put(cMode,nNextKeyCMBool);
 				nNextKeyCMBool = nNextKeyCMBool*2;
@@ -3480,7 +3489,7 @@ public class IRCParser implements Runnable {
 		// Boolean Mode
 		for (int i = 0; i < ModeStr.length(); ++i) {
 			Character cMode = ModeStr.charAt(i);
-			if (bDebug) { System.out.printf("User Mode: %c [%d]\n",cMode,nNextKeyUser); }
+			if (bDebug) { doDebug("User Mode: %c [%d]\n",cMode,nNextKeyUser); }
 			if (!hUserModes.containsKey(cMode)) {
 				hUserModes.put(cMode,nNextKeyUser);
 				nNextKeyUser = nNextKeyUser*2;
@@ -3504,7 +3513,7 @@ public class IRCParser implements Runnable {
 		// Boolean Mode
 		for (int i = 0; i < ModeStr.length(); ++i) {
 			Character cMode = ModeStr.charAt(i);
-			if (bDebug) { System.out.printf("Chan Prefix: %c\n",cMode); }
+			if (bDebug) { doDebug("Chan Prefix: %c\n",cMode); }
 			if (!hChanPrefix.containsKey(cMode)) { hChanPrefix.put(cMode,true); }
 		}
 	}		
@@ -3539,7 +3548,7 @@ public class IRCParser implements Runnable {
 		for (int i = Bits[0].length()-1; i > -1; --i) {
 			Character cMode = Bits[0].charAt(i);
 			Character cPrefix = Bits[1].charAt(i);
-			if (bDebug) { System.out.printf("Prefix Mode: %c => %c [%d]\n",cMode,cPrefix,nNextKeyPrefix); }
+			if (bDebug) { doDebug("Prefix Mode: %c => %c [%d]\n",cMode,cPrefix,nNextKeyPrefix); }
 			if (!hPrefixModes.containsKey(cMode)) {
 				hPrefixModes.put(cMode,nNextKeyPrefix);
 				hPrefixMap.put(cMode,cPrefix);

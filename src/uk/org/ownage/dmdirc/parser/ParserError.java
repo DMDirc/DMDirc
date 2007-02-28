@@ -99,7 +99,7 @@ public class ParserError {
 	 *
 	 * @param newException The exception object to store
 	 */
-	public boolean setException(Exception newException) {
+	public void setException(Exception newException) {
 		exceptionInfo = newException;
 		if (!this.isException()) {
 			this.errorLevel = this.errorLevel+errException;
