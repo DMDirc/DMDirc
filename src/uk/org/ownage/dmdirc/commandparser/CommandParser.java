@@ -57,9 +57,10 @@ abstract public class CommandParser {
     
     /**
      * Parses the specified string as a command
+     * @param origin The window in which the command was typed
      * @param line The line to be parsed
      */
-    public void parseCommand(String line) {
+    public void parseCommand(CommandWindow origin, String line) {
         if (line.charAt(0) == Config.getOption("general","commandchar").charAt(0)) {
             String[] args = line.split(" ");
             
@@ -73,37 +74,40 @@ abstract public class CommandParser {
             // have error handlers if there are too few arguments (e.g., msg/0 and
             // msg/1 would return errors, so msg only gets called with 2+ args).
             if (commands.containsKey(signature)) {
-                executeCommand(commands.get(signature), args);
+                executeCommand(origin, commands.get(signature), args);
             } else if (commands.containsKey(command)) {
-                executeCommand(commands.get(command), args);
+                executeCommand(origin, commands.get(command), args);
             } else {
-                handleInvalidCommand(command, args);
+                handleInvalidCommand(origin, command, args);
             }
         } else {
-            handleNonCommand(line);
+            handleNonCommand(origin, line);
         }
     }
     
     /**
      * Executes the specified command with the given arguments.
+     * @param origin The window in which the command was typed
      * @param command The command to be executed
      * @param args The arguments to the command
      */
-    abstract protected void executeCommand(Command command, String... args);
+    abstract protected void executeCommand(CommandWindow origin, Command command, String... args);
     
     /**
      * Called when the user attempted to issue a command (i.e., used the command
      * character) that wasn't found. It could be that the command has a different
      * arity, or that it plain doesn't exist.
+     * @param origin The window in which the command was typed
      * @param command The command the user tried to execute
      * @param args The arguments passed to the command
      */
-    abstract protected void handleInvalidCommand(String command, String... args);
+    abstract protected void handleInvalidCommand(CommandWindow origin, String command, String... args);
 
     /**
      * Called when the input was a line of text that was not a command. This normally
      * means it is sent to the server/channel/user as-is, with no further processing.
+     * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
-    abstract protected void handleNonCommand(String line);
+    abstract protected void handleNonCommand(CommandWindow origin, String line);
 }

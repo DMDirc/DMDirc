@@ -36,13 +36,14 @@ import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /**
  *
  * @author  chris
  */
-public class ChannelFrame extends javax.swing.JInternalFrame {
+public class ChannelFrame extends javax.swing.JInternalFrame implements CommandWindow {
     
     private Channel parent;
     private NicklistListModel nicklistModel;
@@ -173,8 +174,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
-    
+      
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;

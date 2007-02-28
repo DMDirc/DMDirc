@@ -35,13 +35,14 @@ import javax.swing.JComponent;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 
 /**
  * The ServerFrame is the MDI window that shows server messages to the user
  * @author chris
  */
-public class ServerFrame extends javax.swing.JInternalFrame {
+public class ServerFrame extends javax.swing.JInternalFrame implements CommandWindow {
     
     /**
      * The Server object that owns this frame
@@ -84,7 +85,7 @@ public class ServerFrame extends javax.swing.JInternalFrame {
         
         jTextField1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                ServerFrame.this.commandParser.parseCommand(jTextField1.getText());
+                ServerFrame.this.commandParser.parseCommand(ServerFrame.this, jTextField1.getText());
                 jTextField1.setText("");
             }
         });

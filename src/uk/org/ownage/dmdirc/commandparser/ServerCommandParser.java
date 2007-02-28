@@ -52,10 +52,11 @@ public class ServerCommandParser extends CommandParser {
     
     /**
      * Executes the specified command with the given arguments.
+     * @param origin The window in which the command was typed
      * @param command The command to be executed
      * @param args The arguments to the command
      */
-    protected void executeCommand(Command command, String... args) {
+    protected void executeCommand(CommandWindow origin, Command command, String... args) {
         ((ServerCommand)command).execute(server, args);
     }
     
@@ -63,19 +64,21 @@ public class ServerCommandParser extends CommandParser {
      * Called when the user attempted to issue a command (i.e., used the command
      * character) that wasn't found. It could be that the command has a different
      * arity, or that it plain doesn't exist.
+     * @param origin The window in which the command was typed
      * @param command The command the user tried to execute
      * @param args The arguments passed to the command
      */
-    protected void handleInvalidCommand(String command, String... args) {
-        server.addLine("Unknown command: "+command+"/"+(args.length-1));
+    protected void handleInvalidCommand(CommandWindow origin, String command, String... args) {
+        origin.addLine("Unknown command: "+command+"/"+(args.length-1));
     }
     
     /**
      * Called when the input was a line of text that was not a command. This normally
      * means it is sent to the server/channel/user as-is, with no further processing.
+     * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
-    protected void handleNonCommand(String line) {
+    protected void handleNonCommand(CommandWindow origin, String line) {
         server.getParser().sendLine(line);
     }
     
