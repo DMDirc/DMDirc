@@ -95,10 +95,14 @@ public class ChannelFrame extends javax.swing.JInternalFrame {
                     ((BasicInternalFrameUI)getUI()).getNorthPane()
                     .setPreferredSize(new Dimension(0,0));
                     setBorder(new EmptyBorder(0,0,0,0));
+                    
+                    MainFrame.getMainFrame().setMaximised(true);
                 } else {
                     setBorder(ChannelFrame.this.myborder);
                     ((BasicInternalFrameUI)getUI()).getNorthPane()
                     .setPreferredSize(ChannelFrame.this.titlebarSize);
+                    
+                    MainFrame.getMainFrame().setMaximised(false);
                 }
             }
         });

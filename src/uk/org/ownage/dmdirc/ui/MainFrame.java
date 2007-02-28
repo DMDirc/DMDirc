@@ -40,6 +40,10 @@ public class MainFrame extends javax.swing.JFrame {
      * Singleton instance of MainFrame
      */
     private static MainFrame me;
+    /**
+     * Whether the internal frames are maximised or not
+     */
+    private boolean maximised;
     
     /**
      * Returns the singleton instance of MainFrame
@@ -63,12 +67,6 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
         
-        windowMenu.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent itemEvent) {
-                checkWindowState();
-            }
-        });
-        
         toggleStateMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
@@ -79,6 +77,8 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             }
         });
+        
+        checkWindowState();
     }
     
     /**
@@ -95,6 +95,15 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public JInternalFrame getActiveFrame() {
         return desktopPane.getSelectedFrame();
+    }
+    
+    /**
+     * Sets whether or not the internal frame state is currently maximised
+     * @param max whether the frame is maxomised
+     */
+    public void setMaximised(boolean max) {
+        maximised = max;
+        checkWindowState();
     }
     
     private void checkWindowState() {

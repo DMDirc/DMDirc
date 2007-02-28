@@ -100,10 +100,14 @@ public class ServerFrame extends javax.swing.JInternalFrame {
                     ((BasicInternalFrameUI)getUI()).getNorthPane()
                     .setPreferredSize(new Dimension(0,0));
                     setBorder(new EmptyBorder(0,0,0,0));
+                    
+                    MainFrame.getMainFrame().setMaximised(true);
                 } else {
                     setBorder(ServerFrame.this.myborder);
                     ((BasicInternalFrameUI)getUI()).getNorthPane()
                     .setPreferredSize(ServerFrame.this.titlebarSize);
+                    
+                    MainFrame.getMainFrame().setMaximised(false);
                 }
             }
         });
