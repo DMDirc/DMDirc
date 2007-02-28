@@ -104,6 +104,12 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
                     
                     MainFrame.getMainFrame().setMaximised(true);
                 } else {
+                    autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
+                    != scrollBar.getMaximum());
+                    if(autoScroll) {
+                        jTextPane1.setCaretPosition(jTextPane1.getStyledDocument().getLength());
+                    }
+                    
                     setBorder(ChannelFrame.this.myborder);
                     ((BasicInternalFrameUI)getUI()).getNorthPane()
                     .setPreferredSize(ChannelFrame.this.titlebarSize);

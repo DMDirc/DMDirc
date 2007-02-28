@@ -110,6 +110,12 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
                     
                     MainFrame.getMainFrame().setMaximised(true);
                 } else {
+                    autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
+                    != scrollBar.getMaximum());
+                    if(autoScroll) {
+                        jTextPane1.setCaretPosition(jTextPane1.getStyledDocument().getLength());
+                    }
+                    
                     setBorder(ServerFrame.this.myborder);
                     ((BasicInternalFrameUI)getUI()).getNorthPane()
                     .setPreferredSize(ServerFrame.this.titlebarSize);
@@ -136,7 +142,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
         
         autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
         != scrollBar.getMaximum());
-        if(autoScroll) { 
+        if(autoScroll) {
             jTextPane1.setCaretPosition(doc.getLength());
         }
     }
