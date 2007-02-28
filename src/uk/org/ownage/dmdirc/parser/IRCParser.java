@@ -1209,7 +1209,6 @@ public class IRCParser implements Runnable {
 	 * @param data Debugging Information
 	 */
 	protected boolean callDebugInfo(int level, String data) {
-		// if (bDebug) { System.out.printf("[DEBUG] {%d} %s\n", level, data); }
 		boolean bResult = false;
 		for (int i = 0; i < cbDebugInfo.size(); i++) {
 			try {
@@ -3131,7 +3130,7 @@ public class IRCParser implements Runnable {
 						break;
 					}
 				}
-				System.out.printf("Name: %s Modes: \"%s\" [%d]\n",sName,sModes,nPrefix);
+				if (bDebug) { doDebug("Name: %s Modes: \"%s\" [%d]\n",sName,sModes,nPrefix); }
 				
 				iClient = getClientInfo(sName);
 				if (iClient == null) { iClient = new ClientInfo(this, sName); hClientList.put(iClient.getNickname().toLowerCase(),iClient); }
