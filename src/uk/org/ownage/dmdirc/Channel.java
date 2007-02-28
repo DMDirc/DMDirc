@@ -37,7 +37,9 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
  * @author chris
  */
 public class Channel implements IRCParser.IChannelMessage,
-        IRCParser.IChannelGotNames, IRCParser.IChannelTopic {
+        IRCParser.IChannelGotNames, IRCParser.IChannelTopic,
+        IRCParser.IChannelJoin, IRCParser.IChannelPart, IRCParser.IChannelKick,
+        IRCParser.IChannelQuit {
     
     /** The parser's pChannel class */
     private ChannelInfo channelInfo;
@@ -63,6 +65,10 @@ public class Channel implements IRCParser.IChannelMessage,
         server.getParser().addChannelMessage(this, channelInfo.getName());
         server.getParser().addChannelTopic(this, channelInfo.getName());
         server.getParser().addChannelGotNames(this, channelInfo.getName());
+        server.getParser().addChannelJoin(this, channelInfo.getName());
+        server.getParser().addChannelPart(this, channelInfo.getName());
+        server.getParser().addChannelQuit(this, channelInfo.getName());
+        server.getParser().addChannelKick(this, channelInfo.getName());
         
         updateTitle();
     }
@@ -96,6 +102,38 @@ public class Channel implements IRCParser.IChannelMessage,
     
     private void updateTitle() {
         frame.setTitle(channelInfo.getName()+" - "+channelInfo.getTopic());
+    }
+    
+    public void onChannelJoin(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
+        frame.addLine("* "+cChannelClient.getNickname()+" has joined the channel");
+        frame.addName(cChannelClient);
+    }
+    
+    public void onChannelPart(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
+        if (sReason.equals("")) {
+            frame.addLine("* "+cChannelClient+" has left the channel");
+        } else {
+            frame.addLine("* "+cChannelClient+" has left the channel ("+sReason+")");
+        }
+        frame.removeName(cChannelClient);
+    }
+    
+    public void onChannelKick(IRCParser tParser, ChannelInfo cChannel,
+            ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient,
+            String sReason, String sKickedByHost) {
+        String kicker;
+        if (cKickedByClient == null) {
+            kicker = sKickedByHost;
+        } else {
+            kicker = cKickedByClient.toString();
+        }
+        frame.addLine("* "+cKickedClient+" was kicked by "+kicker+": "+sReason);
+        frame.removeName(cKickedClient);
+    }
+
+    public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
+        frame.addLine("* "+cChannelClient+" has quit IRC ("+sReason+")");
+        frame.removeName(cChannelClient);
     }
     
 }

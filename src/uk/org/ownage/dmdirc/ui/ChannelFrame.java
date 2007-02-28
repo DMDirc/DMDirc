@@ -137,6 +137,14 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         nicklistModel.replace(newNames);
     }
     
+    public void addName(ChannelClientInfo newName) {
+        nicklistModel.add(newName);
+    }
+    
+    public void removeName(ChannelClientInfo name) {
+        nicklistModel.remove(name);
+    }    
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
