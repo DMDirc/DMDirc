@@ -55,7 +55,8 @@ public class ChannelCommandParser extends CommandParser {
     
     /** Loads the relevant commands into the parser */
     protected void loadCommands() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        CommandManager.loadChannelCommands(this);
+        CommandManager.loadServerCommands(this);
     }
     
     /**
@@ -65,7 +66,11 @@ public class ChannelCommandParser extends CommandParser {
      * @param args The arguments to the command
      */    
     protected void executeCommand(CommandWindow origin, Command command, String... args) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (command instanceof ChannelCommand) {
+            ((ChannelCommand) command).execute(origin, server, channel, args);
+        } else {
+            ((ServerCommand) command).execute(origin, server, args);
+        }
     }
     
     /**
@@ -77,7 +82,7 @@ public class ChannelCommandParser extends CommandParser {
      * @param args The arguments passed to the command
      */    
     protected void handleInvalidCommand(CommandWindow origin, String command, String... args) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        origin.addLine("Unknown command: "+command+"/"+(args.length-1));
     }
     
     /**
@@ -87,7 +92,7 @@ public class ChannelCommandParser extends CommandParser {
      * @param line The line input by the user
      */    
     protected void handleNonCommand(CommandWindow origin, String line) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        channel.sendLine(line);
     }
     
 }

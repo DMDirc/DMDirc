@@ -39,7 +39,7 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
 public class Channel implements IRCParser.IChannelMessage,
         IRCParser.IChannelGotNames, IRCParser.IChannelTopic,
         IRCParser.IChannelJoin, IRCParser.IChannelPart, IRCParser.IChannelKick,
-        IRCParser.IChannelQuit {
+        IRCParser.IChannelQuit, IRCParser.IChannelAction {
     
     /** The parser's pChannel class */
     private ChannelInfo channelInfo;
@@ -69,6 +69,7 @@ public class Channel implements IRCParser.IChannelMessage,
         server.getParser().addChannelPart(this, channelInfo.getName());
         server.getParser().addChannelQuit(this, channelInfo.getName());
         server.getParser().addChannelKick(this, channelInfo.getName());
+        server.getParser().addChannelAction(this, channelInfo.getName());
         
         updateTitle();
     }
@@ -134,6 +135,16 @@ public class Channel implements IRCParser.IChannelMessage,
     public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
         frame.addLine("* "+cChannelClient+" has quit IRC ("+sReason+")");
         frame.removeName(cChannelClient);
+    }
+
+    public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
+        String source;
+        if (cChannelClient == null) {
+            source = sHost;
+        } else {
+            source = cChannelClient.toString();
+        }
+        frame.addLine("* "+source+" "+sMessage);
     }
     
 }
