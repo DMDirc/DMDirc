@@ -522,7 +522,7 @@ public class IRCParser implements Runnable {
 		 * @see IRCParser#delUserModeChanged
 		 * @see IRCParser#callUserModeChanged
 		 */
-		public void onUserModeChange(IRCParser tParser, ClientInfo cClient, String sSetBy);
+		public void onUserModeChanged(IRCParser tParser, ClientInfo cClient, String sSetBy);
 	}
 	/**
 	 * Arraylist for storing callback information for UserModeChanged.
@@ -1616,14 +1616,14 @@ public class IRCParser implements Runnable {
 	}	
 	
 	/**
-	 * Add callback for UserModeChanged (onUserModeChange).
+	 * Add callback for UserModeChanged (onUserModeChanged).
 	 *
 	 * @see IRCParser.IUserModeChanged
 	 * @param eMethod     Reference to object that handles the callback
 	 */
 	public void addUserModeChanged(Object eMethod) { addCallback(eMethod, cbUserModeChanged); }
 	/**
-	 * Delete callback for UserModeChanged (onUserModeChange).
+	 * Delete callback for UserModeChanged (onUserModeChanged).
 	 *
 	 * @see IRCParser.IUserModeChanged
 	 * @param eMethod     Reference to object that handles the callback
@@ -1640,7 +1640,7 @@ public class IRCParser implements Runnable {
 		boolean bResult = false;
 		for (int i = 0; i < cbUserModeChanged.size(); i++) {
 			try {
-				cbUserModeChanged.get(i).onUserModeChange(this, cClient, sSetby);
+				cbUserModeChanged.get(i).onUserModeChanged(this, cClient, sSetby);
 			} catch (Exception e) { callErrorInfo(errError+errCanContinue,"Exception in Callback. ["+e.getMessage()+"]"); e.printStackTrace(); }
 			bResult = true;
 		}
