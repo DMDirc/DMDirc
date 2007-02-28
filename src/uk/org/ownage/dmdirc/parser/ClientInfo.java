@@ -165,7 +165,7 @@ public class ClientInfo {
 	}
 	
 	/**
-	 * Get the user modes (as a string representation).
+	 * Check to see if a client is still known on any of the channels we are on.
 	 *
 	 * @return Boolean to see if client is still visable.
 	 */	
