@@ -68,6 +68,7 @@ public class CommandManager {
         if (serverCommands == null) {
             serverCommands = new Vector<Command>(0,1);
             
+            serverCommands.add(new Help());
             serverCommands.add(new Join());
             serverCommands.add(new Test());
             serverCommands.add(new Quit());
@@ -97,6 +98,22 @@ public class CommandManager {
         }
         
         return null;
+    }
+    
+    public static Vector<Command> getServerCommands() {
+        if (serverCommands == null) {
+            return null;
+        }
+        
+        return serverCommands;
+    }
+
+    public static Vector<Command> getChannelCommands() {
+        if (channelCommands == null) {
+            return null;
+        }
+        
+        return channelCommands;
     }
     
 }
