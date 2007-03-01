@@ -77,10 +77,10 @@ public class NicklistListModel extends AbstractListModel {
         boolean sortByMode = true;
         boolean sortByCase = false;
         if (Config.hasOption("ui","sortByMode")) {
-            Config.getOption("ui","sortByMode");
+            sortByMode = Config.getOption("ui","sortByMode").equals("true");
         }
         if (Config.hasOption("ui","sortByCase")) {
-            Config.getOption("ui","sortByCase");
+            sortByCase = Config.getOption("ui","sortByCase").equals("true");
         }
         NicklistComparator comparator = new NicklistComparator(sortByMode, sortByCase);
         Collections.sort(nicknames, comparator);

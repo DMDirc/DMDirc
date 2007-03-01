@@ -87,6 +87,10 @@ public class Config {
         defaults.setProperty("ui.sortByMode", "true");
         defaults.setProperty("ui.sortByCase", "false");
         defaults.setProperty("logging.dateFormat","EEE, d MMM yyyy HH:mm:ss Z");
+        defaults.setProperty("logging.programLogging","true");
+        defaults.setProperty("logging.debugLogging","true");
+        defaults.setProperty("logging.debugLoggingSysOut","true");
+        
 	
 	return defaults;
     }

@@ -39,15 +39,25 @@ import uk.org.ownage.dmdirc.ui.FatalErrorDialog;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 
 /**
- * Logger class for an applications, provides logging, error logging and debug 
+ * Logger class for an applications, provides logging, error logging and debug
  * logging
  */
 public class Logger {
     
     /**
-     * Logfile Printwriter
+     * Logging Printwriter
      */
     private static PrintWriter logWriter = null;
+    
+    /**
+     * Debug Printwriter
+     */
+    private static PrintWriter debugWriter = null;
+    
+    /**
+     * Error Printwriter
+     */
+    private static PrintWriter errorWriter = null;
     
     /**
      * dialog used to report errors to the ui
@@ -76,68 +86,101 @@ public class Logger {
      * @param message Error message/cause
      */
     public static void error(ErrorLevel level, String message) {
-        if (logWriter == null ) createWriter();
+        if (logWriter == null || debugWriter == null || errorWriter == null) {
+            createWriters();
+        }
+        
         switch (level) {
             case FATAL:
-                logWriter.println(formatter.format(new Date())+": ERROR: "+level+" :"+message);
+                errorWriter.println(formatter.format(new Date())+": ERROR: "+level+" :"+message);
                 dialog = new FatalErrorDialog(MainFrame.getMainFrame(), true, new String[]{message});
                 dialog.pack();
                 dialog.setLocationRelativeTo(MainFrame.getMainFrame());
                 dialog.setVisible(true);
                 break;
             default:
-                logWriter.println(formatter.format(new Date())+": ERROR: "+level+" :"+message);
+                errorWriter.println(formatter.format(new Date())+": ERROR: "+level+" :"+message);
                 System.err.println(formatter.format(new Date())+": ERROR: "+level+" :"+message);
                 break;
         }
     }
     
     /**
-     * Record an error message for the application, notifying the user if appropriate
+     * Record an error message for the application, notifying the user if
+     * appropriate
      * @param level error level
      * @param exception Cause of error
      */
     public static void error(ErrorLevel level, Exception exception) {
         String[] message;
-        if (logWriter == null ) createWriter();
+        int i;
+        
+        if (logWriter == null || debugWriter == null || errorWriter == null) {
+            createWriters();
+        }
+        
         StackTraceElement[] stackTrace = exception.getStackTrace();
         switch (level) {
             case FATAL:
-                logWriter.println(formatter.format(new Date())+": ERROR: "+level+" :"+exception.getMessage());
+                errorWriter.println(formatter.format(new Date())+
+                        ": ERROR: "+level+" :"+exception.getMessage());
                 message = new String[stackTrace.length+1];
                 message[0] = exception.getMessage();
-                int i = 1;
+                i = 1;
                 for (StackTraceElement traceElement: stackTrace) {
                     message[i] = traceElement.toString();
                     logWriter.println("\t\t\t\t"+traceElement);
                     i++;
                 }
-                dialog = new FatalErrorDialog(MainFrame.getMainFrame(), true, message);
+                dialog = new FatalErrorDialog(MainFrame.getMainFrame(),
+                        true, message);
                 dialog.pack();
                 dialog.setLocationRelativeTo(MainFrame.getMainFrame());
                 dialog.setVisible(true);
                 break;
             default:
-                logWriter.println(formatter.format(new Date())+": ERROR: "+level+" :"+exception.getMessage());
+                errorWriter.println(formatter.format(new Date())+
+                        ": ERROR: "+level+" :"+exception.getMessage());
+                message = new String[stackTrace.length+1];
+                message[0] = exception.getMessage();
+                i = 1;
                 for (StackTraceElement traceElement: stackTrace) {
-                    logWriter.println("\t\t\t\t"+traceElement);
+                    message[i] = traceElement.toString();
+                    errorWriter.println("\t\t\t\t"+traceElement);
+                    i++;
                 }
-                System.err.println(formatter.format(new Date())+": ERROR: "+level+" :"+exception.getMessage());
+                System.err.println(formatter.format(new Date())+
+                        ": ERROR: "+level+" :"+exception.getMessage());
                 break;
         }
     }
     
     /**
-     * Record an debug message for the application, notifying the user if appropriate
+     * Record an debug message for the application, notifying the user if
+     * appropriate
      * @param level debug level
      * @param message Debug message
      */
     public static void debug(DebugLevel level, String message) {
-        if (logWriter == null ) createWriter();
+        if (!Config.hasOption("logging","debugLogging")
+        && !Config.getOption("logging", "debugLogging").equals("true")) {
+            return;
+        }
+        if (logWriter == null || debugWriter == null || errorWriter == null) {
+            createWriters();
+        }
+        
         switch(level) {
             default:
-                System.out.println(formatter.format(new Date())+": DEBUG: "+level+" :"+message);
-                logWriter.println(formatter.format(new Date())+": DEBUG: "+level+" :"+message);
+                if (Config.hasOption("logging","debugLoggingSysOut")
+                && Config.getOption("logging", "debugLoggingSysOut")
+                .equals("true")) {
+                    System.out.println(formatter.format(new Date())+
+                            ": DEBUG: "+level+" :"+message);
+                }
+                
+                debugWriter.println(formatter.format(new Date())+
+                        ": DEBUG: "+level+" :"+message);
                 break;
         }
     }
@@ -148,25 +191,45 @@ public class Logger {
      * @param message Log message
      */
     public static void log(LogLevel level, String message) {
-        if (logWriter == null ) createWriter();
+        if (!Config.hasOption("logging","programLogging")
+        && !Config.getOption("logging", "programLogging").equals("true")) {
+            return;
+        }
+        if (logWriter == null || debugWriter == null || errorWriter == null) {
+            createWriters();
+        }
+        
         switch(level) {
             default:
-                logWriter.println(formatter.format(new Date())+": LOG: "+level+" :"+message);
+                logWriter.println(formatter.format(new Date())+
+                        ": LOG: "+level+" :"+message);
                 break;
         }
     }
     
     /**
-     * Initialises the logfile writer and date formatter
+     * Initialises the the loggers writers (debug, error, log) and date formatter
      */
-    private static void createWriter() {
+    private static void createWriters() {
         try {
-            logWriter = new PrintWriter(new BufferedWriter(new FileWriter(Config.getConfigDir()+"errors.log")));
+            if (logWriter == null) {
+                logWriter = new PrintWriter(new BufferedWriter(
+                        new FileWriter(Config.getConfigDir()+"log.log")));
+            }
+            if (debugWriter == null) {
+                debugWriter = new PrintWriter(new BufferedWriter(
+                        new FileWriter(Config.getConfigDir()+"debug.log")));
+            }
+            if (errorWriter == null) {
+                errorWriter = new PrintWriter(new BufferedWriter(
+                        new FileWriter(Config.getConfigDir()+"error.log")));
+            }
         } catch (IOException ex) {
-            Logger.error(ErrorLevel.FATAL, "Oh god, i cant open the error log.");
+            Logger.error(ErrorLevel.FATAL, ex);
         }
         if (Config.hasOption("logging", "dateFormat")) {
-            formatter = new SimpleDateFormat(Config.getOption("logging", "dateFormat"));
+            formatter = new SimpleDateFormat(
+                    Config.getOption("logging", "dateFormat"));
         } else {
             formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
         }
