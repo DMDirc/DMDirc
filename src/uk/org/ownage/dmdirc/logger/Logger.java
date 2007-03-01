@@ -106,6 +106,15 @@ public class Logger {
     }
     
     /**
+     * Record an error message for the application at the error error level,
+     * notifying the user if appropriate
+     * @param message Error message/cause
+     */
+    public static void error(String message) {
+        error(ErrorLevel.ERROR, message);
+    }
+    
+    /**
      * Record an error message for the application, notifying the user if
      * appropriate
      * @param level error level
@@ -156,6 +165,15 @@ public class Logger {
     }
     
     /**
+     * Record an error message for the application at the error error level,
+     * notifying the user if appropriate
+     * @param exception Cause of error
+     */
+    public static void error(Exception exception) {
+        error(ErrorLevel.ERROR, exception);
+    }
+    
+    /**
      * Record an debug message for the application, notifying the user if
      * appropriate
      * @param level debug level
@@ -183,6 +201,15 @@ public class Logger {
                         ": DEBUG: "+level+" :"+message);
                 break;
         }
+    }
+    
+    /**
+     * Record an debug message for the application at the normal debug level,
+     * notifying the user if appropriate
+     * @param message Debug message
+     */
+    public static void debug(String message) {
+        debug(DebugLevel.NORMAL, message);
     }
     
     /**
