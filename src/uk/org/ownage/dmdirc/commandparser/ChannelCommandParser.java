@@ -82,7 +82,7 @@ public class ChannelCommandParser extends CommandParser {
      * @param args The arguments passed to the command
      */    
     protected void handleInvalidCommand(CommandWindow origin, String command, String... args) {
-        origin.addLine("Unknown command: "+command+"/"+(args.length-1));
+        origin.addLine("Unknown command: "+command+"/"+args.length);
     }
     
     /**

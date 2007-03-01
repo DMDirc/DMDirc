@@ -41,7 +41,7 @@ public class MeEmpty extends ChannelCommand {
         polyadic = false;
         arity = 0;
         name = "me";
-        show = true;
+        show = false;
     }
 
     public void execute(CommandWindow origin, Server server, Channel channel, String... args) {
