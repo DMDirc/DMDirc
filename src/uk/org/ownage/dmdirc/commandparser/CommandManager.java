@@ -53,6 +53,8 @@ public class CommandManager {
             
             channelCommands.add(new Me());
             channelCommands.add(new MeEmpty());
+            channelCommands.add(new Part());
+            channelCommands.add(new PartDefault());
         }
         
         for (Command com : channelCommands) {
@@ -99,6 +101,26 @@ public class CommandManager {
         
         return null;
     }
+    
+    /**
+     * Retrieves the channel command identified by the specified signature
+     * @param signature The signature to look for
+     * @return A channel command with a matching signature, or null if none
+     * were found.
+     */
+    public static ChannelCommand getChannelCommand(String signature) {
+        if (channelCommands == null) {
+            return null;
+        }
+        
+        for (Command com : channelCommands) {
+            if (com.getSignature().equals(signature)) {
+                return (ChannelCommand) com;
+            }
+        }
+        
+        return null;
+    }    
     
     public static Vector<Command> getServerCommands() {
         if (serverCommands == null) {
