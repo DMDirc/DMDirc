@@ -22,11 +22,13 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.awt.Image;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
+import javax.swing.ImageIcon;
 import uk.org.ownage.dmdirc.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -66,6 +68,13 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     /** Creates new form MainFrame */
     public MainFrame() {
         initComponents();
+        
+        // Load an icon
+        ClassLoader cldr = this.getClass().getClassLoader();
+        
+        java.net.URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/icon.png");
+        setIconImage(new ImageIcon(imageURL).getImage());
+        
         setVisible(true);
         
         miAddServer.addActionListener(new ActionListener() {
