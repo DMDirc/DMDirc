@@ -36,6 +36,8 @@ public class ServerManager {
      */
     private static ServerManager me = null;
     
+    private boolean closing = false;
+    
     /**
      * All servers that currently exist
      */
@@ -70,7 +72,9 @@ public class ServerManager {
      * @param server The server to be unregistered
      */
     public void unregisterServer(Server server) {
-        servers.remove(server);
+        if (!closing) {
+            servers.remove(server);
+        }
     }
     
     /**
@@ -88,10 +92,13 @@ public class ServerManager {
      * @param message The quit message to send to the IRC servers
      */
     public void closeAll(String message) {
+        closing = true;
         for (Server server : servers) {
             server.close(message);
         }
-    }    
+        closing = false;
+        servers.clear();
+    }
     
     /**
      * Returns the number of servers that are registered with the manager

@@ -24,6 +24,8 @@ package uk.org.ownage.dmdirc.ui;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
 import uk.org.ownage.dmdirc.*;
 import java.awt.event.ActionEvent;
@@ -34,7 +36,7 @@ import javax.swing.JInternalFrame;
  * The main application frame
  * @author chris
  */
-public class MainFrame extends javax.swing.JFrame {
+public class MainFrame extends javax.swing.JFrame implements WindowListener {
     
     /**
      * Singleton instance of MainFrame
@@ -80,6 +82,8 @@ public class MainFrame extends javax.swing.JFrame {
                 }
             }
         });
+        
+        addWindowListener(this);
         
         checkWindowState();
     }
@@ -148,6 +152,28 @@ public class MainFrame extends javax.swing.JFrame {
             toggleStateMenuItem.invalidate();
         }
     }
+    
+    public void windowOpened(WindowEvent windowEvent) {
+    }
+
+    public void windowClosing(WindowEvent windowEvent) {
+        ServerManager.getServerManager().closeAll(Config.getOption("general","closemessage"));
+    }
+
+    public void windowClosed(WindowEvent windowEvent) {
+    }
+
+    public void windowIconified(WindowEvent windowEvent) {
+    }
+
+    public void windowDeiconified(WindowEvent windowEvent) {
+    }
+
+    public void windowActivated(WindowEvent windowEvent) {
+    }
+
+    public void windowDeactivated(WindowEvent windowEvent) {
+    }    
     
     /** This method is called from within the constructor to
      * initialize the form.

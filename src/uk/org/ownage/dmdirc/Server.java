@@ -111,6 +111,8 @@ public class Server implements IRCParser.IChannelSelfJoin, IRCParser.IErrorInfo,
         // Unregister parser callbacks
         parser.delChannelSelfJoin(this);
         parser.delErrorInfo(this);
+        // Unregister frame callbacks
+        frame.removeInternalFrameListener(this);
         // Disconnect from the server
         disconnect(reason);
         // Unregister ourselves with the server manager

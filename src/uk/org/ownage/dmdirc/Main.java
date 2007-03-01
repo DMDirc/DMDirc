@@ -22,9 +22,11 @@
 
 package uk.org.ownage.dmdirc;
 
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
  * Main class, handles initialisation
@@ -46,17 +48,11 @@ public class Main {
         
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (ClassNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (InstantiationException ex) {
-            ex.printStackTrace();
-        } catch (UnsupportedLookAndFeelException ex) {
-            ex.printStackTrace();
+        } catch (Exception ex) {
+            Logger.error(ErrorLevel.ERROR, ex);
         }
         
-        MainFrame frame = MainFrame.getMainFrame();
+        MainFrame.getMainFrame();
     }
     
 }

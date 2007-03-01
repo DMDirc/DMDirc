@@ -81,6 +81,7 @@ public class Config {
 	Properties defaults = new Properties();
 	
 	defaults.setProperty("general.commandchar","/");
+        defaults.setProperty("general.closemessage","DMDirc exiting");
         defaults.setProperty("general.quitmessage","Using DMDirc");
         defaults.setProperty("general.partmessage","Using DMDirc");
 	defaults.setProperty("ui.maximisewindows","true");
