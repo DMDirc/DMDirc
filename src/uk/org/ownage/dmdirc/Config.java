@@ -82,6 +82,7 @@ public class Config {
 	
 	defaults.setProperty("general.commandchar","/");
         defaults.setProperty("general.quitmessage","Using DMDirc");
+        defaults.setProperty("general.partmessage","Using DMDirc");
 	defaults.setProperty("ui.maximisewindows","true");
         defaults.setProperty("ui.sortByMode", "true");
         defaults.setProperty("ui.sortByCase", "false");

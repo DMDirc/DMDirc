@@ -134,8 +134,11 @@ public class Server implements IRCParser.IChannelSelfJoin, IRCParser.IErrorInfo,
     private void closeChannels() {
         for (Channel channel : channels.values()) {
             channel.close();
-            channels.remove(channel);
         }
+    }
+    
+    public void delChannel(Channel chan) {
+        channels.remove(chan);
     }
     
     private void addChannel(ChannelInfo chan) {

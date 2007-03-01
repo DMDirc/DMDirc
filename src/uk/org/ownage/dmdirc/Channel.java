@@ -22,6 +22,8 @@
 
 package uk.org.ownage.dmdirc;
 
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.StyledDocument;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
@@ -39,7 +41,7 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
 public class Channel implements IRCParser.IChannelMessage,
         IRCParser.IChannelGotNames, IRCParser.IChannelTopic,
         IRCParser.IChannelJoin, IRCParser.IChannelPart, IRCParser.IChannelKick,
-        IRCParser.IChannelQuit, IRCParser.IChannelAction {
+        IRCParser.IChannelQuit, IRCParser.IChannelAction, InternalFrameListener {
     
     /** The parser's pChannel class */
     private ChannelInfo channelInfo;
@@ -61,6 +63,7 @@ public class Channel implements IRCParser.IChannelMessage,
         
         frame = new ChannelFrame(this);
         MainFrame.getMainFrame().addChild(frame);
+        frame.addInternalFrameListener(this);        
         
         server.getParser().addChannelMessage(this, channelInfo.getName());
         server.getParser().addChannelTopic(this, channelInfo.getName());
@@ -155,8 +158,13 @@ public class Channel implements IRCParser.IChannelMessage,
     public Server getServer() {
         return server;
     }
+    
+    public void part(String reason) {
+        server.getParser().partChannel(channelInfo.getName(), reason);
+        frame.addLine("* You have left the channel.");
+    }
 
-    void close() {
+    public void close() {
         server.getParser().delChannelMessage(this);
         server.getParser().delChannelTopic(this);
         server.getParser().delChannelGotNames(this);
@@ -166,10 +174,35 @@ public class Channel implements IRCParser.IChannelMessage,
         server.getParser().delChannelKick(this);
         server.getParser().delChannelAction(this);
         
+        server.delChannel(this);
+        
         frame.setVisible(false);
         MainFrame.getMainFrame().delChild(frame);
         frame = null;
         server = null;
+    }
+
+    public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
+    }
+
+    public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
+        part(Config.getOption("general","partmessage"));
+        close();
+    }
+
+    public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
+    }
+
+    public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
+    }
+
+    public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
+    }
+
+    public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
+    }
+
+    public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }
     
 }
