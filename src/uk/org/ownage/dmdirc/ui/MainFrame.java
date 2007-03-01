@@ -31,6 +31,8 @@ import uk.org.ownage.dmdirc.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JInternalFrame;
+import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
 
 /**
  * The main application frame
@@ -77,8 +79,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
                 try {
                     getActiveFrame().setMaximum(!getActiveFrame().isMaximum());
                 } catch (PropertyVetoException ex) {
-                    // TODO: Handle error properly
-                    ex.printStackTrace();
+                    Logger.error(ErrorLevel.WARNING, ex);
                 }
             }
         });
@@ -155,25 +156,25 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     
     public void windowOpened(WindowEvent windowEvent) {
     }
-
+    
     public void windowClosing(WindowEvent windowEvent) {
         ServerManager.getServerManager().closeAll(Config.getOption("general","closemessage"));
     }
-
+    
     public void windowClosed(WindowEvent windowEvent) {
     }
-
+    
     public void windowIconified(WindowEvent windowEvent) {
     }
-
+    
     public void windowDeiconified(WindowEvent windowEvent) {
     }
-
+    
     public void windowActivated(WindowEvent windowEvent) {
     }
-
+    
     public void windowDeactivated(WindowEvent windowEvent) {
-    }    
+    }
     
     /** This method is called from within the constructor to
      * initialize the form.
