@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.commandparser;
 import java.util.Vector;
 import uk.org.ownage.dmdirc.commandparser.commands.*;
 import uk.org.ownage.dmdirc.commandparser.commands.server.*;
+import uk.org.ownage.dmdirc.commandparser.commands.channel.*;
 
 /**
  * The command manager creates and manages a single instance of all commands,
@@ -50,6 +51,8 @@ public class CommandManager {
         if (channelCommands == null) {
             channelCommands = new Vector<Command>(0,1);
             
+            channelCommands.add(new Me());
+            channelCommands.add(new MeEmpty());
         }
         
         for (Command com : channelCommands) {

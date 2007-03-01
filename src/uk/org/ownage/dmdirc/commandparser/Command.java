@@ -91,4 +91,21 @@ public abstract class Command {
         return name+" "+arguments+" - "+description;
     }
     
+    /**
+     * Implodes the given list of arguments
+     * @param args The arguments to implode
+     * @return A string containing each argument seperated by a space
+     */
+    protected String implodeArgs(String... args) {
+        String res = "";
+        for (int i = 0; i < args.length; i++) {
+            if (res.equals("")) {
+                res = args[i];
+            } else {
+                res = res.concat(" "+args[i]);
+            }
+        }
+        return res;
+    }
+    
 }

@@ -20,36 +20,31 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.server;
+package uk.org.ownage.dmdirc.commandparser.commands.channel;
 
-import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.ServerManager;
+import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
 /**
  *
  * @author chris
  */
-public class Quit extends ServerCommand {
+public class Me extends ChannelCommand {
     
-    /**
-     * Creates a new instance of QuitDefault
-     */
-    public Quit() {
-        description = "Quits DMDirc, sending the specified quit message to all servers";
-        arguments = "<quit message>";
+    /** Creates a new instance of Me */
+    public Me() {
+        description = "sends an action to the current channel";
+        arguments = "<action>";
         polyadic = true;
         arity = 0;
-        name = "quit";
+        name = "me";
         show = true;
     }
-    
-    public void execute(CommandWindow origin, Server server, String... args) {
-        ServerManager.getServerManager().disconnectAll(implodeArgs(args));
-        Config.save();
-        System.exit(0);
+
+    public void execute(CommandWindow origin, Server server, Channel channel, String... args) {
+        channel.sendAction(implodeArgs(args));
     }
     
 }

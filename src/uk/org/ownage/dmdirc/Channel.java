@@ -79,6 +79,11 @@ public class Channel implements IRCParser.IChannelMessage,
         frame.addLine("> "+line);
     }
     
+    public void sendAction(String action) {
+        channelInfo.sendAction(action);
+        frame.addLine("*> "+action);
+    }    
+    
     public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel,
             ChannelClientInfo cChannelClient, String sMessage, String sHost) {
         if (cChannelClient != null) {

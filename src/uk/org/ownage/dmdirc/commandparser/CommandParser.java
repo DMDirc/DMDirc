@@ -63,22 +63,30 @@ abstract public class CommandParser {
     public void parseCommand(CommandWindow origin, String line) {
         if (line.charAt(0) == Config.getOption("general","commandchar").charAt(0)) {
             String[] args = line.split(" ");
+            String[] comargs;
+            String command;
             
             assert(args.length > 0);
             
-            String command = args[0].substring(1);
+            command = args[0].substring(1);
             
-            String signature = command+"/"+(args.length-1);
+            comargs = new String[args.length-1];
+            
+            for (int i = 1; i < args.length; i++) {
+                comargs[i-1] = args[i];
+            }
+            
+            String signature = command+"/"+(comargs.length);
             
             // Check the specific signature first, so that polyadic commands can
             // have error handlers if there are too few arguments (e.g., msg/0 and
             // msg/1 would return errors, so msg only gets called with 2+ args).
             if (commands.containsKey(signature)) {
-                executeCommand(origin, commands.get(signature), args);
+                executeCommand(origin, commands.get(signature), comargs);
             } else if (commands.containsKey(command)) {
-                executeCommand(origin, commands.get(command), args);
+                executeCommand(origin, commands.get(command), comargs);
             } else {
-                handleInvalidCommand(origin, command, args);
+                handleInvalidCommand(origin, command, comargs);
             }
         } else {
             handleNonCommand(origin, line);
