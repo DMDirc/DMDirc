@@ -32,13 +32,13 @@ package uk.org.ownage.dmdirc.parser;
  */
 public class ParserError {
 	/** Error is potentially Fatal, Desync 99% Guarenteed! */
-	protected static final int errFatal = 1;
+	public static final int errFatal = 1;
 	/** Error is not fatal, but is more severe than a warning. */
-	protected static final int errError = 2;
+	public static final int errError = 2;
 	/** Error was an unexpected occurance, but shouldn't be anything to worry about. */
-	protected static final int errWarning = 4;
+	public static final int errWarning = 4;
 	/** Error was an exception from elsewhere. */
-	protected static final int errException = 8;
+	public static final int errException = 8;
 
 	/** Store the Error level */
 	protected int errorLevel = 0;

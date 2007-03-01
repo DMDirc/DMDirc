@@ -117,7 +117,17 @@ public class IRCParser implements Runnable {
 	/** Is this line the first line we have seen? */
 	protected boolean IsFirst = true;
 	
-	// Better alternative to hashtable?
+	/** Reference to the callback Manager */
+	private CallbackManager myCallbackManager = new CallbackManager(this);
+	
+	/**
+	 * Get a reference to the CallbackManager
+	 *
+	 * @return Reference to the CallbackManager
+	 */
+	public CallbackManager getCallbackManager() {
+		return myCallbackManager;
+	}
 	
 	/** Hashtable storing known prefix modes (ohv). */	
 	protected Hashtable<Character,Integer> hPrefixModes = new Hashtable<Character,Integer>();
@@ -175,1054 +185,7 @@ public class IRCParser implements Runnable {
 	/** Hashtable storing all information gathered from 005. */
 	protected Hashtable<String,String> h005Info = new Hashtable<String,String>();
 	
-	// Callbacks
-	// TODO: This would probably be more efficient (for deleting anyway) as hashtables
-	// with the key being the callback-to object?
-	/**
-	 * Used to give Debug Information.
-	 */
-	public interface IDebugInfo { 
-		/**
-		 * This callback is used to provide occasional debug information from the parser.
-		 *
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param nLevel Debugging Level (ndInfo, ndSocket etc)
-		 * @param sData Debugging Information
-		 * @see IRCParser#addDebugInfo
-		 * @see IRCParser#delDebugInfo
-		 * @see IRCParser#callDebugInfo
-		 */
-		public void onDebugInfo(IRCParser tParser, int nLevel, String sData);
-	}
-	/**
-	 * Arraylist for storing callback information for DebugInfo.
-	 *
-	 * @see IRCParser.IDebugInfo
-	 */
-	private ArrayList<IDebugInfo> cbDebugInfo = new ArrayList<IDebugInfo>();
-	
-	/**
-	 * Called when "End of MOTD" or "No MOTD".
-	 */
-	public interface IMOTDEnd {
-		/**
-		 * Called when "End of MOTD" or "No MOTD".
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @see IRCParser#addMOTDEnd
-		 * @see IRCParser#delMOTDEnd
-		 * @see IRCParser#callMOTDEnd
-		 */
-		public void onMOTDEnd(IRCParser tParser);
-	}
-	/**
-	 * Arraylist for storing callback information for EndOfMOTD/NoMOTD.
-	 *
-	 * @see IRCParser.IMOTDEnd
-	 */	
-	private ArrayList<IMOTDEnd> cbEndOfMOTD = new ArrayList<IMOTDEnd>();
-	
-	/**
-	 * Called after 001.
-	 */
-	public interface IServerReady {
-		/**
-		 * Called after 001.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @see IRCParser#addServerReady
-		 * @see IRCParser#delServerReady
-		 * @see IRCParser#callServerReady
-		 */
-		public void onServerReady(IRCParser tParser);
-	}
-	/**
-	 * Arraylist for storing callback information for Server Ready (001).
-	 *
-	 * @see IRCParser.IServerReady
-	 */	
-	private ArrayList<IServerReady> cbServerReady = new ArrayList<IServerReady>();	
-	
-	/** 
-	 * Called on every incomming line BEFORE parsing.
-	 */
-	public interface IDataIn { 
-		/**
-		 * Called on every incomming line BEFORE parsing.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param sData Incomming Line.
-		 * @see IRCParser#addDataIn
-		 * @see IRCParser#delDataIn
-		 * @see IRCParser#callDataIn
-		 */
-		public void onDataIn(IRCParser tParser, String sData);
-	}
-	/**
-	 * Arraylist for storing callback information for DataIn
-	 *
-	 * @see IRCParser.IDataIn
-	 */	
-	private ArrayList<IDataIn> cbDataIn = new ArrayList<IDataIn>();
-	
-	/**
-	 * Called on every incomming line BEFORE being sent.
-	 */
-	public interface IDataOut {
-		/**
-		 * Called on every incomming line BEFORE being sent.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param sData Outgoing Data
-		 * @param bFromParser True if parser sent the data, false if sent using .sendLine
-		 * @see IRCParser#addDataOut
-		 * @see IRCParser#delDataOut
-		 * @see IRCParser#callDataOut
-		 */
-		public void onDataOut(IRCParser tParser, String sData, boolean bFromParser);
-	}
-	/**
-	 * Arraylist for storing callback information for DataOut.
-	 *
-	 * @see IRCParser.IDataOut
-	 */	
-	private ArrayList<IDataOut> cbDataOut = new ArrayList<IDataOut>();
-	
-	/**
-	 * Called when requested nickname is in use.
-	 */
-	public interface INickInUse {
-		/**
-		 * Called when requested nickname is in use.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @see IRCParser#addNickInUse
-		 * @see IRCParser#delNickInUse
-		 * @see IRCParser#callNickInUse
-		 */
-		public void onNickInUse(IRCParser tParser);
-	}
-	/**
-	 * Arraylist for storing callback information for Nick in Use.
-	 *
-	 * @see IRCParser.INickInUse
-	 */	
-	private ArrayList<INickInUse> cbNickInUse = new ArrayList<INickInUse>();
-	
-	/**
-	 * Called to give Error Information.
-	 */
-	public interface IErrorInfo {
-		/**
-		 * Called to give Error Information.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param nLevel Debugging Level (errFatal, errWarning etc)
-		 * @param sData Error Information
-		 * @see IRCParser#addErrorInfo
-		 * @see IRCParser#delErrorInfo
-		 * @see IRCParser#callErrorInfo
-		 */
-		public void onErrorInfo(IRCParser tParser, ParserError errorInfo);
-	}
-	/**
-	 * Arraylist for storing callback information for ErrorInfo.
-	 *
-	 * @see IRCParser.IErrorInfo
-	 */	
-	private ArrayList<IErrorInfo> cbErrorInfo = new ArrayList<IErrorInfo>();
-	
-	/** 
-	 * Called When we, or another client joins a channel.
-	 * This is called AFTER client has been added to channel as a ChannelClientInfo
-	 */
-	public interface IChannelJoin {
-		/**
-		 * Called When another client joins a channel.
-		 * This is called AFTER client has been added to channel as a ChannelClientInfo
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cChannel Channel Object
-		 * @param cChannelClient ChannelClient object for new person
-		 * @see IRCParser#addChannelJoin
-		 * @see IRCParser#delChannelJoin
-		 * @see IRCParser#callChannelJoin
-		 */
-		public void onChannelJoin(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient );
-	}
-	/**
-	 * Arraylist for storing callback information for ChannelJoin.
-	 *
-	 * @see IRCParser.IChannelJoin
-	 */	
-	private ArrayList<IChannelJoin> cbChannelJoin = new ArrayList<IChannelJoin>();
-	/**
-	 * Hashtable for storing callback channel-specific information for ChannelJoin.
-	 *
-	 * @see IRCParser.IChannelJoin
-	 */	
-	protected Hashtable<IChannelJoin,String> hChannelJoinChan = new Hashtable<IChannelJoin,String>();
-	
-	/** 
-	 * Called When we join a channel.
-	 * We are NOT added as a channelclient until after the names reply
-	 */
-	public interface IChannelSelfJoin {
-		/**
-		 * Called When we join a channel.
-		 * We are NOT added as a channelclient until after the names reply
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cChannel Channel Object
-		 * @see IRCParser#addChannelSelfJoin
-		 * @see IRCParser#delChannelSelfJoin
-		 * @see IRCParser#callChannelSelfJoin
-		 */
-		public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel);
-	}
-	/**
-	 * Arraylist for storing callback information for ChannelSelfJoin.
-	 *
-	 * @see IRCParser.IChannelSelfJoin
-	 */
-	private ArrayList<IChannelSelfJoin> cbChannelSelfJoin = new ArrayList<IChannelSelfJoin>();
-	
-	/** 
-	 * Called When we, or another client parts a channel.
-	 * This is called BEFORE client has been removed from the channel.
-	 */
-	public interface IChannelPart {
-		/**
-		 * Called When we, or another client parts a channel.
-		 * This is called BEFORE client has been removed from the channel.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cChannel Channel that the user parted
-		 * @param cChannelClient Client that parted
-		 * @param sReason Reason given for parting (May be "")
-		 * @see IRCParser#addChannelPart
-		 * @see IRCParser#delChannelPart
-		 * @see IRCParser#callChannelPart
-		 */
-		public void onChannelPart(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );
-	}
-	/**
-	 * Arraylist for storing callback information for ChannelPart.
-	 *
-	 * @see IRCParser.IChannelPart
-	 */	
-	private ArrayList<IChannelPart> cbChannelPart = new ArrayList<IChannelPart>();
-	/**
-	 * Hashtable for storing callback channel-specific information for ChannelPart.
-	 *
-	 * @see IRCParser.IChannelPart
-	 */	
-	protected Hashtable<IChannelPart,String> hChannelPartChan = new Hashtable<IChannelPart,String>();
-	
-	/** 
-	 * Called When we, or another client quits IRC (Called once per channel the user was on).
-	 * This is called BEFORE client has been removed from the channel.
-	 */
-	public interface IChannelQuit {
-		/**
-		 * Called When we, or another client quits IRC (Called once per channel the user was on).
-		 * This is called BEFORE client has been removed from the channel.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cChannel Channel that user was on
-		 * @param cChannelClient User thats quitting
-		 * @param sReason Quit reason
-		 * @see IRCParser#addChannelQuit
-		 * @see IRCParser#delChannelQuit
-		 * @see IRCParser#callChannelQuit
-		 */
-		public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );
-	}
-	/**
-	 * Arraylist for storing callback information for ChannelQuit.
-	 *
-	 * @see IRCParser.IChannelQuit
-	 */	
-	private ArrayList<IChannelQuit> cbChannelQuit = new ArrayList<IChannelQuit>();
-	/**
-	 * Hashtable for storing callback channel-specific information for ChannelQuit.
-	 *
-	 * @see IRCParser.IChannelQuit
-	 */	
-	protected Hashtable<IChannelQuit,String> hChannelQuitChan = new Hashtable<IChannelQuit,String>();	
-	
-	/** 
-	 * Called when the topic is changed or discovered for the first time.
-	 * bIsNewTopic is true if someone sets the topic, false if the topic is discovered on join
-	 */
-	public interface IChannelTopic {
-		/**
-		 * Called when the topic is changed or discovered for the first time.
-		 * bIsNewTopic is true if someone sets the topic, false if the topic is discovered on join
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cChannel Channel that topic was set on
-		 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
-		 * @see IRCParser#addChannelTopic
-		 * @see IRCParser#delChannelTopic
-		 * @see IRCParser#callChannelTopic
-		 */
-		public void onChannelTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsJoinTopic);
-	}
-	/**
-	 * Arraylist for storing callback information for ChannelTopic.
-	 *
-	 * @see IRCParser.IChannelTopic
-	 */	
-	private ArrayList<IChannelTopic> cbChannelTopic = new ArrayList<IChannelTopic>();
-	/**
-	 * Hashtable for storing callback channel-specific information for ChannelTopic.
-	 *
-	 * @see IRCParser.IChannelTopic
-	 */	
-	protected Hashtable<IChannelTopic,String> hChannelTopicChan = new Hashtable<IChannelTopic,String>();
-	
-	/** 
-	 * Called when the channel modes are changed or discovered.
-	 * cChannelClient is null if the modes were found from raw 324 (/MODE #Chan reply) or if a server set the mode.<br>
-	 * If a Server set the mode, sHost is the servers name, else it is the full host of the user who set it
-	 */
-	public interface IChannelModeChanged {
-		/**
-		 * Called when the channel modes are changed or discovered.
-		 * cChannelClient is null if the modes were found from raw 324 (/MODE #Chan reply) or if a server set the mode.<br>
-		 * If a Server set the mode, sHost is the servers name, else it is the full host of the user who set it
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cChannel Channel where modes were changed
-		 * @param cChannelClient Client chaning the modes (null if server)
-		 * @param sHost Host doing the mode changing (User host or server name)
-		 * @param sModes String showing the exact mode change parsed.
-		 * @see IRCParser#addChannelModeChanged
-		 * @see IRCParser#delChannelModeChanged
-		 * @see IRCParser#callChannelModeChanged
-		 */
-		public void onChannelModeChanged(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes);
-	}
-	/**
-	 * Arraylist for storing callback information for ChannelModeChanged.
-	 *
-	 * @see IRCParser.IChannelModeChanged
-	 */	
-	private ArrayList<IChannelModeChanged> cbChannelModeChanged = new ArrayList<IChannelModeChanged>();
-/**
-	 * Hashtable for storing callback channel-specific information for ChannelModeChanged.
-	 *
-	 * @see IRCParser.IChannelModeChanged
-	 */	
-	protected Hashtable<IChannelModeChanged,String> hChannelModeChangedChan = new Hashtable<IChannelModeChanged,String>();
-	
-	/** 
-	 * Called when a users channel mode is changed.
-	 */
-	public interface IChannelUserModeChanged {
-		/**
-		 * Called when a users channel mode is changed.
-		 * cChannelClient is null if the modes were found from raw 324 (/MODE #Chan reply) or if a server set the mode.<br>
-		 * If a Server set the mode, sHost is the servers name, else it is the full host of the user who set it
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cChannel Channel where modes were changed
-		 * @param cChangedClient Client being changed
-		 * @param cSetByClient Client chaning the modes (null if server)
-		 * @param sHost Host doing the mode changing (User host or server name)
-		 * @param sMode String representing mode change (ie +o)
-		 * @see IRCParser#addChannelUserModeChanged
-		 * @see IRCParser#delChannelUserModeChanged
-		 * @see IRCParser#callChannelUserModeChanged
-		 */
-		public void onChannelUserModeChanged(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode);
-	}
-	/**
-	 * Arraylist for storing callback information for ChannelUserModeChanged.
-	 *
-	 * @see IRCParser.IChannelUserModeChanged
-	 */	
-	private ArrayList<IChannelUserModeChanged> cbChannelUserModeChanged = new ArrayList<IChannelUserModeChanged>();
-/**
-	 * Hashtable for storing callback channel-specific information for ChannelUserModeChanged.
-	 *
-	 * @see IRCParser.IChannelUserModeChanged
-	 */	
-	protected Hashtable<IChannelUserModeChanged,String> hChannelUserModeChangedChan = new Hashtable<IChannelUserModeChanged,String>();
-	
-	/** 
-	 * Called when user modes are changed.
-	 * cClient represents the user who's modes were changed (should ALWAYS be us)<br>
-	 * sSetby is the host of the person who set the mode (usually us, may be an oper or server in some cases)
-	 */
-	public interface IUserModeChanged {
-		/**
-		 * Called when user modes are changed.
-		 * cClient represents the user who's modes were changed (should ALWAYS be us)<br>
-		 * sSetby is the host of the person who set the mode (usually us, may be an oper or server in some cases)
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cClient Client that had the mode changed (almost always us)
-		 * @param sSetBy Host that set the mode (us or servername)
-		 * @see IRCParser#addUserModeChanged
-		 * @see IRCParser#delUserModeChanged
-		 * @see IRCParser#callUserModeChanged
-		 */
-		public void onUserModeChanged(IRCParser tParser, ClientInfo cClient, String sSetBy);
-	}
-	/**
-	 * Arraylist for storing callback information for UserModeChanged.
-	 *
-	 * @see IRCParser.IUserModeChanged
-	 */	
-	private ArrayList<IUserModeChanged> cbUserModeChanged = new ArrayList<IUserModeChanged>();
-	
-	/**
-	 * Called when we or another user change nickname.
-	 * This is called after the nickname change has been done internally
-	 */
-	public interface INickChanged {
-		/**
-		 * Called when we or another user change nickname.
-		 * This is called after the nickname change has been done internally
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cClient Client changing nickname
-		 * @param sOldNick Nickname before change
-		 * @see IRCParser#addNickChanged
-		 * @see IRCParser#delNickChanged
-		 * @see IRCParser#callNickChanged
-		 */
-		public void onNickChanged(IRCParser tParser, ClientInfo cClient, String sOldNick);
-	}
-	/**
-	 * Arraylist for storing callback information for NickChanged.
-	 *
-	 * @see IRCParser.INickChanged
-	 */	
-	private ArrayList<INickChanged> cbNickChanged = new ArrayList<INickChanged>();
-	
-	/**
-	 * Called when a person is kicked.
-	 * cKickedByClient can be null if kicked by a server. sKickedByHost is the hostname of the person/server doing the kicking.
-	 */
-	public interface IChannelKick {
-		/**
-		 * Called when a person is kicked.
-		 * cKickedByClient can be null if kicked by a server. sKickedByHost is the hostname of the person/server doing the kicking.
-		 *
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cChannel Channel where the kick took place
-		 * @param cKickedClient ChannelClient that got kicked
-		 * @param cKickedByClient ChannelClient that did the kicking (may be null if server)
-		 * @param sReason Reason for kick (may be "")
-		 * @param sKickedByHost Hostname of Kicker (or servername)
-		 * @see IRCParser#addChannelKick
-		 * @see IRCParser#delChannelKick
-		 * @see IRCParser#callChannelKick
-		 */
-		public void onChannelKick(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost);
-	}
-	/**
-	 * Arraylist for storing callback information for ChannelKick.
-	 *
-	 * @see IRCParser.IChannelKick
-	 */	
-	private ArrayList<IChannelKick> cbChannelKick = new ArrayList<IChannelKick>();
-	/**
-	 * Hashtable for storing callback channel-specific information for ChannelKick.
-	 *
-	 * @see IRCParser.IChannelKick
-	 */	
-	protected Hashtable<IChannelKick,String> hChannelKickChan = new Hashtable<IChannelKick,String>();
-	
-	/**
-	 * Called when a person sends a message to a channel.
-	 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
-	 * cChannelClient is null if user is a server, or not on the channel.
-	 */
-	public interface IChannelMessage {
-		/**
-		 * Called when a person sends a message to a channel.
-		 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
-		 * cChannelClient is null if user is a server, or not on the channel.
-		 *
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cChannel Channel where the message was sent to
-		 * @param cChannelClient ChannelClient who sent the message (may be null if server)
-		 * @param sMessage Message contents
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addChannelMessage
-		 * @see IRCParser#delChannelMessage
-		 * @see IRCParser#callChannelMessage
-		 */
-		public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for ChannelMessage.
-	 *
-	 * @see IRCParser.IChannelMessage
-	 */	
-	private ArrayList<IChannelMessage> cbChannelMessage = new ArrayList<IChannelMessage>();
-/**
-	 * Hashtable for storing callback channel-specific information for ChannelMessage.
-	 *
-	 * @see IRCParser.IChannelMessage
-	 */	
-	protected Hashtable<IChannelMessage,String> hChannelMessageChan = new Hashtable<IChannelMessage,String>();	
-	
-	/**
-	 * Called when a person does an action in a channel.
-	 * sHost is the hostname of the person sending the action. (Can be a server or a person)<br>
-	 * cChannelClient is null if user is a server, or not on the channel.
-	 */
-	public interface IChannelAction {
-		/**
-		 * Called when a person does an action in a channel.
-		 * sHost is the hostname of the person sending the action. (Can be a server or a person)<br>
-		 * cChannelClient is null if user is a server, or not on the channel.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cChannel Channel where the action was sent to
-		 * @param cChannelClient ChannelClient who sent the action (may be null if server)
-		 * @param sMessage action contents
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addChannelAction
-		 * @see IRCParser#delChannelAction
-		 * @see IRCParser#callChannelAction
-		 */
-		public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for ChannelAction.
-	 *
-	 * @see IRCParser.IChannelAction
-	 */	
-	private ArrayList<IChannelAction> cbChannelAction = new ArrayList<IChannelAction>();
-	/**
-	 * Hashtable for storing callback channel-specific information for ChannelAction.
-	 *
-	 * @see IRCParser.IChannelAction
-	 */	
-	protected Hashtable<IChannelAction,String> hChannelActionChan = new Hashtable<IChannelAction,String>();
-	
-	/**
-	 * Called when a person sends a notice to a channel.
-	 * sHost is the hostname of the person sending the notice. (Can be a server or a person)<br>
-	 * cChannelClient is null if user is a server, or not on the channel.
-	 */
-	public interface IChannelNotice {
-		/**
-		 * Called when a person sends a notice to a channel.
-		 * sHost is the hostname of the person sending the notice. (Can be a server or a person)<br>
-		 * cChannelClient is null if user is a server, or not on the channel.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cChannel Channel where the notice was sent to
-		 * @param cChannelClient ChannelClient who sent the notice (may be null if server)
-		 * @param sMessage notice contents
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addChannelNotice
-		 * @see IRCParser#delChannelNotice
-		 * @see IRCParser#callChannelNotice
-		 */
-		public void onChannelNotice(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for ChannelNotice.
-	 *
-	 * @see IRCParser.IChannelNotice
-	 */	
-	private ArrayList<IChannelNotice> cbChannelNotice = new ArrayList<IChannelNotice>();
-	/**
-	 * Hashtable for storing callback channel-specific information for ChannelNotice.
-	 *
-	 * @see IRCParser.IChannelNotice
-	 */	
-	protected Hashtable<IChannelNotice,String> hChannelNoticeChan = new Hashtable<IChannelNotice,String>();
-	
-	/**
-	 * Called when a person sends a message to you directly (PM). 
-	 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
-	 * cClient is null if user is a server, or not on any common channel.
-	 */
-	public interface IPrivateMessage {
-		/**
-		 * Called when a person sends a message to you directly (PM). 
-		 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
-		 * cClient is null if user is a server, or not on any common channel.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cClient Client who sent the message (may be null if no common channels or server)
-		 * @param sMessage Message contents
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addPrivateMessage
-		 * @see IRCParser#delPrivateMessage
-		 * @see IRCParser#callPrivateMessage
-		 */
-		public void onPrivateMessage(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for PrivateMessage.
-	 *
-	 * @see IRCParser.IPrivateMessage
-	 */	
-	private ArrayList<IPrivateMessage> cbPrivateMessage = new ArrayList<IPrivateMessage>();
-	
-	/**
-	 * Called when a person does an action to you (PM).
-	 * sHost is the hostname of the person sending the action. (Can be a server or a person)<br>
-	 * cClient is null if user is a server, or not on any common channel.
-	 */
-	public interface IPrivateAction {
-		/**
-		 * Called when a person does an action to you (PM).
-		 * sHost is the hostname of the person sending the action. (Can be a server or a person)<br>
-		 * cClient is null if user is a server, or not on any common channel.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-	 	 * @param cClient Client who sent the action (may be null if no common channels or server)
-		 * @param sMessage action contents
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addPrivateAction
-		 * @see IRCParser#delPrivateAction
-		 * @see IRCParser#callPrivateAction
-		 */
-		public void onPrivateAction(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for PrivateAction.
-	 *
-	 * @see IRCParser.IPrivateAction
-	 */	
-	private ArrayList<IPrivateAction> cbPrivateAction = new ArrayList<IPrivateAction>();
-	
-	/**
-	 * Called when a person sends a notice to you.
-	 * sHost is the hostname of the person sending the notice. (Can be a server or a person)<br>
-	 * cClient is null if user is a server, or not on any common channel.
-	 */
-	public interface IPrivateNotice {
-		/**
-		 * Called when a person sends a notice to you.
-		 * sHost is the hostname of the person sending the notice. (Can be a server or a person)<br>
-		 * cClient is null if user is a server, or not on any common channel.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cClient Client who sent the notice (may be null if no common channels or server)
-		 * @param sMessage Notice contents
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addPrivateNotice
-		 * @see IRCParser#delPrivateNotice
-		 * @see IRCParser#callPrivateNotice
-		 */
-		public void onPrivateNotice(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for PrivateNotice.
-	 *
-	 * @see IRCParser.IPrivateNotice
-	 */	
-	private ArrayList<IPrivateNotice> cbPrivateNotice = new ArrayList<IPrivateNotice>();
-	
-	/**
-	 * Called when a person sends a message not aimed specifically at you or a channel (ie $*).
-	 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
-	 * cClient is null if user is a server, or not on any common channel.
-	 */
-	public interface IUnknownMessage {
-		/**
-		 * Called when a person sends a message not aimed specifically at you or a channel (ie $*).
-		 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
-		 * cClient is null if user is a server, or not on any common channel.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cClient Client who sent the message (may be null if no common channels or server)
-		 * @param sMessage Message contents
-		 * @param sTarget Actual target of message
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addUnknownMessage
-		 * @see IRCParser#delUnknownMessage
-		 * @see IRCParser#callUnknownMessage
-		 */
-		public void onUnknownMessage(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for UnknownMessage.
-	 *
-	 * @see IRCParser.IUnknownMessage
-	 */	
-	private ArrayList<IUnknownMessage> cbUnknownMessage = new ArrayList<IUnknownMessage>();
-	
-	/**
-	 * Called when a person sends an action not aimed specifically at you or a channel (ie $*).
-	 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
-	 * cClient is null if user is a server, or not on any common channel.
-	 */
-	public interface IUnknownAction {
-		/**
-		 * Called when a person sends an action not aimed specifically at you or a channel (ie $*).
-		 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
-		 * cClient is null if user is a server, or not on any common channel.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cClient Client who sent the action (may be null if no common channels or server)
-		 * @param sMessage Action contents
-		 * @param sTarget Actual target of action
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addUnknownAction
-		 * @see IRCParser#delUnknownAction
-		 * @see IRCParser#callUnknownAction
-		 */
-		public void onUnknownAction(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for UnknownAction.
-	 *
-	 * @see IRCParser.IUnknownAction
-	 */	
-	private ArrayList<IUnknownAction> cbUnknownAction = new ArrayList<IUnknownAction>();
-	
-	/**
-	 * Called when a person sends a notice not aimed specifically at you or a channel (ie $*).
-	 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
-	 * cClient is null if user is a server, or not on any common channel.
-	 */
-	public interface IUnknownNotice { 
-		/**
-		 * Called when a person sends a notice not aimed specifically at you or a channel (ie $*).
-		 * sHost is the hostname of the person sending the message. (Can be a server or a person)<br>
-		 * cClient is null if user is a server, or not on any common channel.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cClient Client who sent the notice (may be null if no common channels or server)
-		 * @param sMessage Notice contents
-		 * @param sTarget Actual target of notice
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addUnknownNotice
-		 * @see IRCParser#delUnknownNotice
-		 * @see IRCParser#callUnknownNotice
-		 */
-		public void onUnknownNotice(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for UnknownNotice.
-	 *
-	 * @see IRCParser.IUnknownNotice
-	 */	
-	private ArrayList<IUnknownNotice> cbUnknownNotice = new ArrayList<IUnknownNotice>();
-	
-	/**
-	 * Called when a person sends a CTCP to a channel.
-	 * sHost is the hostname of the person sending the CTCP. (Can be a server or a person)<br>
-	 * cChannelClient is null if user is a server.
-	 */
-	public interface IChannelCTCP {
-		/**
-		 * Called when a person sends a CTCP to a channel.
-		 * sHost is the hostname of the person sending the CTCP. (Can be a server or a person)<br>
-		 * cChannelClient is null if user is a server.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cChannel Channel where CTCP was sent
-		 * @param cChannelClient ChannelClient who sent the message (may be null if server)
-		 * @param sType Type of CTCP (VERSION, TIME etc)
-		 * @param sMessage Additional contents
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addChannelCTCP
-		 * @see IRCParser#delChannelCTCP
-		 * @see IRCParser#callChannelCTCP
-		 */
-		public void onChannelCTCP(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for ChannelCTCP.
-	 *
-	 * @see IRCParser.IChannelCTCP
-	 */	
-	private ArrayList<IChannelCTCP> cbChannelCTCP = new ArrayList<IChannelCTCP>();
-	/**
-	 * Hashtable for storing callback channel-specific information for ChannelCTCP.
-	 *
-	 * @see IRCParser.IChannelCTCP
-	 */	
-	protected Hashtable<IChannelCTCP,String> hChannelCTCPChan = new Hashtable<IChannelCTCP,String>();
-	
-	/**
-	 * Called when a person sends a CTCP to you directly.
-	 * sHost is the hostname of the person sending the CTCP. (Can be a server or a person)<br>
-	 * cClient is null if user is a server, or not on any common channels.
-	 */
-	public interface IPrivateCTCP {
-		/**
-		 * Called when a person sends a CTCP to you directly.
-		 * sHost is the hostname of the person sending the CTCP. (Can be a server or a person)<br>
-		 * cClient is null if user is a server, or not on any common channels.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-	 	 * @param cClient Client who sent the CTCP (may be null if no common channels or server)
-		 * @param sType Type of CTCP (VERSION, TIME etc)
-		 * @param sMessage Additional contents
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addPrivateCTCP
-		 * @see IRCParser#delPrivateCTCP
-		 * @see IRCParser#callPrivateCTCP
-		 */
-		public void onPrivateCTCP(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for PrivateCTCP.
-	 *
-	 * @see IRCParser.IPrivateCTCP
-	 */	
-	private ArrayList<IPrivateCTCP> cbPrivateCTCP = new ArrayList<IPrivateCTCP>();
-	
-	/**
-	 * Called when a person sends a CTCP not aimed at you or a channel (ie $*).
-	 * sHost is the hostname of the person sending the CTCP. (Can be a server or a person)<br>
-	 * cClient is null if user is a server, or not on any common channels.
-	 */
-	public interface IUnknownCTCP {
-		/**
-		 * Called when a person sends a CTCP not aimed at you or a channel (ie $*).
-		 * sHost is the hostname of the person sending the CTCP. (Can be a server or a person)<br>
-		 * cClient is null if user is a server, or not on any common channels.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-	 	 * @param cClient Client who sent the CTCP (may be null if no common channels or server)
-		 * @param sType Type of CTCP (VERSION, TIME etc)
-		 * @param sMessage Additional contents
-		 * @param sTarget Actual Target of CTCP
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addUnknownCTCP
-		 * @see IRCParser#delUnknownCTCP
-		 * @see IRCParser#callUnknownCTCP
-		 */
-		public void onUnknownCTCP(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for UnknownCTCP.
-	 *
-	 * @see IRCParser.IUnknownCTCP
-	 */	
-	private ArrayList<IUnknownCTCP> cbUnknownCTCP = new ArrayList<IUnknownCTCP>();
-	
-	/**
-	 * Called when a person sends a CTCPRReply to a channel.
-	 * sHost is the hostname of the person sending the CTCPReply. (Can be a server or a person)<br>
-	 * cChannelClient is null if user is a server.
-	 */
-	public interface IChannelCTCPReply {
-		/**
-		 * Called when a person sends a CTCPRReply to a channel.
-		 * sHost is the hostname of the person sending the CTCPReply. (Can be a server or a person)<br>
-		 * cChannelClient is null if user is a server.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cChannel Channel where CTCPReply was sent
-		 * @param cChannelClient ChannelClient who sent the message (may be null if server)
-		 * @param sType Type of CTCPRReply (VERSION, TIME etc)
-		 * @param sMessage Reply Contents
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addChannelCTCPReply
-		 * @see IRCParser#delChannelCTCPReply
-		 * @see IRCParser#callChannelCTCPReply
-		 */
-		public void onChannelCTCPReply(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for ChannelCTCPReply.
-	 *
-	 * @see IRCParser.IChannelCTCPReply
-	 */	
-	private ArrayList<IChannelCTCPReply> cbChannelCTCPReply = new ArrayList<IChannelCTCPReply>();
-	/**
-	 * Hashtable for storing callback channel-specific information for ChannelCTCPReply.
-	 *
-	 * @see IRCParser.IChannelCTCPReply
-	 */	
-	protected Hashtable<IChannelCTCPReply,String> hChannelCTCPReplyChan = new Hashtable<IChannelCTCPReply,String>();
-	
-	/**
-	 * Called when a person sends a CTCPRReply to you directly.
-	 * sHost is the hostname of the person sending the CTCPRReply. (Can be a server or a person)<br>
-	 * cClient is null if user is a server, or not on any common channels.
-	 */
-	public interface IPrivateCTCPReply {
-		/**
-		 * Called when a person sends a CTCPRReply to you directly.
-		 * sHost is the hostname of the person sending the CTCPRReply. (Can be a server or a person)<br>
-		 * cClient is null if user is a server, or not on any common channels.
-		 * 
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cClient Client who sent the CTCPReply (may be null if no common channels or server)
-		 * @param sType Type of CTCPRReply (VERSION, TIME etc)
-		 * @param sMessage Reply Contents
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addPrivateCTCPReply
-		 * @see IRCParser#delPrivateCTCPReply
-		 * @see IRCParser#callPrivateCTCPReply
-		 */
-		public void onPrivateCTCPReply(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for PrivateCTCPReply.
-	 *
-	 * @see IRCParser.IPrivateCTCPReply
-	 */	
-	private ArrayList<IPrivateCTCPReply> cbPrivateCTCPReply = new ArrayList<IPrivateCTCPReply>();
-	
-	/**
-	 * Called when a person sends a CTCP not aimed at you or a channel (ie $*).
-	 * sHost is the hostname of the person sending the CTCP. (Can be a server or a person)<br>
-	 * cClient is null if user is a server, or not on any common channels.
-	 */
-	public interface IUnknownCTCPReply {
-		/**
-		 * Called when a person sends a CTCP not aimed at you or a channel (ie $*).
-		 * sHost is the hostname of the person sending the CTCP. (Can be a server or a person)<br>
-		 * cClient is null if user is a server, or not on any common channels.
-		 *
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cClient Client who sent the CTCPReply (may be null if no common channels or server)
-		 * @param sType Type of CTCPRReply (VERSION, TIME etc)
-		 * @param sMessage Reply Contents
-		 * @param sTarget Actual Target of CTCPReply
-		 * @param sHost Hostname of sender (or servername)
-		 * @see IRCParser#addUnknownCTCPReply
-		 * @see IRCParser#delUnknownCTCPReply
-		 * @see IRCParser#callUnknownCTCPReply
-		 */
-		public void onUnknownCTCPReply(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost );
-	}
-	/**
-	 * Arraylist for storing callback information for UnknownCTCPReply.
-	 *
-	 * @see IRCParser.IUnknownCTCPReply
-	 */	
-	private ArrayList<IUnknownCTCPReply> cbUnknownCTCPReply = new ArrayList<IUnknownCTCPReply>();
-	
-	/** 
-	 * Called When we, or another client quits IRC (Called once in total).
-	 * This is called BEFORE client has been removed from the channel.
-	 */
-	public interface IQuit {
-		/**
-		 * Called When we, or another client quits IRC (Called once in total).
-		 * This is called BEFORE client has been removed from the channel.
-		 *
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cClient Client Quitting
-		 * @param sReason Reason for quitting (may be "")
-		 * @see IRCParser#addQuit
-		 * @see IRCParser#delQuit
-		 * @see IRCParser#callQuit
-		 */
-		public void onQuit(IRCParser tParser, ClientInfo cClient, String sReason );
-	}
-	/**
-	 * Arraylist for storing callback information for Quit.
-	 *
-	 * @see IRCParser.IQuit
-	 */	
-	private ArrayList<IQuit> cbQuit = new ArrayList<IQuit>();
-	
-	/**
-	 * Called when a names reply is parsed.
-	 */
-	public interface IChannelGotNames {
-		/**
-		 * Called when a names reply is parsed.
-		 *
-		 * @param tParser Reference to the parser object that made the callback.
-		 * @param cChannel Channel which the names reply is for
-		 * @see IRCParser#addChannelGotNames
-		 * @see IRCParser#delChannelGotNames
-		 * @see IRCParser#callChannelGotNames
-		 */
-		public void onChannelGotNames(IRCParser tParser, ChannelInfo cChannel);
-	}
-	/**
-	 * Arraylist for storing callback information for ChannelGotNames.
-	 *
-	 * @see IRCParser.IChannelGotNames
-	 */	
-	private ArrayList<IChannelGotNames> cbChannelGotNames = new ArrayList<IChannelGotNames>();
-	/**
-	 * Hashtable for storing callback channel-specific information for ChannelGotNames.
-	 *
-	 * @see IRCParser.IChannelGotNames
-	 */	
-	protected Hashtable<IChannelGotNames,String> hChannelGotNamesChan = new Hashtable<IChannelGotNames,String>();
-	
-	/** Add a callback pointer to the appropriate ArrayList, and make callback channel specific. */
-	@SuppressWarnings("unchecked")
-	private void addChannelCallback(String sChannelName, Hashtable cbHashtable, Object eMethod, ArrayList CallbackList) {
-		addCallback(eMethod, CallbackList);
-		if (sChannelName.equals("")) { return; }
-		if (cbHashtable.containsKey(eMethod)) { cbHashtable.remove(eMethod); }
-		cbHashtable.put(eMethod,sChannelName);
-	}
 
-	/** Delete a callback pointer from the appropriate ArrayList, and delete any channel specificness */
-	private void delChannelCallback(Hashtable cbHashtable, Object eMethod, ArrayList CallbackList) {
-		delCallback(eMethod, CallbackList);
-		if (cbHashtable.containsKey(eMethod)) { cbHashtable.remove(eMethod); }
-	}
-
-
-	/** Add a callback pointer to the appropriate ArrayList. */
-	@SuppressWarnings("unchecked")
-	private void addCallback(Object eMethod, ArrayList CallbackList) {
-		for (int i = 0; i < CallbackList.size(); i++) {
-			if (eMethod.equals(CallbackList.get(i))) { return; }
-		}
-		CallbackList.add(eMethod);
-	}
-	/** Delete a callback pointer from the appropriate ArrayList. */
-	private void delCallback(Object eMethod, ArrayList CallbackList) {
-		for (int i = 0; i < CallbackList.size(); i++) {
-			if (eMethod.equals(CallbackList.get(i))) { CallbackList.remove(i); break; }
-		}
-	}
-	
-	/**
-	 * Add callback for DebugInfo (onDebugInfo).
-	 *
-	 * @see IRCParser.IDebugInfo
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addDebugInfo(Object eMethod) { addCallback(eMethod, cbDebugInfo); }
-	/**
-	 * Delete callback for DebugInfo (onDebugInfo).
-	 *
-	 * @see IRCParser.IDebugInfo
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delDebugInfo(Object eMethod) { delCallback(eMethod, cbDebugInfo); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IDebugInfo Interface.
-	 *
-	 * @see IRCParser.IDebugInfo
-	 * @param level Debugging Level (ndInfo, ndSocket etc)
-	 * @param data Debugging Information
-	 */
-	protected boolean callDebugInfo(int level, String data) {
-		boolean bResult = false;
-		for (int i = 0; i < cbDebugInfo.size(); i++) {
-			try {
-				cbDebugInfo.get(i).onDebugInfo(this, level, data);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onDebugInfo");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}
-	
 	/**
 	 * Used for generalDebug stuff, when bDebug is false, this is never used.
 	 *
@@ -1236,1039 +199,24 @@ public class IRCParser implements Runnable {
 	}
 	
 	/**
-	 * Add callback for MOTDEnd (onMOTDEnd).
+	 * Callback to all objects implementing the ChannelAction Callback.
 	 *
-	 * @see IRCParser.IMOTDEnd
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addMOTDEnd(Object eMethod) { addCallback(eMethod, cbEndOfMOTD); }
-	/**
-	 * Delete callback for MOTDEnd (onMOTDEnd).
-	 *
-	 * @see IRCParser.IMOTDEnd
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delMOTDEnd(Object eMethod) { delCallback(eMethod, cbEndOfMOTD); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IMotdEnd Interface.
-	 *
-	 * @see IRCParser.IMOTDEnd
-	 */
-	protected boolean callMOTDEnd() {
-		boolean bResult = false;
-		for (int i = 0; i < cbEndOfMOTD.size(); i++) {
-			try {
-				cbEndOfMOTD.get(i).onMOTDEnd(this);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onMOTDEnd");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}
-	
-	/**
-	 * Add callback for ServerReady (onServerReady).
-	 *
-	 * @see IRCParser.IServerReady
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addServerReady(Object eMethod) { addCallback(eMethod, cbServerReady); }
-	/**
-	 * Delete callback for ServerReady (onServerReady).
-	 *
-	 * @see IRCParser.IServerReady
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delServerReady(Object eMethod) { delCallback(eMethod, cbServerReady); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IServerReady Interface.
-	 *
-	 * @see IRCParser.IServerReady
-	 */	
-	protected boolean callServerReady() {
-		boolean bResult = false;
-		for (int i = 0; i < cbServerReady.size(); i++) {
-			try {
-				cbServerReady.get(i).onServerReady(this);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onServerReady");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}
-	
-	/**
-	 * Add callback for DataIn (onDataIn).
-	 *
-	 * @see IRCParser.IDataIn
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addDataIn(Object eMethod) { addCallback((IDataIn)eMethod, cbDataIn); }
-	/**
-	 * Delete callback for DataIn (onDataIn).
-	 *
-	 * @see IRCParser.IDataIn
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delDataIn(Object eMethod) { delCallback((IDataIn)eMethod, cbDataIn); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IDataIn Interface.
-	 *
-	 * @see IRCParser.IDataIn
-	 * @param data Incomming Line.
-	 */
-	protected boolean callDataIn(String data) {
-		boolean bResult = false;
-		for (int i = 0; i < cbDataIn.size(); i++) {
-			try {
-				cbDataIn.get(i).onDataIn(this, data);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onDataIn");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}
-	
-	/**
-	 * Add callback for DataOut (onDataOut).
-	 *
-	 * @see IRCParser.IDataOut
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addDataOut(Object eMethod) { addCallback((IDataOut)eMethod, cbDataOut); }
-	/**
-	 * Delete callback for DataOut (onDataOut).
-	 *
-	 * @see IRCParser.IDataOut
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delDataOut(Object eMethod) { delCallback((IDataOut)eMethod, cbDataOut); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IDataOut Interface.
-	 *
-	 * @see IRCParser.IDataOut
-	 * @param data Outgoing Data
-	 * @param FromParser True if parser sent the data, false if sent using .sendLine	 
-	 */
-	protected boolean callDataOut(String data, boolean FromParser) {
-		boolean bResult = false;
-		for (int i = 0; i < cbDataOut.size(); i++) {
-			try {
-				cbDataOut.get(i).onDataOut(this, data, FromParser);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onDataOut");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}
-	
-	/**
-	 * Add callback for NickInUse (onNickInUse).
-	 *
-	 * @see IRCParser.INickInUse
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addNickInUse(Object eMethod) { addCallback(eMethod, cbNickInUse); }
-	/**
-	 * Delete callback for NickInUse (onNickInUse).
-	 *
-	 * @see IRCParser.INickInUse
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delNickInUse(Object eMethod) { delCallback(eMethod, cbNickInUse); }
-	/**
-	 * Callback to all objects implementing the IRCParser.INickInUse Interface.
-	 *
-	 * @see IRCParser.INickInUse
-	 */
-	protected boolean callNickInUse() {
-		boolean bResult = false;
-		for (int i = 0; i < cbNickInUse.size(); i++) {
-			try {
-				cbNickInUse.get(i).onNickInUse(this);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onNickInUse");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}
-	
-	/**
-	 * Add callback for ErrorInfo (onErrorInfo).
-	 *
-	 * @see IRCParser.IErrorInfo
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addErrorInfo(Object eMethod) { addCallback(eMethod, cbErrorInfo); }
-	/**
-	 * Delete callback for ErrorInfo (onErrorInfo).
-	 *
-	 * @see IRCParser.IErrorInfo
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delErrorInfo(Object eMethod) { delCallback(eMethod, cbErrorInfo); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IErrorInfo Interface.
-	 *
-	 * @see IRCParser.IErrorInfo
-	 * @param level Debugging Level (errFatal, errWarning etc)
-	 * @param data Error Information
-	 */
-	protected boolean callErrorInfo(ParserError errorInfo) {
-		if (bDebug) { doDebug("[ERROR] {%d} %s\n", errorInfo.getLevel(), errorInfo.getData()); }
-		boolean bResult = false;
-		for (int i = 0; i < cbErrorInfo.size(); i++) {
-			try {
-				cbErrorInfo.get(i).onErrorInfo(this, errorInfo);
-			} catch (Exception e) {
-				// This will not callErrorInfo or we would get an infinite loop!
-				System.out.println("Exception in onError Callback. ["+e.getMessage()+"]");
-				e.printStackTrace();
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-	
-	/**
-	 * Add callback for ChannelJoin (onChannelJoin).
-	 *
-	 * @see IRCParser.IChannelJoin
-	 * @param eMethod     Reference to object that handles the callback
-	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
-	 */
-	public void addChannelJoin(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelJoinChan, eMethod, cbChannelJoin); }
-	/**
-	 * Delete callback for ChannelJoin (onChannelJoin).
-	 *
-	 * @see IRCParser.IChannelJoin
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delChannelJoin(Object eMethod) { delChannelCallback(hChannelJoinChan, eMethod, cbChannelJoin); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IChannelJoin Interface.
-	 *
-	 * @see IRCParser.IChannelJoin
-	 * @param cChannel Channel Object
-	 * @param cChannelClient ChannelClient object for new person
-	 */
-	protected boolean callChannelJoin(ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
-		boolean bResult = false;
-		IChannelJoin eMethod = null;
-		for (int i = 0; i < cbChannelJoin.size(); i++) {
-			eMethod = cbChannelJoin.get(i);
-			if (hChannelJoinChan.containsKey(eMethod)) { 
-				if (!cChannel.getName().equalsIgnoreCase(hChannelJoinChan.get(eMethod))) { continue; }
-			}
-			try {
-				eMethod.onChannelJoin(this, cChannel, cChannelClient);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onChannelJoin");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-	
-	/**
-	 * Add callback for ChannelSelfJoin (onChannelSelfJoin).
-	 *
-	 * @see IRCParser.IChannelSelfJoin
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addChannelSelfJoin(Object eMethod) { addCallback(eMethod, cbChannelSelfJoin); }
-	/**
-	 * Delete callback for ChannelSelfJoin (onChannelSelfJoin).
-	 *
-	 * @see IRCParser.IChannelSelfJoin
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delChannelSelfJoin(Object eMethod) { delCallback(eMethod, cbChannelSelfJoin); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IChannelSelfJoin Interface.
-	 *
-	 * @see IRCParser.IChannelSelfJoin
-	 * @param cChannel Channel Object
-	 */
-	protected boolean callChannelSelfJoin(ChannelInfo cChannel) {
-		boolean bResult = false;
-		for (int i = 0; i < cbChannelSelfJoin.size(); i++) {
-			try {
-				cbChannelSelfJoin.get(i).onChannelSelfJoin(this, cChannel);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onChannelSelfJoin");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-	
-	/**
-	 * Add callback for ChannelPart (onChannelPart).
-	 *
-	 * @see IRCParser.IChannelPart
-	 * @param eMethod     Reference to object that handles the callback
-	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
-	 */
-	public void addChannelPart(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelPartChan, eMethod, cbChannelPart); }
-	/**
-	 * Delete callback for ChannelPart (onChannelPart).
-	 *
-	 * @see IRCParser.IChannelPart
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delChannelPart(Object eMethod) { delChannelCallback(hChannelPartChan, eMethod, cbChannelPart); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IChannelPart Interface.
-	 *
-	 * @see IRCParser.IChannelPart
-	 * @param cChannel Channel that the user parted
-	 * @param cChannelClient Client that parted
-	 * @param sReason Reason given for parting (May be "")
-	 */
-	protected boolean callChannelPart(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
-		boolean bResult = false;
-		IChannelPart eMethod = null;
-		for (int i = 0; i < cbChannelPart.size(); i++) {
-			eMethod = cbChannelPart.get(i);
-			if (hChannelPartChan.containsKey(eMethod)) { 
-				if (!cChannel.getName().equalsIgnoreCase(hChannelPartChan.get(eMethod))) { continue; }
-			}
-			try {
-				eMethod.onChannelPart(this, cChannel, cChannelClient, sReason);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onChannelPart");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}
-	
-	/**
-	 * Add callback for ChannelQuit (onChannelQuit).
-	 *
-	 * @see IRCParser.IChannelQuit
-	 * @param eMethod     Reference to object that handles the callback
-	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
-	 */
-	public void addChannelQuit(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelQuitChan, eMethod, cbChannelQuit); }
-	/**
-	 * Delete callback for ChannelQuit (onChannelQuit).
-	 *
-	 * @see IRCParser.IChannelQuit
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delChannelQuit(Object eMethod) { delChannelCallback(hChannelQuitChan, eMethod, cbChannelQuit); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IChannelQuit Interface.
-	 *
-	 * @see IRCParser.IChannelQuit
-	 * @param cChannel Channel that user was on
-	 * @param cChannelClient User thats quitting
-	 * @param sReason Quit reason
-	 */
-	protected boolean callChannelQuit(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
-		boolean bResult = false;
-		IChannelQuit eMethod = null;
-		for (int i = 0; i < cbChannelQuit.size(); i++) {
-			eMethod = cbChannelQuit.get(i);
-			if (hChannelQuitChan.containsKey(eMethod)) { 
-				if (!cChannel.getName().equalsIgnoreCase(hChannelQuitChan.get(eMethod))) { continue; }
-			}
-			try {
-				eMethod.onChannelQuit(this, cChannel, cChannelClient, sReason);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onChannelQuit");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-	
-	/**
-	 * Add callback for Quit (onQuit).
-	 *
-	 * @see IRCParser.IQuit
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addQuit(Object eMethod) { addCallback(eMethod, cbQuit); }
-	/**
-	 * Delete callback for Quit (onQuit).
-	 *
-	 * @see IRCParser.IQuit
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delQuit(Object eMethod) { delCallback(eMethod, cbQuit); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IQuit Interface.
-	 *
-	 * @see IRCParser.IQuit
-	 * @param cClient Client Quitting
-	 * @param sReason Reason for quitting (may be "")
-	 */
-	protected boolean callQuit(ClientInfo cClient, String sReason) {
-		boolean bResult = false;
-		for (int i = 0; i < cbQuit.size(); i++) {
-			try {
-				cbQuit.get(i).onQuit(this, cClient, sReason);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onQuit");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}
-	
-	/**
-	 * Add callback for ChannelTopic (onChannelTopic).
-	 *
-	 * @see IRCParser.IChannelTopic
-	 * @param eMethod     Reference to object that handles the callback
-	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
-	 */
-	public void addChannelTopic(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelTopicChan, eMethod, cbChannelTopic); }
-	/**
-	 * Delete callback for ChannelTopic (onChannelTopic).
-	 *
-	 * @see IRCParser.IChannelTopic
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delChannelTopic(Object eMethod) { delChannelCallback(hChannelTopicChan, eMethod, cbChannelTopic); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IChannelTopic Interface.
-	 *
-	 * @see IRCParser.IChannelTopic
-	 * @param cChannel Channel that topic was set on
-	 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
-	 */
-	protected boolean callChannelTopic(ChannelInfo cChannel, boolean bIsJoinTopic) {
-		boolean bResult = false;
-		IChannelTopic eMethod = null;
-		for (int i = 0; i < cbChannelTopic.size(); i++) {
-			eMethod = cbChannelTopic.get(i);
-			if (hChannelTopicChan.containsKey(eMethod)) { 
-				if (!cChannel.getName().equalsIgnoreCase(hChannelTopicChan.get(eMethod))) { continue; }
-			}
-			try {
-				eMethod.onChannelTopic(this, cChannel, bIsJoinTopic);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onChannelTopic");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}
-	
-	/**
-	 * Add callback for ChannelModeChanged (onChannelModeChanged).
-	 *
-	 * @see IRCParser.IChannelModeChanged
-	 * @param eMethod     Reference to object that handles the callback
-	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
-	 */
-	public void addChannelModeChanged(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelModeChangedChan, eMethod, cbChannelModeChanged); }
-	/**
-	 * Delete callback for ChannelModeChanged (onChannelModeChanged).
-	 *
-	 * @see IRCParser.IChannelModeChanged
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delChannelModeChanged(Object eMethod) { delChannelCallback(hChannelModeChangedChan, eMethod, cbChannelModeChanged); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IChannelModeChanged Interface.
-	 *
-	 * @see IRCParser.IChannelModeChanged
-	 * @param cChannel Channel where modes were changed
-	 * @param cChannelClient Client chaning the modes (null if server)
-	 * @param sHost Host doing the mode changing (User host or server name)
-	 * @param sModes Exact String parsed
-	 */
-	protected boolean callChannelModeChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes) {
-		boolean bResult = false;
-		IChannelModeChanged eMethod = null;
-		for (int i = 0; i < cbChannelModeChanged.size(); i++) {
-			eMethod = cbChannelModeChanged.get(i);
-			if (hChannelModeChangedChan.containsKey(eMethod)) { 
-				if (!cChannel.getName().equalsIgnoreCase(hChannelModeChangedChan.get(eMethod))) { continue; }
-			}
-			try {
-				eMethod.onChannelModeChanged(this, cChannel, cChannelClient, sHost, sModes);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onChannelModeChanged");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-	
-	/**
-	 * Add callback for ChannelUserModeChanged (onChannelUserModeChanged).
-	 *
-	 * @see IRCParser.IChannelUserModeChanged
-	 * @param eMethod     Reference to object that handles the callback
-	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
-	 */
-	public void addChannelUserModeChanged(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelUserModeChangedChan, eMethod, cbChannelUserModeChanged); }
-	/**
-	 * Delete callback for ChannelUserModeChanged (onChannelUserModeChanged).
-	 *
-	 * @see IRCParser.IChannelUserModeChanged
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delChannelUserModeChanged(Object eMethod) { delChannelCallback(hChannelUserModeChangedChan, eMethod, cbChannelUserModeChanged); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IChannelUserModeChanged Interface.
-	 *
-	 * @see IRCParser.IChannelUserModeChanged
-	 * @param cChannel Channel where modes were changed
-	 * @param cChangedClient Client being changed
-	 * @param cSetByClient Client chaning the modes (null if server)
-	 * @param sMode String representing mode change (ie +o)
-	 * @param sHost Host doing the mode changing (User host or server name)
-	 */
-	protected boolean callChannelUserModeChanged(ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode) {
-		boolean bResult = false;
-		IChannelUserModeChanged eMethod = null;
-		for (int i = 0; i < cbChannelUserModeChanged.size(); i++) {
-			eMethod = cbChannelUserModeChanged.get(i);
-			if (hChannelUserModeChangedChan.containsKey(eMethod)) { 
-				if (!cChannel.getName().equalsIgnoreCase(hChannelUserModeChangedChan.get(eMethod))) { continue; }
-			}
-			try {
-				eMethod.onChannelUserModeChanged(this, cChannel, cChangedClient, cSetByClient, sHost, sMode);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onChannelUserModeChanged");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-
-	
-	/**
-	 * Add callback for UserModeChanged (onUserModeChanged).
-	 *
-	 * @see IRCParser.IUserModeChanged
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addUserModeChanged(Object eMethod) { addCallback(eMethod, cbUserModeChanged); }
-	/**
-	 * Delete callback for UserModeChanged (onUserModeChanged).
-	 *
-	 * @see IRCParser.IUserModeChanged
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delUserModeChanged(Object eMethod) { delCallback(eMethod, cbUserModeChanged); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IUserModeChanged Interface.
-	 *
-	 * @see IRCParser.IUserModeChanged
-	 * @param cClient Client that had the mode changed (almost always us)
-	 * @param sSetby Host that set the mode (us or servername)
-	 */
-	protected boolean callUserModeChanged(ClientInfo cClient, String sSetby) {
-		boolean bResult = false;
-		for (int i = 0; i < cbUserModeChanged.size(); i++) {
-			try {
-				cbUserModeChanged.get(i).onUserModeChanged(this, cClient, sSetby);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onUserModeChanged");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-	
-	/**
-	 * Add callback for UserNickChanged (onNickChanged).
-	 *
-	 * @see IRCParser.INickChanged
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addNickChanged(Object eMethod) { addCallback(eMethod, cbNickChanged); }
-	/**
-	 * Delete callback for UserNickChanged (onNickChanged).
-	 *
-	 * @see IRCParser.INickChanged
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delNickChanged(Object eMethod) { delCallback(eMethod, cbNickChanged); }
-	/**
-	 * Callback to all objects implementing the IRCParser.INickChanged Interface.
-	 *
-	 * @see IRCParser.INickChanged
-	 * @param cClient Client changing nickname
-	 * @param sOldNick Nickname before change
-	 */
-	protected boolean callNickChanged(ClientInfo cClient, String sOldNick) {
-		boolean bResult = false;
-		for (int i = 0; i < cbNickChanged.size(); i++) {
-			try {
-				cbNickChanged.get(i).onNickChanged(this, cClient, sOldNick);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onNickChanged");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-	
-	/**
-	 * Add callback for ChannelKick (onChannelKick).
-	 *
-	 * @see IRCParser.IChannelKick
-	 * @param eMethod     Reference to object that handles the callback
-	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
-	 */
-	public void addChannelKick(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelKickChan, eMethod, cbChannelKick); }
-	/**
-	 * Delete callback for ChannelKick (onChannelKick).
-	 *
-	 * @see IRCParser.IChannelKick
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delChannelKick(Object eMethod) { delChannelCallback(hChannelKickChan, eMethod, cbChannelKick); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IChannelKick Interface.
-	 *
-	 * @see IRCParser.IChannelKick
-	 * @param cChannel Channel where the kick took place
-	 * @param cKickedClient ChannelClient that got kicked
-	 * @param cKickedByClient ChannelClient that did the kicking (may be null if server)
-	 * @param sReason Reason for kick (may be "")
-	 * @param sKickedByHost Hostname of Kicker (or servername)
-	 */
-	protected boolean callChannelKick(ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost) {
-		boolean bResult = false;
-		IChannelKick eMethod = null;
-		for (int i = 0; i < cbChannelKick.size(); i++) {
-			eMethod = cbChannelKick.get(i);
-			if (hChannelKickChan.containsKey(eMethod)) { 
-				if (!cChannel.getName().equalsIgnoreCase(hChannelKickChan.get(eMethod))) { continue; }
-			}
-			try {
-				eMethod.onChannelKick(this, cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onChannelKick");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-	
-	/**
-	 * Add callback for ChannelMessage (onChannelMessage).
-	 *
-	 * @see IRCParser.IChannelMessage
-	 * @param eMethod     Reference to object that handles the callback
-	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
-	 */
-	public void addChannelMessage(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelMessageChan, eMethod, cbChannelMessage); }
-	/**
-	 * Delete callback for ChannelMessage (onChannelMessage).
-	 *
-	 * @see IRCParser.IChannelMessage
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delChannelMessage(Object eMethod) { delChannelCallback(hChannelMessageChan, eMethod, cbChannelMessage); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IChannelMessage Interface.
-	 *
-	 * @see IRCParser.IChannelMessage
-	 * @param cChannel Channel where the message was sent to
-	 * @param cChannelClient ChannelClient who sent the message (may be null if server)
-	 * @param sMessage Message contents
-	 * @param sHost Hostname of sender (or servername)
-	 */
-	protected boolean callChannelMessage(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
-		boolean bResult = false;
-		IChannelMessage eMethod = null;
-		for (int i = 0; i < cbChannelMessage.size(); i++) {
-			eMethod = cbChannelMessage.get(i);
-			if (hChannelMessageChan.containsKey(eMethod)) { 
-				if (!cChannel.getName().equalsIgnoreCase(hChannelMessageChan.get(eMethod))) { continue; }
-			}
-			try {
-				eMethod.onChannelMessage(this, cChannel, cChannelClient, sMessage, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onChannelMessage");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-	
-	/**
-	 * Add callback for ChannelAction (onChannelAction).
-	 *
-	 * @see IRCParser.IChannelAction
-	 * @param eMethod     Reference to object that handles the callback
-	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
-	 */
-	public void addChannelAction(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelActionChan, eMethod, cbChannelAction); }
-	/**
-	 * Delete callback for ChannelAction (onChannelAction).
-	 *
-	 * @see IRCParser.IChannelAction
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delChannelAction(Object eMethod) { delChannelCallback(hChannelActionChan, eMethod, cbChannelAction); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IChannelAction Interface.
-	 *
-	 * @see IRCParser.IChannelAction
+	 * @see IChannelAction
 	 * @param cChannel Channel where the action was sent to
 	 * @param cChannelClient ChannelClient who sent the action (may be null if server)
 	 * @param sMessage action contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
 	protected boolean callChannelAction(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
-		boolean bResult = false;
-		IChannelAction eMethod = null;
-		for (int i = 0; i < cbChannelAction.size(); i++) {
-			eMethod = cbChannelAction.get(i);
-			if (hChannelActionChan.containsKey(eMethod)) { 
-				if (!cChannel.getName().equalsIgnoreCase(hChannelActionChan.get(eMethod))) { continue; }
-			}
-			try {
-				eMethod.onChannelAction(this, cChannel, cChannelClient, sMessage, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onChannelAction");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-
-	/**
-	 * Add callback for ChannelNotice (onChannelNotice).
-	 *
-	 * @see IRCParser.IChannelNotice
-	 * @param eMethod     Reference to object that handles the callback
-	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
-	 */
-	public void addChannelNotice(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelNoticeChan, eMethod, cbChannelNotice); }
-	/**
-	 * Delete callback for ChannelNotice (onChannelNotice).
-	 *
-	 * @see IRCParser.IChannelNotice
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delChannelNotice(Object eMethod) { delChannelCallback(hChannelNoticeChan, eMethod, cbChannelNotice); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IChannelNotice Interface.
-	 *
-	 * @see IRCParser.IChannelNotice
-	 * @param cChannel Channel where the notice was sent to
-	 * @param cChannelClient ChannelClient who sent the notice (may be null if server)
-	 * @param sMessage notice contents
-	 * @param sHost Hostname of sender (or servername)
-	 */
-	protected boolean callChannelNotice(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
-		boolean bResult = false;
-		IChannelNotice eMethod = null;
-		for (int i = 0; i < cbChannelNotice.size(); i++) {
-			eMethod = cbChannelNotice.get(i);
-			if (hChannelNoticeChan.containsKey(eMethod)) { 
-				if (!cChannel.getName().equalsIgnoreCase(hChannelNoticeChan.get(eMethod))) { continue; }
-			}
-			try {
-				eMethod.onChannelNotice(this, cChannel, cChannelClient, sMessage, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onChannelNotice");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
+		CallbackOnChannelAction cb = (CallbackOnChannelAction)myCallbackManager.getCallbackType("OnChannelAction");
+		if (cb != null) { return cb.call(cChannel, cChannelClient, sMessage, sHost); }
+		return false;
 	}
-	
-	/**
-	 * Add callback for PrivateMessage (onPrivateMessage).
-	 *
-	 * @see IRCParser.IPrivateMessage
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addPrivateMessage(Object eMethod) { addCallback(eMethod, cbPrivateMessage); }
-	/**
-	 * Delete callback for PrivateMessage (onPrivateMessage).
-	 *
-	 * @see IRCParser.IPrivateMessage
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delPrivateMessage(Object eMethod) { delCallback(eMethod, cbPrivateMessage); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IPrivateMessage Interface.
-	 *
-	 * @see IRCParser.IPrivateMessage
-	 * @param cClient Client who sent the message (may be null if no common channels or server)
-	 * @param sMessage Message contents
-	 * @param sHost Hostname of sender (or servername)
-	 */
-	protected boolean callPrivateMessage(ClientInfo cClient, String sMessage, String sHost) {
-		boolean bResult = false;
-		for (int i = 0; i < cbPrivateMessage.size(); i++) {
-			try {
-				cbPrivateMessage.get(i).onPrivateMessage(this, cClient, sMessage, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onPrivateMessage");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-	
-	/**
-	 * Add callback for PrivateAction (onPrivateAction).
-	 *
-	 * @see IRCParser.IPrivateAction
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addPrivateAction(Object eMethod) { addCallback(eMethod, cbPrivateAction); }
-	/**
-	 * Delete callback for PrivateAction (onPrivateAction).
-	 *
-	 * @see IRCParser.IPrivateAction
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delPrivateAction(Object eMethod) { delCallback(eMethod, cbPrivateAction); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IPrivateAction Interface.
-	 *
-	 * @see IRCParser.IPrivateAction
- 	 * @param cClient Client who sent the action (may be null if no common channels or server)
-	 * @param sMessage action contents
-	 * @param sHost Hostname of sender (or servername)
-	 */
-	protected boolean callPrivateAction(ClientInfo cClient, String sMessage, String sHost) {
-		boolean bResult = false;
-		for (int i = 0; i < cbPrivateAction.size(); i++) {
-			try {
-				cbPrivateAction.get(i).onPrivateAction(this, cClient, sMessage, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onPrivateAction");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
 
 	/**
-	 * Add callback for PrivateNotice (onPrivateNotice).
+	 * Callback to all objects implementing the ChannelCTCP Callback.
 	 *
-	 * @see IRCParser.IPrivateNotice
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addPrivateNotice(Object eMethod) { addCallback(eMethod, cbPrivateNotice); }
-	/**
-	 * Delete callback for PrivateNotice (onPrivateNotice).
-	 *
-	 * @see IRCParser.IPrivateNotice
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delPrivateNotice(Object eMethod) { delCallback(eMethod, cbPrivateNotice); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IPrivateNotice Interface.
-	 *
-	 * @see IRCParser.IPrivateNotice
-	 * @param cClient Client who sent the notice (may be null if no common channels or server)
-	 * @param sMessage Notice contents
-	 * @param sHost Hostname of sender (or servername)
-	 */
-	protected boolean callPrivateNotice(ClientInfo cClient, String sMessage, String sHost) {
-		boolean bResult = false;
-		for (int i = 0; i < cbPrivateNotice.size(); i++) {
-			try {
-				cbPrivateNotice.get(i).onPrivateNotice(this, cClient, sMessage, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onPrivateNotice");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}		
-
-	/**
-	 * Add callback for UnknownMessage (onUnknownMessage).
-	 *
-	 * @see IRCParser.IUnknownMessage
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addUnknownMessage(Object eMethod) { addCallback(eMethod, cbUnknownMessage); }
-	/**
-	 * Delete callback for UnknownMessage (onUnknownMessage).
-	 *
-	 * @see IRCParser.IUnknownMessage
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delUnknownMessage(Object eMethod) { delCallback(eMethod, cbUnknownMessage); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IUnknownMessage Interface.
-	 *
-	 * @see IRCParser.IUnknownMessage
-	 * @param cClient Client who sent the message (may be null if no common channels or server)
-	 * @param sMessage Message contents
-	 * @param sTarget Actual target of message
-	 * @param sHost Hostname of sender (or servername)
-	 */
-	protected boolean callUnknownMessage(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
-		boolean bResult = false;
-		for (int i = 0; i < cbUnknownMessage.size(); i++) {
-			try {
-				cbUnknownMessage.get(i).onUnknownMessage(this, cClient, sMessage, sTarget, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onUnknownMessage");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-	
-	/**
-	 * Add callback for UnknownAction (onUnknownAction).
-	 *
-	 * @see IRCParser.IUnknownAction
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addUnknownAction(Object eMethod) { addCallback(eMethod, cbUnknownAction); }
-	/**
-	 * Delete callback for UnknownAction (onUnknownAction).
-	 *
-	 * @see IRCParser.IUnknownAction
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delUnknownAction(Object eMethod) { delCallback(eMethod, cbUnknownAction); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IUnknownAction Interface.
-	 *
-	 * @see IRCParser.IUnknownAction
-	 * @param cClient Client who sent the action (may be null if no common channels or server)
-	 * @param sMessage Action contents
-	 * @param sTarget Actual target of action
-	 * @param sHost Hostname of sender (or servername)
-	 */
-	protected boolean callUnknownAction(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
-		boolean bResult = false;
-		for (int i = 0; i < cbUnknownAction.size(); i++) {
-			try {
-				cbUnknownAction.get(i).onUnknownAction(this, cClient, sMessage, sTarget, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onUnknownAction");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-
-	/**
-	 * Add callback for UnknownNotice (onUnknownNotice).
-	 *
-	 * @see IRCParser.IUnknownNotice
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addUnknownNotice(Object eMethod) { addCallback(eMethod, cbUnknownNotice); }
-	/**
-	 * Delete callback for UnknownNotice (onUnknownNotice).
-	 *
-	 * @see IRCParser.IUnknownNotice
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delUnknownNotice(Object eMethod) { delCallback(eMethod, cbUnknownNotice); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IUnknownNotice Interface.
-	 *
-	 * @see IRCParser.IUnknownNotice
-	 * @param cClient Client who sent the notice (may be null if no common channels or server)
-	 * @param sMessage Notice contents
-	 * @param sTarget Actual target of notice
-	 * @param sHost Hostname of sender (or servername)
-	 */
-	protected boolean callUnknownNotice(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
-		boolean bResult = false;
-		for (int i = 0; i < cbUnknownNotice.size(); i++) {
-			try {
-				cbUnknownNotice.get(i).onUnknownNotice(this, cClient, sMessage, sTarget, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onUnknownNotice");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-	
-	/**
-	 * Add callback for ChannelCTCP (onChannelCTCP).
-	 *
-	 * @see IRCParser.IChannelCTCP
-	 * @param eMethod     Reference to object that handles the callback
-	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
-	 */
-	public void addChannelCTCP(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelCTCPChan, eMethod, cbChannelCTCP); }
-	/**
-	 * Delete callback for ChannelCTCP (onChannelCTCP).
-	 *
-	 * @see IRCParser.IChannelCTCP
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delChannelCTCP(Object eMethod) { delChannelCallback(hChannelCTCPChan, eMethod, cbChannelCTCP); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IChannelCTCP Interface.
-	 *
-	 * @see IRCParser.IChannelCTCP
+	 * @see IChannelCTCP
 	 * @param cChannel Channel where CTCP was sent
 	 * @param cChannelClient ChannelClient who sent the message (may be null if server)
 	 * @param sType Type of CTCP (VERSION, TIME etc)
@@ -2276,121 +224,15 @@ public class IRCParser implements Runnable {
 	 * @param sHost Hostname of sender (or servername)
 	 */
 	protected boolean callChannelCTCP(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost) {
-		boolean bResult = false;
-		IChannelCTCP eMethod = null;
-		for (int i = 0; i < cbChannelCTCP.size(); i++) {
-			eMethod = cbChannelCTCP.get(i);
-			if (hChannelCTCPChan.containsKey(eMethod)) { 
-				if (!cChannel.getName().equalsIgnoreCase(hChannelCTCPChan.get(eMethod))) { continue; }
-			}
-			try {
-				eMethod.onChannelCTCP(this, cChannel, cChannelClient, sType, sMessage, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onChannelCTCP");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
+		CallbackOnChannelCTCP cb = (CallbackOnChannelCTCP)myCallbackManager.getCallbackType("OnChannelCTCP");
+		if (cb != null) { return cb.call(cChannel, cChannelClient, sType, sMessage, sHost); }
+		return false;
+	}
 
 	/**
-	 * Add callback for PrivateCTCP (onPrivateCTCP).
+	 * Callback to all objects implementing the ChannelCTCPReply Callback.
 	 *
-	 * @see IRCParser.IPrivateCTCP
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addPrivateCTCP(Object eMethod) { addCallback(eMethod, cbPrivateCTCP); }
-	/**
-	 * Delete callback for PrivateCTCP (onPrivateCTCP).
-	 *
-	 * @see IRCParser.IPrivateCTCP
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delPrivateCTCP(Object eMethod) { delCallback(eMethod, cbPrivateCTCP); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IPrivateCTCP Interface.
-	 *
-	 * @see IRCParser.IPrivateCTCP
- 	 * @param cClient Client who sent the CTCP (may be null if no common channels or server)
-	 * @param sType Type of CTCP (VERSION, TIME etc)
-	 * @param sMessage Additional contents
-	 * @param sHost Hostname of sender (or servername)
-	 */
-	protected boolean callPrivateCTCP(ClientInfo cClient, String sType, String sMessage, String sHost) {
-		boolean bResult = false;
-		for (int i = 0; i < cbPrivateCTCP.size(); i++) {
-			try {
-				cbPrivateCTCP.get(i).onPrivateCTCP(this, cClient, sType, sMessage, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onPrivateCTCP");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-
-	/**
-	 * Add callback for UnknownCTCP (onUnknownCTCP).
-	 *
-	 * @see IRCParser.IUnknownCTCP
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void addUnknownCTCP(Object eMethod) { addCallback(eMethod, cbUnknownCTCP); }
-	/**
-	 * Delete callback for UnknownCTCP (onUnknownCTCP).
-	 *
-	 * @see IRCParser.IUnknownCTCP
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delUnknownCTCP(Object eMethod) { delCallback(eMethod, cbUnknownCTCP); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IUnknownCTCP Interface.
-	 *
-	 * @see IRCParser.IUnknownCTCP
- 	 * @param cClient Client who sent the CTCP (may be null if no common channels or server)
-	 * @param sType Type of CTCP (VERSION, TIME etc)
-	 * @param sMessage Additional contents
-	 * @param sTarget Actual Target of CTCP
-	 * @param sHost Hostname of sender (or servername)
-	 */
-	protected boolean callUnknownCTCP(ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost) {
-		boolean bResult = false;
-		for (int i = 0; i < cbUnknownCTCP.size(); i++) {
-			try {
-				cbUnknownCTCP.get(i).onUnknownCTCP(this, cClient, sType, sMessage, sTarget, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onUnknownCTCP");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
-	
-	/**
-	 * Add callback for ChannelCTCPReply (onChannelCTCPReply).
-	 *
-	 * @see IRCParser.IChannelCTCPReply
-	 * @param eMethod     Reference to object that handles the callback
-	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
-	 */
-	public void addChannelCTCPReply(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelCTCPReplyChan, eMethod, cbChannelCTCPReply); }
-	/**
-	 * Delete callback for ChannelCTCPReply (onChannelCTCPReply).
-	 *
-	 * @see IRCParser.IChannelCTCPReply
-	 * @param eMethod     Reference to object that handles the callback
-	 */
-	public void delChannelCTCPReply(Object eMethod) { delChannelCallback(hChannelCTCPReplyChan, eMethod, cbChannelCTCPReply); }
-	/**
-	 * Callback to all objects implementing the IRCParser.IChannelCTCPReply Interface.
-	 *
-	 * @see IRCParser.IChannelCTCPReply
+	 * @see IChannelCTCPReply
 	 * @param cChannel Channel where CTCPReply was sent
 	 * @param cChannelClient ChannelClient who sent the message (may be null if server)
 	 * @param sType Type of CTCPRReply (VERSION, TIME etc)
@@ -2398,81 +240,385 @@ public class IRCParser implements Runnable {
 	 * @param sHost Hostname of sender (or servername)
 	 */
 	protected boolean callChannelCTCPReply(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost) {
-		boolean bResult = false;
-		IChannelCTCPReply eMethod = null;
-		for (int i = 0; i < cbChannelCTCPReply.size(); i++) {
-			eMethod = cbChannelCTCPReply.get(i);
-			if (hChannelCTCPReplyChan.containsKey(eMethod)) { 
-				if (!cChannel.getName().equalsIgnoreCase(hChannelCTCPReplyChan.get(eMethod))) { continue; }
-			}
-			try {
-				eMethod.onChannelCTCPReply(this, cChannel, cChannelClient, sType, sMessage, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onChannelCTCPReply");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
+		CallbackOnChannelCTCPReply cb = (CallbackOnChannelCTCPReply)myCallbackManager.getCallbackType("OnChannelCTCPReply");
+		if (cb != null) { return cb.call(cChannel, cChannelClient, sType, sMessage, sHost); }
+		return false;
+	}
 
 	/**
-	 * Add callback for PrivateCTCPReply (onPrivateCTCPReply).
+	 * Callback to all objects implementing the ChannelGotNames Callback.
 	 *
-	 * @see IRCParser.IPrivateCTCPReply
-	 * @param eMethod     Reference to object that handles the callback
+	 * @see IChannelGotNames
+	 * @param cChannel Channel which the names reply is for
 	 */
-	public void addPrivateCTCPReply(Object eMethod) { addCallback(eMethod, cbPrivateCTCPReply); }
+	protected boolean callChannelGotNames(ChannelInfo cChannel) {
+		CallbackOnChannelGotNames cb = (CallbackOnChannelGotNames)myCallbackManager.getCallbackType("OnChannelGotNames");
+		if (cb != null) { return cb.call(cChannel); }
+		return false;
+	}
+
 	/**
-	 * Delete callback for PrivateCTCPReply (onPrivateCTCPReply).
+	 * Callback to all objects implementing the ChannelJoin Callback.
 	 *
-	 * @see IRCParser.IPrivateCTCPReply
-	 * @param eMethod     Reference to object that handles the callback
+	 * @see IChannelJoin
+	 * @param cChannel Channel Object
+	 * @param cChannelClient ChannelClient object for new person
 	 */
-	public void delPrivateCTCPReply(Object eMethod) { delCallback(eMethod, cbPrivateCTCPReply); }
+	protected boolean callChannelJoin(ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
+		CallbackOnChannelJoin cb = (CallbackOnChannelJoin)myCallbackManager.getCallbackType("OnChannelJoin");
+		if (cb != null) { return cb.call(cChannel, cChannelClient); }
+		return false;
+	}
+
 	/**
-	 * Callback to all objects implementing the IRCParser.IPrivateCTCPReply Interface.
+	 * Callback to all objects implementing the ChannelKick Callback.
 	 *
-	 * @see IRCParser.IPrivateCTCPReply
+	 * @see IChannelKick
+	 * @param cChannel Channel where the kick took place
+	 * @param cKickedClient ChannelClient that got kicked
+	 * @param cKickedByClient ChannelClient that did the kicking (may be null if server)
+	 * @param sReason Reason for kick (may be "")
+	 * @param sKickedByHost Hostname of Kicker (or servername)
+	 */
+	protected boolean callChannelKick(ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost) {
+		CallbackOnChannelKick cb = (CallbackOnChannelKick)myCallbackManager.getCallbackType("OnChannelKick");
+		if (cb != null) { return cb.call(cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the ChannelMessage Callback.
+	 *
+	 * @see IChannelMessage
+	 * @param cChannel Channel where the message was sent to
+	 * @param cChannelClient ChannelClient who sent the message (may be null if server)
+	 * @param sMessage Message contents
+	 * @param sHost Hostname of sender (or servername)
+	 */
+	protected boolean callChannelMessage(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
+		CallbackOnChannelMessage cb = (CallbackOnChannelMessage)myCallbackManager.getCallbackType("OnChannelMessage");
+		if (cb != null) { return cb.call(cChannel, cChannelClient, sMessage, sHost); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the ChannelModeChanged Callback.
+	 *
+	 * @see IChannelModeChanged
+	 * @param cChannel Channel where modes were changed
+	 * @param cChannelClient Client chaning the modes (null if server)
+	 * @param sHost Host doing the mode changing (User host or server name)
+	 * @param sModes Exact String parsed
+	 */
+	protected boolean callChannelModeChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes) {
+		CallbackOnChannelModeChanged cb = (CallbackOnChannelModeChanged)myCallbackManager.getCallbackType("OnChannelModeChanged");
+		if (cb != null) { return cb.call(cChannel, cChannelClient, sHost, sModes); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the ChannelNotice Callback.
+	 *
+	 * @see IChannelNotice
+	 * @param cChannel Channel where the notice was sent to
+	 * @param cChannelClient ChannelClient who sent the notice (may be null if server)
+	 * @param sMessage notice contents
+	 * @param sHost Hostname of sender (or servername)
+	 */
+	protected boolean callChannelNotice(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
+		CallbackOnChannelNotice cb = (CallbackOnChannelNotice)myCallbackManager.getCallbackType("OnChannelNotice");
+		if (cb != null) { return cb.call(cChannel, cChannelClient, sMessage, sHost); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the ChannelPart Callback.
+	 *
+	 * @see IChannelPart
+	 * @param cChannel Channel that the user parted
+	 * @param cChannelClient Client that parted
+	 * @param sReason Reason given for parting (May be "")
+	 */
+	protected boolean callChannelPart(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
+		CallbackOnChannelPart cb = (CallbackOnChannelPart)myCallbackManager.getCallbackType("OnChannelPart");
+		if (cb != null) { return cb.call(cChannel, cChannelClient, sReason); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the ChannelQuit Callback.
+	 *
+	 * @see IChannelQuit
+	 * @param cChannel Channel that user was on
+	 * @param cChannelClient User thats quitting
+	 * @param sReason Quit reason
+	 */
+	protected boolean callChannelQuit(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
+		CallbackOnChannelQuit cb = (CallbackOnChannelQuit)myCallbackManager.getCallbackType("OnChannelQuit");
+		if (cb != null) { return cb.call(cChannel, cChannelClient, sReason); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the ChannelSelfJoin Callback.
+	 *
+	 * @see IChannelSelfJoin
+	 * @param cChannel Channel Object
+	 */
+	protected boolean callChannelSelfJoin(ChannelInfo cChannel) {
+		CallbackOnChannelSelfJoin cb = (CallbackOnChannelSelfJoin)myCallbackManager.getCallbackType("OnChannelSelfJoin");
+		if (cb != null) { return cb.call(cChannel); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the ChannelTopic Callback.
+	 *
+	 * @see IChannelTopic
+	 * @param cChannel Channel that topic was set on
+	 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
+	 */
+	protected boolean callChannelTopic(ChannelInfo cChannel, boolean bIsJoinTopic) {
+		CallbackOnChannelTopic cb = (CallbackOnChannelTopic)myCallbackManager.getCallbackType("OnChannelTopic");
+		if (cb != null) { return cb.call(cChannel, bIsJoinTopic); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the ChannelUserModeChanged Callback.
+	 *
+	 * @see IChannelUserModeChanged
+	 * @param cChannel Channel where modes were changed
+	 * @param cChangedClient Client being changed
+	 * @param cSetByClient Client chaning the modes (null if server)
+	 * @param sMode String representing mode change (ie +o)
+	 * @param sHost Host doing the mode changing (User host or server name)
+	 */
+	protected boolean callChannelUserModeChanged(ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode) {
+		CallbackOnChannelUserModeChanged cb = (CallbackOnChannelUserModeChanged)myCallbackManager.getCallbackType("OnChannelUserModeChanged");
+		if (cb != null) { return cb.call(cChannel, cChangedClient, cSetByClient, sHost, sMode); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the DataIn Callback.
+	 *
+	 * @see IDataIn
+	 * @param data Incomming Line.
+	 */
+	protected boolean callDataIn(String data) {
+		CallbackOnDataIn cb = (CallbackOnDataIn)myCallbackManager.getCallbackType("OnDataIn");
+		if (cb != null) { return cb.call(data); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the DataOut Callback.
+	 *
+	 * @see IDataOut
+	 * @param data Outgoing Data
+	 * @param FromParser True if parser sent the data, false if sent using .sendLine	 
+	 */
+	protected boolean callDataOut(String data, boolean FromParser) {
+		CallbackOnDataOut cb = (CallbackOnDataOut)myCallbackManager.getCallbackType("OnDataOut");
+		if (cb != null) { return cb.call(data, FromParser); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the DebugInfo Callback.
+	 *
+	 * @see IDebugInfo
+	 * @param level Debugging Level (ndInfo, ndSocket etc)
+	 * @param data Debugging Information
+	 */
+	protected boolean callDebugInfo(int level, String data) {
+//		CallbackObject cb = myCallbackManager.getCallbackType("OnDebugInfo");
+		CallbackOnDebugInfo cb = (CallbackOnDebugInfo)myCallbackManager.getCallbackType("OnDebugInfo");
+		if (cb != null) { return cb.call(level, data); }
+//		if (cb != null) { return ((CallbackOnDebugInfo)cb).call(level, data); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the IErrorInfo Interface.
+	 *
+	 * @see IErrorInfo
+	 * @param level Debugging Level (errFatal, errWarning etc)
+	 * @param data Error Information
+	 */
+	protected boolean callErrorInfo(ParserError errorInfo) {
+		CallbackOnErrorInfo cb = (CallbackOnErrorInfo)myCallbackManager.getCallbackType("OnErrorInfo");
+		if (cb != null) { return cb.call(errorInfo); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the MOTDEnd Callback.
+	 *
+	 * @see IMOTDEnd
+	 */
+	protected boolean callMOTDEnd() {
+		CallbackOnMOTDEnd cb = (CallbackOnMOTDEnd)myCallbackManager.getCallbackType("OnMOTDEnd");
+		if (cb != null) { return cb.call(); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the NickChanged Callback.
+	 *
+	 * @see INickChanged
+	 * @param cClient Client changing nickname
+	 * @param sOldNick Nickname before change
+	 */
+	protected boolean callNickChanged(ClientInfo cClient, String sOldNick) {
+		CallbackOnNickChanged cb = (CallbackOnNickChanged)myCallbackManager.getCallbackType("OnNickChanged");
+		if (cb != null) { return cb.call(cClient, sOldNick); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the NickInUse Callback.
+	 *
+	 * @see INickInUse
+	 */
+	protected boolean callNickInUse() {
+		CallbackOnNickInUse cb = (CallbackOnNickInUse)myCallbackManager.getCallbackType("OnNickInUse");
+		if (cb != null) { return cb.call(); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the PrivateAction Callback.
+	 *
+	 * @see IPrivateAction
+ 	 * @param cClient Client who sent the action (may be null if no common channels or server)
+	 * @param sMessage action contents
+	 * @param sHost Hostname of sender (or servername)
+	 */
+	protected boolean callPrivateAction(ClientInfo cClient, String sMessage, String sHost) {
+		CallbackOnPrivateAction cb = (CallbackOnPrivateAction)myCallbackManager.getCallbackType("OnPrivateAction");
+		if (cb != null) { return cb.call(cClient, sMessage, sHost); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the PrivateCTCP Callback.
+	 *
+	 * @see IPrivateCTCP
+ 	 * @param cClient Client who sent the CTCP (may be null if no common channels or server)
+	 * @param sType Type of CTCP (VERSION, TIME etc)
+	 * @param sMessage Additional contents
+	 * @param sHost Hostname of sender (or servername)
+	 */
+	protected boolean callPrivateCTCP(ClientInfo cClient, String sType, String sMessage, String sHost) {
+		CallbackOnPrivateCTCP cb = (CallbackOnPrivateCTCP)myCallbackManager.getCallbackType("OnPrivateCTCP");
+		if (cb != null) { return cb.call(cClient, sType, sMessage, sHost); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the PrivateCTCPReply Callback.
+	 *
+	 * @see IPrivateCTCPReply
  	 * @param cClient Client who sent the CTCPReply (may be null if no common channels or server)
 	 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 	 * @param sMessage Reply Contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
 	protected boolean callPrivateCTCPReply(ClientInfo cClient, String sType, String sMessage, String sHost) {
-		boolean bResult = false;
-		for (int i = 0; i < cbPrivateCTCPReply.size(); i++) {
-			try {
-				cbPrivateCTCPReply.get(i).onPrivateCTCPReply(this, cClient, sType, sMessage, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onPrivateCTCPReply");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
+		CallbackOnPrivateCTCPReply cb = (CallbackOnPrivateCTCPReply)myCallbackManager.getCallbackType("OnPrivateCTCPReply");
+		if (cb != null) { return cb.call(cClient, sType, sMessage, sHost); }
+		return false;
+	}
 
 	/**
-	 * Add callback for UnknownCTCPReply (onUnknownCTCPReply).
+	 * Callback to all objects implementing the PrivateMessage Callback.
 	 *
-	 * @see IRCParser.IUnknownCTCPReply
-	 * @param eMethod     Reference to object that handles the callback
+	 * @see IPrivateMessage
+	 * @param cClient Client who sent the message (may be null if no common channels or server)
+	 * @param sMessage Message contents
+	 * @param sHost Hostname of sender (or servername)
 	 */
-	public void addUnknownCTCPReply(Object eMethod) { addCallback(eMethod, cbUnknownCTCPReply); }
+	protected boolean callPrivateMessage(ClientInfo cClient, String sMessage, String sHost) {
+		CallbackOnPrivateMessage cb = (CallbackOnPrivateMessage)myCallbackManager.getCallbackType("OnPrivateMessage");
+		if (cb != null) { return cb.call(cClient, sMessage, sHost); }
+		return false;
+	}
+
 	/**
-	 * Delete callback for UnknownCTCPReply (onUnknownCTCPReply).
+	 * Callback to all objects implementing the PrivateNotice Callback.
 	 *
-	 * @see IRCParser.IUnknownCTCPReply
-	 * @param eMethod     Reference to object that handles the callback
+	 * @see IPrivateNotice
+	 * @param cClient Client who sent the notice (may be null if no common channels or server)
+	 * @param sMessage Notice contents
+	 * @param sHost Hostname of sender (or servername)
 	 */
-	public void delUnknownCTCPReply(Object eMethod) { delCallback(eMethod, cbUnknownCTCPReply); }
+	protected boolean callPrivateNotice(ClientInfo cClient, String sMessage, String sHost) {
+		CallbackOnPrivateNotice cb = (CallbackOnPrivateNotice)myCallbackManager.getCallbackType("OnPrivateNotice");
+		if (cb != null) { return cb.call(cClient, sMessage, sHost); }
+		return false;
+	}
+
 	/**
-	 * Callback to all objects implementing the IRCParser.IUnknownCTCPReply Interface.
+	 * Callback to all objects implementing the Quit Callback.
 	 *
-	 * @see IRCParser.IUnknownCTCPReply
+	 * @see IQuit
+	 * @param cClient Client Quitting
+	 * @param sReason Reason for quitting (may be "")
+	 */
+	protected boolean callQuit(ClientInfo cClient, String sReason) {
+		CallbackOnQuit cb = (CallbackOnQuit)myCallbackManager.getCallbackType("OnQuit");
+		if (cb != null) { return cb.call(cClient, sReason); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the ServerReady Callback.
+	 *
+	 * @see IServerReady
+	 */	
+	protected boolean callServerReady() {
+		CallbackOnServerReady cb = (CallbackOnServerReady)myCallbackManager.getCallbackType("OnServerReady");
+		if (cb != null) { return cb.call(); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the UnknownAction Callback.
+	 *
+	 * @see IUnknownAction
+	 * @param cClient Client who sent the action (may be null if no common channels or server)
+	 * @param sMessage Action contents
+	 * @param sTarget Actual target of action
+	 * @param sHost Hostname of sender (or servername)
+	 */
+	protected boolean callUnknownAction(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
+		CallbackOnUnknownAction cb = (CallbackOnUnknownAction)myCallbackManager.getCallbackType("OnUnknownAction");
+		if (cb != null) { return cb.call(cClient, sMessage, sTarget, sHost); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the UnknownCTCP Callback.
+	 *
+	 * @see IUnknownCTCP
+ 	 * @param cClient Client who sent the CTCP (may be null if no common channels or server)
+	 * @param sType Type of CTCP (VERSION, TIME etc)
+	 * @param sMessage Additional contents
+	 * @param sTarget Actual Target of CTCP
+	 * @param sHost Hostname of sender (or servername)
+	 */
+	protected boolean callUnknownCTCP(ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost) {
+		CallbackOnUnknownCTCP cb = (CallbackOnUnknownCTCP)myCallbackManager.getCallbackType("OnUnknownCTCP");
+		if (cb != null) { return cb.call(cClient, sType, sMessage, sTarget, sHost); }
+		return false;
+	}
+
+	/**
+	 * Callback to all objects implementing the UnknownCTCPReply Callback.
+	 *
+	 * @see IUnknownCTCPReply
  	 * @param cClient Client who sent the CTCPReply (may be null if no common channels or server)
 	 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 	 * @param sMessage Reply Contents
@@ -2480,60 +626,53 @@ public class IRCParser implements Runnable {
 	 * @param sHost Hostname of sender (or servername)
 	 */
 	protected boolean callUnknownCTCPReply(ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost) {
-		boolean bResult = false;
-		for (int i = 0; i < cbUnknownCTCPReply.size(); i++) {
-			try {
-				cbUnknownCTCPReply.get(i).onUnknownCTCPReply(this, cClient, sType, sMessage, sTarget, sHost);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onUnknownCTCPReply");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}		
-	
+		CallbackOnUnknownCTCPReply cb = (CallbackOnUnknownCTCPReply)myCallbackManager.getCallbackType("OnUnknownCTCPReply");
+		if (cb != null) { return cb.call(cClient, sType, sMessage, sTarget, sHost); }
+		return false;
+	}
+
 	/**
-	 * Add callback for ChannelGotNames (onChannelGotNames).
+	 * Callback to all objects implementing the UnknownMessage Callback.
 	 *
-	 * @see IRCParser.IChannelGotNames
-	 * @param eMethod     Reference to object that handles the callback
-	 * @param sChannelName	Only callback if sChannelName.equalsIgnoreCase(cChannel.getName())
+	 * @see IUnknownMessage
+	 * @param cClient Client who sent the message (may be null if no common channels or server)
+	 * @param sMessage Message contents
+	 * @param sTarget Actual target of message
+	 * @param sHost Hostname of sender (or servername)
 	 */
-	public void addChannelGotNames(Object eMethod, String sChannelName) { addChannelCallback(sChannelName, hChannelGotNamesChan, eMethod, cbChannelGotNames); }
+	protected boolean callUnknownMessage(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
+		CallbackOnUnknownMessage cb = (CallbackOnUnknownMessage)myCallbackManager.getCallbackType("OnUnknownMessage");
+		if (cb != null) { return cb.call(cClient, sMessage, sTarget, sHost); }
+		return false;
+	}
+
 	/**
-	 * Delete callback for ChannelGotNames (onChannelGotNames).
+	 * Callback to all objects implementing the UnknownNotice Callback.
 	 *
-	 * @see IRCParser.IChannelGotNames
-	 * @param eMethod     Reference to object that handles the callback
+	 * @see IUnknownNotice
+	 * @param cClient Client who sent the notice (may be null if no common channels or server)
+	 * @param sMessage Notice contents
+	 * @param sTarget Actual target of notice
+	 * @param sHost Hostname of sender (or servername)
 	 */
-	public void delChannelGotNames(Object eMethod) { delChannelCallback(hChannelGotNamesChan, eMethod, cbChannelGotNames); }
+	protected boolean callUnknownNotice(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
+		CallbackOnUnknownNotice cb = (CallbackOnUnknownNotice)myCallbackManager.getCallbackType("OnUnknownNotice");
+		if (cb != null) { return cb.call(cClient, sMessage, sTarget, sHost); }
+		return false;
+	}
+
 	/**
-	 * Callback to all objects implementing the IRCParser.IChannelGotNames Interface.
+	 * Callback to all objects implementing the UserModeChanged Callback.
 	 *
-	 * @see IRCParser.IChannelGotNames
-	 * @param cChannel Channel which the names reply is for
+	 * @see IUserModeChanged
+	 * @param cClient Client that had the mode changed (almost always us)
+	 * @param sSetby Host that set the mode (us or servername)
 	 */
-	protected boolean callChannelGotNames(ChannelInfo cChannel) {
-		boolean bResult = false;
-		IChannelGotNames eMethod = null;
-		for (int i = 0; i < cbChannelGotNames.size(); i++) {
-			eMethod = cbChannelGotNames.get(i);
-			if (hChannelGotNamesChan.containsKey(eMethod)) { 
-				if (!cChannel.getName().equalsIgnoreCase(hChannelGotNamesChan.get(eMethod))) { continue; }
-			}
-			try {
-				eMethod.onChannelGotNames(this, cChannel);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(errError, "Exception in onChannelGotNames");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}		
+	protected boolean callUserModeChanged(ClientInfo cClient, String sSetby) {
+		CallbackOnUserModeChanged cb = (CallbackOnUserModeChanged)myCallbackManager.getCallbackType("OnUserModeChanged");
+		if (cb != null) { return cb.call(cClient, sSetby); }
+		return false;
+	}	
 	
 	/**
 	 * Perform a silent test on certain functions.
