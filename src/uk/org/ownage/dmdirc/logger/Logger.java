@@ -35,124 +35,130 @@ import java.util.Date;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.ui.FatalErrorDialog;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 
 /**
- *
- * @author greboid
+ * Logger class for an applications, provides logging, error logging and debug 
+ * logging
  */
 public class Logger {
     
+    /**
+     * Logfile Printwriter
+     */
     private static PrintWriter logWriter = null;
     
+    /**
+     * dialog used to report errors to the ui
+     */
     private static JDialog dialog;
     
+    /**
+     * JOptionPane used as part of some dialogs
+     */
     private static JOptionPane optionPane;
     
-    private static SimpleDateFormat format;
+    /**
+     * Date formatter, used for logging and displaying messages
+     */
+    private static SimpleDateFormat formatter;
     
-    /** Creates a new instance of Logger */
+    /**
+     * Prevents creation a new instance of Logger
+     */
     private Logger() {
     }
     
+    /**
+     * Record an error message for the application, notifying the user if appropriate
+     * @param level error level
+     * @param message Error message/cause
+     */
     public static void error(ErrorLevel level, String message) {
         if (logWriter == null ) createWriter();
         switch (level) {
             case FATAL:
-                logWriter.println(format.format(new Date())+": ERROR: "+level+" :"+message);
-                optionPane = new JOptionPane(message, JOptionPane.ERROR_MESSAGE,
-                        JOptionPane.DEFAULT_OPTION);
-                dialog = new JDialog(MainFrame.getMainFrame(), "Fatal Error",
-                        true);
-                dialog.setContentPane(optionPane);
-                dialog.setDefaultCloseOperation(
-                        JDialog.DO_NOTHING_ON_CLOSE);
-                dialog.addWindowListener(new WindowAdapter() {
-                    public void windowClosing(WindowEvent we) {
-                        System.exit(-1);
-                    }
-                });
-                optionPane.addPropertyChangeListener(
-                        new PropertyChangeListener() {
-                    public void propertyChange(PropertyChangeEvent e) {
-                        if (dialog.isVisible() && e.getSource() == optionPane) {
-                            System.exit(-1);
-                        }
-                    }
-                });
+                logWriter.println(formatter.format(new Date())+": ERROR: "+level+" :"+message);
+                dialog = new FatalErrorDialog(MainFrame.getMainFrame(), true, new String[]{message});
                 dialog.pack();
                 dialog.setLocationRelativeTo(MainFrame.getMainFrame());
                 dialog.setVisible(true);
                 break;
             default:
-                logWriter.println(format.format(new Date())+": ERROR: "+level+" :"+message);
-                System.err.println(format.format(new Date())+": ERROR: "+level+" :"+message);
+                logWriter.println(formatter.format(new Date())+": ERROR: "+level+" :"+message);
+                System.err.println(formatter.format(new Date())+": ERROR: "+level+" :"+message);
                 break;
         }
     }
     
+    /**
+     * Record an error message for the application, notifying the user if appropriate
+     * @param level error level
+     * @param exception Cause of error
+     */
     public static void error(ErrorLevel level, Exception exception) {
+        String[] message;
         if (logWriter == null ) createWriter();
-        StackTraceElement[] stacktrace = exception.getStackTrace();
+        StackTraceElement[] stackTrace = exception.getStackTrace();
         switch (level) {
             case FATAL:
-                logWriter.println(format.format(new Date())+": ERROR: "+level+" :"+exception.getMessage());
-                for (StackTraceElement traceElement: stacktrace) {
+                logWriter.println(formatter.format(new Date())+": ERROR: "+level+" :"+exception.getMessage());
+                message = new String[stackTrace.length+1];
+                message[0] = exception.getMessage();
+                int i = 1;
+                for (StackTraceElement traceElement: stackTrace) {
+                    message[i] = traceElement.toString();
                     logWriter.println("\t\t\t\t"+traceElement);
+                    i++;
                 }
-                optionPane = new JOptionPane(exception.getMessage(), JOptionPane.ERROR_MESSAGE,
-                        JOptionPane.DEFAULT_OPTION);
-                dialog = new JDialog(MainFrame.getMainFrame(), "Fatal Error",
-                        true);
-                dialog.setContentPane(optionPane);
-                dialog.setDefaultCloseOperation(
-                        JDialog.DO_NOTHING_ON_CLOSE);
-                dialog.addWindowListener(new WindowAdapter() {
-                    public void windowClosing(WindowEvent we) {
-                        System.exit(-1);
-                    }
-                });
-                optionPane.addPropertyChangeListener(
-                        new PropertyChangeListener() {
-                    public void propertyChange(PropertyChangeEvent e) {
-                        if (dialog.isVisible() && e.getSource() == optionPane) {
-                            System.exit(-1);
-                        }
-                    }
-                });
+                dialog = new FatalErrorDialog(MainFrame.getMainFrame(), true, message);
                 dialog.pack();
                 dialog.setLocationRelativeTo(MainFrame.getMainFrame());
                 dialog.setVisible(true);
                 break;
             default:
-                logWriter.println(format.format(new Date())+": ERROR: "+level+" :"+exception.getMessage());
-                for (StackTraceElement traceElement: stacktrace) {
+                logWriter.println(formatter.format(new Date())+": ERROR: "+level+" :"+exception.getMessage());
+                for (StackTraceElement traceElement: stackTrace) {
                     logWriter.println("\t\t\t\t"+traceElement);
                 }
-                System.err.println(format.format(new Date())+": ERROR: "+level+" :"+exception.getMessage());
+                System.err.println(formatter.format(new Date())+": ERROR: "+level+" :"+exception.getMessage());
                 break;
         }
     }
     
+    /**
+     * Record an debug message for the application, notifying the user if appropriate
+     * @param level debug level
+     * @param message Debug message
+     */
     public static void debug(DebugLevel level, String message) {
         if (logWriter == null ) createWriter();
         switch(level) {
             default:
-                System.out.println(format.format(new Date())+": DEBUG: "+level+" :"+message);
-                logWriter.println(format.format(new Date())+": DEBUG: "+level+" :"+message);
+                System.out.println(formatter.format(new Date())+": DEBUG: "+level+" :"+message);
+                logWriter.println(formatter.format(new Date())+": DEBUG: "+level+" :"+message);
                 break;
         }
     }
     
+    /**
+     * Record a log message for the application
+     * @param level log level
+     * @param message Log message
+     */
     public static void log(LogLevel level, String message) {
         if (logWriter == null ) createWriter();
         switch(level) {
             default:
-                logWriter.println(format.format(new Date())+": LOG: "+level+" :"+message);
+                logWriter.println(formatter.format(new Date())+": LOG: "+level+" :"+message);
                 break;
         }
     }
     
+    /**
+     * Initialises the logfile writer and date formatter
+     */
     private static void createWriter() {
         try {
             logWriter = new PrintWriter(new BufferedWriter(new FileWriter(Config.getConfigDir()+"errors.log")));
@@ -160,9 +166,9 @@ public class Logger {
             Logger.error(ErrorLevel.FATAL, "Oh god, i cant open the error log.");
         }
         if (Config.hasOption("logging", "dateFormat")) {
-            format = new SimpleDateFormat(Config.getOption("logging", "dateFormat"));
+            formatter = new SimpleDateFormat(Config.getOption("logging", "dateFormat"));
         } else {
-            format = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+            formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
         }
     }
 }

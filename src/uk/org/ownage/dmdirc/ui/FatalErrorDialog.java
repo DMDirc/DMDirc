@@ -6,16 +6,23 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import uk.org.ownage.dmdirc.logger.Logger;
+
 /**
  *
  * @author  chris
  */
 public class FatalErrorDialog extends javax.swing.JDialog {
     
-    /** Creates new form FatalErrorDialog */
-    public FatalErrorDialog(java.awt.Frame parent, boolean modal) {
+    public FatalErrorDialog(java.awt.Frame parent, boolean modal, String[] message) {
         super(parent, modal);
         initComponents();
+        for (String line: message) {
+            jTextArea1.append(line+"\r\n");
+        }
+        jTextArea1.setCaretPosition(0);
     }
     
     /** This method is called from within the constructor to
@@ -33,6 +40,12 @@ public class FatalErrorDialog extends javax.swing.JDialog {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
+
         jLabel1.setFont(new java.awt.Font("Dialog", 1, 18));
         jLabel1.setText("We're sorry...");
 
@@ -46,6 +59,11 @@ public class FatalErrorDialog extends javax.swing.JDialog {
         jScrollPane1.setViewportView(jTextArea1);
 
         jButton1.setText("OK");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -78,7 +96,15 @@ public class FatalErrorDialog extends javax.swing.JDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-        
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+      System.exit(-1);
+    }//GEN-LAST:event_formWindowClosing
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+      System.exit(-1);
+    }//GEN-LAST:event_jButton1ActionPerformed
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
