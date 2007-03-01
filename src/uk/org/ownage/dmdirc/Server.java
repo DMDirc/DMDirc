@@ -35,6 +35,9 @@ import uk.org.ownage.dmdirc.logger.Logger;
 import javax.swing.event.InternalFrameListener;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
+import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 
 /**
  * The Server class represents the client's view of a server. It maintains
@@ -81,8 +84,12 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
         
         parser = new IRCParser(new ServerInfo(server, port, password));
         
-        parser.getCallbackManager().addCallback("OnChannelSelfJoin", this);
-        parser.getCallbackManager().addCallback("OnErrorInfo", this);
+        try {
+            parser.getCallbackManager().addCallback("OnChannelSelfJoin", this);
+            parser.getCallbackManager().addCallback("OnErrorInfo", this);
+        } catch (CallbackNotFound ex) {
+            Logger.error(ErrorLevel.FATAL, ex);            
+        }
         
         raw = new Raw(this);
         

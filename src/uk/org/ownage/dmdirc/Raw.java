@@ -27,6 +27,9 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
+import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 
 /**
  * Handles the raw window (which shows the user raw data being sent and
@@ -56,8 +59,12 @@ public class Raw implements IDataIn, IDataOut {
         
         MainFrame.getMainFrame().addChild(frame);
         
+        try {
         server.getParser().getCallbackManager().addCallback("OnDataIn", this);
         server.getParser().getCallbackManager().addCallback("OnDataOut", this);
+        } catch (CallbackNotFound ex) {
+            Logger.error(ErrorLevel.FATAL, ex);
+        }
     }
 
     void close() {

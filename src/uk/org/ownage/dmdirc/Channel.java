@@ -38,6 +38,9 @@ import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
+import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
 
 /**
  * The Channel class represents the client's view of the channel. It handles
@@ -69,16 +72,20 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         
         frame = new ChannelFrame(this);
         MainFrame.getMainFrame().addChild(frame);
-        frame.addInternalFrameListener(this);        
+        frame.addInternalFrameListener(this);
         
-        server.getParser().getCallbackManager().addCallback("OnChannelGotNames", this, channelInfo.getName());
-        server.getParser().getCallbackManager().addCallback("OnChannelTopic", this, channelInfo.getName());
-        server.getParser().getCallbackManager().addCallback("OnChannelMessage", this, channelInfo.getName());
-        server.getParser().getCallbackManager().addCallback("OnChannelJoin", this, channelInfo.getName());
-        server.getParser().getCallbackManager().addCallback("OnChannelPart", this, channelInfo.getName());
-        server.getParser().getCallbackManager().addCallback("OnChannelQuit", this, channelInfo.getName());
-        server.getParser().getCallbackManager().addCallback("OnChannelKick", this, channelInfo.getName());
-        server.getParser().getCallbackManager().addCallback("OnChannelAction", this, channelInfo.getName());
+        try {
+            server.getParser().getCallbackManager().addCallback("OnChannelGotNames", this, channelInfo.getName());
+            server.getParser().getCallbackManager().addCallback("OnChannelTopic", this, channelInfo.getName());
+            server.getParser().getCallbackManager().addCallback("OnChannelMessage", this, channelInfo.getName());
+            server.getParser().getCallbackManager().addCallback("OnChannelJoin", this, channelInfo.getName());
+            server.getParser().getCallbackManager().addCallback("OnChannelPart", this, channelInfo.getName());
+            server.getParser().getCallbackManager().addCallback("OnChannelQuit", this, channelInfo.getName());
+            server.getParser().getCallbackManager().addCallback("OnChannelKick", this, channelInfo.getName());
+            server.getParser().getCallbackManager().addCallback("OnChannelAction", this, channelInfo.getName());
+        } catch (CallbackNotFound ex) {
+            Logger.error(ErrorLevel.FATAL, ex);
+        }
         
         updateTitle();
     }
@@ -91,7 +98,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void sendAction(String action) {
         channelInfo.sendAction(action);
         frame.addLine("*> "+action);
-    }    
+    }
     
     public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel,
             ChannelClientInfo cChannelClient, String sMessage, String sHost) {
@@ -145,12 +152,12 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         frame.addLine("* "+cKickedClient+" was kicked by "+kicker+": "+sReason);
         frame.removeName(cKickedClient);
     }
-
+    
     public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
         frame.addLine("* "+cChannelClient+" has quit IRC ("+sReason+")");
         frame.removeName(cChannelClient);
     }
-
+    
     public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
         String source;
         if (cChannelClient == null) {
@@ -160,7 +167,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         }
         frame.addLine("* "+source+" "+sMessage);
     }
-
+    
     public Server getServer() {
         return server;
     }
@@ -169,7 +176,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         server.getParser().partChannel(channelInfo.getName(), reason);
         frame.addLine("* You have left the channel.");
     }
-
+    
     public void close() {
         server.getParser().getCallbackManager().delCallback("OnChannelMessage", this);
         server.getParser().getCallbackManager().delCallback("OnChannelTopic", this);
@@ -187,27 +194,27 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         frame = null;
         server = null;
     }
-
+    
     public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
     }
-
+    
     public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
         part(Config.getOption("general","partmessage"));
         close();
     }
-
+    
     public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
     }
-
+    
     public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
     }
-
+    
     public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
     }
-
+    
     public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
     }
-
+    
     public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }
     
