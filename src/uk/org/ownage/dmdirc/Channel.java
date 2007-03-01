@@ -193,7 +193,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         server.getParser().getCallbackManager().delCallback("OnChannelKick", this);
         server.getParser().getCallbackManager().delCallback("OnChannelAction", this);
         
-        server.delChannel(this);
+        server.delChannel(channelInfo.getName());
         
         frame.setVisible(false);
         MainFrame.getMainFrame().delChild(frame);

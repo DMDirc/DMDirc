@@ -145,7 +145,7 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
         }
     }
     
-    public void delChannel(Channel chan) {
+    public void delChannel(String chan) {
         channels.remove(chan);
     }
     
