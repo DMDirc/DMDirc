@@ -1416,6 +1416,7 @@ public class IRCParser implements Runnable {
 			String sTemp[] = token[0].split(":",2);
 			if (sTemp.length > 1) { token[0] = sTemp[1]; }
 			iChannel.setTopicUser(token[0]);
+			iChannel.setTopic(token[token.length-1]);
 			callChannelTopic(iChannel,false);
 		}
 	}
