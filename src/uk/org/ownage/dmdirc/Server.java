@@ -26,6 +26,7 @@ import java.util.Hashtable;
 import javax.swing.event.InternalFrameEvent;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.MyInfo;
 import uk.org.ownage.dmdirc.parser.ParserError;
 import uk.org.ownage.dmdirc.parser.ServerInfo;
 import uk.org.ownage.dmdirc.ui.MainFrame;
@@ -82,7 +83,10 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
         
         frame.addLine("Connecting to "+server+":"+port);
         
-        parser = new IRCParser(new ServerInfo(server, port, password));
+        MyInfo myInfo = new MyInfo();
+        myInfo.sNickname = Config.getOption("general","defaultnick");
+                
+        parser = new IRCParser(myInfo, new ServerInfo(server, port, password));
         
         try {
             parser.getCallbackManager().addCallback("OnChannelSelfJoin", this);

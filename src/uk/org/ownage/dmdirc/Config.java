@@ -87,6 +87,7 @@ public class Config {
         defaults.setProperty("general.quitmessage","Using DMDirc");
         defaults.setProperty("general.partmessage","Using DMDirc");
         defaults.setProperty("general.cyclemessage","Cycling");
+        defaults.setProperty("general.defaultnick","DMDircUser");
         
 	defaults.setProperty("ui.maximisewindows","true");
         defaults.setProperty("ui.sortByMode", "true");
