@@ -155,5 +155,21 @@ public class Channel implements IRCParser.IChannelMessage,
     public Server getServer() {
         return server;
     }
+
+    void close() {
+        server.getParser().delChannelMessage(this);
+        server.getParser().delChannelTopic(this);
+        server.getParser().delChannelGotNames(this);
+        server.getParser().delChannelJoin(this);
+        server.getParser().delChannelPart(this);
+        server.getParser().delChannelQuit(this);
+        server.getParser().delChannelKick(this);
+        server.getParser().delChannelAction(this);
+        
+        frame.setVisible(false);
+        MainFrame.getMainFrame().delChild(frame);
+        frame = null;
+        server = null;
+    }
     
 }

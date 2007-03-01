@@ -31,7 +31,7 @@ import uk.org.ownage.dmdirc.ui.ServerFrame;
  * received to/from the server)
  * @author chris
  */
-public class Raw {
+public class Raw implements IRCParser.IDataIn, IRCParser.IDataOut {
     
     /**
      * The server object that's being monitored
@@ -54,17 +54,26 @@ public class Raw {
         
         MainFrame.getMainFrame().addChild(frame);
         
-        server.getParser().addDataIn(new IRCParser.IDataIn() {
-            public void onDataIn(IRCParser tParser, String sData) {
-                Raw.this.frame.addLine("<<< "+sData);
-            }
-        });
+        server.getParser().addDataIn(this);
+        server.getParser().addDataOut(this);
+    }
+
+    void close() {
+        server.getParser().delDataIn(this);
+        server.getParser().delDataOut(this);
         
-        server.getParser().addDataOut(new IRCParser.IDataOut() {
-            public void onDataOut(IRCParser tparser, String sData, boolean fromParser) {
-                Raw.this.frame.addLine(">>> "+sData);
-            }
-        });
+        frame.setVisible(false);
+        MainFrame.getMainFrame().delChild(frame);
+        frame = null;
+        server = null;
+    }
+
+    public void onDataIn(IRCParser tParser, String sData) {
+        frame.addLine("<<< "+sData);
+    }
+
+    public void onDataOut(IRCParser tParser, String sData, boolean bFromParser) {
+        frame.addLine(">>> "+sData);
     }
     
 }

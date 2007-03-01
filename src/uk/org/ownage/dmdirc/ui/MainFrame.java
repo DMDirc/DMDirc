@@ -89,6 +89,10 @@ public class MainFrame extends javax.swing.JFrame {
         desktopPane.add(frame);
     }
     
+    public void delChild(JInternalFrame frame) {
+        desktopPane.remove(frame);
+    }    
+    
     /**
      * Returns the JInternalFrame that is currently active
      * @return The active JInternalFrame
@@ -171,6 +175,7 @@ public class MainFrame extends javax.swing.JFrame {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane desktopPane;

@@ -57,6 +57,8 @@ public class Server implements IRCParser.IChannelSelfJoin, IRCParser.IErrorInfo 
      */
     private IRCParser parser;
     
+    private Raw raw;
+    
     /**
      * Creates a new instance of Server
      * @param server The hostname/ip of the server to connect to
@@ -73,28 +75,20 @@ public class Server implements IRCParser.IChannelSelfJoin, IRCParser.IErrorInfo 
         MainFrame.getMainFrame().addChild(frame);
         
         frame.addLine("Connecting to "+server+":"+port);
-              
+        
         parser = new IRCParser(new ServerInfo(server, port, password));
         
         parser.addChannelSelfJoin(this);
         parser.addErrorInfo(this);
-                
-        Raw raw = new Raw(this);
-              
-        try {           
+        
+        raw = new Raw(this);
+        
+        try {
             Thread thread = new Thread(parser);
             thread.start();
         } catch (Exception ex) {
             frame.addLine("ERROR: "+ex.getMessage());
         }
-    }
-    
-    /**
-     * Called on destruction, the server unregisters itself with the ServerManager
-     * @throws java.lang.Throwable ...
-     */
-    protected void finalize() throws Throwable {
-        ServerManager.getServerManager().unregisterServer(this);
     }
     
     /**
@@ -108,15 +102,46 @@ public class Server implements IRCParser.IChannelSelfJoin, IRCParser.IErrorInfo 
     public void addLine(String line) {
         frame.addLine(line);
     }
-
+    
+    public void close(String reason) {
+        // Unregister parser callbacks
+        parser.delChannelSelfJoin(this);
+        parser.delErrorInfo(this);        
+        // Disconnect from the server
+        disconnect(reason);
+        // Unregister ourselves with the server manager
+        ServerManager.getServerManager().unregisterServer(this);
+        // Close all channel windows
+        closeChannels();
+        // Close the raw window
+        raw.close();
+        // Close our own window
+        frame.setVisible(false);
+        MainFrame.getMainFrame().delChild(frame);
+        frame = null;
+        // Ditch the parser
+        parser = null;
+    }
+    
+    public void disconnect(String reason) {
+        parser.quit(reason);
+    }
+    
+    private void closeChannels() {
+        for (Channel channel : channels.values()) {
+            channel.close();
+            channels.remove(channel);
+        }
+    }
+    
     private void addChannel(ChannelInfo chan) {
         channels.put(chan.getName(), new Channel(this, chan));
     }
-
+    
     public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
         addChannel(cChannel);
     }
-
+    
     public void onErrorInfo(IRCParser tParser, ParserError errorInfo) {
         ErrorLevel errorLevel;
         if (errorInfo.isFatal()) {
