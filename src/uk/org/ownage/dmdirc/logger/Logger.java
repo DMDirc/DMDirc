@@ -225,7 +225,7 @@ public class Logger {
                         new FileWriter(Config.getConfigDir()+"error.log")));
             }
         } catch (IOException ex) {
-            Logger.error(ErrorLevel.FATAL, ex);
+            Logger.error(ErrorLevel.WARNING, ex);
         }
         if (Config.hasOption("logging", "dateFormat")) {
             formatter = new SimpleDateFormat(

@@ -29,6 +29,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
  * Reads/writes the application's config file
@@ -152,11 +154,11 @@ public class Config {
 	    try {
 		properties.loadFromXML(new FileInputStream(file));
 	    } catch (InvalidPropertiesFormatException ex) {
-		//Do nothing, defaults used
+		Logger.error(ErrorLevel.INFO, ex);
 	    } catch (FileNotFoundException ex) {
 		//Do nothing, defaults used
 	    } catch (IOException ex) {
-		//Do nothing, defaults used
+		Logger.error(ErrorLevel.WARNING, ex);
 	    }
 	} else {
 	    try {
@@ -164,8 +166,7 @@ public class Config {
 		file.createNewFile();
 		Config.save();
 	    } catch (IOException ex) {
-		//TODO Alert user, use defaults, saving will fail
-		ex.printStackTrace();
+		Logger.error(ErrorLevel.WARNING, ex);
 	    }
 	}
     }
@@ -181,9 +182,9 @@ public class Config {
 	try {
 	    properties.storeToXML(new FileOutputStream(new File(getConfigFile())), null);
 	} catch (FileNotFoundException ex) {
-	    //Do nothing, shouldnt be able to happen
+	    Logger.error(ErrorLevel.INFO, ex);
 	} catch (IOException ex) {
-	    //Do nothing
+	    Logger.error(ErrorLevel.WARNING, ex);
 	}
     }
     
