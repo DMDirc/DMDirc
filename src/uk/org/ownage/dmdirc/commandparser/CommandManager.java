@@ -68,6 +68,7 @@ public class CommandManager {
         if (serverCommands == null) {
             serverCommands = new Vector<Command>(0,1);
             
+            serverCommands.add(new Join());
             serverCommands.add(new Test());
             serverCommands.add(new Quit());
             serverCommands.add(new QuitDefault());
