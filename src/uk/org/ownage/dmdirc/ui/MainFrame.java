@@ -95,14 +95,10 @@ public class MainFrame extends javax.swing.JFrame {
         // Make sure it'll fit with our offsets
         if (frame.getWidth()+xOffset > desktopPane.getWidth()) {
             xOffset = 0;
-            System.out.println("Resetting xOffset");
         }
         if (frame.getHeight()+yOffset > desktopPane.getHeight()) {
             yOffset = 0;
-            System.out.println("Resetting yOffset");
         }
-        
-        System.out.println("x = "+xOffset+" y = "+yOffset);
         
         // Position the frame
         frame.setLocation(xOffset, yOffset);
