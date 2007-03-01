@@ -45,6 +45,9 @@ public class MainFrame extends javax.swing.JFrame {
      */
     private boolean maximised;
     
+    private int xOffset = 0;
+    private int yOffset = 0;
+    
     /**
      * Returns the singleton instance of MainFrame
      * @return MainFrame instance
@@ -86,12 +89,33 @@ public class MainFrame extends javax.swing.JFrame {
      * @param frame the frame to be added
      */
     public void addChild(JInternalFrame frame) {
+        // Add the frame
         desktopPane.add(frame);
+        
+        // Make sure it'll fit with our offsets
+        if (frame.getWidth()+xOffset > desktopPane.getWidth()) {
+            xOffset = 0;
+            System.out.println("Resetting xOffset");
+        }
+        if (frame.getHeight()+yOffset > desktopPane.getHeight()) {
+            yOffset = 0;
+            System.out.println("Resetting yOffset");
+        }
+        
+        System.out.println("x = "+xOffset+" y = "+yOffset);
+        
+        // Position the frame
+        frame.setLocation(xOffset, yOffset);
+        frame.moveToFront();
+        
+        // Increase the offsets
+        xOffset += 30;
+        yOffset += 30;
     }
     
     public void delChild(JInternalFrame frame) {
         desktopPane.remove(frame);
-    }    
+    }
     
     /**
      * Returns the JInternalFrame that is currently active
@@ -175,7 +199,7 @@ public class MainFrame extends javax.swing.JFrame {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JDesktopPane desktopPane;
