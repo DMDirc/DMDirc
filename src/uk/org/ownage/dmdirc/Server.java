@@ -33,8 +33,8 @@ import uk.org.ownage.dmdirc.ui.ServerFrame;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.logger.Logger;
 import javax.swing.event.InternalFrameListener;
-import uk.org.ownage.dmdirc.parser.IChannelSelfJoin;
-import uk.org.ownage.dmdirc.parser.IErrorInfo;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
 
 /**
  * The Server class represents the client's view of a server. It maintains

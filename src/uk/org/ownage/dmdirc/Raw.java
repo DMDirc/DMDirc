@@ -22,8 +22,8 @@
 
 package uk.org.ownage.dmdirc;
 
-import uk.org.ownage.dmdirc.parser.IDataIn;
-import uk.org.ownage.dmdirc.parser.IDataOut;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;

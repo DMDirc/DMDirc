@@ -24,6 +24,9 @@
 
 package uk.org.ownage.dmdirc.parser;
 
+
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.*;
+import uk.org.ownage.dmdirc.parser.callbacks.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -84,7 +87,7 @@ public class IRCParser implements Runnable {
 	 * If this is set to false, self-test and any the "useless" debugging that relies on
 	 * this being true are not compiled.
 	 */
-	protected static final boolean bDebug = true;
+	public static final boolean bDebug = true;
 	
 	/** This is the socket used for reading from/writing to the IRC server. */
 	private Socket socket = null;
@@ -192,7 +195,7 @@ public class IRCParser implements Runnable {
 	 * @param data Data string to log (in printf style)
 	 * @param args Args to go with printf
 	 */
-	protected boolean doDebug(String data, Object... args) {
+	public boolean doDebug(String data, Object... args) {
 		try {
 			return callDebugInfo(ndGeneral, String.format(data, args));
 		} catch (Exception e) { return false; }
@@ -1317,7 +1320,7 @@ public class IRCParser implements Runnable {
 				isAction = true;
 				if (bits.length > 1) {
 					sMessage = bits[1];
-					sMessage = sMessage.substring(0, sMessage.length());
+					sMessage = sMessage.substring(0, sMessage.length()-1);
 				} else { sMessage = ""; }
 			} else if (Character.valueOf(sMessage.charAt(0)).equals(Char1) && Character.valueOf(sMessage.charAt(sMessage.length()-1)).equals(Char1)) {
 				isCTCP = true;
