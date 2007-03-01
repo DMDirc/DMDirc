@@ -38,7 +38,7 @@ public class ChannelClientInfo {
 	/** Reference to ClientInfo object this represents. */
 	private ClientInfo cClient = null;
 	/** Integer representation of the channel modes assocated with this user. */
-	private int nModes;
+	private int nModes = 0;
 	/** Reference to the parser object that owns this channel, Used for modes. */
 	private IRCParser myParser;
 	
