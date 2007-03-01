@@ -95,6 +95,14 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         frame.addLine("> "+line);
     }
     
+    public ChannelInfo getChannelInfo() {
+        return channelInfo;
+    }
+    
+    public void setChannelInfo(ChannelInfo newChannelInfo) {
+        channelInfo = newChannelInfo;
+    }
+    
     public void sendAction(String action) {
         channelInfo.sendAction(action);
         frame.addLine("*> "+action);
@@ -181,6 +189,10 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void part(String reason) {
         server.getParser().partChannel(channelInfo.getName(), reason);
         frame.addLine("* You have left the channel.");
+    }
+    
+    public void join() {
+        server.getParser().joinChannel(channelInfo.getName());
     }
     
     public void close() {

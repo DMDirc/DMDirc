@@ -51,6 +51,7 @@ public class CommandManager {
         if (channelCommands == null) {
             channelCommands = new Vector<Command>(0,1);
             
+            channelCommands.add(new Cycle());
             channelCommands.add(new Me());
             channelCommands.add(new MeEmpty());
             channelCommands.add(new Part());
@@ -120,7 +121,7 @@ public class CommandManager {
         }
         
         return null;
-    }    
+    }
     
     public static Vector<Command> getServerCommands() {
         if (serverCommands == null) {
@@ -129,7 +130,7 @@ public class CommandManager {
         
         return serverCommands;
     }
-
+    
     public static Vector<Command> getChannelCommands() {
         if (channelCommands == null) {
             return null;

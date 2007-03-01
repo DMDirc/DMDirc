@@ -88,7 +88,7 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
             parser.getCallbackManager().addCallback("OnChannelSelfJoin", this);
             parser.getCallbackManager().addCallback("OnErrorInfo", this);
         } catch (CallbackNotFound ex) {
-            Logger.error(ErrorLevel.FATAL, ex);            
+            Logger.error(ErrorLevel.FATAL, ex);
         }
         
         raw = new Raw(this);
@@ -154,7 +154,11 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
     }
     
     public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
-        addChannel(cChannel);
+        if (channels.containsKey(cChannel.getName())) {
+            channels.get(cChannel.getName()).setChannelInfo(cChannel);
+        } else {
+            addChannel(cChannel);
+        }
     }
     
     public void onErrorInfo(IRCParser tParser, ParserError errorInfo) {

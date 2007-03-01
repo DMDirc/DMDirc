@@ -86,9 +86,12 @@ public class Config {
         defaults.setProperty("general.closemessage","DMDirc exiting");
         defaults.setProperty("general.quitmessage","Using DMDirc");
         defaults.setProperty("general.partmessage","Using DMDirc");
+        defaults.setProperty("general.cyclemessage","Cycling");
+        
 	defaults.setProperty("ui.maximisewindows","true");
         defaults.setProperty("ui.sortByMode", "true");
         defaults.setProperty("ui.sortByCase", "false");
+        
         defaults.setProperty("logging.dateFormat","EEE, d MMM yyyy HH:mm:ss Z");
         defaults.setProperty("logging.programLogging","true");
         defaults.setProperty("logging.debugLogging","true");
