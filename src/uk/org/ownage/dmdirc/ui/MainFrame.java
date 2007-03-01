@@ -175,6 +175,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     
     public void windowClosing(WindowEvent windowEvent) {
         ServerManager.getServerManager().closeAll(Config.getOption("general","closemessage"));
+        Config.save();
     }
     
     public void windowClosed(WindowEvent windowEvent) {
