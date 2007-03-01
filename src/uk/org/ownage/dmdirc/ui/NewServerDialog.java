@@ -127,7 +127,7 @@ public class NewServerDialog extends javax.swing.JDialog {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel1.setText("Server:");
 
-        jTextField1.setText("irc.quakenet.org");
+        jTextField1.setText("blueyonder.uk.quakenet.org");
 
         jLabel2.setText("To connect to a new IRC server, enter the server name below");
 
@@ -144,10 +144,12 @@ public class NewServerDialog extends javax.swing.JDialog {
 
         jCheckBox2.setText("Remember server password");
         jCheckBox2.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jCheckBox2.setEnabled(false);
         jCheckBox2.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
         jCheckBox3.setText("Connect to this server automatically in the future");
         jCheckBox3.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        jCheckBox3.setEnabled(false);
         jCheckBox3.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
         jButton1.setText("OK");
