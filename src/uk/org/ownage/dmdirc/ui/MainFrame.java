@@ -208,6 +208,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DMDirc");
+        desktopPane.setBackground(new java.awt.Color(238, 238, 238));
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
