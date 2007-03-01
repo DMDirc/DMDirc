@@ -123,7 +123,13 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     private void updateTitle() {
-        frame.setTitle(channelInfo.getName()+" - "+channelInfo.getTopic());
+        String title = channelInfo.getName()+" - "+channelInfo.getTopic();
+        
+        frame.setTitle(title);
+        
+        if (frame.isMaximum() && MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
+            MainFrame.getMainFrame().setTitle("DMDirc - "+title);
+        }
     }
     
     public void onChannelJoin(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient) {

@@ -60,13 +60,13 @@ public class Raw implements IDataIn, IDataOut {
         MainFrame.getMainFrame().addChild(frame);
         
         try {
-        server.getParser().getCallbackManager().addCallback("OnDataIn", this);
-        server.getParser().getCallbackManager().addCallback("OnDataOut", this);
+            server.getParser().getCallbackManager().addCallback("OnDataIn", this);
+            server.getParser().getCallbackManager().addCallback("OnDataOut", this);
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.FATAL, ex);
         }
     }
-
+    
     void close() {
         server.getParser().getCallbackManager().delCallback("OnDataIn", this);
         server.getParser().getCallbackManager().delCallback("OnDataOut", this);
@@ -76,11 +76,11 @@ public class Raw implements IDataIn, IDataOut {
         frame = null;
         server = null;
     }
-
+    
     public void onDataIn(IRCParser tParser, String sData) {
         frame.addLine("<<< "+sData);
     }
-
+    
     public void onDataOut(IRCParser tParser, String sData, boolean bFromParser) {
         frame.addLine(">>> "+sData);
     }

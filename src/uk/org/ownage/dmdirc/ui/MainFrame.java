@@ -141,6 +141,13 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
      */
     public void setMaximised(boolean max) {
         maximised = max;
+        
+        if (max && getActiveFrame() != null) {
+            setTitle("DMDirc - "+getActiveFrame().getTitle());
+        } else if (!max) {
+            setTitle("DMDirc");
+        }
+        
         checkWindowState();
     }
     
@@ -152,7 +159,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         
         toggleStateMenuItem.setEnabled(true);
         
-        if (getActiveFrame().isMaximum()) {
+        if (maximised) {
             toggleStateMenuItem.setText("Restore");
             toggleStateMenuItem.setMnemonic('r');
             toggleStateMenuItem.invalidate();
