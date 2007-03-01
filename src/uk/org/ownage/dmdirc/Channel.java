@@ -24,11 +24,18 @@ package uk.org.ownage.dmdirc;
 
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.StyledDocument;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.IChannelAction;
+import uk.org.ownage.dmdirc.parser.IChannelGotNames;
+import uk.org.ownage.dmdirc.parser.IChannelJoin;
+import uk.org.ownage.dmdirc.parser.IChannelKick;
+import uk.org.ownage.dmdirc.parser.IChannelMessage;
+import uk.org.ownage.dmdirc.parser.IChannelPart;
+import uk.org.ownage.dmdirc.parser.IChannelQuit;
+import uk.org.ownage.dmdirc.parser.IChannelTopic;
 import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.CallbackManager;
 import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 
@@ -38,10 +45,9 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
  * ChannelFrame, and handles user input to a ChannelFrame
  * @author chris
  */
-public class Channel implements IRCParser.IChannelMessage,
-        IRCParser.IChannelGotNames, IRCParser.IChannelTopic,
-        IRCParser.IChannelJoin, IRCParser.IChannelPart, IRCParser.IChannelKick,
-        IRCParser.IChannelQuit, IRCParser.IChannelAction, InternalFrameListener {
+public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic,
+        IChannelJoin, IChannelPart, IChannelKick, IChannelQuit, IChannelAction,
+        InternalFrameListener {
     
     /** The parser's pChannel class */
     private ChannelInfo channelInfo;
@@ -65,14 +71,14 @@ public class Channel implements IRCParser.IChannelMessage,
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);        
         
-        server.getParser().addChannelMessage(this, channelInfo.getName());
-        server.getParser().addChannelTopic(this, channelInfo.getName());
-        server.getParser().addChannelGotNames(this, channelInfo.getName());
-        server.getParser().addChannelJoin(this, channelInfo.getName());
-        server.getParser().addChannelPart(this, channelInfo.getName());
-        server.getParser().addChannelQuit(this, channelInfo.getName());
-        server.getParser().addChannelKick(this, channelInfo.getName());
-        server.getParser().addChannelAction(this, channelInfo.getName());
+        server.getParser().getCallbackManager().addCallback("OnChannelGotNames", this, channelInfo.getName());
+        server.getParser().getCallbackManager().addCallback("OnChannelTopic", this, channelInfo.getName());
+        server.getParser().getCallbackManager().addCallback("OnChannelMessage", this, channelInfo.getName());
+        server.getParser().getCallbackManager().addCallback("OnChannelJoin", this, channelInfo.getName());
+        server.getParser().getCallbackManager().addCallback("OnChannelPart", this, channelInfo.getName());
+        server.getParser().getCallbackManager().addCallback("OnChannelQuit", this, channelInfo.getName());
+        server.getParser().getCallbackManager().addCallback("OnChannelKick", this, channelInfo.getName());
+        server.getParser().getCallbackManager().addCallback("OnChannelAction", this, channelInfo.getName());
         
         updateTitle();
     }
@@ -165,14 +171,14 @@ public class Channel implements IRCParser.IChannelMessage,
     }
 
     public void close() {
-        server.getParser().delChannelMessage(this);
-        server.getParser().delChannelTopic(this);
-        server.getParser().delChannelGotNames(this);
-        server.getParser().delChannelJoin(this);
-        server.getParser().delChannelPart(this);
-        server.getParser().delChannelQuit(this);
-        server.getParser().delChannelKick(this);
-        server.getParser().delChannelAction(this);
+        server.getParser().getCallbackManager().delCallback("OnChannelMessage", this);
+        server.getParser().getCallbackManager().delCallback("OnChannelTopic", this);
+        server.getParser().getCallbackManager().delCallback("OnChannelGotNames", this);
+        server.getParser().getCallbackManager().delCallback("OnChannelJoin", this);
+        server.getParser().getCallbackManager().delCallback("OnChannelPart", this);
+        server.getParser().getCallbackManager().delCallback("OnChannelQuit", this);
+        server.getParser().getCallbackManager().delCallback("OnChannelKick", this);
+        server.getParser().getCallbackManager().delCallback("OnChannelAction", this);
         
         server.delChannel(this);
         

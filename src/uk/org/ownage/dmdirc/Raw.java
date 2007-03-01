@@ -22,6 +22,8 @@
 
 package uk.org.ownage.dmdirc;
 
+import uk.org.ownage.dmdirc.parser.IDataIn;
+import uk.org.ownage.dmdirc.parser.IDataOut;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
@@ -31,7 +33,7 @@ import uk.org.ownage.dmdirc.ui.ServerFrame;
  * received to/from the server)
  * @author chris
  */
-public class Raw implements IRCParser.IDataIn, IRCParser.IDataOut {
+public class Raw implements IDataIn, IDataOut {
     
     /**
      * The server object that's being monitored
@@ -54,13 +56,13 @@ public class Raw implements IRCParser.IDataIn, IRCParser.IDataOut {
         
         MainFrame.getMainFrame().addChild(frame);
         
-        server.getParser().addDataIn(this);
-        server.getParser().addDataOut(this);
+        server.getParser().getCallbackManager().addCallback("OnDataIn", this);
+        server.getParser().getCallbackManager().addCallback("OnDataOut", this);
     }
 
     void close() {
-        server.getParser().delDataIn(this);
-        server.getParser().delDataOut(this);
+        server.getParser().getCallbackManager().delCallback("OnDataIn", this);
+        server.getParser().getCallbackManager().delCallback("OnDataOut", this);
         
         frame.setVisible(false);
         MainFrame.getMainFrame().delChild(frame);

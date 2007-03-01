@@ -24,17 +24,17 @@ package uk.org.ownage.dmdirc;
 
 import java.util.Hashtable;
 import javax.swing.event.InternalFrameEvent;
-import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ParserError;
 import uk.org.ownage.dmdirc.parser.ServerInfo;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
-import java.util.Vector;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.logger.Logger;
 import javax.swing.event.InternalFrameListener;
+import uk.org.ownage.dmdirc.parser.IChannelSelfJoin;
+import uk.org.ownage.dmdirc.parser.IErrorInfo;
 
 /**
  * The Server class represents the client's view of a server. It maintains
@@ -42,8 +42,7 @@ import javax.swing.event.InternalFrameListener;
  * to the server
  * @author chris
  */
-public class Server implements IRCParser.IChannelSelfJoin, IRCParser.IErrorInfo,
-        InternalFrameListener {
+public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListener {
     
     /**
      * Open channels that currently exist on the server
@@ -71,7 +70,7 @@ public class Server implements IRCParser.IChannelSelfJoin, IRCParser.IErrorInfo,
     public Server(String server, int port, String password) {
         
         ServerManager.getServerManager().registerServer(this);
-                
+        
         frame = new ServerFrame(this);
         frame.setTitle(server+":"+port);
         frame.addInternalFrameListener(this);
@@ -82,8 +81,8 @@ public class Server implements IRCParser.IChannelSelfJoin, IRCParser.IErrorInfo,
         
         parser = new IRCParser(new ServerInfo(server, port, password));
         
-        parser.addChannelSelfJoin(this);
-        parser.addErrorInfo(this);
+        parser.getCallbackManager().addCallback("OnChannelSelfJoin", this);
+        parser.getCallbackManager().addCallback("OnErrorInfo", this);
         
         raw = new Raw(this);
         
@@ -109,8 +108,8 @@ public class Server implements IRCParser.IChannelSelfJoin, IRCParser.IErrorInfo,
     
     public void close(String reason) {
         // Unregister parser callbacks
-        parser.delChannelSelfJoin(this);
-        parser.delErrorInfo(this);
+        parser.getCallbackManager().delCallback("OnChannelSelfJoin", this);
+        parser.getCallbackManager().delCallback("OnErrorInfo", this);
         // Unregister frame callbacks
         frame.removeInternalFrameListener(this);
         // Disconnect from the server
@@ -170,26 +169,26 @@ public class Server implements IRCParser.IChannelSelfJoin, IRCParser.IErrorInfo,
             Logger.error(errorLevel, errorInfo.getData());
         }
     }
-
+    
     public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
     }
-
+    
     public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
         close(Config.getOption("general","quitmessage"));
     }
-
+    
     public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
     }
-
+    
     public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
     }
-
+    
     public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
     }
-
+    
     public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
     }
-
+    
     public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }
     
