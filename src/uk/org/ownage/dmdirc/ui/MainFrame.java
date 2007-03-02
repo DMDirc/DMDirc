@@ -143,9 +143,9 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         maximised = max;
         
         if (max && getActiveFrame() != null) {
-            setTitle("DMDirc - "+getActiveFrame().getTitle());
+            setTitle("DMDirc 0.1 - "+getActiveFrame().getTitle());
         } else if (!max) {
-            setTitle("DMDirc");
+            setTitle("DMDirc 0.1");
         }
         
         checkWindowState();
@@ -208,7 +208,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         toggleStateMenuItem = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("DMDirc");
+        setTitle("DMDirc 0.1");
         desktopPane.setBackground(new java.awt.Color(238, 238, 238));
 
         fileMenu.setMnemonic('f');
