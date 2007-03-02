@@ -85,6 +85,7 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
         
         MyInfo myInfo = new MyInfo();
         myInfo.sNickname = Config.getOption("general","defaultnick");
+        myInfo.sAltNickname = Config.getOption("general","alternatenick");
                 
         parser = new IRCParser(myInfo, new ServerInfo(server, port, password));
         
