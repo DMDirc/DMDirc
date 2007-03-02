@@ -41,6 +41,9 @@ public class ServerInfo {
 	public int nPort = 6667;
 	/** Is this an ssl-enabled server (Default: false). */
 	public boolean bSSL = false;	
+	/** Do we need to wait for input before sending Nick/User/Pass (Default: false). */
+	public boolean waitForFirst = false;
+	
 	
 	/** Constructor using Default values. */
 	public ServerInfo () { }

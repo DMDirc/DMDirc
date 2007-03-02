@@ -24,7 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser;
 
-
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.*;
 import uk.org.ownage.dmdirc.parser.callbacks.*;
 import java.io.BufferedReader;
@@ -33,7 +32,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.TrustManager;
 import javax.net.SocketFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,6 +94,8 @@ public class IRCParser implements Runnable {
 	
 	/** This is the socket used for reading from/writing to the IRC server. */
 	private Socket socket = null;
+	/** This is the socket used for reading from/writing to the IRC server when using SSL. */
+	private SSLSocket sslSocket = null;
 	/** Used for writing to the server. */
 	private PrintWriter out = null;
 	/** Used for reading from the server. */
@@ -765,26 +770,62 @@ public class IRCParser implements Runnable {
 		nNextKeyCMBool = 1;
 		nNextKeyUser = 1;
 	}
+
 	
 	/** Connect to IRC. */
 	private void connect() throws Exception {
 		try {
 			resetState();
 			callDebugInfo(ndSocket,"Connecting to "+server.sHost+":"+server.nPort);
-
+			
 			if (server.bSSL) {
-				SocketFactory socketFactory = SSLSocketFactory.getDefault();
-				socket = socketFactory.createSocket(server.sHost,server.nPort);
+				callDebugInfo(ndSocket,"Server is SSL.");
+				
+				// Create a trust manager that does not validate certificate chains
+				TrustManager[] trustAllCerts = new TrustManager[]{
+						new X509TrustManager() {
+								public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+										return null;
+								}
+								public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+								}
+								public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+								}
+						}
+				};
+				
+				SSLContext sc = SSLContext.getInstance("SSL");
+				sc.init(null, trustAllCerts, new java.security.SecureRandom());
+				
+				SocketFactory socketFactory = sc.getSocketFactory();
+				sslSocket = (SSLSocket)socketFactory.createSocket(server.sHost,server.nPort);
+				//sslSocket.startHandshake();
+				
+				socket = sslSocket;
 			} else {
 				socket = new Socket(server.sHost,server.nPort);
 			}
+			
 			if (bDebug) { doDebug("\t\t-> 1\n"); }
 			out = new PrintWriter(socket.getOutputStream(), true);
 			nSocketState = stateOpen;
 			if (bDebug) { doDebug("\t\t-> 2\n"); }
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			if (bDebug) { doDebug("\t\t-> 3\n"); }
+			
 		} catch (Exception e) { throw e; }
+	}
+	
+	/**
+	 * Send server connection strings (NICK/USER/PASS)
+	 */
+	private void sendConnectionStrings() {
+		if (!server.sPassword.equals("")) {
+			sendString("PASS "+server.sPassword);
+		}
+		setNickname(me.sNickname);
+		sendString("USER "+me.sUsername.toLowerCase()+" * * :"+me.sRealname);
+		IsFirst = false;	
 	}
 	
 	/**
@@ -795,8 +836,11 @@ public class IRCParser implements Runnable {
 		callDebugInfo(ndInfo,"Begin Thread Execution");
 		if (HasBegan) { return; } else { HasBegan = true; }
 		try { connect(); } catch (Exception e) { callDebugInfo(ndSocket,"Error Connecting, Aborted"); return; }
-		// :HACK: While true loops really really suck.
+		
 		callDebugInfo(ndSocket,"Socket Connected");
+		
+		if (!server.waitForFirst) { sendConnectionStrings(); }
+		
 		String line = "";
 		while(true) {
 			try {
@@ -806,14 +850,7 @@ public class IRCParser implements Runnable {
 					nSocketState = stateClosed;
 					break;
 				} else {
-					if (IsFirst) {
-						if (!server.sPassword.equals("")) {
-							sendString("PASS "+server.sPassword);
-						}
-						setNickname(me.sNickname);
-						sendString("USER "+me.sUsername.toLowerCase()+" * * :"+me.sRealname);
-						IsFirst = false;
-					}
+					if (IsFirst) { sendConnectionStrings(); }
 					processLine(line);
 				}
 			} catch (IOException e) {
