@@ -38,8 +38,6 @@ public interface IQuit extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cClient Client Quitting
 	 * @param sReason Reason for quitting (may be "")
-	 * @see IRCParser#addQuit
-	 * @see IRCParser#delQuit
 	 * @see IRCParser#callQuit
 	 */
 	public void onQuit(IRCParser tParser, ClientInfo cClient, String sReason );

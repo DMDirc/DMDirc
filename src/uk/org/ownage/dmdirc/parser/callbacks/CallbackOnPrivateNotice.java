@@ -52,6 +52,11 @@ public class CallbackOnPrivateNotice extends CallbackObject {
 		return bResult;
 	}		
 	
-	// Stupid lack of Constructor inheritance...
+	/**
+	 * Create a new instance of the Callback Object
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
 	public CallbackOnPrivateNotice (IRCParser parser, CallbackManager manager) { super(parser, manager); }
 }

@@ -39,7 +39,11 @@ public class CallbackManager {
 	/** Reference to the parser object that owns this CallbackManager*/
 	IRCParser myParser = null;
 			
-	/** Constructor to create a CallbackManager */
+	/**
+	 * Constructor to create a CallbackManager
+	 *
+	 * @param parser IRCParser that owns this callback manager.
+	 */
 	public CallbackManager(IRCParser parser) {
 		myParser = parser;
 		// Add callbacks
@@ -79,11 +83,12 @@ public class CallbackManager {
 		addCallbackType(new CallbackOnUserModeChanged(myParser, this));
 	}
 	
-	/** Don't allow cloning to get more copies of the CallbackManager */
+	/** Empty clone method to prevent cloning to get more copies of the CallbackManager */
 	public Object clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException();
 	}
 	
+	/** Hashtable used to store the different types of callback known. */
 	private Hashtable<String,CallbackObject> callbackHash = new Hashtable<String,CallbackObject>();
 	/**
 	 * Add new callback type.
@@ -172,7 +177,7 @@ public class CallbackManager {
 	 *
 	 * @param callbackName Name of callback object.
 	 * @param o instance of ICallbackInterface to add.
-	 * @param specific Parameter to specify that a callback should only fire for specific things
+	 * @param target Parameter to specify that a callback should only fire for specific things
 	 * @throws CallbackNotFound If callback is not found.
 	 */
 	public void addCallback(String callbackName, ICallbackInterface o, String target) throws CallbackNotFound {
@@ -202,7 +207,7 @@ public class CallbackManager {
 	 *
 	 * @param callbackName Name of callback object.
 	 * @param o instance of ICallbackInterface to add.
-	 * @param specific Parameter to specify that a callback should only fire for specific things
+	 * @param target Parameter to specify that a callback should only fire for specific things
 	 * @throws CallbackNotFound If callback is not found.
 	 */
 	public boolean addNonCriticalCallback(String callbackName, ICallbackInterface o, String target) {

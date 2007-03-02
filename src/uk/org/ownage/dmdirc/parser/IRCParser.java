@@ -193,6 +193,43 @@ public class IRCParser implements Runnable {
 	/** Hashtable storing all information gathered from 005. */
 	protected Hashtable<String,String> h005Info = new Hashtable<String,String>();
 	
+	/** This is the default TrustManager for SSL Sockets, it trusts all ssl certs. */
+	private TrustManager[] trustAllCerts = new TrustManager[]{
+			new X509TrustManager() {
+					public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+							return null;
+					}
+					public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+					}
+					public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
+					}
+			}
+	};
+	
+	/** This is the TrustManager used for SSL Sockets. */
+	private TrustManager[] myTrustManager = trustAllCerts;
+	
+	/**
+	 * Get a reference to the default TrustManager for SSL Sockets.
+	 *
+	 * @return a reference to trustAllCerts
+	 */
+	public TrustManager[] getDefaultTrustManager() { return trustAllCerts; }
+	
+	/**
+	 * Get a reference to the current TrustManager for SSL Sockets.
+	 *
+	 * @return a reference to myTrustManager;
+	 */
+	public TrustManager[] getTrustManager() { return myTrustManager; }
+	
+	/**
+	 * Replace the current TrustManager for SSL Sockets with a new one.
+	 *
+	 * @param newTrustManager Replacement TrustManager for SSL Sockets.
+	 */
+	public void setTrustManager(TrustManager[] newTrustManager) { myTrustManager = newTrustManager; }
+
 
 	/**
 	 * Used for generalDebug stuff, when bDebug is false, this is never used.
@@ -452,8 +489,7 @@ public class IRCParser implements Runnable {
 	 * Callback to all objects implementing the IErrorInfo Interface.
 	 *
 	 * @see IErrorInfo
-	 * @param level Debugging Level (errFatal, errWarning etc)
-	 * @param data Error Information
+	 * @param errorInfo ParserError object representing the error.
 	 */
 	protected boolean callErrorInfo(ParserError errorInfo) {
 		CallbackOnErrorInfo cb = (CallbackOnErrorInfo)myCallbackManager.getCallbackType("OnErrorInfo");
@@ -781,21 +817,10 @@ public class IRCParser implements Runnable {
 			if (server.bSSL) {
 				callDebugInfo(ndSocket,"Server is SSL.");
 				
-				// Create a trust manager that does not validate certificate chains
-				TrustManager[] trustAllCerts = new TrustManager[]{
-						new X509TrustManager() {
-								public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-										return null;
-								}
-								public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-								}
-								public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) {
-								}
-						}
-				};
+				if (myTrustManager == null) { myTrustManager = trustAllCerts; }
 				
 				SSLContext sc = SSLContext.getInstance("SSL");
-				sc.init(null, trustAllCerts, new java.security.SecureRandom());
+				sc.init(null, myTrustManager, new java.security.SecureRandom());
 				
 				SocketFactory socketFactory = sc.getSocketFactory();
 				sslSocket = (SSLSocket)socketFactory.createSocket(server.sHost,server.nPort);

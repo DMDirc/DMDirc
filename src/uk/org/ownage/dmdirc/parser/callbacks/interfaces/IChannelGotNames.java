@@ -35,8 +35,6 @@ public interface IChannelGotNames extends ICallbackInterface {
 	 *
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cChannel Channel which the names reply is for
-	 * @see IRCParser#addChannelGotNames
-	 * @see IRCParser#delChannelGotNames
 	 * @see IRCParser#callChannelGotNames
 	 */
 	public void onChannelGotNames(IRCParser tParser, ChannelInfo cChannel);

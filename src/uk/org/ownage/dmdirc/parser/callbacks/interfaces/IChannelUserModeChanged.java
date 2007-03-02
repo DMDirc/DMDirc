@@ -41,8 +41,6 @@ public interface IChannelUserModeChanged extends ICallbackInterface {
 	 * @param cSetByClient Client chaning the modes (null if server)
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @param sMode String representing mode change (ie +o)
-	 * @see IRCParser#addChannelUserModeChanged
-	 * @see IRCParser#delChannelUserModeChanged
 	 * @see IRCParser#callChannelUserModeChanged
 	 */
 	public void onChannelUserModeChanged(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode);

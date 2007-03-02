@@ -42,8 +42,6 @@ public interface IChannelNotice extends ICallbackInterface {
 	 * @param cChannelClient ChannelClient who sent the notice (may be null if server)
 	 * @param sMessage notice contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#addChannelNotice
-	 * @see IRCParser#delChannelNotice
 	 * @see IRCParser#callChannelNotice
 	 */
 	public void onChannelNotice(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );

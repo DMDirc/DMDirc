@@ -35,8 +35,6 @@ public interface IDataIn extends ICallbackInterface {
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param sData Incomming Line.
-	 * @see IRCParser#addDataIn
-	 * @see IRCParser#delDataIn
 	 * @see IRCParser#callDataIn
 	 */
 	public void onDataIn(IRCParser tParser, String sData);

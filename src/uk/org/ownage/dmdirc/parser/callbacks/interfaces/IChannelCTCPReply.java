@@ -43,8 +43,6 @@ public interface IChannelCTCPReply extends ICallbackInterface {
 	 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 	 * @param sMessage Reply Contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#addChannelCTCPReply
-	 * @see IRCParser#delChannelCTCPReply
 	 * @see IRCParser#callChannelCTCPReply
 	 */
 	public void onChannelCTCPReply(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost );

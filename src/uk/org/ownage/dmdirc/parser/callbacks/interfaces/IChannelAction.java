@@ -42,8 +42,6 @@ public interface IChannelAction extends ICallbackInterface {
 	 * @param cChannelClient ChannelClient who sent the action (may be null if server)
 	 * @param sMessage action contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#addChannelAction
-	 * @see IRCParser#delChannelAction
 	 * @see IRCParser#callChannelAction
 	 */
 	public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );

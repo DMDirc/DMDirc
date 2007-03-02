@@ -39,8 +39,6 @@ public interface IChannelPart extends ICallbackInterface {
 	 * @param cChannel Channel that the user parted
 	 * @param cChannelClient Client that parted
 	 * @param sReason Reason given for parting (May be "")
-	 * @see IRCParser#addChannelPart
-	 * @see IRCParser#delChannelPart
 	 * @see IRCParser#callChannelPart
 	 */
 	public void onChannelPart(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );

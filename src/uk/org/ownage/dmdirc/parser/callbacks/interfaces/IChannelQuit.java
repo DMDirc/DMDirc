@@ -39,8 +39,6 @@ public interface IChannelQuit extends ICallbackInterface {
 	 * @param cChannel Channel that user was on
 	 * @param cChannelClient User thats quitting
 	 * @param sReason Quit reason
-	 * @see IRCParser#addChannelQuit
-	 * @see IRCParser#delChannelQuit
 	 * @see IRCParser#callChannelQuit
 	 */
 	public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );

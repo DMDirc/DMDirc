@@ -42,8 +42,6 @@ public interface IPrivateCTCPReply extends ICallbackInterface {
 	 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 	 * @param sMessage Reply Contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#addPrivateCTCPReply
-	 * @see IRCParser#delPrivateCTCPReply
 	 * @see IRCParser#callPrivateCTCPReply
 	 */
 	public void onPrivateCTCPReply(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sHost );

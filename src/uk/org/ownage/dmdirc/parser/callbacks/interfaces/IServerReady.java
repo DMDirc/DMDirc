@@ -34,8 +34,6 @@ public interface IServerReady extends ICallbackInterface {
 	 * Called after 001.
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
-	 * @see IRCParser#addServerReady
-	 * @see IRCParser#delServerReady
 	 * @see IRCParser#callServerReady
 	 */
 	public void onServerReady(IRCParser tParser);

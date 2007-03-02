@@ -42,8 +42,6 @@ public interface IUnknownAction extends ICallbackInterface {
 	 * @param sMessage Action contents
 	 * @param sTarget Actual target of action
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#addUnknownAction
-	 * @see IRCParser#delUnknownAction
 	 * @see IRCParser#callUnknownAction
 	 */
 	public void onUnknownAction(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );

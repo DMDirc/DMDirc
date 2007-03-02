@@ -41,8 +41,6 @@ public interface IChannelKick extends ICallbackInterface {
 	 * @param cKickedByClient ChannelClient that did the kicking (may be null if server)
 	 * @param sReason Reason for kick (may be "")
 	 * @param sKickedByHost Hostname of Kicker (or servername)
-	 * @see IRCParser#addChannelKick
-	 * @see IRCParser#delChannelKick
 	 * @see IRCParser#callChannelKick
 	 */
 	public void onChannelKick(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost);

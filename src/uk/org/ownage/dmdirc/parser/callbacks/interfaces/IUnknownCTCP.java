@@ -43,8 +43,6 @@ public interface IUnknownCTCP extends ICallbackInterface {
 	 * @param sMessage Additional contents
 	 * @param sTarget Actual Target of CTCP
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#addUnknownCTCP
-	 * @see IRCParser#delUnknownCTCP
 	 * @see IRCParser#callUnknownCTCP
 	 */
 	public void onUnknownCTCP(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost );

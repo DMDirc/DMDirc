@@ -41,8 +41,6 @@ public interface IPrivateNotice extends ICallbackInterface {
 	 * @param cClient Client who sent the notice (may be null if no common channels or server)
 	 * @param sMessage Notice contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#addPrivateNotice
-	 * @see IRCParser#delPrivateNotice
 	 * @see IRCParser#callPrivateNotice
 	 */
 	public void onPrivateNotice(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );

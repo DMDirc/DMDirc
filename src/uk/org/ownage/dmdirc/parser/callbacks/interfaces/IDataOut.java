@@ -36,8 +36,6 @@ public interface IDataOut extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param sData Outgoing Data
 	 * @param bFromParser True if parser sent the data, false if sent using .sendLine
-	 * @see IRCParser#addDataOut
-	 * @see IRCParser#delDataOut
 	 * @see IRCParser#callDataOut
 	 */
 	public void onDataOut(IRCParser tParser, String sData, boolean bFromParser);

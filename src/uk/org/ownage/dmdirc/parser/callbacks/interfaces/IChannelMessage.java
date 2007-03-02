@@ -42,8 +42,6 @@ public interface IChannelMessage extends ICallbackInterface {
 	 * @param cChannelClient ChannelClient who sent the message (may be null if server)
 	 * @param sMessage Message contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#addChannelMessage
-	 * @see IRCParser#delChannelMessage
 	 * @see IRCParser#callChannelMessage
 	 */
 	public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );

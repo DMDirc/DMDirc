@@ -40,8 +40,6 @@ public interface IUserModeChanged extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cClient Client that had the mode changed (almost always us)
 	 * @param sSetBy Host that set the mode (us or servername)
-	 * @see IRCParser#addUserModeChanged
-	 * @see IRCParser#delUserModeChanged
 	 * @see IRCParser#callUserModeChanged
 	 */
 	public void onUserModeChanged(IRCParser tParser, ClientInfo cClient, String sSetBy);

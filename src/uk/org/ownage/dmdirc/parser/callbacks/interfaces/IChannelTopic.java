@@ -38,8 +38,6 @@ public interface IChannelTopic extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cChannel Channel that topic was set on
 	 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
-	 * @see IRCParser#addChannelTopic
-	 * @see IRCParser#delChannelTopic
 	 * @see IRCParser#callChannelTopic
 	 */
 	public void onChannelTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsJoinTopic);

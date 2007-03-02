@@ -50,6 +50,11 @@ public class CallbackOnDataIn extends CallbackObject {
 		return bResult;
 	}
 	
-	// Stupid lack of Constructor inheritance...
+	/**
+	 * Create a new instance of the Callback Object
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
 	public CallbackOnDataIn (IRCParser parser, CallbackManager manager) { super(parser, manager); }
 }

@@ -41,8 +41,6 @@ public interface IPrivateMessage extends ICallbackInterface {
 	 * @param cClient Client who sent the message (may be null if no common channels or server)
 	 * @param sMessage Message contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#addPrivateMessage
-	 * @see IRCParser#delPrivateMessage
 	 * @see IRCParser#callPrivateMessage
 	 */
 	public void onPrivateMessage(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );

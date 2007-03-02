@@ -38,8 +38,6 @@ public interface INickChanged extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cClient Client changing nickname
 	 * @param sOldNick Nickname before change
-	 * @see IRCParser#addNickChanged
-	 * @see IRCParser#delNickChanged
 	 * @see IRCParser#callNickChanged
 	 */
 	public void onNickChanged(IRCParser tParser, ClientInfo cClient, String sOldNick);

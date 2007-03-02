@@ -37,44 +37,72 @@ import java.util.ArrayList;
  * @version           $Id: IRCParser.java 178 2007-02-28 20:36:16Z ShaneMcC $
  */
 public abstract class CallbackObject {
-	/**
-	 * Arraylist for storing callback information related to the callback.
-	 */
+	/** Arraylist for storing callback information related to the callback. */
 	protected ArrayList<ICallbackInterface> callbackInfo = new ArrayList<ICallbackInterface>();
-	
-	/** Add a callback pointer to the appropriate ArrayList. */
-	protected void addCallback(ICallbackInterface eMethod) {
+
+	/** Reference to the IRCParser that owns this callback. */
+	protected IRCParser myParser = null;
+	/** Reference to the CallbackManager in charge of this callback. */
+	protected CallbackManager myManager = null;
+
+	/**
+	 * Add a callback pointer to the appropriate ArrayList.
+	 *
+	 * @param eMethod OBject to callback to.
+	 */
+	protected final void addCallback(ICallbackInterface eMethod) {
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			if (eMethod.equals(callbackInfo.get(i))) { return; }
 		}
 		callbackInfo.add((ICallbackInterface)eMethod);
 	}
-	/** Delete a callback pointer from the appropriate ArrayList. */
-	protected void delCallback(ICallbackInterface eMethod) {
+	/**
+	 * Delete a callback pointer from the appropriate ArrayList.
+	 *
+	 * @param eMethod Object that was being called back to.
+	 */
+	protected final void delCallback(ICallbackInterface eMethod) {
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			if (eMethod.equals(callbackInfo.get(i))) { callbackInfo.remove(i); break; }
 		}
 	}
 	
-	protected boolean callErrorInfo(ParserError errorInfo) {
-		CallbackOnErrorInfo cb = (CallbackOnErrorInfo)myManager.getCallbackType("ErrorInfo");
+	/**
+	 * Call the OnErrorInfo callback.
+	 *
+	 * @param errorInfo ParserError object to pass as error.
+	 */
+	protected final boolean callErrorInfo(ParserError errorInfo) {
+		CallbackOnErrorInfo cb = (CallbackOnErrorInfo)myManager.getCallbackType("OnErrorInfo");
 		if (cb != null) { return cb.call(errorInfo); }
 		return false;
 	}
 	
+	/**
+	 * Create a new instance of the Callback Object
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
 	protected CallbackObject (IRCParser parser, CallbackManager manager) {
 		this.myParser = parser;
 		this.myManager = manager;
 	}
 	
-	IRCParser myParser = null;
-	CallbackManager myManager = null;
-	
+	/**
+	 * Add a new callback.
+	 *
+	 * @param eMethod Object to callback to.
+	 */
 	public void add(ICallbackInterface eMethod) { addCallback(eMethod); }
+	/**
+	 * Remove a callback.
+	 *
+	 * @param eMethod Object to remove callback to.
+	 */
 	public void del(ICallbackInterface eMethod) { delCallback(eMethod); }
 	
-	/** Get the name for this callback - must be overridden */
-//	public abstract String getName();
+	/** Get the name for this callback */
 	public String getName() {
 		Package thisPackage = this.getClass().getPackage();
 		int packageLength = 0;
@@ -85,7 +113,7 @@ public abstract class CallbackObject {
 	}
 	
 	/** Get the name for this callback in lowercase */
-	public String getLowerName() {
+	public final String getLowerName() {
 		return this.getName().toLowerCase();
 	}
 }

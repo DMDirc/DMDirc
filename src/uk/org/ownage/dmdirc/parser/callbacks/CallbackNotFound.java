@@ -31,5 +31,10 @@ package uk.org.ownage.dmdirc.parser.callbacks;
  * @version           $Id: IRCParser.java 178 2007-02-28 20:36:16Z ShaneMcC $
  */
 public class CallbackNotFound extends Exception {
+	/**
+	 * Create a new CallbackNotFound Exception.
+	 *
+	 * @param message Reason for exception
+	 */
 	public CallbackNotFound(String message) { super(message); }
 }

@@ -33,8 +33,7 @@ public class CallbackOnErrorInfo extends CallbackObject {
 	 * Callback to all objects implementing the IErrorInfo Interface.
 	 *
 	 * @see IErrorInfo
-	 * @param level Debugging Level (errFatal, errWarning etc)
-	 * @param data Error Information
+	 * @param errorInfo ParserError object representing the error.
 	 */
 	public boolean call(ParserError errorInfo) {
 		if (IRCParser.bDebug) { myParser.doDebug("[ERROR] {%d} %s\n", errorInfo.getLevel(), errorInfo.getData()); }
@@ -52,6 +51,11 @@ public class CallbackOnErrorInfo extends CallbackObject {
 		return bResult;
 	}	
 	
-	// Stupid lack of Constructor inheritance...
+	/**
+	 * Create a new instance of the Callback Object
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
 	public CallbackOnErrorInfo (IRCParser parser, CallbackManager manager) { super(parser, manager); }
 }

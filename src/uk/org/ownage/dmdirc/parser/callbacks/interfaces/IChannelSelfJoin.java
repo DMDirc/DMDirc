@@ -37,8 +37,6 @@ public interface IChannelSelfJoin extends ICallbackInterface {
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cChannel Channel Object
-	 * @see IRCParser#addChannelSelfJoin
-	 * @see IRCParser#delChannelSelfJoin
 	 * @see IRCParser#callChannelSelfJoin
 	 */
 	public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel);

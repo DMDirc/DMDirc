@@ -34,8 +34,6 @@ public interface INickInUse extends ICallbackInterface {
 	 * Called when requested nickname is in use.
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
-	 * @see IRCParser#addNickInUse
-	 * @see IRCParser#delNickInUse
 	 * @see IRCParser#callNickInUse
 	 */
 	public void onNickInUse(IRCParser tParser);

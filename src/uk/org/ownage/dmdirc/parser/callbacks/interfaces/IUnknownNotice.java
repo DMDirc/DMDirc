@@ -42,8 +42,6 @@ public interface IUnknownNotice extends ICallbackInterface {
 	 * @param sMessage Notice contents
 	 * @param sTarget Actual target of notice
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#addUnknownNotice
-	 * @see IRCParser#delUnknownNotice
 	 * @see IRCParser#callUnknownNotice
 	 */
 	public void onUnknownNotice(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );

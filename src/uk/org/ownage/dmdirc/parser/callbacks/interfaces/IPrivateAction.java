@@ -41,8 +41,6 @@ public interface IPrivateAction extends ICallbackInterface {
  	 * @param cClient Client who sent the action (may be null if no common channels or server)
 	 * @param sMessage action contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#addPrivateAction
-	 * @see IRCParser#delPrivateAction
 	 * @see IRCParser#callPrivateAction
 	 */
 	public void onPrivateAction(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );

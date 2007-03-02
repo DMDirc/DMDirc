@@ -42,8 +42,6 @@ public interface IUnknownMessage extends ICallbackInterface {
 	 * @param sMessage Message contents
 	 * @param sTarget Actual target of message
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#addUnknownMessage
-	 * @see IRCParser#delUnknownMessage
 	 * @see IRCParser#callUnknownMessage
 	 */
 	public void onUnknownMessage(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );

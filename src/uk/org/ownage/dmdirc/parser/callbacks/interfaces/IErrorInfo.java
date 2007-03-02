@@ -34,10 +34,7 @@ public interface IErrorInfo extends ICallbackInterface {
 	 * Called to give Error Information.
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
-	 * @param nLevel Debugging Level (errFatal, errWarning etc)
-	 * @param sData Error Information
-	 * @see IRCParser#addErrorInfo
-	 * @see IRCParser#delErrorInfo
+	 * @param errorInfo ParserError object representing the error.
 	 * @see IRCParser#callErrorInfo
 	 */
 	public void onErrorInfo(IRCParser tParser, ParserError errorInfo);

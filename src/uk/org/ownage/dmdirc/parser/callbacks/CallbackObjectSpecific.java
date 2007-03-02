@@ -37,12 +37,15 @@ import java.util.ArrayList;
  * @version           $Id: IRCParser.java 178 2007-02-28 20:36:16Z ShaneMcC $
  */
 public abstract class CallbackObjectSpecific extends CallbackObject {
-	/**
-	 * Hashtable for storing specific information for callback.
-	 */	
+	/** Hashtable for storing specific information for callback. */	
 	protected Hashtable<ICallbackInterface,String> specificData = new Hashtable<ICallbackInterface,String>();
 	
-	/** Used to check if a channel matches the specificData */
+	/**
+	 * Used to check if a channel matches the specificData
+	 * 
+	 * @param eMethod Object that is being called back to
+	 * @param cChannel ChannelInfo object for the channel to test
+	 */
 	protected boolean isValidChan(ICallbackInterface eMethod, ChannelInfo cChannel) {
 		if (specificData.containsKey(eMethod)) { 
 			if (!cChannel.getName().equalsIgnoreCase(specificData.get(eMethod))) { return false; }
@@ -52,23 +55,44 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	
 	// We override the default add method to make sure that any add with no
 	// specifics will have the specific data removed.
+	/**
+	 * Add a new callback.
+	 *
+	 * @param eMethod Object to callback to.
+	 */
 	public void add(ICallbackInterface eMethod) {
 		addCallback(eMethod);
 		if (specificData.containsKey(eMethod)) { specificData.remove(eMethod); }
 	}
 	
-	public void add(ICallbackInterface eMethod, String channelName) {
+	/**
+	 * Add a new callback with a specific target.
+	 *
+	 * @param eMethod Object to callback to.
+	 * @param specificTarget Target that must match for callback to be called.
+	 */
+	public void add(ICallbackInterface eMethod, String specificTarget) {
 		add(eMethod);
-		if (!channelName.equals("")) {
-			specificData.put(eMethod,channelName);
+		if (!specificTarget.equals("")) {
+			specificData.put(eMethod,specificTarget);
 		}
 	}
 	
+	/**
+	 * Remove a callback.
+	 *
+	 * @param eMethod Object to remove callback to.
+	 */
 	public void del(ICallbackInterface eMethod) {
 		delCallback(eMethod);
 		if (specificData.containsKey(eMethod)) { specificData.remove(eMethod); }
 	}
 	
-	// Stupid lack of Constructor inheritance...
+	/**
+	 * Create a new instance of the Callback Object
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
 	public CallbackObjectSpecific (IRCParser parser, CallbackManager manager) { super(parser, manager); }
 }

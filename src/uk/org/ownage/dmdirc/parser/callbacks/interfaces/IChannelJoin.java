@@ -38,8 +38,6 @@ public interface IChannelJoin extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cChannel Channel Object
 	 * @param cChannelClient ChannelClient object for new person
-	 * @see IRCParser#addChannelJoin
-	 * @see IRCParser#delChannelJoin
 	 * @see IRCParser#callChannelJoin
 	 */
 	public void onChannelJoin(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient );
