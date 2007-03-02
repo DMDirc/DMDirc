@@ -65,6 +65,8 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
     
     private Raw raw;
     
+    private boolean closing = false;
+    
     /**
      * Creates a new instance of Server
      * @param server The hostname/ip of the server to connect to
@@ -86,7 +88,7 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
         MyInfo myInfo = new MyInfo();
         myInfo.sNickname = Config.getOption("general","defaultnick");
         myInfo.sAltNickname = Config.getOption("general","alternatenick");
-                
+        
         parser = new IRCParser(myInfo, new ServerInfo(server, port, password));
         
         try {
@@ -145,13 +147,17 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
     }
     
     private void closeChannels() {
+        closing = true;
         for (Channel channel : channels.values()) {
             channel.close();
         }
+        closing = false;
     }
     
     public void delChannel(String chan) {
-        channels.remove(chan);
+        if (!closing) {
+            channels.remove(chan);
+        }
     }
     
     private void addChannel(ChannelInfo chan) {
