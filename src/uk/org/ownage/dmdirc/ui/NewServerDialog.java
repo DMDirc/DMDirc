@@ -69,9 +69,11 @@ public class NewServerDialog extends javax.swing.JDialog {
     public static void showNewServerDialog() {
         if (me == null) {
             me = new NewServerDialog();
+            me.setLocationRelativeTo(MainFrame.getMainFrame());
         } else {
             me.setVisible(true);
             me.requestFocus();
+            me.setLocationRelativeTo(MainFrame.getMainFrame());
         }
     }
     
