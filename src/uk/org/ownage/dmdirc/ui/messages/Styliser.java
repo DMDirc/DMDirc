@@ -22,7 +22,10 @@
 
 package uk.org.ownage.dmdirc.ui.messages;
 
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -39,9 +42,60 @@ public class Styliser {
     
     static public void addStyledString(StyledDocument doc, String add) {
         try {
-            doc.insertString(doc.getLength(), add, null);
+            int offset = doc.getLength();
+            int position = 0;
+            boolean cont = true;
+            SimpleAttributeSet attribs = new SimpleAttributeSet();
+            
+            while (position < add.length()) {
+                String next = readUntilControl(add.substring(position));
+                
+                System.out.printf("%s", next);
+                
+                doc.insertString(offset, next, attribs);
+                
+                position += next.length();
+                offset += next.length();
+                
+                if (position < add.length()) {
+                    position += readControlChars(add.substring(position), attribs);
+                }
+            }
+            
         } catch (BadLocationException ex) {
             Logger.error(ErrorLevel.WARNING, ex);
+        }
+    }
+    
+    static private String readUntilControl(String input) {
+        int pos = input.length();
+        
+        // Bold
+        pos = checkChar(pos, input.indexOf(2));
+        
+        return input.substring(0, pos);
+    }
+    
+    private static int readControlChars(String string, SimpleAttributeSet attribs) {
+        // Bold
+        if (string.charAt(0) == 2) {
+            toggleAttribute(attribs, StyleConstants.FontConstants.Bold);
+            return 1;
+        }
+        
+        return 0;
+    }
+
+    private static int checkChar(int pos, int i) {
+        if (i < pos && i != -1) { return i; }
+        return pos;
+    }
+
+    private static void toggleAttribute(SimpleAttributeSet attribs, Object attrib) {
+        if (attribs.containsAttribute(attrib, Boolean.TRUE)) {
+            attribs.removeAttribute(attrib);
+        } else {
+            attribs.addAttribute(attrib, Boolean.TRUE);
         }
     }
     
