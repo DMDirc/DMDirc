@@ -50,8 +50,6 @@ public class Styliser {
             while (position < add.length()) {
                 String next = readUntilControl(add.substring(position));
                 
-                System.out.printf("%s", next);
-                
                 doc.insertString(offset, next, attribs);
                 
                 position += next.length();
@@ -72,6 +70,10 @@ public class Styliser {
         
         // Bold
         pos = checkChar(pos, input.indexOf(2));
+        // Underline
+        pos = checkChar(pos, input.indexOf(31));
+        // Stop all formatting
+        pos = checkChar(pos, input.indexOf(15));
         
         return input.substring(0, pos);
     }
@@ -83,6 +85,17 @@ public class Styliser {
             return 1;
         }
         
+        // Underline
+        if (string.charAt(0) == 31) {
+            toggleAttribute(attribs, StyleConstants.FontConstants.Underline);
+            return 1;
+        }        
+        
+        // Stop formatting
+        if (string.charAt(0) == 15) {
+            resetAttributes(attribs);
+            return 1;
+        }        
         return 0;
     }
 
@@ -97,6 +110,15 @@ public class Styliser {
         } else {
             attribs.addAttribute(attrib, Boolean.TRUE);
         }
+    }
+
+    private static void resetAttributes(SimpleAttributeSet attribs) {
+        if (attribs.containsAttribute(StyleConstants.FontConstants.Bold, Boolean.TRUE)) {
+            attribs.removeAttribute(StyleConstants.FontConstants.Bold);
+        }
+        if (attribs.containsAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE)) {
+            attribs.removeAttribute(StyleConstants.FontConstants.Underline);
+        }        
     }
     
 }
