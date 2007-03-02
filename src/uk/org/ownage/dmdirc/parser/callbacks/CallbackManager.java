@@ -33,7 +33,7 @@ import java.util.Enumeration;
  * Manages adding/removing/calling callbacks.
  *
  * @author            Shane Mc Cormack
- * @version           $Id: IRCParser.java 178 2007-02-28 20:36:16Z ShaneMcC $
+ * @version           $Id$
  */
 public class CallbackManager {
 	/** Reference to the parser object that owns this CallbackManager*/

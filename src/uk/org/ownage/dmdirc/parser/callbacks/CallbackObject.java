@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id: IRCParser.java 178 2007-02-28 20:36:16Z ShaneMcC $
+ * SVN: $Id$
  */
 
 package uk.org.ownage.dmdirc.parser.callbacks;
@@ -34,7 +34,7 @@ import java.util.ArrayList;
  * Superclass for all callback types.
  *
  * @author            Shane Mc Cormack
- * @version           $Id: IRCParser.java 178 2007-02-28 20:36:16Z ShaneMcC $
+ * @version           $Id$
  */
 public abstract class CallbackObject {
 	/** Arraylist for storing callback information related to the callback. */
