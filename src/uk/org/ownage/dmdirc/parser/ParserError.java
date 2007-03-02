@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id: IRCParser.java 178 2007-02-28 20:36:16Z ShaneMcC $
+ * SVN: $Id$
  */
 
 package uk.org.ownage.dmdirc.parser;
@@ -28,7 +28,7 @@ package uk.org.ownage.dmdirc.parser;
  * IRC Parser Error.
  *
  * @author            Shane Mc Cormack
- * @version           $Id: IRCParser.java 178 2007-02-28 20:36:16Z ShaneMcC $
+ * @version           $Id$
  */
 public class ParserError {
 	/** Error is potentially Fatal, Desync 99% Guarenteed! */
@@ -139,7 +139,7 @@ public class ParserError {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id: IRCParser.java 178 2007-02-28 20:36:16Z ShaneMcC $"; }	
+	public static String getSvnInfo () { return "$Id$"; }	
 }
 
 // eof
