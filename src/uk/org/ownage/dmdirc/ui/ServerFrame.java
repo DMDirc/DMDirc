@@ -24,8 +24,6 @@ package uk.org.ownage.dmdirc.ui;
 
 import java.awt.Dimension;
 import javax.swing.JScrollBar;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.StyledDocument;
 import uk.org.ownage.dmdirc.Server;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,9 +34,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
-import uk.org.ownage.dmdirc.logger.DebugLevel;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
 /**
  * The ServerFrame is the MDI window that shows server messages to the user
@@ -136,17 +134,12 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      * @param line text to add
      */
     public void addLine(String line) {
-        StyledDocument doc = jTextPane1.getStyledDocument();
-        try {
-            doc.insertString(doc.getLength(), line+"\n", null);
-        } catch (BadLocationException ex) {
-            ex.printStackTrace();
-        }
+        Styliser.addStyledString(jTextPane1.getStyledDocument(), line+"\n");
         
         autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
         != scrollBar.getMaximum());
         if(autoScroll) {
-            jTextPane1.setCaretPosition(doc.getLength());
+            jTextPane1.setCaretPosition(jTextPane1.getStyledDocument().getLength());
         }
     }
     

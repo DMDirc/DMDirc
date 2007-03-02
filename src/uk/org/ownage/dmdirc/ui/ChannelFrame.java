@@ -25,7 +25,6 @@ package uk.org.ownage.dmdirc.ui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.ImageIcon;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -33,14 +32,13 @@ import javax.swing.JScrollBar;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.StyledDocument;
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
 /**
  *
@@ -133,19 +131,14 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * @param line text to add
      */
     public void addLine(String line) {
-        StyledDocument doc = jTextPane1.getStyledDocument();
-        try {
-            doc.insertString(doc.getLength(), line+"\n", null);
-        } catch (BadLocationException ex) {
-            ex.printStackTrace();
-        }
+        Styliser.addStyledString(jTextPane1.getStyledDocument(), line+"\n");
         
         autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
         != scrollBar.getMaximum());
         if(autoScroll) {
-            jTextPane1.setCaretPosition(doc.getLength());
+            jTextPane1.setCaretPosition(jTextPane1.getStyledDocument().getLength());
         }
-    }
+    }    
     
     public void updateNames(ArrayList<ChannelClientInfo> newNames) {
         nicklistModel.replace(newNames);
