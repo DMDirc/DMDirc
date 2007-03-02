@@ -53,6 +53,8 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     
     private int xOffset = 0;
     private int yOffset = 0;
+
+    private ImageIcon imageIcon;
     
     /**
      * Returns the singleton instance of MainFrame
@@ -73,7 +75,8 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         ClassLoader cldr = this.getClass().getClassLoader();
         
         java.net.URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/icon.png");
-        setIconImage(new ImageIcon(imageURL).getImage());
+        imageIcon = new ImageIcon(imageURL);
+        setIconImage(imageIcon.getImage());
         
         setVisible(true);
         
@@ -125,6 +128,10 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     
     public void delChild(JInternalFrame frame) {
         desktopPane.remove(frame);
+    }
+    
+    public ImageIcon getIcon() {
+        return imageIcon;
     }
     
     /**

@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.ui;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ImageIcon;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -72,6 +73,8 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
     /** Creates new form ChannelFrame */
     public ChannelFrame(Channel parent) {
         this.parent = parent;
+        
+        setFrameIcon(MainFrame.getMainFrame().getIcon());
         
         nicklistModel = new NicklistListModel();
         initComponents();

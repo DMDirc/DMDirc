@@ -75,6 +75,9 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      */
     public ServerFrame(Server parent) {
         initComponents();
+        
+        setFrameIcon(MainFrame.getMainFrame().getIcon());
+        
         setMaximizable(true);
         setClosable(true);
         setVisible(true);
