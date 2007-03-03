@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc;
 
 import java.util.Hashtable;
 import javax.swing.event.InternalFrameEvent;
+import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.MyInfo;
@@ -77,7 +78,7 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
         
         ServerManager.getServerManager().registerServer(this);
         
-        frame = new ServerFrame(this);
+        frame = new ServerFrame(this, new ServerCommandParser(this));
         frame.setTitle(server+":"+port);
         frame.addInternalFrameListener(this);
         

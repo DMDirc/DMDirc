@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc;
 
+import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
 import uk.org.ownage.dmdirc.parser.IRCParser;
@@ -54,7 +55,7 @@ public class Raw implements IDataIn, IDataOut {
     public Raw(Server server) {
         this.server = server;
         
-        frame = new ServerFrame(server);
+        frame = new ServerFrame(server, new ServerCommandParser(server));
         frame.setTitle("(Raw log)");
         
         MainFrame.getMainFrame().addChild(frame);

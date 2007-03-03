@@ -32,8 +32,8 @@ import java.beans.PropertyChangeListener;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
@@ -65,13 +65,13 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      */
     private JScrollBar scrollBar;
     
-    private ServerCommandParser commandParser;
+    private CommandParser commandParser;
     
     /**
      * Creates new form ServerFrame
      * @param parent The server instance that owns this frame
      */
-    public ServerFrame(Server parent) {
+    public ServerFrame(Server parent, CommandParser commandParser) {
         initComponents();
         
         setFrameIcon(MainFrame.getMainFrame().getIcon());
@@ -84,7 +84,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
         this.parent = parent;
         scrollBar = jScrollPane1.getVerticalScrollBar();
         
-        commandParser = new ServerCommandParser(parent);
+        this.commandParser = commandParser;
         
         jTextField1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
