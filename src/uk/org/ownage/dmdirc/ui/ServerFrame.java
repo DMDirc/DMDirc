@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.ui;
 
 import java.awt.Dimension;
+import java.util.Date;
 import javax.swing.JScrollBar;
 import uk.org.ownage.dmdirc.Server;
 import java.awt.event.ActionEvent;
