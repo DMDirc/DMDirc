@@ -39,6 +39,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import uk.org.ownage.dmdirc.ui.input.InputHandler;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
@@ -53,7 +54,12 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
+
+    /**
+     * The InputHandler for our input field
+     */
+    private InputHandler inputHandler;    
     
     private Channel parent;
     private NicklistListModel nicklistModel;
@@ -88,6 +94,8 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         setMaximizable(true);
         setClosable(true);
         setResizable(true);
+        
+        inputHandler = new InputHandler(jTextField1);        
         
         commandParser = new ChannelCommandParser(parent.getServer(), parent);
         

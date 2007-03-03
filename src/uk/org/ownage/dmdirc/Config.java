@@ -94,6 +94,7 @@ public class Config {
 	defaults.setProperty("ui.maximisewindows","false");
         defaults.setProperty("ui.sortByMode", "true");
         defaults.setProperty("ui.sortByCase", "false");
+        defaults.setProperty("ui.inputbuffersize", "50");
         
         defaults.setProperty("logging.dateFormat","EEE, d MMM yyyy HH:mm:ss Z");
         defaults.setProperty("logging.programLogging","true");

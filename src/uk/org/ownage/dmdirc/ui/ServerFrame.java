@@ -37,6 +37,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.ui.input.InputHandler;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
@@ -51,7 +52,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 2;    
     
     /**
      * The border used when the frame is not maximised
@@ -69,8 +70,14 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      * holds the scrollbar for the frame
      */
     private JScrollBar scrollBar;
-    
+    /**
+     * The command parser that this frame has been assigned
+     */
     private CommandParser commandParser;
+    /**
+     * The InputHandler for our input field
+     */
+    private InputHandler inputHandler;
     
     /**
      * Creates a new ServerFrame
@@ -78,6 +85,8 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      */
     public ServerFrame(CommandParser commandParser) {
         initComponents();
+        
+        inputHandler = new InputHandler(jTextField1);
         
         setFrameIcon(MainFrame.getMainFrame().getIcon());
         
