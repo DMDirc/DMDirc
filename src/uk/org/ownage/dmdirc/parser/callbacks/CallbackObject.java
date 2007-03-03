@@ -54,7 +54,7 @@ public abstract class CallbackObject {
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			if (eMethod.equals(callbackInfo.get(i))) { return; }
 		}
-		callbackInfo.add((ICallbackInterface)eMethod);
+		callbackInfo.add(eMethod);
 	}
 	/**
 	 * Delete a callback pointer from the appropriate ArrayList.

@@ -55,7 +55,7 @@ public class PartDefault extends ChannelCommand {
      * @param args The user supplied arguments
      */
     public void execute(CommandWindow origin, Server server, Channel channel, String... args) {
-        ChannelCommand com = (ChannelCommand) CommandManager.getChannelCommand("part");
+        ChannelCommand com = CommandManager.getChannelCommand("part");
         com.execute(origin, server, channel, Config.getOption("general","partmessage"));
     }
     

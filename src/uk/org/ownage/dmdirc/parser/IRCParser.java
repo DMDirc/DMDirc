@@ -1026,6 +1026,7 @@ public class IRCParser implements Runnable {
 							break;
 						case 324: // Modes
 							processMode(sParam,token);
+                                                        break;
 						case 329: // Channel Time
 						case 368: // End of ban list
 							break;

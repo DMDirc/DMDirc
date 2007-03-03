@@ -95,7 +95,7 @@ public class ChannelClientInfo {
 				// There may be a better alternative to this, but this works well. (Gets the prefix modes in order)
 				for (Enumeration e = myParser.hPrefixModes.keys(); e.hasMoreElements();) {
 					cTemp = (Character)e.nextElement();
-					nTemp = (Integer)myParser.hPrefixModes.get(cTemp);
+					nTemp = myParser.hPrefixModes.get(cTemp);
 					if (nTemp == i) {
 						if (bPrefix) { cTemp = myParser.hPrefixMap.get(cTemp); }
 						sModes = sModes+cTemp;

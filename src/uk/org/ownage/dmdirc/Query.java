@@ -158,13 +158,16 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     }
     
     /**
-     * 
-     * @return 
+     * Returns the Server assocaited with this query
+     * @return asscoaited Server
      */
     public Server getServer() {
         return server;
     }
     
+    /**
+     * Closes the query and associated frame
+     */
     public void close() {
         server.getParser().getCallbackManager().delCallback("onPrivateAction", this);
         server.getParser().getCallbackManager().delCallback("onPrivateMessage", this);
@@ -177,51 +180,51 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     }
     
     /**
-     * 
-     * @param internalFrameEvent 
+     * Invoked when a internal frame has been opened.
+     * @param internalFrameEvent frame opened event
      */
     public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
     }
     
     /**
-     * 
-     * @param internalFrameEvent 
+     * Invoked when an internal frame is in the process of being closed.
+     * @param internalFrameEvent frame closing event
      */
     public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
         close();
     }
     
     /**
-     * 
-     * @param internalFrameEvent 
+     * Invoked when an internal frame has been closed.
+     * @param internalFrameEvent frame closed event
      */
     public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
     }
     
     /**
-     * 
-     * @param internalFrameEvent 
+     * Invoked when an internal frame is iconified.
+     * @param internalFrameEvent frame iconified event
      */
     public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
     }
     
     /**
-     * 
-     * @param internalFrameEvent 
+     * Invoked when an internal frame is de-iconified.
+     * @param internalFrameEvent frame deiconified event
      */
     public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
     }
     
     /**
-     * 
-     * @param internalFrameEvent 
+     * Invoked when an internal frame is activated.
+     * @param internalFrameEvent frame activation event
      */
     public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
     }
     
     /**
-     * 
-     * @param internalFrameEvent 
+     * Invoked when an internal frame is de-activated.
+     * @param internalFrameEvent frame deactivation event
      */
     public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }

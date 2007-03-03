@@ -74,7 +74,7 @@ public class PluginManager {
 	AbstractPlugin plugin = null;
 	
 	if( loadedPlugins.containsKey(pluginClassName) ) {
-	    plugin = (AbstractPlugin)loadedPlugins.get(pluginClassName);
+	    plugin = loadedPlugins.get(pluginClassName);
 	    plugin.onUnload();
 	    plugin.stopPlugin();
 	}
