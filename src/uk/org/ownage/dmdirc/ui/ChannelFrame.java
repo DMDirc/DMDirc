@@ -57,7 +57,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
 
     /**
      * The InputHandler for our input field
