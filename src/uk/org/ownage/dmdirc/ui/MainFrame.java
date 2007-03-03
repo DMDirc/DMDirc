@@ -49,11 +49,18 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     /**
      * Whether the internal frames are maximised or not
      */
-    private boolean maximised;
-    
+    private boolean maximised = false;
+    /**
+     * The current number of pixels to displace new frames in the X direction
+     */
     private int xOffset = 0;
+    /**
+     * The current number of pixels to displace new frames in the Y direction
+     */
     private int yOffset = 0;
-
+    /**
+     * The main application icon
+     */
     private ImageIcon imageIcon;
     
     /**
@@ -149,13 +156,31 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     public void setMaximised(boolean max) {
         maximised = max;
         
-        if (max && getActiveFrame() != null) {
-            setTitle("DMDirc - "+getActiveFrame().getTitle());
-        } else if (!max) {
+        if (max) {
+            if (getActiveFrame() != null) {
+                setTitle("DMDirc - "+getActiveFrame().getTitle());
+            }
+        } else {
             setTitle("DMDirc");
         }
         
+        for (JInternalFrame frame : desktopPane.getAllFrames()) {
+            try {
+                frame.setMaximum(max);
+            } catch (PropertyVetoException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
+            }
+        }
+        
         checkWindowState();
+    }
+    
+    /**
+     * Gets whether or not the internal frame state is currently maximised
+     * @return True iff frames should be maximised, false otherwise
+     */
+    public boolean getMaximised() {
+        return maximised;
     }
     
     private void checkWindowState() {

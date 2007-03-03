@@ -398,7 +398,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
         Boolean pref = Boolean.parseBoolean(Config.getOption("ui","maximisewindows"));
-        if (pref.equals(Boolean.TRUE)) {
+        if (pref.equals(Boolean.TRUE) || MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);
             } catch (PropertyVetoException ex) {
