@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc;
 
+import java.beans.PropertyVetoException;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
@@ -75,6 +76,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         frame = new ChannelFrame(this);
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
+        frame.open();
         
         try {
             server.getParser().getCallbackManager().addCallback("OnChannelGotNames", this, channelInfo.getName());
@@ -390,10 +392,19 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
-     * Called when the channel frame is opened. Not implemented.
+     * Called when the channel frame is opened. Checks config settings to
+     * determine if the window should be maximised
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
+        Boolean pref = Boolean.parseBoolean(Config.getOption("ui","maximisewindows"));
+        if (pref.equals(Boolean.TRUE)) {
+            try {
+                frame.setMaximum(true);
+            } catch (PropertyVetoException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
+            }
+        }        
     }
     
     /**

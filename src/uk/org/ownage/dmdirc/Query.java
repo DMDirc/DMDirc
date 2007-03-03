@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc;
 
+import java.beans.PropertyVetoException;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import uk.org.ownage.dmdirc.commandparser.QueryCommandParser;
@@ -73,6 +74,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         frame = new QueryFrame(new QueryCommandParser(this.server, this));
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
+        frame.open();
         
         try {
             server.getParser().getCallbackManager().addCallback("onPrivateAction", this, ClientInfo.parseHost(host));
@@ -185,6 +187,14 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param internalFrameEvent frame opened event
      */
     public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
+        Boolean pref = Boolean.parseBoolean(Config.getOption("ui","maximisewindows"));
+        if (pref.equals(Boolean.TRUE)) {
+            try {
+                frame.setMaximum(true);
+            } catch (PropertyVetoException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
+            }
+        }              
     }
     
     /**

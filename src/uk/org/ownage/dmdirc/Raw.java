@@ -22,6 +22,9 @@
 
 package uk.org.ownage.dmdirc;
 
+import java.beans.PropertyVetoException;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
@@ -37,7 +40,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
  * received to/from the server)
  * @author chris
  */
-public class Raw implements IDataIn, IDataOut {
+public class Raw implements IDataIn, IDataOut, InternalFrameListener {
     
     /**
      * The server object that's being monitored
@@ -57,8 +60,10 @@ public class Raw implements IDataIn, IDataOut {
         
         frame = new ServerFrame(new ServerCommandParser(server));
         frame.setTitle("(Raw log)");
-        
+        frame.addInternalFrameListener(this);
         MainFrame.getMainFrame().addChild(frame);
+        
+        frame.open();
         
         try {
             server.getParser().getCallbackManager().addCallback("OnDataIn", this);
@@ -100,6 +105,66 @@ public class Raw implements IDataIn, IDataOut {
      */    
     public void onDataOut(IRCParser tParser, String sData, boolean bFromParser) {
         frame.addLine(">>> "+sData);
+    }
+
+    /**
+     * Called when the raw frame is opened. Checks config settings to
+     * determine if the window should be maximised
+     * @param internalFrameEvent The event that triggered this callback
+     */
+    public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
+        Boolean pref = Boolean.parseBoolean(Config.getOption("ui","maximisewindows"));
+        if (pref.equals(Boolean.TRUE)) {
+            try {
+                frame.setMaximum(true);
+            } catch (PropertyVetoException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
+            }
+        }        
+    }
+
+    /**
+     * Called when the raw frame is being closed. Removes callbacks and releases
+     * resources.
+     * @param internalFrameEvent The event that triggered this callback
+     */    
+    public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
+        close();
+    }
+
+    /**
+     * Called when the raw frame is actually closed. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */
+    public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
+    }
+    
+    /**
+     * Called when the raw frame is iconified. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */
+    public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
+    }
+    
+    /**
+     * Called when the raw frame is deiconified. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */
+    public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
+    }
+    
+    /**
+     * Called when the raw frame is activated. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */
+    public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
+    }
+    
+    /**
+     * Called when the raw frame is deactivated. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */
+    public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }
     
 }

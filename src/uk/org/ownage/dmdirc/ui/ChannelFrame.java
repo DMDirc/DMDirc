@@ -80,7 +80,6 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         initComponents();
         setMaximizable(true);
         setClosable(true);
-        setVisible(true);
         setResizable(true);
         
         commandParser = new ChannelCommandParser(parent.getServer(), parent);
@@ -127,6 +126,15 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
             }
         });
     }
+    
+    /**
+     * Makes this frame visible. We don't call this from the constructor
+     * so that we can register an actionlistener for the open event before
+     * the frame is opened.
+     */
+    public void open() {
+        setVisible(true);
+    }    
     
     /**
      * Adds a line of text to the main text area

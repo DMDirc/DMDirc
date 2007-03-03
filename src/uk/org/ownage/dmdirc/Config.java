@@ -91,7 +91,7 @@ public class Config {
         defaults.setProperty("general.defaultnick","DMDircUser");
         defaults.setProperty("general.alternatenick","DMDircUser_");
         
-	defaults.setProperty("ui.maximisewindows","true");
+	defaults.setProperty("ui.maximisewindows","false");
         defaults.setProperty("ui.sortByMode", "true");
         defaults.setProperty("ui.sortByCase", "false");
         

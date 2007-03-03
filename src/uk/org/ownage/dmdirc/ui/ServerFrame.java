@@ -76,7 +76,6 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
         
         setMaximizable(true);
         setClosable(true);
-        setVisible(true);
         setResizable(true);
         
         scrollBar = jScrollPane1.getVerticalScrollBar();
@@ -123,6 +122,15 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
             }
         });
         
+    }
+    
+    /**
+     * Makes this frame visible. We don't call this from the constructor
+     * so that we can register an actionlistener for the open event before
+     * the frame is opened.
+     */
+    public void open() {
+        setVisible(true);
     }
     
     /**

@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc;
 
+import java.beans.PropertyVetoException;
 import java.util.Hashtable;
 import javax.swing.event.InternalFrameEvent;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
@@ -91,6 +92,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         frame.addInternalFrameListener(this);
         
         MainFrame.getMainFrame().addChild(frame);
+        
+        frame.open();
         
         frame.addLine("Connecting to "+server+":"+port);
         
@@ -236,25 +239,63 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         }
     }
     
+    /**
+     * Called when the server frame is opened. Checks config settings to
+     * determine if the window should be maximised
+     * @param internalFrameEvent The event that triggered this callback
+     */    
     public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
+        Boolean pref = Boolean.parseBoolean(Config.getOption("ui","maximisewindows"));
+        if (pref.equals(Boolean.TRUE)) {
+            try {
+                frame.setMaximum(true);
+            } catch (PropertyVetoException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
+            }
+        }        
     }
     
+    /**
+     * Called when the server frame is being closed. Has the parser quit
+     * the server, close all channels, and free all resources
+     * @param internalFrameEvent The event that triggered this callback
+     */    
     public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
         close(Config.getOption("general","quitmessage"));
     }
     
+    /**
+     * Called when the channel frame is actually closed. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */
     public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * Called when the channel frame is iconified. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */
     public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * Called when the channel frame is deiconified. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */
     public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * Called when the channel frame is activated. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */
     public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * Called when the channel frame is deactivated. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */
     public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }
 }
