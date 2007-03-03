@@ -37,14 +37,14 @@ public class QueryCommandParser extends CommandParser {
      */
     private Server server;
     /**
-     * The channel instance that this parser is attached to
+     * The query instance that this parser is attached to
      */
     private Query query;
     
     /**
      * Creates a new instance of QueryCommandParser
      * @param server The server instance that this parser is attached to
-     * @param channel The channel instance that this parser is attached to
+     * @param query The query instance that this parser is attached to
      */
     public QueryCommandParser(Server server, Query query) {
         super();

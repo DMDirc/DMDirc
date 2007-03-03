@@ -30,12 +30,12 @@ import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 
 /**
- *
+ * The cycle command allows users to rapidly part and rejoin a channel.
  * @author chris
  */
 public class Cycle extends ChannelCommand {
     
-    /** Creates a new instance of Part */
+    /** Creates a new instance of Cycle */
     public Cycle() {
         description = "parts and rejoins the current channel";
         arguments = "";
@@ -45,6 +45,13 @@ public class Cycle extends ChannelCommand {
         show = true;
     }
 
+    /**
+     * Executes this command
+     * @param origin The frame in which this command was issued
+     * @param server The server object that this command is associated with
+     * @param channel The channel object that this command is associated with
+     * @param args The user supplied arguments
+     */
     public void execute(CommandWindow origin, Server server, Channel channel, String... args) {
         channel.part(Config.getOption("general","cyclemessage"));
         channel.join();

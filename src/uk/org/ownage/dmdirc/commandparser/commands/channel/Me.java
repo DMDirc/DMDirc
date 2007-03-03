@@ -28,7 +28,7 @@ import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 
 /**
- *
+ * The me command sends a CTCP action to the current channel
  * @author chris
  */
 public class Me extends ChannelCommand {
@@ -42,7 +42,14 @@ public class Me extends ChannelCommand {
         name = "me";
         show = true;
     }
-
+    
+    /**
+     * Executes this command
+     * @param origin The frame in which this command was issued
+     * @param server The server object that this command is associated with
+     * @param channel The channel object that this command is associated with
+     * @param args The user supplied arguments
+     */
     public void execute(CommandWindow origin, Server server, Channel channel, String... args) {
         channel.sendAction(implodeArgs(args));
     }

@@ -30,7 +30,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 
 /**
- *
+ * The part command parts the current channel with a specified part message.
  * @author chris
  */
 public class Part extends ChannelCommand {
@@ -44,7 +44,14 @@ public class Part extends ChannelCommand {
         name = "part";
         show = true;
     }
-
+    
+    /**
+     * Executes this command
+     * @param origin The frame in which this command was issued
+     * @param server The server object that this command is associated with
+     * @param channel The channel object that this command is associated with
+     * @param args The user supplied arguments
+     */
     public void execute(CommandWindow origin, Server server, Channel channel, String... args) {
         channel.part(implodeArgs(args));
         channel.close();

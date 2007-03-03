@@ -29,12 +29,13 @@ import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 
 /**
- *
+ * The me/0 command simply tells the user that the correct usage of /me requires
+ * they pass an action to perform.
  * @author chris
  */
 public class MeEmpty extends ChannelCommand {
     
-    /** Creates a new instance of Me */
+    /** Creates a new instance of MeEmpty */
     public MeEmpty() {
         description = "informs the user of the correct usage of the me command";
         arguments = "";
@@ -43,7 +44,14 @@ public class MeEmpty extends ChannelCommand {
         name = "me";
         show = false;
     }
-
+    
+    /**
+     * Executes this command
+     * @param origin The frame in which this command was issued
+     * @param server The server object that this command is associated with
+     * @param channel The channel object that this command is associated with
+     * @param args The user supplied arguments
+     */
     public void execute(CommandWindow origin, Server server, Channel channel, String... args) {
         origin.addLine("Usage: "+Config.getOption("general","commandchar")+"me <action>");
     }
