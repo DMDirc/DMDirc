@@ -160,12 +160,12 @@ public class InputHandler implements KeyListener, ActionListener {
             // And forwards
             while (end < text.length() && text.charAt(end) != ' ') {
                 end++;
-            }        
-                        
+            }
+            
             String word = text.substring(start, end);
             
             TabCompleterResult res = tabCompleter.complete(word);
-                        
+            
             if (res.getResultCount() == 0) {
                 // TODO: Beep, or something
             } else if (res.getResultCount() == 1) {
@@ -175,8 +175,15 @@ public class InputHandler implements KeyListener, ActionListener {
                 target.setText(text);
             } else {
                 // Multiple results
+                String sub = res.getBestSubstring();
+                if (sub == word) {
+                    // TODO: Beep, display possible answers, etc
+                } else {
+                    text = text.substring(0,start)+sub+text.substring(end);
+                    target.setText(text);
+                }
             }
-        
+            
         }
     }
     

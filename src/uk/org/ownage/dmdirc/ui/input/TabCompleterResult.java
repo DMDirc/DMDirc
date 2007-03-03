@@ -72,6 +72,25 @@ public class TabCompleterResult {
     }
     
     /**
+     * Returns the longest substring that matches all results
+     * @return longest possible substring matching all results
+     */
+    public String getBestSubstring() {
+        if (getResultCount() == 0) {
+            return "";
+        }
+        
+        String res = results.get(0);
+        for (String entry : results) {
+            while (!entry.startsWith(res)) {
+                res = res.substring(0, res.length()-1);
+            }
+        }
+        
+        return res;
+    }
+    
+    /**
      * Retrieves the list of results that this set contains
      * @return An arraylist containing the results
      */
