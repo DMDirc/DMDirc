@@ -74,6 +74,8 @@ public class Styliser {
         pos = checkChar(pos, input.indexOf(31));
         // Stop all formatting
         pos = checkChar(pos, input.indexOf(15));
+        // Colour
+        pos = checkChar(pos, input.indexOf(3));
         
         return input.substring(0, pos);
     }
@@ -89,21 +91,40 @@ public class Styliser {
         if (string.charAt(0) == 31) {
             toggleAttribute(attribs, StyleConstants.FontConstants.Underline);
             return 1;
-        }        
+        }
         
         // Stop formatting
         if (string.charAt(0) == 15) {
             resetAttributes(attribs);
             return 1;
-        }        
+        }
+        
+        if (string.charAt(0) == 3) {
+            int count = 1;
+            // This isn't too nice
+            if (isInt(string.charAt(1))) {
+                int foreground = string.charAt(1) - 48;
+                count++;
+                if (isInt(string.charAt(2))) {
+                    foreground = foreground*10 + (string.charAt(2) - 48);
+                    count++;
+                }
+                foreground = foreground % 16;
+                setForeground(attribs, foreground);
+            } else {
+                resetColour(attribs);
+            }
+            return count;
+        }
+        
         return 0;
     }
-
+    
     private static int checkChar(int pos, int i) {
         if (i < pos && i != -1) { return i; }
         return pos;
     }
-
+    
     private static void toggleAttribute(SimpleAttributeSet attribs, Object attrib) {
         if (attribs.containsAttribute(attrib, Boolean.TRUE)) {
             attribs.removeAttribute(attrib);
@@ -111,14 +132,30 @@ public class Styliser {
             attribs.addAttribute(attrib, Boolean.TRUE);
         }
     }
-
+    
     private static void resetAttributes(SimpleAttributeSet attribs) {
         if (attribs.containsAttribute(StyleConstants.FontConstants.Bold, Boolean.TRUE)) {
             attribs.removeAttribute(StyleConstants.FontConstants.Bold);
         }
         if (attribs.containsAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE)) {
             attribs.removeAttribute(StyleConstants.FontConstants.Underline);
-        }        
+        }
+        resetColour(attribs);
+    }
+    
+    private static boolean isInt(char c) {
+        return (c >= 48 && c <= 57);
+    }
+    
+    private static void resetColour(SimpleAttributeSet attribs) {
+        setForeground(attribs, 1);
+    }
+
+    private static void setForeground(SimpleAttributeSet attribs, int foreground) {
+        if (attribs.isDefined(StyleConstants.Foreground)) {
+            attribs.removeAttribute(StyleConstants.Foreground);
+        }
+        attribs.addAttribute(StyleConstants.Foreground, ColourManager.getColour(foreground));
     }
     
 }
