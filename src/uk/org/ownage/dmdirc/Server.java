@@ -27,9 +27,12 @@ import javax.swing.event.InternalFrameEvent;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.MyInfo;
 import uk.org.ownage.dmdirc.parser.ParserError;
 import uk.org.ownage.dmdirc.parser.ServerInfo;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
 import uk.org.ownage.dmdirc.parser.IRCParser;
@@ -47,12 +50,17 @@ import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
  * to the server
  * @author chris
  */
-public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListener {
+public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction, IErrorInfo, InternalFrameListener {
     
     /**
      * Open channels that currently exist on the server
      */
     private Hashtable<String,Channel> channels  = new Hashtable<String,Channel>();
+    
+    /**
+     * Open query windows on the server
+     */
+    private Hashtable<String,Query> queries = new Hashtable<String,Query>();
     
     /**
      * The ServerFrame corresponding to this server
@@ -95,6 +103,8 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
         try {
             parser.getCallbackManager().addCallback("OnChannelSelfJoin", this);
             parser.getCallbackManager().addCallback("OnErrorInfo", this);
+            parser.getCallbackManager().addCallback("OnPrivateMessage", this);
+            parser.getCallbackManager().addCallback("OnPrivateAction", this);
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.FATAL, ex);
         }
@@ -125,6 +135,8 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
         // Unregister parser callbacks
         parser.getCallbackManager().delCallback("OnChannelSelfJoin", this);
         parser.getCallbackManager().delCallback("OnErrorInfo", this);
+        parser.getCallbackManager().delCallback("OnPrivateMessage", this);
+        parser.getCallbackManager().delCallback("OnPrivateAction", this);
         // Unregister frame callbacks
         frame.removeInternalFrameListener(this);
         // Disconnect from the server
@@ -133,6 +145,7 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
         ServerManager.getServerManager().unregisterServer(this);
         // Close all channel windows
         closeChannels();
+        //Close all query windows
         // Close the raw window
         raw.close();
         // Close our own window
@@ -155,6 +168,14 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
         closing = false;
     }
     
+    private void closeQueries() {
+        closing = true;
+        for (Query query: queries.values()) {
+            query.close();
+        }
+        closing = false;
+    }
+    
     public void delChannel(String chan) {
         if (!closing) {
             channels.remove(chan);
@@ -170,6 +191,28 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
             channels.get(cChannel.getName()).setChannelInfo(cChannel);
         } else {
             addChannel(cChannel);
+        }
+    }
+    
+    private void addQuery(String host) {
+        queries.put(ClientInfo.parseHost(host), new Query(this, host));
+    }
+    
+    public void delQuery(String host) {
+        if (!closing) {
+            queries.remove(ClientInfo.parseHost(host));
+        }
+    }
+    
+    public void onPrivateMessage(IRCParser parser, ClientInfo client, String message, String host) {
+        if (!queries.containsKey(ClientInfo.parseHost(host))) {
+            addQuery(host);
+        }
+    }
+    
+    public void onPrivateAction(IRCParser parser, ClientInfo client, String message, String host) {
+        if (!queries.containsKey(ClientInfo.parseHost(host))) {
+            addQuery(host);
         }
     }
     
@@ -214,5 +257,4 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
     
     public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }
-    
 }

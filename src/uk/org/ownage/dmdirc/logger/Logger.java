@@ -160,6 +160,7 @@ public class Logger {
                 }
                 System.err.println(formatter.format(new Date())+
                         ": ERROR: "+level+" :"+exception.getMessage());
+                exception.printStackTrace(System.err);
                 break;
         }
     }

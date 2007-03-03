@@ -57,26 +57,26 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     private QueryFrame frame;
     
     /**
-     * The Client associated with this Query
+     * The full host of the client associated with this Query
      */
-    private ClientInfo client;
+    private String host;
     
     /**
      * Creates a new instance of Query
      * @param client Client user being queried
      * @param server The server object that this Query belongs to
      */
-    public Query(Server server, ClientInfo client) {
+    public Query(Server server, String host) {
         this.server = server;
-        this.client = client;
+        this.host = host;
         
         frame = new QueryFrame(new QueryCommandParser(this.server, this));
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
         
         try {
-            server.getParser().getCallbackManager().addCallback("onPrivateAction", this, client.getNickname());
-            server.getParser().getCallbackManager().addCallback("onPrivateMessage", this, client.getNickname());
+            server.getParser().getCallbackManager().addCallback("onPrivateAction", this, ClientInfo.parseHost(host));
+            server.getParser().getCallbackManager().addCallback("onPrivateMessage", this, ClientInfo.parseHost(host));
             server.getParser().getCallbackManager().addCallback("onNickChanged", this);
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.FATAL, ex);
@@ -90,7 +90,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param line message text to send
      */
     public void sendLine(String line) {
-        server.getParser().sendMessage(client.getNickname(), line);
+        server.getParser().sendMessage(ClientInfo.parseHost(host), line);
         frame.addLine("> "+line);
     }
     
@@ -99,7 +99,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param action action text to send
      */
     public void sendAction(String action) {
-        server.getParser().sendAction(client.getNickname(), action);
+        server.getParser().sendAction(ClientInfo.parseHost(host), action);
         frame.addLine("*> "+action);
     }
     
@@ -111,7 +111,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param host remote user host
      */
     public void onPrivateMessage(IRCParser parser, ClientInfo client, String message, String host) {
-        frame.addLine("<"+client.getNickname()+"> "+message);
+        frame.addLine("<"+ClientInfo.parseHost(host)+"> "+message);
     }
     
     /**
@@ -122,14 +122,14 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param host remote host
      */
     public void onPrivateAction(IRCParser parser, ClientInfo client, String message, String host) {
-        frame.addLine("* "+client.toString()+" "+message);
+        frame.addLine("* "+ClientInfo.parseHost(host)+" "+message);
     }
     
     /**
      * Updates the QueryFrame title
      */
     private void updateTitle() {
-        String title = client.getNickname();
+        String title = ClientInfo.parseHost(host);
         
         frame.setTitle(title);
         
@@ -174,6 +174,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         server.getParser().getCallbackManager().delCallback("onNickChanged", this);
         
         frame.setVisible(false);
+        server.delQuery(host);
         MainFrame.getMainFrame().delChild(frame);
         frame = null;
         server = null;
