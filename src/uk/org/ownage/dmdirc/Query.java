@@ -75,6 +75,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         frame = new QueryFrame(new QueryCommandParser(this.server, this));
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
+        frame.setTabCompleter(server.getTabCompleter());
         frame.open();
         
         try {

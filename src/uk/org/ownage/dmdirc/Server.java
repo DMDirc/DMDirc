@@ -275,10 +275,12 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     private void addQuery(String host) {
+        tabCompleter.addEntry(ClientInfo.parseHost(host));
         queries.put(ClientInfo.parseHost(host), new Query(this, host));
     }
     
     public void delQuery(String host) {
+        tabCompleter.removeEntry(ClientInfo.parseHost(host));
         if (!closing) {
             queries.remove(ClientInfo.parseHost(host));
         }

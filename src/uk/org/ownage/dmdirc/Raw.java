@@ -63,6 +63,7 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener {
         frame.setTitle("(Raw log)");
         frame.addInternalFrameListener(this);
         MainFrame.getMainFrame().addChild(frame);
+        frame.setTabCompleter(server.getTabCompleter());
         
         frame.open();
         
