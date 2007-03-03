@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc;
 
 import java.beans.PropertyVetoException;
 import java.util.Hashtable;
+import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
@@ -123,6 +124,46 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
+     * Connects to a new server with the specified details.
+     * @param server The hostname/ip of the server to connect to
+     * @param port The port to connect to
+     * @param password The server password
+     */
+    public void connect(String server, int port, String password) {
+        if (parser != null && parser.getSocketState() == parser.stateOpen) {
+            disconnect(Config.getOption("general","quitmessage"));
+            closeChannels();
+            closeQueries();
+        }
+        
+        frame.addLine("Connecting to "+server+":"+port);
+        
+        MyInfo myInfo = new MyInfo();
+        myInfo.sNickname = Config.getOption("general","defaultnick");
+        myInfo.sAltNickname = Config.getOption("general","alternatenick");
+        
+        parser = new IRCParser(myInfo, new ServerInfo(server, port, password));
+        
+        try {
+            parser.getCallbackManager().addCallback("OnChannelSelfJoin", this);
+            parser.getCallbackManager().addCallback("OnErrorInfo", this);
+            parser.getCallbackManager().addCallback("OnPrivateMessage", this);
+            parser.getCallbackManager().addCallback("OnPrivateAction", this);
+            parser.getCallbackManager().addCallback("OnDataIn", raw);
+            parser.getCallbackManager().addCallback("OnDataOut", raw);
+        } catch (CallbackNotFound ex) {
+            Logger.error(ErrorLevel.FATAL, ex);
+        }
+        
+        try {
+            Thread thread = new Thread(parser);
+            thread.start();
+        } catch (Exception ex) {
+            frame.addLine("ERROR: "+ex.getMessage());
+        }
+    }
+    
+    /**
      * Retrieves the parser used for this connection
      * @return IRCParser this connection's parser
      */
@@ -171,6 +212,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         for (Channel channel : channels.values()) {
             channel.close();
         }
+        channels.clear();
         closing = false;
     }
     
@@ -179,6 +221,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         for (Query query: queries.values()) {
             query.close();
         }
+        queries.clear();
         closing = false;
     }
     
@@ -200,14 +243,6 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         channels.put(chan.getName(), new Channel(this, chan));
     }
     
-    public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
-        if (channels.containsKey(cChannel.getName())) {
-            channels.get(cChannel.getName()).setChannelInfo(cChannel);
-        } else {
-            addChannel(cChannel);
-        }
-    }
-    
     private void addQuery(String host) {
         queries.put(ClientInfo.parseHost(host), new Query(this, host));
     }
@@ -215,6 +250,33 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     public void delQuery(String host) {
         if (!closing) {
             queries.remove(ClientInfo.parseHost(host));
+        }
+    }
+    
+    /**
+     * Determines if the specified frame is owned by this server
+     */
+    public boolean ownsFrame(JInternalFrame target) {
+        // Check if it's our server frame
+        if (frame.equals(target)) { return true; }
+        // Check if it's the raw frame
+        if (raw.ownsFrame(target)) { return true; }
+        // Check if it's a channel frame
+        for (Channel channel : channels.values()) {
+            if (channel.ownsFrame(target)) { return true; }
+        }
+        // Check if it's a query frame
+        for (Query query : queries.values()) {
+            if (query.ownsFrame(target)) { return true; }
+        }
+        return false;
+    }
+    
+    public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
+        if (channels.containsKey(cChannel.getName())) {
+            channels.get(cChannel.getName()).setChannelInfo(cChannel);
+        } else {
+            addChannel(cChannel);
         }
     }
     
@@ -309,4 +371,5 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      */
     public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }
+    
 }

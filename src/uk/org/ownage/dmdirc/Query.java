@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc;
 
 import java.beans.PropertyVetoException;
+import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import uk.org.ownage.dmdirc.commandparser.QueryCommandParser;
@@ -166,6 +167,13 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     public Server getServer() {
         return server;
     }
+    
+    /**
+     * Determines if the specified frame is owned by this object
+     */
+    public boolean ownsFrame(JInternalFrame target) {
+        return frame.equals(target);
+    }    
     
     /**
      * Closes the query and associated frame

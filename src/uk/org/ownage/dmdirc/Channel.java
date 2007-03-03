@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc;
 
 import java.beans.PropertyVetoException;
+import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
@@ -207,6 +208,13 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         frame = null;
         server = null;
     }
+    
+    /**
+     * Determines if the specified frame is owned by this object
+     */
+    public boolean ownsFrame(JInternalFrame target) {
+        return frame.equals(target);
+    }    
     
     /**
      * Called whenever a message is sent to this channel. NB that the ChannelClient

@@ -23,6 +23,8 @@
 package uk.org.ownage.dmdirc;
 
 import java.util.Vector;
+import javax.swing.JInternalFrame;
+import uk.org.ownage.dmdirc.ui.ServerFrame;
 
 /**
  * The ServerManager maintains a list of all servers, and provides methods to
@@ -111,6 +113,20 @@ public class ServerManager {
      */
     public int numServers() {
         return servers.size();
+    }
+
+    /**
+     * Returns the server instance that owns the specified internal frame
+     * @param active The internal frame to check
+     * @return The server associated with the internal frame
+     */
+    public Server getServerFromFrame(JInternalFrame active) {
+        for (Server server : servers) {
+            if (server.ownsFrame(active)) {
+                return server;
+            }
+        }        
+        return null;
     }
     
 }

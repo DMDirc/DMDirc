@@ -159,7 +159,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
     public void addLine(String messageType, Object... args) {
         addLine(Formatter.formatMessage(messageType, args));
     }    
-    
+        
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is

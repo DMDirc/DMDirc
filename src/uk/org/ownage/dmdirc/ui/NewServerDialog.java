@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import javax.swing.JInternalFrame;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.ServerManager;
 import java.awt.event.ActionEvent;
@@ -31,6 +32,8 @@ import java.awt.event.WindowListener;
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
  * Dialog that allows the user to enter details of a new server to connect to
@@ -50,17 +53,11 @@ public class NewServerDialog extends javax.swing.JDialog {
         super((java.awt.Frame)MainFrame.getMainFrame(), false);
         
         initComponents();
-        
-        if (ServerManager.getServerManager().numServers() == 0) {
-            jCheckBox1.setSelected(true);
-            jCheckBox1.setEnabled(false);
-        }
-        
+               
         jTextField2.setInputVerifier(new PortVerifier());
         
         addCallbacks();
         
-        setVisible(true);
     }
     
     /**
@@ -70,11 +67,20 @@ public class NewServerDialog extends javax.swing.JDialog {
         if (me == null) {
             me = new NewServerDialog();
             me.setLocationRelativeTo(MainFrame.getMainFrame());
+            me.setVisible(true);
         } else {
+            me.setLocationRelativeTo(MainFrame.getMainFrame());
             me.setVisible(true);
             me.requestFocus();
-            me.setLocationRelativeTo(MainFrame.getMainFrame());
         }
+        
+        if (ServerManager.getServerManager().numServers() == 0
+                || MainFrame.getMainFrame().getActiveFrame() == null) {
+            me.jCheckBox1.setSelected(true);
+            me.jCheckBox1.setEnabled(false);
+        } else {
+            me.jCheckBox1.setEnabled(true);            
+        }  
     }
     
     /**
@@ -95,10 +101,18 @@ public class NewServerDialog extends javax.swing.JDialog {
                 NewServerDialog.this.setVisible(false);
                 
                 // Open in a new window?
-                if (jCheckBox1.isSelected()) {
+                if (jCheckBox1.isSelected() ||
+                        ServerManager.getServerManager().numServers() == 0 ||
+                        MainFrame.getMainFrame().getActiveFrame() == null) {
                     Server server = new Server(host, port, pass);
                 } else {
-                    // TODO: Find active server, disconnect, and reconnect
+                    JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
+                    Server server = ServerManager.getServerManager().getServerFromFrame(active);
+                    if (server != null) {
+                        server.connect(host, port, pass);
+                    } else {
+                        Logger.error(ErrorLevel.ERROR, "Cannot determine active server window");
+                    }
                 }
             }
         });

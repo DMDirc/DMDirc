@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc;
 
 import java.beans.PropertyVetoException;
+import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
@@ -109,6 +110,13 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener {
     public void onDataOut(IRCParser tParser, String sData, boolean bFromParser) {
         frame.addLine(">>> "+sData);
     }
+    
+    /**
+     * Determines if the specified frame is owned by this object
+     */
+    public boolean ownsFrame(JInternalFrame target) {
+        return frame.equals(target);
+    }    
 
     /**
      * Called when the raw frame is opened. Checks config settings to
