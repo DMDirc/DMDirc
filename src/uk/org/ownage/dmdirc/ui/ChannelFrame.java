@@ -185,12 +185,13 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * @param line text to add
      */
     public void addLine(String line) {
+        autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
+        != scrollBar.getMaximum());
+        
         String ts = Formatter.formatMessage("timestamp", new Date());
         Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
         Styliser.addStyledString(jTextPane1.getStyledDocument(), line+"\n");
         
-        autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
-        != scrollBar.getMaximum());
         if(autoScroll) {
             jTextPane1.setCaretPosition(jTextPane1.getStyledDocument().getLength());
         }
