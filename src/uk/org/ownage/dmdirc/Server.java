@@ -432,35 +432,43 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Called when the channel frame is actually closed. Not implemented.
+     * Called when the server frame is actually closed. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
     }
     
     /**
-     * Called when the channel frame is iconified. Not implemented.
+     * Called when the server frame is iconified. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
     }
     
     /**
-     * Called when the channel frame is deiconified. Not implemented.
+     * Called when the server frame is deiconified. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
     }
     
     /**
-     * Called when the channel frame is activated. Not implemented.
+     * Called when the server frame is activated. Maximises the frame if it
+     * needs to be
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
+        if (MainFrame.getMainFrame().getMaximised()) {
+            try {
+                frame.setMaximum(true);
+            } catch (PropertyVetoException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
+            }
+        }
     }
     
     /**
-     * Called when the channel frame is deactivated. Not implemented.
+     * Called when the server frame is deactivated. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {

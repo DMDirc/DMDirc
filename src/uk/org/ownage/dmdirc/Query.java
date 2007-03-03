@@ -172,7 +172,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      */
     public boolean ownsFrame(JInternalFrame target) {
         return frame.equals(target);
-    }    
+    }
     
     /**
      * Closes the query and associated frame
@@ -201,7 +201,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
             } catch (PropertyVetoException ex) {
                 Logger.error(ErrorLevel.WARNING, ex);
             }
-        }              
+        }
     }
     
     /**
@@ -238,6 +238,13 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param internalFrameEvent frame activation event
      */
     public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
+        if (MainFrame.getMainFrame().getMaximised()) {
+            try {
+                frame.setMaximum(true);
+            } catch (PropertyVetoException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
+            }
+        }
     }
     
     /**

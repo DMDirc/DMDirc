@@ -465,10 +465,18 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
-     * Called when the channel frame is activated. Not implemented.
+     * Called when the channel frame is activated. Maximises the frame if it
+     * needs to be
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
+        if (MainFrame.getMainFrame().getMaximised()) {
+            try {
+                frame.setMaximum(true);
+            } catch (PropertyVetoException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
+            }
+        }
     }
     
     /**
