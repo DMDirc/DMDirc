@@ -124,9 +124,9 @@ public class ChannelClientInfo {
 	/**
 	 * Get the most important mode this client has (o, v etc).
 	 *
-	 * @return char representing the most important mode.
+	 * @return String representing the most important mode.
 	 */
-	public char getImportantMode() {
+	public String getImportantMode() {
 		String sModes = this.getChanModeStr(false);
 		if (!sModes.equals("")) { sModes = ""+sModes.charAt(0); }
 		return sModes;
@@ -135,9 +135,9 @@ public class ChannelClientInfo {
 	/**
 	 * Get the most important prefix this client has (o, v etc).
 	 *
-	 * @return char representing the most important mode prefix.
+	 * @return String representing the most important mode.
 	 */
-	public char getImportantModePrefix() {
+	public String getImportantModePrefix() {
 		String sModes = this.getChanModeStr(true);
 		if (!sModes.equals("")) { sModes = ""+sModes.charAt(0); }
 		return sModes;
@@ -150,7 +150,7 @@ public class ChannelClientInfo {
 	 * @return String Value of user (inc prefix) (ie @Nickname)
 	 */
 	public String toString() { 
-		String sModes = getImportantPrefix;
+		String sModes = this.getImportantModePrefix();
 		return sModes+this.getNickname();
 	}	
 	
