@@ -45,10 +45,6 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
 public class ServerFrame extends javax.swing.JInternalFrame implements CommandWindow {
     
     /**
-     * The Server object that owns this frame
-     */
-    private Server parent;
-    /**
      * The border used when the frame is not maximised
      */
     private Border myborder;
@@ -68,10 +64,10 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
     private CommandParser commandParser;
     
     /**
-     * Creates new form ServerFrame
-     * @param parent The server instance that owns this frame
+     * Creates a new ServerFrame
+     * @param commandParser The command parser to use
      */
-    public ServerFrame(Server parent, CommandParser commandParser) {
+    public ServerFrame(CommandParser commandParser) {
         initComponents();
         
         setFrameIcon(MainFrame.getMainFrame().getIcon());
@@ -81,7 +77,6 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
         setVisible(true);
         setResizable(true);
         
-        this.parent = parent;
         scrollBar = jScrollPane1.getVerticalScrollBar();
         
         this.commandParser = commandParser;

@@ -78,7 +78,7 @@ public class Server implements IChannelSelfJoin, IErrorInfo, InternalFrameListen
         
         ServerManager.getServerManager().registerServer(this);
         
-        frame = new ServerFrame(this, new ServerCommandParser(this));
+        frame = new ServerFrame(new ServerCommandParser(this));
         frame.setTitle(server+":"+port);
         frame.addInternalFrameListener(this);
         

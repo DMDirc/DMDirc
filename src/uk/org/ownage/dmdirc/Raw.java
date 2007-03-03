@@ -55,7 +55,7 @@ public class Raw implements IDataIn, IDataOut {
     public Raw(Server server) {
         this.server = server;
         
-        frame = new ServerFrame(server, new ServerCommandParser(server));
+        frame = new ServerFrame(new ServerCommandParser(server));
         frame.setTitle("(Raw log)");
         
         MainFrame.getMainFrame().addChild(frame);
