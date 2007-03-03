@@ -151,7 +151,7 @@ public class InputHandler implements KeyListener, ActionListener {
             if (text.equals("")) {
                 return;
             }
-                
+            
             int pos = target.getCaretPosition()-1;
             int start = (pos < 0) ? 0 : pos;
             int end = (pos < 0) ? 0 : pos;
@@ -214,8 +214,10 @@ public class InputHandler implements KeyListener, ActionListener {
         buffer[bufferMaximum] = actionEvent.getActionCommand();
         bufferMaximum = normalise(bufferMaximum + 1);
         bufferPosition = bufferMaximum;
-        if (bufferMaximum == bufferMinimum) {
-            bufferMinimum = normalise(bufferMinimum + 1);
+        
+        if (buffer[bufferSize-1] != null) {
+            bufferMinimum = normalise(bufferMaximum + 1);
+            buffer[bufferMaximum] = null;
         }
     }
     
