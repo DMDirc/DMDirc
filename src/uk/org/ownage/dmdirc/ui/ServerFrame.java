@@ -36,6 +36,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
 /**
@@ -137,6 +138,16 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
             jTextPane1.setCaretPosition(jTextPane1.getStyledDocument().getLength());
         }
     }
+    
+    /**
+     * Formats the arguments using the Formatter, then adds the result to the
+     * main text area
+     * @param messageType The type of this message
+     * @param args The arguments for the message
+     */
+    public void addLine(String messageType, Object... args) {
+        addLine(Formatter.formatMessage(messageType, args));
+    }    
     
     /** This method is called from within the constructor to
      * initialize the form.

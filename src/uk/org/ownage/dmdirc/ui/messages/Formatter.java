@@ -88,6 +88,15 @@ public class Formatter {
         properties.setProperty("channelKick", colour+"3* %1$s%2$s has kicked %3$s%4$s from %5$s.");
         properties.setProperty("channelKickReason", colour+"3* %1$s%2$s has kicked %3$s%4$s from %5$s (%6$s"+stop+").");
         
+        properties.setProperty("channelSelfMessage", "<%1$s%2$s> %3$s");
+        properties.setProperty("channelSelfAction", colour+"6* %1$s%2$s %3$s");
+        
+        properties.setProperty("queryMessage", "<%1$s> %2$s");
+        properties.setProperty("queryAction", colour+"6* %1$s %2$s");
+        
+        properties.setProperty("querySelfMessage", "<%1$s> %2$s");
+        properties.setProperty("querySelfAction", colour+"6* %1$s %2$s");
+        
         return properties;
     }
     

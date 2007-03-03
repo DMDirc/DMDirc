@@ -39,7 +39,7 @@ import uk.org.ownage.dmdirc.ui.ServerFrame;
 
 /**
  * The Query class represents the client's view of a query with another user.
- * It handles callbacks for query events from the parser, maintains the 
+ * It handles callbacks for query events from the parser, maintains the
  * corresponding ServerFrame, and handles user input to a ServerFrame
  * @author chris
  */
@@ -91,7 +91,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      */
     public void sendLine(String line) {
         server.getParser().sendMessage(ClientInfo.parseHost(host), line);
-        frame.addLine("> "+line);
+        frame.addLine("querySelfMessage", server.getParser().getMyself().getNickname(), line);
     }
     
     /**
@@ -100,7 +100,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      */
     public void sendAction(String action) {
         server.getParser().sendAction(ClientInfo.parseHost(host), action);
-        frame.addLine("*> "+action);
+        frame.addLine("querySelfAction", server.getParser().getMyself().getNickname(), action);
     }
     
     /**
@@ -111,7 +111,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param host remote user host
      */
     public void onPrivateMessage(IRCParser parser, String message, String host) {
-        frame.addLine("<"+ClientInfo.parseHost(host)+"> "+message);
+        frame.addLine("queryMessage", ClientInfo.parseHost(host), message);
     }
     
     /**
@@ -122,7 +122,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param host remote host
      */
     public void onPrivateAction(IRCParser parser, String message, String host) {
-        frame.addLine("* "+ClientInfo.parseHost(host)+" "+message);
+        frame.addLine("queryAction", ClientInfo.parseHost(host), message);
     }
     
     /**

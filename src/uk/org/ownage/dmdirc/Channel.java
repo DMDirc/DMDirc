@@ -98,8 +98,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void sendLine(String line) {
         channelInfo.sendMessage(line);
-        frame.addLine("> "+line);
-        // TODO: Use formatter
+        
+        ClientInfo me = server.getParser().getMyself();
+        String modes = channelInfo.getUser(me).getImportantModePrefix();
+        
+        frame.addLine("channelSelfMessage", modes, me.getNickname(), line);
     }
     
     /**
@@ -109,8 +112,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void sendAction(String action) {
         channelInfo.sendAction(action);
-        frame.addLine("*> "+action);
-        // TODO: Use formatter
+
+        ClientInfo me = server.getParser().getMyself();
+        String modes = channelInfo.getUser(me).getImportantModePrefix();
+        
+        frame.addLine("channelSelfAction", modes, me.getNickname(), action);        
     }
     
     /**
@@ -207,7 +213,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             ChannelClientInfo cChannelClient, String sMessage, String sHost) {
         String source = getNick(cChannelClient, sHost);
         String modes = getModes(cChannelClient, sHost);
-        frame.addLine(Formatter.formatMessage("channelMessage", modes, source, sMessage));
+        frame.addLine("channelMessage", modes, source, sMessage);
         
     }
     
@@ -266,11 +272,10 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String modes = cChannelClient.getImportantModePrefix();
         
         if (sReason.equals("")) {
-            frame.addLine(Formatter.formatMessage("channelPart", modes, nick,
-                    cChannel.getName()));
+            frame.addLine("channelPart", modes, nick, cChannel.getName());
         } else {
-            frame.addLine(Formatter.formatMessage("channelPartReason", modes,
-                    nick, cChannel.getName(), sReason));
+            frame.addLine("channelPartReason", modes, nick, cChannel.getName(),
+                    sReason);
         }
         
         frame.removeName(cChannelClient);
@@ -295,11 +300,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String victimmodes = cKickedClient.getImportantModePrefix();
         
         if (sReason.equals("")) {
-            frame.addLine(Formatter.formatMessage("channelKick", kickermodes,
-                    kicker, victimmodes, victim, cChannel.getName()));
+            frame.addLine("channelKick", kickermodes, kicker, victimmodes,
+                    victim, cChannel.getName());
         } else {
-            frame.addLine(Formatter.formatMessage("channelKickReason", kickermodes,
-                    kicker, victimmodes, victim, cChannel.getName(), sReason));
+            frame.addLine("channelKickReason", kickermodes, kicker, victimmodes,
+                    victim, cChannel.getName(), sReason);
         }
         
         frame.removeName(cKickedClient);
@@ -318,9 +323,9 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String source = cChannelClient.getNickname();
         String modes = cChannelClient.getImportantModePrefix();
         if (sReason.equals("")) {
-            frame.addLine(Formatter.formatMessage("channelQuit", modes, source));
+            frame.addLine("channelQuit", modes, source);
         } else {
-            frame.addLine(Formatter.formatMessage("channelQuitReason", modes, source, sReason));
+            frame.addLine("channelQuitReason", modes, source, sReason);
         }
         frame.removeName(cChannelClient);
     }
@@ -333,11 +338,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param sMessage The text of the action
      * @param sHost The host of the performer (lest it wasn't an actual client)
      */
-    public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, 
+    public void onChannelAction(IRCParser tParser, ChannelInfo cChannel,
             ChannelClientInfo cChannelClient, String sMessage, String sHost) {
         String source = getNick(cChannelClient, sHost);
         String modes = getModes(cChannelClient, sHost);
-        frame.addLine(Formatter.formatMessage("channelAction", modes, source, sMessage));
+        frame.addLine("channelAction", modes, source, sMessage);
     }
     
     /**

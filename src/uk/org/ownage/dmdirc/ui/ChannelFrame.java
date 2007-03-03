@@ -38,6 +38,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
 /**
@@ -138,7 +139,17 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         if(autoScroll) {
             jTextPane1.setCaretPosition(jTextPane1.getStyledDocument().getLength());
         }
-    }    
+    }
+    
+    /**
+     * Formats the arguments using the Formatter, then adds the result to the
+     * main text area
+     * @param messageType The type of this message
+     * @param args The arguments for the message
+     */
+    public void addLine(String messageType, Object... args) {
+        addLine(Formatter.formatMessage(messageType, args));
+    }
     
     public void updateNames(ArrayList<ChannelClientInfo> newNames) {
         nicklistModel.replace(newNames);
@@ -150,7 +161,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
     
     public void removeName(ChannelClientInfo name) {
         nicklistModel.remove(name);
-    }    
+    }
     
     /** This method is called from within the constructor to
      * initialize the form.
