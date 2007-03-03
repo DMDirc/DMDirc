@@ -204,13 +204,13 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         }
     }
     
-    public void onPrivateMessage(IRCParser parser, ClientInfo client, String message, String host) {
+    public void onPrivateMessage(IRCParser parser, String message, String host) {
         if (!queries.containsKey(ClientInfo.parseHost(host))) {
             addQuery(host);
         }
     }
     
-    public void onPrivateAction(IRCParser parser, ClientInfo client, String message, String host) {
+    public void onPrivateAction(IRCParser parser, String message, String host) {
         if (!queries.containsKey(ClientInfo.parseHost(host))) {
             addQuery(host);
         }

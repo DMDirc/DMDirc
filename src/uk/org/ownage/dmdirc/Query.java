@@ -110,7 +110,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param message message received
      * @param host remote user host
      */
-    public void onPrivateMessage(IRCParser parser, ClientInfo client, String message, String host) {
+    public void onPrivateMessage(IRCParser parser, String message, String host) {
         frame.addLine("<"+ClientInfo.parseHost(host)+"> "+message);
     }
     
@@ -121,7 +121,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param message message received
      * @param host remote host
      */
-    public void onPrivateAction(IRCParser parser, ClientInfo client, String message, String host) {
+    public void onPrivateAction(IRCParser parser, String message, String host) {
         frame.addLine("* "+ClientInfo.parseHost(host)+" "+message);
     }
     
