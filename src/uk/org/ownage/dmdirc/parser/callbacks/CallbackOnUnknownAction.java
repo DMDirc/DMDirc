@@ -33,16 +33,15 @@ public class CallbackOnUnknownAction extends CallbackObject {
 	 * Callback to all objects implementing the IUnknownAction Interface.
 	 *
 	 * @see IUnknownAction
-	 * @param cClient Client who sent the action (may be null if no common channels or server)
 	 * @param sMessage Action contents
 	 * @param sTarget Actual target of action
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	public boolean call(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
+	public boolean call(String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IUnknownAction)callbackInfo.get(i)).onUnknownAction(myParser, cClient, sMessage, sTarget, sHost);
+				((IUnknownAction)callbackInfo.get(i)).onUnknownAction(myParser, sMessage, sTarget, sHost);
 			} catch (Exception e) {
 				ParserError ei = new ParserError(ParserError.errError, "Exception in onUnknownAction");
 				ei.setException(e);

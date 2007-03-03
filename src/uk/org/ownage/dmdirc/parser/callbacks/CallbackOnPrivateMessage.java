@@ -33,18 +33,17 @@ public class CallbackOnPrivateMessage extends CallbackObjectSpecific {
 	 * Callback to all objects implementing the IPrivateMessage Interface.
 	 *
 	 * @see IPrivateMessage
-	 * @param cClient Client who sent the message (may be null if no common channels or server)
 	 * @param sMessage Message contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	public boolean call(ClientInfo cClient, String sMessage, String sHost) {
+	public boolean call(String sMessage, String sHost) {
 		boolean bResult = false;
 		IPrivateMessage eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			eMethod = (IPrivateMessage)callbackInfo.get(i);
 			if (!this.isValidUser(eMethod, sHost)) { continue; }
 			try {
-				eMethod.onPrivateMessage(myParser, cClient, sMessage, sHost);
+				eMethod.onPrivateMessage(myParser, sMessage, sHost);
 			} catch (Exception e) {
 				ParserError ei = new ParserError(ParserError.errError, "Exception in onPrivateMessage");
 				ei.setException(e);

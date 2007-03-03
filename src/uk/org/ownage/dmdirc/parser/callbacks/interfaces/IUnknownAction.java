@@ -44,5 +44,5 @@ public interface IUnknownAction extends ICallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see IRCParser#callUnknownAction
 	 */
-	public void onUnknownAction(IRCParser tParser, ClientInfo cClient, String sMessage, String sTarget, String sHost );
+	public void onUnknownAction(IRCParser tParser, String sMessage, String sTarget, String sHost );
 }

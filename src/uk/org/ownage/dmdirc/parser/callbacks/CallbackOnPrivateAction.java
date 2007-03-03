@@ -33,18 +33,17 @@ public class CallbackOnPrivateAction extends CallbackObjectSpecific {
 	 * Callback to all objects implementing the IPrivateAction Interface.
 	 *
 	 * @see IPrivateAction
- 	 * @param cClient Client who sent the action (may be null if no common channels or server)
 	 * @param sMessage action contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	public boolean call(ClientInfo cClient, String sMessage, String sHost) {
+	public boolean call(String sMessage, String sHost) {
 		boolean bResult = false;
 		IPrivateAction eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			eMethod = (IPrivateAction)callbackInfo.get(i);
 			if (!this.isValidUser(eMethod, sHost)) { continue; }
 			try {
-				eMethod.onPrivateAction(myParser, cClient, sMessage, sHost);
+				eMethod.onPrivateAction(myParser, sMessage, sHost);
 			} catch (Exception e) {
 				ParserError ei = new ParserError(ParserError.errError, "Exception in onPrivateAction");
 				ei.setException(e);

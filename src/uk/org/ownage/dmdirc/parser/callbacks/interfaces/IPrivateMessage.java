@@ -43,5 +43,5 @@ public interface IPrivateMessage extends ICallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see IRCParser#callPrivateMessage
 	 */
-	public void onPrivateMessage(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );
+	public void onPrivateMessage(IRCParser tParser, String sMessage, String sHost );
 }

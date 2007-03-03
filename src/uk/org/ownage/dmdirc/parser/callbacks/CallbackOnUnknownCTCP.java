@@ -33,17 +33,16 @@ public class CallbackOnUnknownCTCP extends CallbackObject {
 	 * Callback to all objects implementing the IUnknownCTCP Interface.
 	 *
 	 * @see IUnknownCTCP
- 	 * @param cClient Client who sent the CTCP (may be null if no common channels or server)
 	 * @param sType Type of CTCP (VERSION, TIME etc)
 	 * @param sMessage Additional contents
 	 * @param sTarget Actual Target of CTCP
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	public boolean call(ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost) {
+	public boolean call(String sType, String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IUnknownCTCP)callbackInfo.get(i)).onUnknownCTCP(myParser, cClient, sType, sMessage, sTarget, sHost);
+				((IUnknownCTCP)callbackInfo.get(i)).onUnknownCTCP(myParser, sType, sMessage, sTarget, sHost);
 			} catch (Exception e) {
 				ParserError ei = new ParserError(ParserError.errError, "Exception in onUnknownCTCP");
 				ei.setException(e);

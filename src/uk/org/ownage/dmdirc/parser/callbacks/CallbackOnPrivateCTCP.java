@@ -33,19 +33,18 @@ public class CallbackOnPrivateCTCP extends CallbackObjectSpecific {
 	 * Callback to all objects implementing the IPrivateCTCP Interface.
 	 *
 	 * @see IPrivateCTCP
- 	 * @param cClient Client who sent the CTCP (may be null if no common channels or server)
 	 * @param sType Type of CTCP (VERSION, TIME etc)
 	 * @param sMessage Additional contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	public boolean call(ClientInfo cClient, String sType, String sMessage, String sHost) {
+	public boolean call(String sType, String sMessage, String sHost) {
 		boolean bResult = false;
 		IPrivateCTCP eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			eMethod = (IPrivateCTCP)callbackInfo.get(i);
 			if (!this.isValidUser(eMethod, sHost)) { continue; }
 			try {
-				eMethod.onPrivateCTCP(myParser, cClient, sType, sMessage, sHost);
+				eMethod.onPrivateCTCP(myParser, sType, sMessage, sHost);
 			} catch (Exception e) {
 				ParserError ei = new ParserError(ParserError.errError, "Exception in onPrivateCTCP");
 				ei.setException(e);

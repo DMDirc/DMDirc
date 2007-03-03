@@ -33,17 +33,16 @@ public class CallbackOnUnknownCTCPReply extends CallbackObject {
 	 * Callback to all objects implementing the IUnknownCTCPReply Interface.
 	 *
 	 * @see IUnknownCTCPReply
- 	 * @param cClient Client who sent the CTCPReply (may be null if no common channels or server)
 	 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 	 * @param sMessage Reply Contents
 	 * @param sTarget Actual Target of CTCPReply
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	public boolean call(ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost) {
+	public boolean call(String sType, String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IUnknownCTCPReply)callbackInfo.get(i)).onUnknownCTCPReply(myParser, cClient, sType, sMessage, sTarget, sHost);
+				((IUnknownCTCPReply)callbackInfo.get(i)).onUnknownCTCPReply(myParser, sType, sMessage, sTarget, sHost);
 			} catch (Exception e) {
 				ParserError ei = new ParserError(ParserError.errError, "Exception in onUnknownCTCPReply");
 				ei.setException(e);

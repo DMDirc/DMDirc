@@ -43,5 +43,5 @@ public interface IPrivateAction extends ICallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see IRCParser#callPrivateAction
 	 */
-	public void onPrivateAction(IRCParser tParser, ClientInfo cClient, String sMessage, String sHost );
+	public void onPrivateAction(IRCParser tParser, String sMessage, String sHost );
 }

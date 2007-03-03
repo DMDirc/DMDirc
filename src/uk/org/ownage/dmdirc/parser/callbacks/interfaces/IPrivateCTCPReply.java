@@ -44,5 +44,5 @@ public interface IPrivateCTCPReply extends ICallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see IRCParser#callPrivateCTCPReply
 	 */
-	public void onPrivateCTCPReply(IRCParser tParser, ClientInfo cClient, String sType, String sMessage, String sHost );
+	public void onPrivateCTCPReply(IRCParser tParser, String sType, String sMessage, String sHost );
 }

@@ -536,13 +536,12 @@ public class IRCParser implements Runnable {
 	 * Callback to all objects implementing the PrivateAction Callback.
 	 *
 	 * @see IPrivateAction
- 	 * @param cClient Client who sent the action (may be null if no common channels or server)
 	 * @param sMessage action contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callPrivateAction(ClientInfo cClient, String sMessage, String sHost) {
+	protected boolean callPrivateAction(String sMessage, String sHost) {
 		CallbackOnPrivateAction cb = (CallbackOnPrivateAction)myCallbackManager.getCallbackType("OnPrivateAction");
-		if (cb != null) { return cb.call(cClient, sMessage, sHost); }
+		if (cb != null) { return cb.call(sMessage, sHost); }
 		return false;
 	}
 
@@ -550,14 +549,13 @@ public class IRCParser implements Runnable {
 	 * Callback to all objects implementing the PrivateCTCP Callback.
 	 *
 	 * @see IPrivateCTCP
- 	 * @param cClient Client who sent the CTCP (may be null if no common channels or server)
 	 * @param sType Type of CTCP (VERSION, TIME etc)
 	 * @param sMessage Additional contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callPrivateCTCP(ClientInfo cClient, String sType, String sMessage, String sHost) {
+	protected boolean callPrivateCTCP(String sType, String sMessage, String sHost) {
 		CallbackOnPrivateCTCP cb = (CallbackOnPrivateCTCP)myCallbackManager.getCallbackType("OnPrivateCTCP");
-		if (cb != null) { return cb.call(cClient, sType, sMessage, sHost); }
+		if (cb != null) { return cb.call(sType, sMessage, sHost); }
 		return false;
 	}
 
@@ -565,14 +563,13 @@ public class IRCParser implements Runnable {
 	 * Callback to all objects implementing the PrivateCTCPReply Callback.
 	 *
 	 * @see IPrivateCTCPReply
- 	 * @param cClient Client who sent the CTCPReply (may be null if no common channels or server)
 	 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 	 * @param sMessage Reply Contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callPrivateCTCPReply(ClientInfo cClient, String sType, String sMessage, String sHost) {
+	protected boolean callPrivateCTCPReply(String sType, String sMessage, String sHost) {
 		CallbackOnPrivateCTCPReply cb = (CallbackOnPrivateCTCPReply)myCallbackManager.getCallbackType("OnPrivateCTCPReply");
-		if (cb != null) { return cb.call(cClient, sType, sMessage, sHost); }
+		if (cb != null) { return cb.call(sType, sMessage, sHost); }
 		return false;
 	}
 
@@ -580,13 +577,12 @@ public class IRCParser implements Runnable {
 	 * Callback to all objects implementing the PrivateMessage Callback.
 	 *
 	 * @see IPrivateMessage
-	 * @param cClient Client who sent the message (may be null if no common channels or server)
 	 * @param sMessage Message contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callPrivateMessage(ClientInfo cClient, String sMessage, String sHost) {
+	protected boolean callPrivateMessage(String sMessage, String sHost) {
 		CallbackOnPrivateMessage cb = (CallbackOnPrivateMessage)myCallbackManager.getCallbackType("OnPrivateMessage");
-		if (cb != null) { return cb.call(cClient, sMessage, sHost); }
+		if (cb != null) { return cb.call(sMessage, sHost); }
 		return false;
 	}
 
@@ -594,13 +590,12 @@ public class IRCParser implements Runnable {
 	 * Callback to all objects implementing the PrivateNotice Callback.
 	 *
 	 * @see IPrivateNotice
-	 * @param cClient Client who sent the notice (may be null if no common channels or server)
 	 * @param sMessage Notice contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callPrivateNotice(ClientInfo cClient, String sMessage, String sHost) {
+	protected boolean callPrivateNotice(String sMessage, String sHost) {
 		CallbackOnPrivateNotice cb = (CallbackOnPrivateNotice)myCallbackManager.getCallbackType("OnPrivateNotice");
-		if (cb != null) { return cb.call(cClient, sMessage, sHost); }
+		if (cb != null) { return cb.call(sMessage, sHost); }
 		return false;
 	}
 
@@ -632,14 +627,13 @@ public class IRCParser implements Runnable {
 	 * Callback to all objects implementing the UnknownAction Callback.
 	 *
 	 * @see IUnknownAction
-	 * @param cClient Client who sent the action (may be null if no common channels or server)
 	 * @param sMessage Action contents
 	 * @param sTarget Actual target of action
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callUnknownAction(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
+	protected boolean callUnknownAction(String sMessage, String sTarget, String sHost) {
 		CallbackOnUnknownAction cb = (CallbackOnUnknownAction)myCallbackManager.getCallbackType("OnUnknownAction");
-		if (cb != null) { return cb.call(cClient, sMessage, sTarget, sHost); }
+		if (cb != null) { return cb.call(sMessage, sTarget, sHost); }
 		return false;
 	}
 
@@ -647,15 +641,14 @@ public class IRCParser implements Runnable {
 	 * Callback to all objects implementing the UnknownCTCP Callback.
 	 *
 	 * @see IUnknownCTCP
- 	 * @param cClient Client who sent the CTCP (may be null if no common channels or server)
 	 * @param sType Type of CTCP (VERSION, TIME etc)
 	 * @param sMessage Additional contents
 	 * @param sTarget Actual Target of CTCP
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callUnknownCTCP(ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost) {
+	protected boolean callUnknownCTCP(String sType, String sMessage, String sTarget, String sHost) {
 		CallbackOnUnknownCTCP cb = (CallbackOnUnknownCTCP)myCallbackManager.getCallbackType("OnUnknownCTCP");
-		if (cb != null) { return cb.call(cClient, sType, sMessage, sTarget, sHost); }
+		if (cb != null) { return cb.call(sType, sMessage, sTarget, sHost); }
 		return false;
 	}
 
@@ -663,15 +656,14 @@ public class IRCParser implements Runnable {
 	 * Callback to all objects implementing the UnknownCTCPReply Callback.
 	 *
 	 * @see IUnknownCTCPReply
- 	 * @param cClient Client who sent the CTCPReply (may be null if no common channels or server)
 	 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 	 * @param sMessage Reply Contents
 	 * @param sTarget Actual Target of CTCPReply
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callUnknownCTCPReply(ClientInfo cClient, String sType, String sMessage, String sTarget, String sHost) {
+	protected boolean callUnknownCTCPReply(String sType, String sMessage, String sTarget, String sHost) {
 		CallbackOnUnknownCTCPReply cb = (CallbackOnUnknownCTCPReply)myCallbackManager.getCallbackType("OnUnknownCTCPReply");
-		if (cb != null) { return cb.call(cClient, sType, sMessage, sTarget, sHost); }
+		if (cb != null) { return cb.call(sType, sMessage, sTarget, sHost); }
 		return false;
 	}
 
@@ -679,14 +671,13 @@ public class IRCParser implements Runnable {
 	 * Callback to all objects implementing the UnknownMessage Callback.
 	 *
 	 * @see IUnknownMessage
-	 * @param cClient Client who sent the message (may be null if no common channels or server)
 	 * @param sMessage Message contents
 	 * @param sTarget Actual target of message
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callUnknownMessage(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
+	protected boolean callUnknownMessage(String sMessage, String sTarget, String sHost) {
 		CallbackOnUnknownMessage cb = (CallbackOnUnknownMessage)myCallbackManager.getCallbackType("OnUnknownMessage");
-		if (cb != null) { return cb.call(cClient, sMessage, sTarget, sHost); }
+		if (cb != null) { return cb.call(sMessage, sTarget, sHost); }
 		return false;
 	}
 
@@ -694,14 +685,13 @@ public class IRCParser implements Runnable {
 	 * Callback to all objects implementing the UnknownNotice Callback.
 	 *
 	 * @see IUnknownNotice
-	 * @param cClient Client who sent the notice (may be null if no common channels or server)
 	 * @param sMessage Notice contents
 	 * @param sTarget Actual target of notice
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callUnknownNotice(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
+	protected boolean callUnknownNotice(String sMessage, String sTarget, String sHost) {
 		CallbackOnUnknownNotice cb = (CallbackOnUnknownNotice)myCallbackManager.getCallbackType("OnUnknownNotice");
-		if (cb != null) { return cb.call(cClient, sMessage, sTarget, sHost); }
+		if (cb != null) { return cb.call(sMessage, sTarget, sHost); }
 		return false;
 	}
 
@@ -1376,8 +1366,6 @@ public class IRCParser implements Runnable {
 		boolean isAction = false;
 		boolean isCTCP = false;
 		
-		iClient = getClientInfo(token[0]);
-
 		if (sParam.equalsIgnoreCase("PRIVMSG")) {
 			if (bits[0].equalsIgnoreCase(Char1+"ACTION") && Character.valueOf(sMessage.charAt(sMessage.length()-1)).equals(Char1)) {
 				isAction = true;
@@ -1395,6 +1383,7 @@ public class IRCParser implements Runnable {
 		}
 
 		if (isValidChannelName(token[2])) {
+			iClient = getClientInfo(token[0]);
 			iChannel = getChannelInfo(token[2]);
 			if (iClient != null && iChannel != null) { iChannelClient = iChannel.getUser(iClient); }
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
@@ -1418,18 +1407,18 @@ public class IRCParser implements Runnable {
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
 				if (!isAction) {
 					if (isCTCP) {
-						callPrivateCTCP(iClient, sCTCP, sMessage, token[0]);
+						callPrivateCTCP(sCTCP, sMessage, token[0]);
 					} else {
-						callPrivateMessage(iClient, sMessage, token[0]);
+						callPrivateMessage(sMessage, token[0]);
 					}
 				} else {
-					callPrivateAction(iClient, sMessage, token[0]);
+					callPrivateAction(sMessage, token[0]);
 				}
 			} else if (sParam.equalsIgnoreCase("NOTICE")) {
 				if (isCTCP) {
-					callPrivateCTCPReply(iClient, sCTCP, sMessage, token[0]);
+					callPrivateCTCPReply(sCTCP, sMessage, token[0]);
 				} else {
-					callPrivateNotice(iClient, sMessage, token[0]);
+					callPrivateNotice(sMessage, token[0]);
 				}
 			}
 		} else {
@@ -1437,18 +1426,18 @@ public class IRCParser implements Runnable {
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
 				if (!isAction) {
 					if (isCTCP) {
-						callUnknownCTCP(iClient, sCTCP, sMessage, token[2], token[0]);
+						callUnknownCTCP(sCTCP, sMessage, token[2], token[0]);
 					} else {
-						callUnknownMessage(iClient, sMessage, token[2], token[0]);
+						callUnknownMessage(sMessage, token[2], token[0]);
 					}
 				} else {
-					callUnknownAction(iClient, sMessage, token[2], token[0]);
+					callUnknownAction(sMessage, token[2], token[0]);
 				}
 			} else if (sParam.equalsIgnoreCase("NOTICE")) {
 				if (isCTCP) {
-					callUnknownCTCPReply(iClient, sCTCP, sMessage, token[2], token[0]);
+					callUnknownCTCPReply(sCTCP, sMessage, token[2], token[0]);
 				} else {
-					callUnknownNotice(iClient, sMessage, token[2], token[0]);
+					callUnknownNotice(sMessage, token[2], token[0]);
 				}
 			}
 		}

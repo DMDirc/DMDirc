@@ -33,16 +33,15 @@ public class CallbackOnUnknownNotice extends CallbackObject {
 	 * Callback to all objects implementing the IUnknownNotice Interface.
 	 *
 	 * @see IUnknownNotice
-	 * @param cClient Client who sent the notice (may be null if no common channels or server)
 	 * @param sMessage Notice contents
 	 * @param sTarget Actual target of notice
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	public boolean call(ClientInfo cClient, String sMessage, String sTarget, String sHost) {
+	public boolean call(String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IUnknownNotice)callbackInfo.get(i)).onUnknownNotice(myParser, cClient, sMessage, sTarget, sHost);
+				((IUnknownNotice)callbackInfo.get(i)).onUnknownNotice(myParser, sMessage, sTarget, sHost);
 			} catch (Exception e) {
 				ParserError ei = new ParserError(ParserError.errError, "Exception in onUnknownNotice");
 				ei.setException(e);
