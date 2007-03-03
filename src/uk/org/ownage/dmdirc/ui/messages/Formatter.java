@@ -57,7 +57,13 @@ public class Formatter {
      */
     public static String formatMessage(String messageType, Object... arguments) {
         if (properties == null) initialise();
-        return String.format(properties.getProperty(messageType), arguments);
+        
+        if (properties.containsKey(messageType)) {
+                return String.format(properties.getProperty(messageType), arguments);
+        } else {
+            Logger.error(ErrorLevel.ERROR, "Format string not found: "+messageType);
+            return "<No format string for message type "+messageType+">";
+        }
     }
     
     /**
@@ -66,8 +72,22 @@ public class Formatter {
      */
     private static Properties getDefaults() {
         Properties properties = new Properties();
+        
+        char colour = 3;
+        char stop = 15;
+        
         properties.setProperty("channelMessage", "<%1$s%2$s> %3$s");
-        properties.setProperty("channelAction", (char)3 + "6* %1$s%2$s %3$s");
+        properties.setProperty("channelAction", colour+"6* %1$s%2$s %3$s");
+        
+        properties.setProperty("channelJoin", colour+"3* %2$s has joined %3$s.");
+        properties.setProperty("channelPart", colour+"3* %1$s%2$s has left %3$s.");
+        properties.setProperty("channelPartReason", colour+"3* %1$s%2$s has left %3$s (%4$s"+stop+").");
+        properties.setProperty("channelQuit", colour+"2* %1$s%2$s has quit IRC.");
+        properties.setProperty("channelQuitReason", colour+"2* %1$s%2$s has quit IRC (%3$s"+stop+").");        
+        
+        properties.setProperty("channelKick", colour+"3* %1$s%2$s has kicked %3$s%4$s from %5$s.");
+        properties.setProperty("channelKickReason", colour+"3* %1$s%2$s has kicked %3$s%4$s from %5$s (%6$s"+stop+").");
+        
         return properties;
     }
     

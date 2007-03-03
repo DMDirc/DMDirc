@@ -28,6 +28,7 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
@@ -98,6 +99,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void sendLine(String line) {
         channelInfo.sendMessage(line);
         frame.addLine("> "+line);
+        // TODO: Use formatter
     }
     
     /**
@@ -108,6 +110,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void sendAction(String action) {
         channelInfo.sendAction(action);
         frame.addLine("*> "+action);
+        // TODO: Use formatter
     }
     
     /**
@@ -165,6 +168,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void part(String reason) {
         server.getParser().partChannel(channelInfo.getName(), reason);
         frame.addLine("* You have left the channel.");
+        // TODO: Use formatter
     }
     
     /**
@@ -201,15 +205,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel,
             ChannelClientInfo cChannelClient, String sMessage, String sHost) {
-        String source;
-        String modes;
-        if (cChannelClient == null) {
-            source = sHost;
-            modes = "";
-        } else {
-            source = cChannelClient.getNickname();
-            modes = cChannelClient.getImportantModePrefix();
-        }
+        String source = getNick(cChannelClient, sHost);
+        String modes = getModes(cChannelClient, sHost);
         frame.addLine(Formatter.formatMessage("channelMessage", modes, source, sMessage));
         
     }
@@ -238,7 +235,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         } else {
             frame.addLine("* "+cChannel.getTopicUser()+" has changed the topic to '"+cChannel.getTopic()+"'");
         }
-        
+        // TODO: Use formatter
         updateTitle();
     }
     
@@ -252,6 +249,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void onChannelJoin(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
         frame.addLine("* "+cChannelClient.getNickname()+" has joined the channel");
         frame.addName(cChannelClient);
+        // TODO: Use formatter
     }
     
     /**
@@ -262,12 +260,19 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param cChannelClient The client that just parted
      * @param sReason The reason specified when the client parted
      */
-    public void onChannelPart(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
+    public void onChannelPart(IRCParser tParser, ChannelInfo cChannel,
+            ChannelClientInfo cChannelClient, String sReason) {
+        String nick = cChannelClient.getNickname();
+        String modes = cChannelClient.getImportantModePrefix();
+        
         if (sReason.equals("")) {
-            frame.addLine("* "+cChannelClient+" has left the channel");
+            frame.addLine(Formatter.formatMessage("channelPart", modes, nick,
+                    cChannel.getName()));
         } else {
-            frame.addLine("* "+cChannelClient+" has left the channel ("+sReason+")");
+            frame.addLine(Formatter.formatMessage("channelPartReason", modes,
+                    nick, cChannel.getName(), sReason));
         }
+        
         frame.removeName(cChannelClient);
     }
     
@@ -284,13 +289,19 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void onChannelKick(IRCParser tParser, ChannelInfo cChannel,
             ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient,
             String sReason, String sKickedByHost) {
-        String kicker;
-        if (cKickedByClient == null) {
-            kicker = sKickedByHost;
+        String kicker = getNick(cKickedByClient, sKickedByHost);
+        String kickermodes = getModes(cKickedByClient, sKickedByHost);
+        String victim = cKickedClient.getNickname();
+        String victimmodes = cKickedClient.getImportantModePrefix();
+        
+        if (sReason.equals("")) {
+            frame.addLine(Formatter.formatMessage("channelKick", kickermodes,
+                    kicker, victimmodes, victim, cChannel.getName()));
         } else {
-            kicker = cKickedByClient.toString();
+            frame.addLine(Formatter.formatMessage("channelKickReason", kickermodes,
+                    kicker, victimmodes, victim, cChannel.getName(), sReason));
         }
-        frame.addLine("* "+cKickedClient+" was kicked by "+kicker+": "+sReason);
+        
         frame.removeName(cKickedClient);
     }
     
@@ -302,8 +313,15 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param cChannelClient A reference to the client that has quit
      * @param sReason The reason specified in the client's quit message
      */
-    public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
-        frame.addLine("* "+cChannelClient+" has quit IRC ("+sReason+")");
+    public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel,
+            ChannelClientInfo cChannelClient, String sReason) {
+        String source = cChannelClient.getNickname();
+        String modes = cChannelClient.getImportantModePrefix();
+        if (sReason.equals("")) {
+            frame.addLine(Formatter.formatMessage("channelQuit", modes, source));
+        } else {
+            frame.addLine(Formatter.formatMessage("channelQuitReason", modes, source, sReason));
+        }
         frame.removeName(cChannelClient);
     }
     
@@ -315,17 +333,41 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param sMessage The text of the action
      * @param sHost The host of the performer (lest it wasn't an actual client)
      */
-    public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
-        String source;
-        String modes;
-        if (cChannelClient == null) {
-            source = sHost;
-            modes = "";
-        } else {
-            source = cChannelClient.getNickname();
-            modes = cChannelClient.getImportantModePrefix();
-        }
+    public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, 
+            ChannelClientInfo cChannelClient, String sMessage, String sHost) {
+        String source = getNick(cChannelClient, sHost);
+        String modes = getModes(cChannelClient, sHost);
         frame.addLine(Formatter.formatMessage("channelAction", modes, source, sMessage));
+    }
+    
+    /**
+     * Returns a string containing the most important mode for the specified client
+     * @param channelClient The channel client to check
+     * @param host The hostname to check if the channel client doesn't exist
+     * @return A string containing the most important mode, or an empty string
+     * if there are no (known) modes.
+     */
+    private String getModes(ChannelClientInfo channelClient, String host) {
+        if (channelInfo == null) {
+            return "";
+        } else {
+            return channelClient.getImportantModePrefix();
+        }
+    }
+    
+    /**
+     * Returns a string containing the nickname, or other appropriate portion
+     * of the host for displaying (e.g. server name)
+     * @param channelClient The channel client to check
+     * @param host The hostname to check if the channel client doesn't exist
+     * @return A string containing a displayable name
+     */
+    private String getNick(ChannelClientInfo channelClient, String host) {
+        if (channelInfo == null) {
+            return ClientInfo.parseHost(host);
+        } else {
+            return channelClient.getNickname();
+        }
     }
     
     /**
