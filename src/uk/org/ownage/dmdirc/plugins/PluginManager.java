@@ -31,17 +31,36 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Properties;
 
+/**
+ * Managers plugins for the client, also forwards events from the client or irc
+ * to the plugins as required
+ */
 public class PluginManager {
     
+    /**
+     * list of plugins currently loaded
+     */
     private Hashtable<String, AbstractPlugin> loadedPlugins = null;
     
-    public PluginManager(IRCParser parser) {
+    /**
+     * Creates a new plugin manager
+     */
+    public PluginManager() {
 	loadedPlugins = new Hashtable<String, AbstractPlugin>();
     }
     
+    /**
+     * forwards callbacks to the plugins
+     */
     public void forwardCallback() {
     }
     
+    /**
+     * Adds a new plugin to the loaded plugins list
+     * @param pluginClassName plugin name
+     * @param plugin boolean success
+     * @return plugin instance
+     */
     public boolean addPlugin(String pluginClassName, AbstractPlugin plugin) {
 	if( !loadedPlugins.containsKey(pluginClassName) ) {
 	    loadedPlugins.put(pluginClassName,plugin);
@@ -54,6 +73,12 @@ public class PluginManager {
 	return true;
     }
     
+    /**
+     * Removes a plugin from the loaded plugins list, unloading the plugin class
+     * as it does so
+     * @param plugin boolean success
+     * @return plugin to remove
+     */
     protected synchronized boolean removePlugin(AbstractPlugin plugin) {
 	if(loadedPlugins.contains(plugin) ) {
 	    
@@ -70,17 +95,15 @@ public class PluginManager {
 	return false;
     }
     
+    /**
+     * Calls a plugins onunload events and removes it from the loaded plugins list
+     * @param pluginClassName classname of the plugin to stop
+     */
     public void stopPlugin(String pluginClassName) {
 	AbstractPlugin plugin = null;
 	
 	if( loadedPlugins.containsKey(pluginClassName) ) {
 	    plugin = loadedPlugins.get(pluginClassName);
-	    plugin.onUnload();
-	    plugin.stopPlugin();
-	}
-    }
-    public void stopPlugin(AbstractPlugin plugin) {
-	if( loadedPlugins.contains(plugin) ) {
 	    plugin.onUnload();
 	    plugin.stopPlugin();
 	}
