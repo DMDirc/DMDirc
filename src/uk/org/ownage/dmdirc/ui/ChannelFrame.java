@@ -32,6 +32,8 @@ import java.util.Date;
 import javax.swing.JScrollBar;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
@@ -139,6 +141,24 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
                     
                     MainFrame.getMainFrame().setMaximised(false);
                 }
+            }
+        });
+        
+        addInternalFrameListener(new InternalFrameListener() {
+            public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
+                jTextField1.requestFocus();
+            }
+            public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
+            }
+            public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
+            }
+            public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
+            }
+            public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
+            }
+            public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
+            }
+            public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
             }
         });
     }

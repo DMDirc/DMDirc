@@ -25,6 +25,8 @@ package uk.org.ownage.dmdirc.ui;
 import java.awt.Dimension;
 import java.util.Date;
 import javax.swing.JScrollBar;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import uk.org.ownage.dmdirc.Server;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -136,6 +138,24 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
                     
                     MainFrame.getMainFrame().setMaximised(false);
                 }
+            }
+        });
+        
+        addInternalFrameListener(new InternalFrameListener() {
+            public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
+                jTextField1.requestFocus();
+            }
+            public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
+            }
+            public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
+            }
+            public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
+            }
+            public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
+            }
+            public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
+            }
+            public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
             }
         });
         
