@@ -139,7 +139,7 @@ public class ChannelInfo {
 		cTemp = getUser(cClient);
 		if (cTemp == null) { 
 			cTemp = new ChannelClientInfo(myParser,cClient);
-			hChannelUserList.put(cTemp.getNickname(),cTemp);
+			hChannelUserList.put(cTemp.getNickname().toLowerCase(),cTemp);
 		}
 		return cTemp;
 	}

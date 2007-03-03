@@ -38,7 +38,6 @@ import javax.net.ssl.SSLSocket;
 import javax.net.ssl.X509TrustManager;
 import javax.net.ssl.TrustManager;
 import javax.net.SocketFactory;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Enumeration;
@@ -164,7 +163,7 @@ public class IRCParser implements Runnable {
 	
 	/**
 	 * Hashtable storing known non-boolean chan modes (klbeI etc).
-	 * Non Boolean Modes (for Channels) are stored together in this arraylist, the value param
+	 * Non Boolean Modes (for Channels) are stored together in this hashtable, the value param
 	 * is used to show the type of variable. (List (1), Param just for set (2), Param for Set and Unset (2+4=6))<br><br>
 	 *<br>
 	 * see cmList<br>
@@ -242,6 +241,14 @@ public class IRCParser implements Runnable {
 			return callDebugInfo(ndGeneral, String.format(data, args));
 		} catch (Exception e) { return false; }
 	}
+	
+	/** Ignore List */
+	protected RegexStringList myIgnoreList = new RegexStringList();
+	
+	/**
+	 * Get a reference to the ignorelist
+	 */
+	public RegexStringList getIgnoreList() { return myIgnoreList; }
 	
 	/**
 	 * Callback to all objects implementing the ChannelAction Callback.
@@ -1356,11 +1363,18 @@ public class IRCParser implements Runnable {
 	 * @param token IRCTokenised Array of the incomming line
 	 */	
 	private void processIRCMessage(String sParam, String token[]) {
+		// Ignore people!
+		String bits[] = token[0].split(":",2);
+		String sMessage = "";
+		if (bits.length > 1) { sMessage = bits[1]; } else { sMessage = bits[0]; }
+		
+		if (myIgnoreList.matches(sMessage) > -1) { return; }
+		
 		ChannelClientInfo iChannelClient = null;
 		ChannelInfo iChannel = null;
 		ClientInfo iClient = null;
-		String sMessage = token[token.length-1];
-		String[] bits = sMessage.split(" ", 2);
+		sMessage = token[token.length-1];
+		bits = sMessage.split(" ", 2);
 		Character Char1 = Character.valueOf((char)1);
 		String sCTCP = "";
 		boolean isAction = false;
@@ -1540,6 +1554,10 @@ public class IRCParser implements Runnable {
 			String sReason = "";
 			if (token.length > 3) { sReason = token[token.length-1]; }
 			iChannelClient = iChannel.getUser(iClient);
+			if (iChannelClient == null) {
+				callErrorInfo(new ParserError(errWarning, "Got part for channel ("+token[2]+") for a non-existant user. [User: "+token[0]+"]"));
+				return;
+			}
 			callChannelPart(iChannel,iChannelClient,sReason);
 			iChannel.delClient(iClient);
 			if (iClient == cMyself) {
