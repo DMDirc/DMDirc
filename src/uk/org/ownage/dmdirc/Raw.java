@@ -84,6 +84,9 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener {
         frame.setVisible(false);
         MainFrame.getMainFrame().delChild(frame);
         frame = null;
+        
+        server.delRaw();
+        
         server = null;
     }
     
