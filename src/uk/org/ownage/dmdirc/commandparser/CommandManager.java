@@ -26,6 +26,7 @@ import java.util.Vector;
 import uk.org.ownage.dmdirc.commandparser.commands.*;
 import uk.org.ownage.dmdirc.commandparser.commands.server.*;
 import uk.org.ownage.dmdirc.commandparser.commands.channel.*;
+import uk.org.ownage.dmdirc.commandparser.commands.query.*;
 
 /**
  * The command manager creates and manages a single instance of all commands,
@@ -94,6 +95,9 @@ public class CommandManager {
     static void loadQueryCommands(QueryCommandParser parser) {
         if (queryCommands == null)    {
             queryCommands = new Vector<Command>(0,1);
+            
+            queryCommands.add(new QueryMe());
+            queryCommands.add(new QueryMeEmpty());
         }
         
         for (Command com : queryCommands) {
@@ -141,20 +145,31 @@ public class CommandManager {
         return null;
     }
     
-    public static Vector<Command> getServerCommands() {
-        if (serverCommands == null) {
-            return null;
-        }
-        
+    /**
+     * Returns a Vector containing the server commands that have been initialised
+     * by this command manager
+     * @return A Vector of server commands, or null if none have been loaded
+     */
+    public static Vector<Command> getServerCommands() {       
         return serverCommands;
     }
     
-    public static Vector<Command> getChannelCommands() {
-        if (channelCommands == null) {
-            return null;
-        }
-        
+    /**
+     * Returns a Vector containing the channel commands that have been initialised
+     * by this command manager
+     * @return A Vector of channel commands, or null if none have been loaded
+     */    
+    public static Vector<Command> getChannelCommands() {       
         return channelCommands;
     }
+    
+    /**
+     * Returns a Vector containing the query commands that have been initialised
+     * by this command manager
+     * @return A Vector of query commands, or null if none have been loaded
+     */    
+    public static Vector<Command> getQueryCommands() {       
+        return queryCommands;
+    }    
     
 }

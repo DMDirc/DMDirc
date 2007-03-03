@@ -28,13 +28,14 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
 /**
- *
+ * The join command allows users to join a channel, or a comma-seperated list
+ * of channels.
  * @author chris
  */
 public class Join extends ServerCommand {
     
     /**
-     * Creates a new instance of QuitDefault
+     * Creates a new instance of Join
      */
     public Join () {
         description = "Joins the specified channel. Multiple channels may be seperated by commas.";
@@ -44,7 +45,13 @@ public class Join extends ServerCommand {
         name = "join";
         show = true;
     }
-    
+
+    /**
+     * Executes this command
+     * @param origin The frame in which this command was issued
+     * @param server The server object that this command is associated with
+     * @param args The user supplied arguments
+     */    
     public void execute(CommandWindow origin, Server server, String... args) {
         server.getParser().joinChannel(args[0]);
     }

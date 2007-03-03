@@ -29,15 +29,18 @@ import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 import uk.org.ownage.dmdirc.ui.ChannelFrame;
+import uk.org.ownage.dmdirc.ui.QueryFrame;
 
 /**
- *
+ * The help command shows the user a list of available commands, along with
+ * their arguments, and a description. It is context-aware, so channel commands
+ * are only displayed when in a channel window, for example.
  * @author chris
  */
 public class Help extends ServerCommand {
     
     /**
-     * Creates a new instance of QuitDefault
+     * Creates a new instance of Help
      */
     public Help() {
         description = "Displays usage information for all implemented commands";
@@ -48,6 +51,12 @@ public class Help extends ServerCommand {
         show = true;
     }
     
+    /**
+     * Executes this command
+     * @param origin The frame in which this command was issued
+     * @param server The server object that this command is associated with
+     * @param args The user supplied arguments
+     */    
     public void execute(CommandWindow origin, Server server, String... args) {
         origin.addLine("-- Server commands ----------------------------------");
         for (Command com : CommandManager.getServerCommands()) {
@@ -58,6 +67,14 @@ public class Help extends ServerCommand {
         if (origin instanceof ChannelFrame) {
             origin.addLine("-- Channel commands ---------------------------------");
             for (Command com : CommandManager.getChannelCommands()) {
+                if (com.showInHelp()) {
+                    origin.addLine(com.getHelp());
+                }
+            }
+        }
+        if (origin instanceof QueryFrame) {
+            origin.addLine("-- Query commands -----------------------------------");
+            for (Command com : CommandManager.getQueryCommands()) {
                 if (com.showInHelp()) {
                     origin.addLine(com.getHelp());
                 }

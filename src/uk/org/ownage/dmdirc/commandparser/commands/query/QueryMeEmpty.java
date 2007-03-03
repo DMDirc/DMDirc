@@ -20,43 +20,40 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.server;
+package uk.org.ownage.dmdirc.commandparser.commands.query;
 
+import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
+import uk.org.ownage.dmdirc.commandparser.QueryCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
 /**
- * Represents the quit/0 command (i.e., a quit with no arguments). Reads the
- * default quit message from the config file and calls the normal quit command
- * with it as an argument.
+ * Represents the /me command used in a query window, with no parameters.
+ * Informs the user of the correct usage
  * @author chris
  */
-public class QuitDefault extends ServerCommand {
+public class QueryMeEmpty extends QueryCommand {
     
-    /**
-     * Creates a new instance of QuitDefault
-     */
-    public QuitDefault() {
-        description = "Quits DMDirc, sending a default quit message to all servers";
+    /** Creates a new instance of QueryMeEmpty */
+    public QueryMeEmpty() {
+        description = "informs the user of the correct usage of the me command";
         arguments = "";
         polyadic = false;
         arity = 0;
-        name = "quit";
-        show = true;
+        name = "me";
+        show = false;
     }
     
     /**
      * Executes this command
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
+     * @param query The query object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(CommandWindow origin, Server server, String... args) {
-        String def = Config.getOption("general","quitmessage");
-        CommandManager.getServerCommad("quit").execute(origin, server, def);
+    public void execute(CommandWindow origin, Server server, Query query, String... args) {
+        origin.addLine("Usage: "+Config.getOption("general","commandchar")+"me <action>");
     }
     
 }

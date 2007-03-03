@@ -20,43 +20,38 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.server;
+package uk.org.ownage.dmdirc.commandparser.commands.query;
 
-import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
+import uk.org.ownage.dmdirc.commandparser.QueryCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
 /**
- * Represents the quit/0 command (i.e., a quit with no arguments). Reads the
- * default quit message from the config file and calls the normal quit command
- * with it as an argument.
+ * Represents the /me command used in a query window.
  * @author chris
  */
-public class QuitDefault extends ServerCommand {
+public class QueryMe extends QueryCommand {
     
-    /**
-     * Creates a new instance of QuitDefault
-     */
-    public QuitDefault() {
-        description = "Quits DMDirc, sending a default quit message to all servers";
-        arguments = "";
-        polyadic = false;
+    /** Creates a new instance of QueryMe */
+    public QueryMe() {
+        description = "sends an action to the query receipient";
+        arguments = "<action>";
+        polyadic = true;
         arity = 0;
-        name = "quit";
+        name = "me";
         show = true;
     }
-    
+
     /**
      * Executes this command
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
+     * @param query The query object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(CommandWindow origin, Server server, String... args) {
-        String def = Config.getOption("general","quitmessage");
-        CommandManager.getServerCommad("quit").execute(origin, server, def);
+    public void execute(CommandWindow origin, Server server, Query query, String... args) {
+        query.sendAction(implodeArgs(args));
     }
     
 }
