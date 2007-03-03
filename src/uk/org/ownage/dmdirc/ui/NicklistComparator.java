@@ -54,9 +54,9 @@ public class NicklistComparator implements Comparator<ChannelClientInfo> {
         String nickname2 = client2.getNickname();
         
         if (sortByMode) {
-            if (client1.getImportantMode() > client2.getImportantMode()) {
+            if (client1.getImportantModeValue() > client2.getImportantModeValue()) {
                 return -1;
-            } else if (client1.getImportantMode() < client2.getImportantMode()) {
+            } else if (client1.getImportantModeValue() < client2.getImportantModeValue()) {
                 return 1;
             }
         }

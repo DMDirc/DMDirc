@@ -112,10 +112,9 @@ public class ChannelClientInfo {
 	 * Get the value of the most important mode this client has (Prefix modes).
 	 * A higher value, is a more important mode, 0 = no modes.
 	 *
-	 * @return integer representing the value of the mose important mode.
+	 * @return integer representing the value of the most important mode.
 	 */
-	public int getImportantMode() {
-//		for (int i = 1; i < myParser.nNextKeyPrefix; i = i*2) {
+	public int getImportantModeValue() {
 		for (int i = myParser.nNextKeyPrefix; i > 0; i = i/2) {
 			if ((nModes & i) == i) { return i; }
 		}
@@ -123,13 +122,35 @@ public class ChannelClientInfo {
 	}
 	
 	/**
+	 * Get the most important mode this client has (o, v etc).
+	 *
+	 * @return char representing the most important mode.
+	 */
+	public char getImportantMode() {
+		String sModes = this.getChanModeStr(false);
+		if (!sModes.equals("")) { sModes = ""+sModes.charAt(0); }
+		return sModes;
+	}
+
+	/**
+	 * Get the most important prefix this client has (o, v etc).
+	 *
+	 * @return char representing the most important mode prefix.
+	 */
+	public char getImportantModePrefix() {
+		String sModes = this.getChanModeStr(true);
+		if (!sModes.equals("")) { sModes = ""+sModes.charAt(0); }
+		return sModes;
+	}
+	
+
+	/**
 	 * Get the String Value of ChannelClientInfo (ie @Nickname).
 	 *
 	 * @return String Value of user (inc prefix) (ie @Nickname)
 	 */
 	public String toString() { 
-		String sModes = this.getChanModeStr(true);
-		if (!sModes.equals("")) { sModes = ""+sModes.charAt(0); }
+		String sModes = getImportantPrefix;
 		return sModes+this.getNickname();
 	}	
 	
