@@ -39,7 +39,7 @@ public class RegexStringList {
 	/**
 	 * Add a new ignore pattern to the ignore list.
 	 *
-	 * @param pattern Regex syntax for the ignore
+	 * @param pattern Regex syntax for the ignore (Pattern is matched case-insensitively as ^pattern$)
 	 */
 	public void add(String pattern) {
 		for (int i = 0; i < this.count(); ++i) {
@@ -64,7 +64,7 @@ public class RegexStringList {
 	/**
 	 * Check if a string matches any of the ignores in the list
 	 *
-	 * @param check String to check
+	 * @param check String to check (Patterns are matched case-insensitively as ^pattern$)
 	 * @return integer showing the position of the first match in the ignore list (-1 if none)
 	 */
 	public int matches(String check) {
@@ -80,7 +80,7 @@ public class RegexStringList {
 	 * Check if a string matches a specific ignore in the list
 	 *
 	 * @param position Position to check
-	 * @param check String to check
+	 * @param check String to check (Patterns are matched case-insensitively as ^pattern$)
 	 * @return boolean true/false
 	 */
 	public boolean matches(int position, String check) {
