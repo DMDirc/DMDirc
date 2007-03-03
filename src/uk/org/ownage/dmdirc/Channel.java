@@ -24,8 +24,11 @@ package uk.org.ownage.dmdirc;
 
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelJoin;
@@ -34,13 +37,9 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelMessage;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelPart;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelQuit;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelTopic;
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
 
 /**
  * The Channel class represents the client's view of the channel. It handles
@@ -90,46 +89,55 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         updateTitle();
     }
     
+    /**
+     * Sends the specified line as a message to the channel that this object
+     * represents
+     * @param line The message to send
+     */
     public void sendLine(String line) {
         channelInfo.sendMessage(line);
         frame.addLine("> "+line);
     }
     
+    /**
+     * Sends the specified string as an action (CTCP) to the channel that this object
+     * represents
+     * @param action The action to send
+     */
+    public void sendAction(String action) {
+        channelInfo.sendAction(action);
+        frame.addLine("*> "+action);
+    }    
+    
+    /**
+     * Returns the server object that this channel belongs to
+     * @return The server object
+     */
+    public Server getServer() {
+        return server;
+    }    
+    
+    /**
+     * Returns the parser's ChannelInfo object that this object is associated with
+     * @return The ChannelInfo object associated with this object
+     */
     public ChannelInfo getChannelInfo() {
         return channelInfo;
     }
     
+    /**
+     * Sets this object's ChannelInfo reference to the one supplied. This only needs
+     * to be done if the channel window (and hence this channel object) has stayed
+     * open while the user has been out of the channel.
+     * @param newChannelInfo The new ChannelInfo object
+     */
     public void setChannelInfo(ChannelInfo newChannelInfo) {
         channelInfo = newChannelInfo;
     }
     
-    public void sendAction(String action) {
-        channelInfo.sendAction(action);
-        frame.addLine("*> "+action);
-    }
-    
-    public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel,
-            ChannelClientInfo cChannelClient, String sMessage, String sHost) {
-        if (cChannelClient != null) {
-            frame.addLine("<"+cChannelClient.getNickname()+"> "+sMessage);
-        }
-    }
-    
-    public void onChannelGotNames(IRCParser tParser, ChannelInfo cChannel) {
-        frame.updateNames(channelInfo.getChannelClients());
-    }
-    
-    public void onChannelTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsJoinTopic) {
-        if (bIsJoinTopic) {
-            frame.addLine("* Topic is '"+cChannel.getTopic()+"'.");
-            frame.addLine("* Set by "+cChannel.getTopicUser()+".");
-        } else {
-            frame.addLine("* "+cChannel.getTopicUser()+" has changed the topic to '"+cChannel.getTopic()+"'");
-        }
-        
-        updateTitle();
-    }
-    
+    /**
+     * Updates the title of the channel frame, and of the main frame if appropriate.
+     */
     private void updateTitle() {
         String title = channelInfo.getName()+" - "+channelInfo.getTopic();
         
@@ -138,63 +146,29 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         if (frame.isMaximum() && MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
             MainFrame.getMainFrame().setTitle("DMDirc - "+title);
         }
-    }
+    }    
     
-    public void onChannelJoin(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
-        frame.addLine("* "+cChannelClient.getNickname()+" has joined the channel");
-        frame.addName(cChannelClient);
-    }
+    /**
+     * Joins the specified channel. This only makes sense if used after a call to
+     * part().
+     */
+    public void join() {
+        server.getParser().joinChannel(channelInfo.getName());
+    }    
     
-    public void onChannelPart(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
-        if (sReason.equals("")) {
-            frame.addLine("* "+cChannelClient+" has left the channel");
-        } else {
-            frame.addLine("* "+cChannelClient+" has left the channel ("+sReason+")");
-        }
-        frame.removeName(cChannelClient);
-    }
-    
-    public void onChannelKick(IRCParser tParser, ChannelInfo cChannel,
-            ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient,
-            String sReason, String sKickedByHost) {
-        String kicker;
-        if (cKickedByClient == null) {
-            kicker = sKickedByHost;
-        } else {
-            kicker = cKickedByClient.toString();
-        }
-        frame.addLine("* "+cKickedClient+" was kicked by "+kicker+": "+sReason);
-        frame.removeName(cKickedClient);
-    }
-    
-    public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
-        frame.addLine("* "+cChannelClient+" has quit IRC ("+sReason+")");
-        frame.removeName(cChannelClient);
-    }
-    
-    public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
-        String source;
-        if (cChannelClient == null) {
-            source = sHost;
-        } else {
-            source = cChannelClient.toString();
-        }
-        frame.addLine("* "+source+" "+sMessage);
-    }
-    
-    public Server getServer() {
-        return server;
-    }
-    
+    /**
+     * Parts this channel with the specified message. Parting does NOT close the
+     * channel window.
+     * @param reason The reason for parting the channel
+     */
     public void part(String reason) {
         server.getParser().partChannel(channelInfo.getName(), reason);
         frame.addLine("* You have left the channel.");
     }
     
-    public void join() {
-        server.getParser().joinChannel(channelInfo.getName());
-    }
-    
+    /**
+     * Closes the channel window. Frees all references related to the channel.
+     */
     public void close() {
         server.getParser().getCallbackManager().delCallback("OnChannelMessage", this);
         server.getParser().getCallbackManager().delCallback("OnChannelTopic", this);
@@ -211,28 +185,186 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         MainFrame.getMainFrame().delChild(frame);
         frame = null;
         server = null;
+    }    
+    
+    /**
+     * Called whenever a message is sent to this channel. NB that the ChannelClient
+     * passed may be null if the message was not sent by a client on the channel
+     * (i.e., it was sent by a server, or a client outside of the channel). In these
+     * cases the full host is used instead.
+     * @param tParser A reference to the IRC Parser for this server
+     * @param cChannel A reference to the ChannelInfo object for this channel
+     * @param cChannelClient A reference to the ChannelClient object that sent the message
+     * @param sMessage The message that was sent
+     * @param sHost The full host of the sender.
+     */
+    public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel,
+            ChannelClientInfo cChannelClient, String sMessage, String sHost) {
+        if (cChannelClient != null) {
+            frame.addLine("<"+cChannelClient.getNickname()+"> "+sMessage);
+        }
     }
     
+    /**
+     * Called when the parser receives a NAMES reply from the server. This means that
+     * the nicklist in the ChannelFrame needs to be updated.
+     * @param tParser A reference to the IRC Parser for this server
+     * @param cChannel A reference to the ChannelInfo object for this channel
+     */
+    public void onChannelGotNames(IRCParser tParser, ChannelInfo cChannel) {
+        frame.updateNames(channelInfo.getChannelClients());
+    }
+    
+    /**
+     * Called when the channel topic is changed. Changes the title of the channel
+     * frame, and also of the main frame if the channel is maximised and active.
+     * @param tParser A reference to the IRC Parser for this server
+     * @param cChannel A reference to the ChannelInfo object for this channel
+     * @param bIsJoinTopic True iff this is the topic received when we joined the channel
+     */
+    public void onChannelTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsJoinTopic) {
+        if (bIsJoinTopic) {
+            frame.addLine("* Topic is '"+cChannel.getTopic()+"'.");
+            frame.addLine("* Set by "+cChannel.getTopicUser()+".");
+        } else {
+            frame.addLine("* "+cChannel.getTopicUser()+" has changed the topic to '"+cChannel.getTopic()+"'");
+        }
+        
+        updateTitle();
+    }
+       
+    /**
+     * Called when a new client joins the channel. Adds the client to the listbox
+     * in the channel frame.
+     * @param tParser A reference to the IRC Parser for this server
+     * @param cChannel A reference to the ChannelInfo object for this channel
+     * @param cChannelClient The client that has just joined
+     */    
+    public void onChannelJoin(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
+        frame.addLine("* "+cChannelClient.getNickname()+" has joined the channel");
+        frame.addName(cChannelClient);
+    }
+    
+    /**
+     * Called when a client parts the channel. Removes the client from the listbox
+     * in the channel frame.
+     * @param tParser A reference to the IRC Parser for this server
+     * @param cChannel A reference to the ChannelInfo object for this channel
+     * @param cChannelClient The client that just parted
+     * @param sReason The reason specified when the client parted
+     */    
+    public void onChannelPart(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
+        if (sReason.equals("")) {
+            frame.addLine("* "+cChannelClient+" has left the channel");
+        } else {
+            frame.addLine("* "+cChannelClient+" has left the channel ("+sReason+")");
+        }
+        frame.removeName(cChannelClient);
+    }
+    
+    /**
+     * Called when a client is kicked from the channel. The victim is removed
+     * from the channelframe's listbox.
+     * @param tParser A reference to the IRC Parser for this server
+     * @param cChannel A reference to the ChannelInfo object for this channel
+     * @param cKickedClient A reference to the client that was kicked
+     * @param cKickedByClient A reference to the client that did the kicking
+     * @param sReason The reason specified in the kick message
+     * @param sKickedByHost The host of the kicker (in case it wasn't an actual client)
+     */    
+    public void onChannelKick(IRCParser tParser, ChannelInfo cChannel,
+            ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient,
+            String sReason, String sKickedByHost) {
+        String kicker;
+        if (cKickedByClient == null) {
+            kicker = sKickedByHost;
+        } else {
+            kicker = cKickedByClient.toString();
+        }
+        frame.addLine("* "+cKickedClient+" was kicked by "+kicker+": "+sReason);
+        frame.removeName(cKickedClient);
+    }
+    
+    /**
+     * Called when a client that was present on this channel has disconnected
+     * from the IRC server (or been netsplit)
+     * @param tParser A reference to the IRC Parser for this server
+     * @param cChannel A reference to the ChannelInfo object for this channel
+     * @param cChannelClient A reference to the client that has quit
+     * @param sReason The reason specified in the client's quit message
+     */    
+    public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
+        frame.addLine("* "+cChannelClient+" has quit IRC ("+sReason+")");
+        frame.removeName(cChannelClient);
+    }
+    
+    /**
+     * Called when an action is sent to the channel.
+     * @param tParser A reference to the IRC Parser for this server
+     * @param cChannel A reference to the ChannelInfo object for this channel
+     * @param cChannelClient A reference to the client that sent the action
+     * @param sMessage The text of the action
+     * @param sHost The host of the performer (lest it wasn't an actual client)
+     */    
+    public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
+        String source;
+        if (cChannelClient == null) {
+            source = sHost;
+        } else {
+            source = cChannelClient.toString();
+        }
+        frame.addLine("* "+source+" "+sMessage);
+    }
+       
+    /**
+     * Called when the channel frame is opened. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */
     public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
     }
-    
+
+    /**
+     * Called when the channel frame is being closed. Has the parser part the
+     * channel, and frees all resources associated with the channel.
+     * @param internalFrameEvent The event that triggered this callback
+     */    
     public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
         part(Config.getOption("general","partmessage"));
         close();
     }
     
+    /**
+     * Called when the channel frame is actually closed. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */    
     public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * Called when the channel frame is iconified. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */    
     public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * Called when the channel frame is deiconified. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */    
     public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * Called when the channel frame is activated. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */    
     public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * Called when the channel frame is deactivated. Not implemented.
+     * @param internalFrameEvent The event that triggered this callback
+     */    
     public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }
     
