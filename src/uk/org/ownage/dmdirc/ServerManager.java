@@ -36,12 +36,21 @@ public class ServerManager {
      */
     private static ServerManager me = null;
     
+    /**
+     * Indicates that the server manager is in the process of closing all
+     * servers. Used to prevent concurrent access to the servers property
+     */
     private boolean closing = false;
     
     /**
      * All servers that currently exist
      */
     private Vector<Server> servers;
+    
+    /** Creates a new instance of ServerManager */
+    public ServerManager() {
+        servers = new Vector<Server>(0, 1);
+    }
     
     /**
      * Returns the singleton instance of ServerManager
@@ -52,12 +61,7 @@ public class ServerManager {
             me = new ServerManager();
         }
         return me;
-    }
-    
-    /** Creates a new instance of ServerManager */
-    public ServerManager() {
-        servers = new Vector<Server>(0, 1);
-    }
+    }    
     
     /**
      * Registers a new server with the manager
@@ -68,7 +72,8 @@ public class ServerManager {
     }
     
     /**
-     * Unregisters a server from the manager
+     * Unregisters a server from the manager. The request is ignored if the
+     * ServerManager is in the process of closing all servers.
      * @param server The server to be unregistered
      */
     public void unregisterServer(Server server) {
