@@ -27,7 +27,8 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
- *
+ * The colour manager manages the colour scheme for the IRC client. It allows
+ * other components to use IRC colour codes instead of absolute colours.
  * @author chris
  */
 public class ColourManager {
@@ -36,6 +37,13 @@ public class ColourManager {
     public ColourManager() {
     }
     
+    /**
+     * Returns a Color object that represents the colour associated with the
+     * specified IRC colour code. If the code is not found, a warning is logged
+     * with the client's Logger class, and black is returned.
+     * @param number The IRC colour code to look up
+     * @return The corresponding Color object
+     */
     public static Color getColour(int number) {
         switch (number) {
             case 0:

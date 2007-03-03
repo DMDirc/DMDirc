@@ -31,7 +31,8 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
- *
+ * The styliser applies IRC styles to text. Styles are indicated by various
+ * control codes which are a de-facto IRC standard.
  * @author chris
  */
 public class Styliser {
@@ -40,6 +41,11 @@ public class Styliser {
     public Styliser() {
     }
     
+    /**
+     * Stylises the specified string and adds it to the passed StyledDocument.
+     * @param doc The document which the output should be added to
+     * @param add The line to be stylised and added
+     */
     static public void addStyledString(StyledDocument doc, String add) {
         try {
             int offset = doc.getLength();
@@ -65,6 +71,13 @@ public class Styliser {
         }
     }
     
+    /**
+     * Returns a substring of the input string such that no control codes are present
+     * in the output. If the returned value isn't the same as the input, then the
+     * character immediately after is a control character.
+     * @param input The string to read from
+     * @return A substring of the input containing no control characters
+     */
     static private String readUntilControl(String input) {
         int pos = input.length();
         
@@ -80,6 +93,25 @@ public class Styliser {
         return input.substring(0, pos);
     }
     
+    /**
+     * Helper function used in readUntilControl. Checks if i is a valid index of
+     * the string (i.e., it's not -1), and then returns the minimum of pos and i.
+     * @param pos The current position in the string
+     * @param i The index of the first occurance of some character
+     * @return The new position (see implementation)
+     */
+    private static int checkChar(int pos, int i) {
+        if (i < pos && i != -1) { return i; }
+        return pos;
+    }    
+    
+    /**
+     * Reads the first control character from the input string (and any arguments
+     * it takes), and applies it to the specified attribute set.
+     * @param string The string to read from
+     * @param attribs The attribute set that new attributes will be applied to
+     * @return The number of characters read as control characters
+     */
     private static int readControlChars(String string, SimpleAttributeSet attribs) {
         // Bold
         if (string.charAt(0) == 2) {
@@ -135,11 +167,21 @@ public class Styliser {
         return 0;
     }
     
-    private static int checkChar(int pos, int i) {
-        if (i < pos && i != -1) { return i; }
-        return pos;
-    }
-    
+    /**
+     * Determines if the specified character represents a single integer (i.e. 0-9).
+     * @param c The character to check
+     * @return True iff the character is in the range [0-9], false otherwise
+     */
+    private static boolean isInt(char c) {
+        return (c >= 48 && c <= 57);
+    }    
+       
+    /**
+     * Toggles the specified attribute. If the attribute exists in the attribute
+     * set, it is removed. Otherwise, it is added with a value of Boolean.True.
+     * @param attribs The attribute set to check
+     * @param attrib The attribute to toggle
+     */
     private static void toggleAttribute(SimpleAttributeSet attribs, Object attrib) {
         if (attribs.containsAttribute(attrib, Boolean.TRUE)) {
             attribs.removeAttribute(attrib);
@@ -148,6 +190,10 @@ public class Styliser {
         }
     }
     
+    /**
+     * Resets all attributes in the specified attribute list
+     * @param attribs The attribute list whose attributes should be reset
+     */
     private static void resetAttributes(SimpleAttributeSet attribs) {
         if (attribs.containsAttribute(StyleConstants.FontConstants.Bold, Boolean.TRUE)) {
             attribs.removeAttribute(StyleConstants.FontConstants.Bold);
@@ -157,20 +203,26 @@ public class Styliser {
         }
         resetColour(attribs);
     }
-    
-    private static boolean isInt(char c) {
-        return (c >= 48 && c <= 57);
-    }
-    
+       
+    /**
+     * Resets the colour attributes in the specified attribute set
+     * @param attribs The attribute set whose colour attributes should be reset
+     */
     private static void resetColour(SimpleAttributeSet attribs) {
         if (attribs.isDefined(StyleConstants.Foreground)) {
             attribs.removeAttribute(StyleConstants.Foreground);
         }
         if (attribs.isDefined(StyleConstants.Background)) {
             attribs.removeAttribute(StyleConstants.Background);
-        }        
+        }
     }
     
+    /**
+     * Sets the foreground colour in the specified attribute set to the colour
+     * corresponding to the specified colour code.
+     * @param attribs The attribute set to modify
+     * @param foreground The colour code of the new foreground colour
+     */
     private static void setForeground(SimpleAttributeSet attribs, int foreground) {
         if (attribs.isDefined(StyleConstants.Foreground)) {
             attribs.removeAttribute(StyleConstants.Foreground);
@@ -178,11 +230,17 @@ public class Styliser {
         attribs.addAttribute(StyleConstants.Foreground, ColourManager.getColour(foreground));
     }
     
+    /**
+     * Sets the background colour in the specified attribute set to the colour
+     * corresponding to the specified colour code.
+     * @param attribs The attribute set to modify
+     * @param background The colour code of the new background colour
+     */
     private static void setBackground(SimpleAttributeSet attribs, int background) {
         if (attribs.isDefined(StyleConstants.Background)) {
             attribs.removeAttribute(StyleConstants.Background);
         }
         attribs.addAttribute(StyleConstants.Background, ColourManager.getColour(background));
-    }    
+    }
     
 }
