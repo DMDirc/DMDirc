@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.ui.input;
 
 import java.util.ArrayList;
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /**
@@ -64,8 +65,14 @@ public class TabCompleter {
         
         for (String entry : entries) {
             // TODO: Option for case sensitivity
-            if (entry.startsWith(partial)) {
-                result.addResult(entry);
+            if (Boolean.parseBoolean(Config.getOption("tabcompletion","casesensitive"))) {
+                if (entry.startsWith(partial)) {
+                    result.addResult(entry);
+                }
+            } else {
+                if (entry.toLowerCase().startsWith(partial.toLowerCase())) {
+                    result.addResult(entry);
+                }
             }
         }
         
@@ -98,5 +105,5 @@ public class TabCompleter {
     public void replaceEntries(ArrayList<String> newEntries) {
         entries = newEntries;
     }
-            
+    
 }

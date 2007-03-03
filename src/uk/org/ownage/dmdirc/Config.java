@@ -96,6 +96,8 @@ public class Config {
         defaults.setProperty("ui.sortByCase", "false");
         defaults.setProperty("ui.inputbuffersize", "50");
         
+        defaults.setProperty("tabcompletion.casesensitive", "false");
+        
         defaults.setProperty("logging.dateFormat","EEE, d MMM yyyy HH:mm:ss Z");
         defaults.setProperty("logging.programLogging","true");
         defaults.setProperty("logging.debugLogging","true");
