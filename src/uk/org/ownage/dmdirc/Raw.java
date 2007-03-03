@@ -68,6 +68,10 @@ public class Raw implements IDataIn, IDataOut {
         }
     }
     
+    /**
+     * Closes the raw window. Removes parser callbacks, removes the actual
+     * frame, and removes references to the frame and server.
+     */
     void close() {
         server.getParser().getCallbackManager().delCallback("OnDataIn", this);
         server.getParser().getCallbackManager().delCallback("OnDataOut", this);
@@ -78,10 +82,22 @@ public class Raw implements IDataIn, IDataOut {
         server = null;
     }
     
+    /**
+     * Called when the parser receives a line of data. The data is simply 
+     * logged to the raw window.
+     * @param tParser A reference to the IRC parser
+     * @param sData The data that was received
+     */
     public void onDataIn(IRCParser tParser, String sData) {
         frame.addLine("<<< "+sData);
     }
     
+    /**
+     * Called when the parser receives a line of data. The data is simply 
+     * logged to the raw window.
+     * @param tParser A reference to the IRC parser
+     * @param sData The data that was received
+     */    
     public void onDataOut(IRCParser tParser, String sData, boolean bFromParser) {
         frame.addLine(">>> "+sData);
     }
