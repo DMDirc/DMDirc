@@ -42,6 +42,10 @@ public class CommandManager {
      * The channel commands that have been instansiated
      */
     private static Vector<Command> channelCommands;
+    /**
+     * The query commands that have been instansiated
+     */
+    private static Vector<Command> queryCommands;
     
     /**
      * Loads all channel commands into the specified parser
@@ -79,6 +83,20 @@ public class CommandManager {
         }
         
         for (Command com : serverCommands) {
+            parser.registerCommand(com);
+        }
+    }
+    
+    /**
+     * Loads all query commands into the specified parser
+     * @param parser The parser to load commands into
+     */    
+    static void loadQueryCommands(QueryCommandParser parser) {
+        if (queryCommands == null)    {
+            queryCommands = new Vector<Command>(0,1);
+        }
+        
+        for (Command com : queryCommands) {
             parser.registerCommand(com);
         }
     }
