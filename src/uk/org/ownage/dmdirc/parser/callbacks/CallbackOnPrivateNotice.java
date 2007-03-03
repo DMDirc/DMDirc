@@ -28,7 +28,7 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
 
-public class CallbackOnPrivateNotice extends CallbackObject {
+public class CallbackOnPrivateNotice extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IPrivateNotice Interface.
 	 *
@@ -39,9 +39,12 @@ public class CallbackOnPrivateNotice extends CallbackObject {
 	 */
 	public boolean call(ClientInfo cClient, String sMessage, String sHost) {
 		boolean bResult = false;
+		IPrivateNotice eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
+			eMethod = (IPrivateNotice)callbackInfo.get(i);
+			if (!this.isValidUser(eMethod, sHost)) { continue; }
 			try {
-				((IPrivateNotice)callbackInfo.get(i)).onPrivateNotice(myParser, cClient, sMessage, sHost);
+				eMethod.onPrivateNotice(myParser, cClient, sMessage, sHost);
 			} catch (Exception e) {
 				ParserError ei = new ParserError(ParserError.errError, "Exception in onPrivateNotice");
 				ei.setException(e);
@@ -50,7 +53,7 @@ public class CallbackOnPrivateNotice extends CallbackObject {
 			bResult = true;
 		}
 		return bResult;
-	}		
+	}	
 	
 	/**
 	 * Create a new instance of the Callback Object

@@ -28,7 +28,7 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 
-public class CallbackOnPrivateAction extends CallbackObject {
+public class CallbackOnPrivateAction extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IPrivateAction Interface.
 	 *
@@ -39,9 +39,12 @@ public class CallbackOnPrivateAction extends CallbackObject {
 	 */
 	public boolean call(ClientInfo cClient, String sMessage, String sHost) {
 		boolean bResult = false;
+		IPrivateAction eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
+			eMethod = (IPrivateAction)callbackInfo.get(i);
+			if (!this.isValidUser(eMethod, sHost)) { continue; }
 			try {
-				((IPrivateAction)callbackInfo.get(i)).onPrivateAction(myParser, cClient, sMessage, sHost);
+				eMethod.onPrivateAction(myParser, cClient, sMessage, sHost);
 			} catch (Exception e) {
 				ParserError ei = new ParserError(ParserError.errError, "Exception in onPrivateAction");
 				ei.setException(e);

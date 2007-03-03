@@ -54,7 +54,7 @@ public class ClientInfo {
 	 *
 	 * @return nickname of user
 	 */
-	public static String ParseHost(String sWho) {
+	public static String parseHost(String sWho) {
 		// Get the nickname from the string.
 		String sTemp[] = null;
 		sTemp = sWho.split("@",2);
@@ -68,8 +68,8 @@ public class ClientInfo {
 	 * Create a new client object from a hostmask.
 	 *
  	 * @param tParser Refernce to parser that owns this channelclient (used for modes)	 
-	 * @param sHostmask Hostmask parsed by ParseHost to get nickname
-	 * @see ClientInfo#ParseHost
+	 * @param sHostmask Hostmask parsed by parseHost to get nickname
+	 * @see ClientInfo#parseHost
 	 */
 	public ClientInfo (IRCParser tParser, String sHostmask) { 
 		setUserBits(sHostmask,true);

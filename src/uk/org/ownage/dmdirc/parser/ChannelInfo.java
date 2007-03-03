@@ -109,7 +109,7 @@ public class ChannelInfo {
 	 * @return ChannelClientInfo object requested, or null if not found
 	 */
 	public ChannelClientInfo getUser(String sWho) {
-		sWho = ClientInfo.ParseHost(sWho);
+		sWho = ClientInfo.parseHost(sWho);
 		sWho = sWho.toLowerCase();
 		if (hChannelUserList.containsKey(sWho)) { return hChannelUserList.get(sWho); } else { return null; }
 	}	

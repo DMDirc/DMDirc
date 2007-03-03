@@ -28,7 +28,7 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
 
-public class CallbackOnPrivateCTCPReply extends CallbackObject {
+public class CallbackOnPrivateCTCPReply extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IPrivateCTCPReply Interface.
 	 *
@@ -40,9 +40,12 @@ public class CallbackOnPrivateCTCPReply extends CallbackObject {
 	 */
 	public boolean call(ClientInfo cClient, String sType, String sMessage, String sHost) {
 		boolean bResult = false;
+		IPrivateCTCPReply eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
+			eMethod = (IPrivateCTCPReply)callbackInfo.get(i);
+			if (!this.isValidUser(eMethod, sHost)) { continue; }
 			try {
-				((IPrivateCTCPReply)callbackInfo.get(i)).onPrivateCTCPReply(myParser, cClient, sType, sMessage, sHost);
+				eMethod.onPrivateCTCPReply(myParser, cClient, sType, sMessage, sHost);
 			} catch (Exception e) {
 				ParserError ei = new ParserError(ParserError.errError, "Exception in onPrivateCTCPReply");
 				ei.setException(e);

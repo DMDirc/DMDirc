@@ -53,6 +53,20 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 		return true;
 	}
 	
+	/**
+	 * Used to check if a hostname matches the specificData
+	 * 
+	 * @param eMethod Object that is being called back to
+	 * @param sHost Hostname of user that sent the query
+	 */
+	protected boolean isValidUser(ICallbackInterface eMethod, String sHost) {
+		String nickname = ClientInfo.parseHost(sHost);
+		if (specificData.containsKey(eMethod)) { 
+			if (!nickname.equalsIgnoreCase(specificData.get(eMethod))) { return false; }
+		}
+		return true;
+	}
+	
 	// We override the default add method to make sure that any add with no
 	// specifics will have the specific data removed.
 	/**

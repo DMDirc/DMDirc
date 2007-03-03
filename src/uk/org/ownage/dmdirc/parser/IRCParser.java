@@ -943,7 +943,7 @@ public class IRCParser implements Runnable {
 	 */
 	public ClientInfo getClientInfo(String sWho) {
 		if (bDebug) { doDebug("\t\tInput: %s | ",sWho); }
-		sWho = ClientInfo.ParseHost(sWho);
+		sWho = ClientInfo.parseHost(sWho);
 		if (bDebug) { doDebug("Client Name: %s\n",sWho); }
 		sWho = sWho.toLowerCase();
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); } else { return null; }
@@ -1083,7 +1083,7 @@ public class IRCParser implements Runnable {
 			hClientList.remove(iClient.getNickname().toLowerCase());
 			iClient.setUserBits(token[2],true);
 			hClientList.put(iClient.getNickname().toLowerCase(),iClient);
-			callNickChanged(iClient, ClientInfo.ParseHost(token[0]));
+			callNickChanged(iClient, ClientInfo.parseHost(token[0]));
 		}
 	}
 	
