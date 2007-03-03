@@ -272,13 +272,13 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         if (bIsJoinTopic) {
             frame.addLine("channelJoinTopic", cChannel.getTopic(), cChannel.getName());
             frame.addLine("channelJoinTopicSetBy", cChannel.getTopicUser(),
-                    cChannel.getTopicTime(), cChannel.getName());
+                    1000*cChannel.getTopicTime(), cChannel.getName());
         } else {
             ChannelClientInfo user = cChannel.getUser(cChannel.getTopicUser());
             String nick = getNick(user, cChannel.getTopicUser());
             String modes = getModes(user, cChannel.getTopicUser());
             String topic = cChannel.getTopic();
-            frame.addLine("channelTopicChange", modes, nick, topic);
+            frame.addLine("channelTopicChange", modes, nick, topic, cChannel.getName());
         }
 
         updateTitle();
