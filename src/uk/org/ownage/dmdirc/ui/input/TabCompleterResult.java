@@ -1,0 +1,82 @@
+/*
+ * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package uk.org.ownage.dmdirc.ui.input;
+
+import java.util.ArrayList;
+
+/**
+ * Represents the result set from a tab completion operation.
+ * @author chris
+ */
+public class TabCompleterResult {
+    
+    private ArrayList<String> results;
+
+    /**
+     * Creates a new instance of TabCompleterResult with an empty result set
+     */
+    public TabCompleterResult() {
+        this.results = new ArrayList<String>();
+    }    
+    
+    /**
+     * Creates a new instance of TabCompleterResult
+     * @param results The list of results that this result set contains
+     */
+    public TabCompleterResult(ArrayList<String> results) {
+        this.results = results;
+    }
+    
+    /**
+     * Adds a result to this result set
+     * @param result The result to be added
+     */
+    public void addResult(String result) {
+        results.add(result);
+    }
+    
+    /**
+     * Merges the specified additional results with this result set
+     * @param additional The results to merge
+     */
+    public void merge(TabCompleterResult additional) {
+        results.addAll(additional.getResults());
+    }
+    
+    /**
+     * Gets the total size of this result set
+     * @return the size of this result set
+     */
+    public int getResultCount() {
+        return results.size();
+    }
+    
+    /**
+     * Retrieves the list of results that this set contains
+     * @return An arraylist containing the results
+     */
+    public ArrayList<String> getResults() {
+        return results;
+    }
+    
+}

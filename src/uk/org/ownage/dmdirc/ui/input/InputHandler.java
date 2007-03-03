@@ -65,6 +65,10 @@ public class InputHandler implements KeyListener, ActionListener {
      * The textfield that we're handling input for
      */
     private JTextField target;
+    /**
+     * The TabCompleter to use for tab completion
+     */
+    private TabCompleter tabCompleter;
     
     /**
      * Creates a new instance of InputHandler. Adds listeners to the target
@@ -83,6 +87,14 @@ public class InputHandler implements KeyListener, ActionListener {
         target.addKeyListener(this);
         target.addActionListener(this);
         target.setFocusTraversalKeysEnabled(false);
+    }
+    
+    /**
+     * Sets this input handler's tab completer
+     * @param tabCompleter The new tab completer
+     */
+    public void setTabCompleter(TabCompleter tabCompleter) {
+        this.tabCompleter = tabCompleter;
     }
     
     /**
@@ -114,6 +126,7 @@ public class InputHandler implements KeyListener, ActionListener {
                 append("" + (char)3);
             }
         }
+        
         // Back buffer scrolling
         if (keyEvent.getKeyCode() == KeyEvent.VK_UP) {
             if (bufferPosition != bufferMinimum) {
@@ -129,6 +142,41 @@ public class InputHandler implements KeyListener, ActionListener {
             } else {
                 // TODO: Beep, or something
             }
+        }
+        
+        // Tab completion
+        if (keyEvent.getKeyCode() == KeyEvent.VK_TAB && tabCompleter != null) {
+            String text = target.getText();
+            int pos = target.getCaretPosition()-1;
+            int start = pos;
+            int end = pos;
+            
+            // Traverse backwards
+            while (start > 0 && text.charAt(start) != ' ') {
+                start--;
+            }
+            if (text.charAt(start) == ' ') { start++; }
+            
+            // And forwards
+            while (end < text.length() && text.charAt(end) != ' ') {
+                end++;
+            }        
+                        
+            String word = text.substring(start, end);
+            
+            TabCompleterResult res = tabCompleter.complete(word);
+                        
+            if (res.getResultCount() == 0) {
+                // TODO: Beep, or something
+            } else if (res.getResultCount() == 1) {
+                // One result, just replace it
+                String result = res.getResults().get(0);
+                text = text.substring(0,start)+result+text.substring(end);
+                target.setText(text);
+            } else {
+                // Multiple results
+            }
+        
         }
     }
     
@@ -167,7 +215,7 @@ public class InputHandler implements KeyListener, ActionListener {
      */
     private void retrieveBuffer() {
         target.setText(buffer[bufferPosition]);
-    }    
+    }
     
     /**
      * Normalises the input so that it is in the range 0 <= x < bufferSize.

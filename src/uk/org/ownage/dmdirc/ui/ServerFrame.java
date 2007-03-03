@@ -38,6 +38,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
+import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
@@ -147,6 +148,14 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      */
     public void open() {
         setVisible(true);
+    }
+    
+    /**
+     * Sets the tab completer for this frame's input handler
+     * @param tabCompleter The tab completer to use
+     */
+    public void setTabCompleter(TabCompleter tabCompleter) {
+        inputHandler.setTabCompleter(tabCompleter);
     }
     
     /**

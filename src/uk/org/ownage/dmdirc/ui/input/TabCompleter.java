@@ -22,14 +22,81 @@
 
 package uk.org.ownage.dmdirc.ui.input;
 
+import java.util.ArrayList;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+
 /**
- *
+ * The tab completer handles a user's request to tab complete some word.
  * @author chris
  */
 public class TabCompleter {
+    
+    /**
+     * The parent TabCompleter. Results from parents are merged with results
+     * from this completer.
+     */
+    private TabCompleter parent = null;
+    /**
+     * The entries in this completer.
+     */
+    private ArrayList<String> entries = new ArrayList<String>();
     
     /** Creates a new instance of TabCompleter */
     public TabCompleter() {
     }
     
+    /**
+     * Creates a new instance of TabCompleter, with a designated parent
+     * @param parent The parent TabCompleter, which is checked for matches if
+     * local ones fail
+     */
+    public TabCompleter(TabCompleter parent) {
+        this.parent = parent;
+    }
+    
+    /**
+     * Attempts to complete the partial string
+     * @param partial The string to tab complete
+     * @return A TabCompleterResult containing any matches found
+     */
+    public TabCompleterResult complete(String partial) {
+        TabCompleterResult result = new TabCompleterResult();
+        
+        for (String entry : entries) {
+            // TODO: Option for case sensitivity
+            if (entry.startsWith(partial)) {
+                result.addResult(entry);
+            }
+        }
+        
+        if (parent != null) {
+            result.merge(parent.complete(partial));
+        }
+        return result;
+    }
+    
+    /**
+     * Adds a new entry to this tab completer's list
+     * @param entry The new entry to be added
+     */
+    public void addEntry(String entry) {
+        entries.add(entry);
+    }
+    
+    /**
+     * Removes a specified entry from this tab completer's list
+     * @param entry The entry to be removed
+     */
+    public void removeEntry(String entry) {
+        entries.remove(entry);
+    }
+    
+    /**
+     * Replaces the current entries with the new list
+     * @param newEntries the new entries to use
+     */
+    public void replaceEntries(ArrayList<String> newEntries) {
+        entries = newEntries;
+    }
+            
 }

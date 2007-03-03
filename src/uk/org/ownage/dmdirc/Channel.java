@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc;
 
 import java.beans.PropertyVetoException;
+import java.util.ArrayList;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
@@ -43,6 +44,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelTopic;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
+import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
@@ -66,6 +68,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     private ChannelFrame frame;
     
     /**
+     * The tabcompleter used for this channel
+     */
+    private TabCompleter tabCompleter;
+    
+    /**
      * Creates a new instance of Channel
      * @param server The server object that this channel belongs to
      * @param channelInfo The parser's channel object that corresponds to this channel
@@ -74,9 +81,12 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         this.channelInfo = channelInfo;
         this.server = server;
         
+        tabCompleter = new TabCompleter(server.getTabCompleter());
+        
         frame = new ChannelFrame(this);
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
+        frame.setTabCompleter(tabCompleter);
         frame.open();
         
         try {
@@ -232,7 +242,6 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String source = getNick(cChannelClient, sHost);
         String modes = getModes(cChannelClient, sHost);
         frame.addLine("channelMessage", modes, source, sMessage);
-        
     }
     
     /**
@@ -243,6 +252,12 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelGotNames(IRCParser tParser, ChannelInfo cChannel) {
         frame.updateNames(channelInfo.getChannelClients());
+        
+        ArrayList<String> names = new ArrayList<String>();
+        for (ChannelClientInfo channelClient : cChannel.getChannelClients()) {
+            names.add(channelClient.getNickname());
+        }
+        tabCompleter.replaceEntries(names);
     }
     
     /**
@@ -279,6 +294,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void onChannelJoin(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
         frame.addLine("* "+cChannelClient.getNickname()+" has joined the channel");
         frame.addName(cChannelClient);
+        tabCompleter.addEntry(cChannelClient.getNickname());
         // TODO: Use formatter
     }
     
@@ -302,6 +318,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
                     sReason);
         }
         
+        tabCompleter.removeEntry(cChannelClient.getNickname());
         frame.removeName(cChannelClient);
     }
     
@@ -331,6 +348,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
                     victim, cChannel.getName(), sReason);
         }
         
+        tabCompleter.removeEntry(cKickedClient.getNickname());
         frame.removeName(cKickedClient);
     }
     

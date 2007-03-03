@@ -45,6 +45,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
+import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 
 /**
  * The Server class represents the client's view of a server. It maintains
@@ -74,9 +75,22 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      */
     private IRCParser parser;
     
+    /**
+     * The raw frame used for this server instance
+     */
     private Raw raw;
     
+    /**
+     * Used to indicate that this server is in the process of closing all of its
+     * windows, and thus requests for individual ones to be closed should be
+     * ignored
+     */
     private boolean closing = false;
+    
+    /**
+     * The tabcompleter used for this server
+     */
+    private TabCompleter tabCompleter = new TabCompleter();
     
     /**
      * Creates a new instance of Server
@@ -91,6 +105,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         
         frame = new ServerFrame(new ServerCommandParser(this));
         frame.setTitle(server+":"+port);
+        frame.setTabCompleter(tabCompleter);
         frame.addInternalFrameListener(this);
         
         MainFrame.getMainFrame().addChild(frame);
@@ -177,6 +192,14 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         return parser;
     }
     
+    /**
+     * Returns the tab completer for this connection
+     * @return The tab completer for this server
+     */
+    public TabCompleter getTabCompleter() {
+        return tabCompleter;
+    }
+    
     public void addLine(String line) {
         frame.addLine(line);
     }
@@ -240,12 +263,14 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     public void delChannel(String chan) {
+        tabCompleter.removeEntry(chan);
         if (!closing) {
             channels.remove(chan);
         }
     }
     
     private void addChannel(ChannelInfo chan) {
+        tabCompleter.addEntry(chan.getName());
         channels.put(chan.getName(), new Channel(this, chan));
     }
     
