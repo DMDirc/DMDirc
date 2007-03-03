@@ -83,8 +83,9 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param server The hostname/ip of the server to connect to
      * @param port The port to connect to
      * @param password The server password
+     * @param ssl Whether to use SSL or not
      */
-    public Server(String server, int port, String password) {
+    public Server(String server, int port, String password, boolean ssl) {
         
         ServerManager.getServerManager().registerServer(this);
         
@@ -102,7 +103,9 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         myInfo.sNickname = Config.getOption("general","defaultnick");
         myInfo.sAltNickname = Config.getOption("general","alternatenick");
         
-        parser = new IRCParser(myInfo, new ServerInfo(server, port, password));
+        ServerInfo serverInfo = new ServerInfo(server, port, password);
+        serverInfo.bSSL = ssl;
+        parser = new IRCParser(myInfo, serverInfo);
         
         try {
             parser.getCallbackManager().addCallback("OnChannelSelfJoin", this);
@@ -128,8 +131,9 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param server The hostname/ip of the server to connect to
      * @param port The port to connect to
      * @param password The server password
+     * @param ssl Whether to use SSL or not
      */
-    public void connect(String server, int port, String password) {
+    public void connect(String server, int port, String password, boolean ssl) {
         if (parser != null && parser.getSocketState() == parser.stateOpen) {
             disconnect(Config.getOption("general","quitmessage"));
             closeChannels();
@@ -142,7 +146,9 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         myInfo.sNickname = Config.getOption("general","defaultnick");
         myInfo.sAltNickname = Config.getOption("general","alternatenick");
         
-        parser = new IRCParser(myInfo, new ServerInfo(server, port, password));
+        ServerInfo serverInfo = new ServerInfo(server, port, password);
+        serverInfo.bSSL = ssl;
+        parser = new IRCParser(myInfo, serverInfo);
         
         try {
             parser.getCallbackManager().addCallback("OnChannelSelfJoin", this);
