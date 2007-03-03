@@ -98,6 +98,7 @@ public class Formatter {
         properties.setProperty("channelSelfMessage", "<%1$s%2$s> %3$s");
         properties.setProperty("channelSelfAction", colour+"6* %1$s%2$s %3$s");
         
+        properties.setProperty("channelSelfJoin", colour+"3* You are now talking in %2$s.");
         properties.setProperty("channelSelfPart", colour+"3* You have left the channel.");
         properties.setProperty("channelSelfPartReason", colour+"3* You have left the channel.");
         

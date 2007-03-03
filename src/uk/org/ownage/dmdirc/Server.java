@@ -350,6 +350,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
         if (channels.containsKey(cChannel.getName())) {
             channels.get(cChannel.getName()).setChannelInfo(cChannel);
+            channels.get(cChannel.getName()).selfJoin();
         } else {
             addChannel(cChannel);
         }

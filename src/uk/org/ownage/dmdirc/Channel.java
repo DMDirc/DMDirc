@@ -103,6 +103,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         }
         
         updateTitle();
+        selfJoin();
     }
     
     /**
@@ -157,6 +158,14 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void setChannelInfo(ChannelInfo newChannelInfo) {
         channelInfo = newChannelInfo;
+    }
+    
+    /**
+     * Called when we join this channel. Just needs to output a message.
+     */
+    public void selfJoin() {
+        ClientInfo me = server.getParser().getMyself();
+        frame.addLine("channelSelfJoin", me.getNickname(), channelInfo.getName());
     }
     
     /**
@@ -224,7 +233,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public boolean ownsFrame(JInternalFrame target) {
         return frame.equals(target);
-    }    
+    }
     
     /**
      * Called whenever a message is sent to this channel. NB that the ChannelClient
@@ -280,7 +289,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             String topic = cChannel.getTopic();
             frame.addLine("channelTopicChange", modes, nick, topic, cChannel.getName());
         }
-
+        
         updateTitle();
     }
     
@@ -430,7 +439,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             } catch (PropertyVetoException ex) {
                 Logger.error(ErrorLevel.WARNING, ex);
             }
-        }        
+        }
     }
     
     /**
