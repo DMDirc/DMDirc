@@ -65,7 +65,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     
     /**
      * Creates a new instance of Query
-     * @param client Client user being queried
+     * @param host host of the remove client
      * @param server The server object that this Query belongs to
      */
     public Query(Server server, String host) {
@@ -110,7 +110,6 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     /**
      * Handles a private message event from the parser
      * @param parser Parser receiving the event
-     * @param client remote client
      * @param message message received
      * @param host remote user host
      */
@@ -121,7 +120,6 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     /**
      * Handles a private action event from the parser
      * @param parser Parser receiving the event
-     * @param client remote client
      * @param message message received
      * @param host remote host
      */

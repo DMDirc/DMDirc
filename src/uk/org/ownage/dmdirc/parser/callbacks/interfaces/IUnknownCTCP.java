@@ -38,7 +38,6 @@ public interface IUnknownCTCP extends ICallbackInterface {
 	 * cClient is null if user is a server, or not on any common channels.
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
- 	 * @param cClient Client who sent the CTCP (may be null if no common channels or server)
 	 * @param sType Type of CTCP (VERSION, TIME etc)
 	 * @param sMessage Additional contents
 	 * @param sTarget Actual Target of CTCP

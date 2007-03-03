@@ -38,7 +38,6 @@ public interface IUnknownNotice extends ICallbackInterface {
 	 * cClient is null if user is a server, or not on any common channel.
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
-	 * @param cClient Client who sent the notice (may be null if no common channels or server)
 	 * @param sMessage Notice contents
 	 * @param sTarget Actual target of notice
 	 * @param sHost Hostname of sender (or servername)
