@@ -147,9 +147,14 @@ public class InputHandler implements KeyListener, ActionListener {
         // Tab completion
         if (keyEvent.getKeyCode() == KeyEvent.VK_TAB && tabCompleter != null) {
             String text = target.getText();
+            
+            if (text.equals("")) {
+                return;
+            }
+                
             int pos = target.getCaretPosition()-1;
-            int start = pos;
-            int end = pos;
+            int start = (pos < 0) ? 0 : pos;
+            int end = (pos < 0) ? 0 : pos;
             
             // Traverse backwards
             while (start > 0 && text.charAt(start) != ' ') {
@@ -160,6 +165,10 @@ public class InputHandler implements KeyListener, ActionListener {
             // And forwards
             while (end < text.length() && text.charAt(end) != ' ') {
                 end++;
+            }
+            
+            if (start > end) {
+                return;
             }
             
             String word = text.substring(start, end);
@@ -173,6 +182,7 @@ public class InputHandler implements KeyListener, ActionListener {
                 String result = res.getResults().get(0);
                 text = text.substring(0,start)+result+text.substring(end);
                 target.setText(text);
+                target.setCaretPosition(start+result.length());
             } else {
                 // Multiple results
                 String sub = res.getBestSubstring();
@@ -181,6 +191,7 @@ public class InputHandler implements KeyListener, ActionListener {
                 } else {
                     text = text.substring(0,start)+sub+text.substring(end);
                     target.setText(text);
+                    target.setCaretPosition(start+sub.length());
                 }
             }
             
