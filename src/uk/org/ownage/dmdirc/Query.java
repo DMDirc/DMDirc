@@ -24,8 +24,7 @@ package uk.org.ownage.dmdirc;
 
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.commandparser.QueryCommandParser;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.ui.MainFrame;
@@ -35,35 +34,43 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INickChanged;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
+import uk.org.ownage.dmdirc.ui.QueryFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
 
 /**
- * The Channel class represents the client's view of the channel. It handles
- * callbacks for channel events from the parser, maintains the corresponding
- * ChannelFrame, and handles user input to a ChannelFrame
+ * The Query class represents the client's view of a query with another user.
+ * It handles callbacks for query events from the parser, maintains the 
+ * corresponding ServerFrame, and handles user input to a ServerFrame
  * @author chris
  */
 public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         InternalFrameListener {
     
-    /** The server this channel is on */
+    /**
+     * The Server this Query is on
+     */
     private Server server;
     
-    /** The ServerFrame used for this channel */
-    private ServerFrame frame;
+    /**
+     * The ServerFrame used for this Query
+     */
+    private QueryFrame frame;
     
+    /**
+     * The Client associated with this Query
+     */
     private ClientInfo client;
     
     /**
-     * Creates a new instance of Channel
-     * @param server The server object that this channel belongs to
-     * @param channelInfo The parser's channel object that corresponds to this channel
+     * Creates a new instance of Query
+     * @param client Client user being queried
+     * @param server The server object that this Query belongs to
      */
     public Query(Server server, ClientInfo client) {
         this.server = server;
         this.client = client;
         
-        //frame = new ServerFrame(this);
+        frame = new QueryFrame(new QueryCommandParser(this.server, this));
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
         
@@ -78,24 +85,49 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         updateTitle();
     }
     
+    /**
+     * Sends a private message to the remote user
+     * @param line message text to send
+     */
     public void sendLine(String line) {
         server.getParser().sendMessage(client.getNickname(), line);
         frame.addLine("> "+line);
     }
     
+    /**
+     * Sends a private action to the remote user
+     * @param action action text to send
+     */
     public void sendAction(String action) {
         server.getParser().sendAction(client.getNickname(), action);
         frame.addLine("*> "+action);
     }
     
+    /**
+     * Handles a private message event from the parser
+     * @param parser Parser receiving the event
+     * @param client remote client
+     * @param message message received
+     * @param host remote user host
+     */
     public void onPrivateMessage(IRCParser parser, ClientInfo client, String message, String host) {
         frame.addLine("<"+client.getNickname()+"> "+message);
     }
     
+    /**
+     * Handles a private action event from the parser
+     * @param parser Parser receiving the event
+     * @param client remote client
+     * @param message message received
+     * @param host remote host
+     */
     public void onPrivateAction(IRCParser parser, ClientInfo client, String message, String host) {
         frame.addLine("* "+client.toString()+" "+message);
     }
     
+    /**
+     * Updates the QueryFrame title
+     */
     private void updateTitle() {
         String title = client.getNickname();
         
@@ -106,7 +138,13 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         }
     }
     
-    public void onNickChanged(IRCParser tParser, ClientInfo cClient, String sOldNick) {
+    /**
+     * Handles nick change events from the parser
+     * @param parser Parser receiving the event
+     * @param client remote client changing nick
+     * @param oldNick clients old nickname
+     */
+    public void onNickChanged(IRCParser parser, ClientInfo client, String oldNick) {
         server.getParser().getCallbackManager().delCallback("onPrivateAction", this);
         server.getParser().getCallbackManager().delCallback("onPrivateMessage", this);
         try {
@@ -115,9 +153,14 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.FATAL, ex);
         }
+        frame.addLine("* "+oldNick+" is now known as "+client.toString());
         updateTitle();
     }
     
+    /**
+     * 
+     * @return 
+     */
     public Server getServer() {
         return server;
     }
@@ -133,25 +176,53 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         server = null;
     }
     
+    /**
+     * 
+     * @param internalFrameEvent 
+     */
     public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * 
+     * @param internalFrameEvent 
+     */
     public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
         close();
     }
     
+    /**
+     * 
+     * @param internalFrameEvent 
+     */
     public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * 
+     * @param internalFrameEvent 
+     */
     public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * 
+     * @param internalFrameEvent 
+     */
     public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * 
+     * @param internalFrameEvent 
+     */
     public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * 
+     * @param internalFrameEvent 
+     */
     public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }
 }
