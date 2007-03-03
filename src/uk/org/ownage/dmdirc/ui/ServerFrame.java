@@ -130,7 +130,8 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      * @param line text to add
      */
     public void addLine(String line) {
-        Styliser.addStyledString(jTextPane1.getStyledDocument(), line+"\n");
+        String ts = Formatter.formatMessage("timestamp", new Date());
+        Styliser.addStyledString(jTextPane1.getStyledDocument(), ts+line+"\n");
         
         autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
         != scrollBar.getMaximum());

@@ -36,4 +36,12 @@ public interface CommandWindow {
      */
     public void addLine(String line);
     
+    /**
+     * Formats the arguments using the Formatter, then adds the result to the
+     * main text area
+     * @param messageType The type of this message
+     * @param args The arguments for the message
+     */
+    public void addLine(String messageType, Object... args);    
+    
 }

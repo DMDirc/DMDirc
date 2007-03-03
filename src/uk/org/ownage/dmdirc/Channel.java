@@ -112,11 +112,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void sendAction(String action) {
         channelInfo.sendAction(action);
-
+        
         ClientInfo me = server.getParser().getMyself();
         String modes = channelInfo.getUser(me).getImportantModePrefix();
         
-        frame.addLine("channelSelfAction", modes, me.getNickname(), action);        
+        frame.addLine("channelSelfAction", modes, me.getNickname(), action);
     }
     
     /**
@@ -172,9 +172,16 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param reason The reason for parting the channel
      */
     public void part(String reason) {
+        ClientInfo me = server.getParser().getMyself();
+        String modes = channelInfo.getUser(me).getImportantModePrefix();
+        
         server.getParser().partChannel(channelInfo.getName(), reason);
-        frame.addLine("* You have left the channel.");
-        // TODO: Use formatter
+        
+        if (reason.equals("")) {
+            frame.addLine("channelSelfPart", modes, me.getNickname(), channelInfo.getName());
+        } else {
+            frame.addLine("channelSelfPart", modes, me.getNickname(), channelInfo.getName(), reason);
+        }
     }
     
     /**
@@ -232,16 +239,22 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * frame, and also of the main frame if the channel is maximised and active.
      * @param tParser A reference to the IRC Parser for this server
      * @param cChannel A reference to the ChannelInfo object for this channel
-     * @param bIsJoinTopic True iff this is the topic received when we joined the channel
+     * @param bIsJoinTopic Whether this is the topic received when we joined the
+     * channel or not
      */
     public void onChannelTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsJoinTopic) {
         if (bIsJoinTopic) {
-            frame.addLine("* Topic is '"+cChannel.getTopic()+"'.");
-            frame.addLine("* Set by "+cChannel.getTopicUser()+".");
+            frame.addLine("channelJoinTopic", cChannel.getTopic(), cChannel.getName());
+            frame.addLine("channelJoinTopicSetBy", cChannel.getTopicUser(),
+                    cChannel.getTopicTime(), cChannel.getName());
         } else {
-            frame.addLine("* "+cChannel.getTopicUser()+" has changed the topic to '"+cChannel.getTopic()+"'");
+            ChannelClientInfo user = cChannel.getUser(cChannel.getTopicUser());
+            String nick = getNick(user, cChannel.getTopicUser());
+            String modes = getModes(user, cChannel.getTopicUser());
+            String topic = cChannel.getTopic();
+            frame.addLine("channelTopicChange", modes, nick, topic);
         }
-        // TODO: Use formatter
+
         updateTitle();
     }
     
@@ -353,7 +366,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * if there are no (known) modes.
      */
     private String getModes(ChannelClientInfo channelClient, String host) {
-        if (channelInfo == null) {
+        if (channelClient == null) {
             return "";
         } else {
             return channelClient.getImportantModePrefix();
@@ -368,7 +381,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @return A string containing a displayable name
      */
     private String getNick(ChannelClientInfo channelClient, String host) {
-        if (channelInfo == null) {
+        if (channelClient == null) {
             return ClientInfo.parseHost(host);
         } else {
             return channelClient.getNickname();

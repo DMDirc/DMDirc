@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JScrollBar;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -132,7 +133,8 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * @param line text to add
      */
     public void addLine(String line) {
-        Styliser.addStyledString(jTextPane1.getStyledDocument(), line+"\n");
+        String ts = Formatter.formatMessage("timestamp", new Date());
+        Styliser.addStyledString(jTextPane1.getStyledDocument(), ts+line+"\n");
         
         autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
         != scrollBar.getMaximum());

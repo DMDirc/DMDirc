@@ -76,6 +76,8 @@ public class Formatter {
         char colour = 3;
         char stop = 15;
         
+        properties.setProperty("timestamp","%1$tH:%1$tM:%1$tS | ");
+        
         properties.setProperty("channelMessage", "<%1$s%2$s> %3$s");
         properties.setProperty("channelAction", colour+"6* %1$s%2$s %3$s");
         
@@ -88,8 +90,16 @@ public class Formatter {
         properties.setProperty("channelKick", colour+"3* %1$s%2$s has kicked %3$s%4$s from %5$s.");
         properties.setProperty("channelKickReason", colour+"3* %1$s%2$s has kicked %3$s%4$s from %5$s (%6$s"+stop+").");
         
+        properties.setProperty("channelTopicChange", colour+"3* %1$s%2$s has changed the topic to '%3$s"+stop+"'.");
+        
+        properties.setProperty("channelJoinTopic", colour+"3* The topic for %2$s is '%1$s"+stop+"'.");
+        properties.setProperty("channelJoinTopicSetBy", colour+"3* Topic was set by %1$s.");
+        
         properties.setProperty("channelSelfMessage", "<%1$s%2$s> %3$s");
         properties.setProperty("channelSelfAction", colour+"6* %1$s%2$s %3$s");
+        
+        properties.setProperty("channelSelfPart", colour+"3* You have left the channel.");
+        properties.setProperty("channelSelfPartReason", colour+"3* You have left the channel.");
         
         properties.setProperty("queryMessage", "<%1$s> %2$s");
         properties.setProperty("queryAction", colour+"6* %1$s %2$s");
