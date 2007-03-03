@@ -42,6 +42,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
+import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
 /**
  * The Channel class represents the client's view of the channel. It handles
@@ -149,7 +150,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * Updates the title of the channel frame, and of the main frame if appropriate.
      */
     private void updateTitle() {
-        String title = channelInfo.getName()+" - "+channelInfo.getTopic();
+        String title = Styliser.stipControlCodes(channelInfo.getName()+" - "+channelInfo.getTopic());
         
         frame.setTitle(title);
         

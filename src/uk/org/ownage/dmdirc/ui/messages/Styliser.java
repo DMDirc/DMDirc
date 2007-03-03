@@ -73,6 +73,33 @@ public class Styliser {
     }
     
     /**
+     * Strips all recognised control codes from the input string
+     * @param input the String to be stripped
+     * @return a copy of the input with control codes removed
+     */    
+    static public String stipControlCodes(String input) {
+            int position = 0;
+            boolean cont = true;
+            String output = "";
+            SimpleAttributeSet attribs = new SimpleAttributeSet();
+            
+            while (position < input.length()) {
+                String next = readUntilControl(input.substring(position));
+                
+                output = output.concat(next);
+                
+                position += next.length();
+                
+                if (position < input.length()) {
+                    position += readControlChars(input.substring(position),
+                            attribs, (position == 0));
+                }
+            }    
+            
+            return output;
+    }
+    
+    /**
      * Returns a substring of the input string such that no control codes are present
      * in the output. If the returned value isn't the same as the input, then the
      * character immediately after is a control character.
