@@ -140,10 +140,18 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         yOffset += 30;
     }
     
+    /**
+     * Removes the specified InternalFrame from our desktop pane
+     * @param frame The frame to be removed
+     */
     public void delChild(JInternalFrame frame) {
         desktopPane.remove(frame);
     }
     
+    /**
+     * Retrieves the application icon
+     * @return The application icon
+     */
     public ImageIcon getIcon() {
         return imageIcon;
     }
@@ -190,6 +198,10 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         return maximised;
     }
     
+    /**
+     * Checks the current state of the internal frames, and configures the
+     * window menu to behave appropriately
+     */
     private void checkWindowState() {
         if (getActiveFrame() == null) {
             toggleStateMenuItem.setEnabled(false);
@@ -209,26 +221,55 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         }
     }
     
+    /**
+     * Called when the window is opened. Not implemented.
+     * @param windowEvent The event associated with this callback
+     */
     public void windowOpened(WindowEvent windowEvent) {
     }
-    
+
+    /**
+     * Called when the window is closing. Saves the config and has all servers
+     * disconnect with the default close method
+     * @param windowEvent The event associated with this callback
+     */    
     public void windowClosing(WindowEvent windowEvent) {
         ServerManager.getServerManager().closeAll(Config.getOption("general","closemessage"));
         Config.save();
     }
     
+    /**
+     * Called when the window is closed. Not implemented.
+     * @param windowEvent The event associated with this callback
+     */    
     public void windowClosed(WindowEvent windowEvent) {
     }
     
+    /**
+     * Called when the window is iconified. Not implemented.
+     * @param windowEvent The event associated with this callback
+     */    
     public void windowIconified(WindowEvent windowEvent) {
     }
     
+    /**
+     * Called when the window is deiconified. Not implemented.
+     * @param windowEvent The event associated with this callback
+     */
     public void windowDeiconified(WindowEvent windowEvent) {
     }
     
+    /**
+     * Called when the window is activated. Not implemented.
+     * @param windowEvent The event associated with this callback
+     */    
     public void windowActivated(WindowEvent windowEvent) {
     }
     
+    /**
+     * Called when the window is deactivated. Not implemented.
+     * @param windowEvent The event associated with this callback
+     */    
     public void windowDeactivated(WindowEvent windowEvent) {
     }
     

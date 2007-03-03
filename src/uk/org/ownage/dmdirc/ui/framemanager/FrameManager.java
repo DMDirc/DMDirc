@@ -29,23 +29,67 @@ import uk.org.ownage.dmdirc.Raw;
 import uk.org.ownage.dmdirc.Server;
 
 /**
- *
+ * A frame manager is a widget that allows the user to navigate between the
+ * various frames that will be open at any one time.
  * @author chris
  */
 public interface FrameManager {
     
+    /**
+     * Sets the parent component of this frame manager. The frame manager
+     * should render itself within the parent.
+     * @param parent The parent control
+     */
     public void setParent(JComponent parent);
     
+    /**
+     * Adds a new server instance to this frame manager.
+     * @param server The server to be added
+     */
     public void addServer(Server server);
+    /**
+     * Removes a server instance from this frame manager.
+     * @param server The server to be removed
+     */    
     public void delServer(Server server);
     
+    /**
+     * Adds a new channel instance to this frame manager.
+     * @param server The server to which the channel belongs
+     * @param channel The channel to be added
+     */    
     public void addChannel(Server server, Channel channel);
+    /**
+     * Removes a channel instance from this frame manager.
+     * @param server The server to which the channel belongs
+     * @param channel The channel to be removed
+     */
     public void delChannel(Server server, Channel channel);
     
+    /**
+     * Adds a new query instance to this frame manager.
+     * @param server The server to which the query belongs
+     * @param query The query to be added
+     */        
     public void addQuery(Server server, Query query);
+    /**
+     * Removes a query instance from this frame manager.
+     * @param server The server to which the query belongs
+     * @param query The query to be removed
+     */
     public void delQuery(Server server, Query query);
     
+    /**
+     * Adds a new raw instance to this frame manager.
+     * @param server The server to which the raw frame belongs
+     * @param raw The raw instance to be added
+     */
     public void addRaw(Server server, Raw raw);
+    /**
+     * Removes a raw instance from this frame manager.
+     * @param server The server to which the raw frame belongs
+     * @param raw The raw instance to be removed
+     */
     public void delRaw(Server server, Raw raw);
     
 }

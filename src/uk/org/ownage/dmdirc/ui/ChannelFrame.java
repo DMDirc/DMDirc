@@ -63,10 +63,14 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * The InputHandler for our input field
      */
     private InputHandler inputHandler;    
-    
+    /**
+     * The channel object that owns this frame
+     */
     private Channel parent;
+    /**
+     * The nick list model used for this channel's nickname list
+     */
     private NicklistListModel nicklistModel;
-    
     /**
      * The border used when the frame is not maximised
      */
@@ -83,10 +87,16 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * holds the scrollbar for the frame
      */
     private JScrollBar scrollBar;
-    
+    /**
+     * This channel's command parser
+     */
     private ChannelCommandParser commandParser;
     
-    /** Creates new form ChannelFrame */
+    /**
+     * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
+     * and default options for the form.
+     * @param parent The Channel object that owns this frame
+     */
     public ChannelFrame(Channel parent) {
         this.parent = parent;
         
@@ -207,14 +217,26 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         addLine(Formatter.formatMessage(messageType, args));
     }
     
+    /**
+     * Updates the list of clients on this channel
+     * @param newNames The new list of clients
+     */
     public void updateNames(ArrayList<ChannelClientInfo> newNames) {
         nicklistModel.replace(newNames);
     }
     
+    /**
+     * Adds a client to this channels' nicklist
+     * @param newName the new client to be added
+     */
     public void addName(ChannelClientInfo newName) {
         nicklistModel.add(newName);
     }
-    
+
+    /**
+     * Removes a client from this channels' nicklist
+     * @param name the client to be deleted
+     */    
     public void removeName(ChannelClientInfo name) {
         nicklistModel.remove(name);
     }
