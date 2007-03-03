@@ -40,6 +40,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelTopic;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
+import uk.org.ownage.dmdirc.ui.messages.Formatter;
 
 /**
  * The Channel class represents the client's view of the channel. It handles
@@ -107,7 +108,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void sendAction(String action) {
         channelInfo.sendAction(action);
         frame.addLine("*> "+action);
-    }    
+    }
     
     /**
      * Returns the server object that this channel belongs to
@@ -115,7 +116,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public Server getServer() {
         return server;
-    }    
+    }
     
     /**
      * Returns the parser's ChannelInfo object that this object is associated with
@@ -146,7 +147,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         if (frame.isMaximum() && MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
             MainFrame.getMainFrame().setTitle("DMDirc - "+title);
         }
-    }    
+    }
     
     /**
      * Joins the specified channel. This only makes sense if used after a call to
@@ -154,7 +155,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void join() {
         server.getParser().joinChannel(channelInfo.getName());
-    }    
+    }
     
     /**
      * Parts this channel with the specified message. Parting does NOT close the
@@ -185,7 +186,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         MainFrame.getMainFrame().delChild(frame);
         frame = null;
         server = null;
-    }    
+    }
     
     /**
      * Called whenever a message is sent to this channel. NB that the ChannelClient
@@ -200,9 +201,17 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel,
             ChannelClientInfo cChannelClient, String sMessage, String sHost) {
-        if (cChannelClient != null) {
-            frame.addLine("<"+cChannelClient.getNickname()+"> "+sMessage);
+        String source;
+        String modes;
+        if (cChannelClient == null) {
+            source = sHost;
+            modes = "";
+        } else {
+            source = cChannelClient.getNickname();
+            modes = cChannelClient.getImportantModePrefix();
         }
+        frame.addLine(Formatter.formatMessage("channelMessage", modes, source, sMessage));
+        
     }
     
     /**
@@ -232,14 +241,14 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         
         updateTitle();
     }
-       
+    
     /**
      * Called when a new client joins the channel. Adds the client to the listbox
      * in the channel frame.
      * @param tParser A reference to the IRC Parser for this server
      * @param cChannel A reference to the ChannelInfo object for this channel
      * @param cChannelClient The client that has just joined
-     */    
+     */
     public void onChannelJoin(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
         frame.addLine("* "+cChannelClient.getNickname()+" has joined the channel");
         frame.addName(cChannelClient);
@@ -252,7 +261,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param cChannel A reference to the ChannelInfo object for this channel
      * @param cChannelClient The client that just parted
      * @param sReason The reason specified when the client parted
-     */    
+     */
     public void onChannelPart(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
         if (sReason.equals("")) {
             frame.addLine("* "+cChannelClient+" has left the channel");
@@ -271,7 +280,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param cKickedByClient A reference to the client that did the kicking
      * @param sReason The reason specified in the kick message
      * @param sKickedByHost The host of the kicker (in case it wasn't an actual client)
-     */    
+     */
     public void onChannelKick(IRCParser tParser, ChannelInfo cChannel,
             ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient,
             String sReason, String sKickedByHost) {
@@ -292,7 +301,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param cChannel A reference to the ChannelInfo object for this channel
      * @param cChannelClient A reference to the client that has quit
      * @param sReason The reason specified in the client's quit message
-     */    
+     */
     public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
         frame.addLine("* "+cChannelClient+" has quit IRC ("+sReason+")");
         frame.removeName(cChannelClient);
@@ -305,29 +314,32 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param cChannelClient A reference to the client that sent the action
      * @param sMessage The text of the action
      * @param sHost The host of the performer (lest it wasn't an actual client)
-     */    
+     */
     public void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
         String source;
+        String modes;
         if (cChannelClient == null) {
             source = sHost;
+            modes = "";
         } else {
-            source = cChannelClient.toString();
+            source = cChannelClient.getNickname();
+            modes = cChannelClient.getImportantModePrefix();
         }
-        frame.addLine("* "+source+" "+sMessage);
+        frame.addLine(Formatter.formatMessage("channelAction", modes, source, sMessage));
     }
-       
+    
     /**
      * Called when the channel frame is opened. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
     }
-
+    
     /**
      * Called when the channel frame is being closed. Has the parser part the
      * channel, and frees all resources associated with the channel.
      * @param internalFrameEvent The event that triggered this callback
-     */    
+     */
     public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
         part(Config.getOption("general","partmessage"));
         close();
@@ -336,35 +348,35 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     /**
      * Called when the channel frame is actually closed. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
-     */    
+     */
     public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Called when the channel frame is iconified. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
-     */    
+     */
     public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Called when the channel frame is deiconified. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
-     */    
+     */
     public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Called when the channel frame is activated. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
-     */    
+     */
     public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Called when the channel frame is deactivated. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
-     */    
+     */
     public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }
     

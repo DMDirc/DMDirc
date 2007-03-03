@@ -66,7 +66,8 @@ public class Formatter {
      */
     private static Properties getDefaults() {
         Properties properties = new Properties();
-        properties.setProperty("channelMessage", "<%s> %s");
+        properties.setProperty("channelMessage", "<%1$s%2$s> %3$s");
+        properties.setProperty("channelAction", (char)3 + "6* %1$s%2$s %3$s");
         return properties;
     }
     

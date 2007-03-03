@@ -62,7 +62,8 @@ public class Styliser {
                 offset += next.length();
                 
                 if (position < add.length()) {
-                    position += readControlChars(add.substring(position), attribs);
+                    position += readControlChars(add.substring(position),
+                            attribs, (position == 0));
                 }
             }
             
@@ -108,11 +109,13 @@ public class Styliser {
     /**
      * Reads the first control character from the input string (and any arguments
      * it takes), and applies it to the specified attribute set.
+     * @return The number of characters read as control characters
      * @param string The string to read from
      * @param attribs The attribute set that new attributes will be applied to
-     * @return The number of characters read as control characters
+     * @param isStart Whether this is at the start of the string or not
      */
-    private static int readControlChars(String string, SimpleAttributeSet attribs) {
+    private static int readControlChars(String string, SimpleAttributeSet attribs,
+            boolean isStart) {
         // Bold
         if (string.charAt(0) == 2) {
             toggleAttribute(attribs, StyleConstants.FontConstants.Bold);
@@ -144,6 +147,9 @@ public class Styliser {
                 }
                 foreground = foreground % 16;
                 setForeground(attribs, foreground);
+                if (isStart) {
+                    setDefaultForeground(attribs, foreground);
+                }
                 
                 // Now background
                 if (string.charAt(count) == ',') {
@@ -212,9 +218,17 @@ public class Styliser {
         if (attribs.isDefined(StyleConstants.Foreground)) {
             attribs.removeAttribute(StyleConstants.Foreground);
         }
+        if (attribs.isDefined("DefaultForeground")) {
+            attribs.addAttribute(StyleConstants.Foreground, 
+                    attribs.getAttribute("DefaultForeground"));
+        }
         if (attribs.isDefined(StyleConstants.Background)) {
             attribs.removeAttribute(StyleConstants.Background);
         }
+        if (attribs.isDefined("DefaultBackground")) {
+            attribs.addAttribute(StyleConstants.Background, 
+                    attribs.getAttribute("DefaultBackground"));
+        }        
     }
     
     /**
@@ -242,5 +256,23 @@ public class Styliser {
         }
         attribs.addAttribute(StyleConstants.Background, ColourManager.getColour(background));
     }
+
+    /**
+     * Sets the default foreground colour (used after an empty ctrl+k or a ctrl+o)
+     * @param attribs The attribute set to apply this default on
+     * @param foreground The default foreground colour
+     */
+    private static void setDefaultForeground(SimpleAttributeSet attribs, int foreground) {
+        attribs.addAttribute("DefaultForeground", ColourManager.getColour(foreground));
+    }
+    
+    /**
+     * Sets the default background colour (used after an empty ctrl+k or a ctrl+o)
+     * @param attribs The attribute set to apply this default on
+     * @param foreground The default background colour
+     */    
+    private static void setDefaultBackground(SimpleAttributeSet attribs, int background) {
+        attribs.addAttribute("DefaultBackground", ColourManager.getColour(background));
+    }    
     
 }
