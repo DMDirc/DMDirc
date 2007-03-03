@@ -45,7 +45,7 @@ public class ColourManager {
             case 2:
                 return new Color(0, 0, 127);
             case 3:
-                return Color.GREEN;
+                return new Color(0, 141, 0);
             case 4:
                 return Color.RED;
             case 5:

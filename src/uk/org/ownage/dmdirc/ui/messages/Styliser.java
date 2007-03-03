@@ -99,18 +99,33 @@ public class Styliser {
             return 1;
         }
         
+        // Colours
         if (string.charAt(0) == 3) {
             int count = 1;
-            // This isn't too nice
-            if (isInt(string.charAt(1))) {
-                int foreground = string.charAt(1) - 48;
+            // This isn't too nice!
+            if (isInt(string.charAt(count))) {
+                int foreground = string.charAt(count) - 48;
                 count++;
-                if (isInt(string.charAt(2))) {
-                    foreground = foreground*10 + (string.charAt(2) - 48);
+                if (isInt(string.charAt(count))) {
+                    foreground = foreground*10 + (string.charAt(count) - 48);
                     count++;
                 }
                 foreground = foreground % 16;
                 setForeground(attribs, foreground);
+                
+                // Now background
+                if (string.charAt(count) == ',') {
+                    if (isInt(string.charAt(count+1))) {
+                        int background = string.charAt(count+1);
+                        count += 2; // Comma and first digit
+                        if (isInt(string.charAt(count))) {
+                            background = background*10 + (string.charAt(count) - 48);
+                            count++;
+                        }
+                        background = background % 16;
+                        setBackground(attribs, background);
+                    }
+                }
             } else {
                 resetColour(attribs);
             }
@@ -148,14 +163,26 @@ public class Styliser {
     }
     
     private static void resetColour(SimpleAttributeSet attribs) {
-        setForeground(attribs, 1);
+        if (attribs.isDefined(StyleConstants.Foreground)) {
+            attribs.removeAttribute(StyleConstants.Foreground);
+        }
+        if (attribs.isDefined(StyleConstants.Background)) {
+            attribs.removeAttribute(StyleConstants.Background);
+        }        
     }
-
+    
     private static void setForeground(SimpleAttributeSet attribs, int foreground) {
         if (attribs.isDefined(StyleConstants.Foreground)) {
             attribs.removeAttribute(StyleConstants.Foreground);
         }
         attribs.addAttribute(StyleConstants.Foreground, ColourManager.getColour(foreground));
     }
+    
+    private static void setBackground(SimpleAttributeSet attribs, int background) {
+        if (attribs.isDefined(StyleConstants.Background)) {
+            attribs.removeAttribute(StyleConstants.Background);
+        }
+        attribs.addAttribute(StyleConstants.Background, ColourManager.getColour(background));
+    }    
     
 }
