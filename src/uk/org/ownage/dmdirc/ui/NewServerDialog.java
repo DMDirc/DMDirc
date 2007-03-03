@@ -42,6 +42,13 @@ import uk.org.ownage.dmdirc.logger.Logger;
 public class NewServerDialog extends javax.swing.JDialog {
     
     /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;    
+    
+    /**
      * A previously created instance of NewServerDialog
      */
     private static NewServerDialog me;

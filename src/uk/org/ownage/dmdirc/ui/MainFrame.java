@@ -43,6 +43,13 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 public class MainFrame extends javax.swing.JFrame implements WindowListener {
     
     /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;    
+    
+    /**
      * Singleton instance of MainFrame
      */
     private static MainFrame me;

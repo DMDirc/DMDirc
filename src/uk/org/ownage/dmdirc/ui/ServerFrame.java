@@ -47,6 +47,13 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
 public class ServerFrame extends javax.swing.JInternalFrame implements CommandWindow {
     
     /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;    
+    
+    /**
      * The border used when the frame is not maximised
      */
     private Border myborder;

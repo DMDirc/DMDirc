@@ -16,6 +16,13 @@ import uk.org.ownage.dmdirc.logger.Logger;
  */
 public class FatalErrorDialog extends javax.swing.JDialog {
     
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;    
+    
     public FatalErrorDialog(java.awt.Frame parent, boolean modal, String[] message) {
         super(parent, modal);
         initComponents();

@@ -28,6 +28,13 @@ package uk.org.ownage.dmdirc.ui;
  */
 public class IdentityManagerDialog extends javax.swing.JDialog {
     
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;    
+    
     /** Creates new form IdentityManagerDialog */
     public IdentityManagerDialog() {
         initComponents();
@@ -61,11 +68,6 @@ public class IdentityManagerDialog extends javax.swing.JDialog {
         jTextPane1.setText("Identities define your nickname, username, real name and other information relating to your presence on IRC. ");
         jScrollPane1.setViewportView(jTextPane1);
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane2.setViewportView(jList1);
 
         jLabel1.setText("Nicknames:");
