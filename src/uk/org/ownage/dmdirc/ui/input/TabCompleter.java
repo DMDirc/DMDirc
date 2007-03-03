@@ -64,7 +64,6 @@ public class TabCompleter {
         TabCompleterResult result = new TabCompleterResult();
         
         for (String entry : entries) {
-            // TODO: Option for case sensitivity
             if (Boolean.parseBoolean(Config.getOption("tabcompletion","casesensitive"))) {
                 if (entry.startsWith(partial)) {
                     result.addResult(entry);

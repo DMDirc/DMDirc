@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.ui.input;
 
 import java.util.ArrayList;
+import uk.org.ownage.dmdirc.Config;
 
 /**
  * Represents the result set from a tab completion operation.
@@ -31,13 +32,13 @@ import java.util.ArrayList;
 public class TabCompleterResult {
     
     private ArrayList<String> results;
-
+    
     /**
      * Creates a new instance of TabCompleterResult with an empty result set
      */
     public TabCompleterResult() {
         this.results = new ArrayList<String>();
-    }    
+    }
     
     /**
      * Creates a new instance of TabCompleterResult
@@ -80,10 +81,18 @@ public class TabCompleterResult {
             return "";
         }
         
+        boolean caseSensitive = Boolean.parseBoolean(Config.getOption("tabcompletion","casesensitive"));
+        
         String res = results.get(0);
         for (String entry : results) {
-            while (!entry.startsWith(res)) {
-                res = res.substring(0, res.length()-1);
+            if (caseSensitive) {
+                while (!entry.startsWith(res)) {
+                    res = res.substring(0, res.length()-1);
+                }
+            } else {
+                while (!entry.toLowerCase().startsWith(res.toLowerCase())) {
+                    res = res.substring(0, res.length()-1);
+                }
             }
         }
         
