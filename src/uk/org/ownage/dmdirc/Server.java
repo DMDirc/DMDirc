@@ -200,10 +200,18 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         return tabCompleter;
     }
     
+    /**
+     * Adds a line to the server window
+     * @param line line to be added
+     */
     public void addLine(String line) {
         frame.addLine(line);
     }
     
+    /**
+     * closes this server connection and associated windows
+     * @param reason reason for closing
+     */
     public void close(String reason) {
         // Unregister parser callbacks
         parser.getCallbackManager().delCallback("OnChannelSelfJoin", this);
@@ -232,10 +240,17 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         parser = null;
     }
     
+    /**
+     * Disconnects from thie server
+     * @param reason disconnect reason
+     */
     public void disconnect(String reason) {
         parser.quit(reason);
     }
     
+    /**
+     * closes all open channel windows associated with this server
+     */
     private void closeChannels() {
         closing = true;
         for (Channel channel : channels.values()) {
@@ -245,6 +260,9 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         closing = false;
     }
     
+    /**
+     * closes all open query windows associated with this server
+     */
     private void closeQueries() {
         closing = true;
         for (Query query: queries.values()) {
@@ -262,6 +280,10 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         raw = null;
     }
     
+    /**
+     * Removes a specific channel and window from this server
+     * @param chan channel to remove
+     */
     public void delChannel(String chan) {
         tabCompleter.removeEntry(chan);
         if (!closing) {
@@ -269,16 +291,28 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         }
     }
     
+    /**
+     * Adds a specific channel and window to this server
+     * @param chan channel to add
+     */
     private void addChannel(ChannelInfo chan) {
         tabCompleter.addEntry(chan.getName());
         channels.put(chan.getName(), new Channel(this, chan));
     }
     
+    /**
+     * Adds a query query to this server
+     * @param host host of the remote client being queried
+     */
     private void addQuery(String host) {
         tabCompleter.addEntry(ClientInfo.parseHost(host));
         queries.put(ClientInfo.parseHost(host), new Query(this, host));
     }
     
+    /**
+     * Deletes a query from this server
+     * @param host host of the remote client being queried
+     */
     public void delQuery(String host) {
         tabCompleter.removeEntry(ClientInfo.parseHost(host));
         if (!closing) {
@@ -288,6 +322,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     
     /**
      * Determines if the specified frame is owned by this server
+     * @param target internalframe to be checked for ownership
+     * @return boolean ownership status
      */
     public boolean ownsFrame(JInternalFrame target) {
         // Check if it's our server frame
@@ -305,6 +341,12 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         return false;
     }
     
+    /**
+     * Event when client joins a channel, creates new channel object and opens 
+     * a channel window
+     * @param tParser parser instance triggering event
+     * @param cChannel Channel being joined
+     */
     public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
         if (channels.containsKey(cChannel.getName())) {
             channels.get(cChannel.getName()).setChannelInfo(cChannel);
@@ -313,18 +355,37 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         }
     }
     
+    /**
+     * Private message event, creates a new query object and opens a new query 
+     * window if one doesnt exist
+     * @param parser parser instance triggering event
+     * @param message private message being received
+     * @param host host of the remote client
+     */
     public void onPrivateMessage(IRCParser parser, String message, String host) {
         if (!queries.containsKey(ClientInfo.parseHost(host))) {
             addQuery(host);
         }
     }
     
-    public void onPrivateAction(IRCParser parser, String message, String host) {
+    /**
+     * Private action event, creates a new query object and opens a new query 
+     * window if one doesnt exist
+     * @param action action text being received
+     * @param parser parser instance triggering event
+     * @param host host of remote client
+     */
+    public void onPrivateAction(IRCParser parser, String action, String host) {
         if (!queries.containsKey(ClientInfo.parseHost(host))) {
             addQuery(host);
         }
     }
     
+    /**
+     * Parses the parser error and notifies the Logger
+     * @param tParser parser instance triggering event
+     * @param errorInfo Parser error object
+     */
     public void onErrorInfo(IRCParser tParser, ParserError errorInfo) {
         ErrorLevel errorLevel;
         if (errorInfo.isFatal()) {
