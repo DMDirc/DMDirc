@@ -210,8 +210,9 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         == scrollBar.getMaximum());
         
         String ts = Formatter.formatMessage("timestamp", new Date());
+        if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
         Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
-        Styliser.addStyledString(jTextPane1.getStyledDocument(), line+"\n");
+        Styliser.addStyledString(jTextPane1.getStyledDocument(), line);
         
         if(autoScroll) {
             scrollBar.setValue(scrollBar.getMaximum());
