@@ -29,6 +29,7 @@ import java.util.Hashtable;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
@@ -137,6 +138,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         frame.setTabCompleter(tabCompleter);
         frame.addInternalFrameListener(this);
         frame.setFrameIcon(imageIcon);
+        
+        tabCompleter.addEntries(CommandManager.getServerCommandNames());
         
         MainFrame.getMainFrame().addChild(frame);
         

@@ -90,6 +90,20 @@ public class TabCompleter {
     }
     
     /**
+     * Adds multiple new entries to this tab completer's list
+     * @param entries Entries to be added
+     */
+    public void addEntries(ArrayList<String> entries) {
+        if (entries == null) {
+            return;
+        }
+                
+        for (String entry : entries) {
+            addEntry(entry);
+        }
+    }
+    
+    /**
      * Removes a specified entry from this tab completer's list
      * @param entry The entry to be removed
      */

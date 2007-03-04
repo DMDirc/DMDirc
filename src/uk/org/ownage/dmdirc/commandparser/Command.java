@@ -108,4 +108,12 @@ public abstract class Command {
         return res;
     }
     
+    /**
+     * Returns this command's name
+     * @return The name of this command
+     */
+    public String getName() {
+        return name;
+    }
+    
 }

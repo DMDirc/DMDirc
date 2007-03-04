@@ -29,6 +29,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.QueryCommandParser;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
@@ -42,6 +43,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import uk.org.ownage.dmdirc.ui.QueryFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
+import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
@@ -85,13 +87,16 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         ClassLoader cldr = this.getClass().getClassLoader();
         URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/query.png");
         imageIcon = new ImageIcon(imageURL);
-        
+               
         frame = new QueryFrame(new QueryCommandParser(this.server, this));
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
-        frame.setTabCompleter(server.getTabCompleter());
         frame.setFrameIcon(imageIcon);
         frame.open();
+        
+        TabCompleter tabCompleter = new TabCompleter(server.getTabCompleter());
+        tabCompleter.addEntries(CommandManager.getQueryCommandNames());        
+        frame.setTabCompleter(tabCompleter);
         
         try {
             server.getParser().getCallbackManager().addCallback("onPrivateAction", this, ClientInfo.parseHost(host));

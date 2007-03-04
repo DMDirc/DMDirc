@@ -22,7 +22,9 @@
 
 package uk.org.ownage.dmdirc.commandparser;
 
+import java.util.ArrayList;
 import java.util.Vector;
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.commandparser.commands.*;
 import uk.org.ownage.dmdirc.commandparser.commands.server.*;
 import uk.org.ownage.dmdirc.commandparser.commands.channel.*;
@@ -93,7 +95,7 @@ public class CommandManager {
     /**
      * Loads all query commands into the specified parser
      * @param parser The parser to load commands into
-     */    
+     */
     static void loadQueryCommands(QueryCommandParser parser) {
         if (queryCommands == null)    {
             queryCommands = new Vector<Command>(0,1);
@@ -152,7 +154,7 @@ public class CommandManager {
      * by this command manager
      * @return A Vector of server commands, or null if none have been loaded
      */
-    public static Vector<Command> getServerCommands() {       
+    public static Vector<Command> getServerCommands() {
         return serverCommands;
     }
     
@@ -160,8 +162,8 @@ public class CommandManager {
      * Returns a Vector containing the channel commands that have been initialised
      * by this command manager
      * @return A Vector of channel commands, or null if none have been loaded
-     */    
-    public static Vector<Command> getChannelCommands() {       
+     */
+    public static Vector<Command> getChannelCommands() {
         return channelCommands;
     }
     
@@ -169,9 +171,60 @@ public class CommandManager {
      * Returns a Vector containing the query commands that have been initialised
      * by this command manager
      * @return A Vector of query commands, or null if none have been loaded
-     */    
-    public static Vector<Command> getQueryCommands() {       
+     */
+    public static Vector<Command> getQueryCommands() {
         return queryCommands;
+    }
+    
+    /**
+     * Returns the names (including command char) of all registered server
+     * commands
+     * @return An ArrayList<String> containing all registered server command
+     * names
+     */
+    public static ArrayList<String> getServerCommandNames() {
+        return getCommandNames(serverCommands);
+    }
+    
+    /**
+     * Returns the names (including command char) of all registered channel
+     * commands
+     * @return An ArrayList<String> containing all registered server command
+     * names
+     */
+    public static ArrayList<String> getChannelCommandNames() {
+        return getCommandNames(channelCommands);
     }    
+    
+    /**
+     * Returns the names (including command char) of all registered channel
+     * commands
+     * @return An ArrayList<String> containing all registered server command
+     * names
+     */
+    public static ArrayList<String> getQueryCommandNames() {
+        return getCommandNames(queryCommands);
+    }      
+    
+    /**
+     * Iterates through the specified source and returns a list of the names
+     * of all commands found in it.
+     * @param source The source vector to iterate over
+     * @return A list of all commands in the source
+     */
+    private static ArrayList<String> getCommandNames(Vector<Command> source) {
+        if (source == null) {
+            return null;
+        }
+        
+        ArrayList<String> res = new ArrayList<String>();
+        String commandChar = Config.getOption("general","commandchar");
+        
+        for (Command command : source) {
+            res.add(commandChar + command.getName());
+        }
+        
+        return res;
+    }
     
 }

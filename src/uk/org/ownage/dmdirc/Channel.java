@@ -30,6 +30,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
@@ -97,14 +98,17 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/channel.png");
         imageIcon = new ImageIcon(imageURL);
         
-        tabCompleter = new TabCompleter(server.getTabCompleter());
+
         
         frame = new ChannelFrame(this);
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
-        frame.setTabCompleter(tabCompleter);
-        frame.setFrameIcon(imageIcon);
+        frame.setFrameIcon(imageIcon);       
         frame.open();
+        
+        tabCompleter = new TabCompleter(server.getTabCompleter());
+        tabCompleter.addEntries(CommandManager.getChannelCommandNames());        
+        frame.setTabCompleter(tabCompleter);
         
         try {
             server.getParser().getCallbackManager().addCallback("OnChannelGotNames", this, channelInfo.getName());
@@ -290,6 +294,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             names.add(channelClient.getNickname());
         }
         tabCompleter.replaceEntries(names);
+        tabCompleter.addEntries(CommandManager.getChannelCommandNames());        
     }
     
     /**
