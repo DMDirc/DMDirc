@@ -48,19 +48,40 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
 
+/**
+ * Manages open windows in the application in a tree style view
+ */
 public class TreeFrameManager implements FrameManager, TreeModelListener,
         TreeSelectionListener, TreeExpansionListener, TreeWillExpandListener {
     
+    /**
+     * display tree
+     */
     private JTree tree;
     
+    /**
+     * root node
+     */
     private DefaultMutableTreeNode root;
     
+    /**
+     * node renderer
+     */
     private TreeViewTreeCellRenderer renderer;
     
+    /**
+     * data model
+     */
     private DefaultTreeModel model;
     
+    /**
+     * node storage, used for adding and deleting nodes correctly
+     */
     private Hashtable<FrameContainer, DefaultMutableTreeNode> nodes;
     
+    /**
+     * creates a new instance of the TreeFrameManager
+     */
     public TreeFrameManager() {
         nodes = new Hashtable<FrameContainer, DefaultMutableTreeNode>();
         root = new DefaultMutableTreeNode("DMDirc");
@@ -73,6 +94,10 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.setRootVisible(false);
     }
     
+    /**
+     * adds a server to the tree
+     * @param server associated server
+     */
     public void addServer(Server server) {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(server, node);
@@ -81,10 +106,19 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
+    /**
+     * removes a server from the tree
+     * @param server associated server
+     */
     public void delServer(Server server) {
         model.removeNodeFromParent(nodes.get(server));
     }
     
+    /**
+     * adds a channel to the tree
+     * @param server associated server
+     * @param channel associated framecontainer
+     */
     public void addChannel(Server server, Channel channel) {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(channel, node);
@@ -93,10 +127,20 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
+    /**
+     * deletes a channel from the tree
+     * @param server associated server
+     * @param channel associated framecontainer
+     */
     public void delChannel(Server server, Channel channel) {
         model.removeNodeFromParent(nodes.get(channel));
     }
     
+    /**
+     * adds a query to the tree
+     * @param server associated server
+     * @param query associated framecontainer
+     */
     public void addQuery(Server server, Query query) {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(query, node);
@@ -105,10 +149,20 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
+    /**
+     * deletes a query from the tree
+     * @param server associated server
+     * @param query associated framecontainer
+     */
     public void delQuery(Server server, Query query) {
         model.removeNodeFromParent(nodes.get(query));
     }
     
+    /**
+     * adds a raw to the tree
+     * @param server associated server
+     * @param raw associated framecontainer
+     */
     public void addRaw(Server server, Raw raw) {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(raw, node);
@@ -117,10 +171,19 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
+    /**
+     * deletes a raw from the tree
+     * @param server associated server
+     * @param raw associated framecontainer
+     */
     public void delRaw(Server server, Raw raw) {
         model.removeNodeFromParent(nodes.get(raw));
     }
     
+    /**
+     * valled whenever the value of the selection changes
+     * @param e selection event
+     */
     public void valueChanged(TreeSelectionEvent e) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
         
@@ -134,18 +197,40 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         }
     }
     
+    /**
+     * Called after the tree has been expanded
+     * @param event expansion event
+     */
     public void treeExpanded(TreeExpansionEvent event) {
     }
     
+    /**
+     * Called after the tree has been collapsed
+     * @param event expansion event
+     */
     public void treeCollapsed(TreeExpansionEvent event) {
     }
     
+    /**
+     * Called when the tree is about to expand
+     * @param event expansion event
+     * @throws javax.swing.tree.ExpandVetoException thrown to prevent node expanding
+     */
     public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
     }
     
+    /**
+     * Called when the tree is about to collapse
+     * @param event expansion event
+     * @throws javax.swing.tree.ExpandVetoException throw to prevent node collapsing
+     */
     public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
     }
     
+    /**
+     * Sets the parent component in the main UI
+     * @param parent parent component
+     */
     public void setParent(JComponent parent) {
         parent.setLayout(new FlowLayout());
         parent.add(tree);
@@ -153,15 +238,31 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         parent.setVisible(true);
     }
     
+    /**
+     * called after a node, or set of nodes, changes
+     * @param e change event
+     */
     public void treeNodesChanged(TreeModelEvent e) {
     }
     
+    /**
+     * called after a node has been inserted into the tree
+     * @param e change event
+     */
     public void treeNodesInserted(TreeModelEvent e) {
     }
     
+    /**
+     * Called when a node is removed from the tree
+     * @param e change event
+     */
     public void treeNodesRemoved(TreeModelEvent e) {
     }
     
+    /**
+     * Called when a tree changes structure
+     * @param e change event
+     */
     public void treeStructureChanged(TreeModelEvent e) {
     }
 }
