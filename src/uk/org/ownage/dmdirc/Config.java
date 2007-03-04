@@ -88,8 +88,12 @@ public class Config {
         defaults.setProperty("general.partmessage","Using DMDirc");
         defaults.setProperty("general.cyclemessage","Cycling");
         
+        // These are temporary until we get identity support
         defaults.setProperty("general.defaultnick","DMDircUser");
         defaults.setProperty("general.alternatenick","DMDircUser_");
+        defaults.setProperty("general.server","blueyonder.uk.quakenet.org");
+        defaults.setProperty("general.port","7000");
+        defaults.setProperty("general.password","");
         
 	defaults.setProperty("ui.maximisewindows","false");
         defaults.setProperty("ui.sortByMode", "true");

@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.ui;
 
 import javax.swing.JInternalFrame;
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.ServerManager;
 import java.awt.event.ActionEvent;
@@ -61,6 +62,9 @@ public class NewServerDialog extends javax.swing.JDialog {
         
         initComponents();
                
+        jTextField1.setText(Config.getOption("general","server"));
+        jTextField2.setText(Config.getOption("general","port"));
+        jTextField3.setText(Config.getOption("general","password"));
         jTextField2.setInputVerifier(new PortVerifier());
         
         addCallbacks();
