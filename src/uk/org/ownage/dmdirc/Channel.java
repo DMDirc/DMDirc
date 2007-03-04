@@ -261,7 +261,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             ChannelClientInfo cChannelClient, String sMessage, String sHost) {
         String source = getNick(cChannelClient, sHost);
         String modes = getModes(cChannelClient, sHost);
-        frame.addLine("channelMessage", modes, source, sMessage);
+        String type = "channelMessage";
+        if (cChannelClient.getNickname().equals(tParser.getMyself().getNickname())) {
+            type = "channelSelfExternalMessage";
+        }
+        frame.addLine(type, modes, source, sMessage);
         sendNotification();
     }
     
@@ -416,7 +420,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             ChannelClientInfo cChannelClient, String sMessage, String sHost) {
         String source = getNick(cChannelClient, sHost);
         String modes = getModes(cChannelClient, sHost);
-        frame.addLine("channelAction", modes, source, sMessage);
+        String type = "channelAction";
+        if (cChannelClient.getNickname().equals(tParser.getMyself().getNickname())) {
+            type = "channelSelfExternalAction";
+        }        
+        frame.addLine(type, modes, source, sMessage);
         sendNotification();
     }
     

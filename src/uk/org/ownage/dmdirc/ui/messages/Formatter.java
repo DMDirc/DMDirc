@@ -59,7 +59,7 @@ public class Formatter {
         if (properties == null) initialise();
         
         if (properties.containsKey(messageType)) {
-                return String.format(properties.getProperty(messageType), arguments);
+            return String.format(properties.getProperty(messageType), arguments);
         } else {
             Logger.error(ErrorLevel.ERROR, "Format string not found: "+messageType);
             return "<No format string for message type "+messageType+">";
@@ -85,7 +85,7 @@ public class Formatter {
         properties.setProperty("channelPart", colour+"3* %1$s%2$s has left %3$s.");
         properties.setProperty("channelPartReason", colour+"3* %1$s%2$s has left %3$s (%4$s"+stop+").");
         properties.setProperty("channelQuit", colour+"2* %1$s%2$s has quit IRC.");
-        properties.setProperty("channelQuitReason", colour+"2* %1$s%2$s has quit IRC (%3$s"+stop+").");        
+        properties.setProperty("channelQuitReason", colour+"2* %1$s%2$s has quit IRC (%3$s"+stop+").");
         
         properties.setProperty("channelKick", colour+"3* %1$s%2$s has kicked %3$s%4$s from %5$s.");
         properties.setProperty("channelKickReason", colour+"3* %1$s%2$s has kicked %3$s%4$s from %5$s (%6$s"+stop+").");
@@ -99,6 +99,8 @@ public class Formatter {
         
         properties.setProperty("channelSelfMessage", "<%1$s%2$s> %3$s");
         properties.setProperty("channelSelfAction", colour+"6* %1$s%2$s %3$s");
+        properties.setProperty("channelSelfExternalMessage", "<%1$s%2$s> %3$s");
+        properties.setProperty("channelSelfExternalAction", colour+"6* %1$s%2$s %3$s");
         
         properties.setProperty("channelSelfJoin", colour+"3* You are now talking in %2$s.");
         properties.setProperty("channelSelfPart", colour+"3* You have left the channel.");
@@ -121,30 +123,30 @@ public class Formatter {
      * properties object.
      */
     private static void initialise() {
-            File file;
-            if (Config.hasOption("ui", "formatter")) {
-                file = new File(Config.getOption("ui", "formatter"));
-            } else {
-                file = new File(Config.getConfigDir()+"format.properties");
+        File file;
+        if (Config.hasOption("ui", "formatter")) {
+            file = new File(Config.getOption("ui", "formatter"));
+        } else {
+            file = new File(Config.getConfigDir()+"format.properties");
+        }
+        properties = getDefaults();
+        if (file.exists()) {
+            try {
+                properties.load(new FileInputStream(file));
+            } catch (FileNotFoundException ex) {
+                //Do nothing, defaults used
+            } catch (InvalidPropertiesFormatException ex) {
+                Logger.error(ErrorLevel.INFO, ex);
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
             }
-            properties = getDefaults();
-            if (file.exists()) {
-                try {
-                    properties.load(new FileInputStream(file));
-                } catch (FileNotFoundException ex) {
-                    //Do nothing, defaults used
-                } catch (InvalidPropertiesFormatException ex) {
-                    Logger.error(ErrorLevel.INFO, ex);
-                } catch (IOException ex) {
-                    Logger.error(ErrorLevel.WARNING, ex);
-                }
-            } else {
-                try {
-                    file.createNewFile();
-                } catch (IOException ex) {
-                    Logger.error(ErrorLevel.WARNING, ex);
-                }
+        } else {
+            try {
+                file.createNewFile();
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
             }
+        }
     }
     
     /**
