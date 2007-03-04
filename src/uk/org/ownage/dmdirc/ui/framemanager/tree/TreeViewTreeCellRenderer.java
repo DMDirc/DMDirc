@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui.framemanager.tree;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.net.URL;
 import javax.swing.ImageIcon;
@@ -29,11 +30,8 @@ import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.FrameContainer;
-import uk.org.ownage.dmdirc.Query;
-import uk.org.ownage.dmdirc.Raw;
-import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.ui.MainFrame;
 
 /**
  * Displays a node in a tree according to its type
@@ -84,8 +82,13 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         c.setForeground(tree.getForeground());
         setOpaque(true);
         if (node.getUserObject() instanceof FrameContainer) {
+            Color colour = ((TreeFrameManager)MainFrame.getMainFrame().getFrameManager()).getNodeColour((FrameContainer)node.getUserObject());
+            if (colour != null) {
+                c.setForeground(colour);
+            }
             setIcon(((FrameContainer)node.getUserObject()).getIcon());
         } else {
+            
             setIcon(defaultIcon);
         }
         

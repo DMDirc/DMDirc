@@ -23,6 +23,8 @@
 package uk.org.ownage.dmdirc.ui.framemanager.tree;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -31,6 +33,7 @@ import java.util.Hashtable;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeExpansionEvent;
@@ -68,6 +71,11 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     private JTree tree;
     
     /**
+     * Scrollpane for the tree
+     */
+    private JScrollPane scrollPane;
+    
+    /**
      * root node
      */
     private DefaultMutableTreeNode root;
@@ -88,6 +96,11 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     private Hashtable<FrameContainer, DefaultMutableTreeNode> nodes;
     
     /**
+     * stores colour associated with a node, cheap hack till i rewrite the model
+     */
+    private Hashtable<FrameContainer, Color> nodeColours;
+    
+    /**
      * popup menu for menu items on nodes
      */
     private JPopupMenu popup;
@@ -102,6 +115,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      */
     public TreeFrameManager() {
         nodes = new Hashtable<FrameContainer, DefaultMutableTreeNode>();
+        nodeColours = new Hashtable<FrameContainer, Color>();
         popup = new JPopupMenu();
         closeMenuItem = new JMenuItem("Close window");
         closeMenuItem.addActionListener(this);
@@ -115,6 +129,65 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.setCellRenderer(renderer);
         tree.setRootVisible(false);
         tree.setBorder(new EmptyBorder(5, 5, 5, 5));
+    }
+    /**
+     * Indicates whether this frame manager can be positioned vertically
+     * (i.e., at the side of the screen)
+     * @return True iff the frame manager can be positioned vertically
+     */
+    public boolean canPositionVertically() {
+        return true;
+    }
+    
+    /**
+     * Indicates whether this frame manager can be positioned horizontally
+     * (i.e., at the top or bottom of the screen)
+     * @return True iff the frame manager can be positioned horizontally
+     */
+    public boolean canPositionHorizontally() {
+        return false;
+    }
+    
+    /**
+     * Shows an event notification to the user by colouring the corresponding
+     * element to the source a specific colour
+     * @param source The object requesting notification
+     * @param colour The colour that should be used to indicate the notification
+     */
+    public void showNotification(FrameContainer source, Color colour) {
+        if (nodeColours != null) {
+            nodeColours.put(source, colour);
+            tree.revalidate();
+        }
+    }
+    
+    public void clearNotification(FrameContainer source) {
+        if (nodeColours != null && nodeColours.contains(source)) {
+            nodeColours.remove(source);
+        }
+    }
+    
+    public Color getNodeColour(FrameContainer source) {
+        if (nodeColours != null && nodeColours.contains(source)) {
+            return nodeColours.get(source);
+        }
+        return null;
+    }
+    
+    /**
+     * Sets the parent component in the main UI
+     * @param parent parent component
+     */
+    public void setParent(JComponent parent) {
+        scrollPane = new JScrollPane(tree);
+        parent.setLayout(new BorderLayout());
+        parent.add(scrollPane);
+        parent.setPreferredSize(new Dimension(150, Integer.MAX_VALUE));
+        parent.setMinimumSize(new Dimension(150, Integer.MAX_VALUE));
+        tree.setBackground(parent.getBackground());
+        tree.setForeground(parent.getForeground());
+        tree.setVisible(true);
+        parent.setVisible(true);
     }
     
     /**
@@ -248,19 +321,6 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      * @throws javax.swing.tree.ExpandVetoException throw to prevent node collapsing
      */
     public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
-    }
-    
-    /**
-     * Sets the parent component in the main UI
-     * @param parent parent component
-     */
-    public void setParent(JComponent parent) {
-        parent.setLayout(new BorderLayout());
-        parent.add(tree);
-        tree.setBackground(parent.getBackground());
-        tree.setForeground(parent.getForeground());
-        tree.setVisible(true);
-        parent.setVisible(true);
     }
     
     /**
