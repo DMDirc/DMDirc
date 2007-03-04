@@ -114,6 +114,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         jTextPane1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
         jTextField1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
         jTextField1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
+        jTextField1.setCaretColor(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
         jList1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
         jList1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));        
         

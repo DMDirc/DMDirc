@@ -101,6 +101,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
         jTextPane1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
         jTextField1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
         jTextField1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
+        jTextField1.setCaretColor(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
         
         scrollBar = jScrollPane1.getVerticalScrollBar();
         
