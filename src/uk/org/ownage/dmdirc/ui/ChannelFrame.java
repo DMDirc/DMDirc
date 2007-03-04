@@ -206,9 +206,6 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * @param line text to add
      */
     public void addLine(String line) {
-        Logger.debug("Value  : "+scrollBar.getValue()+
-                ", "+scrollBar.getVisibleAmount()+
-                ", "+scrollBar.getMaximum());
         autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
         == scrollBar.getMaximum());
         
