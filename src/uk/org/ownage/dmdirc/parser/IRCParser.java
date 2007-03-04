@@ -1428,7 +1428,10 @@ public class IRCParser implements Runnable {
 					sMessage = bits[1];
 					sMessage = sMessage.substring(0, sMessage.length()-1);
 				} else { sMessage = ""; }
-			} else if (Character.valueOf(sMessage.charAt(0)).equals(Char1) && Character.valueOf(sMessage.charAt(sMessage.length()-1)).equals(Char1)) {
+			}
+		}
+		if (!isAction) {
+			if (Character.valueOf(sMessage.charAt(0)).equals(Char1) && Character.valueOf(sMessage.charAt(sMessage.length()-1)).equals(Char1)) {
 				isCTCP = true;
 				if (bits.length > 1) { sMessage = bits[1]; } else { sMessage = ""; }
 				bits = bits[0].split(Char1.toString());
