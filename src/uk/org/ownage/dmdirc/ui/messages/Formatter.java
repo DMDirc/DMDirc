@@ -97,6 +97,10 @@ public class Formatter {
         properties.setProperty("channelJoinTopic", colour+"3* The topic for %2$s is '%1$s"+stop+"'.");
         properties.setProperty("channelJoinTopicSetBy", colour+"3* Topic was set by %1$s.");
         
+        properties.setProperty("channelModeChange", colour+"3* %1$s%2$s sets mode: %5$s.");
+        properties.setProperty("channelModeDiscovered", colour+"3* Channel modes for %2$s are: %1$s.");
+        properties.setProperty("channelSelfModeChange", colour+"3* You set mode: %5$s.");
+        
         properties.setProperty("channelSelfMessage", "<%1$s%2$s> %3$s");
         properties.setProperty("channelSelfAction", colour+"6* %1$s%2$s %3$s");
         properties.setProperty("channelSelfExternalMessage", "<%1$s%2$s> %3$s");
