@@ -56,10 +56,12 @@ public class CallbackManager {
 		addCallbackType(new CallbackOnChannelMessage(myParser, this));
 		addCallbackType(new CallbackOnChannelModeChanged(myParser, this));
 		addCallbackType(new CallbackOnChannelNickChanged(myParser, this));
+		addCallbackType(new CallbackOnChannelNonUserModeChanged(myParser, this));
 		addCallbackType(new CallbackOnChannelNotice(myParser, this));
 		addCallbackType(new CallbackOnChannelPart(myParser, this));
 		addCallbackType(new CallbackOnChannelQuit(myParser, this));
 		addCallbackType(new CallbackOnChannelSelfJoin(myParser, this));
+		addCallbackType(new CallbackOnChannelSingleModeChanged(myParser, this));		
 		addCallbackType(new CallbackOnChannelTopic(myParser, this));
 		addCallbackType(new CallbackOnChannelUserModeChanged(myParser, this));
 		addCallbackType(new CallbackOnDataIn(myParser, this));

@@ -1168,6 +1168,14 @@ public class IRCParser implements Runnable {
 	}
 	
 	/**
+	 * Method to trim spaces from strings
+	 *
+	 * @param str String to trim
+	 * @return String without spaces on the ends
+	 */
+	private String trim(String str) { return str.trim(); }
+	
+	/**
 	 * Process a Mode change (hands off to ProcessUserMode for usermodes).
 	 *
 	 * @param sParam String representation of parameter to parse
@@ -1176,26 +1184,33 @@ public class IRCParser implements Runnable {
 	private void processMode(String sParam, String token[]) {
 		String[] sModestr;
 		String sFullModeStr;
+		String sNonUserModeStr = "";
+		String sNonUserModeStrParams = "";
 		String sChannelName;
 		String sModeParam;
 		String sTemp;
 		int nCurrent = 0, nParam = 1, nValue = 0;
 		boolean bPositive = true, bBooleanMode = true;
+		char cPositive = '+';
 		ChannelInfo iChannel;
 		ChannelClientInfo iChannelClientInfo;
 		ClientInfo iClient;
+		ChannelClientInfo setterCCI;
 		if (sParam.equals("324")) {
 			sChannelName = token[3];
-			// Java 6 Only
-			// sModestr = Arrays.copyOfRange(token,4,token.length);
 			sModestr = new String[token.length-4];
 			System.arraycopy(token, 4, sModestr, 0, token.length-4);
 		} else {
 			sChannelName = token[2];
-			// Java 6 Only
-			// sModestr = Arrays.copyOfRange(token,3,token.length);
 			sModestr = new String[token.length-3];
 			System.arraycopy(token, 3, sModestr, 0, token.length-3);
+		}
+		
+		CallbackOnChannelSingleModeChanged cbSingle = null;
+		CallbackOnChannelNonUserModeChanged cbNonUser = null;
+		if (!sParam.equals("324")) {
+			cbSingle = (CallbackOnChannelSingleModeChanged)myCallbackManager.getCallbackType("OnChannelSingleModeChanged");
+			cbNonUser = (CallbackOnChannelNonUserModeChanged)myCallbackManager.getCallbackType("OnChannelNonUserModeChanged");
 		}
 
 		if (!isValidChannelName(sChannelName)) { processUserMode(sParam, token, sModestr); return; }
@@ -1208,11 +1223,15 @@ public class IRCParser implements Runnable {
 		}
 		if (!sParam.equals("324")) { nCurrent = iChannel.getMode(); }
 		
+		setterCCI = iChannel.getUser(token[0]);
+		
 		for (int i = 0; i < sModestr[0].length(); ++i) {
 			Character cMode = sModestr[0].charAt(i);
-			if (cMode.equals("+".charAt(0))) { bPositive = true; }
-			else if (cMode.equals("-".charAt(0))) { bPositive = false; }
-			else if (cMode.equals(":".charAt(0))) { continue; }
+			if (cMode.equals(":".charAt(0))) { continue; }
+			
+			sNonUserModeStr = sNonUserModeStr+cMode;
+			if (cMode.equals("+".charAt(0))) { cPositive = '+'; bPositive = true; }
+			else if (cMode.equals("-".charAt(0))) { cPositive = '-'; bPositive = false; }
 			else {
 				if (hChanModesBool.containsKey(cMode)) { nValue = hChanModesBool.get(cMode); bBooleanMode = true; }
 				else if (hChanModesOther.containsKey(cMode)) { nValue = hChanModesOther.get(cMode); bBooleanMode = false; }
@@ -1238,7 +1257,7 @@ public class IRCParser implements Runnable {
 					else { iChannelClientInfo.setChanMode(iChannelClientInfo.getChanMode() - nValue); sTemp = "-"; }
 					sTemp = sTemp+cMode+" "+iChannelClientInfo.getNickname();
 					
-					callChannelUserModeChanged(iChannel, iChannelClientInfo, iChannel.getUser(token[0]), token[0], sTemp);
+					callChannelUserModeChanged(iChannel, iChannelClientInfo, setterCCI, token[0], sTemp);
 					continue;
 				} else {
 					callErrorInfo(new ParserError(errWarning, "Got unknown mode "+cMode+" - Added as boolean mode"));
@@ -1255,17 +1274,27 @@ public class IRCParser implements Runnable {
 				} else {
 					if (nValue == cmList) {
 						sModeParam = sModestr[nParam++];
+						sNonUserModeStrParams = sNonUserModeStrParams+" "+sModeParam;
 						iChannel.setListModeParam(cMode, sModeParam, bPositive);
 						if (bDebug) { doDebug("List Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
+						if (cbSingle != null) { cbSingle.call(iChannel, setterCCI, token[0], cPositive+cMode+" "+sModeParam ); }
 					} else {
 						if (bPositive) { 
 							sModeParam = sModestr[nParam++];
+							sNonUserModeStrParams = sNonUserModeStrParams+" "+sModeParam;
 							if (bDebug) { doDebug("Set Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
 							iChannel.setModeParam(cMode,sModeParam);
+							if (cbSingle != null) { cbSingle.call(iChannel, setterCCI, token[0], cPositive+cMode+" "+sModeParam ); }
 						} else {
-							if ((nValue & cmUnset) == cmUnset) { sModeParam = sModestr[nParam++]; } else { sModeParam = ""; }
+							if ((nValue & cmUnset) == cmUnset) {
+								sModeParam = sModestr[nParam++];
+								sNonUserModeStrParams = sNonUserModeStrParams+" "+sModeParam;
+							} else {
+								sModeParam = "";
+							}
 							if (bDebug) { doDebug("Unset Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
 							iChannel.setModeParam(cMode,"");
+							if (cbSingle != null) { cbSingle.call(iChannel, setterCCI, token[0], trim(cPositive+cMode+" "+sModeParam) ); }
 						}
 					}
 				}
@@ -1276,8 +1305,9 @@ public class IRCParser implements Runnable {
 		for (int i = 0; i < sModestr.length; ++i) { sFullModeStr = sFullModeStr+sModestr[i]+" "; }
 		
 		iChannel.setMode(nCurrent);
-		if (sParam.equals("324")) { callChannelModeChanged(iChannel, null, "", sFullModeStr); }
-		else { callChannelModeChanged(iChannel, iChannel.getUser(token[0]), token[0], sFullModeStr); }
+		if (sParam.equals("324")) { callChannelModeChanged(iChannel, null, "", trim(sFullModeStr)); }
+		else { callChannelModeChanged(iChannel, setterCCI, token[0], trim(sFullModeStr)); }
+		if (cbNonUser != null) { cbNonUser.call(iChannel, setterCCI, token[0], trim(sNonUserModeStr+sNonUserModeStrParams)); }
 	}
 	
 	/**
