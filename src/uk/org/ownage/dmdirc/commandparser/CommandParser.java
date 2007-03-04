@@ -61,6 +61,10 @@ abstract public class CommandParser {
      * @param line The line to be parsed
      */
     public void parseCommand(CommandWindow origin, String line) {
+        if (line.equals("")) {
+            return;
+        }
+        
         if (line.charAt(0) == Config.getOption("general","commandchar").charAt(0)) {
             String[] args = line.split(" ");
             String[] comargs;
