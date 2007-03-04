@@ -1003,7 +1003,6 @@ public class IRCParser implements Runnable {
 								break;
 							case 464: // Password Required
 								ParserError ei = new ParserError(errError,"Password Required");
-								ei.setException(e);
 								callErrorInfo(ei);
 								break;
 							case 433: // Nick In Use
