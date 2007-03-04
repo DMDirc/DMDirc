@@ -47,26 +47,6 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
     private static final long serialVersionUID = 1;
     
     /**
-     * icon for server windows
-     */
-    ImageIcon serverIcon;
-    
-    /**
-     * icon for query windows
-     */
-    ImageIcon queryIcon;
-    
-    /**
-     * icon for raw windows
-     */
-    ImageIcon rawIcon;
-    
-    /**
-     * icon for channel windows
-     */
-    ImageIcon channelIcon;
-    
-    /**
      * default icon
      */
     ImageIcon defaultIcon;
@@ -77,10 +57,6 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
     public TreeViewTreeCellRenderer() {
         ClassLoader cldr = this.getClass().getClassLoader();
         URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/icon.png");
-        serverIcon = new ImageIcon(imageURL);
-        queryIcon = new ImageIcon(imageURL);
-        rawIcon = new ImageIcon(imageURL);
-        channelIcon = new ImageIcon(imageURL);
         defaultIcon = new ImageIcon(imageURL);
     }
     
@@ -101,23 +77,17 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
                 row, hasFocus);
+        
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
-        if (node.getUserObject() instanceof Server) {
-            setIcon(serverIcon);
-            setToolTipText(null);
-        } else if (node.getUserObject() instanceof Query) {
-            setIcon(queryIcon);
-            setToolTipText(null);
-        } else if (node.getUserObject() instanceof Raw) {
-            setIcon(rawIcon);
-            setToolTipText(null);
-        } else if (node.getUserObject() instanceof Channel) {
-            setIcon(channelIcon);
-            setToolTipText(null);
+        
+        if (node.getUserObject() instanceof FrameContainer) {
+            setIcon(((FrameContainer)node.getUserObject()).getIcon());
         } else {
             setIcon(defaultIcon);
-            setToolTipText(null);
         }
+        
+        setToolTipText(null);
+        
         return this;
     }
 }
