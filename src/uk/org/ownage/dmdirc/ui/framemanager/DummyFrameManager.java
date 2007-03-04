@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.ui.framemanager;
 import java.awt.Color;
 import javax.swing.JComponent;
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Raw;
 import uk.org.ownage.dmdirc.Server;
@@ -116,5 +117,41 @@ public class DummyFrameManager implements FrameManager {
      */
     public void delRaw(Server server, Raw raw) {
         System.out.println("DummyFrameManager: delRaw: "+raw+"@"+server);
+    }   
+    
+    /**
+     * Indicates whether this frame manager can be positioned vertically
+     * (i.e., at the side of the screen)
+     * @return True iff the frame manager can be positioned vertically
+     */
+    public boolean canPositionVertically() {
+        return true;
+    }
+    
+    /**
+     * Indicates whether this frame manager can be positioned horizontally
+     * (i.e., at the top or bottom of the screen)
+     * @return True iff the frame manager can be positioned horizontally
+     */
+    public boolean canPositionHorizontally() {
+        return true;
+    }
+    
+    /**
+     * Shows an event notification to the user by colouring the corresponding
+     * element to the source a specific colour
+     * @param source The object requesting notification
+     * @param colour The colour that should be used to indicate the notification
+     */
+    public void showNotification(FrameContainer source, Color colour) {
+        System.out.println("DummyFrameManager: Notifcation for "+source);
+    }
+    
+    /**
+     * Removes the notification status of the specified object
+     * @param source The object whose notification should be cleared
+     */
+    public void clearNotification(FrameContainer source) {
+        System.out.println("DummyFrameManager: Clear notification for "+source);
     }
 }

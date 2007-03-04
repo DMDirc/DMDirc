@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc;
 
+import java.awt.Color;
 import java.beans.PropertyVetoException;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
@@ -40,6 +41,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import uk.org.ownage.dmdirc.ui.QueryFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
  * The Query class represents the client's view of a query with another user.
@@ -117,6 +119,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      */
     public void onPrivateMessage(IRCParser parser, String message, String host) {
         frame.addLine("queryMessage", ClientInfo.parseHost(host), message);
+        sendNotification();
     }
     
     /**
@@ -127,6 +130,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      */
     public void onPrivateAction(IRCParser parser, String message, String host) {
         frame.addLine("queryAction", ClientInfo.parseHost(host), message);
+        sendNotification();
     }
     
     /**
@@ -158,6 +162,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
             Logger.error(ErrorLevel.FATAL, ex);
         }
         frame.addLine("* "+oldNick+" is now known as "+client.toString());
+        sendNotification();
         updateTitle();
     }
     
@@ -247,6 +252,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
                 Logger.error(ErrorLevel.WARNING, ex);
             }
         }
+        clearNotification();
     }
     
     /**
@@ -286,4 +292,21 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     public ImageIcon getIcon() {
         return MainFrame.getMainFrame().getIcon();
     }
+    
+    /**
+     * Sends a notification to the frame manager if this frame isn't active
+     */
+    private void sendNotification() {
+        if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
+            Color c = ColourManager.getColour(4);
+            MainFrame.getMainFrame().getFrameManager().showNotification(this, c);
+        }
+    }
+    
+    /**
+     * Clears any outstanding notifications this frame has set
+     */
+    private void clearNotification() {
+        MainFrame.getMainFrame().getFrameManager().clearNotification(this);
+    }     
 }

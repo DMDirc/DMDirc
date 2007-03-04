@@ -67,6 +67,12 @@ public interface FrameManager {
     public void showNotification(FrameContainer source, Color colour);
     
     /**
+     * Removes the notification status of the specified object
+     * @param source The object whose notification should be cleared
+     */
+    public void clearNotification(FrameContainer source);
+    
+    /**
      * Adds a new server instance to this frame manager.
      * @param server The server to be added
      */

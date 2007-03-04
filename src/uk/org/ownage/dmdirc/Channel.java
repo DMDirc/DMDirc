@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc;
 
+import java.awt.Color;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
@@ -46,6 +47,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
@@ -119,6 +121,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String modes = channelInfo.getUser(me).getImportantModePrefix();
         
         frame.addLine("channelSelfMessage", modes, me.getNickname(), line);
+        sendNotification();
     }
     
     /**
@@ -133,6 +136,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String modes = channelInfo.getUser(me).getImportantModePrefix();
         
         frame.addLine("channelSelfAction", modes, me.getNickname(), action);
+        sendNotification();
     }
     
     /**
@@ -167,6 +171,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void selfJoin() {
         ClientInfo me = server.getParser().getMyself();
         frame.addLine("channelSelfJoin", me.getNickname(), channelInfo.getName());
+        sendNotification();
     }
     
     /**
@@ -246,6 +251,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String source = getNick(cChannelClient, sHost);
         String modes = getModes(cChannelClient, sHost);
         frame.addLine("channelMessage", modes, source, sMessage);
+        sendNotification();
     }
     
     /**
@@ -284,7 +290,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             String topic = cChannel.getTopic();
             frame.addLine("channelTopicChange", modes, nick, topic, cChannel.getName());
         }
-        
+        sendNotification();
         updateTitle();
     }
     
@@ -299,6 +305,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         frame.addLine("channelJoin", "", cChannelClient.getNickname(), cChannel.getName());
         frame.addName(cChannelClient);
         tabCompleter.addEntry(cChannelClient.getNickname());
+        sendNotification();
     }
     
     /**
@@ -331,6 +338,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         
         tabCompleter.removeEntry(cChannelClient.getNickname());
         frame.removeName(cChannelClient);
+        sendNotification();
     }
     
     /**
@@ -361,6 +369,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         
         tabCompleter.removeEntry(cKickedClient.getNickname());
         frame.removeName(cKickedClient);
+        sendNotification();
     }
     
     /**
@@ -381,6 +390,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             frame.addLine("channelQuitReason", modes, source, sReason);
         }
         frame.removeName(cChannelClient);
+        sendNotification();
     }
     
     /**
@@ -396,6 +406,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String source = getNick(cChannelClient, sHost);
         String modes = getModes(cChannelClient, sHost);
         frame.addLine("channelAction", modes, source, sMessage);
+        sendNotification();
     }
     
     /**
@@ -488,6 +499,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
                 Logger.error(ErrorLevel.WARNING, ex);
             }
         }
+        clearNotification();
     }
     
     /**
@@ -527,5 +539,22 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public ImageIcon getIcon() {
         return MainFrame.getMainFrame().getIcon();
     }
+    
+    /**
+     * Sends a notification to the frame manager if this frame isn't active
+     */
+    private void sendNotification() {
+        if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
+            Color c = ColourManager.getColour(4);
+            MainFrame.getMainFrame().getFrameManager().showNotification(this, c);
+        }
+    }
+    
+    /**
+     * Clears any outstanding notifications this frame has set
+     */
+    private void clearNotification() {
+        MainFrame.getMainFrame().getFrameManager().clearNotification(this);
+    }    
     
 }

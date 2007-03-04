@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc;
 
+import java.awt.Color;
 import java.beans.PropertyVetoException;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
@@ -36,6 +37,7 @@ import uk.org.ownage.dmdirc.ui.ServerFrame;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
  * Handles the raw window (which shows the user raw data being sent and
@@ -218,5 +220,22 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
     public ImageIcon getIcon() {
         return MainFrame.getMainFrame().getIcon();
     }
+    
+    /**
+     * Sends a notification to the frame manager if this frame isn't active
+     */
+    private void sendNotification() {
+        if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
+            Color c = ColourManager.getColour(4);
+            MainFrame.getMainFrame().getFrameManager().showNotification(this, c);
+        }
+    }
+    
+    /**
+     * Clears any outstanding notifications this frame has set
+     */
+    private void clearNotification() {
+        MainFrame.getMainFrame().getFrameManager().clearNotification(this);
+    }        
     
 }

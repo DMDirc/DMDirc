@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc;
 
+import java.awt.Color;
 import java.beans.PropertyVetoException;
 import java.net.URL;
 import java.util.Hashtable;
@@ -48,6 +49,7 @@ import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
  * The Server class represents the client's view of a server. It maintains
@@ -119,7 +121,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         ClassLoader cldr = this.getClass().getClassLoader();
         URL imageURL;
         if (ssl) {
-             imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/secure-server.png");
+            imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/secure-server.png");
         } else {
             imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/server.png");
         }
@@ -138,6 +140,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         frame.open();
         
         frame.addLine("Connecting to "+server+":"+port);
+        sendNotification();
         
         MyInfo myInfo = new MyInfo();
         myInfo.sNickname = Config.getOption("general","defaultnick");
@@ -184,13 +187,14 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         ClassLoader cldr = this.getClass().getClassLoader();
         URL imageURL;
         if (ssl) {
-             imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/secure-server.png");
+            imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/secure-server.png");
         } else {
             imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/server.png");
         }
-        imageIcon = new ImageIcon(imageURL);        
+        imageIcon = new ImageIcon(imageURL);
         
         frame.addLine("Connecting to "+server+":"+port);
+        sendNotification();
         
         MyInfo myInfo = new MyInfo();
         myInfo.sNickname = Config.getOption("general","defaultnick");
@@ -510,6 +514,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
                 Logger.error(ErrorLevel.WARNING, ex);
             }
         }
+        clearNotification();
     }
     
     /**
@@ -540,6 +545,23 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      */
     public ImageIcon getIcon() {
         return imageIcon;
+    }
+    
+    /**
+     * Sends a notification to the frame manager if this frame isn't active
+     */
+    private void sendNotification() {
+        if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
+            Color c = ColourManager.getColour(4);
+            MainFrame.getMainFrame().getFrameManager().showNotification(this, c);
+        }
+    }
+    
+    /**
+     * Clears any outstanding notifications this frame has set
+     */
+    private void clearNotification() {
+        MainFrame.getMainFrame().getFrameManager().clearNotification(this);
     }
     
 }
