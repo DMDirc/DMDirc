@@ -273,8 +273,6 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         frame.removeInternalFrameListener(this);
         // Disconnect from the server
         disconnect(reason);
-        // Unregister ourselves with the server manager
-        ServerManager.getServerManager().unregisterServer(this);
         // Close all channel windows
         closeChannels();
         // Close all query windows
@@ -283,6 +281,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         if (raw != null) {
             raw.close();
         }
+        // Unregister ourselves with the server manager
+        ServerManager.getServerManager().unregisterServer(this);        
         // Close our own window
         frame.setVisible(false);
         MainFrame.getMainFrame().delChild(frame);
