@@ -46,7 +46,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 1;
     
     /**
      * Singleton instance of MainFrame
@@ -154,7 +154,20 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         desktopPane.remove(frame);
     }
     
-    /** 
+    /**
+     * Sets the active internal frame to the one specified
+     * @param frame The frame to be activated
+     */
+    public void setActiveFrame(JInternalFrame frame) {
+        frame.moveToFront();
+        try {
+        frame.setSelected(true);
+        } catch (PropertyVetoException ex) {
+            Logger.error(ErrorLevel.ERROR, ex);
+        }
+    }
+    
+    /**
      * Retrieves the frame manager that's currently in use
      * @return The current frame manager
      */
@@ -192,7 +205,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         } else {
             setTitle("DMDirc");
         }
-               
+        
         checkWindowState();
     }
     
@@ -233,12 +246,12 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
      */
     public void windowOpened(WindowEvent windowEvent) {
     }
-
+    
     /**
      * Called when the window is closing. Saves the config and has all servers
      * disconnect with the default close method
      * @param windowEvent The event associated with this callback
-     */    
+     */
     public void windowClosing(WindowEvent windowEvent) {
         ServerManager.getServerManager().closeAll(Config.getOption("general","closemessage"));
         Config.save();
@@ -247,14 +260,14 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     /**
      * Called when the window is closed. Not implemented.
      * @param windowEvent The event associated with this callback
-     */    
+     */
     public void windowClosed(WindowEvent windowEvent) {
     }
     
     /**
      * Called when the window is iconified. Not implemented.
      * @param windowEvent The event associated with this callback
-     */    
+     */
     public void windowIconified(WindowEvent windowEvent) {
     }
     
@@ -268,14 +281,14 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     /**
      * Called when the window is activated. Not implemented.
      * @param windowEvent The event associated with this callback
-     */    
+     */
     public void windowActivated(WindowEvent windowEvent) {
     }
     
     /**
      * Called when the window is deactivated. Not implemented.
      * @param windowEvent The event associated with this callback
-     */    
+     */
     public void windowDeactivated(WindowEvent windowEvent) {
     }
     

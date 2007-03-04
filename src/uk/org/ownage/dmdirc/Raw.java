@@ -200,7 +200,7 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
      * Requests that this object's frame be activated
      */
     public void activateFrame() {
-        frame.requestFocus();
+        MainFrame.getMainFrame().setActiveFrame(frame);
     }    
 
     /**

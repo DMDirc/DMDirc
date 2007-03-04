@@ -268,7 +268,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * Requests that this object's frame be activated
      */
     public void activateFrame() {
-        frame.requestFocus();
+        MainFrame.getMainFrame().setActiveFrame(frame);
     }    
 
     /**

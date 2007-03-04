@@ -508,7 +508,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * Requests that this object's frame be activated
      */
     public void activateFrame() {
-        frame.requestFocus();
+        MainFrame.getMainFrame().setActiveFrame(frame);
     }    
 
     /**
