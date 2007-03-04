@@ -161,9 +161,12 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     public void setActiveFrame(JInternalFrame frame) {
         frame.moveToFront();
         try {
-        frame.setSelected(true);
+            frame.setSelected(true);
         } catch (PropertyVetoException ex) {
             Logger.error(ErrorLevel.ERROR, ex);
+        }
+        if (maximised) {
+            setTitle("DMDirc - "+frame.getTitle());
         }
     }
     
@@ -368,3 +371,4 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     // End of variables declaration//GEN-END:variables
     
 }
+
