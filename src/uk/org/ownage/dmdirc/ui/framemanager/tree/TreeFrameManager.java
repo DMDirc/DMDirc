@@ -32,6 +32,7 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeModelEvent;
@@ -113,6 +114,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         renderer = new TreeViewTreeCellRenderer();
         tree.setCellRenderer(renderer);
         tree.setRootVisible(false);
+        tree.setBorder(new EmptyBorder(5, 5, 5, 5));
     }
     
     /**
