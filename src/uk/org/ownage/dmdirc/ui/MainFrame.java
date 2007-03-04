@@ -207,6 +207,13 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
             }
         } else {
             setTitle("DMDirc");
+            for (JInternalFrame frame : desktopPane.getAllFrames()) {
+                try {
+                    frame.setMaximum(false);
+                } catch (PropertyVetoException ex) {
+                    Logger.error(ErrorLevel.ERROR, ex);
+                }
+            }
         }
         
         checkWindowState();

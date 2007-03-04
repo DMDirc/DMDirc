@@ -143,6 +143,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
                     .setPreferredSize(ServerFrame.this.titlebarSize);
                     
                     MainFrame.getMainFrame().setMaximised(false);
+                    MainFrame.getMainFrame().setActiveFrame(ServerFrame.this);
                 }
             }
         });

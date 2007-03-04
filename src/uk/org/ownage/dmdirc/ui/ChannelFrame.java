@@ -160,6 +160,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
                     .setPreferredSize(ChannelFrame.this.titlebarSize);
                     
                     MainFrame.getMainFrame().setMaximised(false);
+                    MainFrame.getMainFrame().setActiveFrame(ChannelFrame.this);
                 }
             }
         });
