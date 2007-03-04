@@ -22,8 +22,10 @@
 
 package uk.org.ownage.dmdirc.ui.framemanager;
 
+import java.awt.Color;
 import javax.swing.JComponent;
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Raw;
 import uk.org.ownage.dmdirc.Server;
@@ -41,6 +43,28 @@ public interface FrameManager {
      * @param parent The parent control
      */
     public void setParent(JComponent parent);
+    
+    /**
+     * Indicates whether this frame manager can be positioned vertically
+     * (i.e., at the side of the screen)
+     * @return True iff the frame manager can be positioned vertically
+     */
+    public boolean canPositionVertically();
+    
+    /**
+     * Indicates whether this frame manager can be positioned horizontally
+     * (i.e., at the top or bottom of the screen)
+     * @return True iff the frame manager can be positioned horizontally
+     */
+    public boolean canPositionHorizontally();    
+    
+    /**
+     * Shows an event notification to the user by colouring the corresponding
+     * element to the source a specific colour
+     * @param source The object requesting notification
+     * @param colour The colour that should be used to indicate the notification
+     */
+    public void showNotification(FrameContainer source, Color colour);
     
     /**
      * Adds a new server instance to this frame manager.
