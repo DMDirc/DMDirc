@@ -102,17 +102,16 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
                 row, hasFocus);
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
-        FrameContainer frame = (FrameContainer)node.getUserObject();
-        if (frame instanceof Server) {
+        if (node.getUserObject() instanceof Server) {
             setIcon(serverIcon);
             setToolTipText(null);
-        } else if (frame instanceof Query) {
+        } else if (node.getUserObject() instanceof Query) {
             setIcon(queryIcon);
             setToolTipText(null);
-        } else if (frame instanceof Raw) {
+        } else if (node.getUserObject() instanceof Raw) {
             setIcon(rawIcon);
             setToolTipText(null);
-        } else if (frame instanceof Channel) {
+        } else if (node.getUserObject() instanceof Channel) {
             setIcon(channelIcon);
             setToolTipText(null);
         } else {

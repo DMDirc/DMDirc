@@ -123,7 +123,6 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     
     public void valueChanged(TreeSelectionEvent e) {
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-        System.out.println(node);
         
         if (node == null) return;
         
