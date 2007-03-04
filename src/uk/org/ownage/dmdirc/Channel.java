@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc;
 
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
+import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
@@ -56,7 +57,7 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
  */
 public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic,
         IChannelJoin, IChannelPart, IChannelKick, IChannelQuit, IChannelAction,
-        InternalFrameListener {
+        InternalFrameListener, FrameContainer {
     
     /** The parser's pChannel class */
     private ChannelInfo channelInfo;
@@ -509,5 +510,21 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void activateFrame() {
         frame.requestFocus();
     }    
+
+    /**
+     * Adds a line of text to the main text area of the channel frame
+     * @param line The line to add
+     */
+    public void addLine(String line) {
+        frame.addLine(line);
+    }
+
+    /**
+     * Retrieves the icon used by the channel frame
+     * @return The channel frame's icon
+     */
+    public ImageIcon getIcon() {
+        return MainFrame.getMainFrame().getIcon();
+    }
     
 }

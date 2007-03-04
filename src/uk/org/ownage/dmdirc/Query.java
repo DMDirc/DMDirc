@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc;
 
 import java.beans.PropertyVetoException;
+import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
@@ -47,7 +48,7 @@ import uk.org.ownage.dmdirc.ui.ServerFrame;
  * @author chris
  */
 public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
-        InternalFrameListener {
+        InternalFrameListener, FrameContainer {
     
     /**
      * The Server this Query is on
@@ -269,4 +270,20 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     public void activateFrame() {
         frame.requestFocus();
     }    
+
+    /**
+     * Adds a line of text to the main text area of the query frame
+     * @param line The line to add
+     */
+    public void addLine(String line) {
+        frame.addLine(line);
+    }
+
+    /**
+     * Retrieves the icon used by the query frame
+     * @return The query frame's icon
+     */
+    public ImageIcon getIcon() {
+        return MainFrame.getMainFrame().getIcon();
+    }
 }

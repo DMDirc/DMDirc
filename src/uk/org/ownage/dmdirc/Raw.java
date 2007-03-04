@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc;
 
 import java.beans.PropertyVetoException;
+import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
@@ -41,7 +42,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
  * received to/from the server)
  * @author chris
  */
-public class Raw implements IDataIn, IDataOut, InternalFrameListener {
+public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameContainer {
     
     /**
      * The server object that's being monitored
@@ -201,5 +202,21 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener {
     public void activateFrame() {
         frame.requestFocus();
     }    
+
+    /**
+     * Adds a line of text to the main text area of the raw frame
+     * @param line The line to add
+     */
+    public void addLine(String line) {
+        frame.addLine(line);
+    }
+
+    /**
+     * Retrieves the icon used by the raw frame
+     * @return The raw frame's icon
+     */
+    public ImageIcon getIcon() {
+        return MainFrame.getMainFrame().getIcon();
+    }
     
 }

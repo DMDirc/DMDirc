@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc;
 
 import java.beans.PropertyVetoException;
 import java.util.Hashtable;
+import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
@@ -53,7 +54,8 @@ import uk.org.ownage.dmdirc.ui.input.TabCompleter;
  * to the server
  * @author chris
  */
-public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction, IErrorInfo, InternalFrameListener {
+public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction,
+        IErrorInfo, InternalFrameListener, FrameContainer {
     
     /**
      * Open channels that currently exist on the server
@@ -505,6 +507,14 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      */
     public void activateFrame() {
         frame.requestFocus();
+    }
+
+    /**
+     * Returns the server frame's icon
+     * @return The server frame's icon
+     */
+    public ImageIcon getIcon() {
+        return MainFrame.getMainFrame().getIcon();
     }
     
 }
