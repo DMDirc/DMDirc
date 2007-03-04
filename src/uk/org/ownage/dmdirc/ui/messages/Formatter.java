@@ -104,6 +104,9 @@ public class Formatter {
         properties.setProperty("channelSelfPart", colour+"3* You have left the channel.");
         properties.setProperty("channelSelfPartReason", colour+"3* You have left the channel.");
         
+        properties.setProperty("privateCTCP", colour+"4-!- CTCP %4$S from %1$s");
+        properties.setProperty("privateCTCPreply", colour+"4-!- CTCP %4$S reply from %1$s: %5$s");
+        
         properties.setProperty("queryMessage", "<%1$s> %2$s");
         properties.setProperty("queryAction", colour+"6* %1$s %2$s");
         

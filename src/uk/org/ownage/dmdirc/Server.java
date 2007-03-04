@@ -37,6 +37,8 @@ import uk.org.ownage.dmdirc.parser.MyInfo;
 import uk.org.ownage.dmdirc.parser.ParserError;
 import uk.org.ownage.dmdirc.parser.ServerInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
@@ -58,7 +60,8 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
  * @author chris
  */
 public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction,
-        IErrorInfo, InternalFrameListener, FrameContainer {
+        IErrorInfo, IPrivateCTCP, IPrivateCTCPReply, InternalFrameListener,
+        FrameContainer {
     
     /**
      * Open channels that currently exist on the server
@@ -155,6 +158,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
             parser.getCallbackManager().addCallback("OnErrorInfo", this);
             parser.getCallbackManager().addCallback("OnPrivateMessage", this);
             parser.getCallbackManager().addCallback("OnPrivateAction", this);
+            parser.getCallbackManager().addCallback("OnPrivateCTCP", this);
+            parser.getCallbackManager().addCallback("OnPrivateCTCPReply", this);
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.FATAL, ex);
         }
@@ -209,6 +214,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
             parser.getCallbackManager().addCallback("OnErrorInfo", this);
             parser.getCallbackManager().addCallback("OnPrivateMessage", this);
             parser.getCallbackManager().addCallback("OnPrivateAction", this);
+            parser.getCallbackManager().addCallback("OnPrivateCTCP", this);
+            parser.getCallbackManager().addCallback("OnPrivateCTCPReply", this);
             parser.getCallbackManager().addCallback("OnDataIn", raw);
             parser.getCallbackManager().addCallback("OnDataOut", raw);
         } catch (CallbackNotFound ex) {
@@ -257,6 +264,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         parser.getCallbackManager().delCallback("OnErrorInfo", this);
         parser.getCallbackManager().delCallback("OnPrivateMessage", this);
         parser.getCallbackManager().delCallback("OnPrivateAction", this);
+        parser.getCallbackManager().delCallback("OnPrivateCTCP", this);
+        parser.getCallbackManager().delCallback("OnPrivateCTCPReply", this);
         // Unregister frame callbacks
         frame.removeInternalFrameListener(this);
         // Disconnect from the server
@@ -428,6 +437,32 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         if (!queries.containsKey(ClientInfo.parseHost(host))) {
             addQuery(host);
         }
+    }
+    
+    /**
+     * Called when we receive a CTCP request
+     * @param tParser The associated IRC parser
+     * @param sType The type of the CTCP
+     * @param sMessage The contents of the CTCP
+     * @param sHost The source host
+     */
+    public void onPrivateCTCP(IRCParser tParser, String sType, String sMessage, String sHost) {
+        String[] parts = ClientInfo.parseHostFull(sHost);
+        frame.addLine("privateCTCP", parts[0], parts[1], parts[2], sType);
+        sendNotification();
+    }
+    
+    /**
+     * Called when we receive a CTCP reply
+     * @param tParser The associated IRC parser
+     * @param sType The type of the CTCPR
+     * @param sMessage The contents of the CTCPR
+     * @param sHost The source host
+     */
+    public void onPrivateCTCPReply(IRCParser tParser, String sType, String sMessage, String sHost) {
+        String[] parts = ClientInfo.parseHostFull(sHost);
+        frame.addLine("privateCTCPreply", parts[0], parts[1], parts[2], sType, sMessage);
+        sendNotification();
     }
     
     /**
