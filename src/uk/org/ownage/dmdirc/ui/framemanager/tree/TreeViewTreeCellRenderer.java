@@ -76,17 +76,19 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
             boolean sel, boolean expanded, boolean leaf, int row,
             boolean hasFocus) {
         
-        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
+        Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
                 row, hasFocus);
         
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
-        
+        c.setBackground(tree.getBackground());
+        c.setForeground(tree.getForeground());
+        setOpaque(true);
         if (node.getUserObject() instanceof FrameContainer) {
             setIcon(((FrameContainer)node.getUserObject()).getIcon());
         } else {
             setIcon(defaultIcon);
         }
-                
+        
         setBorder(new EmptyBorder(1, 0, 2, 0));
         
         setToolTipText(null);

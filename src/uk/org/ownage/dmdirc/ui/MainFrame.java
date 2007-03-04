@@ -314,7 +314,6 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         setTitle("DMDirc");
         desktopPane.setBackground(new java.awt.Color(238, 238, 238));
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(

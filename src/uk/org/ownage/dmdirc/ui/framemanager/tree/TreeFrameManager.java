@@ -22,9 +22,15 @@
 
 package uk.org.ownage.dmdirc.ui.framemanager.tree;
 
-import java.awt.FlowLayout;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Hashtable;
 import javax.swing.JComponent;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
@@ -52,7 +58,8 @@ import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
  * Manages open windows in the application in a tree style view
  */
 public class TreeFrameManager implements FrameManager, TreeModelListener,
-        TreeSelectionListener, TreeExpansionListener, TreeWillExpandListener {
+        TreeSelectionListener, TreeExpansionListener, TreeWillExpandListener,
+        MouseListener, ActionListener {
     
     /**
      * display tree
@@ -80,13 +87,27 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     private Hashtable<FrameContainer, DefaultMutableTreeNode> nodes;
     
     /**
+     * popup menu for menu items on nodes
+     */
+    private JPopupMenu popup;
+    
+    /**
+     * close menu item used in popup menus
+     */
+    private JMenuItem closeMenuItem;
+    
+    /**
      * creates a new instance of the TreeFrameManager
      */
     public TreeFrameManager() {
         nodes = new Hashtable<FrameContainer, DefaultMutableTreeNode>();
+        popup = new JPopupMenu();
+        closeMenuItem = new JMenuItem("Close window");
+        closeMenuItem.addActionListener(this);
         root = new DefaultMutableTreeNode("DMDirc");
         model = new DefaultTreeModel(root);
         tree = new JTree(model);
+        tree.addMouseListener(this);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(this);
         renderer = new TreeViewTreeCellRenderer();
@@ -232,8 +253,10 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param parent parent component
      */
     public void setParent(JComponent parent) {
-        parent.setLayout(new FlowLayout());
+        parent.setLayout(new BorderLayout());
         parent.add(tree);
+        tree.setBackground(parent.getBackground());
+        tree.setForeground(parent.getForeground());
         tree.setVisible(true);
         parent.setVisible(true);
     }
@@ -264,5 +287,23 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param e change event
      */
     public void treeStructureChanged(TreeModelEvent e) {
+    }
+    
+    public void mouseClicked(MouseEvent e) {
+    }
+    
+    public void mousePressed(MouseEvent e) {
+    }
+    
+    public void mouseReleased(MouseEvent e) {
+    }
+    
+    public void mouseEntered(MouseEvent e) {
+    }
+    
+    public void mouseExited(MouseEvent e) {
+    }
+    
+    public void actionPerformed(ActionEvent e) {
     }
 }
