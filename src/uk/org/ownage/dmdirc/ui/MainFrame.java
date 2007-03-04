@@ -29,6 +29,11 @@ import javax.swing.ImageIcon;
 import uk.org.ownage.dmdirc.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.PointerInfo;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsConfiguration;
+import java.awt.Rectangle;
+import java.awt.MouseInfo;
 import javax.swing.JInternalFrame;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
@@ -106,25 +111,25 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         frameManager = new TreeFrameManager();
         frameManager.setParent(jPanel1);
         
-				// Get the Location of the mouse pointer
-				java.awt.PointerInfo pi = java.awt.MouseInfo.getPointerInfo();
-				// Get the Device (screen) the mouse pointer is on
-				java.awt.GraphicsDevice gd = pi.getDevice();
-				// Get the configuration for the device
-				java.awt.GraphicsConfiguration gc = gd.getDefaultConfiguration();
-				// Get the bounds of the device
-				java.awt.Rectangle gcBounds = gc.getBounds();
-				// Calculate the center of the screen
-				// gcBounds.x and gcBounds.y give the co ordinates where the screen
-				// starts. gcBounds.width and gcBounds.height return the size in pixels
-				// of the screen.
-				int xPos = gcBounds.x + ((gcBounds.width - getWidth()) / 2);
-				int yPos = gcBounds.y + ((gcBounds.height - getHeight()) / 2);
-				// Set the location of the window
-				setLocation(xPos, yPos);
-				
+        // Get the Location of the mouse pointer
+        PointerInfo myPointerInfo = MouseInfo.getPointerInfo();
+        // Get the Device (screen) the mouse pointer is on
+        GraphicsDevice myDevice = myPointerInfo.getDevice();
+        // Get the configuration for the device
+        GraphicsConfiguration myGraphicsConfig = myDevice.getDefaultConfiguration();
+        // Get the bounds of the device
+        Rectangle gcBounds = myGraphicsConfig.getBounds();
+        // Calculate the center of the screen
+        // gcBounds.x and gcBounds.y give the co ordinates where the screen
+        // starts. gcBounds.width and gcBounds.height return the size in pixels
+        // of the screen.
+        int xPos = gcBounds.x + ((gcBounds.width - getWidth()) / 2);
+        int yPos = gcBounds.y + ((gcBounds.height - getHeight()) / 2);
+        // Set the location of the window
+        setLocation(xPos, yPos);
+        
         setVisible(true);
-				
+        
         miAddServer.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 NewServerDialog.showNewServerDialog();
