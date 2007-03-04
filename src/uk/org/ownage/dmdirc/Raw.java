@@ -187,4 +187,12 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener {
     public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * Returns "Raw"...
+     * @return A string representation of this raw object
+     */
+    public String toString() {
+        return "Raw";
+    }    
+    
 }

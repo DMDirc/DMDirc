@@ -475,4 +475,12 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * Returns this server's name
+     * @return A string representation of this server (i.e., its name)
+     */
+    public String toString() {
+        return frame.getTitle();
+    }    
+    
 }

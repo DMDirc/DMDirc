@@ -495,4 +495,12 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }
     
+    /**
+     * Returns this channel's name
+     * @return A string representation of this channel (i.e., its name)
+     */
+    public String toString() {
+        return channelInfo.getName();
+    }
+    
 }

@@ -27,6 +27,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import uk.org.ownage.dmdirc.commandparser.QueryCommandParser;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.ui.MainFrame;
@@ -253,4 +254,12 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      */
     public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
     }
+    
+    /**
+     * Returns this query's name
+     * @return A string representation of this query (i.e., the user's name)
+     */
+    public String toString() {
+        return ClientInfo.parseHost(host);
+    }    
 }
