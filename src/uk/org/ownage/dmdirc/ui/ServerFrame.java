@@ -192,14 +192,14 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      */
     public void addLine(String line) {
         autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
-        != scrollBar.getMaximum());
+        == scrollBar.getMaximum());
         
         String ts = Formatter.formatMessage("timestamp", new Date());
         Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
         Styliser.addStyledString(jTextPane1.getStyledDocument(), line+"\n");
         
         if(autoScroll) {
-            jTextPane1.setCaretPosition(jTextPane1.getStyledDocument().getLength());
+            scrollBar.setValue(scrollBar.getMaximum());
         }
     }
     

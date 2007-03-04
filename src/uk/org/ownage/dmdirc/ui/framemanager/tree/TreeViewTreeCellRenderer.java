@@ -24,10 +24,10 @@ package uk.org.ownage.dmdirc.ui.framemanager.tree;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -103,10 +103,12 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         }
         
         if (manager != null && node.getUserObject().equals(manager.getSelected())) {
+            setFont(getFont().deriveFont(Font.BOLD));
             setBorder(new LineBorder(Color.BLACK));
         } else {
-            setBorder(new EmptyBorder(1, 0, 2, 0));
+            setFont(getFont().deriveFont(Font.PLAIN));
         }
+        setBorder(new EmptyBorder(1, 0, 2, 0));
         
         setToolTipText(null);
         
