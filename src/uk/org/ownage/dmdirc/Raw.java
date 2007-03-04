@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc;
 
 import java.awt.Color;
 import java.beans.PropertyVetoException;
+import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
@@ -54,6 +55,10 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
      * A serverframe instance used for displaying the raw data
      */
     private ServerFrame frame;
+    /**
+     * The icon being used for this raw frame
+     */
+    private ImageIcon imageIcon;
     
     /**
      * Creates a new instance of Raw
@@ -62,11 +67,16 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
     public Raw(Server server) {
         this.server = server;
         
+        ClassLoader cldr = this.getClass().getClassLoader();
+        URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/raw.png");
+        imageIcon = new ImageIcon(imageURL);
+        
         frame = new ServerFrame(new ServerCommandParser(server));
         frame.setTitle("(Raw log)");
         frame.addInternalFrameListener(this);
         MainFrame.getMainFrame().addChild(frame);
         frame.setTabCompleter(server.getTabCompleter());
+        frame.setFrameIcon(imageIcon);
         
         frame.open();
         
@@ -96,7 +106,7 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
     }
     
     /**
-     * Called when the parser receives a line of data. The data is simply 
+     * Called when the parser receives a line of data. The data is simply
      * logged to the raw window.
      * @param tParser A reference to the IRC parser
      * @param sData The data that was received
@@ -106,11 +116,11 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
     }
     
     /**
-     * Called when the parser receives a line of data. The data is simply 
+     * Called when the parser receives a line of data. The data is simply
      * logged to the raw window.
      * @param tParser A reference to the IRC parser
      * @param sData The data that was received
-     */    
+     */
     public void onDataOut(IRCParser tParser, String sData, boolean bFromParser) {
         frame.addLine(">>> "+sData);
     }
@@ -120,8 +130,8 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
      */
     public boolean ownsFrame(JInternalFrame target) {
         return frame.equals(target);
-    }    
-
+    }
+    
     /**
      * Called when the raw frame is opened. Checks config settings to
      * determine if the window should be maximised
@@ -135,18 +145,18 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
             } catch (PropertyVetoException ex) {
                 Logger.error(ErrorLevel.WARNING, ex);
             }
-        }        
+        }
     }
-
+    
     /**
      * Called when the raw frame is being closed. Removes callbacks and releases
      * resources.
      * @param internalFrameEvent The event that triggered this callback
-     */    
+     */
     public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
         close();
     }
-
+    
     /**
      * Called when the raw frame is actually closed. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
@@ -196,15 +206,15 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
      */
     public String toString() {
         return "Raw";
-    }    
+    }
     
     /**
      * Requests that this object's frame be activated
      */
     public void activateFrame() {
         MainFrame.getMainFrame().setActiveFrame(frame);
-    }    
-
+    }
+    
     /**
      * Adds a line of text to the main text area of the raw frame
      * @param line The line to add
@@ -212,13 +222,13 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
     public void addLine(String line) {
         frame.addLine(line);
     }
-
+    
     /**
      * Retrieves the icon used by the raw frame
      * @return The raw frame's icon
      */
     public ImageIcon getIcon() {
-        return MainFrame.getMainFrame().getIcon();
+        return imageIcon;
     }
     
     /**
@@ -236,6 +246,6 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
      */
     private void clearNotification() {
         MainFrame.getMainFrame().getFrameManager().clearNotification(this);
-    }        
+    }
     
 }

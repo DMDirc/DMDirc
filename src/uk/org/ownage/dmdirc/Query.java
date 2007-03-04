@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc;
 
 import java.awt.Color;
 import java.beans.PropertyVetoException;
+import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
@@ -68,6 +69,11 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     private String host;
     
     /**
+     * The icon being used for this query
+     */
+    private ImageIcon imageIcon;    
+    
+    /**
      * Creates a new instance of Query
      * @param host host of the remove client
      * @param server The server object that this Query belongs to
@@ -76,10 +82,15 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         this.server = server;
         this.host = host;
         
+        ClassLoader cldr = this.getClass().getClassLoader();
+        URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/query.png");
+        imageIcon = new ImageIcon(imageURL);        
+        
         frame = new QueryFrame(new QueryCommandParser(this.server, this));
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
         frame.setTabCompleter(server.getTabCompleter());
+        frame.setFrameIcon(imageIcon);
         frame.open();
         
         try {
@@ -290,7 +301,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @return The query frame's icon
      */
     public ImageIcon getIcon() {
-        return MainFrame.getMainFrame().getIcon();
+        return imageIcon;
     }
     
     /**

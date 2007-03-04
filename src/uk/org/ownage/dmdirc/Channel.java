@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc;
 
 import java.awt.Color;
 import java.beans.PropertyVetoException;
+import java.net.URL;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
@@ -76,6 +77,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     private TabCompleter tabCompleter;
     
     /**
+     * The icon being used for this channel
+     */
+    private ImageIcon imageIcon;
+    
+    /**
      * Creates a new instance of Channel
      * @param server The server object that this channel belongs to
      * @param channelInfo The parser's channel object that corresponds to this channel
@@ -84,12 +90,17 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         this.channelInfo = channelInfo;
         this.server = server;
         
+        ClassLoader cldr = this.getClass().getClassLoader();
+        URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/channel.png");
+        imageIcon = new ImageIcon(imageURL);
+        
         tabCompleter = new TabCompleter(server.getTabCompleter());
         
         frame = new ChannelFrame(this);
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
         frame.setTabCompleter(tabCompleter);
+        frame.setFrameIcon(imageIcon);
         frame.open();
         
         try {
@@ -537,7 +548,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @return The channel frame's icon
      */
     public ImageIcon getIcon() {
-        return MainFrame.getMainFrame().getIcon();
+        return imageIcon;
     }
     
     /**
@@ -555,6 +566,6 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     private void clearNotification() {
         MainFrame.getMainFrame().getFrameManager().clearNotification(this);
-    }    
+    }
     
 }
