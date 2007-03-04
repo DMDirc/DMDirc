@@ -41,5 +41,5 @@ public interface IChannelNickChanged extends ICallbackInterface {
 	 * @param sOldNick Nickname before change
 	 * @see IRCParser#callChannelNickChanged
 	 */
-	 public void onChannelNickChanged(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick)
+	 public void onChannelNickChanged(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick);
 }

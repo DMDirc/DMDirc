@@ -63,6 +63,27 @@ public class ClientInfo {
 		if (sTemp.length != 1) { sWho = sTemp[1]; } else { sWho = sTemp[0]; }
 		return sWho;
 	}
+	
+	/**
+	 * Get a nick ident and host of a user from a hostmask.
+	 * Hostmask must match (?:)nick(?!ident)(?@host)
+	 *
+	 * @return Array containing details. (result[0] -> Nick | result[1] -> Ident | result[2] -> Host)
+	 */
+	public static String[] parseHostFull(String sWho) {
+		String sTemp[] = null;
+		String result[] = new String[3];
+		sTemp = sWho.split(":",2);
+		if (sTemp.length != 1) { sWho = sTemp[1]; } else { sWho = sTemp[0]; }
+
+		sTemp = sWho.split("@",2);
+		if (sTemp.length != 1) { result[2] = sTemp[1]; } else { result[2] = ""; }
+		sTemp = sTemp[0].split("!",2);
+		if (sTemp.length != 1) { result[1] = sTemp[1]; } else { result[1] = ""; }
+		result[0] = sTemp[0];
+		
+		return result;
+	}
 
 	/**
 	 * Create a new client object from a hostmask.
