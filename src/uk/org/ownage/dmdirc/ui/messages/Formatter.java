@@ -109,7 +109,7 @@ public class Formatter {
         
         properties.setProperty("queryMessage", "<%1$s> %2$s");
         properties.setProperty("queryAction", colour+"6* %1$s %2$s");
-        
+        properties.setProperty("queryNickChanged", colour+"3* %1$s is now know asn %4$s.");
         properties.setProperty("querySelfMessage", "<%1$s> %2$s");
         properties.setProperty("querySelfAction", colour+"6* %1$s %2$s");
         

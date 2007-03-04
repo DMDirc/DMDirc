@@ -71,7 +71,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     /**
      * The icon being used for this query
      */
-    private ImageIcon imageIcon;    
+    private ImageIcon imageIcon;
     
     /**
      * Creates a new instance of Query
@@ -84,7 +84,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         
         ClassLoader cldr = this.getClass().getClassLoader();
         URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/query.png");
-        imageIcon = new ImageIcon(imageURL);        
+        imageIcon = new ImageIcon(imageURL);
         
         frame = new QueryFrame(new QueryCommandParser(this.server, this));
         MainFrame.getMainFrame().addChild(frame);
@@ -164,17 +164,20 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param oldNick clients old nickname
      */
     public void onNickChanged(IRCParser parser, ClientInfo client, String oldNick) {
-        server.getParser().getCallbackManager().delCallback("onPrivateAction", this);
-        server.getParser().getCallbackManager().delCallback("onPrivateMessage", this);
-        try {
-            server.getParser().getCallbackManager().addCallback("onPrivateAction", this, client.getNickname());
-            server.getParser().getCallbackManager().addCallback("onPrivateMessage", this, client.getNickname());
-        } catch (CallbackNotFound ex) {
-            Logger.error(ErrorLevel.FATAL, ex);
+        if (oldNick.equals(ClientInfo.parseHost(host))) {
+            server.getParser().getCallbackManager().delCallback("onPrivateAction", this);
+            server.getParser().getCallbackManager().delCallback("onPrivateMessage", this);
+            try {
+                server.getParser().getCallbackManager().addCallback("onPrivateAction", this, client.getNickname());
+                server.getParser().getCallbackManager().addCallback("onPrivateMessage", this, client.getNickname());
+            } catch (CallbackNotFound ex) {
+                Logger.error(ErrorLevel.FATAL, ex);
+            }
+            frame.addLine("queryNickChanged", oldNick, client.getIdent(), client.getHost(), client.getNickname());
+            host = client.getNickname()+"!"+client.getIdent()+"@"+client.getHost();
+            sendNotification();
+            updateTitle();
         }
-        frame.addLine("* "+oldNick+" is now known as "+client.toString());
-        sendNotification();
-        updateTitle();
     }
     
     /**
@@ -279,15 +282,15 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      */
     public String toString() {
         return ClientInfo.parseHost(host);
-    }    
+    }
     
     /**
      * Requests that this object's frame be activated
      */
     public void activateFrame() {
         MainFrame.getMainFrame().setActiveFrame(frame);
-    }    
-
+    }
+    
     /**
      * Adds a line of text to the main text area of the query frame
      * @param line The line to add
@@ -295,7 +298,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     public void addLine(String line) {
         frame.addLine(line);
     }
-
+    
     /**
      * Retrieves the icon used by the query frame
      * @return The query frame's icon
@@ -319,5 +322,5 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      */
     private void clearNotification() {
         MainFrame.getMainFrame().getFrameManager().clearNotification(this);
-    }     
+    }
 }
