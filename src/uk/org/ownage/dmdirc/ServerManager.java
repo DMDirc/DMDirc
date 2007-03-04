@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc;
 
 import java.util.Vector;
 import javax.swing.JInternalFrame;
+import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
 
 /**
@@ -63,7 +64,7 @@ public class ServerManager {
             me = new ServerManager();
         }
         return me;
-    }    
+    }
     
     /**
      * Registers a new server with the manager
@@ -71,6 +72,7 @@ public class ServerManager {
      */
     public void registerServer(Server server) {
         servers.add(server);
+        MainFrame.getMainFrame().getFrameManager().addServer(server);
     }
     
     /**
@@ -82,6 +84,7 @@ public class ServerManager {
         if (!closing) {
             servers.remove(server);
         }
+        MainFrame.getMainFrame().getFrameManager().delServer(server);
     }
     
     /**
@@ -114,7 +117,7 @@ public class ServerManager {
     public int numServers() {
         return servers.size();
     }
-
+    
     /**
      * Returns the server instance that owns the specified internal frame
      * @param active The internal frame to check
@@ -125,7 +128,7 @@ public class ServerManager {
             if (server.ownsFrame(active)) {
                 return server;
             }
-        }        
+        }
         return null;
     }
     

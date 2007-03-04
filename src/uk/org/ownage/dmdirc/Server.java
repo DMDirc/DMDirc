@@ -81,6 +81,11 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     private Raw raw;
     
     /**
+     * The name of the server we're connecting to
+     */
+    private String serverName;
+    
+    /**
      * Used to indicate that this server is in the process of closing all of its
      * windows, and thus requests for individual ones to be closed should be
      * ignored
@@ -101,13 +106,15 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      */
     public Server(String server, int port, String password, boolean ssl) {
         
-        ServerManager.getServerManager().registerServer(this);
+        serverName = server;
         
+        ServerManager.getServerManager().registerServer(this);
+                
         frame = new ServerFrame(new ServerCommandParser(this));
         frame.setTitle(server+":"+port);
         frame.setTabCompleter(tabCompleter);
         frame.addInternalFrameListener(this);
-        
+               
         MainFrame.getMainFrame().addChild(frame);
         
         frame.open();
@@ -132,6 +139,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         }
         
         raw = new Raw(this);
+        MainFrame.getMainFrame().getFrameManager().addRaw(this, raw);
         
         try {
             Thread thread = new Thread(parser);
@@ -277,6 +285,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * closed)
      */
     public void delRaw() {
+        MainFrame.getMainFrame().getFrameManager().delRaw(this, raw);
         raw = null;
     }
     
@@ -286,6 +295,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      */
     public void delChannel(String chan) {
         tabCompleter.removeEntry(chan);
+        MainFrame.getMainFrame().getFrameManager().delChannel(this, channels.get(chan));
         if (!closing) {
             channels.remove(chan);
         }
@@ -296,8 +306,11 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param chan channel to add
      */
     private void addChannel(ChannelInfo chan) {
+        Channel newChan = new Channel(this, chan);
+        
         tabCompleter.addEntry(chan.getName());
-        channels.put(chan.getName(), new Channel(this, chan));
+        channels.put(chan.getName(), newChan);
+        MainFrame.getMainFrame().getFrameManager().addChannel(this, newChan);
     }
     
     /**
@@ -305,8 +318,11 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param host host of the remote client being queried
      */
     private void addQuery(String host) {
+        Query newQuery = new Query(this, host);
+        
         tabCompleter.addEntry(ClientInfo.parseHost(host));
-        queries.put(ClientInfo.parseHost(host), new Query(this, host));
+        queries.put(ClientInfo.parseHost(host), newQuery);
+        MainFrame.getMainFrame().getFrameManager().addQuery(this, newQuery);
     }
     
     /**
@@ -315,6 +331,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      */
     public void delQuery(String host) {
         tabCompleter.removeEntry(ClientInfo.parseHost(host));
+        MainFrame.getMainFrame().getFrameManager().delQuery(this, queries.get(ClientInfo.parseHost(host)));
         if (!closing) {
             queries.remove(ClientInfo.parseHost(host));
         }
@@ -342,7 +359,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Event when client joins a channel, creates new channel object and opens 
+     * Event when client joins a channel, creates new channel object and opens
      * a channel window
      * @param tParser parser instance triggering event
      * @param cChannel Channel being joined
@@ -357,7 +374,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Private message event, creates a new query object and opens a new query 
+     * Private message event, creates a new query object and opens a new query
      * window if one doesnt exist
      * @param parser parser instance triggering event
      * @param message private message being received
@@ -370,7 +387,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Private action event, creates a new query object and opens a new query 
+     * Private action event, creates a new query object and opens a new query
      * window if one doesnt exist
      * @param action action text being received
      * @param parser parser instance triggering event
@@ -480,7 +497,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @return A string representation of this server (i.e., its name)
      */
     public String toString() {
-        return frame.getTitle();
-    }    
+        return serverName;
+    }
     
 }

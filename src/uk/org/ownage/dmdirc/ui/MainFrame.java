@@ -35,6 +35,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JInternalFrame;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.ui.framemanager.DummyFrameManager;
+import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
 
 /**
  * The main application frame
@@ -69,6 +71,10 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
      * The main application icon
      */
     private ImageIcon imageIcon;
+    /**
+     * The frame manager that's being used
+     */
+    private FrameManager frameManager;
     
     /**
      * Returns the singleton instance of MainFrame
@@ -91,6 +97,9 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         java.net.URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/icon.png");
         imageIcon = new ImageIcon(imageURL);
         setIconImage(imageIcon.getImage());
+        
+        frameManager = new DummyFrameManager();
+        frameManager.setParent(jPanel1);
         
         setVisible(true);
         
@@ -146,6 +155,14 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
      */
     public void delChild(JInternalFrame frame) {
         desktopPane.remove(frame);
+    }
+    
+    /** 
+     * Retrieves the frame manager that's currently in use
+     * @return The current frame manager
+     */
+    public FrameManager getFrameManager() {
+        return frameManager;
     }
     
     /**
@@ -273,6 +290,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
         desktopPane = new javax.swing.JDesktopPane();
+        jPanel1 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         miAddServer = new javax.swing.JMenuItem();
@@ -282,6 +300,17 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("DMDirc");
         desktopPane.setBackground(new java.awt.Color(238, 238, 238));
+
+        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 135, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(0, 493, Short.MAX_VALUE)
+        );
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -304,11 +333,15 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, desktopPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 572, Short.MAX_VALUE)
+            .add(layout.createSequentialGroup()
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(desktopPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, desktopPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
+            .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, desktopPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -318,6 +351,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     private javax.swing.JDesktopPane desktopPane;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JMenuItem miAddServer;
     private javax.swing.JMenuItem toggleStateMenuItem;
     private javax.swing.JMenu windowMenu;
