@@ -92,7 +92,6 @@ public class ChannelClientInfo {
 //		for (int i = 1; i < myParser.nNextKeyPrefix; i = i*2) {
 		for (int i = myParser.nNextKeyPrefix; i > 0; i = i/2) {
 			if ((nModes & i) == i) {
-				// There may be a better alternative to this, but this works well. (Gets the prefix modes in order)
 				for (Enumeration e = myParser.hPrefixModes.keys(); e.hasMoreElements();) {
 					cTemp = (Character)e.nextElement();
 					nTemp = myParser.hPrefixModes.get(cTemp);

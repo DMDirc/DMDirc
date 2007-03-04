@@ -55,6 +55,7 @@ public class CallbackManager {
 		addCallbackType(new CallbackOnChannelKick(myParser, this));
 		addCallbackType(new CallbackOnChannelMessage(myParser, this));
 		addCallbackType(new CallbackOnChannelModeChanged(myParser, this));
+		addCallbackType(new CallbackOnChannelNickChanged(myParser, this));
 		addCallbackType(new CallbackOnChannelNotice(myParser, this));
 		addCallbackType(new CallbackOnChannelPart(myParser, this));
 		addCallbackType(new CallbackOnChannelQuit(myParser, this));

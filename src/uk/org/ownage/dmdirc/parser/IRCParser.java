@@ -369,6 +369,20 @@ public class IRCParser implements Runnable {
 	}
 
 	/**
+	 * Callback to all objects implementing the ChannelNickChanged Callback.
+	 *
+	 * @see IChannelNickChanged
+	 * @param cChannel One of the channels that the user is on
+	 * @param cChannelClient Client changing nickname
+	 * @param sOldNick Nickname before change
+	 */
+	protected boolean callChannelNickChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick) {
+		CallbackOnChannelNickChanged cb = (CallbackOnChannelNickChanged)myCallbackManager.getCallbackType("OnChannelNickChanged");
+		if (cb != null) { return cb.call(cChannel, cChannelClient, sOldNick); }
+		return false;
+	}
+
+	/**
 	 * Callback to all objects implementing the ChannelNotice Callback.
 	 *
 	 * @see IChannelNotice
@@ -1089,6 +1103,8 @@ public class IRCParser implements Runnable {
 	 */	
 	private void processNickChange(String sParam, String token[]) {
 		ClientInfo iClient;
+		ChannelClientInfo iChannelClient;
+		ChannelInfo iChannel;
 		
 		iClient = getClientInfo(token[0]);
 		if (iClient != null) {
@@ -1096,8 +1112,18 @@ public class IRCParser implements Runnable {
 			hClientList.remove(iClient.getNickname().toLowerCase());
 			iClient.setUserBits(token[2],true);
 			hClientList.put(iClient.getNickname().toLowerCase(),iClient);
+			
+			for (Enumeration e = hChannelList.keys(); e.hasMoreElements();) {
+				iChannel = hChannelList.get(e.nextElement());
+				iChannelClient = iChannel.getUser(iClient);
+				if (iChannelClient != null) {
+					callChannelNickChanged(iChannel,iChannelClient,ClientInfo.parseHost(token[0]));
+				}
+			}
+			
 			callNickChanged(iClient, ClientInfo.parseHost(token[0]));
 		}
+		
 	}
 	
 	/**
