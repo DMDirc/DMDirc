@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc;
 
 import java.beans.PropertyVetoException;
+import java.net.URL;
 import java.util.Hashtable;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
@@ -100,6 +101,11 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     private TabCompleter tabCompleter = new TabCompleter();
     
     /**
+     * The icon being used for this server
+     */
+    private ImageIcon imageIcon;
+    
+    /**
      * Creates a new instance of Server
      * @param server The hostname/ip of the server to connect to
      * @param port The port to connect to
@@ -110,13 +116,23 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         
         serverName = server;
         
+        ClassLoader cldr = this.getClass().getClassLoader();
+        URL imageURL;
+        if (ssl) {
+             imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/secure-server.png");
+        } else {
+            imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/server.png");
+        }
+        imageIcon = new ImageIcon(imageURL);
+        
         ServerManager.getServerManager().registerServer(this);
-                
+        
         frame = new ServerFrame(new ServerCommandParser(this));
         frame.setTitle(server+":"+port);
         frame.setTabCompleter(tabCompleter);
         frame.addInternalFrameListener(this);
-               
+        frame.setFrameIcon(imageIcon);
+        
         MainFrame.getMainFrame().addChild(frame);
         
         frame.open();
@@ -164,6 +180,15 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
             closeChannels();
             closeQueries();
         }
+        
+        ClassLoader cldr = this.getClass().getClassLoader();
+        URL imageURL;
+        if (ssl) {
+             imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/secure-server.png");
+        } else {
+            imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/server.png");
+        }
+        imageIcon = new ImageIcon(imageURL);        
         
         frame.addLine("Connecting to "+server+":"+port);
         
@@ -508,13 +533,13 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     public void activateFrame() {
         MainFrame.getMainFrame().setActiveFrame(frame);
     }
-
+    
     /**
      * Returns the server frame's icon
      * @return The server frame's icon
      */
     public ImageIcon getIcon() {
-        return MainFrame.getMainFrame().getIcon();
+        return imageIcon;
     }
     
 }

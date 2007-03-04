@@ -55,7 +55,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;    
+    private static final long serialVersionUID = 4;    
     
     /**
      * The border used when the frame is not maximised
@@ -90,8 +90,6 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
         initComponents();
         
         inputHandler = new InputHandler(jTextField1);
-        
-        setFrameIcon(MainFrame.getMainFrame().getIcon());
         
         setMaximizable(true);
         setClosable(true);
