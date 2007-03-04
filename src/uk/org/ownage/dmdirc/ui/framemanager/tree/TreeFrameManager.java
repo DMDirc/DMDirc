@@ -157,18 +157,18 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     public void showNotification(FrameContainer source, Color colour) {
         if (nodeColours != null) {
             nodeColours.put(source, colour);
-            tree.revalidate();
+            tree.invalidate();
         }
     }
     
     public void clearNotification(FrameContainer source) {
-        if (nodeColours != null && nodeColours.contains(source)) {
+        if (nodeColours != null && nodeColours.containsKey(source)) {
             nodeColours.remove(source);
         }
     }
     
     public Color getNodeColour(FrameContainer source) {
-        if (nodeColours != null && nodeColours.contains(source)) {
+        if (nodeColours != null && nodeColours.containsKey(source)) {
             return nodeColours.get(source);
         }
         return null;
