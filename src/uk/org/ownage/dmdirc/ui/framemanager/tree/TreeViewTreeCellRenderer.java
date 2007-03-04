@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
+import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import uk.org.ownage.dmdirc.Channel;
@@ -85,6 +86,8 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         } else {
             setIcon(defaultIcon);
         }
+                
+        setBorder(new EmptyBorder(1, 0, 2, 0));
         
         setToolTipText(null);
         
