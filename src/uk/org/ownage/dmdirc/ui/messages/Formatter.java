@@ -121,7 +121,6 @@ public class Formatter {
      * properties object.
      */
     private static void initialise() {
-        if (properties == null) {
             File file;
             if (Config.hasOption("ui", "formatter")) {
                 file = new File(Config.getOption("ui", "formatter"));
@@ -146,6 +145,12 @@ public class Formatter {
                     Logger.error(ErrorLevel.WARNING, ex);
                 }
             }
-        }
+    }
+    
+    /**
+     * reloads the formatter
+     */
+    public static void reload() {
+        initialise();
     }
 }
