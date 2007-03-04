@@ -78,6 +78,7 @@ public class CommandManager {
             
             serverCommands.add(new Help());
             serverCommands.add(new Join());
+            serverCommands.add(new Nick());
             serverCommands.add(new Test());
             serverCommands.add(new Quit());
             serverCommands.add(new QuitDefault());
