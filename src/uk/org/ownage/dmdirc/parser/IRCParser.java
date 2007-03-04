@@ -1127,7 +1127,7 @@ public class IRCParser implements Runnable {
 		} else {
 			if (token.length > 4) { sReason = token[token.length-1]; }
 			iChannelClient = iChannel.getUser(iClient);
-			iChannelKicker = iChannel.getUser(iClient);
+			iChannelKicker = iChannel.getUser(token[0]);
 			callChannelKick(iChannel,iChannelClient,iChannelKicker,sReason,token[0]);
 			iChannel.delClient(iClient);
 			if (iClient == cMyself) {
