@@ -200,12 +200,6 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String modes = channelInfo.getUser(me).getImportantModePrefix();
         
         server.getParser().partChannel(channelInfo.getName(), reason);
-        
-        if (reason.equals("")) {
-            frame.addLine("channelSelfPart", modes, me.getNickname(), channelInfo.getName());
-        } else {
-            frame.addLine("channelSelfPart", modes, me.getNickname(), channelInfo.getName(), reason);
-        }
     }
     
     /**
@@ -302,10 +296,9 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param cChannelClient The client that has just joined
      */
     public void onChannelJoin(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
-        frame.addLine("* "+cChannelClient.getNickname()+" has joined the channel");
+        frame.addLine("channelJoin", "", cChannelClient.getNickname(), cChannel.getName());
         frame.addName(cChannelClient);
         tabCompleter.addEntry(cChannelClient.getNickname());
-        // TODO: Use formatter
     }
     
     /**
@@ -321,11 +314,19 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String nick = cChannelClient.getNickname();
         String modes = cChannelClient.getImportantModePrefix();
         
-        if (sReason.equals("")) {
-            frame.addLine("channelPart", modes, nick, cChannel.getName());
+        if (nick.equalsIgnoreCase(tParser.getMyself().getNickname())) {
+            if (sReason.equals("")) {
+                frame.addLine("channelSelfPart", modes, nick, cChannel.getName());
+            } else {
+                frame.addLine("channelSelfPartReason", modes, nick, cChannel.getName(), sReason);
+            }
         } else {
-            frame.addLine("channelPartReason", modes, nick, cChannel.getName(),
-                    sReason);
+            if (sReason.equals("")) {
+                frame.addLine("channelPart", modes, nick, cChannel.getName());
+            } else {
+                frame.addLine("channelPartReason", modes, nick, cChannel.getName(),
+                        sReason);
+            }
         }
         
         tabCompleter.removeEntry(cChannelClient.getNickname());
@@ -509,8 +510,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void activateFrame() {
         MainFrame.getMainFrame().setActiveFrame(frame);
-    }    
-
+    }
+    
     /**
      * Adds a line of text to the main text area of the channel frame
      * @param line The line to add
@@ -518,7 +519,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void addLine(String line) {
         frame.addLine(line);
     }
-
+    
     /**
      * Retrieves the icon used by the channel frame
      * @return The channel frame's icon

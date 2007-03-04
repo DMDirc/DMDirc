@@ -91,6 +91,8 @@ public class Formatter {
         properties.setProperty("channelKickReason", colour+"3* %1$s%2$s has kicked %3$s%4$s from %5$s (%6$s"+stop+").");
         
         properties.setProperty("channelTopicChange", colour+"3* %1$s%2$s has changed the topic to '%3$s"+stop+"'.");
+        properties.setProperty("channelNickChange", colour+"3* %1$s%2$s is now know as %3$s.");
+        properties.setProperty("channelSelfNickChange", colour+"3* You are now know as %3$s.");
         
         properties.setProperty("channelJoinTopic", colour+"3* The topic for %2$s is '%1$s"+stop+"'.");
         properties.setProperty("channelJoinTopicSetBy", colour+"3* Topic was set by %1$s.");
