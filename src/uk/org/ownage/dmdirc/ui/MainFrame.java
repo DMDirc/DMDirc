@@ -22,9 +22,6 @@
 
 package uk.org.ownage.dmdirc.ui;
 
-import java.awt.Image;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
@@ -35,8 +32,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JInternalFrame;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.ui.framemanager.DummyFrameManager;
 import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
+import uk.org.ownage.dmdirc.ui.framemanager.tree.TreeFrameManager;
 
 /**
  * The main application frame
@@ -98,7 +95,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         imageIcon = new ImageIcon(imageURL);
         setIconImage(imageIcon.getImage());
         
-        frameManager = new DummyFrameManager();
+        frameManager = new TreeFrameManager();
         frameManager.setParent(jPanel1);
         
         setVisible(true);
