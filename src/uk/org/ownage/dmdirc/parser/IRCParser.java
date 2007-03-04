@@ -994,48 +994,64 @@ public class IRCParser implements Runnable {
 			if (token[0].equals("PING") || token[1].equals("PING")) { sendString("PONG :"+sParam); }
 			else {
 				if (token[0].substring(0,1).equals(":")) {
-					// Post Connect
-					switch (nParam) {
-						case -1:
-							processStringParam(sParam,token);
-							break;
-						case 1: // 001 - Welcome to IRC
-							Got001 = true;
-							process001(nParam,token);
-							break;
-						case 4: // 004 - ISUPPORT
-						case 5: // 005 - ISUPPORT
-							process004_005(nParam,token);
-							break;
-						case 305: // No longer away
-						case 306: // Away
-							processAway(nParam,token);
-							break;
-						case 332: // Topic on Join
-						case 333: // Topic Setter On Join
-							processTopic(sParam,token);
-							break;
-						case 375: // MOTD Start
-							break;
-						case 353: // Names
-						case 366: // End of Names
-							processNames(nParam,token);
-							break;
-						case 324: // Modes
-							processMode(sParam,token);
-							break;
-						case 329: // Channel Time
-						case 368: // End of ban list
-							break;
-						case 376: // End of MOTD
-						case 422: // No MOTD
-							processEndOfMOTD(nParam,token);
-							break;
-						case 433: // Nick In Use
-							processNickInUse(nParam,token);
-							break;
-						default: // Unknown
-							break;
+					if (!Got001) {
+						// Before 001 we don't care about anything. (Apart from 001, PING and NickInUse)
+						switch (nParam) {
+							case 1: // 001 - Welcome to IRC
+								Got001 = true;
+								process001(nParam,token);
+								break;
+							case 464: // Password Required
+								ParserError ei = new ParserError(errError,"Password Required");
+								ei.setException(e);
+								callErrorInfo(ei);
+								break;
+							case 433: // Nick In Use
+								processNickInUse(nParam,token);
+								break;
+							default: // Unknown
+								break;
+						}
+					} else {
+						// Post Connect
+						switch (nParam) {
+							case -1:
+								processStringParam(sParam,token);
+								break;
+							case 4: // 004 - ISUPPORT
+							case 5: // 005 - ISUPPORT
+								process004_005(nParam,token);
+								break;
+							case 305: // No longer away
+							case 306: // Away
+								processAway(nParam,token);
+								break;
+							case 332: // Topic on Join
+							case 333: // Topic Setter On Join
+								processTopic(sParam,token);
+								break;
+							case 375: // MOTD Start
+								break;
+							case 353: // Names
+							case 366: // End of Names
+								processNames(nParam,token);
+								break;
+							case 324: // Modes
+								processMode(sParam,token);
+								break;
+							case 329: // Channel Time
+							case 368: // End of ban list
+								break;
+							case 376: // End of MOTD
+							case 422: // No MOTD
+								processEndOfMOTD(nParam,token);
+								break;
+							case 433: // Nick In Use
+								processNickInUse(nParam,token);
+								break;
+							default: // Unknown
+								break;
+						}
 					}
 				} else {
 					// Pre Connect
