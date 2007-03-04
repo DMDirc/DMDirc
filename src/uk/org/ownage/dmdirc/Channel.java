@@ -44,6 +44,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelMessage;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelPart;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelQuit;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelTopic;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelNickChanged;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
@@ -60,7 +61,7 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
  */
 public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic,
         IChannelJoin, IChannelPart, IChannelKick, IChannelQuit, IChannelAction,
-        InternalFrameListener, FrameContainer {
+        IChannelNickChanged, InternalFrameListener, FrameContainer {
     
     /** The parser's pChannel class */
     private ChannelInfo channelInfo;
@@ -112,6 +113,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             server.getParser().getCallbackManager().addCallback("OnChannelQuit", this, channelInfo.getName());
             server.getParser().getCallbackManager().addCallback("OnChannelKick", this, channelInfo.getName());
             server.getParser().getCallbackManager().addCallback("OnChannelAction", this, channelInfo.getName());
+            server.getParser().getCallbackManager().addCallback("OnChannelNickChanged", this, channelInfo.getName());
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.FATAL, ex);
         }
@@ -230,6 +232,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         server.getParser().getCallbackManager().delCallback("OnChannelQuit", this);
         server.getParser().getCallbackManager().delCallback("OnChannelKick", this);
         server.getParser().getCallbackManager().delCallback("OnChannelAction", this);
+        server.getParser().getCallbackManager().delCallback("OnChannelNickChanged", this);
         
         server.delChannel(channelInfo.getName());
         
@@ -427,6 +430,26 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         frame.addLine(type, modes, source, sMessage);
         sendNotification();
     }
+    
+    /**
+     * Called when someone on the channel changes their nickname.
+     * @param tParser A reference to the IRC parser for this server
+     * @param cChannel A reference to the CHannelInfo object for this channel
+     * @param cChannelClient The client that changed nickname
+     * @param sOldNick The old nickname of the client
+     */
+    public void onChannelNickChanged(IRCParser tParser, ChannelInfo cChannel,
+            ChannelClientInfo cChannelClient, String sOldNick) {
+        String modes = cChannelClient.getImportantModePrefix();
+        String nick = cChannelClient.getNickname();
+        String ident = cChannelClient.getClient().getIdent();
+        String host = cChannelClient.getClient().getHost();
+        String type = "channelNickChange";
+        if (tParser.getMyself().getNickname().equals(nick)) {
+            type = "channelSelfNickChange";
+        }
+        frame.addLine(type, modes, sOldNick, ident, host, nick);
+    }    
     
     /**
      * Returns a string containing the most important mode for the specified client
