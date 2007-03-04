@@ -36,6 +36,7 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
@@ -43,6 +44,7 @@ import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
@@ -107,6 +109,13 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         setMaximizable(true);
         setClosable(true);
         setResizable(true);
+        
+        jTextPane1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
+        jTextPane1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
+        jTextField1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
+        jTextField1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
+        jList1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
+        jList1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));        
         
         inputHandler = new InputHandler(jTextField1);        
         

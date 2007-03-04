@@ -27,6 +27,7 @@ import java.util.Date;
 import javax.swing.JScrollBar;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,6 +42,7 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
@@ -94,6 +96,11 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
         setMaximizable(true);
         setClosable(true);
         setResizable(true);
+        
+        jTextPane1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
+        jTextPane1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
+        jTextField1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
+        jTextField1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
         
         scrollBar = jScrollPane1.getVerticalScrollBar();
         

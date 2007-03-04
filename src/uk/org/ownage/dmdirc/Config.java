@@ -95,6 +95,8 @@ public class Config {
         defaults.setProperty("general.port","7000");
         defaults.setProperty("general.password","");
         
+        defaults.setProperty("ui.backgroundcolour", "0");
+        defaults.setProperty("ui.foregroundcolour", "1");
 	defaults.setProperty("ui.maximisewindows","false");
         defaults.setProperty("ui.sortByMode", "true");
         defaults.setProperty("ui.sortByCase", "false");
