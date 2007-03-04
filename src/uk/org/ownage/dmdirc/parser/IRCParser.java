@@ -1220,7 +1220,7 @@ public class IRCParser implements Runnable {
 					// (de) OP/Voice someone
 					sModeParam = sModestr[nParam++];
 					nValue = hPrefixModes.get(cMode);
-					if (bDebug) { doDebug("User Mode: %c [%s] {Positive: %b}\n",cMode, sModeParam, bPositive); }
+					if (bDebug) { doDebug("User Mode: %c / %d [%s] {Positive: %b}\n",cMode, nValue, sModeParam, bPositive); }
 					iChannelClientInfo = iChannel.getUser(sModeParam);
 					if (iChannelClientInfo == null) {
 						// Client not known?
@@ -1233,6 +1233,7 @@ public class IRCParser implements Runnable {
 						}
 						iChannelClientInfo = iChannel.addClient(iClient);
 					}
+					if (bDebug) { doDebug("\tOld Mode Value: %d\n",iChannelClientInfo.getChanMode()); }
 					if (bPositive) { iChannelClientInfo.setChanMode(iChannelClientInfo.getChanMode() + nValue); sTemp = "+"; }
 					else { iChannelClientInfo.setChanMode(iChannelClientInfo.getChanMode() - nValue); sTemp = "-"; }
 					sTemp = sTemp+cMode+" "+iChannelClientInfo.getNickname();
@@ -1603,6 +1604,7 @@ public class IRCParser implements Runnable {
 				return;
 			}
 			callChannelPart(iChannel,iChannelClient,sReason);
+			if (bDebug) { doDebug("Removing %s from %s\n",iClient.getNickname(),iChannel.getName()); }
 			iChannel.delClient(iClient);
 			if (iClient == cMyself) {
 				iChannel.emptyChannel();

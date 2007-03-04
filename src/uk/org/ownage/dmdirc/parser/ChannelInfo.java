@@ -153,7 +153,7 @@ public class ChannelInfo {
 		ChannelClientInfo cTemp = null;
 		cTemp = getUser(cClient);
 		if (cTemp != null) {
-			hChannelUserList.remove(cTemp);
+			hChannelUserList.remove(cTemp.getNickname().toLowerCase());
 		}
 	}	
 	
