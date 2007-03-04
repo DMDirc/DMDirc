@@ -262,4 +262,11 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     public String toString() {
         return ClientInfo.parseHost(host);
     }    
+    
+    /**
+     * Requests that this object's frame be activated
+     */
+    public void activateFrame() {
+        frame.requestFocus();
+    }    
 }

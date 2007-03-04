@@ -503,4 +503,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         return channelInfo.getName();
     }
     
+    /**
+     * Requests that this object's frame be activated
+     */
+    public void activateFrame() {
+        frame.requestFocus();
+    }    
+    
 }

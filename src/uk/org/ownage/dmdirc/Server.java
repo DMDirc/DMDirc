@@ -500,4 +500,11 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         return serverName;
     }
     
+    /**
+     * Requests that this object's frame be activated
+     */
+    public void activateFrame() {
+        frame.requestFocus();
+    }
+    
 }

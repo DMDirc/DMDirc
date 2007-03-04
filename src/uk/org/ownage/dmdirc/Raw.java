@@ -195,4 +195,11 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener {
         return "Raw";
     }    
     
+    /**
+     * Requests that this object's frame be activated
+     */
+    public void activateFrame() {
+        frame.requestFocus();
+    }    
+    
 }
