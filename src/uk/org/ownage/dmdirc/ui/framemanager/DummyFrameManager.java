@@ -154,4 +154,12 @@ public class DummyFrameManager implements FrameManager {
     public void clearNotification(FrameContainer source) {
         System.out.println("DummyFrameManager: Clear notification for "+source);
     }
+
+    /**
+     * Indicates that there is a new active frame
+     * @param source The object that now has focus
+     */    
+    public void setSelected(FrameContainer source) {
+        System.out.println("DummyFrameManager: Now foucsed: "+source);
+    }
 }

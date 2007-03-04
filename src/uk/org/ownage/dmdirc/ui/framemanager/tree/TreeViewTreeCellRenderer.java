@@ -27,7 +27,9 @@ import java.awt.Component;
 import java.net.URL;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import uk.org.ownage.dmdirc.FrameContainer;
@@ -78,11 +80,19 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
                 row, hasFocus);
         
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
+        
+        TreeFrameManager manager = null;
+        
+        if (MainFrame.hasMainFrame()) {
+            manager = (TreeFrameManager)MainFrame.getMainFrame().getFrameManager();
+        }
+        
         c.setBackground(tree.getBackground());
         c.setForeground(tree.getForeground());
+        
         setOpaque(true);
-        if (node.getUserObject() instanceof FrameContainer) {
-            Color colour = ((TreeFrameManager)MainFrame.getMainFrame().getFrameManager()).getNodeColour((FrameContainer)node.getUserObject());
+        if (node.getUserObject() instanceof FrameContainer && manager != null) {
+            Color colour = manager.getNodeColour((FrameContainer)node.getUserObject());
             if (colour != null) {
                 c.setForeground(colour);
             }
@@ -92,7 +102,11 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
             setIcon(defaultIcon);
         }
         
-        setBorder(new EmptyBorder(1, 0, 2, 0));
+        if (manager != null && node.getUserObject().equals(manager.getSelected())) {
+            setBorder(new LineBorder(Color.BLACK));
+        } else {
+            setBorder(new EmptyBorder(1, 0, 2, 0));
+        }
         
         setToolTipText(null);
         

@@ -266,6 +266,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
                 Logger.error(ErrorLevel.WARNING, ex);
             }
         }
+        MainFrame.getMainFrame().getFrameManager().setSelected(this);
         clearNotification();
     }
     

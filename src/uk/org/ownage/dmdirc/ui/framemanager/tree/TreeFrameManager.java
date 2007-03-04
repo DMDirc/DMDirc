@@ -111,6 +111,11 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     private JMenuItem closeMenuItem;
     
     /**
+     * The object that is currently selected
+     */
+    private FrameContainer selected;
+    
+    /**
      * creates a new instance of the TreeFrameManager
      */
     public TreeFrameManager() {
@@ -146,6 +151,23 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      */
     public boolean canPositionHorizontally() {
         return false;
+    }
+    
+    /**
+     * Indicates that there is a new active frame
+     * @param source The object that now has focus
+     */
+    public void setSelected(FrameContainer source) {
+        selected = source;
+        tree.repaint();
+    }
+    
+    /**
+     * Retrieves the currently selected object
+     * @return The object that is currently selected
+     */
+    public FrameContainer getSelected() {
+        return selected;
     }
     
     /**

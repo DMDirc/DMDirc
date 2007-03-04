@@ -59,6 +59,12 @@ public interface FrameManager {
     public boolean canPositionHorizontally();    
     
     /**
+     * Indicates that there is a new active frame
+     * @param source The object that now has focus
+     */
+    public void setSelected(FrameContainer source);
+            
+    /**
      * Shows an event notification to the user by colouring the corresponding
      * element to the source a specific colour
      * @param source The object requesting notification

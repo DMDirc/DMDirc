@@ -84,6 +84,14 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         return me;
     }
     
+    /**
+     * Indicates whether the main frame has been initialised or not
+     * @return True iff the main frame exists
+     */
+    public static boolean hasMainFrame() {
+        return (me != null);
+    }
+    
     /** Creates new form MainFrame */
     public MainFrame() {
         initComponents();

@@ -549,6 +549,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
                 Logger.error(ErrorLevel.WARNING, ex);
             }
         }
+        MainFrame.getMainFrame().getFrameManager().setSelected(this);
         clearNotification();
     }
     

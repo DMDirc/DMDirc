@@ -541,6 +541,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
                 Logger.error(ErrorLevel.WARNING, ex);
             }
         }
+        MainFrame.getMainFrame().getFrameManager().setSelected(this);
         clearNotification();
     }
     
