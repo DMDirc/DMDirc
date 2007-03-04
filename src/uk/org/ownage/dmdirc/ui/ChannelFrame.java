@@ -237,6 +237,13 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
     }
     
     /**
+     * Has the nick list update, to take into account mode changes
+     */
+    public void updateNames() {
+        nicklistModel.sort();
+    }    
+    
+    /**
      * Adds a client to this channels' nicklist
      * @param newName the new client to be added
      */
@@ -294,7 +301,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;

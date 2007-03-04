@@ -478,6 +478,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             frame.addLine(type,  modes, details[0], details[1],
                     details[2], sModes, cChannel.getName());
         }
+        frame.updateNames();
         sendNotification();
     }
     
