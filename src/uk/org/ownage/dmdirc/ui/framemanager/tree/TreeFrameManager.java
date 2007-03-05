@@ -35,6 +35,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
@@ -115,6 +116,8 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      */
     private FrameContainer selected;
     
+    private JComponent parent;
+    
     /**
      * creates a new instance of the TreeFrameManager
      */
@@ -134,6 +137,8 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.setCellRenderer(renderer);
         tree.setRootVisible(false);
         tree.setBorder(new EmptyBorder(5, 5, 5, 5));
+        tree.setRowHeight(0);
+        tree.setPreferredSize(new Dimension(0, 0));
     }
     /**
      * Indicates whether this frame manager can be positioned vertically
@@ -159,7 +164,11 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      */
     public void setSelected(FrameContainer source) {
         selected = source;
-        tree.repaint();
+        SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    tree.repaint();
+                }
+            });
     }
     
     /**
@@ -179,7 +188,11 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     public void showNotification(FrameContainer source, Color colour) {
         if (nodeColours != null) {
             nodeColours.put(source, colour);
-            tree.repaint();
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    tree.repaint();
+                }
+            });
         }
     }
     
@@ -201,6 +214,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param parent parent component
      */
     public void setParent(JComponent parent) {
+        this.parent = parent;
         scrollPane = new JScrollPane(tree);
         parent.setLayout(new BorderLayout());
         parent.add(scrollPane);
@@ -209,7 +223,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.setBackground(parent.getBackground());
         tree.setForeground(parent.getForeground());
         tree.setVisible(true);
-        parent.setVisible(true);
+        //parent.setVisible(true);
     }
     
     /**

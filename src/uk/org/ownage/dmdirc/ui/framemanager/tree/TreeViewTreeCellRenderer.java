@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.ui.framemanager.tree;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.net.URL;
 import javax.swing.ImageIcon;
@@ -89,6 +90,8 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         
         c.setBackground(tree.getBackground());
         c.setForeground(tree.getForeground());
+        setPreferredSize(new Dimension(147, 16));
+        c.setPreferredSize(new Dimension(147, 16));
         
         setOpaque(true);
         if (node.getUserObject() instanceof FrameContainer && manager != null) {
@@ -105,8 +108,12 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         if (manager != null && node.getUserObject().equals(manager.getSelected())) {
             setFont(getFont().deriveFont(Font.BOLD));
             setBorder(new LineBorder(Color.BLACK));
+            c.setSize(10,10);
+            setSize(10,10);
         } else {
             setFont(getFont().deriveFont(Font.PLAIN));
+            c.setSize(10,10);
+            setSize(10,10);
         }
         setBorder(new EmptyBorder(1, 0, 2, 0));
         
