@@ -51,18 +51,40 @@ public class CommandManager {
     private static Vector<Command> queryCommands;
     
     /**
+     * Initialises the command manager's various command lists
+     */
+    private static void initLists() {
+        channelCommands = new Vector<Command>(0,1);
+        
+        channelCommands.add(new Cycle());
+        channelCommands.add(new Me());
+        channelCommands.add(new MeEmpty());
+        channelCommands.add(new Part());
+        channelCommands.add(new PartDefault());
+        
+        serverCommands = new Vector<Command>(0,1);
+        
+        serverCommands.add(new Help());
+        serverCommands.add(new Join());
+        serverCommands.add(new Nick());
+        serverCommands.add(new ReloadFormatter());
+        serverCommands.add(new Test());
+        serverCommands.add(new Quit());
+        serverCommands.add(new QuitDefault());
+        
+        queryCommands = new Vector<Command>(0,1);
+        
+        queryCommands.add(new QueryMe());
+        queryCommands.add(new QueryMeEmpty());
+    }
+    
+    /**
      * Loads all channel commands into the specified parser
      * @param parser The parser to load commands into
      */
     public static void loadChannelCommands(CommandParser parser) {
         if (channelCommands == null) {
-            channelCommands = new Vector<Command>(0,1);
-            
-            channelCommands.add(new Cycle());
-            channelCommands.add(new Me());
-            channelCommands.add(new MeEmpty());
-            channelCommands.add(new Part());
-            channelCommands.add(new PartDefault());
+            CommandManager.initLists();
         }
         
         for (Command com : channelCommands) {
@@ -76,15 +98,7 @@ public class CommandManager {
      */
     public static void loadServerCommands(CommandParser parser) {
         if (serverCommands == null) {
-            serverCommands = new Vector<Command>(0,1);
-            
-            serverCommands.add(new Help());
-            serverCommands.add(new Join());
-            serverCommands.add(new Nick());
-            serverCommands.add(new ReloadFormatter());
-            serverCommands.add(new Test());
-            serverCommands.add(new Quit());
-            serverCommands.add(new QuitDefault());
+            CommandManager.initLists();
         }
         
         for (Command com : serverCommands) {
@@ -98,10 +112,7 @@ public class CommandManager {
      */
     static void loadQueryCommands(QueryCommandParser parser) {
         if (queryCommands == null)    {
-            queryCommands = new Vector<Command>(0,1);
-            
-            queryCommands.add(new QueryMe());
-            queryCommands.add(new QueryMeEmpty());
+            CommandManager.initLists();
         }
         
         for (Command com : queryCommands) {
@@ -117,7 +128,7 @@ public class CommandManager {
      */
     public static ServerCommand getServerCommad(String signature) {
         if (serverCommands == null) {
-            return null;
+            CommandManager.initLists();
         }
         
         for (Command com : serverCommands) {
@@ -137,7 +148,7 @@ public class CommandManager {
      */
     public static ChannelCommand getChannelCommand(String signature) {
         if (channelCommands == null) {
-            return null;
+            CommandManager.initLists();
         }
         
         for (Command com : channelCommands) {
@@ -183,6 +194,10 @@ public class CommandManager {
      * names
      */
     public static ArrayList<String> getServerCommandNames() {
+        if (serverCommands == null) {
+            CommandManager.initLists();
+        }
+        
         return getCommandNames(serverCommands);
     }
     
@@ -193,8 +208,12 @@ public class CommandManager {
      * names
      */
     public static ArrayList<String> getChannelCommandNames() {
+        if (channelCommands == null) {
+            CommandManager.initLists();
+        }
+        
         return getCommandNames(channelCommands);
-    }    
+    }
     
     /**
      * Returns the names (including command char) of all registered channel
@@ -203,8 +222,12 @@ public class CommandManager {
      * names
      */
     public static ArrayList<String> getQueryCommandNames() {
+        if (queryCommands == null) {
+            CommandManager.initLists();
+        }
+        
         return getCommandNames(queryCommands);
-    }      
+    }
     
     /**
      * Iterates through the specified source and returns a list of the names

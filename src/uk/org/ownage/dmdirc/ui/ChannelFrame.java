@@ -100,7 +100,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * and default options for the form.
      * @param parent The Channel object that owns this frame
      */
-    public ChannelFrame(Channel parent) {
+    public ChannelFrame(final Channel parent) {
         this.parent = parent;
         
         setFrameIcon(MainFrame.getMainFrame().getIcon());
@@ -207,19 +207,14 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * @param line text to add
      */
     public void addLine(final String line) {
-        Runnable command = new Runnable() {
-            public void run() {                
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
                 String ts = Formatter.formatMessage("timestamp", new Date());
                 if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
                 Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
-                Styliser.addStyledString(jTextPane1.getStyledDocument(), line);              
+                Styliser.addStyledString(jTextPane1.getStyledDocument(), line);
             }
-        };
-        if (/* scroll? */true) {
-            SwingUtilities.invokeLater(command);
-        } else {
-            command.run();
-        }
+        });
     }
     
     /**
@@ -228,7 +223,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * @param messageType The type of this message
      * @param args The arguments for the message
      */
-    public void addLine(String messageType, Object... args) {
+    public void addLine(final String messageType, final Object... args) {
         addLine(Formatter.formatMessage(messageType, args));
     }
     
@@ -236,8 +231,12 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * Updates the list of clients on this channel
      * @param newNames The new list of clients
      */
-    public void updateNames(ArrayList<ChannelClientInfo> newNames) {
-        nicklistModel.replace(newNames);
+    public void updateNames(final ArrayList<ChannelClientInfo> newNames) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                nicklistModel.replace(newNames);
+            }
+        });
     }
     
     /**
@@ -251,16 +250,24 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * Adds a client to this channels' nicklist
      * @param newName the new client to be added
      */
-    public void addName(ChannelClientInfo newName) {
-        nicklistModel.add(newName);
+    public void addName(final ChannelClientInfo newName) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                nicklistModel.add(newName);
+            }
+        });
     }
     
     /**
      * Removes a client from this channels' nicklist
      * @param name the client to be deleted
      */
-    public void removeName(ChannelClientInfo name) {
-        nicklistModel.remove(name);
+    public void removeName(final ChannelClientInfo name) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                nicklistModel.remove(name);
+            }
+        });
     }
     
     /** This method is called from within the constructor to

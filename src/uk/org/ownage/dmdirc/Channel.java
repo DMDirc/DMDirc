@@ -24,10 +24,12 @@ package uk.org.ownage.dmdirc;
 
 import java.awt.Color;
 import java.beans.PropertyVetoException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
@@ -90,7 +92,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param server The server object that this channel belongs to
      * @param channelInfo The parser's channel object that corresponds to this channel
      */
-    public Channel(Server server, ChannelInfo channelInfo) {
+    public Channel(final Server server, final ChannelInfo channelInfo) {
         this.channelInfo = channelInfo;
         this.server = server;
         
@@ -98,17 +100,25 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/channel.png");
         imageIcon = new ImageIcon(imageURL);
         
-
-        
-        frame = new ChannelFrame(this);
-        MainFrame.getMainFrame().addChild(frame);
-        frame.addInternalFrameListener(this);
-        frame.setFrameIcon(imageIcon);       
-        frame.open();
-        
         tabCompleter = new TabCompleter(server.getTabCompleter());
-        tabCompleter.addEntries(CommandManager.getChannelCommandNames());        
-        frame.setTabCompleter(tabCompleter);
+        tabCompleter.addEntries(CommandManager.getChannelCommandNames());
+        
+        try {           
+            SwingUtilities.invokeAndWait(new Runnable() {
+                public void run() {
+                    frame = new ChannelFrame(Channel.this);
+                    MainFrame.getMainFrame().addChild(frame);
+                    frame.addInternalFrameListener(Channel.this);
+                    frame.setFrameIcon(imageIcon);
+                    frame.open();
+                    frame.setTabCompleter(tabCompleter);
+                }
+            });
+        } catch (InvocationTargetException ex) {
+            Logger.error(ErrorLevel.FATAL, ex);
+        } catch (InterruptedException ex) {
+            Logger.error(ErrorLevel.FATAL, ex);
+        }
         
         try {
             server.getParser().getCallbackManager().addCallback("OnChannelGotNames", this, channelInfo.getName());
@@ -134,7 +144,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * represents
      * @param line The message to send
      */
-    public void sendLine(String line) {
+    public void sendLine(final String line) {
         channelInfo.sendMessage(line);
         
         ClientInfo me = server.getParser().getMyself();
@@ -149,7 +159,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * represents
      * @param action The action to send
      */
-    public void sendAction(String action) {
+    public void sendAction(final String action) {
         channelInfo.sendAction(action);
         
         ClientInfo me = server.getParser().getMyself();
@@ -181,7 +191,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * open while the user has been out of the channel.
      * @param newChannelInfo The new ChannelInfo object
      */
-    public void setChannelInfo(ChannelInfo newChannelInfo) {
+    public void setChannelInfo(final ChannelInfo newChannelInfo) {
         channelInfo = newChannelInfo;
     }
     
@@ -198,13 +208,17 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * Updates the title of the channel frame, and of the main frame if appropriate.
      */
     private void updateTitle() {
-        String title = Styliser.stipControlCodes(channelInfo.getName()+" - "+channelInfo.getTopic());
+        final String title = Styliser.stipControlCodes(channelInfo.getName()+" - "+channelInfo.getTopic());
         
-        frame.setTitle(title);
-        
-        if (frame.isMaximum() && MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
-            MainFrame.getMainFrame().setTitle("DMDirc - "+title);
-        }
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                frame.setTitle(title);
+                
+                if (frame.isMaximum() && MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
+                    MainFrame.getMainFrame().setTitle("DMDirc - "+title);
+                }
+            }
+        });
     }
     
     /**
@@ -220,7 +234,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * channel window.
      * @param reason The reason for parting the channel
      */
-    public void part(String reason) {       
+    public void part(final String reason) {
         server.getParser().partChannel(channelInfo.getName(), reason);
     }
     
@@ -241,16 +255,20 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         
         server.delChannel(channelInfo.getName());
         
-        frame.setVisible(false);
-        MainFrame.getMainFrame().delChild(frame);
-        frame = null;
-        server = null;
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                frame.setVisible(false);
+                MainFrame.getMainFrame().delChild(frame);
+                frame = null;
+                server = null;
+            }
+        });
     }
     
     /**
      * Determines if the specified frame is owned by this object
      */
-    public boolean ownsFrame(JInternalFrame target) {
+    public boolean ownsFrame(final JInternalFrame target) {
         return frame.equals(target);
     }
     
@@ -265,8 +283,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param sMessage The message that was sent
      * @param sHost The full host of the sender.
      */
-    public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel,
-            ChannelClientInfo cChannelClient, String sMessage, String sHost) {
+    public void onChannelMessage(final IRCParser tParser, final ChannelInfo cChannel,
+            final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
         String source = getNick(cChannelClient, sHost);
         String modes = getModes(cChannelClient, sHost);
         String type = "channelMessage";
@@ -283,7 +301,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param tParser A reference to the IRC Parser for this server
      * @param cChannel A reference to the ChannelInfo object for this channel
      */
-    public void onChannelGotNames(IRCParser tParser, ChannelInfo cChannel) {
+    public void onChannelGotNames(final IRCParser tParser, final ChannelInfo cChannel) {
+        
         frame.updateNames(channelInfo.getChannelClients());
         
         ArrayList<String> names = new ArrayList<String>();
@@ -291,7 +310,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             names.add(channelClient.getNickname());
         }
         tabCompleter.replaceEntries(names);
-        tabCompleter.addEntries(CommandManager.getChannelCommandNames());        
+        tabCompleter.addEntries(CommandManager.getChannelCommandNames());
     }
     
     /**
@@ -302,7 +321,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param bIsJoinTopic Whether this is the topic received when we joined the
      * channel or not
      */
-    public void onChannelTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsJoinTopic) {
+    public void onChannelTopic(final IRCParser tParser, final ChannelInfo cChannel,
+            final boolean bIsJoinTopic) {
         if (bIsJoinTopic) {
             frame.addLine("channelJoinTopic", cChannel.getTopic(), cChannel.getName());
             frame.addLine("channelJoinTopicSetBy", cChannel.getTopicUser(),
@@ -325,7 +345,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param cChannel A reference to the ChannelInfo object for this channel
      * @param cChannelClient The client that has just joined
      */
-    public void onChannelJoin(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
+    public void onChannelJoin(final IRCParser tParser, final ChannelInfo cChannel,
+            final ChannelClientInfo cChannelClient) {
         frame.addLine("channelJoin", "", cChannelClient.getNickname(), cChannel.getName());
         frame.addName(cChannelClient);
         tabCompleter.addEntry(cChannelClient.getNickname());
@@ -340,8 +361,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param cChannelClient The client that just parted
      * @param sReason The reason specified when the client parted
      */
-    public void onChannelPart(IRCParser tParser, ChannelInfo cChannel,
-            ChannelClientInfo cChannelClient, String sReason) {
+    public void onChannelPart(final IRCParser tParser, final ChannelInfo cChannel,
+            final ChannelClientInfo cChannelClient, final String sReason) {
         String nick = cChannelClient.getNickname();
         String modes = cChannelClient.getImportantModePrefix();
         
@@ -360,8 +381,9 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             }
         }
         
-        tabCompleter.removeEntry(cChannelClient.getNickname());
         frame.removeName(cChannelClient);
+        
+        tabCompleter.removeEntry(cChannelClient.getNickname());
         sendNotification();
     }
     
@@ -375,9 +397,9 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param sReason The reason specified in the kick message
      * @param sKickedByHost The host of the kicker (in case it wasn't an actual client)
      */
-    public void onChannelKick(IRCParser tParser, ChannelInfo cChannel,
-            ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient,
-            String sReason, String sKickedByHost) {
+    public void onChannelKick(final IRCParser tParser, final ChannelInfo cChannel,
+            final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient,
+            final String sReason, final String sKickedByHost) {
         String kicker = getNick(cKickedByClient, sKickedByHost);
         String kickermodes = getModes(cKickedByClient, sKickedByHost);
         String victim = cKickedClient.getNickname();
@@ -391,8 +413,9 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
                     victim, cChannel.getName(), sReason);
         }
         
-        tabCompleter.removeEntry(cKickedClient.getNickname());
         frame.removeName(cKickedClient);
+        
+        tabCompleter.removeEntry(cKickedClient.getNickname());
         sendNotification();
     }
     
@@ -404,8 +427,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param cChannelClient A reference to the client that has quit
      * @param sReason The reason specified in the client's quit message
      */
-    public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel,
-            ChannelClientInfo cChannelClient, String sReason) {
+    public void onChannelQuit(final IRCParser tParser, final ChannelInfo cChannel,
+            final ChannelClientInfo cChannelClient, final String sReason) {
         String source = cChannelClient.getNickname();
         String modes = cChannelClient.getImportantModePrefix();
         if (sReason.equals("")) {
@@ -413,7 +436,9 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         } else {
             frame.addLine("channelQuitReason", modes, source, sReason);
         }
+        
         frame.removeName(cChannelClient);
+        
         sendNotification();
     }
     
@@ -425,8 +450,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param sMessage The text of the action
      * @param sHost The host of the performer (lest it wasn't an actual client)
      */
-    public void onChannelAction(IRCParser tParser, ChannelInfo cChannel,
-            ChannelClientInfo cChannelClient, String sMessage, String sHost) {
+    public void onChannelAction(final IRCParser tParser, final ChannelInfo cChannel,
+            final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
         String source = getNick(cChannelClient, sHost);
         String modes = getModes(cChannelClient, sHost);
         String type = "channelAction";
@@ -444,8 +469,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param cChannelClient The client that changed nickname
      * @param sOldNick The old nickname of the client
      */
-    public void onChannelNickChanged(IRCParser tParser, ChannelInfo cChannel,
-            ChannelClientInfo cChannelClient, String sOldNick) {
+    public void onChannelNickChanged(final IRCParser tParser, final ChannelInfo cChannel,
+            final ChannelClientInfo cChannelClient, final String sOldNick) {
         String modes = cChannelClient.getImportantModePrefix();
         String nick = cChannelClient.getNickname();
         String ident = cChannelClient.getClient().getIdent();
@@ -466,8 +491,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param sHost the host of the client that set the modes
      * @param sModes the modes that were set
      */
-    public void onChannelModeChanged(IRCParser tParser, ChannelInfo cChannel,
-            ChannelClientInfo cChannelClient, String sHost, String sModes) {
+    public void onChannelModeChanged(final IRCParser tParser, final ChannelInfo cChannel,
+            final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
         String modes = getModes(cChannelClient, sHost);
         String[] details = getDetails(cChannelClient, sHost);
         if (sHost.equals("")) {
@@ -480,6 +505,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             frame.addLine(type,  modes, details[0], details[1],
                     details[2], sModes, cChannel.getName());
         }
+        
         frame.updateNames();
         sendNotification();
     }
@@ -491,7 +517,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @return A string containing the most important mode, or an empty string
      * if there are no (known) modes.
      */
-    private String getModes(ChannelClientInfo channelClient, String host) {
+    private String getModes(final ChannelClientInfo channelClient, final String host) {
         if (channelClient == null) {
             return "";
         } else {
@@ -506,7 +532,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param host The hostname to check if the channel client doesn't exist
      * @return A string containing a displayable name
      */
-    private String getNick(ChannelClientInfo channelClient, String host) {
+    private String getNick(final ChannelClientInfo channelClient, final String host) {
         if (channelClient == null) {
             return ClientInfo.parseHost(host);
         } else {
@@ -521,7 +547,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param host The hostname to check if the channel client doesn't exist
      * @return A string[] containing displayable components
      */
-    private String[] getDetails(ChannelClientInfo channelClient, String host) {
+    private String[] getDetails(final ChannelClientInfo channelClient, final String host) {
         if (channelClient == null) {
             return ClientInfo.parseHostFull(host);
         } else {
@@ -538,14 +564,18 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * determine if the window should be maximised
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
         Boolean pref = Boolean.parseBoolean(Config.getOption("ui","maximisewindows"));
         if (pref.equals(Boolean.TRUE) || MainFrame.getMainFrame().getMaximised()) {
-            try {
-                frame.setMaximum(true);
-            } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
-            }
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    try {
+                        frame.setMaximum(true);
+                    } catch (PropertyVetoException ex) {
+                        Logger.error(ErrorLevel.WARNING, ex);
+                    }
+                }
+            });
         }
     }
     
@@ -554,7 +584,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * channel, and frees all resources associated with the channel.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
         part(Config.getOption("general","partmessage"));
         close();
     }
@@ -563,21 +593,21 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * Called when the channel frame is actually closed. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Called when the channel frame is iconified. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Called when the channel frame is deiconified. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
@@ -585,13 +615,17 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * needs to be
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
         if (MainFrame.getMainFrame().getMaximised()) {
-            try {
-                frame.setMaximum(true);
-            } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
-            }
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    try {
+                        frame.setMaximum(true);
+                    } catch (PropertyVetoException ex) {
+                        Logger.error(ErrorLevel.WARNING, ex);
+                    }
+                }
+            });
         }
         MainFrame.getMainFrame().getFrameManager().setSelected(this);
         clearNotification();
@@ -601,7 +635,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * Called when the channel frame is deactivated. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
@@ -616,14 +650,18 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * Requests that this object's frame be activated
      */
     public void activateFrame() {
-        MainFrame.getMainFrame().setActiveFrame(frame);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                MainFrame.getMainFrame().setActiveFrame(frame);
+            }
+        });
     }
     
     /**
      * Adds a line of text to the main text area of the channel frame
      * @param line The line to add
      */
-    public void addLine(String line) {
+    public void addLine(final String line) {
         frame.addLine(line);
     }
     
