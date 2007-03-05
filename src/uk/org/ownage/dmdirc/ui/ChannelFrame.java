@@ -60,7 +60,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4;
     
     /**
      * The InputHandler for our input field
@@ -119,23 +119,12 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         jList1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
         jList1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
         
-        inputHandler = new InputHandler(jTextField1);
-        
         commandParser = new ChannelCommandParser(parent.getServer(), parent);
         
+        inputHandler = new InputHandler(jTextField1, commandParser, this);
+        
         scrollBar = jScrollPane1.getVerticalScrollBar();
-        
-        jTextField1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                try {
-                    ChannelFrame.this.commandParser.parseCommand(ChannelFrame.this, jTextField1.getText());
-                } catch (Exception e) {
-                    Logger.error(ErrorLevel.ERROR, e);
-                }
-                jTextField1.setText("");
-            }
-        });
-        
+               
         addPropertyChangeListener("maximum", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {

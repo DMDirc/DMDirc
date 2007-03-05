@@ -98,6 +98,21 @@ abstract public class CommandParser {
     }
     
     /**
+     * Parses the specified string as a command, taking the indicated status
+     * of the control key into account
+     * @param origin The window in which the command was typed
+     * @param line The line to be parsed
+     * @param usedCtrl Whether the user used the control key or not
+     */
+    public void parseCommand(CommandWindow origin, String line, boolean usedCtrl) {    
+        if (usedCtrl) {
+            handleNonCommand(origin, line);
+        } else {
+            parseCommand(origin, line);
+        }
+    }
+    
+    /**
      * Executes the specified command with the given arguments.
      * @param origin The window in which the command was typed
      * @param command The command to be executed

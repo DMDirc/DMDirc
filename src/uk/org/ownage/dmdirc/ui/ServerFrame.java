@@ -58,7 +58,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4;
+    private static final long serialVersionUID = 5;
     
     /**
      * The border used when the frame is not maximised
@@ -92,7 +92,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
     public ServerFrame(final CommandParser commandParser) {
         initComponents();
         
-        inputHandler = new InputHandler(jTextField1);
+        inputHandler = new InputHandler(jTextField1, commandParser, this);
         
         setMaximizable(true);
         setClosable(true);
@@ -106,18 +106,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
         
         scrollBar = jScrollPane1.getVerticalScrollBar();       
         this.commandParser = commandParser;
-        
-        jTextField1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                try {
-                    ServerFrame.this.commandParser.parseCommand(ServerFrame.this, jTextField1.getText());
-                } catch (Exception e) {
-                    Logger.error(ErrorLevel.ERROR, e);
-                }
-                jTextField1.setText("");
-            }
-        });
-        
+               
         addPropertyChangeListener("maximum", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
