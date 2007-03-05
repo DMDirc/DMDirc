@@ -104,8 +104,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
         jTextField1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
         jTextField1.setCaretColor(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
         
-        scrollBar = jScrollPane1.getVerticalScrollBar();
-        
+        scrollBar = jScrollPane1.getVerticalScrollBar();       
         this.commandParser = commandParser;
         
         jTextField1.addActionListener(new ActionListener() {
@@ -192,21 +191,19 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      * @param line text to add
      */
     public void addLine(final String line) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
-                == scrollBar.getMaximum());
-                
+        Runnable command = new Runnable() {
+            public void run() {                
                 String ts = Formatter.formatMessage("timestamp", new Date());
                 if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
                 Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
-                Styliser.addStyledString(jTextPane1.getStyledDocument(), line);
-                
-                if(autoScroll) {
-                    scrollBar.setValue(scrollBar.getMaximum());
-                }
+                Styliser.addStyledString(jTextPane1.getStyledDocument(), line);              
             }
-        });
+        };
+        if (/* scroll? */true) {
+            SwingUtilities.invokeLater(command);
+        } else {
+            command.run();
+        }
     }
     
     /**
