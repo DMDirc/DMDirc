@@ -90,8 +90,7 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         
         c.setBackground(tree.getBackground());
         c.setForeground(tree.getForeground());
-        setPreferredSize(new Dimension(147, 16));
-        c.setPreferredSize(new Dimension(147, 16));
+        setPreferredSize(new Dimension(147, getFont().getSize()+5));
         
         setOpaque(true);
         if (node.getUserObject() instanceof FrameContainer && manager != null) {
