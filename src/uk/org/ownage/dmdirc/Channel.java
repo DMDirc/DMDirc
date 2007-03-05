@@ -214,7 +214,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             public void run() {
                 frame.setTitle(title);
                 
-                if (frame.isMaximum() && MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
+                if (frame.isMaximum() && frame.equals(MainFrame.getMainFrame().getActiveFrame())) {
                     MainFrame.getMainFrame().setTitle("DMDirc - "+title);
                 }
             }
