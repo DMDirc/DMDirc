@@ -136,9 +136,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         renderer = new TreeViewTreeCellRenderer();
         tree.setCellRenderer(renderer);
         tree.setRootVisible(false);
-        tree.setBorder(new EmptyBorder(5, 5, 5, 5));
         tree.setRowHeight(0);
-        tree.setPreferredSize(new Dimension(0, 0));
     }
     /**
      * Indicates whether this frame manager can be positioned vertically
@@ -216,14 +214,15 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     public void setParent(JComponent parent) {
         this.parent = parent;
         scrollPane = new JScrollPane(tree);
+        scrollPane.setAutoscrolls(false);
         parent.setLayout(new BorderLayout());
         parent.add(scrollPane);
-        parent.setPreferredSize(new Dimension(150, Integer.MAX_VALUE));
-        parent.setMinimumSize(new Dimension(150, Integer.MAX_VALUE));
+        parent.setPreferredSize(new Dimension(150, 0));
+        scrollPane.setPreferredSize(new Dimension(150, 0));;
         tree.setBackground(parent.getBackground());
         tree.setForeground(parent.getForeground());
+        tree.setBorder(new EmptyBorder(5, 5, 5, 5));
         tree.setVisible(true);
-        //parent.setVisible(true);
     }
     
     /**

@@ -88,15 +88,15 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
             manager = (TreeFrameManager)MainFrame.getMainFrame().getFrameManager();
         }
         
-        c.setBackground(tree.getBackground());
-        c.setForeground(tree.getForeground());
-        setPreferredSize(new Dimension(147, getFont().getSize()+5));
+        setBackground(tree.getBackground());
+        setForeground(tree.getForeground());
+        setPreferredSize(new Dimension(110, getFont().getSize()+5));
         
         setOpaque(true);
         if (node.getUserObject() instanceof FrameContainer && manager != null) {
             Color colour = manager.getNodeColour((FrameContainer)node.getUserObject());
             if (colour != null) {
-                c.setForeground(colour);
+                setForeground(colour);
             }
             setIcon(((FrameContainer)node.getUserObject()).getIcon());
         } else {
@@ -107,12 +107,8 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         if (manager != null && node.getUserObject().equals(manager.getSelected())) {
             setFont(getFont().deriveFont(Font.BOLD));
             setBorder(new LineBorder(Color.BLACK));
-            c.setSize(10,10);
-            setSize(10,10);
         } else {
             setFont(getFont().deriveFont(Font.PLAIN));
-            c.setSize(10,10);
-            setSize(10,10);
         }
         setBorder(new EmptyBorder(1, 0, 2, 0));
         
