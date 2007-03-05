@@ -104,9 +104,9 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
         jTextField1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
         jTextField1.setCaretColor(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
         
-        scrollBar = jScrollPane1.getVerticalScrollBar();       
+        scrollBar = jScrollPane1.getVerticalScrollBar();
         this.commandParser = commandParser;
-               
+        
         addPropertyChangeListener("maximum", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
@@ -181,11 +181,13 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      */
     public void addLine(final String line) {
         SwingUtilities.invokeLater(new Runnable() {
-            public void run() {                
-                String ts = Formatter.formatMessage("timestamp", new Date());
-                if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
-                Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
-                Styliser.addStyledString(jTextPane1.getStyledDocument(), line);              
+            public void run() {
+                for (String myLine : line.split("\n")) {
+                    String ts = Formatter.formatMessage("timestamp", new Date());
+                    if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
+                    Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
+                    Styliser.addStyledString(jTextPane1.getStyledDocument(), myLine);
+                }
             }
         });
     }

@@ -124,7 +124,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         inputHandler = new InputHandler(jTextField1, commandParser, this);
         
         scrollBar = jScrollPane1.getVerticalScrollBar();
-               
+        
         addPropertyChangeListener("maximum", new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
                 if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
@@ -198,10 +198,12 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
     public void addLine(final String line) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                String ts = Formatter.formatMessage("timestamp", new Date());
-                if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
-                Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
-                Styliser.addStyledString(jTextPane1.getStyledDocument(), line);
+                for (String myLine : line.split("\n")) {
+                    String ts = Formatter.formatMessage("timestamp", new Date());
+                    if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
+                    Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
+                    Styliser.addStyledString(jTextPane1.getStyledDocument(), myLine);
+                }
             }
         });
     }
