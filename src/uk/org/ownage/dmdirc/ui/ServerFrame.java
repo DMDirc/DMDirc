@@ -89,7 +89,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      * Creates a new ServerFrame
      * @param commandParser The command parser to use
      */
-    public ServerFrame(CommandParser commandParser) {
+    public ServerFrame(final CommandParser commandParser) {
         initComponents();
         
         inputHandler = new InputHandler(jTextField1);
@@ -181,7 +181,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      * Sets the tab completer for this frame's input handler
      * @param tabCompleter The tab completer to use
      */
-    public void setTabCompleter(TabCompleter tabCompleter) {
+    public void setTabCompleter(final TabCompleter tabCompleter) {
         inputHandler.setTabCompleter(tabCompleter);
     }
     
@@ -191,19 +191,14 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      * @param line text to add
      */
     public void addLine(final String line) {
-        Runnable command = new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
             public void run() {                
                 String ts = Formatter.formatMessage("timestamp", new Date());
                 if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
                 Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
                 Styliser.addStyledString(jTextPane1.getStyledDocument(), line);              
             }
-        };
-        if (/* scroll? */true) {
-            SwingUtilities.invokeLater(command);
-        } else {
-            command.run();
-        }
+        });
     }
     
     /**
@@ -212,7 +207,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      * @param messageType The type of this message
      * @param args The arguments for the message
      */
-    public void addLine(String messageType, Object... args) {
+    public void addLine(final String messageType, final Object... args) {
         addLine(Formatter.formatMessage(messageType, args));
     }
     

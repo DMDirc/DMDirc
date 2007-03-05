@@ -103,7 +103,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(CommandManager.getChannelCommandNames());
         
-        try {           
+        try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
                     frame = new ChannelFrame(Channel.this);
@@ -567,15 +567,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
         Boolean pref = Boolean.parseBoolean(Config.getOption("ui","maximisewindows"));
         if (pref.equals(Boolean.TRUE) || MainFrame.getMainFrame().getMaximised()) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    try {
-                        frame.setMaximum(true);
-                    } catch (PropertyVetoException ex) {
-                        Logger.error(ErrorLevel.WARNING, ex);
-                    }
-                }
-            });
+            try {
+                frame.setMaximum(true);
+            } catch (PropertyVetoException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
+            }
         }
     }
     
@@ -617,15 +613,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
         if (MainFrame.getMainFrame().getMaximised()) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    try {
-                        frame.setMaximum(true);
-                    } catch (PropertyVetoException ex) {
-                        Logger.error(ErrorLevel.WARNING, ex);
-                    }
-                }
-            });
+            try {
+                frame.setMaximum(true);
+            } catch (PropertyVetoException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
+            }
         }
         MainFrame.getMainFrame().getFrameManager().setSelected(this);
         clearNotification();

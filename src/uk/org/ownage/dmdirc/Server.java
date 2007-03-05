@@ -24,10 +24,12 @@ package uk.org.ownage.dmdirc;
 
 import java.awt.Color;
 import java.beans.PropertyVetoException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Hashtable;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
@@ -118,7 +120,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param password The server password
      * @param ssl Whether to use SSL or not
      */
-    public Server(String server, int port, String password, boolean ssl) {
+    public Server(final String server, final int port, final String password,
+            final boolean ssl) {
         
         serverName = server;
         
@@ -133,17 +136,16 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         
         ServerManager.getServerManager().registerServer(this);
         
-        frame = new ServerFrame(new ServerCommandParser(this));
+        frame = new ServerFrame(new ServerCommandParser(Server.this));
         frame.setTitle(server+":"+port);
         frame.setTabCompleter(tabCompleter);
-        frame.addInternalFrameListener(this);
+        frame.addInternalFrameListener(Server.this);
         frame.setFrameIcon(imageIcon);
-        
-        tabCompleter.addEntries(CommandManager.getServerCommandNames());
-        
         MainFrame.getMainFrame().addChild(frame);
         
         frame.open();
+        
+        tabCompleter.addEntries(CommandManager.getServerCommandNames());
         
         frame.addLine("Connecting to "+server+":"+port);
         sendNotification();
@@ -185,7 +187,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param password The server password
      * @param ssl Whether to use SSL or not
      */
-    public void connect(String server, int port, String password, boolean ssl) {
+    public void connect(final String server, final int port, final String password,
+            final boolean ssl) {
         if (parser != null && parser.getSocketState() == parser.stateOpen) {
             disconnect(Config.getOption("general","quitmessage"));
             closeChannels();
@@ -253,7 +256,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * Adds a line to the server window
      * @param line line to be added
      */
-    public void addLine(String line) {
+    public void addLine(final String line) {
         frame.addLine(line);
     }
     
@@ -261,7 +264,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * closes this server connection and associated windows
      * @param reason reason for closing
      */
-    public void close(String reason) {
+    public void close(final String reason) {
         // Unregister parser callbacks
         parser.getCallbackManager().delCallback("OnChannelSelfJoin", this);
         parser.getCallbackManager().delCallback("OnErrorInfo", this);
@@ -282,11 +285,15 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
             raw.close();
         }
         // Unregister ourselves with the server manager
-        ServerManager.getServerManager().unregisterServer(this);        
-        // Close our own window
-        frame.setVisible(false);
-        MainFrame.getMainFrame().delChild(frame);
-        frame = null;
+        ServerManager.getServerManager().unregisterServer(this);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                // Close our own window
+                frame.setVisible(false);
+                MainFrame.getMainFrame().delChild(frame);
+                frame = null;
+            }
+        });
         // Ditch the parser
         parser = null;
     }
@@ -295,7 +302,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * Disconnects from thie server
      * @param reason disconnect reason
      */
-    public void disconnect(String reason) {
+    public void disconnect(final String reason) {
         parser.quit(reason);
     }
     
@@ -336,7 +343,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * Removes a specific channel and window from this server
      * @param chan channel to remove
      */
-    public void delChannel(String chan) {
+    public void delChannel(final String chan) {
         tabCompleter.removeEntry(chan);
         MainFrame.getMainFrame().getFrameManager().delChannel(this, channels.get(chan));
         if (!closing) {
@@ -348,7 +355,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * Adds a specific channel and window to this server
      * @param chan channel to add
      */
-    private void addChannel(ChannelInfo chan) {
+    private void addChannel(final ChannelInfo chan) {
         Channel newChan = new Channel(this, chan);
         
         tabCompleter.addEntry(chan.getName());
@@ -360,7 +367,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * Adds a query query to this server
      * @param host host of the remote client being queried
      */
-    private void addQuery(String host) {
+    private void addQuery(final String host) {
         Query newQuery = new Query(this, host);
         
         tabCompleter.addEntry(ClientInfo.parseHost(host));
@@ -372,7 +379,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * Deletes a query from this server
      * @param host host of the remote client being queried
      */
-    public void delQuery(String host) {
+    public void delQuery(final String host) {
         tabCompleter.removeEntry(ClientInfo.parseHost(host));
         MainFrame.getMainFrame().getFrameManager().delQuery(this, queries.get(ClientInfo.parseHost(host)));
         if (!closing) {
@@ -385,7 +392,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param target internalframe to be checked for ownership
      * @return boolean ownership status
      */
-    public boolean ownsFrame(JInternalFrame target) {
+    public boolean ownsFrame(final JInternalFrame target) {
         // Check if it's our server frame
         if (frame.equals(target)) { return true; }
         // Check if it's the raw frame
@@ -407,7 +414,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param tParser parser instance triggering event
      * @param cChannel Channel being joined
      */
-    public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel) {
+    public void onChannelSelfJoin(final IRCParser tParser, final ChannelInfo cChannel) {
         if (channels.containsKey(cChannel.getName())) {
             channels.get(cChannel.getName()).setChannelInfo(cChannel);
             channels.get(cChannel.getName()).selfJoin();
@@ -423,7 +430,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param message private message being received
      * @param host host of the remote client
      */
-    public void onPrivateMessage(IRCParser parser, String message, String host) {
+    public void onPrivateMessage(final IRCParser parser, final String message,
+            final String host) {
         if (!queries.containsKey(ClientInfo.parseHost(host))) {
             addQuery(host);
         }
@@ -436,7 +444,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param parser parser instance triggering event
      * @param host host of remote client
      */
-    public void onPrivateAction(IRCParser parser, String action, String host) {
+    public void onPrivateAction(final IRCParser parser, final String action, final String host) {
         if (!queries.containsKey(ClientInfo.parseHost(host))) {
             addQuery(host);
         }
@@ -449,7 +457,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param sMessage The contents of the CTCP
      * @param sHost The source host
      */
-    public void onPrivateCTCP(IRCParser tParser, String sType, String sMessage, String sHost) {
+    public void onPrivateCTCP(final IRCParser tParser, final String sType,
+            final String sMessage, final String sHost) {
         String[] parts = ClientInfo.parseHostFull(sHost);
         frame.addLine("privateCTCP", parts[0], parts[1], parts[2], sType);
         sendNotification();
@@ -462,7 +471,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param sMessage The contents of the CTCPR
      * @param sHost The source host
      */
-    public void onPrivateCTCPReply(IRCParser tParser, String sType, String sMessage, String sHost) {
+    public void onPrivateCTCPReply(final IRCParser tParser, final String sType,
+            final String sMessage, final String sHost) {
         String[] parts = ClientInfo.parseHostFull(sHost);
         frame.addLine("privateCTCPreply", parts[0], parts[1], parts[2], sType, sMessage);
         sendNotification();
@@ -473,7 +483,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param tParser parser instance triggering event
      * @param errorInfo Parser error object
      */
-    public void onErrorInfo(IRCParser tParser, ParserError errorInfo) {
+    public void onErrorInfo(final IRCParser tParser, final ParserError errorInfo) {
         ErrorLevel errorLevel;
         if (errorInfo.isFatal()) {
             errorLevel = ErrorLevel.FATAL;
@@ -498,7 +508,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * determine if the window should be maximised
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
         Boolean pref = Boolean.parseBoolean(Config.getOption("ui","maximisewindows"));
         if (pref.equals(Boolean.TRUE) || MainFrame.getMainFrame().getMaximised()) {
             try {
@@ -514,7 +524,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * the server, close all channels, and free all resources
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
         close(Config.getOption("general","quitmessage"));
     }
     
@@ -522,21 +532,21 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * Called when the server frame is actually closed. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Called when the server frame is iconified. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Called when the server frame is deiconified. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
@@ -544,7 +554,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * needs to be
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
         if (MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);
@@ -560,7 +570,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * Called when the server frame is deactivated. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
