@@ -288,6 +288,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         jTextPane1.setEditable(false);
         jScrollPane1.setViewportView(jTextPane1);
 
+        jList1.setFont(new java.awt.Font("Dialog", 0, 12));
         jList1.setModel(nicklistModel);
         jScrollPane2.setViewportView(jList1);
 
