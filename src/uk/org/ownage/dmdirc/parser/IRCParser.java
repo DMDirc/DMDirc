@@ -1402,10 +1402,14 @@ public class IRCParser implements Runnable {
 				for (int i = 0; i < sNameBit.length(); ++i) {
 					Character cMode = sNameBit.charAt(i);
 					if (hPrefixMap.containsKey(cMode)) {
-						if (hPrefixModes.containsKey(hPrefixMap.get(cMode))) {
+						// hPrefixMap contains @, o, +, v this caused issue 107
+						// hPrefixModes only contains o, v so if the mode is in hPrefixMap
+						// and not in hPrefixModes, its ok to use.
+						if (!hPrefixModes.containsKey(cMode)) {
+//						if (hPrefixModes.containsKey(hPrefixMap.get(cMode))) {
 							sModes = sModes+cMode;
 							nPrefix = nPrefix + hPrefixModes.get(hPrefixMap.get(cMode));
-                                                }
+						}
 					} else {
 						sName = sNameBit.substring(i);
 						break;
