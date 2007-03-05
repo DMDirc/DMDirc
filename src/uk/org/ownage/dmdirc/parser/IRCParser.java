@@ -643,6 +643,17 @@ public class IRCParser implements Runnable {
 		if (cb != null) { return cb.call(); }
 		return false;
 	}
+	
+	/**
+	 * Callback to all objects implementing the SocketClosed Callback.
+	 *
+	 * @see ISocketClosed
+	 */	
+	protected boolean callSocketClosed() {
+		CallbackOnServerReady cb = (CallbackOnServerReady)myCallbackManager.getCallbackType("OnSocketClosed");
+		if (cb != null) { return cb.call(); }
+		return false;
+	}
 
 	/**
 	 * Callback to all objects implementing the UnknownAction Callback.
@@ -882,16 +893,16 @@ public class IRCParser implements Runnable {
 			try {
 				line = in.readLine(); // Blocking :/
 				if (line == null) {
-					callDebugInfo(ndSocket,"Socket Closed");
 					nSocketState = stateClosed;
+					callSocketClosed();
 					break;
 				} else {
 					if (IsFirst) { sendConnectionStrings(); }
 					processLine(line);
 				}
 			} catch (IOException e) {
-				callDebugInfo(ndSocket,"Socket Closed");
 				nSocketState = stateClosed;
+				callSocketClosed();
 				break;
 			}
 		}

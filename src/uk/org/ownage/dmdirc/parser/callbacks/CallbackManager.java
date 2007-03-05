@@ -78,6 +78,7 @@ public class CallbackManager {
 		addCallbackType(new CallbackOnPrivateNotice(myParser, this));
 		addCallbackType(new CallbackOnQuit(myParser, this));
 		addCallbackType(new CallbackOnServerReady(myParser, this));
+		addCallbackType(new CallbackOnSocketClosed(myParser, this));
 		addCallbackType(new CallbackOnUnknownAction(myParser, this));
 		addCallbackType(new CallbackOnUnknownCTCP(myParser, this));
 		addCallbackType(new CallbackOnUnknownCTCPReply(myParser, this));
