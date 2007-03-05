@@ -498,8 +498,9 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         if (sHost.equals("")) {
             frame.addLine("channelModeDiscovered", sModes, cChannel.getName());
         } else {
+            String myNick = tParser.getMyself().getNickname();
             String type = "channelModeChange";
-            if (tParser.getMyself().getNickname().equals(cChannelClient.getNickname())) {
+            if (cChannelClient != null && myNick.equals(cChannelClient.getNickname())) {
                 type = "channelSelfModeChange";
             }
             frame.addLine(type,  modes, details[0], details[1],
