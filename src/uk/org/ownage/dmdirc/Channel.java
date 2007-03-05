@@ -220,10 +220,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * channel window.
      * @param reason The reason for parting the channel
      */
-    public void part(String reason) {
-        ClientInfo me = server.getParser().getMyself();
-        String modes = channelInfo.getUser(me).getImportantModePrefix();
-        
+    public void part(String reason) {       
         server.getParser().partChannel(channelInfo.getName(), reason);
     }
     

@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.ui;
 import java.awt.Dimension;
 import java.util.Date;
 import javax.swing.JScrollBar;
+import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import uk.org.ownage.dmdirc.Config;
@@ -57,7 +58,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4;    
+    private static final long serialVersionUID = 4;
     
     /**
      * The border used when the frame is not maximised
@@ -190,18 +191,22 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      * down so that it's visible if the scrollbar is already at the bottom
      * @param line text to add
      */
-    public void addLine(String line) {
-        autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
-        == scrollBar.getMaximum());
-        
-        String ts = Formatter.formatMessage("timestamp", new Date());
-        if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
-        Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
-        Styliser.addStyledString(jTextPane1.getStyledDocument(), line);
-        
-        if(autoScroll) {
-            scrollBar.setValue(scrollBar.getMaximum());
-        }
+    public void addLine(final String line) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
+                == scrollBar.getMaximum());
+                
+                String ts = Formatter.formatMessage("timestamp", new Date());
+                if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
+                Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
+                Styliser.addStyledString(jTextPane1.getStyledDocument(), line);
+                
+                if(autoScroll) {
+                    scrollBar.setValue(scrollBar.getMaximum());
+                }
+            }
+        });
     }
     
     /**
@@ -212,8 +217,8 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
      */
     public void addLine(String messageType, Object... args) {
         addLine(Formatter.formatMessage(messageType, args));
-    }    
-        
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is

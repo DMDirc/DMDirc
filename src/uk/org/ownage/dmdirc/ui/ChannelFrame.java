@@ -30,6 +30,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JScrollBar;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.InternalFrameEvent;
@@ -60,11 +61,11 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 3;
-
+    
     /**
      * The InputHandler for our input field
      */
-    private InputHandler inputHandler;    
+    private InputHandler inputHandler;
     /**
      * The channel object that owns this frame
      */
@@ -116,9 +117,9 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         jTextField1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
         jTextField1.setCaretColor(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
         jList1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
-        jList1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));        
+        jList1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
         
-        inputHandler = new InputHandler(jTextField1);        
+        inputHandler = new InputHandler(jTextField1);
         
         commandParser = new ChannelCommandParser(parent.getServer(), parent);
         
@@ -191,7 +192,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      */
     public void open() {
         setVisible(true);
-    }    
+    }
     
     /**
      * Sets the tab completer for this frame's input handler
@@ -199,24 +200,28 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      */
     public void setTabCompleter(TabCompleter tabCompleter) {
         inputHandler.setTabCompleter(tabCompleter);
-    }    
+    }
     
     /**
      * Adds a line of text to the main text area
      * @param line text to add
      */
-    public void addLine(String line) {
-        autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
-        == scrollBar.getMaximum());
-        
-        String ts = Formatter.formatMessage("timestamp", new Date());
-        if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
-        Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
-        Styliser.addStyledString(jTextPane1.getStyledDocument(), line);
-        
-        if(autoScroll) {
-            scrollBar.setValue(scrollBar.getMaximum());
-        }
+    public void addLine(final String line) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
+                == scrollBar.getMaximum());
+                
+                String ts = Formatter.formatMessage("timestamp", new Date());
+                if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
+                Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
+                Styliser.addStyledString(jTextPane1.getStyledDocument(), line);
+                
+                if(autoScroll) {
+                    scrollBar.setValue(scrollBar.getMaximum());
+                }
+            }
+        });
     }
     
     /**
@@ -242,7 +247,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      */
     public void updateNames() {
         nicklistModel.sort();
-    }    
+    }
     
     /**
      * Adds a client to this channels' nicklist
@@ -251,11 +256,11 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
     public void addName(ChannelClientInfo newName) {
         nicklistModel.add(newName);
     }
-
+    
     /**
      * Removes a client from this channels' nicklist
      * @param name the client to be deleted
-     */    
+     */
     public void removeName(ChannelClientInfo name) {
         nicklistModel.remove(name);
     }
@@ -302,7 +307,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-   
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
