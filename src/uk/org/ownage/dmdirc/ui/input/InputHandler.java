@@ -75,7 +75,7 @@ public class InputHandler implements KeyListener, ActionListener {
      * that we need to operate.
      * @param target The text field this input handler is dealing with.
      */
-    public InputHandler(JTextField target) {
+    public InputHandler(final JTextField target) {
         bufferSize = Integer.parseInt(Config.getOption("ui","inputbuffersize"));
         
         this.target = target;
@@ -93,7 +93,7 @@ public class InputHandler implements KeyListener, ActionListener {
      * Sets this input handler's tab completer
      * @param tabCompleter The new tab completer
      */
-    public void setTabCompleter(TabCompleter tabCompleter) {
+    public void setTabCompleter(final TabCompleter tabCompleter) {
         this.tabCompleter = tabCompleter;
     }
     
@@ -101,7 +101,7 @@ public class InputHandler implements KeyListener, ActionListener {
      * Called when the user types a normal character
      * @param keyEvent The event that was fired
      */
-    public void keyTyped(KeyEvent keyEvent) {
+    public void keyTyped(final KeyEvent keyEvent) {
         
     }
     
@@ -110,7 +110,7 @@ public class InputHandler implements KeyListener, ActionListener {
      * control codes, tab completion, and scrolling the back buffer.
      * @param keyEvent The event that was fired
      */
-    public void keyPressed(KeyEvent keyEvent) {
+    public void keyPressed(final KeyEvent keyEvent) {
         // Formatting codes
         if ((keyEvent.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
             if (keyEvent.getKeyCode() == KeyEvent.VK_B) {
@@ -139,6 +139,9 @@ public class InputHandler implements KeyListener, ActionListener {
             if (bufferPosition != bufferMaximum) {
                 bufferPosition = normalise(bufferPosition+1);
                 retrieveBuffer();
+            } else if (!target.getText().equals("")) {
+                addToBuffer(target.getText());
+                target.setText("");
             } else {
                 // TODO: Beep, or something
             }
@@ -202,7 +205,7 @@ public class InputHandler implements KeyListener, ActionListener {
      * Called when the user releases any key
      * @param keyEvent The event that was fired
      */
-    public void keyReleased(KeyEvent keyEvent) {
+    public void keyReleased(final KeyEvent keyEvent) {
     }
     
     /**
@@ -210,22 +213,15 @@ public class InputHandler implements KeyListener, ActionListener {
      * typed is added to the buffer for future use.
      * @param actionEvent The event that was fired
      */
-    public void actionPerformed(ActionEvent actionEvent) {
-        buffer[bufferMaximum] = actionEvent.getActionCommand();
-        bufferMaximum = normalise(bufferMaximum + 1);
-        bufferPosition = bufferMaximum;
-        
-        if (buffer[bufferSize-1] != null) {
-            bufferMinimum = normalise(bufferMaximum + 1);
-            buffer[bufferMaximum] = null;
-        }
+    public void actionPerformed(final ActionEvent actionEvent) {
+        addToBuffer(actionEvent.getActionCommand());
     }
     
     /**
      * Appends the specified string to the end of the textbox
      * @param string The string to be appeneded
      */
-    private void append(String string) {
+    private void append(final String string) {
         target.setText(target.getText()+string);
     }
     
@@ -247,6 +243,21 @@ public class InputHandler implements KeyListener, ActionListener {
             input = input + bufferSize;
         }
         return (input % bufferSize);
+    }
+    
+    /**
+     * Adds the specified string to the buffer
+     * @param line The line to be added to the buffer
+     */
+    private void addToBuffer(final String line) {
+        buffer[bufferMaximum] = line;
+        bufferMaximum = normalise(bufferMaximum + 1);
+        bufferPosition = bufferMaximum;
+        
+        if (buffer[bufferSize-1] != null) {
+            bufferMinimum = normalise(bufferMaximum + 1);
+            buffer[bufferMaximum] = null;
+        }
     }
     
 }
