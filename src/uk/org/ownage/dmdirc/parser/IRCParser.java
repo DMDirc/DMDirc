@@ -1402,8 +1402,10 @@ public class IRCParser implements Runnable {
 				for (int i = 0; i < sNameBit.length(); ++i) {
 					Character cMode = sNameBit.charAt(i);
 					if (hPrefixMap.containsKey(cMode)) {
-						sModes = sModes+cMode;
-						nPrefix = nPrefix + hPrefixModes.get(hPrefixMap.get(cMode));
+						if (hPrefixModes.containsKey(hPrefixMap.get(cMode))) {
+							sModes = sModes+cMode;
+							nPrefix = nPrefix + hPrefixModes.get(hPrefixMap.get(cMode));
+                                                }
 					} else {
 						sName = sNameBit.substring(i);
 						break;
