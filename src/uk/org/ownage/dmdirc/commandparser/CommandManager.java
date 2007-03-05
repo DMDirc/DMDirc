@@ -71,6 +71,7 @@ public class CommandManager {
         serverCommands.add(new Test());
         serverCommands.add(new Quit());
         serverCommands.add(new QuitDefault());
+        serverCommands.add(new Raw());
         
         queryCommands = new Vector<Command>(0,1);
         

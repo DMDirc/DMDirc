@@ -119,6 +119,8 @@ public class Formatter {
         properties.setProperty("querySelfMessage", "<%1$s> %2$s");
         properties.setProperty("querySelfAction", colour+"6* %1$s %2$s");
         
+        properties.setProperty("rawCommand", colour+"10 >>> %1$s");
+        
         return properties;
     }
     
