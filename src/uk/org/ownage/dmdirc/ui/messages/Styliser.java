@@ -117,6 +117,8 @@ public class Styliser {
         pos = checkChar(pos, input.indexOf(15));
         // Colour
         pos = checkChar(pos, input.indexOf(3));
+        // Italic
+        pos = checkChar(pos, input.indexOf(29));
         
         return input.substring(0, pos);
     }
@@ -154,6 +156,12 @@ public class Styliser {
             toggleAttribute(attribs, StyleConstants.FontConstants.Underline);
             return 1;
         }
+        
+        // Italic
+        if (string.charAt(0) == 29) {
+            toggleAttribute(attribs, StyleConstants.FontConstants.Italic);
+            return 1;
+        }        
         
         // Stop formatting
         if (string.charAt(0) == 15) {
@@ -234,6 +242,9 @@ public class Styliser {
         if (attribs.containsAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE)) {
             attribs.removeAttribute(StyleConstants.FontConstants.Underline);
         }
+        if (attribs.containsAttribute(StyleConstants.FontConstants.Italic, Boolean.TRUE)) {
+            attribs.removeAttribute(StyleConstants.FontConstants.Italic);
+        }        
         resetColour(attribs);
     }
        
