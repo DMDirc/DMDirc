@@ -189,7 +189,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
                     Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
                     Styliser.addStyledString(jTextPane1.getStyledDocument(), myLine);
                     
-                    if (scrollBar.getValue() + scrollBar.getVisibleAmount() + 100 < scrollBar.getMaximum()) {
+                    if (scrollBar.getValue() + Math.round(scrollBar.getVisibleAmount()*1.5) < scrollBar.getMaximum()) {
                         SwingUtilities.invokeLater(new Runnable() {
                             private Rectangle prevRect = jTextPane1.getVisibleRect();
                             public void run() {
