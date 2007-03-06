@@ -744,7 +744,9 @@ public class IRCParser implements Runnable {
 	 * Perform a silent test on certain functions.
 	 *
 	 * @return Boolean result of test. (True only if ALL tests pass)
+ 	 * @deprecated Pointless.
 	 */
+ 	@deprecated
 	public boolean doSelfTest() {
 		return doSelfTest(true);
 	} 
@@ -754,9 +756,12 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param bSilent Should output be given? (Sent to Console)
 	 * @return Boolean result of test. (True only if ALL tests pass)
+	 * @deprecated Pointless.
 	 */	
+	@deprecated
 	public boolean doSelfTest(boolean bSilent) {
-		if (bDebug) {
+		return true;
+		/*if (bDebug) {
 			boolean bResult = false;
 			ParserTestClass ptc = new ParserTestClass();
 			if (bSilent) { bResult = ptc.SelfTest(); }
@@ -778,7 +783,7 @@ public class IRCParser implements Runnable {
 			return bResult;
 		} else { 
 			return true;
-		}
+		}*/
 	}
 	
 	/**
