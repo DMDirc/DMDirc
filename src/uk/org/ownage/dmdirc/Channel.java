@@ -288,7 +288,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String source = getNick(cChannelClient, sHost);
         String modes = getModes(cChannelClient, sHost);
         String type = "channelMessage";
-        if (cChannelClient.getNickname().equals(tParser.getMyself().getNickname())) {
+        if (source.equals(tParser.getMyself().getNickname())) {
             type = "channelSelfExternalMessage";
         }
         frame.addLine(type, modes, source, sMessage);
@@ -366,7 +366,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String nick = cChannelClient.getNickname();
         String modes = cChannelClient.getImportantModePrefix();
         
-        if (nick.equalsIgnoreCase(tParser.getMyself().getNickname())) {
+        if (nick.equals(tParser.getMyself().getNickname())) {
             if (sReason.equals("")) {
                 frame.addLine("channelSelfPart", modes, nick, cChannel.getName());
             } else {
@@ -455,7 +455,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String source = getNick(cChannelClient, sHost);
         String modes = getModes(cChannelClient, sHost);
         String type = "channelAction";
-        if (cChannelClient.getNickname().equals(tParser.getMyself().getNickname())) {
+        if (source.equals(tParser.getMyself().getNickname())) {
             type = "channelSelfExternalAction";
         }
         frame.addLine(type, modes, source, sMessage);
@@ -476,7 +476,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String ident = cChannelClient.getClient().getIdent();
         String host = cChannelClient.getClient().getHost();
         String type = "channelNickChange";
-        if (tParser.getMyself().getNickname().equals(nick)) {
+        if (nick.equals(tParser.getMyself().getNickname())) {
             type = "channelSelfNickChange";
         }
         frame.addLine(type, modes, sOldNick, ident, host, nick);
