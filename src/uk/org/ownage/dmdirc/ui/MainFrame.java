@@ -101,6 +101,8 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     public MainFrame() {
         initComponents();
         
+        setTitle(getTitlePrefix());
+        
         // Load an icon
         ClassLoader cldr = this.getClass().getClassLoader();
         
@@ -196,7 +198,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
             Logger.error(ErrorLevel.ERROR, ex);
         }
         if (maximised) {
-            setTitle("DMDirc - "+frame.getTitle());
+            setTitle(getTitlePrefix()+" - "+frame.getTitle());
         }
     }
     
@@ -233,10 +235,10 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         
         if (max) {
             if (getActiveFrame() != null) {
-                setTitle("DMDirc - "+getActiveFrame().getTitle());
+                setTitle(getTitlePrefix()+" - "+getActiveFrame().getTitle());
             }
         } else {
-            setTitle("DMDirc");
+            setTitle(getTitlePrefix());
             for (JInternalFrame frame : desktopPane.getAllFrames()) {
                 try {
                     frame.setMaximum(false);
@@ -247,6 +249,19 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         }
         
         checkWindowState();
+    }
+    
+    /**
+     * Returns a prefix for use in the titlebar. Includes the version number
+     * if the config option is set
+     * @return Titlebar prefix
+     */
+    public String getTitlePrefix() {
+        if (Boolean.parseBoolean(Config.getOption("ui","showversion"))) {
+            return "DMDirc "+Main.VERSION;
+        } else {
+            return "DMDirc";
+        }
     }
     
     /**

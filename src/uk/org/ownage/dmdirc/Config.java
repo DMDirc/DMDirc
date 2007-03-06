@@ -102,6 +102,7 @@ public class Config {
         defaults.setProperty("ui.sortByMode", "true");
         defaults.setProperty("ui.sortByCase", "false");
         defaults.setProperty("ui.inputbuffersize", "50");
+        defaults.setProperty("ui.showversion", "true");
         
         defaults.setProperty("tabcompletion.casesensitive", "false");
         

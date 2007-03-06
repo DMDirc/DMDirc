@@ -158,7 +158,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         frame.setTitle(title);
         
         if (frame.isMaximum() && MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
-            MainFrame.getMainFrame().setTitle("DMDirc - "+title);
+            MainFrame.getMainFrame().setTitle(MainFrame.getMainFrame().getTitlePrefix()+" - "+title);
         }
     }
     

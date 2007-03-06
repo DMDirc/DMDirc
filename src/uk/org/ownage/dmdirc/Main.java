@@ -33,6 +33,8 @@ import javax.swing.UIManager;
  */
 public class Main {
     
+    final public static String VERSION = "SVN";
+    
     /**
      * Creates a new instance of Main
      */
