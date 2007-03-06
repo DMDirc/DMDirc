@@ -19,41 +19,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id$
+ * SVN: $Id: IMOTDStart.java 257 2007-03-02 23:08:30Z ShaneMcC $
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks;
+package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
 import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
 
-public class CallbackOnMOTDEnd extends CallbackObject {
+/**
+ * Interface Used to give Debug Information.
+ */
+public interface IMOTDStart extends ICallbackInterface {
 	/**
-	 * Callback to all objects implementing the IMotdEnd Interface.
-	 *
-	 * @see IMOTDEnd
+	 * Called on MOTD Start.
+	 * 
+	 * @param tParser Reference to the parser object that made the callback.
+	 * @param sData Incomming Line.
+	 * @see IRCParser#callMOTDStart
 	 */
-	public boolean call(boolean noMOTD) {
-		boolean bResult = false;
-		for (int i = 0; i < callbackInfo.size(); i++) {
-			try {
-				((IMOTDEnd)callbackInfo.get(i)).onMOTDEnd(myParser, noMOTD);
-			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onMOTDEnd");
-				ei.setException(e);
-				callErrorInfo(ei);
-			}
-			bResult = true;
-		}
-		return bResult;
-	}
-	
-	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnMOTDEnd (IRCParser parser, CallbackManager manager) { super(parser, manager); }
+	public void onMOTDStart(IRCParser tParser, String sData);
 }

@@ -521,11 +521,36 @@ public class IRCParser implements Runnable {
 	/**
 	 * Callback to all objects implementing the MOTDEnd Callback.
 	 *
+	 * @param noMOTD Was this an MOTDEnd or NoMOTD
 	 * @see IMOTDEnd
 	 */
-	protected boolean callMOTDEnd() {
+	protected boolean callMOTDEnd(boolean noMOTD) {
 		CallbackOnMOTDEnd cb = (CallbackOnMOTDEnd)myCallbackManager.getCallbackType("OnMOTDEnd");
-		if (cb != null) { return cb.call(); }
+		if (cb != null) { return cb.call(noMOTD); }
+		return false;
+	}
+	
+	/**
+	 * Callback to all objects implementing the MOTDLine Callback.
+	 *
+	 * @see IMOTDLine
+	 * @param data Incomming Line.
+	 */
+	protected boolean callMOTDLine(String data) {
+		CallbackOnMOTDLine cb = (CallbackOnMOTDLine)myCallbackManager.getCallbackType("OnMOTDLine");
+		if (cb != null) { return cb.call(data); }
+		return false;
+	}
+	
+	/**
+	 * Callback to all objects implementing the DataIn Callback.
+	 *
+	 * @see IMOTDStart
+	 * @param data Incomming Line.
+	 */
+	protected boolean callMOTDStart(String data) {
+		CallbackOnMOTDStart cb = (CallbackOnMOTDStart)myCallbackManager.getCallbackType("OnMOTDStart");
+		if (cb != null) { return cb.call(data); }
 		return false;
 	}
 
@@ -550,6 +575,18 @@ public class IRCParser implements Runnable {
 	protected boolean callNickInUse() {
 		CallbackOnNickInUse cb = (CallbackOnNickInUse)myCallbackManager.getCallbackType("OnNickInUse");
 		if (cb != null) { return cb.call(); }
+		return false;
+	}
+	
+	/**
+	 * Callback to all objects implementing the NoticeAuth Callback.
+	 *
+	 * @see INoticeAuth
+	 * @param data Incomming Line.
+	 */
+	protected boolean callNoticeAuth(String data) {
+		CallbackOnNoticeAuth cb = (CallbackOnNoticeAuth)myCallbackManager.getCallbackType("OnNoticeAuth");
+		if (cb != null) { return cb.call(data); }
 		return false;
 	}
 
@@ -761,29 +798,6 @@ public class IRCParser implements Runnable {
 	@Deprecated
 	public boolean doSelfTest(boolean bSilent) {
 		return true;
-		/*if (bDebug) {
-			boolean bResult = false;
-			ParserTestClass ptc = new ParserTestClass();
-			if (bSilent) { bResult = ptc.SelfTest(); }
-			else {
-				System.out.printf(" --------------------\n");
-				System.out.printf("  Beginning Tests\n");
-				System.out.printf(" --------------------\n");
-				ptc.RunTests();
-				System.out.printf(" --------------------\n");
-				System.out.printf("  End\n");
-				System.out.printf(" --------------------\n");		
-				System.out.printf("   Total Tests: %d\n",ptc.GetTotalTests());
-				System.out.printf("  Passed Tests: %d\n",ptc.GetPassedTests());
-				System.out.printf("  Failed Tests: %d\n",ptc.GetFailedTests());
-				System.out.printf(" --------------------\n");			
-				bResult = (ptc.GetTotalTests() == ptc.GetPassedTests());
-			}
-			ptc = null;
-			return bResult;
-		} else { 
-			return true;
-		}*/
 	}
 	
 	/**
@@ -1039,6 +1053,7 @@ public class IRCParser implements Runnable {
 								processNickInUse(nParam,token);
 								break;
 							default: // Unknown
+								callNoticeAuth(token[token.length-1]);
 								break;
 						}
 					} else {
@@ -1060,6 +1075,12 @@ public class IRCParser implements Runnable {
 								processTopic(sParam,token);
 								break;
 							case 375: // MOTD Start
+								callMOTDStart(token[token.length-1]);
+								break;
+							case 372: // MOTD Line
+								callMOTDLine(token[token.length-1]);
+								break;
+							case 352: // Who Reply
 								break;
 							case 353: // Names
 							case 366: // End of Names
@@ -1885,7 +1906,7 @@ public class IRCParser implements Runnable {
 		parseChanPrefix();
 		parsePrefixModes();
 		parseUserModes();
-		callMOTDEnd();
+		callMOTDEnd(nParam == 422);
 	}
 
 	/**

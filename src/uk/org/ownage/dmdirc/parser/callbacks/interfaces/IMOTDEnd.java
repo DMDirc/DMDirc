@@ -34,7 +34,8 @@ public interface IMOTDEnd extends ICallbackInterface {
 		* Called when "End of MOTD" or "No MOTD".
 		* 
 		* @param tParser Reference to the parser object that made the callback.
+		* @param noMOTD Set to true if this was a "No MOTD Found" message rather than an "End of MOTD"
 		* @see IRCParser#callMOTDEnd
 		*/
-	public void onMOTDEnd(IRCParser tParser);
+	public void onMOTDEnd(IRCParser tParser, boolean noMOTD);
 }

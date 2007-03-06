@@ -69,8 +69,11 @@ public class CallbackManager {
 		addCallbackType(new CallbackOnDebugInfo(myParser, this));
 		addCallbackType(new CallbackOnErrorInfo(myParser, this));
 		addCallbackType(new CallbackOnMOTDEnd(myParser, this));
+		addCallbackType(new CallbackOnMOTDLine(myParser, this));
+		addCallbackType(new CallbackOnMOTDStart(myParser, this));
 		addCallbackType(new CallbackOnNickChanged(myParser, this));
 		addCallbackType(new CallbackOnNickInUse(myParser, this));
+		addCallbackType(new CallbackOnNoticeAuth(myParser, this));
 		addCallbackType(new CallbackOnPrivateAction(myParser, this));
 		addCallbackType(new CallbackOnPrivateCTCP(myParser, this));
 		addCallbackType(new CallbackOnPrivateCTCPReply(myParser, this));
