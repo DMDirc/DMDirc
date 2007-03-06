@@ -217,8 +217,8 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         scrollPane.setAutoscrolls(false);
         parent.setLayout(new BorderLayout());
         parent.add(scrollPane);
-        parent.setPreferredSize(new Dimension(150, 0));
-        scrollPane.setPreferredSize(new Dimension(150, 0));;
+        //parent.setPreferredSize(new Dimension(150, 0));
+        scrollPane.setPreferredSize(new Dimension(parent.getWidth(), 0));;
         tree.setBackground(parent.getBackground());
         tree.setForeground(parent.getForeground());
         tree.setBorder(new EmptyBorder(5, 5, 5, 5));
