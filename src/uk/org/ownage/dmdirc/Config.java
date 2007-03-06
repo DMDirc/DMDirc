@@ -72,7 +72,13 @@ public class Config {
      */
     public static String getConfigDir() {
 	String fs = System.getProperty("file.separator");
-	return System.getProperty("user.home")+fs+".DMDirc"+fs;
+        //This is nasty.
+        String baseDir = System.getenv("APPDATA");
+        if (baseDir == null) {
+            System.getProperty("user.home");
+        }
+        //End nasty
+	return baseDir+fs+".DMDirc"+fs;
     }
     
     /**
