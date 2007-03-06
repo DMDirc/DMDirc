@@ -43,6 +43,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
 import uk.org.ownage.dmdirc.parser.IRCParser;
@@ -65,7 +66,7 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
  */
 public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction,
         IErrorInfo, IPrivateCTCP, IPrivateCTCPReply, InternalFrameListener,
-        ISocketClosed, FrameContainer {
+        ISocketClosed, IPrivateNotice, FrameContainer {
     
     /**
      * Open channels that currently exist on the server
@@ -164,6 +165,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
             parser.getCallbackManager().addCallback("OnErrorInfo", this);
             parser.getCallbackManager().addCallback("OnPrivateMessage", this);
             parser.getCallbackManager().addCallback("OnPrivateAction", this);
+            parser.getCallbackManager().addCallback("OnPrivateNotice", this);
             parser.getCallbackManager().addCallback("OnPrivateCTCP", this);
             parser.getCallbackManager().addCallback("OnPrivateCTCPReply", this);
             parser.getCallbackManager().addCallback("OnSocketClosed", this);
@@ -223,6 +225,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
             parser.getCallbackManager().addCallback("OnPrivateMessage", this);
             parser.getCallbackManager().addCallback("OnPrivateAction", this);
             parser.getCallbackManager().addCallback("OnPrivateCTCP", this);
+            parser.getCallbackManager().addCallback("OnPrivateNotice", this);
             parser.getCallbackManager().addCallback("OnPrivateCTCPReply", this);
             parser.getCallbackManager().addCallback("OnSocketClosed", this);
             
@@ -275,6 +278,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         parser.getCallbackManager().delCallback("OnPrivateMessage", this);
         parser.getCallbackManager().delCallback("OnPrivateAction", this);
         parser.getCallbackManager().delCallback("OnPrivateCTCP", this);
+        parser.getCallbackManager().delCallback("OnPrivateNotice", this);
         parser.getCallbackManager().delCallback("OnPrivateCTCPReply", this);
         parser.getCallbackManager().delCallback("OnSocketClosed", this);
         // Unregister frame callbacks
@@ -482,6 +486,18 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         frame.addLine("privateCTCPreply", parts[0], parts[1], parts[2], sType, sMessage);
         sendNotification();
     }
+    
+    /**
+     * Called when we receive a notice
+     * @param tParser The associated IRC parser
+     * @param sMessage The notice content
+     * @param sHost The source of the message
+     */
+    public void onPrivateNotice(IRCParser tParser, String sMessage, String sHost) {
+        String[] parts = ClientInfo.parseHostFull(sHost);
+        frame.addLine("privateNotice", parts[0], parts[1], parts[2], sMessage);
+        sendNotification();
+    }    
     
     /**
      * Called when the IRC socket is closed for any reason
