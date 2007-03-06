@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.ui;
 
 import javax.swing.JInternalFrame;
+import javax.swing.JTextArea;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.ServerManager;
@@ -40,14 +41,14 @@ import uk.org.ownage.dmdirc.logger.Logger;
  * Dialog that allows the user to enter details of a new server to connect to
  * @author chris
  */
-public class NewServerDialog extends javax.swing.JDialog {
+public class NewServerDialog extends StandardDialog {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 2;
     
     /**
      * A previously created instance of NewServerDialog
@@ -61,6 +62,8 @@ public class NewServerDialog extends javax.swing.JDialog {
         super((java.awt.Frame)MainFrame.getMainFrame(), false);
         
         initComponents();
+        
+        orderButtons(jButton2, jButton1);
                
         jTextField1.setText(Config.getOption("general","server"));
         jTextField2.setText(Config.getOption("general","port"));
@@ -85,6 +88,8 @@ public class NewServerDialog extends javax.swing.JDialog {
             me.requestFocus();
         }
         
+        me.jTextField1.requestFocus();
+        
         if (ServerManager.getServerManager().numServers() == 0
                 || MainFrame.getMainFrame().getActiveFrame() == null) {
             me.jCheckBox1.setSelected(true);
@@ -98,12 +103,12 @@ public class NewServerDialog extends javax.swing.JDialog {
      * Adds listeners for various objects in the dialog
      */
     private void addCallbacks() {
-        jButton2.addActionListener(new ActionListener() {
+        getCancelButton().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 NewServerDialog.this.setVisible(false);
             }
         });
-        jButton1.addActionListener(new ActionListener() {
+        getOkButton().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 String host = jTextField1.getText();
                 String pass = jTextField3.getText();
