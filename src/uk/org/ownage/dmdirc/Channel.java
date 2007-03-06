@@ -150,7 +150,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         ClientInfo me = server.getParser().getMyself();
         String modes = channelInfo.getUser(me).getImportantModePrefix();
         
-        frame.addLine("channelSelfMessage", modes, me.getNickname(), line);
+        frame.addLine("channelSelfMessage", modes, me.getNickname(), me.getIdent(),
+                me.getHost(), line, channelInfo);
         sendNotification();
     }
     
@@ -165,7 +166,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         ClientInfo me = server.getParser().getMyself();
         String modes = channelInfo.getUser(me).getImportantModePrefix();
         
-        frame.addLine("channelSelfAction", modes, me.getNickname(), action);
+        frame.addLine("channelSelfAction", modes, me.getNickname(), me.getIdent(),
+                me.getHost(), action, channelInfo);
         sendNotification();
     }
     
@@ -200,7 +202,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void selfJoin() {
         ClientInfo me = server.getParser().getMyself();
-        frame.addLine("channelSelfJoin", me.getNickname(), channelInfo.getName());
+        frame.addLine("channelSelfJoin", "", me.getNickname(), me.getIdent(),
+                me.getHost(), channelInfo.getName());
         sendNotification();
     }
     
@@ -285,13 +288,33 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelMessage(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-        String source = getNick(cChannelClient, sHost);
+        String[] parts = ClientInfo.parseHostFull(sHost);
         String modes = getModes(cChannelClient, sHost);
         String type = "channelMessage";
-        if (source.equals(tParser.getMyself().getNickname())) {
+        if (parts[0].equals(tParser.getMyself().getNickname())) {
             type = "channelSelfExternalMessage";
         }
-        frame.addLine(type, modes, source, sMessage);
+        frame.addLine(type, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
+        sendNotification();
+    }
+    
+    /**
+     * Called when an action is sent to the channel.
+     * @param tParser A reference to the IRC Parser for this server
+     * @param cChannel A reference to the ChannelInfo object for this channel
+     * @param cChannelClient A reference to the client that sent the action
+     * @param sMessage The text of the action
+     * @param sHost The host of the performer (lest it wasn't an actual client)
+     */
+    public void onChannelAction(final IRCParser tParser, final ChannelInfo cChannel,
+            final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
+        String[] parts = ClientInfo.parseHostFull(sHost);
+        String modes = getModes(cChannelClient, sHost);
+        String type = "channelAction";
+        if (parts[0].equals(tParser.getMyself().getNickname())) {
+            type = "channelSelfExternalAction";
+        }
+        frame.addLine(type, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
         sendNotification();
     }
     
@@ -324,15 +347,14 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void onChannelTopic(final IRCParser tParser, final ChannelInfo cChannel,
             final boolean bIsJoinTopic) {
         if (bIsJoinTopic) {
-            frame.addLine("channelJoinTopic", cChannel.getTopic(), cChannel.getName());
-            frame.addLine("channelJoinTopicSetBy", cChannel.getTopicUser(),
-                    1000*cChannel.getTopicTime(), cChannel.getName());
+            frame.addLine("channelJoinTopic", cChannel.getTopic(), 
+                    cChannel.getTopicUser(), 1000*cChannel.getTopicTime(), cChannel);
         } else {
             ChannelClientInfo user = cChannel.getUser(cChannel.getTopicUser());
-            String nick = getNick(user, cChannel.getTopicUser());
+            String[] parts = ClientInfo.parseHostFull(cChannel.getTopicUser());
             String modes = getModes(user, cChannel.getTopicUser());
             String topic = cChannel.getTopic();
-            frame.addLine("channelTopicChange", modes, nick, topic, cChannel.getName());
+            frame.addLine("channelTopicChange", modes, parts[0], parts[1], parts[2], topic, cChannel);
         }
         sendNotification();
         updateTitle();
@@ -347,7 +369,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelJoin(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient) {
-        frame.addLine("channelJoin", "", cChannelClient.getNickname(), cChannel.getName());
+        ClientInfo client = cChannelClient.getClient();
+        
+        frame.addLine("channelJoin", "", client.getNickname(), client.getIdent(),
+                client.getHost(), cChannel);
+        
         frame.addName(cChannelClient);
         tabCompleter.addEntry(cChannelClient.getNickname());
         sendNotification();
@@ -363,21 +389,23 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelPart(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
+        ClientInfo client = cChannelClient.getClient(); 
         String nick = cChannelClient.getNickname();
+        String ident = client.getIdent();
+        String host = client.getHost();
         String modes = cChannelClient.getImportantModePrefix();
         
         if (nick.equals(tParser.getMyself().getNickname())) {
             if (sReason.equals("")) {
-                frame.addLine("channelSelfPart", modes, nick, cChannel.getName());
+                frame.addLine("channelSelfPart", modes, nick, ident, host, cChannel);
             } else {
-                frame.addLine("channelSelfPartReason", modes, nick, cChannel.getName(), sReason);
+                frame.addLine("channelSelfPartReason", modes, nick, ident, host, cChannel, sReason);
             }
         } else {
             if (sReason.equals("")) {
-                frame.addLine("channelPart", modes, nick, cChannel.getName());
+                frame.addLine("channelPart", modes, nick, ident, host, cChannel);
             } else {
-                frame.addLine("channelPartReason", modes, nick, cChannel.getName(),
-                        sReason);
+                frame.addLine("channelPartReason", modes, nick, ident, host, sReason, cChannel);
             }
         }
         
@@ -400,17 +428,19 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void onChannelKick(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient,
             final String sReason, final String sKickedByHost) {
-        String kicker = getNick(cKickedByClient, sKickedByHost);
+        String[] kicker = ClientInfo.parseHostFull(sKickedByHost);
         String kickermodes = getModes(cKickedByClient, sKickedByHost);
         String victim = cKickedClient.getNickname();
         String victimmodes = cKickedClient.getImportantModePrefix();
+        String victimident = cKickedClient.getClient().getIdent();
+        String victimhost = cKickedClient.getClient().getHost();
         
         if (sReason.equals("")) {
-            frame.addLine("channelKick", kickermodes, kicker, victimmodes,
-                    victim, cChannel.getName());
+            frame.addLine("channelKick", kickermodes, kicker[0], kicker[1], kicker[2], victimmodes, 
+                    victim, victimident, victimhost, cChannel.getName());
         } else {
-            frame.addLine("channelKickReason", kickermodes, kicker, victimmodes,
-                    victim, cChannel.getName(), sReason);
+            frame.addLine("channelKickReason", kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,
+                    victim, victimident, victimhost, sReason, cChannel.getName());
         }
         
         frame.removeName(cKickedClient);
@@ -429,36 +459,19 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelQuit(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
+        ClientInfo client = cChannelClient.getClient();
         String source = cChannelClient.getNickname();
         String modes = cChannelClient.getImportantModePrefix();
         if (sReason.equals("")) {
-            frame.addLine("channelQuit", modes, source);
+            frame.addLine("channelQuit", modes, source, client.getIdent(),
+                    client.getHost(), cChannel);
         } else {
-            frame.addLine("channelQuitReason", modes, source, sReason);
+            frame.addLine("channelQuitReason", modes, source, client.getIdent(),
+                    client.getHost(), sReason, cChannel);
         }
         
         frame.removeName(cChannelClient);
         
-        sendNotification();
-    }
-    
-    /**
-     * Called when an action is sent to the channel.
-     * @param tParser A reference to the IRC Parser for this server
-     * @param cChannel A reference to the ChannelInfo object for this channel
-     * @param cChannelClient A reference to the client that sent the action
-     * @param sMessage The text of the action
-     * @param sHost The host of the performer (lest it wasn't an actual client)
-     */
-    public void onChannelAction(final IRCParser tParser, final ChannelInfo cChannel,
-            final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-        String source = getNick(cChannelClient, sHost);
-        String modes = getModes(cChannelClient, sHost);
-        String type = "channelAction";
-        if (source.equals(tParser.getMyself().getNickname())) {
-            type = "channelSelfExternalAction";
-        }
-        frame.addLine(type, modes, source, sMessage);
         sendNotification();
     }
     
@@ -479,7 +492,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         if (nick.equals(tParser.getMyself().getNickname())) {
             type = "channelSelfNickChange";
         }
-        frame.addLine(type, modes, sOldNick, ident, host, nick);
+        frame.addLine(type, modes, sOldNick, ident, host, nick, cChannel);
         sendNotification();
     }
     
@@ -666,7 +679,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void addLine(final String messageType, final Object... args) {
         frame.addLine(messageType, args);
-    }    
+    }
     
     /**
      * Retrieves the icon used by the channel frame

@@ -114,8 +114,9 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param line message text to send
      */
     public void sendLine(String line) {
+        ClientInfo client = server.getParser().getMyself();
         server.getParser().sendMessage(ClientInfo.parseHost(host), line);
-        frame.addLine("querySelfMessage", server.getParser().getMyself().getNickname(), line);
+        frame.addLine("querySelfMessage", client.getNickname(), client.getIdent(), client.getHost(), line);
     }
     
     /**
@@ -123,8 +124,9 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param action action text to send
      */
     public void sendAction(String action) {
+        ClientInfo client = server.getParser().getMyself();
         server.getParser().sendAction(ClientInfo.parseHost(host), action);
-        frame.addLine("querySelfAction", server.getParser().getMyself().getNickname(), action);
+        frame.addLine("querySelfAction", client.getNickname(), client.getIdent(), client.getHost(), action);
     }
     
     /**
@@ -134,7 +136,8 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param host remote user host
      */
     public void onPrivateMessage(IRCParser parser, String message, String host) {
-        frame.addLine("queryMessage", ClientInfo.parseHost(host), message);
+        String[] parts = ClientInfo.parseHostFull(host);
+        frame.addLine("queryMessage", parts[0], parts[1], parts[2], message);
         sendNotification();
     }
     
@@ -145,7 +148,8 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      * @param host remote host
      */
     public void onPrivateAction(IRCParser parser, String message, String host) {
-        frame.addLine("queryAction", ClientInfo.parseHost(host), message);
+        String[] parts = ClientInfo.parseHostFull(host);
+        frame.addLine("queryAction", parts[0], parts[1], parts[2], message);
         sendNotification();
     }
     

@@ -469,7 +469,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     public void onPrivateCTCP(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
         String[] parts = ClientInfo.parseHostFull(sHost);
-        frame.addLine("privateCTCP", parts[0], parts[1], parts[2], sType);
+        frame.addLine("privateCTCP", parts[0], parts[1], parts[2], sType, sMessage);
         sendNotification();
     }
     
