@@ -73,7 +73,7 @@ public class ColourManager {
             case 12:
                 return Color.BLUE;
             case 13:
-                return new Color(146, 0, 146);
+                return new Color(255, 0, 255);
             case 14:
                 return Color.GRAY;
             case 15:
