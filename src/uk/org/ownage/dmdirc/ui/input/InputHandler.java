@@ -141,6 +141,9 @@ public class InputHandler implements KeyListener, ActionListener {
             if (keyEvent.getKeyCode() == KeyEvent.VK_I) {
                 append("" + (char)29);
             }
+            if (keyEvent.getKeyCode() == KeyEvent.VK_F) {
+                append("" + (char)17);
+            }            
             if (keyEvent.getKeyCode() == KeyEvent.VK_K) {
                 if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) != 0) {
                     append("" + (char)4);

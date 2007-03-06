@@ -121,6 +121,8 @@ public class Styliser {
         pos = checkChar(pos, input.indexOf(4));
         // Italic
         pos = checkChar(pos, input.indexOf(29));
+        // Fixed pitch
+        pos = checkChar(pos, input.indexOf(17));
         
         return input.substring(0, pos);
     }
@@ -162,6 +164,17 @@ public class Styliser {
         // Italic
         if (string.charAt(0) == 29) {
             toggleAttribute(attribs, StyleConstants.FontConstants.Italic);
+            return 1;
+        }
+        
+        // Fixed pitch
+        if (string.charAt(0) == 17) {
+            if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospaced")) {
+                attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
+            } else {
+                attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
+                attribs.addAttribute(StyleConstants.FontConstants.FontFamily, "monospaced");
+            }
             return 1;
         }
         
@@ -271,7 +284,7 @@ public class Styliser {
         for (int i = offset; i < 6+offset; i++) {
             res = res && isHex(input.toUpperCase().charAt(i));
         }
-
+        
         return res;
     }
     
@@ -302,6 +315,11 @@ public class Styliser {
         }
         if (attribs.containsAttribute(StyleConstants.FontConstants.Italic, Boolean.TRUE)) {
             attribs.removeAttribute(StyleConstants.FontConstants.Italic);
+        }
+        if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospace")) {
+            Object defaultFont = attribs.getAttribute("DefaultFontFamily");
+            attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
+            attribs.addAttribute(StyleConstants.FontConstants.FontFamily, defaultFont);
         }
         resetColour(attribs);
     }
