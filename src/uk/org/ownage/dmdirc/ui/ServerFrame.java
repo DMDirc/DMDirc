@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.ui;
 
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.util.Date;
 import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
@@ -187,6 +188,15 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
                     if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
                     Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
                     Styliser.addStyledString(jTextPane1.getStyledDocument(), myLine);
+                    
+                    if (scrollBar.getValue() + scrollBar.getVisibleAmount() + 100 < scrollBar.getMaximum()) {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            private Rectangle prevRect = jTextPane1.getVisibleRect();
+                            public void run() {
+                                jTextPane1.scrollRectToVisible(prevRect);
+                            }
+                        });
+                    }
                 }
             }
         });

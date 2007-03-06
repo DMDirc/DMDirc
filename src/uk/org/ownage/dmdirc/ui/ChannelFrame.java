@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.ui;
 
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -203,6 +204,15 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
                     if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
                     Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
                     Styliser.addStyledString(jTextPane1.getStyledDocument(), myLine);
+                }
+                
+                if (scrollBar.getValue() + scrollBar.getVisibleAmount() + 100 < scrollBar.getMaximum()) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        private Rectangle prevRect = jTextPane1.getVisibleRect();
+                        public void run() {
+                            jTextPane1.scrollRectToVisible(prevRect);
+                        }
+                    });
                 }
             }
         });
