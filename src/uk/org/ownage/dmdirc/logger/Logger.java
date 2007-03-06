@@ -137,8 +137,8 @@ public class Logger {
                 message[0] = exception.toString();
                 i = 1;
                 for (StackTraceElement traceElement: stackTrace) {
-                    message[i] = traceElement.toString();
-                    logWriter.println("\t\t\t\t"+traceElement);
+                    message[i] = "\t"+traceElement.toString();
+                    errorWriter.println("\t"+traceElement);
                     i++;
                 }
                 dialog = new FatalErrorDialog(MainFrame.getMainFrame(),
@@ -152,13 +152,9 @@ public class Logger {
                         ": ERROR: "+level+" :"+exception);
                 errorWriter.println(formatter.format(new Date())+
                         ": ERROR: "+level+" :"+exception);
-                message = new String[stackTrace.length+1];
-                message[0] = exception.toString();
-                i = 1;
                 for (StackTraceElement traceElement: stackTrace) {
-                    message[i] = traceElement.toString();
-                    System.err.println("\t\t"+traceElement);
-                    i++;
+                    System.err.println("\t"+traceElement);
+                    errorWriter.println("\t"+traceElement);
                 }
                 break;
         }
@@ -240,16 +236,16 @@ public class Logger {
     private static void createWriters() {
         try {
             if (logWriter == null) {
-                logWriter = new PrintWriter(new BufferedWriter(
-                        new FileWriter(Config.getConfigDir()+"log.log")));
+                logWriter = new PrintWriter(
+                        new FileWriter(Config.getConfigDir()+"log.log", true), true);
             }
             if (debugWriter == null) {
-                debugWriter = new PrintWriter(new BufferedWriter(
-                        new FileWriter(Config.getConfigDir()+"debug.log")));
+                debugWriter = new PrintWriter(
+                        new FileWriter(Config.getConfigDir()+"debug.log", true), true);
             }
             if (errorWriter == null) {
-                errorWriter = new PrintWriter(new BufferedWriter(
-                        new FileWriter(Config.getConfigDir()+"error.log")));
+                errorWriter = new PrintWriter(
+                        new FileWriter(Config.getConfigDir()+"error.log", true), true);
             }
         } catch (IOException ex) {
             Logger.error(ErrorLevel.WARNING, ex);
