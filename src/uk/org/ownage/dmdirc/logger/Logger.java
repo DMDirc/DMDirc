@@ -132,9 +132,9 @@ public class Logger {
         switch (level) {
             case FATAL:
                 errorWriter.println(formatter.format(new Date())+
-                        ": ERROR: "+level+" :"+exception.getMessage());
+                        ": ERROR: "+level+" :"+exception);
                 message = new String[stackTrace.length+1];
-                message[0] = exception.getMessage();
+                message[0] = exception.toString();
                 i = 1;
                 for (StackTraceElement traceElement: stackTrace) {
                     message[i] = traceElement.toString();
@@ -148,19 +148,18 @@ public class Logger {
                 dialog.setVisible(true);
                 break;
             default:
+                System.err.println(formatter.format(new Date())+
+                        ": ERROR: "+level+" :"+exception);
                 errorWriter.println(formatter.format(new Date())+
-                        ": ERROR: "+level+" :"+exception.getMessage());
+                        ": ERROR: "+level+" :"+exception);
                 message = new String[stackTrace.length+1];
-                message[0] = exception.getMessage();
+                message[0] = exception.toString();
                 i = 1;
                 for (StackTraceElement traceElement: stackTrace) {
                     message[i] = traceElement.toString();
-                    errorWriter.println("\t\t\t\t"+traceElement);
+                    System.err.println("\t\t"+traceElement);
                     i++;
                 }
-                System.err.println(formatter.format(new Date())+
-                        ": ERROR: "+level+" :"+exception.getMessage());
-                exception.printStackTrace(System.err);
                 break;
         }
     }
