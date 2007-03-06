@@ -76,27 +76,27 @@ public class Styliser {
      * Strips all recognised control codes from the input string
      * @param input the String to be stripped
      * @return a copy of the input with control codes removed
-     */    
+     */
     static public String stipControlCodes(String input) {
-            int position = 0;
-            boolean cont = true;
-            String output = "";
-            SimpleAttributeSet attribs = new SimpleAttributeSet();
+        int position = 0;
+        boolean cont = true;
+        String output = "";
+        SimpleAttributeSet attribs = new SimpleAttributeSet();
+        
+        while (position < input.length()) {
+            String next = readUntilControl(input.substring(position));
             
-            while (position < input.length()) {
-                String next = readUntilControl(input.substring(position));
-                
-                output = output.concat(next);
-                
-                position += next.length();
-                
-                if (position < input.length()) {
-                    position += readControlChars(input.substring(position),
-                            attribs, (position == 0));
-                }
-            }    
+            output = output.concat(next);
             
-            return output;
+            position += next.length();
+            
+            if (position < input.length()) {
+                position += readControlChars(input.substring(position),
+                        attribs, (position == 0));
+            }
+        }
+        
+        return output;
     }
     
     /**
@@ -117,6 +117,8 @@ public class Styliser {
         pos = checkChar(pos, input.indexOf(15));
         // Colour
         pos = checkChar(pos, input.indexOf(3));
+        // Hex colour
+        pos = checkChar(pos, input.indexOf(4));
         // Italic
         pos = checkChar(pos, input.indexOf(29));
         
@@ -133,7 +135,7 @@ public class Styliser {
     private static int checkChar(int pos, int i) {
         if (i < pos && i != -1) { return i; }
         return pos;
-    }    
+    }
     
     /**
      * Reads the first control character from the input string (and any arguments
@@ -161,7 +163,7 @@ public class Styliser {
         if (string.charAt(0) == 29) {
             toggleAttribute(attribs, StyleConstants.FontConstants.Italic);
             return 1;
-        }        
+        }
         
         // Stop formatting
         if (string.charAt(0) == 15) {
@@ -205,6 +207,33 @@ public class Styliser {
             return count;
         }
         
+        // Hex colours
+        if (string.charAt(0) == 4) {
+            int count = 1;
+            if (hasHexString(string, 1)) {
+                setForeground(attribs, string.substring(1,7).toUpperCase());
+                if (isStart) {
+                    setDefaultForeground(attribs, string.substring(1,7).toUpperCase());
+                }
+                count = count + 6;
+                
+                // Now for background
+                if (string.charAt(count) == ',') {
+                    if (hasHexString(string, count+1)) {
+                        count++;
+                        setBackground(attribs, string.substring(count,count+6).toUpperCase());
+                        if (isStart) {
+                            setDefaultForeground(attribs, string.substring(count,count+6).toUpperCase());
+                        }
+                        count += 6;
+                    }
+                }
+            } else {
+                resetColour(attribs);
+            }
+            return count;
+        }
+        
         return 0;
     }
     
@@ -215,8 +244,37 @@ public class Styliser {
      */
     private static boolean isInt(char c) {
         return (c >= 48 && c <= 57);
-    }    
-       
+    }
+    
+    /**
+     * Determines if the specified character represents a single hex digit
+     * (i.e., 0-F)
+     * @param c The character to check
+     * @return True iff the character is in the range [0-F], false otherwise
+     */
+    private static boolean isHex(char c) {
+        return isInt(c) || (c >= 65 && c <= 70);
+    }
+    
+    /**
+     * Determines if the specified string has a 6-digit hex string starting at
+     * the specified offset.
+     * @param input The string to check
+     * @param offset The offset to start at
+     */
+    private static boolean hasHexString(String input, int offset) {
+        // If the string's too short, it can't have a hex string
+        if (input.length() < offset+6) {
+            return false;
+        }
+        boolean res = true;
+        for (int i = offset; i < 6+offset; i++) {
+            res = res && isHex(input.toUpperCase().charAt(i));
+        }
+
+        return res;
+    }
+    
     /**
      * Toggles the specified attribute. If the attribute exists in the attribute
      * set, it is removed. Otherwise, it is added with a value of Boolean.True.
@@ -244,10 +302,10 @@ public class Styliser {
         }
         if (attribs.containsAttribute(StyleConstants.FontConstants.Italic, Boolean.TRUE)) {
             attribs.removeAttribute(StyleConstants.FontConstants.Italic);
-        }        
+        }
         resetColour(attribs);
     }
-       
+    
     /**
      * Resets the colour attributes in the specified attribute set
      * @param attribs The attribute set whose colour attributes should be reset
@@ -257,25 +315,25 @@ public class Styliser {
             attribs.removeAttribute(StyleConstants.Foreground);
         }
         if (attribs.isDefined("DefaultForeground")) {
-            attribs.addAttribute(StyleConstants.Foreground, 
+            attribs.addAttribute(StyleConstants.Foreground,
                     attribs.getAttribute("DefaultForeground"));
         }
         if (attribs.isDefined(StyleConstants.Background)) {
             attribs.removeAttribute(StyleConstants.Background);
         }
         if (attribs.isDefined("DefaultBackground")) {
-            attribs.addAttribute(StyleConstants.Background, 
+            attribs.addAttribute(StyleConstants.Background,
                     attribs.getAttribute("DefaultBackground"));
-        }        
+        }
     }
     
     /**
      * Sets the foreground colour in the specified attribute set to the colour
-     * corresponding to the specified colour code.
+     * corresponding to the specified colour code or hex.
      * @param attribs The attribute set to modify
-     * @param foreground The colour code of the new foreground colour
+     * @param foreground The colour code/hex of the new foreground colour
      */
-    private static void setForeground(SimpleAttributeSet attribs, int foreground) {
+    private static void setForeground(SimpleAttributeSet attribs, Object foreground) {
         if (attribs.isDefined(StyleConstants.Foreground)) {
             attribs.removeAttribute(StyleConstants.Foreground);
         }
@@ -284,23 +342,23 @@ public class Styliser {
     
     /**
      * Sets the background colour in the specified attribute set to the colour
-     * corresponding to the specified colour code.
+     * corresponding to the specified colour code or hex.
      * @param attribs The attribute set to modify
-     * @param background The colour code of the new background colour
+     * @param background The colour code/hex of the new background colour
      */
-    private static void setBackground(SimpleAttributeSet attribs, int background) {
+    private static void setBackground(SimpleAttributeSet attribs, Object background) {
         if (attribs.isDefined(StyleConstants.Background)) {
             attribs.removeAttribute(StyleConstants.Background);
         }
         attribs.addAttribute(StyleConstants.Background, ColourManager.getColour(background));
     }
-
+    
     /**
      * Sets the default foreground colour (used after an empty ctrl+k or a ctrl+o)
      * @param attribs The attribute set to apply this default on
      * @param foreground The default foreground colour
      */
-    private static void setDefaultForeground(SimpleAttributeSet attribs, int foreground) {
+    private static void setDefaultForeground(SimpleAttributeSet attribs, Object foreground) {
         attribs.addAttribute("DefaultForeground", ColourManager.getColour(foreground));
     }
     
@@ -308,9 +366,9 @@ public class Styliser {
      * Sets the default background colour (used after an empty ctrl+k or a ctrl+o)
      * @param attribs The attribute set to apply this default on
      * @param foreground The default background colour
-     */    
-    private static void setDefaultBackground(SimpleAttributeSet attribs, int background) {
+     */
+    private static void setDefaultBackground(SimpleAttributeSet attribs, Object background) {
         attribs.addAttribute("DefaultBackground", ColourManager.getColour(background));
-    }    
+    }
     
 }
