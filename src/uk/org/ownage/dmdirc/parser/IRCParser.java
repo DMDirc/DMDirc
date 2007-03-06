@@ -746,7 +746,7 @@ public class IRCParser implements Runnable {
 	 * @return Boolean result of test. (True only if ALL tests pass)
  	 * @deprecated Pointless.
 	 */
- 	@deprecated
+ 	@Deprecated
 	public boolean doSelfTest() {
 		return doSelfTest(true);
 	} 
@@ -758,7 +758,7 @@ public class IRCParser implements Runnable {
 	 * @return Boolean result of test. (True only if ALL tests pass)
 	 * @deprecated Pointless.
 	 */	
-	@deprecated
+	@Deprecated
 	public boolean doSelfTest(boolean bSilent) {
 		return true;
 		/*if (bDebug) {
