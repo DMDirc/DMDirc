@@ -119,7 +119,7 @@ public class ClientInfo {
 	 *
 	 * @return String representation of the user.
 	 */
-	public String toString() { return "Nickname: "+sNickname+" | Ident: "+sIdent+" | Host: "+sHost; }
+	public String toString() { return sNickname+"!"+sIdent+"@"+sHost; }
 	
 	/**
 	 * Get the nickname for this user

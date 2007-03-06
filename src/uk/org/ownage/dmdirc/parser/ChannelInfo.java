@@ -358,6 +358,13 @@ public class ChannelInfo {
 	}
 	
 	/**
+	 * Get a string representation of the Channel
+	 *
+	 * @return String representation of the Channel.
+	 */
+	public String toString() { return sName; }
+	
+	/**
 	 * Get SVN Version information
 	 *
 	 * @return SVN Version String
