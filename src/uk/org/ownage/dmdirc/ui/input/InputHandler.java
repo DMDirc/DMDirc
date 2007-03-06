@@ -42,6 +42,18 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 public class InputHandler implements KeyListener, ActionListener {
     
     /**
+     * Indicates that the caret should be moved to the end of a selection when
+     * a control code has been inserted
+     */
+    private static int POSITION_END = 1;
+    
+    /**
+     * Indicates that the caret should be moved to the start of a selection when
+     * a control code has been inserted
+     */
+    private static int POSITION_START = 2;
+    
+    /**
      * The current position in the buffer (where the user has scrolled back
      * to).
      */
@@ -130,25 +142,25 @@ public class InputHandler implements KeyListener, ActionListener {
         // Formatting codes
         if ((keyEvent.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
             if (keyEvent.getKeyCode() == KeyEvent.VK_B) {
-                append("" + (char)2);
+                addControlCode(2, POSITION_END);
             }
             if (keyEvent.getKeyCode() == KeyEvent.VK_U) {
-                append("" + (char)31);
+                addControlCode(31, POSITION_END);
             }
             if (keyEvent.getKeyCode() == KeyEvent.VK_O) {
-                append("" + (char)15);
+                addControlCode(15, POSITION_END);
             }
             if (keyEvent.getKeyCode() == KeyEvent.VK_I) {
-                append("" + (char)29);
+                addControlCode(29, POSITION_END);
             }
             if (keyEvent.getKeyCode() == KeyEvent.VK_F) {
-                append("" + (char)17);
-            }            
+                addControlCode(17, POSITION_END);
+            }
             if (keyEvent.getKeyCode() == KeyEvent.VK_K) {
                 if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) != 0) {
-                    append("" + (char)4);
+                    addControlCode(4, POSITION_START);
                 } else {
-                    append("" + (char)3);
+                    addControlCode(3, POSITION_START);
                 }
             }
             
@@ -258,6 +270,38 @@ public class InputHandler implements KeyListener, ActionListener {
      */
     private void append(final String string) {
         target.setText(target.getText()+string);
+    }
+    
+    /**
+     * Adds the specified control code to the textarea. If the user has a range
+     * of text selected, the characters are added before and after, and the
+     * caret is positioned based on the position argument
+     * @code The control code to add
+     * @position The position of the caret after a selection is altered
+     */
+    private void addControlCode(int code, int position) {
+        String insert = "" + (char)code;
+        int selectionEnd = target.getSelectionEnd();
+        int selectionStart = target.getSelectionStart();
+        if (selectionStart < selectionEnd) {
+            String source = target.getText();
+            String before = source.substring(0, selectionStart);
+            String selected = target.getSelectedText();
+            String after = source.substring(selectionEnd, source.length());
+            target.setText(before+insert+selected+insert+after);
+            if (position == POSITION_START) {
+                target.setCaretPosition(selectionStart+1);
+            } else if (position == POSITION_END) {
+                target.setCaretPosition(selectionEnd+2);
+            }
+        } else {
+            int offset = target.getCaretPosition();
+            String source = target.getText();
+            String before = target.getText().substring(0, offset);
+            String after = target.getText().substring(offset, source.length());
+            target.setText(before+insert+after);
+            target.setCaretPosition(offset+1);
+        }
     }
     
     /**

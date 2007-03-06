@@ -181,7 +181,7 @@ public class Formatter {
         properties.setProperty("queryAction", colour+"6* %1$s %4$s");
         properties.setProperty("querySelfMessage", "<%1$s> %4$s");
         properties.setProperty("querySelfAction", colour+"6* %1$s %4$s");
-        properties.setProperty("queryNickChanged", colour+"3* %1$s is now know asn %4$s.");
+        properties.setProperty("queryNickChanged", colour+"3* %1$s is now know as %4$s.");
         
         // Type: Miscellaneous
         //    1: Miscellaneous data
