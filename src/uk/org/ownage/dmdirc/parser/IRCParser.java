@@ -650,7 +650,7 @@ public class IRCParser implements Runnable {
 	 * @see ISocketClosed
 	 */	
 	protected boolean callSocketClosed() {
-		CallbackOnServerReady cb = (CallbackOnServerReady)myCallbackManager.getCallbackType("OnSocketClosed");
+		CallbackOnSocketClosed cb = (CallbackOnSocketClosed)myCallbackManager.getCallbackType("OnSocketClosed");
 		if (cb != null) { return cb.call(); }
 		return false;
 	}

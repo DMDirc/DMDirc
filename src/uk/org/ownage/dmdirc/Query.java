@@ -306,6 +306,16 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     }
     
     /**
+     * Formats the specified arguments using the supplied message type, and
+     * outputs to the main text area
+     * @param messageType the message type to use
+     * @param args the arguments to pass
+     */
+    public void addLine(final String messageType, final Object... args) {
+        frame.addLine(messageType, args);
+    }        
+    
+    /**
      * Retrieves the icon used by the query frame
      * @return The query frame's icon
      */

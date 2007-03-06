@@ -120,6 +120,7 @@ public class Formatter {
         properties.setProperty("querySelfAction", colour+"6* %1$s %2$s");
         
         properties.setProperty("rawCommand", colour+"10 >>> %1$s");
+        properties.setProperty("socketClosed", colour+"2 -!- You have been disconnected from the server.");
         
         return properties;
     }
