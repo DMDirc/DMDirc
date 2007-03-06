@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.ui.messages;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
@@ -56,7 +57,9 @@ public class Formatter {
      * @return A formatted string
      */
     public static String formatMessage(String messageType, Object... arguments) {
-        if (properties == null) initialise();
+        if (properties == null) {
+            initialise();
+        }
         
         if (properties.containsKey(messageType)) {
             return String.format(properties.getProperty(messageType), arguments);
@@ -193,30 +196,66 @@ public class Formatter {
      * properties object.
      */
     private static void initialise() {
-        File file;
-        if (Config.hasOption("ui", "formatter")) {
-            file = new File(Config.getOption("ui", "formatter"));
-        } else {
-            file = new File(Config.getConfigDir()+"format.properties");
-        }
+        
         properties = getDefaults();
-        if (file.exists()) {
+        
+        if (Config.hasOption("general","formatters")) {
+            for (String file : Config.getOption("general","formatters").split("\n")) {
+                loadFile(file);
+            }
+        }
+        
+    }
+    
+    /**
+     * Loads the specified file into the formatter.
+     * @param file File to be loaded
+     * @return True iff the operation succeeeded, false otherwise
+     */
+    public static boolean loadFile(String file) {
+        File myFile = new File(Config.getConfigDir()+file);
+        if (myFile.exists()) {
             try {
-                properties.load(new FileInputStream(file));
-            } catch (FileNotFoundException ex) {
-                //Do nothing, defaults used
+                properties.load(new FileInputStream(myFile));
             } catch (InvalidPropertiesFormatException ex) {
                 Logger.error(ErrorLevel.INFO, ex);
+                return false;
+            } catch (FileNotFoundException ex) {
+                return false;
             } catch (IOException ex) {
                 Logger.error(ErrorLevel.WARNING, ex);
+                return false;
             }
+            
+            return true;
         } else {
-            try {
-                file.createNewFile();
-            } catch (IOException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
-            }
+            return false;
         }
+    }
+    
+    /**
+     * Saves the current formatter into the specified file
+     * @param target The target file
+     * @return True iff the operation succeeded, false otherwise
+     */
+    public static boolean saveAs(String target) {
+        if (properties == null) {
+            initialise();
+        }
+        
+        File myFile = new File(Config.getConfigDir()+target);
+        
+        try {
+            properties.store(new FileOutputStream(myFile), null);
+        } catch (FileNotFoundException ex) {
+            Logger.error(ErrorLevel.INFO, ex);
+            return false;
+        } catch (IOException ex) {
+            Logger.error(ErrorLevel.WARNING, ex);
+            return false;
+        }
+        
+        return true;
     }
     
     /**

@@ -68,6 +68,8 @@ public class CommandManager {
         serverCommands.add(new Join());
         serverCommands.add(new Nick());
         serverCommands.add(new ReloadFormatter());
+        serverCommands.add(new SaveFormatter());
+        serverCommands.add(new LoadFormatter());
         serverCommands.add(new Test());
         serverCommands.add(new Quit());
         serverCommands.add(new QuitDefault());

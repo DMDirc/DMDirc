@@ -29,32 +29,35 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 
 /**
- * Allows the user to reload the message formatter
+ * Allows the user to save the message formatter to a file
  * @author chris
  */
-public class ReloadFormatter extends ServerCommand {
+public class SaveFormatter extends ServerCommand {
     
     /**
-     * Creates a new instance of ReloadFormatter
+     * Creates a new instance of SaveFormatter
      */
-    public ReloadFormatter () {
-        description = "Reloads the message formatter";
-        arguments = "";
+    public SaveFormatter() {
+        description = "Saves the message formatter to a file";
+        arguments = "<file name>";
         polyadic = false;
-        arity = 0;
-        name = "reloadformatter";
+        arity = 1;
+        name = "saveformatter";
         show = true;
     }
-
+    
     /**
      * Executes this command
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
-     */    
+     */
     public void execute(CommandWindow origin, Server server, String... args) {
-        Formatter.reload();
-        origin.addLine("Formatter reloaded.");
+        if (Formatter.saveAs(args[0])) {
+            origin.addLine("Formatter saved.");
+        } else {
+            origin.addLine("Formatter save failed.");
+        }
     }
     
 }
