@@ -213,6 +213,12 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
                             jTextPane1.scrollRectToVisible(prevRect);
                         }
                     });
+                } else {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            jTextPane1.setCaretPosition(jTextPane1.getDocument().getLength());
+                        }
+                    });                    
                 }
             }
         });

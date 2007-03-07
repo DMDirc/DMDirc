@@ -196,6 +196,12 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
                                 jTextPane1.scrollRectToVisible(prevRect);
                             }
                         });
+                    } else {
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                jTextPane1.setCaretPosition(jTextPane1.getDocument().getLength());
+                            }
+                        });
                     }
                 }
             }
