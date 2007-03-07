@@ -61,6 +61,7 @@ public class CommandManager {
         channelCommands.add(new MeEmpty());
         channelCommands.add(new Part());
         channelCommands.add(new PartDefault());
+        channelCommands.add(new ChannelSettings());
         
         serverCommands = new Vector<Command>(0,1);
         

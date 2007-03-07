@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.util.Hashtable;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -31,11 +32,17 @@ import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 import org.jdesktop.layout.GroupLayout;
+import uk.org.ownage.dmdirc.Channel;
 
 /**
  * Allows the user to modify channel settings (modes, topics, etc)
@@ -51,19 +58,24 @@ public class ChannelSettingsDialog extends StandardDialog
      */
     private static final long serialVersionUID = 1;
     
+    private Channel channel;
+    
     private JTabbedPane tabbedPane;
     private JPanel settingsPanel;
     private JPanel identitiesPanel;
     private JButton button1;
     private JButton button2;
+    private JPanel modesPanel;
+    private Hashtable<String, JCheckBox> modeCheckBoxes;
     
     /**
      * Creates a new instance of ChannelSettingsDialog
-     * @param parent The frame that owns this dialog
-     * @param modal Whether to show modally or not
+     * @param channel The channel object that we're editing settings for
      */
-    public ChannelSettingsDialog(Frame parent, boolean modal) {
-        super(parent, modal);
+    public ChannelSettingsDialog(Channel channel) {
+        super(MainFrame.getMainFrame(), false);
+        
+        this.channel = channel;
         
         initComponents();
         initListeners();
@@ -71,13 +83,14 @@ public class ChannelSettingsDialog extends StandardDialog
     
     /** Initialises GUI components */
     private void initComponents() {
+        // --- Set up the main interface
+        
         GridBagConstraints constraints = new GridBagConstraints();
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
         
-        // TODO: Change channel name
-        setTitle("Channel settings for #channel");
+        setTitle("Channel settings for "+channel);
         
         getContentPane().setLayout(new GridBagLayout());
         
@@ -115,6 +128,25 @@ public class ChannelSettingsDialog extends StandardDialog
         getContentPane().add(button2, constraints);
         
         orderButtons(button1, button2);
+        
+        // --- Set up the channel settings page
+               
+        settingsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        
+        constraints = new GridBagConstraints();
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.anchor = GridBagConstraints.NORTH;
+        modesPanel = new JPanel(new GridBagLayout());
+        modesPanel.setBorder(new TitledBorder(new EtchedBorder(),"Channel Modes"));
+        modesPanel.setPreferredSize(new Dimension(380, 200));
+        settingsPanel.add(modesPanel, constraints);
+        
+        // TODO: Get these from the server!
+        String booleanModes = "cCnNut";
+        String paramModes = "lk";
+        String listModes = "b";
+        
+        modeCheckBoxes = new Hashtable<String, JCheckBox>();
         
         pack();
     }
