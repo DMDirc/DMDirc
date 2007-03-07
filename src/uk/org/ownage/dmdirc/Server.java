@@ -308,6 +308,14 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
+     * Closes this server connection and associated reason, with the default
+     * quit message.
+     */
+    public void close() {
+        close(Config.getOption("general","quitmessage"));
+    }
+    
+    /**
      * Disconnects from thie server
      * @param reason disconnect reason
      */

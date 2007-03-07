@@ -92,7 +92,7 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
      * Closes the raw window. Removes parser callbacks, removes the actual
      * frame, and removes references to the frame and server.
      */
-    void close() {
+    public void close() {
         server.getParser().getCallbackManager().delCallback("OnDataIn", this);
         server.getParser().getCallbackManager().delCallback("OnDataOut", this);
         

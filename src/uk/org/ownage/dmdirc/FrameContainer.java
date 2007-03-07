@@ -64,4 +64,9 @@ public interface FrameContainer {
      */
     public ImageIcon getIcon();
     
+    /**
+     * Closes this container (and it's associated frame)
+     */
+    public void close();
+    
 }
