@@ -54,6 +54,7 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Raw;
@@ -133,6 +134,11 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      * whether the mouse button is currently pressed
      */
     private boolean mouseClicked = true;
+
+    /**
+     *node under right click operation
+     */
+    private DefaultMutableTreeNode popupNode;
     
     /**
      * creates a new instance of the TreeFrameManager
@@ -427,7 +433,12 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     public void mousePressed(MouseEvent e) {
         mouseClicked = true;
         if (e.isPopupTrigger()) {
-            popup.show((JComponent)e.getSource(),e.getX(), e.getY());
+            JTree source = (JTree)e.getSource();
+            TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+            if (path != null) {
+                popupNode = (DefaultMutableTreeNode)path.getLastPathComponent();
+                popup.show(source, e.getX(), e.getY());
+            }
         }
     }
     
@@ -442,18 +453,15 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     }
     
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == closeMenuItem) {
-            DefaultMutableTreeNode node;
-            
-            TreePath path = tree.getSelectionPath();
-            node = (DefaultMutableTreeNode) path.getLastPathComponent();
-            ((FrameContainer)node.getUserObject()).close();
+        if (e.getSource() == closeMenuItem && popupNode != null) {
+            ((FrameContainer)popupNode.getUserObject()).close();
+            popupNode = null;
         }
     }
     
     public void mouseDragged(MouseEvent e) {
         TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
-        DefaultMutableTreeNode node;
+        DefaultMutableTreeNode node = null;
         DefaultTreeModel treeModel = (DefaultTreeModel)tree.getModel();
         int selRow = tree.getRowForLocation(e.getX(), e.getY());
         if (selRow < 0) {
@@ -461,46 +469,61 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
             oldSelectedPath = null;
             if (currentSelectedPath != null) {
                 node = (DefaultMutableTreeNode)currentSelectedPath.getLastPathComponent();
-                this.showRollover(node);
+                if (Config.hasOption("ui", "rolloverEnabled") &&
+                        Config.getOption("ui", "rolloverEnabled").equals("true")) {
+                    this.showRollover(node);
+                }
                 ((FrameContainer)node.getUserObject()).activateFrame();
             } else {
-                this.showRollover(null);
+                if (Config.hasOption("ui", "rolloverEnabled") &&
+                        Config.getOption("ui", "rolloverEnabled").equals("true")) {
+                    this.showRollover(node);
+                }
             }
         } else {
             selectedPath = tree.getPathForLocation(e.getX(), e.getY());
             if ((oldSelectedPath== null) || !selectedPath.equals(oldSelectedPath)) {
                 oldSelectedPath = selectedPath;
                 node = (DefaultMutableTreeNode)oldSelectedPath.getLastPathComponent();
-                this.showRollover(node);
+                if (Config.hasOption("ui", "rolloverEnabled") &&
+                        Config.getOption("ui", "rolloverEnabled").equals("true")) {
+                    this.showRollover(node);
+                }
                 ((FrameContainer)node.getUserObject()).activateFrame();
             } else {
-                this.showRollover(null);
+                if (Config.hasOption("ui", "rolloverEnabled") &&
+                        Config.getOption("ui", "rolloverEnabled").equals("true")) {
+                    this.showRollover(node);
+                }
             }
         }
     }
     
     public void mouseMoved(MouseEvent e) {
-        TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
-        DefaultMutableTreeNode node;
-        DefaultTreeModel treeModel = (DefaultTreeModel)tree.getModel();
-        int selRow = tree.getRowForLocation(e.getX(), e.getY());
-        if (selRow < 0) {
-            currentSelectedPath = oldSelectedPath;
-            oldSelectedPath = null;
-            if (currentSelectedPath != null) {
-                node = (DefaultMutableTreeNode)currentSelectedPath.getLastPathComponent();
-                this.showRollover(node);
+        if (Config.hasOption("ui", "rolloverEnabled") &&
+                Config.getOption("ui", "rolloverEnabled").equals("true")) {
+            TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
+            DefaultMutableTreeNode node;
+            DefaultTreeModel treeModel = (DefaultTreeModel)tree.getModel();
+            int selRow = tree.getRowForLocation(e.getX(), e.getY());
+            if (selRow < 0) {
+                currentSelectedPath = oldSelectedPath;
+                oldSelectedPath = null;
+                if (currentSelectedPath != null) {
+                    node = (DefaultMutableTreeNode)currentSelectedPath.getLastPathComponent();
+                    this.showRollover(node);
+                } else {
+                    this.showRollover(null);
+                }
             } else {
-                this.showRollover(null);
-            }
-        } else {
-            selectedPath = tree.getPathForLocation(e.getX(), e.getY());
-            if ((oldSelectedPath== null) || !selectedPath.equals(oldSelectedPath)) {
-                oldSelectedPath = selectedPath;
-                node = (DefaultMutableTreeNode)oldSelectedPath.getLastPathComponent();
-                this.showRollover(node);
-            } else {
-                this.showRollover(null);
+                selectedPath = tree.getPathForLocation(e.getX(), e.getY());
+                if ((oldSelectedPath== null) || !selectedPath.equals(oldSelectedPath)) {
+                    oldSelectedPath = selectedPath;
+                    node = (DefaultMutableTreeNode)oldSelectedPath.getLastPathComponent();
+                    this.showRollover(node);
+                } else {
+                    this.showRollover(null);
+                }
             }
         }
     }

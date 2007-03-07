@@ -33,6 +33,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
@@ -94,7 +95,12 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         if (manager != null) {
             DefaultMutableTreeNode rolloverNode = manager.getRollover();
             if (rolloverNode == value) {
-                setBackground(ColourManager.getColour("b8d6e6"));
+                if (Config.hasOption("ui", "rolloverColour")) {
+                    setBackground(ColourManager.getColour(
+                            Config.getOption("ui", "rolloverColour")));
+                } else {
+                    setBackground(ColourManager.getColour("b8d6e6"));
+                }
             }
         }
         setForeground(tree.getForeground());
