@@ -29,7 +29,14 @@ import javax.swing.JDialog;
  * Allows the user to modify global client preferences
  * @author chris
  */
-public class PreferencesDialog extends JDialog {
+public class PreferencesDialog extends StandardDialog {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;    
     
     /**
      * Creates a new instance of PreferencesDialog

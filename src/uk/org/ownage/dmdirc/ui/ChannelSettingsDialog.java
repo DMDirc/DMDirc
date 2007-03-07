@@ -29,7 +29,14 @@ import javax.swing.JDialog;
  * Allows the user to modify channel settings (modes, topics, etc)
  * @author chris
  */
-public class ChannelSettingsDialog extends JDialog {
+public class ChannelSettingsDialog extends StandardDialog {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /**
      * Creates a new instance of ChannelSettingsDialog
