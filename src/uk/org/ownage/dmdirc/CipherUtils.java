@@ -41,7 +41,7 @@ import uk.org.ownage.dmdirc.logger.Logger;
 /**
  * Helper class to encrypt and decrypt strings, requests passwords if needed
  */
-public class Encipher {
+public class CipherUtils {
     /**
      * Encryption cipher
      */
@@ -65,7 +65,7 @@ public class Encipher {
     /**
      * Prevents creation of a new instance of Encipher
      */
-    private Encipher() {
+    private CipherUtils() {
     }
     
     /**
