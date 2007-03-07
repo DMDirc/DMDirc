@@ -45,6 +45,7 @@ import javax.swing.border.TitledBorder;
 import org.jdesktop.layout.GroupLayout;
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.ui.components.ParamModePanel;
 
 /**
  * Allows the user to modify channel settings (modes, topics, etc)
@@ -69,6 +70,7 @@ public class ChannelSettingsDialog extends StandardDialog
     private JButton button2;
     private JPanel modesPanel;
     private Hashtable<String, JCheckBox> modeCheckBoxes;
+    private Hashtable<String, ParamModePanel> modeInputs;
     
     /**
      * Creates a new instance of ChannelSettingsDialog
@@ -145,6 +147,7 @@ public class ChannelSettingsDialog extends StandardDialog
         
         // TODO: Get these from the server!
         String booleanModes = "imnpstrDdcCNu";
+        String ourBooleanModes = channel.getChannelInfo().getModeStr();
         String paramModes = "lk";
         String listModes = "b";
         
@@ -158,15 +161,17 @@ public class ChannelSettingsDialog extends StandardDialog
         constraints.gridy = 0;
         constraints.anchor = GridBagConstraints.WEST;
         
+        // Lay out all the boolean mode checkboxes
         for (int i = 0; i < booleanModes.length(); i++) {
             String mode = booleanModes.substring(i, i+1);
             String text = "Mode "+mode;
+            boolean state = ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
             
             if (Config.hasOption("server","mode"+mode)) {
                 text = Config.getOption("server","mode"+mode);
             }
             
-            JCheckBox checkBox = new JCheckBox(text);
+            JCheckBox checkBox = new JCheckBox(text, state);
             checkBox.setBorder(new EmptyBorder(0,10,0,10));
             modesPanel.add(checkBox, constraints);
             
@@ -177,6 +182,17 @@ public class ChannelSettingsDialog extends StandardDialog
             }
             
             modeCheckBoxes.put(mode, checkBox);
+        }
+        
+        // Lay out all the parameter-requiring modes
+        modeInputs = new Hashtable<String, ParamModePanel>();
+        
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.gridwidth = 2;
+        
+        if (constraints.gridx != 0) {
+            constraints.gridy++;
+            constraints.gridx = 0;
         }
         
         pack();
