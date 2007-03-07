@@ -34,7 +34,7 @@ import uk.org.ownage.dmdirc.logger.Logger;
 public class ColourManager {
     
     /** Creates a new instance of ColourManager */
-    public ColourManager() {
+    private ColourManager() {
     }
     
     /**
@@ -43,7 +43,7 @@ public class ColourManager {
      * @param spec The colour specification
      * @returns A colour corresponding to the spec, or WHITE on error
      */
-    public static Color getColour(Object spec) {
+    public static Color getColour(final Object spec) {
         if (spec instanceof Integer) {
             return getColour(((Integer)spec).intValue());
         } else if (spec instanceof String) {
@@ -54,18 +54,29 @@ public class ColourManager {
         }
     }
     
-    public static Color getColour(String hex) {
-        return Color.decode("#"+hex);
+    /**
+     * Returns a Color object that corresponds to the specified 6-digit hex
+     * string. If the string is invalid, logs a warning and returns white.
+     * @param hex The hex string to convert into a Color
+     * @return A Color object corresponding to the hex input
+     */
+    public static Color getColour(final String hex) {
+        try {
+            return Color.decode("#"+hex);
+        } catch (NumberFormatException ex) {
+            Logger.error(ErrorLevel.WARNING, ex);
+            return Color.WHITE;
+        }
     }
     
     /**
      * Returns a Color object that represents the colour associated with the
      * specified IRC colour code. If the code is not found, a warning is logged
-     * with the client's Logger class, and black is returned.
+     * with the client's Logger class, and white is returned.
      * @param number The IRC colour code to look up
      * @return The corresponding Color object
      */
-    public static Color getColour(int number) {
+    public static Color getColour(final int number) {
         switch (number) {
             case 0:
                 return Color.WHITE;
