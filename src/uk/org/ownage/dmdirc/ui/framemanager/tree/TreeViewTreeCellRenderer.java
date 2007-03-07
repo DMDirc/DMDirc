@@ -35,6 +35,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.ui.MainFrame;
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
  * Displays a node in a tree according to its type
@@ -89,6 +90,13 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         }
         
         setBackground(null);
+        
+        if (manager != null) {
+            DefaultMutableTreeNode rolloverNode = manager.getRollover();
+            if (rolloverNode == value) {
+                setBackground(ColourManager.getColour("b8d6e6"));
+            }
+        }
         setForeground(tree.getForeground());
         setPreferredSize(new Dimension(110, getFont().getSize()+5));
         

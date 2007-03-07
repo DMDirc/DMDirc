@@ -29,6 +29,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.util.Hashtable;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -64,7 +67,7 @@ import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
  */
 public class TreeFrameManager implements FrameManager, TreeModelListener,
         TreeSelectionListener, TreeExpansionListener, TreeWillExpandListener,
-        MouseListener, ActionListener {
+        MouseListener, ActionListener, MouseMotionListener, MouseWheelListener {
     
     /**
      * display tree
@@ -102,6 +105,11 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     private Hashtable<FrameContainer, Color> nodeColours;
     
     /**
+     * stores background colour associated with a node, cheap hack till i rewrite the model
+     */
+    private DefaultMutableTreeNode rolloverNode;
+    
+    /**
      * popup menu for menu items on nodes
      */
     private JPopupMenu popup;
@@ -116,7 +124,15 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      */
     private FrameContainer selected;
     
+    /**
+     *Parent component for the frame manager
+     */
     private JComponent parent;
+    
+    /**
+     * whether the mouse button is currently pressed
+     */
+    private boolean mouseClicked = true;
     
     /**
      * creates a new instance of the TreeFrameManager
@@ -127,6 +143,10 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         popup = new JPopupMenu();
         closeMenuItem = new JMenuItem("Close window");
         closeMenuItem.addActionListener(this);
+        closeMenuItem.setActionCommand("Close");
+        popup.add(closeMenuItem);
+        popup.setOpaque(true);
+        popup.setLightWeightPopupEnabled(true);
         root = new DefaultMutableTreeNode("DMDirc");
         model = new DefaultTreeModel(root);
         tree = new JTree(model);
@@ -137,6 +157,8 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.setCellRenderer(renderer);
         tree.setRootVisible(false);
         tree.setRowHeight(0);
+        tree.addMouseMotionListener(this);
+        tree.addMouseWheelListener(this);
     }
     /**
      * Indicates whether this frame manager can be positioned vertically
@@ -163,10 +185,10 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     public void setSelected(FrameContainer source) {
         selected = source;
         SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    tree.repaint();
-                }
-            });
+            public void run() {
+                tree.repaint();
+            }
+        });
     }
     
     /**
@@ -192,6 +214,19 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
                 }
             });
         }
+    }
+    
+    public void showRollover(DefaultMutableTreeNode node) {
+        rolloverNode = node;
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                tree.repaint();
+            }
+        });
+    }
+    
+    public DefaultMutableTreeNode getRollover() {
+        return rolloverNode;
     }
     
     public void clearNotification(FrameContainer source) {
@@ -390,9 +425,14 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     }
     
     public void mousePressed(MouseEvent e) {
+        mouseClicked = true;
+        if (e.isPopupTrigger()) {
+            popup.show((JComponent)e.getSource(),e.getX(), e.getY());
+        }
     }
     
     public void mouseReleased(MouseEvent e) {
+        mouseClicked = false;
     }
     
     public void mouseEntered(MouseEvent e) {
@@ -402,5 +442,80 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     }
     
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == closeMenuItem) {
+            DefaultMutableTreeNode node;
+            
+            TreePath path = tree.getSelectionPath();
+            node = (DefaultMutableTreeNode) path.getLastPathComponent();
+            ((FrameContainer)node.getUserObject()).close();
+        }
+    }
+    
+    public void mouseDragged(MouseEvent e) {
+        TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
+        DefaultMutableTreeNode node;
+        DefaultTreeModel treeModel = (DefaultTreeModel)tree.getModel();
+        int selRow = tree.getRowForLocation(e.getX(), e.getY());
+        if (selRow < 0) {
+            currentSelectedPath = oldSelectedPath;
+            oldSelectedPath = null;
+            if (currentSelectedPath != null) {
+                node = (DefaultMutableTreeNode)currentSelectedPath.getLastPathComponent();
+                this.showRollover(node);
+                ((FrameContainer)node.getUserObject()).activateFrame();
+            } else {
+                this.showRollover(null);
+            }
+        } else {
+            selectedPath = tree.getPathForLocation(e.getX(), e.getY());
+            if ((oldSelectedPath== null) || !selectedPath.equals(oldSelectedPath)) {
+                oldSelectedPath = selectedPath;
+                node = (DefaultMutableTreeNode)oldSelectedPath.getLastPathComponent();
+                this.showRollover(node);
+                ((FrameContainer)node.getUserObject()).activateFrame();
+            } else {
+                this.showRollover(null);
+            }
+        }
+    }
+    
+    public void mouseMoved(MouseEvent e) {
+        TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
+        DefaultMutableTreeNode node;
+        DefaultTreeModel treeModel = (DefaultTreeModel)tree.getModel();
+        int selRow = tree.getRowForLocation(e.getX(), e.getY());
+        if (selRow < 0) {
+            currentSelectedPath = oldSelectedPath;
+            oldSelectedPath = null;
+            if (currentSelectedPath != null) {
+                node = (DefaultMutableTreeNode)currentSelectedPath.getLastPathComponent();
+                this.showRollover(node);
+            } else {
+                this.showRollover(null);
+            }
+        } else {
+            selectedPath = tree.getPathForLocation(e.getX(), e.getY());
+            if ((oldSelectedPath== null) || !selectedPath.equals(oldSelectedPath)) {
+                oldSelectedPath = selectedPath;
+                node = (DefaultMutableTreeNode)oldSelectedPath.getLastPathComponent();
+                this.showRollover(node);
+            } else {
+                this.showRollover(null);
+            }
+        }
+    }
+    
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        DefaultMutableTreeNode node;
+        TreePath path;
+        int index;
+        int notches = e.getWheelRotation();
+        path = tree.getSelectionPath();
+        if (path == null) {
+            node = (DefaultMutableTreeNode)tree.getModel().getRoot();
+            node = (DefaultMutableTreeNode)node.getChildAt(0);
+        } else {
+            node = (DefaultMutableTreeNode)path.getLastPathComponent();
+        }
     }
 }
