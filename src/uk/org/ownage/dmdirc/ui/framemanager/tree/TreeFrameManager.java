@@ -125,6 +125,14 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      */
     private FrameContainer selected;
     
+    /*
+     * currently selected node
+     */
+    /**
+     * Currently selected node in the tree
+     */
+    private DefaultMutableTreeNode selectedNode;
+    
     /**
      *Parent component for the frame manager
      */
@@ -134,7 +142,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      * whether the mouse button is currently pressed
      */
     private boolean mouseClicked = true;
-
+    
     /**
      *node under right click operation
      */
@@ -190,6 +198,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      */
     public void setSelected(FrameContainer source) {
         selected = source;
+        selectedNode = nodes.get(source);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 tree.repaint();
@@ -222,6 +231,10 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         }
     }
     
+    /**
+     * Sets the rollover node and repaints the tree
+     * @param node rollover node
+     */
     public void showRollover(DefaultMutableTreeNode node) {
         rolloverNode = node;
         SwingUtilities.invokeLater(new Runnable() {
@@ -231,16 +244,29 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         });
     }
     
+    /**
+     * retrives the rollover node
+     * @return rollover node
+     */
     public DefaultMutableTreeNode getRollover() {
         return rolloverNode;
     }
     
+    /**
+     * Clears a notification from a frame and its node
+     * @param source Frame to remove notification from
+     */
     public void clearNotification(FrameContainer source) {
         if (nodeColours != null && nodeColours.containsKey(source)) {
             nodeColours.remove(source);
         }
     }
     
+    /**
+     * retrieves the colour of a specific node
+     * @param source node to check colour of
+     * @return colour of the node
+     */
     public Color getNodeColour(FrameContainer source) {
         if (nodeColours != null && nodeColours.containsKey(source)) {
             return nodeColours.get(source);
@@ -427,9 +453,17 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     public void treeStructureChanged(TreeModelEvent e) {
     }
     
+    /**
+     * Invoked when the mouse button has been clicked (pressed and released) on a component.
+     * @param e mouse event
+     */
     public void mouseClicked(MouseEvent e) {
     }
     
+    /**
+     * Invoked when a mouse button has been pressed on a component.
+     * @param e mouse event
+     */
     public void mousePressed(MouseEvent e) {
         mouseClicked = true;
         if (e.isPopupTrigger()) {
@@ -442,16 +476,32 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         }
     }
     
+    /**
+     * Invoked when a mouse button has been released on a component.
+     * @param e mouse event
+     */
     public void mouseReleased(MouseEvent e) {
         mouseClicked = false;
     }
     
+    /**
+     * Invoked when the mouse enters a component.
+     * @param e mouse event
+     */
     public void mouseEntered(MouseEvent e) {
     }
     
+    /**
+     * Invoked when the mouse exits a component.
+     * @param e mouse event
+     */
     public void mouseExited(MouseEvent e) {
     }
     
+    /**
+     * Invoked when an action occurs.
+     * @param e action event
+     */
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == closeMenuItem && popupNode != null) {
             ((FrameContainer)popupNode.getUserObject()).close();
@@ -459,6 +509,10 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         }
     }
     
+    /**
+     * Invoked when a mouse button is pressed on a component and then dragged.
+     * @param e mouse event
+     */
     public void mouseDragged(MouseEvent e) {
         TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
         DefaultMutableTreeNode node = null;
@@ -499,6 +553,10 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         }
     }
     
+    /**
+     * Invoked when the mouse cursor has been moved onto a component but no buttons have been pushed.
+     * @param e mouse event
+     */
     public void mouseMoved(MouseEvent e) {
         if (Config.hasOption("ui", "rolloverEnabled") &&
                 Config.getOption("ui", "rolloverEnabled").equals("true")) {
@@ -528,17 +586,70 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         }
     }
     
+    /**
+     * Invoked when the mouse wheel is rotated.
+     * @param e mouse event
+     */
     public void mouseWheelMoved(MouseWheelEvent e) {
-        DefaultMutableTreeNode node;
+        DefaultMutableTreeNode thisNode, nextNode;
         TreePath path;
         int index;
+        //get the number of notches (used only for direction)
         int notches = e.getWheelRotation();
-        path = tree.getSelectionPath();
-        if (path == null) {
-            node = (DefaultMutableTreeNode)tree.getModel().getRoot();
-            node = (DefaultMutableTreeNode)node.getChildAt(0);
+        if (selectedNode == null) {
+            //no selected node, get the first server
+            thisNode = (DefaultMutableTreeNode)tree.getModel().getRoot();
+            //are there any servers to select?
+            if (thisNode.getChildCount() > 0) {
+                thisNode = (DefaultMutableTreeNode)thisNode.getChildAt(0);
+            } else {
+                //then wait till there are
+                return;
+            }
         } else {
-            node = (DefaultMutableTreeNode)path.getLastPathComponent();
+            //use the selected node to start from
+            thisNode = selectedNode;
         }
+        //are we going up or down?
+        if (notches < 0){
+            //up
+            if (thisNode.getUserObject() instanceof Server) {
+                if (thisNode.getParent().getIndex(thisNode) == 0) {
+                    //first server - last child of parent's last child
+                    nextNode = (DefaultMutableTreeNode)((DefaultMutableTreeNode)((DefaultMutableTreeNode)thisNode.getParent()).getLastChild()).getLastChild();
+                } else {
+                    //other servers - last child of previous sibling
+                    nextNode = (DefaultMutableTreeNode)(thisNode.getPreviousSibling()).getLastChild();
+                }
+            } else {
+                if (thisNode.getParent().getIndex(thisNode) == 0) {
+                    //first frame - parent
+                    nextNode = (DefaultMutableTreeNode)thisNode.getParent();
+                } else {
+                    //other frame - previous sibling
+                    nextNode = thisNode.getPreviousSibling();
+                }
+            }
+        } else {
+            //down
+            if (thisNode.getUserObject() instanceof Server) {
+                //all servers - get the first child
+                nextNode = (DefaultMutableTreeNode)thisNode.getFirstChild();
+            } else {
+                if (thisNode.getParent().getIndex(thisNode) == thisNode.getParent().getChildCount()-1) {
+                    //last frame - get the parents next sibling
+                    nextNode = ((DefaultMutableTreeNode)thisNode.getParent()).getNextSibling();
+                    //parent doesnt have a next sibling, get the first child of the grandparent
+                    if (nextNode == null) {
+                        nextNode = (DefaultMutableTreeNode)((DefaultMutableTreeNode)thisNode.getParent().getParent()).getFirstChild();
+                    }
+                } else {
+                    //other frames - get the next sibling
+                    nextNode = thisNode.getNextSibling();
+                }
+            }
+        }
+        //activate the nodes frame
+        ((FrameContainer)nextNode.getUserObject()).activateFrame();
     }
 }
