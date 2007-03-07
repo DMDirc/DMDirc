@@ -43,6 +43,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import org.jdesktop.layout.GroupLayout;
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.Config;
 
 /**
  * Allows the user to modify channel settings (modes, topics, etc)
@@ -95,10 +96,10 @@ public class ChannelSettingsDialog extends StandardDialog
         getContentPane().setLayout(new GridBagLayout());
         
         settingsPanel = new JPanel(new GridBagLayout());
-        settingsPanel.setPreferredSize(new Dimension(400,400));
+        //settingsPanel.setPreferredSize(new Dimension(400,400));
         
         identitiesPanel = new JPanel(new GridBagLayout());
-        identitiesPanel.setPreferredSize(new Dimension(400,400));
+        //identitiesPanel.setPreferredSize(new Dimension(400,400));
         
         tabbedPane = new JTabbedPane();
         tabbedPane.addTab("IRC Settings", settingsPanel);
@@ -138,7 +139,7 @@ public class ChannelSettingsDialog extends StandardDialog
         constraints.anchor = GridBagConstraints.NORTH;
         modesPanel = new JPanel(new GridBagLayout());
         modesPanel.setBorder(new TitledBorder(new EtchedBorder(),"Channel Modes"));
-        modesPanel.setPreferredSize(new Dimension(380, 200));
+        //modesPanel.setPreferredSize(new Dimension(380, 200));
         settingsPanel.add(modesPanel, constraints);
         
         // TODO: Get these from the server!
@@ -147,6 +148,30 @@ public class ChannelSettingsDialog extends StandardDialog
         String listModes = "b";
         
         modeCheckBoxes = new Hashtable<String, JCheckBox>();
+        
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.anchor = GridBagConstraints.WEST;
+        
+        for (int i = 0; i < booleanModes.length(); i++) {
+            String mode = booleanModes.substring(i, i+1);
+            String text = "Mode "+mode;
+            
+            if (Config.hasOption("server","mode"+mode)) {
+                text = Config.getOption("server","mode"+mode);
+            }
+            
+            JCheckBox checkBox = new JCheckBox(text);
+            modesPanel.add(checkBox, constraints);
+            
+            constraints.gridx++;
+            if (constraints.gridx == 2) {
+                constraints.gridy++;
+                constraints.gridx = 0;
+            }
+            
+            modeCheckBoxes.put(mode, checkBox);
+        }
         
         pack();
     }

@@ -110,6 +110,13 @@ public class Config {
         defaults.setProperty("ui.inputbuffersize", "50");
         defaults.setProperty("ui.showversion", "true");
         
+        defaults.setProperty("server.modec","No formatting");
+        defaults.setProperty("server.modeC","No channel CTCPs");
+        defaults.setProperty("server.moden","No external messages");
+        defaults.setProperty("server.modeN","No channel notices");
+        defaults.setProperty("server.modep","Private");
+        defaults.setProperty("server.modes","Secret");
+        
         defaults.setProperty("tabcompletion.casesensitive", "false");
         
         defaults.setProperty("logging.dateFormat","EEE, d MMM yyyy HH:mm:ss Z");
