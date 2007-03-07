@@ -188,10 +188,10 @@ public class Styliser {
         if (string.charAt(0) == 3) {
             int count = 1;
             // This isn't too nice!
-            if (isInt(string.charAt(count))) {
+            if (string.length() > count && isInt(string.charAt(count))) {
                 int foreground = string.charAt(count) - 48;
                 count++;
-                if (isInt(string.charAt(count))) {
+                if (string.length() > count && isInt(string.charAt(count))) {
                     foreground = foreground*10 + (string.charAt(count) - 48);
                     count++;
                 }
@@ -202,11 +202,11 @@ public class Styliser {
                 }
                 
                 // Now background
-                if (string.charAt(count) == ',') {
-                    if (isInt(string.charAt(count+1))) {
+                if (string.length() > count && string.charAt(count) == ',') {
+                    if (string.length() > count+1 && isInt(string.charAt(count+1))) {
                         int background = string.charAt(count+1);
                         count += 2; // Comma and first digit
-                        if (isInt(string.charAt(count))) {
+                        if (string.length() > count && isInt(string.charAt(count))) {
                             background = background*10 + (string.charAt(count) - 48);
                             count++;
                         }
