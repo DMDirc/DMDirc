@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -143,9 +144,13 @@ public class ChannelSettingsDialog extends StandardDialog
         settingsPanel.add(modesPanel, constraints);
         
         // TODO: Get these from the server!
-        String booleanModes = "cCnNut";
+        String booleanModes = "imnpstrDdcCNu";
         String paramModes = "lk";
         String listModes = "b";
+        
+        char[] booleanModesTemp = booleanModes.toCharArray();
+        Arrays.sort(booleanModesTemp);
+        booleanModes = new String(booleanModesTemp);
         
         modeCheckBoxes = new Hashtable<String, JCheckBox>();
         
@@ -162,6 +167,7 @@ public class ChannelSettingsDialog extends StandardDialog
             }
             
             JCheckBox checkBox = new JCheckBox(text);
+            checkBox.setBorder(new EmptyBorder(0,10,0,10));
             modesPanel.add(checkBox, constraints);
             
             constraints.gridx++;

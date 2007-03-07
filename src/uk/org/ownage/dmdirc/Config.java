@@ -112,10 +112,18 @@ public class Config {
         
         defaults.setProperty("server.modec","No formatting");
         defaults.setProperty("server.modeC","No channel CTCPs");
+        defaults.setProperty("server.modeD","Auditorium mode");
+        defaults.setProperty("server.modei","Invite only");        
+        defaults.setProperty("server.modem","Moderated");
         defaults.setProperty("server.moden","No external messages");
         defaults.setProperty("server.modeN","No channel notices");
+        defaults.setProperty("server.modek","Channel key");
+        defaults.setProperty("server.model","User limit");
         defaults.setProperty("server.modep","Private");
+        defaults.setProperty("server.moder","Registered users only");
         defaults.setProperty("server.modes","Secret");
+        defaults.setProperty("server.modet","Only ops can set topic");
+        defaults.setProperty("server.modeu","No quit messages");
         
         defaults.setProperty("tabcompletion.casesensitive", "false");
         
