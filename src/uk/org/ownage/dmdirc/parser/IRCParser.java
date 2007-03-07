@@ -73,7 +73,7 @@ public class IRCParser implements Runnable {
 	public static final byte stateOpen = 2;
 	
 	/** Attempt to update user host all the time, not just on Who/Add/NickChange. */	
-	private static final boolean alwaysUpdateClient;
+	private static final boolean alwaysUpdateClient = true;
 
 	/** Current Socket State */
 	private byte nSocketState = 0;
@@ -1186,7 +1186,7 @@ public class IRCParser implements Runnable {
 		if (iClient == null) { return; }
 		
 		if (alwaysUpdateClient && iKicker != null) {
-			if (iKicker.getHost().equals("")) { iKicker.setUserBits(token[0]); }
+			if (iKicker.getHost().equals("")) { iKicker.setUserBits(token[0],false); }
 		}
 
 		if (iChannel == null) { 
@@ -1269,7 +1269,7 @@ public class IRCParser implements Runnable {
 		
 		setterCCI = iChannel.getUser(token[0]);
 		if (alwaysUpdateClient && setterCCI != null) {
-			if (setterCCI.getClientInfo().getHost().equals("")) {setterCCI.getClientInfo().setUserBits(token[0]); }
+			if (setterCCI.getClient().getHost().equals("")) {setterCCI.getClient().setUserBits(token[0],false); }
 		}
 		
 		for (int i = 0; i < sModestr[0].length(); ++i) {
@@ -1526,7 +1526,7 @@ public class IRCParser implements Runnable {
 
 		iClient = getClientInfo(token[0]);
 		if (alwaysUpdateClient && iClient != null) {
-			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0]); }
+			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0],false); }
 		}
 
 		if (isValidChannelName(token[2])) {
@@ -1611,7 +1611,7 @@ public class IRCParser implements Runnable {
 			if (alwaysUpdateClient) {
 				ClientInfo iClient = getClientInfo(token[0]);
 				if (iClient != null) {
-					if (iClient.getHost().equals("")) {iClient.setUserBits(token[0]); }
+					if (iClient.getHost().equals("")) {iClient.setUserBits(token[0],false); }
 				}
 			}
 			iChannel = getChannelInfo(token[2]);
@@ -1647,7 +1647,7 @@ public class IRCParser implements Runnable {
 			iClient = new ClientInfo(this, token[0]);
 			hClientList.put(iClient.getNickname().toLowerCase(),iClient);
 		}
-		if (iClient.getHost().equals("")) { iClient.setUserBits(token[0]); }
+		if (iClient.getHost().equals("")) { iClient.setUserBits(token[0],false); }
 		if (iChannel == null) { 
 			if (iClient != cMyself) {
 				callErrorInfo(new ParserError(errWarning, "Got join for channel ("+token[token.length-1]+") that I am not on. [User: "+token[0]+"]"));
@@ -1689,7 +1689,7 @@ public class IRCParser implements Runnable {
 		if (iClient == null) { return; }
 		if (alwaysUpdateClient) {
 			// This may seem pointless - updating before they leave - but the formatter needs it!
-			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0]); }
+			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0],false); }
 		}
 		if (iChannel == null) { 
 			if (iClient != cMyself) {
@@ -1733,7 +1733,7 @@ public class IRCParser implements Runnable {
 		if (iClient == null) { return; }
 		if (alwaysUpdateClient) {
 			// This may seem pointless - updating before they leave - but the formatter needs it!
-			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0]); }
+			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0],false); }
 		}
 		String sReason = "";
 		if (token.length > 2) { sReason = token[token.length-1]; }
