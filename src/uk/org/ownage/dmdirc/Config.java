@@ -75,9 +75,10 @@ public class Config {
         //This is nasty.
         String baseDir = System.getenv("APPDATA");
         if (baseDir == null) {
-            System.getProperty("user.home");
+            baseDir = System.getProperty("user.home");
         }
         //End nasty
+        System.out.println(baseDir+fs+".DMDirc"+fs);
 	return baseDir+fs+".DMDirc"+fs;
     }
     
