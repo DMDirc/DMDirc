@@ -71,6 +71,9 @@ public class IRCParser implements Runnable {
 	public static final byte stateClosed = 1;
 	/** Socket is Open. */	
 	public static final byte stateOpen = 2;
+	
+	/** Attempt to update user host all the time, not just on Who/Add/NickChange. */	
+	private static final boolean alwaysUpdateClient;
 
 	/** Current Socket State */
 	private byte nSocketState = 0;
@@ -1145,7 +1148,6 @@ public class IRCParser implements Runnable {
 		
 		iClient = getClientInfo(token[0]);
 		if (iClient != null) {
-			if (iClient.getHost().equals("")) { iClient.setUserBits(token[0],false); }
 			hClientList.remove(iClient.getNickname().toLowerCase());
 			iClient.setUserBits(token[2],true);
 			hClientList.put(iClient.getNickname().toLowerCase(),iClient);
@@ -1182,6 +1184,11 @@ public class IRCParser implements Runnable {
 		iChannel = getChannelInfo(token[2]);
 		
 		if (iClient == null) { return; }
+		
+		if (alwaysUpdateClient && iKicker != null) {
+			if (iKicker.getHost().equals("")) { iKicker.setUserBits(token[0]); }
+		}
+
 		if (iChannel == null) { 
 			if (iClient != cMyself) {
 				callErrorInfo(new ParserError(errWarning, "Got kick for channel ("+token[2]+") that I am not on. [User: "+token[3]+"]"));
@@ -1261,6 +1268,9 @@ public class IRCParser implements Runnable {
 		if (!sParam.equals("324")) { nCurrent = iChannel.getMode(); }
 		
 		setterCCI = iChannel.getUser(token[0]);
+		if (alwaysUpdateClient && setterCCI != null) {
+			if (setterCCI.getClientInfo().getHost().equals("")) {setterCCI.getClientInfo().setUserBits(token[0]); }
+		}
 		
 		for (int i = 0; i < sModestr[0].length(); ++i) {
 			Character cMode = sModestr[0].charAt(i);
@@ -1514,8 +1524,12 @@ public class IRCParser implements Runnable {
 			}
 		}
 
+		iClient = getClientInfo(token[0]);
+		if (alwaysUpdateClient && iClient != null) {
+			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0]); }
+		}
+
 		if (isValidChannelName(token[2])) {
-			iClient = getClientInfo(token[0]);
 			iChannel = getChannelInfo(token[2]);
 			if (iClient != null && iChannel != null) { iChannelClient = iChannel.getUser(iClient); }
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
@@ -1594,6 +1608,12 @@ public class IRCParser implements Runnable {
 			iChannel.setTopicUser(token[4]);
 			callChannelTopic(iChannel,true);
 		} else {
+			if (alwaysUpdateClient) {
+				ClientInfo iClient = getClientInfo(token[0]);
+				if (iClient != null) {
+					if (iClient.getHost().equals("")) {iClient.setUserBits(token[0]); }
+				}
+			}
 			iChannel = getChannelInfo(token[2]);
 			if (iChannel == null) { return; };
 			iChannel.setTopicTime(java.util.Calendar.getInstance().getTimeInMillis() / 1000);
@@ -1623,7 +1643,11 @@ public class IRCParser implements Runnable {
 		iClient = getClientInfo(token[0]);
 		iChannel = getChannelInfo(token[token.length-1]);
 		
-		if (iClient == null) { iClient = new ClientInfo(this, token[0]); hClientList.put(iClient.getNickname().toLowerCase(),iClient); }
+		if (iClient == null) { 
+			iClient = new ClientInfo(this, token[0]);
+			hClientList.put(iClient.getNickname().toLowerCase(),iClient);
+		}
+		if (iClient.getHost().equals("")) { iClient.setUserBits(token[0]); }
 		if (iChannel == null) { 
 			if (iClient != cMyself) {
 				callErrorInfo(new ParserError(errWarning, "Got join for channel ("+token[token.length-1]+") that I am not on. [User: "+token[0]+"]"));
@@ -1663,6 +1687,10 @@ public class IRCParser implements Runnable {
 		iChannel = getChannelInfo(token[2]);
 		
 		if (iClient == null) { return; }
+		if (alwaysUpdateClient) {
+			// This may seem pointless - updating before they leave - but the formatter needs it!
+			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0]); }
+		}
 		if (iChannel == null) { 
 			if (iClient != cMyself) {
 				callErrorInfo(new ParserError(errWarning, "Got part for channel ("+token[2]+") that I am not on. [User: "+token[0]+"]"));
@@ -1703,7 +1731,10 @@ public class IRCParser implements Runnable {
 		iClient = getClientInfo(token[0]);
 		
 		if (iClient == null) { return; }
-
+		if (alwaysUpdateClient) {
+			// This may seem pointless - updating before they leave - but the formatter needs it!
+			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0]); }
+		}
 		String sReason = "";
 		if (token.length > 2) { sReason = token[token.length-1]; }
 		

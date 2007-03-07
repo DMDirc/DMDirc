@@ -56,12 +56,7 @@ public class ClientInfo {
 	 */
 	public static String parseHost(String sWho) {
 		// Get the nickname from the string.
-		String sTemp[] = null;
-		sTemp = sWho.split("@",2);
-		sTemp = sTemp[0].split("!",2);
-		sTemp = sTemp[0].split(":",2);
-		if (sTemp.length != 1) { sWho = sTemp[1]; } else { sWho = sTemp[0]; }
-		return sWho;
+		return parseHostFull(sWho)[0];
 	}
 	
 	/**
@@ -103,17 +98,12 @@ public class ClientInfo {
 	 * @param bUpdateNick if this is false, only host/ident will be updated.
 	 */	
 	public void setUserBits (String sHostmask, boolean bUpdateNick) {
-		String sTemp[] = null;
-		sTemp = sHostmask.split(":",2);
-		if (sTemp.length != 1) { sHostmask = sTemp[1]; } else { sHostmask = sTemp[0]; }
-
-		sTemp = sHostmask.split("@",2);
-		if (sTemp.length != 1) { sHost = sTemp[1]; }
-		sTemp = sTemp[0].split("!",2);
-		if (sTemp.length != 1) { sIdent = sTemp[1]; }
+		String sTemp[] = parseHostFull(sHostmask);
+		if (!sTemp[2].equals("")) { sHost = sTemp[2]; }
+		if (!sTemp[1].equals("")) { sIdent = sTemp[1]; }
 		if (bUpdateNick) { sNickname = sTemp[0]; }
 	}
-
+	
 	/**
 	 * Get a string representation of the user
 	 *
