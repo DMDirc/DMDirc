@@ -81,7 +81,7 @@ public class CipherUtils {
         try {
             byte[] password = str.getBytes("UTF8");
             byte[] encrypted = ecipher.doFinal(password);
-            return Base64.encodeBytes(encrypted);
+            return new String(encrypted);
         } catch (javax.crypto.BadPaddingException e) {
             Logger.error(ErrorLevel.WARNING, e);
         } catch (IllegalBlockSizeException e) {
@@ -105,8 +105,7 @@ public class CipherUtils {
             if (!authAndCreateCiphers()) return null;
         }
         try {
-            byte[] base64Decrypted = Base64.decode(str);
-            byte[] decrypted = dcipher.doFinal(base64Decrypted);
+            byte[] decrypted = dcipher.doFinal(str.getBytes());
             return new String(decrypted, "UTF8");
         } catch (javax.crypto.BadPaddingException e) {
             Logger.error(ErrorLevel.WARNING, e);
@@ -128,7 +127,7 @@ public class CipherUtils {
     public static String hash(String data) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
-            return Base64.encodeBytes(md.digest(data.getBytes("UTF8")));
+            return new String(md.digest(data.getBytes("UTF8")));
         } catch (NoSuchAlgorithmException e) {
             Logger.error(ErrorLevel.WARNING, e);
         } catch (IOException e) {
