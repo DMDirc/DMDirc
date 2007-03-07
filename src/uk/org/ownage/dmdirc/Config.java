@@ -78,7 +78,6 @@ public class Config {
             baseDir = System.getProperty("user.home");
         }
         //End nasty
-        System.out.println(baseDir+fs+".DMDirc"+fs);
 	return baseDir+fs+".DMDirc"+fs;
     }
     
