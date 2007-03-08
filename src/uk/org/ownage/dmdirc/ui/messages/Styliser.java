@@ -37,19 +37,19 @@ import uk.org.ownage.dmdirc.logger.Logger;
 public class Styliser {
     
     /** The character used for marking up bold text. */
-    public static char CODE_BOLD = 2;
+    public final static char CODE_BOLD = 2;
     /** The character used for marking up coloured text. */
-    public static char CODE_COLOUR = 3;
+    public final static char CODE_COLOUR = 3;
     /** The character used for marking up coloured text (using hex). */
-    public static char CODE_HEXCOLOUR = 4;
+    public final static char CODE_HEXCOLOUR = 4;
     /** The character used for stopping all formatting. */
-    public static char CODE_STOP = 15;
+    public final static char CODE_STOP = 15;
     /** The character used for marking up fixed pitch text. */
-    public static char CODE_FIXED = 17;
+    public final static char CODE_FIXED = 17;
     /** The character used for marking up italic text. */
-    public static char CODE_ITALIC = 29;
+    public final static char CODE_ITALIC = 29;
     /** The character used for marking up underlined text. */
-    public static char CODE_UNDERLINE = 31;
+    public final static char CODE_UNDERLINE = 31;
     
     /** Creates a new instance of Styliser. */
     private Styliser() {
