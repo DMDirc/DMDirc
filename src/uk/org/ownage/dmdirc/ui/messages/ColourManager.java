@@ -41,7 +41,7 @@ public class ColourManager {
      * Retrieves a colour specified by either an IRC colour code (as an int),
      * or a hex string
      * @param spec The colour specification
-     * @returns A colour corresponding to the spec, or WHITE on error
+     * @return A colour corresponding to the spec, or WHITE on error
      */
     public static Color getColour(final Object spec) {
         if (spec instanceof Integer) {
