@@ -19,42 +19,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id$
+ * SVN: $Id: CallbackOnChannelNotice.java 257 2007-03-02 23:08:30Z ShaneMcC $
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks;
+package uk.org.ownage.dmdirc.parser;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
+// import uk.org.ownage.dmdirc.parser.callbacks.;
 
-public class CallbackOnErrorInfo extends CallbackObject {
+/**
+ * Process a 464 message.
+ */
+public class Process464 extends IRCProcessor {
 	/**
-	 * Callback to all objects implementing the IErrorInfo Interface.
+	 * Process a 464 message.
 	 *
-	 * @see IErrorInfo
-	 * @param errorInfo ParserError object representing the error.
+	 * @param type Type of line to process ("464")
+	 * @param tokens IRCTokenised line to process
 	 */
-	public boolean call(ParserError errorInfo) {
-		boolean bResult = false;
-		for (int i = 0; i < callbackInfo.size(); i++) {
-			try {
-				((IErrorInfo)callbackInfo.get(i)).onErrorInfo(myParser, errorInfo);
-			} catch (Exception e) {
-				// This will not callErrorInfo or we would get an infinite loop!
-				System.out.println("Exception in onError Callback. ["+e.getMessage()+"]");
-				e.printStackTrace();
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
+	public void process(String sParam, String[] token) {
+		ParserError ei = new ParserError(ParserError.errError, "Password Required");
+		callErrorInfo(ei);
+	}
 	
 	/**
-	 * Create a new instance of the Callback Object
+	 * What does this IRCProcessor handle.
 	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
+	 * @return String[] with the names of the tokens we handle.
 	 */
-	public CallbackOnErrorInfo (IRCParser parser, CallbackManager manager) { super(parser, manager); }
+	public String[] handles() {
+		String[] iHandle = new String[1];
+		iHandle[0] = "464";
+		return iHandle;
+	} 
+	
+	/**
+	 * Create a new instance of the IRCProcessor Object
+	 *
+	 * @param parser IRCParser That owns this IRCProcessor
+	 * @param manager ProcessingManager that is in charge of this IRCProcessor
+	 */
+	protected Process464 (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
 }

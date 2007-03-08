@@ -19,42 +19,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id$
+ * SVN: $Id: CallbackNotFound.java 298 2007-03-03 14:52:33Z chris87 $
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks;
+package uk.org.ownage.dmdirc.parser;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
-
-public class CallbackOnErrorInfo extends CallbackObject {
+/**
+ * IRC Parser Processor Not Found Exception.
+ *
+ * @author            Shane Mc Cormack
+ * @version           $Id: CallbackNotFound.java 298 2007-03-03 14:52:33Z chris87 $
+ */
+public class ProcessorNotFound extends Exception {
 	/**
-	 * Callback to all objects implementing the IErrorInfo Interface.
-	 *
-	 * @see IErrorInfo
-	 * @param errorInfo ParserError object representing the error.
+	 * A version number for this class. It should be changed whenever the class
+	 * structure is changed (or anything else that would prevent serialized
+	 * objects being unserialized with the new class).
 	 */
-	public boolean call(ParserError errorInfo) {
-		boolean bResult = false;
-		for (int i = 0; i < callbackInfo.size(); i++) {
-			try {
-				((IErrorInfo)callbackInfo.get(i)).onErrorInfo(myParser, errorInfo);
-			} catch (Exception e) {
-				// This will not callErrorInfo or we would get an infinite loop!
-				System.out.println("Exception in onError Callback. ["+e.getMessage()+"]");
-				e.printStackTrace();
-			}
-			bResult = true;
-		}
-		return bResult;
-	}	
+	private static final long serialVersionUID = 1;
 	
 	/**
-	 * Create a new instance of the Callback Object
+	 * Create a new ProcessorNotFound Exception.
 	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
+	 * @param message Reason for exception
 	 */
-	public CallbackOnErrorInfo (IRCParser parser, CallbackManager manager) { super(parser, manager); }
+	public ProcessorNotFound(String message) { super(message); }
 }

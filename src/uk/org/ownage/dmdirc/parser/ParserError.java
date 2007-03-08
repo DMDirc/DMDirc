@@ -39,7 +39,7 @@ public class ParserError {
 	public static final int errWarning = 4;
 	/** Error was an exception from elsewhere. */
 	public static final int errException = 8;
-
+	
 	/** Store the Error level */
 	protected int errorLevel = 0;
 	/** Store the Error Information */

@@ -1,0 +1,76 @@
+/*
+ * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ * SVN: $Id: CallbackOnChannelNotice.java 257 2007-03-02 23:08:30Z ShaneMcC $
+ */
+
+package uk.org.ownage.dmdirc.parser;
+
+// import uk.org.ownage.dmdirc.parser.callbacks.;
+
+/**
+ * Process ISUPPORT lines.
+ */
+public class Process004005 extends IRCProcessor {
+	/**
+	 * Process ISUPPORT lines.
+	 *
+	 * @param type Type of line to process ("005", "PRIVMSG" etc)
+	 * @param tokens IRCTokenised line to process
+	 */
+	public void process(String sParam, String[] token) {
+		if (sParam.equals("004")) {
+			// 004
+			myParser.h005Info.put("USERMODES",token[5]);
+		} else {
+			// 005
+			String[] Bits = null;
+			String sKey = null, sValue = null;
+			for (int i = 3; i < token.length ; i++) {
+				Bits = token[i].split("=",2);
+				sKey = Bits[0].toUpperCase();
+				if (Bits.length == 2) { sValue = Bits[1]; } else { sValue = ""; }
+				callDebugInfo(myParser.ndInfo, "%s => %s",sKey,sValue);
+				myParser.h005Info.put(sKey,sValue);
+			}
+		}
+	}
+	
+	/**
+	 * What does this IRCProcessor handle.
+	 *
+	 * @return String[] with the names of the tokens we handle.
+	 */
+	public String[] handles() {
+		String[] iHandle = new String[2];
+		iHandle[0] = "004";
+		iHandle[1] = "005";
+		return iHandle;
+	} 
+	
+	/**
+	 * Create a new instance of the IRCProcessor Object
+	 *
+	 * @param parser IRCParser That owns this IRCProcessor
+	 * @param manager ProcessingManager that is in charge of this IRCProcessor
+	 */
+	protected Process004005 (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
+}
