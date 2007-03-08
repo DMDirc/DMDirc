@@ -391,7 +391,7 @@ public class Styliser {
     /**
      * Sets the default background colour (used after an empty ctrl+k or a ctrl+o)
      * @param attribs The attribute set to apply this default on
-     * @param foreground The default background colour
+     * @param background The default background colour
      */
     private static void setDefaultBackground(SimpleAttributeSet attribs, Object background) {
         attribs.addAttribute("DefaultBackground", ColourManager.getColour(background));
