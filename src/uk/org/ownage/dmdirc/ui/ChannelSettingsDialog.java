@@ -25,26 +25,22 @@ package uk.org.ownage.dmdirc.ui;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
-import org.jdesktop.layout.GroupLayout;
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.ui.components.ParamModePanel;
 
 /**
@@ -134,7 +130,7 @@ public class ChannelSettingsDialog extends StandardDialog
         orderButtons(button1, button2);
         
         // --- Set up the channel settings page
-               
+        
         settingsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         
         constraints = new GridBagConstraints();
@@ -145,11 +141,12 @@ public class ChannelSettingsDialog extends StandardDialog
         //modesPanel.setPreferredSize(new Dimension(380, 200));
         settingsPanel.add(modesPanel, constraints);
         
-        // TODO: Get these from the server!
-        String booleanModes = "imnpstrDdcCNu";
+        IRCParser parser = channel.getServer().getParser();
+        
+        String booleanModes = parser.getBoolChanModes();
         String ourBooleanModes = channel.getChannelInfo().getModeStr();
-        String paramModes = "lk";
-        String listModes = "b";
+        String paramModes = parser.getSetOnlyChanModes()+parser.getSetUnsetChanModes();
+        String listModes = parser.getListChanModes();
         
         char[] booleanModesTemp = booleanModes.toCharArray();
         Arrays.sort(booleanModesTemp);
@@ -216,7 +213,7 @@ public class ChannelSettingsDialog extends StandardDialog
         button1.addActionListener(this);
         button2.addActionListener(this);
     }
-
+    
     public void actionPerformed(ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
             // TODO: Apply settings
