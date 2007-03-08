@@ -128,14 +128,6 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      */
     private FrameContainer selected;
     
-    /*
-     * currently selected node
-     */
-    /**
-     * Currently selected node in the tree
-     */
-    private DefaultMutableTreeNode selectedNode;
-    
     /**
      *Parent component for the frame manager
      */
@@ -202,7 +194,6 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      */
     public void setSelected(FrameContainer source) {
         selected = source;
-        selectedNode = nodes.get(source);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 tree.repaint();
@@ -216,6 +207,14 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      */
     public FrameContainer getSelected() {
         return selected;
+    }
+    
+    /**
+     * Retrieves the currently selected node
+     * @return The node that is currently selected
+     */
+    public DefaultMutableTreeNode getSelectedNode() {
+        return nodes.get(selected);
     }
     
     /**
@@ -288,9 +287,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         scrollPane.setAutoscrolls(false);
         parent.setLayout(new BorderLayout());
         parent.add(scrollPane);
-        //parent.setPreferredSize(new Dimension(150, 0));
         scrollPane.setPreferredSize(new Dimension(parent.getWidth(), 0));;
-        //tree.setBackground(parent.getBackground());
         tree.setForeground(parent.getForeground());
         tree.setBorder(new EmptyBorder(5, 5, 5, 5));
         tree.setVisible(true);
@@ -306,8 +303,10 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         nodes.put(server, node);
         node.setUserObject(server);
         model.insertNodeInto(node, root);
+        if (root.getChildCount() == 1) {
+            selected = server;
+        }
         tree.scrollPathToVisible(new TreePath(node.getPath()));
-        setSelected(server);
     }
     
     /**
@@ -329,7 +328,6 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         node.setUserObject(channel);
         model.insertNodeInto(node, nodes.get(server));
         tree.scrollPathToVisible(new TreePath(node.getPath()));
-        setSelected(channel);
     }
     
     /**
@@ -352,7 +350,6 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         node.setUserObject(query);
         model.insertNodeInto(node, nodes.get(server));
         tree.scrollPathToVisible(new TreePath(node.getPath()));
-        setSelected(query);
     }
     
     /**
@@ -374,8 +371,6 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         nodes.put(raw, node);
         node.setUserObject(raw);
         model.insertNodeInto(node, nodes.get(server));
-        tree.scrollPathToVisible(new TreePath(node.getPath()));
-        setSelected(raw);
     }
     
     /**
@@ -625,7 +620,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         DefaultMutableTreeNode thisNode, nextNode;
         TreePath path;
         
-        if (selectedNode == null) {
+        if (getSelectedNode() == null) {
             //no selected node, get the root node
             thisNode = root;
             //are there any servers to select?
@@ -637,7 +632,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
             }
         } else {
             //use the selected node to start from
-            thisNode = selectedNode;
+            thisNode = getSelectedNode();
         }
         //are we going up or down?
         if (direction){
