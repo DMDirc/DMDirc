@@ -24,6 +24,7 @@
 
 package uk.org.ownage.dmdirc.parser;
 
+import java.util.Calendar;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelSingleModeChanged;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelNonUserModeChanged;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelModeChanged;
@@ -83,6 +84,7 @@ public class ProcessMode extends IRCProcessor {
 		String sModeParam;
 		String sTemp;
 		int nCurrent = 0, nParam = 1, nValue = 0;
+		long nTemp = 0;
 		boolean bPositive = true, bBooleanMode = true;
 		char cPositive = '+';
 		ChannelInfo iChannel;
@@ -165,7 +167,8 @@ public class ProcessMode extends IRCProcessor {
 						// List Mode
 						sModeParam = sModestr[nParam++];
 						sNonUserModeStrParams = sNonUserModeStrParams+" "+sModeParam;
-						iChannel.setListModeParam(cMode, sModeParam, bPositive);
+						nTemp = (Calendar.getInstance().getTimeInMillis() / 1000);
+						iChannel.setListModeParam(cMode, new ChannelListModeItem(sModeParam, token[0], nTemp ), bPositive);
 						callDebugInfo(myParser.ndInfo, "List Mode: %c [%s] {Positive: %b}",cMode, sModeParam, bPositive);
 						if (cbSingle != null) { cbSingle.call(iChannel, setterCCI, token[0], cPositive+cMode+" "+sModeParam ); }
 					} else {

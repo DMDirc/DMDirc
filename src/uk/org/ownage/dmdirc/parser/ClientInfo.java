@@ -70,8 +70,7 @@ public class ClientInfo {
 	public static String[] parseHostFull(String sWho) {
 		String sTemp[] = null;
 		String result[] = new String[3];
-		sTemp = sWho.split(":",2);
-		if (sTemp.length != 1) { sWho = sTemp[1]; } else { sWho = sTemp[0]; }
+		if (sWho.charAt(0) == ':') { sWho = sWho.substring(1); }
 
 		sTemp = sWho.split("@",2);
 		if (sTemp.length != 1) { result[2] = sTemp[1]; } else { result[2] = ""; }

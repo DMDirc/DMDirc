@@ -79,6 +79,13 @@ public class ProcessingManager {
 		addProcessor(new ProcessJoin(myParser, this));
 		// KICK
 		addProcessor(new ProcessKick(myParser, this));
+		// 346
+		// 347
+		// 348
+		// 349
+		// 367
+		// 368
+		addProcessor(new ProcessListModes(myParser, this));
 		// PRIVMSG
 		// NOTICE
 		addProcessor(new ProcessMessage(myParser, this));

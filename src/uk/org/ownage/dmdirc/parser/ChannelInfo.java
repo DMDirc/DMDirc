@@ -27,6 +27,7 @@ package uk.org.ownage.dmdirc.parser;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.LinkedList;
 
 /**
  * Contains Channel information.
@@ -62,7 +63,12 @@ public class ChannelInfo {
 	/** Hashtable storing values for modes set in the channel that use parameters. */
 	private Hashtable<Character,String> hParamModes = new Hashtable<Character,String>();
 	/** Hashtable storing list modes. */
-	private Hashtable<Character,ArrayList<String>> hListModes = new Hashtable<Character,ArrayList<String>>();
+	private Hashtable<Character,ArrayList<ChannelListModeItem>> hListModes = new Hashtable<Character,ArrayList<ChannelListModeItem>>();
+	/**
+	 * LinkedList storing status of mode adding.
+	 * if an item is in this list for a mode, we are expecting new items for the list
+	 */
+	private LinkedList<Character> lAddingModes = new LinkedList<Character>();
 
 	/**
 	 * Create a new channel object.
@@ -269,17 +275,17 @@ public class ChannelInfo {
 	 * Add/Remove a value to a channel list.
 	 *
 	 * @param cMode Character representing mode
-	 * @param sValue String repreenting value
+	 * @param newItem ChannelListModeItem representing the item
 	 * @param bAdd Add or remove the value. (true for add, false for remove)
 	 */
-	public void setListModeParam(final Character cMode, final String sValue, final boolean bAdd) { 
+	public void setListModeParam(final Character cMode, final ChannelListModeItem newItem, final boolean bAdd) { 
 		if (!myParser.hChanModesOther.containsKey(cMode)) { return; }
 		else if (myParser.hChanModesOther.get(cMode) != myParser.cmList) { return; }
 		
-		if (!hListModes.containsKey(cMode)) { hListModes.put(cMode, new ArrayList<String>());	}
-		ArrayList<String> lModes = hListModes.get(cMode);
+		if (!hListModes.containsKey(cMode)) { hListModes.put(cMode, new ArrayList<ChannelListModeItem>());	}
+		ArrayList<ChannelListModeItem> lModes = hListModes.get(cMode);
 		for (int i = 0; i < lModes.size(); i++) {
-			if (lModes.get(i).equalsIgnoreCase(sValue)) { 
+			if (lModes.get(i).getItem().equalsIgnoreCase(newItem.getItem())) { 
 				if (bAdd) { return; }
 				else { 
 					lModes.remove(i);
@@ -287,7 +293,7 @@ public class ChannelInfo {
 				}
 			}
 		}
-		if (bAdd) { lModes.add(sValue); }
+		if (bAdd) { lModes.add(newItem); }
 		return;
 	}
 	
@@ -295,14 +301,38 @@ public class ChannelInfo {
 	 * Get the list object representing a channel mode.
 	 *
 	 * @param cMode Character representing mode
-	 * @return ArrayList containing items in the list, or null if mode is invalid
+	 * @return ArrayList containing ChannelListModeItem in the list, or null if mode is invalid
 	 */
-	public ArrayList getListModeParam(final Character cMode) { 
+	public ArrayList<ChannelListModeItem> getListModeParam(final Character cMode) { 
 		if (!myParser.hChanModesOther.containsKey(cMode)) { return null; }
 		else if (myParser.hChanModesOther.get(cMode) != myParser.cmList) { return null; }
 		
-		if (!hListModes.containsKey(cMode)) { hListModes.put(cMode, new ArrayList<String>());	}
+		if (!hListModes.containsKey(cMode)) { hListModes.put(cMode, new ArrayList<ChannelListModeItem>());	}
 		return hListModes.get(cMode);
+	}
+	
+	/**
+	 * Get the "adding state" of a list mode.
+	 * 
+	 * @param cMode Character representing mode 
+	 * @return false if we are not expecting a 367 etc, else true.
+	 */
+	public boolean getAddState(final Character cMode) { 
+		return lAddingModes.contains(cMode);
+	}
+	
+	/**
+	 * Get the "adding state" of a list mode.
+	 * 
+	 * @param cMode Character representing mode
+	 * @param newState change the value returned by getAddState
+	 */
+	public void setAddState(final Character cMode, final boolean newState) { 
+		if (newState) {
+			lAddingModes.add(cMode);
+		} else {
+			if (lAddingModes.contains(cMode)) { lAddingModes.remove(cMode); }
+		}
 	}
 	
 	/**

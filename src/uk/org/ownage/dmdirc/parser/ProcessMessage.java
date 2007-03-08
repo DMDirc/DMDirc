@@ -78,9 +78,8 @@ public class ProcessMessage extends IRCProcessor {
 	 */
 	public void process(String sParam, String[] token) {
 		// Ignore people!
-		String bits[] = token[0].split(":",2);
 		String sMessage = "";
-		if (bits.length > 1) { sMessage = bits[1]; } else { sMessage = bits[0]; }
+		if (token[0].charAt(0) == ':') { sMessage = token[0].substring(1); } else { sMessage = token[0]; }
 		// We use sMessage to be the users host (first token in the line)
 		if (myParser.getIgnoreList().matches(sMessage) > -1) { return; }
 		
@@ -88,7 +87,7 @@ public class ProcessMessage extends IRCProcessor {
 		ChannelInfo iChannel = null;
 		ClientInfo iClient = null;
 		sMessage = token[token.length-1];
-		bits = sMessage.split(" ", 2);
+		String bits[] = sMessage.split(" ", 2);
 		Character Char1 = Character.valueOf((char)1);
 		String sCTCP = "";
 		boolean isAction = false;
