@@ -279,7 +279,7 @@ public class ChannelInfo {
 		if (!hListModes.containsKey(cMode)) { hListModes.put(cMode, new ArrayList<String>());	}
 		ArrayList<String> lModes = hListModes.get(cMode);
 		for (int i = 0; i < lModes.size(); i++) {
-			if (!lModes.get(i).equalsIgnoreCase("")) { 
+			if (lModes.get(i).equalsIgnoreCase(sValue)) { 
 				if (bAdd) { return; }
 				else { 
 					lModes.remove(i);
