@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id: Process464.java 495 2007-03-08 19:18:20Z ShaneMcC $
+ * SVN: $Id$
  */
 
 package uk.org.ownage.dmdirc.parser;

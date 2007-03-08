@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id: ChannelInfo.java 500 2007-03-08 21:14:04Z ShaneMcC $
+ * SVN: $Id$
  */
 
 package uk.org.ownage.dmdirc.parser;
@@ -33,7 +33,7 @@ import java.util.Hashtable;
  * 
  * @author            Shane Mc Cormack
  * @author            Chris Smith
- * @version           $Id: ChannelInfo.java 500 2007-03-08 21:14:04Z ShaneMcC $
+ * @version           $Id$
  * @see IRCParser
  */
 public class ChannelListModeItem {
