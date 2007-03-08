@@ -219,7 +219,7 @@ public class ChannelInfo {
 	public String getModeStr() { 
 		String sModes = "+", sModeParams = "", sTemp = "";
 		Character cTemp;
-		int nTemp = 0,
+		int nTemp = 0;
 		final int nChanModes = this.getMode();
 		
 		for (final Enumeration e = myParser.hChanModesBool.keys(); e.hasMoreElements();) {
@@ -294,7 +294,7 @@ public class ChannelInfo {
 	 * @param cMode Character representing mode
 	 * @return ArrayList containing items in the list, or null if mode is invalid
 	 */
-	public ArrayList setListModeParam(final Character cMode) { 
+	public ArrayList getListModeParam(final Character cMode) { 
 		if (!myParser.hChanModesOther.containsKey(cMode)) { return null; }
 		else if (myParser.hChanModesOther.get(cMode) != myParser.cmList) { return null; }
 		
@@ -340,7 +340,7 @@ public class ChannelInfo {
 	 * @param sType Type of CTCP
 	 * @param sMessage Optional Additional Parameters
 	 */
-	public void sendCTCP(final String sType, final String sMessage) { 
+	public void sendCTCP(final String sType, String sMessage) { 
 		if (sType.equals("")) { return; }
 		final Character char1 = Character.valueOf((char)1);
 		if (!sMessage.equals("")) { sMessage = " "+sMessage; }
@@ -353,7 +353,7 @@ public class ChannelInfo {
 	 * @param sType Type of CTCP
 	 * @param sMessage Optional Additional Parameters
 	 */
-	public void sendCTCPReply(final String sType, final String sMessage) { 
+	public void sendCTCPReply(final String sType, String sMessage) { 
 		if (sType.equals("")) { return; }
 		final Character char1 = Character.valueOf((char)1);
 		if (!sMessage.equals("")) { sMessage = " "+sMessage; }

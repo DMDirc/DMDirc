@@ -67,7 +67,7 @@ public class ClientInfo {
 	 * @param sWho Hostname to parse
 	 * @return Array containing details. (result[0] -> Nick | result[1] -> Ident | result[2] -> Host)
 	 */
-	public static String[] parseHostFull(final String sWho) {
+	public static String[] parseHostFull(String sWho) {
 		String sTemp[] = null;
 		String result[] = new String[3];
 		sTemp = sWho.split(":",2);
