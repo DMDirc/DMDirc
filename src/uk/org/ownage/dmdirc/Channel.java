@@ -253,17 +253,20 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * Closes the channel window. Frees all references related to the channel.
      */
     public void close() {
-        server.getParser().getCallbackManager().delCallback("OnChannelMessage", this);
-        server.getParser().getCallbackManager().delCallback("OnChannelTopic", this);
-        server.getParser().getCallbackManager().delCallback("OnChannelGotNames", this);
-        server.getParser().getCallbackManager().delCallback("OnChannelJoin", this);
-        server.getParser().getCallbackManager().delCallback("OnChannelPart", this);
-        server.getParser().getCallbackManager().delCallback("OnChannelQuit", this);
-        server.getParser().getCallbackManager().delCallback("OnChannelKick", this);
-        server.getParser().getCallbackManager().delCallback("OnChannelAction", this);
-        server.getParser().getCallbackManager().delCallback("OnChannelNickChanged", this);
-        server.getParser().getCallbackManager().delCallback("OnChannelModeChanged", this);
-        server.getParser().getCallbackManager().delCallback("OnChannelUserModeChanged", this);
+        final CallbackManager callbackManager = server.getParser().getCallbackManager();
+        part(Config.getOption("general","partmessage"));
+        
+        callbackManager.delCallback("OnChannelMessage", this);
+        callbackManager.delCallback("OnChannelTopic", this);
+        callbackManager.delCallback("OnChannelGotNames", this);
+        callbackManager.delCallback("OnChannelJoin", this);
+        callbackManager.delCallback("OnChannelPart", this);
+        callbackManager.delCallback("OnChannelQuit", this);
+        callbackManager.delCallback("OnChannelKick", this);
+        callbackManager.delCallback("OnChannelAction", this);
+        callbackManager.delCallback("OnChannelNickChanged", this);
+        callbackManager.delCallback("OnChannelModeChanged", this);
+        callbackManager.delCallback("OnChannelUserModeChanged", this);
         
         server.delChannel(channelInfo.getName());
         
