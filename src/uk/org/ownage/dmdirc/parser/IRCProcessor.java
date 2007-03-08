@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id: IRCProcessor.java 273 2007-03-03 02:09:17Z greboid $
+ * SVN: $Id$
  */
 
 package uk.org.ownage.dmdirc.parser;
@@ -36,7 +36,7 @@ import java.util.ArrayList;
  * Superclass for all IRCProcessor types.
  *
  * @author            Shane Mc Cormack
- * @version           $Id: IRCProcessor.java 273 2007-03-03 02:09:17Z greboid $
+ * @version           $Id$
  */
 public abstract class IRCProcessor {
 	/** Reference to the IRCParser that owns this IRCProcessor. */
@@ -177,5 +177,5 @@ public abstract class IRCProcessor {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id: IRCParser.java 478 2007-03-08 05:52:14Z ShaneMcC $"; }	
+	public static String getSvnInfo () { return "$Id$"; }	
 }

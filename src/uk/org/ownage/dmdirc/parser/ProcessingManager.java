@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id: ProcessingManager.java 446 2007-03-06 16:46:38Z ShaneMcC $
+ * SVN: $Id$
  */
 
 package uk.org.ownage.dmdirc.parser;
@@ -31,7 +31,7 @@ import java.util.Enumeration;
  * Manages adding/removing/calling processing stuff.
  *
  * @author            Shane Mc Cormack
- * @version           $Id: ProcessingManager.java 446 2007-03-06 16:46:38Z ShaneMcC $
+ * @version           $Id$
  */
 public class ProcessingManager {
 	/** Reference to the parser object that owns this ProcessingManager */

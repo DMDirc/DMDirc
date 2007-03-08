@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id: CallbackNotFound.java 298 2007-03-03 14:52:33Z chris87 $
+ * SVN: $Id$
  */
 
 package uk.org.ownage.dmdirc.parser;
@@ -28,7 +28,7 @@ package uk.org.ownage.dmdirc.parser;
  * IRC Parser Processor Not Found Exception.
  *
  * @author            Shane Mc Cormack
- * @version           $Id: CallbackNotFound.java 298 2007-03-03 14:52:33Z chris87 $
+ * @version           $Id$
  */
 public class ProcessorNotFound extends Exception {
 	/**

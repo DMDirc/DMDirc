@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id: IRCParser.java 277 2007-03-03 03:04:21Z ShaneMcC $
+ * SVN: $Id$
  */
 
 package uk.org.ownage.dmdirc.parser;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
  * IRC Parser Ignore list.
  *
  * @author            Shane Mc Cormack
- * @version           $Id: IRCParser.java 277 2007-03-03 03:04:21Z ShaneMcC $
+ * @version           $Id$
  */
 public class RegexStringList {
 	/** Arraylist storing ignore patterns */

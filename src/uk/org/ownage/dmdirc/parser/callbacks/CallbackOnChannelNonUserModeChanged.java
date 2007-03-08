@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id: CallbackOnChannelModeChanged.java 257 2007-03-02 23:08:30Z ShaneMcC $
+ * SVN: $Id$
  */
 
 package uk.org.ownage.dmdirc.parser.callbacks;
