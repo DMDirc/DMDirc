@@ -61,12 +61,6 @@ public class ChannelSettingsDialog extends StandardDialog
     
     private Channel channel;
     
-    private JTabbedPane tabbedPane;
-    private JPanel settingsPanel;
-    private JPanel identitiesPanel;
-    private JButton button1;
-    private JButton button2;
-    private JPanel modesPanel;
     private Hashtable<String, JCheckBox> modeCheckBoxes;
     private Hashtable<String, ParamModePanel> modeInputs;
     
@@ -83,32 +77,20 @@ public class ChannelSettingsDialog extends StandardDialog
         initListeners();
     }
     
-    /** Initialises GUI components. */
+    // <editor-fold defaultstate="collapsed" desc=" UI initialisation code ">
+    /** Initialises the main UI components. */
     private void initComponents() {
-        // --- Set up the main interface
-        
         GridBagConstraints constraints = new GridBagConstraints();
+        final JTabbedPane tabbedPane = new JTabbedPane();
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        getContentPane().setLayout(new GridBagLayout());
+        setTitle("Channel settings for " + channel);
         setResizable(false);
         
-        setTitle("Channel settings for " + channel);
-        
-        getContentPane().setLayout(new GridBagLayout());
-        
-        settingsPanel = new JPanel(new GridBagLayout());
-        //settingsPanel.setPreferredSize(new Dimension(400,400));
-        
-        identitiesPanel = new JPanel(new GridBagLayout());
-        //identitiesPanel.setPreferredSize(new Dimension(400,400));
-        
-        tabbedPane = new JTabbedPane();
-        tabbedPane.addTab("IRC Settings", settingsPanel);
-        tabbedPane.addTab("Client Settings", identitiesPanel);
-        
-        button1 = new JButton();
+        final JButton button1 = new JButton();
         button1.setPreferredSize(new Dimension(100, 25));
-        button2 = new JButton();
+        final JButton button2 = new JButton();
         button2.setPreferredSize(new Dimension(100, 25));
         
         constraints.gridx = 0;
@@ -131,24 +113,44 @@ public class ChannelSettingsDialog extends StandardDialog
         
         orderButtons(button1, button2);
         
-        // --- Set up the channel settings page
+        initIrcTab(tabbedPane);
+        
+        pack();
+    }
+    
+    /**
+     * Initialises the IRC Settings tab.
+     * @param tabbedPane The pane to add the IRC Settings tab to
+     */
+    private void initIrcTab(JTabbedPane tabbedPane) {
+        final JPanel settingsPanel = new JPanel(new GridBagLayout());
+        
+        tabbedPane.addTab("IRC Settings", settingsPanel);
         
         settingsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         
-        constraints = new GridBagConstraints();
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.anchor = GridBagConstraints.NORTH;
-        modesPanel = new JPanel(new GridBagLayout());
-        modesPanel.setBorder(new TitledBorder(new EtchedBorder(),"Channel Modes"));
-        //modesPanel.setPreferredSize(new Dimension(380, 200));
-        settingsPanel.add(modesPanel, constraints);
-        
+        initModesPanel(settingsPanel);
+        initTopicsPanel(settingsPanel);
+    }
+    
+    /**
+     * Initialises the modes panel.
+     * @param parent The panel to add the modes panel to
+     */
+    private void initModesPanel(JPanel parent) {
+        final GridBagConstraints constraints = new GridBagConstraints();
+        final JPanel modesPanel = new JPanel(new GridBagLayout());
         final IRCParser parser = channel.getServer().getParser();
-        
         final String booleanModes = parser.getBoolChanModes();
         final String ourBooleanModes = channel.getChannelInfo().getModeStr();
         final String paramModes = parser.getSetOnlyChanModes()+parser.getSetUnsetChanModes();
         final String listModes = parser.getListChanModes();
+        
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.anchor = GridBagConstraints.NORTH;
+        
+        modesPanel.setBorder(new TitledBorder(new EtchedBorder(),"Channel Modes"));
+        parent.add(modesPanel, constraints);
         
         modeCheckBoxes = new Hashtable<String, JCheckBox>();
         
@@ -203,13 +205,29 @@ public class ChannelSettingsDialog extends StandardDialog
             constraints.gridy++;
         }
         
-        pack();
     }
+    
+    /**
+     * Initialises the topic panel.
+     * @param parent The panel to add the topics panel to
+     */
+    private void initTopicsPanel(JPanel parent) {
+        final GridBagConstraints constraints = new GridBagConstraints();
+        final JPanel topicsPanel = new JPanel(new GridBagLayout());
+        
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.anchor = GridBagConstraints.NORTH;
+        constraints.gridy = 1;
+        
+        topicsPanel.setBorder(new TitledBorder(new EtchedBorder(),"Channel Topic"));
+        parent.add(topicsPanel, constraints);
+    }
+    // </editor-fold>
     
     /** Initialises listeners for this dialog. */
     private void initListeners() {
-        button1.addActionListener(this);
-        button2.addActionListener(this);
+        getOkButton().addActionListener(this);
+        getCancelButton().addActionListener(this);
     }
     
     /**

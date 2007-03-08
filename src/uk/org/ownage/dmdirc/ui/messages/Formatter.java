@@ -70,6 +70,19 @@ public final class Formatter {
     }
     
     /**
+     * Determines whether the formatter knows of a specific message type.
+     * @param messageType the message type to check
+     * @return True iff there is a matching format, false otherwise
+     */
+    public static boolean hashFormat(String messageType) {
+        if (properties == null) {
+            initialise();
+        }
+        
+        return properties.containsKey(messageType);
+    }
+    
+    /**
      * Returns the default format strings for the client.
      * @return The default format strings
      */
