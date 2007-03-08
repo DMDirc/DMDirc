@@ -29,6 +29,11 @@ import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelNonUserModeChanged
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelModeChanged;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelUserModeChanged;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnUserModeChanged;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSingleModeChanged;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelNonUserModeChanged;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelModeChanged;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUserModeChanged;
 
 /**
  * Process a Mode line.
@@ -37,8 +42,8 @@ public class ProcessMode extends IRCProcessor {
 	/**
 	 * Process a Mode Line.
 	 *
-	 * @param type Type of line to process ("005", "PRIVMSG" etc)
-	 * @param tokens IRCTokenised line to process
+	 * @param sParam Type of line to process ("MODE", "324")
+	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
 		String[] sModestr;

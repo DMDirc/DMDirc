@@ -25,6 +25,7 @@
 package uk.org.ownage.dmdirc.parser;
 
 // import uk.org.ownage.dmdirc.parser.callbacks.;
+// import uk.org.ownage.dmdirc.parser.callbacks.interfaces.;
 
 /**
  * Process a 464 message.
@@ -33,8 +34,8 @@ public class Process464 extends IRCProcessor {
 	/**
 	 * Process a 464 message.
 	 *
-	 * @param type Type of line to process ("464")
-	 * @param tokens IRCTokenised line to process
+	 * @param sParam Type of line to process ("464")
+	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
 		ParserError ei = new ParserError(ParserError.errError, "Password Required");

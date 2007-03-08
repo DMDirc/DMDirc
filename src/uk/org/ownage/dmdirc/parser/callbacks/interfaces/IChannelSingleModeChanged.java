@@ -24,7 +24,10 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.*;
+import uk.org.ownage.dmdirc.parser.ProcessMode;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /** 
  * Called when the channel modes are changed or discovered.

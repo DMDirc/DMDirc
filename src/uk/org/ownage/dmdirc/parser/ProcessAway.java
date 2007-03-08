@@ -25,6 +25,7 @@
 package uk.org.ownage.dmdirc.parser;
 
 // import uk.org.ownage.dmdirc.parser.callbacks.;
+// import uk.org.ownage.dmdirc.parser.callbacks.interfaces.;
 
 /**
  * Process an Away/Back message.
@@ -33,8 +34,8 @@ public class ProcessAway extends IRCProcessor {
 	/**
 	 * Process an Away/Back message.
 	 *
-	 * @param type Type of line to process ("306", "350")
-	 * @param tokens IRCTokenised line to process
+	 * @param sParam Type of line to process ("305", "306")
+	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
 		myParser.cMyself.setAwayState(sParam.equals("306"));

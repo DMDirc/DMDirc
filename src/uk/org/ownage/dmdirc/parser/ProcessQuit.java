@@ -26,6 +26,8 @@ package uk.org.ownage.dmdirc.parser;
 
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelQuit;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnQuit;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelQuit;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IQuit;
 import java.util.Enumeration;
 
 /**
@@ -35,8 +37,8 @@ public class ProcessQuit extends IRCProcessor {
 	/**
 	 * Process a Quit message.
 	 *
-	 * @param type Type of line to process ("005", "PRIVMSG" etc)
-	 * @param tokens IRCTokenised line to process
+	 * @param sParam Type of line to process ("QUIT")
+	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
 		// :nick!ident@host QUIT

@@ -25,6 +25,7 @@
 package uk.org.ownage.dmdirc.parser;
 
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnNoticeAuth;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INoticeAuth;
 
 /**
  * Process a NoticeAuth message.
@@ -33,8 +34,8 @@ public class ProcessNoticeAuth extends IRCProcessor {
 	/**
 	 * Process a NoticeAuth message.
 	 *
-	 * @param type Type of line to process ("Notice Auth")
-	 * @param tokens IRCTokenised line to process
+	 * @param sParam Type of line to process ("Notice Auth")
+	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
 		callNoticeAuth(token[token.length-1]);

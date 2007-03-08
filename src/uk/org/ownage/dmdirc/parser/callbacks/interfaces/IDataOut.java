@@ -24,7 +24,7 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.*;
+import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
  * Called on every incomming line BEFORE being sent.

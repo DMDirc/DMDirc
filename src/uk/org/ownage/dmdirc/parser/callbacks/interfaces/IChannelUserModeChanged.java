@@ -24,7 +24,10 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.*;
+import uk.org.ownage.dmdirc.parser.ProcessMode;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /** 
  * Called when a users channel mode is changed.
@@ -41,7 +44,7 @@ public interface IChannelUserModeChanged extends ICallbackInterface {
 	 * @param cSetByClient Client chaning the modes (null if server)
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @param sMode String representing mode change (ie +o)
-	 * @see IRCParser#callChannelUserModeChanged
+	 * @see ProcessMode#callChannelUserModeChanged
 	 */
 	public void onChannelUserModeChanged(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode);
 }

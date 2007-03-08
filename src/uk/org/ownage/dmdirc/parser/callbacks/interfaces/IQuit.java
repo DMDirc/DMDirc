@@ -24,7 +24,9 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.*;
+import uk.org.ownage.dmdirc.parser.ProcessQuit;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ClientInfo;
 
 /** 
  * Called When we, or another client quits IRC (Called once in total).
@@ -38,7 +40,7 @@ public interface IQuit extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cClient Client Quitting
 	 * @param sReason Reason for quitting (may be "")
-	 * @see IRCParser#callQuit
+	 * @see ProcessQuit#callQuit
 	 */
 	public void onQuit(IRCParser tParser, ClientInfo cClient, String sReason );
 }

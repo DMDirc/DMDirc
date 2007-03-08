@@ -25,6 +25,8 @@
 package uk.org.ownage.dmdirc.parser;
 
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
 
 import java.util.Hashtable;
 import java.util.ArrayList;

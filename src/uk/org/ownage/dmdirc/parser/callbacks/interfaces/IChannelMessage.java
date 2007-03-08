@@ -24,7 +24,10 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.*;
+import uk.org.ownage.dmdirc.parser.ProcessMessage;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /**
  * Called when a person sends a message to a channel.
@@ -42,7 +45,7 @@ public interface IChannelMessage extends ICallbackInterface {
 	 * @param cChannelClient ChannelClient who sent the message (may be null if server)
 	 * @param sMessage Message contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#callChannelMessage
+	 * @see ProcessMessage#callChannelMessage
 	 */
 	public void onChannelMessage(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
 }

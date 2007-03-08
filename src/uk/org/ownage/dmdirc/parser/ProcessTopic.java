@@ -25,7 +25,7 @@
 package uk.org.ownage.dmdirc.parser;
 
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelTopic;
-
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelTopic;
 import java.util.Calendar;
 
 /**
@@ -35,8 +35,8 @@ public class ProcessTopic extends IRCProcessor {
 	/**
 	 * Process a topic change.
 	 *
-	 * @param type Type of line to process ("005", "PRIVMSG" etc)
-	 * @param tokens IRCTokenised line to process
+	 * @param sParam Type of line to process ("TOPIC", "332", "333")
+	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
 		ChannelInfo iChannel;

@@ -24,7 +24,10 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.*;
+import uk.org.ownage.dmdirc.parser.ProcessJoin;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /** 
  * Called When we, or another client joins a channel.
@@ -38,7 +41,7 @@ public interface IChannelJoin extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cChannel Channel Object
 	 * @param cChannelClient ChannelClient object for new person
-	 * @see IRCParser#callChannelJoin
+	 * @see ProcessJoin#callChannelJoin
 	 */
 	public void onChannelJoin(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient );
 }

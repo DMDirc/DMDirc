@@ -25,6 +25,7 @@
 package uk.org.ownage.dmdirc.parser;
 
 // import uk.org.ownage.dmdirc.parser.callbacks.;
+// import uk.org.ownage.dmdirc.parser.callbacks.interfaces.;
 
 /**
  * Process ISUPPORT lines.
@@ -33,8 +34,8 @@ public class Process004005 extends IRCProcessor {
 	/**
 	 * Process ISUPPORT lines.
 	 *
-	 * @param type Type of line to process ("005", "PRIVMSG" etc)
-	 * @param tokens IRCTokenised line to process
+	 * @param sParam Type of line to process ("005", "004")
+	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
 		if (sParam.equals("004")) {

@@ -39,6 +39,21 @@ import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnUnknownCTCP;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnUnknownCTCPReply;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnUnknownMessage;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnUnknownNotice;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelAction;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelCTCP;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelCTCPReply;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelMessage;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelNotice;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownAction;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownCTCP;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownCTCPReply;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownMessage;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownNotice;
 
 
 /**
@@ -58,8 +73,8 @@ public class ProcessMessage extends IRCProcessor {
 	 * Actions are handled here aswell separately from CTCPs.<br>
 	 * Each type has 5 Calls, making 15 callbacks handled here.
 	 *
-	 * @param type Type of line to process ("005", "PRIVMSG" etc)
-	 * @param tokens IRCTokenised line to process
+	 * @param sParam Type of line to process ("NOTICE", "PRIVMSG")
+	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
 		// Ignore people!

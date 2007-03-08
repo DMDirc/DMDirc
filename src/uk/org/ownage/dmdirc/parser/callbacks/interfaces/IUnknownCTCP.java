@@ -24,7 +24,8 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.*;
+import uk.org.ownage.dmdirc.parser.ProcessMessage;
+import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
  * Called when a person sends a CTCP not aimed at you or a channel (ie $*).
@@ -42,7 +43,7 @@ public interface IUnknownCTCP extends ICallbackInterface {
 	 * @param sMessage Additional contents
 	 * @param sTarget Actual Target of CTCP
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#callUnknownCTCP
+	 * @see ProcessMessage#callUnknownCTCP
 	 */
 	public void onUnknownCTCP(IRCParser tParser, String sType, String sMessage, String sTarget, String sHost );
 }

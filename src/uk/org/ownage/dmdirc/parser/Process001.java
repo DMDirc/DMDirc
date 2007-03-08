@@ -25,6 +25,7 @@
 package uk.org.ownage.dmdirc.parser;
 
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnServerReady;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IServerReady;
 
 /**
  * Process a 001 message.
@@ -33,8 +34,8 @@ public class Process001 extends IRCProcessor {
 	/**
 	 * Process a 001 message.
 	 *
-	 * @param type Type of line to process ("001")
-	 * @param tokens IRCTokenised line to process
+	 * @param sParam Type of line to process ("001")
+	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
 		myParser.Got001 = true;

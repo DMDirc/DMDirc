@@ -27,6 +27,9 @@ package uk.org.ownage.dmdirc.parser;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnMOTDEnd;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnMOTDLine;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnMOTDStart;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDLine;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDStart;
 
 /**
  * Process a MOTD Related Line
@@ -35,8 +38,8 @@ public class ProcessMOTD extends IRCProcessor {
 	/**
 	 * Process a MOTD Related Line.
 	 *
-	 * @param type Type of line to process ("005", "PRIVMSG" etc)
-	 * @param tokens IRCTokenised line to process
+	 * @param sParam Type of line to process ("375", "372", "376", "422")
+	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
 		if (sParam.equals("375")) {

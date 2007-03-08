@@ -24,7 +24,10 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.*;
+import uk.org.ownage.dmdirc.parser.ProcessQuit;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /** 
  * Called When we, or another client quits IRC (Called once per channel the user was on).
@@ -39,7 +42,7 @@ public interface IChannelQuit extends ICallbackInterface {
 	 * @param cChannel Channel that user was on
 	 * @param cChannelClient User thats quitting
 	 * @param sReason Quit reason
-	 * @see IRCParser#callChannelQuit
+	 * @see ProcessQuit#callChannelQuit
 	 */
 	public void onChannelQuit(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );
 }

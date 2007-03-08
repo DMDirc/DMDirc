@@ -24,7 +24,8 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.*;
+import uk.org.ownage.dmdirc.parser.ProcessNoticeAuth;
+import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
  * Interface Used to give Debug Information.
@@ -35,7 +36,7 @@ public interface INoticeAuth extends ICallbackInterface {
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param sData Incomming Line.
-	 * @see IRCParser#callNoticeAuth
+	 * @see ProcessNoticeAuth#callNoticeAuth
 	 */
 	public void onNoticeAuth(IRCParser tParser, String sData);
 }

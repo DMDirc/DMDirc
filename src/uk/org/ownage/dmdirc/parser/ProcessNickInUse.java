@@ -25,6 +25,7 @@
 package uk.org.ownage.dmdirc.parser;
 
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnNickInUse;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INickInUse;
 
 /**
  * Process a NickInUse message.
@@ -45,8 +46,8 @@ public class ProcessNickInUse extends IRCProcessor {
 	 * will attempt to use the altnickname instead.<br>
 	 * If this also fails, we will start prepending _ (or the value of me.cPrepend) to the main nickname.
 	 *
-	 * @param type Type of line to process ("005", "PRIVMSG" etc)
-	 * @param tokens IRCTokenised line to process
+	 * @param sParam Type of line to process ("433")
+	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
 		if (!callNickInUse()) {

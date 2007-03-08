@@ -25,6 +25,7 @@
 package uk.org.ownage.dmdirc.parser;
 
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelKick;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelKick;
 
 /**
  * Process a channel kick.
@@ -33,8 +34,8 @@ public class ProcessKick extends IRCProcessor {
 	/**
 	 * Process a channel kick.
 	 *
-	 * @param type Type of line to process ("005", "PRIVMSG" etc)
-	 * @param tokens IRCTokenised line to process
+	 * @param sParam Type of line to process ("KICK")
+	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
 		ChannelClientInfo iChannelClient;

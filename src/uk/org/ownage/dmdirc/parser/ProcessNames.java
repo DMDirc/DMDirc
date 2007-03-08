@@ -25,6 +25,7 @@
 package uk.org.ownage.dmdirc.parser;
 
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelGotNames;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
 
 /**
  * Process a Names reply.
@@ -33,8 +34,8 @@ public class ProcessNames extends IRCProcessor {
 	/**
 	 * Process a Names reply.
 	 *
-	 * @param type Type of line to process ("005", "PRIVMSG" etc)
-	 * @param tokens IRCTokenised line to process
+	 * @param sParam Type of line to process ("366", "353")
+	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
 		ChannelInfo iChannel;

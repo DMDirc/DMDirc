@@ -23,6 +23,11 @@
  */
 
 package uk.org.ownage.dmdirc.parser;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ISocketClosed;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDataIn;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDataOut;
@@ -247,7 +252,7 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IDataOut
 	 * @param data Outgoing Data
-	 * @param FromParser True if parser sent the data, false if sent using .sendLine	 
+	 * @param FromParser True if parser sent the data, false if sent using .sendLine
 	 */
 	protected boolean callDataOut(String data, boolean FromParser) {
 		CallbackOnDataOut cb = (CallbackOnDataOut)myCallbackManager.getCallbackType("OnDataOut");

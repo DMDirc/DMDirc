@@ -25,6 +25,7 @@
 package uk.org.ownage.dmdirc.parser;
 
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelPart;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelPart;
 
 /**
  * Process a channel part.
@@ -33,8 +34,8 @@ public class ProcessPart extends IRCProcessor {
 	/**
 	 * Process a channel part.
 	 *
-	 * @param type Type of line to process ("005", "PRIVMSG" etc)
-	 * @param tokens IRCTokenised line to process
+	 * @param sParam Type of line to process ("PART")
+	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
 		// :nick!ident@host PART #Channel

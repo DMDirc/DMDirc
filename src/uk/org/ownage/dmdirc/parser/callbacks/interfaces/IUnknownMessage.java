@@ -24,7 +24,8 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.*;
+import uk.org.ownage.dmdirc.parser.ProcessMessage;
+import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
  * Called when a person sends a message not aimed specifically at you or a channel (ie $*).
@@ -41,7 +42,7 @@ public interface IUnknownMessage extends ICallbackInterface {
 	 * @param sMessage Message contents
 	 * @param sTarget Actual target of message
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#callUnknownMessage
+	 * @see ProcessMessage#callUnknownMessage
 	 */
 	public void onUnknownMessage(IRCParser tParser, String sMessage, String sTarget, String sHost );
 }

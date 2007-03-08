@@ -24,7 +24,8 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.*;
+import uk.org.ownage.dmdirc.parser.ProcessMessage;
+import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
  * Called when a person does an action to you (PM).
@@ -40,7 +41,7 @@ public interface IPrivateAction extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param sMessage action contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see IRCParser#callPrivateAction
+	 * @see ProcessMessage#callPrivateAction
 	 */
 	public void onPrivateAction(IRCParser tParser, String sMessage, String sHost );
 }
