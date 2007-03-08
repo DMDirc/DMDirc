@@ -54,7 +54,6 @@ import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
-import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
 /**
@@ -347,7 +346,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void onChannelTopic(final IRCParser tParser, final ChannelInfo cChannel,
             final boolean bIsJoinTopic) {
         if (bIsJoinTopic) {
-            frame.addLine("channelJoinTopic", cChannel.getTopic(), 
+            frame.addLine("channelJoinTopic", cChannel.getTopic(),
                     cChannel.getTopicUser(), 1000*cChannel.getTopicTime(), cChannel);
         } else {
             ChannelClientInfo user = cChannel.getUser(cChannel.getTopicUser());
@@ -389,7 +388,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelPart(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
-        ClientInfo client = cChannelClient.getClient(); 
+        ClientInfo client = cChannelClient.getClient();
         String nick = cChannelClient.getNickname();
         String ident = client.getIdent();
         String host = client.getHost();
@@ -436,7 +435,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         String victimhost = cKickedClient.getClient().getHost();
         
         if (sReason.equals("")) {
-            frame.addLine("channelKick", kickermodes, kicker[0], kicker[1], kicker[2], victimmodes, 
+            frame.addLine("channelKick", kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,
                     victim, victimident, victimhost, cChannel.getName());
         } else {
             frame.addLine("channelKickReason", kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,

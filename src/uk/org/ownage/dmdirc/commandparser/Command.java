@@ -22,8 +22,6 @@
 
 package uk.org.ownage.dmdirc.commandparser;
 
-import uk.org.ownage.dmdirc.Server;
-
 /**
  * Represents a generic command
  * @author chris

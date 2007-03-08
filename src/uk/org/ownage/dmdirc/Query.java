@@ -31,7 +31,6 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.QueryCommandParser;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.ui.MainFrame;
@@ -42,7 +41,6 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INickChanged;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import uk.org.ownage.dmdirc.ui.QueryFrame;
-import uk.org.ownage.dmdirc.ui.ServerFrame;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
@@ -87,7 +85,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         ClassLoader cldr = this.getClass().getClassLoader();
         URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/query.png");
         imageIcon = new ImageIcon(imageURL);
-               
+        
         frame = new QueryFrame(new QueryCommandParser(this.server, this));
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
@@ -95,7 +93,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         frame.open();
         
         TabCompleter tabCompleter = new TabCompleter(server.getTabCompleter());
-        tabCompleter.addEntries(CommandManager.getQueryCommandNames());        
+        tabCompleter.addEntries(CommandManager.getQueryCommandNames());
         frame.setTabCompleter(tabCompleter);
         
         try {
@@ -317,7 +315,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
      */
     public void addLine(final String messageType, final Object... args) {
         frame.addLine(messageType, args);
-    }        
+    }
     
     /**
      * Retrieves the icon used by the query frame

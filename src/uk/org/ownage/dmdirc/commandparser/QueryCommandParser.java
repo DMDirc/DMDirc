@@ -64,7 +64,7 @@ public class QueryCommandParser extends CommandParser {
      * @param origin The window in which the command was typed
      * @param command The command to be executed
      * @param args The arguments to the command
-     */    
+     */
     protected void executeCommand(CommandWindow origin, Command command, String... args) {
         if (command instanceof QueryCommand) {
             ((QueryCommand) command).execute(origin, server, query, args);
@@ -80,7 +80,7 @@ public class QueryCommandParser extends CommandParser {
      * @param origin The window in which the command was typed
      * @param command The command the user tried to execute
      * @param args The arguments passed to the command
-     */    
+     */
     protected void handleInvalidCommand(CommandWindow origin, String command, String... args) {
         origin.addLine("Unknown command: "+command+"/"+args.length);
     }
@@ -90,7 +90,7 @@ public class QueryCommandParser extends CommandParser {
      * means it is sent to the server/channel/user as-is, with no further processing.
      * @param origin The window in which the command was typed
      * @param line The line input by the user
-     */    
+     */
     protected void handleNonCommand(CommandWindow origin, String line) {
         query.sendLine(line);
     }

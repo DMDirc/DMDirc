@@ -104,7 +104,7 @@ abstract public class CommandParser {
      * @param line The line to be parsed
      * @param usedCtrl Whether the user used the control key or not
      */
-    public void parseCommand(CommandWindow origin, String line, boolean usedCtrl) {    
+    public void parseCommand(CommandWindow origin, String line, boolean usedCtrl) {
         if (usedCtrl) {
             handleNonCommand(origin, line);
         } else {
@@ -129,7 +129,7 @@ abstract public class CommandParser {
      * @param args The arguments passed to the command
      */
     abstract protected void handleInvalidCommand(CommandWindow origin, String command, String... args);
-
+    
     /**
      * Called when the input was a line of text that was not a command. This normally
      * means it is sent to the server/channel/user as-is, with no further processing.

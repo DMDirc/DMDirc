@@ -22,16 +22,15 @@
 
 package uk.org.ownage.dmdirc.commandparser;
 
-import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 
 /**
- * Represents a generic server command. Server commands are associated with 
+ * Represents a generic server command. Server commands are associated with
  * a server instance.
  * @author chris
  */
 public abstract class ServerCommand extends Command {
-       
+    
     /** Creates a new instance of ChannelCommand */
     public ServerCommand() {
         super();
@@ -42,6 +41,6 @@ public abstract class ServerCommand extends Command {
      * @param origin The window in which the command was typed
      * @param server The server instance that this command is being executed on
      * @param args Arguments passed to this command
-     */    
+     */
     public abstract void execute(CommandWindow origin, Server server, String... args);
 }

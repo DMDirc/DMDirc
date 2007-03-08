@@ -42,6 +42,6 @@ public interface CommandWindow {
      * @param messageType The type of this message
      * @param args The arguments for the message
      */
-    public void addLine(String messageType, Object... args);    
+    public void addLine(String messageType, Object... args);
     
 }
