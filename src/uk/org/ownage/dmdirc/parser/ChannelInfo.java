@@ -347,7 +347,7 @@ public class ChannelInfo {
 		if (sType.equals("")) { return; }
 		final Character char1 = Character.valueOf((char)1);
 		if (!sMessage.equals("")) { sMessage = " "+sMessage; }
-		myParser.sendString("PRIVMSG "+sName+" :"+char1+sType.toUpperCase()+sMessage+char1);	
+		sendMessage(char1+sType.toUpperCase()+sMessage+char1);
 	}
 	
 	/**
@@ -360,7 +360,7 @@ public class ChannelInfo {
 		if (sType.equals("")) { return; }
 		final Character char1 = Character.valueOf((char)1);
 		if (!sMessage.equals("")) { sMessage = " "+sMessage; }
-		myParser.sendString("NOTICE "+sName+" :"+char1+sType.toUpperCase()+sMessage+char1);	
+		sendNotice(char1+sType.toUpperCase()+sMessage+char1);	
 	}
 	
 	/**
