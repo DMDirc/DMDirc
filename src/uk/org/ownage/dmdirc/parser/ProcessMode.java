@@ -143,7 +143,7 @@ public class ProcessMode extends IRCProcessor {
 					callDebugInfo(myParser.ndInfo, "\tOld Mode Value: %d",iChannelClientInfo.getChanMode());
 					if (bPositive) { iChannelClientInfo.setChanMode(iChannelClientInfo.getChanMode() + nValue); sTemp = "+"; }
 					else { iChannelClientInfo.setChanMode(iChannelClientInfo.getChanMode() - nValue); sTemp = "-"; }
-					sTemp = sTemp+cMode+" "+iChannelClientInfo.getNickname();
+					sTemp = sTemp+cMode;
 					
 					callChannelUserModeChanged(iChannel, iChannelClientInfo, setterCCI, token[0], sTemp);
 					continue;
