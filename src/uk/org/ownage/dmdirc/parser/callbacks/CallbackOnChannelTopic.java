@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelTopic;
 
+/**
+ * Callback to all objects implementing the IChannelTopic Interface.
+ */
 public class CallbackOnChannelTopic extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IChannelTopic Interface.
@@ -35,6 +38,7 @@ public class CallbackOnChannelTopic extends CallbackObjectSpecific {
 	 * @see IChannelTopic
 	 * @param cChannel Channel that topic was set on
 	 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(ChannelInfo cChannel, boolean bIsJoinTopic) {
 		boolean bResult = false;

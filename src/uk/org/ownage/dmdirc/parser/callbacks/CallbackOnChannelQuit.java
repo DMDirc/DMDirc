@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelQuit;
 
+/**
+ * Callback to all objects implementing the IChannelQuit Interface.
+ */
 public class CallbackOnChannelQuit extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IChannelQuit Interface.
@@ -36,6 +39,7 @@ public class CallbackOnChannelQuit extends CallbackObjectSpecific {
 	 * @param cChannel Channel that user was on
 	 * @param cChannelClient User thats quitting
 	 * @param sReason Quit reason
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
 		boolean bResult = false;

@@ -28,12 +28,16 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.INoticeAuth;
 
+/**
+ * Callback to all objects implementing the INoticeAuth Interface.
+ */
 public class CallbackOnNoticeAuth extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the INoticeAuth Interface.
 	 *
 	 * @see INoticeAuth
 	 * @param data Incomming Line.
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(String data) {
 		boolean bResult = false;

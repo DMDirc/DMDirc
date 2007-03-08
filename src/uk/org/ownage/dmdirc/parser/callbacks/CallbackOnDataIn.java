@@ -28,12 +28,16 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
 
+/**
+ * Callback to all objects implementing the IDataIn Interface.
+ */
 public class CallbackOnDataIn extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the IDataIn Interface.
 	 *
 	 * @see IDataIn
 	 * @param data Incomming Line.
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(String data) {
 		boolean bResult = false;

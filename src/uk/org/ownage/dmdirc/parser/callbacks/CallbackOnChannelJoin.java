@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelJoin;
 
+/**
+ * Callback to all objects implementing the IChannelJoin Interface.
+ */
 public class CallbackOnChannelJoin extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IChannelJoin Interface.
@@ -35,6 +38,7 @@ public class CallbackOnChannelJoin extends CallbackObjectSpecific {
 	 * @see IChannelJoin
 	 * @param cChannel Channel Object
 	 * @param cChannelClient ChannelClient object for new person
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
 		boolean bResult = false;

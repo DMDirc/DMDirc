@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
 
+/**
+ * Callback to all objects implementing the IChannelUserModeChanged Interface.
+ */
 public class CallbackOnChannelUserModeChanged extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IChannelUserModeChanged Interface.
@@ -38,6 +41,7 @@ public class CallbackOnChannelUserModeChanged extends CallbackObjectSpecific {
 	 * @param cSetByClient Client chaning the modes (null if server)
 	 * @param sMode String representing mode change (ie +o)
 	 * @param sHost Host doing the mode changing (User host or server name)
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode) {
 		boolean bResult = false;

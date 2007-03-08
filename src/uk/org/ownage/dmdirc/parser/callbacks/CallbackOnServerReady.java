@@ -28,12 +28,16 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IServerReady;
 
+/**
+ * Callback to all objects implementing the IServerReady Interface.
+ */
 public class CallbackOnServerReady extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the IServerReady Interface.
 	 *
 	 * @see IServerReady
-	 */	
+	 * @return true if a callback was called, else false
+	 */
 	public boolean call() {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {

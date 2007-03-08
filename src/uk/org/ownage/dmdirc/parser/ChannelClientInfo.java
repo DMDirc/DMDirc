@@ -48,7 +48,7 @@ public class ChannelClientInfo {
 	 * @param tParser Refernce to parser that owns this channelclient (used for modes)
 	 * @param client Client that this channelclient represents
 	 */	
-	public ChannelClientInfo(IRCParser tParser, ClientInfo client) { myParser = tParser; cClient = client; }
+	public ChannelClientInfo(final IRCParser tParser, final ClientInfo client) { myParser = tParser; cClient = client; }
 	
 	/**
 	 * Get the client object represented by this channelclient.
@@ -68,7 +68,7 @@ public class ChannelClientInfo {
 	 *
 	 * @param nNewMode integer representing the modes this client has.
 	 */	
-	public void setChanMode(int nNewMode) { nModes = nNewMode; }
+	public void setChanMode(final int nNewMode) { nModes = nNewMode; }
 	/**
 	 * Get the modes this client has (Prefix modes).
 	 *
@@ -82,17 +82,18 @@ public class ChannelClientInfo {
 	 * getChanModeStr(false).charAt(0) can be used to get the highest mode (o)
 	 * getChanModeStr(true).charAt(0) can be used to get the highest prefix (@)
 	 *
+	 * @param bPrefix if this is true, prefixes will be returned (@+) not modes (ov)
 	 * @return String representing the modes this client has.
 	 */
-	public String getChanModeStr(boolean bPrefix) {
-		String sModes = "", sTemp = "";
+	public String getChanModeStr(final boolean bPrefix) {
+		String sModes = "";
 		Character cTemp;
-		int nTemp = 0, nModes = this.getChanMode();
+		int nTemp = 0, nCurrentModes = this.getChanMode();
 
 //		for (int i = 1; i < myParser.nNextKeyPrefix; i = i*2) {
 		for (int i = myParser.nNextKeyPrefix; i > 0; i = i/2) {
-			if ((nModes & i) == i) {
-				for (Enumeration e = myParser.hPrefixModes.keys(); e.hasMoreElements();) {
+			if ((nCurrentModes & i) == i) {
+				for (final Enumeration e = myParser.hPrefixModes.keys(); e.hasMoreElements();) {
 					cTemp = (Character)e.nextElement();
 					nTemp = myParser.hPrefixModes.get(cTemp);
 					if (nTemp == i) {
@@ -161,9 +162,10 @@ public class ChannelClientInfo {
 	public String toFullString() { return this.getChanModeStr(true)+this.getNickname(); }	
 	
 	/**
-	 * Get SVN Version information
+	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
 	public static String getSvnInfo () { return "$Id$"; }	
 }
+

@@ -27,7 +27,9 @@ package uk.org.ownage.dmdirc.parser.callbacks;
 import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelNickChanged;
-
+/**
+ * Callback to all objects implementing the IChannelNickChanged Interface.
+ */
 public class CallbackOnChannelNickChanged extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IChannelNickChanged Interface.
@@ -36,6 +38,7 @@ public class CallbackOnChannelNickChanged extends CallbackObjectSpecific {
 	 * @param cChannel One of the channels that the user is on
 	 * @param cChannelClient Client changing nickname
 	 * @param sOldNick Nickname before change
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick) {
 		boolean bResult = false;

@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelPart;
 
+/**
+ * Callback to all objects implementing the IChannelPart Interface.
+ */
 public class CallbackOnChannelPart extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IChannelPart Interface.
@@ -36,6 +39,7 @@ public class CallbackOnChannelPart extends CallbackObjectSpecific {
 	 * @param cChannel Channel that the user parted
 	 * @param cChannelClient Client that parted
 	 * @param sReason Reason given for parting (May be "")
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
 		boolean bResult = false;

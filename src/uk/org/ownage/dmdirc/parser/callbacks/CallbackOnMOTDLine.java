@@ -28,12 +28,16 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDLine;
 
+/**
+ * Callback to all objects implementing the IMOTDLine Interface.
+ */
 public class CallbackOnMOTDLine extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the IMOTDLine Interface.
 	 *
 	 * @see IMOTDLine
 	 * @param data Incomming Line.
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(String data) {
 		boolean bResult = false;

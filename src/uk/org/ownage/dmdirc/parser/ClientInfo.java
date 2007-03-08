@@ -52,9 +52,10 @@ public class ClientInfo {
 	 * Get a nickname of a user from a hostmask.
 	 * Hostmask must match (?:)nick(?!ident)(?@host)
 	 *
+	 * @param sWho Hostname to parse
 	 * @return nickname of user
 	 */
-	public static String parseHost(String sWho) {
+	public static String parseHost(final String sWho) {
 		// Get the nickname from the string.
 		return parseHostFull(sWho)[0];
 	}
@@ -63,9 +64,10 @@ public class ClientInfo {
 	 * Get a nick ident and host of a user from a hostmask.
 	 * Hostmask must match (?:)nick(?!ident)(?@host)
 	 *
+	 * @param sWho Hostname to parse
 	 * @return Array containing details. (result[0] -> Nick | result[1] -> Ident | result[2] -> Host)
 	 */
-	public static String[] parseHostFull(String sWho) {
+	public static String[] parseHostFull(final String sWho) {
 		String sTemp[] = null;
 		String result[] = new String[3];
 		sTemp = sWho.split(":",2);
@@ -87,17 +89,17 @@ public class ClientInfo {
 	 * @param sHostmask Hostmask parsed by parseHost to get nickname
 	 * @see ClientInfo#parseHost
 	 */
-	public ClientInfo (IRCParser tParser, String sHostmask) { 
+	public ClientInfo (final IRCParser tParser, final String sHostmask) { 
 		setUserBits(sHostmask,true);
 		myParser = tParser;
 	}
 	/**
-	 * Get a string representation of the user
+	 * Get a string representation of the user.
 	 *
 	 * @param sHostmask takes a host (?:)nick(?!ident)(?@host) and sets nick/host/ident variables
 	 * @param bUpdateNick if this is false, only host/ident will be updated.
 	 */	
-	public void setUserBits (String sHostmask, boolean bUpdateNick) {
+	public void setUserBits (final String sHostmask, final boolean bUpdateNick) {
 		String sTemp[] = parseHostFull(sHostmask);
 		if (!sTemp[2].equals("")) { sHost = sTemp[2]; }
 		if (!sTemp[1].equals("")) { sIdent = sTemp[1]; }
@@ -105,26 +107,26 @@ public class ClientInfo {
 	}
 	
 	/**
-	 * Get a string representation of the user
+	 * Get a string representation of the user.
 	 *
 	 * @return String representation of the user.
 	 */
 	public String toString() { return sNickname+"!"+sIdent+"@"+sHost; }
 	
 	/**
-	 * Get the nickname for this user
+	 * Get the nickname for this user.
 	 *
 	 * @return Known nickname for user.
 	 */
 	public String getNickname() { return sNickname; }
 	/**
-	 * Get the ident for this user
+	 * Get the ident for this user.
 	 *
 	 * @return Known ident for user. (May be "")
 	 */		
 	public String getIdent() { return sIdent; }
 	/**
-	 * Get the hostname for this user
+	 * Get the hostname for this user.
 	 *
 	 * @return Known host for user. (May be "")
 	 */		
@@ -135,7 +137,7 @@ public class ClientInfo {
 	 *
 	 * @param bNewState Boolean representing state. true = away, false = here
 	 */	
-	public void setAwayState(boolean bNewState) { bIsAway = bNewState; }
+	public void setAwayState(final boolean bNewState) { bIsAway = bNewState; }
 	/**
 	 * Get the away state of a user.
 	 *
@@ -148,7 +150,7 @@ public class ClientInfo {
 	 *
 	 * @param nNewMode new integer representing channel modes. (Boolean only)
 	 */	
-	public void setUserMode(int nNewMode) { nModes = nNewMode; }
+	public void setUserMode(final int nNewMode) { nModes = nNewMode; }
 	/**
 	 * Get the user modes (as an integer).
 	 *
@@ -164,12 +166,13 @@ public class ClientInfo {
 	public String getUserModeStr() { 
 		String sModes = "+", sTemp = "";
 		Character cTemp;
-		int nTemp = 0, nModes = this.getUserMode();
+		int nTemp = 0;
+		final int nChanModes = this.getUserMode();
 		
-		for (Enumeration e = myParser.hUserModes.keys(); e.hasMoreElements();) {
+		for (final Enumeration e = myParser.hUserModes.keys(); e.hasMoreElements();) {
 			cTemp = (Character)e.nextElement();
 			nTemp = myParser.hUserModes.get(cTemp);
-			if ((nModes & nTemp) == nTemp) { sModes = sModes+cTemp; }
+			if ((nChanModes & nTemp) == nTemp) { sModes = sModes+cTemp; }
 		}
 		
 		return sModes;
@@ -195,7 +198,7 @@ public class ClientInfo {
 	}
 	
 	/**
-	 * Get SVN Version information
+	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */

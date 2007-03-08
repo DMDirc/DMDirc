@@ -102,7 +102,11 @@ public abstract class CallbackObject {
 	 */
 	public void del(ICallbackInterface eMethod) { delCallback(eMethod); }
 	
-	/** Get the name for this callback */
+	/**
+	 * Get the name for this callback
+	 *
+	 * @return Name of callback
+	 */
 	public String getName() {
 		Package thisPackage = this.getClass().getPackage();
 		int packageLength = 0;
@@ -112,7 +116,11 @@ public abstract class CallbackObject {
 		return this.getClass().getName().substring(packageLength+8); // 8 is the length of "Callback"
 	}
 	
-	/** Get the name for this callback in lowercase */
+	/**
+	 * Get the name for this callback in lowercase.
+	 *
+	 * @return Name of callback, in lowercase
+	 */
 	public final String getLowerName() {
 		return this.getName().toLowerCase();
 	}

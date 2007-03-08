@@ -28,12 +28,16 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
 
+/**
+ * Callback to all objects implementing the IChannelGotNames Interface.
+ */
 public class CallbackOnChannelGotNames extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IChannelGotNames Interface.
 	 *
 	 * @see IChannelGotNames
 	 * @param cChannel Channel which the names reply is for
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(ChannelInfo cChannel) {
 		boolean bResult = false;

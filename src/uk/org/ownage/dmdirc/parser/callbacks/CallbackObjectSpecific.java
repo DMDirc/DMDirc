@@ -45,6 +45,7 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	 * 
 	 * @param eMethod Object that is being called back to
 	 * @param cChannel ChannelInfo object for the channel to test
+	 * @return true if channel given matches the specifics for the method given
 	 */
 	protected boolean isValidChan(ICallbackInterface eMethod, ChannelInfo cChannel) {
 		if (specificData.containsKey(eMethod)) { 
@@ -58,6 +59,7 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	 * 
 	 * @param eMethod Object that is being called back to
 	 * @param sHost Hostname of user that sent the query
+	 * @return true if host given matches the specifics for the method given
 	 */
 	protected boolean isValidUser(ICallbackInterface eMethod, String sHost) {
 		String nickname = ClientInfo.parseHost(sHost);

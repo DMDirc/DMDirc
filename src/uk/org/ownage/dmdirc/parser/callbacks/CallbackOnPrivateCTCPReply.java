@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
 
+/**
+ * Callback to all objects implementing the IPrivateCTCPReply Interface.
+ */
 public class CallbackOnPrivateCTCPReply extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IPrivateCTCPReply Interface.
@@ -36,6 +39,7 @@ public class CallbackOnPrivateCTCPReply extends CallbackObjectSpecific {
 	 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 	 * @param sMessage Reply Contents
 	 * @param sHost Hostname of sender (or servername)
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(String sType, String sMessage, String sHost) {
 		boolean bResult = false;

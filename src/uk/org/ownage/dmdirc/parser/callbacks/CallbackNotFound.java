@@ -43,5 +43,5 @@ public class CallbackNotFound extends Exception {
 	 *
 	 * @param message Reason for exception
 	 */
-	public CallbackNotFound(String message) { super(message); }
+	public CallbackNotFound(final String message) { super(message); }
 }

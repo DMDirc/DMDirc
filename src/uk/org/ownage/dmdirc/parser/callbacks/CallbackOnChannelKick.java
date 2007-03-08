@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelKick;
 
+/**
+ * Callback to all objects implementing the IChannelKick Interface.
+ */
 public class CallbackOnChannelKick extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IChannelKick Interface.
@@ -38,6 +41,7 @@ public class CallbackOnChannelKick extends CallbackObjectSpecific {
 	 * @param cKickedByClient ChannelClient that did the kicking (may be null if server)
 	 * @param sReason Reason for kick (may be "")
 	 * @param sKickedByHost Hostname of Kicker (or servername)
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost) {
 		boolean bResult = false;

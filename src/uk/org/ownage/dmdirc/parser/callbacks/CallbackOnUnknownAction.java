@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownAction;
 
+/**
+ * Callback to all objects implementing the IUnknownAction Interface.
+ */
 public class CallbackOnUnknownAction extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the IUnknownAction Interface.
@@ -36,6 +39,7 @@ public class CallbackOnUnknownAction extends CallbackObject {
 	 * @param sMessage Action contents
 	 * @param sTarget Actual target of action
 	 * @param sHost Hostname of sender (or servername)
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;

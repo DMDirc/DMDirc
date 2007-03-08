@@ -48,3 +48,4 @@ public interface IChannelNonUserModeChanged extends ICallbackInterface {
 	 */
 	public void onChannelNonUserModeChanged(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes);
 }
+

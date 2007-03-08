@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUserModeChanged;
 
+/**
+ * Callback to all objects implementing the IUserModeChanged Interface.
+ */
 public class CallbackOnUserModeChanged extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the IUserModeChanged Interface.
@@ -35,6 +38,7 @@ public class CallbackOnUserModeChanged extends CallbackObject {
 	 * @see IUserModeChanged
 	 * @param cClient Client that had the mode changed (almost always us)
 	 * @param sSetby Host that set the mode (us or servername)
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(ClientInfo cClient, String sSetby) {
 		boolean bResult = false;
@@ -59,3 +63,4 @@ public class CallbackOnUserModeChanged extends CallbackObject {
 	 */
 	public CallbackOnUserModeChanged (IRCParser parser, CallbackManager manager) { super(parser, manager); }
 }
+

@@ -24,9 +24,9 @@
 
 package uk.org.ownage.dmdirc.parser;
 
-import java.util.Hashtable;
-import java.util.Enumeration;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
 /**
  * Contains Channel information.
@@ -61,7 +61,7 @@ public class ChannelInfo {
 	private Hashtable<String,ChannelClientInfo> hChannelUserList = new Hashtable<String,ChannelClientInfo>();
 	/** Hashtable storing values for modes set in the channel that use parameters. */
 	private Hashtable<Character,String> hParamModes = new Hashtable<Character,String>();
-	/** Hashtable storing list modes */
+	/** Hashtable storing list modes. */
 	private Hashtable<Character,ArrayList<String>> hListModes = new Hashtable<Character,ArrayList<String>>();
 
 	/**
@@ -70,7 +70,7 @@ public class ChannelInfo {
 	 * @param tParser Refernce to parser that owns this channelclient (used for modes)	 
 	 * @param name Channel name.
 	 */
-	public ChannelInfo (IRCParser tParser, String name) { myParser = tParser; sName = name; }
+	public ChannelInfo (final IRCParser tParser, final String name) { myParser = tParser; sName = name; }
 	
 	/**
 	 * Get the name of this channel object.
@@ -86,13 +86,13 @@ public class ChannelInfo {
 	public int getUserCount() { return hChannelUserList.size(); }
 	
 	/**
-	 * Get the channel users
+	 * Get the channel users.
 	 *
 	 * @return ArrayList of ChannelClients
 	 */
 	public ArrayList<ChannelClientInfo> getChannelClients() {
 		ArrayList<ChannelClientInfo> lClients = new ArrayList<ChannelClientInfo>();
-		for (Enumeration e = hChannelUserList.keys(); e.hasMoreElements();) {
+		for (final Enumeration e = hChannelUserList.keys(); e.hasMoreElements();) {
 			lClients.add(hChannelUserList.get(e.nextElement()));
 		}
 		return lClients;
@@ -106,6 +106,7 @@ public class ChannelInfo {
 	/**
 	 * Get the ChannelClientInfo object associated with a nickname.
 	 *
+	 * @param sWho Nickname to return channelclient for
 	 * @return ChannelClientInfo object requested, or null if not found
 	 */
 	public ChannelClientInfo getUser(String sWho) {
@@ -116,9 +117,10 @@ public class ChannelInfo {
 	/**
 	 * Get the ChannelClientInfo object associated with a ClientInfo object.
 	 *
+	 * @param cWho ClientInfo to return ChannelClient for
 	 * @return ChannelClientInfo object requested, or null if not found
 	 */	
-	public ChannelClientInfo getUser(ClientInfo cWho) {
+	public ChannelClientInfo getUser(final ClientInfo cWho) {
 		ChannelClientInfo cTemp = null;
 		for (Enumeration e = hChannelUserList.keys(); e.hasMoreElements();) {
 			cTemp = hChannelUserList.get(e.nextElement());
@@ -134,7 +136,7 @@ public class ChannelInfo {
 	 * @param cClient Client object to be added to channel
 	 * @return ChannelClientInfo object added, or an existing object if already known on channel
 	 */		
-	protected ChannelClientInfo addClient(ClientInfo cClient) {
+	protected ChannelClientInfo addClient(final ClientInfo cClient) {
 		ChannelClientInfo cTemp = null;
 		cTemp = getUser(cClient);
 		if (cTemp == null) { 
@@ -149,7 +151,7 @@ public class ChannelInfo {
 	 *
 	 * @param cClient Client object to be removed from channel
 	 */	
-	protected void delClient(ClientInfo cClient) {
+	protected void delClient(final ClientInfo cClient) {
 		ChannelClientInfo cTemp = null;
 		cTemp = getUser(cClient);
 		if (cTemp != null) {
@@ -162,7 +164,7 @@ public class ChannelInfo {
 	 *
 	 * @param nNewTime New unixtimestamp time for the topic (Seconds sinse epoch, not milliseconds)
 	 */
-	public void setTopicTime(long nNewTime) { nTopicTime = nNewTime; }
+	public void setTopicTime(final long nNewTime) { nTopicTime = nNewTime; }
 	/**
 	 * Get the topic time.
 	 *
@@ -175,7 +177,7 @@ public class ChannelInfo {
 	 *
 	 * @param sNewTopic New contents of topic
 	 */	
-	public void setTopic(String sNewTopic) { sTopic = sNewTopic; }
+	public void setTopic(final String sNewTopic) { sTopic = sNewTopic; }
 	/**
 	 * Get the topic.
 	 *
@@ -188,7 +190,7 @@ public class ChannelInfo {
 	 *
 	 * @param sNewUser New user who set the topic (nickname if gotten on connect, full host if seen by parser)
 	 */	
-	public void setTopicUser(String sNewUser) { sTopicUser = sNewUser; }
+	public void setTopicUser(final String sNewUser) { sTopicUser = sNewUser; }
 	/**
 	 * Get the topic creator.
 	 *
@@ -201,7 +203,7 @@ public class ChannelInfo {
 	 *
 	 * @param nNewMode new integer representing channel modes. (Boolean only)
 	 */	
-	public void setMode(int nNewMode) { nModes = nNewMode; }
+	public void setMode(final int nNewMode) { nModes = nNewMode; }
 	/**
 	 * Get the channel modes (as an integer).
 	 *
@@ -217,14 +219,15 @@ public class ChannelInfo {
 	public String getModeStr() { 
 		String sModes = "+", sModeParams = "", sTemp = "";
 		Character cTemp;
-		int nTemp = 0, nModes = this.getMode();
+		int nTemp = 0,
+		final int nChanModes = this.getMode();
 		
-		for (Enumeration e = myParser.hChanModesBool.keys(); e.hasMoreElements();) {
+		for (final Enumeration e = myParser.hChanModesBool.keys(); e.hasMoreElements();) {
 			cTemp = (Character)e.nextElement();
 			nTemp = myParser.hChanModesBool.get(cTemp);
-			if ((nModes & nTemp) == nTemp) { sModes = sModes+cTemp; }
+			if ((nChanModes & nTemp) == nTemp) { sModes = sModes+cTemp; }
 		}
-		for (Enumeration e = hParamModes.keys(); e.hasMoreElements();) {
+		for (final Enumeration e = hParamModes.keys(); e.hasMoreElements();) {
 			cTemp = (Character)e.nextElement();
 			sTemp = hParamModes.get(cTemp);
 			if (!sTemp.equals("")) {
@@ -242,8 +245,8 @@ public class ChannelInfo {
 	 * @param cMode Character representing mode
 	 * @param sValue String repreenting value (if "" mode is unset)
 	 */	
-	public void setModeParam(Character cMode, String sValue) { 
-		if (sValue == "") {
+	public void setModeParam(final Character cMode, final String sValue) { 
+		if (sValue.equals("")) {
 			if (hParamModes.containsKey(cMode)) {
 				hParamModes.remove(cMode);
 			}
@@ -257,7 +260,7 @@ public class ChannelInfo {
 	 * @param cMode Character representing mode
 	 * @return string representing the value of the mode ("" if mode not set)
 	 */	
-	public String getModeParam(Character cMode) { 
+	public String getModeParam(final Character cMode) { 
 		if (hParamModes.containsKey(cMode)) { return hParamModes.get(cMode); }
 		else { return ""; }
 	}
@@ -269,7 +272,7 @@ public class ChannelInfo {
 	 * @param sValue String repreenting value
 	 * @param bAdd Add or remove the value. (true for add, false for remove)
 	 */
-	public void setListModeParam(Character cMode, String sValue, boolean bAdd) { 
+	public void setListModeParam(final Character cMode, final String sValue, final boolean bAdd) { 
 		if (!myParser.hChanModesOther.containsKey(cMode)) { return; }
 		else if (myParser.hChanModesOther.get(cMode) != myParser.cmList) { return; }
 		
@@ -291,7 +294,7 @@ public class ChannelInfo {
 	 * @param cMode Character representing mode
 	 * @return ArrayList containing items in the list, or null if mode is invalid
 	 */
-	public ArrayList setListModeParam(Character cMode) { 
+	public ArrayList setListModeParam(final Character cMode) { 
 		if (!myParser.hChanModesOther.containsKey(cMode)) { return null; }
 		else if (myParser.hChanModesOther.get(cMode) != myParser.cmList) { return null; }
 		
@@ -304,7 +307,7 @@ public class ChannelInfo {
 	 *
 	 * @param sMessage Message to send
 	 */
-	public void sendMessage(String sMessage) { 
+	public void sendMessage(final String sMessage) { 
 		if (sMessage.equals("")) { return; }
 		
 		myParser.sendString("PRIVMSG "+sName+" :"+sMessage);	
@@ -315,7 +318,7 @@ public class ChannelInfo {
 	 *
 	 * @param sMessage Message to send
 	 */
-	public void sendNotice(String sMessage) { 
+	public void sendNotice(final String sMessage) { 
 		if (sMessage.equals("")) { return; }
 		
 		myParser.sendString("NOTICE "+sName+" :"+sMessage);	
@@ -326,7 +329,7 @@ public class ChannelInfo {
 	 *
 	 * @param sMessage Message to send
 	 */
-	public void sendAction(String sMessage) { 
+	public void sendAction(final String sMessage) { 
 		if (sMessage.equals("")) { return; }
 		sendCTCP("ACTION", sMessage);
 	}
@@ -337,11 +340,11 @@ public class ChannelInfo {
 	 * @param sType Type of CTCP
 	 * @param sMessage Optional Additional Parameters
 	 */
-	public void sendCTCP(String sType, String sMessage) { 
+	public void sendCTCP(final String sType, final String sMessage) { 
 		if (sType.equals("")) { return; }
-		Character Char1 = Character.valueOf((char)1);
+		final Character char1 = Character.valueOf((char)1);
 		if (!sMessage.equals("")) { sMessage = " "+sMessage; }
-		myParser.sendString("PRIVMSG "+sName+" :"+Char1+sType.toUpperCase()+sMessage+Char1);	
+		myParser.sendString("PRIVMSG "+sName+" :"+char1+sType.toUpperCase()+sMessage+char1);	
 	}
 	
 	/**
@@ -350,15 +353,15 @@ public class ChannelInfo {
 	 * @param sType Type of CTCP
 	 * @param sMessage Optional Additional Parameters
 	 */
-	public void sendCTCPReply(String sType, String sMessage) { 
+	public void sendCTCPReply(final String sType, final String sMessage) { 
 		if (sType.equals("")) { return; }
-		Character Char1 = Character.valueOf((char)1);
+		final Character char1 = Character.valueOf((char)1);
 		if (!sMessage.equals("")) { sMessage = " "+sMessage; }
-		myParser.sendString("NOTICE "+sName+" :"+Char1+sType.toUpperCase()+sMessage+Char1);	
+		myParser.sendString("NOTICE "+sName+" :"+char1+sType.toUpperCase()+sMessage+char1);	
 	}
 	
 	/**
-	 * Get a string representation of the Channel
+	 * Get a string representation of the Channel.
 	 *
 	 * @return String representation of the Channel.
 	 */
@@ -371,3 +374,4 @@ public class ChannelInfo {
 	 */
 	public static String getSvnInfo () { return "$Id$"; }	
 }
+

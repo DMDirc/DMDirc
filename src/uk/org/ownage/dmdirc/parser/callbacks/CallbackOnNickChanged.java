@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.INickChanged;
 
+/**
+ * Callback to all objects implementing the INickChanged Interface.
+ */
 public class CallbackOnNickChanged extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the INickChanged Interface.
@@ -35,6 +38,7 @@ public class CallbackOnNickChanged extends CallbackObject {
 	 * @see INickChanged
 	 * @param cClient Client changing nickname
 	 * @param sOldNick Nickname before change
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(ClientInfo cClient, String sOldNick) {
 		boolean bResult = false;

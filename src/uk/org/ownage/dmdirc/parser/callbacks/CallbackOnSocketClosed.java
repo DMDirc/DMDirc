@@ -28,12 +28,16 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.ISocketClosed;
 
+/**
+ * Callback to all objects implementing the ISocketClosed Interface.
+ */
 public class CallbackOnSocketClosed extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the ISocketClosed Interface.
 	 *
 	 * @see ISocketClosed
-	 */	
+	 * @return true if a callback was called, else false
+	 */
 	public boolean call() {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {

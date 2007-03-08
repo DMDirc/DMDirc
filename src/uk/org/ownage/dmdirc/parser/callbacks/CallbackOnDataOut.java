@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
 
+/**
+ * Callback to all objects implementing the IDataOut Interface.
+ */
 public class CallbackOnDataOut extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the IDataOut Interface.
@@ -35,6 +38,7 @@ public class CallbackOnDataOut extends CallbackObject {
 	 * @see IDataOut
 	 * @param data Outgoing Data
 	 * @param FromParser True if parser sent the data, false if sent using .sendLine	 
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(String data, boolean FromParser) {
 		boolean bResult = false;

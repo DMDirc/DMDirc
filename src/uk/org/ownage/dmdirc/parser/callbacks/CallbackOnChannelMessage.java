@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelMessage;
 
+/**
+ * Callback to all objects implementing the IChannelMessage Interface.
+ */
 public class CallbackOnChannelMessage extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IChannelMessage Interface.
@@ -37,6 +40,7 @@ public class CallbackOnChannelMessage extends CallbackObjectSpecific {
 	 * @param cChannelClient ChannelClient who sent the message (may be null if server)
 	 * @param sMessage Message contents
 	 * @param sHost Hostname of sender (or servername)
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
 		boolean bResult = false;

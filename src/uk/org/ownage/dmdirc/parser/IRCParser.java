@@ -23,32 +23,32 @@
  */
 
 package uk.org.ownage.dmdirc.parser;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ISocketClosed;
+
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDataIn;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDataOut;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDebugInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnErrorInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnSocketClosed;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ISocketClosed;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import javax.net.SocketFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.X509TrustManager;
 import javax.net.ssl.TrustManager;
-import javax.net.SocketFactory;
-import java.util.Arrays;
-import java.util.Hashtable;
-import java.util.Enumeration;
 
 /**
  * IRC Parser.
@@ -240,6 +240,7 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IDataIn
 	 * @param data Incomming Line.
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callDataIn(String data) {
 		CallbackOnDataIn cb = (CallbackOnDataIn)myCallbackManager.getCallbackType("OnDataIn");
@@ -253,6 +254,7 @@ public class IRCParser implements Runnable {
 	 * @see IDataOut
 	 * @param data Outgoing Data
 	 * @param FromParser True if parser sent the data, false if sent using .sendLine
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callDataOut(String data, boolean FromParser) {
 		CallbackOnDataOut cb = (CallbackOnDataOut)myCallbackManager.getCallbackType("OnDataOut");
@@ -267,6 +269,7 @@ public class IRCParser implements Runnable {
 	 * @param level Debugging Level (ndInfo, ndSocket etc)
 	 * @param data Debugging Information as a format string
 	 * @param args Formatting String Options
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callDebugInfo(int level, String data, Object... args) {
 		return callDebugInfo(level, String.format(data, args));
@@ -277,6 +280,7 @@ public class IRCParser implements Runnable {
 	 * @see IDebugInfo
 	 * @param level Debugging Level (ndInfo, ndSocket etc)
 	 * @param data Debugging Information
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callDebugInfo(int level, String data) {
 		CallbackOnDebugInfo cb = (CallbackOnDebugInfo)myCallbackManager.getCallbackType("OnDebugInfo");
@@ -289,6 +293,7 @@ public class IRCParser implements Runnable {
 	 *
 	 * @see IErrorInfo
 	 * @param errorInfo ParserError object representing the error.
+	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callErrorInfo(ParserError errorInfo) {
 		CallbackOnErrorInfo cb = (CallbackOnErrorInfo)myCallbackManager.getCallbackType("OnErrorInfo");
@@ -300,6 +305,7 @@ public class IRCParser implements Runnable {
 	 * Callback to all objects implementing the SocketClosed Callback.
 	 *
 	 * @see ISocketClosed
+	 * @return true if a method was called, false otherwise
 	 */	
 	protected boolean callSocketClosed() {
 		CallbackOnSocketClosed cb = (CallbackOnSocketClosed)myCallbackManager.getCallbackType("OnSocketClosed");
@@ -360,7 +366,11 @@ public class IRCParser implements Runnable {
 	}
 
 	
-	/** Connect to IRC. */
+	/**
+	 * Connect to IRC.
+	 *
+	 * @throws Exception if there was an error setting up the socket
+	 */
 	private void connect() throws Exception {
 		try {
 			resetState();
@@ -954,6 +964,7 @@ public class IRCParser implements Runnable {
 	 * Check if a channel name is valid.
 	 *
 	 * @param sChannelName Channel name to test
+	 * @return true if name is valid on the current connection, false otherwise. (Always false before noMOTD/MOTDEnd)
 	 */
 	public boolean isValidChannelName(String sChannelName) {
 		return hChanPrefix.containsKey(sChannelName.charAt(0));
@@ -967,7 +978,7 @@ public class IRCParser implements Runnable {
 	public ClientInfo getMyself() { return cMyself; }
 	
 	/**
-	 * Get SVN Version information
+	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */

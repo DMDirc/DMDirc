@@ -141,5 +141,3 @@ public class ParserError {
 	 */
 	public static String getSvnInfo () { return "$Id$"; }	
 }
-
-// eof

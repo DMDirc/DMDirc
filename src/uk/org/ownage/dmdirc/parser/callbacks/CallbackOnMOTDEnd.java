@@ -28,11 +28,15 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
 
+/**
+ * Callback to all objects implementing the IMotdEnd Interface.
+ */
 public class CallbackOnMOTDEnd extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the IMotdEnd Interface.
 	 *
 	 * @see IMOTDEnd
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(boolean noMOTD) {
 		boolean bResult = false;

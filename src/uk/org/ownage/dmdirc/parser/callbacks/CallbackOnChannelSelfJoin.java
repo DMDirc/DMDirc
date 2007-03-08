@@ -28,12 +28,16 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
 
+/**
+ * Callback to all objects implementing the IChannelSelfJoin Interface.
+ */
 public class CallbackOnChannelSelfJoin extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the IChannelSelfJoin Interface.
 	 *
 	 * @see IChannelSelfJoin
 	 * @param cChannel Channel Object
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(ChannelInfo cChannel) {
 		boolean bResult = false;

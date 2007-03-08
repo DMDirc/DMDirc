@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo;
 
+/**
+ * Callback to all objects implementing the IDebugInfo Interface.
+ */
 public class CallbackOnDebugInfo extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the IDebugInfo Interface.
@@ -35,6 +38,7 @@ public class CallbackOnDebugInfo extends CallbackObject {
 	 * @see IDebugInfo
 	 * @param level Debugging Level (ndInfo, ndSocket etc)
 	 * @param data Debugging Information
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(int level, String data) {
 		boolean bResult = false;

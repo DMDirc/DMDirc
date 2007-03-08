@@ -48,3 +48,4 @@ public interface IChannelSingleModeChanged extends ICallbackInterface {
 	 */
 	public void onChannelSingleModeChanged(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes);
 }
+

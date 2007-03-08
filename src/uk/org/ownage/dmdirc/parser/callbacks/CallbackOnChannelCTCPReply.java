@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelCTCPReply;
 
+/**
+ * Callback to all objects implementing the IChannelCTCPReply Interface.
+ */
 public class CallbackOnChannelCTCPReply extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IChannelCTCPReply Interface.
@@ -38,6 +41,7 @@ public class CallbackOnChannelCTCPReply extends CallbackObjectSpecific {
 	 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 	 * @param sMessage Reply Contents
 	 * @param sHost Hostname of sender (or servername)
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost) {
 		boolean bResult = false;

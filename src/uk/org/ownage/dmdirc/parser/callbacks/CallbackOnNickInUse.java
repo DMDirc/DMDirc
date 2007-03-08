@@ -28,11 +28,15 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.INickInUse;
 
+/**
+ * Callback to all objects implementing the INickInUse Interface.
+ */
 public class CallbackOnNickInUse extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the INickInUse Interface.
 	 *
 	 * @see INickInUse
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call() {
 		boolean bResult = false;

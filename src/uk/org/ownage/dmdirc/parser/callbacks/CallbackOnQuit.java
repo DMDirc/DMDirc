@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IQuit;
 
+/**
+ * Callback to all objects implementing the IQuit Interface.
+ */
 public class CallbackOnQuit extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the IQuit Interface.
@@ -35,6 +38,7 @@ public class CallbackOnQuit extends CallbackObject {
 	 * @see IQuit
 	 * @param cClient Client Quitting
 	 * @param sReason Reason for quitting (may be "")
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(ClientInfo cClient, String sReason) {
 		boolean bResult = false;

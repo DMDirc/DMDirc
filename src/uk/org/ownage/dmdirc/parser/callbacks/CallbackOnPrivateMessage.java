@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 
+/**
+ * Callback to all objects implementing the IPrivateMessage Interface.
+ */
 public class CallbackOnPrivateMessage extends CallbackObjectSpecific {
 	/**
 	 * Callback to all objects implementing the IPrivateMessage Interface.
@@ -35,6 +38,7 @@ public class CallbackOnPrivateMessage extends CallbackObjectSpecific {
 	 * @see IPrivateMessage
 	 * @param sMessage Message contents
 	 * @param sHost Hostname of sender (or servername)
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(String sMessage, String sHost) {
 		boolean bResult = false;

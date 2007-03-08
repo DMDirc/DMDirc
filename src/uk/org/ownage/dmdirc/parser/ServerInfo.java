@@ -61,3 +61,4 @@ public class ServerInfo {
 	 */
 	public static String getSvnInfo () { return "$Id$"; }	
 }
+

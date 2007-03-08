@@ -28,6 +28,9 @@ import uk.org.ownage.dmdirc.parser.*;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownCTCP;
 
+/**
+ * Callback to all objects implementing the IUnknownCTCP Interface.
+ */
 public class CallbackOnUnknownCTCP extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the IUnknownCTCP Interface.
@@ -37,6 +40,7 @@ public class CallbackOnUnknownCTCP extends CallbackObject {
 	 * @param sMessage Additional contents
 	 * @param sTarget Actual Target of CTCP
 	 * @param sHost Hostname of sender (or servername)
+	 * @return true if a callback was called, else false
 	 */
 	public boolean call(String sType, String sMessage, String sTarget, String sHost) {
 		boolean bResult = false;
