@@ -25,7 +25,7 @@ package uk.org.ownage.dmdirc.ui;
 import java.awt.Frame;
 
 /**
- * Allows the user to modify global client preferences
+ * Allows the user to modify global client preferences.
  * @author chris
  */
 public class PreferencesDialog extends StandardDialog {
@@ -38,15 +38,15 @@ public class PreferencesDialog extends StandardDialog {
     private static final long serialVersionUID = 1;
     
     /**
-     * Creates a new instance of PreferencesDialog
+     * Creates a new instance of PreferencesDialog.
      * @param parent The frame that owns this dialog
      * @param modal Whether to show modally or not
      */
-    public PreferencesDialog(Frame parent, boolean modal) {
+    public PreferencesDialog(final Frame parent, final boolean modal) {
         super(parent, modal);
     }
     
-    /** Initialises GUI components */
+    /** Initialises GUI components. */
     private void initComponents() {
         
     }

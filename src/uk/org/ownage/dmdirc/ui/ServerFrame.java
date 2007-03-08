@@ -24,17 +24,20 @@ package uk.org.ownage.dmdirc.ui;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.util.Date;
-import javax.swing.JScrollBar;
-import javax.swing.SwingUtilities;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
-import uk.org.ownage.dmdirc.Config;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Date;
+
+import javax.swing.JScrollBar;
+import javax.swing.SwingUtilities;
+import javax.swing.JInternalFrame;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
@@ -44,10 +47,10 @@ import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
 /**
- * The ServerFrame is the MDI window that shows server messages to the user
+ * The ServerFrame is the MDI window that shows server messages to the user.
  * @author chris
  */
-public class ServerFrame extends javax.swing.JInternalFrame implements CommandWindow {
+public class ServerFrame extends JInternalFrame implements CommandWindow {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -57,32 +60,32 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
     private static final long serialVersionUID = 5;
     
     /**
-     * The border used when the frame is not maximised
+     * The border used when the frame is not maximised.
      */
     private Border myborder;
     /**
-     * The dimensions of the titlebar of the frame
+     * The dimensions of the titlebar of the frame.
      **/
     private Dimension titlebarSize;
     /**
-     * whether to auto scroll the textarea when adding text
+     * whether to auto scroll the textarea when adding text.
      */
     private boolean autoScroll = true;
     /**
-     * holds the scrollbar for the frame
+     * holds the scrollbar for the frame.
      */
     private JScrollBar scrollBar;
     /**
-     * The command parser that this frame has been assigned
+     * The command parser that this frame has been assigned.
      */
     private CommandParser commandParser;
     /**
-     * The InputHandler for our input field
+     * The InputHandler for our input field.
      */
     private InputHandler inputHandler;
     
     /**
-     * Creates a new ServerFrame
+     * Creates a new ServerFrame.
      * @param commandParser The command parser to use
      */
     public ServerFrame(final CommandParser commandParser) {
@@ -94,11 +97,11 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
         setClosable(true);
         setResizable(true);
         
-        jTextPane1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
-        jTextPane1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
-        jTextField1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
-        jTextField1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
-        jTextField1.setCaretColor(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
+        jTextPane1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
+        jTextPane1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
+        jTextField1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
+        jTextField1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
+        jTextField1.setCaretColor(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
         
         scrollBar = jScrollPane1.getVerticalScrollBar();
         this.commandParser = commandParser;
@@ -108,10 +111,10 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
                 if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
                     ServerFrame.this.myborder = getBorder();
                     ServerFrame.this.titlebarSize =
-                            ((BasicInternalFrameUI)getUI())
+                            ((BasicInternalFrameUI) getUI())
                             .getNorthPane().getPreferredSize();
                     
-                    ((BasicInternalFrameUI)getUI()).getNorthPane()
+                    ((BasicInternalFrameUI) getUI()).getNorthPane()
                     .setPreferredSize(new Dimension(0,0));
                     setBorder(new EmptyBorder(0,0,0,0));
                     
@@ -124,7 +127,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
                     }
                     
                     setBorder(ServerFrame.this.myborder);
-                    ((BasicInternalFrameUI)getUI()).getNorthPane()
+                    ((BasicInternalFrameUI) getUI()).getNorthPane()
                     .setPreferredSize(ServerFrame.this.titlebarSize);
                     
                     MainFrame.getMainFrame().setMaximised(false);
@@ -134,20 +137,20 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
         });
         
         addInternalFrameListener(new InternalFrameListener() {
-            public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
+            public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
                 jTextField1.requestFocus();
             }
-            public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
+            public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
             }
-            public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
+            public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
             }
-            public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
+            public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
             }
-            public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
+            public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
             }
-            public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
+            public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
             }
-            public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
+            public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
             }
         });
         
@@ -163,7 +166,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
     }
     
     /**
-     * Sets the tab completer for this frame's input handler
+     * Sets the tab completer for this frame's input handler.
      * @param tabCompleter The tab completer to use
      */
     public void setTabCompleter(final TabCompleter tabCompleter) {
@@ -172,7 +175,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
     
     /**
      * Adds a line of text to the main text area, and scrolls the text pane
-     * down so that it's visible if the scrollbar is already at the bottom
+     * down so that it's visible if the scrollbar is already at the bottom.
      * @param line text to add
      */
     public void addLine(final String line) {
@@ -180,11 +183,11 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
             public void run() {
                 for (String myLine : line.split("\n")) {
                     String ts = Formatter.formatMessage("timestamp", new Date());
-                    if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
+                    if (!jTextPane1.getText().equals("")) { ts = "\n" + ts; }
                     Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
                     Styliser.addStyledString(jTextPane1.getStyledDocument(), myLine);
                     
-                    if (scrollBar.getValue() + Math.round(scrollBar.getVisibleAmount()*1.5) < scrollBar.getMaximum()) {
+                    if (scrollBar.getValue() + Math.round(scrollBar.getVisibleAmount() * 1.5) < scrollBar.getMaximum()) {
                         SwingUtilities.invokeLater(new Runnable() {
                             private Rectangle prevRect = jTextPane1.getVisibleRect();
                             public void run() {
@@ -205,7 +208,7 @@ public class ServerFrame extends javax.swing.JInternalFrame implements CommandWi
     
     /**
      * Formats the arguments using the Formatter, then adds the result to the
-     * main text area
+     * main text area.
      * @param messageType The type of this message
      * @param args The arguments for the message
      */

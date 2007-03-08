@@ -26,6 +26,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -46,38 +47,38 @@ public class StandardDialog extends JDialog  {
     private static final long serialVersionUID = 1;
     
     /**
-     * The OK button for this frame
+     * The OK button for this frame.
      */
     protected JButton okButton;
     /**
-     * The cancel button for this frame
+     * The cancel button for this frame.
      */
     protected JButton cancelButton;
     
     /**
-     * Creates a new instance of StandardDialog
+     * Creates a new instance of StandardDialog.
      * @param owner The frame that owns this dialog
      * @param modal Whether to display modally or not
      */
-    public StandardDialog(Frame owner, boolean modal) {
+    public StandardDialog(final Frame owner, final boolean modal) {
         super(owner, modal);
     }
     
     /**
-     * Sets the specified button up as the OK button
+     * Sets the specified button up as the OK button.
      * @param button The target button
      */
-    protected void setOkButton(JButton button) {
+    protected void setOkButton(final JButton button) {
         okButton = button;
         button.setText("OK");
         button.setDefaultCapable(true);
     }
     
     /**
-     * Sets the specified button up as the Cancel button
+     * Sets the specified button up as the Cancel button.
      * @param button The target button
      */
-    protected void setCancelButton(JButton button) {
+    protected void setCancelButton(final JButton button) {
         cancelButton = button;
         button.setText("Cancel");
         button.setDefaultCapable(false);
@@ -89,7 +90,8 @@ public class StandardDialog extends JDialog  {
      * @param leftButton The left-most button
      * @param rightButton The right-most button
      */
-    protected void orderButtons(JButton leftButton, JButton rightButton) {
+    protected void orderButtons(final JButton leftButton,
+            final JButton rightButton) {
         if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
             // Windows - put the OK button on the left
             setOkButton(leftButton);
@@ -109,13 +111,13 @@ public class StandardDialog extends JDialog  {
      */
     protected JRootPane createRootPane() {
         ActionListener escapeListener = new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
+            public void actionPerformed(final ActionEvent actionEvent) {
                 executeAction(StandardDialog.this.cancelButton);
             }
         };
         
         ActionListener enterListener = new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
+            public void actionPerformed(final ActionEvent actionEvent) {
                 executeAction(StandardDialog.this.okButton);
             }
         };
@@ -124,14 +126,16 @@ public class StandardDialog extends JDialog  {
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         
         JRootPane rootPane = new JRootPane();
-        rootPane.registerKeyboardAction(escapeListener, escape, JComponent.WHEN_IN_FOCUSED_WINDOW);
-        rootPane.registerKeyboardAction(enterListener, enter, JComponent.WHEN_IN_FOCUSED_WINDOW);
+        rootPane.registerKeyboardAction(escapeListener, escape,
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
+        rootPane.registerKeyboardAction(enterListener, enter,
+                JComponent.WHEN_IN_FOCUSED_WINDOW);
         
         return rootPane;
     }
     
     /**
-     * Retrieves the OK button for this form
+     * Retrieves the OK button for this form.
      * @return The form's OK button
      */
     protected JButton getOkButton() {
@@ -139,7 +143,7 @@ public class StandardDialog extends JDialog  {
     }
     
     /**
-     * Retrieves the Cancel button for this form
+     * Retrieves the Cancel button for this form.
      * @return The form's cancel button
      */
     protected JButton getCancelButton() {
@@ -150,7 +154,7 @@ public class StandardDialog extends JDialog  {
      * Simulates the user clicking on the specified target button.
      * @param target The button to use
      */
-    protected void executeAction(JButton target) {
+    protected void executeAction(final JButton target) {
         if (target != null) {
             target.doClick();
         }

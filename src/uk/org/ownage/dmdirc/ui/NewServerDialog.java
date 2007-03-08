@@ -22,20 +22,22 @@
 
 package uk.org.ownage.dmdirc.ui;
 
-import javax.swing.JInternalFrame;
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.ServerManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JInternalFrame;
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+
+import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.ServerManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
- * Dialog that allows the user to enter details of a new server to connect to
+ * Dialog that allows the user to enter details of a new server to connect to.
  * @author chris
  */
 public class NewServerDialog extends StandardDialog {
@@ -43,28 +45,28 @@ public class NewServerDialog extends StandardDialog {
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * objects being unserialized with the new class)..
      */
     private static final long serialVersionUID = 2;
     
     /**
-     * A previously created instance of NewServerDialog
+     * A previously created instance of NewServerDialog.
      */
     private static NewServerDialog me;
     
     /**
-     * Creates a new instance of the dialog
+     * Creates a new instance of the dialog.
      */
     private NewServerDialog() {
-        super((java.awt.Frame)MainFrame.getMainFrame(), false);
+        super((java.awt.Frame) MainFrame.getMainFrame(), false);
         
         initComponents();
         
         orderButtons(jButton2, jButton1);
         
-        jTextField1.setText(Config.getOption("general","server"));
-        jTextField2.setText(Config.getOption("general","port"));
-        jTextField3.setText(Config.getOption("general","password"));
+        jTextField1.setText(Config.getOption("general", "server"));
+        jTextField2.setText(Config.getOption("general", "port"));
+        jTextField3.setText(Config.getOption("general", "password"));
         jTextField2.setInputVerifier(new PortVerifier());
         
         addCallbacks();
@@ -97,16 +99,16 @@ public class NewServerDialog extends StandardDialog {
     }
     
     /**
-     * Adds listeners for various objects in the dialog
+     * Adds listeners for various objects in the dialog.
      */
     private void addCallbacks() {
         getCancelButton().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
+            public void actionPerformed(final ActionEvent actionEvent) {
                 NewServerDialog.this.setVisible(false);
             }
         });
         getOkButton().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
+            public void actionPerformed(final ActionEvent actionEvent) {
                 String host = jTextField1.getText();
                 String pass = jTextField3.getText();
                 int port = Integer.parseInt(jTextField2.getText());
@@ -115,8 +117,8 @@ public class NewServerDialog extends StandardDialog {
                 
                 // Open in a new window?
                 if (jCheckBox1.isSelected() ||
-                        ServerManager.getServerManager().numServers() == 0 ||
-                        MainFrame.getMainFrame().getActiveFrame() == null) {
+                        ServerManager.getServerManager().numServers() == 0
+                        || MainFrame.getMainFrame().getActiveFrame() == null) {
                     Server server = new Server(host, port, pass, jCheckBox4.isSelected());
                 } else {
                     JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
@@ -280,21 +282,21 @@ public class NewServerDialog extends StandardDialog {
 }
 
 /**
- * Verifies that the port number is a valid port
+ * Verifies that the port number is a valid port.
  */
 class PortVerifier extends InputVerifier {
     
     /**
-     * Verifies that the number specified in the textfield is a valid port
+     * Verifies that the number specified in the textfield is a valid port.
      * @param jComponent The component to be tested
      * @return true iff the number is a valid port, false otherwise
      */
-    public boolean verify(JComponent jComponent) {
-        JTextField tf = (JTextField)jComponent;
+    public boolean verify(final JComponent jComponent) {
+        JTextField tf = (JTextField) jComponent;
         try {
             Integer port = Integer.parseInt(tf.getText());
             return (port > 0 && port <= 65535);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             return false;
         }
     }
