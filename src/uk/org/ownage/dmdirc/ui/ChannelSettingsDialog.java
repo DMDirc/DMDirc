@@ -195,6 +195,19 @@ public class ChannelSettingsDialog extends StandardDialog
             constraints.gridx = 0;
         }
         
+        for (int i = 0; i < paramModes.length(); i++) {
+            String mode = paramModes.substring(i, i+1);
+            String value = channel.getChannelInfo().getModeParam(mode.charAt(0));
+            boolean state = ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+            
+            ParamModePanel panel = new ParamModePanel(mode, state, value);
+            modesPanel.add(panel, constraints);
+            
+            modeInputs.put(mode, panel);
+            
+            constraints.gridy++;
+        }
+        
         pack();
     }
     

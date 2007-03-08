@@ -22,10 +22,16 @@
 
 package uk.org.ownage.dmdirc.ui.components;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import uk.org.ownage.dmdirc.Config;
 
 /**
@@ -33,14 +39,14 @@ import uk.org.ownage.dmdirc.Config;
  * the user a checkbox, the mode's name, and a text field
  * @author chris
  */
-public class ParamModePanel extends JPanel {
+public class ParamModePanel extends JPanel implements ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 1;
     
     private JCheckBox checkBox;
     private JTextField textField;
@@ -53,18 +59,39 @@ public class ParamModePanel extends JPanel {
      */
     public ParamModePanel(String mode, boolean state, String value) {
         String text = "Mode "+mode;
+        GridBagConstraints constraints = new GridBagConstraints();
+        //constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.anchor = GridBagConstraints.WEST;
         
         setLayout(new GridBagLayout());
+        setBorder(new EmptyBorder(5,5,0,5));
         
         if (Config.hasOption("server","mode"+mode)) {
             text = Config.getOption("server", "mode"+mode);
         }
         
         checkBox = new JCheckBox(text, state);
-        add(checkBox);
+        add(checkBox, constraints);
         
+        constraints.anchor = GridBagConstraints.EAST;
         textField = new JTextField(value);
-        add(textField);
+        textField.setColumns(10);
+        add(textField, constraints);
+        
+        if (!state) {
+            textField.setEnabled(false);
+        }
+        
+        checkBox.addActionListener(this);
+        checkBox.setBorder(new EmptyBorder(0,0,0,10));
+    }
+    
+    /**
+     * Called when our checkbox is toggled
+     * @param actionEvent associated action event
+     */
+    public void actionPerformed(ActionEvent actionEvent) {
+        textField.setEnabled(checkBox.isSelected());
     }
     
 }
