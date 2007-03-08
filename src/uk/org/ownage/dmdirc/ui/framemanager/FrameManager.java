@@ -42,90 +42,94 @@ public interface FrameManager {
      * should render itself within the parent.
      * @param parent The parent control
      */
-    public void setParent(JComponent parent);
+    void setParent(JComponent parent);
     
     /**
      * Indicates whether this frame manager can be positioned vertically
-     * (i.e., at the side of the screen)
+     * (i.e., at the side of the screen).
      * @return True iff the frame manager can be positioned vertically
      */
-    public boolean canPositionVertically();
+    boolean canPositionVertically();
     
     /**
      * Indicates whether this frame manager can be positioned horizontally
-     * (i.e., at the top or bottom of the screen)
+     * (i.e., at the top or bottom of the screen).
      * @return True iff the frame manager can be positioned horizontally
      */
-    public boolean canPositionHorizontally();
+    boolean canPositionHorizontally();
     
     /**
-     * Indicates that there is a new active frame
+     * Indicates that there is a new active frame.
      * @param source The object that now has focus
      */
-    public void setSelected(FrameContainer source);
+    void setSelected(FrameContainer source);
     
     /**
      * Shows an event notification to the user by colouring the corresponding
-     * element to the source a specific colour
+     * element to the source a specific colour.
      * @param source The object requesting notification
      * @param colour The colour that should be used to indicate the notification
      */
-    public void showNotification(FrameContainer source, Color colour);
+    void showNotification(FrameContainer source, Color colour);
     
     /**
-     * Removes the notification status of the specified object
+     * Removes the notification status of the specified object.
      * @param source The object whose notification should be cleared
      */
-    public void clearNotification(FrameContainer source);
+    void clearNotification(FrameContainer source);
     
     /**
      * Adds a new server instance to this frame manager.
      * @param server The server to be added
      */
-    public void addServer(Server server);
+    void addServer(Server server);
+    
     /**
      * Removes a server instance from this frame manager.
      * @param server The server to be removed
      */
-    public void delServer(Server server);
+    void delServer(Server server);
     
     /**
      * Adds a new channel instance to this frame manager.
      * @param server The server to which the channel belongs
      * @param channel The channel to be added
      */
-    public void addChannel(Server server, Channel channel);
+    void addChannel(Server server, Channel channel);
+    
     /**
      * Removes a channel instance from this frame manager.
      * @param server The server to which the channel belongs
      * @param channel The channel to be removed
      */
-    public void delChannel(Server server, Channel channel);
+    void delChannel(Server server, Channel channel);
     
     /**
      * Adds a new query instance to this frame manager.
      * @param server The server to which the query belongs
      * @param query The query to be added
      */
-    public void addQuery(Server server, Query query);
+    void addQuery(Server server, Query query);
+    
     /**
      * Removes a query instance from this frame manager.
      * @param server The server to which the query belongs
      * @param query The query to be removed
      */
-    public void delQuery(Server server, Query query);
+    void delQuery(Server server, Query query);
     
     /**
      * Adds a new raw instance to this frame manager.
      * @param server The server to which the raw frame belongs
      * @param raw The raw instance to be added
      */
-    public void addRaw(Server server, Raw raw);
+    void addRaw(Server server, Raw raw);
+    
     /**
      * Removes a raw instance from this frame manager.
      * @param server The server to which the raw frame belongs
      * @param raw The raw instance to be removed
      */
-    public void delRaw(Server server, Raw raw);
+    void delRaw(Server server, Raw raw);
     
 }

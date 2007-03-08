@@ -36,8 +36,23 @@ import uk.org.ownage.dmdirc.logger.Logger;
  */
 public class Styliser {
     
-    /** Creates a new instance of Styliser */
-    public Styliser() {
+    /** The character used for marking up bold text. */
+    public static char CODE_BOLD = 2;
+    /** The character used for marking up coloured text. */
+    public static char CODE_COLOUR = 3;
+    /** The character used for marking up coloured text (using hex). */
+    public static char CODE_HEXCOLOUR = 4;
+    /** The character used for stopping all formatting. */
+    public static char CODE_STOP = 15;
+    /** The character used for marking up fixed pitch text. */
+    public static char CODE_FIXED = 17;
+    /** The character used for marking up italic text. */
+    public static char CODE_ITALIC = 29;
+    /** The character used for marking up underlined text. */
+    public static char CODE_UNDERLINE = 31;
+    
+    /** Creates a new instance of Styliser. */
+    private Styliser() {
     }
     
     /**
@@ -45,7 +60,8 @@ public class Styliser {
      * @param doc The document which the output should be added to
      * @param add The line to be stylised and added
      */
-    static public void addStyledString(StyledDocument doc, String add) {
+    public static void addStyledString(final StyledDocument doc,
+            final String add) {
         try {
             int offset = doc.getLength();
             int position = 0;
@@ -72,11 +88,11 @@ public class Styliser {
     }
     
     /**
-     * Strips all recognised control codes from the input string
+     * Strips all recognised control codes from the input string.
      * @param input the String to be stripped
      * @return a copy of the input with control codes removed
      */
-    static public String stipControlCodes(String input) {
+    public static String stipControlCodes(final String input) {
         int position = 0;
         boolean cont = true;
         String output = "";
@@ -105,23 +121,16 @@ public class Styliser {
      * @param input The string to read from
      * @return A substring of the input containing no control characters
      */
-    static private String readUntilControl(String input) {
+    private static String readUntilControl(final String input) {
         int pos = input.length();
         
-        // Bold
-        pos = checkChar(pos, input.indexOf(2));
-        // Underline
-        pos = checkChar(pos, input.indexOf(31));
-        // Stop all formatting
-        pos = checkChar(pos, input.indexOf(15));
-        // Colour
-        pos = checkChar(pos, input.indexOf(3));
-        // Hex colour
-        pos = checkChar(pos, input.indexOf(4));
-        // Italic
-        pos = checkChar(pos, input.indexOf(29));
-        // Fixed pitch
-        pos = checkChar(pos, input.indexOf(17));
+        pos = checkChar(pos, input.indexOf(CODE_BOLD));
+        pos = checkChar(pos, input.indexOf(CODE_UNDERLINE));
+        pos = checkChar(pos, input.indexOf(CODE_STOP));
+        pos = checkChar(pos, input.indexOf(CODE_COLOUR));
+        pos = checkChar(pos, input.indexOf(CODE_HEXCOLOUR));
+        pos = checkChar(pos, input.indexOf(CODE_ITALIC));
+        pos = checkChar(pos, input.indexOf(CODE_FIXED));
         
         return input.substring(0, pos);
     }
@@ -149,25 +158,25 @@ public class Styliser {
     private static int readControlChars(String string, SimpleAttributeSet attribs,
             boolean isStart) {
         // Bold
-        if (string.charAt(0) == 2) {
+        if (string.charAt(0) == CODE_BOLD) {
             toggleAttribute(attribs, StyleConstants.FontConstants.Bold);
             return 1;
         }
         
         // Underline
-        if (string.charAt(0) == 31) {
+        if (string.charAt(0) == CODE_UNDERLINE) {
             toggleAttribute(attribs, StyleConstants.FontConstants.Underline);
             return 1;
         }
         
         // Italic
-        if (string.charAt(0) == 29) {
+        if (string.charAt(0) == CODE_ITALIC) {
             toggleAttribute(attribs, StyleConstants.FontConstants.Italic);
             return 1;
         }
         
         // Fixed pitch
-        if (string.charAt(0) == 17) {
+        if (string.charAt(0) == CODE_FIXED) {
             if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospaced")) {
                 attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
             } else {
@@ -178,20 +187,20 @@ public class Styliser {
         }
         
         // Stop formatting
-        if (string.charAt(0) == 15) {
+        if (string.charAt(0) == CODE_STOP) {
             resetAttributes(attribs);
             return 1;
         }
         
         // Colours
-        if (string.charAt(0) == 3) {
+        if (string.charAt(0) == CODE_COLOUR) {
             int count = 1;
             // This isn't too nice!
             if (string.length() > count && isInt(string.charAt(count))) {
                 int foreground = string.charAt(count) - 48;
                 count++;
                 if (string.length() > count && isInt(string.charAt(count))) {
-                    foreground = foreground*10 + (string.charAt(count) - 48);
+                    foreground = foreground * 10 + (string.charAt(count) - 48);
                     count++;
                 }
                 foreground = foreground % 16;
@@ -202,11 +211,11 @@ public class Styliser {
                 
                 // Now background
                 if (string.length() > count && string.charAt(count) == ',') {
-                    if (string.length() > count+1 && isInt(string.charAt(count+1))) {
-                        int background = string.charAt(count+1);
+                    if (string.length() > count + 1 && isInt(string.charAt(count + 1))) {
+                        int background = string.charAt(count + 1);
                         count += 2; // Comma and first digit
                         if (string.length() > count && isInt(string.charAt(count))) {
-                            background = background*10 + (string.charAt(count) - 48);
+                            background = background * 10 + (string.charAt(count) - 48);
                             count++;
                         }
                         background = background % 16;
@@ -220,22 +229,22 @@ public class Styliser {
         }
         
         // Hex colours
-        if (string.charAt(0) == 4) {
+        if (string.charAt(0) == CODE_HEXCOLOUR) {
             int count = 1;
             if (hasHexString(string, 1)) {
-                setForeground(attribs, string.substring(1,7).toUpperCase());
+                setForeground(attribs, string.substring(1, 7).toUpperCase());
                 if (isStart) {
-                    setDefaultForeground(attribs, string.substring(1,7).toUpperCase());
+                    setDefaultForeground(attribs, string.substring(1, 7).toUpperCase());
                 }
                 count = count + 6;
                 
                 // Now for background
                 if (string.charAt(count) == ',') {
-                    if (hasHexString(string, count+1)) {
+                    if (hasHexString(string, count + 1)) {
                         count++;
-                        setBackground(attribs, string.substring(count,count+6).toUpperCase());
+                        setBackground(attribs, string.substring(count, count + 6).toUpperCase());
                         if (isStart) {
-                            setDefaultForeground(attribs, string.substring(count,count+6).toUpperCase());
+                            setDefaultForeground(attribs, string.substring(count, count + 6).toUpperCase());
                         }
                         count += 6;
                     }
@@ -255,7 +264,7 @@ public class Styliser {
      * @return True iff the character is in the range [0-9], false otherwise
      */
     private static boolean isInt(char c) {
-        return (c >= 48 && c <= 57);
+        return (c >= '0' && c <= '9');
     }
     
     /**
@@ -265,7 +274,7 @@ public class Styliser {
      * @return True iff the character is in the range [0-F], false otherwise
      */
     private static boolean isHex(char c) {
-        return isInt(c) || (c >= 65 && c <= 70);
+        return isInt(c) || (c >= 'A' && c <= 'Z');
     }
     
     /**
@@ -276,11 +285,11 @@ public class Styliser {
      */
     private static boolean hasHexString(String input, int offset) {
         // If the string's too short, it can't have a hex string
-        if (input.length() < offset+6) {
+        if (input.length() < offset + 6) {
             return false;
         }
         boolean res = true;
-        for (int i = offset; i < 6+offset; i++) {
+        for (int i = offset; i < 6 + offset; i++) {
             res = res && isHex(input.toUpperCase().charAt(i));
         }
         
