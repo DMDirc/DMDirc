@@ -191,6 +191,7 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
                 Logger.error(ErrorLevel.WARNING, ex);
             }
         }
+        server.setActiveFrame(frame);
         MainFrame.getMainFrame().getFrameManager().setSelected(this);
     }
     

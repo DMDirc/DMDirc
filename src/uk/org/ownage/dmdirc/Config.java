@@ -94,6 +94,7 @@ public class Config {
         defaults.setProperty("general.partmessage", "Using DMDirc");
         defaults.setProperty("general.cyclemessage", "Cycling");
         defaults.setProperty("general.globaldisconnectmessage", "true");
+        defaults.setProperty("general.sendinfomessagestoactive", "true");
         
         // These are temporary until we get identity support
         defaults.setProperty("general.defaultnick", "DMDircUser");

@@ -26,32 +26,35 @@ import java.awt.Color;
 import java.beans.PropertyVetoException;
 import java.net.URL;
 import java.util.Hashtable;
+
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
+
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
+import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.MyInfo;
 import uk.org.ownage.dmdirc.parser.ParserError;
 import uk.org.ownage.dmdirc.parser.ServerInfo;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ISocketClosed;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import javax.swing.event.InternalFrameListener;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ISocketClosed;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
@@ -113,6 +116,11 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     private ImageIcon imageIcon;
     
     /**
+     * The last activated internal frame for this server
+     */
+    private CommandWindow activeFrame;
+    
+    /**
      * Creates a new instance of Server.
      * @param server The hostname/ip of the server to connect to
      * @param port The port to connect to
@@ -141,6 +149,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         frame.addInternalFrameListener(Server.this);
         frame.setFrameIcon(imageIcon);
         MainFrame.getMainFrame().addChild(frame);
+        
+        activeFrame = frame;
         
         frame.open();
         
@@ -426,6 +436,29 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
+     * Sets the specified frame as the most-recently activated.
+     * @param source The frame that was activated
+     */
+    public void setActiveFrame(final CommandWindow source) {
+        activeFrame = source;
+    }
+    
+    /**
+     * Passes the arguments to the most recently activated frame for this
+     * server. If the frame isn't know, or isn't visible, use this frame
+     * instead.
+     * @param messageType The type of message to send
+     * @param args The arguments for the message
+     */
+    public void addLineToActive(String messageType, Object... args) {
+        if (activeFrame == null || !activeFrame.isVisible()) {
+            activeFrame = frame;
+        }
+        
+        frame.addLine(messageType, args);
+    }
+    
+    /**
      * Event when client joins a channel, creates new channel object and opens
      * a channel window.
      * @param tParser parser instance triggering event
@@ -477,6 +510,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     public void onPrivateCTCP(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
         String[] parts = ClientInfo.parseHostFull(sHost);
+        // TODO: Obey general.sendinfomessagestoactive
         frame.addLine("privateCTCP", parts[0], parts[1], parts[2], sType, sMessage);
         sendNotification();
     }
@@ -491,6 +525,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     public void onPrivateCTCPReply(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
         String[] parts = ClientInfo.parseHostFull(sHost);
+        // TODO: Obey general.sendinfomessagestoactive
         frame.addLine("privateCTCPreply", parts[0], parts[1], parts[2], sType, sMessage);
         sendNotification();
     }
@@ -503,6 +538,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      */
     public void onPrivateNotice(IRCParser tParser, String sMessage, String sHost) {
         String[] parts = ClientInfo.parseHostFull(sHost);
+        // TODO: Obey general.sendinfomessagestoactive
         frame.addLine("privateNotice", parts[0], parts[1], parts[2], sMessage);
         sendNotification();
     }
@@ -610,6 +646,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
             }
         }
         MainFrame.getMainFrame().getFrameManager().setSelected(this);
+        setActiveFrame(frame);
         clearNotification();
     }
     

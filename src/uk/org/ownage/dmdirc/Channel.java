@@ -681,6 +681,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             }
         }
         MainFrame.getMainFrame().getFrameManager().setSelected(this);
+        server.setActiveFrame(frame);
         clearNotification();
     }
     
