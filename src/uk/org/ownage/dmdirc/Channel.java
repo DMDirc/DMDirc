@@ -518,11 +518,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelModeChanged(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
-        String modes = getModes(cChannelClient, sHost);
-        String[] details = getDetails(cChannelClient, sHost);
         if (sHost.equals("")) {
             frame.addLine("channelModeDiscovered", sModes, cChannel.getName());
         } else {
+            String modes = getModes(cChannelClient, sHost);
+            String[] details = getDetails(cChannelClient, sHost);
             String myNick = tParser.getMyself().getNickname();
             String type = "channelModeChange";
             if (cChannelClient != null && myNick.equals(cChannelClient.getNickname())) {
@@ -546,9 +546,9 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param sHost The hostname of the setter
      * @param sMode The mode that has been changed
      */
-    public void onChannelUserModeChanged(final IRCParser tParser, 
+    public void onChannelUserModeChanged(final IRCParser tParser,
             final ChannelInfo cChannel, final ChannelClientInfo cChangedClient,
-            final ChannelClientInfo cSetByClient, final String sHost, 
+            final ChannelClientInfo cSetByClient, final String sHost,
             final String sMode) {
         
         if (Boolean.parseBoolean(Config.getOption("channel", "splitusermodes"))) {
@@ -558,7 +558,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             final String targetNick = cChangedClient.getClient().getNickname();
             final String targetIdent = cChangedClient.getClient().getIdent();
             final String targetHost = cChangedClient.getClient().getHost();
-                    
+            
             String format = "channelUserMode_" + sMode;
             if (!Formatter.hasFormat(format)) {
                 format = "channelUserMode_default";
