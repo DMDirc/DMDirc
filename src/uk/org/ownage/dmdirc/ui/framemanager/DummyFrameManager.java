@@ -23,7 +23,9 @@
 package uk.org.ownage.dmdirc.ui.framemanager;
 
 import java.awt.Color;
+
 import javax.swing.JComponent;
+
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.Query;
@@ -36,7 +38,7 @@ import uk.org.ownage.dmdirc.Server;
  */
 public class DummyFrameManager implements FrameManager {
     
-    /** Creates a new instance of DummyFrameManager */
+    /** Creates a new instance of DummyFrameManager. */
     public DummyFrameManager() {
     }
     
@@ -121,7 +123,7 @@ public class DummyFrameManager implements FrameManager {
     
     /**
      * Indicates whether this frame manager can be positioned vertically
-     * (i.e., at the side of the screen)
+     * (i.e., at the side of the screen).
      * @return True iff the frame manager can be positioned vertically
      */
     public boolean canPositionVertically() {
@@ -130,7 +132,7 @@ public class DummyFrameManager implements FrameManager {
     
     /**
      * Indicates whether this frame manager can be positioned horizontally
-     * (i.e., at the top or bottom of the screen)
+     * (i.e., at the top or bottom of the screen).
      * @return True iff the frame manager can be positioned horizontally
      */
     public boolean canPositionHorizontally() {
@@ -139,7 +141,7 @@ public class DummyFrameManager implements FrameManager {
     
     /**
      * Shows an event notification to the user by colouring the corresponding
-     * element to the source a specific colour
+     * element to the source a specific colour.
      * @param source The object requesting notification
      * @param colour The colour that should be used to indicate the notification
      */
@@ -148,7 +150,7 @@ public class DummyFrameManager implements FrameManager {
     }
     
     /**
-     * Removes the notification status of the specified object
+     * Removes the notification status of the specified object.
      * @param source The object whose notification should be cleared
      */
     public void clearNotification(FrameContainer source) {
@@ -156,7 +158,7 @@ public class DummyFrameManager implements FrameManager {
     }
     
     /**
-     * Indicates that there is a new active frame
+     * Indicates that there is a new active frame.
      * @param source The object that now has focus
      */
     public void setSelected(FrameContainer source) {

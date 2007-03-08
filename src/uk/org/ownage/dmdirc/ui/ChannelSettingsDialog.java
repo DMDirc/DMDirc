@@ -59,9 +59,19 @@ public class ChannelSettingsDialog extends StandardDialog
      */
     private static final long serialVersionUID = 1;
     
+    /**
+     * The channel object that this dialog belongs to.
+     */
     private Channel channel;
     
+    /**
+     * The checkboxes used for boolean modes.
+     */
     private Hashtable<String, JCheckBox> modeCheckBoxes;
+    
+    /**
+     * The ParamModePanels used for parameter-requiring modes.
+     */
     private Hashtable<String, ParamModePanel> modeInputs;
     
     /**

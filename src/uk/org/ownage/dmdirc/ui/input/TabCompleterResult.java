@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.ui.input;
 
 import java.util.ArrayList;
+
 import uk.org.ownage.dmdirc.Config;
 
 /**
@@ -34,14 +35,14 @@ public class TabCompleterResult {
     private ArrayList<String> results;
     
     /**
-     * Creates a new instance of TabCompleterResult with an empty result set
+     * Creates a new instance of TabCompleterResult with an empty result set.
      */
     public TabCompleterResult() {
         this.results = new ArrayList<String>();
     }
     
     /**
-     * Creates a new instance of TabCompleterResult
+     * Creates a new instance of TabCompleterResult.
      * @param results The list of results that this result set contains
      */
     public TabCompleterResult(ArrayList<String> results) {
@@ -49,7 +50,7 @@ public class TabCompleterResult {
     }
     
     /**
-     * Adds a result to this result set
+     * Adds a result to this result set.
      * @param result The result to be added
      */
     public void addResult(String result) {
@@ -57,7 +58,7 @@ public class TabCompleterResult {
     }
     
     /**
-     * Merges the specified additional results with this result set
+     * Merges the specified additional results with this result set.
      * @param additional The results to merge
      */
     public void merge(TabCompleterResult additional) {
@@ -65,7 +66,7 @@ public class TabCompleterResult {
     }
     
     /**
-     * Gets the total size of this result set
+     * Gets the total size of this result set.
      * @return the size of this result set
      */
     public int getResultCount() {
@@ -73,7 +74,7 @@ public class TabCompleterResult {
     }
     
     /**
-     * Returns the longest substring that matches all results
+     * Returns the longest substring that matches all results.
      * @return longest possible substring matching all results
      */
     public String getBestSubstring() {
@@ -81,17 +82,17 @@ public class TabCompleterResult {
             return "";
         }
         
-        boolean caseSensitive = Boolean.parseBoolean(Config.getOption("tabcompletion","casesensitive"));
+        boolean caseSensitive = Boolean.parseBoolean(Config.getOption("tabcompletion", "casesensitive"));
         
         String res = results.get(0);
         for (String entry : results) {
             if (caseSensitive) {
                 while (!entry.startsWith(res)) {
-                    res = res.substring(0, res.length()-1);
+                    res = res.substring(0, res.length() - 1);
                 }
             } else {
                 while (!entry.toLowerCase().startsWith(res.toLowerCase())) {
-                    res = res.substring(0, res.length()-1);
+                    res = res.substring(0, res.length() - 1);
                 }
             }
         }
@@ -100,7 +101,7 @@ public class TabCompleterResult {
     }
     
     /**
-     * Retrieves the list of results that this set contains
+     * Retrieves the list of results that this set contains.
      * @return An arraylist containing the results
      */
     public ArrayList<String> getResults() {

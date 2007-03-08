@@ -26,15 +26,17 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
+
 import uk.org.ownage.dmdirc.Config;
 
 /**
  * A component to encapsulate one parameter-requiring channel mode, displaying
- * the user a checkbox, the mode's name, and a text field
+ * the user a checkbox, the mode's name, and a text field.
  * @author chris
  */
 public class ParamModePanel extends JPanel implements ActionListener {
@@ -46,11 +48,14 @@ public class ParamModePanel extends JPanel implements ActionListener {
      */
     private static final long serialVersionUID = 1;
     
+    /** The checkbox used in this mode panel */
     private JCheckBox checkBox;
+    
+    /** The textfield for the value of the mode */
     private JTextField textField;
     
     /**
-     * Creates a new instance of ParamModePanel
+     * Creates a new instance of ParamModePanel.
      * @param mode The mode that this panel should deal with
      * @param state The current state of the mode
      * @param value The current value of the mode
@@ -85,7 +90,7 @@ public class ParamModePanel extends JPanel implements ActionListener {
     }
     
     /**
-     * Called when our checkbox is toggled
+     * Called when our checkbox is toggled.
      * @param actionEvent associated action event
      */
     public void actionPerformed(ActionEvent actionEvent) {

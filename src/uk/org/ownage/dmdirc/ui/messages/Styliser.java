@@ -26,6 +26,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 
@@ -269,7 +270,7 @@ public class Styliser {
     
     /**
      * Determines if the specified character represents a single hex digit
-     * (i.e., 0-F)
+     * (i.e., 0-F).
      * @param c The character to check
      * @return True iff the character is in the range [0-F], false otherwise
      */
@@ -311,7 +312,7 @@ public class Styliser {
     }
     
     /**
-     * Resets all attributes in the specified attribute list
+     * Resets all attributes in the specified attribute list.
      * @param attribs The attribute list whose attributes should be reset
      */
     private static void resetAttributes(SimpleAttributeSet attribs) {
@@ -333,7 +334,7 @@ public class Styliser {
     }
     
     /**
-     * Resets the colour attributes in the specified attribute set
+     * Resets the colour attributes in the specified attribute set.
      * @param attribs The attribute set whose colour attributes should be reset
      */
     private static void resetColour(SimpleAttributeSet attribs) {
@@ -380,7 +381,7 @@ public class Styliser {
     }
     
     /**
-     * Sets the default foreground colour (used after an empty ctrl+k or a ctrl+o)
+     * Sets the default foreground colour (used after an empty ctrl+k or a ctrl+o).
      * @param attribs The attribute set to apply this default on
      * @param foreground The default foreground colour
      */
@@ -389,7 +390,7 @@ public class Styliser {
     }
     
     /**
-     * Sets the default background colour (used after an empty ctrl+k or a ctrl+o)
+     * Sets the default background colour (used after an empty ctrl+k or a ctrl+o).
      * @param attribs The attribute set to apply this default on
      * @param background The default background colour
      */

@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.ui.messages;
 
 import java.awt.Color;
+
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 
@@ -33,21 +34,21 @@ import uk.org.ownage.dmdirc.logger.Logger;
  */
 public class ColourManager {
     
-    /** Creates a new instance of ColourManager */
+    /** Creates a new instance of ColourManager. */
     private ColourManager() {
     }
     
     /**
      * Retrieves a colour specified by either an IRC colour code (as an int),
-     * or a hex string
+     * or a hex string.
      * @param spec The colour specification
      * @return A colour corresponding to the spec, or WHITE on error
      */
     public static Color getColour(final Object spec) {
         if (spec instanceof Integer) {
-            return getColour(((Integer)spec).intValue());
+            return getColour(((Integer) spec).intValue());
         } else if (spec instanceof String) {
-            return getColour((String)spec);
+            return getColour((String) spec);
         } else {
             Logger.error(ErrorLevel.WARNING, "(ColourManager.getColour) Unknown object type: "+spec);
             return Color.WHITE;
@@ -62,7 +63,7 @@ public class ColourManager {
      */
     public static Color getColour(final String hex) {
         try {
-            return Color.decode("#"+hex);
+            return Color.decode("#" + hex);
         } catch (NumberFormatException ex) {
             Logger.error(ErrorLevel.WARNING, ex);
             return Color.WHITE;

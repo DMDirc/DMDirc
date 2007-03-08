@@ -23,7 +23,9 @@
 package uk.org.ownage.dmdirc.ui.framemanager;
 
 import java.awt.Color;
+
 import javax.swing.JComponent;
+
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.Query;
