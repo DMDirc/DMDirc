@@ -74,7 +74,9 @@ public class TreeViewModel extends DefaultTreeModel {
      *
      */
     /**
-     * 
+     * Compares the new child with the existing children or parent to decide 
+     * where it needs to be inserted 
+     *
      * @param newChild 
      * @param parent 
      * @return 
