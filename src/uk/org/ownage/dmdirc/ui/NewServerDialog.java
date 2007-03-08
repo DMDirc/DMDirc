@@ -23,14 +23,11 @@
 package uk.org.ownage.dmdirc.ui;
 
 import javax.swing.JInternalFrame;
-import javax.swing.JTextArea;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.ServerManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
@@ -64,7 +61,7 @@ public class NewServerDialog extends StandardDialog {
         initComponents();
         
         orderButtons(jButton2, jButton1);
-               
+        
         jTextField1.setText(Config.getOption("general","server"));
         jTextField2.setText(Config.getOption("general","port"));
         jTextField3.setText(Config.getOption("general","password"));
@@ -95,8 +92,8 @@ public class NewServerDialog extends StandardDialog {
             me.jCheckBox1.setSelected(true);
             me.jCheckBox1.setEnabled(false);
         } else {
-            me.jCheckBox1.setEnabled(true);            
-        }  
+            me.jCheckBox1.setEnabled(true);
+        }
     }
     
     /**

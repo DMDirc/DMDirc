@@ -70,7 +70,7 @@ public class NicklistListModel extends AbstractListModel {
     }
     
     /**
-     * Sorts the nicklist based on settings in the Config, only needed if the sort 
+     * Sorts the nicklist based on settings in the Config, only needed if the sort
      * method changes
      */
     public void sort() {
@@ -99,7 +99,7 @@ public class NicklistListModel extends AbstractListModel {
         returnValue = nicknames.addAll(clients);
         
         this.sort();
-
+        
         return returnValue;
     }
     
@@ -114,7 +114,7 @@ public class NicklistListModel extends AbstractListModel {
         returnValue = nicknames.add(client);
         
         this.sort();
-
+        
         return returnValue;
     }
     

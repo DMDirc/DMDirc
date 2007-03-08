@@ -22,7 +22,6 @@
 
 package uk.org.ownage.dmdirc.ui.messages;
 
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;

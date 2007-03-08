@@ -22,10 +22,6 @@
 
 package uk.org.ownage.dmdirc.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import uk.org.ownage.dmdirc.logger.Logger;
-
 /**
  * The fatal error dialog is used to inform the user that a fatal error has
  * occured.
@@ -38,7 +34,7 @@ public class FatalErrorDialog extends javax.swing.JDialog {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 1;
     
     /**
      * Creates a new fatal error dialog.
@@ -127,23 +123,23 @@ public class FatalErrorDialog extends javax.swing.JDialog {
         );
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    
     /**
      * Called when the window is closing. Terminates the application as we
      * can't proceed.
      * @param evt The event that triggered this callback
      */
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-      System.exit(-1);
+        System.exit(-1);
     }//GEN-LAST:event_formWindowClosing
-
+    
     /**
      * Called when the user clicks the 'OK' button. Terminates the application
      * as we can't proceed.
      * @param evt The event associated with this action
      */
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-      System.exit(-1);
+        System.exit(-1);
     }//GEN-LAST:event_jButton1ActionPerformed
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -22,7 +22,6 @@
 
 package uk.org.ownage.dmdirc.ui.components;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -31,7 +30,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import uk.org.ownage.dmdirc.Config;
 
 /**

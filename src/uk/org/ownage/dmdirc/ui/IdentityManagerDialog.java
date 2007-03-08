@@ -33,7 +33,7 @@ public class IdentityManagerDialog extends javax.swing.JDialog {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 1;
     
     /** Creates new form IdentityManagerDialog */
     public IdentityManagerDialog() {

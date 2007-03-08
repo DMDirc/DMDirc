@@ -25,7 +25,6 @@ package uk.org.ownage.dmdirc.ui.framemanager.tree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
-import uk.org.ownage.dmdirc.FrameContainer;
 
 /**
  * A simple sorted tree data model based on DefaultTreeModel.
@@ -51,7 +50,7 @@ public class TreeViewModel extends DefaultTreeModel {
     /**
      * Creates a tree specifying whether any node can have children,
      * or whether only certain nodes can have children.
-     * @param asksAllowsChildren true = ask whether child can have chilren, 
+     * @param asksAllowsChildren true = ask whether child can have chilren,
      * false all nodes can have chilren
      * @param root a root TreeNode
      */
@@ -64,7 +63,7 @@ public class TreeViewModel extends DefaultTreeModel {
      * @param newChild child to be added
      * @param parent parent child is to be added too
      */
-    public void insertNodeInto(DefaultMutableTreeNode newChild, DefaultMutableTreeNode parent) {      
+    public void insertNodeInto(DefaultMutableTreeNode newChild, DefaultMutableTreeNode parent) {
         int index = 0;
         index = doComparison(newChild, parent);
         super.insertNodeInto(newChild, parent, index);
@@ -74,12 +73,12 @@ public class TreeViewModel extends DefaultTreeModel {
      *
      */
     /**
-     * Compares the new child with the existing children or parent to decide 
-     * where it needs to be inserted 
+     * Compares the new child with the existing children or parent to decide
+     * where it needs to be inserted
      *
-     * @param newChild 
-     * @param parent 
-     * @return 
+     * @param newChild
+     * @param parent
+     * @return
      */
     private int doComparison(DefaultMutableTreeNode newChild, DefaultMutableTreeNode parent) {
         if (parent == root) {

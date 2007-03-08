@@ -24,7 +24,6 @@ package uk.org.ownage.dmdirc.ui.input;
 
 import java.util.ArrayList;
 import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /**
  * The tab completer handles a user's request to tab complete some word.
@@ -97,7 +96,7 @@ public class TabCompleter {
         if (entries == null) {
             return;
         }
-                
+        
         for (String entry : entries) {
             addEntry(entry);
         }

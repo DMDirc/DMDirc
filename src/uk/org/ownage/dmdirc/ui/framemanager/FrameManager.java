@@ -56,14 +56,14 @@ public interface FrameManager {
      * (i.e., at the top or bottom of the screen)
      * @return True iff the frame manager can be positioned horizontally
      */
-    public boolean canPositionHorizontally();    
+    public boolean canPositionHorizontally();
     
     /**
      * Indicates that there is a new active frame
      * @param source The object that now has focus
      */
     public void setSelected(FrameContainer source);
-            
+    
     /**
      * Shows an event notification to the user by colouring the corresponding
      * element to the source a specific colour
@@ -86,14 +86,14 @@ public interface FrameManager {
     /**
      * Removes a server instance from this frame manager.
      * @param server The server to be removed
-     */    
+     */
     public void delServer(Server server);
     
     /**
      * Adds a new channel instance to this frame manager.
      * @param server The server to which the channel belongs
      * @param channel The channel to be added
-     */    
+     */
     public void addChannel(Server server, Channel channel);
     /**
      * Removes a channel instance from this frame manager.
@@ -106,7 +106,7 @@ public interface FrameManager {
      * Adds a new query instance to this frame manager.
      * @param server The server to which the query belongs
      * @param query The query to be added
-     */        
+     */
     public void addQuery(Server server, Query query);
     /**
      * Removes a query instance from this frame manager.

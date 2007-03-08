@@ -26,7 +26,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import javax.swing.JInternalFrame;
 import javax.swing.JTextField;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.commandparser.CommandParser;

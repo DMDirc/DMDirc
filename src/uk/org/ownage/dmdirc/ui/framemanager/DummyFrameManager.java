@@ -117,7 +117,7 @@ public class DummyFrameManager implements FrameManager {
      */
     public void delRaw(Server server, Raw raw) {
         System.out.println("DummyFrameManager: delRaw: "+raw+"@"+server);
-    }   
+    }
     
     /**
      * Indicates whether this frame manager can be positioned vertically
@@ -154,11 +154,11 @@ public class DummyFrameManager implements FrameManager {
     public void clearNotification(FrameContainer source) {
         System.out.println("DummyFrameManager: Clear notification for "+source);
     }
-
+    
     /**
      * Indicates that there is a new active frame
      * @param source The object that now has focus
-     */    
+     */
     public void setSelected(FrameContainer source) {
         System.out.println("DummyFrameManager: Now foucsed: "+source);
     }

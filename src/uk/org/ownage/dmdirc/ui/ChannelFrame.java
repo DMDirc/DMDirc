@@ -24,8 +24,6 @@ package uk.org.ownage.dmdirc.ui;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -41,8 +39,6 @@ import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
@@ -218,7 +214,7 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
                         public void run() {
                             jTextPane1.setCaretPosition(jTextPane1.getDocument().getLength());
                         }
-                    });                    
+                    });
                 }
             }
         });

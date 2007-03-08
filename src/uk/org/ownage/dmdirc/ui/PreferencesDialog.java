@@ -23,7 +23,6 @@
 package uk.org.ownage.dmdirc.ui;
 
 import java.awt.Frame;
-import javax.swing.JDialog;
 
 /**
  * Allows the user to modify global client preferences
@@ -36,7 +35,7 @@ public class PreferencesDialog extends StandardDialog {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 1;
     
     /**
      * Creates a new instance of PreferencesDialog

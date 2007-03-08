@@ -43,7 +43,7 @@ public class NicklistComparator implements Comparator<ChannelClientInfo> {
     }
     
     /**
-     * Compares two ChannelClient objects based on the settings the comparator was 
+     * Compares two ChannelClient objects based on the settings the comparator was
      * initialised with
      * @param client1 the first client to be compared
      * @param client2 the second client to be compared
