@@ -25,7 +25,6 @@ package uk.org.ownage.dmdirc;
 import java.util.Vector;
 import javax.swing.JInternalFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.ServerFrame;
 
 /**
  * The ServerManager maintains a list of all servers, and provides methods to
@@ -35,28 +34,28 @@ import uk.org.ownage.dmdirc.ui.ServerFrame;
 public class ServerManager {
     
     /**
-     * Singleton instance of ServerManager
+     * Singleton instance of ServerManager.
      */
     private static ServerManager me = null;
     
     /**
      * Indicates that the server manager is in the process of closing all
-     * servers. Used to prevent concurrent access to the servers property
+     * servers. Used to prevent concurrent access to the servers property.
      */
     private boolean closing = false;
     
     /**
-     * All servers that currently exist
+     * All servers that currently exist.
      */
     private Vector<Server> servers;
     
-    /** Creates a new instance of ServerManager */
+    /** Creates a new instance of ServerManager. */
     public ServerManager() {
         servers = new Vector<Server>(0, 1);
     }
     
     /**
-     * Returns the singleton instance of ServerManager
+     * Returns the singleton instance of ServerManager.
      * @return Instance of ServerManager
      */
     public static ServerManager getServerManager() {
@@ -67,7 +66,7 @@ public class ServerManager {
     }
     
     /**
-     * Registers a new server with the manager
+     * Registers a new server with the manager.
      * @param server The server to be registered
      */
     public void registerServer(Server server) {
@@ -88,7 +87,7 @@ public class ServerManager {
     }
     
     /**
-     * Makes all servers disconnected with the specified quit message
+     * Makes all servers disconnected with the specified quit message.
      * @param message The quit message to send to the IRC servers
      */
     public void disconnectAll(String message) {
@@ -98,7 +97,7 @@ public class ServerManager {
     }
     
     /**
-     * Closes all servers with the specified quit message
+     * Closes all servers with the specified quit message.
      * @param message The quit message to send to the IRC servers
      */
     public void closeAll(String message) {
@@ -111,7 +110,7 @@ public class ServerManager {
     }
     
     /**
-     * Returns the number of servers that are registered with the manager
+     * Returns the number of servers that are registered with the manager.
      * @return number of registered servers
      */
     public int numServers() {
@@ -119,7 +118,7 @@ public class ServerManager {
     }
     
     /**
-     * Returns the server instance that owns the specified internal frame
+     * Returns the server instance that owns the specified internal frame.
      * @param active The internal frame to check
      * @return The server associated with the internal frame
      */

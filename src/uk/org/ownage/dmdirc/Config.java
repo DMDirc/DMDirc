@@ -33,78 +33,78 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
- * Reads/writes the application's config file
+ * Reads/writes the application's config file.
  * @author chris
  */
 public class Config {
     
     /**
-     * The application's current configuration
+     * The application's current configuration.
      */
     private static Properties properties;
     
-    /** Disallow creation of a new instance of Config */
+    /** Disallow creation of a new instance of Config. */
     private Config() {
     }
     
     /**
-     * Returns the singleton instance of ServerManager
+     * Returns the singleton instance of ServerManager.
      * @return Instance of ServerManager
      */
     public static Properties getConfig() {
-	if (properties == null) {
-	    initialise();
-	}
-	return properties;
+        if (properties == null) {
+            initialise();
+        }
+        return properties;
     }
     
     /**
-     * Returns the full path to the application's config file
+     * Returns the full path to the application's config file.
      * @return config file
      */
     private static String getConfigFile() {
-	return getConfigDir()+"dmdirc.xml";
+        return getConfigDir()+"dmdirc.xml";
     }
     
     /**
-     * Returns the application's config directory
+     * Returns the application's config directory.
      * @return configuration directory
      */
     public static String getConfigDir() {
-	String fs = System.getProperty("file.separator");
+        String fs = System.getProperty("file.separator");
         //This is nasty.
         String baseDir = System.getenv("APPDATA");
         if (baseDir == null) {
             baseDir = System.getProperty("user.home");
         }
         //End nasty
-	return baseDir+fs+".DMDirc"+fs;
+        return baseDir+fs+".DMDirc"+fs;
     }
     
     /**
-     * Returns the default settings for DMDirc
+     * Returns the default settings for DMDirc.
      * @return default settings
      */
     private static Properties getDefaults() {
-	Properties defaults = new Properties();
-	
-	defaults.setProperty("general.commandchar","/");
-        defaults.setProperty("general.closemessage","DMDirc exiting");
-        defaults.setProperty("general.quitmessage","Using DMDirc");
-        defaults.setProperty("general.partmessage","Using DMDirc");
-        defaults.setProperty("general.cyclemessage","Cycling");
-        defaults.setProperty("general.globaldisconnectmessage","true");
+        Properties defaults = new Properties();
+        
+        defaults.setProperty("general.commandchar", "/");
+        defaults.setProperty("general.closemessage", "DMDirc exiting");
+        defaults.setProperty("general.quitmessage", "Using DMDirc");
+        defaults.setProperty("general.partmessage", "Using DMDirc");
+        defaults.setProperty("general.cyclemessage", "Cycling");
+        defaults.setProperty("general.globaldisconnectmessage", "true");
         
         // These are temporary until we get identity support
-        defaults.setProperty("general.defaultnick","DMDircUser");
-        defaults.setProperty("general.alternatenick","DMDircUser_");
-        defaults.setProperty("general.server","blueyonder.uk.quakenet.org");
-        defaults.setProperty("general.port","7000");
-        defaults.setProperty("general.password","");
+        defaults.setProperty("general.defaultnick", "DMDircUser");
+        defaults.setProperty("general.alternatenick", "DMDircUser_");
+        defaults.setProperty("general.server", "blueyonder.uk.quakenet.org");
+        defaults.setProperty("general.port", "7000");
+        defaults.setProperty("general.password", "");
         
         defaults.setProperty("ui.backgroundcolour", "0");
         defaults.setProperty("ui.foregroundcolour", "1");
-	defaults.setProperty("ui.maximisewindows","false");
+        defaults.setProperty("ui.maximisewindows", "false");
         defaults.setProperty("ui.sortByMode", "true");
         defaults.setProperty("ui.sortByCase", "false");
         defaults.setProperty("ui.inputbuffersize", "50");
@@ -112,120 +112,120 @@ public class Config {
         defaults.setProperty("ui.rolloverEnabled", "true");
         defaults.setProperty("ui.rolloverColour", "f0f0f0");
         
-        defaults.setProperty("server.modec","No formatting");
-        defaults.setProperty("server.modeC","No channel CTCPs");
-        defaults.setProperty("server.modeD","Auditorium mode");
-        defaults.setProperty("server.modei","Invite only");        
-        defaults.setProperty("server.modem","Moderated");
-        defaults.setProperty("server.moden","No external messages");
-        defaults.setProperty("server.modeN","No channel notices");
-        defaults.setProperty("server.modek","Channel key");
-        defaults.setProperty("server.model","User limit");
-        defaults.setProperty("server.modep","Private");
-        defaults.setProperty("server.moder","Registered users only");
-        defaults.setProperty("server.modes","Secret");
-        defaults.setProperty("server.modet","Only ops can set topic");
-        defaults.setProperty("server.modeu","No quit messages");
+        defaults.setProperty("server.modec", "No formatting");
+        defaults.setProperty("server.modeC", "No channel CTCPs");
+        defaults.setProperty("server.modeD", "Auditorium mode");
+        defaults.setProperty("server.modei", "Invite only");
+        defaults.setProperty("server.modem", "Moderated");
+        defaults.setProperty("server.moden", "No external messages");
+        defaults.setProperty("server.modeN", "No channel notices");
+        defaults.setProperty("server.modek", "Channel key");
+        defaults.setProperty("server.model", "User limit");
+        defaults.setProperty("server.modep", "Private");
+        defaults.setProperty("server.moder", "Registered users only");
+        defaults.setProperty("server.modes", "Secret");
+        defaults.setProperty("server.modet", "Only ops can set topic");
+        defaults.setProperty("server.modeu", "No quit messages");
         
         defaults.setProperty("tabcompletion.casesensitive", "false");
         
-        defaults.setProperty("logging.dateFormat","EEE, d MMM yyyy HH:mm:ss Z");
-        defaults.setProperty("logging.programLogging","true");
-        defaults.setProperty("logging.debugLogging","true");
-        defaults.setProperty("logging.debugLoggingSysOut","true");
+        defaults.setProperty("logging.dateFormat", "EEE, d MMM yyyy HH:mm:ss Z");
+        defaults.setProperty("logging.programLogging", "true");
+        defaults.setProperty("logging.debugLogging", "true");
+        defaults.setProperty("logging.debugLoggingSysOut", "true");
         
-	
-	return defaults;
+        
+        return defaults;
     }
     
     /**
-     * Determines if the specified option exists
+     * Determines if the specified option exists.
      * @return true iff the option exists, false otherwise
      * @param domain the domain of the option
      * @param option the name of the option
      */
     public static boolean hasOption(String domain, String option) {
-	if (properties == null) {
-	    initialise();
-	}
-	
-	return (properties.getProperty(domain+"."+option) != null);
+        if (properties == null) {
+            initialise();
+        }
+        
+        return (properties.getProperty(domain + "." + option) != null);
     }
     
     /**
-     * Returns the specified option
+     * Returns the specified option.
      * @return the value of the specified option
      * @param domain the domain of the option
      * @param option the name of the option
      */
     public static String getOption(String domain, String option) {
-	if (properties == null) {
-	    initialise();
-	}
-	
-	return properties.getProperty(domain+"."+option);
+        if (properties == null) {
+            initialise();
+        }
+        
+        return properties.getProperty(domain + "." + option);
     }
     
     /**
-     * Sets a specified option
+     * Sets a specified option.
      * @param domain domain of the option
      * @param option name of the option
      * @param value value of the option
      */
     public static void setOption(String domain, String option, String value) {
-	if (properties == null) {
-	    initialise();
-	}
-	
-	properties.setProperty(domain+"."+option, value);
+        if (properties == null) {
+            initialise();
+        }
+        
+        properties.setProperty(domain + "." + option, value);
     }
     
     /**
      * Loads the config file from disc, if it exists else initialises defaults
-     * and creates file
+     * and creates file.
      */
     private static void initialise() {
-	
-	properties = getDefaults();
-	
-	File file = new File(getConfigFile());
-	
-	if (file.exists()) {
-	    try {
-		properties.loadFromXML(new FileInputStream(file));
-	    } catch (InvalidPropertiesFormatException ex) {
-		Logger.error(ErrorLevel.INFO, ex);
-	    } catch (FileNotFoundException ex) {
-		//Do nothing, defaults used
-	    } catch (IOException ex) {
-		Logger.error(ErrorLevel.WARNING, ex);
-	    }
-	} else {
-	    try {
-		(new File(getConfigDir())).mkdirs();
-		file.createNewFile();
-		Config.save();
-	    } catch (IOException ex) {
-		Logger.error(ErrorLevel.WARNING, ex);
-	    }
-	}
+        
+        properties = getDefaults();
+        
+        File file = new File(getConfigFile());
+        
+        if (file.exists()) {
+            try {
+                properties.loadFromXML(new FileInputStream(file));
+            } catch (InvalidPropertiesFormatException ex) {
+                Logger.error(ErrorLevel.INFO, ex);
+            } catch (FileNotFoundException ex) {
+                //Do nothing, defaults used
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
+            }
+        } else {
+            try {
+                (new File(getConfigDir())).mkdirs();
+                file.createNewFile();
+                Config.save();
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
+            }
+        }
     }
     
     
     /**
-     * Saves the config file to disc
+     * Saves the config file to disc.
      */
     public static void save() {
-	if (properties == null) {
-	    initialise();
-	}
-	try {
-	    properties.storeToXML(new FileOutputStream(new File(getConfigFile())), null);
-	} catch (FileNotFoundException ex) {
-	    Logger.error(ErrorLevel.INFO, ex);
-	} catch (IOException ex) {
-	    Logger.error(ErrorLevel.WARNING, ex);
-	}
+        if (properties == null) {
+            initialise();
+        }
+        try {
+            properties.storeToXML(new FileOutputStream(new File(getConfigFile())), null);
+        } catch (FileNotFoundException ex) {
+            Logger.error(ErrorLevel.INFO, ex);
+        } catch (IOException ex) {
+            Logger.error(ErrorLevel.WARNING, ex);
+        }
     }
     
 }

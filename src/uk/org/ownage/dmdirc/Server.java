@@ -24,7 +24,6 @@ package uk.org.ownage.dmdirc;
 
 import java.awt.Color;
 import java.beans.PropertyVetoException;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Hashtable;
 import javax.swing.ImageIcon;
@@ -33,7 +32,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.MyInfo;
@@ -47,7 +45,6 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
 import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.logger.Logger;
 import javax.swing.event.InternalFrameListener;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
@@ -61,7 +58,7 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 /**
  * The Server class represents the client's view of a server. It maintains
  * a list of all channels, queries, etc, and handles parser callbacks pertaining
- * to the server
+ * to the server.
  * @author chris
  */
 public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction,
@@ -69,54 +66,54 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         ISocketClosed, IPrivateNotice, FrameContainer {
     
     /**
-     * Open channels that currently exist on the server
+     * Open channels that currently exist on the server.
      */
     private Hashtable<String,Channel> channels  = new Hashtable<String,Channel>();
     
     /**
-     * Open query windows on the server
+     * Open query windows on the server.
      */
     private Hashtable<String,Query> queries = new Hashtable<String,Query>();
     
     /**
-     * The ServerFrame corresponding to this server
+     * The ServerFrame corresponding to this server.
      */
     private ServerFrame frame;
     
     /**
-     * The IRC Parser instance handling this server
+     * The IRC Parser instance handling this server.
      */
     private IRCParser parser;
     
     /**
-     * The raw frame used for this server instance
+     * The raw frame used for this server instance.
      */
     private Raw raw;
     
     /**
-     * The name of the server we're connecting to
+     * The name of the server we're connecting to.
      */
     private String serverName;
     
     /**
      * Used to indicate that this server is in the process of closing all of its
      * windows, and thus requests for individual ones to be closed should be
-     * ignored
+     * ignored.
      */
     private boolean closing = false;
     
     /**
-     * The tabcompleter used for this server
+     * The tabcompleter used for this server.
      */
     private TabCompleter tabCompleter = new TabCompleter();
     
     /**
-     * The icon being used for this server
+     * The icon being used for this server.
      */
     private ImageIcon imageIcon;
     
     /**
-     * Creates a new instance of Server
+     * Creates a new instance of Server.
      * @param server The hostname/ip of the server to connect to
      * @param port The port to connect to
      * @param password The server password
@@ -139,7 +136,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         ServerManager.getServerManager().registerServer(this);
         
         frame = new ServerFrame(new ServerCommandParser(Server.this));
-        frame.setTitle(server+":"+port);
+        frame.setTitle(server + ":" + port);
         frame.setTabCompleter(tabCompleter);
         frame.addInternalFrameListener(Server.this);
         frame.setFrameIcon(imageIcon);
@@ -149,7 +146,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         
         tabCompleter.addEntries(CommandManager.getServerCommandNames());
         
-        frame.addLine("Connecting to "+server+":"+port);
+        // TODO: Use formatter
+        frame.addLine("Connecting to " + server + ":" + port);
         sendNotification();
         
         MyInfo myInfo = new MyInfo();
@@ -180,7 +178,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
             Thread thread = new Thread(parser);
             thread.start();
         } catch (Exception ex) {
-            frame.addLine("ERROR: "+ex.getMessage());
+            frame.addLine("ERROR: " + ex.getMessage());
         }
     }
     
@@ -193,6 +191,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      */
     public void connect(final String server, final int port, final String password,
             final boolean ssl) {
+        // TODO: Abstract the functionality of this and the constructor
         if (parser != null && parser.getSocketState() == parser.stateOpen) {
             disconnect(Config.getOption("general","quitmessage"));
             closeChannels();
@@ -208,7 +207,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         }
         imageIcon = new ImageIcon(imageURL);
         
-        frame.addLine("Connecting to "+server+":"+port);
+        // TODO: Use formatter
+        frame.addLine("Connecting to " + server + ":" + port);
         sendNotification();
         
         MyInfo myInfo = new MyInfo();
@@ -244,31 +244,31 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Retrieves the parser used for this connection
+     * Retrieves the parser used for this connection.
      * @return IRCParser this connection's parser
      */
-    public IRCParser getParser() {
+    final public IRCParser getParser() {
         return parser;
     }
     
     /**
-     * Returns the tab completer for this connection
+     * Returns the tab completer for this connection.
      * @return The tab completer for this server
      */
-    public TabCompleter getTabCompleter() {
+    final public TabCompleter getTabCompleter() {
         return tabCompleter;
     }
     
     /**
-     * Adds a line to the server window
+     * Adds a line to the server window.
      * @param line line to be added
      */
-    public void addLine(final String line) {
+    final public void addLine(final String line) {
         frame.addLine(line);
     }
     
     /**
-     * closes this server connection and associated windows
+     * closes this server connection and associated windows.
      * @param reason reason for closing
      */
     public void close(final String reason) {
@@ -312,11 +312,11 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * quit message.
      */
     public void close() {
-        close(Config.getOption("general","quitmessage"));
+        close(Config.getOption("general", "quitmessage"));
     }
     
     /**
-     * Disconnects from thie server
+     * Disconnects from the server.
      * @param reason disconnect reason
      */
     public void disconnect(final String reason) {
@@ -324,7 +324,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * closes all open channel windows associated with this server
+     * closes all open channel windows associated with this server.
      */
     private void closeChannels() {
         closing = true;
@@ -336,11 +336,11 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * closes all open query windows associated with this server
+     * closes all open query windows associated with this server.
      */
     private void closeQueries() {
         closing = true;
-        for (Query query: queries.values()) {
+        for (Query query : queries.values()) {
             query.close();
         }
         queries.clear();
@@ -349,7 +349,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     
     /**
      * Removes our reference to the raw object (presumably after it has been
-     * closed)
+     * closed).
      */
     public void delRaw() {
         MainFrame.getMainFrame().getFrameManager().delRaw(this, raw);
@@ -357,7 +357,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Removes a specific channel and window from this server
+     * Removes a specific channel and window from this server.
      * @param chan channel to remove
      */
     public void delChannel(final String chan) {
@@ -369,7 +369,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Adds a specific channel and window to this server
+     * Adds a specific channel and window to this server.
      * @param chan channel to add
      */
     private void addChannel(final ChannelInfo chan) {
@@ -381,7 +381,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Adds a query query to this server
+     * Adds a query query to this server.
      * @param host host of the remote client being queried
      */
     private void addQuery(final String host) {
@@ -393,7 +393,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Deletes a query from this server
+     * Deletes a query from this server.
      * @param host host of the remote client being queried
      */
     public void delQuery(final String host) {
@@ -405,7 +405,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Determines if the specified frame is owned by this server
+     * Determines if the specified frame is owned by this server.
      * @param target internalframe to be checked for ownership
      * @return boolean ownership status
      */
@@ -427,7 +427,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     
     /**
      * Event when client joins a channel, creates new channel object and opens
-     * a channel window
+     * a channel window.
      * @param tParser parser instance triggering event
      * @param cChannel Channel being joined
      */
@@ -442,7 +442,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     
     /**
      * Private message event, creates a new query object and opens a new query
-     * window if one doesnt exist
+     * window if one doesnt exist.
      * @param parser parser instance triggering event
      * @param message private message being received
      * @param host host of the remote client
@@ -456,7 +456,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     
     /**
      * Private action event, creates a new query object and opens a new query
-     * window if one doesnt exist
+     * window if one doesnt exist.
      * @param action action text being received
      * @param parser parser instance triggering event
      * @param host host of remote client
@@ -468,7 +468,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Called when we receive a CTCP request
+     * Called when we receive a CTCP request.
      * @param tParser The associated IRC parser
      * @param sType The type of the CTCP
      * @param sMessage The contents of the CTCP
@@ -482,7 +482,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Called when we receive a CTCP reply
+     * Called when we receive a CTCP reply.
      * @param tParser The associated IRC parser
      * @param sType The type of the CTCPR
      * @param sMessage The contents of the CTCPR
@@ -496,7 +496,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Called when we receive a notice
+     * Called when we receive a notice.
      * @param tParser The associated IRC parser
      * @param sMessage The notice content
      * @param sHost The source of the message
@@ -505,10 +505,10 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         String[] parts = ClientInfo.parseHostFull(sHost);
         frame.addLine("privateNotice", parts[0], parts[1], parts[2], sMessage);
         sendNotification();
-    }    
+    }
     
     /**
-     * Called when the IRC socket is closed for any reason
+     * Called when the IRC socket is closed for any reason.
      * @param tParser The IRC parser for this server
      */
     public void onSocketClosed(IRCParser tParser) {
@@ -520,12 +520,12 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
             }
             for (Query query : queries.values()) {
                 query.addLine("socketClosed", serverName);
-            }            
+            }
         }
-    }    
+    }
     
     /**
-     * Parses the parser error and notifies the Logger
+     * Parses the parser error and notifies the Logger.
      * @param tParser parser instance triggering event
      * @param errorInfo Parser error object
      */
@@ -538,7 +538,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         } else if (errorInfo.isWarning()) {
             errorLevel = ErrorLevel.WARNING;
         } else {
-            Logger.error(ErrorLevel.WARNING, "Unknown error level for parser error: "+errorInfo.getData());
+            Logger.error(ErrorLevel.WARNING,
+                    "Unknown error level for parser error: " + errorInfo.getData());
             return;
         }
         
@@ -551,11 +552,11 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     
     /**
      * Called when the server frame is opened. Checks config settings to
-     * determine if the window should be maximised
+     * determine if the window should be maximised.
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        Boolean pref = Boolean.parseBoolean(Config.getOption("ui","maximisewindows"));
+        Boolean pref = Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"));
         if (pref.equals(Boolean.TRUE) || MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);
@@ -567,7 +568,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     
     /**
      * Called when the server frame is being closed. Has the parser quit
-     * the server, close all channels, and free all resources
+     * the server, close all channels, and free all resources.
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
@@ -597,7 +598,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     
     /**
      * Called when the server frame is activated. Maximises the frame if it
-     * needs to be
+     * needs to be.
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
@@ -620,7 +621,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Returns this server's name
+     * Returns this server's name.
      * @return A string representation of this server (i.e., its name)
      */
     public String toString() {
@@ -628,14 +629,14 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Requests that this object's frame be activated
+     * Requests that this object's frame be activated.
      */
     public void activateFrame() {
         MainFrame.getMainFrame().setActiveFrame(frame);
     }
     
     /**
-     * Returns the server frame's icon
+     * Returns the server frame's icon.
      * @return The server frame's icon
      */
     public ImageIcon getIcon() {
@@ -643,7 +644,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Sends a notification to the frame manager if this frame isn't active
+     * Sends a notification to the frame manager if this frame isn't active.
      */
     private void sendNotification() {
         if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
@@ -653,7 +654,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Clears any outstanding notifications this frame has set
+     * Clears any outstanding notifications this frame has set.
      */
     private void clearNotification() {
         MainFrame.getMainFrame().getFrameManager().clearNotification(this);
