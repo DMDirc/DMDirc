@@ -27,11 +27,13 @@ import java.beans.PropertyVetoException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
+
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -39,6 +41,7 @@ import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelJoin;
@@ -49,11 +52,13 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelPart;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelQuit;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelTopic;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelNickChanged;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
 /**
@@ -64,8 +69,8 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
  */
 public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic,
         IChannelJoin, IChannelPart, IChannelKick, IChannelQuit, IChannelAction,
-        IChannelNickChanged, IChannelModeChanged, InternalFrameListener,
-        FrameContainer {
+        IChannelNickChanged, IChannelModeChanged, IChannelUserModeChanged,
+        InternalFrameListener, FrameContainer {
     
     /** The parser's pChannel class */
     private ChannelInfo channelInfo;
@@ -120,16 +125,20 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         }
         
         try {
-            server.getParser().getCallbackManager().addCallback("OnChannelGotNames", this, channelInfo.getName());
-            server.getParser().getCallbackManager().addCallback("OnChannelTopic", this, channelInfo.getName());
-            server.getParser().getCallbackManager().addCallback("OnChannelMessage", this, channelInfo.getName());
-            server.getParser().getCallbackManager().addCallback("OnChannelJoin", this, channelInfo.getName());
-            server.getParser().getCallbackManager().addCallback("OnChannelPart", this, channelInfo.getName());
-            server.getParser().getCallbackManager().addCallback("OnChannelQuit", this, channelInfo.getName());
-            server.getParser().getCallbackManager().addCallback("OnChannelKick", this, channelInfo.getName());
-            server.getParser().getCallbackManager().addCallback("OnChannelAction", this, channelInfo.getName());
-            server.getParser().getCallbackManager().addCallback("OnChannelNickChanged", this, channelInfo.getName());
-            server.getParser().getCallbackManager().addCallback("OnChannelModeChanged", this, channelInfo.getName());
+            final CallbackManager callbackManager = server.getParser().getCallbackManager();
+            final String channel = channelInfo.getName();
+            
+            callbackManager.addCallback("OnChannelGotNames", this, channel);
+            callbackManager.addCallback("OnChannelTopic", this, channel);
+            callbackManager.addCallback("OnChannelMessage", this, channel);
+            callbackManager.addCallback("OnChannelJoin", this, channel);
+            callbackManager.addCallback("OnChannelPart", this, channel);
+            callbackManager.addCallback("OnChannelQuit", this, channel);
+            callbackManager.addCallback("OnChannelKick", this, channel);
+            callbackManager.addCallback("OnChannelAction", this, channel);
+            callbackManager.addCallback("OnChannelNickChanged", this, channel);
+            callbackManager.addCallback("OnChannelModeChanged", this, channel);
+            callbackManager.addCallback("OnChannelUserModeChanged", this, channel);
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.FATAL, ex);
         }
@@ -254,6 +263,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         server.getParser().getCallbackManager().delCallback("OnChannelAction", this);
         server.getParser().getCallbackManager().delCallback("OnChannelNickChanged", this);
         server.getParser().getCallbackManager().delCallback("OnChannelModeChanged", this);
+        server.getParser().getCallbackManager().delCallback("OnChannelUserModeChanged", this);
         
         server.delChannel(channelInfo.getName());
         
@@ -496,7 +506,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
-     * Called when modes are changed on the channel
+     * Called when modes are changed on the channel.
      * @param tParser A reference to the IRC parser for this server
      * @param cChannel A reference to the ChannelInfo object for this channel
      * @param cChannelClient The client that set the modes
@@ -524,8 +534,43 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
+     * Called when a mode has been changed on a user. Used for custom mode
+     * formats.
+     * @param tParser A reference to the IRC parser for this server
+     * @param cChannel A reference to the ChannelInfo object for this channel
+     * @param cChangedClient The client whose mode was changed
+     * @param cSetByClient The client who made the change
+     * @param sHost The hostname of the setter
+     * @param sMode The mode that has been changed
+     */
+    public void onChannelUserModeChanged(final IRCParser tParser, 
+            final ChannelInfo cChannel, final ChannelClientInfo cChangedClient,
+            final ChannelClientInfo cSetByClient, final String sHost, 
+            final String sMode) {
+        
+        if (Boolean.parseBoolean(Config.getOption("channel", "splitusermodes"))) {
+            final String sourceModes = getModes(cSetByClient, sHost);
+            final String[] sourceHost = getDetails(cSetByClient, sHost);
+            final String targetModes = cChangedClient.getImportantModePrefix();
+            final String targetNick = cChangedClient.getClient().getNickname();
+            final String targetIdent = cChangedClient.getClient().getIdent();
+            final String targetHost = cChangedClient.getClient().getHost();
+                    
+            String format = "channelUserMode_" + sMode;
+            if (!Formatter.hasFormat(format)) {
+                format = "channelUserMode_default";
+            }
+            
+            frame.addLine(format, sourceModes, sourceHost[0], sourceHost[1],
+                    sourceHost[2], targetModes, targetNick, targetIdent,
+                    targetHost, sMode, cChannel);
+        }
+        
+    }
+    
+    /**
      * Returns a string containing the most important mode for the specified client
-     * @param channelClient The channel client to check
+     * @param channelClient The channel client to check.
      * @param host The hostname to check if the channel client doesn't exist
      * @return A string containing the most important mode, or an empty string
      * if there are no (known) modes.

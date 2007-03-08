@@ -74,7 +74,7 @@ public final class Formatter {
      * @param messageType the message type to check
      * @return True iff there is a matching format, false otherwise
      */
-    public static boolean hashFormat(String messageType) {
+    public static boolean hasFormat(String messageType) {
         if (properties == null) {
             initialise();
         }
@@ -162,6 +162,7 @@ public final class Formatter {
         //    9: Content
         //   10: Channel name
         properties.setProperty("channelKickReason", colour + "3* %1$s%2$s has kicked %5$s%6$s from %10$s (%9$s"+stop+").");
+        properties.setProperty("channelUserMode_default", colour + "3* %1$s%2$s sets mode %9$s on %6$s.");
         
         // Type: Channel topic sync
         //    1: Topic

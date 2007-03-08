@@ -112,6 +112,8 @@ public class Config {
         defaults.setProperty("ui.rolloverEnabled", "true");
         defaults.setProperty("ui.rolloverColour", "f0f0f0");
         
+        defaults.setProperty("channel.splitusermodes", "false");
+        
         defaults.setProperty("server.modec", "No formatting");
         defaults.setProperty("server.modeC", "No channel CTCPs");
         defaults.setProperty("server.modeD", "Auditorium mode");
