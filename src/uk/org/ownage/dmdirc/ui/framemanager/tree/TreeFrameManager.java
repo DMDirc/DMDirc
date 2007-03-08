@@ -27,6 +27,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -50,7 +52,6 @@ import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.ExpandVetoException;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import uk.org.ownage.dmdirc.Channel;
@@ -68,7 +69,8 @@ import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
  */
 public class TreeFrameManager implements FrameManager, TreeModelListener,
         TreeSelectionListener, TreeExpansionListener, TreeWillExpandListener,
-        MouseListener, ActionListener, MouseMotionListener, MouseWheelListener {
+        MouseListener, ActionListener, MouseMotionListener, MouseWheelListener,
+        KeyListener {
     
     /**
      * display tree
@@ -292,6 +294,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.setForeground(parent.getForeground());
         tree.setBorder(new EmptyBorder(5, 5, 5, 5));
         tree.setVisible(true);
+        tree.addKeyListener(this);
     }
     
     /**
@@ -304,6 +307,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         node.setUserObject(server);
         model.insertNodeInto(node, root);
         tree.scrollPathToVisible(new TreePath(node.getPath()));
+        setSelected(server);
     }
     
     /**
@@ -325,6 +329,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         node.setUserObject(channel);
         model.insertNodeInto(node, nodes.get(server));
         tree.scrollPathToVisible(new TreePath(node.getPath()));
+        setSelected(channel);
     }
     
     /**
@@ -347,6 +352,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         node.setUserObject(query);
         model.insertNodeInto(node, nodes.get(server));
         tree.scrollPathToVisible(new TreePath(node.getPath()));
+        setSelected(query);
     }
     
     /**
@@ -369,6 +375,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         node.setUserObject(raw);
         model.insertNodeInto(node, nodes.get(server));
         tree.scrollPathToVisible(new TreePath(node.getPath()));
+        setSelected(raw);
     }
     
     /**
@@ -600,14 +607,27 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param e mouse event
      */
     public void mouseWheelMoved(MouseWheelEvent e) {
-        DefaultMutableTreeNode thisNode, nextNode;
-        TreePath path;
-        int index;
         //get the number of notches (used only for direction)
         int notches = e.getWheelRotation();
+        if (notches < 0) {
+            changeFocus(true);
+        } else {
+            changeFocus(false);
+        }
+    }
+    
+    /**
+     * Activates the node above or below the active node in the tree
+     *
+     *@param direction true = up, false = down
+     */
+    private void changeFocus(boolean direction) {
+        DefaultMutableTreeNode thisNode, nextNode;
+        TreePath path;
+        
         if (selectedNode == null) {
-            //no selected node, get the first server
-            thisNode = (DefaultMutableTreeNode)tree.getModel().getRoot();
+            //no selected node, get the root node
+            thisNode = root;
             //are there any servers to select?
             if (thisNode.getChildCount() > 0) {
                 thisNode = (DefaultMutableTreeNode)thisNode.getChildAt(0);
@@ -620,7 +640,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
             thisNode = selectedNode;
         }
         //are we going up or down?
-        if (notches < 0){
+        if (direction){
             //up
             if (thisNode.getUserObject() instanceof Server) {
                 if (thisNode.getParent().getIndex(thisNode) == 0) {
@@ -665,5 +685,31 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         }
         //activate the nodes frame
         ((FrameContainer)nextNode.getUserObject()).activateFrame();
+    }
+    
+    /**
+     * Invoked when a key has been typed.
+     * @param e key event
+     */
+    public void keyTyped(KeyEvent e) {
+    }
+    
+    /**
+     * Invoked when a key has been pressed.
+     * @param e key event
+     */
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            changeFocus(false);
+        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+            changeFocus(true);
+        }
+    }
+    
+    /**
+     * Invoked when a key has been released.
+     * @param e key event
+     */
+    public void keyReleased(KeyEvent e) {
     }
 }
