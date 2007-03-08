@@ -28,6 +28,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.swing.JInternalFrame;
 import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
@@ -35,6 +37,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
@@ -47,10 +50,10 @@ import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
 /**
- *
+ * The channel frame is the GUI component that represents a channel to the user.
  * @author  chris
  */
-public class ChannelFrame extends javax.swing.JInternalFrame implements CommandWindow {
+public class ChannelFrame extends JInternalFrame implements CommandWindow {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -60,45 +63,45 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
     private static final long serialVersionUID = 4;
     
     /**
-     * The InputHandler for our input field
+     * The InputHandler for our input field.
      */
     private InputHandler inputHandler;
     /**
-     * The channel object that owns this frame
+     * The channel object that owns this frame.
      */
     private Channel parent;
     /**
-     * The nick list model used for this channel's nickname list
+     * The nick list model used for this channel's nickname list.
      */
     private NicklistListModel nicklistModel;
     /**
-     * The border used when the frame is not maximised
+     * The border used when the frame is not maximised.
      */
     private Border myborder;
     /**
-     * The dimensions of the titlebar of the frame
+     * The dimensions of the titlebar of the frame.
      **/
     private Dimension titlebarSize;
     /**
-     * whether to auto scroll the textarea when adding text
+     * whether to auto scroll the textarea when adding text.
      */
     private boolean autoScroll = true;
     /**
-     * holds the scrollbar for the frame
+     * holds the scrollbar for the frame.
      */
     private JScrollBar scrollBar;
     /**
-     * This channel's command parser
+     * This channel's command parser.
      */
     private ChannelCommandParser commandParser;
     
     /**
      * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
      * and default options for the form.
-     * @param parent The Channel object that owns this frame
+     * @param owner The Channel object that owns this frame
      */
-    public ChannelFrame(final Channel parent) {
-        this.parent = parent;
+    public ChannelFrame(final Channel owner) {
+        parent = owner;
         
         setFrameIcon(MainFrame.getMainFrame().getIcon());
         
@@ -108,13 +111,13 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         setClosable(true);
         setResizable(true);
         
-        jTextPane1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
-        jTextPane1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
-        jTextField1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
-        jTextField1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
-        jTextField1.setCaretColor(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
-        jList1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","backgroundcolour"))));
-        jList1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui","foregroundcolour"))));
+        jTextPane1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
+        jTextPane1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
+        jTextField1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
+        jTextField1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
+        jTextField1.setCaretColor(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
+        jList1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
+        jList1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
         
         commandParser = new ChannelCommandParser(parent.getServer(), parent);
         
@@ -123,27 +126,27 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         scrollBar = jScrollPane1.getVerticalScrollBar();
         
         addPropertyChangeListener("maximum", new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+            public void propertyChange(final PropertyChangeEvent propertyChangeEvent) {
                 if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
                     ChannelFrame.this.myborder = getBorder();
                     ChannelFrame.this.titlebarSize =
-                            ((BasicInternalFrameUI)getUI())
+                            ((BasicInternalFrameUI) getUI())
                             .getNorthPane().getPreferredSize();
                     
-                    ((BasicInternalFrameUI)getUI()).getNorthPane()
-                    .setPreferredSize(new Dimension(0,0));
-                    setBorder(new EmptyBorder(0,0,0,0));
+                    ((BasicInternalFrameUI) getUI()).getNorthPane()
+                    .setPreferredSize(new Dimension(0, 0));
+                    setBorder(new EmptyBorder(0, 0, 0, 0));
                     
                     MainFrame.getMainFrame().setMaximised(true);
                 } else {
-                    autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
-                    != scrollBar.getMaximum());
-                    if(autoScroll) {
+                    autoScroll = (scrollBar.getValue() + scrollBar.getVisibleAmount())
+                    != scrollBar.getMaximum();
+                    if (autoScroll) {
                         jTextPane1.setCaretPosition(jTextPane1.getStyledDocument().getLength());
                     }
                     
                     setBorder(ChannelFrame.this.myborder);
-                    ((BasicInternalFrameUI)getUI()).getNorthPane()
+                    ((BasicInternalFrameUI) getUI()).getNorthPane()
                     .setPreferredSize(ChannelFrame.this.titlebarSize);
                     
                     MainFrame.getMainFrame().setMaximised(false);
@@ -153,20 +156,20 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
         });
         
         addInternalFrameListener(new InternalFrameListener() {
-            public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
+            public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
                 jTextField1.requestFocus();
             }
-            public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
+            public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
             }
-            public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
+            public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
             }
-            public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
+            public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
             }
-            public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
+            public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
             }
-            public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
+            public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
             }
-            public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
+            public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
             }
         });
     }
@@ -176,33 +179,33 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
      * so that we can register an actionlistener for the open event before
      * the frame is opened.
      */
-    public void open() {
+    public final void open() {
         setVisible(true);
     }
     
     /**
-     * Sets the tab completer for this frame's input handler
+     * Sets the tab completer for this frame's input handler.
      * @param tabCompleter The tab completer to use
      */
-    public void setTabCompleter(TabCompleter tabCompleter) {
+    public final void setTabCompleter(TabCompleter tabCompleter) {
         inputHandler.setTabCompleter(tabCompleter);
     }
     
     /**
-     * Adds a line of text to the main text area
+     * Adds a line of text to the main text area.
      * @param line text to add
      */
-    public void addLine(final String line) {
+    public final void addLine(final String line) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 for (String myLine : line.split("\n")) {
                     String ts = Formatter.formatMessage("timestamp", new Date());
-                    if (!jTextPane1.getText().equals("")) { ts = "\n"+ts; }
+                    if (!jTextPane1.getText().equals("")) { ts = "\n" + ts; }
                     Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
                     Styliser.addStyledString(jTextPane1.getStyledDocument(), myLine);
                 }
                 
-                if (scrollBar.getValue() + Math.round(scrollBar.getVisibleAmount()*1.5) < scrollBar.getMaximum()) {
+                if (scrollBar.getValue() + Math.round(scrollBar.getVisibleAmount() * 1.5) < scrollBar.getMaximum()) {
                     SwingUtilities.invokeLater(new Runnable() {
                         private Rectangle prevRect = jTextPane1.getVisibleRect();
                         public void run() {
@@ -222,19 +225,19 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
     
     /**
      * Formats the arguments using the Formatter, then adds the result to the
-     * main text area
+     * main text area.
      * @param messageType The type of this message
      * @param args The arguments for the message
      */
-    public void addLine(final String messageType, final Object... args) {
+    public final void addLine(final String messageType, final Object... args) {
         addLine(Formatter.formatMessage(messageType, args));
     }
     
     /**
-     * Updates the list of clients on this channel
+     * Updates the list of clients on this channel.
      * @param newNames The new list of clients
      */
-    public void updateNames(final ArrayList<ChannelClientInfo> newNames) {
+    public final void updateNames(final ArrayList<ChannelClientInfo> newNames) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 nicklistModel.replace(newNames);
@@ -243,17 +246,17 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
     }
     
     /**
-     * Has the nick list update, to take into account mode changes
+     * Has the nick list update, to take into account mode changes.
      */
-    public void updateNames() {
+    public final void updateNames() {
         nicklistModel.sort();
     }
     
     /**
-     * Adds a client to this channels' nicklist
+     * Adds a client to this channels' nicklist.
      * @param newName the new client to be added
      */
-    public void addName(final ChannelClientInfo newName) {
+    public final void addName(final ChannelClientInfo newName) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 nicklistModel.add(newName);
@@ -262,10 +265,10 @@ public class ChannelFrame extends javax.swing.JInternalFrame implements CommandW
     }
     
     /**
-     * Removes a client from this channels' nicklist
+     * Removes a client from this channels' nicklist.
      * @param name the client to be deleted
      */
-    public void removeName(final ChannelClientInfo name) {
+    public final void removeName(final ChannelClientInfo name) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 nicklistModel.remove(name);

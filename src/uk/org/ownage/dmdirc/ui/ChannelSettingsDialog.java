@@ -22,14 +22,15 @@
 
 package uk.org.ownage.dmdirc.ui;
 
-import java.util.Arrays;
-import java.util.Hashtable;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
+import java.util.Hashtable;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
@@ -38,13 +39,14 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.ui.components.ParamModePanel;
 
 /**
- * Allows the user to modify channel settings (modes, topics, etc)
+ * Allows the user to modify channel settings (modes, topics, etc).
  * @author chris
  */
 public class ChannelSettingsDialog extends StandardDialog
@@ -69,10 +71,10 @@ public class ChannelSettingsDialog extends StandardDialog
     private Hashtable<String, ParamModePanel> modeInputs;
     
     /**
-     * Creates a new instance of ChannelSettingsDialog
+     * Creates a new instance of ChannelSettingsDialog.
      * @param channel The channel object that we're editing settings for
      */
-    public ChannelSettingsDialog(Channel channel) {
+    public ChannelSettingsDialog(final Channel channel) {
         super(MainFrame.getMainFrame(), false);
         
         this.channel = channel;
@@ -81,7 +83,7 @@ public class ChannelSettingsDialog extends StandardDialog
         initListeners();
     }
     
-    /** Initialises GUI components */
+    /** Initialises GUI components. */
     private void initComponents() {
         // --- Set up the main interface
         
@@ -90,7 +92,7 @@ public class ChannelSettingsDialog extends StandardDialog
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
         
-        setTitle("Channel settings for "+channel);
+        setTitle("Channel settings for " + channel);
         
         getContentPane().setLayout(new GridBagLayout());
         
@@ -105,9 +107,9 @@ public class ChannelSettingsDialog extends StandardDialog
         tabbedPane.addTab("Client Settings", identitiesPanel);
         
         button1 = new JButton();
-        button1.setPreferredSize(new Dimension(100,25));
+        button1.setPreferredSize(new Dimension(100, 25));
         button2 = new JButton();
-        button2.setPreferredSize(new Dimension(100,25));
+        button2.setPreferredSize(new Dimension(100, 25));
         
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -141,16 +143,12 @@ public class ChannelSettingsDialog extends StandardDialog
         //modesPanel.setPreferredSize(new Dimension(380, 200));
         settingsPanel.add(modesPanel, constraints);
         
-        IRCParser parser = channel.getServer().getParser();
+        final IRCParser parser = channel.getServer().getParser();
         
-        String booleanModes = parser.getBoolChanModes();
-        String ourBooleanModes = channel.getChannelInfo().getModeStr();
-        String paramModes = parser.getSetOnlyChanModes()+parser.getSetUnsetChanModes();
-        String listModes = parser.getListChanModes();
-        
-        char[] booleanModesTemp = booleanModes.toCharArray();
-        Arrays.sort(booleanModesTemp);
-        booleanModes = new String(booleanModesTemp);
+        final String booleanModes = parser.getBoolChanModes();
+        final String ourBooleanModes = channel.getChannelInfo().getModeStr();
+        final String paramModes = parser.getSetOnlyChanModes()+parser.getSetUnsetChanModes();
+        final String listModes = parser.getListChanModes();
         
         modeCheckBoxes = new Hashtable<String, JCheckBox>();
         
@@ -160,16 +158,16 @@ public class ChannelSettingsDialog extends StandardDialog
         
         // Lay out all the boolean mode checkboxes
         for (int i = 0; i < booleanModes.length(); i++) {
-            String mode = booleanModes.substring(i, i+1);
-            String text = "Mode "+mode;
-            boolean state = ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+            final String mode = booleanModes.substring(i, i+1);
+            final boolean state = ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+            String text = "Mode " + mode;
             
-            if (Config.hasOption("server","mode"+mode)) {
-                text = Config.getOption("server","mode"+mode);
+            if (Config.hasOption("server","mode" + mode)) {
+                text = Config.getOption("server","mode" + mode);
             }
             
-            JCheckBox checkBox = new JCheckBox(text, state);
-            checkBox.setBorder(new EmptyBorder(0,10,0,10));
+            final JCheckBox checkBox = new JCheckBox(text, state);
+            checkBox.setBorder(new EmptyBorder(0, 10, 0, 10));
             modesPanel.add(checkBox, constraints);
             
             constraints.gridx++;
@@ -193,11 +191,11 @@ public class ChannelSettingsDialog extends StandardDialog
         }
         
         for (int i = 0; i < paramModes.length(); i++) {
-            String mode = paramModes.substring(i, i+1);
-            String value = channel.getChannelInfo().getModeParam(mode.charAt(0));
-            boolean state = ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+            final String mode = paramModes.substring(i, i + 1);
+            final String value = channel.getChannelInfo().getModeParam(mode.charAt(0));
+            final boolean state = ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
             
-            ParamModePanel panel = new ParamModePanel(mode, state, value);
+            final ParamModePanel panel = new ParamModePanel(mode, state, value);
             modesPanel.add(panel, constraints);
             
             modeInputs.put(mode, panel);
@@ -208,13 +206,17 @@ public class ChannelSettingsDialog extends StandardDialog
         pack();
     }
     
-    /** Initialises listeners for this dialog */
+    /** Initialises listeners for this dialog. */
     private void initListeners() {
         button1.addActionListener(this);
         button2.addActionListener(this);
     }
     
-    public void actionPerformed(ActionEvent actionEvent) {
+    /**
+     * Called whenever the user clicks on one of the two buttons.
+     * @param actionEvent Event generated by this action
+     */
+    public final void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
             // TODO: Apply settings
             setVisible(false);
