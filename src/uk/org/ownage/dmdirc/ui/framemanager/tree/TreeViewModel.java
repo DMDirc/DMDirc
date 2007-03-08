@@ -22,15 +22,15 @@
 
 package uk.org.ownage.dmdirc.ui.framemanager.tree;
 
-import java.io.Serializable;
-import javax.swing.event.EventListenerList;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
-import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 import uk.org.ownage.dmdirc.FrameContainer;
 
-public class TreeViewModel implements Serializable, TreeModel {
+/**
+ * A simple sorted tree data model based on DefaultTreeModel.
+ */
+public class TreeViewModel extends DefaultTreeModel {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -39,54 +39,51 @@ public class TreeViewModel implements Serializable, TreeModel {
      */
     private static final long serialVersionUID = 1;
     
-    protected TreeViewNode root;
-    
-    protected EventListenerList listenerList = new EventListenerList();
-    
-    public TreeViewModel(TreeViewNode root) {
-        this.root = root;
+    /**
+     * Creates a tree in which any node can have children.
+     *
+     * @param root a TreeNode object that is the root of the tree
+     */
+    public TreeViewModel(TreeNode root) {
+        super(root);
     }
     
-    public Object getRoot() {
-        return root;
+    /**
+     * Creates a tree specifying whether any node can have children,
+     * or whether only certain nodes can have children.
+     * @param asksAllowsChildren true = ask whether child can have chilren, 
+     * false all nodes can have chilren
+     * @param root a root TreeNode
+     */
+    public TreeViewModel(TreeNode root, boolean asksAllowsChildren) {
+        super(root, asksAllowsChildren);
     }
     
-    public Object getChild(Object parent, int index) {
-        return ((TreeViewNode)parent).getChildAt(index);
+    /**
+     * Inserts a new node into the tree and fires the appropriate events
+     * @param newChild child to be added
+     * @param parent parent child is to be added too
+     */
+    public void insertNodeInto(DefaultMutableTreeNode newChild, DefaultMutableTreeNode parent) {      
+        int index = 0;
+        index = doComparison(newChild, parent);
+        super.insertNodeInto(newChild, parent, index);
     }
     
-    public int getChildCount(Object parent) {
-        return ((TreeViewNode)parent).getChildCount();
-    }
-    
-    public boolean isLeaf(Object node) {
-        return ((TreeViewNode)node).isLeaf();
-    }
-    
-    public void valueForPathChanged(TreePath path, Object newValue) {
-        TreeViewNode node = (TreeViewNode)path.getLastPathComponent();
-        node.setFrameContainerObject((FrameContainer)newValue);
-        //TODO nodeChanged
-    }
-    
-    public int getIndexOfChild(Object parent, Object child) {
-        return -1;
-    }
-    
-    public void addTreeModelListener(TreeModelListener l) {
-        listenerList.add(TreeModelListener.class, l);
-    }
-    
-    public void removeTreeModelListener(TreeModelListener l) {
-        listenerList.remove(TreeModelListener.class, l);
-    }
-    
-    public void insert(TreeViewNode parent, TreeViewNode child) {
-        parent.addChild(child);
-    }
-    
-    public void remove(TreeViewNode parent, TreeViewNode child) {
-        parent.removeChild(child);
+    /*
+     *
+     */
+    /**
+     * 
+     * @param newChild 
+     * @param parent 
+     * @return 
+     */
+    private int doComparison(DefaultMutableTreeNode newChild, DefaultMutableTreeNode parent) {
+        if (parent == root) {
+            return root.getChildCount();
+        }
+        return parent.getChildCount();
     }
 }
 

@@ -93,7 +93,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     /**
      * data model
      */
-    private DefaultTreeModel model;
+    private TreeViewModel model;
     
     /**
      * node storage, used for adding and deleting nodes correctly
@@ -106,7 +106,8 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     private Hashtable<FrameContainer, Color> nodeColours;
     
     /**
-     * stores background colour associated with a node, cheap hack till i rewrite the model
+     * stores background colour associated with a node,
+     * cheap hack till i rewrite the model
      */
     private DefaultMutableTreeNode rolloverNode;
     
@@ -162,10 +163,11 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         popup.setOpaque(true);
         popup.setLightWeightPopupEnabled(true);
         root = new DefaultMutableTreeNode("DMDirc");
-        model = new DefaultTreeModel(root);
+        model = new TreeViewModel(root);
         tree = new JTree(model);
         tree.addMouseListener(this);
-        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        tree.getSelectionModel().
+                setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(this);
         renderer = new TreeViewTreeCellRenderer();
         tree.setCellRenderer(renderer);
@@ -300,7 +302,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(server, node);
         node.setUserObject(server);
-        model.insertNodeInto(node, (MutableTreeNode)root, root.getChildCount());
+        model.insertNodeInto(node, root);
         tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
@@ -321,7 +323,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(channel, node);
         node.setUserObject(channel);
-        model.insertNodeInto(node, (MutableTreeNode)nodes.get(server), nodes.get(server).getChildCount());
+        model.insertNodeInto(node, nodes.get(server));
         tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
@@ -343,7 +345,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(query, node);
         node.setUserObject(query);
-        model.insertNodeInto(node, (MutableTreeNode)nodes.get(server), nodes.get(server).getChildCount());
+        model.insertNodeInto(node, nodes.get(server));
         tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
@@ -365,7 +367,7 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
         DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(raw, node);
         node.setUserObject(raw);
-        model.insertNodeInto(node, (MutableTreeNode)nodes.get(server), nodes.get(server).getChildCount());
+        model.insertNodeInto(node, nodes.get(server));
         tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
@@ -383,7 +385,8 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param e selection event
      */
     public void valueChanged(TreeSelectionEvent e) {
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+        DefaultMutableTreeNode node =
+                (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
         
         if (node == null) return;
         
@@ -412,17 +415,21 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     /**
      * Called when the tree is about to expand
      * @param event expansion event
-     * @throws javax.swing.tree.ExpandVetoException thrown to prevent node expanding
+     * @throws javax.swing.tree.ExpandVetoException thrown to prevent
+     * node expanding
      */
-    public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
+    public void treeWillExpand(TreeExpansionEvent event) throws
+            ExpandVetoException {
     }
     
     /**
      * Called when the tree is about to collapse
      * @param event expansion event
-     * @throws javax.swing.tree.ExpandVetoException throw to prevent node collapsing
+     * @throws javax.swing.tree.ExpandVetoException throw to prevent
+     * node collapsing
      */
-    public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException {
+    public void treeWillCollapse(TreeExpansionEvent event) throws
+            ExpandVetoException {
     }
     
     /**
@@ -454,7 +461,8 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     }
     
     /**
-     * Invoked when the mouse button has been clicked (pressed and released) on a component.
+     * Invoked when the mouse button has been clicked (pressed and released)
+     * on a component.
      * @param e mouse event
      */
     public void mouseClicked(MouseEvent e) {
@@ -554,7 +562,8 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
     }
     
     /**
-     * Invoked when the mouse cursor has been moved onto a component but no buttons have been pushed.
+     * Invoked when the mouse cursor has been moved onto a component but no
+     * buttons have been pushed.
      * @param e mouse event
      */
     public void mouseMoved(MouseEvent e) {
@@ -616,10 +625,13 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
             if (thisNode.getUserObject() instanceof Server) {
                 if (thisNode.getParent().getIndex(thisNode) == 0) {
                     //first server - last child of parent's last child
-                    nextNode = (DefaultMutableTreeNode)((DefaultMutableTreeNode)((DefaultMutableTreeNode)thisNode.getParent()).getLastChild()).getLastChild();
+                    nextNode = (DefaultMutableTreeNode)
+                    ((DefaultMutableTreeNode)((DefaultMutableTreeNode)
+                    thisNode.getParent()).getLastChild()).getLastChild();
                 } else {
                     //other servers - last child of previous sibling
-                    nextNode = (DefaultMutableTreeNode)(thisNode.getPreviousSibling()).getLastChild();
+                    nextNode = (DefaultMutableTreeNode)
+                    (thisNode.getPreviousSibling()).getLastChild();
                 }
             } else {
                 if (thisNode.getParent().getIndex(thisNode) == 0) {
@@ -636,12 +648,14 @@ public class TreeFrameManager implements FrameManager, TreeModelListener,
                 //all servers - get the first child
                 nextNode = (DefaultMutableTreeNode)thisNode.getFirstChild();
             } else {
-                if (thisNode.getParent().getIndex(thisNode) == thisNode.getParent().getChildCount()-1) {
+                if (thisNode.getParent().getIndex(thisNode) ==
+                        thisNode.getParent().getChildCount()-1) {
                     //last frame - get the parents next sibling
                     nextNode = ((DefaultMutableTreeNode)thisNode.getParent()).getNextSibling();
                     //parent doesnt have a next sibling, get the first child of the grandparent
                     if (nextNode == null) {
-                        nextNode = (DefaultMutableTreeNode)((DefaultMutableTreeNode)thisNode.getParent().getParent()).getFirstChild();
+                        nextNode = (DefaultMutableTreeNode)((DefaultMutableTreeNode)
+                        thisNode.getParent().getParent()).getFirstChild();
                     }
                 } else {
                     //other frames - get the next sibling

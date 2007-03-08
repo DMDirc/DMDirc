@@ -109,6 +109,8 @@ public class Config {
         defaults.setProperty("ui.sortByCase", "false");
         defaults.setProperty("ui.inputbuffersize", "50");
         defaults.setProperty("ui.showversion", "true");
+        defaults.setProperty("ui.rolloverEnabled", "true");
+        defaults.setProperty("ui.rolloverColour", "f0f0f0");
         
         defaults.setProperty("server.modec","No formatting");
         defaults.setProperty("server.modeC","No channel CTCPs");
