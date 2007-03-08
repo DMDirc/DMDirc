@@ -41,9 +41,9 @@ public class TreeViewModel extends DefaultTreeModel {
     /**
      * Creates a tree in which any node can have children.
      *
-     * @param root a TreeNode object that is the root of the tree
+     * @param root a TreeNode object that is the root of the tree.
      */
-    public TreeViewModel(TreeNode root) {
+    public TreeViewModel(final TreeNode root) {
         super(root);
     }
     
@@ -51,21 +51,21 @@ public class TreeViewModel extends DefaultTreeModel {
      * Creates a tree specifying whether any node can have children,
      * or whether only certain nodes can have children.
      * @param asksAllowsChildren true = ask whether child can have chilren,
-     * false all nodes can have chilren
-     * @param root a root TreeNode
+     * false all nodes can have chilren.
+     * @param root a root TreeNode.
      */
-    public TreeViewModel(TreeNode root, boolean asksAllowsChildren) {
+    public TreeViewModel(final TreeNode root, final boolean asksAllowsChildren) {
         super(root, asksAllowsChildren);
     }
     
     /**
-     * Inserts a new node into the tree and fires the appropriate events
-     * @param newChild child to be added
-     * @param parent parent child is to be added too
+     * Inserts a new node into the tree and fires the appropriate events.
+     * @param newChild child to be added.
+     * @param parent parent child is to be added too.
      */
-    public void insertNodeInto(DefaultMutableTreeNode newChild, DefaultMutableTreeNode parent) {
+    public final void insertNodeInto(final DefaultMutableTreeNode newChild, final DefaultMutableTreeNode parent) {
         int index = 0;
-        index = doComparison(newChild, parent);
+        index = getIndex(newChild, parent);
         super.insertNodeInto(newChild, parent, index);
     }
     
@@ -74,13 +74,13 @@ public class TreeViewModel extends DefaultTreeModel {
      */
     /**
      * Compares the new child with the existing children or parent to decide
-     * where it needs to be inserted
+     * where it needs to be inserted.
      *
-     * @param newChild
-     * @param parent
-     * @return
+     * @param newChild new node to be inserted.
+     * @param parent node the new node will be inserted into.
+     * @return index where new node is to be inserted.
      */
-    private int doComparison(DefaultMutableTreeNode newChild, DefaultMutableTreeNode parent) {
+    private int getIndex(final DefaultMutableTreeNode newChild, final DefaultMutableTreeNode parent) {
         if (parent == root) {
             return root.getChildCount();
         }

@@ -22,105 +22,107 @@
 
 package uk.org.ownage.dmdirc.logger;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.ui.FatalErrorDialog;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 
 /**
  * Logger class for an applications, provides logging, error logging and debug
- * logging
+ * logging.
  */
-public class Logger {
+public final class Logger {
     
     /**
-     * Logging Printwriter
+     * Logging Printwriter.
      */
-    private static PrintWriter logWriter = null;
+    private static PrintWriter logWriter;
     
     /**
-     * Debug Printwriter
+     * Debug Printwriter.
      */
-    private static PrintWriter debugWriter = null;
+    private static PrintWriter debugWriter;
     
     /**
-     * Error Printwriter
+     * Error Printwriter.
      */
-    private static PrintWriter errorWriter = null;
+    private static PrintWriter errorWriter;
     
     /**
-     * dialog used to report errors to the ui
+     * dialog used to report errors to the ui.
      */
     private static JDialog dialog;
     
     /**
-     * JOptionPane used as part of some dialogs
+     * JOptionPane used as part of some dialogs.
      */
     private static JOptionPane optionPane;
     
     /**
-     * Date formatter, used for logging and displaying messages
+     * Date formatter, used for logging and displaying messages.
      */
     private static SimpleDateFormat formatter;
     
     /**
-     * Prevents creation a new instance of Logger
+     * Prevents creation a new instance of Logger.
      */
     private Logger() {
     }
     
     /**
-     * Record an error message for the application, notifying the user if appropriate
-     * @param level error level
-     * @param message Error message/cause
+     * Record an error message for the application, notifying the user
+     * if appropriate.
+     * @param level error level.
+     * @param message Error message/cause.
      */
-    public static void error(ErrorLevel level, String message) {
+    public static void error(final ErrorLevel level, final String message) {
         if (logWriter == null || debugWriter == null || errorWriter == null) {
             createWriters();
         }
         
         switch (level) {
             case FATAL:
-                errorWriter.println(formatter.format(new Date())+": ERROR: "+level+" :"+message);
-                dialog = new FatalErrorDialog(MainFrame.getMainFrame(), true, new String[]{message});
+                errorWriter.println(formatter.format(new Date()) + ": ERROR: "
+                        + level + " :" + message);
+                dialog = new FatalErrorDialog(MainFrame.getMainFrame(), true,
+                        new String[]{message});
                 dialog.pack();
                 dialog.setLocationRelativeTo(MainFrame.getMainFrame());
                 dialog.setVisible(true);
                 break;
             default:
-                errorWriter.println(formatter.format(new Date())+": ERROR: "+level+" :"+message);
-                System.err.println(formatter.format(new Date())+": ERROR: "+level+" :"+message);
+                errorWriter.println(formatter.format(new Date()) + ": ERROR: "
+                        + level + " :" + message);
+                System.err.println(formatter.format(new Date()) + ": ERROR: "
+                        + level + " :" + message);
                 break;
         }
     }
     
     /**
      * Record an error message for the application at the error error level,
-     * notifying the user if appropriate
-     * @param message Error message/cause
+     * notifying the user if appropriate.
+     * @param message Error message/cause.
      */
-    public static void error(String message) {
+    public static void error(final String message) {
         error(ErrorLevel.ERROR, message);
     }
     
     /**
      * Record an error message for the application, notifying the user if
-     * appropriate
-     * @param level error level
-     * @param exception Cause of error
+     * appropriate.
+     * @param level error level.
+     * @param exception Cause of error.
      */
-    public static void error(ErrorLevel level, Exception exception) {
+    public static void error(final ErrorLevel level, final Exception exception) {
         String[] message;
         int i;
         
@@ -128,17 +130,17 @@ public class Logger {
             createWriters();
         }
         
-        StackTraceElement[] stackTrace = exception.getStackTrace();
+        final StackTraceElement[] stackTrace = exception.getStackTrace();
         switch (level) {
             case FATAL:
-                errorWriter.println(formatter.format(new Date())+
-                        ": ERROR: "+level+" :"+exception);
-                message = new String[stackTrace.length+1];
+                errorWriter.println(formatter.format(new Date())
+                + ": ERROR: " + level + " :" + exception);
+                message = new String[stackTrace.length + 1];
                 message[0] = exception.toString();
                 i = 1;
-                for (StackTraceElement traceElement: stackTrace) {
-                    message[i] = "\t"+traceElement.toString();
-                    errorWriter.println("\t"+traceElement);
+                for (StackTraceElement traceElement : stackTrace) {
+                    message[i] = "\t" + traceElement.toString();
+                    errorWriter.println("\t" + traceElement);
                     i++;
                 }
                 dialog = new FatalErrorDialog(MainFrame.getMainFrame(),
@@ -148,13 +150,13 @@ public class Logger {
                 dialog.setVisible(true);
                 break;
             default:
-                System.err.println(formatter.format(new Date())+
-                        ": ERROR: "+level+" :"+exception);
-                errorWriter.println(formatter.format(new Date())+
-                        ": ERROR: "+level+" :"+exception);
-                for (StackTraceElement traceElement: stackTrace) {
-                    System.err.println("\t"+traceElement);
-                    errorWriter.println("\t"+traceElement);
+                System.err.println(formatter.format(new Date())
+                + ": ERROR: " + level + " :" + exception);
+                errorWriter.println(formatter.format(new Date())
+                + ": ERROR: " + level + " :" + exception);
+                for (StackTraceElement traceElement : stackTrace) {
+                    System.err.println("\t" + traceElement);
+                    errorWriter.println("\t" + traceElement);
                 }
                 break;
         }
@@ -162,21 +164,21 @@ public class Logger {
     
     /**
      * Record an error message for the application at the error error level,
-     * notifying the user if appropriate
-     * @param exception Cause of error
+     * notifying the user if appropriate.
+     * @param exception Cause of error.
      */
-    public static void error(Exception exception) {
+    public static void error(final Exception exception) {
         error(ErrorLevel.ERROR, exception);
     }
     
     /**
      * Record an debug message for the application, notifying the user if
-     * appropriate
-     * @param level debug level
-     * @param message Debug message
+     * appropriate.
+     * @param level debug level.
+     * @param message Debug message.
      */
-    public static void debug(DebugLevel level, String message) {
-        if (!Config.hasOption("logging","debugLogging")
+    public static void debug(final DebugLevel level, final String message) {
+        if (!Config.hasOption("logging", "debugLogging")
         && !Config.getOption("logging", "debugLogging").equals("true")) {
             return;
         }
@@ -186,35 +188,35 @@ public class Logger {
         
         switch(level) {
             default:
-                if (Config.hasOption("logging","debugLoggingSysOut")
+                if (Config.hasOption("logging", "debugLoggingSysOut")
                 && Config.getOption("logging", "debugLoggingSysOut")
                 .equals("true")) {
-                    System.out.println(formatter.format(new Date())+
-                            ": DEBUG: "+level+" :"+message);
+                    System.out.println(formatter.format(new Date()) 
+                    + ": DEBUG: " + level + " :" + message);
                 }
                 
-                debugWriter.println(formatter.format(new Date())+
-                        ": DEBUG: "+level+" :"+message);
+                debugWriter.println(formatter.format(new Date()) 
+                + ": DEBUG: " + level + " :" + message);
                 break;
         }
     }
     
     /**
      * Record an debug message for the application at the normal debug level,
-     * notifying the user if appropriate
-     * @param message Debug message
+     * notifying the user if appropriate.
+     * @param message Debug message.
      */
-    public static void debug(String message) {
+    public static void debug(final String message) {
         debug(DebugLevel.NORMAL, message);
     }
     
     /**
-     * Record a log message for the application
-     * @param level log level
-     * @param message Log message
+     * Record a log message for the application.
+     * @param level log level.
+     * @param message Log message.
      */
-    public static void log(LogLevel level, String message) {
-        if (!Config.hasOption("logging","programLogging")
+    public static void log(final LogLevel level, final String message) {
+        if (!Config.hasOption("logging", "programLogging")
         && !Config.getOption("logging", "programLogging").equals("true")) {
             return;
         }
@@ -224,28 +226,31 @@ public class Logger {
         
         switch(level) {
             default:
-                logWriter.println(formatter.format(new Date())+
-                        ": LOG: "+level+" :"+message);
+                logWriter.println(formatter.format(new Date()) 
+                + ": LOG: " + level + " :" + message);
                 break;
         }
     }
     
     /**
-     * Initialises the the loggers writers (debug, error, log) and date formatter
+     * Initialises the the loggers writers (debug, error, log) and date formatter.
      */
     private static void createWriters() {
         try {
             if (logWriter == null) {
                 logWriter = new PrintWriter(
-                        new FileWriter(Config.getConfigDir()+"log.log", true), true);
+                        new FileWriter(Config.getConfigDir() 
+                        + "log.log", true), true);
             }
             if (debugWriter == null) {
                 debugWriter = new PrintWriter(
-                        new FileWriter(Config.getConfigDir()+"debug.log", true), true);
+                        new FileWriter(Config.getConfigDir() 
+                        + "debug.log", true), true);
             }
             if (errorWriter == null) {
                 errorWriter = new PrintWriter(
-                        new FileWriter(Config.getConfigDir()+"error.log", true), true);
+                        new FileWriter(Config.getConfigDir() 
+                        + "error.log", true), true);
             }
         } catch (IOException ex) {
             Logger.error(ErrorLevel.WARNING, ex);

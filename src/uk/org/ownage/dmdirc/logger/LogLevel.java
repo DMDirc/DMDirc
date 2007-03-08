@@ -23,27 +23,12 @@
 package uk.org.ownage.dmdirc.logger;
 
 /**
- * Specific log levels allowed by the Logger
+ * Specific log levels allowed by the Logger.
  */
 public enum LogLevel {        
     /**
-     * Core log messages
+     * log levels recognised by the logger.
      */
-    CORE, 
-    /**
-     * Command parser log messages
-     */
-    COMMAND, 
-    /**
-     * Parser log messages
-     */
-    PARSER, 
-    /**
-     * Plugin log messages
-     */
-    PLUGIN, 
-    /**
-     * UI log messages
-     */
-    UI
+    CORE, COMMAND, PARSER,PLUGIN, UI,
 }
+

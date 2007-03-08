@@ -27,19 +27,21 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.net.URL;
+
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
- * Displays a node in a tree according to its type
+ * Displays a node in a tree according to its type.
  */
 public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
     
@@ -51,50 +53,49 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
     private static final long serialVersionUID = 1;
     
     /**
-     * default icon
+     * default icon.
      */
-    ImageIcon defaultIcon;
+    private ImageIcon defaultIcon;
     
     /**
-     * Creates a new instance of TreeViewTreeCellRenderer
+     * Creates a new instance of TreeViewTreeCellRenderer.
      */
     public TreeViewTreeCellRenderer() {
-        ClassLoader cldr = this.getClass().getClassLoader();
-        URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/icon.png");
+        final ClassLoader cldr = this.getClass().getClassLoader();
+        final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/icon.png");
         defaultIcon = new ImageIcon(imageURL);
     }
     
     /**
-     * Configures the renderer based on the passed parameters
-     * @param tree JTree for this renderer
-     * @param value node to be renderered
-     * @param sel whether the node is selected
-     * @param expanded whether the node is expanded
-     * @param leaf whether the node is a leaf
-     * @param row the node's row
-     * @param hasFocus whether the node has focus
-     * @return RendererComponent for this node
+     * Configures the renderer based on the passed parameters.
+     * @param tree JTree for this renderer.
+     * @param value node to be renderered.
+     * @param sel whether the node is selected.
+     * @param expanded whether the node is expanded.
+     * @param leaf whether the node is a leaf.
+     * @param row the node's row.
+     * @param hasFocus whether the node has focus.
+     * @return RendererComponent for this node.
      */
-    public Component getTreeCellRendererComponent(JTree tree, Object value,
-            boolean sel, boolean expanded, boolean leaf, int row,
-            boolean hasFocus) {
+    public final Component getTreeCellRendererComponent(final JTree tree, 
+            final Object value, final boolean sel, final boolean expanded, 
+            final boolean leaf, final int row, final boolean hasFocus) {
         
-        Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
+        final Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
                 row, hasFocus);
         
-        DefaultMutableTreeNode node = (DefaultMutableTreeNode)value;
+        final DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
         
         TreeFrameManager manager = null;
         
         if (MainFrame.hasMainFrame()) {
-            manager = (TreeFrameManager)MainFrame.getMainFrame().getFrameManager();
+            manager = (TreeFrameManager) MainFrame.getMainFrame().getFrameManager();
         }
         
         setBackground(null);
         
         if (manager != null) {
-            DefaultMutableTreeNode rolloverNode = manager.getRollover();
-            if (rolloverNode == value) {
+            if (manager.getRollover() == value) {
                 if (Config.hasOption("ui", "rolloverColour")) {
                     setBackground(ColourManager.getColour(
                             Config.getOption("ui", "rolloverColour")));
@@ -104,15 +105,15 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
             }
         }
         setForeground(tree.getForeground());
-        setPreferredSize(new Dimension(110, getFont().getSize()+5));
+        setPreferredSize(new Dimension(110, getFont().getSize() + 5));
         
         setOpaque(true);
         if (node.getUserObject() instanceof FrameContainer && manager != null) {
-            Color colour = manager.getNodeColour((FrameContainer)node.getUserObject());
+            final Color colour = manager.getNodeColour((FrameContainer) node.getUserObject());
             if (colour != null) {
                 setForeground(colour);
             }
-            setIcon(((FrameContainer)node.getUserObject()).getIcon());
+            setIcon(((FrameContainer) node.getUserObject()).getIcon());
         } else {
             
             setIcon(defaultIcon);

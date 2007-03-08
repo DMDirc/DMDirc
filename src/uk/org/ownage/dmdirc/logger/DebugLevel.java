@@ -23,11 +23,11 @@
 package uk.org.ownage.dmdirc.logger;
 
 /**
- * Specific debug levels allowed by Logger
+ * Specific debug levels allowed by Logger.
  */
 public enum DebugLevel {        
     /**
-     * Normal debug messages
+     * debug levels recognised by the logger.
      */
-    NORMAL
+    NORMAL,
 }

@@ -23,23 +23,11 @@
 package uk.org.ownage.dmdirc.logger;
 
 /**
- * Specific error levels allowed by Logger
+ * Specific error levels allowed by Logger.
  */
 public enum ErrorLevel {        
     /**
-     * Fatal error
+     * error levels recognised by the logger.
      */
-    FATAL, 
-    /**
-     * Standard error
-     */
-    ERROR, 
-    /**
-     * Warning error
-     */
-    WARNING, 
-    /**
-     * Informational error
-     */
-    INFO
+    FATAL, ERROR, WARNING, INFO,
 }
