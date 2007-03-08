@@ -39,44 +39,52 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
- * Helper class to encrypt and decrypt strings, requests passwords if needed
+ * Helper class to encrypt and decrypt strings, requests passwords if needed.
  */
-public class CipherUtils {
+public final class CipherUtils {
     /**
-     * Encryption cipher
+     * Encryption cipher.
      */
     private static Cipher ecipher;
+
     /**
-     * Decryption cipher
+     * Decryption cipher.
      */
     private static Cipher dcipher;
+
     /**
-     * Salt
+     * Salt.
      */
-    private static byte[] salt = {
-        (byte)0xA9, (byte)0x9B, (byte)0xC8, (byte)0x32,
-        (byte)0x56, (byte)0x35, (byte)0xE3, (byte)0x03
+    private static final byte[] SALT = {
+        (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
+        (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03
     };
+
     /**
-     * Iteration count
+     * Iteration count.
      */
-    private static int iterationCount = 19;
+    private static final int ITERATIONS = 19;
     
     /**
-     * Prevents creation of a new instance of Encipher
+     * number of auth attemps before failing the attempt.
+     */
+    private static final int AUTH_TRIES = 4;
+
+    /**
+     * Prevents creation of a new instance of Encipher.
      */
     private CipherUtils() {
     }
-    
+
     /**
-     * Encrypts a string using the stored settings. Will return null if the automatic
-     * user authentication fails - use checkauth and auth.
+     * Encrypts a string using the stored settings. Will return null if the
+     * automatic user authentication fails - use checkauth and auth.
      * @param str String to encrypt
      * @return Encrypted string
      */
-    public static String encrypt(String str) {
+    public static String encrypt(final String str) {
         if (dcipher == null || ecipher == null) {
-            if (!authAndCreateCiphers()) return null;
+            if (!authAndCreateCiphers()) { return null; }
         }
         try {
             byte[] password = str.getBytes("UTF8");
@@ -93,16 +101,16 @@ public class CipherUtils {
         }
         return null;
     }
-    
+
     /**
-     * Encrypts a string using the stored settings. Will return null if the automatic
-     * user authentication fails - use checkauth and auth.
+     * Encrypts a string using the stored settings. Will return null if the
+     * automatic user authentication fails - use checkauth and auth.
      * @param str String to decrypt
      * @return Decrypted string
      */
-    public static String decrypt(String str) {
+    public static String decrypt(final String str) {
         if (dcipher == null || ecipher == null) {
-            if (!authAndCreateCiphers()) return null;
+            if (!authAndCreateCiphers()) { return null; }
         }
         try {
             byte[] decrypted = dcipher.doFinal(str.getBytes());
@@ -118,13 +126,13 @@ public class CipherUtils {
         }
         return null;
     }
-    
+
     /**
-     * Performs a SHA-512 hash
+     * Performs a SHA-512 hash.
      * @param data String to hashed
      * @return hashed string
      */
-    public static String hash(String data) {
+    public static String hash(final String data) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-512");
             return new String(md.digest(data.getBytes("UTF8")));
@@ -135,9 +143,9 @@ public class CipherUtils {
         }
         return null;
     }
-    
+
     /**
-     * Checks if a user is authed
+     * Checks if a user is authed.
      * @return Auth status
      */
     public static boolean checkAuthed() {
@@ -146,9 +154,9 @@ public class CipherUtils {
         }
         return false;
     }
-    
+
     /**
-     * Auths a user and creates ciphers
+     * Auths a user and creates ciphers.
      * @return auth status
      */
     public static boolean authAndCreateCiphers() {
@@ -165,7 +173,7 @@ public class CipherUtils {
                 passwordHash = null;
             }
             passwordHash = "moo";
-            while ((password == null || password.length() == 0) && tries < 4) {
+            while ((password == null || password.length() == 0) && tries < AUTH_TRIES) {
                 password =  JOptionPane.showInputDialog(prompt);
                 if (passwordHash == null) {
                     passwordHash = hash(password);
@@ -173,24 +181,25 @@ public class CipherUtils {
                     Config.save();
                 }
                 if (!hash(password).equals(passwordHash)) {
-                    prompt = "<html>Password mis-match<br>Please re-enter your password</html>";
+                    prompt = "<html>Password mis-match<br>Please re-enter "
+                            + "your password</html>";
                     tries++;
                     password = null;
                 }
             }
         }
-        if (tries == 4) {
+        if (tries == AUTH_TRIES) {
             return false;
         }
         try {
             KeySpec keySpec = new PBEKeySpec(
-                    password.toCharArray(), salt, iterationCount);
+                    password.toCharArray(), SALT, ITERATIONS);
             SecretKey key = SecretKeyFactory.
                     getInstance("PBEWithMD5AndDES").generateSecret(keySpec);
             ecipher = Cipher.getInstance(key.getAlgorithm());
             dcipher = Cipher.getInstance(key.getAlgorithm());
             AlgorithmParameterSpec paramSpec =
-                    new PBEParameterSpec(salt, iterationCount);
+                    new PBEParameterSpec(SALT, ITERATIONS);
             ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
             dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
             return true;
