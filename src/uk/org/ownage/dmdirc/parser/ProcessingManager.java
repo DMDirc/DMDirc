@@ -181,6 +181,8 @@ public class ProcessingManager {
 			} else {
 				throw new ProcessorNotFound("No processors will handle "+sParam);
 			}
+		} catch (ProcessorNotFound p) {
+			throw p;
 		} catch (Exception e) {
 			String line = "";
 			for (int i = 0; i < token.length; ++i ) { line = line+" "+token[i]; }
@@ -192,3 +194,4 @@ public class ProcessingManager {
 	}
 		
 }
+
