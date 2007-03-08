@@ -1785,20 +1785,122 @@ public class IRCParser implements Runnable {
 	}
 	
 	/**
+	 * Get the known boolean chanmodes in 005 order.
+	 * Modes are returned in the order that the ircd specifies the modes in 005
+	 * with any newly-found modes (mode being set that wasn't specified in 005)
+	 * being added at the end.
+	 *
+	 * @return All the currently known boolean modes
+	 */	
+	public String getBoolChanModes005() {
+		// This code isn't the nicest, as Hashtable's don't lend themselves to being
+		// ordered. 
+		// Order isn't really important, and this code only takes 3 lines of we
+		// don't care about it but ordered guarentees that on a specific ircd this
+		// method will ALWAYs return the same value.
+		char[] modes = new char[hChanModesBool.size()];
+		Character cTemp;
+		Integer nTemp;
+		
+		for (Enumeration e = hChanModesBool.keys(); e.hasMoreElements();) {
+			cTemp = (Character)e.nextElement();
+			nTemp = hChanModesBool.get(cTemp);
+			// Is there an easier way to find out the power of 2 value for a number?
+			// ie 1024 = 10, 512 = 9 ?
+			for (int i = 0; i < modes.length; i++) {
+				if (Math.pow(2, i) == (double)nTemp) {
+					modes[i] = cTemp;
+					break;
+				}
+			}
+		}
+		return new String(modes);
+	}
+	
+	/**
+	 * Get the known boolean chanmodes in alphabetical order.
+	 * Modes are returned in alphabetic order
+	 *
+	 * @return All the currently known boolean modes
+	 */	
+	public String getBoolChanModes() {
+		char[] modes = new char[hChanModesBool.size()];
+		int i = 0;
+		for (Enumeration e = hChanModesBool.keys(); e.hasMoreElements();) {
+			modes[i++] = (Character)e.nextElement();
+		}
+		// Alphabetically sort the array
+		Arrays.sort(modes);
+		return new String(modes);
+	}
+	
+	/**
+	 * Get the known List chanmodes.
+	 * Modes are returned in alphabetical order
+	 *
+	 * @return All the currently known List modes
+	 */	
+	public String getListChanModes() {
+		return getOtherModeString(cmList);
+	}
+	
+	/**
+	 * Get the known Set-Only chanmodes.
+	 * Modes are returned in alphabetical order
+	 *
+	 * @return All the currently known Set-Only modes
+	 */	
+	public String getSetOnlyChanModes() {
+		return getOtherModeString(cmSet);
+	}
+	
+	/**
+	 * Get the known Set-Unset chanmodes.
+	 * Modes are returned in alphabetical order
+	 *
+	 * @return All the currently known Set-Unset modes
+	 */	
+	public String getSetUnsetChanModes() {
+		return getOtherModeString((byte)(cmSet+cmUnset));
+	}
+
+	/**
+	 * Get modes from hChanModesOther that have a specific value.
+	 * Modes are returned in alphabetical order
+	 *
+	 * @param nValue Value mode must have to be included
+	 * @return All the currently known Set-Unset modes
+	 */	
+	protected String getOtherModeString(byte nValue) {
+		char[] modes = new char[hChanModesOther.size()];
+		Character cTemp;
+		Byte nTemp;
+		int i = 0;
+		for (Enumeration e = hChanModesOther.keys(); e.hasMoreElements();) {
+			cTemp = (Character)e.nextElement();
+			nTemp = hChanModesOther.get(cTemp);
+			if (nTemp == nValue) { modes[i++] = cTemp; }
+		}
+		// Alphabetically sort the array
+		Arrays.sort(modes);
+		return (new String(modes)).trim();
+	}
+	
+	/**
 	 * Process CHANMODES from 005.
 	 */	
-	protected void parseChanModes() {
+	public void parseChanModes() {
 		final String sDefaultModes = "b,k,l,imnpstrc";
 		String[] Bits = null;
 		String ModeStr;
 		if (h005Info.containsKey("CHANMODES")) { ModeStr = h005Info.get("CHANMODES");	}
 		else { ModeStr = sDefaultModes; h005Info.put("CHANMODES",ModeStr); }
-		Bits = ModeStr.split(",",4);
-		if (Bits.length != 4) {
+		Bits = ModeStr.split(",",5);
+		if (Bits.length < 4) {
 			ModeStr = sDefaultModes;
 			callErrorInfo(new ParserError(errError, "CHANMODES String not valid. Using default string of \""+ModeStr+"\""));
 			h005Info.put("CHANMODES",ModeStr);
-			Bits = ModeStr.split(",",4);
+			Bits = ModeStr.split(",",5);
 		}
 		
 		// resetState
