@@ -1889,7 +1889,7 @@ public class IRCParser implements Runnable {
 	/**
 	 * Process CHANMODES from 005.
 	 */	
-	public void parseChanModes() {
+	protected void parseChanModes() {
 		final String sDefaultModes = "b,k,l,imnpstrc";
 		String[] Bits = null;
 		String ModeStr;
