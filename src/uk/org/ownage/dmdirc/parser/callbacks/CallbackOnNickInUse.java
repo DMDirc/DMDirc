@@ -39,12 +39,12 @@ public class CallbackOnNickInUse extends CallbackObject {
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
 				((INickInUse)callbackInfo.get(i)).onNickInUse(myParser);
+				bResult = true;
 			} catch (Exception e) {
 				ParserError ei = new ParserError(ParserError.errError, "Exception in onNickInUse");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
-			bResult = true;
 		}
 		return bResult;
 	}
