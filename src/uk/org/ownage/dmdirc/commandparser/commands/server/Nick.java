@@ -22,21 +22,20 @@
 
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
-import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
 /**
- * Allows the user to change nickname
+ * Allows the user to change nickname.
  * @author chris
  */
 public class Nick extends ServerCommand {
     
     /**
-     * Creates a new instance of Join
+     * Creates a new instance of Join.
      */
-    public Nick () {
+    public Nick() {
         description = "Changes your nickname";
         arguments = "<new nickname>";
         polyadic = false;
@@ -46,12 +45,13 @@ public class Nick extends ServerCommand {
     }
 
     /**
-     * Executes this command
+     * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
      */    
-    public void execute(CommandWindow origin, Server server, String... args) {
+    public void execute(final CommandWindow origin, final Server server, 
+            final String... args) {
         server.getParser().setNickname(args[0]);
     }
     

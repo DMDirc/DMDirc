@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser;
 
 import java.util.Hashtable;
+
 import uk.org.ownage.dmdirc.Config;
 
 /**
@@ -31,56 +32,56 @@ import uk.org.ownage.dmdirc.Config;
  * on the character at the start of the string), and handles it appropriately.
  * @author chris
  */
-abstract public class CommandParser {
+public abstract class CommandParser {
     
     /**
-     * Commands that are associated with this parser
+     * Commands that are associated with this parser.
      */
-    private Hashtable<String,Command> commands;
+    private Hashtable<String, Command> commands;
     
-    /** Creates a new instance of CommandParser */
+    /** Creates a new instance of CommandParser. */
     public CommandParser() {
-        commands = new Hashtable<String,Command>();
+        commands = new Hashtable<String, Command>();
         loadCommands();
     }
     
-    /** Loads the relevant commands into the parser */
+    /** Loads the relevant commands into the parser. */
     protected abstract void loadCommands();
     
     /**
-     * Registers the specified command with this parser
+     * Registers the specified command with this parser.
      * @param command Command to be registered
      */
-    public void registerCommand(Command command) {
+    public void registerCommand(final Command command) {
         commands.put(command.getSignature(), command);
     }
     
     /**
-     * Parses the specified string as a command
+     * Parses the specified string as a command.
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      */
-    public void parseCommand(CommandWindow origin, String line) {
+    public void parseCommand(final CommandWindow origin, final String line) {
         if (line.equals("")) {
             return;
         }
         
-        if (line.charAt(0) == Config.getOption("general","commandchar").charAt(0)) {
-            String[] args = line.split(" ");
+        if (line.charAt(0) == Config.getOption("general", "commandchar").charAt(0)) {
+            final String[] args = line.split(" ");
             String[] comargs;
             String command;
             
-            assert(args.length > 0);
+            assert args.length > 0;
             
             command = args[0].substring(1);
             
-            comargs = new String[args.length-1];
+            comargs = new String[args.length - 1];
             
             for (int i = 1; i < args.length; i++) {
-                comargs[i-1] = args[i];
+                comargs[i - 1] = args[i];
             }
             
-            String signature = command+"/"+(comargs.length);
+            final String signature = command + "/" + (comargs.length);
             
             // Check the specific signature first, so that polyadic commands can
             // have error handlers if there are too few arguments (e.g., msg/0 and
@@ -99,12 +100,13 @@ abstract public class CommandParser {
     
     /**
      * Parses the specified string as a command, taking the indicated status
-     * of the control key into account
+     * of the control key into account.
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      * @param usedCtrl Whether the user used the control key or not
      */
-    public void parseCommand(CommandWindow origin, String line, boolean usedCtrl) {
+    public void parseCommand(final CommandWindow origin, final String line, 
+            final boolean usedCtrl) {
         if (usedCtrl) {
             handleNonCommand(origin, line);
         } else {
@@ -118,7 +120,8 @@ abstract public class CommandParser {
      * @param command The command to be executed
      * @param args The arguments to the command
      */
-    abstract protected void executeCommand(CommandWindow origin, Command command, String... args);
+    protected abstract void executeCommand(final CommandWindow origin, 
+            final Command command, final String... args);
     
     /**
      * Called when the user attempted to issue a command (i.e., used the command
@@ -128,7 +131,8 @@ abstract public class CommandParser {
      * @param command The command the user tried to execute
      * @param args The arguments passed to the command
      */
-    abstract protected void handleInvalidCommand(CommandWindow origin, String command, String... args);
+    protected abstract void handleInvalidCommand(final CommandWindow origin, 
+            final String command, final String... args);
     
     /**
      * Called when the input was a line of text that was not a command. This normally
@@ -136,5 +140,6 @@ abstract public class CommandParser {
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
-    abstract protected void handleNonCommand(CommandWindow origin, String line);
+    protected abstract void handleNonCommand(final CommandWindow origin, 
+            final String line);
 }

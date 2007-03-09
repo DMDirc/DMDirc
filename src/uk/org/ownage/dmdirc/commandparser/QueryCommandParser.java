@@ -33,27 +33,27 @@ import uk.org.ownage.dmdirc.Server;
 public class QueryCommandParser extends CommandParser {
     
     /**
-     * The server instance that this parser is attached to
+     * The server instance that this parser is attached to.
      */
     private Server server;
     /**
-     * The query instance that this parser is attached to
+     * The query instance that this parser is attached to.
      */
     private Query query;
     
     /**
-     * Creates a new instance of QueryCommandParser
-     * @param server The server instance that this parser is attached to
-     * @param query The query instance that this parser is attached to
+     * Creates a new instance of QueryCommandParser.
+     * @param newServer The server instance that this parser is attached to
+     * @param newQuery The query instance that this parser is attached to
      */
-    public QueryCommandParser(Server server, Query query) {
+    public QueryCommandParser(final Server newServer, final Query newQuery) {
         super();
         
         this.server = server;
         this.query = query;
     }
     
-    /** Loads the relevant commands into the parser */
+    /** Loads the relevant commands into the parser. */
     protected void loadCommands() {
         CommandManager.loadQueryCommands(this);
         CommandManager.loadServerCommands(this);
@@ -65,7 +65,8 @@ public class QueryCommandParser extends CommandParser {
      * @param command The command to be executed
      * @param args The arguments to the command
      */
-    protected void executeCommand(CommandWindow origin, Command command, String... args) {
+    protected void executeCommand(final CommandWindow origin, 
+            final Command command, final String... args) {
         if (command instanceof QueryCommand) {
             ((QueryCommand) command).execute(origin, server, query, args);
         } else {
@@ -81,8 +82,9 @@ public class QueryCommandParser extends CommandParser {
      * @param command The command the user tried to execute
      * @param args The arguments passed to the command
      */
-    protected void handleInvalidCommand(CommandWindow origin, String command, String... args) {
-        origin.addLine("Unknown command: "+command+"/"+args.length);
+    protected void handleInvalidCommand(final CommandWindow origin, 
+            final String command, final String... args) {
+        origin.addLine("Unknown command: " + command + "/" + args.length);
     }
     
     /**
@@ -91,7 +93,7 @@ public class QueryCommandParser extends CommandParser {
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
-    protected void handleNonCommand(CommandWindow origin, String line) {
+    protected void handleNonCommand(final CommandWindow origin, final String line) {
         query.sendLine(line);
     }
     

@@ -29,12 +29,12 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.ui.ChannelSettingsDialog;
 
 /**
- * Opens the channel settings window for the channel
+ * Opens the channel settings window for the channel.
  * @author chris
  */
 public class ChannelSettings extends ChannelCommand {
     
-    /** Creates a new instance of ChannelSettings */
+    /** Creates a new instance of ChannelSettings. */
     public ChannelSettings() {
         description = "opens the channel settings window";
         arguments = "";
@@ -45,13 +45,14 @@ public class ChannelSettings extends ChannelCommand {
     }
     
     /**
-     * Executes this command
+     * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param channel The channel object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(CommandWindow origin, Server server, Channel channel, String... args) {
+    public void execute(final CommandWindow origin, final Server server, 
+            final Channel channel, final String... args) {
         new ChannelSettingsDialog(channel).setVisible(true);
     }
     

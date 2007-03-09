@@ -22,20 +22,19 @@
 
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
-import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 
 /**
- * Allows the user to load a message formatter from a file
+ * Allows the user to load a message formatter from a file.
  * @author chris
  */
 public class LoadFormatter extends ServerCommand {
     
     /**
-     * Creates a new instance of LoadFormatter
+     * Creates a new instance of LoadFormatter.
      */
     public LoadFormatter() {
         description = "Loads a message formatter from a file";
@@ -47,12 +46,13 @@ public class LoadFormatter extends ServerCommand {
     }
     
     /**
-     * Executes this command
+     * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(CommandWindow origin, Server server, String... args) {
+    public void execute(final CommandWindow origin, final Server server, 
+            final String... args) {
         if (Formatter.loadFile(args[0])) {
             origin.addLine("Formatter loaded.");
         } else {

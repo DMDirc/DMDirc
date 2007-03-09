@@ -22,7 +22,6 @@
 
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
-import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
@@ -35,9 +34,9 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 public class Join extends ServerCommand {
     
     /**
-     * Creates a new instance of Join
+     * Creates a new instance of Join.
      */
-    public Join () {
+    public Join() {
         description = "Joins the specified channel. Multiple channels may be seperated by commas.";
         arguments = "<channel(s)>";
         polyadic = false;
@@ -47,12 +46,13 @@ public class Join extends ServerCommand {
     }
 
     /**
-     * Executes this command
+     * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
      */    
-    public void execute(CommandWindow origin, Server server, String... args) {
+    public void execute(final CommandWindow origin, final Server server, 
+            final String... args) {
         server.getParser().joinChannel(args[0]);
     }
     

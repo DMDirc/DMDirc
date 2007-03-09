@@ -35,7 +35,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
  */
 public class MeEmpty extends ChannelCommand {
     
-    /** Creates a new instance of MeEmpty */
+    /** Creates a new instance of MeEmpty. */
     public MeEmpty() {
         description = "informs the user of the correct usage of the me command";
         arguments = "";
@@ -46,14 +46,15 @@ public class MeEmpty extends ChannelCommand {
     }
     
     /**
-     * Executes this command
+     * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param channel The channel object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(CommandWindow origin, Server server, Channel channel, String... args) {
-        origin.addLine("Usage: "+Config.getOption("general","commandchar")+"me <action>");
+    public void execute(final CommandWindow origin, final Server server, 
+            final Channel channel, final String... args) {
+        origin.addLine("Usage: " + Config.getOption("general", "commandchar") + "me <action>");
     }
     
 }

@@ -31,13 +31,13 @@ import uk.org.ownage.dmdirc.Server;
  */
 public abstract class ServerCommand extends Command {
     
-    /** Creates a new instance of ChannelCommand */
+    /** Creates a new instance of ChannelCommand. */
     public ServerCommand() {
         super();
     }
     
     /**
-     * Executes this command
+     * Executes this command.
      * @param origin The window in which the command was typed
      * @param server The server instance that this command is being executed on
      * @param args Arguments passed to this command

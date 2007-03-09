@@ -29,6 +29,6 @@ public enum LogLevel {
     /**
      * log levels recognised by the logger.
      */
-    CORE, COMMAND, PARSER,PLUGIN, UI,
+    CORE, COMMAND, PARSER, PLUGIN, UI,
 }
 

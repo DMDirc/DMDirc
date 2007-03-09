@@ -22,11 +22,11 @@
 
 package uk.org.ownage.dmdirc.commandparser.commands.query;
 
-import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.QueryCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.commandparser.QueryCommand;
 
 /**
  * Represents the /me command used in a query window, with no parameters.
@@ -35,7 +35,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
  */
 public class QueryMeEmpty extends QueryCommand {
     
-    /** Creates a new instance of QueryMeEmpty */
+    /** Creates a new instance of QueryMeEmpty. */
     public QueryMeEmpty() {
         description = "informs the user of the correct usage of the me command";
         arguments = "";
@@ -46,14 +46,15 @@ public class QueryMeEmpty extends QueryCommand {
     }
     
     /**
-     * Executes this command
+     * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param query The query object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(CommandWindow origin, Server server, Query query, String... args) {
-        origin.addLine("Usage: "+Config.getOption("general","commandchar")+"me <action>");
+    public void execute(final CommandWindow origin, final Server server, 
+            final Query query, final String... args) {
+        origin.addLine("Usage: " + Config.getOption("general", "commandchar") + "me <action>");
     }
     
 }

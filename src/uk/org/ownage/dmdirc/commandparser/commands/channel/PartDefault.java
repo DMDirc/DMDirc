@@ -37,7 +37,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
  */
 public class PartDefault extends ChannelCommand {
     
-    /** Creates a new instance of PartDefault */
+    /** Creates a new instance of PartDefault. */
     public PartDefault() {
         description = "parts the channel with the default reason";
         arguments = "";
@@ -48,15 +48,16 @@ public class PartDefault extends ChannelCommand {
     }
     
     /**
-     * Executes this command
+     * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param channel The channel object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(CommandWindow origin, Server server, Channel channel, String... args) {
-        ChannelCommand com = CommandManager.getChannelCommand("part");
-        com.execute(origin, server, channel, Config.getOption("general","partmessage"));
+    public void execute(final CommandWindow origin, final Server server, 
+            final Channel channel, final String... args) {
+        final ChannelCommand com = CommandManager.getChannelCommand("part");
+        com.execute(origin, server, channel, Config.getOption("general", "partmessage"));
     }
     
 }

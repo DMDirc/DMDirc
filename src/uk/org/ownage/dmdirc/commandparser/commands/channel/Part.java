@@ -23,10 +23,8 @@
 package uk.org.ownage.dmdirc.commandparser.commands.channel;
 
 import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 
 /**
@@ -35,7 +33,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
  */
 public class Part extends ChannelCommand {
     
-    /** Creates a new instance of Part */
+    /** Creates a new instance of Part. */
     public Part() {
         description = "parts the channel with the specified reason";
         arguments = "<reason>";
@@ -46,15 +44,15 @@ public class Part extends ChannelCommand {
     }
     
     /**
-     * Executes this command
+     * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param channel The channel object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(CommandWindow origin, Server server, Channel channel, String... args) {
+    public void execute(final CommandWindow origin, final Server server, 
+            final Channel channel, final String... args) {
         channel.part(implodeArgs(args));
         channel.close();
     }
-    
 }

@@ -25,27 +25,27 @@ package uk.org.ownage.dmdirc.commandparser;
 import uk.org.ownage.dmdirc.Server;
 
 /**
- * A command parser used in the context of a server
+ * A command parser used in the context of a server.
  * @author chris
  */
 public class ServerCommandParser extends CommandParser {
     
     /**
-     * The server instance that this parser is attached to
+     * The server instance that this parser is attached to.
      */
     private Server server;
     
     /**
-     * Creates a new instance of ServerCommandParser
-     * @param server The server instance that this parser is attached to
+     * Creates a new instance of ServerCommandParser.
+     * @param newServer The server instance that this parser is attached to
      */
-    public ServerCommandParser(Server server) {
+    public ServerCommandParser(final Server newServer) {
         super();
         
-        this.server = server;
+        this.server = newServer;
     }
     
-    /** Loads the relevant commands into the parser */
+    /** Loads the relevant commands into the parser. */
     protected void loadCommands() {
         CommandManager.loadServerCommands(this);
     }
@@ -56,8 +56,9 @@ public class ServerCommandParser extends CommandParser {
      * @param command The command to be executed
      * @param args The arguments to the command
      */
-    protected void executeCommand(CommandWindow origin, Command command, String... args) {
-        ((ServerCommand)command).execute(origin, server, args);
+    protected void executeCommand(final CommandWindow origin, 
+            final Command command, final String... args) {
+        ((ServerCommand) command).execute(origin, server, args);
     }
     
     /**
@@ -68,8 +69,9 @@ public class ServerCommandParser extends CommandParser {
      * @param command The command the user tried to execute
      * @param args The arguments passed to the command
      */
-    protected void handleInvalidCommand(CommandWindow origin, String command, String... args) {
-        origin.addLine("Unknown command: "+command+"/"+args.length);
+    protected void handleInvalidCommand(final CommandWindow origin, 
+            final String command, final String... args) {
+        origin.addLine("Unknown command: " + command + "/" + args.length);
     }
     
     /**
@@ -78,7 +80,7 @@ public class ServerCommandParser extends CommandParser {
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
-    protected void handleNonCommand(CommandWindow origin, String line) {
+    protected void handleNonCommand(final CommandWindow origin, final String line) {
         server.getParser().sendLine(line);
     }
     

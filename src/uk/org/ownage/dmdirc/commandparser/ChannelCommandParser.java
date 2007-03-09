@@ -30,30 +30,30 @@ import uk.org.ownage.dmdirc.Server;
  * both channel and server commands.
  * @author chris
  */
-public class ChannelCommandParser extends CommandParser {
+public final class ChannelCommandParser extends CommandParser {
     
     /**
-     * The server instance that this parser is attached to
+     * The server instance that this parser is attached to.
      */
     private Server server;
     /**
-     * The channel instance that this parser is attached to
+     * The channel instance that this parser is attached to.
      */
     private Channel channel;
     
     /**
-     * Creates a new instance of ChannelCommandParser
-     * @param server The server instance that this parser is attached to
-     * @param channel The channel instance that this parser is attached to
+     * Creates a new instance of ChannelCommandParser.
+     * @param newServer The server instance that this parser is attached to
+     * @param newChannel The channel instance that this parser is attached to
      */
-    public ChannelCommandParser(Server server, Channel channel) {
+    public ChannelCommandParser(final Server newServer, final Channel newChannel) {
         super();
         
-        this.server = server;
-        this.channel = channel;
+        this.server = newServer;
+        this.channel = newChannel;
     }
     
-    /** Loads the relevant commands into the parser */
+    /** Loads the relevant commands into the parser. */
     protected void loadCommands() {
         CommandManager.loadChannelCommands(this);
         CommandManager.loadServerCommands(this);
@@ -65,7 +65,8 @@ public class ChannelCommandParser extends CommandParser {
      * @param command The command to be executed
      * @param args The arguments to the command
      */
-    protected void executeCommand(CommandWindow origin, Command command, String... args) {
+    protected void executeCommand(final CommandWindow origin,
+            final Command command, final String... args) {
         if (command instanceof ChannelCommand) {
             ((ChannelCommand) command).execute(origin, server, channel, args);
         } else {
@@ -81,8 +82,9 @@ public class ChannelCommandParser extends CommandParser {
      * @param command The command the user tried to execute
      * @param args The arguments passed to the command
      */
-    protected void handleInvalidCommand(CommandWindow origin, String command, String... args) {
-        origin.addLine("Unknown command: "+command+"/"+args.length);
+    protected void handleInvalidCommand(final CommandWindow origin,
+            final String command, final String... args) {
+        origin.addLine("Unknown command: " + command + "/" + args.length);
     }
     
     /**
@@ -91,7 +93,7 @@ public class ChannelCommandParser extends CommandParser {
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
-    protected void handleNonCommand(CommandWindow origin, String line) {
+    protected void handleNonCommand(final CommandWindow origin, final String line) {
         channel.sendLine(line);
     }
     

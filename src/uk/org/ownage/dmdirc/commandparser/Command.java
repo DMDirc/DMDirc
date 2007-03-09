@@ -23,38 +23,38 @@
 package uk.org.ownage.dmdirc.commandparser;
 
 /**
- * Represents a generic command
+ * Represents a generic command.
  * @author chris
  */
 public abstract class Command {
     
     /**
-     * The name of this command (i.e., the string used by the user to execute it)
+     * The name of this command (i.e., the string used by the user to execute it).
      */
     protected String name;
     /**
-     * The arity of this command
+     * The arity of this command.
      */
-    protected int arity = 0;
+    protected int arity;
     /**
-     * Whether this command is polyadic or not
+     * Whether this command is polyadic or not.
      */
     protected boolean polyadic;
     /**
-     * Whether this command should be shown in help output
+     * Whether this command should be shown in help output.
      */
     protected boolean show = true;
     /**
-     * A textual description of this command's arguments
+     * A textual description of this command's arguments.
      */
     protected String arguments = "<unknown>";
     /**
-     * A description of this command
+     * A description of this command.
      */
     protected String description = "unknown";
     
     /**
-     * Creates a new instance of Command
+     * Creates a new instance of Command.
      */
     public Command() {
     }
@@ -69,12 +69,12 @@ public abstract class Command {
         if (polyadic) {
             return name;
         } else {
-            return name+"/"+arity;
+            return name + "/" + arity;
         }
     }
     
     /**
-     * Returns whether or not this command should be shown in help messages
+     * Returns whether or not this command should be shown in help messages.
      * @return True iff the command should be shown, false otherwise
      */
     public boolean showInHelp() {
@@ -82,32 +82,32 @@ public abstract class Command {
     }
     
     /**
-     * Returns a string representing the help message for this command
+     * Returns a string representing the help message for this command.
      * @return the help message for this command
      */
     public String getHelp() {
-        return name+" "+arguments+" - "+description;
+        return name + " " + arguments + " - " + description;
     }
     
     /**
-     * Implodes the given list of arguments
+     * Implodes the given list of arguments.
      * @param args The arguments to implode
      * @return A string containing each argument seperated by a space
      */
-    protected String implodeArgs(String... args) {
+    protected String implodeArgs(final String... args) {
         String res = "";
         for (int i = 0; i < args.length; i++) {
             if (res.equals("")) {
                 res = args[i];
             } else {
-                res = res.concat(" "+args[i]);
+                res = res.concat(" " + args[i]);
             }
         }
         return res;
     }
     
     /**
-     * Returns this command's name
+     * Returns this command's name.
      * @return The name of this command
      */
     public String getName() {

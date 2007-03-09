@@ -37,7 +37,7 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 public class QuitDefault extends ServerCommand {
     
     /**
-     * Creates a new instance of QuitDefault
+     * Creates a new instance of QuitDefault.
      */
     public QuitDefault() {
         description = "Quits DMDirc, sending a default quit message to all servers";
@@ -49,13 +49,14 @@ public class QuitDefault extends ServerCommand {
     }
     
     /**
-     * Executes this command
+     * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(CommandWindow origin, Server server, String... args) {
-        String def = Config.getOption("general","quitmessage");
+    public void execute(final CommandWindow origin, final Server server, 
+            final String... args) {
+        final String def = Config.getOption("general", "quitmessage");
         CommandManager.getServerCommad("quit").execute(origin, server, def);
     }
     

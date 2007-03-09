@@ -26,18 +26,18 @@ import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 
 /**
- * Represents a command which can be performed only in the context of a channel
+ * Represents a command which can be performed only in the context of a channel.
  * @author chris
  */
 public abstract class ChannelCommand extends Command {
     
-    /** Creates a new instance of ChannelCommand */
+    /** Creates a new instance of ChannelCommand. */
     public ChannelCommand() {
         super();
     }
     
     /**
-     * Executes this command
+     * Executes this command.
      * @param origin The window in which the command was typed
      * @param server The server instance that this command is being executed on
      * @param channel The channel instance that this command is being executed on

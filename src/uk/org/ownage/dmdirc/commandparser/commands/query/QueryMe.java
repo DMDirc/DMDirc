@@ -24,8 +24,8 @@ package uk.org.ownage.dmdirc.commandparser.commands.query;
 
 import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.QueryCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.commandparser.QueryCommand;
 
 /**
  * Represents the /me command used in a query window.
@@ -33,7 +33,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
  */
 public class QueryMe extends QueryCommand {
     
-    /** Creates a new instance of QueryMe */
+    /** Creates a new instance of QueryMe. */
     public QueryMe() {
         description = "sends an action to the query receipient";
         arguments = "<action>";
@@ -44,13 +44,14 @@ public class QueryMe extends QueryCommand {
     }
 
     /**
-     * Executes this command
+     * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param query The query object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(CommandWindow origin, Server server, Query query, String... args) {
+    public void execute(final CommandWindow origin, final Server server, 
+            final Query query, final String... args) {
         query.sendAction(implodeArgs(args));
     }
     

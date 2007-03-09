@@ -26,18 +26,18 @@ import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Server;
 
 /**
- * Represents a command which can be performed only in the context of a query
+ * Represents a command which can be performed only in the context of a query.
  * @author chris
  */
 public abstract class QueryCommand extends Command {
     
-    /** Creates a new instance of ChannelCommand */
+    /** Creates a new instance of ChannelCommand. */
     public QueryCommand() {
         super();
     }
     
     /**
-     * Executes this command
+     * Executes this command.
      * @param origin The window in which the command was typed
      * @param server The server instance that this command is being executed on
      * @param query The query object that the commadparser is associated with

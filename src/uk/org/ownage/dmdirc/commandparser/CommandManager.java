@@ -24,37 +24,60 @@ package uk.org.ownage.dmdirc.commandparser;
 
 import java.util.ArrayList;
 import java.util.Vector;
+
 import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.commandparser.commands.*;
-import uk.org.ownage.dmdirc.commandparser.commands.server.*;
-import uk.org.ownage.dmdirc.commandparser.commands.channel.*;
-import uk.org.ownage.dmdirc.commandparser.commands.query.*;
+import uk.org.ownage.dmdirc.commandparser.commands.Test;
+import uk.org.ownage.dmdirc.commandparser.commands.channel.ChannelSettings;
+import uk.org.ownage.dmdirc.commandparser.commands.channel.Cycle;
+import uk.org.ownage.dmdirc.commandparser.commands.channel.Me;
+import uk.org.ownage.dmdirc.commandparser.commands.channel.MeEmpty;
+import uk.org.ownage.dmdirc.commandparser.commands.channel.Part;
+import uk.org.ownage.dmdirc.commandparser.commands.channel.PartDefault;
+import uk.org.ownage.dmdirc.commandparser.commands.query.QueryMe;
+import uk.org.ownage.dmdirc.commandparser.commands.query.QueryMeEmpty;
+import uk.org.ownage.dmdirc.commandparser.commands.server.Help;
+import uk.org.ownage.dmdirc.commandparser.commands.server.Join;
+import uk.org.ownage.dmdirc.commandparser.commands.server.LoadFormatter;
+import uk.org.ownage.dmdirc.commandparser.commands.server.Nick;
+import uk.org.ownage.dmdirc.commandparser.commands.server.Quit;
+import uk.org.ownage.dmdirc.commandparser.commands.server.QuitDefault;
+import uk.org.ownage.dmdirc.commandparser.commands.server.Raw;
+import uk.org.ownage.dmdirc.commandparser.commands.server.ReloadFormatter;
+import uk.org.ownage.dmdirc.commandparser.commands.server.SaveFormatter;
+
 
 /**
  * The command manager creates and manages a single instance of all commands,
- * and provides methods to load each group of commands into a parser instance
+ * and provides methods to load each group of commands into a parser instance.
  * @author chris
  */
-public class CommandManager {
+public final class CommandManager {
     
     /**
-     * The server commands that have been instansiated
+     * The server commands that have been instansiated.
      */
     private static Vector<Command> serverCommands;
     /**
-     * The channel commands that have been instansiated
+     * The channel commands that have been instansiated.
      */
     private static Vector<Command> channelCommands;
     /**
-     * The query commands that have been instansiated
+     * The query commands that have been instansiated.
      */
     private static Vector<Command> queryCommands;
     
     /**
-     * Initialises the command manager's various command lists
+     * Prevents creation of a new command manager.
+     */
+    private CommandManager() {
+        //do nothing
+    }
+    
+    /**
+     * Initialises the command manager's various command lists.
      */
     private static void initLists() {
-        channelCommands = new Vector<Command>(0,1);
+        channelCommands = new Vector<Command>(0, 1);
         
         channelCommands.add(new Cycle());
         channelCommands.add(new Me());
@@ -63,7 +86,7 @@ public class CommandManager {
         channelCommands.add(new PartDefault());
         channelCommands.add(new ChannelSettings());
         
-        serverCommands = new Vector<Command>(0,1);
+        serverCommands = new Vector<Command>(0, 1);
         
         serverCommands.add(new Help());
         serverCommands.add(new Join());
@@ -76,17 +99,17 @@ public class CommandManager {
         serverCommands.add(new QuitDefault());
         serverCommands.add(new Raw());
         
-        queryCommands = new Vector<Command>(0,1);
+        queryCommands = new Vector<Command>(0, 1);
         
         queryCommands.add(new QueryMe());
         queryCommands.add(new QueryMeEmpty());
     }
     
     /**
-     * Loads all channel commands into the specified parser
+     * Loads all channel commands into the specified parser.
      * @param parser The parser to load commands into
      */
-    public static void loadChannelCommands(CommandParser parser) {
+    public static void loadChannelCommands(final CommandParser parser) {
         if (channelCommands == null) {
             CommandManager.initLists();
         }
@@ -97,10 +120,10 @@ public class CommandManager {
     }
     
     /**
-     * Loads all server commands into the specified parser
+     * Loads all server commands into the specified parser.
      * @param parser The parser to load commands into
      */
-    public static void loadServerCommands(CommandParser parser) {
+    public static void loadServerCommands(final CommandParser parser) {
         if (serverCommands == null) {
             CommandManager.initLists();
         }
@@ -111,10 +134,10 @@ public class CommandManager {
     }
     
     /**
-     * Loads all query commands into the specified parser
+     * Loads all query commands into the specified parser.
      * @param parser The parser to load commands into
      */
-    static void loadQueryCommands(QueryCommandParser parser) {
+    static void loadQueryCommands(final QueryCommandParser parser) {
         if (queryCommands == null)    {
             CommandManager.initLists();
         }
@@ -125,12 +148,12 @@ public class CommandManager {
     }
     
     /**
-     * Retrieves the server command identified by the specified signature
+     * Retrieves the server command identified by the specified signature.
      * @param signature The signature to look for
      * @return A server command with a matching signature, or null if none
      * were found.
      */
-    public static ServerCommand getServerCommad(String signature) {
+    public static ServerCommand getServerCommad(final String signature) {
         if (serverCommands == null) {
             CommandManager.initLists();
         }
@@ -145,12 +168,12 @@ public class CommandManager {
     }
     
     /**
-     * Retrieves the channel command identified by the specified signature
+     * Retrieves the channel command identified by the specified signature.
      * @param signature The signature to look for
      * @return A channel command with a matching signature, or null if none
      * were found.
      */
-    public static ChannelCommand getChannelCommand(String signature) {
+    public static ChannelCommand getChannelCommand(final String signature) {
         if (channelCommands == null) {
             CommandManager.initLists();
         }
@@ -166,7 +189,7 @@ public class CommandManager {
     
     /**
      * Returns a Vector containing the server commands that have been initialised
-     * by this command manager
+     * by this command manager.
      * @return A Vector of server commands, or null if none have been loaded
      */
     public static Vector<Command> getServerCommands() {
@@ -175,7 +198,7 @@ public class CommandManager {
     
     /**
      * Returns a Vector containing the channel commands that have been initialised
-     * by this command manager
+     * by this command manager.
      * @return A Vector of channel commands, or null if none have been loaded
      */
     public static Vector<Command> getChannelCommands() {
@@ -184,7 +207,7 @@ public class CommandManager {
     
     /**
      * Returns a Vector containing the query commands that have been initialised
-     * by this command manager
+     * by this command manager.
      * @return A Vector of query commands, or null if none have been loaded
      */
     public static Vector<Command> getQueryCommands() {
@@ -193,7 +216,7 @@ public class CommandManager {
     
     /**
      * Returns the names (including command char) of all registered server
-     * commands
+     * commands.
      * @return An ArrayList<String> containing all registered server command
      * names
      */
@@ -207,7 +230,7 @@ public class CommandManager {
     
     /**
      * Returns the names (including command char) of all registered channel
-     * commands
+     * commands.
      * @return An ArrayList<String> containing all registered server command
      * names
      */
@@ -221,7 +244,7 @@ public class CommandManager {
     
     /**
      * Returns the names (including command char) of all registered channel
-     * commands
+     * commands.
      * @return An ArrayList<String> containing all registered server command
      * names
      */
@@ -239,13 +262,13 @@ public class CommandManager {
      * @param source The source vector to iterate over
      * @return A list of all commands in the source
      */
-    private static ArrayList<String> getCommandNames(Vector<Command> source) {
+    private static ArrayList<String> getCommandNames(final Vector<Command> source) {
         if (source == null) {
             return null;
         }
         
-        ArrayList<String> res = new ArrayList<String>();
-        String commandChar = Config.getOption("general","commandchar");
+        final ArrayList<String> res = new ArrayList<String>();
+        final String commandChar = Config.getOption("general", "commandchar");
         
         for (Command command : source) {
             res.add(commandChar + command.getName());

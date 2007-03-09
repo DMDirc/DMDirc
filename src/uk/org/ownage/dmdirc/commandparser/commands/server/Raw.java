@@ -35,7 +35,7 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 public class Raw extends ServerCommand {
     
     /**
-     * Creates a new instance of Quit
+     * Creates a new instance of Quit.
      */
     public Raw() {
         description = "Sends a line of text directly to the IRC sServer";
@@ -47,12 +47,13 @@ public class Raw extends ServerCommand {
     }
     
     /**
-     * Executes this command
+     * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
      */    
-    public void execute(CommandWindow origin, Server server, String... args) {
+    public void execute(final CommandWindow origin, final Server server, 
+            final String... args) {
         final String line = implodeArgs(args);
         
         server.getParser().sendLine(line);
