@@ -106,6 +106,9 @@ public class IRCParser implements Runnable {
 
 	/** Name the server calls itself. */
 	protected String sServerName;
+	
+	/** Network name. This is "" if no network name is provided */
+	protected String sNetworkName;
 
 	/** This is what we think the nickname should be. */
 	protected String sThinkNickname;
@@ -363,6 +366,8 @@ public class IRCParser implements Runnable {
 		nNextKeyPrefix = 1;
 		nNextKeyCMBool = 1;
 		nNextKeyUser = 1;
+		sServerName = "";
+		sNetworkName = "";
 	}
 
 	
@@ -542,6 +547,24 @@ public class IRCParser implements Runnable {
 		if (out == null) { return; }
 		callDataOut(line,true);
 		out.printf("%s\r\n",line);
+	}
+	
+	/**
+	 * Get the network name given in 005.
+	 *
+	 * @return network name from 005
+	 */
+	public String getNetworkName() {
+		return sNetworkName;
+	}
+	
+	/**
+	 * Get the server name given in 001.
+	 *
+	 * @return server name from 001
+	 */
+	public String getServerName() {
+		return sServerName;
 	}
 	
 	/**

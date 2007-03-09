@@ -47,10 +47,10 @@ public class ProcessMOTD extends IRCProcessor {
 		} else if (sParam.equals("372")) {
 			callMOTDLine(token[token.length-1]);
 		} else {
-			myParser.parseChanModes();
-			myParser.parseChanPrefix();
-			myParser.parsePrefixModes();
-			myParser.parseUserModes();
+			if (myParser.hChanModesBool.size() == 0) { myParser.parseChanModes(); }
+			if (myParser.hChanPrefix.size() == 0) { myParser.parseChanPrefix(); }
+			if (myParser.hPrefixModes.size() == 0) { myParser.parsePrefixModes(); }
+			if (myParser.hUserModes.size() == 0) { myParser.parseUserModes(); }
 			callMOTDEnd(sParam.equals(422));
 		}
 	}

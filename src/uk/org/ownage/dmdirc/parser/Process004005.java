@@ -41,6 +41,7 @@ public class Process004005 extends IRCProcessor {
 		if (sParam.equals("004")) {
 			// 004
 			myParser.h005Info.put("USERMODES",token[5]);
+			myParser.parseUserModes();
 		} else {
 			// 005
 			String[] Bits = null;
@@ -51,6 +52,15 @@ public class Process004005 extends IRCProcessor {
 				if (Bits.length == 2) { sValue = Bits[1]; } else { sValue = ""; }
 				callDebugInfo(myParser.ndInfo, "%s => %s",sKey,sValue);
 				myParser.h005Info.put(sKey,sValue);
+				if (sKey.equals("NETWORK")) {
+					myParser.sNetworkName = sValue;
+				} else if (sKey.equals("CHANTYPES")) {
+					myParser.parseChanPrefix();
+				} else if (sKey.equals("PREFIX")) {
+					myParser.parsePrefixModes();
+				} else if (sKey.equals("CHANMODES")) {
+					myParser.parseChanModes();
+				}
 			}
 		}
 	}
