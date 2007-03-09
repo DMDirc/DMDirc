@@ -68,4 +68,11 @@ public class CallbackOnChannelCTCPReply extends CallbackObjectSpecific {
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
 	public CallbackOnChannelCTCPReply (IRCParser parser, CallbackManager manager) { super(parser, manager); }
+	
+	/**
+	 * Get SVN Version information.
+	 *
+	 * @return SVN Version String
+	 */
+	public static String getSvnInfo () { return "$Id$"; }	
 }

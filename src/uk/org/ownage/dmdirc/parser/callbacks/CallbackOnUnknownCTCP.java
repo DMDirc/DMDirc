@@ -64,4 +64,11 @@ public class CallbackOnUnknownCTCP extends CallbackObject {
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
 	public CallbackOnUnknownCTCP (IRCParser parser, CallbackManager manager) { super(parser, manager); }
+	
+	/**
+	 * Get SVN Version information.
+	 *
+	 * @return SVN Version String
+	 */
+	public static String getSvnInfo () { return "$Id$"; }	
 }

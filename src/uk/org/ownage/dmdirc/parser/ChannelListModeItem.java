@@ -87,5 +87,12 @@ public class ChannelListModeItem {
 		myOwner = owner;
 		if (owner.charAt(0) == ':') { myOwner = owner.substring(1); }
 	}
+	
+	/**
+	 * Get SVN Version information.
+	 *
+	 * @return SVN Version String
+	 */
+	public static String getSvnInfo () { return "$Id$"; }	
 }
 

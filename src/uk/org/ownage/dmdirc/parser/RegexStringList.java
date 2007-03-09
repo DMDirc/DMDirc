@@ -125,4 +125,11 @@ public class RegexStringList {
 	public int count() {
 		return ignoreInfo.size();
 	}
+	
+	/**
+	 * Get SVN Version information.
+	 *
+	 * @return SVN Version String
+	 */
+	public static String getSvnInfo () { return "$Id$"; }	
 }

@@ -235,4 +235,11 @@ public class CallbackManager {
 		CallbackObject cb = getCallbackType(callbackName);
 		if (cb != null) { cb.del(o); }
 	}
+	
+	/**
+	 * Get SVN Version information.
+	 *
+	 * @return SVN Version String
+	 */
+	public static String getSvnInfo () { return "$Id$"; }	
 }
