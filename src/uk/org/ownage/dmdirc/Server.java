@@ -392,6 +392,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         tabCompleter.addEntry(chan.getName());
         channels.put(chan.getName(), newChan);
         MainFrame.getMainFrame().getFrameManager().addChannel(this, newChan);
+        
+        newChan.show();
     }
     
     /**
@@ -558,7 +560,16 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     public void onPrivateCTCP(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
+        
         handleNotification("privateCTCP", parts[0], parts[1], parts[2], sType, sMessage);
+        
+        if (sType.equalsIgnoreCase("VERSION")) {
+            tParser.sendCTCPReply(parts[0], "VERSION", "DMDirc "+Main.VERSION+" - http://dmdirc.ownage.org.uk/");
+        } else if (sType.equalsIgnoreCase("PING")) {
+            tParser.sendCTCPReply(parts[0], "PING", sMessage);
+        } else if (sType.equalsIgnoreCase("CLIENTINFO")) {
+            tParser.sendCTCPReply(parts[0], "CLIENTINFO", "VERSION PING CLIENTINFO");
+        }
     }
     
     /**

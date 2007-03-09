@@ -115,7 +115,6 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
                     MainFrame.getMainFrame().addChild(frame);
                     frame.addInternalFrameListener(Channel.this);
                     frame.setFrameIcon(imageIcon);
-                    frame.open();
                     frame.setTabCompleter(tabCompleter);
                 }
             });
@@ -146,6 +145,13 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         
         updateTitle();
         selfJoin();
+    }
+    
+    /**
+     * Shows this channel's frame.
+     */
+    public void show() {
+        frame.open();
     }
     
     /**
