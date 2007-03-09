@@ -122,7 +122,7 @@ public final class Styliser {
      * @param input The string to read from
      * @return A substring of the input containing no control characters
      */
-    private static String readUntilControl(final String input) {
+    static String readUntilControl(final String input) {
         int pos = input.length();
         
         pos = checkChar(pos, input.indexOf(CODE_BOLD));
