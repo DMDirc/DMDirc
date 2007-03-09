@@ -41,19 +41,19 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
  * commands.
  * @author chris
  */
-public class InputHandler implements KeyListener, ActionListener {
+public final class InputHandler implements KeyListener, ActionListener {
     
     /**
      * Indicates that the caret should be moved to the end of a selection when
      * a control code has been inserted.
      */
-    private final static int POSITION_END = 1;
+    private static final int POSITION_END = 1;
     
     /**
      * Indicates that the caret should be moved to the start of a selection when
      * a control code has been inserted.
      */
-    private final static int POSITION_START = 2;
+    private static final int POSITION_START = 2;
     
     /**
      * The current position in the buffer (where the user has scrolled back
@@ -100,6 +100,7 @@ public class InputHandler implements KeyListener, ActionListener {
      * that we need to operate.
      * @param target The text field this input handler is dealing with.
      * @param commandParser The command parser to use for this text field.
+     * @param parentWindow The window that owns this input handler
      */
     public InputHandler(final JTextField target, final CommandParser commandParser,
             final CommandWindow parentWindow) {
@@ -121,10 +122,10 @@ public class InputHandler implements KeyListener, ActionListener {
     
     /**
      * Sets this input handler's tab completer.
-     * @param tabCompleter The new tab completer
+     * @param newTabCompleter The new tab completer
      */
-    public void setTabCompleter(final TabCompleter tabCompleter) {
-        this.tabCompleter = tabCompleter;
+    public void setTabCompleter(final TabCompleter newTabCompleter) {
+        tabCompleter = newTabCompleter;
     }
     
     /**
@@ -160,9 +161,9 @@ public class InputHandler implements KeyListener, ActionListener {
             }
             if (keyEvent.getKeyCode() == KeyEvent.VK_K) {
                 if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) != 0) {
-                    addControlCode(Styliser.CODE_COLOUR, POSITION_START);
-                } else {
                     addControlCode(Styliser.CODE_HEXCOLOUR, POSITION_START);
+                } else {
+                    addControlCode(Styliser.CODE_COLOUR, POSITION_START);
                 }
             }
             
@@ -200,7 +201,7 @@ public class InputHandler implements KeyListener, ActionListener {
                 return;
             }
             
-            int pos = target.getCaretPosition()-1;
+            final int pos = target.getCaretPosition() - 1;
             int start = (pos < 0) ? 0 : pos;
             int end = (pos < 0) ? 0 : pos;
             
@@ -219,22 +220,22 @@ public class InputHandler implements KeyListener, ActionListener {
                 return;
             }
             
-            String word = text.substring(start, end);
+            final String word = text.substring(start, end);
             
-            TabCompleterResult res = tabCompleter.complete(word);
+            final TabCompleterResult res = tabCompleter.complete(word);
             
             if (res.getResultCount() == 0) {
                 // TODO: Beep, or something
             } else if (res.getResultCount() == 1) {
                 // One result, just replace it
-                String result = res.getResults().get(0);
-                text = text.substring(0, start) + result+text.substring(end);
+                final String result = res.getResults().get(0);
+                text = text.substring(0, start) + result + text.substring(end);
                 target.setText(text);
                 target.setCaretPosition(start + result.length());
             } else {
                 // Multiple results
-                String sub = res.getBestSubstring();
-                if (sub == word) {
+                final String sub = res.getBestSubstring();
+                if (sub.equalsIgnoreCase(word)) {
                     // TODO: Beep, display possible answers, etc
                 } else {
                     text = text.substring(0, start) + sub + text.substring(end);
@@ -278,18 +279,18 @@ public class InputHandler implements KeyListener, ActionListener {
      * Adds the specified control code to the textarea. If the user has a range
      * of text selected, the characters are added before and after, and the
      * caret is positioned based on the position argument.
-     * @code The control code to add
-     * @position The position of the caret after a selection is altered
+     * @param code The control code to add
+     * @param position The position of the caret after a selection is altered
      */
-    private void addControlCode(int code, int position) {
-        String insert = "" + (char)code;
-        int selectionEnd = target.getSelectionEnd();
-        int selectionStart = target.getSelectionStart();
+    private void addControlCode(final int code, final int position) {
+        final String insert = "" + (char) code;
+        final int selectionEnd = target.getSelectionEnd();
+        final int selectionStart = target.getSelectionStart();
         if (selectionStart < selectionEnd) {
-            String source = target.getText();
-            String before = source.substring(0, selectionStart);
-            String selected = target.getSelectedText();
-            String after = source.substring(selectionEnd, source.length());
+            final String source = target.getText();
+            final String before = source.substring(0, selectionStart);
+            final String selected = target.getSelectedText();
+            final String after = source.substring(selectionEnd, source.length());
             target.setText(before + insert + selected + insert + after);
             if (position == POSITION_START) {
                 target.setCaretPosition(selectionStart + 1);
@@ -297,10 +298,10 @@ public class InputHandler implements KeyListener, ActionListener {
                 target.setCaretPosition(selectionEnd + 2);
             }
         } else {
-            int offset = target.getCaretPosition();
-            String source = target.getText();
-            String before = target.getText().substring(0, offset);
-            String after = target.getText().substring(offset, source.length());
+            final int offset = target.getCaretPosition();
+            final String source = target.getText();
+            final String before = target.getText().substring(0, offset);
+            final String after = target.getText().substring(offset, source.length());
             target.setText(before + insert + after);
             target.setCaretPosition(offset + 1);
         }
@@ -319,11 +320,12 @@ public class InputHandler implements KeyListener, ActionListener {
      * @param input The number to normalise
      * @return The normalised number
      */
-    private int normalise(int input) {
-        while (input < 0) {
-            input = input + bufferSize;
+    private int normalise(final int input) {
+        int res = input;
+        while (res < 0) {
+            res += bufferSize;
         }
-        return (input % bufferSize);
+        return res % bufferSize;
     }
     
     /**

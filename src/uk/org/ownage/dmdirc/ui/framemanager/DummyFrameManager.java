@@ -36,7 +36,7 @@ import uk.org.ownage.dmdirc.Server;
  * A dummy frame manager. Does nothing.
  * @author chris
  */
-public class DummyFrameManager implements FrameManager {
+public final class DummyFrameManager implements FrameManager {
     
     /** Creates a new instance of DummyFrameManager. */
     public DummyFrameManager() {
@@ -47,7 +47,7 @@ public class DummyFrameManager implements FrameManager {
      * should render itself within the parent.
      * @param parent The parent control
      */
-    public void setParent(JComponent parent) {
+    public void setParent(final JComponent parent) {
         parent.setBackground(Color.RED);
     }
     
@@ -55,16 +55,16 @@ public class DummyFrameManager implements FrameManager {
      * Adds a new server instance to this frame manager.
      * @param server The server to be added
      */
-    public void addServer(Server server) {
-        System.out.println("DummyFrameManager: addServer: "+server);
+    public void addServer(final Server server) {
+        System.out.println("DummyFrameManager: addServer: " + server);
     }
     
     /**
      * Removes a server instance from this frame manager.
      * @param server The server to be removed
      */
-    public void delServer(Server server) {
-        System.out.println("DummyFrameManager: delServer: "+server);
+    public void delServer(final Server server) {
+        System.out.println("DummyFrameManager: delServer: " + server);
     }
     
     /**
@@ -72,8 +72,8 @@ public class DummyFrameManager implements FrameManager {
      * @param server The server to which the channel belongs
      * @param channel The channel to be added
      */
-    public void addChannel(Server server, Channel channel) {
-        System.out.println("DummyFrameManager: addChannel: "+channel+"@"+server);
+    public void addChannel(final Server server, final Channel channel) {
+        System.out.println("DummyFrameManager: addChannel: " + channel + "@" + server);
     }
     
     /**
@@ -81,8 +81,8 @@ public class DummyFrameManager implements FrameManager {
      * @param server The server to which the channel belongs
      * @param channel The channel to be removed
      */
-    public void delChannel(Server server, Channel channel) {
-        System.out.println("DummyFrameManager: delChannel: "+channel+"@"+server);
+    public void delChannel(final Server server, final Channel channel) {
+        System.out.println("DummyFrameManager: delChannel: " + channel + "@" + server);
     }
     
     /**
@@ -90,8 +90,8 @@ public class DummyFrameManager implements FrameManager {
      * @param server The server to which the query belongs
      * @param query The query to be added
      */
-    public void addQuery(Server server, Query query) {
-        System.out.println("DummyFrameManager: addQuery: "+query+"@"+server);
+    public void addQuery(final Server server, final Query query) {
+        System.out.println("DummyFrameManager: addQuery: " + query + "@" + server);
     }
     
     /**
@@ -99,8 +99,8 @@ public class DummyFrameManager implements FrameManager {
      * @param server The server to which the query belongs
      * @param query The query to be removed
      */
-    public void delQuery(Server server, Query query) {
-        System.out.println("DummyFrameManager: delQuery: "+query+"@"+server);
+    public void delQuery(final Server server, final Query query) {
+        System.out.println("DummyFrameManager: delQuery: " + query + "@" + server);
     }
     
     /**
@@ -108,8 +108,8 @@ public class DummyFrameManager implements FrameManager {
      * @param server The server to which the raw frame belongs
      * @param raw The raw instance to be added
      */
-    public void addRaw(Server server, Raw raw) {
-        System.out.println("DummyFrameManager: addRaw: "+raw+"@"+server);
+    public void addRaw(final Server server, final Raw raw) {
+        System.out.println("DummyFrameManager: addRaw: " + raw + "@" + server);
     }
     
     /**
@@ -117,8 +117,8 @@ public class DummyFrameManager implements FrameManager {
      * @param server The server to which the raw frame belongs
      * @param raw The raw instance to be removed
      */
-    public void delRaw(Server server, Raw raw) {
-        System.out.println("DummyFrameManager: delRaw: "+raw+"@"+server);
+    public void delRaw(final Server server, final Raw raw) {
+        System.out.println("DummyFrameManager: delRaw: " + raw + "@" + server);
     }
     
     /**
@@ -145,23 +145,23 @@ public class DummyFrameManager implements FrameManager {
      * @param source The object requesting notification
      * @param colour The colour that should be used to indicate the notification
      */
-    public void showNotification(FrameContainer source, Color colour) {
-        System.out.println("DummyFrameManager: Notifcation for "+source);
+    public void showNotification(final FrameContainer source, final Color colour) {
+        System.out.println("DummyFrameManager: Notifcation for " + source);
     }
     
     /**
      * Removes the notification status of the specified object.
      * @param source The object whose notification should be cleared
      */
-    public void clearNotification(FrameContainer source) {
-        System.out.println("DummyFrameManager: Clear notification for "+source);
+    public void clearNotification(final FrameContainer source) {
+        System.out.println("DummyFrameManager: Clear notification for " + source);
     }
     
     /**
      * Indicates that there is a new active frame.
      * @param source The object that now has focus
      */
-    public void setSelected(FrameContainer source) {
-        System.out.println("DummyFrameManager: Now foucsed: "+source);
+    public void setSelected(final FrameContainer source) {
+        System.out.println("DummyFrameManager: Now foucsed: " + source);
     }
 }

@@ -35,22 +35,22 @@ import uk.org.ownage.dmdirc.logger.Logger;
  * control codes which are a de-facto IRC standard.
  * @author chris
  */
-public class Styliser {
+public final class Styliser {
     
     /** The character used for marking up bold text. */
-    public final static char CODE_BOLD = 2;
+    public static final char CODE_BOLD = 2;
     /** The character used for marking up coloured text. */
-    public final static char CODE_COLOUR = 3;
+    public static final char CODE_COLOUR = 3;
     /** The character used for marking up coloured text (using hex). */
-    public final static char CODE_HEXCOLOUR = 4;
+    public static final char CODE_HEXCOLOUR = 4;
     /** The character used for stopping all formatting. */
-    public final static char CODE_STOP = 15;
+    public static final char CODE_STOP = 15;
     /** The character used for marking up fixed pitch text. */
-    public final static char CODE_FIXED = 17;
+    public static final char CODE_FIXED = 17;
     /** The character used for marking up italic text. */
-    public final static char CODE_ITALIC = 29;
+    public static final char CODE_ITALIC = 29;
     /** The character used for marking up underlined text. */
-    public final static char CODE_UNDERLINE = 31;
+    public static final char CODE_UNDERLINE = 31;
     
     /** Creates a new instance of Styliser. */
     private Styliser() {
@@ -66,11 +66,11 @@ public class Styliser {
         try {
             int offset = doc.getLength();
             int position = 0;
-            boolean cont = true;
-            SimpleAttributeSet attribs = new SimpleAttributeSet();
+            
+            final SimpleAttributeSet attribs = new SimpleAttributeSet();
             
             while (position < add.length()) {
-                String next = readUntilControl(add.substring(position));
+                final String next = readUntilControl(add.substring(position));
                 
                 doc.insertString(offset, next, attribs);
                 
@@ -79,7 +79,7 @@ public class Styliser {
                 
                 if (position < add.length()) {
                     position += readControlChars(add.substring(position),
-                            attribs, (position == 0));
+                            attribs, position == 0);
                 }
             }
             
@@ -94,13 +94,13 @@ public class Styliser {
      * @return a copy of the input with control codes removed
      */
     public static String stipControlCodes(final String input) {
+        final SimpleAttributeSet attribs = new SimpleAttributeSet();
+        
         int position = 0;
-        boolean cont = true;
         String output = "";
-        SimpleAttributeSet attribs = new SimpleAttributeSet();
         
         while (position < input.length()) {
-            String next = readUntilControl(input.substring(position));
+            final String next = readUntilControl(input.substring(position));
             
             output = output.concat(next);
             
@@ -108,7 +108,7 @@ public class Styliser {
             
             if (position < input.length()) {
                 position += readControlChars(input.substring(position),
-                        attribs, (position == 0));
+                        attribs, position == 0);
             }
         }
         
@@ -143,7 +143,7 @@ public class Styliser {
      * @param i The index of the first occurance of some character
      * @return The new position (see implementation)
      */
-    private static int checkChar(int pos, int i) {
+    private static int checkChar(final int pos, final int i) {
         if (i < pos && i != -1) { return i; }
         return pos;
     }
@@ -156,8 +156,8 @@ public class Styliser {
      * @param attribs The attribute set that new attributes will be applied to
      * @param isStart Whether this is at the start of the string or not
      */
-    private static int readControlChars(String string, SimpleAttributeSet attribs,
-            boolean isStart) {
+    private static int readControlChars(final String string, 
+            final SimpleAttributeSet attribs, final boolean isStart) {
         // Bold
         if (string.charAt(0) == CODE_BOLD) {
             toggleAttribute(attribs, StyleConstants.FontConstants.Bold);
@@ -198,10 +198,10 @@ public class Styliser {
             int count = 1;
             // This isn't too nice!
             if (string.length() > count && isInt(string.charAt(count))) {
-                int foreground = string.charAt(count) - 48;
+                int foreground = string.charAt(count) - '0';
                 count++;
                 if (string.length() > count && isInt(string.charAt(count))) {
-                    foreground = foreground * 10 + (string.charAt(count) - 48);
+                    foreground = foreground * 10 + (string.charAt(count) - '0');
                     count++;
                 }
                 foreground = foreground % 16;
@@ -213,10 +213,10 @@ public class Styliser {
                 // Now background
                 if (string.length() > count && string.charAt(count) == ',') {
                     if (string.length() > count + 1 && isInt(string.charAt(count + 1))) {
-                        int background = string.charAt(count + 1);
+                        int background = string.charAt(count + 1) - '0';
                         count += 2; // Comma and first digit
                         if (string.length() > count && isInt(string.charAt(count))) {
-                            background = background * 10 + (string.charAt(count) - 48);
+                            background = background * 10 + (string.charAt(count) - '0');
                             count++;
                         }
                         background = background % 16;
@@ -264,8 +264,8 @@ public class Styliser {
      * @param c The character to check
      * @return True iff the character is in the range [0-9], false otherwise
      */
-    private static boolean isInt(char c) {
-        return (c >= '0' && c <= '9');
+    private static boolean isInt(final char c) {
+        return c >= '0' && c <= '9';
     }
     
     /**
@@ -274,7 +274,7 @@ public class Styliser {
      * @param c The character to check
      * @return True iff the character is in the range [0-F], false otherwise
      */
-    private static boolean isHex(char c) {
+    private static boolean isHex(final char c) {
         return isInt(c) || (c >= 'A' && c <= 'Z');
     }
     
@@ -283,8 +283,9 @@ public class Styliser {
      * the specified offset.
      * @param input The string to check
      * @param offset The offset to start at
+     * @return True iff there is a hex string preset at the offset
      */
-    private static boolean hasHexString(String input, int offset) {
+    private static boolean hasHexString(final String input, final int offset) {
         // If the string's too short, it can't have a hex string
         if (input.length() < offset + 6) {
             return false;
@@ -303,7 +304,8 @@ public class Styliser {
      * @param attribs The attribute set to check
      * @param attrib The attribute to toggle
      */
-    private static void toggleAttribute(SimpleAttributeSet attribs, Object attrib) {
+    private static void toggleAttribute(final SimpleAttributeSet attribs,
+            final Object attrib) {
         if (attribs.containsAttribute(attrib, Boolean.TRUE)) {
             attribs.removeAttribute(attrib);
         } else {
@@ -315,7 +317,7 @@ public class Styliser {
      * Resets all attributes in the specified attribute list.
      * @param attribs The attribute list whose attributes should be reset
      */
-    private static void resetAttributes(SimpleAttributeSet attribs) {
+    private static void resetAttributes(final SimpleAttributeSet attribs) {
         if (attribs.containsAttribute(StyleConstants.FontConstants.Bold, Boolean.TRUE)) {
             attribs.removeAttribute(StyleConstants.FontConstants.Bold);
         }
@@ -326,7 +328,7 @@ public class Styliser {
             attribs.removeAttribute(StyleConstants.FontConstants.Italic);
         }
         if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospace")) {
-            Object defaultFont = attribs.getAttribute("DefaultFontFamily");
+            final Object defaultFont = attribs.getAttribute("DefaultFontFamily");
             attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
             attribs.addAttribute(StyleConstants.FontConstants.FontFamily, defaultFont);
         }
@@ -337,7 +339,7 @@ public class Styliser {
      * Resets the colour attributes in the specified attribute set.
      * @param attribs The attribute set whose colour attributes should be reset
      */
-    private static void resetColour(SimpleAttributeSet attribs) {
+    private static void resetColour(final SimpleAttributeSet attribs) {
         if (attribs.isDefined(StyleConstants.Foreground)) {
             attribs.removeAttribute(StyleConstants.Foreground);
         }
@@ -360,7 +362,8 @@ public class Styliser {
      * @param attribs The attribute set to modify
      * @param foreground The colour code/hex of the new foreground colour
      */
-    private static void setForeground(SimpleAttributeSet attribs, Object foreground) {
+    private static void setForeground(final SimpleAttributeSet attribs,
+            final Object foreground) {
         if (attribs.isDefined(StyleConstants.Foreground)) {
             attribs.removeAttribute(StyleConstants.Foreground);
         }
@@ -373,7 +376,8 @@ public class Styliser {
      * @param attribs The attribute set to modify
      * @param background The colour code/hex of the new background colour
      */
-    private static void setBackground(SimpleAttributeSet attribs, Object background) {
+    private static void setBackground(final SimpleAttributeSet attribs, 
+            final Object background) {
         if (attribs.isDefined(StyleConstants.Background)) {
             attribs.removeAttribute(StyleConstants.Background);
         }
@@ -385,7 +389,8 @@ public class Styliser {
      * @param attribs The attribute set to apply this default on
      * @param foreground The default foreground colour
      */
-    private static void setDefaultForeground(SimpleAttributeSet attribs, Object foreground) {
+    private static void setDefaultForeground(final SimpleAttributeSet attribs, 
+            final Object foreground) {
         attribs.addAttribute("DefaultForeground", ColourManager.getColour(foreground));
     }
     
@@ -394,7 +399,8 @@ public class Styliser {
      * @param attribs The attribute set to apply this default on
      * @param background The default background colour
      */
-    private static void setDefaultBackground(SimpleAttributeSet attribs, Object background) {
+    private static void setDefaultBackground(final SimpleAttributeSet attribs, 
+            final Object background) {
         attribs.addAttribute("DefaultBackground", ColourManager.getColour(background));
     }
     

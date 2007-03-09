@@ -22,18 +22,21 @@
 
 package uk.org.ownage.dmdirc.ui;
 
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.beans.PropertyVetoException;
-import javax.swing.ImageIcon;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.PointerInfo;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsConfiguration;
 import java.awt.Rectangle;
 import java.awt.MouseInfo;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.beans.PropertyVetoException;
+import java.net.URL;
+
+import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
+
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Main;
 import uk.org.ownage.dmdirc.ServerManager;
@@ -43,10 +46,10 @@ import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
 import uk.org.ownage.dmdirc.ui.framemanager.tree.TreeFrameManager;
 
 /**
- * The main application frame
+ * The main application frame.
  * @author chris
  */
-public class MainFrame extends javax.swing.JFrame implements WindowListener {
+public final class MainFrame extends javax.swing.JFrame implements WindowListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -56,59 +59,45 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     private static final long serialVersionUID = 1;
     
     /**
-     * Singleton instance of MainFrame
+     * The number of pixels each new internal frame is offset by.
+     */
+    private static final int FRAME_OPENING_OFFSET = 30;
+    
+    /**
+     * Singleton instance of MainFrame.
      */
     private static MainFrame me;
     /**
-     * Whether the internal frames are maximised or not
+     * Whether the internal frames are maximised or not.
      */
-    private boolean maximised = false;
+    private boolean maximised;
     /**
-     * The current number of pixels to displace new frames in the X direction
+     * The current number of pixels to displace new frames in the X direction.
      */
-    private int xOffset = 0;
+    private int xOffset;
     /**
-     * The current number of pixels to displace new frames in the Y direction
+     * The current number of pixels to displace new frames in the Y direction.
      */
-    private int yOffset = 0;
+    private int yOffset;
     /**
-     * The main application icon
+     * The main application icon.
      */
     private ImageIcon imageIcon;
     /**
-     * The frame manager that's being used
+     * The frame manager that's being used.
      */
     private FrameManager frameManager;
     
-    /**
-     * Returns the singleton instance of MainFrame
-     * @return MainFrame instance
-     */
-    public static MainFrame getMainFrame() {
-        if (me == null) {
-            me = new MainFrame();
-        }
-        return me;
-    }
-    
-    /**
-     * Indicates whether the main frame has been initialised or not
-     * @return True iff the main frame exists
-     */
-    public static boolean hasMainFrame() {
-        return (me != null);
-    }
-    
-    /** Creates new form MainFrame */
+    /** Creates new form MainFrame. */
     public MainFrame() {
         initComponents();
         
         setTitle(getTitlePrefix());
         
         // Load an icon
-        ClassLoader cldr = this.getClass().getClassLoader();
+        final ClassLoader cldr = this.getClass().getClassLoader();
         
-        java.net.URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/icon.png");
+        final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/icon.png");
         imageIcon = new ImageIcon(imageURL);
         setIconImage(imageIcon.getImage());
         
@@ -116,32 +105,32 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         frameManager.setParent(jPanel1);
         
         // Get the Location of the mouse pointer
-        PointerInfo myPointerInfo = MouseInfo.getPointerInfo();
+        final PointerInfo myPointerInfo = MouseInfo.getPointerInfo();
         // Get the Device (screen) the mouse pointer is on
-        GraphicsDevice myDevice = myPointerInfo.getDevice();
+        final GraphicsDevice myDevice = myPointerInfo.getDevice();
         // Get the configuration for the device
-        GraphicsConfiguration myGraphicsConfig = myDevice.getDefaultConfiguration();
+        final GraphicsConfiguration myGraphicsConfig = myDevice.getDefaultConfiguration();
         // Get the bounds of the device
-        Rectangle gcBounds = myGraphicsConfig.getBounds();
+        final Rectangle gcBounds = myGraphicsConfig.getBounds();
         // Calculate the center of the screen
         // gcBounds.x and gcBounds.y give the co ordinates where the screen
         // starts. gcBounds.width and gcBounds.height return the size in pixels
         // of the screen.
-        int xPos = gcBounds.x + ((gcBounds.width - getWidth()) / 2);
-        int yPos = gcBounds.y + ((gcBounds.height - getHeight()) / 2);
+        final int xPos = gcBounds.x + ((gcBounds.width - getWidth()) / 2);
+        final int yPos = gcBounds.y + ((gcBounds.height - getHeight()) / 2);
         // Set the location of the window
         setLocation(xPos, yPos);
         
         setVisible(true);
         
         miAddServer.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
+            public void actionPerformed(final ActionEvent actionEvent) {
                 NewServerDialog.showNewServerDialog();
             }
         });
         
         toggleStateMenuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
+            public void actionPerformed(final ActionEvent actionEvent) {
                 try {
                     getActiveFrame().setMaximum(!getActiveFrame().isMaximum());
                 } catch (PropertyVetoException ex) {
@@ -156,18 +145,37 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     }
     
     /**
-     * Adds the specified InternalFrame as a child of the main frame
+     * Returns the singleton instance of MainFrame.
+     * @return MainFrame instance
+     */
+    public static MainFrame getMainFrame() {
+        if (me == null) {
+            me = new MainFrame();
+        }
+        return me;
+    }
+    
+    /**
+     * Indicates whether the main frame has been initialised or not.
+     * @return True iff the main frame exists
+     */
+    public static boolean hasMainFrame() {
+        return me != null;
+    }
+    
+    /**
+     * Adds the specified InternalFrame as a child of the main frame.
      * @param frame the frame to be added
      */
-    public void addChild(JInternalFrame frame) {
+    public void addChild(final JInternalFrame frame) {
         // Add the frame
         desktopPane.add(frame);
         
         // Make sure it'll fit with our offsets
-        if (frame.getWidth()+xOffset > desktopPane.getWidth()) {
+        if (frame.getWidth() + xOffset > desktopPane.getWidth()) {
             xOffset = 0;
         }
-        if (frame.getHeight()+yOffset > desktopPane.getHeight()) {
+        if (frame.getHeight() + yOffset > desktopPane.getHeight()) {
             yOffset = 0;
         }
         
@@ -176,23 +184,23 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
         frame.moveToFront();
         
         // Increase the offsets
-        xOffset += 30;
-        yOffset += 30;
+        xOffset += FRAME_OPENING_OFFSET;
+        yOffset += FRAME_OPENING_OFFSET;
     }
     
     /**
-     * Removes the specified InternalFrame from our desktop pane
+     * Removes the specified InternalFrame from our desktop pane.
      * @param frame The frame to be removed
      */
-    public void delChild(JInternalFrame frame) {
+    public void delChild(final JInternalFrame frame) {
         desktopPane.remove(frame);
     }
     
     /**
-     * Sets the active internal frame to the one specified
+     * Sets the active internal frame to the one specified.
      * @param frame The frame to be activated
      */
-    public void setActiveFrame(JInternalFrame frame) {
+    public void setActiveFrame(final JInternalFrame frame) {
         frame.moveToFront();
         try {
             frame.setSelected(true);
@@ -200,12 +208,12 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
             Logger.error(ErrorLevel.ERROR, ex);
         }
         if (maximised) {
-            setTitle(getTitlePrefix()+" - "+frame.getTitle());
+            setTitle(getTitlePrefix() + " - " + frame.getTitle());
         }
     }
     
     /**
-     * Retrieves the frame manager that's currently in use
+     * Retrieves the frame manager that's currently in use.
      * @return The current frame manager
      */
     public FrameManager getFrameManager() {
@@ -213,7 +221,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     }
     
     /**
-     * Retrieves the application icon
+     * Retrieves the application icon.
      * @return The application icon
      */
     public ImageIcon getIcon() {
@@ -221,7 +229,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     }
     
     /**
-     * Returns the JInternalFrame that is currently active
+     * Returns the JInternalFrame that is currently active.
      * @return The active JInternalFrame
      */
     public JInternalFrame getActiveFrame() {
@@ -229,15 +237,15 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     }
     
     /**
-     * Sets whether or not the internal frame state is currently maximised
+     * Sets whether or not the internal frame state is currently maximised.
      * @param max whether the frame is maxomised
      */
-    public void setMaximised(boolean max) {
+    public void setMaximised(final boolean max) {
         maximised = max;
         
         if (max) {
             if (getActiveFrame() != null) {
-                setTitle(getTitlePrefix()+" - "+getActiveFrame().getTitle());
+                setTitle(getTitlePrefix() + " - " + getActiveFrame().getTitle());
             }
         } else {
             setTitle(getTitlePrefix());
@@ -255,19 +263,19 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     
     /**
      * Returns a prefix for use in the titlebar. Includes the version number
-     * if the config option is set
+     * if the config option is set.
      * @return Titlebar prefix
      */
     public String getTitlePrefix() {
-        if (Boolean.parseBoolean(Config.getOption("ui","showversion"))) {
-            return "DMDirc "+Main.VERSION;
+        if (Boolean.parseBoolean(Config.getOption("ui", "showversion"))) {
+            return "DMDirc " + Main.VERSION;
         } else {
             return "DMDirc";
         }
     }
     
     /**
-     * Gets whether or not the internal frame state is currently maximised
+     * Gets whether or not the internal frame state is currently maximised.
      * @return True iff frames should be maximised, false otherwise
      */
     public boolean getMaximised() {
@@ -276,7 +284,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
     
     /**
      * Checks the current state of the internal frames, and configures the
-     * window menu to behave appropriately
+     * window menu to behave appropriately.
      */
     private void checkWindowState() {
         if (getActiveFrame() == null) {
@@ -301,7 +309,7 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
      * Called when the window is opened. Not implemented.
      * @param windowEvent The event associated with this callback
      */
-    public void windowOpened(WindowEvent windowEvent) {
+    public void windowOpened(final WindowEvent windowEvent) {
     }
     
     /**
@@ -309,8 +317,8 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
      * disconnect with the default close method
      * @param windowEvent The event associated with this callback
      */
-    public void windowClosing(WindowEvent windowEvent) {
-        ServerManager.getServerManager().closeAll(Config.getOption("general","closemessage"));
+    public void windowClosing(final WindowEvent windowEvent) {
+        ServerManager.getServerManager().closeAll(Config.getOption("general", "closemessage"));
         Config.save();
     }
     
@@ -318,35 +326,35 @@ public class MainFrame extends javax.swing.JFrame implements WindowListener {
      * Called when the window is closed. Not implemented.
      * @param windowEvent The event associated with this callback
      */
-    public void windowClosed(WindowEvent windowEvent) {
+    public void windowClosed(final WindowEvent windowEvent) {
     }
     
     /**
      * Called when the window is iconified. Not implemented.
      * @param windowEvent The event associated with this callback
      */
-    public void windowIconified(WindowEvent windowEvent) {
+    public void windowIconified(final WindowEvent windowEvent) {
     }
     
     /**
      * Called when the window is deiconified. Not implemented.
      * @param windowEvent The event associated with this callback
      */
-    public void windowDeiconified(WindowEvent windowEvent) {
+    public void windowDeiconified(final WindowEvent windowEvent) {
     }
     
     /**
      * Called when the window is activated. Not implemented.
      * @param windowEvent The event associated with this callback
      */
-    public void windowActivated(WindowEvent windowEvent) {
+    public void windowActivated(final WindowEvent windowEvent) {
     }
     
     /**
      * Called when the window is deactivated. Not implemented.
      * @param windowEvent The event associated with this callback
      */
-    public void windowDeactivated(WindowEvent windowEvent) {
+    public void windowDeactivated(final WindowEvent windowEvent) {
     }
     
     /** This method is called from within the constructor to

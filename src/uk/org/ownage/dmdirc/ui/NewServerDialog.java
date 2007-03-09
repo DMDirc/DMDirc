@@ -25,8 +25,8 @@ package uk.org.ownage.dmdirc.ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JInternalFrame;
 import javax.swing.InputVerifier;
+import javax.swing.JInternalFrame;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
@@ -40,7 +40,7 @@ import uk.org.ownage.dmdirc.logger.Logger;
  * Dialog that allows the user to enter details of a new server to connect to.
  * @author chris
  */
-public class NewServerDialog extends StandardDialog {
+public final class NewServerDialog extends StandardDialog {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -109,20 +109,20 @@ public class NewServerDialog extends StandardDialog {
         });
         getOkButton().addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
-                String host = jTextField1.getText();
-                String pass = jTextField3.getText();
-                int port = Integer.parseInt(jTextField2.getText());
+                final String host = jTextField1.getText();
+                final String pass = jTextField3.getText();
+                final int port = Integer.parseInt(jTextField2.getText());
                 
                 NewServerDialog.this.setVisible(false);
                 
                 // Open in a new window?
-                if (jCheckBox1.isSelected() ||
-                        ServerManager.getServerManager().numServers() == 0
+                if (jCheckBox1.isSelected()
+                        || ServerManager.getServerManager().numServers() == 0
                         || MainFrame.getMainFrame().getActiveFrame() == null) {
-                    Server server = new Server(host, port, pass, jCheckBox4.isSelected());
+                    final Server server = new Server(host, port, pass, jCheckBox4.isSelected());
                 } else {
-                    JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
-                    Server server = ServerManager.getServerManager().getServerFromFrame(active);
+                    final JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
+                    final Server server = ServerManager.getServerManager().getServerFromFrame(active);
                     if (server != null) {
                         server.connect(host, port, pass, jCheckBox4.isSelected());
                     } else {
@@ -286,16 +286,29 @@ public class NewServerDialog extends StandardDialog {
  */
 class PortVerifier extends InputVerifier {
     
+    /** The minimum port number */
+    private final static int MIN_PORT = 0;
+    
+    /** The maximum port number */
+    private final static int MAX_PORT = 65535;
+    
+    /**
+     * Creates a new instance of PortVerifier.
+     */
+    public PortVerifier() {
+        
+    }
+    
     /**
      * Verifies that the number specified in the textfield is a valid port.
      * @param jComponent The component to be tested
      * @return true iff the number is a valid port, false otherwise
      */
     public boolean verify(final JComponent jComponent) {
-        JTextField tf = (JTextField) jComponent;
+        final JTextField textField = (JTextField) jComponent;
         try {
-            Integer port = Integer.parseInt(tf.getText());
-            return (port > 0 && port <= 65535);
+            final int port = Integer.parseInt(textField.getText());
+            return port > MIN_PORT && port <= MAX_PORT;
         } catch (NumberFormatException e) {
             return false;
         }
