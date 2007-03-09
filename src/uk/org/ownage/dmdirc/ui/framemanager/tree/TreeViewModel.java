@@ -22,9 +22,17 @@
 
 package uk.org.ownage.dmdirc.ui.framemanager.tree;
 
+import java.util.Enumeration;
+
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
+
+import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.Query;
+import uk.org.ownage.dmdirc.Raw;
+import uk.org.ownage.dmdirc.Server;
 
 /**
  * A simple sorted tree data model based on DefaultTreeModel.
@@ -69,9 +77,6 @@ public class TreeViewModel extends DefaultTreeModel {
         super.insertNodeInto(newChild, parent, index);
     }
     
-    /*
-     *
-     */
     /**
      * Compares the new child with the existing children or parent to decide
      * where it needs to be inserted.
@@ -80,11 +85,69 @@ public class TreeViewModel extends DefaultTreeModel {
      * @param parent node the new node will be inserted into.
      * @return index where new node is to be inserted.
      */
-    private int getIndex(final DefaultMutableTreeNode newChild, final DefaultMutableTreeNode parent) {
-        if (parent == root) {
-            return root.getChildCount();
+    private int getIndex(final DefaultMutableTreeNode newChild, final DefaultMutableTreeNode parent) {      
+        
+        if (parent.equals(root) && !Boolean.parseBoolean(Config.getOption("ui", "sortservers"))) {
+            return parent.getChildCount();
         }
+                
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            DefaultMutableTreeNode child = (DefaultMutableTreeNode) parent.getChildAt(i);
+            if (sortBefore(newChild, child)) {
+                return i;
+            } else if (!sortAfter(newChild, child) && Boolean.parseBoolean(Config.getOption("ui", "sortwindows"))) {
+                if (newChild.getUserObject().toString().compareToIgnoreCase(child.getUserObject().toString()) < 0) {
+                    return i;
+                }
+            }
+        }
+        
         return parent.getChildCount();
+    }
+    
+    /**
+     * Compares the types of the specified nodes' objects to see if the new
+     * node should be sorted before the other.
+     * @param newChild The new child to be tested
+     * @param child The existing child that it's being tested against
+     * @return True iff newChild should be sorted before child
+     */
+    private boolean sortBefore(final DefaultMutableTreeNode newChild,
+            final DefaultMutableTreeNode child) {
+        
+        return getPosition(newChild.getUserObject()) < getPosition(child.getUserObject());
+    }
+    
+    /**
+     * Compares the types of the specified nodes' objects to see if the new
+     * node should be sorted after the other.
+     * @param newChild The new child to be tested
+     * @param child The existing child that it's being tested against
+     * @return True iff newChild should be sorted before child
+     */
+    private boolean sortAfter(final DefaultMutableTreeNode newChild,
+            final DefaultMutableTreeNode child) {
+        
+        return getPosition(newChild.getUserObject()) > getPosition(child.getUserObject());
+    }    
+    
+    /**
+     * Returns an integer corresponding to the expected order of an object.
+     * @param object The object to be tested
+     * @return Position of the object
+     */
+    private int getPosition(final Object object) {
+        if (object instanceof Server) {
+            return 1;
+        } else if (object instanceof Raw) {
+            return 2;
+        } else if (object instanceof Channel) {
+            return 3;
+        } else if (object instanceof Query) {
+            return 4;
+        } else {
+            return 5;
+        }
     }
 }
 

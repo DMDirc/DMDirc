@@ -124,8 +124,12 @@ public final class Config {
         defaults.setProperty("ui.sortByCase", "false");
         defaults.setProperty("ui.inputbuffersize", "50");
         defaults.setProperty("ui.showversion", "true");
+        
+        // TODO: These should probably be renamed to treeview.* or so?
         defaults.setProperty("ui.rolloverEnabled", "true");
         defaults.setProperty("ui.rolloverColour", "f0f0f0");
+        defaults.setProperty("ui.sortwindows", "true");
+        defaults.setProperty("ui.sortservers", "true");
         
         defaults.setProperty("channel.splitusermodes", "false");
         
