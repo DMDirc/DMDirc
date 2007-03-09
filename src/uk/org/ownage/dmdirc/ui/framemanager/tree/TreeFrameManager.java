@@ -378,6 +378,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         nodes.put(raw, node);
         node.setUserObject(raw);
         model.insertNodeInto(node, nodes.get(server));
+        tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
     /**
