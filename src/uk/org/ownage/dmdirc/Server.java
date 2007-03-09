@@ -343,7 +343,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     private void closeChannels() {
         closing = true;
         for (Channel channel : channels.values()) {
-            channel.close();
+            channel.closeWindow();
         }
         channels.clear();
         closing = false;

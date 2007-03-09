@@ -260,11 +260,18 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
-     * Closes the channel window. Frees all references related to the channel.
+     * Parts the channel and then closes the frame.
      */
     public void close() {
-        final CallbackManager callbackManager = server.getParser().getCallbackManager();
         part(Config.getOption("general", "partmessage"));
+        closeWindow();
+    }
+    
+    /**
+     * Closes the window without parting the channel.
+     */
+    public void closeWindow() {
+        final CallbackManager callbackManager = server.getParser().getCallbackManager();        
         
         callbackManager.delCallback("OnChannelMessage", this);
         callbackManager.delCallback("OnChannelTopic", this);
@@ -287,7 +294,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
                 frame = null;
                 server = null;
             }
-        });
+        });        
     }
     
     /**
