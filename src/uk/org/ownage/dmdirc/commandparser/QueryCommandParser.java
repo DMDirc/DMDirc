@@ -49,8 +49,8 @@ public class QueryCommandParser extends CommandParser {
     public QueryCommandParser(final Server newServer, final Query newQuery) {
         super();
         
-        this.server = server;
-        this.query = query;
+        server = newServer;
+        query = newQuery;
     }
     
     /** Loads the relevant commands into the parser. */
