@@ -22,48 +22,42 @@
 
 package uk.org.ownage.dmdirc.plugins;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.Properties;
 
 /**
  * Managers plugins for the client, also forwards events from the client or irc
- * to the plugins as required
+ * to the plugins as required.
  */
-public class PluginManager {
+public final class PluginManager {
     
     /**
-     * list of plugins currently loaded
+     * list of plugins currently loaded.
      */
-    private Hashtable<String, AbstractPlugin> loadedPlugins = null;
+    private Hashtable<String, AbstractPlugin> loadedPlugins;
     
     /**
-     * Creates a new plugin manager
+     * Creates a new plugin manager.
      */
     public PluginManager() {
 	loadedPlugins = new Hashtable<String, AbstractPlugin>();
     }
     
     /**
-     * forwards callbacks to the plugins
+     * forwards callbacks to the plugins.
      */
     public void forwardCallback() {
     }
     
     /**
-     * Adds a new plugin to the loaded plugins list
+     * Adds a new plugin to the loaded plugins list.
      * @param pluginClassName plugin name
      * @param plugin boolean success
      * @return plugin instance
      */
-    public boolean addPlugin(String pluginClassName, AbstractPlugin plugin) {
-	if( !loadedPlugins.containsKey(pluginClassName) ) {
-	    loadedPlugins.put(pluginClassName,plugin);
+    public boolean addPlugin(final String pluginClassName, 
+            final AbstractPlugin plugin) {
+	if (!loadedPlugins.containsKey(pluginClassName)) {
+	    loadedPlugins.put(pluginClassName, plugin);
 	    
 	    plugin.onLoad();
 	} else {
@@ -75,12 +69,12 @@ public class PluginManager {
     
     /**
      * Removes a plugin from the loaded plugins list, unloading the plugin class
-     * as it does so
+     * as it does so.
      * @param plugin boolean success
      * @return plugin to remove
      */
     protected synchronized boolean removePlugin(AbstractPlugin plugin) {
-	if(loadedPlugins.contains(plugin) ) {
+	if (loadedPlugins.contains(plugin)) {
 	    
 	    ClassLoader loader = plugin.getClass().getClassLoader();
 	    loader = null;
@@ -96,13 +90,14 @@ public class PluginManager {
     }
     
     /**
-     * Calls a plugins onunload events and removes it from the loaded plugins list
+     * Calls a plugins onunload events and removes it from the loaded plugins 
+     * list.
      * @param pluginClassName classname of the plugin to stop
      */
-    public void stopPlugin(String pluginClassName) {
+    public void stopPlugin(final String pluginClassName) {
 	AbstractPlugin plugin = null;
 	
-	if( loadedPlugins.containsKey(pluginClassName) ) {
+	if (loadedPlugins.containsKey(pluginClassName)) {
 	    plugin = loadedPlugins.get(pluginClassName);
 	    plugin.onUnload();
 	    plugin.stopPlugin();

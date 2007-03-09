@@ -57,7 +57,8 @@ public final class Formatter {
      * @param arguments The arguments to this message type
      * @return A formatted string
      */
-    public static String formatMessage(String messageType, Object... arguments) {
+    public static String formatMessage(final String messageType, 
+            final Object... arguments) {
         if (properties == null) {
             initialise();
         }
@@ -75,7 +76,7 @@ public final class Formatter {
      * @param messageType the message type to check
      * @return True iff there is a matching format, false otherwise
      */
-    public static boolean hasFormat(String messageType) {
+    public static boolean hasFormat(final String messageType) {
         if (properties == null) {
             initialise();
         }
@@ -88,14 +89,14 @@ public final class Formatter {
      * @return The default format strings
      */
     private static Properties getDefaults() {
-        Properties properties = new Properties();
+        final Properties defaultProperties = new Properties();
         
-        char colour = Styliser.CODE_COLOUR;
-        char stop = Styliser.CODE_STOP;
+        final char colour = Styliser.CODE_COLOUR;
+        final char stop = Styliser.CODE_STOP;
         
         // Type: Timestamp
         //    1: Current timestamp
-        properties.setProperty("timestamp","%1$tH:%1$tM:%1$tS | ");
+        defaultProperties.setProperty("timestamp", "%1$tH:%1$tM:%1$tS | ");
         
         // Type: Channel Message
         //    1: User mode prefixes
@@ -104,12 +105,12 @@ public final class Formatter {
         //    4: User host
         //    5: Message content
         //    6: Channel name
-        properties.setProperty("channelMessage", "<%1$s%2$s> %5$s");
-        properties.setProperty("channelAction", colour + "6* %1$s%2$s %5$s");
-        properties.setProperty("channelSelfMessage", "<%1$s%2$s> %5$s");
-        properties.setProperty("channelSelfAction", colour + "6* %1$s%2$s %5$s");
-        properties.setProperty("channelSelfExternalMessage", "<%1$s%2$s> %5$s");
-        properties.setProperty("channelSelfExternalAction", colour + "6* %1$s%2$s %5$s");
+        defaultProperties.setProperty("channelMessage", "<%1$s%2$s> %5$s");
+        defaultProperties.setProperty("channelAction", colour + "6* %1$s%2$s %5$s");
+        defaultProperties.setProperty("channelSelfMessage", "<%1$s%2$s> %5$s");
+        defaultProperties.setProperty("channelSelfAction", colour + "6* %1$s%2$s %5$s");
+        defaultProperties.setProperty("channelSelfExternalMessage", "<%1$s%2$s> %5$s");
+        defaultProperties.setProperty("channelSelfExternalAction", colour + "6* %1$s%2$s %5$s");
         
         // Type: Channel Event
         //    1: User mode prefixes
@@ -117,11 +118,11 @@ public final class Formatter {
         //    3: User ident
         //    4: User host
         //    5: Channel name
-        properties.setProperty("channelJoin", colour + "3* %2$s (%3$s@%4$s) has joined %5$s.");
-        properties.setProperty("channelPart", colour + "3* %1$s%2$s (%3$s@%4$s) has left %5$s.");
-        properties.setProperty("channelQuit", colour + "2* %1$s%2$s (%3$s@%4$s) has quit IRC.");
-        properties.setProperty("channelSelfJoin", colour + "3* You are now talking in %5$s.");
-        properties.setProperty("channelSelfPart", colour + "3* You have left the channel.");
+        defaultProperties.setProperty("channelJoin", colour + "3* %2$s (%3$s@%4$s) has joined %5$s.");
+        defaultProperties.setProperty("channelPart", colour + "3* %1$s%2$s (%3$s@%4$s) has left %5$s.");
+        defaultProperties.setProperty("channelQuit", colour + "2* %1$s%2$s (%3$s@%4$s) has quit IRC.");
+        defaultProperties.setProperty("channelSelfJoin", colour + "3* You are now talking in %5$s.");
+        defaultProperties.setProperty("channelSelfPart", colour + "3* You have left the channel.");
         
         // Type: Channel Event with content
         //    1: User mode prefixes
@@ -130,14 +131,14 @@ public final class Formatter {
         //    4: User host
         //    5: Content
         //    6: Channel name
-        properties.setProperty("channelPartReason", colour + "3* %1$s%2$s (%3$s@%4$s) has left %6$s (%5$s"+stop+").");
-        properties.setProperty("channelQuitReason", colour + "2* %1$s%2$s (%3$s@%4$s) has quit IRC (%5$s"+stop+").");
-        properties.setProperty("channelTopicChange", colour + "3* %1$s%2$s has changed the topic to '%5$s"+stop+"'.");
-        properties.setProperty("channelNickChange", colour + "3* %1$s%2$s is now know as %5$s.");
-        properties.setProperty("channelModeChange", colour + "3* %1$s%2$s sets mode: %5$s.");
-        properties.setProperty("channelSelfNickChange", colour + "3* You are now know as %5$s.");
-        properties.setProperty("channelSelfModeChange", colour + "3* You set mode: %5$s.");
-        properties.setProperty("channelSelfPartReason", colour + "3* You have left the channel.");
+        defaultProperties.setProperty("channelPartReason", colour + "3* %1$s%2$s (%3$s@%4$s) has left %6$s (%5$s" + stop + ").");
+        defaultProperties.setProperty("channelQuitReason", colour + "2* %1$s%2$s (%3$s@%4$s) has quit IRC (%5$s" + stop + ").");
+        defaultProperties.setProperty("channelTopicChange", colour + "3* %1$s%2$s has changed the topic to '%5$s" + stop + "'.");
+        defaultProperties.setProperty("channelNickChange", colour + "3* %1$s%2$s is now know as %5$s.");
+        defaultProperties.setProperty("channelModeChange", colour + "3* %1$s%2$s sets mode: %5$s.");
+        defaultProperties.setProperty("channelSelfNickChange", colour + "3* You are now know as %5$s.");
+        defaultProperties.setProperty("channelSelfModeChange", colour + "3* You set mode: %5$s.");
+        defaultProperties.setProperty("channelSelfPartReason", colour + "3* You have left the channel.");
         
         // Type: Binary Channel Event
         //    1: Source user mode prefixes
@@ -149,7 +150,7 @@ public final class Formatter {
         //    7: Target user ident
         //    8: Target user host
         //    9: Channel name
-        properties.setProperty("channelKick", colour + "3* %1$s%2$s has kicked %5$s%6$s from %9$s.");
+        defaultProperties.setProperty("channelKick", colour + "3* %1$s%2$s has kicked %5$s%6$s from %9$s.");
         
         // Type: Binary Channel Event with content
         //    1: Source user mode prefixes
@@ -162,20 +163,20 @@ public final class Formatter {
         //    8: Target user host
         //    9: Content
         //   10: Channel name
-        properties.setProperty("channelKickReason", colour + "3* %1$s%2$s has kicked %5$s%6$s from %10$s (%9$s"+stop+").");
-        properties.setProperty("channelUserMode_default", colour + "3* %1$s%2$s sets mode %9$s on %6$s.");
+        defaultProperties.setProperty("channelKickReason", colour + "3* %1$s%2$s has kicked %5$s%6$s from %10$s (%9$s" + stop + ").");
+        defaultProperties.setProperty("channelUserMode_default", colour + "3* %1$s%2$s sets mode %9$s on %6$s.");
         
         // Type: Channel topic sync
         //    1: Topic
         //    2: User responsible
         //    3: Time last changed
         //    4: Channel name
-        properties.setProperty("channelJoinTopic", colour + "3* The topic for %4$s is '%1$s"+stop+"'.\n"+colour+"3* Topic was set by %2$s.");
+        defaultProperties.setProperty("channelJoinTopic", colour + "3* The topic for %4$s is '%1$s" + stop + "'.\n" + colour + "3* Topic was set by %2$s.");
         
         // Type: Channel mode discovery
         //     1: Channel modes
         //     2: Channel name
-        properties.setProperty("channelModeDiscovered", colour + "3* Channel modes for %2$s are: %1$s.");
+        defaultProperties.setProperty("channelModeDiscovered", colour + "3* Channel modes for %2$s are: %1$s.");
         
         // Type: Private CTCP
         //    1: User nickname
@@ -183,27 +184,27 @@ public final class Formatter {
         //    3: User host
         //    4: CTCP type
         //    5: CTCP content
-        properties.setProperty("privateCTCP", colour + "4-!- CTCP %4$S from %1$s");
-        properties.setProperty("privateCTCPreply", colour + "4-!- CTCP %4$S reply from %1$s: %5$s");
+        defaultProperties.setProperty("privateCTCP", colour + "4-!- CTCP %4$S from %1$s");
+        defaultProperties.setProperty("privateCTCPreply", colour + "4-!- CTCP %4$S reply from %1$s: %5$s");
         
         // Type: Private communications
         //    1: User nickname
         //    2: User ident
         //    3: User host
         //    4: Message content
-        properties.setProperty("privateNotice", colour + "5-%1$s- %4$s");
-        properties.setProperty("queryMessage", "<%1$s> %4$s");
-        properties.setProperty("queryAction", colour + "6* %1$s %4$s");
-        properties.setProperty("querySelfMessage", "<%1$s> %4$s");
-        properties.setProperty("querySelfAction", colour + "6* %1$s %4$s");
-        properties.setProperty("queryNickChanged", colour + "3* %1$s is now know as %4$s.");
+        defaultProperties.setProperty("privateNotice", colour + "5-%1$s- %4$s");
+        defaultProperties.setProperty("queryMessage", "<%1$s> %4$s");
+        defaultProperties.setProperty("queryAction", colour + "6* %1$s %4$s");
+        defaultProperties.setProperty("querySelfMessage", "<%1$s> %4$s");
+        defaultProperties.setProperty("querySelfAction", colour + "6* %1$s %4$s");
+        defaultProperties.setProperty("queryNickChanged", colour + "3* %1$s is now know as %4$s.");
         
         // Type: Miscellaneous
         //    1: Miscellaneous data
-        properties.setProperty("rawCommand", colour + "10 >>> %1$s");
-        properties.setProperty("socketClosed", colour + "2 -!- You have been disconnected from the server.");
+        defaultProperties.setProperty("rawCommand", colour + "10 >>> %1$s");
+        defaultProperties.setProperty("socketClosed", colour + "2 -!- You have been disconnected from the server.");
         
-        return properties;
+        return defaultProperties;
     }
     
     /**
@@ -227,8 +228,8 @@ public final class Formatter {
      * @param file File to be loaded
      * @return True iff the operation succeeeded, false otherwise
      */
-    public static boolean loadFile(String file) {
-        File myFile = new File(Config.getConfigDir() + file);
+    public static boolean loadFile(final String file) {
+        final File myFile = new File(Config.getConfigDir() + file);
         if (myFile.exists()) {
             try {
                 properties.load(new FileInputStream(myFile));
@@ -253,12 +254,12 @@ public final class Formatter {
      * @param target The target file
      * @return True iff the operation succeeded, false otherwise
      */
-    public static boolean saveAs(String target) {
+    public static boolean saveAs(final String target) {
         if (properties == null) {
             initialise();
         }
         
-        File myFile = new File(Config.getConfigDir() + target);
+        final File myFile = new File(Config.getConfigDir() + target);
         
         try {
             properties.store(new FileOutputStream(myFile), null);

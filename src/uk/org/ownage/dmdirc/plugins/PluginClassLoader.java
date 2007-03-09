@@ -27,20 +27,26 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import uk.org.ownage.dmdirc.logger.Logger;
+
 
 /**
  * A custom ClassLoader to load and unload plugins.
  */
-class PluginClassLoader extends ClassLoader {
-    private String baseDir = null;
+public final class PluginClassLoader extends ClassLoader {
     
     /**
-     * Constructs new PluginClassLoader
-     *
-     * @param baseDir plugin base dir
+     * Base directory for the class loader.
      */
-    public PluginClassLoader(String baseDir) {
-	this.baseDir = baseDir;
+    private String baseDir;
+    
+    /**
+     * Constructs new PluginClassLoader.
+     *
+     * @param directory plugin loader base directory
+     */
+    public PluginClassLoader(final String directory) {
+        this.baseDir = directory;
     }
     
     /**
@@ -48,46 +54,51 @@ class PluginClassLoader extends ClassLoader {
      *
      * @param name plugin class name to load
      * @return plugin class
+     * @throws ClassNotFoundException if the class to be loaded could not be
+     * found in the base directory for this classloader
      */
-    public Class loadClass(String name) throws ClassNotFoundException {
-	Class loadedClass = findLoadedClass(name);
-	if ( loadedClass == null ) {
-	    try {
-		loadedClass = findSystemClass(name);
-	    } catch ( Exception e ) {
-		// do nothing
-	    }
-	    
-	    if ( loadedClass == null ) {
-		String fileName = baseDir + File.separator +
-			name.replace('.', File.separatorChar) + ".class";
-		byte[] data = null;
-		
-		System.out.println("Trying to load: " + fileName);
-		
-		try {
-		    data = loadClassData(fileName);
-		} catch( IOException e ) {
-		    System.out.println(e);
-		    throw new ClassNotFoundException(e.getMessage());
-		}
-		
-		loadedClass = defineClass(name,data, 0, data.length);
-		
-		if ( loadedClass == null ) {
-		    System.out.println("loadedClass == null");
-		    throw new ClassNotFoundException("Could not load " + name);
-		} else {
-		    resolveClass(loadedClass);
-		}
-	    } else {
-		//Found loaded system class
-	    }
-	} else {
-	    //Found loaded class
-	}
-	
-	return loadedClass;
+    public Class loadClass(final String name) throws ClassNotFoundException {
+        Class loadedClass = findLoadedClass(name);
+        String fileName;
+        if (loadedClass == null) {
+            /*
+            try {
+                loadedClass = findSystemClass(name);
+            } catch (ClassNotFoundException e) {
+                //Do nothing
+            }
+             */
+            
+            if (loadedClass == null) {
+                fileName = baseDir + File.separator 
+                        + name.replace('.', File.separatorChar) + ".class";
+                byte[] data = null;
+                
+                Logger.debug("Trying to load: " + fileName);
+                
+                try {
+                    data = loadClassData(fileName);
+                } catch (IOException e) {
+                    Logger.debug("" + e);
+                    throw new ClassNotFoundException(e.getMessage());
+                }
+                
+                loadedClass = defineClass(name, data, 0, data.length);
+                
+                if (loadedClass == null) {
+                    Logger.debug("loadedClass == null");
+                    throw new ClassNotFoundException("Could not load " + name);
+                } else {
+                    resolveClass(loadedClass);
+                }
+            } else {
+                Logger.debug("found class");
+            }
+        } else {
+            Logger.debug("class already loaded");
+        }
+        
+        return loadedClass;
     }
     
     /**
@@ -95,29 +106,18 @@ class PluginClassLoader extends ClassLoader {
      *
      * @param fileName file name
      * @return bytecodes
+     * @throws IOException if unable to read the specified file
      */
-    private byte[] loadClassData(String fileName) throws IOException {
-	File file = new File(fileName);
-	byte buffer[] = new byte[(int)file.length()];
-	
-	FileInputStream in = new FileInputStream(file);
-	DataInputStream dataIn = new DataInputStream(in);
-	
-	dataIn.readFully(buffer);
-	dataIn.close();
-	
-	return buffer;
+    private byte[] loadClassData(final String fileName) throws IOException {
+        final File file = new File(fileName);
+        final byte[] buffer = new byte[(int) file.length()];
+        
+        final FileInputStream in = new FileInputStream(file);
+        final DataInputStream dataIn = new DataInputStream(in);
+        
+        dataIn.readFully(buffer);
+        dataIn.close();
+        
+        return buffer;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-

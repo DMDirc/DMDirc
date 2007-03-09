@@ -71,12 +71,12 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     /**
      * Open channels that currently exist on the server.
      */
-    private Hashtable<String,Channel> channels  = new Hashtable<String,Channel>();
+    private Hashtable<String, Channel> channels  = new Hashtable<String, Channel>();
     
     /**
      * Open query windows on the server.
      */
-    private Hashtable<String,Query> queries = new Hashtable<String,Query>();
+    private Hashtable<String, Query> queries = new Hashtable<String, Query>();
     
     /**
      * The ServerFrame corresponding to this server.
@@ -103,7 +103,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * windows, and thus requests for individual ones to be closed should be
      * ignored.
      */
-    private boolean closing = false;
+    private boolean closing;
     
     /**
      * The tabcompleter used for this server.
@@ -116,7 +116,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     private ImageIcon imageIcon;
     
     /**
-     * The last activated internal frame for this server
+     * The last activated internal frame for this server.
      */
     private CommandWindow activeFrame;
     
@@ -132,7 +132,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         
         serverName = server;
         
-        ClassLoader cldr = this.getClass().getClassLoader();
+        final ClassLoader cldr = this.getClass().getClassLoader();
         URL imageURL;
         if (ssl) {
             imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/secure-server.png");
@@ -160,11 +160,11 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         frame.addLine("Connecting to " + server + ":" + port);
         sendNotification();
         
-        MyInfo myInfo = new MyInfo();
-        myInfo.sNickname = Config.getOption("general","defaultnick");
-        myInfo.sAltNickname = Config.getOption("general","alternatenick");
+        final MyInfo myInfo = new MyInfo();
+        myInfo.sNickname = Config.getOption("general", "defaultnick");
+        myInfo.sAltNickname = Config.getOption("general", "alternatenick");
         
-        ServerInfo serverInfo = new ServerInfo(server, port, password);
+        final ServerInfo serverInfo = new ServerInfo(server, port, password);
         serverInfo.bSSL = ssl;
         parser = new IRCParser(myInfo, serverInfo);
         
@@ -185,8 +185,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         MainFrame.getMainFrame().getFrameManager().addRaw(this, raw);
         
         try {
-            Thread thread = new Thread(parser);
-            thread.start();
+            new Thread(parser).start();
         } catch (Exception ex) {
             frame.addLine("ERROR: " + ex.getMessage());
         }
@@ -203,12 +202,12 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
             final boolean ssl) {
         // TODO: Abstract the functionality of this and the constructor
         if (parser != null && parser.getSocketState() == parser.stateOpen) {
-            disconnect(Config.getOption("general","quitmessage"));
+            disconnect(Config.getOption("general", "quitmessage"));
             closeChannels();
             closeQueries();
         }
         
-        ClassLoader cldr = this.getClass().getClassLoader();
+        final ClassLoader cldr = this.getClass().getClassLoader();
         URL imageURL;
         if (ssl) {
             imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/secure-server.png");
@@ -221,11 +220,11 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         frame.addLine("Connecting to " + server + ":" + port);
         sendNotification();
         
-        MyInfo myInfo = new MyInfo();
-        myInfo.sNickname = Config.getOption("general","defaultnick");
-        myInfo.sAltNickname = Config.getOption("general","alternatenick");
+        final MyInfo myInfo = new MyInfo();
+        myInfo.sNickname = Config.getOption("general", "defaultnick");
+        myInfo.sAltNickname = Config.getOption("general", "alternatenick");
         
-        ServerInfo serverInfo = new ServerInfo(server, port, password);
+        final ServerInfo serverInfo = new ServerInfo(server, port, password);
         serverInfo.bSSL = ssl;
         parser = new IRCParser(myInfo, serverInfo);
         
@@ -246,10 +245,9 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         }
         
         try {
-            Thread thread = new Thread(parser);
-            thread.start();
+            new Thread(parser).start();
         } catch (Exception ex) {
-            frame.addLine("ERROR: "+ex.getMessage());
+            frame.addLine("ERROR: " + ex.getMessage());
         }
     }
     
@@ -257,7 +255,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * Retrieves the parser used for this connection.
      * @return IRCParser this connection's parser
      */
-    final public IRCParser getParser() {
+    public final IRCParser getParser() {
         return parser;
     }
     
@@ -265,7 +263,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * Returns the tab completer for this connection.
      * @return The tab completer for this server
      */
-    final public TabCompleter getTabCompleter() {
+    public final TabCompleter getTabCompleter() {
         return tabCompleter;
     }
     
@@ -273,7 +271,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * Adds a line to the server window.
      * @param line line to be added
      */
-    final public void addLine(final String line) {
+    public final void addLine(final String line) {
         frame.addLine(line);
     }
     
@@ -383,7 +381,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param chan channel to add
      */
     private void addChannel(final ChannelInfo chan) {
-        Channel newChan = new Channel(this, chan);
+        final Channel newChan = new Channel(this, chan);
         
         tabCompleter.addEntry(chan.getName());
         channels.put(chan.getName(), newChan);
@@ -395,7 +393,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param host host of the remote client being queried
      */
     private void addQuery(final String host) {
-        Query newQuery = new Query(this, host);
+        final Query newQuery = new Query(this, host);
         
         tabCompleter.addEntry(ClientInfo.parseHost(host));
         queries.put(ClientInfo.parseHost(host), newQuery);
@@ -450,7 +448,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param messageType The type of message to send
      * @param args The arguments for the message
      */
-    public void addLineToActive(String messageType, Object... args) {
+    public void addLineToActive(final String messageType, final Object... args) {
         if (activeFrame == null || !activeFrame.isVisible()) {
             activeFrame = frame;
         }
@@ -476,11 +474,11 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     /**
      * Private message event, creates a new query object and opens a new query
      * window if one doesnt exist.
-     * @param parser parser instance triggering event
+     * @param tParser parser instance triggering event
      * @param message private message being received
      * @param host host of the remote client
      */
-    public void onPrivateMessage(final IRCParser parser, final String message,
+    public void onPrivateMessage(final IRCParser tParser, final String message,
             final String host) {
         if (!queries.containsKey(ClientInfo.parseHost(host))) {
             addQuery(host);
@@ -491,10 +489,10 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * Private action event, creates a new query object and opens a new query
      * window if one doesnt exist.
      * @param action action text being received
-     * @param parser parser instance triggering event
+     * @param tParser parser instance triggering event
      * @param host host of remote client
      */
-    public void onPrivateAction(final IRCParser parser, final String action, final String host) {
+    public void onPrivateAction(final IRCParser tParser, final String action, final String host) {
         if (!queries.containsKey(ClientInfo.parseHost(host))) {
             addQuery(host);
         }
@@ -509,7 +507,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      */
     public void onPrivateCTCP(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
-        String[] parts = ClientInfo.parseHostFull(sHost);
+        final String[] parts = ClientInfo.parseHostFull(sHost);
         // TODO: Obey general.sendinfomessagestoactive
         frame.addLine("privateCTCP", parts[0], parts[1], parts[2], sType, sMessage);
         sendNotification();
@@ -524,7 +522,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      */
     public void onPrivateCTCPReply(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
-        String[] parts = ClientInfo.parseHostFull(sHost);
+        final String[] parts = ClientInfo.parseHostFull(sHost);
         // TODO: Obey general.sendinfomessagestoactive
         frame.addLine("privateCTCPreply", parts[0], parts[1], parts[2], sType, sMessage);
         sendNotification();
@@ -536,8 +534,9 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param sMessage The notice content
      * @param sHost The source of the message
      */
-    public void onPrivateNotice(IRCParser tParser, String sMessage, String sHost) {
-        String[] parts = ClientInfo.parseHostFull(sHost);
+    public void onPrivateNotice(final IRCParser tParser, final String sMessage, 
+            final String sHost) {
+        final String[] parts = ClientInfo.parseHostFull(sHost);
         // TODO: Obey general.sendinfomessagestoactive
         frame.addLine("privateNotice", parts[0], parts[1], parts[2], sMessage);
         sendNotification();
@@ -547,10 +546,10 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * Called when the IRC socket is closed for any reason.
      * @param tParser The IRC parser for this server
      */
-    public void onSocketClosed(IRCParser tParser) {
+    public void onSocketClosed(final IRCParser tParser) {
         frame.addLine("socketClosed", serverName);
         sendNotification();
-        if (Boolean.parseBoolean(Config.getOption("general","globaldisconnectmessage"))) {
+        if (Boolean.parseBoolean(Config.getOption("general", "globaldisconnectmessage"))) {
             for (Channel channel : channels.values()) {
                 channel.addLine("socketClosed", serverName);
             }
@@ -592,7 +591,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        Boolean pref = Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"));
+        final Boolean pref = Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"));
         if (pref.equals(Boolean.TRUE) || MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);
@@ -608,7 +607,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
-        close(Config.getOption("general","quitmessage"));
+        close(Config.getOption("general", "quitmessage"));
     }
     
     /**
@@ -685,7 +684,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      */
     private void sendNotification() {
         if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
-            Color c = ColourManager.getColour(4);
+            final Color c = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, c);
         }
     }

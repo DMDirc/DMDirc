@@ -24,25 +24,25 @@ package uk.org.ownage.dmdirc.plugins;
 
 /**
  * Abstract plugin, all plugins will need to subclass this method to be accepted
- * by the plugin manager and loaded as a plugin
+ * by the plugin manager and loaded as a plugin.
  */
 public abstract class AbstractPlugin {
     
     /**
-     * PluginManager associated with this plugin
+     * PluginManager associated with this plugin.
      */
-    private PluginManager pm = null;
+    private PluginManager pluginManager;
 
     /**
-     * Creates a new instance of the plugin
-     * @param pm PluginManager associated with this plugin
+     * Creates a new instance of the plugin.
+     * @param newPluginManager PluginManager associated with this plugin
      */
-    public AbstractPlugin(PluginManager pm) {
-	this.pm = pm;
+    public AbstractPlugin(final PluginManager newPluginManager) {
+	this.pluginManager = newPluginManager;
     }
     
     /**
-     * Starts the plugin running in its own thread
+     * Starts the plugin running in its own thread.
      */
     abstract void start();
 
@@ -53,13 +53,13 @@ public abstract class AbstractPlugin {
     }
     
     /**
-     * Called just before the plugin is to be unloaded
+     * Called just before the plugin is to be unloaded.
      */
     void onUnload() {
     }
     
     /**
-     * Called to terminate the plugins thread
+     * Called to terminate the plugins thread.
      */
     abstract void stopPlugin(); 
 }

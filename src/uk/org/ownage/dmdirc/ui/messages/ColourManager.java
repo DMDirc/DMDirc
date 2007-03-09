@@ -32,7 +32,7 @@ import uk.org.ownage.dmdirc.logger.Logger;
  * other components to use IRC colour codes instead of absolute colours.
  * @author chris
  */
-public class ColourManager {
+public final class ColourManager {
     
     /** Creates a new instance of ColourManager. */
     private ColourManager() {
@@ -50,7 +50,7 @@ public class ColourManager {
         } else if (spec instanceof String) {
             return getColour((String) spec);
         } else {
-            Logger.error(ErrorLevel.WARNING, "(ColourManager.getColour) Unknown object type: "+spec);
+            Logger.error(ErrorLevel.WARNING, "(ColourManager.getColour) Unknown object type: " + spec);
             return Color.WHITE;
         }
     }
@@ -112,7 +112,7 @@ public class ColourManager {
             case 15:
                 return Color.LIGHT_GRAY;
             default:
-                Logger.error(ErrorLevel.WARNING, "Invalid colour: "+number);
+                Logger.error(ErrorLevel.WARNING, "Invalid colour: " + number);
                 return Color.WHITE;
         }
     }

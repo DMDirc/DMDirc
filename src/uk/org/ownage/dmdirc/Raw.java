@@ -25,50 +25,54 @@ package uk.org.ownage.dmdirc;
 import java.awt.Color;
 import java.beans.PropertyVetoException;
 import java.net.URL;
+
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
-import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+
+
 
 /**
  * Handles the raw window (which shows the user raw data being sent and
- * received to/from the server)
+ * received to/from the server).
  * @author chris
  */
 public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameContainer {
     
     /**
-     * The server object that's being monitored
+     * The server object that's being monitored.
      */
     private Server server;
     /**
-     * A serverframe instance used for displaying the raw data
+     * A serverframe instance used for displaying the raw data.
      */
     private ServerFrame frame;
     /**
-     * The icon being used for this raw frame
+     * The icon being used for this raw frame.
      */
     private ImageIcon imageIcon;
     
     /**
-     * Creates a new instance of Raw
-     * @param server the server to monitor
+     * Creates a new instance of Raw.
+     * @param newServer the server to monitor
      */
-    public Raw(Server server) {
-        this.server = server;
+    public Raw(final Server newServer) {
+        this.server = newServer;
         
-        ClassLoader cldr = this.getClass().getClassLoader();
-        URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/raw.png");
+        final ClassLoader cldr = this.getClass().getClassLoader();
+        final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/raw.png");
         imageIcon = new ImageIcon(imageURL);
         
         frame = new ServerFrame(new ServerCommandParser(server));
@@ -89,7 +93,7 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
     }
     
     /**
-     * Closes the raw window. Removes parser callbacks, removes the actual
+     * Closes the raw window. Removes parser callbacks, removes the actual.
      * frame, and removes references to the frame and server.
      */
     public void close() {
@@ -108,37 +112,42 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
     /**
      * Called when the parser receives a line of data. The data is simply
      * logged to the raw window.
-     * @param tParser A reference to the IRC parser
-     * @param sData The data that was received
+     * @param parser A reference to the IRC parser
+     * @param data The data that was received
      */
-    public void onDataIn(IRCParser tParser, String sData) {
-        frame.addLine("<<< "+sData);
+    public void onDataIn(final IRCParser parser, final String data) {
+        frame.addLine("<<< " + data);
     }
     
     /**
      * Called when the parser receives a line of data. The data is simply
      * logged to the raw window.
-     * @param tParser A reference to the IRC parser
-     * @param sData The data that was received
+     * @param parser A reference to the IRC parser
+     * @param data The data that was received
+     * @param fromParser true if sent from parser, false otherwise
      */
-    public void onDataOut(IRCParser tParser, String sData, boolean bFromParser) {
-        frame.addLine(">>> "+sData);
+    public void onDataOut(final IRCParser parser, final String data, 
+            final boolean fromParser) {
+        frame.addLine(">>> " + data);
     }
     
     /**
-     * Determines if the specified frame is owned by this object
+     * Determines if the specified frame is owned by this object.
+     *
+     * @param target JInternalFrame to check ownership of
+     * @return boolean ownership of the frame
      */
-    public boolean ownsFrame(JInternalFrame target) {
+    public boolean ownsFrame(final JInternalFrame target) {
         return frame.equals(target);
     }
     
     /**
      * Called when the raw frame is opened. Checks config settings to
-     * determine if the window should be maximised
+     * determine if the window should be maximised.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameOpened(InternalFrameEvent internalFrameEvent) {
-        Boolean pref = Boolean.parseBoolean(Config.getOption("ui","maximisewindows"));
+    public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
+        final Boolean pref = Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"));
         if (pref.equals(Boolean.TRUE) || MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);
@@ -153,7 +162,7 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
      * resources.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameClosing(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
         close();
     }
     
@@ -161,29 +170,29 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
      * Called when the raw frame is actually closed. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameClosed(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Called when the raw frame is iconified. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameIconified(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Called when the raw frame is deiconified. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameDeiconified(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Called when the raw frame is activated. Maximises the frame if it
-     * needs to be
+     * needs to be.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameActivated(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
         if (MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);
@@ -199,7 +208,7 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
      * Called when the raw frame is deactivated. Not implemented.
      * @param internalFrameEvent The event that triggered this callback
      */
-    public void internalFrameDeactivated(InternalFrameEvent internalFrameEvent) {
+    public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
@@ -211,22 +220,22 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
     }
     
     /**
-     * Requests that this object's frame be activated
+     * Requests that this object's frame be activated.
      */
     public void activateFrame() {
         MainFrame.getMainFrame().setActiveFrame(frame);
     }
     
     /**
-     * Adds a line of text to the main text area of the raw frame
+     * Adds a line of text to the main text area of the raw frame.
      * @param line The line to add
      */
-    public void addLine(String line) {
+    public void addLine(final String line) {
         frame.addLine(line);
     }
     
     /**
-     * Retrieves the icon used by the raw frame
+     * Retrieves the icon used by the raw frame.
      * @return The raw frame's icon
      */
     public ImageIcon getIcon() {
@@ -234,17 +243,17 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
     }
     
     /**
-     * Sends a notification to the frame manager if this frame isn't active
+     * Sends a notification to the frame manager if this frame isn't active.
      */
     private void sendNotification() {
         if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
-            Color c = ColourManager.getColour(4);
+            final Color c = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, c);
         }
     }
     
     /**
-     * Clears any outstanding notifications this frame has set
+     * Clears any outstanding notifications this frame has set.
      */
     private void clearNotification() {
         MainFrame.getMainFrame().getFrameManager().clearNotification(this);

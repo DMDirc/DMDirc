@@ -99,8 +99,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param newChannelInfo The parser's channel object that corresponds to this channel
      */
     public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
-        this.channelInfo = channelInfo;
-        this.server = server;
+        this.channelInfo = newChannelInfo;
+        this.server = newServer;
         
         final ClassLoader cldr = this.getClass().getClassLoader();
         final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/channel.png");
