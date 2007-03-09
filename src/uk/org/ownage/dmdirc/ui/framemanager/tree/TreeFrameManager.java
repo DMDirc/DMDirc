@@ -201,11 +201,10 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      */
     public void setSelected(final FrameContainer source) {
         selected = source;
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                tree.repaint();
-            }
-        });
+        if (nodes.get(source) != null) {
+            tree.scrollPathToVisible(new TreePath(nodes.get(source).getPath()));
+        }
+        tree.repaint();
     }
     
     /**
@@ -540,13 +539,13 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
             oldSelectedPath = null;
             if (currentSelectedPath != null) {
                 node = (DefaultMutableTreeNode) currentSelectedPath.getLastPathComponent();
-                if (Config.hasOption("ui", "rolloverEnabled") 
+                if (Config.hasOption("ui", "rolloverEnabled")
                 && Config.getOption("ui", "rolloverEnabled").equals("true")) {
                     this.showRollover(node);
                 }
                 ((FrameContainer) node.getUserObject()).activateFrame();
             } else {
-                if (Config.hasOption("ui", "rolloverEnabled") 
+                if (Config.hasOption("ui", "rolloverEnabled")
                 && Config.getOption("ui", "rolloverEnabled").equals("true")) {
                     this.showRollover(node);
                 }
@@ -556,13 +555,13 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
             if ((oldSelectedPath == null) || !selectedPath.equals(oldSelectedPath)) {
                 oldSelectedPath = selectedPath;
                 node = (DefaultMutableTreeNode) oldSelectedPath.getLastPathComponent();
-                if (Config.hasOption("ui", "rolloverEnabled") 
+                if (Config.hasOption("ui", "rolloverEnabled")
                 && Config.getOption("ui", "rolloverEnabled").equals("true")) {
                     this.showRollover(node);
                 }
                 ((FrameContainer) node.getUserObject()).activateFrame();
             } else {
-                if (Config.hasOption("ui", "rolloverEnabled") 
+                if (Config.hasOption("ui", "rolloverEnabled")
                 && Config.getOption("ui", "rolloverEnabled").equals("true")) {
                     this.showRollover(node);
                 }
@@ -576,7 +575,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param e mouse event.
      */
     public void mouseMoved(final MouseEvent e) {
-        if (Config.hasOption("ui", "rolloverEnabled") 
+        if (Config.hasOption("ui", "rolloverEnabled")
         && Config.getOption("ui", "rolloverEnabled").equals("true")) {
             TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
             DefaultMutableTreeNode node;
