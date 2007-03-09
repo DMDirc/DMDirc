@@ -768,7 +768,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void sendNotification() {
         JInternalFrame activeFrame = MainFrame.getMainFrame().getActiveFrame();
-        if (activeFrame != null && activeFrame.equals(frame)) {
+        if (activeFrame != null && !activeFrame.equals(frame)) {
             final Color c = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, c);
         }
