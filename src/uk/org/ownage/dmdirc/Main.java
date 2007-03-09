@@ -22,38 +22,47 @@
 
 package uk.org.ownage.dmdirc;
 
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.MainFrame;
-import javax.swing.UIManager;
 
 /**
- * Main class, handles initialisation
+ * Main class, handles initialisation.
  * @author chris
  */
-public class Main {
-    
-    final public static String VERSION = "SVN";
+public final class Main {
     
     /**
-     * Creates a new instance of Main
+     * Stores the current program version.
      */
-    public Main() {
+    public static final String VERSION = "SVN";
+    
+    /**
+     * Prevents creation of main.
+     */
+    private Main() {
     }
     
     /**
      * Entry procedure.
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
-        
+    public static void main(final String[] args) {
         try {
             //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (Exception ex) {
+        } catch (InstantiationException ex) {
             Logger.error(ErrorLevel.ERROR, ex);
-        }
-        
+        } catch (ClassNotFoundException ex) {
+            Logger.error(ErrorLevel.ERROR, ex);
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.error(ErrorLevel.ERROR, ex);
+        } catch (IllegalAccessException ex) {
+            Logger.error(ErrorLevel.ERROR, ex);
+        }        
         MainFrame.getMainFrame();
     }
     

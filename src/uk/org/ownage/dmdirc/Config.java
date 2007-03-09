@@ -29,14 +29,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
+
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.LogLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
  * Reads/writes the application's config file.
  * @author chris
  */
-public class Config {
+public final class Config {
     
     /**
      * The application's current configuration.
@@ -63,7 +65,7 @@ public class Config {
      * @return config file
      */
     private static String getConfigFile() {
-        return getConfigDir()+"dmdirc.xml";
+        return getConfigDir() + "dmdirc.xml";
     }
     
     /**
@@ -71,14 +73,14 @@ public class Config {
      * @return configuration directory
      */
     public static String getConfigDir() {
-        String fs = System.getProperty("file.separator");
+        final String fs = System.getProperty("file.separator");
         //This is nasty.
         String baseDir = System.getenv("APPDATA");
         if (baseDir == null) {
             baseDir = System.getProperty("user.home");
         }
         //End nasty
-        return baseDir+fs+".DMDirc"+fs;
+        return baseDir + fs + ".DMDirc" + fs;
     }
     
     /**
@@ -86,7 +88,7 @@ public class Config {
      * @return default settings
      */
     private static Properties getDefaults() {
-        Properties defaults = new Properties();
+        final Properties defaults = new Properties();
         
         defaults.setProperty("general.commandchar", "/");
         defaults.setProperty("general.closemessage", "DMDirc exiting");
@@ -147,12 +149,12 @@ public class Config {
      * @param domain the domain of the option
      * @param option the name of the option
      */
-    public static boolean hasOption(String domain, String option) {
+    public static boolean hasOption(final String domain, final String option) {
         if (properties == null) {
             initialise();
         }
         
-        return (properties.getProperty(domain + "." + option) != null);
+        return properties.getProperty(domain + "." + option) != null;
     }
     
     /**
@@ -161,7 +163,7 @@ public class Config {
      * @param domain the domain of the option
      * @param option the name of the option
      */
-    public static String getOption(String domain, String option) {
+    public static String getOption(final String domain, final String option) {
         if (properties == null) {
             initialise();
         }
@@ -175,7 +177,8 @@ public class Config {
      * @param option name of the option
      * @param value value of the option
      */
-    public static void setOption(String domain, String option, String value) {
+    public static void setOption(final String domain, final String option, 
+            final String value) {
         if (properties == null) {
             initialise();
         }
@@ -191,7 +194,7 @@ public class Config {
         
         properties = getDefaults();
         
-        File file = new File(getConfigFile());
+        final File file = new File(getConfigFile());
         
         if (file.exists()) {
             try {
@@ -199,7 +202,7 @@ public class Config {
             } catch (InvalidPropertiesFormatException ex) {
                 Logger.error(ErrorLevel.INFO, ex);
             } catch (FileNotFoundException ex) {
-                //Do nothing, defaults used
+                Logger.log(LogLevel.CORE, "No config file, using defaults");
             } catch (IOException ex) {
                 Logger.error(ErrorLevel.WARNING, ex);
             }
@@ -223,7 +226,8 @@ public class Config {
             initialise();
         }
         try {
-            properties.storeToXML(new FileOutputStream(new File(getConfigFile())), null);
+            properties.storeToXML(new FileOutputStream(
+                    new File(getConfigFile())), null);
         } catch (FileNotFoundException ex) {
             Logger.error(ErrorLevel.INFO, ex);
         } catch (IOException ex) {

@@ -33,9 +33,9 @@ import javax.swing.JInternalFrame;
 public interface FrameContainer {
     
     /**
-     * Requests that this object's frame be activated
+     * Requests that this object's frame be activated.
      */
-    public void activateFrame();
+    void activateFrame();
     
     /**
      * Determines if this object, or any of its children, owns the specified
@@ -43,30 +43,30 @@ public interface FrameContainer {
      * @param target The frame to check
      * @return true iff the frame is owned by this object, false otherwise
      */
-    public boolean ownsFrame(JInternalFrame target);
+    boolean ownsFrame(JInternalFrame target);
     
     /**
-     * Adds a line to the main text area of the frame
+     * Adds a line to the main text area of the frame.
      * @param line line to be added
      */
-    public void addLine(String line);
+    void addLine(String line);
     
     /**
-     * Returns a string identifier for this object/its frame
+     * Returns a string identifier for this object/its frame.
      * @return String identifier
      */
-    public String toString();
+    String toString();
     
     /**
      * Returns a reference to the icon that is currently being used by the
      * frame.
      * @return The frame's icon
      */
-    public ImageIcon getIcon();
+    ImageIcon getIcon();
     
     /**
-     * Closes this container (and it's associated frame)
+     * Closes this container (and it's associated frame).
      */
-    public void close();
+    void close();
     
 }

@@ -28,6 +28,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
+
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SecretKey;
@@ -35,6 +36,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import javax.swing.JOptionPane;
+
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 
@@ -57,7 +59,7 @@ public final class CipherUtils {
      */
     private static final byte[] SALT = {
         (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
-        (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03
+        (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03,
     };
 
     /**
@@ -87,9 +89,7 @@ public final class CipherUtils {
             if (!authAndCreateCiphers()) { return null; }
         }
         try {
-            byte[] password = str.getBytes("UTF8");
-            byte[] encrypted = ecipher.doFinal(password);
-            return new String(encrypted);
+            return new String(ecipher.doFinal(str.getBytes("UTF8")));
         } catch (javax.crypto.BadPaddingException e) {
             Logger.error(ErrorLevel.WARNING, e);
         } catch (IllegalBlockSizeException e) {
@@ -113,8 +113,7 @@ public final class CipherUtils {
             if (!authAndCreateCiphers()) { return null; }
         }
         try {
-            byte[] decrypted = dcipher.doFinal(str.getBytes());
-            return new String(decrypted, "UTF8");
+            return new String(dcipher.doFinal(str.getBytes()), "UTF8");
         } catch (javax.crypto.BadPaddingException e) {
             Logger.error(ErrorLevel.WARNING, e);
         } catch (IllegalBlockSizeException e) {
@@ -134,8 +133,8 @@ public final class CipherUtils {
      */
     public static String hash(final String data) {
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-512");
-            return new String(md.digest(data.getBytes("UTF8")));
+            return new String(MessageDigest.getInstance("SHA-512")
+            .digest(data.getBytes("UTF8")));
         } catch (NoSuchAlgorithmException e) {
             Logger.error(ErrorLevel.WARNING, e);
         } catch (IOException e) {
@@ -192,13 +191,13 @@ public final class CipherUtils {
             return false;
         }
         try {
-            KeySpec keySpec = new PBEKeySpec(
+            final KeySpec keySpec = new PBEKeySpec(
                     password.toCharArray(), SALT, ITERATIONS);
-            SecretKey key = SecretKeyFactory.
+            final SecretKey key = SecretKeyFactory.
                     getInstance("PBEWithMD5AndDES").generateSecret(keySpec);
             ecipher = Cipher.getInstance(key.getAlgorithm());
             dcipher = Cipher.getInstance(key.getAlgorithm());
-            AlgorithmParameterSpec paramSpec =
+            final AlgorithmParameterSpec paramSpec =
                     new PBEParameterSpec(SALT, ITERATIONS);
             ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
             dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);

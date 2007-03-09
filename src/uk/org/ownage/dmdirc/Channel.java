@@ -42,18 +42,18 @@ import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelJoin;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelKick;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelMessage;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelModeChanged;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelNickChanged;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelPart;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelQuit;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelTopic;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelNickChanged;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
@@ -61,10 +61,12 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
+
+
 /**
  * The Channel class represents the client's view of the channel. It handles
  * callbacks for channel events from the parser, maintains the corresponding
- * ChannelFrame, and handles user input to a ChannelFrame
+ * ChannelFrame, and handles user input to a ChannelFrame.
  * @author chris
  */
 public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic,
@@ -72,36 +74,36 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         IChannelNickChanged, IChannelModeChanged, IChannelUserModeChanged,
         InternalFrameListener, FrameContainer {
     
-    /** The parser's pChannel class */
+    /** The parser's pChannel class. */
     private ChannelInfo channelInfo;
     
-    /** The server this channel is on */
+    /** The server this channel is on. */
     private Server server;
     
-    /** The ChannelFrame used for this channel */
+    /** The ChannelFrame used for this channel. */
     private ChannelFrame frame;
     
     /**
-     * The tabcompleter used for this channel
+     * The tabcompleter used for this channel.
      */
     private TabCompleter tabCompleter;
     
     /**
-     * The icon being used for this channel
+     * The icon being used for this channel.
      */
     private ImageIcon imageIcon;
     
     /**
-     * Creates a new instance of Channel
-     * @param server The server object that this channel belongs to
-     * @param channelInfo The parser's channel object that corresponds to this channel
+     * Creates a new instance of Channel.
+     * @param newServer The server object that this channel belongs to
+     * @param newChannelInfo The parser's channel object that corresponds to this channel
      */
-    public Channel(final Server server, final ChannelInfo channelInfo) {
+    public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
         this.channelInfo = channelInfo;
         this.server = server;
         
-        ClassLoader cldr = this.getClass().getClassLoader();
-        URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/channel.png");
+        final ClassLoader cldr = this.getClass().getClassLoader();
+        final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/channel.png");
         imageIcon = new ImageIcon(imageURL);
         
         tabCompleter = new TabCompleter(server.getTabCompleter());
@@ -149,14 +151,14 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     
     /**
      * Sends the specified line as a message to the channel that this object
-     * represents
+     * represents.
      * @param line The message to send
      */
     public void sendLine(final String line) {
         channelInfo.sendMessage(line);
         
-        ClientInfo me = server.getParser().getMyself();
-        String modes = channelInfo.getUser(me).getImportantModePrefix();
+        final ClientInfo me = server.getParser().getMyself();
+        final String modes = channelInfo.getUser(me).getImportantModePrefix();
         
         frame.addLine("channelSelfMessage", modes, me.getNickname(), me.getIdent(),
                 me.getHost(), line, channelInfo);
@@ -165,14 +167,14 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     
     /**
      * Sends the specified string as an action (CTCP) to the channel that this object
-     * represents
+     * represents.
      * @param action The action to send
      */
     public void sendAction(final String action) {
         channelInfo.sendAction(action);
         
-        ClientInfo me = server.getParser().getMyself();
-        String modes = channelInfo.getUser(me).getImportantModePrefix();
+        final ClientInfo me = server.getParser().getMyself();
+        final String modes = channelInfo.getUser(me).getImportantModePrefix();
         
         frame.addLine("channelSelfAction", modes, me.getNickname(), me.getIdent(),
                 me.getHost(), action, channelInfo);
@@ -180,7 +182,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
-     * Returns the server object that this channel belongs to
+     * Returns the server object that this channel belongs to.
      * @return The server object
      */
     public Server getServer() {
@@ -188,7 +190,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
-     * Returns the parser's ChannelInfo object that this object is associated with
+     * Returns the parser's ChannelInfo object that this object is associated with.
      * @return The ChannelInfo object associated with this object
      */
     public ChannelInfo getChannelInfo() {
@@ -209,7 +211,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * Called when we join this channel. Just needs to output a message.
      */
     public void selfJoin() {
-        ClientInfo me = server.getParser().getMyself();
+        final ClientInfo me = server.getParser().getMyself();
         frame.addLine("channelSelfJoin", "", me.getNickname(), me.getIdent(),
                 me.getHost(), channelInfo.getName());
         sendNotification();
@@ -219,14 +221,15 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * Updates the title of the channel frame, and of the main frame if appropriate.
      */
     private void updateTitle() {
-        final String title = Styliser.stipControlCodes(channelInfo.getName()+" - "+channelInfo.getTopic());
+        final String title = Styliser.stipControlCodes(channelInfo.getName() 
+        + " - " + channelInfo.getTopic());
         
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 frame.setTitle(title);
                 
                 if (frame.isMaximum() && frame.equals(MainFrame.getMainFrame().getActiveFrame())) {
-                    MainFrame.getMainFrame().setTitle(MainFrame.getMainFrame().getTitlePrefix()+" - "+title);
+                    MainFrame.getMainFrame().setTitle(MainFrame.getMainFrame().getTitlePrefix() + " - " + title);
                 }
             }
         });
@@ -254,7 +257,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void close() {
         final CallbackManager callbackManager = server.getParser().getCallbackManager();
-        part(Config.getOption("general","partmessage"));
+        part(Config.getOption("general", "partmessage"));
         
         callbackManager.delCallback("OnChannelMessage", this);
         callbackManager.delCallback("OnChannelTopic", this);
@@ -281,7 +284,10 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
-     * Determines if the specified frame is owned by this object
+     * Determines if the specified frame is owned by this object.
+     * 
+     * @param target JInternalFrame to check ownership of
+     * @return boolean whether this object owns the specified frame
      */
     public boolean ownsFrame(final JInternalFrame target) {
         return frame.equals(target);
@@ -300,8 +306,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelMessage(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-        String[] parts = ClientInfo.parseHostFull(sHost);
-        String modes = getModes(cChannelClient, sHost);
+        final String[] parts = ClientInfo.parseHostFull(sHost);
+        final String modes = getModes(cChannelClient, sHost);
         String type = "channelMessage";
         if (parts[0].equals(tParser.getMyself().getNickname())) {
             type = "channelSelfExternalMessage";
@@ -320,8 +326,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelAction(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-        String[] parts = ClientInfo.parseHostFull(sHost);
-        String modes = getModes(cChannelClient, sHost);
+        final String[] parts = ClientInfo.parseHostFull(sHost);
+        final String modes = getModes(cChannelClient, sHost);
         String type = "channelAction";
         if (parts[0].equals(tParser.getMyself().getNickname())) {
             type = "channelSelfExternalAction";
@@ -340,7 +346,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         
         frame.updateNames(channelInfo.getChannelClients());
         
-        ArrayList<String> names = new ArrayList<String>();
+        final ArrayList<String> names = new ArrayList<String>();
         for (ChannelClientInfo channelClient : cChannel.getChannelClients()) {
             names.add(channelClient.getNickname());
         }
@@ -360,12 +366,12 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             final boolean bIsJoinTopic) {
         if (bIsJoinTopic) {
             frame.addLine("channelJoinTopic", cChannel.getTopic(),
-                    cChannel.getTopicUser(), 1000*cChannel.getTopicTime(), cChannel);
+                    cChannel.getTopicUser(), 1000 * cChannel.getTopicTime(), cChannel);
         } else {
-            ChannelClientInfo user = cChannel.getUser(cChannel.getTopicUser());
-            String[] parts = ClientInfo.parseHostFull(cChannel.getTopicUser());
-            String modes = getModes(user, cChannel.getTopicUser());
-            String topic = cChannel.getTopic();
+            final ChannelClientInfo user = cChannel.getUser(cChannel.getTopicUser());
+            final String[] parts = ClientInfo.parseHostFull(cChannel.getTopicUser());
+            final String modes = getModes(user, cChannel.getTopicUser());
+            final String topic = cChannel.getTopic();
             frame.addLine("channelTopicChange", modes, parts[0], parts[1], parts[2], topic, cChannel);
         }
         sendNotification();
@@ -381,7 +387,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelJoin(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient) {
-        ClientInfo client = cChannelClient.getClient();
+        final ClientInfo client = cChannelClient.getClient();
         
         frame.addLine("channelJoin", "", client.getNickname(), client.getIdent(),
                 client.getHost(), cChannel);
@@ -401,11 +407,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelPart(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
-        ClientInfo client = cChannelClient.getClient();
-        String nick = cChannelClient.getNickname();
-        String ident = client.getIdent();
-        String host = client.getHost();
-        String modes = cChannelClient.getImportantModePrefix();
+        final ClientInfo client = cChannelClient.getClient();
+        final String nick = cChannelClient.getNickname();
+        final String ident = client.getIdent();
+        final String host = client.getHost();
+        final String modes = cChannelClient.getImportantModePrefix();
         
         if (nick.equals(tParser.getMyself().getNickname())) {
             if (sReason.equals("")) {
@@ -440,12 +446,12 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     public void onChannelKick(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient,
             final String sReason, final String sKickedByHost) {
-        String[] kicker = ClientInfo.parseHostFull(sKickedByHost);
-        String kickermodes = getModes(cKickedByClient, sKickedByHost);
-        String victim = cKickedClient.getNickname();
-        String victimmodes = cKickedClient.getImportantModePrefix();
-        String victimident = cKickedClient.getClient().getIdent();
-        String victimhost = cKickedClient.getClient().getHost();
+        final String[] kicker = ClientInfo.parseHostFull(sKickedByHost);
+        final String kickermodes = getModes(cKickedByClient, sKickedByHost);
+        final String victim = cKickedClient.getNickname();
+        final String victimmodes = cKickedClient.getImportantModePrefix();
+        final String victimident = cKickedClient.getClient().getIdent();
+        final String victimhost = cKickedClient.getClient().getHost();
         
         if (sReason.equals("")) {
             frame.addLine("channelKick", kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,
@@ -463,7 +469,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     
     /**
      * Called when a client that was present on this channel has disconnected
-     * from the IRC server (or been netsplit)
+     * from the IRC server (or been netsplit).
      * @param tParser A reference to the IRC Parser for this server
      * @param cChannel A reference to the ChannelInfo object for this channel
      * @param cChannelClient A reference to the client that has quit
@@ -471,9 +477,9 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelQuit(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
-        ClientInfo client = cChannelClient.getClient();
-        String source = cChannelClient.getNickname();
-        String modes = cChannelClient.getImportantModePrefix();
+        final ClientInfo client = cChannelClient.getClient();
+        final String source = cChannelClient.getNickname();
+        final String modes = cChannelClient.getImportantModePrefix();
         if (sReason.equals("")) {
             frame.addLine("channelQuit", modes, source, client.getIdent(),
                     client.getHost(), cChannel);
@@ -496,10 +502,10 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void onChannelNickChanged(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sOldNick) {
-        String modes = cChannelClient.getImportantModePrefix();
-        String nick = cChannelClient.getNickname();
-        String ident = cChannelClient.getClient().getIdent();
-        String host = cChannelClient.getClient().getHost();
+        final String modes = cChannelClient.getImportantModePrefix();
+        final String nick = cChannelClient.getNickname();
+        final String ident = cChannelClient.getClient().getIdent();
+        final String host = cChannelClient.getClient().getHost();
         String type = "channelNickChange";
         if (nick.equals(tParser.getMyself().getNickname())) {
             type = "channelSelfNickChange";
@@ -521,9 +527,9 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         if (sHost.equals("")) {
             frame.addLine("channelModeDiscovered", sModes, cChannel.getName());
         } else {
-            String modes = getModes(cChannelClient, sHost);
-            String[] details = getDetails(cChannelClient, sHost);
-            String myNick = tParser.getMyself().getNickname();
+            final String modes = getModes(cChannelClient, sHost);
+            final String[] details = getDetails(cChannelClient, sHost);
+            final String myNick = tParser.getMyself().getNickname();
             String type = "channelModeChange";
             if (cChannelClient != null && myNick.equals(cChannelClient.getNickname())) {
                 type = "channelSelfModeChange";
@@ -572,7 +578,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
-     * Returns a string containing the most important mode for the specified client
+     * Returns a string containing the most important mode for the specified client.
      * @param channelClient The channel client to check.
      * @param host The hostname to check if the channel client doesn't exist
      * @return A string containing the most important mode, or an empty string
@@ -588,7 +594,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     
     /**
      * Returns a string containing the nickname, or other appropriate portion
-     * of the host for displaying (e.g. server name)
+     * of the host for displaying (e.g. server name).
      * @param channelClient The channel client to check
      * @param host The hostname to check if the channel client doesn't exist
      * @return A string containing a displayable name
@@ -603,7 +609,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     
     /**
      * Returns a string[] containing the nickname/ident/host of the client, or
-     * server, where applicable
+     * server, where applicable.
      * @param channelClient The channel client to check
      * @param host The hostname to check if the channel client doesn't exist
      * @return A string[] containing displayable components
@@ -622,11 +628,11 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     
     /**
      * Called when the channel frame is opened. Checks config settings to
-     * determine if the window should be maximised
+     * determine if the window should be maximised.
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        Boolean pref = Boolean.parseBoolean(Config.getOption("ui","maximisewindows"));
+        final Boolean pref = Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"));
         if (pref.equals(Boolean.TRUE) || MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);
@@ -642,7 +648,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
-        part(Config.getOption("general","partmessage"));
+        part(Config.getOption("general", "partmessage"));
         close();
     }
     
@@ -669,7 +675,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     
     /**
      * Called when the channel frame is activated. Maximises the frame if it
-     * needs to be
+     * needs to be.
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
@@ -693,7 +699,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
-     * Returns this channel's name
+     * Returns this channel's name.
      * @return A string representation of this channel (i.e., its name)
      */
     public String toString() {
@@ -701,7 +707,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
-     * Requests that this object's frame be activated
+     * Requests that this object's frame be activated.
      */
     public void activateFrame() {
         SwingUtilities.invokeLater(new Runnable() {
@@ -712,7 +718,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
-     * Adds a line of text to the main text area of the channel frame
+     * Adds a line of text to the main text area of the channel frame.
      * @param line The line to add
      */
     public void addLine(final String line) {
@@ -721,7 +727,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     
     /**
      * Formats the specified arguments using the supplied message type, and
-     * outputs to the main text area
+     * outputs to the main text area.
      * @param messageType the message type to use
      * @param args the arguments to pass
      */
@@ -730,7 +736,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
-     * Retrieves the icon used by the channel frame
+     * Retrieves the icon used by the channel frame.
      * @return The channel frame's icon
      */
     public ImageIcon getIcon() {
@@ -738,17 +744,17 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
-     * Sends a notification to the frame manager if this frame isn't active
+     * Sends a notification to the frame manager if this frame isn't active.
      */
     private void sendNotification() {
         if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
-            Color c = ColourManager.getColour(4);
+            final Color c = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, c);
         }
     }
     
     /**
-     * Clears any outstanding notifications this frame has set
+     * Clears any outstanding notifications this frame has set.
      */
     private void clearNotification() {
         MainFrame.getMainFrame().getFrameManager().clearNotification(this);
