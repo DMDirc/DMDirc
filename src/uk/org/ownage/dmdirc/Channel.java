@@ -767,7 +767,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * Sends a notification to the frame manager if this frame isn't active.
      */
     public void sendNotification() {
-        if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
+        JInternalFrame activeFrame = MainFrame.getMainFrame().getActiveFrame();
+        if (activeFrame != null && activeFrame.equals(frame)) {
             final Color c = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, c);
         }
