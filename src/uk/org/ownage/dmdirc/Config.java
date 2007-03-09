@@ -95,15 +95,27 @@ public final class Config {
         defaults.setProperty("general.quitmessage", "Using DMDirc");
         defaults.setProperty("general.partmessage", "Using DMDirc");
         defaults.setProperty("general.cyclemessage", "Cycling");
+        
+        // These two should no longer be used
+        // TODO: Check for any use of these (& update), then remove then
         defaults.setProperty("general.globaldisconnectmessage", "true");
         defaults.setProperty("general.sendinfomessagestoactive", "true");
-        
+                
         // These are temporary until we get identity support
         defaults.setProperty("general.defaultnick", "DMDircUser");
         defaults.setProperty("general.alternatenick", "DMDircUser_");
         defaults.setProperty("general.server", "blueyonder.uk.quakenet.org");
         defaults.setProperty("general.port", "7000");
         defaults.setProperty("general.password", "");
+        
+        // These control where notifications will go. Expected values are
+        // "active", "all", or "server".
+        // TODO: Some kind of validation in the config class itself, rather
+        //       than elsewhere?
+        defaults.setProperty("notifications.socketClosed","all");
+        defaults.setProperty("notifications.privateNotice","all");
+        defaults.setProperty("notifications.privateCTCP","server");
+        defaults.setProperty("notifications.privateCTCPreply","server");
         
         defaults.setProperty("ui.backgroundcolour", "0");
         defaults.setProperty("ui.foregroundcolour", "1");

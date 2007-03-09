@@ -35,6 +35,7 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
+import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
@@ -60,8 +61,6 @@ import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
-
-
 
 /**
  * The Channel class represents the client's view of the channel. It handles
@@ -99,8 +98,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * @param newChannelInfo The parser's channel object that corresponds to this channel
      */
     public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
-        this.channelInfo = newChannelInfo;
-        this.server = newServer;
+        channelInfo = newChannelInfo;
+        server = newServer;
         
         final ClassLoader cldr = this.getClass().getClassLoader();
         final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/channel.png");
@@ -205,6 +204,14 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      */
     public void setChannelInfo(final ChannelInfo newChannelInfo) {
         channelInfo = newChannelInfo;
+    }
+    
+    /**
+     * Returns the internal frame belonging to this object
+     * @return This object's internal frame
+     */
+    public CommandWindow getFrame() {
+        return frame;
     }
     
     /**
@@ -687,7 +694,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
             }
         }
         MainFrame.getMainFrame().getFrameManager().setSelected(this);
-        server.setActiveFrame(frame);
+        server.setActiveFrame(this);
         clearNotification();
     }
     
@@ -746,7 +753,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     /**
      * Sends a notification to the frame manager if this frame isn't active.
      */
-    private void sendNotification() {
+    public void sendNotification() {
         if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
             final Color c = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, c);

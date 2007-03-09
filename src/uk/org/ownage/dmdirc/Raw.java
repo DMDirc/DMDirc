@@ -30,6 +30,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
@@ -108,6 +109,14 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
         
         server = null;
     }
+    
+    /**
+     * Returns the internal frame belonging to this object
+     * @return This object's internal frame
+     */
+    public CommandWindow getFrame() {
+        return frame;
+    }    
     
     /**
      * Called when the parser receives a line of data. The data is simply
@@ -200,7 +209,7 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
                 Logger.error(ErrorLevel.WARNING, ex);
             }
         }
-        server.setActiveFrame(frame);
+        server.setActiveFrame(this);
         MainFrame.getMainFrame().getFrameManager().setSelected(this);
     }
     
@@ -245,7 +254,7 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
     /**
      * Sends a notification to the frame manager if this frame isn't active.
      */
-    private void sendNotification() {
+    public void sendNotification() {
         if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
             final Color c = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, c);

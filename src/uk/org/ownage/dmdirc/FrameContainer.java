@@ -25,6 +25,8 @@ package uk.org.ownage.dmdirc;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 
+import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+
 /**
  * Standard interface for all objects that contain an innerframe. Provides
  * methods for interfacing with the frame via the owner.
@@ -50,6 +52,18 @@ public interface FrameContainer {
      * @param line line to be added
      */
     void addLine(String line);
+    
+    /**
+     * Sends a notification to the frame manager that this object has been
+     * updated.
+     */
+    void sendNotification();
+    
+    /**
+     * Returns the internal frame associated with this object.
+     * @return The internal frame associated with this object
+     */
+    CommandWindow getFrame();
     
     /**
      * Returns a string identifier for this object/its frame.

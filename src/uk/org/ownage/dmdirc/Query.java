@@ -32,6 +32,7 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
+import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.QueryCommandParser;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -108,6 +109,14 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
         
         updateTitle();
     }
+    
+    /**
+     * Returns the internal frame belonging to this object
+     * @return This object's internal frame
+     */
+    public CommandWindow getFrame() {
+        return frame;
+    }    
     
     /**
      * Sends a private message to the remote user.
@@ -282,7 +291,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
             }
         }
         MainFrame.getMainFrame().getFrameManager().setSelected(this);
-        server.setActiveFrame(frame);
+        server.setActiveFrame(this);
         clearNotification();
     }
     
@@ -337,7 +346,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     /**
      * Sends a notification to the frame manager if this frame isn't active.
      */
-    private void sendNotification() {
+    public void sendNotification() {
         if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
             final Color c = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, c);

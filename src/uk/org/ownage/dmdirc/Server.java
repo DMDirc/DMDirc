@@ -118,7 +118,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     /**
      * The last activated internal frame for this server.
      */
-    private CommandWindow activeFrame;
+    private FrameContainer activeFrame = this;
     
     /**
      * Creates a new instance of Server.
@@ -149,8 +149,6 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         frame.addInternalFrameListener(Server.this);
         frame.setFrameIcon(imageIcon);
         MainFrame.getMainFrame().addChild(frame);
-        
-        activeFrame = frame;
         
         frame.open();
         
@@ -265,6 +263,14 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      */
     public final TabCompleter getTabCompleter() {
         return tabCompleter;
+    }
+    
+    /**
+     * Returns the internal frame belonging to this object
+     * @return This object's internal frame
+     */
+    public CommandWindow getFrame() {
+        return frame;
     }
     
     /**
@@ -437,7 +443,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * Sets the specified frame as the most-recently activated.
      * @param source The frame that was activated
      */
-    public void setActiveFrame(final CommandWindow source) {
+    public void setActiveFrame(final FrameContainer source) {
         activeFrame = source;
     }
     
@@ -449,11 +455,55 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param args The arguments for the message
      */
     public void addLineToActive(final String messageType, final Object... args) {
-        if (activeFrame == null || !activeFrame.isVisible()) {
-            activeFrame = frame;
+        if (activeFrame == null || !activeFrame.getFrame().isVisible()) {
+            activeFrame = this;
         }
         
+        activeFrame.getFrame().addLine(messageType, args);
+        activeFrame.sendNotification();
+    }
+    
+    /**
+     * Passes the arguments to all frames for this server.
+     * @param messageType The type of message to send
+     * @param args The arguments of the message
+     */
+    public void addLineToAll(final String messageType, final Object... args) {
+        for (Channel channel : channels.values()) {
+            channel.addLine(messageType, args);
+            channel.sendNotification();
+        }
+        for (Query query : queries.values()) {
+            query.addLine(messageType, args);
+            query.sendNotification();
+        }
         frame.addLine(messageType, args);
+        sendNotification();
+    }
+    
+    /**
+     * Handles general server notifications (i.e., ones note tied to a
+     * specific window). The user can select where the notifications should
+     * go in their config.
+     * @param messageType The type of message that is being sent
+     * @param args The arguments for the message
+     */
+    public void handleNotification(final String messageType, final Object... args) {
+        String target = "server";
+        if (Config.hasOption("notifications", messageType)) {
+            final String newTarget = Config.getOption("notifications", messageType);
+            if (newTarget.equals("server") || newTarget.equals("all") || newTarget.equals("active")) {
+                target = newTarget;
+            }
+        }
+        if (target.equals("server")) {
+            frame.addLine(messageType, args);
+            sendNotification();
+        } else if (target.equals("all")) {
+            addLineToAll(messageType, args);
+        } else if (target.equals("active")) {
+            addLineToActive(messageType, args);
+        }
     }
     
     /**
@@ -508,9 +558,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     public void onPrivateCTCP(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
-        // TODO: Obey general.sendinfomessagestoactive
-        frame.addLine("privateCTCP", parts[0], parts[1], parts[2], sType, sMessage);
-        sendNotification();
+        handleNotification("privateCTCP", parts[0], parts[1], parts[2], sType, sMessage);
     }
     
     /**
@@ -523,9 +571,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     public void onPrivateCTCPReply(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
-        // TODO: Obey general.sendinfomessagestoactive
-        frame.addLine("privateCTCPreply", parts[0], parts[1], parts[2], sType, sMessage);
-        sendNotification();
+        handleNotification("privateCTCPreply", parts[0], parts[1], parts[2], sType, sMessage);
     }
     
     /**
@@ -534,12 +580,10 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param sMessage The notice content
      * @param sHost The source of the message
      */
-    public void onPrivateNotice(final IRCParser tParser, final String sMessage, 
+    public void onPrivateNotice(final IRCParser tParser, final String sMessage,
             final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
-        // TODO: Obey general.sendinfomessagestoactive
-        frame.addLine("privateNotice", parts[0], parts[1], parts[2], sMessage);
-        sendNotification();
+        handleNotification("privateNotice", parts[0], parts[1], parts[2], sMessage);
     }
     
     /**
@@ -547,16 +591,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
      * @param tParser The IRC parser for this server
      */
     public void onSocketClosed(final IRCParser tParser) {
-        frame.addLine("socketClosed", serverName);
-        sendNotification();
-        if (Boolean.parseBoolean(Config.getOption("general", "globaldisconnectmessage"))) {
-            for (Channel channel : channels.values()) {
-                channel.addLine("socketClosed", serverName);
-            }
-            for (Query query : queries.values()) {
-                query.addLine("socketClosed", serverName);
-            }
-        }
+        handleNotification("socketClosed", serverName);
     }
     
     /**
@@ -645,7 +680,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
             }
         }
         MainFrame.getMainFrame().getFrameManager().setSelected(this);
-        setActiveFrame(frame);
+        setActiveFrame(this);
         clearNotification();
     }
     
@@ -682,7 +717,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     /**
      * Sends a notification to the frame manager if this frame isn't active.
      */
-    private void sendNotification() {
+    public void sendNotification() {
         if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
             final Color c = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, c);
