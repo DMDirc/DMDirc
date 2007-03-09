@@ -25,7 +25,7 @@ package uk.org.ownage.dmdirc.ui;
 import uk.org.ownage.dmdirc.commandparser.CommandParser;
 
 /**
- * The QueryFrame is the MDI window that shows query messages to the user
+ * The QueryFrame is the MDI window that shows query messages to the user.
  */
 public class QueryFrame extends ServerFrame {
     
@@ -37,10 +37,10 @@ public class QueryFrame extends ServerFrame {
     private static final long serialVersionUID = 1;
     
     /**
-     * Creates a new QueryFrame
+     * Creates a new QueryFrame.
      * @param commandParser The command parser to use
      */
-    public QueryFrame(CommandParser commandParser) {
+    public QueryFrame(final CommandParser commandParser) {
         super(commandParser);
     }
     

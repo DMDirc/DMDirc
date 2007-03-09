@@ -53,7 +53,18 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
     private static final long serialVersionUID = 1;
     
     /**
-     * default icon.
+     * The preferred width of each cell.
+     */
+    private static final int WIDTH = 110;
+    
+    /**
+     * How much to offset the font size by in order to determine the height
+     * of the cell.
+     */
+    private static final int HEIGHT_OFFSET = 5;
+    
+    /**
+     * The default icon to use for unknown frames.
      */
     private ImageIcon defaultIcon;
     
@@ -77,12 +88,12 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
      * @param hasFocus whether the node has focus.
      * @return RendererComponent for this node.
      */
-    public final Component getTreeCellRendererComponent(final JTree tree, 
-            final Object value, final boolean sel, final boolean expanded, 
+    public final Component getTreeCellRendererComponent(final JTree tree,
+            final Object value, final boolean sel, final boolean expanded,
             final boolean leaf, final int row, final boolean hasFocus) {
         
-        final Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
-                row, hasFocus);
+        final Component c = super.getTreeCellRendererComponent(tree, value, sel,
+                expanded, leaf, row, hasFocus);
         
         final DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
         
@@ -105,7 +116,7 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
             }
         }
         setForeground(tree.getForeground());
-        setPreferredSize(new Dimension(110, getFont().getSize() + 5));
+        setPreferredSize(new Dimension(WIDTH, getFont().getSize() + HEIGHT_OFFSET));
         
         setOpaque(true);
         if (node.getUserObject() instanceof FrameContainer && manager != null) {

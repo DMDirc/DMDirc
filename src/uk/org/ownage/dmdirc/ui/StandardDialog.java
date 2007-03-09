@@ -49,11 +49,12 @@ public class StandardDialog extends JDialog  {
     /**
      * The OK button for this frame.
      */
-    protected JButton okButton;
+    private JButton okButton;
+    
     /**
      * The cancel button for this frame.
      */
-    protected JButton cancelButton;
+    private JButton cancelButton;
     
     /**
      * Creates a new instance of StandardDialog.
@@ -68,7 +69,7 @@ public class StandardDialog extends JDialog  {
      * Sets the specified button up as the OK button.
      * @param button The target button
      */
-    protected void setOkButton(final JButton button) {
+    protected final void setOkButton(final JButton button) {
         okButton = button;
         button.setText("OK");
         button.setDefaultCapable(true);
@@ -78,7 +79,7 @@ public class StandardDialog extends JDialog  {
      * Sets the specified button up as the Cancel button.
      * @param button The target button
      */
-    protected void setCancelButton(final JButton button) {
+    protected final void setCancelButton(final JButton button) {
         cancelButton = button;
         button.setText("Cancel");
         button.setDefaultCapable(false);
@@ -90,7 +91,7 @@ public class StandardDialog extends JDialog  {
      * @param leftButton The left-most button
      * @param rightButton The right-most button
      */
-    protected void orderButtons(final JButton leftButton,
+    protected final void orderButtons(final JButton leftButton,
             final JButton rightButton) {
         if (System.getProperty("os.name").toLowerCase().startsWith("win")) {
             // Windows - put the OK button on the left
@@ -109,23 +110,24 @@ public class StandardDialog extends JDialog  {
      * to send enter/escape events to our buttons.
      * @return The new root pane
      */
-    protected JRootPane createRootPane() {
-        ActionListener escapeListener = new ActionListener() {
+    protected final JRootPane createRootPane() {
+        final ActionListener escapeListener = new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
                 executeAction(StandardDialog.this.cancelButton);
             }
         };
         
-        ActionListener enterListener = new ActionListener() {
+        final ActionListener enterListener = new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
                 executeAction(StandardDialog.this.okButton);
             }
         };
         
-        KeyStroke escape = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
-        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
+        final KeyStroke escape = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+        final KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0);
         
-        JRootPane rootPane = new JRootPane();
+        final JRootPane rootPane = new JRootPane();
+        
         rootPane.registerKeyboardAction(escapeListener, escape,
                 JComponent.WHEN_IN_FOCUSED_WINDOW);
         rootPane.registerKeyboardAction(enterListener, enter,
@@ -138,7 +140,7 @@ public class StandardDialog extends JDialog  {
      * Retrieves the OK button for this form.
      * @return The form's OK button
      */
-    protected JButton getOkButton() {
+    protected final JButton getOkButton() {
         return okButton;
     }
     
@@ -146,7 +148,7 @@ public class StandardDialog extends JDialog  {
      * Retrieves the Cancel button for this form.
      * @return The form's cancel button
      */
-    protected JButton getCancelButton() {
+    protected final JButton getCancelButton() {
         return cancelButton;
     }
     
@@ -154,7 +156,7 @@ public class StandardDialog extends JDialog  {
      * Simulates the user clicking on the specified target button.
      * @param target The button to use
      */
-    protected void executeAction(final JButton target) {
+    protected final void executeAction(final JButton target) {
         if (target != null) {
             target.doClick();
         }

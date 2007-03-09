@@ -30,8 +30,11 @@ import uk.org.ownage.dmdirc.Config;
  * Represents the result set from a tab completion operation.
  * @author chris
  */
-public class TabCompleterResult {
+public final class TabCompleterResult {
     
+    /**
+     * The result list for this tab completer.
+     */
     private ArrayList<String> results;
     
     /**
@@ -43,17 +46,17 @@ public class TabCompleterResult {
     
     /**
      * Creates a new instance of TabCompleterResult.
-     * @param results The list of results that this result set contains
+     * @param newResults The list of results that this result set contains
      */
-    public TabCompleterResult(ArrayList<String> results) {
-        this.results = results;
+    public TabCompleterResult(final ArrayList<String> newResults) {
+        results = newResults;
     }
     
     /**
      * Adds a result to this result set.
      * @param result The result to be added
      */
-    public void addResult(String result) {
+    public void addResult(final String result) {
         results.add(result);
     }
     
@@ -61,7 +64,7 @@ public class TabCompleterResult {
      * Merges the specified additional results with this result set.
      * @param additional The results to merge
      */
-    public void merge(TabCompleterResult additional) {
+    public void merge(final TabCompleterResult additional) {
         results.addAll(additional.getResults());
     }
     
@@ -82,7 +85,7 @@ public class TabCompleterResult {
             return "";
         }
         
-        boolean caseSensitive = Boolean.parseBoolean(Config.getOption("tabcompletion", "casesensitive"));
+        final boolean caseSensitive = Boolean.parseBoolean(Config.getOption("tabcompletion", "casesensitive"));
         
         String res = results.get(0);
         for (String entry : results) {

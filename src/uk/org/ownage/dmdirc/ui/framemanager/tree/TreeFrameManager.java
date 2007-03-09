@@ -75,6 +75,11 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         KeyListener {
     
     /**
+     * The size of the border to use around the tree.
+     */
+    private static final int BORDER_SIZE = 5;
+    
+    /**
      * display tree.
      */
     private JTree tree;
@@ -291,7 +296,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         parent.add(scrollPane);
         scrollPane.setPreferredSize(new Dimension(parent.getWidth(), 0));
         tree.setForeground(parent.getForeground());
-        tree.setBorder(new EmptyBorder(5, 5, 5, 5));
+        tree.setBorder(new EmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
         tree.setVisible(true);
         tree.addKeyListener(this);
     }
