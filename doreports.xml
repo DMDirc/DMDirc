@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DMDirc" default="default" basedir=".">
+    <description>Builds, tests, and runs the project DMDirc.</description>
+    <import file="junitreport.xml" />
+    <import file="style_build.xml" />
+    <target name="reports" depends="test-html,checkstyle" />
+</project>
+
+

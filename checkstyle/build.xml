@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See commented blocks below for -->
+<!-- some examples of how to customize the build. -->
+<!-- (If you delete it and reopen the project it will be recreated.) -->
+<project name="DMDirc" default="default" basedir=".">
+    <description>Builds, tests, and runs the project DMDirc.</description>
+    <import file="nbproject/build-impl.xml"/>
+    <!--
+
+    There exist several targets which are by default empty and which can be 
+    used for execution of your tasks. These targets are usually executed 
+    before and after some main targets. They are: 
+
+      -pre-init:                 called before initialization of project properties
+      -post-init:                called after initialization of project properties
+      -pre-compile:              called before javac compilation
+      -post-compile:             called after javac compilation
+      -pre-compile-single:       called before javac compilation of single file
+      -post-compile-single:      called after javac compilation of single file
+      -pre-compile-test:         called before javac compilation of JUnit tests
+      -post-compile-test:        called after javac compilation of JUnit tests
+      -pre-compile-test-single:  called before javac compilation of single JUnit test
+      -post-compile-test-single: called after javac compilation of single JUunit test
+      -pre-jar:                  called before JAR building
+      -post-jar:                 called after JAR building
+      -post-clean:               called after cleaning build products
+
+    (Targets beginning with '-' are not intended to be called on their own.)
+
+    Example of inserting an obfuscator after compilation could look like this:
+
+        <target name="-post-compile">
+            <obfuscate>
+                <fileset dir="${build.classes.dir}"/>
+            </obfuscate>
+        </target>
+
+    For list of available properties check the imported 
+    nbproject/build-impl.xml file. 
+
+
+    Another way to customize the build is by overriding existing main targets.
+    The targets of interest are: 
+
+      -init-macrodef-javac:     defines macro for javac compilation
+      -init-macrodef-junit:     defines macro for junit execution
+      -init-macrodef-debug:     defines macro for class debugging
+      -init-macrodef-java:      defines macro for class execution
+      -do-jar-with-manifest:    JAR building (if you are using a manifest)
+      -do-jar-without-manifest: JAR building (if you are not using a manifest)
+      run:                      execution of project 
+      -javadoc-build:           Javadoc generation
+      test-report:              JUnit report generation
+
+    An example of overriding the target for project execution could look like this:
+
+        <target name="run" depends="DMDirc-impl.jar">
+            <exec dir="bin" executable="launcher.exe">
+                <arg file="${dist.jar}"/>
+            </exec>
+        </target>
+
+    Notice that the overridden target depends on the jar target and not only on 
+    the compile target as the regular run target does. Again, for a list of available 
+    properties which you can use, check the target you are overriding in the
+    nbproject/build-impl.xml file. 
+
+    -->
+    <target name="checkstyle" depends="
+	    checkstyle-dmdirc-all, checkstyle-sun-all, checkstyle-duplicate-all, checkstyle-todo-all, 
+	    checkstyle-dmdirc-core, checkstyle-sun-core, checkstyle-duplicate-core, checkstyle-todo-core,
+	    checkstyle-dmdirc-commandparser, checkstyle-sun-commandparser, checkstyle-duplicate-commandparser, checkstyle-todo-commandparser,
+	    checkstyle-dmdirc-identities, checkstyle-sun-identities, checkstyle-duplicate-identities, checkstyle-todo-identities,
+	    checkstyle-dmdirc-logger, checkstyle-sun-logger, checkstyle-duplicate-logger, checkstyle-todo-logger,
+	    checkstyle-dmdirc-parser, checkstyle-sun-parser, checkstyle-duplicate-parser, checkstyle-todo-parser,
+	    checkstyle-dmdirc-ui, checkstyle-sun-ui, checkstyle-duplicate-ui, checkstyle-todo-ui,
+	    remove-xml-files, move-index" /> 
+            
+    
+    <target name="checkstyle-dmdirc-ui">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/ui/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-ui-dmdirc.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-ui-dmdirc.xml" out="reports/report-ui-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-sun-ui">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/sun_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/ui/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-ui-sun.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-ui-sun.xml" out="reports/report-ui-sun.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-duplicate-ui">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/duplicate_code_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/ui/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-ui-duplicate.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-ui-duplicate.xml" out="reports/report-ui-duplicate.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-todo-ui">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/todo_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/ui/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-ui-todo.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-ui-todo.xml" out="reports/report-ui-todo.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    
+    
+    <target name="checkstyle-dmdirc-parser">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/parser/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-parser-dmdirc.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-parser-dmdirc.xml" out="reports/report-parser-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-sun-parser">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/sun_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/parser/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-parser-sun.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-parser-sun.xml" out="reports/report-parser-sun.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-duplicate-parser">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/duplicate_code_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/parser/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-parser-duplicate.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-parser-duplicate.xml" out="reports/report-parser-duplicate.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-todo-parser">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/todo_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/parser/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-parser-todo.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-parser-todo.xml" out="reports/report-parser-todo.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    
+    
+    <target name="checkstyle-dmdirc-logger">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/logger/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-logger-dmdirc.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-logger-dmdirc.xml" out="reports/report-logger-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-sun-logger">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/sun_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/logger/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-logger-sun.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-logger-sun.xml" out="reports/report-logger-sun.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-duplicate-logger">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/duplicate_code_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/logger/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-logger-duplicate.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-logger-duplicate.xml" out="reports/report-logger-duplicate.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-todo-logger">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/todo_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/logger/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-logger-todo.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-logger-todo.xml" out="reports/report-logger-todo.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    
+    
+    <target name="checkstyle-dmdirc-identities">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/identities/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-identities-dmdirc.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-identities-dmdirc.xml" out="reports/report-identities-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-sun-identities">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/sun_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/identities/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-identities-sun.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-identities-sun.xml" out="reports/report-identities-sun.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-duplicate-identities">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/duplicate_code_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/identities/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-identities-duplicate.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-identities-duplicate.xml" out="reports/report-identities-duplicate.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-todo-identities">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/todo_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/identities/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-identities-todo.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-identities-todo.xml" out="reports/report-identities-todo.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    
+    
+    <target name="checkstyle-dmdirc-commandparser">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/commandparser/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-commandparser-dmdirc.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-commandparser-dmdirc.xml" out="reports/report-commandparser-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-sun-commandparser">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/sun_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/commandparser/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-commandparser-sun.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-commandparser-sun.xml" out="reports/report-commandparser-sun.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-duplicate-commandparser">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/duplicate_code_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/commandparser/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-commandparser-duplicate.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-commandparser-duplicate.xml" out="reports/report-commandparser-duplicate.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-todo-commandparser">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/todo_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/commandparser/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-commandparser-todo.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-commandparser-todo.xml" out="reports/report-commandparser-todo.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    
+    
+    <target name="checkstyle-dmdirc-core">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/" includes="*.java"/>
+		    <formatter type="xml" tofile="reports/report-core-dmdirc.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-core-dmdirc.xml" out="reports/report-core-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-sun-core">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/sun_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/" includes="*.java"/>
+		    <formatter type="xml" tofile="reports/report-core-sun.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-core-sun.xml" out="reports/report-core-sun.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-duplicate-core">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/duplicate_code_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/" includes="*.java"/>
+		    <formatter type="xml" tofile="reports/report-core-duplicate.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-core-duplicate.xml" out="reports/report-core-duplicate.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-todo-core">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/todo_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/uk/org/ownage/dmdirc/" includes="*.java"/>
+		    <formatter type="xml" tofile="reports/report-core-todo.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-core-todo.xml" out="reports/report-core-todo.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    
+    
+    <target name="checkstyle-dmdirc-all">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-all-dmdirc.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-all-dmdirc.xml" out="reports/report-all-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-sun-all">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/sun_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-all-sun.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-all-sun.xml" out="reports/report-all-sun.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-duplicate-all">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/duplicate_code_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-all-duplicate.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-all-duplicate.xml" out="reports/report-all-duplicate.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    <target name="checkstyle-todo-all">
+	    <taskdef resource="checkstyletask.properties"
+		     classpath="checkstyle-all-4.3.jar"/>
+	    <checkstyle config="checkstyle/todo_checks.xml" failureProperty="checkstyle.failure"
+			failOnViolation="false">
+		    <fileset dir="src/" includes="**/*.java"/>
+		    <formatter type="xml" tofile="reports/report-all-todo.xml"/>
+	    </checkstyle>
+	    <style in="reports/report-all-todo.xml" out="reports/report-all-todo.html" style="checkstyle/checkstyle.xsl"/>
+    </target>
+    
+    
+    <target name="remove-xml-files">
+	<delete>
+		<fileset dir="reports/" includes="*.xml"/>
+  	</delete>
+    </target>
+    <target name="move-index">
+        <copy file="checkstyle/index.html" tofile="reports/index.html"/>
+    </target>
+</project>
