@@ -31,6 +31,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 
 import javax.swing.JButton;
@@ -197,13 +198,18 @@ public class ChannelSettingsDialog extends StandardDialog
         constraints.fill = GridBagConstraints.BOTH;
         constraints.anchor = GridBagConstraints.NORTH;
         
-        modesPanel.setBorder(new TitledBorder(new EtchedBorder(),"Channel Modes"));
+        modesPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(
+                new EtchedBorder(), "Channel Modes"),
+                new EmptyBorder(10, 10, 10, 10)));
         parent.add(modesPanel, constraints);
         
         modeCheckBoxes = new Hashtable<String, JCheckBox>();
         
         constraints.gridx = 0;
         constraints.gridy = 0;
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
         constraints.anchor = GridBagConstraints.WEST;
         
         // Lay out all the boolean mode checkboxes
@@ -217,7 +223,7 @@ public class ChannelSettingsDialog extends StandardDialog
             }
             
             final JCheckBox checkBox = new JCheckBox(text, state);
-            checkBox.setBorder(new EmptyBorder(0, 10, 0, 10));
+            checkBox.setBorder(new EmptyBorder(0, 0, 0, 0));
             modesPanel.add(checkBox, constraints);
             
             constraints.gridx++;
@@ -270,7 +276,10 @@ public class ChannelSettingsDialog extends StandardDialog
         constraints.anchor = GridBagConstraints.NORTH;
         constraints.gridy = 1;
         
-        topicsPanel.setBorder(new TitledBorder(new EtchedBorder(),"Channel Topic"));
+        topicsPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(
+                new EtchedBorder(), "Channel Topic"),
+                new EmptyBorder(10, 10, 10, 10)));
         parent.add(topicsPanel, constraints);
         
         constraints.gridy = 2;
@@ -278,15 +287,18 @@ public class ChannelSettingsDialog extends StandardDialog
         topicText.setColumns(30);
         topicsPanel.add(topicText, constraints);
         
-        constraints.fill = GridBagConstraints.CENTER;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.anchor = GridBagConstraints.LINE_START;
         constraints.gridy = 3;
         topicWho.setSize(30, 0);
+        topicWho.setBorder(new EmptyBorder(5, 0, 0, 0));
         if (topic.equals("")) {
             topicWho.setText("No topic set.");
         } else {
-            topicWho.setText(new Date(1000 *
-                    channel.getChannelInfo().getTopicTime())+" by "
-                    +channel.getChannelInfo().getTopicUser());
+            topicWho.setText("<html>Set by "
+                    + channel.getChannelInfo().getTopicUser() + "<br> on "
+                    + new Date(1000 * channel.getChannelInfo().getTopicTime())
+                    + "</html>");
         }
         topicsPanel.add(topicWho, constraints);
     }
@@ -309,9 +321,9 @@ public class ChannelSettingsDialog extends StandardDialog
         
         int verticalPosition = 1;
         for (char mode: listModes) {
-            String text = mode + " mode list";
-            if (Config.hasOption("server","mode" + mode)) {
-                text = Config.getOption("server","mode" + mode)+" list";
+            String modeText = mode + " mode list";
+            if (Config.hasOption("server", "mode" + mode)) {
+                modeText = Config.getOption("server", "mode" + mode) + " list";
             }
             constraints.fill = GridBagConstraints.BOTH;
             constraints.gridy = verticalPosition;
@@ -319,7 +331,10 @@ public class ChannelSettingsDialog extends StandardDialog
             constraints.weighty = 1.0;
             
             panel = new JPanel(new GridBagLayout());
-            panel.setBorder(new TitledBorder(new EtchedBorder(), text));
+            panel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(
+                new EtchedBorder(), modeText),
+                new EmptyBorder(10, 10, 10, 10)));
             
             listModel = new DefaultListModel();
             list = new JList(listModel);
@@ -337,6 +352,7 @@ public class ChannelSettingsDialog extends StandardDialog
             verticalPosition++;
         }
         constraints.gridy = 1;
+        listModesPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         JScrollPane scrollPane = new JScrollPane(listModesPanel);
         scrollPane.setPreferredSize(parent.getPreferredSize());
         parent.add(scrollPane, constraints);

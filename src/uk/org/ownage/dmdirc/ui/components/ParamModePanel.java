@@ -63,22 +63,27 @@ public class ParamModePanel extends JPanel implements ActionListener {
     public ParamModePanel(String mode, boolean state, String value) {
         String text = "Mode "+mode;
         GridBagConstraints constraints = new GridBagConstraints();
-        //constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.anchor = GridBagConstraints.WEST;
         
         setLayout(new GridBagLayout());
-        setBorder(new EmptyBorder(5,5,0,5));
+        setBorder(new EmptyBorder(5, 0, 0, 0));
         
         if (Config.hasOption("server","mode"+mode)) {
             text = Config.getOption("server", "mode"+mode);
         }
         
+        constraints.weightx = 0.5;
+        constraints.weighty = 0.5;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.anchor = GridBagConstraints.LINE_START;
         checkBox = new JCheckBox(text, state);
         add(checkBox, constraints);
         
-        constraints.anchor = GridBagConstraints.EAST;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.anchor = GridBagConstraints.LINE_END;
+        constraints.weightx = 0.5;
+        constraints.weighty = 0.5;
         textField = new JTextField(value);
-        textField.setColumns(10);
+        textField.setColumns(16);
         add(textField, constraints);
         
         if (!state) {
@@ -86,7 +91,7 @@ public class ParamModePanel extends JPanel implements ActionListener {
         }
         
         checkBox.addActionListener(this);
-        checkBox.setBorder(new EmptyBorder(0,0,0,10));
+        checkBox.setBorder(new EmptyBorder(0,0,0,0));
     }
     
     /**
