@@ -64,9 +64,9 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
  * to the server.
  * @author chris
  */
-public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction,
-        IErrorInfo, IPrivateCTCP, IPrivateCTCPReply, InternalFrameListener,
-        ISocketClosed, IPrivateNotice, FrameContainer {
+public final class Server implements IChannelSelfJoin, IPrivateMessage,
+        IPrivateAction, IErrorInfo, IPrivateCTCP, IPrivateCTCPReply,
+        InternalFrameListener, ISocketClosed, IPrivateNotice, FrameContainer {
     
     /**
      * Open channels that currently exist on the server.
@@ -184,7 +184,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         
         try {
             new Thread(parser).start();
-        } catch (Exception ex) {
+        } catch (IllegalThreadStateException ex) {
             frame.addLine("ERROR: " + ex.getMessage());
         }
     }
@@ -244,7 +244,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         
         try {
             new Thread(parser).start();
-        } catch (Exception ex) {
+        } catch (IllegalThreadStateException ex) {
             frame.addLine("ERROR: " + ex.getMessage());
         }
     }
@@ -266,7 +266,7 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
     }
     
     /**
-     * Returns the internal frame belonging to this object
+     * Returns the internal frame belonging to this object.
      * @return This object's internal frame
      */
     public CommandWindow getFrame() {
@@ -564,7 +564,8 @@ public class Server implements IChannelSelfJoin, IPrivateMessage, IPrivateAction
         handleNotification("privateCTCP", parts[0], parts[1], parts[2], sType, sMessage);
         
         if (sType.equalsIgnoreCase("VERSION")) {
-            tParser.sendCTCPReply(parts[0], "VERSION", "DMDirc "+Main.VERSION+" - http://dmdirc.ownage.org.uk/");
+            tParser.sendCTCPReply(parts[0], "VERSION", "DMDirc " + Main.VERSION
+                    + " - http://dmdirc.ownage.org.uk/");
         } else if (sType.equalsIgnoreCase("PING")) {
             tParser.sendCTCPReply(parts[0], "PING", sMessage);
         } else if (sType.equalsIgnoreCase("CLIENTINFO")) {

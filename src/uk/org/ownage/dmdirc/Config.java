@@ -112,10 +112,10 @@ public final class Config {
         // "active", "all", or "server".
         // TODO: Some kind of validation in the config class itself, rather
         //       than elsewhere?
-        defaults.setProperty("notifications.socketClosed","all");
-        defaults.setProperty("notifications.privateNotice","all");
-        defaults.setProperty("notifications.privateCTCP","server");
-        defaults.setProperty("notifications.privateCTCPreply","server");
+        defaults.setProperty("notifications.socketClosed", "all");
+        defaults.setProperty("notifications.privateNotice", "all");
+        defaults.setProperty("notifications.privateCTCP", "server");
+        defaults.setProperty("notifications.privateCTCPreply", "server");
         
         defaults.setProperty("ui.backgroundcolour", "0");
         defaults.setProperty("ui.foregroundcolour", "1");

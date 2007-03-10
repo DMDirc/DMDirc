@@ -53,8 +53,8 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
  * corresponding ServerFrame, and handles user input to a ServerFrame.
  * @author chris
  */
-public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
-        InternalFrameListener, FrameContainer {
+public final class Query implements IPrivateAction, IPrivateMessage, 
+        INickChanged, InternalFrameListener, FrameContainer {
     
     /**
      * The Server this Query is on.
@@ -111,7 +111,7 @@ public class Query implements IPrivateAction, IPrivateMessage, INickChanged,
     }
     
     /**
-     * Returns the internal frame belonging to this object
+     * Returns the internal frame belonging to this object.
      * @return This object's internal frame
      */
     public CommandWindow getFrame() {

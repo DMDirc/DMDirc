@@ -68,10 +68,10 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
  * ChannelFrame, and handles user input to a ChannelFrame.
  * @author chris
  */
-public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic,
-        IChannelJoin, IChannelPart, IChannelKick, IChannelQuit, IChannelAction,
-        IChannelNickChanged, IChannelModeChanged, IChannelUserModeChanged,
-        InternalFrameListener, FrameContainer {
+public final class Channel implements IChannelMessage, IChannelGotNames,
+        IChannelTopic, IChannelJoin, IChannelPart, IChannelKick, IChannelQuit, 
+        IChannelAction, IChannelNickChanged, IChannelModeChanged, 
+        IChannelUserModeChanged, InternalFrameListener, FrameContainer {
     
     /** The parser's pChannel class. */
     private ChannelInfo channelInfo;
@@ -95,7 +95,8 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     /**
      * Creates a new instance of Channel.
      * @param newServer The server object that this channel belongs to
-     * @param newChannelInfo The parser's channel object that corresponds to this channel
+     * @param newChannelInfo The parser's channel object that corresponds to 
+     * this channel
      */
     public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
         channelInfo = newChannelInfo;
@@ -213,7 +214,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
     }
     
     /**
-     * Returns the internal frame belonging to this object
+     * Returns the internal frame belonging to this object.
      * @return This object's internal frame
      */
     public CommandWindow getFrame() {
@@ -638,7 +639,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
         if (channelClient == null) {
             return ClientInfo.parseHostFull(host);
         } else {
-            String[] res = new String[3];
+            final String[] res = new String[3];
             res[0] = channelClient.getNickname();
             res[1] = channelClient.getClient().getIdent();
             res[2] = channelClient.getClient().getHost();
@@ -767,7 +768,7 @@ public class Channel implements IChannelMessage, IChannelGotNames, IChannelTopic
      * Sends a notification to the frame manager if this frame isn't active.
      */
     public void sendNotification() {
-        JInternalFrame activeFrame = MainFrame.getMainFrame().getActiveFrame();
+        final JInternalFrame activeFrame = MainFrame.getMainFrame().getActiveFrame();
         if (activeFrame != null && !activeFrame.equals(frame)) {
             final Color c = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, c);

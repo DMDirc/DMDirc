@@ -30,8 +30,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 
+import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -50,7 +50,8 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
  * received to/from the server).
  * @author chris
  */
-public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameContainer {
+public final class Raw implements IDataIn, IDataOut, InternalFrameListener, 
+        FrameContainer {
     
     /**
      * The server object that's being monitored.
@@ -111,7 +112,7 @@ public class Raw implements IDataIn, IDataOut, InternalFrameListener, FrameConta
     }
     
     /**
-     * Returns the internal frame belonging to this object
+     * Returns the internal frame belonging to this object.
      * @return This object's internal frame
      */
     public CommandWindow getFrame() {
