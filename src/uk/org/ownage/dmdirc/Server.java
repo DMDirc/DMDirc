@@ -263,7 +263,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * Retrieves the parser used for this connection.
      * @return IRCParser this connection's parser
      */
-    public final IRCParser getParser() {
+    public IRCParser getParser() {
         return parser;
     }
     
@@ -271,7 +271,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * Returns the tab completer for this connection.
      * @return The tab completer for this server
      */
-    public final TabCompleter getTabCompleter() {
+    public TabCompleter getTabCompleter() {
         return tabCompleter;
     }
     
@@ -287,7 +287,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * Adds a line to the server window.
      * @param line line to be added
      */
-    public final void addLine(final String line) {
+    public void addLine(final String line) {
         frame.addLine(line);
     }
     
@@ -616,7 +616,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param tParser The associated IRC parser
      * @param sData The message at the start of the MOTD
      */
-    public void onMOTDStart(IRCParser tParser, String sData) {
+    public void onMOTDStart(final IRCParser tParser, final String sData) {
         frame.addLine("motdStart", sData);
         sendNotification();
     }
@@ -626,7 +626,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param tParser The associated IRC parser
      * @param sData The line of the MOTD
      */    
-    public void onMOTDLine(IRCParser tParser, String sData) {
+    public void onMOTDLine(final IRCParser tParser, final String sData) {
         frame.addLine("motdLine", sData);
         sendNotification();        
     }
@@ -636,7 +636,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param tParser The associated IRC parser
      * @param noMOTD Indicates that there was no MOTD
      */    
-    public void onMOTDEnd(IRCParser tParser, boolean noMOTD) {
+    public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD) {
         frame.addLine("motdEnd", "End of server's MOTD.");
         sendNotification();
     }    
