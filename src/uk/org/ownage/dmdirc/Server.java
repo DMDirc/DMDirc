@@ -134,7 +134,6 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public Server(final String server, final int port, final String password,
             final boolean ssl) {
         
-        
         ServerManager.getServerManager().registerServer(this);
         
         frame = new ServerFrame(new ServerCommandParser(this));
@@ -160,7 +159,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public void connect(final String server, final int port, final String password,
             final boolean ssl) {
-        // TODO: Abstract the functionality of this and the constructor
+        
         if (parser != null && parser.getSocketState() == parser.stateOpen) {
             disconnect(Config.getOption("general", "quitmessage"));
             closeChannels();
