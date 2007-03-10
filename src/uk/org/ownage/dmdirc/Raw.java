@@ -85,13 +85,6 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
         frame.setFrameIcon(imageIcon);
         
         frame.open();
-        
-        try {
-            server.getParser().getCallbackManager().addCallback("OnDataIn", this);
-            server.getParser().getCallbackManager().addCallback("OnDataOut", this);
-        } catch (CallbackNotFound ex) {
-            Logger.error(ErrorLevel.FATAL, ex);
-        }
     }
     
     /**

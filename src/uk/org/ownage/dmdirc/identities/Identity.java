@@ -48,10 +48,12 @@ public final class Identity implements ConfigSource {
     /**
      * Creates a new instance of Identity.
      * @param fileName The file to load this identity from.
+     * @throws IOException Input error when reading the file
+     * @throws InvalidIdentityFileException Missing required properties
      */
-    public Identity(final String fileName) throws FileNotFoundException, 
-            IOException, InvalidIdentityFileException {
-               
+    public Identity(final String fileName) throws IOException,
+            InvalidIdentityFileException {
+        
         final File file = new File(fileName);
         
         properties = new Properties();
@@ -80,6 +82,16 @@ public final class Identity implements ConfigSource {
      */
     public String getName() {
         return name;
+    }
+    
+    /**
+     * Determines whether this identity can be used as a profile when
+     * connecting to a server. Profiles are identities that can supply
+     * nick, ident, real name, etc.
+     * @return True iff this identity can be used as a profile
+     */
+    public boolean isProfile() {
+        return hasOption("profile", "nickname") && hasOption("profile", "realname");
     }
     
     /**

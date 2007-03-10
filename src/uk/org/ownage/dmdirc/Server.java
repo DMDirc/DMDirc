@@ -134,23 +134,13 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public Server(final String server, final int port, final String password,
             final boolean ssl) {
         
-        serverName = server;
-        
-        final ClassLoader cldr = this.getClass().getClassLoader();
-        URL imageURL;
-        if (ssl) {
-            imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/secure-server.png");
-        } else {
-            imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/server.png");
-        }
-        imageIcon = new ImageIcon(imageURL);
         
         ServerManager.getServerManager().registerServer(this);
         
-        frame = new ServerFrame(new ServerCommandParser(Server.this));
+        frame = new ServerFrame(new ServerCommandParser(this));
         frame.setTitle(server + ":" + port);
         frame.setTabCompleter(tabCompleter);
-        frame.addInternalFrameListener(Server.this);
+        frame.addInternalFrameListener(this);
         frame.setFrameIcon(imageIcon);
         MainFrame.getMainFrame().addChild(frame);
         
@@ -158,42 +148,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         
         tabCompleter.addEntries(CommandManager.getServerCommandNames());
         
-        // TODO: Use formatter
-        frame.addLine("Connecting to " + server + ":" + port);
-        sendNotification();
-        
-        final MyInfo myInfo = new MyInfo();
-        myInfo.sNickname = Config.getOption("general", "defaultnick");
-        myInfo.sAltNickname = Config.getOption("general", "alternatenick");
-        
-        final ServerInfo serverInfo = new ServerInfo(server, port, password);
-        serverInfo.bSSL = ssl;
-        parser = new IRCParser(myInfo, serverInfo);
-        
-        try {
-            parser.getCallbackManager().addCallback("OnChannelSelfJoin", this);
-            parser.getCallbackManager().addCallback("OnErrorInfo", this);
-            parser.getCallbackManager().addCallback("OnPrivateMessage", this);
-            parser.getCallbackManager().addCallback("OnPrivateAction", this);
-            parser.getCallbackManager().addCallback("OnPrivateNotice", this);
-            parser.getCallbackManager().addCallback("OnPrivateCTCP", this);
-            parser.getCallbackManager().addCallback("OnPrivateCTCPReply", this);
-            parser.getCallbackManager().addCallback("OnSocketClosed", this);
-            parser.getCallbackManager().addCallback("OnMOTDStart", this);
-            parser.getCallbackManager().addCallback("OnMOTDLine", this);
-            parser.getCallbackManager().addCallback("OnMOTDEnd", this);            
-        } catch (CallbackNotFound ex) {
-            Logger.error(ErrorLevel.FATAL, ex);
-        }
-        
-        raw = new Raw(this);
-        MainFrame.getMainFrame().getFrameManager().addRaw(this, raw);
-        
-        try {
-            new Thread(parser).start();
-        } catch (IllegalThreadStateException ex) {
-            frame.addLine("ERROR: " + ex.getMessage());
-        }
+        connect(server, port, password, ssl);
     }
     
     /**
@@ -212,6 +167,8 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             closeQueries();
         }
         
+        serverName = server;
+        
         final ClassLoader cldr = this.getClass().getClassLoader();
         URL imageURL;
         if (ssl) {
@@ -233,6 +190,11 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         serverInfo.bSSL = ssl;
         parser = new IRCParser(myInfo, serverInfo);
         
+        if (raw == null) {
+            raw = new Raw(this);
+            MainFrame.getMainFrame().getFrameManager().addRaw(this, raw);
+        }        
+        
         try {
             parser.getCallbackManager().addCallback("OnChannelSelfJoin", this);
             parser.getCallbackManager().addCallback("OnErrorInfo", this);
@@ -247,11 +209,11 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             parser.getCallbackManager().addCallback("OnMOTDEnd", this);
             
             parser.getCallbackManager().addCallback("OnDataIn", raw);
-            parser.getCallbackManager().addCallback("OnDataOut", raw);
+            parser.getCallbackManager().addCallback("OnDataOut", raw);            
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.FATAL, ex);
         }
-        
+                
         try {
             new Thread(parser).start();
         } catch (IllegalThreadStateException ex) {
@@ -620,26 +582,26 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         frame.addLine("motdStart", sData);
         sendNotification();
     }
-
+    
     /**
      * Called when a line of the server's MOTD has been received.
      * @param tParser The associated IRC parser
      * @param sData The line of the MOTD
-     */    
+     */
     public void onMOTDLine(final IRCParser tParser, final String sData) {
         frame.addLine("motdLine", sData);
-        sendNotification();        
+        sendNotification();
     }
-
+    
     /**
      * Called when the server's MOTD is over.
      * @param tParser The associated IRC parser
      * @param noMOTD Indicates that there was no MOTD
-     */    
+     */
     public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD) {
         frame.addLine("motdEnd", "End of server's MOTD.");
         sendNotification();
-    }    
+    }
     
     /**
      * Called when the IRC socket is closed for any reason.
