@@ -58,9 +58,11 @@ public class ProcessListModes extends IRCProcessor {
 		if (sParam.equals("367")) { mode = 'b'; isItem = true; }
 		else if (sParam.equals("348")) { mode = 'e'; isItem = true; }
 		else if (sParam.equals("346")) { mode = 'I'; isItem = true; }
+		else if (sParam.equals("344")) { mode = 'R'; isItem = true; }
 		else if (sParam.equals("368")) { mode = 'b'; isItem = false; }
 		else if (sParam.equals("349")) { mode = 'e'; isItem = false; }
 		else if (sParam.equals("347")) { mode = 'I'; isItem = false; }
+		else if (sParam.equals("345")) { mode = 'R'; isItem = false; }
 		
 		if (isItem) {
 			if (!channel.getAddState(mode)) {
@@ -90,13 +92,15 @@ public class ProcessListModes extends IRCProcessor {
 	 * @return String[] with the names of the tokens we handle.
 	 */
 	public String[] handles() {
-		String[] iHandle = new String[6];
-		iHandle[0] = "348";
-		iHandle[1] = "349";
-		iHandle[2] = "346";
-		iHandle[3] = "347";
-		iHandle[4] = "367";
-		iHandle[5] = "368";
+		String[] iHandle = new String[8];
+		iHandle[0] = "344"; // Reop Item
+		iHandle[1] = "345"; // End of Reop
+		iHandle[2] = "346"; // Invite Item
+		iHandle[3] = "347"; // End of Invite
+		iHandle[4] = "348"; // Except Item
+		iHandle[5] = "349"; // Except End
+		iHandle[6] = "367"; // Ban Item
+		iHandle[7] = "368"; // Ban End
 		return iHandle;
 	} 
 	
