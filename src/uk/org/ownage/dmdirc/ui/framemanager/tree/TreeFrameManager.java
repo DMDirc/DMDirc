@@ -683,7 +683,8 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
             }
         }
         //activate the nodes frame
-        ((FrameContainer) nextNode.getUserObject()).activateFrame();
+        //((FrameContainer) nextNode.getUserObject()).activateFrame();
+        tree.setSelectionPath(new TreePath(nextNode));
     }
     
     /**
