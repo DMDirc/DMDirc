@@ -116,7 +116,7 @@ public class ProcessMessage extends IRCProcessor {
 				bits = bits[0].split(Char1.toString());
 				sCTCP = bits[1];
 				// remove the trailing char1
-				if (sMessage == "") { sMessage = sMessage.split(Char1.toString())[0]; }
+				if (!sMessage.equals("")) { sMessage = sMessage.split(Char1.toString())[0]; }
 				else { sCTCP = sCTCP.split(Char1.toString())[0]; }
 				callDebugInfo(myParser.ndInfo, "CTCP: \"%s\" \"%s\"",sCTCP,sMessage);
 			}
