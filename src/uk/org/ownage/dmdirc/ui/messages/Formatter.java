@@ -93,6 +93,7 @@ public final class Formatter {
         
         final char colour = Styliser.CODE_COLOUR;
         final char stop = Styliser.CODE_STOP;
+        final char fixed = Styliser.CODE_FIXED;
         
         // Type: Timestamp
         //    1: Current timestamp
@@ -203,6 +204,9 @@ public final class Formatter {
         //    1: Miscellaneous data
         defaultProperties.setProperty("rawCommand", colour + "10 >>> %1$s");
         defaultProperties.setProperty("socketClosed", colour + "2 -!- You have been disconnected from the server.");
+        defaultProperties.setProperty("motdStart", colour + "10%1$s");
+        defaultProperties.setProperty("motdLine", colour + "10" + fixed + "%1$s");
+        defaultProperties.setProperty("motdEnd", colour + "10%1$s");
         
         return defaultProperties;
     }

@@ -47,6 +47,9 @@ import uk.org.ownage.dmdirc.parser.ServerInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDLine;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDStart;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
@@ -66,7 +69,8 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
  */
 public final class Server implements IChannelSelfJoin, IPrivateMessage,
         IPrivateAction, IErrorInfo, IPrivateCTCP, IPrivateCTCPReply,
-        InternalFrameListener, ISocketClosed, IPrivateNotice, FrameContainer {
+        InternalFrameListener, ISocketClosed, IPrivateNotice, IMOTDStart,
+        IMOTDLine, IMOTDEnd, FrameContainer {
     
     /**
      * Open channels that currently exist on the server.
@@ -175,6 +179,9 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             parser.getCallbackManager().addCallback("OnPrivateCTCP", this);
             parser.getCallbackManager().addCallback("OnPrivateCTCPReply", this);
             parser.getCallbackManager().addCallback("OnSocketClosed", this);
+            parser.getCallbackManager().addCallback("OnMOTDStart", this);
+            parser.getCallbackManager().addCallback("OnMOTDLine", this);
+            parser.getCallbackManager().addCallback("OnMOTDEnd", this);            
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.FATAL, ex);
         }
@@ -235,6 +242,9 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             parser.getCallbackManager().addCallback("OnPrivateNotice", this);
             parser.getCallbackManager().addCallback("OnPrivateCTCPReply", this);
             parser.getCallbackManager().addCallback("OnSocketClosed", this);
+            parser.getCallbackManager().addCallback("OnMOTDStart", this);
+            parser.getCallbackManager().addCallback("OnMOTDLine", this);
+            parser.getCallbackManager().addCallback("OnMOTDEnd", this);
             
             parser.getCallbackManager().addCallback("OnDataIn", raw);
             parser.getCallbackManager().addCallback("OnDataOut", raw);
@@ -295,6 +305,9 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         parser.getCallbackManager().delCallback("OnPrivateNotice", this);
         parser.getCallbackManager().delCallback("OnPrivateCTCPReply", this);
         parser.getCallbackManager().delCallback("OnSocketClosed", this);
+        parser.getCallbackManager().delCallback("OnMOTDStart", this);
+        parser.getCallbackManager().delCallback("OnMOTDLine", this);
+        parser.getCallbackManager().delCallback("OnMOTDEnd", this);
         // Unregister frame callbacks
         frame.removeInternalFrameListener(this);
         // Disconnect from the server
@@ -597,6 +610,36 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         final String[] parts = ClientInfo.parseHostFull(sHost);
         handleNotification("privateNotice", parts[0], parts[1], parts[2], sMessage);
     }
+    
+    /**
+     * Called when the server's MOTD is starting to be sent.
+     * @param tParser The associated IRC parser
+     * @param sData The message at the start of the MOTD
+     */
+    public void onMOTDStart(IRCParser tParser, String sData) {
+        frame.addLine("motdStart", sData);
+        sendNotification();
+    }
+
+    /**
+     * Called when a line of the server's MOTD has been received.
+     * @param tParser The associated IRC parser
+     * @param sData The line of the MOTD
+     */    
+    public void onMOTDLine(IRCParser tParser, String sData) {
+        frame.addLine("motdLine", sData);
+        sendNotification();        
+    }
+
+    /**
+     * Called when the server's MOTD is over.
+     * @param tParser The associated IRC parser
+     * @param noMOTD Indicates that there was no MOTD
+     */    
+    public void onMOTDEnd(IRCParser tParser, boolean noMOTD) {
+        frame.addLine("motdEnd", "End of server's MOTD.");
+        sendNotification();
+    }    
     
     /**
      * Called when the IRC socket is closed for any reason.
