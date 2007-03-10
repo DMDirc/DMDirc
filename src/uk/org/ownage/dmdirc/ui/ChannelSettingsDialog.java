@@ -28,13 +28,19 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
+import javax.swing.DefaultListModel;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -42,6 +48,8 @@ import javax.swing.border.TitledBorder;
 
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.ChannelListModeItem;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.ui.components.ParamModePanel;
 
@@ -87,7 +95,6 @@ public class ChannelSettingsDialog extends StandardDialog
         initListeners();
     }
     
-    // <editor-fold defaultstate="collapsed" desc=" UI initialisation code ">
     /** Initialises the main UI components. */
     private void initComponents() {
         GridBagConstraints constraints = new GridBagConstraints();
@@ -125,6 +132,10 @@ public class ChannelSettingsDialog extends StandardDialog
         
         initIrcTab(tabbedPane);
         
+        initListModesTab(tabbedPane);
+        
+        initSettingsTab(tabbedPane);
+        
         pack();
     }
     
@@ -144,6 +155,34 @@ public class ChannelSettingsDialog extends StandardDialog
     }
     
     /**
+     * Initialises the IRC Settings tab.
+     * @param tabbedPane The pane to add the IRC Settings tab to
+     */
+    private void initListModesTab(JTabbedPane tabbedPane) {
+        final JPanel listModesPanel = new JPanel(new GridBagLayout());
+        
+        tabbedPane.addTab("Channel Lists", listModesPanel);
+        
+        listModesPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        
+        initListModesPanel(listModesPanel);
+    }
+    
+    /**
+     * Initialises the channel Settings (identities) tab.
+     * @param tabbedPane The pane to add the IRC Settings tab to
+     */
+    private void initSettingsTab(JTabbedPane tabbedPane) {
+        final JPanel settingsPanel = new JPanel(new GridBagLayout());
+        
+        tabbedPane.addTab("Channel Settings", settingsPanel);
+        
+        settingsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        
+        initSettingsPanel(settingsPanel);
+    }
+    
+    /**
      * Initialises the modes panel.
      * @param parent The panel to add the modes panel to
      */
@@ -154,7 +193,6 @@ public class ChannelSettingsDialog extends StandardDialog
         final String booleanModes = parser.getBoolChanModes();
         final String ourBooleanModes = channel.getChannelInfo().getModeStr();
         final String paramModes = parser.getSetOnlyChanModes()+parser.getSetUnsetChanModes();
-        final String listModes = parser.getListChanModes();
         
         constraints.fill = GridBagConstraints.BOTH;
         constraints.anchor = GridBagConstraints.NORTH;
@@ -224,6 +262,9 @@ public class ChannelSettingsDialog extends StandardDialog
     private void initTopicsPanel(JPanel parent) {
         final GridBagConstraints constraints = new GridBagConstraints();
         final JPanel topicsPanel = new JPanel(new GridBagLayout());
+        final JTextField topicText = new JTextField();
+        final JLabel topicWho = new JLabel();
+        final String topic = channel.getChannelInfo().getTopic();
         
         constraints.fill = GridBagConstraints.BOTH;
         constraints.anchor = GridBagConstraints.NORTH;
@@ -231,8 +272,84 @@ public class ChannelSettingsDialog extends StandardDialog
         
         topicsPanel.setBorder(new TitledBorder(new EtchedBorder(),"Channel Topic"));
         parent.add(topicsPanel, constraints);
+        
+        constraints.gridy = 2;
+        topicText.setText(channel.getChannelInfo().getTopic());
+        topicText.setColumns(30);
+        topicsPanel.add(topicText, constraints);
+        
+        constraints.fill = GridBagConstraints.CENTER;
+        constraints.gridy = 3;
+        topicWho.setSize(30, 0);
+        if (topic.equals("")) {
+            topicWho.setText("No topic set.");
+        } else {
+            topicWho.setText(new Date(1000 *
+                    channel.getChannelInfo().getTopicTime())+" by "
+                    +channel.getChannelInfo().getTopicUser());
+        }
+        topicsPanel.add(topicWho, constraints);
     }
-    // </editor-fold>
+    
+    /**
+     * Initialises the list modes panel.
+     * @param parent The panel to add the list modes panel to
+     */
+    public void initListModesPanel(JPanel parent) {
+        final GridBagConstraints constraints = new GridBagConstraints();
+        final JPanel listModesPanel = new JPanel(new GridBagLayout());
+        final char[] listModes = channel.getServer().getParser()
+        .getListChanModes().toCharArray();
+        final ChannelInfo channelInfo = channel.getChannelInfo();
+        
+        JList list;
+        DefaultListModel listModel;
+        JPanel panel;
+        ArrayList<ChannelListModeItem> listItems;
+        
+        int verticalPosition = 1;
+        for (char mode: listModes) {
+            String text = mode + " mode list";
+            if (Config.hasOption("server","mode" + mode)) {
+                text = Config.getOption("server","mode" + mode)+" list";
+            }
+            constraints.fill = GridBagConstraints.BOTH;
+            constraints.gridy = verticalPosition;
+            constraints.weightx = 1.0;
+            constraints.weighty = 1.0;
+            
+            panel = new JPanel(new GridBagLayout());
+            panel.setBorder(new TitledBorder(new EtchedBorder(), text));
+            
+            listModel = new DefaultListModel();
+            list = new JList(listModel);
+            list.setVisibleRowCount(5);
+            
+            listItems = channelInfo.getListModeParam(mode);
+            
+            for (ChannelListModeItem listItem: listItems) {
+                listModel.addElement(listItem.getItem());
+            }
+            
+            panel.add(list, constraints);
+            
+            listModesPanel.add(panel, constraints);
+            verticalPosition++;
+        }
+        constraints.gridy = 1;
+        JScrollPane scrollPane = new JScrollPane(listModesPanel);
+        scrollPane.setPreferredSize(parent.getPreferredSize());
+        parent.add(scrollPane, constraints);
+    }
+    
+    /**
+     * Initialises the channel settings.
+     * @param parent The panel to add the channel settings panel to
+     */
+    public void initSettingsPanel(JPanel parent) {
+        final GridBagConstraints constraints = new GridBagConstraints();
+        final JPanel topicsPanel = new JPanel(new GridBagLayout());
+    }
     
     /** Initialises listeners for this dialog. */
     private void initListeners() {
