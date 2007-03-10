@@ -22,6 +22,10 @@
 
 package uk.org.ownage.dmdirc.identities;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -30,7 +34,7 @@ import java.util.Properties;
  * cases, or the user may manually apply them.
  * @author chris
  */
-public class Identity implements ConfigSource {
+public final class Identity implements ConfigSource {
     
     /** The name of this identity. */
     private String name;
@@ -43,9 +47,39 @@ public class Identity implements ConfigSource {
     
     /**
      * Creates a new instance of Identity.
-     * @param file The file to load this identity from.
+     * @param fileName The file to load this identity from.
      */
-    public Identity(final String file) {
+    public Identity(final String fileName) throws FileNotFoundException, 
+            IOException, InvalidIdentityFileException {
+               
+        final File file = new File(fileName);
+        
+        properties = new Properties();
+        
+        if (file.exists()) {
+            properties.loadFromXML(new FileInputStream(file));
+            
+            if (!properties.containsKey("identity.name")) {
+                throw new InvalidIdentityFileException();
+            }
+            
+            name = getOption("identity", "name");
+            
+            if (hasOption("identity", "autoapply")) {
+                autoapplies = getOption("identity", "autoapply").split("\n");
+            }
+            
+        } else {
+            throw new FileNotFoundException();
+        }
+    }
+    
+    /**
+     * Returns the name of this identity.
+     * @return The name of this identity
+     */
+    public String getName() {
+        return name;
     }
     
     /**
@@ -56,7 +90,7 @@ public class Identity implements ConfigSource {
      * @return True iff this source has the option, false otherwise
      */
     public boolean hasOption(final String domain, final String option) {
-        return false;
+        return properties.containsKey(domain + "." + option);
     }
     
     /**
@@ -66,7 +100,7 @@ public class Identity implements ConfigSource {
      * @return The value of the specified option
      */
     public String getOption(final String domain, final String option) {
-        return "";
+        return (String) properties.get(domain + "." + option);
     }
     
     /**
@@ -75,7 +109,7 @@ public class Identity implements ConfigSource {
      * @param option The name of the option
      * @param value The new value for the option
      */
-    public void setOption(final String domain, final String option, 
+    public void setOption(final String domain, final String option,
             final String value) {
         
     }
