@@ -22,35 +22,62 @@
 
 package uk.org.ownage.dmdirc.identities;
 
+import java.util.Properties;
+
 /**
- * A Config source is an object that can provide configuration details.
+ * An identity is a group of settings that are applied to a connection, server,
+ * network or channel. Identities may be automatically applied in certain
+ * cases, or the user may manually apply them.
  * @author chris
  */
-public interface ConfigSource {
+public class Identity implements ConfigSource {
+    
+    /** The name of this identity. */
+    private String name;
+    
+    /** The autoapplies list for this identity. */
+    private String[] autoapplies;
+    
+    /** The configuration details for this identity. */
+    private Properties properties;
     
     /**
-     * Determines whether this config source has a setting for the specified
-     * option in the specified domain. 
+     * Creates a new instance of Identity.
+     * @param file The file to load this identity from.
+     */
+    public Identity(final String file) {
+    }
+    
+    /**
+     * Determines whether this identity has a setting for the specified
+     * option in the specified domain.
      * @param domain The domain of the option
      * @param option The name of the option
      * @return True iff this source has the option, false otherwise
      */
-    boolean hasOption(String domain, String option);
+    public boolean hasOption(final String domain, final String option) {
+        return false;
+    }
     
     /**
-     * Retrieves the specified option from this config source.
+     * Retrieves the specified option from this identity.
      * @param domain The domain of the option
      * @param option The name of the option
      * @return The value of the specified option
      */
-    String getOption(String domain, String option);
+    public String getOption(final String domain, final String option) {
+        return "";
+    }
     
     /**
-     * Sets the specified option in this source to the specified value.
+     * Sets the specified option in this identity to the specified value.
      * @param domain The domain of the option
      * @param option The name of the option
      * @param value The new value for the option
      */
-    void setOption(String domain, String option, String value);
+    public void setOption(final String domain, final String option, 
+            final String value) {
+        
+    }
     
 }
