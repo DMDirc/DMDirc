@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -36,6 +37,7 @@ import javax.swing.DefaultListModel;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -45,7 +47,6 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
 
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
@@ -82,6 +83,26 @@ public class ChannelSettingsDialog extends StandardDialog
      * The ParamModePanels used for parameter-requiring modes.
      */
     private Hashtable<String, ParamModePanel> modeInputs;
+    
+    /**
+     * Combox box used to switch between list modes
+     */
+    private JComboBox listModesMenu;
+    
+    /**
+     * Arraylist of jpanels containing the listmodes
+     */
+    private ArrayList<JPanel> listModesPanels;
+    
+    /**
+     * JPanel used to show listmodespanels in
+     */
+    private JPanel listModesPanel;
+    
+    /**
+     * add and remove list mode buttons
+     */
+    private JButton addListModeButton, removeListModeButton;
     
     /**
      * Creates a new instance of ChannelSettingsDialog.
@@ -215,6 +236,7 @@ public class ChannelSettingsDialog extends StandardDialog
         // Lay out all the boolean mode checkboxes
         for (int i = 0; i < booleanModes.length(); i++) {
             final String mode = booleanModes.substring(i, i+1);
+            final char modeChar = mode.toCharArray()[0];
             final boolean state = ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
             String text = "Mode " + mode;
             
@@ -232,6 +254,9 @@ public class ChannelSettingsDialog extends StandardDialog
                 constraints.gridx = 0;
             }
             
+            if (!channel.getServer().getParser().isUserSettable(modeChar)) {
+                checkBox.setEnabled(false);
+            }
             modeCheckBoxes.put(mode, checkBox);
         }
         
@@ -309,36 +334,42 @@ public class ChannelSettingsDialog extends StandardDialog
      */
     public void initListModesPanel(JPanel parent) {
         final GridBagConstraints constraints = new GridBagConstraints();
-        final JPanel listModesPanel = new JPanel(new GridBagLayout());
-        final char[] listModes = channel.getServer().getParser()
+        final char[] listModesArray = channel.getServer().getParser()
         .getListChanModes().toCharArray();
         final ChannelInfo channelInfo = channel.getChannelInfo();
+        final ArrayList<String> listModesList = new ArrayList<String>();
+        
         
         JList list;
         DefaultListModel listModel;
         JPanel panel;
         ArrayList<ChannelListModeItem> listItems;
         
-        int verticalPosition = 1;
-        for (char mode: listModes) {
-            String modeText = mode + " mode list";
+        
+        for (char mode: listModesArray) {
+            String modeText = mode + " list";
             if (Config.hasOption("server", "mode" + mode)) {
-                modeText = Config.getOption("server", "mode" + mode) + " list";
+                modeText = Config.getOption("server", "mode" + mode);
             }
-            constraints.fill = GridBagConstraints.BOTH;
-            constraints.gridy = verticalPosition;
-            constraints.weightx = 1.0;
-            constraints.weighty = 1.0;
+            listModesList.add(modeText);
+        }
+        
+        addListModeButton = new JButton("Add");
+        removeListModeButton = new JButton("Remove");
+        listModesPanels = new ArrayList<JPanel>();
+        listModesPanel = new JPanel(new BorderLayout());
+        listModesMenu = new JComboBox(listModesList.toArray());
+        
+        for (char mode: listModesArray) {
+            String modeText = mode + " list";
+            if (Config.hasOption("server", "mode" + mode)) {
+                modeText = Config.getOption("server", "mode" + mode);
+            }
             
-            panel = new JPanel(new GridBagLayout());
-            panel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(
-                new EtchedBorder(), modeText),
-                new EmptyBorder(10, 10, 10, 10)));
+            panel = new JPanel(new BorderLayout());
             
             listModel = new DefaultListModel();
             list = new JList(listModel);
-            list.setVisibleRowCount(5);
             
             listItems = channelInfo.getListModeParam(mode);
             
@@ -346,16 +377,31 @@ public class ChannelSettingsDialog extends StandardDialog
                 listModel.addElement(listItem.getItem());
             }
             
-            panel.add(list, constraints);
+            panel.add(list, BorderLayout.CENTER);
             
-            listModesPanel.add(panel, constraints);
-            verticalPosition++;
+            listModesPanels.add(panel);
         }
+        listModesPanel.add(listModesPanels.get(0), BorderLayout.CENTER);
+        listModesPanel.setPreferredSize(parent.getPreferredSize());
+        constraints.weightx = 1.0;
+        constraints.weighty = 0.0;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.gridx = 1;
         constraints.gridy = 1;
-        listModesPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
-        JScrollPane scrollPane = new JScrollPane(listModesPanel);
-        scrollPane.setPreferredSize(parent.getPreferredSize());
-        parent.add(scrollPane, constraints);
+        constraints.gridwidth = 2;
+        parent.add(listModesMenu, constraints);
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        constraints.gridy = 2;
+        parent.add(listModesPanel, constraints);
+        constraints.weightx = 0.5;
+        constraints.weighty = 0;
+        constraints.gridx = 1;
+        constraints.gridy = 3;
+        constraints.gridwidth = 1;
+        parent.add(addListModeButton, constraints);
+        constraints.gridx = 2;
+        parent.add(removeListModeButton, constraints);
     }
     
     /**
@@ -364,13 +410,16 @@ public class ChannelSettingsDialog extends StandardDialog
      */
     public void initSettingsPanel(JPanel parent) {
         final GridBagConstraints constraints = new GridBagConstraints();
-        final JPanel topicsPanel = new JPanel(new GridBagLayout());
+        final JPanel settingsPanel = new JPanel(new GridBagLayout());
     }
     
     /** Initialises listeners for this dialog. */
     private void initListeners() {
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
+        addListModeButton.addActionListener(this);
+        removeListModeButton.addActionListener(this);
+        listModesMenu.addActionListener(this);
     }
     
     /**
@@ -383,6 +432,16 @@ public class ChannelSettingsDialog extends StandardDialog
             setVisible(false);
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             setVisible(false);
+        } else if (listModesMenu.equals(actionEvent.getSource())) {
+            listModesPanel.removeAll();
+            listModesPanel.add(listModesPanels.get(listModesMenu.getSelectedIndex()), BorderLayout.CENTER);
+        } else if (addListModeButton.equals(actionEvent.getSource())) {
+            //TODO popup and add new list mode
+        } else if (removeListModeButton.equals(actionEvent.getSource())) {
+            JList list = (JList)listModesPanels.get(listModesMenu.getSelectedIndex()).getComponent(0);
+            for (Object mode: list.getSelectedValues()) {
+                //remove the mode
+            }
         }
     }
     
