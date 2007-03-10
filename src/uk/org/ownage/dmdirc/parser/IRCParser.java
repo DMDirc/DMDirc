@@ -991,7 +991,54 @@ public class IRCParser implements Runnable {
 	 */
 	public boolean isValidChannelName(String sChannelName) {
 		return hChanPrefix.containsKey(sChannelName.charAt(0));
-	}	
+	}
+	
+	/**
+	 * Check if a given chanmode is user settable
+	 *
+	 * @param mode Mode to test
+	 * @return true if mode is settable by users, false if servers only
+	 */
+	public boolean isUserSettable(final Character mode) {
+		String validmodes;
+		if (h005Info.containsKey("USERCHANMODES")) { validmodes = h005Info.get("USERCHANMODES"); }
+		else { validmodes = "bklimnpstrc"; }
+		return validmodes.matches(".*"+mode+".*");
+	}
+	
+	/**
+	 * Get the 005 info
+	 *
+	 * @return 005Info hashtable.
+	 */
+	public Hashtable<String,String> get005() { return h005Info; }
+	
+	/**
+	 * Get the name of the ircd
+	 *
+	 * @param getType if this is false the string frmo 004 is returned. Else a guess of the type (ircu, hybrid, ircnet)
+	 * @return IRCD Version or Type
+	 */
+	public String getIRCD(final boolean getType) {
+		if (h005Info.containsKey("004IRCD")) {
+			String version = h005Info.get("004IRCD");
+			if (getType) {
+				if (version.matches("(?i).*asuka.*")) { return "asuka"; }
+				else if (version.matches("(?i).*hybrid.*")) { return "hybrid"; }
+				else if (version.matches("(?i).*ratbox.*")) { return "ratbox"; }
+				else if (version.matches("(?i).*beware.*")) { return "bircd"; }
+				else if (version.matches("(?i).*ircu.*")) { return "ircu"; }
+				else if (version.matches("(?i).*unreal.*")) { return "unreal"; }
+				else {
+					// Stupid networks go here...
+					if (sNetworkName.equalsIgnoreCase("ircnet")) { return "ircnet"; }
+					else { return "generic"; }
+				}
+			} else { return version; }
+		} else {
+			return "";
+		}
+	}
 	
 	/**
 	 * Get a reference to the cMyself object.

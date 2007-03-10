@@ -40,7 +40,9 @@ public class Process004005 extends IRCProcessor {
 	public void process(String sParam, String[] token) {
 		if (sParam.equals("004")) {
 			// 004
+			myParser.h005Info.put("004IRCD",token[4]);
 			myParser.h005Info.put("USERMODES",token[5]);
+			myParser.h005Info.put("USERCHANMODES",token[6]);
 			myParser.parseUserModes();
 		} else {
 			// 005
