@@ -15,6 +15,11 @@
                 <Property name="text" type="java.lang.String" value="New Server..."/>
               </Properties>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="miPreferences">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Preferences"/>
+              </Properties>
+            </MenuItem>
           </SubComponents>
         </Menu>
         <Menu class="javax.swing.JMenu" name="windowMenu">

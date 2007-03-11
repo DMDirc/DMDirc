@@ -67,7 +67,7 @@ public class ChannelSettingsDialog extends StandardDialog
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Size of the large borders in the dialog. */
     private static final int LARGE_BORDER = 10;
@@ -147,7 +147,8 @@ public class ChannelSettingsDialog extends StandardDialog
         constraints.gridy = 0;
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER);
+        constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER, 
+                LARGE_BORDER, LARGE_BORDER);
         getContentPane().add(tabbedPane, constraints);
         
         constraints.insets.set(0, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER);
@@ -181,7 +182,8 @@ public class ChannelSettingsDialog extends StandardDialog
         
         tabbedPane.addTab("IRC Settings", settingsPanel);
         
-        settingsPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER));
+        settingsPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER, 
+                LARGE_BORDER, LARGE_BORDER));
         
         initModesPanel(settingsPanel);
         initTopicsPanel(settingsPanel);
@@ -196,7 +198,8 @@ public class ChannelSettingsDialog extends StandardDialog
         
         tabbedPane.addTab("Channel Lists", listModesMainPanel);
         
-        listModesMainPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER));
+        listModesMainPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER, 
+                LARGE_BORDER, LARGE_BORDER));
         
         initListModesPanel(listModesMainPanel);
     }
@@ -210,7 +213,8 @@ public class ChannelSettingsDialog extends StandardDialog
         
         tabbedPane.addTab("Channel Settings", settingsPanel);
         
-        settingsPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER));
+        settingsPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER, 
+                LARGE_BORDER, LARGE_BORDER));
         
         initSettingsPanel(settingsPanel);
     }
@@ -225,7 +229,8 @@ public class ChannelSettingsDialog extends StandardDialog
         final IRCParser parser = channel.getServer().getParser();
         final String booleanModes = parser.getBoolChanModes();
         final String ourBooleanModes = channel.getChannelInfo().getModeStr();
-        final String paramModes = parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
+        final String paramModes = parser.getSetOnlyChanModes() 
+        + parser.getSetUnsetChanModes();
         
         constraints.fill = GridBagConstraints.BOTH;
         constraints.anchor = GridBagConstraints.NORTH;
@@ -233,7 +238,8 @@ public class ChannelSettingsDialog extends StandardDialog
         modesPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
                 new EtchedBorder(), "Channel Modes"),
-                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER)));
+                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
+                LARGE_BORDER)));
         parent.add(modesPanel, constraints);
         
         modeCheckBoxes = new Hashtable<String, JCheckBox>();
@@ -248,7 +254,8 @@ public class ChannelSettingsDialog extends StandardDialog
         for (int i = 0; i < booleanModes.length(); i++) {
             final String mode = booleanModes.substring(i, i + 1);
             final char modeChar = mode.toCharArray()[0];
-            final boolean state = ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+            final boolean state = ourBooleanModes.split(" ")[0]
+                    .contains(mode.subSequence(0, 1));
             String text = "Mode " + mode;
             
             if (Config.hasOption("server", "mode" + mode)) {
@@ -284,8 +291,10 @@ public class ChannelSettingsDialog extends StandardDialog
         
         for (int i = 0; i < paramModes.length(); i++) {
             final String mode = paramModes.substring(i, i + 1);
-            final String value = channel.getChannelInfo().getModeParam(mode.charAt(0));
-            final boolean state = ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+            final String value = channel.getChannelInfo()
+            .getModeParam(mode.charAt(0));
+            final boolean state = ourBooleanModes.split(" ")[0]
+                    .contains(mode.subSequence(0, 1));
             
             final ParamModePanel panel = new ParamModePanel(mode, state, value);
             modesPanel.add(panel, constraints);
@@ -315,7 +324,8 @@ public class ChannelSettingsDialog extends StandardDialog
         topicsPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
                 new EtchedBorder(), "Channel Topic"),
-                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER)));
+                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, 
+                LARGE_BORDER)));
         parent.add(topicsPanel, constraints);
         
         constraints.gridy = 2;
@@ -446,21 +456,27 @@ public class ChannelSettingsDialog extends StandardDialog
             setVisible(false);
         } else if (listModesMenu.equals(actionEvent.getSource())) {
             listModesPanel.removeAll();
-            listModesPanel.add(listModesPanels.get(listModesMenu.getSelectedIndex()), BorderLayout.CENTER);
+            listModesPanel.add(listModesPanels.get(listModesMenu
+                    .getSelectedIndex()), BorderLayout.CENTER);
         } else if (addListModeButton.equals(actionEvent.getSource())) {
             final int selectedIndex = listModesMenu.getSelectedIndex();
             String modeText = "" + listModesArray[selectedIndex];
             String modeMask;
-            if (Config.hasOption("server", "mode" + listModesArray[selectedIndex])) {
-                modeText = Config.getOption("server", "mode" + listModesArray[selectedIndex]);
+            if (Config.hasOption("server", "mode" 
+                    + listModesArray[selectedIndex])) {
+                modeText = Config.getOption("server", "mode" 
+                        + listModesArray[selectedIndex]);
             }
-            modeMask =  JOptionPane.showInputDialog(listModesPanel, "Please enter the hostmask for the new " + modeText);
-            if (modeMask != null && (!modeMask.equals("") || modeMask.length() > 0)) {
+            modeMask =  JOptionPane.showInputDialog(listModesPanel, 
+                    "Please enter the hostmask for the new " + modeText);
+            if (modeMask != null && (!modeMask.equals("") 
+            || modeMask.length() > 0)) {
                 setMode("+" + listModesArray[selectedIndex] + modeMask);
             }
         } else if (removeListModeButton.equals(actionEvent.getSource())) {
             final int selectedIndex = listModesMenu.getSelectedIndex();
-            final JList list = (JList) listModesPanels.get(selectedIndex).getComponent(0);
+            final JList list = (JList) listModesPanels.get(selectedIndex)
+            .getComponent(0);
             for (Object mode : list.getSelectedValues()) {
                 setMode("-" + listModesArray[selectedIndex] + " " + mode);
             }
@@ -476,29 +492,37 @@ public class ChannelSettingsDialog extends StandardDialog
         final IRCParser parser = channel.getServer().getParser();
         final String booleanModes = parser.getBoolChanModes();
         final String ourBooleanModes = channel.getChannelInfo().getModeStr();
-        final String paramModes = parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
+        final String paramModes = parser.getSetOnlyChanModes() 
+        + parser.getSetUnsetChanModes();
         final StringBuffer modeString = new StringBuffer();
         final StringBuffer paramString = new StringBuffer();
         
         for (int i = 0; i < booleanModes.length(); i++) {
             final String mode = booleanModes.substring(i, i + 1);
-            final boolean state = ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+            final boolean state = ourBooleanModes.split(" ")[0]
+                    .contains(mode.subSequence(0, 1));
             
             if (state != modeCheckBoxes.get(mode).isSelected()) {
-                modeString.append((modeCheckBoxes.get(mode).isSelected() ? '+' : '-') + mode);
+                modeString.append((modeCheckBoxes.get(mode)
+                .isSelected() ? '+' : '-') + mode);
             }
         }
         
         for (int i = 0; i < paramModes.length(); i++) {
             final String mode = paramModes.substring(i, i + 1);
-            final String value = channel.getChannelInfo().getModeParam(mode.charAt(0));
-            final boolean state = ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+            final String value = channel.getChannelInfo()
+            .getModeParam(mode.charAt(0));
+            final boolean state = ourBooleanModes.split(" ")[0]
+                    .contains(mode.subSequence(0, 1));
             final ParamModePanel paramModePanel = modeInputs.get(mode);
             
-            if (state != paramModePanel.getState() || !value.equals(paramModePanel.getValue())) {
-                modeString.append((paramModePanel.getState() ? '+' : '-') + mode);
+            if (state != paramModePanel.getState() 
+            || !value.equals(paramModePanel.getValue())) {
+                modeString.append((paramModePanel.getState() ? '+' : '-') 
+                + mode);
                 if (paramModePanel.getValue().contains(" ")) {
-                    paramString.append(" " + paramModePanel.getValue().substring(0, paramModePanel.getValue().indexOf(" ")));
+                    paramString.append(" " + paramModePanel.getValue()
+                    .substring(0, paramModePanel.getValue().indexOf(" ")));
                 } else {
                     paramString.append(" " + paramModePanel.getValue());
                 }
@@ -515,7 +539,8 @@ public class ChannelSettingsDialog extends StandardDialog
      * @param mode the mode string to send to the channel
      */
     private void setMode(final String mode) {
-        channel.getServer().getParser().sendLine("MODE " + channel.getChannelInfo().getName() + " " + mode);
+        channel.getServer().getParser().sendLine("MODE " 
+                + channel.getChannelInfo().getName() + " " + mode);
     }
     
 }

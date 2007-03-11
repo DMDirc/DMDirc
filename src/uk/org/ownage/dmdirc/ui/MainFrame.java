@@ -22,11 +22,11 @@
 
 package uk.org.ownage.dmdirc.ui;
 
-import java.awt.PointerInfo;
-import java.awt.GraphicsDevice;
 import java.awt.GraphicsConfiguration;
-import java.awt.Rectangle;
+import java.awt.GraphicsDevice;
 import java.awt.MouseInfo;
+import java.awt.PointerInfo;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
@@ -40,10 +40,12 @@ import javax.swing.JInternalFrame;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Main;
 import uk.org.ownage.dmdirc.ServerManager;
-import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
 import uk.org.ownage.dmdirc.ui.framemanager.tree.TreeFrameManager;
+
+
 
 /**
  * The main application frame.
@@ -56,7 +58,7 @@ public final class MainFrame extends javax.swing.JFrame implements WindowListene
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /**
      * The number of pixels each new internal frame is offset by.
@@ -126,6 +128,12 @@ public final class MainFrame extends javax.swing.JFrame implements WindowListene
         miAddServer.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
                 NewServerDialog.showNewServerDialog();
+            }
+        });
+        
+        miPreferences.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent actionEvent) {
+                new PreferencesDialog(MainFrame.getMainFrame(), true).setVisible(true);
             }
         });
         
@@ -370,6 +378,7 @@ public final class MainFrame extends javax.swing.JFrame implements WindowListene
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         miAddServer = new javax.swing.JMenuItem();
+        miPreferences = new javax.swing.JMenuItem();
         windowMenu = new javax.swing.JMenu();
         toggleStateMenuItem = new javax.swing.JMenuItem();
 
@@ -405,6 +414,9 @@ public final class MainFrame extends javax.swing.JFrame implements WindowListene
         fileMenu.setText("File");
         miAddServer.setText("New Server...");
         fileMenu.add(miAddServer);
+
+        miPreferences.setText("Preferences");
+        fileMenu.add(miPreferences);
 
         jMenuBar1.add(fileMenu);
 
@@ -443,6 +455,7 @@ public final class MainFrame extends javax.swing.JFrame implements WindowListene
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JMenuItem miAddServer;
+    private javax.swing.JMenuItem miPreferences;
     private javax.swing.JMenuItem toggleStateMenuItem;
     private javax.swing.JMenu windowMenu;
     // End of variables declaration//GEN-END:variables
