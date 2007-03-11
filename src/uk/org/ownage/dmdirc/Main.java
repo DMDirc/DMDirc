@@ -51,6 +51,15 @@ public final class Main {
      * @param args the command line arguments
      */
     public static void main(final String[] args) {
+        if (Config.hasOption("ui", "antialias")) {
+            String aaSetting = Config.getOption("ui", "antialias");
+            String jvmVersion = System.getProperty("java.version");
+            if (jvmVersion.startsWith("1.6")) {
+                System.setProperty("awt.useSystemAAFontSettings", aaSetting);
+             } else if (jvmVersion.startsWith("1.5")) {
+                System.setProperty("swing.aatext", aaSetting);
+            }
+        }
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             
