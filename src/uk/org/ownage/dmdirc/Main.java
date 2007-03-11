@@ -52,8 +52,11 @@ public final class Main {
      */
     public static void main(final String[] args) {
         try {
-            //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            
+            if (Config.hasOption("ui", "lookandfeel")) {
+                UIManager.setLookAndFeel(Config.getOption("ui", "lookandfeel"));
+            }
         } catch (InstantiationException ex) {
             Logger.error(ErrorLevel.ERROR, ex);
         } catch (ClassNotFoundException ex) {
