@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.Hashtable;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -146,15 +147,23 @@ public class ChannelSettingsDialog extends StandardDialog
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.gridwidth = 3;
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER, 
                 LARGE_BORDER, LARGE_BORDER);
         getContentPane().add(tabbedPane, constraints);
         
+        constraints.weighty = 0.0;
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.gridwidth = 1;
+        getContentPane().add(Box.createHorizontalGlue(), constraints);
+        
+        constraints.weightx = 0.0;
         constraints.insets.set(0, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER);
         constraints.gridx = 1;
         constraints.gridy = 1;
-        constraints.gridwidth = 1;
         constraints.anchor = GridBagConstraints.EAST;
         constraints.fill = GridBagConstraints.NONE;
         getContentPane().add(button1, constraints);

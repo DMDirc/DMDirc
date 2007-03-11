@@ -27,7 +27,10 @@ import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -37,7 +40,7 @@ import javax.swing.border.EmptyBorder;
 /**
  * Allows the user to modify global client preferences.
  */
-public class PreferencesDialog extends StandardDialog {
+public class PreferencesDialog extends StandardDialog implements ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -91,12 +94,15 @@ public class PreferencesDialog extends StandardDialog {
                 LARGE_BORDER, LARGE_BORDER);
         getContentPane().add(tabbedPane, constraints);
         
-        constraints.weightx = 0.0;
         constraints.weighty = 0.0;
-        constraints.insets.set(0, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER);
-        constraints.gridx = 1;
+        constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.gridwidth = 1;
+        getContentPane().add(Box.createHorizontalGlue(), constraints);
+        
+        constraints.weightx = 0.0;
+        constraints.insets.set(0, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER);
+        constraints.gridx = 1;
         constraints.anchor = GridBagConstraints.EAST;
         constraints.fill = GridBagConstraints.NONE;
         getContentPane().add(button1, constraints);
@@ -219,6 +225,23 @@ public class PreferencesDialog extends StandardDialog {
         
         tabPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
                 LARGE_BORDER, LARGE_BORDER));
+    }
+    
+    /**
+     * Initialises listeners for this dialog.
+     */
+    private void initListeners() {
+        getOkButton().addActionListener(this);
+        getCancelButton().addActionListener(this);
+    }
+
+    public void actionPerformed(ActionEvent actionEvent) {
+        if (getOkButton().equals(actionEvent.getSource())) {
+            //TODO apply settings
+            setVisible(false);
+        } else if (getCancelButton().equals(actionEvent.getSource())) {
+            setVisible(false);
+        }
     }
     
 }
