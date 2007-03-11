@@ -28,7 +28,7 @@ import uk.org.ownage.dmdirc.Server;
  * A command parser used in the context of a server.
  * @author chris
  */
-public class ServerCommandParser extends CommandParser {
+public final class ServerCommandParser extends CommandParser {
     
     /**
      * The server instance that this parser is attached to.

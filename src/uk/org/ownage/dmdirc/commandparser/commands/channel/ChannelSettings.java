@@ -32,7 +32,7 @@ import uk.org.ownage.dmdirc.ui.ChannelSettingsDialog;
  * Opens the channel settings window for the channel.
  * @author chris
  */
-public class ChannelSettings extends ChannelCommand {
+public final class ChannelSettings extends ChannelCommand {
     
     /** Creates a new instance of ChannelSettings. */
     public ChannelSettings() {

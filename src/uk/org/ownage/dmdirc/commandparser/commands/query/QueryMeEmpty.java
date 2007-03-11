@@ -33,7 +33,7 @@ import uk.org.ownage.dmdirc.commandparser.QueryCommand;
  * Informs the user of the correct usage
  * @author chris
  */
-public class QueryMeEmpty extends QueryCommand {
+public final class QueryMeEmpty extends QueryCommand {
     
     /** Creates a new instance of QueryMeEmpty. */
     public QueryMeEmpty() {

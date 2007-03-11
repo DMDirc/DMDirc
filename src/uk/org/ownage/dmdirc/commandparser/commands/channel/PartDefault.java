@@ -35,7 +35,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
  * and calls the main Part command.
  * @author chris
  */
-public class PartDefault extends ChannelCommand {
+public final class PartDefault extends ChannelCommand {
     
     /** Creates a new instance of PartDefault. */
     public PartDefault() {

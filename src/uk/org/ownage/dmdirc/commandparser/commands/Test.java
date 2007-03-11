@@ -31,7 +31,7 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommand;
  * the IRC parser.
  * @author chris
  */
-public class Test extends ServerCommand {
+public final class Test extends ServerCommand {
     
     /** Creates a new instance of Test. */
     public Test() {

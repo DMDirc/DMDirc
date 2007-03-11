@@ -30,7 +30,7 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommand;
  * Allows the user to change nickname.
  * @author chris
  */
-public class Nick extends ServerCommand {
+public final class Nick extends ServerCommand {
     
     /**
      * Creates a new instance of Join.

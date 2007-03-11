@@ -31,7 +31,7 @@ import uk.org.ownage.dmdirc.ui.messages.Formatter;
  * Allows the user to reload the message formatter.
  * @author chris
  */
-public class ReloadFormatter extends ServerCommand {
+public final class ReloadFormatter extends ServerCommand {
     
     /**
      * Creates a new instance of ReloadFormatter.

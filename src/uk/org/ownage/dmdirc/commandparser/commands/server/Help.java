@@ -36,7 +36,7 @@ import uk.org.ownage.dmdirc.ui.QueryFrame;
  * are only displayed when in a channel window, for example.
  * @author chris
  */
-public class Help extends ServerCommand {
+public final class Help extends ServerCommand {
     
     /**
      * Creates a new instance of Help.

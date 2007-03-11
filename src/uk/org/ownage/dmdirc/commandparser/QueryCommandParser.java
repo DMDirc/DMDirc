@@ -30,7 +30,7 @@ import uk.org.ownage.dmdirc.Server;
  * both query and server commands.
  * @author chris
  */
-public class QueryCommandParser extends CommandParser {
+public final class QueryCommandParser extends CommandParser {
     
     /**
      * The server instance that this parser is attached to.

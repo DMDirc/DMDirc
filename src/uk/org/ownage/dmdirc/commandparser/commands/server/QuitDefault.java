@@ -34,7 +34,7 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommand;
  * with it as an argument.
  * @author chris
  */
-public class QuitDefault extends ServerCommand {
+public final class QuitDefault extends ServerCommand {
     
     /**
      * Creates a new instance of QuitDefault.

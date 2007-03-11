@@ -32,7 +32,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
  * The cycle command allows users to rapidly part and rejoin a channel.
  * @author chris
  */
-public class Cycle extends ChannelCommand {
+public final class Cycle extends ChannelCommand {
     
     /** Creates a new instance of Cycle. */
     public Cycle() {

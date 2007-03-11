@@ -31,7 +31,7 @@ import uk.org.ownage.dmdirc.ui.messages.Formatter;
  * Allows the user to load a message formatter from a file.
  * @author chris
  */
-public class LoadFormatter extends ServerCommand {
+public final class LoadFormatter extends ServerCommand {
     
     /**
      * Creates a new instance of LoadFormatter.

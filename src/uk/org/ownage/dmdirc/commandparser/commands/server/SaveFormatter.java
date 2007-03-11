@@ -31,7 +31,7 @@ import uk.org.ownage.dmdirc.ui.messages.Formatter;
  * Allows the user to save the message formatter to a file.
  * @author chris
  */
-public class SaveFormatter extends ServerCommand {
+public final class SaveFormatter extends ServerCommand {
     
     /**
      * Creates a new instance of SaveFormatter.

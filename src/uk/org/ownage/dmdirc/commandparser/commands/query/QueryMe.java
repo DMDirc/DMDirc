@@ -31,7 +31,7 @@ import uk.org.ownage.dmdirc.commandparser.QueryCommand;
  * Represents the /me command used in a query window.
  * @author chris
  */
-public class QueryMe extends QueryCommand {
+public final class QueryMe extends QueryCommand {
     
     /** Creates a new instance of QueryMe. */
     public QueryMe() {

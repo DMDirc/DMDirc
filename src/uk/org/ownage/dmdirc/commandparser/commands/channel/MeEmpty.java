@@ -33,7 +33,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
  * they pass an action to perform.
  * @author chris
  */
-public class MeEmpty extends ChannelCommand {
+public final class MeEmpty extends ChannelCommand {
     
     /** Creates a new instance of MeEmpty. */
     public MeEmpty() {

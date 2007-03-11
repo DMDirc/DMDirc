@@ -36,7 +36,6 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
 import uk.org.ownage.dmdirc.ui.MainFrame;

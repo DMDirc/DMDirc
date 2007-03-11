@@ -31,7 +31,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
  * The me command sends a CTCP action to the current channel.
  * @author chris
  */
-public class Me extends ChannelCommand {
+public final class Me extends ChannelCommand {
     
     /** Creates a new instance of Me. */
     public Me() {

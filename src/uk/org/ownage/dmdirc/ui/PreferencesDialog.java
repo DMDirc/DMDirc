@@ -26,7 +26,6 @@ import java.awt.Frame;
 
 /**
  * Allows the user to modify global client preferences.
- * @author chris
  */
 public class PreferencesDialog extends StandardDialog {
     

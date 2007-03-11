@@ -22,7 +22,6 @@
 
 package uk.org.ownage.dmdirc.ui.framemanager.tree;
 
-import java.util.Enumeration;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -71,7 +70,8 @@ public class TreeViewModel extends DefaultTreeModel {
      * @param newChild child to be added.
      * @param parent parent child is to be added too.
      */
-    public final void insertNodeInto(final DefaultMutableTreeNode newChild, final DefaultMutableTreeNode parent) {
+    public final void insertNodeInto(final DefaultMutableTreeNode newChild,
+            final DefaultMutableTreeNode parent) {
         int index = 0;
         index = getIndex(newChild, parent);
         super.insertNodeInto(newChild, parent, index);
@@ -85,18 +85,23 @@ public class TreeViewModel extends DefaultTreeModel {
      * @param parent node the new node will be inserted into.
      * @return index where new node is to be inserted.
      */
-    private int getIndex(final DefaultMutableTreeNode newChild, final DefaultMutableTreeNode parent) {      
+    private int getIndex(final DefaultMutableTreeNode newChild,
+            final DefaultMutableTreeNode parent) {
         
-        if (parent.equals(root) && !Boolean.parseBoolean(Config.getOption("ui", "sortservers"))) {
+        if (parent.equals(root) 
+        && !Boolean.parseBoolean(Config.getOption("ui", "sortservers"))) {
             return parent.getChildCount();
         }
-                
+        
         for (int i = 0; i < parent.getChildCount(); i++) {
-            DefaultMutableTreeNode child = (DefaultMutableTreeNode) parent.getChildAt(i);
+            final DefaultMutableTreeNode child = 
+                    (DefaultMutableTreeNode) parent.getChildAt(i);
             if (sortBefore(newChild, child)) {
                 return i;
-            } else if (!sortAfter(newChild, child) && Boolean.parseBoolean(Config.getOption("ui", "sortwindows"))) {
-                if (newChild.getUserObject().toString().compareToIgnoreCase(child.getUserObject().toString()) < 0) {
+            } else if (!sortAfter(newChild, child)
+            && Boolean.parseBoolean(Config.getOption("ui", "sortwindows"))) {
+                if (newChild.getUserObject().toString()
+                .compareToIgnoreCase(child.getUserObject().toString()) < 0) {
                     return i;
                 }
             }
@@ -115,7 +120,8 @@ public class TreeViewModel extends DefaultTreeModel {
     private boolean sortBefore(final DefaultMutableTreeNode newChild,
             final DefaultMutableTreeNode child) {
         
-        return getPosition(newChild.getUserObject()) < getPosition(child.getUserObject());
+        return getPosition(newChild.getUserObject()) 
+        < getPosition(child.getUserObject());
     }
     
     /**
@@ -128,8 +134,9 @@ public class TreeViewModel extends DefaultTreeModel {
     private boolean sortAfter(final DefaultMutableTreeNode newChild,
             final DefaultMutableTreeNode child) {
         
-        return getPosition(newChild.getUserObject()) > getPosition(child.getUserObject());
-    }    
+        return getPosition(newChild.getUserObject()) 
+        > getPosition(child.getUserObject());
+    }
     
     /**
      * Returns an integer corresponding to the expected order of an object.

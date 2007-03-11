@@ -31,7 +31,7 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommand;
  * of channels.
  * @author chris
  */
-public class Join extends ServerCommand {
+public final class Join extends ServerCommand {
     
     /**
      * Creates a new instance of Join.

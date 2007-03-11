@@ -34,7 +34,7 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommand;
  * supplied) and saves the config file.
  * @author chris
  */
-public class Quit extends ServerCommand {
+public final class Quit extends ServerCommand {
     
     /**
      * Creates a new instance of Quit.

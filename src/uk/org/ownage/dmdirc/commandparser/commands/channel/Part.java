@@ -31,7 +31,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
  * The part command parts the current channel with a specified part message.
  * @author chris
  */
-public class Part extends ChannelCommand {
+public final class Part extends ChannelCommand {
     
     /** Creates a new instance of Part. */
     public Part() {
