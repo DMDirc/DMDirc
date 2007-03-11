@@ -20,40 +20,39 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser;
+package uk.org.ownage.dmdirc.commandparser.commands.server;
+
+import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
 /**
- * A command window is a window that allows the user to input a command (that's
- * passed to a command parser). This interface includes methods that are required
- * to allow the commands to interact with the user via the window.
+ * The clear command clears the main text area of the current window.
  * @author chris
  */
-public interface CommandWindow {
+public class Clear extends ServerCommand {
     
     /**
-     * Adds a line of text to the main text area of the window.
-     * @param line The line to be added
+     * Creates a new instance of Clear.
      */
-    void addLine(String line);
+    public Clear() {
+        description = "Clear the buffer of the current window.";
+        arguments = "";
+        polyadic = false;
+        arity = 0;
+        name = "clear";
+        show = true;
+    }
     
     /**
-     * Formats the arguments using the Formatter, then adds the result to the
-     * main text area.
-     * @param messageType The type of this message
-     * @param args The arguments for the message
+     * Executes this command.
+     * @param origin The frame in which this command was issued
+     * @param server The server object that this command is associated with
+     * @param args The user supplied arguments
      */
-    void addLine(String messageType, Object... args);
-    
-    /**
-     * Clears the main text area of the command window.
-     */
-    void clear();
-    
-    /**
-     * Determines if the current frame is visible.
-     *
-     * @return boolean visibility
-     */
-    boolean isVisible();
+    public void execute(final CommandWindow origin, final Server server,
+            final String... args) {        
+        origin.clear();
+    }
     
 }

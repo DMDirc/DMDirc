@@ -35,6 +35,7 @@ import uk.org.ownage.dmdirc.commandparser.commands.channel.Part;
 import uk.org.ownage.dmdirc.commandparser.commands.channel.PartDefault;
 import uk.org.ownage.dmdirc.commandparser.commands.query.QueryMe;
 import uk.org.ownage.dmdirc.commandparser.commands.query.QueryMeEmpty;
+import uk.org.ownage.dmdirc.commandparser.commands.server.Clear;
 import uk.org.ownage.dmdirc.commandparser.commands.server.Help;
 import uk.org.ownage.dmdirc.commandparser.commands.server.Join;
 import uk.org.ownage.dmdirc.commandparser.commands.server.LoadFormatter;
@@ -98,6 +99,7 @@ public final class CommandManager {
         serverCommands.add(new Quit());
         serverCommands.add(new QuitDefault());
         serverCommands.add(new Raw());
+        serverCommands.add(new Clear());
         
         queryCommands = new Vector<Command>(0, 1);
         

@@ -166,6 +166,13 @@ public class ServerFrame extends JInternalFrame implements CommandWindow {
     }
     
     /**
+     * Clears the main text area of the command window.
+     */
+    public void clear() {
+        jTextPane1.setText("");
+    }
+    
+    /**
      * Sets the tab completer for this frame's input handler.
      * @param tabCompleter The tab completer to use
      */
