@@ -89,19 +89,19 @@ public class ChannelListModeItem {
 	}
 	
 	/**
+		* Returns a String representation of this object.
+		*
+		* @return String representation of this object
+		*/
+	public String toString() {
+			return getItem();
+	}
+	
+	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
 	public static String getSvnInfo () { return "$Id$"; }
-        
-        /**
-         * Returns a String representation of this object.
-         *
-         * @return String representation of this object
-         */
-        public String toString() {
-            return getItem();
-        }
 }
 
