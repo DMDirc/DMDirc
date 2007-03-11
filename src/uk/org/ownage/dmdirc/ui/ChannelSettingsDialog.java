@@ -67,7 +67,13 @@ public class ChannelSettingsDialog extends StandardDialog
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
+    
+    /** Size of the large borders in the dialog. */
+    private static final int LARGE_BORDER = 10;
+    
+    /** Size of the small borders in the dialog. */
+    private static final int SMALL_BORDER = 5;
     
     /**
      * The channel object that this dialog belongs to.
@@ -141,10 +147,10 @@ public class ChannelSettingsDialog extends StandardDialog
         constraints.gridy = 0;
         constraints.gridwidth = 3;
         constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(10, 10, 10, 10);
+        constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER);
         getContentPane().add(tabbedPane, constraints);
         
-        constraints.insets.set(0, 10, 10, 10);
+        constraints.insets.set(0, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER);
         constraints.gridx = 1;
         constraints.gridy = 1;
         constraints.gridwidth = 1;
@@ -175,7 +181,7 @@ public class ChannelSettingsDialog extends StandardDialog
         
         tabbedPane.addTab("IRC Settings", settingsPanel);
         
-        settingsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        settingsPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER));
         
         initModesPanel(settingsPanel);
         initTopicsPanel(settingsPanel);
@@ -190,7 +196,7 @@ public class ChannelSettingsDialog extends StandardDialog
         
         tabbedPane.addTab("Channel Lists", listModesMainPanel);
         
-        listModesMainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        listModesMainPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER));
         
         initListModesPanel(listModesMainPanel);
     }
@@ -204,7 +210,7 @@ public class ChannelSettingsDialog extends StandardDialog
         
         tabbedPane.addTab("Channel Settings", settingsPanel);
         
-        settingsPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        settingsPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER));
         
         initSettingsPanel(settingsPanel);
     }
@@ -227,7 +233,7 @@ public class ChannelSettingsDialog extends StandardDialog
         modesPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
                 new EtchedBorder(), "Channel Modes"),
-                new EmptyBorder(10, 10, 10, 10)));
+                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER)));
         parent.add(modesPanel, constraints);
         
         modeCheckBoxes = new Hashtable<String, JCheckBox>();
@@ -309,7 +315,7 @@ public class ChannelSettingsDialog extends StandardDialog
         topicsPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
                 new EtchedBorder(), "Channel Topic"),
-                new EmptyBorder(10, 10, 10, 10)));
+                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER)));
         parent.add(topicsPanel, constraints);
         
         constraints.gridy = 2;
@@ -321,7 +327,7 @@ public class ChannelSettingsDialog extends StandardDialog
         constraints.anchor = GridBagConstraints.LINE_START;
         constraints.gridy = 3;
         topicWho.setSize(30, 0);
-        topicWho.setBorder(new EmptyBorder(5, 0, 0, 0));
+        topicWho.setBorder(new EmptyBorder(SMALL_BORDER, 0, 0, 0));
         if (topic.equals("")) {
             topicWho.setText("No topic set.");
         } else {
@@ -384,7 +390,7 @@ public class ChannelSettingsDialog extends StandardDialog
             }
             
             panel.add(list, BorderLayout.CENTER);
-            panel.setBorder(new EmptyBorder(5, 0, 5, 0));
+            panel.setBorder(new EmptyBorder(SMALL_BORDER, 0, SMALL_BORDER, 0));
             
             listModesPanels.add(panel);
         }
