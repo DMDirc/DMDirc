@@ -412,6 +412,13 @@ public class ChannelInfo {
 		if (!negativeparam.equals("")) { modestr = modestr+negativeparam; }
 		myParser.callDebugInfo(myParser.ndInfo, "Sending mode: %s", modestr);
 		myParser.sendLine("MODE "+sName+" "+modestr);
+		clearModeQueue();
+	}
+	
+	/**
+	 * This function will clear the mode queue (WITHOUT Sending).
+	 */
+	public void clearModeQueue() { 
 		lModeQueue.clear();
 	}
 	
