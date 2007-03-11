@@ -69,6 +69,8 @@ public class ChannelInfo {
 	 * if an item is in this list for a mode, we are expecting new items for the list
 	 */
 	private LinkedList<Character> lAddingModes = new LinkedList<Character>();
+	/** Modes waiting to be sent to the server */
+	private LinkedList<String> lModeQueue = new LinkedList<String>();
 
 	/**
 	 * Create a new channel object.
@@ -170,7 +172,7 @@ public class ChannelInfo {
 	 *
 	 * @param nNewTime New unixtimestamp time for the topic (Seconds sinse epoch, not milliseconds)
 	 */
-	public void setTopicTime(final long nNewTime) { nTopicTime = nNewTime; }
+	protected void setTopicTime(final long nNewTime) { nTopicTime = nNewTime; }
 	/**
 	 * Get the topic time.
 	 *
@@ -183,7 +185,7 @@ public class ChannelInfo {
 	 *
 	 * @param sNewTopic New contents of topic
 	 */	
-	public void setTopic(final String sNewTopic) { sTopic = sNewTopic; }
+	protected void setTopic(final String sNewTopic) { sTopic = sNewTopic; }
 	/**
 	 * Get the topic.
 	 *
@@ -196,7 +198,7 @@ public class ChannelInfo {
 	 *
 	 * @param sNewUser New user who set the topic (nickname if gotten on connect, full host if seen by parser)
 	 */	
-	public void setTopicUser(final String sNewUser) { sTopicUser = sNewUser; }
+	protected void setTopicUser(final String sNewUser) { sTopicUser = sNewUser; }
 	/**
 	 * Get the topic creator.
 	 *
@@ -209,7 +211,7 @@ public class ChannelInfo {
 	 *
 	 * @param nNewMode new integer representing channel modes. (Boolean only)
 	 */	
-	public void setMode(final int nNewMode) { nModes = nNewMode; }
+	protected void setMode(final int nNewMode) { nModes = nNewMode; }
 	/**
 	 * Get the channel modes (as an integer).
 	 *
@@ -251,7 +253,7 @@ public class ChannelInfo {
 	 * @param cMode Character representing mode
 	 * @param sValue String repreenting value (if "" mode is unset)
 	 */	
-	public void setModeParam(final Character cMode, final String sValue) { 
+	protected void setModeParam(final Character cMode, final String sValue) { 
 		if (sValue.equals("")) {
 			if (hParamModes.containsKey(cMode)) {
 				hParamModes.remove(cMode);
@@ -278,7 +280,7 @@ public class ChannelInfo {
 	 * @param newItem ChannelListModeItem representing the item
 	 * @param bAdd Add or remove the value. (true for add, false for remove)
 	 */
-	public void setListModeParam(final Character cMode, final ChannelListModeItem newItem, final boolean bAdd) { 
+	protected void setListModeParam(final Character cMode, final ChannelListModeItem newItem, final boolean bAdd) { 
 		if (!myParser.hChanModesOther.containsKey(cMode)) { return; }
 		else if (myParser.hChanModesOther.get(cMode) != myParser.cmList) { return; }
 		
@@ -327,12 +329,90 @@ public class ChannelInfo {
 	 * @param cMode Character representing mode
 	 * @param newState change the value returned by getAddState
 	 */
-	public void setAddState(final Character cMode, final boolean newState) { 
+	protected void setAddState(final Character cMode, final boolean newState) { 
 		if (newState) {
 			lAddingModes.add(cMode);
 		} else {
 			if (lAddingModes.contains(cMode)) { lAddingModes.remove(cMode); }
 		}
+	}
+	
+	/**
+	 * Adjust the channel modes on a channel.
+	 * This function will queue modes up to be sent in one go, according to 005 params.
+	 * If less modes are altered than the queue accepts, sendModes() must be called.<br><br>
+	 * sendModes is automatically called if you attempt to add more modes than is allowed
+	 * to be queued
+	 *
+	 * @param positive Is this a positive mode change, or a negative mode change
+	 * @param mode Character representing the mode to change
+	 * @param parameter Parameter needed to make change (not used if mode doesn't need a parameter)
+	 */
+	public void alterMode(final boolean positive, final Character mode, final String parameter) { 
+		int modecount = 1;
+		String modestr = "";
+		if (myParser.h005Info.containsKey("MODES")) {
+			try { modecount = Integer.parseInt(myParser.h005Info.get("MODES")); }
+			catch (Exception e) { modecount = 1; }
+		}
+		if (!myParser.isUserSettable(mode)) { return; }
+		
+		if (lModeQueue.size() == modecount) { sendModes(); }
+		if (positive) { modestr = "+"; } else { modestr = "-";}
+		modestr = modestr+mode;
+		if (!myParser.hChanModesBool.containsKey(mode)) {
+			// May need a param
+			if (myParser.hPrefixModes.containsKey(mode)) {
+				modestr = modestr+" "+parameter;
+			} else {
+				modecount = myParser.hChanModesOther.get(mode);
+				if ((modecount & myParser.cmList) == myParser.cmList) {
+					modestr = modestr+" "+parameter;
+				} else if (!positive && ((modecount & myParser.cmUnset) == myParser.cmUnset)) {
+					modestr = modestr+" "+parameter;
+				} else if (positive && ((modecount & myParser.cmSet) == myParser.cmSet)) {
+					modestr = modestr+" "+parameter;
+				}
+			}
+		}
+		myParser.callDebugInfo(myParser.ndInfo, "Queueing mode: %s", modestr);
+		lModeQueue.add(modestr);
+	}
+	
+	/**
+	 * This function will send modes that are currently queued up to send.
+	 * This assumes that the queue only contains the amount that are alowed to be sent
+	 * and thus will try to send the entire queue in one go.<br><br>
+	 * Modes are always sent positive then negative and not mixed.
+	 */
+	public void sendModes() { 
+		String positivemode = "";
+		String positiveparam = "";
+		String negativemode = "";
+		String negativeparam = "";
+		String modestr;
+		String modeparam[];
+		boolean positive;
+		for (int i = 0; i < lModeQueue.size(); ++i) {
+			modeparam = lModeQueue.get(i).split(" ");
+			modestr = modeparam[0];
+			positive = (modestr.charAt(0) == '+');
+			if (positive) {
+				positivemode = positivemode+modestr.charAt(1);
+				if (modeparam.length > 1) { positiveparam = positiveparam+" "+modeparam[1]; }
+			} else {
+				negativemode = negativemode+modestr.charAt(1);
+				if (modeparam.length > 1) { positiveparam = positiveparam+" "+modeparam[1]; }
+			}
+		}
+		modestr = "";
+		if (!positivemode.equals("")) { modestr = modestr+"+"+positivemode; }
+		if (!negativemode.equals("")) { modestr = modestr+"-"+negativemode; }
+		if (!positiveparam.equals("")) { modestr = modestr+positiveparam; }
+		if (!negativeparam.equals("")) { modestr = modestr+negativeparam; }
+		myParser.callDebugInfo(myParser.ndInfo, "Sending mode: %s", modestr);
+		myParser.sendLine("MODE "+sName+" "+modestr);
+		lModeQueue.clear();
 	}
 	
 	/**
