@@ -32,16 +32,16 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
@@ -85,33 +85,38 @@ public class ChannelSettingsDialog extends StandardDialog
     private Hashtable<String, ParamModePanel> modeInputs;
     
     /**
-     * Combox box used to switch between list modes
+     * Combox box used to switch between list modes.
      */
     private JComboBox listModesMenu;
     
     /**
-     * Arraylist of jpanels containing the listmodes
+     * Arraylist of jpanels containing the listmodes.
      */
     private ArrayList<JPanel> listModesPanels;
     
     /**
-     * JPanel used to show listmodespanels in
+     * JPanel used to show listmodespanels in.
      */
     private JPanel listModesPanel;
     
     /**
-     * add and remove list mode buttons
+     * add and remove list mode buttons.
      */
     private JButton addListModeButton, removeListModeButton;
     
     /**
-     * Creates a new instance of ChannelSettingsDialog.
-     * @param channel The channel object that we're editing settings for
+     * list modes available on this server.
      */
-    public ChannelSettingsDialog(final Channel channel) {
+    private char[] listModesArray;
+    
+    /**
+     * Creates a new instance of ChannelSettingsDialog.
+     * @param newChannel The channel object that we're editing settings for
+     */
+    public ChannelSettingsDialog(final Channel newChannel) {
         super(MainFrame.getMainFrame(), false);
         
-        this.channel = channel;
+        this.channel = newChannel;
         
         initComponents();
         initListeners();
@@ -119,7 +124,7 @@ public class ChannelSettingsDialog extends StandardDialog
     
     /** Initialises the main UI components. */
     private void initComponents() {
-        GridBagConstraints constraints = new GridBagConstraints();
+        final GridBagConstraints constraints = new GridBagConstraints();
         final JTabbedPane tabbedPane = new JTabbedPane();
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -165,7 +170,7 @@ public class ChannelSettingsDialog extends StandardDialog
      * Initialises the IRC Settings tab.
      * @param tabbedPane The pane to add the IRC Settings tab to
      */
-    private void initIrcTab(JTabbedPane tabbedPane) {
+    private void initIrcTab(final JTabbedPane tabbedPane) {
         final JPanel settingsPanel = new JPanel(new GridBagLayout());
         
         tabbedPane.addTab("IRC Settings", settingsPanel);
@@ -180,21 +185,21 @@ public class ChannelSettingsDialog extends StandardDialog
      * Initialises the IRC Settings tab.
      * @param tabbedPane The pane to add the IRC Settings tab to
      */
-    private void initListModesTab(JTabbedPane tabbedPane) {
-        final JPanel listModesPanel = new JPanel(new GridBagLayout());
+    private void initListModesTab(final JTabbedPane tabbedPane) {
+        final JPanel listModesMainPanel = new JPanel(new GridBagLayout());
         
-        tabbedPane.addTab("Channel Lists", listModesPanel);
+        tabbedPane.addTab("Channel Lists", listModesMainPanel);
         
-        listModesPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        listModesMainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
         
-        initListModesPanel(listModesPanel);
+        initListModesPanel(listModesMainPanel);
     }
     
     /**
      * Initialises the channel Settings (identities) tab.
      * @param tabbedPane The pane to add the IRC Settings tab to
      */
-    private void initSettingsTab(JTabbedPane tabbedPane) {
+    private void initSettingsTab(final JTabbedPane tabbedPane) {
         final JPanel settingsPanel = new JPanel(new GridBagLayout());
         
         tabbedPane.addTab("Channel Settings", settingsPanel);
@@ -208,13 +213,13 @@ public class ChannelSettingsDialog extends StandardDialog
      * Initialises the modes panel.
      * @param parent The panel to add the modes panel to
      */
-    private void initModesPanel(JPanel parent) {
+    private void initModesPanel(final JPanel parent) {
         final GridBagConstraints constraints = new GridBagConstraints();
         final JPanel modesPanel = new JPanel(new GridBagLayout());
         final IRCParser parser = channel.getServer().getParser();
         final String booleanModes = parser.getBoolChanModes();
         final String ourBooleanModes = channel.getChannelInfo().getModeStr();
-        final String paramModes = parser.getSetOnlyChanModes()+parser.getSetUnsetChanModes();
+        final String paramModes = parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
         
         constraints.fill = GridBagConstraints.BOTH;
         constraints.anchor = GridBagConstraints.NORTH;
@@ -235,13 +240,13 @@ public class ChannelSettingsDialog extends StandardDialog
         
         // Lay out all the boolean mode checkboxes
         for (int i = 0; i < booleanModes.length(); i++) {
-            final String mode = booleanModes.substring(i, i+1);
+            final String mode = booleanModes.substring(i, i + 1);
             final char modeChar = mode.toCharArray()[0];
             final boolean state = ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
             String text = "Mode " + mode;
             
-            if (Config.hasOption("server","mode" + mode)) {
-                text = Config.getOption("server","mode" + mode);
+            if (Config.hasOption("server", "mode" + mode)) {
+                text = Config.getOption("server", "mode" + mode);
             }
             
             final JCheckBox checkBox = new JCheckBox(text, state);
@@ -290,7 +295,7 @@ public class ChannelSettingsDialog extends StandardDialog
      * Initialises the topic panel.
      * @param parent The panel to add the topics panel to
      */
-    private void initTopicsPanel(JPanel parent) {
+    private void initTopicsPanel(final JPanel parent) {
         final GridBagConstraints constraints = new GridBagConstraints();
         final JPanel topicsPanel = new JPanel(new GridBagLayout());
         final JTextField topicText = new JTextField();
@@ -332,9 +337,9 @@ public class ChannelSettingsDialog extends StandardDialog
      * Initialises the list modes panel.
      * @param parent The panel to add the list modes panel to
      */
-    public void initListModesPanel(JPanel parent) {
+    private void initListModesPanel(final JPanel parent) {
         final GridBagConstraints constraints = new GridBagConstraints();
-        final char[] listModesArray = channel.getServer().getParser()
+        listModesArray = channel.getServer().getParser()
         .getListChanModes().toCharArray();
         final ChannelInfo channelInfo = channel.getChannelInfo();
         final ArrayList<String> listModesList = new ArrayList<String>();
@@ -346,10 +351,10 @@ public class ChannelSettingsDialog extends StandardDialog
         ArrayList<ChannelListModeItem> listItems;
         
         
-        for (char mode: listModesArray) {
+        for (char mode : listModesArray) {
             String modeText = mode + " list";
             if (Config.hasOption("server", "mode" + mode)) {
-                modeText = Config.getOption("server", "mode" + mode);
+                modeText = Config.getOption("server", "mode" + mode) + " list";
             }
             listModesList.add(modeText);
         }
@@ -360,7 +365,7 @@ public class ChannelSettingsDialog extends StandardDialog
         listModesPanel = new JPanel(new BorderLayout());
         listModesMenu = new JComboBox(listModesList.toArray());
         
-        for (char mode: listModesArray) {
+        for (char mode : listModesArray) {
             String modeText = mode + " list";
             if (Config.hasOption("server", "mode" + mode)) {
                 modeText = Config.getOption("server", "mode" + mode);
@@ -370,14 +375,16 @@ public class ChannelSettingsDialog extends StandardDialog
             
             listModel = new DefaultListModel();
             list = new JList(listModel);
+            list.setBorder(new EtchedBorder());
             
             listItems = channelInfo.getListModeParam(mode);
             
-            for (ChannelListModeItem listItem: listItems) {
-                listModel.addElement(listItem.getItem());
+            for (ChannelListModeItem listItem : listItems) {
+                listModel.addElement(listItem);
             }
             
             panel.add(list, BorderLayout.CENTER);
+            panel.setBorder(new EmptyBorder(5, 0, 5, 0));
             
             listModesPanels.add(panel);
         }
@@ -408,7 +415,7 @@ public class ChannelSettingsDialog extends StandardDialog
      * Initialises the channel settings.
      * @param parent The panel to add the channel settings panel to
      */
-    public void initSettingsPanel(JPanel parent) {
+    private void initSettingsPanel(final JPanel parent) {
         final GridBagConstraints constraints = new GridBagConstraints();
         final JPanel settingsPanel = new JPanel(new GridBagLayout());
     }
@@ -428,21 +435,81 @@ public class ChannelSettingsDialog extends StandardDialog
      */
     public final void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
-            // TODO: Apply settings
-            setVisible(false);
+            setChangedBooleanModes();
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             setVisible(false);
         } else if (listModesMenu.equals(actionEvent.getSource())) {
             listModesPanel.removeAll();
             listModesPanel.add(listModesPanels.get(listModesMenu.getSelectedIndex()), BorderLayout.CENTER);
         } else if (addListModeButton.equals(actionEvent.getSource())) {
-            //TODO popup and add new list mode
+            final int selectedIndex = listModesMenu.getSelectedIndex();
+            String modeText = "" + listModesArray[selectedIndex];
+            String modeMask;
+            if (Config.hasOption("server", "mode" + listModesArray[selectedIndex])) {
+                modeText = Config.getOption("server", "mode" + listModesArray[selectedIndex]);
+            }
+            modeMask =  JOptionPane.showInputDialog(listModesPanel, "Please enter the hostmask for the new " + modeText);
+            if (modeMask != null && (!modeMask.equals("") || modeMask.length() > 0)) {
+                setMode("+" + listModesArray[selectedIndex] + modeMask);
+            }
         } else if (removeListModeButton.equals(actionEvent.getSource())) {
-            JList list = (JList)listModesPanels.get(listModesMenu.getSelectedIndex()).getComponent(0);
-            for (Object mode: list.getSelectedValues()) {
-                //remove the mode
+            final int selectedIndex = listModesMenu.getSelectedIndex();
+            final JList list = (JList) listModesPanels.get(selectedIndex).getComponent(0);
+            for (Object mode : list.getSelectedValues()) {
+                setMode("-" + listModesArray[selectedIndex] + " " + mode);
             }
         }
+    }
+    
+    
+    /**
+     * Processes the channel settings dialog and constructs a mode string for
+     * changed modes, then sends this to the server.
+     */
+    private void setChangedBooleanModes() {
+        final IRCParser parser = channel.getServer().getParser();
+        final String booleanModes = parser.getBoolChanModes();
+        final String ourBooleanModes = channel.getChannelInfo().getModeStr();
+        final String paramModes = parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
+        final StringBuffer modeString = new StringBuffer();
+        final StringBuffer paramString = new StringBuffer();
+        
+        for (int i = 0; i < booleanModes.length(); i++) {
+            final String mode = booleanModes.substring(i, i + 1);
+            final boolean state = ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+            
+            if (state != modeCheckBoxes.get(mode).isSelected()) {
+                modeString.append((modeCheckBoxes.get(mode).isSelected() ? '+' : '-') + mode);
+            }
+        }
+        
+        for (int i = 0; i < paramModes.length(); i++) {
+            final String mode = paramModes.substring(i, i + 1);
+            final String value = channel.getChannelInfo().getModeParam(mode.charAt(0));
+            final boolean state = ourBooleanModes.split(" ")[0].contains(mode.subSequence(0, 1));
+            final ParamModePanel paramModePanel = modeInputs.get(mode);
+            
+            if (state != paramModePanel.getState() || !value.equals(paramModePanel.getValue())) {
+                modeString.append((paramModePanel.getState() ? '+' : '-') + mode);
+                if (paramModePanel.getValue().contains(" ")) {
+                    paramString.append(" " + paramModePanel.getValue().substring(0, paramModePanel.getValue().indexOf(" ")));
+                } else {
+                    paramString.append(" " + paramModePanel.getValue());
+                }
+            }
+        }
+        modeString.append(paramString);
+        setMode(modeString.toString());
+        
+        setVisible(false);
+    }
+    
+    /**
+     * Sends the specified mode string to the channel.
+     * @param mode the mode string to send to the channel
+     */
+    private void setMode(final String mode) {
+        channel.getServer().getParser().sendLine("MODE " + channel.getChannelInfo().getName() + " " + mode);
     }
     
 }

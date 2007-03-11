@@ -27,7 +27,9 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.InputVerifier;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -39,7 +41,7 @@ import uk.org.ownage.dmdirc.Config;
  * the user a checkbox, the mode's name, and a text field.
  * @author chris
  */
-public class ParamModePanel extends JPanel implements ActionListener {
+public final class ParamModePanel extends JPanel implements ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -48,27 +50,33 @@ public class ParamModePanel extends JPanel implements ActionListener {
      */
     private static final long serialVersionUID = 1;
     
-    /** The checkbox used in this mode panel */
+    /** The checkbox used in this mode panel. */
     private JCheckBox checkBox;
     
-    /** The textfield for the value of the mode */
+    /** The textfield for the value of the mode. */
     private JTextField textField;
+    
+    
+    /** the mode this component represents. */
+    private String mode;
     
     /**
      * Creates a new instance of ParamModePanel.
-     * @param mode The mode that this panel should deal with
+     * @param thisMode The mode that this panel should deal with
      * @param state The current state of the mode
      * @param value The current value of the mode
      */
-    public ParamModePanel(String mode, boolean state, String value) {
-        String text = "Mode "+mode;
-        GridBagConstraints constraints = new GridBagConstraints();
+    public ParamModePanel(final String thisMode, final boolean state, final String value) {
+        
+        this.mode = thisMode;
+        String text = "Mode " + mode;
+        final GridBagConstraints constraints = new GridBagConstraints();
         
         setLayout(new GridBagLayout());
         setBorder(new EmptyBorder(5, 0, 0, 0));
         
-        if (Config.hasOption("server","mode"+mode)) {
-            text = Config.getOption("server", "mode"+mode);
+        if (Config.hasOption("server", "mode" + mode)) {
+            text = Config.getOption("server", "mode" + mode);
         }
         
         constraints.weightx = 0.5;
@@ -84,6 +92,7 @@ public class ParamModePanel extends JPanel implements ActionListener {
         constraints.weighty = 0.5;
         textField = new JTextField(value);
         textField.setColumns(16);
+        textField.setInputVerifier(new ModeParameterVerifier());
         add(textField, constraints);
         
         if (!state) {
@@ -91,15 +100,73 @@ public class ParamModePanel extends JPanel implements ActionListener {
         }
         
         checkBox.addActionListener(this);
-        checkBox.setBorder(new EmptyBorder(0,0,0,0));
+        checkBox.setBorder(new EmptyBorder(0, 0, 0, 0));
     }
     
     /**
      * Called when our checkbox is toggled.
      * @param actionEvent associated action event
      */
-    public void actionPerformed(ActionEvent actionEvent) {
+    public void actionPerformed(final ActionEvent actionEvent) {
         textField.setEnabled(checkBox.isSelected());
     }
     
+    /**
+     * returns the state of this component.
+     * @return boolean state of mode
+     */
+    public boolean getState() {
+        return checkBox.isSelected();
+    }
+    
+    /**
+     * returns the parameter of this mode if enabled, else returns an empty
+     * string.
+     * @return String mode parameter or "" if unset
+     */
+    public String getValue() {
+        return textField.getText();
+    }
+    
+    /**
+     * Returns the name of the mode this component represents.
+     * @return String name of the mode
+     */
+    public String getModeName() {
+        return checkBox.getText();
+    }
+    
+    /**
+     * Returns the mode this component represents.
+     * @return String mode
+     */
+    public String getMode() {
+        return mode;
+    }
+    
 }
+
+/**
+ * Verifies that the parameter has no spaces.
+ */
+class ModeParameterVerifier extends InputVerifier {
+    
+    /**
+     * Creates a new instance of LimitVerifier.
+     */
+    public ModeParameterVerifier() {
+        
+    }
+    
+    /**
+     * Verifies that the parameter contains no spaces.
+     * @param jComponent The component to be tested
+     * @return true iff the text contains no spaces, false otherwise
+     */
+    public boolean verify(final JComponent jComponent) {
+        final JTextField textField = (JTextField) jComponent;
+        return !textField.getText().contains(" ");
+    }
+    
+}
+
