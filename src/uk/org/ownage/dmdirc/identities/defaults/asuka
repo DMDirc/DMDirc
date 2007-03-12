@@ -1,0 +1,22 @@
+# Default mode settings for Asuka
+# b,k,l,imnpstrDdcCNu
+
+identity.name = Asuka mode aliases
+identity.autoapply = irc://asuka:*@*/*
+
+server.modeb = Ban
+server.modec = No formatting
+server.modeC = No channel CTCPs
+server.moded = Auditorium mode
+server.modeD = Auditorium mode
+server.modei = Invite only
+server.modem = Moderated
+server.moden = No external messages
+server.modeN = No channel notices
+server.modek = Channel key
+server.model = User limit
+server.modep = Private
+server.moder = Registered users only
+server.modes = Secret
+server.modet = Only ops can set topic
+server.modeu = No quit messages

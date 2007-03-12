@@ -47,14 +47,12 @@ public final class Identity implements ConfigSource {
     
     /**
      * Creates a new instance of Identity.
-     * @param fileName The file to load this identity from.
+     * @param file The file to load this identity from.
      * @throws IOException Input error when reading the file
      * @throws InvalidIdentityFileException Missing required properties
      */
-    public Identity(final String fileName) throws IOException,
+    public Identity(final File file) throws IOException,
             InvalidIdentityFileException {
-        
-        final File file = new File(fileName);
         
         properties = new Properties();
         

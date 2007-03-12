@@ -22,6 +22,14 @@
 
 package uk.org.ownage.dmdirc.identities;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Enumeration;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
+
 /**
  * The identity manager manages all known identities, providing easy methods
  * to access them.
@@ -31,6 +39,40 @@ public final class IdentityManager {
     
     /** Creates a new instance of IdentityManager. */
     private IdentityManager() {
+    }
+    
+    /**
+     * Loads all identity files.
+     */
+    public static void load() {
+        final ClassLoader cldr = IdentityManager.class.getClassLoader();
+        
+        try {
+            
+            final URL url = cldr.getResource("uk/org/ownage/dmdirc/identities/defaults/");
+            final File[] files = new File(url.toURI()).listFiles();
+            
+            for (int i = 0; i < files.length; i++) {
+                try {
+                    addIdentity(new Identity(files[i]));
+                } catch (InvalidIdentityFileException ex) {
+                    Logger.error(ErrorLevel.WARNING, ex);
+                } catch (IOException ex) {
+                    Logger.error(ErrorLevel.ERROR, ex);
+                }
+            }
+            
+        } catch (URISyntaxException ex) {
+            Logger.error(ErrorLevel.ERROR, ex);
+        }
+    }
+    
+    /**
+     * Adds the specific identity to this manager.
+     * @param identity The identity to be added
+     */
+    public static void addIdentity(Identity identity) {
+        
     }
     
 }
