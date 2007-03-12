@@ -52,14 +52,11 @@ public final class Main {
      */
     public static void main(final String[] args) {
         if (Config.hasOption("ui", "antialias")) {
-            String aaSetting = Config.getOption("ui", "antialias");
-            String jvmVersion = System.getProperty("java.version");
-            if (jvmVersion.startsWith("1.6")) {
-                System.setProperty("awt.useSystemAAFontSettings", aaSetting);
-             } else if (jvmVersion.startsWith("1.5")) {
-                System.setProperty("swing.aatext", aaSetting);
-            }
+            final String aaSetting = Config.getOption("ui", "antialias");
+            System.setProperty("awt.useSystemAAFontSettings", aaSetting);
+            System.setProperty("swing.aatext", aaSetting);
         }
+        
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             
@@ -74,7 +71,7 @@ public final class Main {
             Logger.error(ErrorLevel.ERROR, ex);
         } catch (IllegalAccessException ex) {
             Logger.error(ErrorLevel.ERROR, ex);
-        }        
+        }
         MainFrame.getMainFrame();
     }
     
