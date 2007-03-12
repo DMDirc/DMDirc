@@ -927,8 +927,8 @@ public class IRCParser implements Runnable {
 		// a "PRIVMSG" this will find the length of ":nick!user@host PRIVMSG #channel :"
 		// and subtract it from the MAX_LINELENGTH. This should be sufficient in most cases.
 		// Lint = the 2 ":" at the start and end and the 3 separating " "s
-		final int lint = 5;
-		return MAX_LINELENGTH - getMyself().length - sType.length() - sTarget.length() - lint;
+		final int LINE_LINT = 5;
+		return MAX_LINELENGTH - getMyself().toString().length() - sType.length() - sTarget.length() - LINE_LINT;
 	}
 	
 	/**
