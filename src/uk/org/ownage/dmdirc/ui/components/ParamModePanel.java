@@ -22,8 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui.components;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -32,6 +31,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 
 import uk.org.ownage.dmdirc.Config;
@@ -66,41 +66,53 @@ public final class ParamModePanel extends JPanel implements ActionListener {
      * @param state The current state of the mode
      * @param value The current value of the mode
      */
-    public ParamModePanel(final String thisMode, final boolean state, final String value) {
+    public ParamModePanel(final String thisMode, final boolean state, 
+            final String value) {
         
         this.mode = thisMode;
         String text = "Mode " + mode;
-        final GridBagConstraints constraints = new GridBagConstraints();
         
-        setLayout(new GridBagLayout());
-        setBorder(new EmptyBorder(5, 0, 0, 0));
+        SpringLayout layout = new SpringLayout();
+        setLayout(layout);
         
         if (Config.hasOption("server", "mode" + mode)) {
             text = Config.getOption("server", "mode" + mode);
         }
         
-        constraints.weightx = 0.5;
-        constraints.weighty = 0.5;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.anchor = GridBagConstraints.LINE_START;
-        checkBox = new JCheckBox(text, state);
-        add(checkBox, constraints);
+        text += ": ";
         
-        constraints.fill = GridBagConstraints.NONE;
-        constraints.anchor = GridBagConstraints.LINE_END;
-        constraints.weightx = 0.5;
-        constraints.weighty = 0.5;
+        checkBox = new JCheckBox(text, state);
+        add(checkBox);
+        
         textField = new JTextField(value);
-        textField.setColumns(16);
         textField.setInputVerifier(new ModeParameterVerifier());
-        add(textField, constraints);
+        add(textField);
         
         if (!state) {
             textField.setEnabled(false);
         }
         
         checkBox.addActionListener(this);
-        checkBox.setBorder(new EmptyBorder(0, 0, 0, 0));
+        checkBox.setBorder(new EmptyBorder(0, 0, 0, 10));
+        
+        layout.putConstraint(SpringLayout.WEST, checkBox,
+                0,
+                SpringLayout.WEST, this);
+        layout.putConstraint(SpringLayout.NORTH, checkBox,
+                5,
+                SpringLayout.NORTH, this);
+        layout.putConstraint(SpringLayout.WEST, textField,
+                5,
+                SpringLayout.EAST, checkBox);
+        layout.putConstraint(SpringLayout.NORTH, textField,
+                5,
+                SpringLayout.NORTH, this);
+        layout.putConstraint(SpringLayout.EAST, this,
+                5,
+                SpringLayout.EAST, textField);
+        layout.putConstraint(SpringLayout.SOUTH, this,
+                0,
+                SpringLayout.SOUTH, textField);
     }
     
     /**

@@ -116,11 +116,13 @@ public class PreferencesDialog extends StandardDialog implements ActionListener 
         
         initUITab(tabbedPane);
         
-        initServerTab(tabbedPane);
-        
         initLoggingTab(tabbedPane);
         
         initIdentitiesTab(tabbedPane);
+        
+        initServerTab(tabbedPane);
+        
+        initListeners();
         
         pack();
     }
@@ -145,16 +147,12 @@ public class PreferencesDialog extends StandardDialog implements ActionListener 
      * @param tabbedPane parent pane
      */
     private void initUITab(final JTabbedPane tabbedPane) {
-        final JTabbedPane uiTabbedPane = new JTabbedPane();
+        final JPanel uiPanel = new JPanel();
         
-        tabbedPane.addTab("GUI", uiTabbedPane);
+        tabbedPane.addTab("GUI", uiPanel);
         
-        uiTabbedPane.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
+        uiPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
                 LARGE_BORDER, LARGE_BORDER));
-        
-        initNotificationsTab(uiTabbedPane);
-        
-        initTabCompletionTab(uiTabbedPane);
     }
     
     /**
@@ -200,41 +198,13 @@ public class PreferencesDialog extends StandardDialog implements ActionListener 
     }
     
     /**
-     * Initialises the notifications tab.
-     *
-     * @param uiTabbedPane parent pane
-     */
-    private void initNotificationsTab(final JTabbedPane uiTabbedPane) {
-        final JPanel notificationsPanel = new JPanel(new GridBagLayout());
-        
-        uiTabbedPane.addTab("Notifications", notificationsPanel);
-        
-        notificationsPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER));
-    }
-    
-    /**
-     * Initialises the tab completion tab.
-     *
-     * @param uiTabbedPane parent pane
-     */
-    private void initTabCompletionTab(final JTabbedPane uiTabbedPane) {
-        final JPanel tabPanel = new JPanel(new GridBagLayout());
-        
-        uiTabbedPane.addTab("Tab Completion", tabPanel);
-        
-        tabPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER));
-    }
-    
-    /**
      * Initialises listeners for this dialog.
      */
     private void initListeners() {
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
     }
-
+    
     public void actionPerformed(ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
             //TODO apply settings
