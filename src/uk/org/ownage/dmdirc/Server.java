@@ -134,6 +134,8 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public Server(final String server, final int port, final String password,
             final boolean ssl) {
         
+        serverName = server;
+        
         ServerManager.getServerManager().registerServer(this);
         
         frame = new ServerFrame(new ServerCommandParser(this));

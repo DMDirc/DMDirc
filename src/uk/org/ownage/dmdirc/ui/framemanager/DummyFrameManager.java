@@ -162,6 +162,6 @@ public final class DummyFrameManager implements FrameManager {
      * @param source The object that now has focus
      */
     public void setSelected(final FrameContainer source) {
-        System.out.println("DummyFrameManager: Now foucsed: " + source);
+        System.out.println("DummyFrameManager: Now focused: " + source);
     }
 }
