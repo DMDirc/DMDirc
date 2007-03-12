@@ -79,6 +79,9 @@ public class IRCParser implements Runnable {
 	/** Current Socket State */
 	private byte nSocketState = 0;
 	
+	/** Max length an outgoing line should be (NOT including \r\n). */
+	public static final int MAX_LINELENGTH = 510;
+	
 	/**
 	 * Get the current socket State.
 	 *
@@ -910,6 +913,20 @@ public class IRCParser implements Runnable {
 			sendString("NICK "+sNewNickName);
 		}
 		sThinkNickname = sNewNickName;
+	}
+	
+	/**
+	 * Get the max length a message can be.
+	 *
+	 * @param type Type of message (ie PRIVMSG)
+	 * @param target Target for message (eg #DMDirc)
+	 * @return Max Length message should be.
+	 */
+	public int getMaxLength(String sType, String sTarget) { 
+		// If my host is "nick!user@host" and we are sending "#Channel"
+		// a "PRIVMSG" this will find the length of ":nick!user@host PRIVMSG #channel :"
+		// and subtract it from the MAX_LINELENGTH. This should be sufficient in most cases.
+		return MAX_LINELENGTH - (":"+myParser.getMyself()+" "+sType+" "+sTarget+" :");
 	}
 	
 	/**
