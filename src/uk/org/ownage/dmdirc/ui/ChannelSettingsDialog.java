@@ -29,6 +29,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
@@ -43,8 +45,9 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
+import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -61,7 +64,7 @@ import uk.org.ownage.dmdirc.ui.components.ParamModePanel;
  * @author chris
  */
 public class ChannelSettingsDialog extends StandardDialog
-        implements ActionListener {
+        implements ActionListener, KeyListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -117,6 +120,26 @@ public class ChannelSettingsDialog extends StandardDialog
     private char[] listModesArray;
     
     /**
+     * iSupport hashtable, needed as i cant just get individual values.
+     */
+    private Hashtable<String, String> iSupport;
+    
+    /**
+     * the maximum length allowed for a topic.
+     */
+    private int topicLengthMax = 250;
+    
+    /**
+     * label showing the number of characters left in a topic.
+     */
+    private JLabel topicLengthLabel;
+    
+    /**
+     * Topic text entry text area.
+     */
+    private JTextArea topicText;
+    
+    /**
      * Creates a new instance of ChannelSettingsDialog.
      * @param newChannel The channel object that we're editing settings for
      */
@@ -124,6 +147,10 @@ public class ChannelSettingsDialog extends StandardDialog
         super(MainFrame.getMainFrame(), false);
         
         this.channel = newChannel;
+        iSupport = channel.getServer().getParser().get005();
+        if (iSupport.containsKey("TOPICLEN")) {
+            topicLengthMax = Integer.parseInt(iSupport.get("TOPICLEN"));
+        }
         
         initComponents();
         initListeners();
@@ -137,7 +164,7 @@ public class ChannelSettingsDialog extends StandardDialog
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new GridBagLayout());
         setTitle("Channel settings for " + channel);
-        setResizable(true);
+        setResizable(false);
         
         final JButton button1 = new JButton();
         button1.setPreferredSize(new Dimension(100, 25));
@@ -324,9 +351,11 @@ public class ChannelSettingsDialog extends StandardDialog
     private void initTopicsPanel(final JPanel parent) {
         final GridBagConstraints constraints = new GridBagConstraints();
         final JPanel topicsPanel = new JPanel(new GridBagLayout());
-        final JTextField topicText = new JTextField();
         final JLabel topicWho = new JLabel();
         final String topic = channel.getChannelInfo().getTopic();
+        final JScrollPane scrollPane;
+        topicLengthLabel = new JLabel();
+        topicText = new JTextArea(100, 4);
         
         constraints.fill = GridBagConstraints.BOTH;
         constraints.anchor = GridBagConstraints.NORTH;
@@ -342,12 +371,24 @@ public class ChannelSettingsDialog extends StandardDialog
         
         constraints.gridy = 2;
         topicText.setText(channel.getChannelInfo().getTopic());
-        topicText.setColumns(30);
-        topicsPanel.add(topicText, constraints);
+        topicText.setLineWrap(true);
+        topicText.addKeyListener(this);
+        topicText.setWrapStyleWord(true);
+        scrollPane = new JScrollPane(topicText);
+        scrollPane.setMinimumSize(new Dimension(100, 
+                getFont().getSize() * 4));
+        scrollPane.setPreferredSize(new Dimension(100, 
+                getFont().getSize() * 4));
+        topicsPanel.add(scrollPane, constraints);
+        
+        constraints.gridy = 3;
+        topicLengthLabel.setText(topicLengthMax - topicText.getText().length()
+        + " of " + topicLengthMax + " available");
+        topicsPanel.add(topicLengthLabel, constraints);
         
         constraints.fill = GridBagConstraints.BOTH;
         constraints.anchor = GridBagConstraints.LINE_START;
-        constraints.gridy = 3;
+        constraints.gridy = 4;
         topicWho.setSize(30, 0);
         topicWho.setBorder(new EmptyBorder(SMALL_BORDER, 0, 0, 0));
         if (topic.equals("")) {
@@ -465,6 +506,8 @@ public class ChannelSettingsDialog extends StandardDialog
     public final void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
             setChangedBooleanModes();
+            setChangedTopic();
+            setVisible(false);
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             setVisible(false);
         } else if (listModesMenu.equals(actionEvent.getSource())) {
@@ -502,6 +545,21 @@ public class ChannelSettingsDialog extends StandardDialog
         }
     }
     
+    
+    /**
+     * processes the topic and changes it if necessary.
+     */
+    private void setChangedTopic() {
+        if (!channel.getChannelInfo().getTopic().equals(topicText.getText())) {
+            System.out.println("Topic changed");
+            System.out.println("TOPIC " 
+                    + channel.getChannelInfo().getName() + ": " 
+                    + topicText.getText());
+            channel.getServer().getParser().sendLine("TOPIC " 
+                    + channel.getChannelInfo().getName() + "" + " :" 
+                    + topicText.getText());
+        }
+    }
     
     /**
      * Processes the channel settings dialog and constructs a mode string for
@@ -557,7 +615,37 @@ public class ChannelSettingsDialog extends StandardDialog
             System.out.println("Sending modes");
             channel.getChannelInfo().sendModes();
         }
-        setVisible(false);
+    }
+    
+    /**
+     * Handles key typed events in the dialog.
+     *
+     * @param keyEvent Key typed KeyEvent
+     */
+    public final void keyTyped(final KeyEvent keyEvent) {
+        if (topicText.getText().length() >= topicLengthMax
+                && (keyEvent.getKeyCode() != KeyEvent.VK_BACK_SPACE
+                && keyEvent.getKeyCode() != KeyEvent.VK_DELETE)) {
+            keyEvent.consume();
+        }
+        topicLengthLabel.setText(topicLengthMax - topicText.getText().length() 
+        + " of " + topicLengthMax + " available");
+    }
+    
+    /**
+     * Handles key pressed events in the dialog.
+     *
+     * @param keyEvent Key typed KeyEvent
+     */
+    public final void keyPressed(final KeyEvent keyEvent) {
+    }
+    
+    /**
+     * Handles key released events in the dialog.
+     *
+     * @param keyEvent Key released KeyEvent
+     */
+    public final void keyReleased(final KeyEvent keyEvent) {
     }
     
 }
