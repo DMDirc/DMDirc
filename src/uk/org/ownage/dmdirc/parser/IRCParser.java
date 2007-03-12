@@ -645,9 +645,23 @@ public class IRCParser implements Runnable {
 	 * Process CHANMODES from 005.
 	 */	
 	protected void parseChanModes() {
-		final String sDefaultModes = "b,k,l,imnpstrc";
+		String sDefaultModes = "b,k,l,";
 		String[] Bits = null;
 		String ModeStr;
+		if (h005Info.containsKey("USERCHANMODES")) {
+			ModeStr = h005Info.get("USERCHANMODES");
+			char mode;
+			for (int i = 0; i < ModeStr.length(); ++i) {
+				mode = ModeStr.charAt(i);
+				if (!hPrefixModes.containsKey(mode)) {
+					if (sDefaultModes.indexOf(mode) < 0) {
+						sDefaultModes = sDefaultModes+mode;
+					}
+				}
+			}
+		} else {
+			sDefaultModes = sDefaultModes+"imnpstrc";
+		}
 		if (h005Info.containsKey("CHANMODES")) { ModeStr = h005Info.get("CHANMODES");	}
 		else { ModeStr = sDefaultModes; h005Info.put("CHANMODES",ModeStr); }
 		Bits = ModeStr.split(",",5);
