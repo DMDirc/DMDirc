@@ -926,7 +926,9 @@ public class IRCParser implements Runnable {
 		// If my host is "nick!user@host" and we are sending "#Channel"
 		// a "PRIVMSG" this will find the length of ":nick!user@host PRIVMSG #channel :"
 		// and subtract it from the MAX_LINELENGTH. This should be sufficient in most cases.
-		return MAX_LINELENGTH - (":"+getMyself()+" "+sType+" "+sTarget+" :").length();
+		// Lint = the 2 ":" at the start and end and the 3 separating " "s
+		final int lint = 5;
+		return MAX_LINELENGTH - getMyself().length - sType.length() - sTarget.length() - lint;
 	}
 	
 	/**
@@ -935,7 +937,7 @@ public class IRCParser implements Runnable {
 	 * @param sTarget Target
 	 * @param sMessage Message to send
 	 */
-	public void sendMessage(String sTarget, String sMessage) { 
+	public void sendMessage(final String sTarget, final String sMessage) { 
 		if (sTarget.equals("") || sMessage.equals("")) { return; }
 		
 		sendString("PRIVMSG "+sTarget+" :"+sMessage);	
