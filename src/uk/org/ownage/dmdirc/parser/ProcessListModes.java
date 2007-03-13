@@ -38,44 +38,75 @@ public class ProcessListModes extends IRCProcessor {
 	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
-		//<- :uk.ircnet.org 348 DF|Laptop #dmdirc test2!*@*
-		//<- :uk.ircnet.org 348 DF|Laptop #dmdirc test1!*@*
-		//<- :uk.ircnet.org 349 DF|Laptop #dmdirc :End of Channel Exception List
-		//<- :uk.ircnet.org 346 DF|Laptop #dmdirc test2!*@*
-		//<- :uk.ircnet.org 346 DF|Laptop #dmdirc test1!*@*
-		//<- :uk.ircnet.org 347 DF|Laptop #dmdirc :End of Channel Invite List
-		//<- :neo.uk.CodersIRC.org 367 DF|Laptop #dmdirc test2!*@* DF|Laptop 1115086001
-		//<- :neo.uk.CodersIRC.org 367 DF|Laptop #dmdirc test1!*@* DF|Laptop 1115086000
-		//<- :neo.uk.CodersIRC.org 368 DF|Laptop #dmdirc :End of Channel Ban List
 		ChannelInfo channel = getChannelInfo(token[3]);
+		String thisIRCD = myParser.getIRCD(true).toLowerCase();
 		String item = "";
 		String owner = "";
+		byte tokenStart = 4; // Where do the relevent tokens start?
+		boolean isCleverMode = false;
 		long time = 0;
 		char mode = 'b';
 		boolean isItem = true; // true if item listing, false if "end of .." item
 		if (channel == null) { return; }
-		
-		if (sParam.equals("367")) { mode = 'b'; isItem = true; }
-		else if (sParam.equals("348")) { mode = 'e'; isItem = true; }
-		else if (sParam.equals("346")) { mode = 'I'; isItem = true; }
-		else if (sParam.equals("344")) { mode = 'R'; isItem = true; }
-		else if (sParam.equals("368")) { mode = 'b'; isItem = false; }
-		else if (sParam.equals("349")) { mode = 'e'; isItem = false; }
-		else if (sParam.equals("347")) { mode = 'I'; isItem = false; }
-		else if (sParam.equals("345")) { mode = 'R'; isItem = false; }
+		if (sParam.equals("367") || sParam.equals("368")) {
+			// Ban List/Item.
+			// (Also used for +d and +q on hyperion... -_-)
+			mode = 'b';
+			isItem = sParam.equals("368");
+		} else if (sParam.equals("348") || sParam.equals("349")) {
+			// Except / Exempt List etc
+			mode = 'e';
+			isItem = sParam.equals("349");
+		} else if (sParam.equals("346") || sParam.equals("347")) {
+			// Invite List
+			mode = 'I';
+			isItem = sParam.equals("347");
+		} else if (sParam.equals("344") || sParam.equals("345")) {
+			// Reop List
+			mode = 'R';
+			isItem = sParam.equals("345");
+		} else if (sParam.equals(myParser.h005Info.get("LISTMODE")) || sParam.equals(myParser.h005Info.get("LISTMODEEND"))) {
+			// Support for potential future decent mode listing in the protocol
+			//
+			// See my proposal: http://home.dataforce.org.uk/wiki/?ircds/listmodes/proposal
+			mode = token[4].charAt(0);
+			isItem = sParam.equals("998");
+			tokenStart = 5;
+			isCleverMode = true;
+		}
 		
 		if (isItem) {
+			if ((!isCleverMode) && (thisIRCD.equals("hyperion") || thisIRCD.equals("dancer"))) {
+				if (token.length > 4) {
+					if (mode == 'b') {
+						// Assume mode is a 'd' mode
+						mode = 'd';
+						// Now work out if its not (or attempt to.)
+						int identstart = token[tokenStart].indexOf("!");
+						int hoststart = token[tokenStart].indexOf("@");
+						// Check that ! and @ are both in the string - as required by +b and +q
+						if ((identstart >= 0) && (hoststart >= 0)) {
+							// Check that ! is BEFORE the @ - as required by +b and +q
+							if (identstart < hoststart) {
+								if (thisIRCD.equals("hyperion") && token[tokenStart].charAt(0) == '%') { mode = 'q'; }
+								else { mode = 'b'; }
+							}
+						}
+					}
+				}
+			} // End Hyperian stupidness of using the same numeric for 3 different things..
+			
 			if (!channel.getAddState(mode)) {
 				callDebugInfo(myParser.ndInfo, "New List Mode Batch: Clearing!");
 				channel.getListModeParam(mode).clear();
 				channel.setAddState(mode, true);
 			}
 			
-			if (token.length > 6) { 
-				try { time = Long.parseLong(token[6]); } catch (Exception e) { time = 0; }
+			if (token.length > (tokenStart+2)) { 
+				try { time = Long.parseLong(token[tokenStart+2]); } catch (Exception e) { time = 0; }
 			}
-			if (token.length > 5) { owner = token[5]; }
-			if (token.length > 4) { item = token[4]; }
+			if (token.length > (tokenStart+1)) { owner = token[tokenStart+1]; }
+			if (token.length > tokenStart) { item = token[tokenStart]; }
 			if (!item.equals("")) {
 				ChannelListModeItem clmi = new ChannelListModeItem(item, owner, time);
 				callDebugInfo(myParser.ndInfo, "List Mode: %c [%s/%s/%d]",mode, item, owner, time);
@@ -92,15 +123,30 @@ public class ProcessListModes extends IRCProcessor {
 	 * @return String[] with the names of the tokens we handle.
 	 */
 	public String[] handles() {
-		String[] iHandle = new String[8];
-		iHandle[0] = "344"; // Reop Item
-		iHandle[1] = "345"; // End of Reop
-		iHandle[2] = "346"; // Invite Item
-		iHandle[3] = "347"; // End of Invite
-		iHandle[4] = "348"; // Except Item
-		iHandle[5] = "349"; // Except End
-		iHandle[6] = "367"; // Ban Item
-		iHandle[7] = "368"; // Ban End
+		String[] iHandle = new String[9];
+		int i = 0;
+		// Ban List - All IRCds
+		iHandle[i++] = "367"; // Item
+		iHandle[i++] = "368"; // End
+		
+		// Reop List - ircnet 
+		iHandle[i++] = "344"; // Item
+		iHandle[i++] = "345"; // End
+		
+		// Invex List - unreal
+		// Invite List - asuka austhex bahamut dancer hybrid hyperion ircnet ratbox undernet
+		iHandle[i++] = "346"; // Item
+		iHandle[i++] = "347"; // End
+		
+		// Exception list - austhex
+		// Except List - dancer hybrid hyperion ircnet ratbox
+		// Exempt List - bahamut
+		// Ex List =- unreal
+		iHandle[i++] = "348"; // Item
+		iHandle[i++] = "349"; // End
+		
+		// This is here to allow finding the processor for adding LISTMODE support
+		iHandle[i++] = "__LISTMODE__";
 		return iHandle;
 	} 
 	

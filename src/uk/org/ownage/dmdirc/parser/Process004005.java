@@ -62,6 +62,20 @@ public class Process004005 extends IRCProcessor {
 					myParser.parsePrefixModes();
 				} else if (sKey.equals("CHANMODES")) {
 					myParser.parseChanModes();
+				} else if (sKey.equals("LISTMODE")) {
+					// Support for potential future decent mode listing in the protocol
+					// 
+					// See my proposal: http://home.dataforce.org.uk/wiki/?ircds/listmodes/proposal
+					// Add listmode handler
+					String[] handles = new String[2];
+					handles[0] = sValue; // List mode item
+					sValue = ""+(Integer.parseInt(sValue) + 1);
+					myParser.h005Info.put("LISTMODEEND", sValue);
+					handles[1] = sValue; // List mode end
+					// Add listmode handlers
+					try {
+						myParser.getProcessingManager().addProcessor(handles, myParser.getProcessingManager().getProcessor("__LISTMODE__"));
+					} catch (Exception e) { }
 				}
 			}
 		}

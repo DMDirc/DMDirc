@@ -128,6 +128,13 @@ public class IRCParser implements Runnable {
 	/** Reference to the Processing Manager */
 	private ProcessingManager myProcessingManager = new ProcessingManager(this);
 	
+	/**
+	 * Get a reference to the Processing Manager
+	 *
+	 * @return Reference to the CallbackManager
+	 */
+	public ProcessingManager getProcessingManager() { return myProcessingManager;	}
+	
 	/** Reference to the callback Manager */
 	private CallbackManager myCallbackManager = new CallbackManager(this);
 	
@@ -652,6 +659,8 @@ public class IRCParser implements Runnable {
 		String[] Bits = null;
 		String ModeStr;
 		if (h005Info.containsKey("USERCHANMODES")) {
+			if (getIRCD(true).equalsIgnoreCase("dancer")) { sDefaultModes = "dqeI"+sDefaultModes; }
+			if (getIRCD(true).equalsIgnoreCase("austirc")) { sDefaultModes = "e"+sDefaultModes; }
 			ModeStr = h005Info.get("USERCHANMODES");
 			char mode;
 			for (int i = 0; i < ModeStr.length(); ++i) {
@@ -918,8 +927,8 @@ public class IRCParser implements Runnable {
 	/**
 	 * Get the max length a message can be.
 	 *
-	 * @param type Type of message (ie PRIVMSG)
-	 * @param target Target for message (eg #DMDirc)
+	 * @param sType Type of message (ie PRIVMSG)
+	 * @param sTarget Target for message (eg #DMDirc)
 	 * @return Max Length message should be.
 	 */
 	public int getMaxLength(String sType, String sTarget) { 
@@ -1051,14 +1060,19 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param getType if this is false the string frmo 004 is returned. Else a guess of the type (ircu, hybrid, ircnet)
 	 * @return IRCD Version or Type
-	 */
+	 */ 
 	public String getIRCD(final boolean getType) {
 		if (h005Info.containsKey("004IRCD")) {
 			String version = h005Info.get("004IRCD");
 			if (getType) {
 				if (version.matches("(?i).*asuka.*")) { return "asuka"; }
-				else if (version.matches("(?i).*hybrid.*")) { return "hybrid"; }
+				else if (version.matches("(?i).*hyperion.*")) { return "hyperion"; }
+				else if (version.matches("(?i).*dancer.*")) { return "dancer"; }
+				else if (version.matches("(?i).*austhex.*")) { return "austhex"; }
+				else if (version.matches("(?i).*austirc.*")) { return "austirc"; }
 				else if (version.matches("(?i).*ratbox.*")) { return "ratbox"; }
+				else if (version.matches("(?i).*ircd.hybrid.*")) { return "hybrid7"; }
+				else if (version.matches("(?i).*hybrid.*")) { return "hybrid"; }
 				else if (version.matches("(?i).*beware.*")) { return "bircd"; }
 				else if (version.matches("(?i).*ircu.*")) { return "ircu"; }
 				else if (version.matches("(?i).*unreal.*")) { return "unreal"; }

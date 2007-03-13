@@ -79,13 +79,6 @@ public class ProcessingManager {
 		addProcessor(new ProcessJoin(myParser, this));
 		// KICK
 		addProcessor(new ProcessKick(myParser, this));
-		// 346
-		// 347
-		// 348
-		// 349
-		// 367
-		// 368
-		addProcessor(new ProcessListModes(myParser, this));
 		// PRIVMSG
 		// NOTICE
 		addProcessor(new ProcessMessage(myParser, this));
@@ -112,6 +105,15 @@ public class ProcessingManager {
 		// 332
 		// 333
 		addProcessor(new ProcessTopic(myParser, this));
+		// 344
+		// 345
+		// 346
+		// 347
+		// 348
+		// 349
+		// 367
+		// 368
+		addProcessor(new ProcessListModes(myParser, this));
 	}
 	
 	/**
@@ -134,10 +136,19 @@ public class ProcessingManager {
 	public void addProcessor(IRCProcessor processor) {	
 		// handles() returns a String array of all the tokens
 		// that this processor will parse.
+		addProcessor(processor.handles(), processor);
+	}
+	
+	/**
+	 * Add a processor to tokens not-specified in the handles() reply.
+	 *
+	 * @param processor IRCProcessor subclass for the processor.
+	 * @param handles String Array of tokens to add this processor as a hadler for
+	 */
+	public void addProcessor(String[] handles, IRCProcessor processor) {	
 		DoDebug("Adding processor: "+processor.getName());
 		
 		try {
-			String[] handles = processor.handles();
 			for (int i = 0; i < handles.length; ++i) {
 				if (processHash.containsKey(handles[i].toLowerCase())) {
 					// New Processors take priority over old ones
@@ -173,6 +184,20 @@ public class ProcessingManager {
 	}
 	
 	/**
+	 * Get the processor used for a specified token.
+	 *
+	 * @param sParam Type of line to process ("005", "PRIVMSG" etc)
+	 * @return IRCProcessor for the given param.
+	 */
+	public IRCProcessor getProcessor(String sParam) throws ProcessorNotFound {
+		if (processHash.containsKey(sParam.toLowerCase())) {
+			return processHash.get(sParam.toLowerCase());
+		} else {
+			throw new ProcessorNotFound("No processors will handle "+sParam);
+		}
+	}
+	
+	/**
 	 * Process a Line.
 	 *
 	 * @param sParam Type of line to process ("005", "PRIVMSG" etc)
@@ -182,12 +207,8 @@ public class ProcessingManager {
 	public void process(String sParam, String[] token) throws ProcessorNotFound {
 		IRCProcessor messageProcessor = null;
 		try {
-			if (processHash.containsKey(sParam.toLowerCase())) {
-				messageProcessor = processHash.get(sParam.toLowerCase());
-				messageProcessor.process(sParam, token);
-			} else {
-				throw new ProcessorNotFound("No processors will handle "+sParam);
-			}
+			messageProcessor = getProcessor(sParam);
+			messageProcessor.process(sParam, token);
 		} catch (ProcessorNotFound p) {
 			throw p;
 		} catch (Exception e) {

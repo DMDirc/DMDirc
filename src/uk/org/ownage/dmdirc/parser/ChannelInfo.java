@@ -383,7 +383,7 @@ public class ChannelInfo {
 	 * This function will send modes that are currently queued up to send.
 	 * This assumes that the queue only contains the amount that are alowed to be sent
 	 * and thus will try to send the entire queue in one go.<br><br>
-	 * Modes are always sent positive then negative and not mixed.
+	 * Modes are always sent negative then positive and not mixed.
 	 */
 	public void sendModes() { 
 		String positivemode = "";
@@ -406,10 +406,10 @@ public class ChannelInfo {
 			}
 		}
 		modestr = "";
-		if (!positivemode.equals("")) { modestr = modestr+"+"+positivemode; }
 		if (!negativemode.equals("")) { modestr = modestr+"-"+negativemode; }
-		if (!positiveparam.equals("")) { modestr = modestr+positiveparam; }
+		if (!positivemode.equals("")) { modestr = modestr+"+"+positivemode; }
 		if (!negativeparam.equals("")) { modestr = modestr+negativeparam; }
+		if (!positiveparam.equals("")) { modestr = modestr+positiveparam; }
 		myParser.callDebugInfo(myParser.ndInfo, "Sending mode: %s", modestr);
 		myParser.sendLine("MODE "+sName+" "+modestr);
 		clearModeQueue();
