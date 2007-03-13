@@ -184,7 +184,7 @@ public class PreferencesDialog extends StandardDialog implements ActionListener 
     private void initUITab(final JTabbedPane tabbedPane) {
         final JPanel uiPanel = new JPanel();
         final GridBagConstraints constraints = new GridBagConstraints();
-        final String[] windowOptions 
+        final String[] windowOptions
                 = new String[] {"All", "Active", "Server", };
         JPanel panel;
         JLabel label;
@@ -454,19 +454,20 @@ public class PreferencesDialog extends StandardDialog implements ActionListener 
         }
         
         for (int r = 0; r < rows; r++) {
-            Spring height = Spring.constant(0);
+            int height = 0;
             for (int c = 0; c < columns; c++) {
-                height = Spring.max(height,
+                height +=
                         getConstraintsForCell(r, c, parent, columns).
-                        getHeight());
+                        getHeight().getValue();
             }
             for (int c = 0; c < columns; c++) {
                 SpringLayout.Constraints constraints =
                         getConstraintsForCell(r, c, parent, columns);
                 constraints.setY(y);
-                constraints.setHeight(height);
+                constraints.setHeight(Spring.constant(height));
             }
-            y = Spring.sum(y, Spring.sum(height, Spring.constant(yPadding)));
+            //y = Spring.sum(y, Spring.sum(Spring.constant(height), Spring.constant(yPadding)));
+            y = Spring.sum(y, Spring.constant(height));
         }
         
         SpringLayout.Constraints pCons = layout.getConstraints(parent);
