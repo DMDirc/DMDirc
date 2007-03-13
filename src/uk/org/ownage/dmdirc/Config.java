@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 
@@ -239,10 +240,23 @@ public final class Config {
      */
     public static void save() {
         if (properties == null) {
-            initialise();
+            return;
         }
+        
+        final Properties defaults = getDefaults();
+        final Properties output = new Properties();
+        
+        final Enumeration<Object> keys = properties.keys();
+        
+        while (keys.hasMoreElements()) {
+            final String key = (String) keys.nextElement();
+            if (!defaults.containsKey(key) || !defaults.getProperty(key).equals(properties.getProperty(key))) {
+                output.setProperty(key, properties.getProperty(key));
+            }
+        }
+        
         try {
-            properties.storeToXML(new FileOutputStream(
+            output.storeToXML(new FileOutputStream(
                     new File(getConfigFile())), null);
         } catch (FileNotFoundException ex) {
             Logger.error(ErrorLevel.INFO, ex);

@@ -1,0 +1,28 @@
+# Default mode settings for Bahamut
+# beI,k,jl,cimMnOprRst
+
+identity.name = Bahamut mode aliases
+identity.autoapply = irc://bahamut:*@*/*
+
+server.modeb = Ban
+server.modee = Exception
+server.modeI = Invite
+
+server.modek = Channel key
+
+server.modej = Join throttling
+server.model = User limit
+
+server.modec = No control codes
+server.modei = Invite only
+server.modem = Moderated
+server.modeM = Silence unregistered users
+server.moden = No external messages
+server.modeO = IRC Operators only
+server.modep = Private
+server.moder = Channel has been registered
+server.modeR = Registered users only
+server.modes = Secret
+server.modet = Only ops can set topic
+
+server.modeL = Appear in /list
