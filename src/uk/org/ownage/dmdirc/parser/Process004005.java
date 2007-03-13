@@ -65,7 +65,7 @@ public class Process004005 extends IRCProcessor {
 				} else if (sKey.equals("LISTMODE")) {
 					// Support for potential future decent mode listing in the protocol
 					// 
-					// See my proposal: http://home.dataforce.org.uk/wiki/?ircds/listmodes/proposal
+					// See my proposal: http://shane.dmdirc.com/listmodes.php
 					// Add listmode handler
 					String[] handles = new String[2];
 					handles[0] = sValue; // List mode item

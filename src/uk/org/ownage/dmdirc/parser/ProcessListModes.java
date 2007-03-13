@@ -68,7 +68,7 @@ public class ProcessListModes extends IRCProcessor {
 		} else if (sParam.equals(myParser.h005Info.get("LISTMODE")) || sParam.equals(myParser.h005Info.get("LISTMODEEND"))) {
 			// Support for potential future decent mode listing in the protocol
 			//
-			// See my proposal: http://home.dataforce.org.uk/wiki/?ircds/listmodes/proposal
+			// See my proposal: http://shane.dmdirc.com/listmodes.php
 			mode = token[4].charAt(0);
 			isItem = sParam.equals(myParser.h005Info.get("LISTMODE"));
 			tokenStart = 5;
