@@ -94,6 +94,10 @@ public class IrcAddress {
     public IrcAddress(final String myIrcd, final String myServer,
             final String myNetwork, final String myChannel) {
         
+        ircd = myIrcd;
+        server = myServer;
+        network = myNetwork;
+        channel = myChannel;
     }
     
 }

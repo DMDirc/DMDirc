@@ -40,7 +40,7 @@ public final class Identity implements ConfigSource {
     private String name;
     
     /** The autoapplies list for this identity. */
-    private String[] autoapplies;
+    private IrcAddress[] autoapplies;
     
     /** The configuration details for this identity. */
     private Properties properties;
@@ -66,7 +66,12 @@ public final class Identity implements ConfigSource {
             name = getOption("identity", "name");
             
             if (hasOption("identity", "autoapply")) {
-                autoapplies = getOption("identity", "autoapply").split("\n");
+                final String[] applies = getOption("identity", "autoapply").split("\n");
+                autoapplies = new IrcAddress[applies.length];
+                
+                for (int i = 0; i < applies.length; i++) {
+                    autoapplies[i] = new IrcAddress(applies[i]);
+                }
             }
             
         } else {

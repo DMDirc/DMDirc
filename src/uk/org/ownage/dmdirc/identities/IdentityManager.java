@@ -26,7 +26,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
+
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 
@@ -36,6 +38,11 @@ import uk.org.ownage.dmdirc.logger.Logger;
  * @author chris
  */
 public final class IdentityManager {
+    
+    /**
+     * The identities that have been loaded into this manager.
+     */
+    private static ArrayList<Identity> identities;
     
     /** Creates a new instance of IdentityManager. */
     private IdentityManager() {
@@ -71,8 +78,12 @@ public final class IdentityManager {
      * Adds the specific identity to this manager.
      * @param identity The identity to be added
      */
-    public static void addIdentity(Identity identity) {
+    public static void addIdentity(final Identity identity) {
+        if (identities == null) {
+             identities = new ArrayList<Identity>();
+        }
         
+        identities.add(identity);
     }
     
 }
