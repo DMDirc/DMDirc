@@ -52,25 +52,25 @@ public class ProcessListModes extends IRCProcessor {
 			// Ban List/Item.
 			// (Also used for +d and +q on hyperion... -_-)
 			mode = 'b';
-			isItem = sParam.equals("368");
+			isItem = sParam.equals("367");
 		} else if (sParam.equals("348") || sParam.equals("349")) {
 			// Except / Exempt List etc
 			mode = 'e';
-			isItem = sParam.equals("349");
+			isItem = sParam.equals("348");
 		} else if (sParam.equals("346") || sParam.equals("347")) {
 			// Invite List
 			mode = 'I';
-			isItem = sParam.equals("347");
+			isItem = sParam.equals("346");
 		} else if (sParam.equals("344") || sParam.equals("345")) {
 			// Reop List
 			mode = 'R';
-			isItem = sParam.equals("345");
+			isItem = sParam.equals("344");
 		} else if (sParam.equals(myParser.h005Info.get("LISTMODE")) || sParam.equals(myParser.h005Info.get("LISTMODEEND"))) {
 			// Support for potential future decent mode listing in the protocol
 			//
 			// See my proposal: http://home.dataforce.org.uk/wiki/?ircds/listmodes/proposal
 			mode = token[4].charAt(0);
-			isItem = sParam.equals("998");
+			isItem = sParam.equals(myParser.h005Info.get("LISTMODE"));
 			tokenStart = 5;
 			isCleverMode = true;
 		}
