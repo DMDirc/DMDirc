@@ -22,7 +22,6 @@
 
 package uk.org.ownage.dmdirc.ui.components;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -72,7 +71,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
         this.mode = thisMode;
         String text = "Mode " + mode;
         
-        SpringLayout layout = new SpringLayout();
+        final SpringLayout layout = new SpringLayout();
         setLayout(layout);
         
         if (Config.hasOption("server", "mode" + mode)) {
