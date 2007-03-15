@@ -71,18 +71,25 @@ public final class PreferencesDialog extends StandardDialog
     /** Size of the small borders in the dialog. */
     private static final int SMALL_BORDER = 5;
     
+    /** Acceptable input types for the config dialog. */
     private static enum optionType { TEXTFIELD, CHECKBOX, COMBOBOX, };
     
+    /** All text fields in the dialog, used to apply settings. */
     private Hashtable<String, JTextField> textFields;
     
+    /** All checkboxes in the dialog, used to apply settings. */
     private Hashtable<String, JCheckBox> checkBoxes;
     
+    /** All combo boxes in the dialog, used to apply settings. */
     private Hashtable<String, JComboBox> comboBoxes;
     
+    /** Preferences tab list, used to switch option types. */
     private JList tabList;
     
+    /** Main card layout. */
     private CardLayout cardLayout;
     
+    /** Main panel. */
     private JPanel mainPanel;
     
     /**
@@ -104,11 +111,11 @@ public final class PreferencesDialog extends StandardDialog
      * Initialises GUI components.
      */
     private void initComponents() {
-        cardLayout = new CardLayout();
-        SpringLayout layout = new SpringLayout();
-        mainPanel = new JPanel(cardLayout);
+        final SpringLayout layout = new SpringLayout();
         final JButton button1 = new JButton();
         final JButton button2 = new JButton();
+        cardLayout = new CardLayout();
+        mainPanel = new JPanel(cardLayout);
         tabList = new JList(new DefaultListModel());
         tabList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tabList.addListSelectionListener(this);
@@ -126,7 +133,7 @@ public final class PreferencesDialog extends StandardDialog
         button1.setPreferredSize(new Dimension(100, 25));
         button2.setPreferredSize(new Dimension(100, 25));
         tabList.setPreferredSize(new Dimension(100, 450));
-        setMinimumSize(new Dimension(600,500));
+        setMinimumSize(new Dimension(600, 500));
         
         orderButtons(button1, button2);
         
@@ -189,16 +196,22 @@ public final class PreferencesDialog extends StandardDialog
     
     /**
      * Adds an option of the specified type to the specified panel.
+     *
+     * @param parent parent to add component to
+     * @param optionName Config option name, used to read/write values to
+     * @param title user friendly title for the option
+     * @param type type of input component required
      */
     private void addComponent(final JPanel parent, final String optionName,
             final String title, final optionType type) {
         final String[] windowOptions
                 = new String[] {"all", "active", "server", };
-        JComponent option;
         final String[] configArgs = optionName.split("\\.");
         final String configValue =
                 Config.getOption(configArgs[0], configArgs[1]);
-        JLabel label = new JLabel(title, JLabel.TRAILING);
+        final JLabel label = new JLabel(title, JLabel.TRAILING);
+        
+        JComponent option;
         
         parent.add(label);
         switch (type) {
@@ -229,7 +242,7 @@ public final class PreferencesDialog extends StandardDialog
     /**
      * Initialises the preferences tab.
      *
-     * @param tabbedPane parent pane
+     * @param cardLayoutPanel parent pane
      */
     private void initGeneralTab(final JPanel cardLayoutPanel) {
         final JPanel panel = new JPanel(new SpringLayout());
@@ -253,7 +266,7 @@ public final class PreferencesDialog extends StandardDialog
     /**
      * Initialises the UI tab.
      *
-     * @param tabbedPane parent pane
+     * @param cardLayoutPanel parent pane
      */
     private void initUITab(final JPanel cardLayoutPanel) {
         final JPanel panel = new JPanel(new SpringLayout());
@@ -285,7 +298,7 @@ public final class PreferencesDialog extends StandardDialog
     /**
      * Initialises the TreeView tab.
      *
-     * @param tabbedPane parent pane
+     * @param cardLayoutPanel parent pane
      */
     private void initTreeViewTab(final JPanel cardLayoutPanel) {
         final JPanel panel = new JPanel(new SpringLayout());
@@ -310,7 +323,7 @@ public final class PreferencesDialog extends StandardDialog
     /**
      * Initialises the Notifications tab.
      *
-     * @param tabbedPane parent pane
+     * @param cardLayoutPanel parent pane
      */
     private void initNotificationsTab(final JPanel cardLayoutPanel) {
         final JPanel panel = new JPanel(new SpringLayout());
@@ -328,13 +341,13 @@ public final class PreferencesDialog extends StandardDialog
                 LARGE_BORDER, LARGE_BORDER);
         
         cardLayoutPanel.add(panel, "Notifications");
-        ((DefaultListModel) tabList.getModel()).addElement("Notifications");;
+        ((DefaultListModel) tabList.getModel()).addElement("Notifications");
     }
     
     /**
      * Initialises the input tab.
      *
-     * @param tabbedPane parent pane
+     * @param cardLayoutPanel parent pane
      */
     private void initInputTab(final JPanel cardLayoutPanel) {
         final JPanel panel = new JPanel(new SpringLayout());
@@ -354,7 +367,7 @@ public final class PreferencesDialog extends StandardDialog
     /**
      * Initialises the logging tab.
      *
-     * @param tabbedPane parent pane
+     * @param cardLayoutPanel parent pane
      */
     private void initLoggingTab(final JPanel cardLayoutPanel) {
         final JPanel panel = new JPanel(new SpringLayout());
@@ -365,8 +378,8 @@ public final class PreferencesDialog extends StandardDialog
                 optionType.CHECKBOX);
         addComponent(panel, "logging.debugLogging", "Debug logs: ",
                 optionType.CHECKBOX);
-        addComponent(panel, "logging.debugLoggingSysOut", "Debug console output: ",
-                optionType.CHECKBOX);
+        addComponent(panel, "logging.debugLoggingSysOut",
+                "Debug console output: ", optionType.CHECKBOX);
         
         layoutGrid(panel, 4, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
@@ -378,7 +391,7 @@ public final class PreferencesDialog extends StandardDialog
     /**
      * Initialises the identities tab.
      *
-     * @param tabbedPane parent pane
+     * @param cardLayoutPanel parent pane
      */
     private void initIdentitiesTab(final JPanel cardLayoutPanel) {
         final JPanel panel = new JPanel(new SpringLayout());
@@ -390,7 +403,7 @@ public final class PreferencesDialog extends StandardDialog
     /**
      * Initialises the advanced tab.
      *
-     * @param tabbedPane parent pane
+     * @param cardLayoutPanel parent pane
      */
     private void initAdvancedTab(final JPanel cardLayoutPanel) {
         final JPanel panel = new JPanel(new SpringLayout());
@@ -414,7 +427,23 @@ public final class PreferencesDialog extends StandardDialog
      */
     public void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
-            //TODO apply settings
+            String[] optionArgs;
+            for (String option : textFields.keySet()) {
+                optionArgs = option.split("\\.");
+                Config.setOption(optionArgs[0], optionArgs[1], 
+                        textFields.get(option).getText());
+            }
+            for (String option : checkBoxes.keySet()) {
+                optionArgs = option.split("\\.");
+                Config.setOption(optionArgs[0], optionArgs[1], 
+                        "" + checkBoxes.get(option).isSelected());
+            }
+            for (String option : comboBoxes.keySet()) {
+                optionArgs = option.split("\\.");
+                Config.setOption(optionArgs[0], optionArgs[1], 
+                        (String) comboBoxes.get(option).getSelectedItem());
+            }
+            Config.save();
             setVisible(false);
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             setVisible(false);
@@ -500,7 +529,7 @@ public final class PreferencesDialog extends StandardDialog
      *
      * @param selectionEvent list selection event
      */
-    public void valueChanged(ListSelectionEvent selectionEvent) {
+    public void valueChanged(final ListSelectionEvent selectionEvent) {
         if (!selectionEvent.getValueIsAdjusting()) {
             cardLayout.show(mainPanel, (String) ((JList) selectionEvent.
                     getSource()).getSelectedValue());
