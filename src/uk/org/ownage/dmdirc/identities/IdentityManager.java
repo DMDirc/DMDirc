@@ -27,7 +27,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
+import java.util.TreeMap;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -43,6 +46,12 @@ public final class IdentityManager {
      * The identities that have been loaded into this manager.
      */
     private static ArrayList<Identity> identities;
+    
+    /**
+     * The GlobalConfig instance to use for new ConfigManagers.
+     * We only need one instance of GlobalConfig, so keep it cached here.
+     */
+    private static GlobalConfig globalConfig;
     
     /** Creates a new instance of IdentityManager. */
     private IdentityManager() {
@@ -72,6 +81,8 @@ public final class IdentityManager {
         } catch (URISyntaxException ex) {
             Logger.error(ErrorLevel.ERROR, ex);
         }
+        
+        globalConfig = new GlobalConfig();
     }
     
     /**
@@ -85,5 +96,17 @@ public final class IdentityManager {
         
         identities.add(identity);
     }
+    
+    /**
+     * Retrieves a list of all config sources that should be applied to the
+     * specified target.
+     * @param target The address to match against
+     * @return A list of all matching config sources
+     */
+    /*public static TreeMap<ConfigSource> getSources(final IrcAddress target) {
+        TreeMap<ConfigSource> sources = new TreeMap<ConfigSource>();
+        
+        return sources;
+    }*/
     
 }

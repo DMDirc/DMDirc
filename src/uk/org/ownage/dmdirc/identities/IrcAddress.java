@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  * existing implementations that use irc://server/channel.
  * @author chris
  */
-public class IrcAddress {
+public class IrcAddress implements Comparable {
     
     /**
      * The regular expression used for matching addresses.
@@ -98,6 +98,10 @@ public class IrcAddress {
         server = myServer;
         network = myNetwork;
         channel = myChannel;
+    }
+
+    public int compareTo(Object target) {
+        return 1;
     }
     
 }

@@ -26,11 +26,11 @@ package uk.org.ownage.dmdirc.identities;
  * A Config source is an object that can provide configuration details.
  * @author chris
  */
-public interface ConfigSource {
+public interface ConfigSource extends Comparable {
     
     /**
      * Determines whether this config source has a setting for the specified
-     * option in the specified domain. 
+     * option in the specified domain.
      * @param domain The domain of the option
      * @param option The name of the option
      * @return True iff this source has the option, false otherwise
@@ -52,5 +52,11 @@ public interface ConfigSource {
      * @param value The new value for the option
      */
     void setOption(String domain, String option, String value);
+    
+    /**
+     * Retrieves the IrcAddress of this config source.
+     * @return This source's address
+     */
+    IrcAddress getAddress();
     
 }

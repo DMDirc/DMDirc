@@ -128,5 +128,13 @@ public final class Identity implements ConfigSource {
             final String value) {
         
     }
+
+    public IrcAddress getAddress() {
+        return new IrcAddress("irc://*/*");
+    }
+
+    public int compareTo(Object target) {
+        return 1;
+    }
     
 }

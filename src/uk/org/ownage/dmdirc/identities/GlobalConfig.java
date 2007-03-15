@@ -30,6 +30,9 @@ import uk.org.ownage.dmdirc.Config;
  */
 public final class GlobalConfig implements ConfigSource {
     
+    /** The address that this config applies to. */
+    private final IrcAddress address = new IrcAddress("irc://*/*");
+    
     /** Creates a new instance of GlobalConfig. */
     public GlobalConfig() {
     }
@@ -63,6 +66,24 @@ public final class GlobalConfig implements ConfigSource {
      */    
     public void setOption(final String domain, final String option, final String value) {
         Config.setOption(domain, option, value);
+    }
+    
+    /**
+     * Retrieves the IrcAddress of this config source.
+     * @return This source's address
+     */
+    public IrcAddress getAddress() {
+        return address;
+    }
+
+    /**
+     * Compares this config source to another.
+     * @param target The object to compare to.
+     * @return -1 if this object is less than the other, +1 if this object is
+     * greater, 0 if they're equal.
+     */
+    public int compareTo(Object target) {
+        return address.compareTo(((ConfigSource) target).getAddress());
     }
     
 }
