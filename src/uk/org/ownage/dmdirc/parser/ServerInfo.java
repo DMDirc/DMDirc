@@ -43,6 +43,12 @@ public class ServerInfo {
 	public boolean bSSL = false;	
 	/** Do we need to wait for input before sending Nick/User/Pass (Default: false). */
 	public boolean waitForFirst = false;
+	/** Are we using a socks proxy (Default: false). */
+	public boolean useSocksProxy = false;
+	/** Proxy server to connect to (Default: "127.0.0.1"). */
+	public String proxyHost = "127.0.0.1";
+	/** Port server listens on for client connections (Default: 8080). */
+	public int proxyPort = 8080;
 	
 	
 	/** Constructor using Default values. */

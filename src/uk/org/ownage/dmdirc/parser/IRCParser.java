@@ -40,13 +40,15 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import javax.net.SocketFactory;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocket;
+// import javax.net.ssl.SSLSocket;
 import javax.net.ssl.X509TrustManager;
 import javax.net.ssl.TrustManager;
 
@@ -91,8 +93,8 @@ public class IRCParser implements Runnable {
 	
 	/** This is the socket used for reading from/writing to the IRC server. */
 	private Socket socket = null;
-	/** This is the socket used for reading from/writing to the IRC server when using SSL. */
-	private SSLSocket sslSocket = null;
+//	/** This is the socket used for reading from/writing to the IRC server when using SSL. */
+//	private SSLSocket sslSocket = null;
 	/** Used for writing to the server. */
 	private PrintWriter out = null;
 	/** Used for reading from the server. */
@@ -391,6 +393,19 @@ public class IRCParser implements Runnable {
 			resetState();
 			callDebugInfo(ndSocket, "Connecting to "+server.sHost+":"+server.nPort);
 			
+			if (server.useSocksProxy) {
+				callDebugInfo(ndSocket, "Using Proxy");
+				Proxy.Type proxyType = Proxy.Type.SOCKS;
+				socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.proxyHost, server.proxyPort)));
+				
+				socket.connect(new InetSocketAddress(server.sHost,server.nPort));
+			} else {
+				callDebugInfo(ndSocket, "Not using Proxy");
+				if (!server.bSSL) {
+					socket = new Socket(server.sHost,server.nPort);
+				}
+			}
+			
 			if (server.bSSL) {
 				callDebugInfo(ndSocket, "Server is SSL.");
 				
@@ -399,12 +414,15 @@ public class IRCParser implements Runnable {
 				SSLContext sc = SSLContext.getInstance("SSL");
 				sc.init(null, myTrustManager, new java.security.SecureRandom());
 				
-				SocketFactory socketFactory = sc.getSocketFactory();
-				sslSocket = (SSLSocket)socketFactory.createSocket(server.sHost,server.nPort);
-				
-				socket = sslSocket;
-			} else {
-				socket = new Socket(server.sHost,server.nPort);
+				SSLSocketFactory socketFactory = sc.getSocketFactory();
+				if (server.useSocksProxy) {
+					// sslSocket = (SSLSocket)socketFactory.createSocket(socket, server.sHost, server.nPort, false);
+					socket = socketFactory.createSocket(socket, server.sHost, server.nPort, false);
+				} else {
+					// sslSocket = (SSLSocket)socketFactory.createSocket(server.sHost,server.nPort);
+					socket = socketFactory.createSocket(server.sHost,server.nPort);
+				}
+				// socket = sslSocket;
 			}
 			
 			callDebugInfo(ndSocket, "\t-> Opening socket output stream PrintWriter");
