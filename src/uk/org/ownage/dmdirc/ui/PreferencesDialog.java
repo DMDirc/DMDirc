@@ -257,8 +257,10 @@ public final class PreferencesDialog extends StandardDialog
                 optionType.TEXTFIELD);
         addComponent(panel, "general.cyclemessage", "Cycle message: ",
                 optionType.TEXTFIELD);
+        addComponent(panel, "general.kickmessage", "Kick message: ",
+                optionType.TEXTFIELD);
         
-        layoutGrid(panel, 4, 2, SMALL_BORDER, SMALL_BORDER,
+        layoutGrid(panel, 5, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
         
         cardLayoutPanel.add(panel, "General");

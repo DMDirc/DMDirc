@@ -129,6 +129,9 @@ public final class MainFrame extends JFrame implements WindowListener {
     /** Window menu. */
     private JMenu windowMenu;
     
+    /** split pane. */
+    private JSplitPane mainSplitPane;
+    
     /**
      * Creates new form MainFrame.
      */
@@ -411,7 +414,6 @@ public final class MainFrame extends JFrame implements WindowListener {
      */
     private void initComponents() {
         final SpringLayout springLayout = new SpringLayout();
-        JSplitPane mainSplitPane;
         
         jPanel1 = new JPanel();
         jPanel2 = new JPanel();

@@ -123,6 +123,9 @@ public class ChannelFrame extends JInternalFrame implements CommandWindow {
     /** text pane. */
     private JTextPane jTextPane1;
     
+    /** split pane. */
+    private JSplitPane splitPane;
+    
     /**
      * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
      * and default options for the form.
@@ -316,8 +319,7 @@ public class ChannelFrame extends JInternalFrame implements CommandWindow {
      */
     private void initComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
-        final JSplitPane splitPane =
-                new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         
         jScrollPane1 = new JScrollPane();
         jTextPane1 = new JTextPane();
@@ -351,12 +353,10 @@ public class ChannelFrame extends JInternalFrame implements CommandWindow {
         constraints.gridy = 1;
         getContentPane().add(jTextField1, constraints);
         
-        splitPane.setDividerSize(5);
-        
         splitPane.setLeftComponent(jScrollPane1);
         splitPane.setRightComponent(jScrollPane2);
         
-        splitPane.setDividerLocation(450);
+        splitPane.setDividerLocation(465);
         splitPane.setResizeWeight(1);
         splitPane.setDividerSize(5);
         
