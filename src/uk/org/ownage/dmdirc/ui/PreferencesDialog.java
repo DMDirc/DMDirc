@@ -134,6 +134,8 @@ public final class PreferencesDialog extends StandardDialog
         button2.setPreferredSize(new Dimension(100, 25));
         tabList.setPreferredSize(new Dimension(100, 450));
         setMinimumSize(new Dimension(600, 500));
+        setPreferredSize(new Dimension(600, 500));
+        setMaximumSize(new Dimension(600, 500));
         
         orderButtons(button1, button2);
         
