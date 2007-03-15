@@ -44,9 +44,12 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
@@ -313,7 +316,7 @@ public class ChannelFrame extends JInternalFrame implements CommandWindow {
      */
     private void initComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
-        final JSplitPane splitPane = 
+        final JSplitPane splitPane =
                 new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         
         jScrollPane1 = new JScrollPane();
@@ -321,12 +324,18 @@ public class ChannelFrame extends JInternalFrame implements CommandWindow {
         jTextField1 = new JTextField();
         jScrollPane2 = new JScrollPane();
         jList1 = new JList();
-
+        
+        splitPane.setBorder(null);
+        BasicSplitPaneDivider divider = ((BasicSplitPaneUI) splitPane.getUI()).getDivider();
+        if (divider != null){
+            divider.setBorder(null);
+        }
+        
         jScrollPane1.setVerticalScrollBarPolicy(
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         jTextPane1.setEditable(false);
         jScrollPane1.setViewportView(jTextPane1);
-
+        
         jList1.setFont(new Font("Dialog", 0, 12));
         jList1.setModel(nicklistModel);
         jScrollPane2.setViewportView(jList1);
@@ -349,7 +358,7 @@ public class ChannelFrame extends JInternalFrame implements CommandWindow {
         
         splitPane.setDividerLocation(450);
         splitPane.setResizeWeight(1);
-        splitPane.setDividerSize(5);     
+        splitPane.setDividerSize(5);
         
         pack();
     }

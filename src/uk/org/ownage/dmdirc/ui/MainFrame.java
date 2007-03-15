@@ -48,6 +48,9 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
+import javax.swing.border.LineBorder;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Main;
@@ -422,6 +425,12 @@ public final class MainFrame extends JFrame implements WindowListener {
         desktopPane.setBackground(new Color(238, 238, 238));
         mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         
+        mainSplitPane.setBorder(null);
+        BasicSplitPaneDivider divider = ((BasicSplitPaneUI) mainSplitPane.getUI()).getDivider();
+        if (divider != null){
+            divider.setBorder(null);
+        }
+        
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
         miAddServer.setText("New Server...");
@@ -446,6 +455,7 @@ public final class MainFrame extends JFrame implements WindowListener {
         getContentPane().add(mainSplitPane);
         
         mainSplitPane.setDividerSize(5);
+        mainSplitPane.setOneTouchExpandable(false);
         
         mainSplitPane.setLeftComponent(jPanel1);
         mainSplitPane.setRightComponent(desktopPane);
