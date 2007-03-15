@@ -39,16 +39,23 @@ public class ChannelClientInfo {
 	private ClientInfo cClient = null;
 	/** Integer representation of the channel modes assocated with this user. */
 	private int nModes = 0;
-	/** Reference to the parser object that owns this channel, Used for modes. */
+	/** Reference to the parser object that owns this channelclient, Used for modes. */
 	private IRCParser myParser;
+	/** Reference to the channel object that owns this channelclient. */
+	private ChannelInfo myChannel;
 	
 	/**
 	 * Create a ChannelClient instance of a CLient.
 	 *
 	 * @param tParser Refernce to parser that owns this channelclient (used for modes)
 	 * @param client Client that this channelclient represents
+	 * @param channel Channel that owns this channelclient
 	 */	
-	public ChannelClientInfo(final IRCParser tParser, final ClientInfo client) { myParser = tParser; cClient = client; }
+	public ChannelClientInfo(final IRCParser tParser, final ClientInfo client, final ChannelInfo channel) {
+		myParser = tParser;
+		cClient = client;
+		myChannel = channel;
+	}
 	
 	/**
 	 * Get the client object represented by this channelclient.
@@ -153,6 +160,16 @@ public class ChannelClientInfo {
 		String sModes = this.getImportantModePrefix();
 		return sModes+this.getNickname();
 	}	
+	
+	/**
+	 * Attempt to kick this user from the channel.
+	 *
+	 * @param sReason Why are they being kicked? "" for no reason
+	 */
+	public void kick(String sReason) {
+		if (!sReason.equals("")) { sReason = " :"+sReason; }
+		myParser.sendString("KICK "+myChannel+" "+this.getNickname()+sReason);
+	}
 	
 	/**
 	 * Get the "Complete" String Value of ChannelClientInfo (ie @+Nickname).
