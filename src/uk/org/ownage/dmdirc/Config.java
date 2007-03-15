@@ -96,12 +96,13 @@ public final class Config {
         defaults.setProperty("general.quitmessage", "Using DMDirc");
         defaults.setProperty("general.partmessage", "Using DMDirc");
         defaults.setProperty("general.cyclemessage", "Cycling");
+        defaults.setProperty("general.kickmessage", "Bye!");
         
         // These two should no longer be used
         // TODO: Check for any use of these (& update), then remove then
         defaults.setProperty("general.globaldisconnectmessage", "true");
         defaults.setProperty("general.sendinfomessagestoactive", "true");
-                
+        
         // These are temporary until we get identity support
         defaults.setProperty("general.defaultnick", "DMDircUser");
         defaults.setProperty("general.alternatenick", "DMDircUser_");
@@ -194,7 +195,7 @@ public final class Config {
      * @param option name of the option
      * @param value value of the option
      */
-    public static void setOption(final String domain, final String option, 
+    public static void setOption(final String domain, final String option,
             final String value) {
         if (properties == null) {
             initialise();

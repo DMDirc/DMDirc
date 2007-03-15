@@ -27,25 +27,9 @@ import java.util.Vector;
 
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.commandparser.commands.Test;
-import uk.org.ownage.dmdirc.commandparser.commands.channel.ChannelSettings;
-import uk.org.ownage.dmdirc.commandparser.commands.channel.Cycle;
-import uk.org.ownage.dmdirc.commandparser.commands.channel.Me;
-import uk.org.ownage.dmdirc.commandparser.commands.channel.MeEmpty;
-import uk.org.ownage.dmdirc.commandparser.commands.channel.Part;
-import uk.org.ownage.dmdirc.commandparser.commands.channel.PartDefault;
-import uk.org.ownage.dmdirc.commandparser.commands.query.QueryMe;
-import uk.org.ownage.dmdirc.commandparser.commands.query.QueryMeEmpty;
-import uk.org.ownage.dmdirc.commandparser.commands.server.Clear;
-import uk.org.ownage.dmdirc.commandparser.commands.server.Help;
-import uk.org.ownage.dmdirc.commandparser.commands.server.Join;
-import uk.org.ownage.dmdirc.commandparser.commands.server.LoadFormatter;
-import uk.org.ownage.dmdirc.commandparser.commands.server.Nick;
-import uk.org.ownage.dmdirc.commandparser.commands.server.Quit;
-import uk.org.ownage.dmdirc.commandparser.commands.server.QuitDefault;
-import uk.org.ownage.dmdirc.commandparser.commands.server.Raw;
-import uk.org.ownage.dmdirc.commandparser.commands.server.ReloadFormatter;
-import uk.org.ownage.dmdirc.commandparser.commands.server.SaveFormatter;
-
+import uk.org.ownage.dmdirc.commandparser.commands.channel.*;
+import uk.org.ownage.dmdirc.commandparser.commands.query.*;
+import uk.org.ownage.dmdirc.commandparser.commands.server.*;
 
 /**
  * The command manager creates and manages a single instance of all commands,
@@ -85,6 +69,9 @@ public final class CommandManager {
         channelCommands.add(new MeEmpty());
         channelCommands.add(new Part());
         channelCommands.add(new PartDefault());
+        channelCommands.add(new Kick());
+        channelCommands.add(new KickEmpty());
+        channelCommands.add(new KickReason());
         channelCommands.add(new ChannelSettings());
         
         serverCommands = new Vector<Command>(0, 1);
