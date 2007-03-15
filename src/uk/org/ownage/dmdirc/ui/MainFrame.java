@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.ui;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.MouseInfo;
@@ -44,6 +45,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
 
 import uk.org.ownage.dmdirc.Config;
@@ -53,8 +56,6 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
 import uk.org.ownage.dmdirc.ui.framemanager.tree.TreeFrameManager;
-
-import org.jdesktop.layout.GroupLayout;
 
 /**
  * The main application frame.
@@ -406,9 +407,8 @@ public final class MainFrame extends JFrame implements WindowListener {
      * Initialises the components for this frame.
      */
     private void initComponents() {
-        final GroupLayout jPanel1Layout;
-        final GroupLayout jPanel2Layout;
-        final GroupLayout layout = new GroupLayout(getContentPane());
+        final SpringLayout springLayout = new SpringLayout();
+        JSplitPane mainSplitPane;
         
         jPanel1 = new JPanel();
         jPanel2 = new JPanel();
@@ -419,36 +419,8 @@ public final class MainFrame extends JFrame implements WindowListener {
         miPreferences = new JMenuItem();
         windowMenu = new JMenu();
         toggleStateMenuItem = new JMenuItem();
-        
-        jPanel1Layout = new GroupLayout(jPanel1);
-        jPanel2Layout = new GroupLayout(jPanel2);
-        
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle("DMDirc");
-        jPanel1.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 0));
-        
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-                jPanel1Layout.createParallelGroup(GroupLayout.LEADING)
-                .add(0, 153, Short.MAX_VALUE)
-                );
-        jPanel1Layout.setVerticalGroup(
-                jPanel1Layout.createParallelGroup(GroupLayout.LEADING)
-                .add(0, 488, Short.MAX_VALUE)
-                );
-        
-        jPanel2.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 5));
         desktopPane.setBackground(new Color(238, 238, 238));
-       
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-                jPanel2Layout.createParallelGroup(GroupLayout.LEADING)
-                .add(GroupLayout.TRAILING, desktopPane, GroupLayout.DEFAULT_SIZE, 589, Short.MAX_VALUE)
-                );
-        jPanel2Layout.setVerticalGroup(
-                jPanel2Layout.createParallelGroup(GroupLayout.LEADING)
-                .add(desktopPane, GroupLayout.DEFAULT_SIZE, 488, Short.MAX_VALUE)
-                );
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -465,24 +437,32 @@ public final class MainFrame extends JFrame implements WindowListener {
         toggleStateMenuItem.setMnemonic('m');
         toggleStateMenuItem.setText("Maximise");
         windowMenu.add(toggleStateMenuItem);
+        setPreferredSize(new Dimension(800, 600));
         
         jMenuBar1.add(windowMenu);
         
         setJMenuBar(jMenuBar1);
         
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(GroupLayout.LEADING)
-                .add(GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(jPanel1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.LEADING)
-                .add(jPanel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(jPanel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                );
+        getContentPane().add(mainSplitPane);
+        
+        mainSplitPane.setDividerSize(5);
+        
+        mainSplitPane.setLeftComponent(jPanel1);
+        mainSplitPane.setRightComponent(desktopPane);
+        
+        mainSplitPane.setDividerLocation(155);
+        mainSplitPane.setResizeWeight(0);
+        
+        springLayout.putConstraint(SpringLayout.EAST, getContentPane(), 10,
+                SpringLayout.EAST, mainSplitPane);
+        springLayout.putConstraint(SpringLayout.SOUTH, getContentPane(), 10,
+                SpringLayout.SOUTH, mainSplitPane);
+        
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setTitle("DMDirc");
+        jPanel1.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 0));
+        desktopPane.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 0));
+        
         pack();
     }
 }
