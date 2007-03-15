@@ -27,9 +27,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
@@ -107,8 +105,8 @@ public final class PreferencesDialog extends StandardDialog
      */
     private void initComponents() {
         cardLayout = new CardLayout();
+        SpringLayout layout = new SpringLayout();
         mainPanel = new JPanel(cardLayout);
-        final GridBagConstraints constraints = new GridBagConstraints();
         final JButton button1 = new JButton();
         final JButton button2 = new JButton();
         tabList = new JList(new DefaultListModel());
@@ -118,47 +116,55 @@ public final class PreferencesDialog extends StandardDialog
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new GridBagLayout());
         setTitle("Preferences");
-        setResizable(true);
-        
-        
-        button1.setPreferredSize(new Dimension(100, 25));
-        button2.setPreferredSize(new Dimension(100, 25));
-        
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        constraints.gridheight = 2;
-        constraints.insets = new Insets(SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER);
-        getContentPane().add(tabList, constraints);
-        
-        constraints.gridheight = 1;
-        constraints.gridwidth = 2;
-        constraints.gridx = 1;
-        getContentPane().add(mainPanel, constraints);
-        
-        constraints.weighty = 0.0;
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        constraints.gridwidth = 1;
-        getContentPane().add(Box.createHorizontalGlue(), constraints);
-
-        constraints.weightx = 0.0;
-        constraints.insets.set(0, 0, LARGE_BORDER, LARGE_BORDER);
-        constraints.gridx = 2;
-        constraints.anchor = GridBagConstraints.EAST;
-        constraints.fill = GridBagConstraints.NONE;
-        getContentPane().add(button1, constraints);
-        
-        constraints.gridx = 3;
-        getContentPane().add(button2, constraints);
+        setResizable(false);
         
         mainPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
                 SMALL_BORDER, LARGE_BORDER));
         
+        getContentPane().setLayout(layout);
+        
+        button1.setPreferredSize(new Dimension(100, 25));
+        button2.setPreferredSize(new Dimension(100, 25));
+        tabList.setPreferredSize(new Dimension(100, 450));
+        setMinimumSize(new Dimension(600,500));
+        
         orderButtons(button1, button2);
+        
+        getContentPane().add(tabList);
+        
+        getContentPane().add(mainPanel);
+        
+        getContentPane().add(Box.createHorizontalGlue());
+        
+        getContentPane().add(button1);
+        
+        getContentPane().add(button2);
+        
+        //tab list
+        layout.putConstraint(SpringLayout.WEST, tabList, 10,
+                SpringLayout.WEST, getContentPane());
+        layout.putConstraint(SpringLayout.NORTH, tabList, 10,
+                SpringLayout.NORTH, getContentPane());
+        //main panel
+        layout.putConstraint(SpringLayout.WEST, mainPanel, 5,
+                SpringLayout.EAST, tabList);
+        layout.putConstraint(SpringLayout.NORTH, mainPanel, 5,
+                SpringLayout.NORTH, getContentPane());
+        //ok button
+        layout.putConstraint(SpringLayout.EAST, getOkButton(), -10,
+                SpringLayout.EAST, getContentPane());
+        layout.putConstraint(SpringLayout.NORTH, getOkButton(), 5,
+                SpringLayout.SOUTH, mainPanel);
+        //cancel button
+        layout.putConstraint(SpringLayout.EAST, getCancelButton(), -10,
+                SpringLayout.WEST, getOkButton());
+        layout.putConstraint(SpringLayout.NORTH, getCancelButton(), 5,
+                SpringLayout.SOUTH, mainPanel);
+        //panel size
+        layout.putConstraint(SpringLayout.EAST, getContentPane(), 10,
+                SpringLayout.EAST, mainPanel);
+        layout.putConstraint(SpringLayout.SOUTH, getContentPane(), 10,
+                SpringLayout.SOUTH, getOkButton());
         
         initGeneralTab(mainPanel);
         
@@ -177,8 +183,6 @@ public final class PreferencesDialog extends StandardDialog
         initAdvancedTab(mainPanel);
         
         initListeners();
-        
-        setPreferredSize(new Dimension(620,400));
         
         pack();
     }
@@ -228,17 +232,7 @@ public final class PreferencesDialog extends StandardDialog
      * @param tabbedPane parent pane
      */
     private void initGeneralTab(final JPanel cardLayoutPanel) {
-        final JPanel generalPanel = new JPanel(new GridBagLayout());
-        final GridBagConstraints constraints = new GridBagConstraints();
-        final JPanel panel;
-        
-        generalPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER));
-        
-        cardLayoutPanel.add(generalPanel, "General");
-        ((DefaultListModel) tabList.getModel()).addElement("General");
-        
-        panel = new JPanel(new SpringLayout());
+        final JPanel panel = new JPanel(new SpringLayout());
         
         addComponent(panel, "general.closemessage", "Close message: ",
                 optionType.TEXTFIELD);
@@ -252,10 +246,8 @@ public final class PreferencesDialog extends StandardDialog
         layoutGrid(panel, 4, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
         
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        generalPanel.add(panel, constraints);
+        cardLayoutPanel.add(panel, "General");
+        ((DefaultListModel) tabList.getModel()).addElement("General");
     }
     
     /**
@@ -264,21 +256,7 @@ public final class PreferencesDialog extends StandardDialog
      * @param tabbedPane parent pane
      */
     private void initUITab(final JPanel cardLayoutPanel) {
-        final JPanel uiPanel = new JPanel();
-        final GridBagConstraints constraints = new GridBagConstraints();
-        JPanel panel;
-        JLabel label;
-        JTextField textField;
-        JCheckBox checkBox;
-        JComboBox comboBox;
-        
-        cardLayoutPanel.add(uiPanel, "GUI");
-        ((DefaultListModel) tabList.getModel()).addElement("GUI");
-        
-        uiPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER));
-        
-        panel = new JPanel(new SpringLayout());
+        final JPanel panel = new JPanel(new SpringLayout());
         
         addComponent(panel, "ui.showversion", "Show version: ",
                 optionType.CHECKBOX);
@@ -300,10 +278,8 @@ public final class PreferencesDialog extends StandardDialog
         layoutGrid(panel, 8, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
         
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        uiPanel.add(panel, constraints);
+        cardLayoutPanel.add(panel, "GUI");
+        ((DefaultListModel) tabList.getModel()).addElement("GUI");
     }
     
     /**
@@ -312,17 +288,7 @@ public final class PreferencesDialog extends StandardDialog
      * @param tabbedPane parent pane
      */
     private void initTreeViewTab(final JPanel cardLayoutPanel) {
-        final JPanel treeViewPanel = new JPanel();
-        final GridBagConstraints constraints = new GridBagConstraints();
-        JPanel panel;
-        
-        cardLayoutPanel.add(treeViewPanel, "Treeview");
-        ((DefaultListModel) tabList.getModel()).addElement("Treeview");
-        
-        treeViewPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER));
-        
-        panel = new JPanel(new SpringLayout());
+        final JPanel panel = new JPanel(new SpringLayout());
         
         addComponent(panel, "ui.rolloverEnabled", "Rollover enabled: ",
                 optionType.CHECKBOX);
@@ -336,10 +302,8 @@ public final class PreferencesDialog extends StandardDialog
         layoutGrid(panel, 4, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
         
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        treeViewPanel.add(panel, constraints);
+        cardLayoutPanel.add(panel, "Treeview");
+        ((DefaultListModel) tabList.getModel()).addElement("Treeview");
         
     }
     
@@ -349,17 +313,7 @@ public final class PreferencesDialog extends StandardDialog
      * @param tabbedPane parent pane
      */
     private void initNotificationsTab(final JPanel cardLayoutPanel) {
-        final JPanel notificationsPanel = new JPanel();
-        final GridBagConstraints constraints = new GridBagConstraints();
-        JPanel panel;
-        
-        cardLayoutPanel.add(notificationsPanel, "Notifications");
-        ((DefaultListModel) tabList.getModel()).addElement("Notifications");
-        
-        notificationsPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER));
-        
-        panel = new JPanel(new SpringLayout());
+        final JPanel panel = new JPanel(new SpringLayout());
         
         addComponent(panel, "notifications.socketClosed", "Socket closed: ",
                 optionType.COMBOBOX);
@@ -373,10 +327,8 @@ public final class PreferencesDialog extends StandardDialog
         layoutGrid(panel, 4, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
         
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        notificationsPanel.add(panel, constraints);
+        cardLayoutPanel.add(panel, "Notifications");
+        ((DefaultListModel) tabList.getModel()).addElement("Notifications");;
     }
     
     /**
@@ -385,17 +337,7 @@ public final class PreferencesDialog extends StandardDialog
      * @param tabbedPane parent pane
      */
     private void initInputTab(final JPanel cardLayoutPanel) {
-        final JPanel inputPanel = new JPanel();
-        final GridBagConstraints constraints = new GridBagConstraints();
-        JPanel panel;
-        
-        cardLayoutPanel.add(inputPanel, "Input");
-        ((DefaultListModel) tabList.getModel()).addElement("Input");
-        
-        inputPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER));
-        
-        panel = new JPanel(new SpringLayout());
+        final JPanel panel = new JPanel(new SpringLayout());
         
         addComponent(panel, "general.commandchar", "Command character: ",
                 optionType.TEXTFIELD);
@@ -405,10 +347,8 @@ public final class PreferencesDialog extends StandardDialog
         layoutGrid(panel, 2, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
         
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        inputPanel.add(panel, constraints);
+        cardLayoutPanel.add(panel, "Input");
+        ((DefaultListModel) tabList.getModel()).addElement("Input");
     }
     
     /**
@@ -417,17 +357,7 @@ public final class PreferencesDialog extends StandardDialog
      * @param tabbedPane parent pane
      */
     private void initLoggingTab(final JPanel cardLayoutPanel) {
-        final JPanel loggingPanel = new JPanel(new GridBagLayout());
-        final GridBagConstraints constraints = new GridBagConstraints();
-        JPanel panel;
-        
-        cardLayoutPanel.add(loggingPanel, "Logging");
-        ((DefaultListModel) tabList.getModel()).addElement("Logging");
-        
-        loggingPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER));
-        
-        panel = new JPanel(new SpringLayout());
+        final JPanel panel = new JPanel(new SpringLayout());
         
         addComponent(panel, "logging.dateFormat", "Date format: ",
                 optionType.TEXTFIELD);
@@ -441,10 +371,8 @@ public final class PreferencesDialog extends StandardDialog
         layoutGrid(panel, 4, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
         
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        loggingPanel.add(panel, constraints);
+        cardLayoutPanel.add(panel, "Logging");
+        ((DefaultListModel) tabList.getModel()).addElement("Logging");
     }
     
     /**
@@ -453,13 +381,10 @@ public final class PreferencesDialog extends StandardDialog
      * @param tabbedPane parent pane
      */
     private void initIdentitiesTab(final JPanel cardLayoutPanel) {
-        final JPanel identitiesPanel = new JPanel(new GridBagLayout());
+        final JPanel panel = new JPanel(new SpringLayout());
         
-        cardLayoutPanel.add(identitiesPanel, "Identities");
+        cardLayoutPanel.add(panel, "Identities");
         ((DefaultListModel) tabList.getModel()).addElement("Identities");
-        
-        identitiesPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER));
     }
     
     /**
@@ -468,13 +393,10 @@ public final class PreferencesDialog extends StandardDialog
      * @param tabbedPane parent pane
      */
     private void initAdvancedTab(final JPanel cardLayoutPanel) {
-        final JPanel advancedPanel = new JPanel(new GridBagLayout());
+        final JPanel panel = new JPanel(new SpringLayout());
         
-        cardLayoutPanel.add(advancedPanel, "Advanced");
+        cardLayoutPanel.add(panel, "Advanced");
         ((DefaultListModel) tabList.getModel()).addElement("Advanced");
-        
-        advancedPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER));
     }
     
     /**
@@ -580,10 +502,8 @@ public final class PreferencesDialog extends StandardDialog
      */
     public void valueChanged(ListSelectionEvent selectionEvent) {
         if (!selectionEvent.getValueIsAdjusting()) {
-            String selectedItem = (String) ((JList) selectionEvent.getSource()).
-                    getSelectedValue();
-            System.out.println(selectedItem);
-            cardLayout.show(mainPanel, selectedItem);
+            cardLayout.show(mainPanel, (String) ((JList) selectionEvent.
+                    getSource()).getSelectedValue());
         }
     }
 }
