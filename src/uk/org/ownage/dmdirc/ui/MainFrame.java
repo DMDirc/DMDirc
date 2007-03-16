@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
@@ -48,7 +49,6 @@ import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
-import javax.swing.border.LineBorder;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
@@ -57,6 +57,7 @@ import uk.org.ownage.dmdirc.Main;
 import uk.org.ownage.dmdirc.ServerManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.ui.components.StatusBar;
 import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
 import uk.org.ownage.dmdirc.ui.framemanager.tree.TreeFrameManager;
 
@@ -131,6 +132,9 @@ public final class MainFrame extends JFrame implements WindowListener {
     
     /** split pane. */
     private JSplitPane mainSplitPane;
+    
+    /** status bar. */
+    private StatusBar statusBar;
     
     /**
      * Creates new form MainFrame.
@@ -358,6 +362,15 @@ public final class MainFrame extends JFrame implements WindowListener {
     }
     
     /**
+     * returns the status bar instance.
+     *
+     * @return StatusBar instance
+     */
+    public StatusBar getStatusBar() {
+        return statusBar;
+    }
+    
+    /**
      * Called when the window is opened. Not implemented.
      * @param windowEvent The event associated with this callback
      */
@@ -426,10 +439,12 @@ public final class MainFrame extends JFrame implements WindowListener {
         toggleStateMenuItem = new JMenuItem();
         desktopPane.setBackground(new Color(238, 238, 238));
         mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        statusBar = new StatusBar();
         
         mainSplitPane.setBorder(null);
-        BasicSplitPaneDivider divider = ((BasicSplitPaneUI) mainSplitPane.getUI()).getDivider();
-        if (divider != null){
+        final BasicSplitPaneDivider divider =
+                ((BasicSplitPaneUI) mainSplitPane.getUI()).getDivider();
+        if (divider != null) {
             divider.setBorder(null);
         }
         
@@ -454,7 +469,9 @@ public final class MainFrame extends JFrame implements WindowListener {
         
         setJMenuBar(jMenuBar1);
         
-        getContentPane().add(mainSplitPane);
+        getContentPane().add(mainSplitPane, BorderLayout.CENTER);
+        
+        getContentPane().add(statusBar, BorderLayout.SOUTH);
         
         mainSplitPane.setDividerSize(5);
         mainSplitPane.setOneTouchExpandable(false);
@@ -465,10 +482,10 @@ public final class MainFrame extends JFrame implements WindowListener {
         mainSplitPane.setDividerLocation(155);
         mainSplitPane.setResizeWeight(0);
         
-        springLayout.putConstraint(SpringLayout.EAST, getContentPane(), 10,
-                SpringLayout.EAST, mainSplitPane);
-        springLayout.putConstraint(SpringLayout.SOUTH, getContentPane(), 10,
-                SpringLayout.SOUTH, mainSplitPane);
+        //springLayout.putConstraint(SpringLayout.EAST, getContentPane(), 10,
+        //        SpringLayout.EAST, mainSplitPane);
+        //springLayout.putConstraint(SpringLayout.SOUTH, getContentPane(), 10,
+        //        SpringLayout.SOUTH, mainSplitPane);
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("DMDirc");
