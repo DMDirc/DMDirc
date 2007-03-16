@@ -28,9 +28,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Date;
 
-import javax.swing.JScrollBar;
-import javax.swing.SwingUtilities;
 import javax.swing.JInternalFrame;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.InternalFrameEvent;
@@ -45,6 +49,9 @@ import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
+
+import org.jdesktop.layout.GroupLayout;
+import org.jdesktop.layout.LayoutStyle;
 
 /**
  * The ServerFrame is the MDI window that shows server messages to the user.
@@ -84,30 +91,44 @@ public class ServerFrame extends JInternalFrame implements CommandWindow {
      */
     private InputHandler inputHandler;
     
+    /** scroll pane. */
+    private JScrollPane jScrollPane1;
+    
+    /** text field. */
+    private JTextField jTextField1;
+    
+    /** text pane. */
+    private JTextPane jTextPane1;
+    
     /**
      * Creates a new ServerFrame.
-     * @param commandParser The command parser to use
+     * @param newCommandParser The command parser to use
      */
-    public ServerFrame(final CommandParser commandParser) {
+    public ServerFrame(final CommandParser newCommandParser) {
         initComponents();
         
-        inputHandler = new InputHandler(jTextField1, commandParser, this);
+        inputHandler = new InputHandler(jTextField1, newCommandParser, this);
         
         setMaximizable(true);
         setClosable(true);
         setResizable(true);
         
-        jTextPane1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
-        jTextPane1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
-        jTextField1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
-        jTextField1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
-        jTextField1.setCaretColor(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
+        jTextPane1.setBackground(ColourManager.getColour(
+                Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
+        jTextPane1.setForeground(ColourManager.getColour(
+                Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
+        jTextField1.setBackground(ColourManager.getColour(
+                Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
+        jTextField1.setForeground(ColourManager.getColour(
+                Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
+        jTextField1.setCaretColor(ColourManager.getColour(
+                Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
         
         scrollBar = jScrollPane1.getVerticalScrollBar();
         this.commandParser = commandParser;
         
         addPropertyChangeListener("maximum", new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+            public void propertyChange(final PropertyChangeEvent propertyChangeEvent) {
                 if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
                     ServerFrame.this.myborder = getBorder();
                     ServerFrame.this.titlebarSize =
@@ -115,14 +136,14 @@ public class ServerFrame extends JInternalFrame implements CommandWindow {
                             .getNorthPane().getPreferredSize();
                     
                     ((BasicInternalFrameUI) getUI()).getNorthPane()
-                    .setPreferredSize(new Dimension(0,0));
-                    setBorder(new EmptyBorder(0,0,0,0));
+                    .setPreferredSize(new Dimension(0, 0));
+                    setBorder(new EmptyBorder(0, 0, 0, 0));
                     
                     MainFrame.getMainFrame().setMaximised(true);
                 } else {
-                    autoScroll = ((scrollBar.getValue() + scrollBar.getVisibleAmount())
-                    != scrollBar.getMaximum());
-                    if(autoScroll) {
+                    autoScroll = scrollBar.getValue()
+                    + scrollBar.getVisibleAmount() != scrollBar.getMaximum();
+                    if (autoScroll) {
                         jTextPane1.setCaretPosition(jTextPane1.getStyledDocument().getLength());
                     }
                     
@@ -223,45 +244,34 @@ public class ServerFrame extends JInternalFrame implements CommandWindow {
         addLine(Formatter.formatMessage(messageType, args));
     }
     
-    /** This method is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * Initialises components in this frame.
      */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        jTextField1 = new javax.swing.JTextField();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTextPane1 = new javax.swing.JTextPane();
-
+        jTextField1 = new JTextField();
+        jScrollPane1 = new JScrollPane();
+        jTextPane1 = new JTextPane();
+        
         setTitle("Server Frame");
-
-        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        
+        jScrollPane1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         jTextPane1.setEditable(false);
         jScrollPane1.setViewportView(jTextPane1);
-
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
+        
+        final GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
-        );
+                layout.createParallelGroup(GroupLayout.LEADING)
+                .add(jTextField1, GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+                .add(GroupLayout.TRAILING, jScrollPane1, GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+                );
         layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 19, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-        );
+                layout.createParallelGroup(GroupLayout.LEADING)
+                .add(GroupLayout.TRAILING, layout.createSequentialGroup()
+                .add(jScrollPane1, GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.RELATED)
+                .add(jTextField1, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE))
+                );
         pack();
-    }// </editor-fold>//GEN-END:initComponents
-    
-    
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextPane jTextPane1;
-    // End of variables declaration//GEN-END:variables
-    
+    }
 }
