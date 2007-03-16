@@ -30,6 +30,7 @@ import javax.swing.BorderFactory;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
@@ -101,6 +102,12 @@ public final class NewServerDialog extends StandardDialog {
     
     /** text field. */
     private JTextField jTextField3;
+    
+    /** label. */
+    private JLabel jLabel5;
+    
+    /** combo box. */
+    private JComboBox jComboBox1;
     
     /**
      * Creates a new instance of the dialog.
@@ -198,6 +205,8 @@ public final class NewServerDialog extends StandardDialog {
         jButton1 = new JButton();
         jButton2 = new JButton();
         jCheckBox4 = new JCheckBox();
+        jLabel5 = new JLabel();
+        jComboBox1 = new JComboBox(new String[]{"Default", });
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Connect to a new server");
@@ -214,6 +223,10 @@ public final class NewServerDialog extends StandardDialog {
         jTextField2.setText("7000");
         
         jLabel4.setText("Password:");
+        
+        jLabel5.setText("Identity: ");
+        
+        jComboBox1.setEnabled(false);
         
         jCheckBox1.setText("Open in a new server window");
         jCheckBox1.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -275,6 +288,12 @@ public final class NewServerDialog extends StandardDialog {
                 .addContainerGap(28, Short.MAX_VALUE)
                 .add(jCheckBox4, GroupLayout.PREFERRED_SIZE, 362, GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
+                .add(GroupLayout.TRAILING, layout.createSequentialGroup()
+                .add(16, 16, 16)
+                .add(jLabel5)
+                .addPreferredGap(LayoutStyle.RELATED)
+                .add(jComboBox1)
+                .addContainerGap())
                 );
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.LEADING)
@@ -285,12 +304,16 @@ public final class NewServerDialog extends StandardDialog {
                 .add(layout.createParallelGroup(GroupLayout.BASELINE)
                 .add(jLabel1)
                 .add(jTextField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                .addPreferredGap(LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(GroupLayout.BASELINE)
                 .add(jLabel3)
                 .add(jTextField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .add(jLabel4)
                 .add(jTextField3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(LayoutStyle.RELATED, 15, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(GroupLayout.BASELINE)
+                .add(jLabel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .add(jComboBox1))
                 .addPreferredGap(LayoutStyle.RELATED, 15, Short.MAX_VALUE)
                 .add(jCheckBox4)
                 .addPreferredGap(LayoutStyle.RELATED)

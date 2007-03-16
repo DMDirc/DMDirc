@@ -270,7 +270,8 @@ public class ServerFrame extends JInternalFrame implements CommandWindow {
                 .add(GroupLayout.TRAILING, layout.createSequentialGroup()
                 .add(jScrollPane1, GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
                 .addPreferredGap(LayoutStyle.RELATED)
-                .add(jTextField1, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE))
+                .add(jTextField1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.RELATED, 5, 5))
                 );
         pack();
     }
