@@ -412,8 +412,15 @@ public final class PreferencesDialog extends StandardDialog
     private void initAdvancedTab(final JPanel cardLayoutPanel) {
         final JPanel panel = new JPanel(new SpringLayout());
         
+        addComponent(panel, "ui.lookandfeel", "Look and feel: ",
+                optionType.TEXTFIELD);
+        
+        layoutGrid(panel, 1, 2, SMALL_BORDER, SMALL_BORDER,
+                LARGE_BORDER, LARGE_BORDER);
+        
         cardLayoutPanel.add(panel, "Advanced");
         ((DefaultListModel) tabList.getModel()).addElement("Advanced");
+        
     }
     
     /**
