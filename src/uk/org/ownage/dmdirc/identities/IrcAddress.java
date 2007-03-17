@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
  * existing implementations that use irc://server/channel.
  * @author chris
  */
-public class IrcAddress implements Comparable {
+public final class IrcAddress implements Comparable {
     
     /**
      * The regular expression used for matching addresses.
@@ -100,7 +100,13 @@ public class IrcAddress implements Comparable {
         channel = myChannel;
     }
 
-    public int compareTo(Object target) {
+    /**
+     * Compares this config source to another.
+     * @param target The object to compare to.
+     * @return -1 if this object is less than the other, +1 if this object is
+     * greater, 0 if they're equal.
+     */
+    public int compareTo(final Object target) {
         return 1;
     }
     

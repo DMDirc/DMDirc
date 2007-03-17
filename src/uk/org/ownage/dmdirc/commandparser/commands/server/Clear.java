@@ -50,7 +50,7 @@ public class Clear extends ServerCommand {
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
+    public final void execute(final CommandWindow origin, final Server server,
             final String... args) {        
         origin.clear();
     }

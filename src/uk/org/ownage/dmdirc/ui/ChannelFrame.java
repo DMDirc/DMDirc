@@ -44,7 +44,6 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
@@ -328,8 +327,9 @@ public class ChannelFrame extends JInternalFrame implements CommandWindow {
         jList1 = new JList();
         
         splitPane.setBorder(null);
-        BasicSplitPaneDivider divider = ((BasicSplitPaneUI) splitPane.getUI()).getDivider();
-        if (divider != null){
+        final BasicSplitPaneDivider divider = 
+                ((BasicSplitPaneUI) splitPane.getUI()).getDivider();
+        if (divider != null) {
             divider.setBorder(null);
         }
         

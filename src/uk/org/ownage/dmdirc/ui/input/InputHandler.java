@@ -98,18 +98,19 @@ public final class InputHandler implements KeyListener, ActionListener {
     /**
      * Creates a new instance of InputHandler. Adds listeners to the target
      * that we need to operate.
-     * @param target The text field this input handler is dealing with.
-     * @param commandParser The command parser to use for this text field.
-     * @param parentWindow The window that owns this input handler
+     * @param thisTarget The text field this input handler is dealing with.
+     * @param thisCommandParser The command parser to use for this text field.
+     * @param thisParentWindow The window that owns this input handler
      */
-    public InputHandler(final JTextField target, final CommandParser commandParser,
-            final CommandWindow parentWindow) {
+    public InputHandler(final JTextField thisTarget, 
+            final CommandParser thisCommandParser,
+            final CommandWindow thisParentWindow) {
         
         bufferSize = Integer.parseInt(Config.getOption("ui", "inputbuffersize"));
         
-        this.commandParser = commandParser;
-        this.parentWindow = parentWindow;
-        this.target = target;
+        this.commandParser = thisCommandParser;
+        this.parentWindow = thisParentWindow;
+        this.target = thisTarget;
         this.buffer = new String[bufferSize];
         bufferPosition = 0;
         bufferMinimum = 0;

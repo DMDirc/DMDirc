@@ -30,7 +30,7 @@ import uk.org.ownage.dmdirc.Config;
  * The tab completer handles a user's request to tab complete some word.
  * @author chris
  */
-public class TabCompleter {
+public final class TabCompleter {
     
     /**
      * The parent TabCompleter. Results from parents are merged with results
@@ -48,11 +48,11 @@ public class TabCompleter {
     
     /**
      * Creates a new instance of TabCompleter, with a designated parent.
-     * @param parent The parent TabCompleter, which is checked for matches if
+     * @param newParent The parent TabCompleter, which is checked for matches if
      * local ones fail
      */
-    public TabCompleter(TabCompleter parent) {
-        this.parent = parent;
+    public TabCompleter(TabCompleter newParent) {
+        this.parent = newParent;
     }
     
     /**
@@ -60,7 +60,7 @@ public class TabCompleter {
      * @param partial The string to tab complete
      * @return A TabCompleterResult containing any matches found
      */
-    public TabCompleterResult complete(String partial) {
+    public TabCompleterResult complete(final String partial) {
         TabCompleterResult result = new TabCompleterResult();
         
         for (String entry : entries) {
@@ -85,20 +85,20 @@ public class TabCompleter {
      * Adds a new entry to this tab completer's list.
      * @param entry The new entry to be added
      */
-    public void addEntry(String entry) {
+    public void addEntry(final String entry) {
         entries.add(entry);
     }
     
     /**
      * Adds multiple new entries to this tab completer's list.
-     * @param entries Entries to be added
+     * @param newEntries Entries to be added
      */
-    public void addEntries(ArrayList<String> entries) {
-        if (entries == null) {
+    public void addEntries(final ArrayList<String> newEntries) {
+        if (newEntries == null) {
             return;
         }
         
-        for (String entry : entries) {
+        for (String entry : newEntries) {
             addEntry(entry);
         }
     }
@@ -107,7 +107,7 @@ public class TabCompleter {
      * Removes a specified entry from this tab completer's list.
      * @param entry The entry to be removed
      */
-    public void removeEntry(String entry) {
+    public void removeEntry(final String entry) {
         entries.remove(entry);
     }
     
@@ -115,7 +115,7 @@ public class TabCompleter {
      * Replaces the current entries with the new list.
      * @param newEntries the new entries to use
      */
-    public void replaceEntries(ArrayList<String> newEntries) {
+    public void replaceEntries(final ArrayList<String> newEntries) {
         entries = newEntries;
     }
     
