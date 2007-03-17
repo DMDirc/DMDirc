@@ -22,7 +22,7 @@
 
 package uk.org.ownage.dmdirc;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.JInternalFrame;
 
@@ -49,11 +49,10 @@ public final class ServerManager {
     /**
      * All servers that currently exist.
      */
-    private Vector<Server> servers;
+    private final ArrayList<Server> servers = new ArrayList<Server>();
     
     /** Creates a new instance of ServerManager. */
     private ServerManager() {
-        servers = new Vector<Server>(0, 1);
     }
     
     /**

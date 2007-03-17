@@ -74,14 +74,14 @@ public final class Config {
      * @return configuration directory
      */
     public static String getConfigDir() {
-        final String fs = System.getProperty("file.separator");
+        final String seperator = System.getProperty("file.separator");
         //This is nasty.
         String baseDir = System.getenv("APPDATA");
         if (baseDir == null) {
             baseDir = System.getProperty("user.home");
         }
         //End nasty
-        return baseDir + fs + ".DMDirc" + fs;
+        return baseDir + seperator + ".DMDirc" + seperator;
     }
     
     /**

@@ -49,7 +49,7 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
  * received to/from the server).
  * @author chris
  */
-public final class Raw implements IDataIn, IDataOut, InternalFrameListener, 
+public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
         FrameContainer {
     
     /**
@@ -63,7 +63,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
     /**
      * The icon being used for this raw frame.
      */
-    private ImageIcon imageIcon;
+    private final ImageIcon imageIcon;
     
     /**
      * Creates a new instance of Raw.
@@ -109,7 +109,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      */
     public CommandWindow getFrame() {
         return frame;
-    }    
+    }
     
     /**
      * Called when the parser receives a line of data. The data is simply
@@ -128,7 +128,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      * @param data The data that was received
      * @param fromParser true if sent from parser, false otherwise
      */
-    public void onDataOut(final IRCParser parser, final String data, 
+    public void onDataOut(final IRCParser parser, final String data,
             final boolean fromParser) {
         frame.addLine(">>> " + data);
     }
@@ -249,8 +249,8 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      */
     public void sendNotification() {
         if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
-            final Color c = ColourManager.getColour(4);
-            MainFrame.getMainFrame().getFrameManager().showNotification(this, c);
+            final Color colour = ColourManager.getColour(4);
+            MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
         }
     }
     

@@ -85,12 +85,12 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     /**
      * The tabcompleter used for this channel.
      */
-    private TabCompleter tabCompleter;
+    private final TabCompleter tabCompleter;
     
     /**
      * The icon being used for this channel.
      */
-    private ImageIcon imageIcon;
+    private final ImageIcon imageIcon;
     
     /**
      * Creates a new instance of Channel.
@@ -435,13 +435,13 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         final String modes = cChannelClient.getImportantModePrefix();
         
         if (nick.equals(tParser.getMyself().getNickname())) {
-            if (sReason.equals("")) {
+            if (sReason.length() == 0) {
                 frame.addLine("channelSelfPart", modes, nick, ident, host, cChannel);
             } else {
                 frame.addLine("channelSelfPartReason", modes, nick, ident, host, cChannel, sReason);
             }
         } else {
-            if (sReason.equals("")) {
+            if (sReason.length() == 0) {
                 frame.addLine("channelPart", modes, nick, ident, host, cChannel);
             } else {
                 frame.addLine("channelPartReason", modes, nick, ident, host, sReason, cChannel);
@@ -474,7 +474,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         final String victimident = cKickedClient.getClient().getIdent();
         final String victimhost = cKickedClient.getClient().getHost();
         
-        if (sReason.equals("")) {
+        if (sReason.length() == 0) {
             frame.addLine("channelKick", kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,
                     victim, victimident, victimhost, cChannel.getName());
         } else {
@@ -501,7 +501,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         final ClientInfo client = cChannelClient.getClient();
         final String source = cChannelClient.getNickname();
         final String modes = cChannelClient.getImportantModePrefix();
-        if (sReason.equals("")) {
+        if (sReason.length() == 0) {
             frame.addLine("channelQuit", modes, source, client.getIdent(),
                     client.getHost(), cChannel);
         } else {
@@ -545,7 +545,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      */
     public void onChannelModeChanged(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
-        if (sHost.equals("")) {
+        if (sHost.length() == 0) {
             frame.addLine("channelModeDiscovered", sModes, cChannel.getName());
         } else {
             final String modes = getModes(cChannelClient);
@@ -754,8 +754,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     public void sendNotification() {
         final JInternalFrame activeFrame = MainFrame.getMainFrame().getActiveFrame();
         if (activeFrame != null && !activeFrame.equals(frame)) {
-            final Color c = ColourManager.getColour(4);
-            MainFrame.getMainFrame().getFrameManager().showNotification(this, c);
+            final Color colour = ColourManager.getColour(4);
+            MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
         }
     }
     

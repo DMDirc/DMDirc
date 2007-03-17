@@ -75,12 +75,12 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     /**
      * Open channels that currently exist on the server.
      */
-    private Hashtable<String, Channel> channels  = new Hashtable<String, Channel>();
+    private final Hashtable<String, Channel> channels  = new Hashtable<String, Channel>();
     
     /**
      * Open query windows on the server.
      */
-    private Hashtable<String, Query> queries = new Hashtable<String, Query>();
+    private final Hashtable<String, Query> queries = new Hashtable<String, Query>();
     
     /**
      * The ServerFrame corresponding to this server.
@@ -112,7 +112,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     /**
      * The tabcompleter used for this server.
      */
-    private TabCompleter tabCompleter = new TabCompleter();
+    private final TabCompleter tabCompleter = new TabCompleter();
     
     /**
      * The icon being used for this server.
@@ -194,7 +194,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         if (raw == null) {
             raw = new Raw(this);
             MainFrame.getMainFrame().getFrameManager().addRaw(this, raw);
-        }        
+        }
         
         try {
             parser.getCallbackManager().addCallback("OnChannelSelfJoin", this);
@@ -210,11 +210,11 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             parser.getCallbackManager().addCallback("OnMOTDEnd", this);
             
             parser.getCallbackManager().addCallback("OnDataIn", raw);
-            parser.getCallbackManager().addCallback("OnDataOut", raw);            
+            parser.getCallbackManager().addCallback("OnDataOut", raw);
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.FATAL, ex);
         }
-                
+        
         try {
             new Thread(parser).start();
         } catch (IllegalThreadStateException ex) {
@@ -470,16 +470,16 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         String target = "server";
         if (Config.hasOption("notifications", messageType)) {
             final String newTarget = Config.getOption("notifications", messageType);
-            if (newTarget.equals("server") || newTarget.equals("all") || newTarget.equals("active")) {
+            if ("server".equals(newTarget) || "all".equals(newTarget) || "active".equals(newTarget)) {
                 target = newTarget;
             }
         }
-        if (target.equals("server")) {
+        if ("server".equals(target)) {
             frame.addLine(messageType, args);
             sendNotification();
-        } else if (target.equals("all")) {
+        } else if ("all".equals(target)) {
             addLineToAll(messageType, args);
-        } else if (target.equals("active")) {
+        } else if ("active".equals(target)) {
             addLineToActive(messageType, args);
         }
     }
@@ -737,8 +737,8 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public void sendNotification() {
         if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
-            final Color c = ColourManager.getColour(4);
-            MainFrame.getMainFrame().getFrameManager().showNotification(this, c);
+            final Color colour = ColourManager.getColour(4);
+            MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
         }
     }
     

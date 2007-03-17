@@ -48,12 +48,12 @@ public final class CipherUtils {
      * Encryption cipher.
      */
     private static Cipher ecipher;
-
+    
     /**
      * Decryption cipher.
      */
     private static Cipher dcipher;
-
+    
     /**
      * Salt.
      */
@@ -61,7 +61,7 @@ public final class CipherUtils {
         (byte) 0xA9, (byte) 0x9B, (byte) 0xC8, (byte) 0x32,
         (byte) 0x56, (byte) 0x35, (byte) 0xE3, (byte) 0x03,
     };
-
+    
     /**
      * Iteration count.
      */
@@ -71,13 +71,13 @@ public final class CipherUtils {
      * number of auth attemps before failing the attempt.
      */
     private static final int AUTH_TRIES = 4;
-
+    
     /**
      * Prevents creation of a new instance of Encipher.
      */
     private CipherUtils() {
     }
-
+    
     /**
      * Encrypts a string using the stored settings. Will return null if the
      * automatic user authentication fails - use checkauth and auth.
@@ -85,8 +85,8 @@ public final class CipherUtils {
      * @return Encrypted string
      */
     public static String encrypt(final String str) {
-        if (dcipher == null || ecipher == null) {
-            if (!authAndCreateCiphers()) { return null; }
+        if ((dcipher == null || ecipher == null) && !authAndCreateCiphers()) {
+            return null;
         }
         try {
             return new String(ecipher.doFinal(str.getBytes("UTF8")));
@@ -101,7 +101,7 @@ public final class CipherUtils {
         }
         return null;
     }
-
+    
     /**
      * Encrypts a string using the stored settings. Will return null if the
      * automatic user authentication fails - use checkauth and auth.
@@ -109,8 +109,8 @@ public final class CipherUtils {
      * @return Decrypted string
      */
     public static String decrypt(final String str) {
-        if (dcipher == null || ecipher == null) {
-            if (!authAndCreateCiphers()) { return null; }
+        if ((dcipher == null || ecipher == null) && !authAndCreateCiphers()) {
+            return null;
         }
         try {
             return new String(dcipher.doFinal(str.getBytes()), "UTF8");
@@ -125,7 +125,7 @@ public final class CipherUtils {
         }
         return null;
     }
-
+    
     /**
      * Performs a SHA-512 hash.
      * @param data String to hashed
@@ -142,7 +142,7 @@ public final class CipherUtils {
         }
         return null;
     }
-
+    
     /**
      * Checks if a user is authed.
      * @return Auth status
@@ -153,7 +153,7 @@ public final class CipherUtils {
         }
         return false;
     }
-
+    
     /**
      * Auths a user and creates ciphers.
      * @return auth status

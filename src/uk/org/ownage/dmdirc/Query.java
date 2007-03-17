@@ -74,7 +74,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
     /**
      * The icon being used for this query.
      */
-    private ImageIcon imageIcon;
+    private final ImageIcon imageIcon;
     
     /**
      * Creates a new instance of Query.
@@ -348,8 +348,8 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      */
     public void sendNotification() {
         if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
-            final Color c = ColourManager.getColour(4);
-            MainFrame.getMainFrame().getFrameManager().showNotification(this, c);
+            final Color colour = ColourManager.getColour(4);
+            MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
         }
     }
     
