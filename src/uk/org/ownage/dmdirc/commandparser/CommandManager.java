@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.commandparser.commands.Test;
 import uk.org.ownage.dmdirc.commandparser.commands.channel.*;
 import uk.org.ownage.dmdirc.commandparser.commands.query.*;
 import uk.org.ownage.dmdirc.commandparser.commands.server.*;
@@ -82,7 +81,6 @@ public final class CommandManager {
         serverCommands.add(new ReloadFormatter());
         serverCommands.add(new SaveFormatter());
         serverCommands.add(new LoadFormatter());
-        serverCommands.add(new Test());
         serverCommands.add(new Quit());
         serverCommands.add(new QuitDefault());
         serverCommands.add(new Raw());
