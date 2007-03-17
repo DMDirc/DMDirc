@@ -107,13 +107,13 @@ public final class StatusBar extends JPanel implements MouseListener {
     }
     
     /**
-     * sets the message in the status bar.
+     * sets the icon in the status bar.
      *
      * @param newIcon Icon to display
      * @param newNotifier status error notifier to be notified for events on 
      * this error
      */
-    public void setMessage(final ImageIcon newIcon, 
+    public void setIcon(final ImageIcon newIcon, 
             final StatusErrorNotifier newNotifier) {
         iconLabel.setIcon(newIcon);
         errorNotifier = newNotifier;
