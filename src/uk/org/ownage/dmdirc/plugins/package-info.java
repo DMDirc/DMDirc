@@ -20,38 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands;
-
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
-
 /**
- * A sample command. Takes no arguments, and merely prints the SVN ID string of 
- * the IRC parser.
- * @author chris
+ * Plugin manager and interfaces.
  */
-public final class Test extends ServerCommand {
-    
-    /** Creates a new instance of Test. */
-    public Test() {
-        description = "a test command";
-        arguments = "";
-        polyadic = false;
-        arity = 0;            
-        name = "test";        
-        show = true;
-    }
-
-    /**
-     * Executes this command.
-     * @param origin The window in which the command was typed
-     * @param server The server instance that this command is being executed on
-     * @param args Arguments passed to this command
-     */
-    public void execute(final CommandWindow origin, final Server server, 
-            final String... args) {
-        origin.addLine(server.getParser().getSvnInfo());
-    }
-    
-}
+package uk.org.ownage.dmdirc.plugins;
