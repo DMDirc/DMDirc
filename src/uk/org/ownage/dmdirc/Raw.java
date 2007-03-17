@@ -254,11 +254,4 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
         }
     }
     
-    /**
-     * Clears any outstanding notifications this frame has set.
-     */
-    private void clearNotification() {
-        MainFrame.getMainFrame().getFrameManager().clearNotification(this);
-    }
-    
 }

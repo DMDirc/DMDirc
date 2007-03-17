@@ -269,14 +269,6 @@ public final class InputHandler implements KeyListener, ActionListener {
     }
     
     /**
-     * Appends the specified string to the end of the textbox.
-     * @param string The string to be appeneded
-     */
-    private void append(final String string) {
-        target.setText(target.getText() + string);
-    }
-    
-    /**
      * Adds the specified control code to the textarea. If the user has a range
      * of text selected, the characters are added before and after, and the
      * caret is positioned based on the position argument.

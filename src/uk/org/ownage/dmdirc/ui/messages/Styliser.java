@@ -221,6 +221,9 @@ public final class Styliser {
                         }
                         background = background % 16;
                         setBackground(attribs, background);
+                        if (isStart) {
+                            setDefaultBackground(attribs, background);
+                        }
                     }
                 }
             } else {
@@ -245,7 +248,7 @@ public final class Styliser {
                         count++;
                         setBackground(attribs, string.substring(count, count + 6).toUpperCase());
                         if (isStart) {
-                            setDefaultForeground(attribs, string.substring(count, count + 6).toUpperCase());
+                            setDefaultBackground(attribs, string.substring(count, count + 6).toUpperCase());
                         }
                         count += 6;
                     }
