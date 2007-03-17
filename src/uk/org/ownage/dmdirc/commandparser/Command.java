@@ -52,13 +52,7 @@ public abstract class Command {
      * A description of this command.
      */
     protected String description = "unknown";
-    
-    /**
-     * Creates a new instance of Command.
-     */
-    public Command() {
-    }
-    
+        
     /**
      * Returns the signature of this command. For polyadic commands, the signature
      * is simply the name. For other commands, the signature is a concatenation of
@@ -98,7 +92,7 @@ public abstract class Command {
     protected String implodeArgs(final int offset, final String... args) {
         String res = "";
         for (int i = offset; i < args.length; i++) {
-            if (res.equals("")) {
+            if (res.length() == 0) {
                 res = args[i];
             } else {
                 res = res.concat(" " + args[i]);

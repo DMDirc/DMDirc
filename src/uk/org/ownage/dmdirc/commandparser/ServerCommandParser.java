@@ -33,7 +33,7 @@ public final class ServerCommandParser extends CommandParser {
     /**
      * The server instance that this parser is attached to.
      */
-    private Server server;
+    private final Server server;
     
     /**
      * Creates a new instance of ServerCommandParser.
@@ -42,7 +42,7 @@ public final class ServerCommandParser extends CommandParser {
     public ServerCommandParser(final Server newServer) {
         super();
         
-        this.server = newServer;
+        server = newServer;
     }
     
     /** Loads the relevant commands into the parser. */

@@ -37,7 +37,7 @@ public abstract class CommandParser {
     /**
      * Commands that are associated with this parser.
      */
-    private Hashtable<String, Command> commands;
+    private final Hashtable<String, Command> commands;
     
     /** Creates a new instance of CommandParser. */
     public CommandParser() {
@@ -62,7 +62,7 @@ public abstract class CommandParser {
      * @param line The line to be parsed
      */
     public void parseCommand(final CommandWindow origin, final String line) {
-        if (line.equals("")) {
+        if (line.length() == 0) {
             return;
         }
         
@@ -76,10 +76,8 @@ public abstract class CommandParser {
             command = args[0].substring(1);
             
             comargs = new String[args.length - 1];
-            
-            for (int i = 1; i < args.length; i++) {
-                comargs[i - 1] = args[i];
-            }
+
+            System.arraycopy(args, 1, comargs, 0, args.length - 1);
             
             final String signature = command + "/" + (comargs.length);
             

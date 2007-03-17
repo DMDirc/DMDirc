@@ -30,12 +30,7 @@ import uk.org.ownage.dmdirc.Server;
  * @author chris
  */
 public abstract class QueryCommand extends Command {
-    
-    /** Creates a new instance of ChannelCommand. */
-    public QueryCommand() {
-        super();
-    }
-    
+        
     /**
      * Executes this command.
      * @param origin The window in which the command was typed

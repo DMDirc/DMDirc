@@ -23,7 +23,6 @@
 package uk.org.ownage.dmdirc.commandparser;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.commandparser.commands.channel.*;
@@ -40,15 +39,15 @@ public final class CommandManager {
     /**
      * The server commands that have been instansiated.
      */
-    private static Vector<Command> serverCommands;
+    private static ArrayList<Command> serverCommands;
     /**
      * The channel commands that have been instansiated.
      */
-    private static Vector<Command> channelCommands;
+    private static ArrayList<Command> channelCommands;
     /**
      * The query commands that have been instansiated.
      */
-    private static Vector<Command> queryCommands;
+    private static ArrayList<Command> queryCommands;
     
     /**
      * Prevents creation of a new command manager.
@@ -61,7 +60,7 @@ public final class CommandManager {
      * Initialises the command manager's various command lists.
      */
     private static void initLists() {
-        channelCommands = new Vector<Command>(0, 1);
+        channelCommands = new ArrayList<Command>();
         
         channelCommands.add(new Cycle());
         channelCommands.add(new Me());
@@ -73,7 +72,7 @@ public final class CommandManager {
         channelCommands.add(new KickReason());
         channelCommands.add(new ChannelSettings());
         
-        serverCommands = new Vector<Command>(0, 1);
+        serverCommands = new ArrayList<Command>();
         
         serverCommands.add(new Help());
         serverCommands.add(new Join());
@@ -86,7 +85,7 @@ public final class CommandManager {
         serverCommands.add(new Raw());
         serverCommands.add(new Clear());
         
-        queryCommands = new Vector<Command>(0, 1);
+        queryCommands = new ArrayList<Command>();
         
         queryCommands.add(new QueryMe());
         queryCommands.add(new QueryMeEmpty());
@@ -179,7 +178,7 @@ public final class CommandManager {
      * by this command manager.
      * @return A Vector of server commands, or null if none have been loaded
      */
-    public static Vector<Command> getServerCommands() {
+    public static ArrayList<Command> getServerCommands() {
         return serverCommands;
     }
     
@@ -188,7 +187,7 @@ public final class CommandManager {
      * by this command manager.
      * @return A Vector of channel commands, or null if none have been loaded
      */
-    public static Vector<Command> getChannelCommands() {
+    public static ArrayList<Command> getChannelCommands() {
         return channelCommands;
     }
     
@@ -197,7 +196,7 @@ public final class CommandManager {
      * by this command manager.
      * @return A Vector of query commands, or null if none have been loaded
      */
-    public static Vector<Command> getQueryCommands() {
+    public static ArrayList<Command> getQueryCommands() {
         return queryCommands;
     }
     
@@ -249,7 +248,7 @@ public final class CommandManager {
      * @param source The source vector to iterate over
      * @return A list of all commands in the source
      */
-    private static ArrayList<String> getCommandNames(final Vector<Command> source) {
+    private static ArrayList<String> getCommandNames(final ArrayList<Command> source) {
         if (source == null) {
             return null;
         }

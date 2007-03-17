@@ -35,11 +35,11 @@ public final class ChannelCommandParser extends CommandParser {
     /**
      * The server instance that this parser is attached to.
      */
-    private Server server;
+    private final Server server;
     /**
      * The channel instance that this parser is attached to.
      */
-    private Channel channel;
+    private final Channel channel;
     
     /**
      * Creates a new instance of ChannelCommandParser.

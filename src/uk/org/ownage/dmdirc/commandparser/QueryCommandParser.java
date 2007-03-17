@@ -35,11 +35,11 @@ public final class QueryCommandParser extends CommandParser {
     /**
      * The server instance that this parser is attached to.
      */
-    private Server server;
+    private final Server server;
     /**
      * The query instance that this parser is attached to.
      */
-    private Query query;
+    private final Query query;
     
     /**
      * Creates a new instance of QueryCommandParser.
