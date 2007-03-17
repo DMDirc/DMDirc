@@ -482,10 +482,10 @@ public final class MainFrame extends JFrame implements WindowListener {
         mainSplitPane.setDividerLocation(155);
         mainSplitPane.setResizeWeight(0);
         
-        //springLayout.putConstraint(SpringLayout.EAST, getContentPane(), 10,
-        //        SpringLayout.EAST, mainSplitPane);
-        //springLayout.putConstraint(SpringLayout.SOUTH, getContentPane(), 10,
-        //        SpringLayout.SOUTH, mainSplitPane);
+        springLayout.putConstraint(SpringLayout.EAST, getContentPane(), 10,
+                SpringLayout.EAST, mainSplitPane);
+        springLayout.putConstraint(SpringLayout.SOUTH, getContentPane(), 10,
+                SpringLayout.SOUTH, mainSplitPane);
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("DMDirc");

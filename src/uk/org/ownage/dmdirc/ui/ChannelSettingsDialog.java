@@ -537,11 +537,13 @@ public class ChannelSettingsDialog extends StandardDialog
             final JList list = (JList) listModesPanels.get(selectedIndex)
             .getComponent(0);
             for (Object mode : list.getSelectedValues()) {
+                list.remove(listModesArray[selectedIndex]);
                 channel.getChannelInfo().alterMode(false,
                         listModesArray[selectedIndex],
                         mode.toString());
-                channel.getChannelInfo().sendModes();
+                
             }
+            channel.getChannelInfo().sendModes();
         }
     }
     

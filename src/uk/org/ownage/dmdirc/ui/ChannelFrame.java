@@ -338,9 +338,9 @@ public class ChannelFrame extends JInternalFrame implements CommandWindow {
         jTextPane1.setEditable(false);
         jScrollPane1.setViewportView(jTextPane1);
         
-        jTextField1.setMinimumSize(new Dimension(Short.MAX_VALUE, 24));
-        jTextField1.setPreferredSize(new Dimension(Short.MAX_VALUE, 24));
-        jTextField1.setMaximumSize(new Dimension(Short.MAX_VALUE, 24));
+        //jTextField1.setMinimumSize(new Dimension(Short.MAX_VALUE, 24));
+        //jTextField1.setPreferredSize(new Dimension(Short.MAX_VALUE, 24));
+        //jTextField1.setMaximumSize(new Dimension(Short.MAX_VALUE, 24));
         
         jList1.setFont(new Font("Dialog", 0, 12));
         jList1.setModel(nicklistModel);

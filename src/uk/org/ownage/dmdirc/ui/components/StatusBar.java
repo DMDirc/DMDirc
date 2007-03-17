@@ -158,9 +158,9 @@ public final class StatusBar extends JPanel implements MouseListener {
      * @param mouseEvent mouse event
      */
     public void mouseClicked(final MouseEvent mouseEvent) {
-        if (mouseEvent.getSource() == messageLabel) {
+        if (mouseEvent.getSource() == messageLabel && messageNotifier != null) {
             messageNotifier.clickReceived(mouseEvent);
-        } else if (mouseEvent.getSource() == iconLabel) {
+        } else if (mouseEvent.getSource() == iconLabel && errorNotifier != null) {
             errorNotifier.clickReceived(mouseEvent);
         }
     }
