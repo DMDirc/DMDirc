@@ -2,7 +2,7 @@
 # b,k,l,imnpstrDdcCNu
 
 identity.name = Asuka mode aliases
-identity.autoapply = irc://asuka:*@*/*
+identity.ircd = asuka
 
 server.modeb = Ban
 

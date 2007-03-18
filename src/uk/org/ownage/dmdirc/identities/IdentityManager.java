@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -87,7 +88,7 @@ public final class IdentityManager {
      */
     public static void addIdentity(final Identity identity) {
         if (identities == null) {
-             identities = new ArrayList<Identity>();
+            identities = new ArrayList<Identity>();
         }
         
         identities.add(identity);
@@ -96,13 +97,42 @@ public final class IdentityManager {
     /**
      * Retrieves a list of all config sources that should be applied to the
      * specified target.
-     * @param target The address to match against
+     * @param ircd The server's ircd
+     * @param network The name of the network
+     * @param server The server's name
      * @return A list of all matching config sources
      */
-    /*public static TreeMap<ConfigSource> getSources(final IrcAddress target) {
-        TreeMap<ConfigSource> sources = new TreeMap<ConfigSource>();
+    public static ArrayList<ConfigSource> getSources(final String ircd,
+            final String network, final String server) {
+        
+        final ArrayList<ConfigSource> sources = new ArrayList<ConfigSource>();
+        
+        String comp = "";
+        
+        for (ConfigSource identity : identities) {
+            switch (identity.getTarget().getType()) {
+                case ConfigTarget.TYPE_IRCD:
+                    comp = ircd;
+                    break;
+                case ConfigTarget.TYPE_NETWORK:
+                    comp = network;
+                    break;
+                case ConfigTarget.TYPE_SERVER:
+                    comp = server;
+                    break;
+                default:
+                    comp = "<Unknown>";
+                    break;
+            }
+            
+            if (comp.equalsIgnoreCase(identity.getTarget().getData())) {
+                sources.add(identity);
+            }
+        }
+        
+        Collections.sort(sources);
         
         return sources;
-    }*/
+    }
     
 }

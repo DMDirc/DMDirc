@@ -2,7 +2,7 @@
 # bdeIq,k,lfJD,cgijLmnPQrRstz
 
 identity.name = Hyperion mode aliases
-identity.autoapply = irc://hyperion:*@*/*
+identity.ircd = hyperion
 
 server.modeb = Ban
 server.moded = Real name ban

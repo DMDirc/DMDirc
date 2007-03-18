@@ -37,13 +37,13 @@ import java.util.Properties;
 public final class Identity implements ConfigSource {
     
     /** The name of this identity. */
-    private String name;
+    private final String name;
     
-    /** The autoapplies list for this identity. */
-    private IrcAddress[] autoapplies;
+    /** The target for this identity. */
+    private final ConfigTarget myTarget = new ConfigTarget();
     
     /** The configuration details for this identity. */
-    private Properties properties;
+    private final Properties properties;
     
     /**
      * Creates a new instance of Identity.
@@ -57,21 +57,24 @@ public final class Identity implements ConfigSource {
         properties = new Properties();
         
         if (file.exists()) {
-            properties.loadFromXML(new FileInputStream(file));
+            properties.load(new FileInputStream(file));
             
             if (!properties.containsKey("identity.name")) {
-                throw new InvalidIdentityFileException();
+                throw new InvalidIdentityFileException("No name specified");
             }
             
             name = getOption("identity", "name");
             
-            if (hasOption("identity", "autoapply")) {
-                final String[] applies = getOption("identity", "autoapply").split("\n");
-                autoapplies = new IrcAddress[applies.length];
-                
-                for (int i = 0; i < applies.length; i++) {
-                    autoapplies[i] = new IrcAddress(applies[i]);
-                }
+            if (hasOption("identity", "ircd")) {
+                myTarget.setIrcd(getOption("identity", "ircd"));
+            } else if (hasOption("identity", "network")) {
+                myTarget.setNetwork(getOption("identity", "network"));
+            } else if (hasOption("identity", "server")) {
+                myTarget.setServer(getOption("identity", "server"));
+            } else if (hasOption("identity", "channel")) {
+                myTarget.setChannel(getOption("identity", "channel"));
+            } else if (!isProfile()) {
+                throw new InvalidIdentityFileException("No target and no profile");
             }
             
         } else {
@@ -126,15 +129,26 @@ public final class Identity implements ConfigSource {
      */
     public void setOption(final String domain, final String option,
             final String value) {
-        
+        properties.setProperty(domain + "." + option, value);
     }
 
-    public IrcAddress getAddress() {
-        return new IrcAddress("irc://*/*");
+    /**
+     * Retrieves this identity's target.
+     * @return The target of this identity
+     */
+    public ConfigTarget getTarget() {
+        return myTarget;
     }
 
-    public int compareTo(Object target) {
-        return 1;
+    /**
+     * Compares this identity to another config source to determine which
+     * is more specific.
+     * @param target The ConfigSource to compare to
+     * @return -1 if this config source is less specific, 0 if they're equal,
+     * +1 if this config is more specific.
+     */
+    public int compareTo(final Object target) {
+        return myTarget.compareTo(((ConfigSource) target).getTarget());
     }
     
 }

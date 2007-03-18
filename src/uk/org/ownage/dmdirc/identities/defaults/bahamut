@@ -2,7 +2,7 @@
 # beI,k,jl,cimMnOprRst
 
 identity.name = Bahamut mode aliases
-identity.autoapply = irc://bahamut:*@*/*
+identity.ircd = bahamut
 
 server.modeb = Ban
 server.modee = Exception

@@ -31,10 +31,11 @@ import uk.org.ownage.dmdirc.Config;
 public final class GlobalConfig implements ConfigSource {
     
     /** The address that this config applies to. */
-    private final IrcAddress address = new IrcAddress("irc://*/*");
+    private final ConfigTarget myTarget = new ConfigTarget();
     
     /** Creates a new instance of GlobalConfig. */
     public GlobalConfig() {
+        myTarget.setGlobal();
     }
 
     /**
@@ -69,11 +70,11 @@ public final class GlobalConfig implements ConfigSource {
     }
     
     /**
-     * Retrieves the IrcAddress of this config source.
-     * @return This source's address
+     * Retrieves the target of this config source.
+     * @return This source's target
      */
-    public IrcAddress getAddress() {
-        return address;
+    public ConfigTarget getTarget() {
+        return myTarget;
     }
 
     /**
@@ -83,7 +84,7 @@ public final class GlobalConfig implements ConfigSource {
      * greater, 0 if they're equal.
      */
     public int compareTo(final Object target) {
-        return address.compareTo(((ConfigSource) target).getAddress());
+        return myTarget.compareTo(((ConfigSource) target).getTarget());
     }
     
 }

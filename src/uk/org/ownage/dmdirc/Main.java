@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import uk.org.ownage.dmdirc.identities.IdentityManager;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -72,6 +73,9 @@ public final class Main {
         } catch (IllegalAccessException ex) {
             Logger.error(ErrorLevel.ERROR, ex);
         }
+        
+        IdentityManager.load();
+        
         MainFrame.getMainFrame();
     }
     

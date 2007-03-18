@@ -54,9 +54,9 @@ public interface ConfigSource extends Comparable {
     void setOption(String domain, String option, String value);
     
     /**
-     * Retrieves the IrcAddress of this config source.
-     * @return This source's address
+     * Retrieves the target of this config source.
+     * @return This source's target
      */
-    IrcAddress getAddress();
+    ConfigTarget getTarget();
     
 }
