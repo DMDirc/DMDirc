@@ -36,7 +36,7 @@ public final class TabCompleter {
      * The parent TabCompleter. Results from parents are merged with results
      * from this completer.
      */
-    private TabCompleter parent = null;
+    private TabCompleter parent;
     /**
      * The entries in this completer.
      */
@@ -51,7 +51,7 @@ public final class TabCompleter {
      * @param newParent The parent TabCompleter, which is checked for matches if
      * local ones fail
      */
-    public TabCompleter(TabCompleter newParent) {
+    public TabCompleter(final TabCompleter newParent) {
         this.parent = newParent;
     }
     
@@ -61,7 +61,7 @@ public final class TabCompleter {
      * @return A TabCompleterResult containing any matches found
      */
     public TabCompleterResult complete(final String partial) {
-        TabCompleterResult result = new TabCompleterResult();
+        final TabCompleterResult result = new TabCompleterResult();
         
         for (String entry : entries) {
             if (Boolean.parseBoolean(Config.getOption("tabcompletion", "casesensitive"))) {

@@ -72,6 +72,8 @@ public final class CipherUtils {
      */
     private static final int AUTH_TRIES = 4;
     
+    private static String password;
+    
     /**
      * Prevents creation of a new instance of Encipher.
      */
@@ -85,8 +87,12 @@ public final class CipherUtils {
      * @return Encrypted string
      */
     public static String encrypt(final String str) {
-        if ((dcipher == null || ecipher == null) && !authAndCreateCiphers()) {
-            return null;
+        if (!checkAuthed()) {
+            if (auth()) {
+                createCiphers();
+            } else {
+                return null;
+            }
         }
         try {
             return new String(ecipher.doFinal(str.getBytes("UTF8")));
@@ -109,8 +115,12 @@ public final class CipherUtils {
      * @return Decrypted string
      */
     public static String decrypt(final String str) {
-        if ((dcipher == null || ecipher == null) && !authAndCreateCiphers()) {
-            return null;
+        if (!checkAuthed()) {
+            if (auth()) {
+                createCiphers();
+            } else {
+                return null;
+            }
         }
         try {
             return new String(dcipher.doFinal(str.getBytes()), "UTF8");
@@ -155,11 +165,48 @@ public final class CipherUtils {
     }
     
     /**
-     * Auths a user and creates ciphers.
+     * creates ciphers.
      * @return auth status
      */
-    public static boolean authAndCreateCiphers() {
-        String password = null;
+    private static void createCiphers() {
+        try {
+            final KeySpec keySpec = new PBEKeySpec(
+                    password.toCharArray(), SALT, ITERATIONS);
+            final SecretKey key = SecretKeyFactory.
+                    getInstance("PBEWithMD5AndDES").generateSecret(keySpec);
+            ecipher = Cipher.getInstance(key.getAlgorithm());
+            dcipher = Cipher.getInstance(key.getAlgorithm());
+            final AlgorithmParameterSpec paramSpec =
+                    new PBEParameterSpec(SALT, ITERATIONS);
+            ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
+            dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
+        } catch (java.security.InvalidAlgorithmParameterException e) {
+            Logger.error(ErrorLevel.WARNING, e);
+            ecipher = null;
+            dcipher = null;
+        } catch (java.security.spec.InvalidKeySpecException e) {
+            Logger.error(ErrorLevel.WARNING, e);
+            ecipher = null;
+            dcipher = null;
+        } catch (javax.crypto.NoSuchPaddingException e) {
+            Logger.error(ErrorLevel.WARNING, e);
+            ecipher = null;
+            dcipher = null;
+        } catch (java.security.NoSuchAlgorithmException e) {
+            Logger.error(ErrorLevel.WARNING, e);
+            ecipher = null;
+            dcipher = null;
+        } catch (java.security.InvalidKeyException e) {
+            Logger.error(ErrorLevel.WARNING, e);
+            ecipher = null;
+            dcipher = null;
+        }
+    }
+    
+    /**
+     * auths a user and sets the password
+     */
+    public static boolean auth() {
         String passwordHash = null;
         String prompt = "Please enter your password";
         int tries = 1;
@@ -168,8 +215,6 @@ public final class CipherUtils {
         } else {
             if (Config.hasOption("encryption", "passwordHash")) {
                 passwordHash = Config.getOption("encryption", "passwordHash");
-            } else {
-                passwordHash = null;
             }
             passwordHash = "moo";
             while ((password == null || password.length() == 0) && tries < AUTH_TRIES) {
@@ -190,29 +235,6 @@ public final class CipherUtils {
         if (tries == AUTH_TRIES) {
             return false;
         }
-        try {
-            final KeySpec keySpec = new PBEKeySpec(
-                    password.toCharArray(), SALT, ITERATIONS);
-            final SecretKey key = SecretKeyFactory.
-                    getInstance("PBEWithMD5AndDES").generateSecret(keySpec);
-            ecipher = Cipher.getInstance(key.getAlgorithm());
-            dcipher = Cipher.getInstance(key.getAlgorithm());
-            final AlgorithmParameterSpec paramSpec =
-                    new PBEParameterSpec(SALT, ITERATIONS);
-            ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
-            dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
-            return true;
-        } catch (java.security.InvalidAlgorithmParameterException e) {
-            Logger.error(ErrorLevel.WARNING, e);
-        } catch (java.security.spec.InvalidKeySpecException e) {
-            Logger.error(ErrorLevel.WARNING, e);
-        } catch (javax.crypto.NoSuchPaddingException e) {
-            Logger.error(ErrorLevel.WARNING, e);
-        } catch (java.security.NoSuchAlgorithmException e) {
-            Logger.error(ErrorLevel.WARNING, e);
-        } catch (java.security.InvalidKeyException e) {
-            Logger.error(ErrorLevel.WARNING, e);
-        }
-        return false;
+        return true;
     }
 }
