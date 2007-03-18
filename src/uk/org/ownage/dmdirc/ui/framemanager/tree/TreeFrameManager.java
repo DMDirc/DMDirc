@@ -675,7 +675,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * Invoked when a key has been typed.
-     * @param e key event.
+     * @param event key event.
      */
     public void keyTyped(final KeyEvent event) {
         //Do nothing
@@ -683,7 +683,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * Invoked when a key has been pressed.
-     * @param e key event.
+     * @param event key event.
      */
     public void keyPressed(final KeyEvent event) {
         //Do nothing
@@ -691,7 +691,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * Invoked when a key has been released.
-     * @param e key event.
+     * @param event key event.
      */
     public void keyReleased(final KeyEvent event) {
         //Do nothing
