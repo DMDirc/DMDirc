@@ -109,7 +109,16 @@ public class ChannelInfo {
 	/**
 	 * Empty the channel (Remove all known channelclients).
 	 */
-	protected void emptyChannel() { hChannelUserList.clear(); }
+	protected void emptyChannel() {
+		ChannelClientInfo cTemp = null;
+		for (Enumeration e = hChannelUserList.keys(); e.hasMoreElements();) {
+			cTemp = hChannelUserList.get(e.nextElement()).getClient();
+			if (!cTemp.checkVisability(this)) {
+				myParser.hClientList.remove(cTemp.getNickname().toLowerCase());
+			}
+		}
+		hChannelUserList.clear();
+	}
 
 	/**
 	 * Get the ChannelClientInfo object associated with a nickname.

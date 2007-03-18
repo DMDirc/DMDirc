@@ -453,7 +453,14 @@ public class IRCParser implements Runnable {
 	public void run() {
 		callDebugInfo(ndInfo, "Begin Thread Execution");
 		if (HasBegan) { return; } else { HasBegan = true; }
-		try { connect(); } catch (Exception e) { callDebugInfo(ndSocket, "Error Connecting, Aborted"); return; }
+		try {connect(); }
+		catch (Exception e) {
+			callDebugInfo(ndSocket, "Error Connecting, Aborted");
+			ParserError ei = new ParserError(ParserError.errError, "Error connecting to server");
+			ei.setException(e);
+			callErrorInfo(ei);
+			return;
+		}
 		
 		callDebugInfo(ndSocket, "Socket Connected");
 		
@@ -1040,7 +1047,7 @@ public class IRCParser implements Runnable {
 	 */
 	public void disconnect(String sReason) {
 		quit(sReason);
-		try { socket.close(); } catch (Exception e) { /* Meh */ };
+		try { socket.close(); } catch (Exception e) { };
 	}
 	
 	/**

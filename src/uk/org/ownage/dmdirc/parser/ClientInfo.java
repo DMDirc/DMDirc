@@ -184,12 +184,23 @@ public class ClientInfo {
 	 * @return Boolean to see if client is still visable.
 	 */	
 	public boolean checkVisability() {
+		return checkVisability(null);
+	}
+	
+	/**
+	 * Check to see if a client is still known on any of the channels we are on.
+	 *
+	 * @param cChannel Channel to ignore when checking.
+	 * @return Boolean to see if client is still visable.
+	 */	
+	public boolean checkVisability(ChannelInfo cChannel) {
 		boolean bCanSee = false;
 		ChannelInfo iChannel;
 		ChannelClientInfo iChannelClient;
 		
 		for (Enumeration e = myParser.hChannelList.keys(); e.hasMoreElements();) {
 			iChannel = myParser.hChannelList.get(e.nextElement());
+			if (iChannel == cChannel) { continue; }
 			iChannelClient = iChannel.getUser(this);
 			if (iChannelClient != null) {	bCanSee = true; break; }
 		}
