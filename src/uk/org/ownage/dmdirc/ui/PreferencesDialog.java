@@ -31,6 +31,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Hashtable;
+import javax.swing.BorderFactory;
 
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
@@ -127,6 +128,9 @@ public final class PreferencesDialog extends StandardDialog
         
         mainPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
                 SMALL_BORDER, LARGE_BORDER));
+        tabList.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEtchedBorder(),
+                BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER)));
         
         getContentPane().setLayout(layout);
         
@@ -275,10 +279,6 @@ public final class PreferencesDialog extends StandardDialog
     private void initUITab(final JPanel cardLayoutPanel) {
         final JPanel panel = new JPanel(new SpringLayout());
         
-        addComponent(panel, "ui.showversion", "Show version: ",
-                optionType.CHECKBOX);
-        addComponent(panel, "ui.inputbuffersize", "Input bufer size: ",
-                optionType.TEXTFIELD);
         addComponent(panel, "ui.maximisewindows", "Auto-Maximise windows: ",
                 optionType.CHECKBOX);
         addComponent(panel, "ui.backgroundcolour", "Window background colour: ",
@@ -292,7 +292,7 @@ public final class PreferencesDialog extends StandardDialog
         addComponent(panel, "channel.splitusermodes", "Split user modes: ",
                 optionType.CHECKBOX);
         
-        layoutGrid(panel, 8, 2, SMALL_BORDER, SMALL_BORDER,
+        layoutGrid(panel, 6, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
         
         cardLayoutPanel.add(panel, "GUI");
@@ -415,7 +415,12 @@ public final class PreferencesDialog extends StandardDialog
         addComponent(panel, "ui.lookandfeel", "Look and feel: ",
                 optionType.TEXTFIELD);
         
-        layoutGrid(panel, 1, 2, SMALL_BORDER, SMALL_BORDER,
+        addComponent(panel, "ui.showversion", "Show version: ",
+                optionType.CHECKBOX);
+        addComponent(panel, "ui.inputbuffersize", "Input bufer size: ",
+                optionType.TEXTFIELD);
+        
+        layoutGrid(panel, 3, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
         
         cardLayoutPanel.add(panel, "Advanced");

@@ -51,7 +51,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -82,53 +81,43 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     /**
      * display tree.
      */
-    private JTree tree;
-    
-    /**
-     * Scrollpane for the tree.
-     */
-    private JScrollPane scrollPane;
+    private final transient JTree tree;
     
     /**
      * root node.
      */
-    private DefaultMutableTreeNode root;
-    
-    /**
-     * node renderer.
-     */
-    private TreeViewTreeCellRenderer renderer;
+    private final transient DefaultMutableTreeNode root;
     
     /**
      * data model.
      */
-    private TreeViewModel model;
+    private final transient TreeViewModel model;
     
     /**
      * node storage, used for adding and deleting nodes correctly.
      */
-    private Hashtable<FrameContainer, DefaultMutableTreeNode> nodes;
+    private final transient Hashtable<FrameContainer, DefaultMutableTreeNode> nodes;
     
     /**
      * stores colour associated with a node, cheap hack till i rewrite the model.
      */
-    private Hashtable<FrameContainer, Color> nodeColours;
+    private final transient Hashtable<FrameContainer, Color> nodeColours;
     
     /**
      * stores background colour associated with a node,
      * cheap hack till i rewrite the model.
      */
-    private DefaultMutableTreeNode rolloverNode;
+    private transient DefaultMutableTreeNode rolloverNode;
     
     /**
      * popup menu for menu items on nodes.
      */
-    private JPopupMenu popup;
+    private final transient JPopupMenu popup;
     
     /**
      * close menu item used in popup menus.
      */
-    private JMenuItem closeMenuItem;
+    private final transient JMenuItem closeMenuItem;
     
     /**
      * The object that is currently selected.
@@ -136,19 +125,9 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     private FrameContainer selected;
     
     /**
-     *Parent component for the frame manager.
-     */
-    private JComponent parent;
-    
-    /**
-     * whether the mouse button is currently pressed.
-     */
-    private boolean mouseClicked = true;
-    
-    /**
      *node under right click operation.
      */
-    private DefaultMutableTreeNode popupNode;
+    private transient DefaultMutableTreeNode popupNode;
     
     /**
      * creates a new instance of the TreeFrameManager.
@@ -170,7 +149,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.getSelectionModel().
                 setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.addTreeSelectionListener(this);
-        renderer = new TreeViewTreeCellRenderer();
+        final TreeViewTreeCellRenderer renderer = new TreeViewTreeCellRenderer();
         tree.setCellRenderer(renderer);
         tree.setRootVisible(false);
         tree.setRowHeight(0);
@@ -288,9 +267,8 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * Sets the parent component in the main UI.
      * @param newParent parent component.
      */
-    public void setParent(final JComponent newParent) {
-        this.parent = newParent;
-        scrollPane = new JScrollPane(tree);
+    public void setParent(final JComponent parent) {
+        final JScrollPane scrollPane = new JScrollPane(tree);
         scrollPane.setAutoscrolls(false);
         parent.setLayout(new BorderLayout());
         parent.add(scrollPane);
@@ -394,7 +372,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * valled whenever the value of the selection changes.
      * @param e selection event.
      */
-    public void valueChanged(final TreeSelectionEvent e) {
+    public void valueChanged(final TreeSelectionEvent event) {
         final DefaultMutableTreeNode node =
                 (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
         
@@ -413,6 +391,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event expansion event.
      */
     public void treeExpanded(final TreeExpansionEvent event) {
+        //Do nothing
     }
     
     /**
@@ -420,6 +399,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event expansion event.
      */
     public void treeCollapsed(final TreeExpansionEvent event) {
+        //Do nothing
     }
     
     /**
@@ -430,6 +410,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      */
     public void treeWillExpand(final TreeExpansionEvent event) throws
             ExpandVetoException {
+        //Do nothing
     }
     
     /**
@@ -440,34 +421,39 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      */
     public void treeWillCollapse(final TreeExpansionEvent event) throws
             ExpandVetoException {
+        //Do nothing
     }
     
     /**
      * called after a node, or set of nodes, changes.
      * @param e change event.
      */
-    public void treeNodesChanged(final TreeModelEvent e) {
+    public void treeNodesChanged(final TreeModelEvent event) {
+        //Do nothing
     }
     
     /**
      * called after a node has been inserted into the tree.
      * @param e change event.
      */
-    public void treeNodesInserted(final TreeModelEvent e) {
+    public void treeNodesInserted(final TreeModelEvent event) {
+        //Do nothing
     }
     
     /**
      * Called when a node is removed from the tree.
      * @param e change event.
      */
-    public void treeNodesRemoved(final TreeModelEvent e) {
+    public void treeNodesRemoved(final TreeModelEvent event) {
+        //Do nothing
     }
     
     /**
      * Called when a tree changes structure.
      * @param e change event.
      */
-    public void treeStructureChanged(final TreeModelEvent e) {
+    public void treeStructureChanged(final TreeModelEvent event) {
+        //Do nothing
     }
     
     /**
@@ -475,21 +461,22 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * on a component.
      * @param e mouse event.
      */
-    public void mouseClicked(final MouseEvent e) {
+    public void mouseClicked(final MouseEvent event) {
+        //Do nothing
     }
     
     /**
      * Invoked when a mouse button has been pressed on a component.
      * @param e mouse event.
      */
-    public void mousePressed(final MouseEvent e) {
-        mouseClicked = true;
-        if (e.isPopupTrigger()) {
-            final JTree source = (JTree) e.getSource();
-            final TreePath path = tree.getPathForLocation(e.getX(), e.getY());
+    public void mousePressed(final MouseEvent event) {
+        if (event.isPopupTrigger()) {
+            final JTree source = (JTree) event.getSource();
+            final TreePath path = tree.getPathForLocation(event.getX(), 
+                    event.getY());
             if (path != null) {
                 popupNode = (DefaultMutableTreeNode) path.getLastPathComponent();
-                popup.show(source, e.getX(), e.getY());
+                popup.show(source, event.getX(), event.getY());
             }
         }
     }
@@ -498,61 +485,61 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * Invoked when a mouse button has been released on a component.
      * @param e mouse event.
      */
-    public void mouseReleased(final MouseEvent e) {
-        mouseClicked = false;
+    public void mouseReleased(final MouseEvent event) {
+        //Do nothing
     }
     
     /**
      * Invoked when the mouse enters a component.
      * @param e mouse event.
      */
-    public void mouseEntered(final MouseEvent e) {
+    public void mouseEntered(final MouseEvent event) {
+        //Do nothing
     }
     
     /**
      * Invoked when the mouse exits a component.
      * @param e mouse event.
      */
-    public void mouseExited(final MouseEvent e) {
+    public void mouseExited(final MouseEvent event) {
+        //Do nothing
     }
     
     /**
      * Invoked when an action occurs.
      * @param e action event.
      */
-    public void actionPerformed(final ActionEvent e) {
-        if (e.getSource() == closeMenuItem && popupNode != null) {
+    public void actionPerformed(final ActionEvent event) {
+        if (event.getSource() == closeMenuItem && popupNode != null) {
             ((FrameContainer) popupNode.getUserObject()).close();
-            popupNode = null;
         }
     }
     
     /**
      * Invoked when a mouse button is pressed on a component and then dragged.
-     * @param e mouse event.
+     * 
+     * @param event mouse event.
      */
-    public void mouseDragged(final MouseEvent e) {
+    public void mouseDragged(final MouseEvent event) {
         TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
         DefaultMutableTreeNode node = null;
-        final DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
-        if (tree.getRowForLocation(e.getX(), e.getY()) < 0) {
+        if (tree.getRowForLocation(event.getX(), event.getY()) < 0) {
             currentSelectedPath = oldSelectedPath;
-            oldSelectedPath = null;
-            if (currentSelectedPath != null) {
+            if (currentSelectedPath == null) {
+                if (Config.hasOption("ui", "rolloverEnabled")
+                && Config.getOption("ui", "rolloverEnabled").equals("true")) {
+                    this.showRollover(node);
+                }
+            } else {
                 node = (DefaultMutableTreeNode) currentSelectedPath.getLastPathComponent();
                 if (Config.hasOption("ui", "rolloverEnabled")
                 && Config.getOption("ui", "rolloverEnabled").equals("true")) {
                     this.showRollover(node);
                 }
                 ((FrameContainer) node.getUserObject()).activateFrame();
-            } else {
-                if (Config.hasOption("ui", "rolloverEnabled")
-                && Config.getOption("ui", "rolloverEnabled").equals("true")) {
-                    this.showRollover(node);
-                }
             }
         } else {
-            selectedPath = tree.getPathForLocation(e.getX(), e.getY());
+            selectedPath = tree.getPathForLocation(event.getX(), event.getY());
             if ((oldSelectedPath == null) || !selectedPath.equals(oldSelectedPath)) {
                 oldSelectedPath = selectedPath;
                 node = (DefaultMutableTreeNode) oldSelectedPath.getLastPathComponent();
@@ -573,25 +560,24 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     /**
      * Invoked when the mouse cursor has been moved onto a component but no
      * buttons have been pushed.
-     * @param e mouse event.
+     * 
+     * @param event mouse event.
      */
-    public void mouseMoved(final MouseEvent e) {
+    public void mouseMoved(final MouseEvent event) {
         if (Config.hasOption("ui", "rolloverEnabled")
         && Config.getOption("ui", "rolloverEnabled").equals("true")) {
             TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
             DefaultMutableTreeNode node;
-            final DefaultTreeModel treeModel = (DefaultTreeModel) tree.getModel();
-            if (tree.getRowForLocation(e.getX(), e.getY()) < 0) {
+            if (tree.getRowForLocation(event.getX(), event.getY()) < 0) {
                 currentSelectedPath = oldSelectedPath;
-                oldSelectedPath = null;
-                if (currentSelectedPath != null) {
+                if (currentSelectedPath == null) {
+                    this.showRollover(null);
+                } else {
                     node = (DefaultMutableTreeNode) currentSelectedPath.getLastPathComponent();
                     this.showRollover(node);
-                } else {
-                    this.showRollover(null);
                 }
             } else {
-                selectedPath = tree.getPathForLocation(e.getX(), e.getY());
+                selectedPath = tree.getPathForLocation(event.getX(), event.getY());
                 if ((oldSelectedPath == null) || !selectedPath.equals(oldSelectedPath)) {
                     oldSelectedPath = selectedPath;
                     node = (DefaultMutableTreeNode) oldSelectedPath.getLastPathComponent();
@@ -607,9 +593,9 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * Invoked when the mouse wheel is rotated.
      * @param e mouse event.
      */
-    public void mouseWheelMoved(final MouseWheelEvent e) {
+    public void mouseWheelMoved(final MouseWheelEvent event) {
         //get the number of notches (used only for direction)
-        if (e.getWheelRotation() < 0) {
+        if (event.getWheelRotation() < 0) {
             changeFocus(true);
         } else {
             changeFocus(false);
@@ -691,25 +677,23 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * Invoked when a key has been typed.
      * @param e key event.
      */
-    public void keyTyped(final KeyEvent e) {
+    public void keyTyped(final KeyEvent event) {
+        //Do nothing
     }
     
     /**
      * Invoked when a key has been pressed.
      * @param e key event.
      */
-    public void keyPressed(final KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            changeFocus(false);
-        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-            changeFocus(true);
-        }
+    public void keyPressed(final KeyEvent event) {
+        //Do nothing
     }
     
     /**
      * Invoked when a key has been released.
      * @param e key event.
      */
-    public void keyReleased(final KeyEvent e) {
+    public void keyReleased(final KeyEvent event) {
+        //Do nothing
     }
 }

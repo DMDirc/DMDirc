@@ -435,12 +435,7 @@ public class ChannelSettingsDialog extends StandardDialog
         listModesPanel = new JPanel(new BorderLayout());
         listModesMenu = new JComboBox(listModesList.toArray());
         
-        for (char mode : listModesArray) {
-            String modeText = mode + " list";
-            if (Config.hasOption("server", "mode" + mode)) {
-                modeText = Config.getOption("server", "mode" + mode);
-            }
-            
+        for (char mode : listModesArray) {            
             panel = new JPanel(new BorderLayout());
             
             listModel = new DefaultListModel();

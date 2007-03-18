@@ -181,7 +181,7 @@ public final class MainFrame extends JFrame implements WindowListener {
         
         miPreferences.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
-                new PreferencesDialog(MainFrame.getMainFrame(), true).setVisible(true);
+                new PreferencesDialog(MainFrame.getMainFrame(), false).setVisible(true);
             }
         });
         

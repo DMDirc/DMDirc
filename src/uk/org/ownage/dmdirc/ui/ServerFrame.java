@@ -262,15 +262,16 @@ public class ServerFrame extends JInternalFrame implements CommandWindow {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(GroupLayout.LEADING)
+                .add(GroupLayout.TRAILING, layout.createParallelGroup(GroupLayout.LEADING)
                 .add(jTextField1, GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
-                .add(GroupLayout.TRAILING, jScrollPane1, GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE)
+                .add(jScrollPane1, GroupLayout.DEFAULT_SIZE, 394, Short.MAX_VALUE))
                 );
         layout.setVerticalGroup(
                 layout.createParallelGroup(GroupLayout.LEADING)
                 .add(GroupLayout.TRAILING, layout.createSequentialGroup()
                 .add(jScrollPane1, GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(jTextField1, GroupLayout.PREFERRED_SIZE, 24, GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(LayoutStyle.RELATED, 5, 5)
+                .add(jTextField1, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.RELATED, 5, 5))
                 );
         pack();
