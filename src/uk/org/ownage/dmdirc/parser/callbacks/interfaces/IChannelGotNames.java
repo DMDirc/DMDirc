@@ -24,7 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ProcessNames;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 
@@ -37,7 +36,7 @@ public interface IChannelGotNames extends ICallbackInterface {
 	 *
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cChannel Channel which the names reply is for
-	 * @see ProcessNames#callChannelGotNames
+	 * @see uk.org.ownage.dmdirc.parser.ProcessNames#callChannelGotNames
 	 */
-	public void onChannelGotNames(IRCParser tParser, ChannelInfo cChannel);
+	void onChannelGotNames(IRCParser tParser, ChannelInfo cChannel);
 }

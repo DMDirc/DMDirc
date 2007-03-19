@@ -36,7 +36,7 @@ public interface IDebugInfo extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param nLevel Debugging Level (ndInfo, ndSocket etc)
 	 * @param sData Debugging Information
-	 * @see IRCParser#callDebugInfo
+	 * @see uk.org.ownage.dmdirc.parser.IRCParser#callDebugInfo
 	 */
-	public void onDebugInfo(IRCParser tParser, int nLevel, String sData);
+	void onDebugInfo(IRCParser tParser, int nLevel, String sData);
 }

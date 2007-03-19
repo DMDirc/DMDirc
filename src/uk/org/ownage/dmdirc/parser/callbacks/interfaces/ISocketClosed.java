@@ -36,5 +36,5 @@ public interface ISocketClosed extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @see IRCParser#callSocketClosed
 	 */
-	public void onSocketClosed(IRCParser tParser);
+	void onSocketClosed(IRCParser tParser);
 }

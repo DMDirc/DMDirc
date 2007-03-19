@@ -36,7 +36,7 @@ public interface IErrorInfo extends ICallbackInterface {
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param errorInfo ParserError object representing the error.
-	 * @see IRCParser#callErrorInfo
+	 * @see uk.org.ownage.dmdirc.parser.IRCParser#callErrorInfo
 	 */
-	public void onErrorInfo(IRCParser tParser, ParserError errorInfo);
+	void onErrorInfo(IRCParser tParser, ParserError errorInfo);
 }

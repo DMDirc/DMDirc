@@ -24,7 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ProcessMessage;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
@@ -42,7 +41,7 @@ public interface IPrivateCTCP extends ICallbackInterface {
 	 * @param sType Type of CTCP (VERSION, TIME etc)
 	 * @param sMessage Additional contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see ProcessMessage#callPrivateCTCP
+	 * @see uk.org.ownage.dmdirc.parser.ProcessMessage#callPrivateCTCP
 	 */
-	public void onPrivateCTCP(IRCParser tParser, String sType, String sMessage, String sHost );
+	void onPrivateCTCP(IRCParser tParser, String sType, String sMessage, String sHost);
 }

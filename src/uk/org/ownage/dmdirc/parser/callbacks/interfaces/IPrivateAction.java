@@ -24,7 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ProcessMessage;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
@@ -41,7 +40,7 @@ public interface IPrivateAction extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param sMessage action contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see ProcessMessage#callPrivateAction
+	 * @see uk.org.ownage.dmdirc.parser.ProcessMessage#callPrivateAction
 	 */
-	public void onPrivateAction(IRCParser tParser, String sMessage, String sHost );
+	void onPrivateAction(IRCParser tParser, String sMessage, String sHost);
 }

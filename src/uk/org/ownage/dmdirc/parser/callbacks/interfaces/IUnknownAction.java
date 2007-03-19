@@ -24,7 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ProcessMessage;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
@@ -42,7 +41,7 @@ public interface IUnknownAction extends ICallbackInterface {
 	 * @param sMessage Action contents
 	 * @param sTarget Actual target of action
 	 * @param sHost Hostname of sender (or servername)
-	 * @see ProcessMessage#callUnknownAction
+	 * @see uk.org.ownage.dmdirc.parser.ProcessMessage#callUnknownAction
 	 */
-	public void onUnknownAction(IRCParser tParser, String sMessage, String sTarget, String sHost );
+	void onUnknownAction(IRCParser tParser, String sMessage, String sTarget, String sHost);
 }

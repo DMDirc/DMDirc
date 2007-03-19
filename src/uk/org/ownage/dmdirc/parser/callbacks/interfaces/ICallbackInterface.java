@@ -25,6 +25,6 @@
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
 /**
- * "SuperInterface" for all callbacks
+ * "SuperInterface" for all callbacks.
  */
 public interface ICallbackInterface { }

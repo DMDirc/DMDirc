@@ -24,7 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ProcessKick;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
@@ -44,7 +43,7 @@ public interface IChannelKick extends ICallbackInterface {
 	 * @param cKickedByClient ChannelClient that did the kicking (may be null if server)
 	 * @param sReason Reason for kick (may be "")
 	 * @param sKickedByHost Hostname of Kicker (or servername)
-	 * @see ProcessKick#callChannelKick
+	 * @see uk.org.ownage.dmdirc.parser.ProcessKick#callChannelKick
 	 */
-	public void onChannelKick(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost);
+	void onChannelKick(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost);
 }

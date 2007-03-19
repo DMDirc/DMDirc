@@ -24,7 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ProcessJoin;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 
@@ -39,7 +38,7 @@ public interface IChannelSelfJoin extends ICallbackInterface {
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cChannel Channel Object
-	 * @see ProcessJoin#callChannelSelfJoin
+	 * @see uk.org.ownage.dmdirc.parser.ProcessJoin#callChannelSelfJoin
 	 */
-	public void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel);
+	void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel);
 }

@@ -24,7 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ProcessNickInUse;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
@@ -35,7 +34,7 @@ public interface INickInUse extends ICallbackInterface {
 	 * Called when requested nickname is in use.
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
-	 * @see ProcessNickInUse#callNickInUse
+	 * @see uk.org.ownage.dmdirc.parser.ProcessNickInUse#callNickInUse
 	 */
-	public void onNickInUse(IRCParser tParser);
+	void onNickInUse(IRCParser tParser);
 }

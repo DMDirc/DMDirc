@@ -24,7 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ProcessTopic;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 
@@ -40,7 +39,7 @@ public interface IChannelTopic extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cChannel Channel that topic was set on
 	 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
-	 * @see ProcessTopic#callChannelTopic
+	 * @see uk.org.ownage.dmdirc.parser.ProcessTopic#callChannelTopic
 	 */
-	public void onChannelTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsJoinTopic);
+	void onChannelTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsJoinTopic);
 }

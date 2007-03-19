@@ -24,7 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ProcessMessage;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
@@ -43,7 +42,7 @@ public interface IUnknownCTCP extends ICallbackInterface {
 	 * @param sMessage Additional contents
 	 * @param sTarget Actual Target of CTCP
 	 * @param sHost Hostname of sender (or servername)
-	 * @see ProcessMessage#callUnknownCTCP
+	 * @see uk.org.ownage.dmdirc.parser.ProcessMessage#callUnknownCTCP
 	 */
-	public void onUnknownCTCP(IRCParser tParser, String sType, String sMessage, String sTarget, String sHost );
+	void onUnknownCTCP(IRCParser tParser, String sType, String sMessage, String sTarget, String sHost);
 }

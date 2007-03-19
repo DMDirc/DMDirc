@@ -24,7 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ProcessMOTD;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
@@ -36,7 +35,7 @@ public interface IMOTDStart extends ICallbackInterface {
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param sData Incomming Line.
-	 * @see ProcessMOTD#callMOTDStart
+	 * @see uk.org.ownage.dmdirc.parser.ProcessMOTD#callMOTDStart
 	 */
-	public void onMOTDStart(IRCParser tParser, String sData);
+	void onMOTDStart(IRCParser tParser, String sData);
 }

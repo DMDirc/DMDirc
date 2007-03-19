@@ -24,7 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ProcessPart;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
@@ -42,7 +41,7 @@ public interface IChannelPart extends ICallbackInterface {
 	 * @param cChannel Channel that the user parted
 	 * @param cChannelClient Client that parted
 	 * @param sReason Reason given for parting (May be "")
-	 * @see ProcessPart#callChannelPart
+	 * @see uk.org.ownage.dmdirc.parser.ProcessPart#callChannelPart
 	 */
-	public void onChannelPart(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );
+	void onChannelPart(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );
 }

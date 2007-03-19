@@ -24,7 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.Process001;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
@@ -35,7 +34,7 @@ public interface IServerReady extends ICallbackInterface {
 	 * Called after 001.
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
-	 * @see Process001#callServerReady
+	 * @see uk.org.ownage.dmdirc.parser.Process001#callServerReady
 	 */
-	public void onServerReady(IRCParser tParser);
+	void onServerReady(IRCParser tParser);
 }

@@ -24,9 +24,8 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ProcessMode;
-import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /** 
  * Called when user modes are changed.
@@ -42,7 +41,7 @@ public interface IUserModeChanged extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cClient Client that had the mode changed (almost always us)
 	 * @param sSetBy Host that set the mode (us or servername)
-	 * @see ProcessMode#callUserModeChanged
+	 * @see uk.org.ownage.dmdirc.parser.ProcessMode#callUserModeChanged
 	 */
-	public void onUserModeChanged(IRCParser tParser, ClientInfo cClient, String sSetBy);
+	void onUserModeChanged(IRCParser tParser, ClientInfo cClient, String sSetBy);
 }
