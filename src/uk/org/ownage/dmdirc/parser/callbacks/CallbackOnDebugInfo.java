@@ -24,14 +24,26 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo;
 
 /**
  * Callback to all objects implementing the IDebugInfo Interface.
  */
-public class CallbackOnDebugInfo extends CallbackObject {
+public final class CallbackOnDebugInfo extends CallbackObject {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnDebugInfo(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IDebugInfo Interface.
 	 *
@@ -40,13 +52,13 @@ public class CallbackOnDebugInfo extends CallbackObject {
 	 * @param data Debugging Information
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(int level, String data) {
+	public boolean call(final int level, final String data) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IDebugInfo)callbackInfo.get(i)).onDebugInfo(myParser, level, data);
+				((IDebugInfo) callbackInfo.get(i)).onDebugInfo(myParser, level, data);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onDebugInfo");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onDebugInfo");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -56,17 +68,11 @@ public class CallbackOnDebugInfo extends CallbackObject {
 	}
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnDebugInfo (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

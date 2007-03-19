@@ -24,14 +24,28 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelNonUserModeChanged;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelNonUserModeChanged;
 
 /**
  * Callback to all objects implementing the IChannelNonUserModeChanged Interface.
  */
-public class CallbackOnChannelNonUserModeChanged extends CallbackObjectSpecific {
+public final class CallbackOnChannelNonUserModeChanged extends CallbackObjectSpecific {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnChannelNonUserModeChanged(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IChannelNonUserModeChanged Interface.
 	 *
@@ -42,36 +56,32 @@ public class CallbackOnChannelNonUserModeChanged extends CallbackObjectSpecific 
 	 * @param sModes Exact String parsed (not including user modes)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes) {
+	public boolean call(final ChannelInfo cChannel, 
+                final ChannelClientInfo cChannelClient, final String sHost, 
+                final String sModes) {
 		boolean bResult = false;
 		IChannelNonUserModeChanged eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
-			eMethod = (IChannelNonUserModeChanged)callbackInfo.get(i);
+			eMethod = (IChannelNonUserModeChanged) callbackInfo.get(i);
 			if (!this.isValidChan(eMethod, cChannel)) { continue; }
 			try {
 				eMethod.onChannelNonUserModeChanged(myParser, cChannel, cChannelClient, sHost, sModes);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelNonUserModeChanged");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelNonUserModeChanged");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
 			bResult = true;
 		}
 		return bResult;
-	}	
-	
-	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnChannelNonUserModeChanged (IRCParser parser, CallbackManager manager) { super(parser, manager); }
+	}
 	
 	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

@@ -46,5 +46,5 @@ public interface IChannelNotice extends ICallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see uk.org.ownage.dmdirc.parser.ProcessMessage#callChannelNotice
 	 */
-	void onChannelNotice(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
+	void onChannelNotice(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost);
 }

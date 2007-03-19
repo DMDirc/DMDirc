@@ -24,15 +24,27 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
 import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownNotice;
 
 /**
  * Callback to all objects implementing the IUnknownNotice Interface.
  */
-public class CallbackOnUnknownNotice extends CallbackObject {
+public final class CallbackOnUnknownNotice extends CallbackObject {
+
 	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnUnknownNotice(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+    
+        /**
 	 * Callback to all objects implementing the IUnknownNotice Interface.
 	 *
 	 * @see IUnknownNotice
@@ -41,13 +53,14 @@ public class CallbackOnUnknownNotice extends CallbackObject {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(String sMessage, String sTarget, String sHost) {
+	public boolean call(final String sMessage, final String sTarget, 
+                final String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IUnknownNotice)callbackInfo.get(i)).onUnknownNotice(myParser, sMessage, sTarget, sHost);
+				((IUnknownNotice) callbackInfo.get(i)).onUnknownNotice(myParser, sMessage, sTarget, sHost);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onUnknownNotice");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onUnknownNotice");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -57,17 +70,11 @@ public class CallbackOnUnknownNotice extends CallbackObject {
 	}	
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnUnknownNotice (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

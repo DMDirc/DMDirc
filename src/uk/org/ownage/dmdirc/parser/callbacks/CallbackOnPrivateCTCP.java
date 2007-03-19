@@ -24,14 +24,26 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
 
 /**
  * Callback to all objects implementing the IPrivateCTCP Interface.
  */
-public class CallbackOnPrivateCTCP extends CallbackObjectSpecific {
+public final class CallbackOnPrivateCTCP extends CallbackObjectSpecific {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnPrivateCTCP(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IPrivateCTCP Interface.
 	 *
@@ -41,16 +53,17 @@ public class CallbackOnPrivateCTCP extends CallbackObjectSpecific {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(String sType, String sMessage, String sHost) {
+	public boolean call(final String sType, final String sMessage, 
+                final String sHost) {
 		boolean bResult = false;
 		IPrivateCTCP eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
-			eMethod = (IPrivateCTCP)callbackInfo.get(i);
+			eMethod = (IPrivateCTCP) callbackInfo.get(i);
 			if (!this.isValidUser(eMethod, sHost)) { continue; }
 			try {
 				eMethod.onPrivateCTCP(myParser, sType, sMessage, sHost);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onPrivateCTCP");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onPrivateCTCP");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -60,17 +73,11 @@ public class CallbackOnPrivateCTCP extends CallbackObjectSpecific {
 	}	
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnPrivateCTCP (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

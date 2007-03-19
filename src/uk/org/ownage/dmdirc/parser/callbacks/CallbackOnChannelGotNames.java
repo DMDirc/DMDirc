@@ -24,14 +24,27 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
 
 /**
  * Callback to all objects implementing the IChannelGotNames Interface.
  */
-public class CallbackOnChannelGotNames extends CallbackObjectSpecific {
+public final class CallbackOnChannelGotNames extends CallbackObjectSpecific {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnChannelGotNames(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IChannelGotNames Interface.
 	 *
@@ -39,16 +52,16 @@ public class CallbackOnChannelGotNames extends CallbackObjectSpecific {
 	 * @param cChannel Channel which the names reply is for
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(ChannelInfo cChannel) {
+	public boolean call(final ChannelInfo cChannel) {
 		boolean bResult = false;
 		IChannelGotNames eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
-			eMethod = (IChannelGotNames)callbackInfo.get(i);
+			eMethod = (IChannelGotNames) callbackInfo.get(i);
 			if (!this.isValidChan(eMethod, cChannel)) { continue; }
 			try {
 				eMethod.onChannelGotNames(myParser, cChannel);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelGotNames");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelGotNames");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -58,17 +71,11 @@ public class CallbackOnChannelGotNames extends CallbackObjectSpecific {
 	}	
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnChannelGotNames (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

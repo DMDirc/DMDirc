@@ -24,14 +24,26 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 
 /**
  * Callback to all objects implementing the IPrivateAction Interface.
  */
-public class CallbackOnPrivateAction extends CallbackObjectSpecific {
+public final class CallbackOnPrivateAction extends CallbackObjectSpecific {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnPrivateAction(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IPrivateAction Interface.
 	 *
@@ -40,16 +52,16 @@ public class CallbackOnPrivateAction extends CallbackObjectSpecific {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(String sMessage, String sHost) {
+	public boolean call(final String sMessage, final String sHost) {
 		boolean bResult = false;
 		IPrivateAction eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
-			eMethod = (IPrivateAction)callbackInfo.get(i);
+			eMethod = (IPrivateAction) callbackInfo.get(i);
 			if (!this.isValidUser(eMethod, sHost)) { continue; }
 			try {
 				eMethod.onPrivateAction(myParser, sMessage, sHost);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onPrivateAction");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onPrivateAction");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -59,17 +71,11 @@ public class CallbackOnPrivateAction extends CallbackObjectSpecific {
 	}	
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnPrivateAction (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

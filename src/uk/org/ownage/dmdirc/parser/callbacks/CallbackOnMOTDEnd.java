@@ -24,27 +24,39 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
 
 /**
  * Callback to all objects implementing the IMotdEnd Interface.
  */
-public class CallbackOnMOTDEnd extends CallbackObject {
+public final class CallbackOnMOTDEnd extends CallbackObject {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnMOTDEnd(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IMotdEnd Interface.
-	 *
+	 * @param noMOTD true if there was an MOTD, false otherwise
 	 * @see IMOTDEnd
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(boolean noMOTD) {
+	public boolean call(final boolean noMOTD) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IMOTDEnd)callbackInfo.get(i)).onMOTDEnd(myParser, noMOTD);
+				((IMOTDEnd) callbackInfo.get(i)).onMOTDEnd(myParser, noMOTD);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onMOTDEnd");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onMOTDEnd");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -54,17 +66,11 @@ public class CallbackOnMOTDEnd extends CallbackObject {
 	}
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnMOTDEnd (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

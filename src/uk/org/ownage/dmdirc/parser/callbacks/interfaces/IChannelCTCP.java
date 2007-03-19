@@ -47,5 +47,5 @@ public interface IChannelCTCP extends ICallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see uk.org.ownage.dmdirc.parser.ProcessMessage#callChannelCTCP
 	 */
-	void onChannelCTCP(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost );
+	void onChannelCTCP(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost);
 }

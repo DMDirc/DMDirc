@@ -24,14 +24,27 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
 
 /**
  * Callback to all objects implementing the IChannelSelfJoin Interface.
  */
-public class CallbackOnChannelSelfJoin extends CallbackObject {
+public final class CallbackOnChannelSelfJoin extends CallbackObject {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnChannelSelfJoin(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IChannelSelfJoin Interface.
 	 *
@@ -39,13 +52,13 @@ public class CallbackOnChannelSelfJoin extends CallbackObject {
 	 * @param cChannel Channel Object
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(ChannelInfo cChannel) {
+	public boolean call(final ChannelInfo cChannel) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IChannelSelfJoin)callbackInfo.get(i)).onChannelSelfJoin(myParser, cChannel);
+				((IChannelSelfJoin) callbackInfo.get(i)).onChannelSelfJoin(myParser, cChannel);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelSelfJoin");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelSelfJoin");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -55,17 +68,11 @@ public class CallbackOnChannelSelfJoin extends CallbackObject {
 	}	
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnChannelSelfJoin (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

@@ -24,14 +24,28 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelQuit;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelQuit;
 
 /**
  * Callback to all objects implementing the IChannelQuit Interface.
  */
-public class CallbackOnChannelQuit extends CallbackObjectSpecific {
+public final class CallbackOnChannelQuit extends CallbackObjectSpecific {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnChannelQuit(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IChannelQuit Interface.
 	 *
@@ -41,16 +55,17 @@ public class CallbackOnChannelQuit extends CallbackObjectSpecific {
 	 * @param sReason Quit reason
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
+	public boolean call(final ChannelInfo cChannel, 
+                final ChannelClientInfo cChannelClient, final String sReason) {
 		boolean bResult = false;
 		IChannelQuit eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
-			eMethod = (IChannelQuit)callbackInfo.get(i);
+			eMethod = (IChannelQuit) callbackInfo.get(i);
 			if (!this.isValidChan(eMethod, cChannel)) { continue; }
 			try {
 				eMethod.onChannelQuit(myParser, cChannel, cChannelClient, sReason);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelQuit");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelQuit");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -60,17 +75,11 @@ public class CallbackOnChannelQuit extends CallbackObjectSpecific {
 	}	
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnChannelQuit (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

@@ -24,14 +24,26 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDStart;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDStart;
 
 /**
  * Callback to all objects implementing the IMOTDStart Interface.
  */
-public class CallbackOnMOTDStart extends CallbackObject {
+public final class CallbackOnMOTDStart extends CallbackObject {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnMOTDStart(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IMOTDStart Interface.
 	 *
@@ -39,13 +51,13 @@ public class CallbackOnMOTDStart extends CallbackObject {
 	 * @param data Incomming Line.
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(String data) {
+	public boolean call(final String data) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IMOTDStart)callbackInfo.get(i)).onMOTDStart(myParser, data);
+				((IMOTDStart) callbackInfo.get(i)).onMOTDStart(myParser, data);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onMOTDStart");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onMOTDStart");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -55,17 +67,11 @@ public class CallbackOnMOTDStart extends CallbackObject {
 	}
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnMOTDStart (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

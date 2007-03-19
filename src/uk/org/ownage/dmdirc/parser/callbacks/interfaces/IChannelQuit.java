@@ -43,5 +43,5 @@ public interface IChannelQuit extends ICallbackInterface {
 	 * @param sReason Quit reason
 	 * @see uk.org.ownage.dmdirc.parser.ProcessQuit#callChannelQuit
 	 */
-	void onChannelQuit(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );
+	void onChannelQuit(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason);
 }

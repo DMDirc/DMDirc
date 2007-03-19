@@ -24,14 +24,28 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelJoin;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelJoin;
 
 /**
  * Callback to all objects implementing the IChannelJoin Interface.
  */
-public class CallbackOnChannelJoin extends CallbackObjectSpecific {
+public final class CallbackOnChannelJoin extends CallbackObjectSpecific {
+    		
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnChannelJoin(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IChannelJoin Interface.
 	 *
@@ -40,16 +54,17 @@ public class CallbackOnChannelJoin extends CallbackObjectSpecific {
 	 * @param cChannelClient ChannelClient object for new person
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
+	public boolean call(final ChannelInfo cChannel, 
+                final ChannelClientInfo cChannelClient) {
 		boolean bResult = false;
 		IChannelJoin eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
-			eMethod = (IChannelJoin)callbackInfo.get(i);
+			eMethod = (IChannelJoin) callbackInfo.get(i);
 			if (!this.isValidChan(eMethod, cChannel)) { continue; }
 			try {
 				eMethod.onChannelJoin(myParser, cChannel, cChannelClient);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelJoin");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelJoin");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -57,19 +72,13 @@ public class CallbackOnChannelJoin extends CallbackObjectSpecific {
 		}
 		return bResult;
 	}	
-		
-	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnChannelJoin (IRCParser parser, CallbackManager manager) { super(parser, manager); }
 	
 	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

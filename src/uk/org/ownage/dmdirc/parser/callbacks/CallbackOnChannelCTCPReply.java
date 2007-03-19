@@ -24,14 +24,28 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelCTCPReply;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelCTCPReply;
 
 /**
  * Callback to all objects implementing the IChannelCTCPReply Interface.
  */
-public class CallbackOnChannelCTCPReply extends CallbackObjectSpecific {
+public final class CallbackOnChannelCTCPReply extends CallbackObjectSpecific {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnChannelCTCPReply(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IChannelCTCPReply Interface.
 	 *
@@ -43,16 +57,18 @@ public class CallbackOnChannelCTCPReply extends CallbackObjectSpecific {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost) {
+	public boolean call(final ChannelInfo cChannel, 
+                final ChannelClientInfo cChannelClient, final String sType, 
+                final String sMessage, final String sHost) {
 		boolean bResult = false;
 		IChannelCTCPReply eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
-			eMethod = (IChannelCTCPReply)callbackInfo.get(i);
+			eMethod = (IChannelCTCPReply) callbackInfo.get(i);
 			if (!this.isValidChan(eMethod, cChannel)) { continue; }
 			try {
 				eMethod.onChannelCTCPReply(myParser, cChannel, cChannelClient, sType, sMessage, sHost);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelCTCPReply");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelCTCPReply");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -62,17 +78,11 @@ public class CallbackOnChannelCTCPReply extends CallbackObjectSpecific {
 	}	
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnChannelCTCPReply (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

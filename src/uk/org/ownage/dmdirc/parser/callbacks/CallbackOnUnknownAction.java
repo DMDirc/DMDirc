@@ -24,14 +24,26 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownAction;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownAction;
 
 /**
  * Callback to all objects implementing the IUnknownAction Interface.
  */
-public class CallbackOnUnknownAction extends CallbackObject {
+public final class CallbackOnUnknownAction extends CallbackObject {
+    
+        /**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnUnknownAction(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IUnknownAction Interface.
 	 *
@@ -41,33 +53,28 @@ public class CallbackOnUnknownAction extends CallbackObject {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(String sMessage, String sTarget, String sHost) {
+	public boolean call(final String sMessage, final String sTarget, 
+                final String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IUnknownAction)callbackInfo.get(i)).onUnknownAction(myParser, sMessage, sTarget, sHost);
+				((IUnknownAction) callbackInfo.get(i)).onUnknownAction(myParser, sMessage, sTarget, sHost);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onUnknownAction");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onUnknownAction");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
 			bResult = true;
 		}
 		return bResult;
-	}	
-	
-	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnUnknownAction (IRCParser parser, CallbackManager manager) { super(parser, manager); }
+        }
 	
 	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

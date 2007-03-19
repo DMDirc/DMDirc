@@ -24,14 +24,27 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.INickChanged;
+import uk.org.ownage.dmdirc.parser.ClientInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INickChanged;
 
 /**
  * Callback to all objects implementing the INickChanged Interface.
  */
-public class CallbackOnNickChanged extends CallbackObject {
+public final class CallbackOnNickChanged extends CallbackObject {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnNickChanged(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the INickChanged Interface.
 	 *
@@ -40,13 +53,13 @@ public class CallbackOnNickChanged extends CallbackObject {
 	 * @param sOldNick Nickname before change
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(ClientInfo cClient, String sOldNick) {
+	public boolean call(final ClientInfo cClient, final String sOldNick) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((INickChanged)callbackInfo.get(i)).onNickChanged(myParser, cClient, sOldNick);
+				((INickChanged) callbackInfo.get(i)).onNickChanged(myParser, cClient, sOldNick);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onNickChanged");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onNickChanged");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -56,17 +69,11 @@ public class CallbackOnNickChanged extends CallbackObject {
 	}	
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnNickChanged (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

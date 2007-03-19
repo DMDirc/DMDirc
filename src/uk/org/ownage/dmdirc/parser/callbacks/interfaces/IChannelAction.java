@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack
  *
@@ -47,5 +46,5 @@ public interface IChannelAction extends ICallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see uk.org.ownage.dmdirc.parser.ProcessMessage#callChannelAction
 	 */
-	void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost );
+	void onChannelAction(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost);
 }

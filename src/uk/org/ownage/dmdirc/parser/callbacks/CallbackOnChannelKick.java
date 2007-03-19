@@ -24,14 +24,28 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelKick;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelKick;
 
 /**
  * Callback to all objects implementing the IChannelKick Interface.
  */
-public class CallbackOnChannelKick extends CallbackObjectSpecific {
+public final class CallbackOnChannelKick extends CallbackObjectSpecific {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnChannelKick(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IChannelKick Interface.
 	 *
@@ -43,16 +57,19 @@ public class CallbackOnChannelKick extends CallbackObjectSpecific {
 	 * @param sKickedByHost Hostname of Kicker (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost) {
+	public boolean call(final ChannelInfo cChannel, 
+                final ChannelClientInfo cKickedClient, 
+                final ChannelClientInfo cKickedByClient, final String sReason, 
+                final String sKickedByHost) {
 		boolean bResult = false;
 		IChannelKick eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
-			eMethod = (IChannelKick)callbackInfo.get(i);
+			eMethod = (IChannelKick) callbackInfo.get(i);
 			if (!this.isValidChan(eMethod, cChannel)) { continue; }
 			try {
 				eMethod.onChannelKick(myParser, cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelKick");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelKick");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -62,17 +79,11 @@ public class CallbackOnChannelKick extends CallbackObjectSpecific {
 	}	
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnChannelKick (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

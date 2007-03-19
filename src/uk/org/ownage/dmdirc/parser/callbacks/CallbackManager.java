@@ -23,10 +23,12 @@
  */
 
 package uk.org.ownage.dmdirc.parser.callbacks;
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
-import java.util.Hashtable;
+
 import java.util.Enumeration;
+import java.util.Hashtable;
+
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
 
 /**
  * IRC Parser Callback Manager.
@@ -35,16 +37,19 @@ import java.util.Enumeration;
  * @author            Shane Mc Cormack
  * @version           $Id$
  */
-public class CallbackManager {
-	/** Reference to the parser object that owns this CallbackManager*/
-	IRCParser myParser = null;
+public final class CallbackManager {
+	/** Reference to the parser object that owns this CallbackManager. */
+	IRCParser myParser;
+        
+        /** Hashtable used to store the different types of callback known. */
+	private Hashtable<String, CallbackObject> callbackHash = new Hashtable<String, CallbackObject>();
 			
 	/**
-	 * Constructor to create a CallbackManager
+	 * Constructor to create a CallbackManager.
 	 *
 	 * @param parser IRCParser that owns this callback manager.
 	 */
-	public CallbackManager(IRCParser parser) {
+	public CallbackManager(final IRCParser parser) {
 		myParser = parser;
 		// Add callbacks
 		addCallbackType(new CallbackOnChannelAction(myParser, this));
@@ -90,20 +95,22 @@ public class CallbackManager {
 		addCallbackType(new CallbackOnUserModeChanged(myParser, this));
 	}
 	
-	/** Empty clone method to prevent cloning to get more copies of the CallbackManager */
+	/** 
+         * Empty clone method to prevent cloning to get more copies of the CallbackManager. 
+         * @return Cloned Object
+         * @throws CloneNotSupportedException whenever it is called
+         */
 	public Object clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException();
 	}
 	
-	/** Hashtable used to store the different types of callback known. */
-	private Hashtable<String,CallbackObject> callbackHash = new Hashtable<String,CallbackObject>();
 	/**
 	 * Add new callback type.
 	 *
 	 * @param callback CallbackObject subclass for the callback.
 	 * @return if adding succeeded or not.
 	 */
-	public boolean addCallbackType(CallbackObject callback) {
+	public boolean addCallbackType(final CallbackObject callback) {
 		if (!callbackHash.containsKey(callback.getLowerName())) {
 			callbackHash.put(callback.getLowerName(), callback);
 			return true;
@@ -117,7 +124,7 @@ public class CallbackManager {
 	 * @param callback CallbackObject subclass to remove.
 	 * @return if removal succeeded or not.
 	 */
-	public boolean delCallbackType(CallbackObject callback) {
+	public boolean delCallbackType(final CallbackObject callback) {
 		if (callbackHash.containsKey(callback.getLowerName())) {
 			callbackHash.remove(callback.getLowerName());
 			return true;
@@ -126,13 +133,15 @@ public class CallbackManager {
 	}
 		
 	/**
-	 * Get reference to callback object
+	 * Get reference to callback object.
 	 *
 	 * @param callbackName Name of callback object.
+         *
+         * @return CallbackObject returns the callback object for this type
 	 */
-	public CallbackObject getCallbackType(String callbackName) {
+	public CallbackObject getCallbackType(final String callbackName) {
 		if (callbackHash.containsKey(callbackName.toLowerCase())) {
-			CallbackObject res = callbackHash.get(callbackName.toLowerCase());
+			final CallbackObject res = callbackHash.get(callbackName.toLowerCase());
 			return res;
 		}
 		return null;
@@ -143,11 +152,13 @@ public class CallbackManager {
 	 *
 	 * @param o instance of ICallbackInterface to remove.
 	 */
-	public void delAllCallback(ICallbackInterface o) {
-		CallbackObject cb = null;
-		for (Enumeration e = callbackHash.keys(); e.hasMoreElements();) {
+	public void delAllCallback(final ICallbackInterface o) {
+		CallbackObject cb;
+		for (final Enumeration e = callbackHash.keys(); e.hasMoreElements();) {
 			cb = callbackHash.get(e.nextElement());
-			if (cb != null) { cb.del(o); }
+			if (cb != null) { 
+                            cb.del(o); 
+                        }
 		}
 	}
 	
@@ -156,11 +167,13 @@ public class CallbackManager {
 	 *
 	 * @param o instance of ICallbackInterface to add.
 	 */
-	public void addAllCallback(ICallbackInterface o) {
-		CallbackObject cb = null;
-		for (Enumeration e = callbackHash.keys(); e.hasMoreElements();) {
+	public void addAllCallback(final ICallbackInterface o) {
+		CallbackObject cb;
+		for (final Enumeration e = callbackHash.keys(); e.hasMoreElements();) {
 			cb = callbackHash.get(e.nextElement());
-			if (cb != null) { cb.add(o); }
+			if (cb != null) { 
+                            cb.add(o); 
+                        }
 		}
 	}
 	
@@ -170,12 +183,17 @@ public class CallbackManager {
 	 *
 	 * @param callbackName Name of callback object.
 	 * @param o instance of ICallbackInterface to add.
-	 * @throws CallbackNotFound If callback is not found.
+	 * @throws uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound If callback is not found.
 	 */
-	public void addCallback(String callbackName, ICallbackInterface o) throws CallbackNotFound {
-		CallbackObject cb = getCallbackType(callbackName);
-		if (cb != null) { cb.add(o); }
-		else { throw new CallbackNotFound("Callback '"+callbackName+"' could not be found.");  }
+	public void addCallback(final String callbackName, 
+                final ICallbackInterface o) throws CallbackNotFound {
+		final CallbackObject cb = getCallbackType(callbackName);
+		if (cb != null) { 
+                    cb.add(o); 
+                }
+		else { 
+                    throw new CallbackNotFound("Callback '"+callbackName+"' could not be found.");  
+                }
 	}
 	
 	/**
@@ -187,10 +205,15 @@ public class CallbackManager {
 	 * @param target Parameter to specify that a callback should only fire for specific things
 	 * @throws CallbackNotFound If callback is not found.
 	 */
-	public void addCallback(String callbackName, ICallbackInterface o, String target) throws CallbackNotFound {
+	public void addCallback(final String callbackName, 
+                final ICallbackInterface o, final String target) throws CallbackNotFound {
 		CallbackObjectSpecific cb = (CallbackObjectSpecific)getCallbackType(callbackName);
-		if (cb != null) { cb.add(o,target); }
-		else { throw new CallbackNotFound("Callback '"+callbackName+"' could not be found.");  }
+		if (cb != null) { 
+                    cb.add(o,target); 
+                }
+		else { 
+                    throw new CallbackNotFound("Callback '"+callbackName+"' could not be found.");  
+                }
 	}
 	
 	/**
@@ -201,11 +224,14 @@ public class CallbackManager {
 	 * @param o instance of ICallbackInterface to add.
 	 * @return true/false if the callback was added or not.
 	 */
-	public boolean addNonCriticalCallback(String callbackName, ICallbackInterface o)  {
+	public boolean addNonCriticalCallback(final String callbackName, 
+                final ICallbackInterface o)  {
 		try {
 			addCallback(callbackName, o);
 			return true;
-		} catch (Exception e) { return false;	}
+		} catch (Exception e) {
+                    return false;
+                }
 	}
 	
 	/**
@@ -217,23 +243,28 @@ public class CallbackManager {
 	 * @param target Parameter to specify that a callback should only fire for specific things
 	 * @throws CallbackNotFound If callback is not found.
 	 */
-	public boolean addNonCriticalCallback(String callbackName, ICallbackInterface o, String target) {
+	public boolean addNonCriticalCallback(final String callbackName, 
+                final ICallbackInterface o, final String target) {
 		try {
 			addCallback(callbackName, o, target);
 			return true;
-		} catch (Exception e) { return false;	}
+		} catch (Exception e) { 
+                    return false;	
+                }
 	}
 	
 	
 	/**
-	 * Remove a callback
+	 * Remove a callback.
 	 *
 	 * @param callbackName Name of callback object.
 	 * @param o instance of ICallbackInterface to remove.
 	 */
-	public void delCallback(String callbackName, ICallbackInterface o) {
+	public void delCallback(final String callbackName, final ICallbackInterface o) {
 		CallbackObject cb = getCallbackType(callbackName);
-		if (cb != null) { cb.del(o); }
+		if (cb != null) { 
+                    cb.del(o); 
+                }
 	}
 	
 	/**
@@ -241,5 +272,7 @@ public class CallbackManager {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

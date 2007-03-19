@@ -24,11 +24,12 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import java.util.Hashtable;
 import java.util.ArrayList;
+
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
+
 /**
  * CallbackObject.
  * Superclass for all callback types.
@@ -41,27 +42,39 @@ public abstract class CallbackObject {
 	protected ArrayList<ICallbackInterface> callbackInfo = new ArrayList<ICallbackInterface>();
 
 	/** Reference to the IRCParser that owns this callback. */
-	protected IRCParser myParser = null;
+	protected IRCParser myParser;
 	/** Reference to the CallbackManager in charge of this callback. */
-	protected CallbackManager myManager = null;
+	protected CallbackManager myManager;
+        	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	protected CallbackObject(final IRCParser parser, final CallbackManager manager) {
+		this.myParser = parser;
+		this.myManager = manager;
+	}
 
 	/**
 	 * Add a callback pointer to the appropriate ArrayList.
 	 *
 	 * @param eMethod OBject to callback to.
 	 */
-	protected final void addCallback(ICallbackInterface eMethod) {
+	protected final void addCallback(final ICallbackInterface eMethod) {
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			if (eMethod.equals(callbackInfo.get(i))) { return; }
 		}
 		callbackInfo.add(eMethod);
 	}
+        
 	/**
 	 * Delete a callback pointer from the appropriate ArrayList.
 	 *
 	 * @param eMethod Object that was being called back to.
 	 */
-	protected final void delCallback(ICallbackInterface eMethod) {
+	protected final void delCallback(final ICallbackInterface eMethod) {
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			if (eMethod.equals(callbackInfo.get(i))) { callbackInfo.remove(i); break; }
 		}
@@ -71,22 +84,13 @@ public abstract class CallbackObject {
 	 * Call the OnErrorInfo callback.
 	 *
 	 * @param errorInfo ParserError object to pass as error.
+         *
+         * @return true if error call succeeded, false otherwise
 	 */
-	protected final boolean callErrorInfo(ParserError errorInfo) {
-		CallbackOnErrorInfo cb = (CallbackOnErrorInfo)myManager.getCallbackType("OnErrorInfo");
+	protected final boolean callErrorInfo(final ParserError errorInfo) {
+		final CallbackOnErrorInfo cb = (CallbackOnErrorInfo) myManager.getCallbackType("OnErrorInfo");
 		if (cb != null) { return cb.call(errorInfo); }
 		return false;
-	}
-	
-	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	protected CallbackObject (IRCParser parser, CallbackManager manager) {
-		this.myParser = parser;
-		this.myManager = manager;
 	}
 	
 	/**
@@ -94,26 +98,31 @@ public abstract class CallbackObject {
 	 *
 	 * @param eMethod Object to callback to.
 	 */
-	public void add(ICallbackInterface eMethod) { addCallback(eMethod); }
+	public void add(final ICallbackInterface eMethod) { 
+            addCallback(eMethod); 
+        }
+        
 	/**
 	 * Remove a callback.
 	 *
 	 * @param eMethod Object to remove callback to.
 	 */
-	public void del(ICallbackInterface eMethod) { delCallback(eMethod); }
+	public void del(final ICallbackInterface eMethod) { 
+            delCallback(eMethod); 
+        }
 	
 	/**
-	 * Get the name for this callback
+	 * Get the name for this callback.
 	 *
 	 * @return Name of callback
 	 */
 	public String getName() {
-		Package thisPackage = this.getClass().getPackage();
+		final Package thisPackage = this.getClass().getPackage();
 		int packageLength = 0;
 		if (thisPackage != null) {
-			packageLength = thisPackage.getName().length()+1;
+			packageLength = thisPackage.getName().length() + 1;
 		}
-		return this.getClass().getName().substring(packageLength+8); // 8 is the length of "Callback"
+		return this.getClass().getName().substring(packageLength + 8); // 8 is the length of "Callback"
 	}
 	
 	/**
@@ -130,5 +139,7 @@ public abstract class CallbackObject {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() {
+           return "$Id$"; 
+        }	
 }

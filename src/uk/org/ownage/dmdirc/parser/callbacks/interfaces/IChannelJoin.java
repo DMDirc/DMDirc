@@ -42,5 +42,5 @@ public interface IChannelJoin extends ICallbackInterface {
 	 * @param cChannelClient ChannelClient object for new person
 	 * @see uk.org.ownage.dmdirc.parser.ProcessJoin#callChannelJoin
 	 */
-	void onChannelJoin(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient );
+	void onChannelJoin(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient);
 }

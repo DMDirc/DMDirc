@@ -24,14 +24,28 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
 
 /**
  * Callback to all objects implementing the IChannelUserModeChanged Interface.
  */
-public class CallbackOnChannelUserModeChanged extends CallbackObjectSpecific {
+public final class CallbackOnChannelUserModeChanged extends CallbackObjectSpecific {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnChannelUserModeChanged(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IChannelUserModeChanged Interface.
 	 *
@@ -43,16 +57,19 @@ public class CallbackOnChannelUserModeChanged extends CallbackObjectSpecific {
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode) {
+	public boolean call(final ChannelInfo cChannel, 
+                final ChannelClientInfo cChangedClient, 
+                final ChannelClientInfo cSetByClient, 
+                final String sHost, final String sMode) {
 		boolean bResult = false;
 		IChannelUserModeChanged eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
-			eMethod = (IChannelUserModeChanged)callbackInfo.get(i);
+			eMethod = (IChannelUserModeChanged) callbackInfo.get(i);
 			if (!this.isValidChan(eMethod, cChannel)) { continue; }
 			try {
 				eMethod.onChannelUserModeChanged(myParser, cChannel, cChangedClient, cSetByClient, sHost, sMode);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelUserModeChanged");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelUserModeChanged");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -62,17 +79,11 @@ public class CallbackOnChannelUserModeChanged extends CallbackObjectSpecific {
 	}	
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnChannelUserModeChanged (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

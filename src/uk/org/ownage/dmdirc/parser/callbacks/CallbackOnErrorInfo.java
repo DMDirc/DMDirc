@@ -24,14 +24,26 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
 
 /**
  * Callback to all objects implementing the IErrorInfo Interface.
  */
-public class CallbackOnErrorInfo extends CallbackObject {
+public final class CallbackOnErrorInfo extends CallbackObject {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnErrorInfo(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IErrorInfo Interface.
 	 *
@@ -39,14 +51,14 @@ public class CallbackOnErrorInfo extends CallbackObject {
 	 * @param errorInfo ParserError object representing the error.
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(ParserError errorInfo) {
+	public boolean call(final ParserError errorInfo) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IErrorInfo)callbackInfo.get(i)).onErrorInfo(myParser, errorInfo);
+				((IErrorInfo) callbackInfo.get(i)).onErrorInfo(myParser, errorInfo);
 			} catch (Exception e) {
 				// This will not callErrorInfo or we would get an infinite loop!
-				System.out.println("Exception in onError Callback. ["+e.getMessage()+"]");
+				System.out.println("Exception in onError Callback. [" + e.getMessage() + "]");
 				e.printStackTrace();
 			}
 			bResult = true;
@@ -55,17 +67,11 @@ public class CallbackOnErrorInfo extends CallbackObject {
 	}	
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnErrorInfo (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

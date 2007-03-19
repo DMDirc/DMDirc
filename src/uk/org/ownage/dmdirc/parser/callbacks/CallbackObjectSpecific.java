@@ -24,11 +24,13 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
 import java.util.Hashtable;
-import java.util.ArrayList;
+
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.ClientInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
+
 /**
  * CallbackObjectSpecific.
  * Superclass for all callback types that have a "specific" target.
@@ -37,17 +39,30 @@ import java.util.ArrayList;
  * @version           $Id$
  */
 public abstract class CallbackObjectSpecific extends CallbackObject {
+   
 	/** Hashtable for storing specific information for callback. */	
-	protected Hashtable<ICallbackInterface,String> specificData = new Hashtable<ICallbackInterface,String>();
-	
+	protected Hashtable<ICallbackInterface, String> specificData = new Hashtable<ICallbackInterface, String>();
+        	
 	/**
-	 * Used to check if a channel matches the specificData
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackObjectSpecific(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
+	/**
+	 * Used to check if a channel matches the specificData.
 	 * 
 	 * @param eMethod Object that is being called back to
 	 * @param cChannel ChannelInfo object for the channel to test
 	 * @return true if channel given matches the specifics for the method given
 	 */
-	protected boolean isValidChan(ICallbackInterface eMethod, ChannelInfo cChannel) {
+	protected boolean isValidChan(final ICallbackInterface eMethod, 
+                final ChannelInfo cChannel) {
 		if (specificData.containsKey(eMethod)) { 
 			if (!cChannel.getName().equalsIgnoreCase(specificData.get(eMethod))) { return false; }
 		}
@@ -55,14 +70,15 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	}
 	
 	/**
-	 * Used to check if a hostname matches the specificData
+	 * Used to check if a hostname matches the specificData.
 	 * 
 	 * @param eMethod Object that is being called back to
 	 * @param sHost Hostname of user that sent the query
 	 * @return true if host given matches the specifics for the method given
 	 */
-	protected boolean isValidUser(ICallbackInterface eMethod, String sHost) {
-		String nickname = ClientInfo.parseHost(sHost);
+	protected boolean isValidUser(final ICallbackInterface eMethod, 
+                final String sHost) {
+		final String nickname = ClientInfo.parseHost(sHost);
 		if (specificData.containsKey(eMethod)) { 
 			if (!nickname.equalsIgnoreCase(specificData.get(eMethod))) { return false; }
 		}
@@ -76,7 +92,7 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	 *
 	 * @param eMethod Object to callback to.
 	 */
-	public void add(ICallbackInterface eMethod) {
+	public void add(final ICallbackInterface eMethod) {
 		addCallback(eMethod);
 		if (specificData.containsKey(eMethod)) { specificData.remove(eMethod); }
 	}
@@ -87,10 +103,11 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	 * @param eMethod Object to callback to.
 	 * @param specificTarget Target that must match for callback to be called.
 	 */
-	public void add(ICallbackInterface eMethod, String specificTarget) {
+	public void add(final ICallbackInterface eMethod, 
+                final String specificTarget) {
 		add(eMethod);
 		if (!specificTarget.equals("")) {
-			specificData.put(eMethod,specificTarget);
+			specificData.put(eMethod, specificTarget);
 		}
 	}
 	
@@ -99,23 +116,17 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	 *
 	 * @param eMethod Object to remove callback to.
 	 */
-	public void del(ICallbackInterface eMethod) {
+	public void del(final ICallbackInterface eMethod) {
 		delCallback(eMethod);
 		if (specificData.containsKey(eMethod)) { specificData.remove(eMethod); }
 	}
-	
-	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackObjectSpecific (IRCParser parser, CallbackManager manager) { super(parser, manager); }
 	
 	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

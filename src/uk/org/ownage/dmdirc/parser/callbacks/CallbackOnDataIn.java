@@ -24,14 +24,26 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
 
 /**
  * Callback to all objects implementing the IDataIn Interface.
  */
-public class CallbackOnDataIn extends CallbackObject {
+public final class CallbackOnDataIn extends CallbackObject {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnDataIn(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IDataIn Interface.
 	 *
@@ -39,13 +51,13 @@ public class CallbackOnDataIn extends CallbackObject {
 	 * @param data Incomming Line.
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(String data) {
+	public boolean call(final String data) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IDataIn)callbackInfo.get(i)).onDataIn(myParser, data);
+				((IDataIn) callbackInfo.get(i)).onDataIn(myParser, data);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onDataIn");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onDataIn");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -55,17 +67,11 @@ public class CallbackOnDataIn extends CallbackObject {
 	}
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnDataIn (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

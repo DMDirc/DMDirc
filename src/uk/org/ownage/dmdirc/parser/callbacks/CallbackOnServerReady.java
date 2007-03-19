@@ -24,14 +24,26 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IServerReady;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IServerReady;
 
 /**
  * Callback to all objects implementing the IServerReady Interface.
  */
-public class CallbackOnServerReady extends CallbackObject {
+public final class CallbackOnServerReady extends CallbackObject {
+    
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnServerReady(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IServerReady Interface.
 	 *
@@ -42,9 +54,9 @@ public class CallbackOnServerReady extends CallbackObject {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IServerReady)callbackInfo.get(i)).onServerReady(myParser);
+				((IServerReady) callbackInfo.get(i)).onServerReady(myParser);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onServerReady");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onServerReady");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -54,17 +66,11 @@ public class CallbackOnServerReady extends CallbackObject {
 	}
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnServerReady (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

@@ -24,14 +24,26 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownCTCP;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownCTCP;
 
 /**
  * Callback to all objects implementing the IUnknownCTCP Interface.
  */
-public class CallbackOnUnknownCTCP extends CallbackObject {
+public final class CallbackOnUnknownCTCP extends CallbackObject {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnUnknownCTCP(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IUnknownCTCP Interface.
 	 *
@@ -42,13 +54,14 @@ public class CallbackOnUnknownCTCP extends CallbackObject {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(String sType, String sMessage, String sTarget, String sHost) {
+	public boolean call(final String sType, final String sMessage, 
+                final String sTarget, final String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IUnknownCTCP)callbackInfo.get(i)).onUnknownCTCP(myParser, sType, sMessage, sTarget, sHost);
+				((IUnknownCTCP) callbackInfo.get(i)).onUnknownCTCP(myParser, sType, sMessage, sTarget, sHost);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onUnknownCTCP");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onUnknownCTCP");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -58,17 +71,11 @@ public class CallbackOnUnknownCTCP extends CallbackObject {
 	}	
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnUnknownCTCP (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

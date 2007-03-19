@@ -24,14 +24,26 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
 
 /**
  * Callback to all objects implementing the IPrivateCTCPReply Interface.
  */
-public class CallbackOnPrivateCTCPReply extends CallbackObjectSpecific {
+public final class CallbackOnPrivateCTCPReply extends CallbackObjectSpecific {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnPrivateCTCPReply(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IPrivateCTCPReply Interface.
 	 *
@@ -41,16 +53,17 @@ public class CallbackOnPrivateCTCPReply extends CallbackObjectSpecific {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(String sType, String sMessage, String sHost) {
+	public boolean call(final String sType, final String sMessage, 
+                final String sHost) {
 		boolean bResult = false;
 		IPrivateCTCPReply eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
-			eMethod = (IPrivateCTCPReply)callbackInfo.get(i);
+			eMethod = (IPrivateCTCPReply) callbackInfo.get(i);
 			if (!this.isValidUser(eMethod, sHost)) { continue; }
 			try {
 				eMethod.onPrivateCTCPReply(myParser, sType, sMessage, sHost);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onPrivateCTCPReply");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onPrivateCTCPReply");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -60,17 +73,11 @@ public class CallbackOnPrivateCTCPReply extends CallbackObjectSpecific {
 	}	
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnPrivateCTCPReply (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

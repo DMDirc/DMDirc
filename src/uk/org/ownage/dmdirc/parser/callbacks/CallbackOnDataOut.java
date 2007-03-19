@@ -24,29 +24,41 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.*;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import  uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
+import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.parser.ParserError;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
 
 /**
  * Callback to all objects implementing the IDataOut Interface.
  */
-public class CallbackOnDataOut extends CallbackObject {
+public final class CallbackOnDataOut extends CallbackObject {
+    	
+	/**
+	 * Create a new instance of the Callback Object.
+	 *
+	 * @param parser IRCParser That owns this callback
+	 * @param manager CallbackManager that is in charge of this callback
+	 */
+	public CallbackOnDataOut(final IRCParser parser, 
+                final CallbackManager manager) { 
+            super(parser, manager); 
+        }
+        
 	/**
 	 * Callback to all objects implementing the IDataOut Interface.
 	 *
 	 * @see IDataOut
 	 * @param data Outgoing Data
-	 * @param FromParser True if parser sent the data, false if sent using .sendLine	 
+	 * @param fromParser True if parser sent the data, false if sent using .sendLine	 
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(String data, boolean FromParser) {
+	public boolean call(final String data, final boolean fromParser) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IDataOut)callbackInfo.get(i)).onDataOut(myParser, data, FromParser);
+				((IDataOut) callbackInfo.get(i)).onDataOut(myParser, data, fromParser);
 			} catch (Exception e) {
-				ParserError ei = new ParserError(ParserError.errError, "Exception in onDataOut");
+				final ParserError ei = new ParserError(ParserError.errError, "Exception in onDataOut");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
@@ -56,17 +68,11 @@ public class CallbackOnDataOut extends CallbackObject {
 	}
 	
 	/**
-	 * Create a new instance of the Callback Object
-	 *
-	 * @param parser IRCParser That owns this callback
-	 * @param manager CallbackManager that is in charge of this callback
-	 */
-	public CallbackOnDataOut (IRCParser parser, CallbackManager manager) { super(parser, manager); }
-	
-	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

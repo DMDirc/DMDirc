@@ -43,5 +43,5 @@ public interface IChannelPart extends ICallbackInterface {
 	 * @param sReason Reason given for parting (May be "")
 	 * @see uk.org.ownage.dmdirc.parser.ProcessPart#callChannelPart
 	 */
-	void onChannelPart(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason );
+	void onChannelPart(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason);
 }

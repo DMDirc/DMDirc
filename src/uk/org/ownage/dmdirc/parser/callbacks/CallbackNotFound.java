@@ -43,12 +43,16 @@ public class CallbackNotFound extends Exception {
 	 *
 	 * @param message Reason for exception
 	 */
-	public CallbackNotFound(final String message) { super(message); }
+	public CallbackNotFound(final String message) { 
+            super(message); 
+        }
 	
 	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { 
+            return "$Id$"; 
+        }	
 }

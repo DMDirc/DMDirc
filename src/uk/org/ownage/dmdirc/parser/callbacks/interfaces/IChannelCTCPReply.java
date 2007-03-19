@@ -47,5 +47,5 @@ public interface IChannelCTCPReply extends ICallbackInterface {
 	 * @param sHost Hostname of sender (or servername)
 	 * @see uk.org.ownage.dmdirc.parser.ProcessMessage#callChannelCTCPReply
 	 */
-	void onChannelCTCPReply(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost );
+	void onChannelCTCPReply(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost);
 }
