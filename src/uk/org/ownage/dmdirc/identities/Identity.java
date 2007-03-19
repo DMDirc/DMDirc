@@ -49,7 +49,8 @@ public final class Identity implements ConfigSource {
      * Creates a new instance of Identity.
      * @param file The file to load this identity from.
      * @throws IOException Input error when reading the file
-     * @throws InvalidIdentityFileException Missing required properties
+     * @throws uk.org.ownage.dmdirc.identities.InvalidIdentityFileException 
+     * Missing required properties
      */
     public Identity(final File file) throws IOException,
             InvalidIdentityFileException {

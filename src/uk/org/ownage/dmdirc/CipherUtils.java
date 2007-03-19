@@ -72,6 +72,9 @@ public final class CipherUtils {
      */
     private static final int AUTH_TRIES = 4;
     
+    /**
+     * User password.
+     */
     private static String password;
     
     /**
@@ -155,7 +158,6 @@ public final class CipherUtils {
     
     /**
      * Checks if a user is authed.
-     * @return Auth status
      */
     public static boolean checkAuthed() {
         if (dcipher != null && ecipher != null) {
@@ -204,7 +206,9 @@ public final class CipherUtils {
     }
     
     /**
-     * auths a user and sets the password
+     * Auths a user and sets the password.
+     *
+     * @return true if auth was successful, false otherwise.
      */
     public static boolean auth() {
         String passwordHash = null;

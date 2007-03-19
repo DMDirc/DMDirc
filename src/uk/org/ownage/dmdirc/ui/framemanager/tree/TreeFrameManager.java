@@ -265,7 +265,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * Sets the parent component in the main UI.
-     * @param newParent parent component.
+     * @param parent parent component.
      */
     public void setParent(final JComponent parent) {
         final JScrollPane scrollPane = new JScrollPane(tree);
@@ -370,7 +370,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * valled whenever the value of the selection changes.
-     * @param e selection event.
+     * @param event selection event.
      */
     public void valueChanged(final TreeSelectionEvent event) {
         final DefaultMutableTreeNode node =
@@ -426,7 +426,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * called after a node, or set of nodes, changes.
-     * @param e change event.
+     * @param event change event.
      */
     public void treeNodesChanged(final TreeModelEvent event) {
         //Do nothing
@@ -434,7 +434,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * called after a node has been inserted into the tree.
-     * @param e change event.
+     * @param event change event.
      */
     public void treeNodesInserted(final TreeModelEvent event) {
         //Do nothing
@@ -442,7 +442,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * Called when a node is removed from the tree.
-     * @param e change event.
+     * @param event change event.
      */
     public void treeNodesRemoved(final TreeModelEvent event) {
         //Do nothing
@@ -450,7 +450,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * Called when a tree changes structure.
-     * @param e change event.
+     * @param event change event.
      */
     public void treeStructureChanged(final TreeModelEvent event) {
         //Do nothing
@@ -459,7 +459,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     /**
      * Invoked when the mouse button has been clicked (pressed and released)
      * on a component.
-     * @param e mouse event.
+     * @param event mouse event.
      */
     public void mouseClicked(final MouseEvent event) {
         //Do nothing
@@ -467,7 +467,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * Invoked when a mouse button has been pressed on a component.
-     * @param e mouse event.
+     * @param event mouse event.
      */
     public void mousePressed(final MouseEvent event) {
         if (event.isPopupTrigger()) {
@@ -483,7 +483,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * Invoked when a mouse button has been released on a component.
-     * @param e mouse event.
+     * @param event mouse event.
      */
     public void mouseReleased(final MouseEvent event) {
         //Do nothing
@@ -491,7 +491,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * Invoked when the mouse enters a component.
-     * @param e mouse event.
+     * @param event mouse event.
      */
     public void mouseEntered(final MouseEvent event) {
         //Do nothing
@@ -499,7 +499,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * Invoked when the mouse exits a component.
-     * @param e mouse event.
+     * @param event mouse event.
      */
     public void mouseExited(final MouseEvent event) {
         //Do nothing
@@ -507,7 +507,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * Invoked when an action occurs.
-     * @param e action event.
+     * @param event action event.
      */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == closeMenuItem && popupNode != null) {
@@ -591,7 +591,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * Invoked when the mouse wheel is rotated.
-     * @param e mouse event.
+     * @param event mouse event.
      */
     public void mouseWheelMoved(final MouseWheelEvent event) {
         //get the number of notches (used only for direction)

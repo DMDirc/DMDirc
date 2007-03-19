@@ -29,15 +29,15 @@ package uk.org.ownage.dmdirc.identities;
 public class ConfigTarget implements Comparable {
     
     /** Indicates that the target is a global config source. */
-    public final static int TYPE_GLOBAL = 1;
+    public static final int TYPE_GLOBAL = 1;
     /** Indicates that the target targets an ircd. */
-    public final static int TYPE_IRCD = 2;
+    public static final int TYPE_IRCD = 2;
     /** Indicates that the target targets a network. */
-    public final static int TYPE_NETWORK = 3;
+    public static final int TYPE_NETWORK = 3;
     /** Indicates that the target targets a server. */
-    public final static int TYPE_SERVER = 4;
+    public static final int TYPE_SERVER = 4;
     /** Indicates that the target targets a channel. */
-    public final static int TYPE_CHANNEL = 5;
+    public static final int TYPE_CHANNEL = 5;
     
     /** The type of this target. */
     private int type;

@@ -73,16 +73,10 @@ public final class PluginManager {
      * @param plugin boolean success
      * @return plugin to remove
      */
-    protected synchronized boolean removePlugin(AbstractPlugin plugin) {
+    protected synchronized boolean removePlugin(final AbstractPlugin plugin) {
 	if (loadedPlugins.contains(plugin)) {
-	    
-	    ClassLoader loader = plugin.getClass().getClassLoader();
-	    loader = null;
-	    plugin = null;
-	    
-	    System.gc();
-	    
 	    loadedPlugins.remove(plugin);
+            System.gc();
 	    return true;
 	}
 	
