@@ -23,9 +23,10 @@
  */
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
+
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /** 
  * Called When we, or another client quits IRC (Called once per channel the user was on).

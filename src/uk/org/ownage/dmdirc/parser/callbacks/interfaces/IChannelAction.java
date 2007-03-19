@@ -25,9 +25,9 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
  * Called when a person does an action in a channel.

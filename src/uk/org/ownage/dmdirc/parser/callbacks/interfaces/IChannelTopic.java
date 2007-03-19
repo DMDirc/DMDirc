@@ -24,8 +24,8 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /** 
  * Called when the topic is changed or discovered for the first time.

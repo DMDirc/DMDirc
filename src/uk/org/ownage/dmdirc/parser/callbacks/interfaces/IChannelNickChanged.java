@@ -24,9 +24,9 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /** 
  * Called when we or another user change nickname (Called once per channel the user is on).
