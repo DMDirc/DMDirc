@@ -24,8 +24,8 @@ package uk.org.ownage.dmdirc;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import uk.org.ownage.dmdirc.identities.IdentityManager;
 
+import uk.org.ownage.dmdirc.identities.IdentityManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.MainFrame;
