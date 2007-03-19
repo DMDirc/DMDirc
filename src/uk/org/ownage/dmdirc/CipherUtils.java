@@ -158,6 +158,8 @@ public final class CipherUtils {
     
     /**
      * Checks if a user is authed.
+     *
+     * @return true if authed, false otherwise
      */
     public static boolean checkAuthed() {
         if (dcipher != null && ecipher != null) {
@@ -168,7 +170,6 @@ public final class CipherUtils {
     
     /**
      * creates ciphers.
-     * @return auth status
      */
     private static void createCiphers() {
         try {
