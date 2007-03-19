@@ -22,105 +22,58 @@
 
 package uk.org.ownage.dmdirc.ui;
 
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Rectangle;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Date;
-
-import javax.swing.JInternalFrame;
 import javax.swing.JList;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
-import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import uk.org.ownage.dmdirc.ui.components.Frame;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
-import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
-import uk.org.ownage.dmdirc.ui.messages.Formatter;
-import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
 /**
  * The channel frame is the GUI component that represents a channel to the user.
  * @author  chris
  */
-public class ChannelFrame extends JInternalFrame implements CommandWindow {
+public class ChannelFrame extends Frame {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4;
+    private static final long serialVersionUID = 5;
     
-    /**
-     * The InputHandler for our input field.
-     */
-    private InputHandler inputHandler;
-    /**
-     * The channel object that owns this frame.
-     */
-    private Channel parent;
     /**
      * The nick list model used for this channel's nickname list.
      */
     private NicklistListModel nicklistModel;
-    /**
-     * The border used when the frame is not maximised.
-     */
-    private Border myborder;
-    /**
-     * The dimensions of the titlebar of the frame.
-     **/
-    private Dimension titlebarSize;
-    /**
-     * whether to auto scroll the textarea when adding text.
-     */
-    private boolean autoScroll = true;
-    /**
-     * holds the scrollbar for the frame.
-     */
-    private JScrollBar scrollBar;
+
     /**
      * This channel's command parser.
      */
     private ChannelCommandParser commandParser;
     
     /** Nick list. */
-    private JList jList1;
+    private JList nickList;
     
     /** scrollpane. */
-    private JScrollPane jScrollPane1;
-    
-    /** scrollpane. */
-    private JScrollPane jScrollPane2;
-    
-    /** input text field. */
-    private JTextField jTextField1;
-    
-    /** text pane. */
-    private JTextPane jTextPane1;
+    private JScrollPane nickScrollPane;
     
     /** split pane. */
     private JSplitPane splitPane;
@@ -131,143 +84,19 @@ public class ChannelFrame extends JInternalFrame implements CommandWindow {
      * @param owner The Channel object that owns this frame
      */
     public ChannelFrame(final Channel owner) {
-        parent = owner;
+        super(owner);
         
-        setFrameIcon(MainFrame.getMainFrame().getIcon());
-        
-        nicklistModel = new NicklistListModel();
         initComponents();
-        setMaximizable(true);
-        setClosable(true);
-        setResizable(true);
         
-        jTextPane1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
-        jTextPane1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
-        jTextField1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
-        jTextField1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
-        jTextField1.setCaretColor(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
-        jList1.setBackground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
-        jList1.setForeground(ColourManager.getColour(Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
+        nickList.setBackground(ColourManager.getColour(
+                Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
+        nickList.setForeground(ColourManager.getColour(
+                Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
         
-        commandParser = new ChannelCommandParser(parent.getServer(), parent);
+        commandParser = new ChannelCommandParser(((Channel) getFrameParent()).
+                getServer(), (Channel) getFrameParent());
         
-        inputHandler = new InputHandler(jTextField1, commandParser, this);
-        
-        scrollBar = jScrollPane1.getVerticalScrollBar();
-        
-        addPropertyChangeListener("maximum", new PropertyChangeListener() {
-            public void propertyChange(final PropertyChangeEvent propertyChangeEvent) {
-                if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
-                    ChannelFrame.this.myborder = getBorder();
-                    ChannelFrame.this.titlebarSize =
-                            ((BasicInternalFrameUI) getUI())
-                            .getNorthPane().getPreferredSize();
-                    
-                    ((BasicInternalFrameUI) getUI()).getNorthPane()
-                    .setPreferredSize(new Dimension(0, 0));
-                    setBorder(new EmptyBorder(0, 0, 0, 0));
-                    
-                    MainFrame.getMainFrame().setMaximised(true);
-                } else {
-                    autoScroll = (scrollBar.getValue() + scrollBar.getVisibleAmount())
-                    != scrollBar.getMaximum();
-                    if (autoScroll) {
-                        jTextPane1.setCaretPosition(jTextPane1.getStyledDocument().getLength());
-                    }
-                    
-                    setBorder(ChannelFrame.this.myborder);
-                    ((BasicInternalFrameUI) getUI()).getNorthPane()
-                    .setPreferredSize(ChannelFrame.this.titlebarSize);
-                    
-                    MainFrame.getMainFrame().setMaximised(false);
-                    MainFrame.getMainFrame().setActiveFrame(ChannelFrame.this);
-                }
-            }
-        });
-        
-        addInternalFrameListener(new InternalFrameListener() {
-            public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
-                jTextField1.requestFocus();
-            }
-            public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
-            }
-            public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
-            }
-            public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
-            }
-            public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
-            }
-            public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
-            }
-            public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-            }
-        });
-    }
-    
-    /**
-     * Makes this frame visible. We don't call this from the constructor
-     * so that we can register an actionlistener for the open event before
-     * the frame is opened.
-     */
-    public final void open() {
-        setVisible(true);
-    }
-    
-    /**
-     * Clears the main text area of the command window.
-     */
-    public final void clear() {
-        jTextPane1.setText("");
-    }
-    
-    /**
-     * Sets the tab completer for this frame's input handler.
-     * @param tabCompleter The tab completer to use
-     */
-    public final void setTabCompleter(final TabCompleter tabCompleter) {
-        inputHandler.setTabCompleter(tabCompleter);
-    }
-    
-    /**
-     * Adds a line of text to the main text area.
-     * @param line text to add
-     */
-    public final void addLine(final String line) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                for (String myLine : line.split("\n")) {
-                    String ts = Formatter.formatMessage("timestamp", new Date());
-                    if (!jTextPane1.getText().equals("")) { ts = "\n" + ts; }
-                    Styliser.addStyledString(jTextPane1.getStyledDocument(), ts);
-                    Styliser.addStyledString(jTextPane1.getStyledDocument(), myLine);
-                }
-                
-                if (scrollBar.getValue() + Math.round(scrollBar.getVisibleAmount() * 1.5) < scrollBar.getMaximum()) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        private Rectangle prevRect = jTextPane1.getVisibleRect();
-                        public void run() {
-                            jTextPane1.scrollRectToVisible(prevRect);
-                        }
-                    });
-                } else {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            jTextPane1.setCaretPosition(jTextPane1.getDocument().getLength());
-                        }
-                    });
-                }
-            }
-        });
-    }
-    
-    /**
-     * Formats the arguments using the Formatter, then adds the result to the
-     * main text area.
-     * @param messageType The type of this message
-     * @param args The arguments for the message
-     */
-    public final void addLine(final String messageType, final Object... args) {
-        addLine(Formatter.formatMessage(messageType, args));
+        setInputHandler(new InputHandler(getInputField(), commandParser, this));
     }
     
     /**
@@ -320,11 +149,11 @@ public class ChannelFrame extends JInternalFrame implements CommandWindow {
         final GridBagConstraints constraints = new GridBagConstraints();
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         
-        jScrollPane1 = new JScrollPane();
-        jTextPane1 = new JTextPane();
-        jTextField1 = new JTextField();
-        jScrollPane2 = new JScrollPane();
-        jList1 = new JList();
+        scrollPane = new JScrollPane();
+        textPane = new JTextPane();
+        inputField = new JTextField();
+        nickScrollPane = new JScrollPane();
+        nickList = new JList();
         
         splitPane.setBorder(null);
         final BasicSplitPaneDivider divider = 
@@ -333,18 +162,16 @@ public class ChannelFrame extends JInternalFrame implements CommandWindow {
             divider.setBorder(null);
         }
         
-        jScrollPane1.setVerticalScrollBarPolicy(
+        scrollPane.setVerticalScrollBarPolicy(
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        jTextPane1.setEditable(false);
-        jScrollPane1.setViewportView(jTextPane1);
+        textPane.setEditable(false);
+        scrollPane.setViewportView(textPane);
         
-        //jTextField1.setMinimumSize(new Dimension(Short.MAX_VALUE, 24));
-        //jTextField1.setPreferredSize(new Dimension(Short.MAX_VALUE, 24));
-        //jTextField1.setMaximumSize(new Dimension(Short.MAX_VALUE, 24));
+        nicklistModel = new NicklistListModel();
         
-        jList1.setFont(new Font("Dialog", 0, 12));
-        jList1.setModel(nicklistModel);
-        jScrollPane2.setViewportView(jList1);
+        nickList.setFont(new Font("Dialog", 0, 12));
+        nickList.setModel(nicklistModel);
+        nickScrollPane.setViewportView(nickList);
         
         getContentPane().setLayout(new GridBagLayout());
         constraints.weightx = 1.0;
@@ -355,10 +182,10 @@ public class ChannelFrame extends JInternalFrame implements CommandWindow {
         constraints.weighty = 0.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridy = 1;
-        getContentPane().add(jTextField1, constraints);
+        getContentPane().add(inputField, constraints);
         
-        splitPane.setLeftComponent(jScrollPane1);
-        splitPane.setRightComponent(jScrollPane2);
+        splitPane.setLeftComponent(scrollPane);
+        splitPane.setRightComponent(nickScrollPane);
         
         splitPane.setDividerLocation(465);
         splitPane.setResizeWeight(1);

@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
+import javax.swing.UIManager;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.LogLevel;
@@ -126,6 +127,7 @@ public final class Config {
         defaults.setProperty("ui.sortByCase", "false");
         defaults.setProperty("ui.inputbuffersize", "50");
         defaults.setProperty("ui.showversion", "true");
+        defaults.setProperty("ui.lookandfeel", UIManager.getCrossPlatformLookAndFeelClassName());
         
         // TODO: These should probably be renamed to treeview.* or so?
         defaults.setProperty("ui.rolloverEnabled", "true");
