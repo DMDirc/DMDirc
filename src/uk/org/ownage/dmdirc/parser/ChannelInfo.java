@@ -110,7 +110,7 @@ public class ChannelInfo {
 	 * Empty the channel (Remove all known channelclients).
 	 */
 	protected void emptyChannel() {
-		ChannelClientInfo cTemp = null;
+		ClientInfo cTemp = null;
 		for (Enumeration e = hChannelUserList.keys(); e.hasMoreElements();) {
 			cTemp = hChannelUserList.get(e.nextElement()).getClient();
 			if (!cTemp.checkVisability(this)) {
