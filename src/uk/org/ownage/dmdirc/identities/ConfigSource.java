@@ -26,7 +26,7 @@ package uk.org.ownage.dmdirc.identities;
  * A Config source is an object that can provide configuration details.
  * @author chris
  */
-public interface ConfigSource extends Comparable {
+public interface ConfigSource extends Comparable<ConfigSource> {
     
     /**
      * Determines whether this config source has a setting for the specified

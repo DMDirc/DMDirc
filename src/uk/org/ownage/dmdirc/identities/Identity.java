@@ -147,8 +147,8 @@ public final class Identity implements ConfigSource {
      * @return -1 if this config source is less specific, 0 if they're equal,
      * +1 if this config is more specific.
      */
-    public int compareTo(final Object target) {
-        return myTarget.compareTo(((ConfigSource) target).getTarget());
+    public int compareTo(final ConfigSource target) {
+        return myTarget.compareTo(target.getTarget());
     }
     
 }

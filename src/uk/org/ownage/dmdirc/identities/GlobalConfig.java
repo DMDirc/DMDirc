@@ -83,8 +83,8 @@ public final class GlobalConfig implements ConfigSource {
      * @return -1 if this object is less than the other, +1 if this object is
      * greater, 0 if they're equal.
      */
-    public int compareTo(final Object target) {
-        return myTarget.compareTo(((ConfigSource) target).getTarget());
+    public int compareTo(final ConfigSource target) {
+        return myTarget.compareTo(target.getTarget());
     }
     
 }
