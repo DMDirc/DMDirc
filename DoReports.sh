@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# cron doesn't seem to like doing this iself...
+. /etc/profile
+
 # Path to trunk
 MYDIR="/home/dmdirc/google"
 # Path to ant binary

@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# cron doesn't seem to like doing this iself...
+. /etc/profile
+
 # Path to WWW Directory
 WWWDIR="/home/dmdirc/www"
 # Path to trunk

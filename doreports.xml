@@ -3,7 +3,7 @@
     <description>Builds, tests, and runs the project DMDirc.</description>
     <import file="junitreport.xml" />
     <import file="style_build.xml" />
-    <target name="reports" depends="test-html,checkstyle" />
+    <target name="reports" depends="test-html,checkstyle,javadoc" />
 </project>
 
 
