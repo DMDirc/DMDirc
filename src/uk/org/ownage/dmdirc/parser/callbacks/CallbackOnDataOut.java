@@ -32,18 +32,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
  * Callback to all objects implementing the IDataOut Interface.
  */
 public final class CallbackOnDataOut extends CallbackObject {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnDataOut(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnDataOut(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IDataOut Interface.
 	 *
@@ -72,7 +69,5 @@ public final class CallbackOnDataOut extends CallbackObject {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

@@ -34,18 +34,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelNonUserModeChang
  * Callback to all objects implementing the IChannelNonUserModeChanged Interface.
  */
 public final class CallbackOnChannelNonUserModeChanged extends CallbackObjectSpecific {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnChannelNonUserModeChanged(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnChannelNonUserModeChanged(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IChannelNonUserModeChanged Interface.
 	 *
@@ -56,9 +53,7 @@ public final class CallbackOnChannelNonUserModeChanged extends CallbackObjectSpe
 	 * @param sModes Exact String parsed (not including user modes)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, 
-                final ChannelClientInfo cChannelClient, final String sHost, 
-                final String sModes) {
+	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
 		boolean bResult = false;
 		IChannelNonUserModeChanged eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
@@ -81,7 +76,5 @@ public final class CallbackOnChannelNonUserModeChanged extends CallbackObjectSpe
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

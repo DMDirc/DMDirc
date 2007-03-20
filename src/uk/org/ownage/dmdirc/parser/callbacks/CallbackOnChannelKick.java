@@ -34,18 +34,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelKick;
  * Callback to all objects implementing the IChannelKick Interface.
  */
 public final class CallbackOnChannelKick extends CallbackObjectSpecific {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnChannelKick(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnChannelKick(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IChannelKick Interface.
 	 *
@@ -57,10 +54,7 @@ public final class CallbackOnChannelKick extends CallbackObjectSpecific {
 	 * @param sKickedByHost Hostname of Kicker (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, 
-                final ChannelClientInfo cKickedClient, 
-                final ChannelClientInfo cKickedByClient, final String sReason, 
-                final String sKickedByHost) {
+	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient, final String sReason, final String sKickedByHost) {
 		boolean bResult = false;
 		IChannelKick eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
@@ -83,7 +77,5 @@ public final class CallbackOnChannelKick extends CallbackObjectSpecific {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

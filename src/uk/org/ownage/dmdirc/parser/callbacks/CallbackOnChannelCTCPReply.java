@@ -34,18 +34,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelCTCPReply;
  * Callback to all objects implementing the IChannelCTCPReply Interface.
  */
 public final class CallbackOnChannelCTCPReply extends CallbackObjectSpecific {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnChannelCTCPReply(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnChannelCTCPReply(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IChannelCTCPReply Interface.
 	 *
@@ -57,9 +54,7 @@ public final class CallbackOnChannelCTCPReply extends CallbackObjectSpecific {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, 
-                final ChannelClientInfo cChannelClient, final String sType, 
-                final String sMessage, final String sHost) {
+	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sType, final String sMessage, final String sHost) {
 		boolean bResult = false;
 		IChannelCTCPReply eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
@@ -82,7 +77,5 @@ public final class CallbackOnChannelCTCPReply extends CallbackObjectSpecific {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }
 }

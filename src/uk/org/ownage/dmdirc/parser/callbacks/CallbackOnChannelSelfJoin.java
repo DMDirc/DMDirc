@@ -33,18 +33,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
  * Callback to all objects implementing the IChannelSelfJoin Interface.
  */
 public final class CallbackOnChannelSelfJoin extends CallbackObject {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnChannelSelfJoin(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnChannelSelfJoin(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IChannelSelfJoin Interface.
 	 *
@@ -72,7 +69,5 @@ public final class CallbackOnChannelSelfJoin extends CallbackObject {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

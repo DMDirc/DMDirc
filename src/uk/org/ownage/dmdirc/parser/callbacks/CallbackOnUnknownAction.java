@@ -32,18 +32,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownAction;
  * Callback to all objects implementing the IUnknownAction Interface.
  */
 public final class CallbackOnUnknownAction extends CallbackObject {
-    
-        /**
+	
+  /**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnUnknownAction(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnUnknownAction(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IUnknownAction Interface.
 	 *
@@ -53,8 +50,7 @@ public final class CallbackOnUnknownAction extends CallbackObject {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final String sMessage, final String sTarget, 
-                final String sHost) {
+	public boolean call(final String sMessage, final String sTarget, final String sHost) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
@@ -67,14 +63,12 @@ public final class CallbackOnUnknownAction extends CallbackObject {
 			bResult = true;
 		}
 		return bResult;
-        }
+	}
 	
 	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

@@ -40,10 +40,10 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
 public final class CallbackManager {
 	/** Reference to the parser object that owns this CallbackManager. */
 	IRCParser myParser;
-        
-        /** Hashtable used to store the different types of callback known. */
+	
+	/** Hashtable used to store the different types of callback known. */
 	private Hashtable<String, CallbackObject> callbackHash = new Hashtable<String, CallbackObject>();
-			
+	
 	/**
 	 * Constructor to create a CallbackManager.
 	 *
@@ -66,7 +66,7 @@ public final class CallbackManager {
 		addCallbackType(new CallbackOnChannelPart(myParser, this));
 		addCallbackType(new CallbackOnChannelQuit(myParser, this));
 		addCallbackType(new CallbackOnChannelSelfJoin(myParser, this));
-		addCallbackType(new CallbackOnChannelSingleModeChanged(myParser, this));		
+		addCallbackType(new CallbackOnChannelSingleModeChanged(myParser, this));
 		addCallbackType(new CallbackOnChannelTopic(myParser, this));
 		addCallbackType(new CallbackOnChannelUserModeChanged(myParser, this));
 		addCallbackType(new CallbackOnDataIn(myParser, this));
@@ -95,11 +95,11 @@ public final class CallbackManager {
 		addCallbackType(new CallbackOnUserModeChanged(myParser, this));
 	}
 	
-	/** 
-         * Empty clone method to prevent cloning to get more copies of the CallbackManager. 
-         * @return Cloned Object
-         * @throws CloneNotSupportedException whenever it is called
-         */
+	/**
+	 * Empty clone method to prevent cloning to get more copies of the CallbackManager.
+	 * @return Cloned Object
+	 * @throws CloneNotSupportedException whenever it is called
+	 */
 	public Object clone() throws CloneNotSupportedException {
 		throw new CloneNotSupportedException();
 	}
@@ -117,7 +117,7 @@ public final class CallbackManager {
 		}
 		return false;
 	}
-		
+	
 	/**
 	 * Remove a callback type.
 	 *
@@ -131,13 +131,12 @@ public final class CallbackManager {
 		}
 		return false;
 	}
-		
+	
 	/**
 	 * Get reference to callback object.
 	 *
 	 * @param callbackName Name of callback object.
-         *
-         * @return CallbackObject returns the callback object for this type
+	 * @return CallbackObject returns the callback object for this type
 	 */
 	public CallbackObject getCallbackType(final String callbackName) {
 		if (callbackHash.containsKey(callbackName.toLowerCase())) {
@@ -156,9 +155,7 @@ public final class CallbackManager {
 		CallbackObject cb;
 		for (final Enumeration e = callbackHash.keys(); e.hasMoreElements();) {
 			cb = callbackHash.get(e.nextElement());
-			if (cb != null) { 
-                            cb.del(o); 
-                        }
+			if (cb != null) { cb.del(o); }
 		}
 	}
 	
@@ -171,9 +168,7 @@ public final class CallbackManager {
 		CallbackObject cb;
 		for (final Enumeration e = callbackHash.keys(); e.hasMoreElements();) {
 			cb = callbackHash.get(e.nextElement());
-			if (cb != null) { 
-                            cb.add(o); 
-                        }
+			if (cb != null) { cb.add(o); }
 		}
 	}
 	
@@ -185,15 +180,10 @@ public final class CallbackManager {
 	 * @param o instance of ICallbackInterface to add.
 	 * @throws uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound If callback is not found.
 	 */
-	public void addCallback(final String callbackName, 
-                final ICallbackInterface o) throws CallbackNotFound {
+	public void addCallback(final String callbackName, final ICallbackInterface o) throws CallbackNotFound {
 		final CallbackObject cb = getCallbackType(callbackName);
-		if (cb != null) { 
-                    cb.add(o); 
-                }
-		else { 
-                    throw new CallbackNotFound("Callback '"+callbackName+"' could not be found.");  
-                }
+		if (cb != null) { cb.add(o); }
+		else { throw new CallbackNotFound("Callback '"+callbackName+"' could not be found."); }
 	}
 	
 	/**
@@ -205,15 +195,10 @@ public final class CallbackManager {
 	 * @param target Parameter to specify that a callback should only fire for specific things
 	 * @throws CallbackNotFound If callback is not found.
 	 */
-	public void addCallback(final String callbackName, 
-                final ICallbackInterface o, final String target) throws CallbackNotFound {
+	public void addCallback(final String callbackName, final ICallbackInterface o, final String target) throws CallbackNotFound {
 		CallbackObjectSpecific cb = (CallbackObjectSpecific)getCallbackType(callbackName);
-		if (cb != null) { 
-                    cb.add(o,target); 
-                }
-		else { 
-                    throw new CallbackNotFound("Callback '"+callbackName+"' could not be found.");  
-                }
+		if (cb != null) { cb.add(o,target); }
+		else { throw new CallbackNotFound("Callback '"+callbackName+"' could not be found."); }
 	}
 	
 	/**
@@ -224,14 +209,11 @@ public final class CallbackManager {
 	 * @param o instance of ICallbackInterface to add.
 	 * @return true/false if the callback was added or not.
 	 */
-	public boolean addNonCriticalCallback(final String callbackName, 
-                final ICallbackInterface o)  {
+	public boolean addNonCriticalCallback(final String callbackName, final ICallbackInterface o)  {
 		try {
 			addCallback(callbackName, o);
 			return true;
-		} catch (Exception e) {
-                    return false;
-                }
+		} catch (Exception e) { return false; }
 	}
 	
 	/**
@@ -243,14 +225,11 @@ public final class CallbackManager {
 	 * @param target Parameter to specify that a callback should only fire for specific things
 	 * @throws CallbackNotFound If callback is not found.
 	 */
-	public boolean addNonCriticalCallback(final String callbackName, 
-                final ICallbackInterface o, final String target) {
+	public boolean addNonCriticalCallback(final String callbackName, final ICallbackInterface o, final String target) {
 		try {
 			addCallback(callbackName, o, target);
 			return true;
-		} catch (Exception e) { 
-                    return false;	
-                }
+		} catch (Exception e) { return false;	}
 	}
 	
 	
@@ -262,9 +241,7 @@ public final class CallbackManager {
 	 */
 	public void delCallback(final String callbackName, final ICallbackInterface o) {
 		CallbackObject cb = getCallbackType(callbackName);
-		if (cb != null) { 
-                    cb.del(o); 
-                }
+		if (cb != null) { cb.del(o); }
 	}
 	
 	/**
@@ -272,7 +249,5 @@ public final class CallbackManager {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

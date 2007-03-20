@@ -34,18 +34,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelQuit;
  * Callback to all objects implementing the IChannelQuit Interface.
  */
 public final class CallbackOnChannelQuit extends CallbackObjectSpecific {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnChannelQuit(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnChannelQuit(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IChannelQuit Interface.
 	 *
@@ -55,8 +52,7 @@ public final class CallbackOnChannelQuit extends CallbackObjectSpecific {
 	 * @param sReason Quit reason
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, 
-                final ChannelClientInfo cChannelClient, final String sReason) {
+	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
 		boolean bResult = false;
 		IChannelQuit eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
@@ -79,7 +75,5 @@ public final class CallbackOnChannelQuit extends CallbackObjectSpecific {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

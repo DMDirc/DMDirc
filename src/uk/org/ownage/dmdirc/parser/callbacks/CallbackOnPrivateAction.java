@@ -32,18 +32,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
  * Callback to all objects implementing the IPrivateAction Interface.
  */
 public final class CallbackOnPrivateAction extends CallbackObjectSpecific {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnPrivateAction(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnPrivateAction(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IPrivateAction Interface.
 	 *
@@ -75,7 +72,5 @@ public final class CallbackOnPrivateAction extends CallbackObjectSpecific {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }
 }

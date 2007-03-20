@@ -33,18 +33,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelTopic;
  * Callback to all objects implementing the IChannelTopic Interface.
  */
 public final class CallbackOnChannelTopic extends CallbackObjectSpecific {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnChannelTopic(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnChannelTopic(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IChannelTopic Interface.
 	 *
@@ -76,7 +73,5 @@ public final class CallbackOnChannelTopic extends CallbackObjectSpecific {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

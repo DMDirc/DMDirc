@@ -33,18 +33,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INickChanged;
  * Callback to all objects implementing the INickChanged Interface.
  */
 public final class CallbackOnNickChanged extends CallbackObject {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnNickChanged(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnNickChanged(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the INickChanged Interface.
 	 *
@@ -73,7 +70,5 @@ public final class CallbackOnNickChanged extends CallbackObject {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }
 }

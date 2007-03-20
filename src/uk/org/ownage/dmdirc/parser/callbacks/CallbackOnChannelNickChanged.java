@@ -34,18 +34,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelNickChanged;
  * Callback to all objects implementing the IChannelNickChanged Interface.
  */
 public final class CallbackOnChannelNickChanged extends CallbackObjectSpecific {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnChannelNickChanged(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnChannelNickChanged(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IChannelNickChanged Interface.
 	 *
@@ -55,8 +52,7 @@ public final class CallbackOnChannelNickChanged extends CallbackObjectSpecific {
 	 * @param sOldNick Nickname before change
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, 
-                final ChannelClientInfo cChannelClient, final String sOldNick) {
+	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sOldNick) {
 		boolean bResult = false;
 		IChannelNickChanged eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
@@ -79,7 +75,5 @@ public final class CallbackOnChannelNickChanged extends CallbackObjectSpecific {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

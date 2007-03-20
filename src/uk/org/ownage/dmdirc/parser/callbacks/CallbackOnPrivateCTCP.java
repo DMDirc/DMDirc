@@ -32,18 +32,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
  * Callback to all objects implementing the IPrivateCTCP Interface.
  */
 public final class CallbackOnPrivateCTCP extends CallbackObjectSpecific {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnPrivateCTCP(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnPrivateCTCP(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IPrivateCTCP Interface.
 	 *
@@ -53,8 +50,7 @@ public final class CallbackOnPrivateCTCP extends CallbackObjectSpecific {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final String sType, final String sMessage, 
-                final String sHost) {
+	public boolean call(final String sType, final String sMessage, final String sHost) {
 		boolean bResult = false;
 		IPrivateCTCP eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
@@ -77,7 +73,5 @@ public final class CallbackOnPrivateCTCP extends CallbackObjectSpecific {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

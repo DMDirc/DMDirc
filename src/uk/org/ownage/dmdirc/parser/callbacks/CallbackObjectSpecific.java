@@ -39,21 +39,18 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
  * @version           $Id$
  */
 public abstract class CallbackObjectSpecific extends CallbackObject {
-   
+	
 	/** Hashtable for storing specific information for callback. */	
 	protected Hashtable<ICallbackInterface, String> specificData = new Hashtable<ICallbackInterface, String>();
-        	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackObjectSpecific(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackObjectSpecific(final IRCParser parser, final CallbackManager manager) { super(parser, manager);  }
+	
 	/**
 	 * Used to check if a channel matches the specificData.
 	 * 
@@ -61,8 +58,7 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	 * @param cChannel ChannelInfo object for the channel to test
 	 * @return true if channel given matches the specifics for the method given
 	 */
-	protected boolean isValidChan(final ICallbackInterface eMethod, 
-                final ChannelInfo cChannel) {
+	protected boolean isValidChan(final ICallbackInterface eMethod, final ChannelInfo cChannel) {
 		if (specificData.containsKey(eMethod)) { 
 			if (!cChannel.getName().equalsIgnoreCase(specificData.get(eMethod))) { return false; }
 		}
@@ -76,10 +72,9 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	 * @param sHost Hostname of user that sent the query
 	 * @return true if host given matches the specifics for the method given
 	 */
-	protected boolean isValidUser(final ICallbackInterface eMethod, 
-                final String sHost) {
+	protected boolean isValidUser(final ICallbackInterface eMethod, final String sHost) {
 		final String nickname = ClientInfo.parseHost(sHost);
-		if (specificData.containsKey(eMethod)) { 
+		if (specificData.containsKey(eMethod)) {
 			if (!nickname.equalsIgnoreCase(specificData.get(eMethod))) { return false; }
 		}
 		return true;
@@ -103,8 +98,7 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	 * @param eMethod Object to callback to.
 	 * @param specificTarget Target that must match for callback to be called.
 	 */
-	public void add(final ICallbackInterface eMethod, 
-                final String specificTarget) {
+	public void add(final ICallbackInterface eMethod, final String specificTarget) {
 		add(eMethod);
 		if (!specificTarget.equals("")) {
 			specificData.put(eMethod, specificTarget);
@@ -126,7 +120,5 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

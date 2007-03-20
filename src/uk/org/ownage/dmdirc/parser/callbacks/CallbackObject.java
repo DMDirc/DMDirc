@@ -40,12 +40,12 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
 public abstract class CallbackObject {
 	/** Arraylist for storing callback information related to the callback. */
 	protected ArrayList<ICallbackInterface> callbackInfo = new ArrayList<ICallbackInterface>();
-
+	
 	/** Reference to the IRCParser that owns this callback. */
 	protected IRCParser myParser;
 	/** Reference to the CallbackManager in charge of this callback. */
 	protected CallbackManager myManager;
-        	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
@@ -56,7 +56,7 @@ public abstract class CallbackObject {
 		this.myParser = parser;
 		this.myManager = manager;
 	}
-
+	
 	/**
 	 * Add a callback pointer to the appropriate ArrayList.
 	 *
@@ -68,7 +68,7 @@ public abstract class CallbackObject {
 		}
 		callbackInfo.add(eMethod);
 	}
-        
+	
 	/**
 	 * Delete a callback pointer from the appropriate ArrayList.
 	 *
@@ -84,8 +84,7 @@ public abstract class CallbackObject {
 	 * Call the OnErrorInfo callback.
 	 *
 	 * @param errorInfo ParserError object to pass as error.
-         *
-         * @return true if error call succeeded, false otherwise
+	 * @return true if error call succeeded, false otherwise
 	 */
 	protected final boolean callErrorInfo(final ParserError errorInfo) {
 		final CallbackOnErrorInfo cb = (CallbackOnErrorInfo) myManager.getCallbackType("OnErrorInfo");
@@ -98,18 +97,14 @@ public abstract class CallbackObject {
 	 *
 	 * @param eMethod Object to callback to.
 	 */
-	public void add(final ICallbackInterface eMethod) { 
-            addCallback(eMethod); 
-        }
-        
+	public void add(final ICallbackInterface eMethod) { addCallback(eMethod); }
+	
 	/**
 	 * Remove a callback.
 	 *
 	 * @param eMethod Object to remove callback to.
 	 */
-	public void del(final ICallbackInterface eMethod) { 
-            delCallback(eMethod); 
-        }
+	public void del(final ICallbackInterface eMethod) { delCallback(eMethod); }
 	
 	/**
 	 * Get the name for this callback.
@@ -130,16 +125,12 @@ public abstract class CallbackObject {
 	 *
 	 * @return Name of callback, in lowercase
 	 */
-	public final String getLowerName() {
-		return this.getName().toLowerCase();
-	}
+	public final String getLowerName() { return this.getName().toLowerCase(); }
 	
 	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() {
-           return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

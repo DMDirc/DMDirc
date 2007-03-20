@@ -34,18 +34,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelPart;
  * Callback to all objects implementing the IChannelPart Interface.
  */
 public final class CallbackOnChannelPart extends CallbackObjectSpecific {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnChannelPart(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnChannelPart(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IChannelPart Interface.
 	 *
@@ -55,8 +52,7 @@ public final class CallbackOnChannelPart extends CallbackObjectSpecific {
 	 * @param sReason Reason given for parting (May be "")
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, 
-                final ChannelClientInfo cChannelClient, final String sReason) {
+	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
 		boolean bResult = false;
 		IChannelPart eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
@@ -79,7 +75,5 @@ public final class CallbackOnChannelPart extends CallbackObjectSpecific {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

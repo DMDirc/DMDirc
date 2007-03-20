@@ -33,18 +33,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
  * Callback to all objects implementing the IChannelGotNames Interface.
  */
 public final class CallbackOnChannelGotNames extends CallbackObjectSpecific {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnChannelGotNames(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnChannelGotNames(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IChannelGotNames Interface.
 	 *
@@ -75,7 +72,5 @@ public final class CallbackOnChannelGotNames extends CallbackObjectSpecific {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }
 }

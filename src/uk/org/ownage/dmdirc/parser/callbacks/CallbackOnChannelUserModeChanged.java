@@ -34,18 +34,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
  * Callback to all objects implementing the IChannelUserModeChanged Interface.
  */
 public final class CallbackOnChannelUserModeChanged extends CallbackObjectSpecific {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnChannelUserModeChanged(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnChannelUserModeChanged(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IChannelUserModeChanged Interface.
 	 *
@@ -57,10 +54,7 @@ public final class CallbackOnChannelUserModeChanged extends CallbackObjectSpecif
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, 
-                final ChannelClientInfo cChangedClient, 
-                final ChannelClientInfo cSetByClient, 
-                final String sHost, final String sMode) {
+	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cChangedClient, final ChannelClientInfo cSetByClient, final String sHost, final String sMode) {
 		boolean bResult = false;
 		IChannelUserModeChanged eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
@@ -83,7 +77,5 @@ public final class CallbackOnChannelUserModeChanged extends CallbackObjectSpecif
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

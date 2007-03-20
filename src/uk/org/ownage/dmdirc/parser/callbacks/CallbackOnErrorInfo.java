@@ -32,18 +32,15 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
  * Callback to all objects implementing the IErrorInfo Interface.
  */
 public final class CallbackOnErrorInfo extends CallbackObject {
-    	
+	
 	/**
 	 * Create a new instance of the Callback Object.
 	 *
 	 * @param parser IRCParser That owns this callback
 	 * @param manager CallbackManager that is in charge of this callback
 	 */
-	public CallbackOnErrorInfo(final IRCParser parser, 
-                final CallbackManager manager) { 
-            super(parser, manager); 
-        }
-        
+	public CallbackOnErrorInfo(final IRCParser parser, final CallbackManager manager) { super(parser, manager); }
+	
 	/**
 	 * Callback to all objects implementing the IErrorInfo Interface.
 	 *
@@ -58,7 +55,7 @@ public final class CallbackOnErrorInfo extends CallbackObject {
 				((IErrorInfo) callbackInfo.get(i)).onErrorInfo(myParser, errorInfo);
 			} catch (Exception e) {
 				// This will not callErrorInfo or we would get an infinite loop!
-				System.out.println("Exception in onError Callback. [" + e.getMessage() + "]");
+				System.out.printf("Exception in onError Callback. [%s]\n", e.getMessage());
 				e.printStackTrace();
 			}
 			bResult = true;
@@ -71,7 +68,5 @@ public final class CallbackOnErrorInfo extends CallbackObject {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { 
-            return "$Id$"; 
-        }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }
