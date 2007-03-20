@@ -85,7 +85,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/ui/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-ui-dmdirc.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-ui-dmdirc.xml" out="reports/report-ui-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-ui-dmdirc.xml" out="reports/report-ui-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-sun-ui">
 	    <taskdef resource="checkstyletask.properties"
@@ -95,7 +95,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/ui/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-ui-sun.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-ui-sun.xml" out="reports/report-ui-sun.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-ui-sun.xml" out="reports/report-ui-sun.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-duplicate-ui">
 	    <taskdef resource="checkstyletask.properties"
@@ -105,7 +105,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/ui/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-ui-duplicate.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-ui-duplicate.xml" out="reports/report-ui-duplicate.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-ui-duplicate.xml" out="reports/report-ui-duplicate.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-todo-ui">
 	    <taskdef resource="checkstyletask.properties"
@@ -115,7 +115,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/ui/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-ui-todo.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-ui-todo.xml" out="reports/report-ui-todo.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-ui-todo.xml" out="reports/report-ui-todo.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     
     
@@ -127,7 +127,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/parser/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-parser-dmdirc.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-parser-dmdirc.xml" out="reports/report-parser-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-parser-dmdirc.xml" out="reports/report-parser-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-sun-parser">
 	    <taskdef resource="checkstyletask.properties"
@@ -137,7 +137,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/parser/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-parser-sun.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-parser-sun.xml" out="reports/report-parser-sun.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-parser-sun.xml" out="reports/report-parser-sun.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-duplicate-parser">
 	    <taskdef resource="checkstyletask.properties"
@@ -147,7 +147,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/parser/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-parser-duplicate.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-parser-duplicate.xml" out="reports/report-parser-duplicate.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-parser-duplicate.xml" out="reports/report-parser-duplicate.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-todo-parser">
 	    <taskdef resource="checkstyletask.properties"
@@ -157,7 +157,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/parser/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-parser-todo.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-parser-todo.xml" out="reports/report-parser-todo.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-parser-todo.xml" out="reports/report-parser-todo.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     
     
@@ -169,7 +169,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/logger/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-logger-dmdirc.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-logger-dmdirc.xml" out="reports/report-logger-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-logger-dmdirc.xml" out="reports/report-logger-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-sun-logger">
 	    <taskdef resource="checkstyletask.properties"
@@ -179,7 +179,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/logger/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-logger-sun.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-logger-sun.xml" out="reports/report-logger-sun.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-logger-sun.xml" out="reports/report-logger-sun.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-duplicate-logger">
 	    <taskdef resource="checkstyletask.properties"
@@ -189,7 +189,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/logger/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-logger-duplicate.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-logger-duplicate.xml" out="reports/report-logger-duplicate.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-logger-duplicate.xml" out="reports/report-logger-duplicate.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-todo-logger">
 	    <taskdef resource="checkstyletask.properties"
@@ -199,7 +199,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/logger/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-logger-todo.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-logger-todo.xml" out="reports/report-logger-todo.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-logger-todo.xml" out="reports/report-logger-todo.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     
     
@@ -211,7 +211,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/identities/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-identities-dmdirc.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-identities-dmdirc.xml" out="reports/report-identities-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-identities-dmdirc.xml" out="reports/report-identities-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-sun-identities">
 	    <taskdef resource="checkstyletask.properties"
@@ -221,7 +221,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/identities/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-identities-sun.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-identities-sun.xml" out="reports/report-identities-sun.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-identities-sun.xml" out="reports/report-identities-sun.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-duplicate-identities">
 	    <taskdef resource="checkstyletask.properties"
@@ -231,7 +231,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/identities/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-identities-duplicate.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-identities-duplicate.xml" out="reports/report-identities-duplicate.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-identities-duplicate.xml" out="reports/report-identities-duplicate.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-todo-identities">
 	    <taskdef resource="checkstyletask.properties"
@@ -241,7 +241,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/identities/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-identities-todo.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-identities-todo.xml" out="reports/report-identities-todo.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-identities-todo.xml" out="reports/report-identities-todo.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     
     
@@ -253,7 +253,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/commandparser/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-commandparser-dmdirc.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-commandparser-dmdirc.xml" out="reports/report-commandparser-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-commandparser-dmdirc.xml" out="reports/report-commandparser-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-sun-commandparser">
 	    <taskdef resource="checkstyletask.properties"
@@ -263,7 +263,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/commandparser/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-commandparser-sun.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-commandparser-sun.xml" out="reports/report-commandparser-sun.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-commandparser-sun.xml" out="reports/report-commandparser-sun.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-duplicate-commandparser">
 	    <taskdef resource="checkstyletask.properties"
@@ -273,7 +273,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/commandparser/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-commandparser-duplicate.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-commandparser-duplicate.xml" out="reports/report-commandparser-duplicate.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-commandparser-duplicate.xml" out="reports/report-commandparser-duplicate.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-todo-commandparser">
 	    <taskdef resource="checkstyletask.properties"
@@ -283,7 +283,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/commandparser/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-commandparser-todo.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-commandparser-todo.xml" out="reports/report-commandparser-todo.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-commandparser-todo.xml" out="reports/report-commandparser-todo.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     
     
@@ -295,7 +295,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/" includes="*.java"/>
 		    <formatter type="xml" tofile="reports/report-core-dmdirc.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-core-dmdirc.xml" out="reports/report-core-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-core-dmdirc.xml" out="reports/report-core-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-sun-core">
 	    <taskdef resource="checkstyletask.properties"
@@ -305,7 +305,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/" includes="*.java"/>
 		    <formatter type="xml" tofile="reports/report-core-sun.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-core-sun.xml" out="reports/report-core-sun.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-core-sun.xml" out="reports/report-core-sun.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-duplicate-core">
 	    <taskdef resource="checkstyletask.properties"
@@ -315,7 +315,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/" includes="*.java"/>
 		    <formatter type="xml" tofile="reports/report-core-duplicate.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-core-duplicate.xml" out="reports/report-core-duplicate.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-core-duplicate.xml" out="reports/report-core-duplicate.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-todo-core">
 	    <taskdef resource="checkstyletask.properties"
@@ -325,7 +325,7 @@
 		    <fileset dir="src/uk/org/ownage/dmdirc/" includes="*.java"/>
 		    <formatter type="xml" tofile="reports/report-core-todo.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-core-todo.xml" out="reports/report-core-todo.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-core-todo.xml" out="reports/report-core-todo.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     
     
@@ -337,7 +337,7 @@
 		    <fileset dir="src/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-all-dmdirc.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-all-dmdirc.xml" out="reports/report-all-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-all-dmdirc.xml" out="reports/report-all-dmdirc.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-sun-all">
 	    <taskdef resource="checkstyletask.properties"
@@ -347,7 +347,7 @@
 		    <fileset dir="src/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-all-sun.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-all-sun.xml" out="reports/report-all-sun.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-all-sun.xml" out="reports/report-all-sun.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-duplicate-all">
 	    <taskdef resource="checkstyletask.properties"
@@ -357,7 +357,7 @@
 		    <fileset dir="src/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-all-duplicate.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-all-duplicate.xml" out="reports/report-all-duplicate.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-all-duplicate.xml" out="reports/report-all-duplicate.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     <target name="checkstyle-todo-all">
 	    <taskdef resource="checkstyletask.properties"
@@ -367,7 +367,7 @@
 		    <fileset dir="src/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-all-todo.xml"/>
 	    </checkstyle>
-	    <style in="reports/report-all-todo.xml" out="reports/report-all-todo.html" style="checkstyle/checkstyle.xsl"/>
+	    <xslt in="reports/report-all-todo.xml" out="reports/report-all-todo.html" style="checkstyle/checkstyle.xsl"/>
     </target>
     
     
