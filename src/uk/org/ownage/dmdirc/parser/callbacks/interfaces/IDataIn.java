@@ -27,7 +27,7 @@ package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
- * Interface Used to give Debug Information.
+ * Interface Used on every incomming line BEFORE parsing.
  */
 public interface IDataIn extends ICallbackInterface {
 	/**
