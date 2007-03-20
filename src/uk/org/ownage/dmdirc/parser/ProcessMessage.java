@@ -118,12 +118,12 @@ public class ProcessMessage extends IRCProcessor {
 				// remove the trailing char1
 				if (!sMessage.equals("")) { sMessage = sMessage.split(Char1.toString())[0]; }
 				else { sCTCP = sCTCP.split(Char1.toString())[0]; }
-				callDebugInfo(myParser.ndInfo, "CTCP: \"%s\" \"%s\"",sCTCP,sMessage);
+				callDebugInfo(myParser.DEBUG_INFO, "CTCP: \"%s\" \"%s\"",sCTCP,sMessage);
 			}
 		}
 
 		iClient = getClientInfo(token[0]);
-		if (myParser.alwaysUpdateClient && iClient != null) {
+		if (myParser.ALWAYS_UPDATECLIENT && iClient != null) {
 			// Facilitate DMDIRC Formatter
 			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0],false); }
 		}
@@ -173,7 +173,7 @@ public class ProcessMessage extends IRCProcessor {
 				}
 			}
 		} else {
-			callDebugInfo(myParser.ndInfo, "Message for Other ("+token[2]+")");
+			callDebugInfo(myParser.DEBUG_INFO, "Message for Other ("+token[2]+")");
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
 				if (!isAction) {
 					if (isCTCP) {

@@ -61,7 +61,7 @@ public final class CallbackOnChannelPart extends CallbackObjectSpecific {
 			try {
 				eMethod.onChannelPart(myParser, cChannel, cChannelClient, sReason);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelPart");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelPart");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

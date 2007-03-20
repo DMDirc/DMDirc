@@ -55,7 +55,7 @@ public final class CallbackOnDebugInfo extends CallbackObject {
 			try {
 				((IDebugInfo) callbackInfo.get(i)).onDebugInfo(myParser, level, data);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.errError, "Exception in onDebugInfo");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onDebugInfo");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

@@ -43,7 +43,7 @@ public class ProcessNames extends IRCProcessor {
 			// End of names
 			iChannel = getChannelInfo(token[3]);
 			if (iChannel != null) {
-				iChannel.bAddingNames = false;
+				iChannel.setAddingNames(false);
 				callChannelGotNames(iChannel);
 			}
 		} else {
@@ -55,14 +55,14 @@ public class ProcessNames extends IRCProcessor {
 			iChannel = getChannelInfo(token[4]);
 		
 			if (iChannel == null) { 
-				callErrorInfo(new ParserError(ParserError.errWarning, "Got names for channel ("+token[4]+") that I am not on."));
+				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got names for channel ("+token[4]+") that I am not on."));
 				iChannel = new ChannelInfo(myParser, token[4]);
 				myParser.hChannelList.put(iChannel.getName().toLowerCase(),iChannel);
 			}
 			
 			// If we are not expecting names, clear the current known names - this is fresh stuff!
-			if (!iChannel.bAddingNames) { iChannel.emptyChannel(); }
-			iChannel.bAddingNames = true;
+			if (!iChannel.getAddingNames()) { iChannel.emptyChannel(); }
+			iChannel.setAddingNames(true);
 			
 			String[] sNames = token[token.length-1].split(" ");
 			String sNameBit = "", sModes = "", sName = "";
@@ -84,7 +84,7 @@ public class ProcessNames extends IRCProcessor {
 						break;
 					}
 				}
-				callDebugInfo(myParser.ndInfo, "Name: %s Modes: \"%s\" [%d]",sName,sModes,nPrefix);
+				callDebugInfo(myParser.DEBUG_INFO, "Name: %s Modes: \"%s\" [%d]",sName,sModes,nPrefix);
 				
 				iClient = getClientInfo(sName);
 				if (iClient == null) { iClient = new ClientInfo(myParser, sName); myParser.hClientList.put(iClient.getNickname().toLowerCase(),iClient); }

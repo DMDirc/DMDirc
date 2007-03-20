@@ -32,13 +32,13 @@ package uk.org.ownage.dmdirc.parser;
  */
 public class ParserError {
 	/** Error is potentially Fatal, Desync 99% Guarenteed! */
-	public static final int errFatal = 1;
+	public static final int ERROR_FATAL = 1;
 	/** Error is not fatal, but is more severe than a warning. */
-	public static final int errError = 2;
+	public static final int ERROR_ERROR = 2;
 	/** Error was an unexpected occurance, but shouldn't be anything to worry about. */
-	public static final int errWarning = 4;
+	public static final int ERROR_WARNING = 4;
 	/** Error was an exception from elsewhere. */
-	public static final int errException = 8;
+	public static final int ERROR_EXCEPTION = 8;
 	
 	/** Store the Error level */
 	protected int errorLevel = 0;
@@ -64,7 +64,7 @@ public class ParserError {
 	 * @return Returns true for a fatal error, false for a non-fatal error
 	 */
 	public boolean isFatal() {
-		return ((errorLevel & errFatal) == errFatal);
+		return ((errorLevel & ERROR_FATAL) == ERROR_FATAL);
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public class ParserError {
 	 * @return Returns true for an "Error" level error, else false.
 	 */
 	public boolean isError() {
-		return ((errorLevel & errError) == errError);
+		return ((errorLevel & ERROR_ERROR) == ERROR_ERROR);
 	}
 	
 	/**
@@ -82,7 +82,7 @@ public class ParserError {
 	 * @return Returns true for a warning, else false.
 	 */
 	public boolean isWarning() {
-		return ((errorLevel & errWarning) == errWarning);
+		return ((errorLevel & ERROR_WARNING) == ERROR_WARNING);
 	}
 	
 	/**
@@ -91,7 +91,7 @@ public class ParserError {
 	 * @return Returns true if getException will return an exception.
 	 */
 	public boolean isException() {
-		return ((errorLevel & errException) == errException);
+		return ((errorLevel & ERROR_EXCEPTION) == ERROR_EXCEPTION);
 	}
 	
 	/**
@@ -102,7 +102,7 @@ public class ParserError {
 	public void setException(Exception newException) {
 		exceptionInfo = newException;
 		if (!this.isException()) {
-			this.errorLevel = this.errorLevel+errException;
+			this.errorLevel = this.errorLevel+ERROR_EXCEPTION;
 		}
 	}
 	

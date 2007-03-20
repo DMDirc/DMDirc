@@ -62,7 +62,7 @@ public final class CallbackOnChannelNonUserModeChanged extends CallbackObjectSpe
 			try {
 				eMethod.onChannelNonUserModeChanged(myParser, cChannel, cChannelClient, sHost, sModes);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelNonUserModeChanged");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelNonUserModeChanged");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

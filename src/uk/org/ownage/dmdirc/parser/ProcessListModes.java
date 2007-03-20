@@ -97,7 +97,7 @@ public class ProcessListModes extends IRCProcessor {
 			} // End Hyperian stupidness of using the same numeric for 3 different things..
 			
 			if (!channel.getAddState(mode)) {
-				callDebugInfo(myParser.ndInfo, "New List Mode Batch: Clearing!");
+				callDebugInfo(myParser.DEBUG_INFO, "New List Mode Batch: Clearing!");
 				channel.getListModeParam(mode).clear();
 				channel.setAddState(mode, true);
 			}
@@ -109,7 +109,7 @@ public class ProcessListModes extends IRCProcessor {
 			if (token.length > tokenStart) { item = token[tokenStart]; }
 			if (!item.equals("")) {
 				ChannelListModeItem clmi = new ChannelListModeItem(item, owner, time);
-				callDebugInfo(myParser.ndInfo, "List Mode: %c [%s/%s/%d]",mode, item, owner, time);
+				callDebugInfo(myParser.DEBUG_INFO, "List Mode: %c [%s/%s/%d]",mode, item, owner, time);
 				channel.setListModeParam(mode, clmi, true);
 			}
 		} else {

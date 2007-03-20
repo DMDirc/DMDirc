@@ -51,7 +51,7 @@ public class ProcessQuit extends IRCProcessor {
 		iClient = getClientInfo(token[0]);
 		
 		if (iClient == null) { return; }
-		if (myParser.alwaysUpdateClient) {
+		if (myParser.ALWAYS_UPDATECLIENT) {
 			// This may seem pointless - updating before they leave - but the formatter needs it!
 			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0],false); }
 		}

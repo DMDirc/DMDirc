@@ -53,7 +53,7 @@ public class ProcessingManager {
 	 * Debugging Data to the console.
 	 */
 	private void DoDebug(String line, Object... args) {
-		myParser.callDebugInfo(myParser.ndProcessor, line, args);
+		myParser.callDebugInfo(myParser.DEBUG_PROCESSOR, line, args);
 	}
 	
 	/**
@@ -215,7 +215,7 @@ public class ProcessingManager {
 			String line = "";
 			for (int i = 0; i < token.length; ++i ) { line = line+" "+token[i]; }
 			line = line.trim();
-			ParserError ei = new ParserError(ParserError.errWarning,"Exception in Parser. [Param: "+sParam+"] [Processor: "+messageProcessor+"] [Line: "+line+"]");
+			ParserError ei = new ParserError(ParserError.ERROR_WARNING,"Exception in Parser. [Param: "+sParam+"] [Processor: "+messageProcessor+"] [Line: "+line+"]");
 			ei.setException(e);
 			myParser.callErrorInfo(ei);
 		}

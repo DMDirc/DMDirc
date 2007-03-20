@@ -61,7 +61,7 @@ public final class CallbackOnChannelQuit extends CallbackObjectSpecific {
 			try {
 				eMethod.onChannelQuit(myParser, cChannel, cChannelClient, sReason);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelQuit");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelQuit");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

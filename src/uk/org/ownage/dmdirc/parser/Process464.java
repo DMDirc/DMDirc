@@ -38,7 +38,7 @@ public class Process464 extends IRCProcessor {
 	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
-		ParserError ei = new ParserError(ParserError.errError, "Password Required");
+		ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Password Required");
 		callErrorInfo(ei);
 	}
 	

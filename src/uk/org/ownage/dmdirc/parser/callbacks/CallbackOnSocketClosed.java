@@ -53,7 +53,7 @@ public final class CallbackOnSocketClosed extends CallbackObject {
 			try {
 				((ISocketClosed) callbackInfo.get(i)).onSocketClosed(myParser);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.errError, "Exception in onSocketClosed");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onSocketClosed");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

@@ -58,7 +58,7 @@ public final class CallbackOnPrivateMessage extends CallbackObjectSpecific {
 			try {
 				eMethod.onPrivateMessage(myParser, sMessage, sHost);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.errError, "Exception in onPrivateMessage");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onPrivateMessage");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

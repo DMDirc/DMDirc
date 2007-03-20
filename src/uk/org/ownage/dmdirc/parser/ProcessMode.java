@@ -101,7 +101,7 @@ public class ProcessMode extends IRCProcessor {
 		
 		iChannel = getChannelInfo(sChannelName);
 		if (iChannel == null) { 
-			callErrorInfo(new ParserError(ParserError.errWarning, "Got modes for channel ("+sChannelName+") that I am not on."));
+			callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got modes for channel ("+sChannelName+") that I am not on."));
 			iChannel = new ChannelInfo(myParser, sChannelName);
 			myParser.hChannelList.put(iChannel.getName().toLowerCase(),iChannel);
 		}
@@ -109,7 +109,7 @@ public class ProcessMode extends IRCProcessor {
 		if (!sParam.equals("324")) { nCurrent = iChannel.getMode(); }
 		
 		setterCCI = iChannel.getUser(token[0]);
-		if (myParser.alwaysUpdateClient && setterCCI != null) {
+		if (myParser.ALWAYS_UPDATECLIENT && setterCCI != null) {
 			// Facilitate dmdirc formatter
 			if (setterCCI.getClient().getHost().equals("")) {setterCCI.getClient().setUserBits(token[0],false); }
 		}
@@ -129,20 +129,20 @@ public class ProcessMode extends IRCProcessor {
 					// (de) OP/Voice someone
 					sModeParam = sModestr[nParam++];
 					nValue = myParser.hPrefixModes.get(cMode);
-					callDebugInfo(myParser.ndInfo, "User Mode: %c / %d [%s] {Positive: %b}",cMode, nValue, sModeParam, bPositive);
+					callDebugInfo(myParser.DEBUG_INFO, "User Mode: %c / %d [%s] {Positive: %b}",cMode, nValue, sModeParam, bPositive);
 					iChannelClientInfo = iChannel.getUser(sModeParam);
 					if (iChannelClientInfo == null) {
 						// Client not known?
-						callErrorInfo(new ParserError(ParserError.errWarning, "Got mode for client not known on channel - Added"));
+						callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got mode for client not known on channel - Added"));
 						iClient = getClientInfo(sModeParam);
 						if (iClient == null) { 
-							callErrorInfo(new ParserError(ParserError.errWarning, "Got mode for client not known at all - Added"));
+							callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got mode for client not known at all - Added"));
 							iClient = new ClientInfo(myParser, sModeParam);
 							myParser.hClientList.put(iClient.getNickname().toLowerCase(),iClient);
 						}
 						iChannelClientInfo = iChannel.addClient(iClient);
 					}
-					callDebugInfo(myParser.ndInfo, "\tOld Mode Value: %d",iChannelClientInfo.getChanMode());
+					callDebugInfo(myParser.DEBUG_INFO, "\tOld Mode Value: %d",iChannelClientInfo.getChanMode());
 					if (bPositive) { iChannelClientInfo.setChanMode(iChannelClientInfo.getChanMode() + nValue); sTemp = "+"; }
 					else { iChannelClientInfo.setChanMode(iChannelClientInfo.getChanMode() - nValue); sTemp = "-"; }
 					sTemp = sTemp+cMode;
@@ -151,7 +151,7 @@ public class ProcessMode extends IRCProcessor {
 					continue;
 				} else {
 					// unknown mode - add as boolean
-					callErrorInfo(new ParserError(ParserError.errWarning, "Got unknown mode "+cMode+" - Added as boolean mode"));
+					callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got unknown mode "+cMode+" - Added as boolean mode"));
 					myParser.hChanModesBool.put(cMode,myParser.nNextKeyCMBool);
 					nValue = myParser.nNextKeyCMBool;
 					bBooleanMode = true;
@@ -159,7 +159,7 @@ public class ProcessMode extends IRCProcessor {
 				}
 				
 				if (bBooleanMode) {
-					callDebugInfo(myParser.ndInfo, "Boolean Mode: %c [%d] {Positive: %b}",cMode, nValue, bPositive);
+					callDebugInfo(myParser.DEBUG_INFO, "Boolean Mode: %c [%d] {Positive: %b}",cMode, nValue, bPositive);
 					if (bPositive) { nCurrent = nCurrent + nValue; }
 					else { nCurrent = nCurrent - nValue; }
 				} else {
@@ -169,7 +169,7 @@ public class ProcessMode extends IRCProcessor {
 						sNonUserModeStrParams = sNonUserModeStrParams+" "+sModeParam;
 						nTemp = (Calendar.getInstance().getTimeInMillis() / 1000);
 						iChannel.setListModeParam(cMode, new ChannelListModeItem(sModeParam, token[0], nTemp ), bPositive);
-						callDebugInfo(myParser.ndInfo, "List Mode: %c [%s] {Positive: %b}",cMode, sModeParam, bPositive);
+						callDebugInfo(myParser.DEBUG_INFO, "List Mode: %c [%s] {Positive: %b}",cMode, sModeParam, bPositive);
 						if (cbSingle != null) { cbSingle.call(iChannel, setterCCI, token[0], cPositive+cMode+" "+sModeParam ); }
 					} else {
 						// Mode with a parameter
@@ -177,7 +177,7 @@ public class ProcessMode extends IRCProcessor {
 							// +Mode - always needs a parameter to set
 							sModeParam = sModestr[nParam++];
 							sNonUserModeStrParams = sNonUserModeStrParams+" "+sModeParam;
-							callDebugInfo(myParser.ndInfo, "Set Mode: %c [%s] {Positive: %b}",cMode, sModeParam, bPositive);
+							callDebugInfo(myParser.DEBUG_INFO, "Set Mode: %c [%s] {Positive: %b}",cMode, sModeParam, bPositive);
 							iChannel.setModeParam(cMode,sModeParam);
 							if (cbSingle != null) { cbSingle.call(iChannel, setterCCI, token[0], cPositive+cMode+" "+sModeParam ); }
 						} else {
@@ -188,7 +188,7 @@ public class ProcessMode extends IRCProcessor {
 							} else {
 								sModeParam = "";
 							}
-							callDebugInfo(myParser.ndInfo, "Unset Mode: %c [%s] {Positive: %b}",cMode, sModeParam, bPositive);
+							callDebugInfo(myParser.DEBUG_INFO, "Unset Mode: %c [%s] {Positive: %b}",cMode, sModeParam, bPositive);
 							iChannel.setModeParam(cMode,"");
 							if (cbSingle != null) { cbSingle.call(iChannel, setterCCI, token[0], trim(cPositive+cMode+" "+sModeParam) ); }
 						}
@@ -233,13 +233,13 @@ public class ProcessMode extends IRCProcessor {
 				if (myParser.hUserModes.containsKey(cMode)) { nValue = myParser.hUserModes.get(cMode); }
 				else {
 					// Unknown mode
-					callErrorInfo(new ParserError(ParserError.errWarning, "Got unknown user mode "+cMode+" - Added"));
+					callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got unknown user mode "+cMode+" - Added"));
 					myParser.hUserModes.put(cMode,myParser.nNextKeyUser);
 					nValue = myParser.nNextKeyUser;
 					myParser.nNextKeyUser = myParser.nNextKeyUser*2;
 				}
 				// Usermodes are always boolean
-				callDebugInfo(myParser.ndInfo, "User Mode: %c [%d] {Positive: %b}",cMode, nValue, bPositive);
+				callDebugInfo(myParser.DEBUG_INFO, "User Mode: %c [%d] {Positive: %b}",cMode, nValue, bPositive);
 				if (bPositive) { nCurrent = nCurrent + nValue; }
 				else { nCurrent = nCurrent - nValue; }
 			}

@@ -60,7 +60,7 @@ public class ProcessJoin extends IRCProcessor {
 		if (iClient.getHost().equals("")) { iClient.setUserBits(token[0],false); }
 		if (iChannel == null) { 
 			if (iClient != myParser.cMyself) {
-				callErrorInfo(new ParserError(ParserError.errWarning, "Got join for channel ("+token[token.length-1]+") that I am not on. [User: "+token[0]+"]"));
+				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got join for channel ("+token[token.length-1]+") that I am not on. [User: "+token[0]+"]"));
 			}
 			iChannel = new ChannelInfo(myParser, token[token.length-1]);
 			myParser.hChannelList.put(iChannel.getName().toLowerCase(),iChannel);

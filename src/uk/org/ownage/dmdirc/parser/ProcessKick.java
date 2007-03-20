@@ -51,14 +51,14 @@ public class ProcessKick extends IRCProcessor {
 		
 		if (iClient == null) { return; }
 		
-		if (myParser.alwaysUpdateClient && iKicker != null) {
+		if (myParser.ALWAYS_UPDATECLIENT && iKicker != null) {
 			// To facilitate dmdirc formatter, get user information
 			if (iKicker.getHost().equals("")) { iKicker.setUserBits(token[0],false); }
 		}
 
 		if (iChannel == null) { 
 			if (iClient != myParser.cMyself) {
-				callErrorInfo(new ParserError(ParserError.errWarning, "Got kick for channel ("+token[2]+") that I am not on. [User: "+token[3]+"]"));
+				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got kick for channel ("+token[2]+") that I am not on. [User: "+token[3]+"]"));
 			}
 			return;
 		} else {

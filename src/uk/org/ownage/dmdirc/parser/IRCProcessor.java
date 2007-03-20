@@ -62,7 +62,7 @@ public abstract class IRCProcessor {
 	 * Callback to all objects implementing the DebugInfo Callback.
 	 *
 	 * @see IDebugInfo
-	 * @param level Debugging Level (ndInfo, ndSocket etc)
+	 * @param level Debugging Level (DEBUG_INFO, ndSocket etc)
 	 * @param data Debugging Information
 	 * @param args Formatting String Options
 	 */
@@ -74,7 +74,7 @@ public abstract class IRCProcessor {
 	 * Callback to all objects implementing the DebugInfo Callback.
 	 *
 	 * @see IDebugInfo
-	 * @param level Debugging Level (ndInfo, ndSocket etc)
+	 * @param level Debugging Level (DEBUG_INFO, ndSocket etc)
 	 * @param data Debugging Information
 	 */
 	protected boolean callDebugInfo(int level, String data) {

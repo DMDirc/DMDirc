@@ -34,22 +34,90 @@ package uk.org.ownage.dmdirc.parser;
  */
 public class MyInfo {
 	/** Nickname to attempt to use on IRC (Default: IRCParser). */
-	public String sNickname = "IRCParser";
+	private String nickname = "IRCParser";
 	/**
 	 * Alternative nickname to attempt to use on IRC (Default: IRC-Parser).
 	 * If the first nickname is in use, and a NickInUse message is recieved before 001, we
 	 * will attempt to use this nickname instead.<br>
-	 * If this also fails, we will start prepending the cPrepend character (_) to the main nickname
-	 *
-	 * @see MyInfo#cPrepend
+	 * If this also fails, we will start prepending the prependChar character (_) to the main nickname
 	 */
-	public String sAltNickname = "IRC-Parser";
+	private String altNickname = "IRC-Parser";
 	/** Realname string to use (Default: "DMDIRC IRCParser"). */
-	public String sRealname = "DMDIRC IRCParser";
+	private String realname = "DMDIRC IRCParser";
 	/** Username to use, this doesn't matter when an ident server is running (Default: IRCParser). */
-	public String sUsername = "IRCParser";
+	private String username = "IRCParser";
 	/** Character to prepend to nickname if in use (Default "_"). */
-	public char cPrepend = '_';	
+	public char prependChar = '_';	
+	
+	/**
+	 * Set the Nickname.
+	 *
+	 * @param newValue Value to set to.
+	 */
+	public void setNickname(String newValue) { nickname = newValue; }
+	
+	/**
+	 * Get the Nickname.
+	 *
+	 * @return Current Nickname
+	 */
+	public String getNickname() { return nickname; }
+	
+	/**
+	 * Set the Alternative Nickname.
+	 *
+	 * @param newValue Value to set to.
+	 */
+	public void setAltNickname(String newValue) { altNickname = newValue; }
+	
+	/**
+	 * Get the Alternative Nickname.
+	 *
+	 * @return Current Nickname
+	 */
+	public String getAltNickname() { return altNickname; }
+	
+	/**
+	 * Set the Realname.
+	 *
+	 * @param newValue Value to set to.
+	 */
+	public void setRealname(String newValue) { realname = newValue; }
+	
+	/**
+	 * Get the Realname.
+	 *
+	 * @return Current Realname
+	 */
+	public String getRealname() { return realname; }
+	
+	/**
+	 * Set the Username.
+	 *
+	 * @param newValue Value to set to.
+	 */
+	public void setUsername(String newValue) { username = newValue; }
+	
+	/**
+	 * Get the Username.
+	 *
+	 * @return Current Username
+	 */
+	public String getUsername() { return username; }
+	
+	/**
+	 * Set the Prepend Character.
+	 *
+	 * @param newValue Value to set to.
+	 */
+	public void setPrependChar(char newValue) { prependChar = newValue; }
+	
+	/**
+	 * Get the Prepend Character.
+	 *
+	 * @return Current Prepend Character
+	 */
+	public char getPrependChar() { return prependChar; }	
 	
 	/**
 	 * Get SVN Version information

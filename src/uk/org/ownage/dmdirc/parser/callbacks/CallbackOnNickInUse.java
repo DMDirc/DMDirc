@@ -54,7 +54,7 @@ public final class CallbackOnNickInUse extends CallbackObject {
 				((INickInUse) callbackInfo.get(i)).onNickInUse(myParser);
 				bResult = true;
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.errError, "Exception in onNickInUse");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onNickInUse");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

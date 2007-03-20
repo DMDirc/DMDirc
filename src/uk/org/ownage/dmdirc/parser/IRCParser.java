@@ -61,25 +61,25 @@ import javax.net.ssl.TrustManager;
 public class IRCParser implements Runnable {
 	
 	/** General Debug Information. */
-	public static final int ndInfo = 1;
+	public static final int DEBUG_INFO = 1;
 	/** Socket Debug Information. */	
-	public static final int ndSocket = 2;
+	public static final int DEBUG_SOCKET = 2;
 	/** Processing Manager Debug Information. */	
-	public static final int ndProcessor = 4;
-//	public static final int ndSomething = 8; //Next thingy
+	public static final int DEBUG_PROCESSOR = 4;
+//	public static final int DEBUG_SOMETHING = 8; //Next thingy
 
 	/** Socket is not created yet. */
-	public static final byte stateNull = 0;
+	public static final byte STATE_NULL = 0;
 	/** Socket is closed. */	
-	public static final byte stateClosed = 1;
+	public static final byte STATE_CLOSED = 1;
 	/** Socket is Open. */	
-	public static final byte stateOpen = 2;
+	public static final byte STATE_OPEN = 2;
 	
 	/** Attempt to update user host all the time, not just on Who/Add/NickChange. */	
-	protected static final boolean alwaysUpdateClient = true;
+	protected static final boolean ALWAYS_UPDATECLIENT = true;
 
 	/** Current Socket State */
-	private byte nSocketState = 0;
+	private byte currentSocketState = 0;
 	
 	/** Max length an outgoing line should be (NOT including \r\n). */
 	public static final int MAX_LINELENGTH = 510;
@@ -87,14 +87,12 @@ public class IRCParser implements Runnable {
 	/**
 	 * Get the current socket State.
 	 *
-	 * @return Current SocketState (stateNull, stateClosed or stateOpen)
+	 * @return Current SocketState (STATE_NULL, STATE_CLOSED or STATE_OPEN)
 	 */
-	public byte getSocketState() { return nSocketState; }
+	public byte getSocketState() { return currentSocketState; }
 	
 	/** This is the socket used for reading from/writing to the IRC server. */
 	private Socket socket = null;
-//	/** This is the socket used for reading from/writing to the IRC server when using SSL. */
-//	private SSLSocket sslSocket = null;
 	/** Used for writing to the server. */
 	private PrintWriter out = null;
 	/** Used for reading from the server. */
@@ -166,7 +164,7 @@ public class IRCParser implements Runnable {
 	 * Numeric values are powers of 2. This allows up to 32 modes at present (expandable to 64)<br><br>
 	 * ChannelInfo/ChannelClientInfo etc provide methods to view the modes in a human way.<br><br>
 	 * <br>
-	 * Channel modes discovered but not listed in 005 are stored as boolean modes automatically (and a errWarning Error is called)
+	 * Channel modes discovered but not listed in 005 are stored as boolean modes automatically (and a ERROR_WARNING Error is called)
 	 */
 	protected Hashtable<Character,Integer> hChanModesBool = new Hashtable<Character,Integer>();
 	/** Integer representing the next avaliable integer value of a Boolean mode. */	
@@ -281,7 +279,7 @@ public class IRCParser implements Runnable {
 	 * Callback to all objects implementing the DebugInfo Callback.
 	 *
 	 * @see IDebugInfo
-	 * @param level Debugging Level (ndInfo, ndSocket etc)
+	 * @param level Debugging Level (DEBUG_INFO, DEBUG_SOCKET etc)
 	 * @param data Debugging Information as a format string
 	 * @param args Formatting String Options
 	 * @return true if a method was called, false otherwise
@@ -293,7 +291,7 @@ public class IRCParser implements Runnable {
 	 * Callback to all objects implementing the DebugInfo Callback.
 	 *
 	 * @see IDebugInfo
-	 * @param level Debugging Level (ndInfo, ndSocket etc)
+	 * @param level Debugging Level (DEBUG_INFO, DEBUG_SOCKET etc)
 	 * @param data Debugging Information
 	 * @return true if a method was called, false otherwise
 	 */
@@ -391,23 +389,23 @@ public class IRCParser implements Runnable {
 	private void connect() throws Exception {
 		try {
 			resetState();
-			callDebugInfo(ndSocket, "Connecting to "+server.sHost+":"+server.nPort);
+			callDebugInfo(DEBUG_SOCKET, "Connecting to "+server.getHost()+":"+server.getPort());
 			
-			if (server.useSocksProxy) {
-				callDebugInfo(ndSocket, "Using Proxy");
+			if (server.getUseSocks()) {
+				callDebugInfo(DEBUG_SOCKET, "Using Proxy");
 				Proxy.Type proxyType = Proxy.Type.SOCKS;
-				socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.proxyHost, server.proxyPort)));
+				socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
 				
-				socket.connect(new InetSocketAddress(server.sHost,server.nPort));
+				socket.connect(new InetSocketAddress(server.getHost(),server.getPort()));
 			} else {
-				callDebugInfo(ndSocket, "Not using Proxy");
-				if (!server.bSSL) {
-					socket = new Socket(server.sHost,server.nPort);
+				callDebugInfo(DEBUG_SOCKET, "Not using Proxy");
+				if (!server.getSSL()) {
+					socket = new Socket(server.getHost(),server.getPort());
 				}
 			}
 			
-			if (server.bSSL) {
-				callDebugInfo(ndSocket, "Server is SSL.");
+			if (server.getSSL()) {
+				callDebugInfo(DEBUG_SOCKET, "Server is SSL.");
 				
 				if (myTrustManager == null) { myTrustManager = trustAllCerts; }
 				
@@ -415,22 +413,19 @@ public class IRCParser implements Runnable {
 				sc.init(null, myTrustManager, new java.security.SecureRandom());
 				
 				SSLSocketFactory socketFactory = sc.getSocketFactory();
-				if (server.useSocksProxy) {
-					// sslSocket = (SSLSocket)socketFactory.createSocket(socket, server.sHost, server.nPort, false);
-					socket = socketFactory.createSocket(socket, server.sHost, server.nPort, false);
+				if (server.getUseSocks()) {
+					socket = socketFactory.createSocket(socket, server.getHost(), server.getPort(), false);
 				} else {
-					// sslSocket = (SSLSocket)socketFactory.createSocket(server.sHost,server.nPort);
-					socket = socketFactory.createSocket(server.sHost,server.nPort);
+					socket = socketFactory.createSocket(server.getHost(), server.getPort());
 				}
-				// socket = sslSocket;
 			}
 			
-			callDebugInfo(ndSocket, "\t-> Opening socket output stream PrintWriter");
+			callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket output stream PrintWriter");
 			out = new PrintWriter(socket.getOutputStream(), true);
-			nSocketState = stateOpen;
-			callDebugInfo(ndSocket, "\t-> Opening socket input stream BufferedReader");
+			currentSocketState = STATE_OPEN;
+			callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket input stream BufferedReader");
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			callDebugInfo(ndSocket, "\t-> Socket Opened");
+			callDebugInfo(DEBUG_SOCKET, "\t-> Socket Opened");
 		} catch (Exception e) { throw e; }
 	}
 	
@@ -438,11 +433,11 @@ public class IRCParser implements Runnable {
 	 * Send server connection strings (NICK/USER/PASS)
 	 */
 	private void sendConnectionStrings() {
-		if (!server.sPassword.equals("")) {
-			sendString("PASS "+server.sPassword);
+		if (!server.getPassword().equals("")) {
+			sendString("PASS "+server.getPassword());
 		}
-		setNickname(me.sNickname);
-		sendString("USER "+me.sUsername.toLowerCase()+" * * :"+me.sRealname);
+		setNickname(me.getNickname());
+		sendString("USER "+me.getUsername().toLowerCase()+" * * :"+me.getRealname());
 		IsFirst = false;	
 	}
 	
@@ -451,20 +446,21 @@ public class IRCParser implements Runnable {
 	 * Connect to server, and start parsing incomming lines
 	 */
 	public void run() {
-		callDebugInfo(ndInfo, "Begin Thread Execution");
+		callDebugInfo(DEBUG_INFO, "Begin Thread Execution");
 		if (HasBegan) { return; } else { HasBegan = true; }
 		try {connect(); }
 		catch (Exception e) {
-			callDebugInfo(ndSocket, "Error Connecting, Aborted");
-			ParserError ei = new ParserError(ParserError.errError, "Error connecting to server");
+			callDebugInfo(DEBUG_SOCKET, "Error Connecting, Aborted");
+			ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Error connecting to server");
 			ei.setException(e);
 			callErrorInfo(ei);
 			return;
 		}
 		
-		callDebugInfo(ndSocket, "Socket Connected");
+		callDebugInfo(DEBUG_SOCKET, "Socket Connected");
 		
-		if (!server.waitForFirst) { sendConnectionStrings(); }
+//This has been removed, seems pointless
+//		if (!server.waitForFirst) { sendConnectionStrings(); }
 		
 		// Prepare the ProcessingManager
 		myProcessingManager.init();
@@ -474,7 +470,7 @@ public class IRCParser implements Runnable {
 			try {
 				line = in.readLine(); // Blocking :/
 				if (line == null) {
-					nSocketState = stateClosed;
+					currentSocketState = STATE_CLOSED;
 					// Empty the ProcessingManager
 					myProcessingManager.empty();
 					callSocketClosed();
@@ -484,20 +480,20 @@ public class IRCParser implements Runnable {
 					processLine(line);
 				}
 			} catch (IOException e) {
-				nSocketState = stateClosed;
+				currentSocketState = STATE_CLOSED;
 				// Empty the ProcessingManager
 				myProcessingManager.empty();
 				callSocketClosed();
 				break;
 			}
 		}
-		callDebugInfo(ndInfo, "End Thread Execution");
+		callDebugInfo(DEBUG_INFO, "End Thread Execution");
 	}
 	
 	/** Close socket on destroy. */
 	protected void finalize(){
 		try { socket.close(); }
-		catch (IOException e) { callDebugInfo(ndSocket, "Could not close socket"); }
+		catch (IOException e) { callDebugInfo(DEBUG_SOCKET, "Could not close socket"); }
 	}
 
 	/**
@@ -637,7 +633,7 @@ public class IRCParser implements Runnable {
 				}
 			}
 		} catch (Exception e) {
-			ParserError ei = new ParserError(ParserError.errFatal, "Exception in Parser. {"+line+"}");
+			ParserError ei = new ParserError(ParserError.ERROR_FATAL, "Exception in Parser. {"+line+"}");
 			ei.setException(e);
 			callErrorInfo(ei);
 		}
@@ -704,7 +700,7 @@ public class IRCParser implements Runnable {
 		Bits = ModeStr.split(",",5);
 		if (Bits.length < 4) {
 			ModeStr = sDefaultModes;
-			callErrorInfo(new ParserError(ParserError.errError, "CHANMODES String not valid. Using default string of \""+ModeStr+"\""));
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "CHANMODES String not valid. Using default string of \""+ModeStr+"\""));
 			h005Info.put("CHANMODES",ModeStr);
 			Bits = ModeStr.split(",",5);
 		}
@@ -717,7 +713,7 @@ public class IRCParser implements Runnable {
 		// List modes.
 		for (int i = 0; i < Bits[0].length(); ++i) {
 			Character cMode = Bits[0].charAt(i);
-			callDebugInfo(ndInfo, "Found List Mode: %c",cMode);
+			callDebugInfo(DEBUG_INFO, "Found List Mode: %c",cMode);
 			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode,cmList); }
 		}
 		
@@ -725,21 +721,21 @@ public class IRCParser implements Runnable {
 		Byte nBoth = (cmSet+cmUnset);
 		for (int i = 0; i < Bits[1].length(); ++i) {
 			Character cMode = Bits[1].charAt(i);
-			callDebugInfo(ndInfo, "Found Set/Unset Mode: %c",cMode);
+			callDebugInfo(DEBUG_INFO, "Found Set/Unset Mode: %c",cMode);
 			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode,nBoth); }
 		}
 		
 		// Param just for Set
 		for (int i = 0; i < Bits[2].length(); ++i) {
 			Character cMode = Bits[2].charAt(i);
-			callDebugInfo(ndInfo, "Found Set Only Mode: %c",cMode);
+			callDebugInfo(DEBUG_INFO, "Found Set Only Mode: %c",cMode);
 			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode,cmSet); }
 		}
 		
 		// Boolean Mode
 		for (int i = 0; i < Bits[3].length(); ++i) {
 			Character cMode = Bits[3].charAt(i);
-			callDebugInfo(ndInfo, "Found Boolean Mode: %c [%d]",cMode,nNextKeyCMBool);
+			callDebugInfo(DEBUG_INFO, "Found Boolean Mode: %c [%d]",cMode,nNextKeyCMBool);
 			if (!hChanModesBool.containsKey(cMode)) {
 				hChanModesBool.put(cMode,nNextKeyCMBool);
 				nNextKeyCMBool = nNextKeyCMBool*2;
@@ -833,7 +829,7 @@ public class IRCParser implements Runnable {
 		// Boolean Mode
 		for (int i = 0; i < ModeStr.length(); ++i) {
 			Character cMode = ModeStr.charAt(i);
-			callDebugInfo(ndInfo, "Found User Mode: %c [%d]",cMode,nNextKeyUser);
+			callDebugInfo(DEBUG_INFO, "Found User Mode: %c [%d]",cMode,nNextKeyUser);
 			if (!hUserModes.containsKey(cMode)) {
 				hUserModes.put(cMode,nNextKeyUser);
 				nNextKeyUser = nNextKeyUser*2;
@@ -857,7 +853,7 @@ public class IRCParser implements Runnable {
 		// Boolean Mode
 		for (int i = 0; i < ModeStr.length(); ++i) {
 			Character cMode = ModeStr.charAt(i);
-			callDebugInfo(ndInfo, "Found Chan Prefix: %c",cMode);
+			callDebugInfo(DEBUG_INFO, "Found Chan Prefix: %c",cMode);
 			if (!hChanPrefix.containsKey(cMode)) { hChanPrefix.put(cMode,true); }
 		}
 	}		
@@ -877,7 +873,7 @@ public class IRCParser implements Runnable {
 		Bits = ModeStr.split("\\)",2);
 		if (Bits.length != 2 || Bits[0].length() != Bits[1].length()) {
 			ModeStr = sDefaultModes;
-			callErrorInfo(new ParserError(ParserError.errError, "PREFIX String not valid. Using default string of \""+ModeStr+"\""));
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "PREFIX String not valid. Using default string of \""+ModeStr+"\""));
 			h005Info.put("PREFIX",ModeStr);
 			ModeStr = ModeStr.substring(1);
 			Bits = ModeStr.split("\\)",2);
@@ -891,7 +887,7 @@ public class IRCParser implements Runnable {
 		for (int i = Bits[0].length()-1; i > -1; --i) {
 			Character cMode = Bits[0].charAt(i);
 			Character cPrefix = Bits[1].charAt(i);
-			callDebugInfo(ndInfo, "Found Prefix Mode: %c => %c [%d]",cMode,cPrefix,nNextKeyPrefix);
+			callDebugInfo(DEBUG_INFO, "Found Prefix Mode: %c => %c [%d]",cMode,cPrefix,nNextKeyPrefix);
 			if (!hPrefixModes.containsKey(cMode)) {
 				hPrefixModes.put(cMode,nNextKeyPrefix);
 				hPrefixMap.put(cMode,cPrefix);
@@ -938,8 +934,8 @@ public class IRCParser implements Runnable {
 	 * @param sNewNickName New nickname wanted.
 	 */
 	public void setNickname(String sNewNickName) {
-		if (this.getSocketState() != stateOpen) {
-			me.sNickname = sNewNickName;
+		if (this.getSocketState() != STATE_OPEN) {
+			me.setNickname(sNewNickName);
 		} else {
 			if (cMyself != null) {
 				if (cMyself.getNickname().equals(sNewNickName)) { return; }

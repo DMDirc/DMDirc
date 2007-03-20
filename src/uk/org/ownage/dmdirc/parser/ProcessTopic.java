@@ -51,7 +51,7 @@ public class ProcessTopic extends IRCProcessor {
 			iChannel.setTopicUser(token[4]);
 			callChannelTopic(iChannel,true);
 		} else {
-			if (myParser.alwaysUpdateClient) {
+			if (myParser.ALWAYS_UPDATECLIENT) {
 				ClientInfo iClient = getClientInfo(token[0]);
 				if (iClient != null) {
 					if (iClient.getHost().equals("")) {iClient.setUserBits(token[0],false); }

@@ -162,7 +162,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public void connect(final String server, final int port, final String password,
             final boolean ssl) {
         
-        if (parser != null && parser.getSocketState() == parser.stateOpen) {
+        if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
             disconnect(Config.getOption("general", "quitmessage"));
             closeChannels();
             closeQueries();
@@ -184,11 +184,11 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         sendNotification();
         
         final MyInfo myInfo = new MyInfo();
-        myInfo.sNickname = Config.getOption("general", "defaultnick");
-        myInfo.sAltNickname = Config.getOption("general", "alternatenick");
+        myInfo.setNickname(Config.getOption("general", "defaultnick"));
+        myInfo.setAltNickname(Config.getOption("general", "alternatenick"));
         
         final ServerInfo serverInfo = new ServerInfo(server, port, password);
-        serverInfo.bSSL = ssl;
+        serverInfo.setSSL(ssl);
         parser = new IRCParser(myInfo, serverInfo);
         
         if (raw == null) {

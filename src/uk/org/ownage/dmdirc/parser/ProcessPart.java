@@ -49,13 +49,13 @@ public class ProcessPart extends IRCProcessor {
 		iChannel = getChannelInfo(token[2]);
 		
 		if (iClient == null) { return; }
-		if (myParser.alwaysUpdateClient) {
+		if (myParser.ALWAYS_UPDATECLIENT) {
 			// This may seem pointless - updating before they leave - but the formatter needs it!
 			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0],false); }
 		}
 		if (iChannel == null) { 
 			if (iClient != myParser.cMyself) {
-				callErrorInfo(new ParserError(ParserError.errWarning, "Got part for channel ("+token[2]+") that I am not on. [User: "+token[0]+"]"));
+				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got part for channel ("+token[2]+") that I am not on. [User: "+token[0]+"]"));
 			}
 			return;
 		} else {
@@ -63,11 +63,11 @@ public class ProcessPart extends IRCProcessor {
 			if (token.length > 3) { sReason = token[token.length-1]; }
 			iChannelClient = iChannel.getUser(iClient);
 			if (iChannelClient == null) {
-				callErrorInfo(new ParserError(ParserError.errWarning, "Got part for channel ("+token[2]+") for a non-existant user. [User: "+token[0]+"]"));
+				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got part for channel ("+token[2]+") for a non-existant user. [User: "+token[0]+"]"));
 				return;
 			}
 			callChannelPart(iChannel,iChannelClient,sReason);
-			callDebugInfo(myParser.ndInfo, "Removing %s from %s",iClient.getNickname(),iChannel.getName());
+			callDebugInfo(myParser.DEBUG_INFO, "Removing %s from %s",iClient.getNickname(),iChannel.getName());
 			iChannel.delClient(iClient);
 			if (iClient == myParser.cMyself) {
 				iChannel.emptyChannel();

@@ -63,7 +63,7 @@ public final class CallbackOnChannelKick extends CallbackObjectSpecific {
 			try {
 				eMethod.onChannelKick(myParser, cChannel, cKickedClient, cKickedByClient, sReason, sKickedByHost);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelKick");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelKick");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

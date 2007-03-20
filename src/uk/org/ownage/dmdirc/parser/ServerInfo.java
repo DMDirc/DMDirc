@@ -33,32 +33,136 @@ package uk.org.ownage.dmdirc.parser;
  * @see IRCParser
  */
 public class ServerInfo {
+	/**
+	 * A version number for this class. It should be changed whenever the class
+	 * structure is changed (or anything else that would prevent serialized
+	 * objects being unserialized with the new class).
+	 */
+	private static final long serialVersionUID = 1;
+
 	/** Server to connect to (Default: "irc.quakenet.org"). */
-	public String sHost = "irc.quakenet.org";
-	/** Optional password needed to connect to server (Default: ""). */
-	public String sPassword = "";
+	private String host = "irc.quakenet.org";
 	/** Port server listens on for client connections (Default: 6667). */
-	public int nPort = 6667;
+	private int port = 6667;
+	/** Optional password needed to connect to server (Default: ""). */
+	private String password = "";
 	/** Is this an ssl-enabled server (Default: false). */
-	public boolean bSSL = false;	
+	private boolean isSSL = false;	
 	/** Do we need to wait for input before sending Nick/User/Pass (Default: false). */
-	public boolean waitForFirst = false;
+	private boolean waitForFirst = false;
 	/** Are we using a socks proxy (Default: false). */
-	public boolean useSocksProxy = false;
+	private boolean useSocksProxy = false;
 	/** Proxy server to connect to (Default: "127.0.0.1"). */
-	public String proxyHost = "127.0.0.1";
+	private String proxyHost = "127.0.0.1";
 	/** Port server listens on for client connections (Default: 8080). */
-	public int proxyPort = 8080;
-	
+	private int proxyPort = 8080;
 	
 	/** Constructor using Default values. */
 	public ServerInfo () { }
-	/** Constructor using specifed host, port and password, SSL must be specifed separately. */
-	public ServerInfo (String host, int port, String pass) {
-		sHost = host;
-		nPort = port;
-		sPassword = pass;
+	/** Constructor using specifed host, port and password, SSL/Proxy must be specifed separately. */
+	public ServerInfo (String serverHost, int serverPort, String serverPass) {
+		host = serverHost;
+		port = serverPort;
+		password = serverPass;
 	}
+	
+	/**
+	 * Set the hostname.
+	 *
+	 * @param newValue Value to set to.
+	 */
+	public void setHost(String newValue) { host = newValue; }
+	
+	/**
+	 * Get the hostname.
+	 *
+	 * @return Current hostname
+	 */
+	public String getHost() { return host; }
+	
+	/**
+	 * Set the port.
+	 *
+	 * @param newValue Value to set to.
+	 */
+	public void setPort(int newValue) { port = newValue; }
+	
+	/**
+	 * Get the port.
+	 *
+	 * @return Current port
+	 */
+	public int getPort() { return port; }
+	
+	/**
+	 * Set the password.
+	 *
+	 * @param newValue Value to set to.
+	 */
+	public void setPassword(String newValue) { password = newValue; }
+	
+	/**
+	 * Get the password.
+	 *
+	 * @return Current Password
+	 */
+	public String getPassword() { return password; }
+	
+	/**
+	 * Set if the server uses ssl.
+	 *
+	 * @param newValue true if server uses ssl, else false
+	 */
+	public void setSSL(boolean newValue) { isSSL = newValue; }
+	
+	/**
+	 * Get if the server uses ssl.
+	 *
+	 * @return true if server uses ssl, else false
+	 */
+	public boolean getSSL() { return isSSL; }
+	
+	/**
+	 * Set if we are connecting via a socks proxy.
+	 *
+	 * @param newValue true if we are using socks, else false
+	 */
+	public void setUseSocks(boolean newValue) { useSocksProxy = newValue; }
+	
+	/**
+	 * Get if we are connecting via a socks proxy.
+	 *
+	 * @return true if we are using socks, else false
+	 */
+	public boolean getUseSocks() { return useSocksProxy; }
+	
+	/**
+	 * Set the Proxy hostname.
+	 *
+	 * @param newValue Value to set to.
+	 */
+	public void setProxyHost(String newValue) { proxyHost = newValue; }
+	
+	/**
+	 * Get the Proxy hostname.
+	 *
+	 * @return Current Proxy hostname
+	 */
+	public String getProxyHost() { return proxyHost; }
+	
+	/**
+	 * Set the Proxy port.
+	 *
+	 * @param newValue Value to set to.
+	 */
+	public void setProxyPort(int newValue) { proxyPort = newValue; }
+	
+	/**
+	 * Get the Proxy port.
+	 *
+	 * @return Current Proxy port
+	 */
+	public int getProxyPort() { return proxyPort; }
 	
 	/**
 	 * Get SVN Version information

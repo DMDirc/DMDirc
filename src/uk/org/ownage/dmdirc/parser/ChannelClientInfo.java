@@ -97,7 +97,6 @@ public class ChannelClientInfo {
 		Character cTemp;
 		int nTemp = 0, nCurrentModes = this.getChanMode();
 
-//		for (int i = 1; i < myParser.nNextKeyPrefix; i = i*2) {
 		for (int i = myParser.nNextKeyPrefix; i > 0; i = i/2) {
 			if ((nCurrentModes & i) == i) {
 				for (final Enumeration e = myParser.hPrefixModes.keys(); e.hasMoreElements();) {

@@ -63,7 +63,7 @@ public final class CallbackOnChannelCTCP extends CallbackObjectSpecific {
 			try {
 				eMethod.onChannelCTCP(myParser, cChannel, cChannelClient, sType, sMessage, sHost);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelCTCP");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelCTCP");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

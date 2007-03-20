@@ -58,7 +58,7 @@ public final class CallbackOnChannelGotNames extends CallbackObjectSpecific {
 			try {
 				eMethod.onChannelGotNames(myParser, cChannel);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelGotNames");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelGotNames");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

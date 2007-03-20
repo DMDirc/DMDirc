@@ -52,7 +52,7 @@ public class Process004005 extends IRCProcessor {
 				Bits = token[i].split("=",2);
 				sKey = Bits[0].toUpperCase();
 				if (Bits.length == 2) { sValue = Bits[1]; } else { sValue = ""; }
-				callDebugInfo(myParser.ndInfo, "%s => %s",sKey,sValue);
+				callDebugInfo(myParser.DEBUG_INFO, "%s => %s",sKey,sValue);
 				myParser.h005Info.put(sKey,sValue);
 				if (sKey.equals("NETWORK")) {
 					myParser.sNetworkName = sValue;

@@ -42,7 +42,7 @@ public class ChannelInfo {
 	 * Boolean repreenting the status of names requests.
 	 * When this is false, any new names reply will cause current known channelclients to be removed.
 	 */
-	protected boolean bAddingNames = true;
+	private boolean bAddingNames = true;
 	
 	/** Current known topic in the channel. */
 	private String sTopic = "";
@@ -79,6 +79,20 @@ public class ChannelInfo {
 	 * @param name Channel name.
 	 */
 	public ChannelInfo (final IRCParser tParser, final String name) { myParser = tParser; sName = name; }
+	
+	/**
+	 * Set if we are getting a names request or not.
+	 *
+	 * @param newValue if false, any new names reply will cause current known channelclients to be removed.
+	 */
+	public void setAddingNames(boolean newValue) { bAddingNames = newValue; }
+	
+	/**
+	 * Get if we are getting a names request or not.
+	 *
+	 * @return if false, any new names reply will cause current known channelclients to be removed.
+	 */
+	public boolean getAddingNames() { return bAddingNames; }
 	
 	/**
 	 * Get the name of this channel object.
@@ -384,7 +398,7 @@ public class ChannelInfo {
 				}
 			}
 		}
-		myParser.callDebugInfo(myParser.ndInfo, "Queueing mode: %s", modestr);
+		myParser.callDebugInfo(myParser.DEBUG_INFO, "Queueing mode: %s", modestr);
 		lModeQueue.add(modestr);
 	}
 	
@@ -419,7 +433,7 @@ public class ChannelInfo {
 		if (!positivemode.equals("")) { modestr = modestr+"+"+positivemode; }
 		if (!negativeparam.equals("")) { modestr = modestr+negativeparam; }
 		if (!positiveparam.equals("")) { modestr = modestr+positiveparam; }
-		myParser.callDebugInfo(myParser.ndInfo, "Sending mode: %s", modestr);
+		myParser.callDebugInfo(myParser.DEBUG_INFO, "Sending mode: %s", modestr);
 		myParser.sendLine("MODE "+sName+" "+modestr);
 		clearModeQueue();
 	}

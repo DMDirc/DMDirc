@@ -56,7 +56,7 @@ public final class CallbackOnQuit extends CallbackObject {
 			try {
 				((IQuit) callbackInfo.get(i)).onQuit(myParser, cClient, sReason);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.errError, "Exception in onQuit");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onQuit");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

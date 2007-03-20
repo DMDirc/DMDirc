@@ -62,7 +62,7 @@ public final class CallbackOnChannelModeChanged extends CallbackObjectSpecific {
 			try {
 				eMethod.onChannelModeChanged(myParser, cChannel, cChannelClient, sHost, sModes);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.errError, "Exception in onChannelModeChanged");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelModeChanged");
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
