@@ -75,7 +75,7 @@ public final class PluginManager {
      */
     protected synchronized boolean removePlugin(final AbstractPlugin plugin) {
 	if (loadedPlugins.contains(plugin)) {
-	    loadedPlugins.remove(plugin);
+	    loadedPlugins.remove(plugin.toString());
             System.gc();
 	    return true;
 	}

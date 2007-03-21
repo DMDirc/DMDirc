@@ -125,7 +125,7 @@ public class ServerFrame extends JInternalFrame implements CommandWindow {
                 Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
         
         scrollBar = jScrollPane1.getVerticalScrollBar();
-        this.commandParser = commandParser;
+        this.commandParser = newCommandParser;
         
         addPropertyChangeListener("maximum", new PropertyChangeListener() {
             public void propertyChange(final PropertyChangeEvent propertyChangeEvent) {

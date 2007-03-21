@@ -26,10 +26,11 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -43,7 +44,8 @@ import org.jdesktop.layout.LayoutStyle;
  * occured.
  * @author  chris
  */
-public class FatalErrorDialog extends javax.swing.JDialog {
+public class FatalErrorDialog extends JDialog implements ActionListener,
+        WindowListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -76,7 +78,7 @@ public class FatalErrorDialog extends javax.swing.JDialog {
      * @param modal Whether this dialog is modal or not
      * @param message The message (error info) to be displayed
      */
-    public FatalErrorDialog(final Frame parent, final boolean modal, 
+    public FatalErrorDialog(final Frame parent, final boolean modal,
             final String[] message) {
         super(parent, modal);
         initComponents();
@@ -99,11 +101,7 @@ public class FatalErrorDialog extends javax.swing.JDialog {
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("DMDirc - an error occured");
-        addWindowListener(new WindowAdapter() {
-            public void windowClosing(final WindowEvent evt) {
-                System.exit(-1);
-            }
-        });
+        addWindowListener(this);
         
         jLabel1.setFont(new Font("Dialog", 1, 18));
         jLabel1.setText("We're sorry...");
@@ -118,11 +116,7 @@ public class FatalErrorDialog extends javax.swing.JDialog {
         jScrollPane1.setViewportView(jTextArea1);
         
         jButton1.setText("OK");
-        jButton1.addActionListener(new ActionListener() {
-            public void actionPerformed(final ActionEvent evt) {
-                System.exit(-1);
-            }
-        });
+        jButton1.addActionListener(this);
         
         final GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -154,6 +148,31 @@ public class FatalErrorDialog extends javax.swing.JDialog {
                 .addContainerGap())
                 );
         pack();
+    }
+    
+    public void actionPerformed(ActionEvent actionEvent) {
+        System.exit(-1);
+    }
+
+    public void windowOpened(WindowEvent windowEvent) {
+    }
+
+    public void windowClosing(WindowEvent windowEvent) {
+    }
+
+    public void windowClosed(WindowEvent windowEvent) {
+    }
+
+    public void windowIconified(WindowEvent windowEvent) {
+    }
+
+    public void windowDeiconified(WindowEvent windowEvent) {
+    }
+
+    public void windowActivated(WindowEvent windowEvent) {
+    }
+
+    public void windowDeactivated(WindowEvent windowEvent) {
     }
     
 }

@@ -62,11 +62,6 @@ public final class Logger {
     private static JDialog dialog;
     
     /**
-     * JOptionPane used as part of some dialogs.
-     */
-    private static JOptionPane optionPane;
-    
-    /**
      * Date formatter, used for logging and displaying messages.
      */
     private static SimpleDateFormat formatter;

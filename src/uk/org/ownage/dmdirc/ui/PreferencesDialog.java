@@ -73,7 +73,7 @@ public final class PreferencesDialog extends StandardDialog
     private static final int SMALL_BORDER = 5;
     
     /** Acceptable input types for the config dialog. */
-    private static enum optionType { TEXTFIELD, CHECKBOX, COMBOBOX, };
+    private static enum OptionType { TEXTFIELD, CHECKBOX, COMBOBOX, };
     
     /** All text fields in the dialog, used to apply settings. */
     private Hashtable<String, JTextField> textFields;
@@ -209,7 +209,7 @@ public final class PreferencesDialog extends StandardDialog
      * @param type type of input component required
      */
     private void addComponent(final JPanel parent, final String optionName,
-            final String title, final optionType type) {
+            final String title, final OptionType type) {
         final String[] windowOptions
                 = new String[] {"all", "active", "server", };
         final String[] configArgs = optionName.split("\\.");
@@ -254,15 +254,15 @@ public final class PreferencesDialog extends StandardDialog
         final JPanel panel = new JPanel(new SpringLayout());
         
         addComponent(panel, "general.closemessage", "Close message: ",
-                optionType.TEXTFIELD);
+                OptionType.TEXTFIELD);
         addComponent(panel, "general.partmessage", "Part message: ",
-                optionType.TEXTFIELD);
+                OptionType.TEXTFIELD);
         addComponent(panel, "general.quitmessage", "Quit message: ",
-                optionType.TEXTFIELD);
+                OptionType.TEXTFIELD);
         addComponent(panel, "general.cyclemessage", "Cycle message: ",
-                optionType.TEXTFIELD);
+                OptionType.TEXTFIELD);
         addComponent(panel, "general.kickmessage", "Kick message: ",
-                optionType.TEXTFIELD);
+                OptionType.TEXTFIELD);
         
         layoutGrid(panel, 5, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
@@ -280,17 +280,17 @@ public final class PreferencesDialog extends StandardDialog
         final JPanel panel = new JPanel(new SpringLayout());
         
         addComponent(panel, "ui.maximisewindows", "Auto-Maximise windows: ",
-                optionType.CHECKBOX);
+                OptionType.CHECKBOX);
         addComponent(panel, "ui.backgroundcolour", "Window background colour: ",
-                optionType.TEXTFIELD);
+                OptionType.TEXTFIELD);
         addComponent(panel, "ui.foregroundcolour", "Window foreground colour: ",
-                optionType.TEXTFIELD);
+                OptionType.TEXTFIELD);
         addComponent(panel, "ui.sortByMode", "Nicklist sort by mode: ",
-                optionType.CHECKBOX);
+                OptionType.CHECKBOX);
         addComponent(panel, "ui.sortByCase", "Nicklist sort by case: ",
-                optionType.CHECKBOX);
+                OptionType.CHECKBOX);
         addComponent(panel, "channel.splitusermodes", "Split user modes: ",
-                optionType.CHECKBOX);
+                OptionType.CHECKBOX);
         
         layoutGrid(panel, 6, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
@@ -308,13 +308,13 @@ public final class PreferencesDialog extends StandardDialog
         final JPanel panel = new JPanel(new SpringLayout());
         
         addComponent(panel, "ui.rolloverEnabled", "Rollover enabled: ",
-                optionType.CHECKBOX);
+                OptionType.CHECKBOX);
         addComponent(panel, "ui.rolloverColour", "Rollover colour: ",
-                optionType.TEXTFIELD);
+                OptionType.TEXTFIELD);
         addComponent(panel, "ui.sortwindows", "Sort windows: ",
-                optionType.CHECKBOX);
+                OptionType.CHECKBOX);
         addComponent(panel, "ui.sortservers", "Sort servers: ",
-                optionType.CHECKBOX);
+                OptionType.CHECKBOX);
         
         layoutGrid(panel, 4, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
@@ -333,13 +333,13 @@ public final class PreferencesDialog extends StandardDialog
         final JPanel panel = new JPanel(new SpringLayout());
         
         addComponent(panel, "notifications.socketClosed", "Socket closed: ",
-                optionType.COMBOBOX);
+                OptionType.COMBOBOX);
         addComponent(panel, "notifications.privateNotice", "Private notice: ",
-                optionType.COMBOBOX);
+                OptionType.COMBOBOX);
         addComponent(panel, "notifications.privateCTCP", "CTCP request: ",
-                optionType.COMBOBOX);
+                OptionType.COMBOBOX);
         addComponent(panel, "notifications.privateCTCPreply", "CTCP reply: ",
-                optionType.COMBOBOX);
+                OptionType.COMBOBOX);
         
         layoutGrid(panel, 4, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
@@ -357,9 +357,9 @@ public final class PreferencesDialog extends StandardDialog
         final JPanel panel = new JPanel(new SpringLayout());
         
         addComponent(panel, "general.commandchar", "Command character: ",
-                optionType.TEXTFIELD);
+                OptionType.TEXTFIELD);
         addComponent(panel, "tabcompletion.casesensitive",
-                "Case-sensitive tab completion: ", optionType.CHECKBOX);
+                "Case-sensitive tab completion: ", OptionType.CHECKBOX);
         
         layoutGrid(panel, 2, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
@@ -377,13 +377,13 @@ public final class PreferencesDialog extends StandardDialog
         final JPanel panel = new JPanel(new SpringLayout());
         
         addComponent(panel, "logging.dateFormat", "Date format: ",
-                optionType.TEXTFIELD);
+                OptionType.TEXTFIELD);
         addComponent(panel, "logging.programLogging", "Program logs: ",
-                optionType.CHECKBOX);
+                OptionType.CHECKBOX);
         addComponent(panel, "logging.debugLogging", "Debug logs: ",
-                optionType.CHECKBOX);
+                OptionType.CHECKBOX);
         addComponent(panel, "logging.debugLoggingSysOut",
-                "Debug console output: ", optionType.CHECKBOX);
+                "Debug console output: ", OptionType.CHECKBOX);
         
         layoutGrid(panel, 4, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
@@ -413,12 +413,12 @@ public final class PreferencesDialog extends StandardDialog
         final JPanel panel = new JPanel(new SpringLayout());
         
         addComponent(panel, "ui.lookandfeel", "Look and feel: ",
-                optionType.TEXTFIELD);
+                OptionType.TEXTFIELD);
         
         addComponent(panel, "ui.showversion", "Show version: ",
-                optionType.CHECKBOX);
+                OptionType.CHECKBOX);
         addComponent(panel, "ui.inputbuffersize", "Input bufer size: ",
-                optionType.TEXTFIELD);
+                OptionType.TEXTFIELD);
         
         layoutGrid(panel, 3, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);

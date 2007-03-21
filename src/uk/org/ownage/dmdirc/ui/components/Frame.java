@@ -64,6 +64,18 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     private static final long serialVersionUID = 1;
     
+    /** Frame input field. */
+    protected JTextField inputField;
+    
+    /** Frame output pane. */
+    protected JTextPane textPane;
+    
+    /** scrollpane. */
+    protected JScrollPane scrollPane;
+    
+    /** holds the scrollbar for the frame. */
+    protected JScrollBar scrollBar;
+    
     /** The InputHandler for our input field. */
     private InputHandler inputHandler;
     
@@ -79,19 +91,11 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /** The dimensions of the titlebar of the frame. **/
     private Dimension titlebarSize;
     
-    /** Frame input field. */
-    protected JTextField inputField;
-    
-    /** Frame output pane. */
-    protected JTextPane textPane;
-    
-    /** scrollpane. */
-    protected JScrollPane scrollPane;
-    
-    /** holds the scrollbar for the frame. */
-    protected JScrollBar scrollBar;
-    
-    /** Creates a new instance of Frame. */
+    /** 
+     * Creates a new instance of Frame. 
+     *
+     * @param owner FrameContainer owning this frame.
+     */
     public Frame(final FrameContainer owner) {
         parent = owner;
         
@@ -132,7 +136,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Adds a line of text to the main text area.
      * @param line text to add
      */
-    public void addLine(final String line) {
+    public final void addLine(final String line) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 for (String myLine : line.split("\n")) {
@@ -166,14 +170,14 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param messageType The type of this message
      * @param args The arguments for the message
      */
-    public void addLine(final String messageType, final Object... args) {
+    public final void addLine(final String messageType, final Object... args) {
         addLine(Formatter.formatMessage(messageType, args));
     }
     
     /**
      * Clears the main text area of the frame.
      */
-    public void clear() {
+    public final void clear() {
         getTextPane().setText("");
     }
     
@@ -185,13 +189,20 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         getInputHandler().setTabCompleter(tabCompleter);
     }
     
+    /**
+     * Initialises the components for this frame.
+     */
     private void initComponents() {
         scrollPane = new JScrollPane();
         inputField = new JTextField();
         textPane = new JTextPane();
     }
     
-    public void propertyChange(final PropertyChangeEvent propertyChangeEvent) {
+    /**
+     * Removes and reinserts the border of an internal frame on maximising. 
+     * {@inheritDoc}
+     */
+    public final void propertyChange(final PropertyChangeEvent propertyChangeEvent) {
         if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
             Frame.this.myborder = getBorder();
             Frame.this.titlebarSize =
@@ -213,54 +224,92 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         }
     }
     
-    public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
+    /**
+     * Not needed for this class. {@inheritDoc}
+     */
+    public final void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
     }
     
-    public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
+    /**
+     * Not needed for this class. {@inheritDoc}
+     */
+    public final void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
     }
     
-    public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
+    /**
+     * Not needed for this class. {@inheritDoc}
+     */
+    public final void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
     }
     
-    public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
+    /**
+     * Not needed for this class. {@inheritDoc}
+     */
+    public final void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
     }
     
-    public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
+    /**
+     * Not needed for this class. {@inheritDoc}
+     */
+    public final void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
     }
     
-    public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
+    /**
+     * Activates the input field on frame focus. {@inheritDoc}
+     */
+    public final void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
         getInputField().requestFocus();
     }
     
-    public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
+    /**
+     * Not needed for this class. {@inheritDoc}
+     */
+    public final void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
     }
-
-    public FrameContainer getFrameParent() {
+    
+    /**
+     * Returns the parent Frame container for this frame.
+     *
+     * @return FrameContainer parent
+     */
+    public final FrameContainer getFrameParent() {
         return parent;
     }
-
-    public InputHandler getInputHandler() {
+    
+    /**
+     * Returns the input handler associated with this frame.
+     *
+     * @return Input handlers for this frame
+     */
+    public final InputHandler getInputHandler() {
         return inputHandler;
     }
-
-    public void setInputHandler(InputHandler inputHandler) {
-        this.inputHandler = inputHandler;
+    
+    /**
+     * Sets the input handler for this frame.
+     *
+     * @param newInputHandler input handler to set for this frame
+     */
+    public final void setInputHandler(final InputHandler newInputHandler) {
+        this.inputHandler = newInputHandler;
     }
-
-    public JTextField getInputField() {
+    
+    /**
+     * returns the input field for this frame.
+     *
+     * @return JTextField input field for the frame.
+     */
+    public final JTextField getInputField() {
         return inputField;
     }
-
-    public void setInputField(JTextField inputField) {
-        this.inputField = inputField;
-    }
-
-    public JTextPane getTextPane() {
+    
+    /**
+     * Returns the text pane for this frame.
+     *
+     * @return JTextPane text pane for this frame
+     */
+    public final JTextPane getTextPane() {
         return textPane;
-    }
-
-    public void setTextPane(JTextPane textPane) {
-        this.textPane = textPane;
     }
     
 }

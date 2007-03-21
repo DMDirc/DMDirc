@@ -62,4 +62,9 @@ public abstract class AbstractPlugin {
      * Called to terminate the plugins thread.
      */
     abstract void stopPlugin(); 
+    
+    /**
+     * Returns the name of the plugin
+     */
+    public abstract String toString();
 }
