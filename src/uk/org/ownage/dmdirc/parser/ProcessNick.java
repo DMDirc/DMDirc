@@ -44,11 +44,13 @@ public class ProcessNick extends IRCProcessor {
 		ClientInfo iClient;
 		ChannelClientInfo iChannelClient;
 		ChannelInfo iChannel;
+		String oldNickname;
 		
 		iClient = getClientInfo(token[0]);
 		if (iClient != null) {
+			oldNickname = iClient.getNickname().toLowerCase();
 			// Remove the client from the known clients list
-			myParser.hClientList.remove(iClient.getNickname().toLowerCase());
+			myParser.hClientList.remove(oldNickname);
 			// Change the nickame
 			iClient.setUserBits(token[2],true);
 			// Readd the client
@@ -56,8 +58,9 @@ public class ProcessNick extends IRCProcessor {
 			
 			for (Enumeration e = myParser.hChannelList.keys(); e.hasMoreElements();) {
 				iChannel = myParser.hChannelList.get(e.nextElement());
-				iChannelClient = iChannel.getUser(iClient);
+				iChannelClient = iChannel.getUser(oldNickname);
 				if (iChannelClient != null) {
+					iChannel.renameClient(oldNickname, iChannelClient);
 					callChannelNickChanged(iChannel,iChannelClient,ClientInfo.parseHost(token[0]));
 				}
 			}

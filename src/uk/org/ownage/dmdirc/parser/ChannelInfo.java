@@ -191,6 +191,23 @@ public class ChannelInfo {
 	}	
 	
 	/**
+	 * Rename a channelClient.
+	 *
+	 * @param oldNickname Nickname client used to be known as
+	 * @param cChannelClient ChannelClient object
+	 */	
+	protected void renameClient(final String oldNickname, final ChannelClientInfo cChannelClient) {
+		ChannelClientInfo cTemp = null;
+		if (hChannelUserList.containsKey(oldNickname)) {
+			cTemp = hChannelUserList.get(oldNickname);
+			if (cTemp == cChannelClient) {
+				hChannelUserList.remove(oldNickname);
+				hChannelUserList.put(cTemp.getNickname().toLowerCase(), cTemp);
+			}
+		}
+	}
+	
+	/**
 	 * Set the topic time.
 	 *
 	 * @param nNewTime New unixtimestamp time for the topic (Seconds sinse epoch, not milliseconds)
