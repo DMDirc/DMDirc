@@ -143,7 +143,8 @@ public class ChannelInfo {
 	public ChannelClientInfo getUser(String sWho) {
 		sWho = ClientInfo.parseHost(sWho);
 		sWho = sWho.toLowerCase();
-		if (hChannelUserList.containsKey(sWho)) { return hChannelUserList.get(sWho); } else { return null; }
+		if (hChannelUserList.containsKey(sWho)) { return hChannelUserList.get(sWho); }
+		else { return null; }
 	}	
 	/**
 	 * Get the ChannelClientInfo object associated with a ClientInfo object.
@@ -194,14 +195,17 @@ public class ChannelInfo {
 	 * Rename a channelClient.
 	 *
 	 * @param oldNickname Nickname client used to be known as
-	 * @param cChannelClient ChannelClient object
+	 * @param cChannelClient ChannelClient object with updated client object
 	 */	
 	protected void renameClient(final String oldNickname, final ChannelClientInfo cChannelClient) {
 		ChannelClientInfo cTemp = null;
 		if (hChannelUserList.containsKey(oldNickname)) {
 			cTemp = hChannelUserList.get(oldNickname);
 			if (cTemp == cChannelClient) {
+				// Remove the old key
 				hChannelUserList.remove(oldNickname);
+				// Add with the new key. (getNickname will return the new name not the
+				// old one)
 				hChannelUserList.put(cTemp.getNickname().toLowerCase(), cTemp);
 			}
 		}

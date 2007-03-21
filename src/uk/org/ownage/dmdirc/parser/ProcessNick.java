@@ -58,8 +58,12 @@ public class ProcessNick extends IRCProcessor {
 			
 			for (Enumeration e = myParser.hChannelList.keys(); e.hasMoreElements();) {
 				iChannel = myParser.hChannelList.get(e.nextElement());
+				// Find the user (using the old nickname)
 				iChannelClient = iChannel.getUser(oldNickname);
 				if (iChannelClient != null) {
+					// Rename them. This uses the old nickname (the key in the hashtable)
+					// and the channelClient object has access to the new nickname (by way
+					// of the ClientInfo object we updated above)
 					iChannel.renameClient(oldNickname, iChannelClient);
 					callChannelNickChanged(iChannel,iChannelClient,ClientInfo.parseHost(token[0]));
 				}
