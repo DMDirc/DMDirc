@@ -35,7 +35,6 @@ import javax.swing.event.InternalFrameListener;
 
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
@@ -138,7 +137,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         
         ServerManager.getServerManager().registerServer(this);
         
-        frame = new ServerFrame(new ServerCommandParser(this));
+        frame = new ServerFrame(this);
         frame.setTitle(server + ":" + port);
         frame.setTabCompleter(tabCompleter);
         frame.addInternalFrameListener(this);

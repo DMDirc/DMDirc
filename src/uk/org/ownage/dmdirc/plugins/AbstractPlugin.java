@@ -64,7 +64,9 @@ public abstract class AbstractPlugin {
     abstract void stopPlugin(); 
     
     /**
-     * Returns the name of the plugin
+     * Returns the class name of the plugin.
+     *
+     * @return the class name of the plugin
      */
     public abstract String toString();
 }

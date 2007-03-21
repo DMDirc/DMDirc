@@ -27,6 +27,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.util.ArrayList;
+
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -39,7 +40,6 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.ui.components.Frame;
@@ -48,9 +48,8 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
  * The channel frame is the GUI component that represents a channel to the user.
- * @author  chris
  */
-public class ChannelFrame extends Frame {
+public final class ChannelFrame extends Frame {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -103,7 +102,7 @@ public class ChannelFrame extends Frame {
      * Updates the list of clients on this channel.
      * @param newNames The new list of clients
      */
-    public final void updateNames(final ArrayList<ChannelClientInfo> newNames) {
+    public void updateNames(final ArrayList<ChannelClientInfo> newNames) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 nicklistModel.replace(newNames);
@@ -114,7 +113,7 @@ public class ChannelFrame extends Frame {
     /**
      * Has the nick list update, to take into account mode changes.
      */
-    public final void updateNames() {
+    public void updateNames() {
         nicklistModel.sort();
     }
     
@@ -122,7 +121,7 @@ public class ChannelFrame extends Frame {
      * Adds a client to this channels' nicklist.
      * @param newName the new client to be added
      */
-    public final void addName(final ChannelClientInfo newName) {
+    public void addName(final ChannelClientInfo newName) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 nicklistModel.add(newName);
@@ -134,7 +133,7 @@ public class ChannelFrame extends Frame {
      * Removes a client from this channels' nicklist.
      * @param name the client to be deleted
      */
-    public final void removeName(final ChannelClientInfo name) {
+    public void removeName(final ChannelClientInfo name) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 nicklistModel.remove(name);
@@ -149,9 +148,9 @@ public class ChannelFrame extends Frame {
         final GridBagConstraints constraints = new GridBagConstraints();
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         
-        scrollPane = new JScrollPane();
-        textPane = new JTextPane();
-        inputField = new JTextField();
+        setScrollPane(new JScrollPane());
+        setTextPane(new JTextPane());
+        setInputField(new JTextField());
         nickScrollPane = new JScrollPane();
         nickList = new JList();
         
@@ -162,10 +161,10 @@ public class ChannelFrame extends Frame {
             divider.setBorder(null);
         }
         
-        scrollPane.setVerticalScrollBarPolicy(
+        getScrollPane().setVerticalScrollBarPolicy(
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        textPane.setEditable(false);
-        scrollPane.setViewportView(textPane);
+        getTextPane().setEditable(false);
+        getScrollPane().setViewportView(getTextPane());
         
         nicklistModel = new NicklistListModel();
         
@@ -182,9 +181,9 @@ public class ChannelFrame extends Frame {
         constraints.weighty = 0.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridy = 1;
-        getContentPane().add(inputField, constraints);
+        getContentPane().add(getInputField(), constraints);
         
-        splitPane.setLeftComponent(scrollPane);
+        splitPane.setLeftComponent(getScrollPane());
         splitPane.setRightComponent(nickScrollPane);
         
         splitPane.setDividerLocation(465);

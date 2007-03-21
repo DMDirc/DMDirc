@@ -27,7 +27,7 @@ package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
- * Interface Used when the MOTD Starts
+ * Interface Used when the MOTD Starts.
  */
 public interface IMOTDStart extends ICallbackInterface {
 	/**

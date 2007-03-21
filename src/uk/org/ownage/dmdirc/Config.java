@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
+
 import javax.swing.UIManager;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;

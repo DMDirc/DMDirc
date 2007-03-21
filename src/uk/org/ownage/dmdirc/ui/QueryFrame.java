@@ -22,26 +22,88 @@
 
 package uk.org.ownage.dmdirc.ui;
 
-import uk.org.ownage.dmdirc.commandparser.CommandParser;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
+
+import uk.org.ownage.dmdirc.Query;
+import uk.org.ownage.dmdirc.commandparser.QueryCommandParser;
+import uk.org.ownage.dmdirc.ui.components.Frame;
+import uk.org.ownage.dmdirc.ui.input.InputHandler;
 
 /**
  * The QueryFrame is the MDI window that shows query messages to the user.
  */
-public class QueryFrame extends ServerFrame {
+public final class QueryFrame extends Frame {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 6;
+    
+    /**
+     * The nick list model used for this channel's nickname list.
+     */
+    private NicklistListModel nicklistModel;
+    
+    /**
+     * This channel's command parser.
+     */
+    private QueryCommandParser commandParser;
+    
+    /** scrollpane. */
+    private JScrollPane nickScrollPane;
     
     /**
      * Creates a new QueryFrame.
-     * @param commandParser The command parser to use
+     * @param owner Parent Frame container
      */
-    public QueryFrame(final CommandParser commandParser) {
-        super(commandParser);
+    public QueryFrame(final Query owner) {
+        super(owner);
+        
+        initComponents();
+        
+        commandParser = new QueryCommandParser(((Query) getFrameParent()).
+                getServer(), (Query) getFrameParent());
+        
+        setInputHandler(new InputHandler(getInputField(), commandParser, this));
     }
     
+    /**
+     * Initialises components in this frame.
+     */
+    private void initComponents() {
+        final GridBagConstraints constraints = new GridBagConstraints();
+        
+        setScrollPane(new JScrollPane());
+        setTextPane(new JTextPane());
+        setInputField(new JTextField());
+        
+        setTitle("Query Frame");
+        
+        getScrollPane().setVerticalScrollBarPolicy(
+                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        getTextPane().setEditable(false);
+        getScrollPane().setViewportView(getTextPane());
+        
+        getContentPane().setLayout(new GridBagLayout());
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(0, 0, 5, 5);
+        getContentPane().add(getScrollPane(), constraints);
+        constraints.weighty = 0.0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.gridy = 1;
+        getContentPane().add(getInputField(), constraints);
+        
+        pack();
+    }
 }

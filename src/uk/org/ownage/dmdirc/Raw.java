@@ -32,7 +32,6 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.IRCParser;
@@ -76,7 +75,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
         final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/raw.png");
         imageIcon = new ImageIcon(imageURL);
         
-        frame = new ServerFrame(new ServerCommandParser(server));
+        frame = new ServerFrame(server);
         frame.setTitle("(Raw log)");
         frame.addInternalFrameListener(this);
         MainFrame.getMainFrame().addChild(frame);

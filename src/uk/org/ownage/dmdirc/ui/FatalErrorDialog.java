@@ -44,7 +44,7 @@ import org.jdesktop.layout.LayoutStyle;
  * occured.
  * @author  chris
  */
-public class FatalErrorDialog extends JDialog implements ActionListener,
+public final class FatalErrorDialog extends JDialog implements ActionListener,
         WindowListener {
     
     /**
@@ -150,29 +150,53 @@ public class FatalErrorDialog extends JDialog implements ActionListener,
         pack();
     }
     
-    public void actionPerformed(ActionEvent actionEvent) {
+    /**
+     * Exits the program. {@inheritDoc}
+     */
+    public void actionPerformed(final ActionEvent actionEvent) {
         System.exit(-1);
     }
 
-    public void windowOpened(WindowEvent windowEvent) {
+    /**
+     * Not needed by this class. {@inheritDoc}
+     */
+    public void windowOpened(final WindowEvent windowEvent) {
     }
 
-    public void windowClosing(WindowEvent windowEvent) {
+    /**
+     * Not needed by this class. {@inheritDoc}
+     */
+    public void windowClosing(final WindowEvent windowEvent) {
     }
 
-    public void windowClosed(WindowEvent windowEvent) {
+    /**
+     * Not needed by this class. {@inheritDoc}
+     */
+    public void windowClosed(final WindowEvent windowEvent) {
     }
 
-    public void windowIconified(WindowEvent windowEvent) {
+    /**
+     * Not needed by this class. {@inheritDoc}
+     */
+    public void windowIconified(final WindowEvent windowEvent) {
     }
 
-    public void windowDeiconified(WindowEvent windowEvent) {
+    /**
+     * Not needed by this class. {@inheritDoc}
+     */
+    public void windowDeiconified(final WindowEvent windowEvent) {
     }
 
-    public void windowActivated(WindowEvent windowEvent) {
+    /**
+     * Not needed by this class. {@inheritDoc}
+     */
+    public void windowActivated(final WindowEvent windowEvent) {
     }
 
-    public void windowDeactivated(WindowEvent windowEvent) {
+    /**
+     * Not needed by this class. {@inheritDoc}
+     */
+    public void windowDeactivated(final WindowEvent windowEvent) {
     }
     
 }

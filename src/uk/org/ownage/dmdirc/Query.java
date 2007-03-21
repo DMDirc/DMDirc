@@ -33,7 +33,6 @@ import javax.swing.event.InternalFrameListener;
 
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.QueryCommandParser;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
@@ -89,7 +88,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
         final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/query.png");
         imageIcon = new ImageIcon(imageURL);
         
-        frame = new QueryFrame(new QueryCommandParser(this.server, this));
+        frame = new QueryFrame(this);
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
         frame.setFrameIcon(imageIcon);

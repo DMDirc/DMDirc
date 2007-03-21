@@ -65,16 +65,16 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     private static final long serialVersionUID = 1;
     
     /** Frame input field. */
-    protected JTextField inputField;
+    private JTextField inputField;
     
     /** Frame output pane. */
-    protected JTextPane textPane;
+    private JTextPane textPane;
     
     /** scrollpane. */
-    protected JScrollPane scrollPane;
+    private JScrollPane scrollPane;
     
     /** holds the scrollbar for the frame. */
-    protected JScrollBar scrollBar;
+    private JScrollBar scrollBar;
     
     /** The InputHandler for our input field. */
     private InputHandler inputHandler;
@@ -109,7 +109,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         addPropertyChangeListener("maximum", this);
         addInternalFrameListener(this);
         
-        scrollBar = scrollPane.getVerticalScrollBar();
+        scrollBar = getScrollPane().getVerticalScrollBar();
         
         getTextPane().setBackground(ColourManager.getColour(
                 Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
@@ -193,9 +193,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Initialises the components for this frame.
      */
     private void initComponents() {
-        scrollPane = new JScrollPane();
-        inputField = new JTextField();
-        textPane = new JTextPane();
+        setScrollPane(new JScrollPane());
+        setInputField(new JTextField());
+        setTextPane(new JTextPane());
     }
     
     /**
@@ -310,6 +310,42 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     public final JTextPane getTextPane() {
         return textPane;
+    }
+
+    /**
+     * Sets the frames input field.
+     *
+     * @param newInputField new input field to use
+     */
+    protected final void setInputField(final JTextField newInputField) {
+        this.inputField = newInputField;
+    }
+
+    /**
+     * Sets the frames text pane.
+     *
+     * @param newTextPane new text pane to use
+     */
+    protected final void setTextPane(final JTextPane newTextPane) {
+        this.textPane = newTextPane;
+    }
+
+    /**
+     * Gets the frames input field.
+     *
+     * @return returns the JScrollPane used in this frame.
+     */
+    protected final JScrollPane getScrollPane() {
+        return scrollPane;
+    }
+
+    /**
+     * Sets the frames scroll pane.
+     *
+     * @param newScrollPane new scroll pane to use
+     */
+    protected final void setScrollPane(final JScrollPane newScrollPane) {
+        this.scrollPane = newScrollPane;
     }
     
 }
