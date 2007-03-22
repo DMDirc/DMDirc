@@ -78,7 +78,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @param token IRCTokenised Array of the incomming line
 	 */	
 	public void processChanMode(String sParam, String token[], String sModestr[], String sChannelName) {
-		String sFullModeStr;
+		StringBuffer sFullModeStr = new StringBuffer();
 		String sNonUserModeStr = "";
 		String sNonUserModeStrParams = "";
 		String sModeParam;
@@ -198,8 +198,7 @@ public class ProcessMode extends IRCProcessor {
 		}
 		
 		// Call Callbacks
-		sFullModeStr = "";
-		for (int i = 0; i < sModestr.length; ++i) { sFullModeStr = sFullModeStr+sModestr[i]+" "; }
+		for (int i = 0; i < sModestr.length; ++i) { sFullModeStr.append(sModestr[i]).append(" "); }
 		
 		iChannel.setMode(nCurrent);
 		if (sParam.equals("324")) { callChannelModeChanged(iChannel, null, "", trim(sFullModeStr)); }

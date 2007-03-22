@@ -65,7 +65,8 @@ public class ProcessNames extends IRCProcessor {
 			iChannel.setAddingNames(true);
 			
 			String[] sNames = token[token.length-1].split(" ");
-			String sNameBit = "", sModes = "", sName = "";
+			String sNameBit = "", sName = "";
+			StringBuffer sModes = new StringBuffer();
 			int nPrefix = 0;
 			for (int j = 0; j < sNames.length; ++j) {
 				sNameBit = sNames[j];
@@ -76,7 +77,7 @@ public class ProcessNames extends IRCProcessor {
 						// hPrefixModes only contains o, v so if the mode is in hPrefixMap
 						// and not in hPrefixModes, its ok to use.
 						if (!myParser.hPrefixModes.containsKey(cMode)) {
-							sModes = sModes+cMode;
+							sModes.append(cMode);
 							nPrefix = nPrefix + myParser.hPrefixModes.get(myParser.hPrefixMap.get(cMode));
 						}
 					} else {
@@ -84,7 +85,7 @@ public class ProcessNames extends IRCProcessor {
 						break;
 					}
 				}
-				callDebugInfo(myParser.DEBUG_INFO, "Name: %s Modes: \"%s\" [%d]",sName,sModes,nPrefix);
+				callDebugInfo(myParser.DEBUG_INFO, "Name: %s Modes: \"%s\" [%d]",sName,sModes.toString(),nPrefix);
 				
 				iClient = getClientInfo(sName);
 				if (iClient == null) { iClient = new ClientInfo(myParser, sName); myParser.hClientList.put(iClient.getNickname().toLowerCase(),iClient); }

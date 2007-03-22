@@ -93,7 +93,7 @@ public class ChannelClientInfo {
 	 * @return String representing the modes this client has.
 	 */
 	public String getChanModeStr(final boolean bPrefix) {
-		String sModes = "";
+		StringBuffer sModes = new StringBuffer();
 		Character cTemp;
 		int nTemp = 0, nCurrentModes = this.getChanMode();
 
@@ -104,14 +104,14 @@ public class ChannelClientInfo {
 					nTemp = myParser.hPrefixModes.get(cTemp);
 					if (nTemp == i) {
 						if (bPrefix) { cTemp = myParser.hPrefixMap.get(cTemp); }
-						sModes = sModes+cTemp;
+						sModes = sModes.append(cTemp);
 						break;
 					}
 				}
 			}
 		}
 		
-		return sModes;
+		return sModes.toString();
 	}
 
 	/**

@@ -48,9 +48,12 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.SSLContext;
-// import javax.net.ssl.SSLSocket;
 import javax.net.ssl.X509TrustManager;
 import javax.net.ssl.TrustManager;
+import java.io.IOException;
+import java.net.UnknownHostException;
+import java.security.NoSuchAlgorithmException;
+import java.security.KeyManagementException;
 
 /**
  * IRC Parser.
@@ -383,11 +386,13 @@ public class IRCParser implements Runnable {
 	
 	/**
 	 * Connect to IRC.
-	 *
-	 * @throws Exception if there was an error setting up the socket
+	 * 
+	 * @throws IOException if the socket can not be connected
+	 * @throws UnknownHostException if the hostname can not be resolved
+	 * @throws NoSuchAlgorithmException if SSL is not available
+	 * @throws KeyManagementException if the trustManager is invalid
 	 */
-	private void connect() throws Exception {
-		try {
+	private void connect() throws IOException, UnknownHostException, NoSuchAlgorithmException, KeyManagementException {
 			resetState();
 			callDebugInfo(DEBUG_SOCKET, "Connecting to "+server.getHost()+":"+server.getPort());
 			
@@ -426,7 +431,6 @@ public class IRCParser implements Runnable {
 			callDebugInfo(DEBUG_SOCKET, "\t-> Opening socket input stream BufferedReader");
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			callDebugInfo(DEBUG_SOCKET, "\t-> Socket Opened");
-		} catch (Exception e) { throw e; }
 	}
 	
 	/**
@@ -450,7 +454,7 @@ public class IRCParser implements Runnable {
 		if (HasBegan) { return; } else { HasBegan = true; }
 		try {connect(); }
 		catch (Exception e) {
-			callDebugInfo(DEBUG_SOCKET, "Error Connecting, Aborted");
+			callDebugInfo(DEBUG_SOCKET, "Error Connecting ("+e.getMessage()+"), Aborted");
 			ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Error connecting to server");
 			ei.setException(e);
 			callErrorInfo(ei);
@@ -676,30 +680,30 @@ public class IRCParser implements Runnable {
 	 * Process CHANMODES from 005.
 	 */	
 	protected void parseChanModes() {
-		String sDefaultModes = "b,k,l,";
+		StringBuffer sDefaultModes = new StringBuffer("b,k,l,");
 		String[] Bits = null;
 		String ModeStr;
 		if (h005Info.containsKey("USERCHANMODES")) {
-			if (getIRCD(true).equalsIgnoreCase("dancer")) { sDefaultModes = "dqeI"+sDefaultModes; }
-			if (getIRCD(true).equalsIgnoreCase("austirc")) { sDefaultModes = "e"+sDefaultModes; }
+			if (getIRCD(true).equalsIgnoreCase("dancer")) { sDefaultModes.insert(0, "dqeI"); }
+			else if (getIRCD(true).equalsIgnoreCase("austirc")) { sDefaultModes.insert(0, "e"); }
 			ModeStr = h005Info.get("USERCHANMODES");
 			char mode;
 			for (int i = 0; i < ModeStr.length(); ++i) {
 				mode = ModeStr.charAt(i);
 				if (!hPrefixModes.containsKey(mode)) {
 					if (sDefaultModes.indexOf(mode) < 0) {
-						sDefaultModes = sDefaultModes+mode;
+						sDefaultModes.append(mode);
 					}
 				}
 			}
 		} else {
-			sDefaultModes = sDefaultModes+"imnpstrc";
+			sDefaultModes.append("imnpstrc");
 		}
 		if (h005Info.containsKey("CHANMODES")) { ModeStr = h005Info.get("CHANMODES");	}
-		else { ModeStr = sDefaultModes; h005Info.put("CHANMODES",ModeStr); }
+		else { ModeStr = sDefaultModes.toString(); h005Info.put("CHANMODES",ModeStr); }
 		Bits = ModeStr.split(",",5);
 		if (Bits.length < 4) {
-			ModeStr = sDefaultModes;
+			ModeStr = sDefaultModes.toString();
 			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "CHANMODES String not valid. Using default string of \""+ModeStr+"\""));
 			h005Info.put("CHANMODES",ModeStr);
 			Bits = ModeStr.split(",",5);

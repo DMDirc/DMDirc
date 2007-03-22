@@ -212,10 +212,10 @@ public class ProcessingManager {
 		} catch (ProcessorNotFound p) {
 			throw p;
 		} catch (Exception e) {
-			String line = "";
-			for (int i = 0; i < token.length; ++i ) { line = line+" "+token[i]; }
+			StringBuffer line = new StringBuffer();
+			for (int i = 0; i < token.length; ++i ) { line.append(" ").append(token[i]); }
 			line = line.trim();
-			ParserError ei = new ParserError(ParserError.ERROR_WARNING,"Exception in Parser. [Param: "+sParam+"] [Processor: "+messageProcessor+"] [Line: "+line+"]");
+			ParserError ei = new ParserError(ParserError.ERROR_WARNING,"Exception in Parser. [Param: "+sParam+"] [Processor: "+messageProcessor+"] [Line: "+line.toString()+"]");
 			ei.setException(e);
 			myParser.callErrorInfo(ei);
 		}

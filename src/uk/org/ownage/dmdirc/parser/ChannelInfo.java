@@ -269,7 +269,9 @@ public class ChannelInfo {
 	 * @return string representing modes. (boolean and non-list)
 	 */	
 	public String getModeStr() { 
-		String sModes = "+", sModeParams = "", sTemp = "";
+		StringBuffer sModes = new StringBuffer("+");
+		StringBuffer sModeParams = new StringBuffer()
+		String sTemp = "";
 		Character cTemp;
 		int nTemp = 0;
 		final int nChanModes = this.getMode();
@@ -283,12 +285,12 @@ public class ChannelInfo {
 			cTemp = (Character)e.nextElement();
 			sTemp = hParamModes.get(cTemp);
 			if (!sTemp.equals("")) {
-				sModes = sModes+cTemp;
-				sModeParams = sModeParams+" "+this.getModeParam(cTemp);
+				sModes.append(cTemp);
+				sModeParams.append(" ").append(this.getModeParam(cTemp));
  			}
 		}
 		
-		return sModes+sModeParams;
+		return sModes.append(sModeParams).toString();
 	}	
 	
 	/**
@@ -430,11 +432,11 @@ public class ChannelInfo {
 	 * Modes are always sent negative then positive and not mixed.
 	 */
 	public void sendModes() { 
-		String positivemode = "";
-		String positiveparam = "";
-		String negativemode = "";
-		String negativeparam = "";
-		String modestr;
+		StringBuffer positivemode = new StringBuffer();
+		StringBuffer positiveparam = new StringBuffer();
+		StringBuffer negativemode = new StringBuffer();
+		StringBuffer negativeparam = new StringBuffer();
+		StringBuffer modestr = new StringBuffer();
 		String modeparam[];
 		boolean positive;
 		for (int i = 0; i < lModeQueue.size(); ++i) {
@@ -442,20 +444,19 @@ public class ChannelInfo {
 			modestr = modeparam[0];
 			positive = (modestr.charAt(0) == '+');
 			if (positive) {
-				positivemode = positivemode+modestr.charAt(1);
-				if (modeparam.length > 1) { positiveparam = positiveparam+" "+modeparam[1]; }
+				positivemode.append(modestr.charAt(1));
+				if (modeparam.length > 1) { positiveparam.append(" ").append(modeparam[1]); }
 			} else {
-				negativemode = negativemode+modestr.charAt(1);
-				if (modeparam.length > 1) { positiveparam = positiveparam+" "+modeparam[1]; }
+				negativemode.append(modestr.charAt(1));
+				if (modeparam.length > 1) { negativeparam.append(" ").append(modeparam[1]); }
 			}
 		}
-		modestr = "";
-		if (!negativemode.equals("")) { modestr = modestr+"-"+negativemode; }
-		if (!positivemode.equals("")) { modestr = modestr+"+"+positivemode; }
-		if (!negativeparam.equals("")) { modestr = modestr+negativeparam; }
-		if (!positiveparam.equals("")) { modestr = modestr+positiveparam; }
-		myParser.callDebugInfo(myParser.DEBUG_INFO, "Sending mode: %s", modestr);
-		myParser.sendLine("MODE "+sName+" "+modestr);
+		if (negativemode.length() > 0) { modestr.append("-").append(negativemode); }
+		if (positivemode.length() > 0) { modestr.append("+").append(positivemode); }
+		if (negativeparam.length() > 0) { modestr.append(negativeparam); }
+		if (positiveparam.length() > 0) { modestr.append(positiveparam); }
+		myParser.callDebugInfo(myParser.DEBUG_INFO, "Sending mode: %s", modestr.toString());
+		myParser.sendLine("MODE "+sName+" "+modestr.toString());
 		clearModeQueue();
 	}
 	
