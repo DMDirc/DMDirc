@@ -78,7 +78,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @param token IRCTokenised Array of the incomming line
 	 */	
 	public void processChanMode(String sParam, String token[], String sModestr[], String sChannelName) {
-		StringBuffer sFullModeStr = new StringBuffer();
+		StringBuilder sFullModeStr = new StringBuilder();
 		String sNonUserModeStr = "";
 		String sNonUserModeStrParams = "";
 		String sModeParam;

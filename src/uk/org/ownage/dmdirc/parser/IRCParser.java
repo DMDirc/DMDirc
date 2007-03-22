@@ -680,7 +680,7 @@ public class IRCParser implements Runnable {
 	 * Process CHANMODES from 005.
 	 */	
 	protected void parseChanModes() {
-		StringBuffer sDefaultModes = new StringBuffer("b,k,l,");
+		StringBuilder sDefaultModes = new StringBuilder("b,k,l,");
 		String[] Bits = null;
 		String ModeStr;
 		if (h005Info.containsKey("USERCHANMODES")) {

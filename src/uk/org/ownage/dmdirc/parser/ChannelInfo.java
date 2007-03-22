@@ -269,8 +269,8 @@ public class ChannelInfo {
 	 * @return string representing modes. (boolean and non-list)
 	 */	
 	public String getModeStr() { 
-		StringBuffer sModes = new StringBuffer("+");
-		StringBuffer sModeParams = new StringBuffer();
+		StringBuilder sModes = new StringBuilder("+");
+		StringBuilder sModeParams = new StringBuilder();
 		String sTemp = "";
 		Character cTemp;
 		int nTemp = 0;
@@ -432,11 +432,11 @@ public class ChannelInfo {
 	 * Modes are always sent negative then positive and not mixed.
 	 */
 	public void sendModes() { 
-		StringBuffer positivemode = new StringBuffer();
-		StringBuffer positiveparam = new StringBuffer();
-		StringBuffer negativemode = new StringBuffer();
-		StringBuffer negativeparam = new StringBuffer();
-		StringBuffer sendModeStr = new StringBuffer();
+		StringBuilder positivemode = new StringBuilder();
+		StringBuilder positiveparam = new StringBuilder();
+		StringBuilder negativemode = new StringBuilder();
+		StringBuilder negativeparam = new StringBuilder();
+		StringBuilder sendModeStr = new StringBuilder();
 		String modestr;
 		String modeparam[];
 		boolean positive;

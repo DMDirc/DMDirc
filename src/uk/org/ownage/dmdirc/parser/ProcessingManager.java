@@ -212,7 +212,7 @@ public class ProcessingManager {
 		} catch (ProcessorNotFound p) {
 			throw p;
 		} catch (Exception e) {
-			StringBuffer line = new StringBuffer();
+			StringBuilder line = new StringBuilder();
 			for (int i = 0; i < token.length; ++i ) { line.append(" ").append(token[i]); }
 			ParserError ei = new ParserError(ParserError.ERROR_WARNING,"Exception in Parser. [Param: "+sParam+"] [Processor: "+messageProcessor+"] [Line: "+line.toString().trim()+"]");
 			ei.setException(e);

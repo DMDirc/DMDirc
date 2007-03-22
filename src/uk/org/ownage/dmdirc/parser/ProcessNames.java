@@ -66,7 +66,7 @@ public class ProcessNames extends IRCProcessor {
 			
 			String[] sNames = token[token.length-1].split(" ");
 			String sNameBit = "", sName = "";
-			StringBuffer sModes = new StringBuffer();
+			StringBuilder sModes = new StringBuilder();
 			int nPrefix = 0;
 			for (int j = 0; j < sNames.length; ++j) {
 				sNameBit = sNames[j];
@@ -93,7 +93,7 @@ public class ProcessNames extends IRCProcessor {
 				iChannelClient.setChanMode(nPrefix);
 
 				sName = "";
-				sModes = new StringBuffer();
+				sModes = new StringBuilder();
 				nPrefix = 0;
 			}
 		}

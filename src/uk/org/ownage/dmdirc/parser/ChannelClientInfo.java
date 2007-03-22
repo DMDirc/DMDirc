@@ -93,7 +93,7 @@ public class ChannelClientInfo {
 	 * @return String representing the modes this client has.
 	 */
 	public String getChanModeStr(final boolean bPrefix) {
-		StringBuffer sModes = new StringBuffer();
+		StringBuilder sModes = new StringBuilder();
 		Character cTemp;
 		int nTemp = 0, nCurrentModes = this.getChanMode();
 
