@@ -398,8 +398,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             return;
         }
         
-        if (text.toLowerCase().startsWith("http://") 
-        || text.toLowerCase().startsWith("https://") 
+        if (text.toLowerCase().startsWith("http://")
+        || text.toLowerCase().startsWith("https://")
         || text.toLowerCase().startsWith("www.")) {
             BrowserLauncher.openURL(text);
         }  else if (parent.getServer().getParser().isValidChannelName(text)) {
@@ -422,6 +422,11 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Not needed for this class. {@inheritDoc}
      */
     public void mouseReleased(final MouseEvent mouseEvent) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                getInputField().grabFocus();
+            }
+        });
     }
     
     /**
