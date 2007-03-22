@@ -164,7 +164,7 @@ public class ClientInfo {
 	 * @return string representing modes. (boolean and non-list)
 	 */	
 	public String getUserModeStr() { 
-		StringBuilder sModes = new StringBuilder("+")
+		StringBuilder sModes = new StringBuilder("+");
 		String sTemp = "";
 		Character cTemp;
 		int nTemp = 0;
