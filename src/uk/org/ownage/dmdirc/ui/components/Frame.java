@@ -356,13 +356,11 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Checks for url's, channels and nicknames. {@inheritDoc}
      */
     public void mouseClicked(MouseEvent mouseEvent) {
-        System.out.println("entrance");
         final int pos = getTextPane().getCaretPosition();
         final int length = getTextPane().getDocument().getLength();
         String text;
         
         if (pos == 0) {
-            System.out.println("exit 1");
             return;
         }
         
@@ -372,7 +370,6 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         try {
             text = getTextPane().getText(start, end);
         } catch (BadLocationException ex) {
-            System.out.println("exit 2");
             return;
         }
         
@@ -380,33 +377,38 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         end = pos;
         
         // Traverse backwards
-        while (start > 0 && text.charAt(start) != ' ') {
+        while (start > 0 && start < text.length() && text.charAt(start) != ' ') {
             start--;
         }
-        if (text.charAt(start) == ' ') { start++; }
+        if (start+1 < text.length() && text.charAt(start) == ' ') { start++; }
         
         // And forwards
-        while (end < text.length() && text.charAt(end) != ' ') {
+        while (end < text.length() && end > 0 && text.charAt(end) != ' '
+                && text.charAt(end) != '\n') {
             end++;
         }
         
         if (start > end) {
-            System.out.println("exit 3");
             return;
         }
         
         text = text.substring(start, end);
         
-        System.out.println(text);
+        if (text.length() <= 2) {
+            return;
+        }
         
         if (text.toLowerCase().startsWith("http://") ||
                 text.toLowerCase().startsWith("https://") ||
                 text.toLowerCase().startsWith("www.")) {
             BrowserLauncher.openURL(text);
         }  else if (parent.getServer().getParser().isValidChannelName(text)) {
-            parent.getServer().getParser().joinChannel(text);
+            if (parent.getServer().getParser().getChannelInfo(text) == null) {
+                parent.getServer().getParser().joinChannel(text);
+            } else {
+                parent.getServer().getChannel(text).activateFrame();
+            }
         }
-        System.out.println("exit 4");
     }
     
     /**

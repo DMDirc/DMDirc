@@ -757,4 +757,8 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         return this;
     }
     
+    public Channel getChannel(String name) {
+        return channels.get(name);
+    }
+    
 }
