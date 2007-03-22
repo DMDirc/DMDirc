@@ -355,7 +355,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /**
      * Checks for url's, channels and nicknames. {@inheritDoc}
      */
-    public void mouseClicked(MouseEvent mouseEvent) {
+    public final void mouseClicked(final MouseEvent mouseEvent) {
         final int pos = getTextPane().getCaretPosition();
         final int length = getTextPane().getDocument().getLength();
         String text;
@@ -380,7 +380,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         while (start > 0 && start < text.length() && text.charAt(start) != ' ') {
             start--;
         }
-        if (start+1 < text.length() && text.charAt(start) == ' ') { start++; }
+        if (start + 1 < text.length() && text.charAt(start) == ' ') { start++; }
         
         // And forwards
         while (end < text.length() && end > 0 && text.charAt(end) != ' '
@@ -398,9 +398,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             return;
         }
         
-        if (text.toLowerCase().startsWith("http://") ||
-                text.toLowerCase().startsWith("https://") ||
-                text.toLowerCase().startsWith("www.")) {
+        if (text.toLowerCase().startsWith("http://") 
+        || text.toLowerCase().startsWith("https://") 
+        || text.toLowerCase().startsWith("www.")) {
             BrowserLauncher.openURL(text);
         }  else if (parent.getServer().getParser().isValidChannelName(text)) {
             if (parent.getServer().getParser().getChannelInfo(text) == null) {
@@ -409,30 +409,39 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 parent.getServer().getChannel(text).activateFrame();
             }
         }
+        mouseClick(mouseEvent);
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public void mousePressed(MouseEvent mouseEvent) {
+    public void mousePressed(final MouseEvent mouseEvent) {
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public void mouseReleased(MouseEvent mouseEvent) {
+    public void mouseReleased(final MouseEvent mouseEvent) {
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public void mouseEntered(MouseEvent mouseEvent) {
+    public void mouseEntered(final MouseEvent mouseEvent) {
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public void mouseExited(MouseEvent mouseEvent) {
+    public void mouseExited(final MouseEvent mouseEvent) {
+    }
+    
+    /**
+     * Called when the mouse is clicked, after the default click operations
+     * have been performed.
+     * @param mouseEvent mouse event
+     */
+    public void mouseClick(final MouseEvent mouseEvent) {
     }
     
 }
