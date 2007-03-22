@@ -78,12 +78,13 @@ public final class Config {
     public static String getConfigDir() {
         final String fs = System.getProperty("file.separator");
         final String osName = System.getProperty("os.name");
-        String configDir;
+        String configDir = null;
         if (osName.startsWith("Mac OS")) {
             configDir = System.getProperty("user.home") + "/Library/Preferences/DMDirc/"; 
         } else if (osName.startsWith("Windows")) {
             configDir = System.getenv("APPDATA") + fs + "DMDirc" + fs;
-        } else {
+        }
+        if (configDir == null) {
             configDir = System.getProperty("user.home") + fs + ".DMDirc" + fs;
         }
         return configDir;
