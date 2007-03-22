@@ -69,28 +69,29 @@ public final class PluginClassLoader extends ClassLoader {
             }
              */
             
+            
+            fileName = baseDir + File.separator
+                    + name.replace('.', File.separatorChar) + ".class";
+            byte[] data = null;
+            
+            Logger.debug("Trying to load: " + fileName);
+            
+            try {
+                data = loadClassData(fileName);
+            } catch (IOException e) {
+                Logger.debug("" + e);
+                throw new ClassNotFoundException(e.getMessage());
+            }
+            
+            loadedClass = defineClass(name, data, 0, data.length);
+            
             if (loadedClass == null) {
-                fileName = baseDir + File.separator 
-                        + name.replace('.', File.separatorChar) + ".class";
-                byte[] data = null;
-                
-                Logger.debug("Trying to load: " + fileName);
-                
-                try {
-                    data = loadClassData(fileName);
-                } catch (IOException e) {
-                    Logger.debug("" + e);
-                    throw new ClassNotFoundException(e.getMessage());
-                }
-                
-                loadedClass = defineClass(name, data, 0, data.length);
-                
-                if (loadedClass == null) {
-                    Logger.debug("loadedClass == null");
-                    throw new ClassNotFoundException("Could not load " + name);
-                } else {
-                    resolveClass(loadedClass);
-                }
+                Logger.debug("loadedClass == null");
+                throw new ClassNotFoundException("Could not load " + name);
+            } else {
+                resolveClass(loadedClass);
+            }
+            if (loadedClass == null) {
             } else {
                 Logger.debug("found class");
             }

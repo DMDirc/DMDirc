@@ -92,8 +92,7 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
             final Object value, final boolean sel, final boolean expanded,
             final boolean leaf, final int row, final boolean hasFocus) {
         
-        final Component c = super.getTreeCellRendererComponent(tree, value, sel,
-                expanded, leaf, row, hasFocus);
+        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
         
         final DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
         

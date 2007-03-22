@@ -103,7 +103,7 @@ public final class MainFrame extends JFrame implements WindowListener {
      */
     private FrameManager frameManager;
     
-    /** Sekstop pane. */
+    /** Dekstop pane. */
     private JDesktopPane desktopPane;
     
     /** File menu. */

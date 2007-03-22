@@ -481,8 +481,8 @@ public class ChannelSettingsDialog extends StandardDialog
      * @param parent The panel to add the channel settings panel to
      */
     private void initSettingsPanel(final JPanel parent) {
-        final GridBagConstraints constraints = new GridBagConstraints();
-        final JPanel settingsPanel = new JPanel(new GridBagLayout());
+        //final GridBagConstraints constraints = new GridBagConstraints();
+        //final JPanel settingsPanel = new JPanel(new GridBagLayout());
     }
     
     /** Initialises listeners for this dialog. */

@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
@@ -29,7 +30,14 @@ import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 /**
  * Compares nicklist entries to each other, for sorting purposes.
  */
-public final class NicklistComparator implements Comparator<ChannelClientInfo> {
+public final class NicklistComparator implements Comparator<ChannelClientInfo>,
+        Serializable {
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /**
      * whether to sort the nicklist by modes.
@@ -46,30 +54,30 @@ public final class NicklistComparator implements Comparator<ChannelClientInfo> {
      * @param newSortByMode sorts by channel mode of the user
      * @param newSortByCase sorts by nickname case
      */
-    public NicklistComparator(final boolean newSortByMode, 
+    public NicklistComparator(final boolean newSortByMode,
             final boolean newSortByCase) {
         this.sortByMode = newSortByMode;
         this.sortByCase = newSortByCase;
     }
     
     /**
-     * Compares two ChannelClient objects based on the settings the comparator 
+     * Compares two ChannelClient objects based on the settings the comparator
      * was initialised with.
      * @param client1 the first client to be compared
      * @param client2 the second client to be compared
-     * @return a negative integer, zero, or a positive integer as the first 
+     * @return a negative integer, zero, or a positive integer as the first
      * argument is less than, equal to, or greater than the second.
      */
-    public int compare(final ChannelClientInfo client1, 
+    public int compare(final ChannelClientInfo client1,
             final ChannelClientInfo client2) {
         final String nickname1 = client1.getNickname();
         final String nickname2 = client2.getNickname();
         
         if (sortByMode) {
-            if (client1.getImportantModeValue() 
+            if (client1.getImportantModeValue()
             > client2.getImportantModeValue()) {
                 return -1;
-            } else if (client1.getImportantModeValue() 
+            } else if (client1.getImportantModeValue()
             < client2.getImportantModeValue()) {
                 return 1;
             }

@@ -58,7 +58,7 @@ public final class KickReason extends ChannelCommand {
         final ChannelClientInfo victim = channel.getChannelInfo().getUser(args[0]);
         
         if (victim == null) {
-            origin.addLine("User not found: " + victim);
+            origin.addLine("User not found: " + args[0]);
         } else {
             victim.kick(implodeArgs(1, args));
         }

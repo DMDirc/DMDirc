@@ -54,10 +54,10 @@ public final class StatusBar extends JPanel implements MouseListener {
     private JLabel iconLabel;
     
     /** current status bar message notifier. */
-    private StatusMessageNotifier messageNotifier;
+    private transient StatusMessageNotifier messageNotifier;
     
     /** current status bar error notifier. */
-    private StatusErrorNotifier errorNotifier;
+    private transient StatusErrorNotifier errorNotifier;
     
     /** Creates a new instance of StatusBar. */
     public StatusBar() {

@@ -174,7 +174,7 @@ public final class NewServerDialog extends StandardDialog {
                 if (jCheckBox1.isSelected()
                 || ServerManager.getServerManager().numServers() == 0
                         || MainFrame.getMainFrame().getActiveFrame() == null) {
-                    final Server server = new Server(host, port, pass, jCheckBox4.isSelected());
+                    new Server(host, port, pass, jCheckBox4.isSelected());
                 } else {
                     final JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
                     final Server server = ServerManager.getServerManager().getServerFromFrame(active);
