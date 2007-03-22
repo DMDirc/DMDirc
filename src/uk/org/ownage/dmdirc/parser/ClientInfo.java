@@ -164,7 +164,8 @@ public class ClientInfo {
 	 * @return string representing modes. (boolean and non-list)
 	 */	
 	public String getUserModeStr() { 
-		String sModes = "+", sTemp = "";
+		StringBuilder sModes = new StringBuilder("+")
+		String sTemp = "";
 		Character cTemp;
 		int nTemp = 0;
 		final int nChanModes = this.getUserMode();
@@ -172,10 +173,10 @@ public class ClientInfo {
 		for (final Enumeration e = myParser.hUserModes.keys(); e.hasMoreElements();) {
 			cTemp = (Character)e.nextElement();
 			nTemp = myParser.hUserModes.get(cTemp);
-			if ((nChanModes & nTemp) == nTemp) { sModes = sModes+cTemp; }
+			if ((nChanModes & nTemp) == nTemp) { sModes.append(cTemp); }
 		}
 		
-		return sModes;
+		return sModes.toString();
 	}
 	
 	/**
