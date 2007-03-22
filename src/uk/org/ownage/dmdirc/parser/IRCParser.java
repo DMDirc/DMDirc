@@ -691,7 +691,7 @@ public class IRCParser implements Runnable {
 			for (int i = 0; i < ModeStr.length(); ++i) {
 				mode = ModeStr.charAt(i);
 				if (!hPrefixModes.containsKey(mode)) {
-					if (sDefaultModes.indexOf(mode) < 0) {
+					if (sDefaultModes.indexOf(Character.toString(mode)) < 0) {
 						sDefaultModes.append(mode);
 					}
 				}

@@ -201,8 +201,8 @@ public class ProcessMode extends IRCProcessor {
 		for (int i = 0; i < sModestr.length; ++i) { sFullModeStr.append(sModestr[i]).append(" "); }
 		
 		iChannel.setMode(nCurrent);
-		if (sParam.equals("324")) { callChannelModeChanged(iChannel, null, "", trim(sFullModeStr)); }
-		else { callChannelModeChanged(iChannel, setterCCI, token[0], trim(sFullModeStr)); }
+		if (sParam.equals("324")) { callChannelModeChanged(iChannel, null, "", sFullModeStr.toString().trim()); }
+		else { callChannelModeChanged(iChannel, setterCCI, token[0], sFullModeStr.toString().trim()); }
 		if (cbNonUser != null) { cbNonUser.call(iChannel, setterCCI, token[0], trim(sNonUserModeStr+sNonUserModeStrParams)); }
 	}
 	

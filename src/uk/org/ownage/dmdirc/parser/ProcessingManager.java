@@ -214,8 +214,7 @@ public class ProcessingManager {
 		} catch (Exception e) {
 			StringBuffer line = new StringBuffer();
 			for (int i = 0; i < token.length; ++i ) { line.append(" ").append(token[i]); }
-			line = line.trim();
-			ParserError ei = new ParserError(ParserError.ERROR_WARNING,"Exception in Parser. [Param: "+sParam+"] [Processor: "+messageProcessor+"] [Line: "+line.toString()+"]");
+			ParserError ei = new ParserError(ParserError.ERROR_WARNING,"Exception in Parser. [Param: "+sParam+"] [Processor: "+messageProcessor+"] [Line: "+line.toString().trim()+"]");
 			ei.setException(e);
 			myParser.callErrorInfo(ei);
 		}

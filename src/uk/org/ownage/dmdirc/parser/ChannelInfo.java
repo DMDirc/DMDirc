@@ -270,7 +270,7 @@ public class ChannelInfo {
 	 */	
 	public String getModeStr() { 
 		StringBuffer sModes = new StringBuffer("+");
-		StringBuffer sModeParams = new StringBuffer()
+		StringBuffer sModeParams = new StringBuffer();
 		String sTemp = "";
 		Character cTemp;
 		int nTemp = 0;
@@ -279,7 +279,7 @@ public class ChannelInfo {
 		for (final Enumeration e = myParser.hChanModesBool.keys(); e.hasMoreElements();) {
 			cTemp = (Character)e.nextElement();
 			nTemp = myParser.hChanModesBool.get(cTemp);
-			if ((nChanModes & nTemp) == nTemp) { sModes = sModes+cTemp; }
+			if ((nChanModes & nTemp) == nTemp) { sModes.append(cTemp); }
 		}
 		for (final Enumeration e = hParamModes.keys(); e.hasMoreElements();) {
 			cTemp = (Character)e.nextElement();
@@ -436,7 +436,8 @@ public class ChannelInfo {
 		StringBuffer positiveparam = new StringBuffer();
 		StringBuffer negativemode = new StringBuffer();
 		StringBuffer negativeparam = new StringBuffer();
-		StringBuffer modestr = new StringBuffer();
+		StringBuffer sendModeStr = new StringBuffer();
+		String modestr;
 		String modeparam[];
 		boolean positive;
 		for (int i = 0; i < lModeQueue.size(); ++i) {
@@ -451,12 +452,12 @@ public class ChannelInfo {
 				if (modeparam.length > 1) { negativeparam.append(" ").append(modeparam[1]); }
 			}
 		}
-		if (negativemode.length() > 0) { modestr.append("-").append(negativemode); }
-		if (positivemode.length() > 0) { modestr.append("+").append(positivemode); }
-		if (negativeparam.length() > 0) { modestr.append(negativeparam); }
-		if (positiveparam.length() > 0) { modestr.append(positiveparam); }
-		myParser.callDebugInfo(myParser.DEBUG_INFO, "Sending mode: %s", modestr.toString());
-		myParser.sendLine("MODE "+sName+" "+modestr.toString());
+		if (negativemode.length() > 0) { sendModeStr.append("-").append(negativemode); }
+		if (positivemode.length() > 0) { sendModeStr.append("+").append(positivemode); }
+		if (negativeparam.length() > 0) { sendModeStr.append(negativeparam); }
+		if (positiveparam.length() > 0) { sendModeStr.append(positiveparam); }
+		myParser.callDebugInfo(myParser.DEBUG_INFO, "Sending mode: %s", sendModeStr.toString());
+		myParser.sendLine("MODE "+sName+" "+sendModeStr.toString());
 		clearModeQueue();
 	}
 	

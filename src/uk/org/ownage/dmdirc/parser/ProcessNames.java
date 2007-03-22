@@ -93,7 +93,7 @@ public class ProcessNames extends IRCProcessor {
 				iChannelClient.setChanMode(nPrefix);
 
 				sName = "";
-				sModes = "";
+				sModes = new StringBuffer();
 				nPrefix = 0;
 			}
 		}
