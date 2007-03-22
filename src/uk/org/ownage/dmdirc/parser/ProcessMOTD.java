@@ -51,7 +51,7 @@ public class ProcessMOTD extends IRCProcessor {
 			if (!myParser.h005Info.containsKey("PREFIX")) { myParser.parsePrefixModes(); }
 			if (!myParser.h005Info.containsKey("USERMODES")) { myParser.parseUserModes(); }
 			if (!myParser.h005Info.containsKey("CHANMODES")) { myParser.parseChanModes(); }
-			callMOTDEnd(sParam.equals(422));
+			callMOTDEnd(sParam.equals("422"));
 		}
 	}
 	
