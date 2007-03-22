@@ -83,4 +83,11 @@ public interface FrameContainer {
      */
     void close();
     
+    /**
+     * Returns the server instance associated with this frame.
+     *
+     * @return the associated server connection
+     */
+    Server getServer();
+    
 }

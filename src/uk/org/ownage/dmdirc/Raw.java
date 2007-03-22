@@ -253,4 +253,13 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
         }
     }
     
+    /**
+     * Returns the server instance associated with this frame.
+     *
+     * @return the associated server connection
+     */
+    public Server getServer() {
+        return server;
+    }
+    
 }

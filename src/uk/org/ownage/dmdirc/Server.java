@@ -748,4 +748,13 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         MainFrame.getMainFrame().getFrameManager().clearNotification(this);
     }
     
+    /**
+     * Returns the server instance associated with this frame.
+     *
+     * @return the associated server connection
+     */
+    public Server getServer() {
+        return this;
+    }
+    
 }

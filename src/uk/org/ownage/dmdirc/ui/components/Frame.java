@@ -24,6 +24,8 @@ package uk.org.ownage.dmdirc.ui.components;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Date;
@@ -39,7 +41,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+import javax.swing.text.BadLocationException;
 
+import uk.org.ownage.dmdirc.BrowserLauncher;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
@@ -55,7 +59,7 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
  * Frame component.
  */
 public abstract class Frame extends JInternalFrame implements CommandWindow,
-        PropertyChangeListener, InternalFrameListener {
+        PropertyChangeListener, InternalFrameListener, MouseListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -91,8 +95,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /** The dimensions of the titlebar of the frame. **/
     private Dimension titlebarSize;
     
-    /** 
-     * Creates a new instance of Frame. 
+    /**
+     * Creates a new instance of Frame.
      *
      * @param owner FrameContainer owning this frame.
      */
@@ -199,7 +203,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     }
     
     /**
-     * Removes and reinserts the border of an internal frame on maximising. 
+     * Removes and reinserts the border of an internal frame on maximising.
      * {@inheritDoc}
      */
     public final void propertyChange(final PropertyChangeEvent propertyChangeEvent) {
@@ -311,7 +315,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     public final JTextPane getTextPane() {
         return textPane;
     }
-
+    
     /**
      * Sets the frames input field.
      *
@@ -320,7 +324,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     protected final void setInputField(final JTextField newInputField) {
         this.inputField = newInputField;
     }
-
+    
     /**
      * Sets the frames text pane.
      *
@@ -329,7 +333,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     protected final void setTextPane(final JTextPane newTextPane) {
         this.textPane = newTextPane;
     }
-
+    
     /**
      * Gets the frames input field.
      *
@@ -338,7 +342,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     protected final JScrollPane getScrollPane() {
         return scrollPane;
     }
-
+    
     /**
      * Sets the frames scroll pane.
      *
@@ -346,6 +350,87 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     protected final void setScrollPane(final JScrollPane newScrollPane) {
         this.scrollPane = newScrollPane;
+    }
+    
+    /**
+     * Checks for url's, channels and nicknames. {@inheritDoc}
+     */
+    public void mouseClicked(MouseEvent mouseEvent) {
+        System.out.println("entrance");
+        final int pos = getTextPane().getCaretPosition();
+        final int length = getTextPane().getDocument().getLength();
+        String text;
+        
+        if (pos == 0) {
+            System.out.println("exit 1");
+            return;
+        }
+        
+        int start = (pos - 510 < 0) ? 0 : pos - 510;
+        int end = (pos + 510 > length) ? length : pos + 510;
+        
+        try {
+            text = getTextPane().getText(start, end);
+        } catch (BadLocationException ex) {
+            System.out.println("exit 2");
+            return;
+        }
+        
+        start = pos;
+        end = pos;
+        
+        // Traverse backwards
+        while (start > 0 && text.charAt(start) != ' ') {
+            start--;
+        }
+        if (text.charAt(start) == ' ') { start++; }
+        
+        // And forwards
+        while (end < text.length() && text.charAt(end) != ' ') {
+            end++;
+        }
+        
+        if (start > end) {
+            System.out.println("exit 3");
+            return;
+        }
+        
+        text = text.substring(start, end);
+        
+        System.out.println(text);
+        
+        if (text.toLowerCase().startsWith("http://") ||
+                text.toLowerCase().startsWith("https://") ||
+                text.toLowerCase().startsWith("www.")) {
+            BrowserLauncher.openURL(text);
+        }  else if (parent.getServer().getParser().isValidChannelName(text)) {
+            parent.getServer().getParser().joinChannel(text);
+        }
+        System.out.println("exit 4");
+    }
+    
+    /**
+     * Not needed for this class. {@inheritDoc}
+     */
+    public void mousePressed(MouseEvent mouseEvent) {
+    }
+    
+    /**
+     * Not needed for this class. {@inheritDoc}
+     */
+    public void mouseReleased(MouseEvent mouseEvent) {
+    }
+    
+    /**
+     * Not needed for this class. {@inheritDoc}
+     */
+    public void mouseEntered(MouseEvent mouseEvent) {
+    }
+    
+    /**
+     * Not needed for this class. {@inheritDoc}
+     */
+    public void mouseExited(MouseEvent mouseEvent) {
     }
     
 }

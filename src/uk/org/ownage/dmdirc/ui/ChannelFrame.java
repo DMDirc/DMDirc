@@ -26,6 +26,8 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.JList;
@@ -49,7 +51,7 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 /**
  * The channel frame is the GUI component that represents a channel to the user.
  */
-public final class ChannelFrame extends Frame {
+public final class ChannelFrame extends Frame implements MouseListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -171,6 +173,8 @@ public final class ChannelFrame extends Frame {
         nickList.setFont(new Font("Dialog", 0, 12));
         nickList.setModel(nicklistModel);
         nickScrollPane.setViewportView(nickList);
+        
+        getTextPane().addMouseListener(this);
         
         getContentPane().setLayout(new GridBagLayout());
         constraints.weightx = 1.0;

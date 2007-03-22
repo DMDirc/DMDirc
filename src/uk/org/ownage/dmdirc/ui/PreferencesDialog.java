@@ -419,8 +419,10 @@ public final class PreferencesDialog extends StandardDialog
                 OptionType.CHECKBOX);
         addComponent(panel, "ui.inputbuffersize", "Input bufer size: ",
                 OptionType.TEXTFIELD);
+        addComponent(panel, "general.browser", "Browser: ",
+                OptionType.TEXTFIELD);
         
-        layoutGrid(panel, 3, 2, SMALL_BORDER, SMALL_BORDER,
+        layoutGrid(panel, 4, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
         
         cardLayoutPanel.add(panel, "Advanced");
@@ -446,17 +448,19 @@ public final class PreferencesDialog extends StandardDialog
             String[] optionArgs;
             for (String option : textFields.keySet()) {
                 optionArgs = option.split("\\.");
-                Config.setOption(optionArgs[0], optionArgs[1], 
-                        textFields.get(option).getText());
+                if (!textFields.get(option).getText().equals("")) {
+                    Config.setOption(optionArgs[0], optionArgs[1],
+                            textFields.get(option).getText());
+                }
             }
             for (String option : checkBoxes.keySet()) {
                 optionArgs = option.split("\\.");
-                Config.setOption(optionArgs[0], optionArgs[1], 
+                Config.setOption(optionArgs[0], optionArgs[1],
                         "" + checkBoxes.get(option).isSelected());
             }
             for (String option : comboBoxes.keySet()) {
                 optionArgs = option.split("\\.");
-                Config.setOption(optionArgs[0], optionArgs[1], 
+                Config.setOption(optionArgs[0], optionArgs[1],
                         (String) comboBoxes.get(option).getSelectedItem());
             }
             Config.save();

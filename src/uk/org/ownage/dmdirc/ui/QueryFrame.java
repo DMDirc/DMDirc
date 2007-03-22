@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.MouseListener;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -39,7 +40,7 @@ import uk.org.ownage.dmdirc.ui.input.InputHandler;
 /**
  * The QueryFrame is the MDI window that shows query messages to the user.
  */
-public final class QueryFrame extends Frame {
+public final class QueryFrame extends Frame implements MouseListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -92,6 +93,8 @@ public final class QueryFrame extends Frame {
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         getTextPane().setEditable(false);
         getScrollPane().setViewportView(getTextPane());
+        
+        getTextPane().addMouseListener(this);
         
         getContentPane().setLayout(new GridBagLayout());
         constraints.weightx = 1.0;
