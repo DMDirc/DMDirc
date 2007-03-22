@@ -80,11 +80,14 @@ public final class Config {
         final String osName = System.getProperty("os.name");
         String configDir = null;
         if (osName.startsWith("Mac OS")) {
-            configDir = System.getProperty("user.home") + "/Library/Preferences/DMDirc/"; 
+            configDir = System.getProperty("user.home") + "/Library/Preferences/DMDirc/";
         } else if (osName.startsWith("Windows")) {
-            configDir = System.getenv("APPDATA") + fs + "DMDirc" + fs;
-        }
-        if (configDir == null) {
+            if (System.getenv("APPDATA") == null) {
+                configDir = System.getProperty("user.home") + fs + "DMDirc" + fs;
+            } else {
+                configDir = System.getenv("APPDATA") + fs + "DMDirc" + fs;
+            }
+        } else {
             configDir = System.getProperty("user.home") + fs + ".DMDirc" + fs;
         }
         return configDir;
