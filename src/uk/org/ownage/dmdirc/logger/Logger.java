@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.swing.JDialog;
-import javax.swing.JOptionPane;
 
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.ui.FatalErrorDialog;

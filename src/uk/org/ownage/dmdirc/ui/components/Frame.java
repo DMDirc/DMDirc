@@ -409,7 +409,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 parent.getServer().getChannel(text).activateFrame();
             }
         }
-        mouseClick(mouseEvent);
+        mouseButtonClicked(mouseEvent);
     }
     
     /**
@@ -421,12 +421,13 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public void mouseReleased(final MouseEvent mouseEvent) {
+    public final void mouseReleased(final MouseEvent mouseEvent) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 getInputField().grabFocus();
             }
         });
+        mouseButtonReleased(mouseEvent);
     }
     
     /**
@@ -446,7 +447,15 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * have been performed.
      * @param mouseEvent mouse event
      */
-    public void mouseClick(final MouseEvent mouseEvent) {
+    public void mouseButtonClicked(final MouseEvent mouseEvent) {
+    }
+
+    /**
+     * Called when the mouse is released, after the default release operations
+     * have been performed.
+     * @param mouseEvent mouse event
+     */
+    private void mouseButtonReleased(final MouseEvent mouseEvent) {
     }
     
 }

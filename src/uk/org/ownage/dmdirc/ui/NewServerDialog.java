@@ -22,7 +22,6 @@
 
 package uk.org.ownage.dmdirc.ui;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -124,6 +123,8 @@ public final class NewServerDialog extends StandardDialog {
         
         initComponents();
         
+        layoutComponents();
+        
         serverField.setText(Config.getOption("general", "server"));
         portField.setText(Config.getOption("general", "port"));
         passwordField.setText(Config.getOption("general", "password"));
@@ -196,9 +197,7 @@ public final class NewServerDialog extends StandardDialog {
     /**
      * Initialises the components in this dialog.
      */
-    private void initComponents() {
-        final GridBagConstraints constraints = new GridBagConstraints();
-        
+    private void initComponents() {        
         serverLabel = new JLabel();
         serverField = new JTextField();
         instructionLabel = new JLabel();
@@ -258,7 +257,13 @@ public final class NewServerDialog extends StandardDialog {
         sslCheck.setText("Use a secure (SSL) connection");
         sslCheck.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         sslCheck.setMargin(new Insets(0, 0, 0, 0));
-        
+    }
+    
+    /**
+     * Lays out the components in the dialog.
+     */
+    private void layoutComponents() {
+        final GridBagConstraints constraints = new GridBagConstraints();
         getContentPane().setLayout(new GridBagLayout());
         
         constraints.gridx = 0;

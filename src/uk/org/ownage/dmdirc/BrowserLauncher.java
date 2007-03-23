@@ -22,9 +22,12 @@
 
 package uk.org.ownage.dmdirc;
 
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import javax.swing.JOptionPane;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
  *
@@ -35,11 +38,16 @@ public final class BrowserLauncher {
     private BrowserLauncher() {
     }
     
-    public static void openURL(String url) {
-        String osName = System.getProperty("os.name");
+    /**
+     * Opens a URL in the default browser where possible, else any availble
+     * browser it finds.
+     * @param url url to open in the browser
+     */
+    public static void openURL(final String url) {
+        final String osName = System.getProperty("os.name");
         try {
             if (osName.startsWith("Mac OS")) {
-                Method openURL = Class.forName("com.apple.eio.FileManager")
+                final Method openURL = Class.forName("com.apple.eio.FileManager")
                 .getDeclaredMethod("openURL", new Class[] {String.class});
                 openURL.invoke(null, new Object[] {url});
             } else if (osName.startsWith("Windows")) {
@@ -51,8 +59,8 @@ public final class BrowserLauncher {
                 if (Config.hasOption("general", "browser")) {
                     browser = Config.getOption("general", "browser");
                 } else {
-                    String[] browsers =
-                    { "firefox", "konqueror", "epiphany", "opera", "mozilla", };
+                    final String[] browsers =
+                    {"firefox", "konqueror", "epiphany", "opera", "mozilla", };
                     for (int count = 0; count < browsers.length
                             && browser == null; count++) {
                         if (Runtime.getRuntime()
@@ -63,14 +71,24 @@ public final class BrowserLauncher {
                     }
                 }
                 if (browser == null) {
-                    throw new Exception("Could not find web browser");
+                    Logger.error(ErrorLevel.ERROR, "Unable to find browser, " 
+                            + "please set in preferences.");
                 } else {
                     Runtime.getRuntime().exec(new String[] {browser, url});
                 }
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                    "Unable to launch web browser, please edit preferences.");
+        } catch (ClassNotFoundException e) {
+            Logger.error(ErrorLevel.ERROR, e);
+        } catch (NoSuchMethodException e) {
+            Logger.error(ErrorLevel.ERROR, e);
+        } catch (IllegalAccessException e) {
+            Logger.error(ErrorLevel.ERROR, e);
+        } catch (InterruptedException e) {
+            Logger.error(ErrorLevel.ERROR, e);
+        } catch (InvocationTargetException e) {
+            Logger.error(ErrorLevel.ERROR, e);
+        } catch (IOException e) {
+            Logger.error(ErrorLevel.ERROR, e);
         }
     }
     

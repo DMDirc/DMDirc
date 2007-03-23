@@ -57,46 +57,30 @@ public final class PluginClassLoader extends ClassLoader {
      * @throws ClassNotFoundException if the class to be loaded could not be
      * found in the base directory for this classloader
      */
-    public Class loadClass(final String name) throws ClassNotFoundException {
-        Class loadedClass = findLoadedClass(name);
+    public Class< ? > loadClass(final String name) throws ClassNotFoundException {
+        Class< ? > loadedClass = null;
         String fileName;
+        
+        fileName = baseDir + File.separator
+                + name.replace('.', File.separatorChar) + ".class";
+        byte[] data = null;
+        
+        Logger.debug("Trying to load: " + fileName);
+        
+        try {
+            data = loadClassData(fileName);
+        } catch (IOException e) {
+            Logger.debug("" + e);
+            throw new ClassNotFoundException(e.getMessage());
+        }
+        
+        loadedClass = defineClass(name, data, 0, data.length);
+        
         if (loadedClass == null) {
-            /*
-            try {
-                loadedClass = findSystemClass(name);
-            } catch (ClassNotFoundException e) {
-                //Do nothing
-            }
-             */
-            
-            
-            fileName = baseDir + File.separator
-                    + name.replace('.', File.separatorChar) + ".class";
-            byte[] data = null;
-            
-            Logger.debug("Trying to load: " + fileName);
-            
-            try {
-                data = loadClassData(fileName);
-            } catch (IOException e) {
-                Logger.debug("" + e);
-                throw new ClassNotFoundException(e.getMessage());
-            }
-            
-            loadedClass = defineClass(name, data, 0, data.length);
-            
-            if (loadedClass == null) {
-                Logger.debug("loadedClass == null");
-                throw new ClassNotFoundException("Could not load " + name);
-            } else {
-                resolveClass(loadedClass);
-            }
-            if (loadedClass == null) {
-            } else {
-                Logger.debug("found class");
-            }
+            Logger.debug("loadedClass == null");
+            throw new ClassNotFoundException("Could not load " + name);
         } else {
-            Logger.debug("class already loaded");
+            resolveClass(loadedClass);
         }
         
         return loadedClass;

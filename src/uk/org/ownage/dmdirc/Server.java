@@ -757,7 +757,12 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         return this;
     }
     
-    public Channel getChannel(String name) {
+    /**
+     * Returns the channel with the specified name.
+     * @param name name of the channel
+     * @return Channel requested or null not found
+     */
+    public Channel getChannel(final String name) {
         return channels.get(name);
     }
     
