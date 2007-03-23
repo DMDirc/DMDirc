@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -103,6 +104,8 @@ public class StandardDialog extends JDialog  {
             setOkButton(rightButton);
             setCancelButton(leftButton);
         }
+        leftButton.setPreferredSize(new Dimension(100, 25));
+        rightButton.setPreferredSize(new Dimension(100, 25));
     }
     
     /**

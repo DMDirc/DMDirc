@@ -134,8 +134,6 @@ public final class PreferencesDialog extends StandardDialog
         
         getContentPane().setLayout(layout);
         
-        button1.setPreferredSize(new Dimension(100, 25));
-        button2.setPreferredSize(new Dimension(100, 25));
         tabList.setPreferredSize(new Dimension(100, 450));
         setMinimumSize(new Dimension(600, 500));
         setPreferredSize(new Dimension(600, 500));

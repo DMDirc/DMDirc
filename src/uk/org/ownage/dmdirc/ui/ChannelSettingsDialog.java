@@ -167,9 +167,7 @@ public class ChannelSettingsDialog extends StandardDialog
         setResizable(false);
         
         final JButton button1 = new JButton();
-        button1.setPreferredSize(new Dimension(100, 25));
         final JButton button2 = new JButton();
-        button2.setPreferredSize(new Dimension(100, 25));
         
         constraints.gridx = 0;
         constraints.gridy = 0;
