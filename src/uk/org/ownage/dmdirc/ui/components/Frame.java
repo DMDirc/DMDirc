@@ -42,12 +42,15 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 
 import uk.org.ownage.dmdirc.BrowserLauncher;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
@@ -148,6 +151,20 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                     if (!getTextPane().getText().equals("")) { ts = "\n" + ts; }
                     Styliser.addStyledString(getTextPane().getStyledDocument(), ts);
                     Styliser.addStyledString(getTextPane().getStyledDocument(), myLine);
+                }
+                try {
+                    int frameBufferSize = Integer.MAX_VALUE;
+                    if (Config.hasOption("ui", "frameBufferSize")) {
+                        frameBufferSize = Integer.parseInt(Config.getOption("ui", "frameBufferSize"));
+                    }
+                    Document doc = getTextPane().getDocument();
+                    if (doc.getLength() > frameBufferSize) {
+                        doc.remove(0, (doc.getText(2, 512).indexOf('\n') + 3));
+                    }
+                } catch (NumberFormatException ex) {
+                    Logger.error(ErrorLevel.WARNING, ex);
+                } catch (BadLocationException ex) {
+                    Logger.error(ErrorLevel.WARNING, ex);
                 }
                 
                 if (scrollBar.getValue() + Math.round(scrollBar.getVisibleAmount() * 1.5) < scrollBar.getMaximum()) {
@@ -449,7 +466,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     public void mouseButtonClicked(final MouseEvent mouseEvent) {
     }
-
+    
     /**
      * Called when the mouse is released, after the default release operations
      * have been performed.

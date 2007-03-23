@@ -421,8 +421,10 @@ public final class PreferencesDialog extends StandardDialog
                 OptionType.TEXTFIELD);
         addComponent(panel, "general.browser", "Browser: ",
                 OptionType.TEXTFIELD);
+        addComponent(panel, "ui.frameBufferSize", "Frame buffer size: ",
+                OptionType.TEXTFIELD);
         
-        layoutGrid(panel, 4, 2, SMALL_BORDER, SMALL_BORDER,
+        layoutGrid(panel, 5, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
         
         cardLayoutPanel.add(panel, "Advanced");
