@@ -22,11 +22,15 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -44,9 +48,6 @@ import uk.org.ownage.dmdirc.ServerManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
-
 /**
  * Dialog that allows the user to enter details of a new server to connect to.
  */
@@ -59,55 +60,61 @@ public final class NewServerDialog extends StandardDialog {
      */
     private static final long serialVersionUID = 3;
     
+    /** Size of the large borders in the dialog. */
+    private static final int LARGE_BORDER = 10;
+    
+    /** Size of the small borders in the dialog. */
+    private static final int SMALL_BORDER = 5;
+    
     /**
      * A previously created instance of NewServerDialog.
      */
     private static NewServerDialog me;
     
     /** ok/cancel button. */
-    private JButton jButton1;
+    private JButton button1;
     
     /** ok/cancel button. */
-    private JButton jButton2;
+    private JButton button2;
     
     /** checkbox. */
-    private JCheckBox jCheckBox1;
+    private JCheckBox newServerWindowCheck;
     
     /** checkbox. */
-    private JCheckBox jCheckBox2;
+    private JCheckBox rememberPasswordCheck;
     
     /** checkbox. */
-    private JCheckBox jCheckBox3;
+    private JCheckBox autoConnectCheck;
     
     /** checkbox. */
-    private JCheckBox jCheckBox4;
+    private JCheckBox sslCheck;
     
     /** label. */
-    private JLabel jLabel1;
+    private JLabel serverLabel;
     
     /** label. */
-    private JLabel jLabel2;
+    private JLabel instructionLabel;
     
     /** label. */
-    private JLabel jLabel3;
+    private JLabel portLabel;
     
     /** label. */
-    private JLabel jLabel4;
+    private JLabel passwordLabel;
     
     /** text field. */
-    private JTextField jTextField1;
+    private JTextField serverField;
     
     /** text field. */
-    private JTextField jTextField2;
+    private JTextField portField;
     
     /** text field. */
-    private JTextField jTextField3;
+    private JTextField passwordField;
     
     /** label. */
-    private JLabel jLabel5;
+    private JLabel identityLabel;
     
     /** combo box. */
-    private JComboBox jComboBox1;
+    private JComboBox identityField;
     
     /**
      * Creates a new instance of the dialog.
@@ -117,12 +124,10 @@ public final class NewServerDialog extends StandardDialog {
         
         initComponents();
         
-        orderButtons(jButton2, jButton1);
-        
-        jTextField1.setText(Config.getOption("general", "server"));
-        jTextField2.setText(Config.getOption("general", "port"));
-        jTextField3.setText(Config.getOption("general", "password"));
-        jTextField2.setInputVerifier(new PortVerifier());
+        serverField.setText(Config.getOption("general", "server"));
+        portField.setText(Config.getOption("general", "port"));
+        passwordField.setText(Config.getOption("general", "password"));
+        portField.setInputVerifier(new PortVerifier());
         
         addCallbacks();
         
@@ -142,14 +147,14 @@ public final class NewServerDialog extends StandardDialog {
             me.requestFocus();
         }
         
-        me.jTextField1.requestFocus();
+        me.serverField.requestFocus();
         
         if (ServerManager.getServerManager().numServers() == 0
                 || MainFrame.getMainFrame().getActiveFrame() == null) {
-            me.jCheckBox1.setSelected(true);
-            me.jCheckBox1.setEnabled(false);
+            me.newServerWindowCheck.setSelected(true);
+            me.newServerWindowCheck.setEnabled(false);
         } else {
-            me.jCheckBox1.setEnabled(true);
+            me.newServerWindowCheck.setEnabled(true);
         }
     }
     
@@ -164,22 +169,22 @@ public final class NewServerDialog extends StandardDialog {
         });
         getOkButton().addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
-                final String host = jTextField1.getText();
-                final String pass = jTextField3.getText();
-                final int port = Integer.parseInt(jTextField2.getText());
+                final String host = serverField.getText();
+                final String pass = passwordField.getText();
+                final int port = Integer.parseInt(portField.getText());
                 
                 NewServerDialog.this.setVisible(false);
                 
                 // Open in a new window?
-                if (jCheckBox1.isSelected()
+                if (newServerWindowCheck.isSelected()
                 || ServerManager.getServerManager().numServers() == 0
                         || MainFrame.getMainFrame().getActiveFrame() == null) {
-                    new Server(host, port, pass, jCheckBox4.isSelected());
+                    new Server(host, port, pass, sslCheck.isSelected());
                 } else {
                     final JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
                     final Server server = ServerManager.getServerManager().getServerFromFrame(active);
                     if (server != null) {
-                        server.connect(host, port, pass, jCheckBox4.isSelected());
+                        server.connect(host, port, pass, sslCheck.isSelected());
                     } else {
                         Logger.error(ErrorLevel.ERROR, "Cannot determine active server window");
                     }
@@ -192,142 +197,178 @@ public final class NewServerDialog extends StandardDialog {
      * Initialises the components in this dialog.
      */
     private void initComponents() {
-        jLabel1 = new JLabel();
-        jTextField1 = new JTextField();
-        jLabel2 = new JLabel();
-        jLabel3 = new JLabel();
-        jTextField2 = new JTextField();
-        jLabel4 = new JLabel();
-        jTextField3 = new JTextField();
-        jCheckBox1 = new JCheckBox();
-        jCheckBox2 = new JCheckBox();
-        jCheckBox3 = new JCheckBox();
-        jButton1 = new JButton();
-        jButton2 = new JButton();
-        jCheckBox4 = new JCheckBox();
-        jLabel5 = new JLabel();
-        jComboBox1 = new JComboBox(new String[]{"Default", });
+        final GridBagConstraints constraints = new GridBagConstraints();
+        
+        serverLabel = new JLabel();
+        serverField = new JTextField();
+        instructionLabel = new JLabel();
+        portLabel = new JLabel();
+        portField = new JTextField();
+        passwordLabel = new JLabel();
+        passwordField = new JTextField();
+        newServerWindowCheck = new JCheckBox();
+        rememberPasswordCheck = new JCheckBox();
+        autoConnectCheck = new JCheckBox();
+        button1 = new JButton();
+        button2 = new JButton();
+        sslCheck = new JCheckBox();
+        identityLabel = new JLabel();
+        identityField = new JComboBox(new String[]{"Default", });
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        orderButtons(button2, button1);
         setTitle("Connect to a new server");
-        jLabel1.setHorizontalAlignment(SwingConstants.RIGHT);
-        jLabel1.setText("Server:");
         
-        jTextField1.setText("blueyonder.uk.quakenet.org");
+        serverLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        serverLabel.setText("Server:");
         
-        jLabel2.setText("To connect to a new IRC server, enter the server name below");
+        serverField.setText("blueyonder.uk.quakenet.org");
         
-        jLabel3.setHorizontalAlignment(SwingConstants.RIGHT);
-        jLabel3.setText("Port:");
+        instructionLabel.setText("To connect to a new IRC server, enter the server name below");
         
-        jTextField2.setText("7000");
+        portLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        portLabel.setText("Port:");
         
-        jLabel4.setText("Password:");
+        portField.setText("7000");
         
-        jLabel5.setText("Identity: ");
+        passwordLabel.setText("Password:");
         
-        jComboBox1.setEnabled(false);
+        identityLabel.setText("Identity: ");
         
-        jCheckBox1.setText("Open in a new server window");
-        jCheckBox1.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox1.setMargin(new Insets(0, 0, 0, 0));
+        identityField.setEnabled(false);
         
-        jCheckBox2.setText("Remember server password");
-        jCheckBox2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox2.setEnabled(false);
-        jCheckBox2.setMargin(new Insets(0, 0, 0, 0));
+        newServerWindowCheck.setText("Open in a new server window");
+        newServerWindowCheck.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        newServerWindowCheck.setMargin(new Insets(0, 0, 0, 0));
         
-        jCheckBox3.setText("Connect to this server automatically in the future");
-        jCheckBox3.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox3.setEnabled(false);
-        jCheckBox3.setMargin(new Insets(0, 0, 0, 0));
+        rememberPasswordCheck.setText("Remember server password");
+        rememberPasswordCheck.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        rememberPasswordCheck.setEnabled(false);
+        rememberPasswordCheck.setMargin(new Insets(0, 0, 0, 0));
         
-        jButton1.setText("OK");
+        autoConnectCheck.setText("Connect to this server automatically in the future");
+        autoConnectCheck.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        autoConnectCheck.setEnabled(false);
+        autoConnectCheck.setMargin(new Insets(0, 0, 0, 0));
         
-        jButton2.setText("Cancel");
+        button1.setText("OK");
         
-        jCheckBox4.setText("Use a secure (SSL) connection");
-        jCheckBox4.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        jCheckBox4.setMargin(new Insets(0, 0, 0, 0));
+        button2.setText("Cancel");
         
-        final GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(GroupLayout.LEADING)
-                .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(GroupLayout.LEADING)
-                .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jLabel2, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .add(layout.createSequentialGroup()
-                .add(16, 16, 16)
-                .add(layout.createParallelGroup(GroupLayout.TRAILING, false)
-                .add(GroupLayout.LEADING, jLabel3, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(GroupLayout.LEADING, jLabel1, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(GroupLayout.LEADING)
-                .add(layout.createSequentialGroup()
-                .add(jTextField2, GroupLayout.PREFERRED_SIZE, 56, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(jLabel4)
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(jTextField3, GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE))
-                .add(jTextField1, GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)))
-                .add(GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(232, 232, 232)
-                .add(jButton2, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(jButton1, GroupLayout.PREFERRED_SIZE, 76, GroupLayout.PREFERRED_SIZE))
-                .add(GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(28, 28, 28)
-                .add(layout.createParallelGroup(GroupLayout.LEADING)
-                .add(jCheckBox2, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
-                .add(jCheckBox1, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
-                .add(jCheckBox3, GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)))
-                .add(GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(28, Short.MAX_VALUE)
-                .add(jCheckBox4, GroupLayout.PREFERRED_SIZE, 362, GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
-                .add(GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(16, 16, 16)
-                .add(jLabel5)
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(jComboBox1)
-                .addContainerGap())
-                );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.LEADING)
-                .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jLabel2, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE)
-                .add(16, 16, 16)
-                .add(layout.createParallelGroup(GroupLayout.BASELINE)
-                .add(jLabel1)
-                .add(jTextField1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(GroupLayout.BASELINE)
-                .add(jLabel3)
-                .add(jTextField2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .add(jLabel4)
-                .add(jTextField3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.RELATED, 15, Short.MAX_VALUE)
-                .add(layout.createParallelGroup(GroupLayout.BASELINE)
-                .add(jLabel5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .add(jComboBox1))
-                .addPreferredGap(LayoutStyle.RELATED, 15, Short.MAX_VALUE)
-                .add(jCheckBox4)
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(jCheckBox1)
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(jCheckBox2)
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(jCheckBox3)
-                .add(17, 17, 17)
-                .add(layout.createParallelGroup(GroupLayout.BASELINE)
-                .add(jButton1)
-                .add(jButton2))
-                .addContainerGap())
-                );
+        sslCheck.setText("Use a secure (SSL) connection");
+        sslCheck.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        sslCheck.setMargin(new Insets(0, 0, 0, 0));
+        
+        getContentPane().setLayout(new GridBagLayout());
+        
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 4;
+        constraints.weightx = 0.0;
+        constraints.weighty = 1.0;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.anchor = GridBagConstraints.WEST;
+        constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER,
+                LARGE_BORDER, LARGE_BORDER);
+        getContentPane().add(instructionLabel, constraints);
+        
+        constraints.gridy = 1;
+        constraints.insets = new Insets(SMALL_BORDER, LARGE_BORDER,
+                SMALL_BORDER, SMALL_BORDER);
+        constraints.gridwidth = 1;
+        getContentPane().add(serverLabel, constraints);
+        constraints.insets = new Insets(SMALL_BORDER, 0,
+                SMALL_BORDER, LARGE_BORDER);
+        constraints.gridx = 1;
+        constraints.gridwidth = 3;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.weightx = 1.0;
+        getContentPane().add(serverField, constraints);
+        
+        constraints.insets = new Insets(SMALL_BORDER, LARGE_BORDER,
+                SMALL_BORDER, SMALL_BORDER);
+        constraints.gridy = 2;
+        constraints.gridx = 0;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.gridwidth = 1;
+        constraints.weightx = 0.0;
+        getContentPane().add(portLabel, constraints);
+        constraints.insets = new Insets(SMALL_BORDER, 0,
+                SMALL_BORDER, LARGE_BORDER);
+        constraints.gridx = 1;
+        constraints.weightx = 0.2;
+        constraints.gridwidth = 3;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        getContentPane().add(portField, constraints);
+        
+        constraints.gridwidth = 1;
+        constraints.gridy = 3;
+        constraints.insets = new Insets(SMALL_BORDER, LARGE_BORDER,
+                SMALL_BORDER, SMALL_BORDER);
+        constraints.gridx = 0;
+        constraints.weightx = 0.0;
+        constraints.fill = GridBagConstraints.NONE;
+        getContentPane().add(passwordLabel, constraints);
+        constraints.insets = new Insets(SMALL_BORDER, 0,
+                SMALL_BORDER, LARGE_BORDER);
+        constraints.gridwidth = 3;
+        constraints.gridx = 1;
+        constraints.weightx = 0.8;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        getContentPane().add(passwordField, constraints);
+        
+        constraints.insets = new Insets(SMALL_BORDER, LARGE_BORDER,
+                SMALL_BORDER, SMALL_BORDER);
+        constraints.gridy = 4;
+        constraints.gridx = 0;
+        constraints.gridwidth = 1;
+        constraints.weightx = 0.0;
+        getContentPane().add(identityLabel, constraints);
+        constraints.insets = new Insets(SMALL_BORDER, 0,
+                SMALL_BORDER, LARGE_BORDER);
+        constraints.gridx = 1;
+        constraints.gridwidth = 3;
+        constraints.weightx = 1.0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        getContentPane().add(identityField, constraints);
+        
+        constraints.weightx = 0.0;
+        constraints.gridwidth = 4;
+        constraints.gridy = 5;
+        constraints.gridx = 0;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.insets = new Insets(SMALL_BORDER, LARGE_BORDER,
+                SMALL_BORDER, SMALL_BORDER);
+        getContentPane().add(sslCheck, constraints);
+        
+        constraints.gridy = 6;
+        getContentPane().add(newServerWindowCheck, constraints);
+        
+        constraints.gridy = 7;
+        getContentPane().add(rememberPasswordCheck, constraints);
+        
+        constraints.gridy = 8;
+        getContentPane().add(autoConnectCheck, constraints);
+        
+        constraints.weighty = 0.0;
+        constraints.weightx = 1.0;
+        constraints.gridx = 0;
+        constraints.gridy = 9;
+        constraints.gridwidth = 2;
+        constraints.fill = GridBagConstraints.BOTH;
+        getContentPane().add(Box.createHorizontalGlue(), constraints);
+        
+        constraints.gridwidth = 1;
+        constraints.weightx = 0.0;
+        constraints.insets.set(LARGE_BORDER, 0, LARGE_BORDER, LARGE_BORDER);
+        constraints.gridx = 1;
+        constraints.anchor = GridBagConstraints.EAST;
+        constraints.fill = GridBagConstraints.NONE;
+        getContentPane().add(getCancelButton(), constraints);
+        
+        constraints.gridx = 2;
+        getContentPane().add(getOkButton(), constraints);
+        
         pack();
     }
     

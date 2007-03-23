@@ -24,10 +24,12 @@ package uk.org.ownage.dmdirc.identities;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -60,25 +62,28 @@ public final class IdentityManager {
     public static void load() {
         final ClassLoader cldr = IdentityManager.class.getClassLoader();
         
-        try {
-            
-            final URL url = cldr.getResource("uk/org/ownage/dmdirc/identities/defaults/");
-            final File[] files = new File(url.toURI()).listFiles();
-            
-            for (int i = 0; i < files.length; i++) {
-                try {
-                    if (!files[i].isDirectory()) {
-                        addIdentity(new Identity(files[i]));
-                    }
-                } catch (InvalidIdentityFileException ex) {
-                    Logger.error(ErrorLevel.WARNING, ex);
-                } catch (IOException ex) {
-                    Logger.error(ErrorLevel.ERROR, ex);
+        final URL url = cldr.getResource("uk/org/ownage/dmdirc/identities/defaults/");
+        //FIXME listing files on a jar file doesnt work.
+        //HACK to allow jar to run, without identities
+        final File file = new File(url.getPath());
+        File[] files;
+        if (file.listFiles() == null) {
+            files = new File[]{};
+        } else {
+            files = file.listFiles();
+        }
+        //END HACK
+        
+        for (int i = 0; i < files.length; i++) {
+            try {
+                if (!files[i].isDirectory()) {
+                    addIdentity(new Identity(files[i]));
                 }
+            } catch (InvalidIdentityFileException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.ERROR, ex);
             }
-            
-        } catch (URISyntaxException ex) {
-            Logger.error(ErrorLevel.ERROR, ex);
         }
         
         globalConfig = new GlobalConfig();
