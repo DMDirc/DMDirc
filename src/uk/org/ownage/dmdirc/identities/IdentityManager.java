@@ -67,7 +67,9 @@ public final class IdentityManager {
             
             for (int i = 0; i < files.length; i++) {
                 try {
-                    addIdentity(new Identity(files[i]));
+                    if (!files[i].isDirectory()) {
+                        addIdentity(new Identity(files[i]));
+                    }
                 } catch (InvalidIdentityFileException ex) {
                     Logger.error(ErrorLevel.WARNING, ex);
                 } catch (IOException ex) {

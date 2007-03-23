@@ -22,12 +22,15 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
+import javax.swing.Box;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -36,16 +39,12 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
-import org.jdesktop.layout.GroupLayout;
-import org.jdesktop.layout.LayoutStyle;
-
 /**
  * The fatal error dialog is used to inform the user that a fatal error has
  * occured.
  * @author  chris
  */
-public final class FatalErrorDialog extends JDialog implements ActionListener,
-        WindowListener {
+public final class FatalErrorDialog extends JDialog implements ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -53,6 +52,12 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 2;
+    
+    /** Size of the large borders in the dialog. */
+    private static final int LARGE_BORDER = 10;
+    
+    /** Size of the small borders in the dialog. */
+    private static final int SMALL_BORDER = 5;
     
     /** button. */
     private JButton jButton1;
@@ -92,6 +97,8 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
      * Initialises the components for this dialog.
      */
     private void initComponents() {
+        final GridBagConstraints constraints = new GridBagConstraints();
+        
         jLabel1 = new JLabel();
         jLabel2 = new JLabel();
         jLabel3 = new JLabel();
@@ -101,7 +108,6 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("DMDirc - an error occured");
-        addWindowListener(this);
         
         jLabel1.setFont(new Font("Dialog", 1, 18));
         jLabel1.setText("We're sorry...");
@@ -114,39 +120,50 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         jTextArea1.setEditable(false);
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
+        jScrollPane1.setPreferredSize(new Dimension(700, 300));
         
         jButton1.setText("OK");
+        jButton1.setPreferredSize(new Dimension(100, 25));
         jButton1.addActionListener(this);
         
-        final GroupLayout layout = new GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-                layout.createParallelGroup(GroupLayout.LEADING)
-                .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(GroupLayout.LEADING)
-                .add(jScrollPane1, GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
-                .add(jLabel1)
-                .add(GroupLayout.TRAILING, jButton1, GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)
-                .add(jLabel3)
-                .add(jLabel2))
-                .addContainerGap())
-                );
-        layout.setVerticalGroup(
-                layout.createParallelGroup(GroupLayout.LEADING)
-                .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jLabel1)
-                .add(23, 23, 23)
-                .add(jLabel2)
-                .add(21, 21, 21)
-                .add(jLabel3)
-                .addPreferredGap(LayoutStyle.RELATED)
-                .add(jScrollPane1, GroupLayout.PREFERRED_SIZE, 246, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.RELATED, 9, Short.MAX_VALUE)
-                .add(jButton1)
-                .addContainerGap())
-                );
+        getContentPane().setLayout(new GridBagLayout());
+        
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 3;
+        constraints.weightx = 0.0;
+        constraints.weighty = 1.0;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER,
+                LARGE_BORDER, LARGE_BORDER);
+        getContentPane().add(jLabel1, constraints);
+        constraints.insets = new Insets(0, LARGE_BORDER, LARGE_BORDER, 
+                LARGE_BORDER);
+        constraints.gridy = 1;
+        getContentPane().add(jLabel2, constraints);
+        constraints.insets = new Insets(0, LARGE_BORDER, SMALL_BORDER, 
+                LARGE_BORDER);
+        constraints.gridy = 2;
+        getContentPane().add(jLabel3, constraints);
+        constraints.insets = new Insets(0, LARGE_BORDER, 0, LARGE_BORDER);
+        constraints.weightx = 1.0;
+        constraints.gridy = 3;
+        getContentPane().add(jScrollPane1, constraints);
+        
+        constraints.weighty = 0.0;
+        constraints.gridx = 0;
+        constraints.gridy = 4;
+        constraints.gridwidth = 1;
+        getContentPane().add(Box.createHorizontalGlue(), constraints);
+        
+        constraints.weightx = 0.0;
+        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, 
+                LARGE_BORDER);
+        constraints.gridx = 1;
+        constraints.gridy = 5;
+        constraints.anchor = GridBagConstraints.EAST;
+        constraints.fill = GridBagConstraints.NONE;
+        getContentPane().add(jButton1, constraints);
         pack();
     }
     
@@ -155,48 +172,6 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
      */
     public void actionPerformed(final ActionEvent actionEvent) {
         System.exit(-1);
-    }
-
-    /**
-     * Not needed by this class. {@inheritDoc}
-     */
-    public void windowOpened(final WindowEvent windowEvent) {
-    }
-
-    /**
-     * Not needed by this class. {@inheritDoc}
-     */
-    public void windowClosing(final WindowEvent windowEvent) {
-    }
-
-    /**
-     * Not needed by this class. {@inheritDoc}
-     */
-    public void windowClosed(final WindowEvent windowEvent) {
-    }
-
-    /**
-     * Not needed by this class. {@inheritDoc}
-     */
-    public void windowIconified(final WindowEvent windowEvent) {
-    }
-
-    /**
-     * Not needed by this class. {@inheritDoc}
-     */
-    public void windowDeiconified(final WindowEvent windowEvent) {
-    }
-
-    /**
-     * Not needed by this class. {@inheritDoc}
-     */
-    public void windowActivated(final WindowEvent windowEvent) {
-    }
-
-    /**
-     * Not needed by this class. {@inheritDoc}
-     */
-    public void windowDeactivated(final WindowEvent windowEvent) {
     }
     
 }

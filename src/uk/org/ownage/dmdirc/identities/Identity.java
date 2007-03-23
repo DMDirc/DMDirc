@@ -79,7 +79,7 @@ public final class Identity implements ConfigSource {
             }
             
         } else {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException(file.toString());
         }
     }
     

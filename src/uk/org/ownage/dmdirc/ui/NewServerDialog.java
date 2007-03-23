@@ -113,7 +113,7 @@ public final class NewServerDialog extends StandardDialog {
      * Creates a new instance of the dialog.
      */
     private NewServerDialog() {
-        super((java.awt.Frame) MainFrame.getMainFrame(), false);
+        super(MainFrame.getMainFrame(), false);
         
         initComponents();
         
