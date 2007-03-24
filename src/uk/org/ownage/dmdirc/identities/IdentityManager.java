@@ -59,27 +59,23 @@ public final class IdentityManager {
     public static void load() {
         final ClassLoader cldr = IdentityManager.class.getClassLoader();
         
-        final URL url = cldr.getResource("uk/org/ownage/dmdirc/identities/defaults/");
-        //FIXME listing files on a jar file doesnt work.
-        //HACK to allow jar to run, without identities
-        final File file = new File(url.getPath());
-        File[] files;
-        if (file.listFiles() == null) {
-            files = new File[]{};
-        } else {
-            files = file.listFiles();
-        }
-        //END HACK
+        final String base = "uk/org/ownage/dmdirc/identities/defaults/";
         
-        for (int i = 0; i < files.length; i++) {
-            try {
-                if (!files[i].isDirectory()) {
-                    addIdentity(new Identity(files[i]));
+        final String urls[] = {"asuka", "bahamut", "hyperion"};
+        
+        for (String url : urls) {
+            final URL res = cldr.getResource(base + url);
+            if (res == null) {
+                Logger.error(ErrorLevel.WARNING, "Unable to load default identity: "+url);
+            } else {
+                final File file = new File(res.getPath());
+                try {
+                    addIdentity(new Identity(file));
+                } catch (InvalidIdentityFileException ex) {
+                    Logger.error(ErrorLevel.WARNING, ex);
+                } catch (IOException ex) {
+                    Logger.error(ErrorLevel.ERROR, ex);
                 }
-            } catch (InvalidIdentityFileException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
-            } catch (IOException ex) {
-                Logger.error(ErrorLevel.ERROR, ex);
             }
         }
         
