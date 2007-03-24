@@ -169,7 +169,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
     }
 
     public void clickReceived(MouseEvent mouseEvent) {
-        MainFrame.getMainFrame().getStatusBar().setError(null);
+        MainFrame.getMainFrame().getStatusBar().clearError();
         this.setVisible(true);
     }
     

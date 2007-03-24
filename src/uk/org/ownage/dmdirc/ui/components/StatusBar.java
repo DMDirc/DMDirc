@@ -66,6 +66,9 @@ public final class StatusBar extends JPanel implements MouseListener {
     /** current status bar error notifier. */
     private transient StatusErrorNotifier errorNotifier;
     
+    /** non error state image icon. */
+    private ImageIcon normalIcon;
+    
     /** Creates a new instance of StatusBar. */
     public StatusBar() {
         super();
@@ -89,6 +92,9 @@ public final class StatusBar extends JPanel implements MouseListener {
         
         setPreferredSize(new Dimension(Short.MAX_VALUE, 26));
         iconLabel.setPreferredSize(new Dimension(21, 26));
+        
+        normalIcon = new ImageIcon(this.getClass()
+        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/normal.png"));
     }
     
     /**
@@ -147,7 +153,7 @@ public final class StatusBar extends JPanel implements MouseListener {
         }
         new Timer().schedule(new TimerTask() {
             public void run() {
-                setError(null);
+                setError(normalIcon);
             }
         }, new Date(System.currentTimeMillis() + displayLength));
     }
@@ -159,6 +165,13 @@ public final class StatusBar extends JPanel implements MouseListener {
      */
     public void setError(final ImageIcon newIcon) {
         setError(newIcon, null);
+    }
+    
+    /**
+     * Removes the error state from the status bar.
+     */
+    public void clearError() {
+        setError(normalIcon);
     }
     
     /**

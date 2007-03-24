@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.ImageIcon;
 
 import javax.swing.JDialog;
 
@@ -83,6 +84,8 @@ public final class Logger {
             createWriters();
         }
         
+        ImageIcon icon;
+        
         switch (level) {
             case FATAL:
                 errorWriter.println(formatter.format(new Date()) + ": ERROR: "
@@ -93,17 +96,37 @@ public final class Logger {
                 dialog.setLocationRelativeTo(MainFrame.getMainFrame());
                 dialog.setVisible(true);
                 break;
+            case ERROR:
+                icon = new ImageIcon(ClassLoader.getSystemClassLoader()
+                .getResource("uk/org/ownage/dmdirc/res/error.png"));
+                showError(level, icon, new String[]{message, });
+                break;
+            case WARNING:
+                icon = new ImageIcon(ClassLoader.getSystemClassLoader()
+                .getResource("uk/org/ownage/dmdirc/res/warning.png"));
+                showError(level, icon, new String[]{message, });
+                break;
+            case INFO:
+                icon = new ImageIcon(ClassLoader.getSystemClassLoader()
+                .getResource("uk/org/ownage/dmdirc/res/info.png"));
+                showError(level, icon, new String[]{message, });
+                break;
             default:
-                MainFrame.getMainFrame().getStatusBar()
-                .setError(MainFrame.getMainFrame().getIcon(),
-                        new ErrorDialog(MainFrame.getMainFrame(),
-                        false, new String[]{message}));
-                errorWriter.println(formatter.format(new Date()) + ": ERROR: "
-                        + level + " :" + message);
-                System.err.println(formatter.format(new Date()) + ": ERROR: "
-                        + level + " :" + message);
+                icon = new ImageIcon(ClassLoader.getSystemClassLoader()
+                .getResource("uk/org/ownage/dmdirc/res/error.png"));
+                showError(level, icon, new String[]{message, });
                 break;
         }
+    }
+    
+    private static void showError(ErrorLevel level, ImageIcon icon, String[] message) {
+        MainFrame.getMainFrame().getStatusBar().setError(icon,
+                new ErrorDialog(MainFrame.getMainFrame(),
+                false, message));
+        errorWriter.println(formatter.format(new Date()) + ": ERROR: "
+                + level + " :" + message);
+        System.err.println(formatter.format(new Date()) + ": ERROR: "
+                + level + " :" + message);
     }
     
     /**
@@ -190,11 +213,11 @@ public final class Logger {
                 if (Config.hasOption("logging", "debugLoggingSysOut")
                 && Config.getOption("logging", "debugLoggingSysOut")
                 .equals("true")) {
-                    System.out.println(formatter.format(new Date()) 
+                    System.out.println(formatter.format(new Date())
                     + ": DEBUG: " + level + " :" + message);
                 }
                 
-                debugWriter.println(formatter.format(new Date()) 
+                debugWriter.println(formatter.format(new Date())
                 + ": DEBUG: " + level + " :" + message);
                 break;
         }
@@ -225,7 +248,7 @@ public final class Logger {
         
         switch(level) {
             default:
-                logWriter.println(formatter.format(new Date()) 
+                logWriter.println(formatter.format(new Date())
                 + ": LOG: " + level + " :" + message);
                 break;
         }
@@ -238,17 +261,17 @@ public final class Logger {
         try {
             if (logWriter == null) {
                 logWriter = new PrintWriter(
-                        new FileWriter(Config.getConfigDir() 
+                        new FileWriter(Config.getConfigDir()
                         + "log.log", true), true);
             }
             if (debugWriter == null) {
                 debugWriter = new PrintWriter(
-                        new FileWriter(Config.getConfigDir() 
+                        new FileWriter(Config.getConfigDir()
                         + "debug.log", true), true);
             }
             if (errorWriter == null) {
                 errorWriter = new PrintWriter(
-                        new FileWriter(Config.getConfigDir() 
+                        new FileWriter(Config.getConfigDir()
                         + "error.log", true), true);
             }
         } catch (IOException ex) {
