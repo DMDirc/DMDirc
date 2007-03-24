@@ -33,7 +33,7 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 
-import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.identities.ConfigManager;
 
 /**
  * A component to encapsulate one parameter-requiring channel mode, displaying
@@ -66,7 +66,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
      * @param value The current value of the mode
      */
     public ParamModePanel(final String thisMode, final boolean state, 
-            final String value) {
+            final String value, final ConfigManager configManager) {
         
         this.mode = thisMode;
         String text = "Mode " + mode;
@@ -74,8 +74,8 @@ public final class ParamModePanel extends JPanel implements ActionListener {
         final SpringLayout layout = new SpringLayout();
         setLayout(layout);
         
-        if (Config.hasOption("server", "mode" + mode)) {
-            text = Config.getOption("server", "mode" + mode);
+        if (configManager.hasOption("server", "mode" + mode)) {
+            text = configManager.getOption("server", "mode" + mode);
         }
         
         text += ": ";

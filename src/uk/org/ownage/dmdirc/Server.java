@@ -230,6 +230,30 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     }
     
     /**
+     * Retrieves the name of this server.
+     * @return The name of this server
+     */
+    public String getName() {
+        return serverName;
+    }
+    
+    /**
+     * Retrieves the name of this server's network.
+     * @return The name of this server's network
+     */
+    public String getNetwork() {
+        return parser.getNetworkName();
+    }
+    
+    /**
+     * Retrieves the name of this server's IRCd.
+     * @return The name of this server's IRCd
+     */
+    public String getIrcd() {
+        return parser.getIRCD(true);
+    }
+    
+    /**
      * Returns the tab completer for this connection.
      * @return The tab completer for this server
      */

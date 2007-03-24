@@ -57,7 +57,7 @@ public final class QuitDefault extends ServerCommand {
     public void execute(final CommandWindow origin, final Server server, 
             final String... args) {
         final String def = Config.getOption("general", "quitmessage");
-        CommandManager.getServerCommad("quit").execute(origin, server, def);
+        CommandManager.getServerCommand("quit").execute(origin, server, def);
     }
     
 }

@@ -149,7 +149,7 @@ public final class Identity implements ConfigSource {
      * +1 if this config is more specific.
      */
     public int compareTo(final ConfigSource target) {
-        return myTarget.compareTo(target.getTarget());
+        return target.getTarget().compareTo(myTarget);
     }
     
 }

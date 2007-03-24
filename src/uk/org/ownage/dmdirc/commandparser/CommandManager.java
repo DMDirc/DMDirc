@@ -139,7 +139,7 @@ public final class CommandManager {
      * @return A server command with a matching signature, or null if none
      * were found.
      */
-    public static ServerCommand getServerCommad(final String signature) {
+    public static ServerCommand getServerCommand(final String signature) {
         if (serverCommands == null) {
             CommandManager.initLists();
         }

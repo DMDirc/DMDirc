@@ -84,7 +84,7 @@ public final class GlobalConfig implements ConfigSource {
      * greater, 0 if they're equal.
      */
     public int compareTo(final ConfigSource target) {
-        return myTarget.compareTo(target.getTarget());
+        return target.getTarget().compareTo(myTarget);
     }
     
 }

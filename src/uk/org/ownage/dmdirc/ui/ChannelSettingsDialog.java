@@ -53,7 +53,6 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ChannelListModeItem;
 import uk.org.ownage.dmdirc.parser.IRCParser;
@@ -294,8 +293,8 @@ public class ChannelSettingsDialog extends StandardDialog
                     .contains(mode.subSequence(0, 1));
             String text = "Mode " + mode;
             
-            if (Config.hasOption("server", "mode" + mode)) {
-                text = Config.getOption("server", "mode" + mode);
+            if (channel.getConfigManager().hasOption("server", "mode" + mode)) {
+                text = channel.getConfigManager().getOption("server", "mode" + mode);
             }
             
             final JCheckBox checkBox = new JCheckBox(text, state);
@@ -331,7 +330,8 @@ public class ChannelSettingsDialog extends StandardDialog
             final boolean state = ourBooleanModes.split(" ")[0]
                     .contains(mode.subSequence(0, 1));
             
-            final ParamModePanel panel = new ParamModePanel(mode, state, value);
+            final ParamModePanel panel = new ParamModePanel(mode, state, value,
+                    channel.getConfigManager());
             panel.setBorder(new EmptyBorder(5, 0, 0, 0));
             modesPanel.add(panel, constraints);
             
@@ -421,8 +421,8 @@ public class ChannelSettingsDialog extends StandardDialog
         
         for (char mode : listModesArray) {
             String modeText = mode + " list";
-            if (Config.hasOption("server", "mode" + mode)) {
-                modeText = Config.getOption("server", "mode" + mode) + " list";
+            if (channel.getConfigManager().hasOption("server", "mode" + mode)) {
+                modeText = channel.getConfigManager().getOption("server", "mode" + mode) + " list";
             }
             listModesList.add(modeText);
         }
@@ -511,9 +511,9 @@ public class ChannelSettingsDialog extends StandardDialog
             final int selectedIndex = listModesMenu.getSelectedIndex();
             String modeText = "" + listModesArray[selectedIndex];
             String modeMask;
-            if (Config.hasOption("server", "mode"
+            if (channel.getConfigManager().hasOption("server", "mode"
                     + listModesArray[selectedIndex])) {
-                modeText = Config.getOption("server", "mode"
+                modeText = channel.getConfigManager().getOption("server", "mode"
                         + listModesArray[selectedIndex]);
             }
             modeMask =  JOptionPane.showInputDialog(listModesPanel,

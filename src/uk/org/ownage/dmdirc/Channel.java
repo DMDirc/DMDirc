@@ -36,6 +36,7 @@ import javax.swing.event.InternalFrameListener;
 
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
@@ -82,15 +83,14 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     /** The ChannelFrame used for this channel. */
     private ChannelFrame frame;
     
-    /**
-     * The tabcompleter used for this channel.
-     */
+    /** The tabcompleter used for this channel. */
     private final TabCompleter tabCompleter;
     
-    /**
-     * The icon being used for this channel.
-     */
+    /** The icon being used for this channel. */
     private final ImageIcon imageIcon;
+    
+    /** The config manager for this channel. */
+    private final ConfigManager configManager;
     
     /**
      * Creates a new instance of Channel.
@@ -101,6 +101,9 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
         channelInfo = newChannelInfo;
         server = newServer;
+        
+        configManager = new ConfigManager(server.getIrcd(), server.getNetwork(),
+                server.getName(), channelInfo.getName());
         
         final ClassLoader cldr = this.getClass().getClassLoader();
         final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/channel.png");
@@ -153,6 +156,14 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      */
     public void show() {
         frame.open();
+    }
+    
+    /**
+     * Retrieves this channel's config manager.
+     * @return This channel's configManager
+     */
+    public ConfigManager getConfigManager() {
+        return configManager;
     }
     
     /**
@@ -270,7 +281,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * Parts the channel and then closes the frame.
      */
     public void close() {
-        part(Config.getOption("general", "partmessage"));
+        part(configManager.getOption("general", "partmessage"));
         closeWindow();
     }
     
@@ -578,7 +589,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             final ChannelClientInfo cSetByClient, final String sHost,
             final String sMode) {
         
-        if (Boolean.parseBoolean(Config.getOption("channel", "splitusermodes"))) {
+        if (Boolean.parseBoolean(configManager.getOption("channel", "splitusermodes"))) {
             final String sourceModes = getModes(cSetByClient);
             final String[] sourceHost = getDetails(cSetByClient, sHost);
             final String targetModes = cChangedClient.getImportantModePrefix();
@@ -637,7 +648,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        final Boolean pref = Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"));
+        final Boolean pref = Boolean.parseBoolean(configManager.getOption("ui", "maximisewindows"));
         if (pref || MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);
@@ -653,7 +664,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
-        part(Config.getOption("general", "partmessage"));
+        part(configManager.getOption("general", "partmessage"));
         close();
     }
     
