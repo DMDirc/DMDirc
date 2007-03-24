@@ -26,7 +26,7 @@ package uk.org.ownage.dmdirc.identities;
  * Represents the target of a particular config source.
  * @author chris
  */
-public class ConfigTarget implements Comparable {
+public final class ConfigTarget implements Comparable {
     
     /** Indicates that the target is a global config source. */
     public static final int TYPE_GLOBAL = 1;

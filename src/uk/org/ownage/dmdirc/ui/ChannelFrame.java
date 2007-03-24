@@ -26,14 +26,13 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.MouseListener;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 import javax.swing.JList;
+import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
@@ -50,7 +49,7 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 /**
  * The channel frame is the GUI component that represents a channel to the user.
  */
-public final class ChannelFrame extends Frame implements MouseListener {
+public final class ChannelFrame extends Frame {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -63,7 +62,7 @@ public final class ChannelFrame extends Frame implements MouseListener {
      * The nick list model used for this channel's nickname list.
      */
     private NicklistListModel nicklistModel;
-
+    
     /**
      * This channel's command parser.
      */
@@ -77,6 +76,9 @@ public final class ChannelFrame extends Frame implements MouseListener {
     
     /** split pane. */
     private JSplitPane splitPane;
+    
+    /** popup menu item. */
+    private JMenuItem settingsMI;
     
     /**
      * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
@@ -146,17 +148,20 @@ public final class ChannelFrame extends Frame implements MouseListener {
      * Initialises the compoents in this frame.
      */
     private void initComponents() {
+        settingsMI = new JMenuItem("Settings");
+        settingsMI.addActionListener(this);
+        getPopup().addSeparator();
+        getPopup().add(settingsMI);
+        
+        
         final GridBagConstraints constraints = new GridBagConstraints();
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         
-        setScrollPane(new JScrollPane());
-        setTextPane(new JTextPane());
-        setInputField(new JTextField());
         nickScrollPane = new JScrollPane();
         nickList = new JList();
         
         splitPane.setBorder(null);
-        final BasicSplitPaneDivider divider = 
+        final BasicSplitPaneDivider divider =
                 ((BasicSplitPaneUI) splitPane.getUI()).getDivider();
         if (divider != null) {
             divider.setBorder(null);
@@ -172,8 +177,6 @@ public final class ChannelFrame extends Frame implements MouseListener {
         nickList.setFont(new Font("Dialog", 0, 12));
         nickList.setModel(nicklistModel);
         nickScrollPane.setViewportView(nickList);
-        
-        getTextPane().addMouseListener(this);
         
         getContentPane().setLayout(new GridBagLayout());
         constraints.weightx = 1.0;
@@ -194,6 +197,16 @@ public final class ChannelFrame extends Frame implements MouseListener {
         splitPane.setDividerSize(5);
         
         pack();
+    }
+    
+    /**
+     * {@inheritDoc}.
+     */
+    public void actionPerformed(final ActionEvent actionEvent) {
+        super.actionPerformed(actionEvent);
+        if (actionEvent.getSource() == settingsMI) {
+            new ChannelSettingsDialog((Channel) getFrameParent()).setVisible(true);
+        }
     }
     
 }

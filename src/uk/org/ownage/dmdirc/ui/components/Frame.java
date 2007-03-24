@@ -23,7 +23,10 @@
 package uk.org.ownage.dmdirc.ui.components;
 
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
@@ -31,6 +34,8 @@ import java.beans.PropertyChangeListener;
 import java.util.Date;
 
 import javax.swing.JInternalFrame;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -62,7 +67,8 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
  * Frame component.
  */
 public abstract class Frame extends JInternalFrame implements CommandWindow,
-        PropertyChangeListener, InternalFrameListener, MouseListener {
+        PropertyChangeListener, InternalFrameListener,
+        MouseListener, ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -97,6 +103,24 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     
     /** The dimensions of the titlebar of the frame. **/
     private Dimension titlebarSize;
+    
+    /** Popupmenu for this frame. */
+    private JPopupMenu popup;
+    
+    /** Popupmenu for this frame. */
+    private JPopupMenu inputFieldPopup;
+    
+    /** popup menu item. */
+    private JMenuItem copyMI;
+    
+    /** popup menu item. */
+    private JMenuItem inputPasteMI;
+    
+    /** popup menu item. */
+    private JMenuItem inputCopyMI;
+    
+    /** popup menu item. */
+    private JMenuItem inputCutMI;
     
     /**
      * Creates a new instance of Frame.
@@ -157,9 +181,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                     if (Config.hasOption("ui", "frameBufferSize")) {
                         frameBufferSize = Integer.parseInt(Config.getOption("ui", "frameBufferSize"));
                     }
-                    Document doc = getTextPane().getDocument();
+                    final Document doc = getTextPane().getDocument();
                     if (doc.getLength() > frameBufferSize) {
-                        doc.remove(0, (doc.getText(2, 512).indexOf('\n') + 3));
+                        doc.remove(0, doc.getText(2, 512).indexOf('\n' + 3));
                     }
                 } catch (NumberFormatException ex) {
                     Logger.error(ErrorLevel.WARNING, ex);
@@ -217,6 +241,32 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         setScrollPane(new JScrollPane());
         setInputField(new JTextField());
         setTextPane(new JTextPane());
+
+        getTextPane().addMouseListener(this);
+        getInputField().addMouseListener(this);
+        
+        popup = new JPopupMenu();
+        inputFieldPopup = new JPopupMenu();
+        
+        copyMI = new JMenuItem("Copy");
+        copyMI.addActionListener(this);
+        
+        inputPasteMI = new JMenuItem("Paste");
+        inputPasteMI.addActionListener(this);
+        inputCopyMI = new JMenuItem("Copy");
+        inputCopyMI.addActionListener(this);
+        inputCutMI = new JMenuItem("Cut");
+        inputCutMI.addActionListener(this);
+        
+        popup.add(copyMI);
+        popup.setOpaque(true);
+        popup.setLightWeightPopupEnabled(true);
+        
+        inputFieldPopup.add(inputCutMI);
+        inputFieldPopup.add(inputCopyMI);
+        inputFieldPopup.add(inputPasteMI);
+        inputFieldPopup.setOpaque(true);
+        inputFieldPopup.setLightWeightPopupEnabled(true);
     }
     
     /**
@@ -372,7 +422,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /**
      * Checks for url's, channels and nicknames. {@inheritDoc}
      */
-    public final void mouseClicked(final MouseEvent mouseEvent) {
+    public void mouseClicked(final MouseEvent mouseEvent) {
         final int pos = getTextPane().getCaretPosition();
         final int length = getTextPane().getDocument().getLength();
         String text;
@@ -426,25 +476,26 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 parent.getServer().getChannel(text).activateFrame();
             }
         }
-        mouseButtonClicked(mouseEvent);
+        processMouseEvent(mouseEvent);
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void mousePressed(final MouseEvent mouseEvent) {
+        processMouseEvent(mouseEvent);
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public final void mouseReleased(final MouseEvent mouseEvent) {
+    public void mouseReleased(final MouseEvent mouseEvent) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 getInputField().grabFocus();
             }
         });
-        mouseButtonReleased(mouseEvent);
+        processMouseEvent(mouseEvent);
     }
     
     /**
@@ -460,19 +511,41 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     }
     
     /**
-     * Called when the mouse is clicked, after the default click operations
-     * have been performed.
-     * @param mouseEvent mouse event
+     * Processes every mouse button event to check for a popup trigger.
+     * @param e mouse event
      */
-    public void mouseButtonClicked(final MouseEvent mouseEvent) {
+    public void processMouseEvent(final MouseEvent e) {
+        if (e.isPopupTrigger() && e.getSource() == getTextPane()) {
+            final Point point = getScrollPane().getMousePosition();
+            getPopup().show(this, (int) point.getX(), (int) point.getY());
+        } else if (e.isPopupTrigger() && e.getSource() == getInputField()) {
+            inputFieldPopup.show(this, e.getX(), e.getY() + getInputField().getY());
+        } else {
+            super.processMouseEvent(e);
+        }
     }
     
     /**
-     * Called when the mouse is released, after the default release operations
-     * have been performed.
-     * @param mouseEvent mouse event
+     * {@inheritDoc}.
      */
-    private void mouseButtonReleased(final MouseEvent mouseEvent) {
+    public void actionPerformed(final ActionEvent actionEvent) {
+        if (actionEvent.getSource() == copyMI) {
+            getTextPane().copy();
+        } else if (actionEvent.getSource() == inputCopyMI) {
+            getInputField().copy();
+        } else if (actionEvent.getSource() == inputPasteMI) {
+            getInputField().paste();
+        } else if (actionEvent.getSource() == inputCutMI) {
+            getInputField().cut();
+        }
+    }
+    
+    /**
+     * returns the popup menu for this frame.
+     * @return JPopupMenu for this frame
+     */
+    public final JPopupMenu getPopup() {
+        return popup;
     }
     
 }

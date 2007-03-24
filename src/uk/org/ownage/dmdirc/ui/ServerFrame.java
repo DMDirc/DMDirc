@@ -25,11 +25,8 @@ package uk.org.ownage.dmdirc.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.MouseListener;
 
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 
 import uk.org.ownage.dmdirc.Server;
@@ -41,7 +38,7 @@ import uk.org.ownage.dmdirc.ui.input.InputHandler;
 /**
  * The ServerFrame is the MDI window that shows server messages to the user.
  */
-public final class ServerFrame extends Frame implements MouseListener {
+public final class ServerFrame extends Frame {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -83,18 +80,12 @@ public final class ServerFrame extends Frame implements MouseListener {
     private void initComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
         
-        setScrollPane(new JScrollPane());
-        setTextPane(new JTextPane());
-        setInputField(new JTextField());
-        
         setTitle("Server Frame");
         
         getScrollPane().setVerticalScrollBarPolicy(
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         getTextPane().setEditable(false);
         getScrollPane().setViewportView(getTextPane());
-        
-        getTextPane().addMouseListener(this);
         
         getContentPane().setLayout(new GridBagLayout());
         constraints.weightx = 1.0;
