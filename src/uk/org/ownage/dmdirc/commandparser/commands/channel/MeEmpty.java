@@ -23,7 +23,6 @@
 package uk.org.ownage.dmdirc.commandparser.commands.channel;
 
 import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
@@ -54,7 +53,7 @@ public final class MeEmpty extends ChannelCommand {
      */
     public void execute(final CommandWindow origin, final Server server, 
             final Channel channel, final String... args) {
-        origin.addLine("Usage: " + Config.getOption("general", "commandchar") + "me <action>");
+        origin.addLine("Usage: " + origin.getConfigManager().getOption("general", "commandchar") + "me <action>");
     }
     
 }

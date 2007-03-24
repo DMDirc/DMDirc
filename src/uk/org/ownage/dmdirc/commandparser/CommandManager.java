@@ -254,10 +254,9 @@ public final class CommandManager {
         }
         
         final ArrayList<String> res = new ArrayList<String>();
-        final String commandChar = Config.getOption("general", "commandchar");
         
         for (Command command : source) {
-            res.add(commandChar + command.getName());
+            res.add(command.getName());
         }
         
         return res;

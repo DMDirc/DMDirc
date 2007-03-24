@@ -24,8 +24,6 @@ package uk.org.ownage.dmdirc.commandparser;
 
 import java.util.Hashtable;
 
-import uk.org.ownage.dmdirc.Config;
-
 /**
  * Represents a generic command parser. A command parser takes a line of input
  * from the user, determines if it is an attempt at executing a command (based
@@ -66,7 +64,7 @@ public abstract class CommandParser {
             return;
         }
         
-        if (line.charAt(0) == Config.getOption("general", "commandchar").charAt(0)) {
+        if (line.charAt(0) == origin.getConfigManager().getOption("general", "commandchar").charAt(0)) {
             final String[] args = line.split(" ");
             String[] comargs;
             String command;

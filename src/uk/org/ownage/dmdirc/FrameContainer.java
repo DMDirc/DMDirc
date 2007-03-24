@@ -26,6 +26,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.identities.ConfigManager;
 
 /**
  * Standard interface for all objects that contain an innerframe. Provides
@@ -89,5 +90,11 @@ public interface FrameContainer {
      * @return the associated server connection
      */
     Server getServer();
+    
+    /**
+     * Returns the config manager for this frame.
+     * @return the associated config manager
+     */
+    ConfigManager getConfigManager();
     
 }

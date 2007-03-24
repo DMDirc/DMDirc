@@ -22,7 +22,6 @@
 
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
-import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
@@ -56,7 +55,7 @@ public final class QuitDefault extends ServerCommand {
      */
     public void execute(final CommandWindow origin, final Server server, 
             final String... args) {
-        final String def = Config.getOption("general", "quitmessage");
+        final String def = origin.getConfigManager().getOption("general", "quitmessage");
         CommandManager.getServerCommand("quit").execute(origin, server, def);
     }
     

@@ -40,8 +40,8 @@ import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
+import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.ui.components.Frame;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
@@ -57,7 +57,7 @@ public final class ChannelFrame extends Frame {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 5;
+    private static final long serialVersionUID = 6;
     
     /** Size of the large borders in the dialog. */
     private static final int LARGE_BORDER = 10;
@@ -65,14 +65,10 @@ public final class ChannelFrame extends Frame {
     /** Size of the small borders in the dialog. */
     private static final int SMALL_BORDER = 5;
     
-    /**
-     * The nick list model used for this channel's nickname list.
-     */
+    /** The nick list model used for this channel's nickname list. */
     private NicklistListModel nicklistModel;
     
-    /**
-     * This channel's command parser.
-     */
+    /** This channel's command parser. */
     private ChannelCommandParser commandParser;
     
     /** Nick list. */
@@ -87,6 +83,9 @@ public final class ChannelFrame extends Frame {
     /** popup menu item. */
     private JMenuItem settingsMI;
     
+    /** The channel object that owns this frame. */
+    private Channel parent;
+    
     /**
      * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
      * and default options for the form.
@@ -95,12 +94,14 @@ public final class ChannelFrame extends Frame {
     public ChannelFrame(final Channel owner) {
         super(owner);
         
+        parent = owner;
+        
         initComponents();
         
         nickList.setBackground(ColourManager.getColour(
-                Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
+                Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
         nickList.setForeground(ColourManager.getColour(
-                Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
+                Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
         
         commandParser = new ChannelCommandParser(((Channel) getFrameParent()).
                 getServer(), (Channel) getFrameParent());
@@ -149,6 +150,14 @@ public final class ChannelFrame extends Frame {
                 nicklistModel.remove(name);
             }
         });
+    }
+    
+    /**
+     * Retrieves the config manager for this command window.
+     * @return This window's config manager
+     */    
+    public ConfigManager getConfigManager() {
+        return parent.getConfigManager();
     }
     
     /**

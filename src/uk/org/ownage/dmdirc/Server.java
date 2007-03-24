@@ -35,6 +35,7 @@ import javax.swing.event.InternalFrameListener;
 
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
@@ -124,6 +125,11 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     private FrameContainer activeFrame = this;
     
     /**
+     * The config manager for this server.
+     */
+    private ConfigManager configManager;
+    
+    /**
      * Creates a new instance of Server.
      * @param server The hostname/ip of the server to connect to
      * @param port The port to connect to
@@ -136,6 +142,8 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         serverName = server;
         
         ServerManager.getServerManager().registerServer(this);
+        
+        configManager = new ConfigManager("", "", server);
         
         frame = new ServerFrame(this);
         frame.setTitle(server + ":" + port);
@@ -162,12 +170,14 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             final boolean ssl) {
         
         if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
-            disconnect(Config.getOption("general", "quitmessage"));
+            disconnect(configManager.getOption("general", "quitmessage"));
             closeChannels();
             closeQueries();
         }
         
         serverName = server;
+        
+        configManager = new ConfigManager("", "", server);
         
         final ClassLoader cldr = this.getClass().getClassLoader();
         URL imageURL;
@@ -183,8 +193,8 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         sendNotification();
         
         final MyInfo myInfo = new MyInfo();
-        myInfo.setNickname(Config.getOption("general", "defaultnick"));
-        myInfo.setAltNickname(Config.getOption("general", "alternatenick"));
+        myInfo.setNickname(configManager.getOption("general", "defaultnick"));
+        myInfo.setAltNickname(configManager.getOption("general", "alternatenick"));
         
         final ServerInfo serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);
@@ -270,6 +280,14 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     }
     
     /**
+     * Returns the config manager for this server.
+     * @return This server's config manager
+     */
+    public ConfigManager getConfigManager() {
+        return configManager;
+    }
+    
+    /**
      * Adds a line to the server window.
      * @param line line to be added
      */
@@ -325,7 +343,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * quit message.
      */
     public void close() {
-        close(Config.getOption("general", "quitmessage"));
+        close(configManager.getOption("general", "quitmessage"));
     }
     
     /**
@@ -491,8 +509,8 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public void handleNotification(final String messageType, final Object... args) {
         String target = "server";
-        if (Config.hasOption("notifications", messageType)) {
-            final String newTarget = Config.getOption("notifications", messageType);
+        if (configManager.hasOption("notifications", messageType)) {
+            final String newTarget = configManager.getOption("notifications", messageType);
             if ("server".equals(newTarget) || "all".equals(newTarget) || "active".equals(newTarget)) {
                 target = newTarget;
             }
@@ -667,7 +685,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        final Boolean pref = Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"));
+        final Boolean pref = Boolean.parseBoolean(configManager.getOption("ui", "maximisewindows"));
         if (pref || MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);
@@ -683,7 +701,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
-        close(Config.getOption("general", "quitmessage"));
+        close(configManager.getOption("general", "quitmessage"));
     }
     
     /**

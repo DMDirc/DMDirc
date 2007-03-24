@@ -33,6 +33,7 @@ import javax.swing.event.InternalFrameListener;
 
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
@@ -238,7 +239,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      * @param internalFrameEvent frame opened event
      */
     public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        final Boolean pref = Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"));
+        final Boolean pref = Boolean.parseBoolean(server.getConfigManager().getOption("ui", "maximisewindows"));
         if (pref || MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);
@@ -357,5 +358,13 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      */
     private void clearNotification() {
         MainFrame.getMainFrame().getFrameManager().clearNotification(this);
+    }
+    
+    /**
+     * Returns this query's config manager.
+     * @return This query's config manager
+     */
+    public ConfigManager getConfigManager() {
+        return server.getConfigManager();
     }
 }

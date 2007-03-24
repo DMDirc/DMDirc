@@ -23,7 +23,6 @@
 package uk.org.ownage.dmdirc.commandparser.commands.channel;
 
 import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
@@ -56,7 +55,7 @@ public final class Kick extends ChannelCommand {
             final Channel channel, final String... args) {
         final String[] newArgs = new String[2];
         newArgs[0] = args[0]; // Nickname
-        newArgs[1] = Config.getOption("general", "kickmessage");
+        newArgs[1] = origin.getConfigManager().getOption("general", "kickmessage");
         
         CommandManager.getChannelCommand("kick").execute(origin, server, channel, newArgs);
     }

@@ -31,6 +31,7 @@ import javax.swing.ScrollPaneConstants;
 
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
+import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.ui.components.Frame;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
 
@@ -45,20 +46,19 @@ public final class ServerFrame extends Frame {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 6;
+    private static final long serialVersionUID = 7;
     
-    /**
-     * The nick list model used for this channel's nickname list.
-     */
+    /** The nick list model used for this channel's nickname list. */
     private NicklistListModel nicklistModel;
     
-    /**
-     * This channel's command parser.
-     */
+    /** This channel's command parser. */
     private ServerCommandParser commandParser;
     
     /** scrollpane. */
     private JScrollPane nickScrollPane;
+    
+    /** This frame's parent. */
+    private Server parent;
     
     /**
      * Creates a new ServerFrame.
@@ -67,11 +67,21 @@ public final class ServerFrame extends Frame {
     public ServerFrame(final Server owner) {
         super(owner);
         
+        parent = owner;
+        
         initComponents();
         
         commandParser = new ServerCommandParser((Server) getFrameParent());
         
         setInputHandler(new InputHandler(getInputField(), commandParser, this));
+    }
+    
+    /**
+     * Retrieves the config manager for this command window.
+     * @return This window's config manager
+     */    
+    public ConfigManager getConfigManager() {
+        return parent.getConfigManager();
     }
     
     /**

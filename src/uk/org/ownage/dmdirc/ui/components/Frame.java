@@ -50,7 +50,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
 import uk.org.ownage.dmdirc.BrowserLauncher;
-import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
@@ -143,15 +142,15 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         scrollBar = getScrollPane().getVerticalScrollBar();
         
         getTextPane().setBackground(ColourManager.getColour(
-                Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
+                Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
         getTextPane().setForeground(ColourManager.getColour(
-                Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
+                Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
         getInputField().setBackground(ColourManager.getColour(
-                Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
+                Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
         getInputField().setForeground(ColourManager.getColour(
-                Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
+                Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
         getInputField().setCaretColor(ColourManager.getColour(
-                Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
+                Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
     }
     
     /**
@@ -178,8 +177,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 }
                 try {
                     int frameBufferSize = Integer.MAX_VALUE;
-                    if (Config.hasOption("ui", "frameBufferSize")) {
-                        frameBufferSize = Integer.parseInt(Config.getOption("ui", "frameBufferSize"));
+                    if (parent.getConfigManager().hasOption("ui", "frameBufferSize")) {
+                        frameBufferSize = Integer.parseInt(parent.getConfigManager().getOption("ui", "frameBufferSize"));
                     }
                     final Document doc = getTextPane().getDocument();
                     if (doc.getLength() > frameBufferSize) {

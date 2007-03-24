@@ -32,6 +32,7 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.IRCParser;
@@ -148,7 +149,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        final Boolean pref = Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"));
+        final Boolean pref = Boolean.parseBoolean(server.getConfigManager().getOption("ui", "maximisewindows"));
         if (pref || MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);
@@ -261,5 +262,13 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
     public Server getServer() {
         return server;
     }
+    
+    /**
+     * Returns this raw's config manager.
+     * @return This raw's config manager
+     */
+    public ConfigManager getConfigManager() {
+        return server.getConfigManager();
+    }    
     
 }

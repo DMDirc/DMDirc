@@ -22,6 +22,8 @@
 
 package uk.org.ownage.dmdirc.commandparser;
 
+import uk.org.ownage.dmdirc.identities.ConfigManager;
+
 /**
  * A command window is a window that allows the user to input a command (that's
  * passed to a command parser). This interface includes methods that are required
@@ -48,6 +50,12 @@ public interface CommandWindow {
      * Clears the main text area of the command window.
      */
     void clear();
+    
+    /**
+     * Retrieves the config manager for this command window.
+     * @return This window's config manager
+     */
+    ConfigManager getConfigManager();
     
     /**
      * Determines if the current frame is visible.

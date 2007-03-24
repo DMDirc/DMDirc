@@ -23,7 +23,6 @@
 package uk.org.ownage.dmdirc.commandparser.commands.channel;
 
 import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
@@ -57,7 +56,7 @@ public final class PartDefault extends ChannelCommand {
     public void execute(final CommandWindow origin, final Server server, 
             final Channel channel, final String... args) {
         final ChannelCommand com = CommandManager.getChannelCommand("part");
-        com.execute(origin, server, channel, Config.getOption("general", "partmessage"));
+        com.execute(origin, server, channel, origin.getConfigManager().getOption("general", "partmessage"));
     }
     
 }

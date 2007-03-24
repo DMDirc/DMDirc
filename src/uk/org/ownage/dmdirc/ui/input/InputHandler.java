@@ -28,8 +28,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JTextField;
-
-import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
@@ -106,7 +104,7 @@ public final class InputHandler implements KeyListener, ActionListener {
             final CommandParser thisCommandParser,
             final CommandWindow thisParentWindow) {
         
-        bufferSize = Integer.parseInt(Config.getOption("ui", "inputbuffersize"));
+        bufferSize = Integer.parseInt(thisParentWindow.getConfigManager().getOption("ui", "inputbuffersize"));
         
         this.commandParser = thisCommandParser;
         this.parentWindow = thisParentWindow;
