@@ -24,8 +24,8 @@
 
 package uk.org.ownage.dmdirc.parser;
 
-// import uk.org.ownage.dmdirc.parser.callbacks.;
-// import uk.org.ownage.dmdirc.parser.callbacks.interfaces.;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnGotNetwork;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IGotNetwork;
 
 /**
  * Process ISUPPORT lines.
@@ -56,6 +56,7 @@ public class Process004005 extends IRCProcessor {
 				myParser.h005Info.put(sKey,sValue);
 				if (sKey.equals("NETWORK")) {
 					myParser.sNetworkName = sValue;
+					callGotNetwork();
 				} else if (sKey.equals("CHANTYPES")) {
 					myParser.parseChanPrefix();
 				} else if (sKey.equals("PREFIX")) {
@@ -92,6 +93,22 @@ public class Process004005 extends IRCProcessor {
 		iHandle[1] = "005";
 		return iHandle;
 	} 
+	
+	/**
+	 * Callback to all objects implementing the GotNetwork Callback.
+	 * This takes no params of its own, but works them out itself.
+	 *
+	 * @see IGotNetwork
+	 */
+	protected boolean callGotNetwork() {
+		String networkName = myParser.sNetworkName;
+		String ircdVersion = myParser.getIRCD(false);
+		String ircdType = myParser.getIRCD(true);
+		
+		CallbackOnGotNetwork cb = (CallbackOnGotNetwork)getCallbackManager().getCallbackType("OnGotNetwork");
+		if (cb != null) { return cb.call(networkName, ircdVersion, ircdType); }
+		return false;
+	}
 	
 	/**
 	 * Create a new instance of the IRCProcessor Object

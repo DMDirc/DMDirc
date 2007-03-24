@@ -1108,7 +1108,8 @@ public class IRCParser implements Runnable {
 				}
 			} else { return version; }
 		} else {
-			return "";
+			if (getType) { return "generic"; }
+			else { return ""; }
 		}
 	}
 	
