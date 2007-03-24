@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui.components;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -32,7 +33,7 @@ import java.util.TimerTask;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SpringLayout;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
@@ -68,37 +69,26 @@ public final class StatusBar extends JPanel implements MouseListener {
     /** Creates a new instance of StatusBar. */
     public StatusBar() {
         super();
-        final SpringLayout layout = new SpringLayout();
+        final BorderLayout layout = new BorderLayout(5, 5);
+        
+        setBorder(new EmptyBorder(0, 5, 5, 5));
         
         messageLabel = new JLabel();
         iconLabel = new JLabel();
         
-        add(messageLabel);
-        add(iconLabel);
-        
-        this.setLayout(layout);
-        
-        setMinimumSize(new Dimension(Short.MAX_VALUE, 30));
-        setPreferredSize(new Dimension(Short.MAX_VALUE, 30));
-        setMaximumSize(new Dimension(Short.MAX_VALUE, 30));
-        iconLabel.setPreferredSize(new Dimension(25, 25));
-        iconLabel.setMinimumSize(new Dimension(25, 25));
-        messageLabel.setMinimumSize(new Dimension(25, 25));
-        messageLabel.setPreferredSize(new Dimension(200, 25));
-        messageLabel.setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
-        
         messageLabel.setBorder(new EtchedBorder());
         iconLabel.setBorder(new EtchedBorder());
         
-        layout.putConstraint(SpringLayout.WEST, messageLabel, 5,
-                SpringLayout.WEST, this);
-        layout.putConstraint(SpringLayout.EAST, messageLabel, -5,
-                SpringLayout.WEST, iconLabel);
-        layout.putConstraint(SpringLayout.EAST, iconLabel, -5,
-                SpringLayout.EAST, this);
-        
         messageLabel.addMouseListener(this);
         iconLabel.addMouseListener(this);
+        
+        this.setLayout(layout);
+        
+        add(messageLabel, BorderLayout.CENTER);
+        add(iconLabel, BorderLayout.LINE_END);
+        
+        setPreferredSize(new Dimension(Short.MAX_VALUE, 26));
+        iconLabel.setPreferredSize(new Dimension(21, 26));
     }
     
     /**
@@ -115,14 +105,14 @@ public final class StatusBar extends JPanel implements MouseListener {
         int displayLength = 5000;
         if (Config.hasOption("statusBar", "messageDisplayLength")) {
             try {
-            displayLength = Integer.parseInt(Config.getOption("statusBar", "messageDisplayLength"));
+                displayLength = Integer.parseInt(Config.getOption("statusBar", "messageDisplayLength"));
             } catch (NumberFormatException e) {
                 Logger.error(ErrorLevel.WARNING, e);
             }
         }
         new Timer().schedule(new TimerTask() {
             public void run() {
-                setMessage("");
+                setMessage("Ready.");
             }
         }, new Date(System.currentTimeMillis() + displayLength));
     }
@@ -143,14 +133,14 @@ public final class StatusBar extends JPanel implements MouseListener {
      * @param newNotifier status error notifier to be notified for events on
      * this error
      */
-    public void setError(final ImageIcon newIcon, 
+    public void setError(final ImageIcon newIcon,
             final StatusErrorNotifier newNotifier) {
         iconLabel.setIcon(newIcon);
         errorNotifier = newNotifier;
         int displayLength = 10000;
         if (Config.hasOption("statusBar", "errorDisplayLength")) {
             try {
-            displayLength = Integer.parseInt(Config.getOption("statusBar", "errorDisplayLength"));
+                displayLength = Integer.parseInt(Config.getOption("statusBar", "errorDisplayLength"));
             } catch (NumberFormatException e) {
                 Logger.error(ErrorLevel.WARNING, e);
             }
