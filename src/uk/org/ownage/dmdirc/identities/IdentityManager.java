@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import uk.org.ownage.dmdirc.Config;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -63,12 +64,32 @@ public final class IdentityManager {
         
         final String urls[] = {"asuka", "bahamut", "hyperion"};
         
+        // Load the defaults
         for (String url : urls) {
             final URL res = cldr.getResource(base + url);
             if (res == null) {
                 Logger.error(ErrorLevel.WARNING, "Unable to load default identity: "+url);
             } else {
                 final File file = new File(res.getPath());
+                try {
+                    addIdentity(new Identity(file));
+                } catch (InvalidIdentityFileException ex) {
+                    Logger.error(ErrorLevel.WARNING, ex);
+                } catch (IOException ex) {
+                    Logger.error(ErrorLevel.ERROR, ex);
+                }
+            }
+        }
+        
+        // And load the user's identities
+        final String fs = System.getProperty("file.separator");
+        final String location = Config.getConfigDir() + "identities" + fs;
+        final File dir = new File(location);
+        
+        if (dir == null || dir.listFiles() == null) {
+            Logger.error(ErrorLevel.WARNING, "Unable to load user identity files");
+        } else {
+            for (File file : dir.listFiles()) {
                 try {
                     addIdentity(new Identity(file));
                 } catch (InvalidIdentityFileException ex) {
@@ -100,10 +121,11 @@ public final class IdentityManager {
      * @param ircd The server's ircd
      * @param network The name of the network
      * @param server The server's name
+     * @param channel The channel name (in the form channel@network)
      * @return A list of all matching config sources
      */
     public static ArrayList<ConfigSource> getSources(final String ircd,
-            final String network, final String server) {
+            final String network, final String server, final String channel) {
         
         final ArrayList<ConfigSource> sources = new ArrayList<ConfigSource>();
         
@@ -120,6 +142,9 @@ public final class IdentityManager {
                 case ConfigTarget.TYPE_SERVER:
                     comp = server;
                     break;
+                case ConfigTarget.TYPE_CHANNEL:
+                    comp = channel;
+                    break;
                 default:
                     comp = "<Unknown>";
                     break;
@@ -130,9 +155,24 @@ public final class IdentityManager {
             }
         }
         
+        sources.add(globalConfig);
+        
         Collections.sort(sources);
         
         return sources;
+    }
+    
+    /**
+     * Retrieves a list of all config sources that should be applied to the
+     * specified target.
+     * @param ircd The server's ircd
+     * @param network The name of the network
+     * @param server The server's name
+     * @return A list of all matching config sources
+     */
+    public static ArrayList<ConfigSource> getSources(final String ircd,
+            final String network, final String server) {
+        return getSources(ircd, network, server, "<Unknown>");
     }
     
 }
