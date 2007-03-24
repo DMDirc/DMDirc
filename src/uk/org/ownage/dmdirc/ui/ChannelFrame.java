@@ -35,6 +35,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
+import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
@@ -57,6 +58,12 @@ public final class ChannelFrame extends Frame {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 5;
+    
+    /** Size of the large borders in the dialog. */
+    private static final int LARGE_BORDER = 10;
+    
+    /** Size of the small borders in the dialog. */
+    private static final int SMALL_BORDER = 5;
     
     /**
      * The nick list model used for this channel's nickname list.
@@ -159,6 +166,8 @@ public final class ChannelFrame extends Frame {
         
         nickScrollPane = new JScrollPane();
         nickList = new JList();
+        nickList.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER));
         
         splitPane.setBorder(null);
         final BasicSplitPaneDivider divider =
