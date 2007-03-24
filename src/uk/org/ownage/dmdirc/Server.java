@@ -36,6 +36,7 @@ import javax.swing.event.InternalFrameListener;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
+import uk.org.ownage.dmdirc.identities.ConfigSource;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
@@ -138,7 +139,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param ssl Whether to use SSL or not
      */
     public Server(final String server, final int port, final String password,
-            final boolean ssl) {
+            final boolean ssl, final ConfigSource profile) {
         
         serverName = server;
         
@@ -157,7 +158,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         
         tabCompleter.addEntries(CommandManager.getServerCommandNames());
         
-        connect(server, port, password, ssl);
+        connect(server, port, password, ssl, profile);
     }
     
     /**
@@ -168,7 +169,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param ssl Whether to use SSL or not
      */
     public void connect(final String server, final int port, final String password,
-            final boolean ssl) {
+            final boolean ssl, final ConfigSource profile) {
         
         if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
             disconnect(configManager.getOption("general", "quitmessage"));
@@ -194,8 +195,8 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         sendNotification();
         
         final MyInfo myInfo = new MyInfo();
-        myInfo.setNickname(configManager.getOption("general", "defaultnick"));
-        myInfo.setAltNickname(configManager.getOption("general", "alternatenick"));
+        myInfo.setNickname(profile.getOption("profile", "nickname"));
+        myInfo.setRealname(profile.getOption("profile", "realname"));
         
         final ServerInfo serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);

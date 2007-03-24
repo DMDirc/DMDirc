@@ -44,6 +44,8 @@ import javax.swing.WindowConstants;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.ServerManager;
+import uk.org.ownage.dmdirc.identities.ConfigSource;
+import uk.org.ownage.dmdirc.identities.IdentityManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 
@@ -176,16 +178,18 @@ public final class NewServerDialog extends StandardDialog {
                 
                 NewServerDialog.this.setVisible(false);
                 
+                final ConfigSource profile = IdentityManager.getProfiles().get(0);
+                
                 // Open in a new window?
                 if (newServerWindowCheck.isSelected()
                 || ServerManager.getServerManager().numServers() == 0
                         || MainFrame.getMainFrame().getActiveFrame() == null) {
-                    new Server(host, port, pass, sslCheck.isSelected());
+                    new Server(host, port, pass, sslCheck.isSelected(), profile);
                 } else {
                     final JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
                     final Server server = ServerManager.getServerManager().getServerFromFrame(active);
                     if (server != null) {
-                        server.connect(host, port, pass, sslCheck.isSelected());
+                        server.connect(host, port, pass, sslCheck.isSelected(), profile);
                     } else {
                         Logger.error(ErrorLevel.ERROR, "Cannot determine active server window");
                     }
