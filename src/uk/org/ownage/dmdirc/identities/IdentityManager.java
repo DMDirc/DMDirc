@@ -62,7 +62,7 @@ public final class IdentityManager {
         
         final String base = "uk/org/ownage/dmdirc/identities/defaults/";
         
-        final String urls[] = {"asuka", "bahamut", "hyperion"};
+        final String urls[] = {"asuka", "bahamut", "hyperion", "defaultprofile"};
         
         // Load the defaults
         for (String url : urls) {
@@ -113,6 +113,22 @@ public final class IdentityManager {
         }
         
         identities.add(identity);
+    }
+    
+    /**
+     * Retrieves a list of identities that serve as profiles.
+     * @return A list of profiles
+     */
+    public static ArrayList<ConfigSource> getProfiles() {
+        final ArrayList<ConfigSource> profiles = new ArrayList<ConfigSource>();
+        
+        for (Identity identity : identities) {
+            if (identity.isProfile()) {
+                profiles.add(identity);
+            }
+        }
+        
+        return profiles;
     }
     
     /**

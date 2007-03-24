@@ -140,6 +140,14 @@ public final class Identity implements ConfigSource {
     public ConfigTarget getTarget() {
         return myTarget;
     }
+    
+    /**
+     * Returns a string representation of this object (its name).
+     * @return A string representation of this object
+     */
+    public String toString() {
+       return name; 
+    }
 
     /**
      * Compares this identity to another config source to determine which
