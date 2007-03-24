@@ -26,6 +26,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import javax.swing.ImageIcon;
 
@@ -80,6 +81,16 @@ public final class Logger {
      * @param message Error message/cause.
      */
     public static void error(final ErrorLevel level, final String message) {
+        handleError(level, new String[]{message, });
+    }
+    
+    /**
+     * Record an error message for the application, notifying the user
+     * if appropriate.
+     * @param level error level.
+     * @param message Error message/cause.
+     */
+    private static void handleError(final ErrorLevel level, final String[] message) {
         if (logWriter == null || debugWriter == null || errorWriter == null) {
             createWriters();
         }
@@ -91,7 +102,7 @@ public final class Logger {
                 errorWriter.println(formatter.format(new Date()) + ": ERROR: "
                         + level + " :" + message);
                 dialog = new FatalErrorDialog(MainFrame.getMainFrame(), true,
-                        new String[]{message});
+                        message);
                 dialog.pack();
                 dialog.setLocationRelativeTo(MainFrame.getMainFrame());
                 dialog.setVisible(true);
@@ -99,22 +110,22 @@ public final class Logger {
             case ERROR:
                 icon = new ImageIcon(ClassLoader.getSystemClassLoader()
                 .getResource("uk/org/ownage/dmdirc/res/error.png"));
-                showError(level, icon, new String[]{message, });
+                showError(level, icon, message);
                 break;
             case WARNING:
                 icon = new ImageIcon(ClassLoader.getSystemClassLoader()
                 .getResource("uk/org/ownage/dmdirc/res/warning.png"));
-                showError(level, icon, new String[]{message, });
+                showError(level, icon, message);
                 break;
             case INFO:
                 icon = new ImageIcon(ClassLoader.getSystemClassLoader()
                 .getResource("uk/org/ownage/dmdirc/res/info.png"));
-                showError(level, icon, new String[]{message, });
+                showError(level, icon, message);
                 break;
             default:
                 icon = new ImageIcon(ClassLoader.getSystemClassLoader()
                 .getResource("uk/org/ownage/dmdirc/res/error.png"));
-                showError(level, icon, new String[]{message, });
+                showError(level, icon, message);
                 break;
         }
     }
@@ -124,9 +135,19 @@ public final class Logger {
                 new ErrorDialog(MainFrame.getMainFrame(),
                 false, message));
         errorWriter.println(formatter.format(new Date()) + ": ERROR: "
-                + level + " :" + message);
+                + level + " :" + message[0]);
+        if (message.length > 1) {
+            for (int i = 1; i <= message.length; i++) {
+                errorWriter.println("\t" + message[i]);
+            }
+        }
         System.err.println(formatter.format(new Date()) + ": ERROR: "
-                + level + " :" + message);
+                + level + " :" + message[0]);
+        if (message.length > 1) {
+            for (int i = 1; i <= message.length; i++) {
+                System.err.println("\t" + message[i]);
+            }
+        }
     }
     
     /**
@@ -145,43 +166,20 @@ public final class Logger {
      * @param exception Cause of error.
      */
     public static void error(final ErrorLevel level, final Exception exception) {
+        final StackTraceElement[] stackTrace = exception.getStackTrace();
+        
         String[] message;
         int i;
         
-        if (logWriter == null || debugWriter == null || errorWriter == null) {
-            createWriters();
+        message = new String[stackTrace.length + 1];
+        message[0] = exception.toString();
+        i = 1;
+        for (StackTraceElement traceElement : stackTrace) {
+            message[i] = "\t" + traceElement.toString();
+            i++;
         }
         
-        final StackTraceElement[] stackTrace = exception.getStackTrace();
-        switch (level) {
-            case FATAL:
-                errorWriter.println(formatter.format(new Date())
-                + ": ERROR: " + level + " :" + exception);
-                message = new String[stackTrace.length + 1];
-                message[0] = exception.toString();
-                i = 1;
-                for (StackTraceElement traceElement : stackTrace) {
-                    message[i] = "\t" + traceElement.toString();
-                    errorWriter.println("\t" + traceElement);
-                    i++;
-                }
-                dialog = new FatalErrorDialog(MainFrame.getMainFrame(),
-                        true, message);
-                dialog.pack();
-                dialog.setLocationRelativeTo(MainFrame.getMainFrame());
-                dialog.setVisible(true);
-                break;
-            default:
-                System.err.println(formatter.format(new Date())
-                + ": ERROR: " + level + " :" + exception);
-                errorWriter.println(formatter.format(new Date())
-                + ": ERROR: " + level + " :" + exception);
-                for (StackTraceElement traceElement : stackTrace) {
-                    System.err.println("\t" + traceElement);
-                    errorWriter.println("\t" + traceElement);
-                }
-                break;
-        }
+        handleError(level, message);
     }
     
     /**
