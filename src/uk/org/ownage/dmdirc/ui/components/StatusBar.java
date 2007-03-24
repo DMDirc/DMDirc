@@ -83,7 +83,9 @@ public final class StatusBar extends JPanel implements MouseListener {
         setMaximumSize(new Dimension(Short.MAX_VALUE, 30));
         iconLabel.setPreferredSize(new Dimension(25, 25));
         iconLabel.setMinimumSize(new Dimension(25, 25));
-        messageLabel.setPreferredSize(new Dimension(Short.MAX_VALUE, 25));
+        messageLabel.setMinimumSize(new Dimension(25, 25));
+        messageLabel.setPreferredSize(new Dimension(200, 25));
+        messageLabel.setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
         
         messageLabel.setBorder(new EtchedBorder());
         iconLabel.setBorder(new EtchedBorder());

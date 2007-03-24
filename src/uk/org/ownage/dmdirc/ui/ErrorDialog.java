@@ -23,13 +23,13 @@
 package uk.org.ownage.dmdirc.ui;
 
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -39,19 +39,22 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
+import uk.org.ownage.dmdirc.ui.interfaces.StatusErrorNotifier;
+
 /**
  * The fatal error dialog is used to inform the user that a fatal error has
  * occured.
  * @author  chris
  */
-public final class FatalErrorDialog extends JDialog implements ActionListener {
+public final class ErrorDialog extends JDialog implements ActionListener,
+        StatusErrorNotifier {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 1;
     
     /** Size of the large borders in the dialog. */
     private static final int LARGE_BORDER = 10;
@@ -60,22 +63,19 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
     private static final int SMALL_BORDER = 5;
     
     /** button. */
-    private JButton jButton1;
+    private JButton okButton;
     
-    /** button. */
-    private JLabel jLabel1;
+    /** label. */
+    private JLabel infoLabel;
     
-    /** button. */
-    private JLabel jLabel2;
+    /** label. */
+    private JLabel detailLabel;
     
-    /** button. */
-    private JLabel jLabel3;
+    /** Scroll pane. */
+    private JScrollPane detailsScrollPane;
     
-    /** button. */
-    private JScrollPane jScrollPane1;
-    
-    /** button. */
-    private JTextArea jTextArea1;
+    /** text area. */
+    private JTextArea detailsField;
     
     /**
      * Creates a new fatal error dialog.
@@ -83,14 +83,14 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
      * @param modal Whether this dialog is modal or not
      * @param message The message (error info) to be displayed
      */
-    public FatalErrorDialog(final Frame parent, final boolean modal,
+    public ErrorDialog(final Frame parent, final boolean modal,
             final String[] message) {
         super(parent, modal);
         initComponents();
         for (String line : message) {
-            jTextArea1.append(line + "\r\n");
+            detailsField.append(line + "\r\n");
         }
-        jTextArea1.setCaretPosition(0);
+        detailsField.setCaretPosition(0);
     }
     
     /**
@@ -99,32 +99,28 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
     private void initComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
         
-        jLabel1 = new JLabel();
-        jLabel2 = new JLabel();
-        jLabel3 = new JLabel();
-        jScrollPane1 = new JScrollPane();
-        jTextArea1 = new JTextArea();
-        jButton1 = new JButton();
+        infoLabel = new JLabel();
+        detailLabel = new JLabel();
+        detailsScrollPane = new JScrollPane();
+        detailsField = new JTextArea();
+        okButton = new JButton();
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("DMDirc - an error occured");
         
-        jLabel1.setFont(new Font("Dialog", 1, 18));
-        jLabel1.setText("We're sorry...");
+        infoLabel.setText("DMDirc has encountered a error.");
         
-        jLabel2.setText("DMDirc has encountered a fatal error and cannot continue.");
+        detailLabel.setText("Error details:");
         
-        jLabel3.setText("Error details:");
+        detailsField.setColumns(20);
+        detailsField.setEditable(false);
+        detailsField.setRows(5);
+        detailsScrollPane.setViewportView(detailsField);
+        detailsScrollPane.setPreferredSize(new Dimension(700, 300));
         
-        jTextArea1.setColumns(20);
-        jTextArea1.setEditable(false);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
-        jScrollPane1.setPreferredSize(new Dimension(700, 300));
-        
-        jButton1.setText("OK");
-        jButton1.setPreferredSize(new Dimension(100, 25));
-        jButton1.addActionListener(this);
+        okButton.setText("OK");
+        okButton.setPreferredSize(new Dimension(100, 25));
+        okButton.addActionListener(this);
         
         getContentPane().setLayout(new GridBagLayout());
         
@@ -136,34 +132,32 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
-        getContentPane().add(jLabel1, constraints);
-        constraints.insets = new Insets(0, LARGE_BORDER, LARGE_BORDER, 
+        getContentPane().add(infoLabel, constraints);
+        
+        constraints.insets = new Insets(0, LARGE_BORDER, SMALL_BORDER,
                 LARGE_BORDER);
         constraints.gridy = 1;
-        getContentPane().add(jLabel2, constraints);
-        constraints.insets = new Insets(0, LARGE_BORDER, SMALL_BORDER, 
-                LARGE_BORDER);
-        constraints.gridy = 2;
-        getContentPane().add(jLabel3, constraints);
+        getContentPane().add(detailLabel, constraints);
+        
         constraints.insets = new Insets(0, LARGE_BORDER, 0, LARGE_BORDER);
         constraints.weightx = 1.0;
-        constraints.gridy = 3;
-        getContentPane().add(jScrollPane1, constraints);
+        constraints.gridy = 2;
+        getContentPane().add(detailsScrollPane, constraints);
         
         constraints.weighty = 0.0;
         constraints.gridx = 0;
-        constraints.gridy = 4;
+        constraints.gridy = 3;
         constraints.gridwidth = 1;
         getContentPane().add(Box.createHorizontalGlue(), constraints);
         
         constraints.weightx = 0.0;
-        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, 
+        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
                 LARGE_BORDER);
         constraints.gridx = 1;
         constraints.gridy = 5;
         constraints.anchor = GridBagConstraints.EAST;
         constraints.fill = GridBagConstraints.NONE;
-        getContentPane().add(jButton1, constraints);
+        getContentPane().add(okButton, constraints);
         pack();
     }
     
@@ -171,7 +165,11 @@ public final class FatalErrorDialog extends JDialog implements ActionListener {
      * Exits the program. {@inheritDoc}
      */
     public void actionPerformed(final ActionEvent actionEvent) {
-        System.exit(-1);
+        this.setVisible(false);
+    }
+
+    public void clickReceived(MouseEvent mouseEvent) {
+        this.setVisible(true);
     }
     
 }
