@@ -31,6 +31,7 @@ import java.util.Date;
 import javax.swing.JDialog;
 
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.ui.ErrorDialog;
 import uk.org.ownage.dmdirc.ui.FatalErrorDialog;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 
@@ -93,6 +94,10 @@ public final class Logger {
                 dialog.setVisible(true);
                 break;
             default:
+                MainFrame.getMainFrame().getStatusBar()
+                .setError(MainFrame.getMainFrame().getIcon(),
+                        new ErrorDialog(MainFrame.getMainFrame(),
+                        false, new String[]{message}));
                 errorWriter.println(formatter.format(new Date()) + ": ERROR: "
                         + level + " :" + message);
                 System.err.println(formatter.format(new Date()) + ": ERROR: "

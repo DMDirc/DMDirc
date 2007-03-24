@@ -113,9 +113,9 @@ public final class StatusBar extends JPanel implements MouseListener {
         messageLabel.setText(newMessage);
         messageNotifier = newNotifier;
         int displayLength = 5000;
-        if (Config.hasOption("ui", "displayLength")) {
+        if (Config.hasOption("statusBar", "messageDisplayLength")) {
             try {
-            displayLength = Integer.parseInt(Config.getOption("ui", "displayLength"));
+            displayLength = Integer.parseInt(Config.getOption("statusBar", "messageDisplayLength"));
             } catch (NumberFormatException e) {
                 Logger.error(ErrorLevel.WARNING, e);
             }
@@ -137,16 +137,38 @@ public final class StatusBar extends JPanel implements MouseListener {
     }
     
     /**
-     * sets the icon in the status bar.
+     * sets the icon in the status bar with a specified callback event.
      *
      * @param newIcon Icon to display
      * @param newNotifier status error notifier to be notified for events on
      * this error
      */
-    public void setIcon(final ImageIcon newIcon,
+    public void setError(final ImageIcon newIcon, 
             final StatusErrorNotifier newNotifier) {
         iconLabel.setIcon(newIcon);
         errorNotifier = newNotifier;
+        int displayLength = 10000;
+        if (Config.hasOption("statusBar", "errorDisplayLength")) {
+            try {
+            displayLength = Integer.parseInt(Config.getOption("statusBar", "errorDisplayLength"));
+            } catch (NumberFormatException e) {
+                Logger.error(ErrorLevel.WARNING, e);
+            }
+        }
+        new Timer().schedule(new TimerTask() {
+            public void run() {
+                setError(null);
+            }
+        }, new Date(System.currentTimeMillis() + displayLength));
+    }
+    
+    /**
+     * sets the icon in the status bar.
+     *
+     * @param newIcon Icon to display
+     */
+    public void setError(final ImageIcon newIcon) {
+        setError(newIcon, null);
     }
     
     /**

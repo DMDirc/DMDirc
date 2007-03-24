@@ -83,14 +83,14 @@ public final class ErrorDialog extends JDialog implements ActionListener,
      * @param modal Whether this dialog is modal or not
      * @param message The message (error info) to be displayed
      */
-    public ErrorDialog(final Frame parent, final boolean modal,
-            final String[] message) {
+    public ErrorDialog(final Frame parent, final boolean modal, final String[] message) {
         super(parent, modal);
         initComponents();
         for (String line : message) {
             detailsField.append(line + "\r\n");
         }
         detailsField.setCaretPosition(0);
+        setLocationRelativeTo(MainFrame.getMainFrame());
     }
     
     /**
@@ -116,7 +116,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
         detailsField.setEditable(false);
         detailsField.setRows(5);
         detailsScrollPane.setViewportView(detailsField);
-        detailsScrollPane.setPreferredSize(new Dimension(700, 300));
+        detailsScrollPane.setPreferredSize(new Dimension(400, 200));
         
         okButton.setText("OK");
         okButton.setPreferredSize(new Dimension(100, 25));
