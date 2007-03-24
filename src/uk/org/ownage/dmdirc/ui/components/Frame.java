@@ -468,8 +468,10 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         if (text.toLowerCase().startsWith("http://")
         || text.toLowerCase().startsWith("https://")
         || text.toLowerCase().startsWith("www.")) {
+            MainFrame.getMainFrame().getStatusBar().setMessage("Opening: " + text);
             BrowserLauncher.openURL(text);
-        }  else if (parent.getServer().getParser().isValidChannelName(text)) {
+        }
+        if (parent.getServer().getParser().isValidChannelName(text)) {
             if (parent.getServer().getParser().getChannelInfo(text) == null) {
                 parent.getServer().getParser().joinChannel(text);
             } else {

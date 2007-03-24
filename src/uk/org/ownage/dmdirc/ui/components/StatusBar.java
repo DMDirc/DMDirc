@@ -25,12 +25,18 @@ package uk.org.ownage.dmdirc.ui.components;
 import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.border.EtchedBorder;
+import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 
 import uk.org.ownage.dmdirc.ui.interfaces.StatusErrorNotifier;
 import uk.org.ownage.dmdirc.ui.interfaces.StatusMessageNotifier;
@@ -94,26 +100,48 @@ public final class StatusBar extends JPanel implements MouseListener {
     }
     
     /**
-     * sets the message in the status bar.
+     * sets the message in the status bar with a specified callback event.
      *
      * @param newMessage Message to display
-     * @param newNotifier status message notifier to be notified for events on 
+     * @param newNotifier status message notifier to be notified for events on
      * this message
      */
-    public void setMessage(final String newMessage, 
+    public void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier) {
         messageLabel.setText(newMessage);
         messageNotifier = newNotifier;
+        int displayLength = 5000;
+        if (Config.hasOption("ui", "displayLength")) {
+            try {
+            displayLength = Integer.parseInt(Config.getOption("ui", "displayLength"));
+            } catch (NumberFormatException e) {
+                Logger.error(ErrorLevel.WARNING, e);
+            }
+        }
+        new Timer().schedule(new TimerTask() {
+            public void run() {
+                setMessage("");
+            }
+        }, new Date(System.currentTimeMillis() + displayLength));
+    }
+    
+    /**
+     * sets the message in the status bar.
+     *
+     * @param newMessage Message to display
+     */
+    public void setMessage(final String newMessage) {
+        setMessage(newMessage, null);
     }
     
     /**
      * sets the icon in the status bar.
      *
      * @param newIcon Icon to display
-     * @param newNotifier status error notifier to be notified for events on 
+     * @param newNotifier status error notifier to be notified for events on
      * this error
      */
-    public void setIcon(final ImageIcon newIcon, 
+    public void setIcon(final ImageIcon newIcon,
             final StatusErrorNotifier newNotifier) {
         iconLabel.setIcon(newIcon);
         errorNotifier = newNotifier;
