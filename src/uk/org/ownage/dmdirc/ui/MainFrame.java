@@ -481,6 +481,7 @@ public final class MainFrame extends JFrame implements WindowListener {
         
         mainSplitPane.setDividerLocation(155);
         mainSplitPane.setResizeWeight(0);
+        mainSplitPane.setContinuousLayout(true);
         
         springLayout.putConstraint(SpringLayout.EAST, getContentPane(), 10,
                 SpringLayout.EAST, mainSplitPane);

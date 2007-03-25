@@ -302,44 +302,44 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public final void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
+    public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public final void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
+    public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public final void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
+    public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public final void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
+    public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public final void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
+    public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**
      * Activates the input field on frame focus. {@inheritDoc}
      */
-    public final void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
+    public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
         getInputField().requestFocus();
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public final void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
+    public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
     }
     
     /**

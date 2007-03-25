@@ -155,7 +155,7 @@ public final class ChannelFrame extends Frame {
     /**
      * Retrieves the config manager for this command window.
      * @return This window's config manager
-     */    
+     */
     public ConfigManager getConfigManager() {
         return parent.getConfigManager();
     }
@@ -213,6 +213,7 @@ public final class ChannelFrame extends Frame {
         splitPane.setDividerLocation(465);
         splitPane.setResizeWeight(1);
         splitPane.setDividerSize(5);
+        splitPane.setContinuousLayout(true);
         
         pack();
     }
@@ -226,5 +227,4 @@ public final class ChannelFrame extends Frame {
             new ChannelSettingsDialog((Channel) getFrameParent()).setVisible(true);
         }
     }
-    
 }

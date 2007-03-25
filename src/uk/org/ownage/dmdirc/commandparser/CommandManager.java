@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser;
 
 import java.util.ArrayList;
+import uk.org.ownage.dmdirc.Config;
 
 import uk.org.ownage.dmdirc.commandparser.commands.channel.*;
 import uk.org.ownage.dmdirc.commandparser.commands.query.*;
