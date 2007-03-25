@@ -671,7 +671,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * Called when we receive a numeric response from the server.
      * @param tParser The associated IRC parser
      * @param numeric The numeric of the message
-     * @param lines The tokenised line
+     * @param line The tokenised line
      */
     public void onNumeric(final IRCParser tParser, final int numeric,
             final String[] line) {

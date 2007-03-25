@@ -117,6 +117,12 @@ public final class NewServerDialog extends StandardDialog {
     /** combo box. */
     private JComboBox identityField;
     
+    /** label. */
+    private JLabel serverListLabel;
+    
+    /** combo box. */
+    private JComboBox serverListField;
+    
     /**
      * Creates a new instance of the dialog.
      */
@@ -217,6 +223,8 @@ public final class NewServerDialog extends StandardDialog {
         sslCheck = new JCheckBox();
         identityLabel = new JLabel();
         identityField = new JComboBox(IdentityManager.getProfiles().toArray());
+        serverListLabel = new JLabel();
+        serverListField = new JComboBox(new String[]{});
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         orderButtons(button2, button1);
@@ -237,6 +245,10 @@ public final class NewServerDialog extends StandardDialog {
         passwordLabel.setText("Password:");
         
         identityLabel.setText("Profile: ");
+        
+        serverListLabel.setText("Server: ");
+        
+        serverListField.setEnabled(false);
         
         newServerWindowCheck.setText("Open in a new server window");
         newServerWindowCheck.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -324,9 +336,24 @@ public final class NewServerDialog extends StandardDialog {
         constraints.fill = GridBagConstraints.HORIZONTAL;
         getContentPane().add(passwordField, constraints);
         
-        constraints.insets = new Insets(SMALL_BORDER, LARGE_BORDER,
+        /*constraints.insets = new Insets(SMALL_BORDER, LARGE_BORDER,
                 SMALL_BORDER, SMALL_BORDER);
         constraints.gridy = 4;
+        constraints.gridx = 0;
+        constraints.gridwidth = 1;
+        constraints.weightx = 0.0;
+        getContentPane().add(serverListLabel, constraints);
+        constraints.insets = new Insets(SMALL_BORDER, 0,
+                SMALL_BORDER, LARGE_BORDER);
+        constraints.gridx = 1;
+        constraints.gridwidth = 3;
+        constraints.weightx = 1.0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        getContentPane().add(serverListField, constraints);*/
+        
+        constraints.insets = new Insets(SMALL_BORDER, LARGE_BORDER,
+                SMALL_BORDER, SMALL_BORDER);
+        constraints.gridy = 5;
         constraints.gridx = 0;
         constraints.gridwidth = 1;
         constraints.weightx = 0.0;
@@ -341,26 +368,26 @@ public final class NewServerDialog extends StandardDialog {
         
         constraints.weightx = 0.0;
         constraints.gridwidth = 4;
-        constraints.gridy = 5;
+        constraints.gridy = 6;
         constraints.gridx = 0;
         constraints.fill = GridBagConstraints.NONE;
         constraints.insets = new Insets(SMALL_BORDER, LARGE_BORDER,
                 SMALL_BORDER, SMALL_BORDER);
         getContentPane().add(sslCheck, constraints);
         
-        constraints.gridy = 6;
+        constraints.gridy = 7;
         getContentPane().add(newServerWindowCheck, constraints);
         
-        constraints.gridy = 7;
+        constraints.gridy = 8;
         getContentPane().add(rememberPasswordCheck, constraints);
         
-        constraints.gridy = 8;
+        constraints.gridy = 9;
         getContentPane().add(autoConnectCheck, constraints);
         
         constraints.weighty = 0.0;
         constraints.weightx = 1.0;
         constraints.gridx = 0;
-        constraints.gridy = 9;
+        constraints.gridy = 10;
         constraints.gridwidth = 2;
         constraints.fill = GridBagConstraints.BOTH;
         getContentPane().add(Box.createHorizontalGlue(), constraints);

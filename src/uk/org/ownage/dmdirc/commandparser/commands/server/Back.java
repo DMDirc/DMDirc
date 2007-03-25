@@ -27,7 +27,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
 /**
- * The back command allows the user to unset their away status
+ * The back command allows the user to unset their away status.
  * @author chris
  */
 public final class Back extends ServerCommand {

@@ -27,11 +27,11 @@ package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 
 /**
- * Called when we go away, or come back
+ * Called when we go away, or come back.
  */
 public interface IAwayState extends ICallbackInterface { 
 	/**
-	 * Called when we go away, or come back
+	 * Called when we go away, or come back.
 	 *
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param currentState Set to true if we are now away, else false.

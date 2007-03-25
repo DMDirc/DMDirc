@@ -557,11 +557,11 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     }
     
     /** {@inheritDoc}. */
-    public void keyTyped(KeyEvent event) {
+    public void keyTyped(final KeyEvent event) {
     }
     
     /** {@inheritDoc}. */
-    public void keyPressed(KeyEvent event) {
+    public void keyPressed(final KeyEvent event) {
         if (event.getSource() == getTextPane()) {
             if (!Boolean.parseBoolean(Config.getOption("ui", "quickCopy"))) {
                 if ((event.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
@@ -578,7 +578,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     }
     
     /** {@inheritDoc}. */
-    public void keyReleased(KeyEvent event) {
+    public void keyReleased(final KeyEvent event) {
     }
     
 }
