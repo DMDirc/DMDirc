@@ -50,7 +50,7 @@ public abstract class CommandParser {
      * Registers the specified command with this parser.
      * @param command Command to be registered
      */
-    public void registerCommand(final Command command) {
+    public final void registerCommand(final Command command) {
         commands.put(command.getSignature(), command);
     }
     
@@ -59,7 +59,7 @@ public abstract class CommandParser {
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      */
-    public void parseCommand(final CommandWindow origin, final String line) {
+    public final void parseCommand(final CommandWindow origin, final String line) {
         if (line.length() == 0) {
             return;
         }
@@ -101,7 +101,7 @@ public abstract class CommandParser {
      * @param line The line to be parsed
      * @param usedCtrl Whether the user used the control key or not
      */
-    public void parseCommand(final CommandWindow origin, final String line, 
+    public final void parseCommand(final CommandWindow origin, final String line, 
             final boolean usedCtrl) {
         if (usedCtrl) {
             handleNonCommand(origin, line);

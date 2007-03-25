@@ -26,10 +26,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
-import javax.swing.ImageIcon;
 
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 
 import uk.org.ownage.dmdirc.Config;
@@ -130,7 +129,14 @@ public final class Logger {
         }
     }
     
-    private static void showError(ErrorLevel level, ImageIcon icon, String[] message) {
+    /**
+     * Shows the specified error.
+     * @param level The level of the error
+     * @param icon The icon to use for the status bar
+     * @param message The error message itself
+     */
+    private static void showError(final ErrorLevel level, final ImageIcon icon, 
+            final String[] message) {
         MainFrame.getMainFrame().getStatusBar().setError(icon,
                 new ErrorDialog(MainFrame.getMainFrame(),
                 false, message));

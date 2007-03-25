@@ -59,7 +59,7 @@ public abstract class Command {
      * the name, a literal "/", and the arity.
      * @return The signature of this command
      */
-    public String getSignature() {
+    public final String getSignature() {
         if (polyadic) {
             return name;
         } else {
@@ -71,7 +71,7 @@ public abstract class Command {
      * Returns whether or not this command should be shown in help messages.
      * @return True iff the command should be shown, false otherwise
      */
-    public boolean showInHelp() {
+    public final boolean showInHelp() {
         return show;
     }
     
@@ -79,7 +79,7 @@ public abstract class Command {
      * Returns a string representing the help message for this command.
      * @return the help message for this command
      */
-    public String getHelp() {
+    public final String getHelp() {
         return name + " " + arguments + " - " + description;
     }
     
@@ -89,7 +89,7 @@ public abstract class Command {
      * @param args The arguments to implode
      * @return A string containing each argument seperated by a space
      */
-    protected String implodeArgs(final int offset, final String... args) {
+    protected final String implodeArgs(final int offset, final String... args) {
         String res = "";
         for (int i = offset; i < args.length; i++) {
             if (res.length() == 0) {
@@ -106,7 +106,7 @@ public abstract class Command {
      * @param args The arguments to implode
      * @return A string containing each argument seperated by a space
      */
-    protected String implodeArgs(final String... args) {
+    protected final String implodeArgs(final String... args) {
         return implodeArgs(0, args);
     }
     
@@ -114,7 +114,7 @@ public abstract class Command {
      * Returns this command's name.
      * @return The name of this command
      */
-    public String getName() {
+    public final String getName() {
         return name;
     }
     

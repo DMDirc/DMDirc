@@ -64,6 +64,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
      * @param thisMode The mode that this panel should deal with
      * @param state The current state of the mode
      * @param value The current value of the mode
+     * @param configManager The config manager to use to get mode names
      */
     public ParamModePanel(final String thisMode, final boolean state, 
             final String value, final ConfigManager configManager) {

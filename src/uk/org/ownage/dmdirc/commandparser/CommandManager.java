@@ -179,27 +179,27 @@ public final class CommandManager {
     }
     
     /**
-     * Returns a Vector containing the server commands that have been initialised
+     * Returns a list containing the server commands that have been initialised
      * by this command manager.
-     * @return A Vector of server commands, or null if none have been loaded
+     * @return An ArrayList of server commands, or null if none have been loaded
      */
     public static ArrayList<Command> getServerCommands() {
         return serverCommands;
     }
     
     /**
-     * Returns a Vector containing the channel commands that have been initialised
+     * Returns a list containing the channel commands that have been initialised
      * by this command manager.
-     * @return A Vector of channel commands, or null if none have been loaded
+     * @return An ArrayList of channel commands, or null if none have been loaded
      */
     public static ArrayList<Command> getChannelCommands() {
         return channelCommands;
     }
     
     /**
-     * Returns a Vector containing the query commands that have been initialised
+     * Returns a list containing the query commands that have been initialised
      * by this command manager.
-     * @return A Vector of query commands, or null if none have been loaded
+     * @return An ArrayList of query commands, or null if none have been loaded
      */
     public static ArrayList<Command> getQueryCommands() {
         return queryCommands;
@@ -208,7 +208,7 @@ public final class CommandManager {
     /**
      * Returns the names (including command char) of all registered server
      * commands.
-     * @return An ArrayList<String> containing all registered server command
+     * @return An ArrayList&lt;String&gt; containing all registered server command
      * names
      */
     public static ArrayList<String> getServerCommandNames() {
@@ -222,7 +222,7 @@ public final class CommandManager {
     /**
      * Returns the names (including command char) of all registered channel
      * commands.
-     * @return An ArrayList<String> containing all registered server command
+     * @return An ArrayList&lt;String&gt; containing all registered server command
      * names
      */
     public static ArrayList<String> getChannelCommandNames() {
@@ -236,7 +236,7 @@ public final class CommandManager {
     /**
      * Returns the names (including command char) of all registered channel
      * commands.
-     * @return An ArrayList<String> containing all registered server command
+     * @return An ArrayList&lt;String&gt; containing all registered server command
      * names
      */
     public static ArrayList<String> getQueryCommandNames() {

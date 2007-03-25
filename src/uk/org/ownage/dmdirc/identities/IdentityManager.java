@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import uk.org.ownage.dmdirc.Config;
 
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 
@@ -70,7 +70,7 @@ public final class IdentityManager {
         for (String url : urls) {
             final URL res = cldr.getResource(base + url);
             if (res == null) {
-                Logger.error(ErrorLevel.WARNING, "Unable to load default identity: "+url);
+                Logger.error(ErrorLevel.WARNING, "Unable to load default identity: " + url);
             } else {
                 final File file = new File(res.getPath());
                 try {

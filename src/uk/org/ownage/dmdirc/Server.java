@@ -52,6 +52,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IGotNetwork;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDLine;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDStart;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INumeric;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
@@ -62,6 +63,7 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+import uk.org.ownage.dmdirc.ui.messages.Formatter;
 
 /**
  * The Server class represents the client's view of a server. It maintains
@@ -72,7 +74,7 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 public final class Server implements IChannelSelfJoin, IPrivateMessage,
         IPrivateAction, IErrorInfo, IPrivateCTCP, IPrivateCTCPReply,
         InternalFrameListener, ISocketClosed, IPrivateNotice, IMOTDStart,
-        IMOTDLine, IMOTDEnd, IGotNetwork, FrameContainer {
+        IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, FrameContainer {
     
     /**
      * Open channels that currently exist on the server.
@@ -137,6 +139,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param port The port to connect to
      * @param password The server password
      * @param ssl Whether to use SSL or not
+     * @param profile The profile to use
      */
     public Server(final String server, final int port, final String password,
             final boolean ssl, final ConfigSource profile) {
@@ -167,6 +170,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param port The port to connect to
      * @param password The server password
      * @param ssl Whether to use SSL or not
+     * @param profile The profile to use
      */
     public void connect(final String server, final int port, final String password,
             final boolean ssl, final ConfigSource profile) {
@@ -217,6 +221,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             parser.getCallbackManager().addCallback("OnPrivateCTCPReply", this);
             parser.getCallbackManager().addCallback("OnSocketClosed", this);
             parser.getCallbackManager().addCallback("OnGotNetwork", this);
+            parser.getCallbackManager().addCallback("OnNumeric", this);
             parser.getCallbackManager().addCallback("OnMOTDStart", this);
             parser.getCallbackManager().addCallback("OnMOTDLine", this);
             parser.getCallbackManager().addCallback("OnMOTDEnd", this);
@@ -313,6 +318,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         parser.getCallbackManager().delCallback("OnPrivateCTCPReply", this);
         parser.getCallbackManager().delCallback("OnSocketClosed", this);
         parser.getCallbackManager().delCallback("OnGotNetwork", this);
+        parser.getCallbackManager().delCallback("OnNumeric", this);
         parser.getCallbackManager().delCallback("OnMOTDStart", this);
         parser.getCallbackManager().delCallback("OnMOTDLine", this);
         parser.getCallbackManager().delCallback("OnMOTDEnd", this);
@@ -626,10 +632,10 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param ircdVersion The version of the IRCd
      * @param ircdType The type of the IRCd
      */
-    public void onGotNetwork(final IRCParser tParser, final String networkName, 
+    public void onGotNetwork(final IRCParser tParser, final String networkName,
             final String ircdVersion, final String ircdType) {
         configManager = new ConfigManager(ircdType, networkName, serverName);
-    }    
+    }
     
     /**
      * Called when the server's MOTD is starting to be sent.
@@ -659,6 +665,26 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD) {
         frame.addLine("motdEnd", "End of server's MOTD.");
         sendNotification();
+    }
+    
+    /**
+     * Called when we receive a numeric response from the server.
+     * @param tParser The associated IRC parser
+     * @param numeric The numeric of the message
+     * @param lines The tokenised line
+     */
+    public void onNumeric(final IRCParser tParser, final int numeric,
+            final String[] line) {
+        final String withIrcd = "numeric_" + tParser.getIRCD(true) + "_" + numeric;
+        final String sansIrcd = "numeric_" + numeric;
+        
+        if (Formatter.hasFormat(withIrcd)) {
+            frame.addLine(withIrcd, (Object[]) line);
+        } else if (Formatter.hasFormat(sansIrcd)) {
+            frame.addLine(sansIrcd, (Object[]) line);
+        } else if (Formatter.hasFormat("numeric_unknown")) {
+            frame.addLine("numeric_unknown", (Object[]) line);
+        }
     }
     
     /**

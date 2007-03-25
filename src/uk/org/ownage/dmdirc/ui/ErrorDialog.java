@@ -168,7 +168,11 @@ public final class ErrorDialog extends JDialog implements ActionListener,
         this.setVisible(false);
     }
 
-    public void clickReceived(MouseEvent mouseEvent) {
+    /**
+     * Called when the user clicks on the status notifier.
+     * @param mouseEvent The event that triggered this callback
+     */
+    public void clickReceived(final MouseEvent mouseEvent) {
         MainFrame.getMainFrame().getStatusBar().clearError();
         this.setVisible(true);
     }

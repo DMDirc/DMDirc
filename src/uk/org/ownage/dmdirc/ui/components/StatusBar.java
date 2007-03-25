@@ -36,10 +36,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
-
 import uk.org.ownage.dmdirc.ui.interfaces.StatusErrorNotifier;
 import uk.org.ownage.dmdirc.ui.interfaces.StatusMessageNotifier;
 

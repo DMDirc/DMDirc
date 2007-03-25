@@ -28,8 +28,9 @@ import java.util.ArrayList;
  * The config manager manages the various config sources for each entity.
  * @author chris
  */
-public class ConfigManager {
-    
+public final class ConfigManager {
+
+    /** A list of sources for this config manager. */
     private ArrayList<ConfigSource> sources;
     
     /**
