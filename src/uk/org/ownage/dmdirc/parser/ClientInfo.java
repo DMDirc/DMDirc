@@ -139,7 +139,10 @@ public class ClientInfo {
 	 *
 	 * @param bNewState Boolean representing state. true = away, false = here
 	 */	
-	protected void setAwayState(final boolean bNewState) { bIsAway = bNewState; }
+	protected void setAwayState(final boolean bNewState) {
+		bIsAway = bNewState;
+		if (!bIsAway) { myAwayReason = ""; }
+	}
 	/**
 	 * Get the away state of a user.
 	 *
@@ -156,7 +159,7 @@ public class ClientInfo {
 	/**
 	 * Set the Away Reason for this user.
 	 *
-	 * @param newValue new Known away reason for user.
+	 * @param newValue new away reason for user.
 	 */
 	protected void setAwayReason(String newValue) { myAwayReason = newValue; }
 	
