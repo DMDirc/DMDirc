@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.ui.components;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Date;
@@ -78,6 +79,8 @@ public final class StatusBar extends JPanel implements MouseListener {
         
         messageLabel = new JLabel();
         iconLabel = new JLabel();
+        
+        messageLabel.setFont(messageLabel.getFont().deriveFont(Font.PLAIN));
         
         messageLabel.setBorder(new EtchedBorder());
         iconLabel.setBorder(new EtchedBorder());

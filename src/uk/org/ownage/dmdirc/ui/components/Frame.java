@@ -27,6 +27,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
@@ -50,6 +52,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
 import uk.org.ownage.dmdirc.BrowserLauncher;
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
@@ -67,7 +70,7 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
  */
 public abstract class Frame extends JInternalFrame implements CommandWindow,
         PropertyChangeListener, InternalFrameListener,
-        MouseListener, ActionListener {
+        MouseListener, ActionListener, KeyListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -240,8 +243,10 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         setScrollPane(new JScrollPane());
         setInputField(new JTextField());
         setTextPane(new JTextPane());
-
+        
         getTextPane().addMouseListener(this);
+        getTextPane().addKeyListener(this);
+        getScrollPane().addKeyListener(this);
         getInputField().addMouseListener(this);
         
         popup = new JPopupMenu();
@@ -491,11 +496,6 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Not needed for this class. {@inheritDoc}
      */
     public void mouseReleased(final MouseEvent mouseEvent) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                getInputField().grabFocus();
-            }
-        });
         processMouseEvent(mouseEvent);
     }
     
@@ -521,14 +521,16 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             getPopup().show(this, (int) point.getX(), (int) point.getY());
         } else if (e.isPopupTrigger() && e.getSource() == getInputField()) {
             inputFieldPopup.show(this, e.getX(), e.getY() + getInputField().getY());
+        } else if (e.getSource() == getTextPane()) {
+            getTextPane().requestFocus();
+        } else if (e.getSource() == getInputField()) {
+            getInputField().requestFocus();
         } else {
             super.processMouseEvent(e);
         }
     }
     
-    /**
-     * {@inheritDoc}.
-     */
+    /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent actionEvent) {
         if (actionEvent.getSource() == copyMI) {
             getTextPane().copy();
@@ -547,6 +549,31 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     public final JPopupMenu getPopup() {
         return popup;
+    }
+    
+    /** {@inheritDoc}. */
+    public void keyTyped(KeyEvent event) {
+    }
+    
+    /** {@inheritDoc}. */
+    public void keyPressed(KeyEvent event) {
+        if (event.getSource() == getTextPane()) {
+            if (!Boolean.parseBoolean(Config.getOption("ui", "quickCopy"))) {
+                if ((event.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
+                    if (event.getKeyCode() == KeyEvent.VK_C) {
+                        getTextPane().copy();
+                    }
+                } else {
+                    getInputField().requestFocus();
+                }
+            } else {
+                getInputField().requestFocus();
+            }
+        }
+    }
+    
+    /** {@inheritDoc}. */
+    public void keyReleased(KeyEvent event) {
     }
     
 }
