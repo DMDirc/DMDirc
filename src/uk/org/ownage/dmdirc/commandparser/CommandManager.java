@@ -71,6 +71,7 @@ public final class CommandManager {
         channelCommands.add(new KickEmpty());
         channelCommands.add(new KickReason());
         channelCommands.add(new ChannelSettings());
+        channelCommands.add(new ShowTopic());
         
         serverCommands = new ArrayList<Command>();
         
@@ -82,9 +83,9 @@ public final class CommandManager {
         serverCommands.add(new LoadFormatter());
         serverCommands.add(new Quit());
         serverCommands.add(new QuitDefault());
-        serverCommands.add(new ShowTopic());
         serverCommands.add(new Raw());
         serverCommands.add(new Clear());
+        serverCommands.add(new Motd());
         
         queryCommands = new ArrayList<Command>();
         

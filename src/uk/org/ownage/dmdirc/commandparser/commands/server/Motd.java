@@ -27,21 +27,20 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
 /**
- * The raw command allows the user to send a raw line of text directly to the
- * irc server.
+ * The MOTD command allows the user to retrieve the MOTD for the server.
  * @author chris
  */
-public final class Raw extends ServerCommand {
+public final class Motd extends ServerCommand {
     
     /**
-     * Creates a new instance of Raw.
+     * Creates a new instance of Motd.
      */
-    public Raw() {
-        description = "Sends a line of text directly to the IRC sServer";
-        arguments = "<raw command>";
-        polyadic = true;
+    public Motd() {
+        description = "Retrieves the server's MOTD";
+        arguments = "";
+        polyadic = false;
         arity = 0;
-        name = "raw";
+        name = "motd";
         show = true;
     }
     
@@ -55,8 +54,7 @@ public final class Raw extends ServerCommand {
             final String... args) {
         final String line = implodeArgs(args);
         
-        server.getParser().sendLine(line);
-        origin.addLine("rawCommand", line);
+        server.getParser().sendLine("MOTD");
     }
     
 }
