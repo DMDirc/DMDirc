@@ -24,8 +24,9 @@
 
 package uk.org.ownage.dmdirc.parser;
 
-// import uk.org.ownage.dmdirc.parser.callbacks.;
-// import uk.org.ownage.dmdirc.parser.callbacks.interfaces.;
+import uk.org.ownage.dmdirc.parser.ClientInfo;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnAwayState;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IAwayState;
 
 /**
  * Process an Away/Back message.
@@ -38,7 +39,27 @@ public class ProcessAway extends IRCProcessor {
 	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
-		myParser.cMyself.setAwayState(sParam.equals("306"));
+		if (sParam.equals("301")) {
+			ClientInfo iClient = myParser.getClientInfo(token[3]);
+			if (iClient != null) { iClient.setAwayReason(token[token.length-1]); }
+		} else {
+			myParser.cMyself.setAwayState(sParam.equals("306"));
+			callAwayState(sParam.equals("306"), myParser.cMyself.getAwayReason());
+		}
+	}
+	
+	/**
+	 * Callback to all objects implementing the onAwayState Callback.
+	 *
+	 * @see IAwayState
+	 * @param currentState Set to true if we are now away, else false.
+	 * @param reason Best guess at away reason
+	 * @return true if a method was called, false otherwise
+	 */
+	protected boolean callAwayState(boolean currentState, String reason) {
+		CallbackOnAwayState cb = (CallbackOnAwayState)myParser.getCallbackManager().getCallbackType("OnAwayState");
+		if (cb != null) { return cb.call(currentState, reason); }
+		return false;
 	}
 	
 	/**
@@ -47,9 +68,10 @@ public class ProcessAway extends IRCProcessor {
 	 * @return String[] with the names of the tokens we handle.
 	 */
 	public String[] handles() {
-		String[] iHandle = new String[2];
-		iHandle[0] = "305";
-		iHandle[1] = "306";
+		String[] iHandle = new String[3];
+		iHandle[0] = "301"; // Whois Away
+		iHandle[1] = "305";
+		iHandle[2] = "306";
 		return iHandle;
 	} 
 	

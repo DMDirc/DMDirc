@@ -567,21 +567,35 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param line Line to send (\r\n termination is added automatically)
 	 */
-	public void sendLine(String line) {
-		if (out == null) { return; }
-		callDataOut(line,false);
-		out.printf("%s\r\n",line);
-	}
+	public void sendLine(String line) { doSendString(line,false); }
 	
 	/** 
 	 * Send a line to the server and add proper line ending.
 	 *
 	 * @param line Line to send (\r\n termination is added automatically)
 	 */
-	protected void sendString(String line) {
+	protected void sendString(String line) { doSendString(line,true); }
+	
+	/** 
+	 * Send a line to the server and add proper line ending.
+	 *
+	 * @param line Line to send (\r\n termination is added automatically)
+	 * @param fromParser is this line from the parser? (used for callDataOut)
+	 */
+	protected void doSendString(String line, boolean fromParser) {
 		if (out == null) { return; }
-		callDataOut(line,true);
+		callDataOut(line,fromParser);
 		out.printf("%s\r\n",line);
+		String[] newLine = tokeniseLine(line);
+		if (newLine[0].equalsIgnoreCase("away")) {
+			if (newLine.length > 1) {
+				// AWAY blah blah blah
+				// 01234^-5
+				cMyself.setAwayReason(line.substring(5));
+			} else {
+				cMyself.setAwayReason("");
+			}
+		}
 	}
 	
 	/**

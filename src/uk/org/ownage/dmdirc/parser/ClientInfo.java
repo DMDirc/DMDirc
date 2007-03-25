@@ -43,6 +43,8 @@ public class ClientInfo {
 	private String sHost = "";
 	/** Known user modes of client. */
 	private int nModes = 0;
+	/** Known Away Reason of client. */
+	private String myAwayReason = "";
 	/** Known away state for client. */
 	private boolean bIsAway = false;
 	/** Reference to the parser object that owns this channel, Used for modes. */
@@ -137,7 +139,7 @@ public class ClientInfo {
 	 *
 	 * @param bNewState Boolean representing state. true = away, false = here
 	 */	
-	public void setAwayState(final boolean bNewState) { bIsAway = bNewState; }
+	protected void setAwayState(final boolean bNewState) { bIsAway = bNewState; }
 	/**
 	 * Get the away state of a user.
 	 *
@@ -146,11 +148,24 @@ public class ClientInfo {
 	public boolean getAwayState() { return bIsAway; }
 	
 	/**
+	 * Get the Away Reason for this user.
+	 *
+	 * @return Known away reason for user.
+	 */
+	public String getAwayReason() { return myAwayReason; }
+	/**
+	 * Set the Away Reason for this user.
+	 *
+	 * @param newValue new Known away reason for user.
+	 */
+	protected void setAwayReason(String newValue) { myAwayReason = newValue; }
+	
+	/**
 	 * Set the user modes (as an integer).
 	 *
 	 * @param nNewMode new integer representing channel modes. (Boolean only)
 	 */	
-	public void setUserMode(final int nNewMode) { nModes = nNewMode; }
+	protected void setUserMode(final int nNewMode) { nModes = nNewMode; }
 	/**
 	 * Get the user modes (as an integer).
 	 *

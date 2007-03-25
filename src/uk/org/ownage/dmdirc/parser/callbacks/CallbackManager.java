@@ -52,6 +52,7 @@ public final class CallbackManager {
 	public CallbackManager(final IRCParser parser) {
 		myParser = parser;
 		// Add callbacks
+		addCallbackType(new CallbackOnAwayState(myParser, this));
 		addCallbackType(new CallbackOnChannelAction(myParser, this));
 		addCallbackType(new CallbackOnChannelCTCP(myParser, this));
 		addCallbackType(new CallbackOnChannelCTCPReply(myParser, this));
