@@ -80,6 +80,7 @@ public final class CallbackManager {
 		addCallbackType(new CallbackOnNickChanged(myParser, this));
 		addCallbackType(new CallbackOnNickInUse(myParser, this));
 		addCallbackType(new CallbackOnNoticeAuth(myParser, this));
+		addCallbackType(new CallbackOnNumeric(myParser, this));
 		addCallbackType(new CallbackOnPrivateAction(myParser, this));
 		addCallbackType(new CallbackOnPrivateCTCP(myParser, this));
 		addCallbackType(new CallbackOnPrivateCTCPReply(myParser, this));
