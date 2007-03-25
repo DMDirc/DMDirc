@@ -40,7 +40,7 @@ public final class KickEmpty extends ChannelCommand {
         polyadic = false;
         arity = 0;
         name = "kick";
-        show = true;
+        show = false;
     }
     
     /**
