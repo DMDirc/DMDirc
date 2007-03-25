@@ -530,7 +530,7 @@ public class ChannelSettingsDialog extends StandardDialog
             final JList list = (JList) listModesPanels.get(selectedIndex)
             .getComponent(0);
             for (Object mode : list.getSelectedValues()) {
-                list.remove(listModesArray[selectedIndex]);
+                ((DefaultListModel) list.getModel()).removeElement(mode);
                 channel.getChannelInfo().alterMode(false,
                         listModesArray[selectedIndex],
                         mode.toString());

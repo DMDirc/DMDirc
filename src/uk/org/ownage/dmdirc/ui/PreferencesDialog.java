@@ -289,8 +289,10 @@ public final class PreferencesDialog extends StandardDialog
                 OptionType.CHECKBOX);
         addComponent(panel, "channel.splitusermodes", "Split user modes: ",
                 OptionType.CHECKBOX);
+        addComponent(panel, "ui.quickCopy", "Quick Copy: ",
+                OptionType.CHECKBOX);
         
-        layoutGrid(panel, 6, 2, SMALL_BORDER, SMALL_BORDER,
+        layoutGrid(panel, 7, 2, SMALL_BORDER, SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
         
         cardLayoutPanel.add(panel, "GUI");

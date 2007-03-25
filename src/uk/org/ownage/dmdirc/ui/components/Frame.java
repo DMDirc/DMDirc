@@ -496,6 +496,11 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Not needed for this class. {@inheritDoc}
      */
     public void mouseReleased(final MouseEvent mouseEvent) {
+        if (Boolean.parseBoolean(Config.getOption("ui", "quickCopy"))) {
+            getTextPane().copy();
+            getTextPane().setCaretPosition(getTextPane().getCaretPosition());
+            getTextPane().moveCaretPosition(getTextPane().getCaretPosition());
+        }
         processMouseEvent(mouseEvent);
     }
     
