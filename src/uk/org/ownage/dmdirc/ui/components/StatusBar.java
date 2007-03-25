@@ -121,7 +121,7 @@ public final class StatusBar extends JPanel implements MouseListener {
         }
         new Timer().schedule(new TimerTask() {
             public void run() {
-                clearError();
+                clearMessage();
             }
         }, new Date(System.currentTimeMillis() + displayLength));
     }
