@@ -178,7 +178,7 @@ public final class NewServerDialog extends StandardDialog {
                 
                 NewServerDialog.this.setVisible(false);
                 
-                final ConfigSource profile = IdentityManager.getProfiles().get(0);
+                final ConfigSource profile = (ConfigSource) identityField.getSelectedItem();
                 
                 // Open in a new window?
                 if (newServerWindowCheck.isSelected()
@@ -216,7 +216,7 @@ public final class NewServerDialog extends StandardDialog {
         button2 = new JButton();
         sslCheck = new JCheckBox();
         identityLabel = new JLabel();
-        identityField = new JComboBox(new String[]{"Default", });
+        identityField = new JComboBox(IdentityManager.getProfiles().toArray());
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         orderButtons(button2, button1);
@@ -236,9 +236,7 @@ public final class NewServerDialog extends StandardDialog {
         
         passwordLabel.setText("Password:");
         
-        identityLabel.setText("Identity: ");
-        
-        identityField.setEnabled(false);
+        identityLabel.setText("Profile: ");
         
         newServerWindowCheck.setText("Open in a new server window");
         newServerWindowCheck.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
