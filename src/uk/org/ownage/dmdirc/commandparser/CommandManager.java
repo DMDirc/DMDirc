@@ -70,6 +70,8 @@ public final class CommandManager {
         channelCommands.add(new Kick());
         channelCommands.add(new KickEmpty());
         channelCommands.add(new KickReason());
+        channelCommands.add(new Ban());
+        channelCommands.add(new BanEmpty());
         channelCommands.add(new ChannelSettings());
         channelCommands.add(new ShowTopic());
         

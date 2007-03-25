@@ -23,25 +23,26 @@
 package uk.org.ownage.dmdirc.commandparser.commands.channel;
 
 import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /**
- * The kick/0 command informs the user of the correct usage of /kick.
+ * The kick command bans a specified user or host from the channel.
  * @author chris
  */
-public final class KickEmpty extends ChannelCommand {
+public final class Ban extends ChannelCommand {
     
-    /** Creates a new instance of KickEmpty. */
-    public KickEmpty() {
-        description = "informs the user of the kick command";
-        arguments = "";
+    /** Creates a new instance of Ban. */
+    public Ban() {
+        description = "bans the specified user or host from the channel";
+        arguments = "<user|host>";
         polyadic = false;
-        arity = 0;
-        name = "kick";
-        show = false;
+        arity = 1;
+        name = "ban";
+        show = true;
     }
     
     /**
@@ -53,7 +54,15 @@ public final class KickEmpty extends ChannelCommand {
      */
     public void execute(final CommandWindow origin, final Server server, 
             final Channel channel, final String... args) {
-        origin.addLine("Usage: " + Config.getOption("general", "commandchar") + "kick <user> [reason]");
+
+        String host = args[0];
+        final ChannelClientInfo user = channel.getChannelInfo().getUser(args[0]);
+        if (user != null && user.getClient().getHost().length() > 0) {
+            // TODO: Customisable ban masks, somehow.
+            host = "*!*@" + user.getClient().getHost();
+        }
+        
+        server.getParser().sendLine("MODE " + channel + " +b " + host);
     }
     
 }

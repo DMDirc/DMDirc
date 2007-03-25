@@ -29,14 +29,14 @@ import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 
 /**
- * The kick/0 command informs the user of the correct usage of /kick.
+ * The ban/0 command informs the user of the correct usage of /ban.
  * @author chris
  */
-public final class KickEmpty extends ChannelCommand {
+public final class BanEmpty extends ChannelCommand {
     
-    /** Creates a new instance of KickEmpty. */
-    public KickEmpty() {
-        description = "informs the user of the kick command";
+    /** Creates a new instance of BanEmpty. */
+    public BanEmpty() {
+        description = "informs the user of the ban command";
         arguments = "";
         polyadic = false;
         arity = 0;
@@ -53,7 +53,7 @@ public final class KickEmpty extends ChannelCommand {
      */
     public void execute(final CommandWindow origin, final Server server, 
             final Channel channel, final String... args) {
-        origin.addLine("Usage: " + Config.getOption("general", "commandchar") + "kick <user> [reason]");
+        origin.addLine("Usage: " + Config.getOption("general", "commandchar") + "ban <user|host>");
     }
     
 }
