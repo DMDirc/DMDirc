@@ -95,6 +95,9 @@ public final class StatusBar extends JPanel implements MouseListener {
         
         normalIcon = new ImageIcon(this.getClass()
         .getClassLoader().getResource("uk/org/ownage/dmdirc/res/normal.png"));
+        
+        clearMessage();
+        clearError();
     }
     
     /**
@@ -118,7 +121,7 @@ public final class StatusBar extends JPanel implements MouseListener {
         }
         new Timer().schedule(new TimerTask() {
             public void run() {
-                setMessage("Ready.");
+                clearError();
             }
         }, new Date(System.currentTimeMillis() + displayLength));
     }
@@ -130,6 +133,13 @@ public final class StatusBar extends JPanel implements MouseListener {
      */
     public void setMessage(final String newMessage) {
         setMessage(newMessage, null);
+    }
+    
+    /**
+     * Removes the message from the status bar.
+     */
+    public void clearMessage() {
+        setMessage("Ready.");
     }
     
     /**
