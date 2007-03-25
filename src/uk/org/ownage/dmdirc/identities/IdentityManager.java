@@ -64,6 +64,8 @@ public final class IdentityManager {
         
         final String urls[] = {"asuka", "bahamut", "hyperion", "defaultprofile"};
         
+        identities = new ArrayList<Identity>();
+        
         // Load the defaults
         for (String url : urls) {
             final URL res = cldr.getResource(base + url);
@@ -107,11 +109,7 @@ public final class IdentityManager {
      * Adds the specific identity to this manager.
      * @param identity The identity to be added
      */
-    public static void addIdentity(final Identity identity) {
-        if (identities == null) {
-            identities = new ArrayList<Identity>();
-        }
-        
+    public static void addIdentity(final Identity identity) {        
         identities.add(identity);
     }
     
@@ -121,6 +119,10 @@ public final class IdentityManager {
      */
     public static ArrayList<ConfigSource> getProfiles() {
         final ArrayList<ConfigSource> profiles = new ArrayList<ConfigSource>();
+        
+        if (identities == null) {
+            load();
+        }
         
         for (Identity identity : identities) {
             if (identity.isProfile()) {
