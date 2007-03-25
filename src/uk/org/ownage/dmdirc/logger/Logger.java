@@ -137,14 +137,14 @@ public final class Logger {
         errorWriter.println(formatter.format(new Date()) + ": ERROR: "
                 + level + " :" + message[0]);
         if (message.length > 1) {
-            for (int i = 1; i <= message.length; i++) {
+            for (int i = 1; i < message.length; i++) {
                 errorWriter.println("\t" + message[i]);
             }
         }
         System.err.println(formatter.format(new Date()) + ": ERROR: "
                 + level + " :" + message[0]);
         if (message.length > 1) {
-            for (int i = 1; i <= message.length; i++) {
+            for (int i = 1; i < message.length; i++) {
                 System.err.println("\t" + message[i]);
             }
         }
