@@ -23,6 +23,8 @@
  */
 
 package uk.org.ownage.dmdirc.parser;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INumeric;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnNumeric;
 import java.util.Hashtable;
 import java.util.Enumeration;
 
@@ -217,9 +219,29 @@ public class ProcessingManager {
 			ParserError ei = new ParserError(ParserError.ERROR_WARNING,"Exception in Parser. [Param: "+sParam+"] [Processor: "+messageProcessor+"] [Line: "+line.toString().trim()+"]");
 			ei.setException(e);
 			myParser.callErrorInfo(ei);
+		} finally {
+			// Try to call callNumeric. We don't want this to work if sParam is a non
+			// integer param, hense the empty catch
+			try {
+				callNumeric(Integer.parseInt(sParam), token);
+			} catch (NumberFormatException e) { }	
 		}
 	}
-		
+
+	/**
+	 * Callback to all objects implementing the onNumeric Callback.
+	 *
+	 * @see INumeric
+	 * @param numeric What numeric is this for
+	 * @param token IRC Tokenised line
+	 * @return true if a method was called, false otherwise
+	 */
+	protected boolean callNumeric(int numeric, String[] token) {
+		CallbackOnNumeric cb = (CallbackOnNumeric)myParser.getCallbackManager().getCallbackType("OnNumeric");
+		if (cb != null) { return cb.call(numeric, token); }
+		return false;
+	}
+
 	
 	/**
 	 * Get SVN Version information.
