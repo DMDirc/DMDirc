@@ -202,6 +202,7 @@ public final class Formatter {
         
         // Type: Miscellaneous
         //    1: Miscellaneous data
+        defaultProperties.setProperty("channelNoTopic", colour + "3* There is no topic set for %1$s.");
         defaultProperties.setProperty("rawCommand", colour + "10 >>> %1$s");
         defaultProperties.setProperty("socketClosed", colour + "2 -!- You have been disconnected from the server.");
         defaultProperties.setProperty("motdStart", colour + "10%1$s");

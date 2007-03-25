@@ -82,6 +82,7 @@ public final class CommandManager {
         serverCommands.add(new LoadFormatter());
         serverCommands.add(new Quit());
         serverCommands.add(new QuitDefault());
+        serverCommands.add(new ShowTopic());
         serverCommands.add(new Raw());
         serverCommands.add(new Clear());
         
@@ -256,7 +257,7 @@ public final class CommandManager {
         final ArrayList<String> res = new ArrayList<String>();
         
         for (Command command : source) {
-            res.add(command.getName());
+            res.add(Config.getOption("general", "commandchar") + command.getName());
         }
         
         return res;
