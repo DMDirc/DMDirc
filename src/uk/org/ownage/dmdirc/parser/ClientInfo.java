@@ -48,7 +48,7 @@ public class ClientInfo {
 	/** Known away state for client. */
 	private boolean bIsAway = false;
 	/** Reference to the parser object that owns this channel, Used for modes. */
-	private IRCParser myParser; // Reference to parser object that owns this channel. Used for Modes
+	private IRCParser myParser;
 
 	/**
 	 * Get a nickname of a user from a hostmask.
@@ -136,6 +136,7 @@ public class ClientInfo {
 	
 	/**
 	 * Set the away state of a user.
+	 * Automatically sets away reason to "" if set to false
 	 *
 	 * @param bNewState Boolean representing state. true = away, false = here
 	 */	
@@ -158,6 +159,7 @@ public class ClientInfo {
 	public String getAwayReason() { return myAwayReason; }
 	/**
 	 * Set the Away Reason for this user.
+	 * Automatically set to "" if awaystate is set to false
 	 *
 	 * @param newValue new away reason for user.
 	 */

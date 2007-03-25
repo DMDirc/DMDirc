@@ -592,8 +592,6 @@ public class IRCParser implements Runnable {
 				// AWAY blah blah blah
 				// 01234^-5
 				cMyself.setAwayReason(line.substring(5));
-			} else {
-				cMyself.setAwayReason("");
 			}
 		}
 	}
