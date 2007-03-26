@@ -30,6 +30,8 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import uk.org.ownage.dmdirc.Query;
+import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.commandparser.QueryCommandParser;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.ui.components.Frame;
@@ -82,6 +84,22 @@ public final class QueryFrame extends Frame {
      */
     public ConfigManager getConfigManager() {
         return parent.getServer().getConfigManager();
+    }
+    
+    /**
+     * Retrieves the command Parser for this command window.
+     * @return This window's command Parser
+     */
+    public CommandParser getCommandParser() {
+        return commandParser;
+    }
+    
+    /**
+     * Retrieves the server associated with this command window.
+     * @return This window's associated server instance
+     */
+    public Server getServer() {
+        return parent.getServer();
     }
     
     /**

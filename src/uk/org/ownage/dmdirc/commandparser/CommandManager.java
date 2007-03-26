@@ -89,6 +89,7 @@ public final class CommandManager {
         serverCommands.add(new Clear());
         serverCommands.add(new Motd());
         serverCommands.add(new Away());
+        serverCommands.add(new ConfigInfo());
         serverCommands.add(new Back());
         
         queryCommands = new ArrayList<Command>();

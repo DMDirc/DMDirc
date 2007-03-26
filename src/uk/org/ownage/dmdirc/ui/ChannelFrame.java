@@ -40,7 +40,9 @@ import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
+import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.ui.components.Frame;
@@ -110,6 +112,14 @@ public final class ChannelFrame extends Frame {
     }
     
     /**
+     * Retrieves the command Parser for this command window.
+     * @return This window's command Parser
+     */
+    public CommandParser getCommandParser() {
+        return commandParser;
+    }
+    
+    /**
      * Updates the list of clients on this channel.
      * @param newNames The new list of clients
      */
@@ -158,6 +168,14 @@ public final class ChannelFrame extends Frame {
      */
     public ConfigManager getConfigManager() {
         return parent.getConfigManager();
+    }
+    
+    /**
+     * Retrieves the server associated with this command window.
+     * @return This window's associated server instance
+     */
+    public Server getServer() {
+        return parent.getServer();
     }
     
     /**

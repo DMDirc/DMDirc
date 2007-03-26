@@ -83,7 +83,7 @@ public final class ConfigTarget implements Comparable {
     /**
      * Sets this target to target a channel.
      * @param channel The channel to target, in the form of channel@network
-     */    
+     */
     public void setChannel(final String channel) {
         type = TYPE_CHANNEL;
         data = channel;
@@ -113,6 +113,27 @@ public final class ConfigTarget implements Comparable {
      */
     public int compareTo(final Object target) {
         return type - ((ConfigTarget) target).getType();
+    }
+    
+    /**
+     * Returns a string representation of this object.
+     * @return A string representation of this object
+     */
+    public String toString() {
+        switch (type) {
+            case TYPE_GLOBAL:
+                return "Global config";
+            case TYPE_IRCD:
+                return "Ircd specific: " + data;
+            case TYPE_NETWORK:
+                return "Network specific: " + data;
+            case TYPE_SERVER:
+                return "Server specific: " + data;
+            case TYPE_CHANNEL:
+                return "Channel specific: " + data;
+            default:
+                return "Unknown";
+        }
     }
     
 }

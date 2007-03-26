@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * @author chris
  */
 public final class ConfigManager {
-
+    
     /** A list of sources for this config manager. */
     private ArrayList<ConfigSource> sources;
     
@@ -78,7 +78,7 @@ public final class ConfigManager {
      * @param domain The domain of the option
      * @param option The name of the option
      * @return True iff the option exists, false otherwise.
-     */    
+     */
     public boolean hasOption(final String domain, final String option) {
         for (ConfigSource source : sources) {
             if (source.hasOption(domain, option)) {
@@ -87,5 +87,13 @@ public final class ConfigManager {
         }
         
         return false;
+    }
+    
+    /**
+     * Retrieves a list of sources for this config manager.
+     * @return This config manager's sources.
+     */
+    public ArrayList<ConfigSource> getSources() {
+        return sources;
     }
 }

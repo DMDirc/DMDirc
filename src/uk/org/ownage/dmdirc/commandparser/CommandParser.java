@@ -71,10 +71,28 @@ public abstract class CommandParser {
             
             assert args.length > 0;
             
+            if (args.length >= 2 && origin.getServer().getParser().isValidChannelName(args[1])) {
+                if (origin.getServer().hasChannel(args[1])) {
+                    
+                    String newLine = "";
+                    for (int i = 0; i < args.length; i++) {
+                        if (i == 1) { continue; }
+                        newLine = newLine + " " + args[i];
+                    }
+                    newLine = newLine.substring(1);
+                    
+                    origin.getServer().getChannel(args[1]).getFrame().getCommandParser().parseCommand(origin, newLine);
+                    
+                    return;
+                } else {
+                    // Do something haxy involving external commands here...
+                }
+            }
+            
             command = args[0].substring(1);
             
             comargs = new String[args.length - 1];
-
+            
             System.arraycopy(args, 1, comargs, 0, args.length - 1);
             
             final String signature = command + "/" + (comargs.length);
@@ -101,7 +119,7 @@ public abstract class CommandParser {
      * @param line The line to be parsed
      * @param usedCtrl Whether the user used the control key or not
      */
-    public final void parseCommand(final CommandWindow origin, final String line, 
+    public final void parseCommand(final CommandWindow origin, final String line,
             final boolean usedCtrl) {
         if (usedCtrl) {
             handleNonCommand(origin, line);
@@ -116,7 +134,7 @@ public abstract class CommandParser {
      * @param command The command to be executed
      * @param args The arguments to the command
      */
-    protected abstract void executeCommand(final CommandWindow origin, 
+    protected abstract void executeCommand(final CommandWindow origin,
             final Command command, final String... args);
     
     /**
@@ -127,7 +145,7 @@ public abstract class CommandParser {
      * @param command The command the user tried to execute
      * @param args The arguments passed to the command
      */
-    protected abstract void handleInvalidCommand(final CommandWindow origin, 
+    protected abstract void handleInvalidCommand(final CommandWindow origin,
             final String command, final String... args);
     
     /**
@@ -136,6 +154,6 @@ public abstract class CommandParser {
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
-    protected abstract void handleNonCommand(final CommandWindow origin, 
+    protected abstract void handleNonCommand(final CommandWindow origin,
             final String line);
 }

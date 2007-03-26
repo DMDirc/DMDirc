@@ -240,6 +240,24 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     }
     
     /**
+     * Determines whether the server knows of the specified channel.
+     * @param channel The channel to be checked
+     * @return True iff the channel is known, false otherwise
+     */
+    public boolean hasChannel(final String channel) {
+        return channels.containsKey(channel.toLowerCase());
+    }
+    
+    /**
+     * Retrieves the specified channel belonging to this server.
+     * @param channel The channel to be retrieved
+     * @return The appropriate channel object
+     */
+    public Channel getChannel(final String channel) {
+        return channels.get(channel.toLowerCase());
+    }    
+    
+    /**
      * Retrieves the parser used for this connection.
      * @return IRCParser this connection's parser
      */
@@ -403,9 +421,9 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public void delChannel(final String chan) {
         tabCompleter.removeEntry(chan);
-        MainFrame.getMainFrame().getFrameManager().delChannel(this, channels.get(chan));
+        MainFrame.getMainFrame().getFrameManager().delChannel(this, channels.get(chan.toLowerCase()));
         if (!closing) {
-            channels.remove(chan);
+            channels.remove(chan.toLowerCase());
         }
     }
     
@@ -417,7 +435,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         final Channel newChan = new Channel(this, chan);
         
         tabCompleter.addEntry(chan.getName());
-        channels.put(chan.getName(), newChan);
+        channels.put(chan.getName().toLowerCase(), newChan);
         MainFrame.getMainFrame().getFrameManager().addChannel(this, newChan);
         
         newChan.show();
@@ -839,15 +857,6 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public Server getServer() {
         return this;
-    }
-    
-    /**
-     * Returns the channel with the specified name.
-     * @param name name of the channel
-     * @return Channel requested or null not found
-     */
-    public Channel getChannel(final String name) {
-        return channels.get(name);
     }
     
 }

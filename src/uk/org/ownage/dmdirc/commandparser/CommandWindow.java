@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.commandparser;
 
+import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
 
 /**
@@ -56,6 +57,18 @@ public interface CommandWindow {
      * @return This window's config manager
      */
     ConfigManager getConfigManager();
+    
+    /**
+     * Retrieves the command Parser for this command window.
+     * @return This window's command Parser
+     */
+    CommandParser getCommandParser();
+    
+    /**
+     * Retrieves the server associated with this command window.
+     * @return This window's associated server instance
+     */
+    Server getServer();
     
     /**
      * Determines if the current frame is visible.
