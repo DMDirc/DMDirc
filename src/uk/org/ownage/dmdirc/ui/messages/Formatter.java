@@ -209,6 +209,15 @@ public final class Formatter {
         defaultProperties.setProperty("motdLine", colour + "10" + fixed + "%1$s");
         defaultProperties.setProperty("motdEnd", colour + "10%1$s");
         
+        // Type: Numerical data
+        defaultProperties.setProperty("numeric_301", "%4$s is away: %5$s");
+        defaultProperties.setProperty("numeric_311", "-\n%4$s is %5$s@%6$s (%8$s).");
+        defaultProperties.setProperty("numeric_312", "%4$s is connected to %5$s (%6$s).");
+        defaultProperties.setProperty("numeric_313", "%4$s %5$s.");
+        defaultProperties.setProperty("numeric_318", "End of WHOIS info for %4$s.\n-");
+        defaultProperties.setProperty("numeric_319", "%4$s is on: %5$s");
+        defaultProperties.setProperty("numeric_330", "%4$s %6$s %5$s.");
+        
         return defaultProperties;
     }
     
