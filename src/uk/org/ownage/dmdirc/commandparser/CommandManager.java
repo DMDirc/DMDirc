@@ -71,6 +71,7 @@ public final class CommandManager {
         channelCommands.add(new KickEmpty());
         channelCommands.add(new KickReason());
         channelCommands.add(new Ban());
+        channelCommands.add(new Benchmark());
         channelCommands.add(new ChannelSettings());
         channelCommands.add(new ShowTopic());
         

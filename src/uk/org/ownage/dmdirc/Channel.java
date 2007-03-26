@@ -338,13 +338,23 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      */
     public void onChannelMessage(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-        final String[] parts = ClientInfo.parseHostFull(sHost);
-        final String modes = getModes(cChannelClient);
+        
         String type = "channelMessage";
-        if (parts[0].equals(tParser.getMyself().getNickname())) {
+        if (cChannelClient != null && cChannelClient.getClient().equals(tParser.getMyself())) {
             type = "channelSelfExternalMessage";
         }
-        frame.addLine(type, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
+        
+        if (cChannelClient == null) {
+            final String[] parts = ClientInfo.parseHostFull(sHost);
+            frame.addLine(type, "", parts[0], parts[1], parts[2], sMessage, 
+                    cChannel);
+        } else {
+            final ClientInfo client = cChannelClient.getClient();
+            frame.addLine(type, cChannelClient.getImportantModePrefix(), 
+                    client.getNickname(), client.getIdent(), client.getHost(), 
+                    sMessage, cChannel);
+        }
+        
         sendNotification();
     }
     
