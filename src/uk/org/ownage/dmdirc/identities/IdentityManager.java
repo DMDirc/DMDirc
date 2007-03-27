@@ -24,7 +24,8 @@ package uk.org.ownage.dmdirc.identities;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -68,18 +69,17 @@ public final class IdentityManager {
         
         // Load the defaults
         for (String url : urls) {
-            final URL res = cldr.getResource(base + url);
-            if (res == null) {
-                Logger.error(ErrorLevel.WARNING, "Unable to load default identity: " + url);
-            } else {
-                final File file = new File(res.getPath());
-                try {
-                    addIdentity(new Identity(file));
-                } catch (InvalidIdentityFileException ex) {
-                    Logger.error(ErrorLevel.WARNING, ex);
-                } catch (IOException ex) {
-                    Logger.error(ErrorLevel.ERROR, ex);
+            try {
+                final InputStream res = cldr.getResourceAsStream(base + url);
+                if (res == null) {
+                    Logger.error(ErrorLevel.WARNING, "Unable to load default identity: " + url);
+                } else {
+                    addIdentity(new Identity(res));
                 }
+            } catch (InvalidIdentityFileException ex) {
+                Logger.error(ErrorLevel.WARNING, ex);
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.ERROR, ex);
             }
         }
         
@@ -93,7 +93,7 @@ public final class IdentityManager {
         } else {
             for (File file : dir.listFiles()) {
                 try {
-                    addIdentity(new Identity(file));
+                    addIdentity(new Identity(file.toURI().toURL().openStream()));
                 } catch (InvalidIdentityFileException ex) {
                     Logger.error(ErrorLevel.WARNING, ex);
                 } catch (IOException ex) {
@@ -109,7 +109,7 @@ public final class IdentityManager {
      * Adds the specific identity to this manager.
      * @param identity The identity to be added
      */
-    public static void addIdentity(final Identity identity) {        
+    public static void addIdentity(final Identity identity) {
         identities.add(identity);
     }
     

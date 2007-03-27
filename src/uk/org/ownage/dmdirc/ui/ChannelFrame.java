@@ -228,8 +228,8 @@ public final class ChannelFrame extends Frame {
         splitPane.setLeftComponent(getScrollPane());
         splitPane.setRightComponent(nickScrollPane);
         
-        splitPane.setDividerLocation(465);
         splitPane.setResizeWeight(1);
+        splitPane.setDividerLocation(465);
         splitPane.setDividerSize(5);
         splitPane.setContinuousLayout(true);
         
@@ -244,5 +244,13 @@ public final class ChannelFrame extends Frame {
         if (actionEvent.getSource() == settingsMI) {
             new ChannelSettingsDialog((Channel) getFrameParent()).setVisible(true);
         }
+    }
+
+    /**
+     * Returns the splitpane.
+     * @return nicklist JSplitPane
+     */
+    public JSplitPane getSplitPane() {
+        return splitPane;
     }
 }

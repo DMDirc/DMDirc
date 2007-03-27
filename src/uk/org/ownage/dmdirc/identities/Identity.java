@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 /**
@@ -47,39 +48,33 @@ public final class Identity implements ConfigSource {
     
     /**
      * Creates a new instance of Identity.
-     * @param file The file to load this identity from.
-     * @throws IOException Input error when reading the file
-     * @throws uk.org.ownage.dmdirc.identities.InvalidIdentityFileException 
+     * @param file The InputStream to load this identity from.
+     * @throws uk.org.ownage.dmdirc.identities.InvalidIdentityFileException
      * Missing required properties
      */
-    public Identity(final File file) throws IOException,
+    public Identity(final InputStream file) throws IOException,
             InvalidIdentityFileException {
         
         properties = new Properties();
         
-        if (file.exists()) {
-            properties.load(new FileInputStream(file));
-            
-            if (!properties.containsKey("identity.name")) {
-                throw new InvalidIdentityFileException("No name specified");
-            }
-            
-            name = getOption("identity", "name");
-            
-            if (hasOption("identity", "ircd")) {
-                myTarget.setIrcd(getOption("identity", "ircd"));
-            } else if (hasOption("identity", "network")) {
-                myTarget.setNetwork(getOption("identity", "network"));
-            } else if (hasOption("identity", "server")) {
-                myTarget.setServer(getOption("identity", "server"));
-            } else if (hasOption("identity", "channel")) {
-                myTarget.setChannel(getOption("identity", "channel"));
-            } else if (!isProfile()) {
-                throw new InvalidIdentityFileException("No target and no profile");
-            }
-            
-        } else {
-            throw new FileNotFoundException(file.toString());
+        properties.load(file);
+        
+        if (!properties.containsKey("identity.name")) {
+            throw new InvalidIdentityFileException("No name specified");
+        }
+        
+        name = getOption("identity", "name");
+        
+        if (hasOption("identity", "ircd")) {
+            myTarget.setIrcd(getOption("identity", "ircd"));
+        } else if (hasOption("identity", "network")) {
+            myTarget.setNetwork(getOption("identity", "network"));
+        } else if (hasOption("identity", "server")) {
+            myTarget.setServer(getOption("identity", "server"));
+        } else if (hasOption("identity", "channel")) {
+            myTarget.setChannel(getOption("identity", "channel"));
+        } else if (!isProfile()) {
+            throw new InvalidIdentityFileException("No target and no profile");
         }
     }
     
@@ -132,7 +127,7 @@ public final class Identity implements ConfigSource {
             final String value) {
         properties.setProperty(domain + "." + option, value);
     }
-
+    
     /**
      * Retrieves this identity's target.
      * @return The target of this identity
@@ -146,9 +141,9 @@ public final class Identity implements ConfigSource {
      * @return A string representation of this object
      */
     public String toString() {
-       return name; 
+        return name;
     }
-
+    
     /**
      * Compares this identity to another config source to determine which
      * is more specific.
