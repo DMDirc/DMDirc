@@ -353,7 +353,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         }
         
         final String[] parts = getDetails(cChannelClient, sHost);
-        final String modes = cChannelClient.getImportantModePrefix();
+        final String modes = getModes(cChannelClient);
         
         frame.addLine(type, modes, parts[0], parts[1], parts[2], sMessage, 
                 cChannel);

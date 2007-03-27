@@ -185,7 +185,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                     }
                     final Document doc = getTextPane().getDocument();
                     if (doc.getLength() > frameBufferSize) {
-                        doc.remove(0, doc.getText(2, 512).indexOf('\n' + 3));
+                        doc.remove(0, 1 + doc.getText(doc.getLength() - frameBufferSize, 512).indexOf('\n') + doc.getLength() - frameBufferSize);
                     }
                 } catch (NumberFormatException ex) {
                     Logger.error(ErrorLevel.WARNING, ex);
