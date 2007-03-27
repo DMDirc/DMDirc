@@ -70,8 +70,8 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
  * @author chris
  */
 public final class Channel implements IChannelMessage, IChannelGotNames,
-        IChannelTopic, IChannelJoin, IChannelPart, IChannelKick, IChannelQuit, 
-        IChannelAction, IChannelNickChanged, IChannelModeChanged, 
+        IChannelTopic, IChannelJoin, IChannelPart, IChannelKick, IChannelQuit,
+        IChannelAction, IChannelNickChanged, IChannelModeChanged,
         IChannelUserModeChanged, InternalFrameListener, FrameContainer {
     
     /** The parser's pChannel class. */
@@ -95,7 +95,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     /**
      * Creates a new instance of Channel.
      * @param newServer The server object that this channel belongs to
-     * @param newChannelInfo The parser's channel object that corresponds to 
+     * @param newChannelInfo The parser's channel object that corresponds to
      * this channel
      */
     public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
@@ -246,7 +246,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * Updates the title of the channel frame, and of the main frame if appropriate.
      */
     private void updateTitle() {
-        final String title = Styliser.stipControlCodes(channelInfo.getName() 
+        final String title = Styliser.stipControlCodes(channelInfo.getName()
         + " - " + channelInfo.getTopic());
         
         SwingUtilities.invokeLater(new Runnable() {
@@ -275,6 +275,14 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      */
     public void part(final String reason) {
         server.getParser().partChannel(channelInfo.getName(), reason);
+        resetWindow();
+    }
+    
+    /**
+     * Resets the window state after the client has left a channel.
+     */
+    private void resetWindow() {
+        frame.updateNames(new ArrayList<ChannelClientInfo>());
     }
     
     /**
@@ -289,7 +297,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * Closes the window without parting the channel.
      */
     public void closeWindow() {
-        final CallbackManager callbackManager = server.getParser().getCallbackManager();        
+        final CallbackManager callbackManager = server.getParser().getCallbackManager();
         
         callbackManager.delCallback("OnChannelMessage", this);
         callbackManager.delCallback("OnChannelTopic", this);
@@ -312,12 +320,12 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
                 frame = null;
                 server = null;
             }
-        });        
+        });
     }
     
     /**
      * Determines if the specified frame is owned by this object.
-     * 
+     *
      * @param target JInternalFrame to check ownership of
      * @return boolean whether this object owns the specified frame
      */
@@ -346,12 +354,12 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         if (cChannelClient == null) {
             final String[] parts = ClientInfo.parseHostFull(sHost);
-            frame.addLine(type, "", parts[0], parts[1], parts[2], sMessage, 
+            frame.addLine(type, "", parts[0], parts[1], parts[2], sMessage,
                     cChannel);
         } else {
             final ClientInfo client = cChannelClient.getClient();
-            frame.addLine(type, cChannelClient.getImportantModePrefix(), 
-                    client.getNickname(), client.getIdent(), client.getHost(), 
+            frame.addLine(type, cChannelClient.getImportantModePrefix(),
+                    client.getNickname(), client.getIdent(), client.getHost(),
                     sMessage, cChannel);
         }
         
@@ -461,6 +469,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             } else {
                 frame.addLine("channelSelfPartReason", modes, nick, ident, host, cChannel, sReason);
             }
+            resetWindow();
         } else {
             if (sReason.length() == 0) {
                 frame.addLine("channelPart", modes, nick, ident, host, cChannel);
@@ -506,6 +515,11 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         frame.removeName(cKickedClient);
         
         tabCompleter.removeEntry(cKickedClient.getNickname());
+        
+        if (cKickedClient.getClient().equals(tParser.getMyself())) {
+            resetWindow();
+        }
+        
         sendNotification();
     }
     
