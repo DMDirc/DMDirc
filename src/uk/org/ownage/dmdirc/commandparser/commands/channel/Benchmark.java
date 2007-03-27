@@ -53,22 +53,27 @@ public final class Benchmark extends ChannelCommand {
      */
     public void execute(final CommandWindow origin, final Server server, 
             final Channel channel, final String... args) {
-        String strings[] = {
+        final String strings[] = {
             "this is a test",
             "test number two",
             "this is a line that is significantly longer than the other lines",
             "this is a line containing bold, underline, and other stuff",
             "here are some 4colours FFFF00for you!",
-            "some more test data"
+            "some more test data",
         };
         
         for (int i = 0; i < 100; i++) {
             for (int j = 0; j < strings.length; j++) {
-                channel.onChannelMessage(server.getParser(), channel.getChannelInfo(), null, strings[j], "benchmarker!dmdirc@dmdirc.com");
+                channel.onChannelMessage(server.getParser(), 
+                        channel.getChannelInfo(), null, strings[j], 
+                        "benchmarker!dmdirc@dmdirc.com");
             }
             
             for (int j = 0; j < strings.length; j++) {
-                channel.onChannelMessage(server.getParser(), channel.getChannelInfo(), channel.getChannelInfo().getUser(server.getParser().getMyself()), strings[j], "benchmarker!dmdirc@dmdirc.com");
+                channel.onChannelMessage(server.getParser(), 
+                        channel.getChannelInfo(), 
+                        channel.getChannelInfo().getUser(server.getParser().getMyself()),
+                        strings[j], "benchmarker!dmdirc@dmdirc.com");
             }            
         }
     }
