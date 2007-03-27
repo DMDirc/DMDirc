@@ -352,16 +352,11 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             type = "channelSelfExternalMessage";
         }
         
-        if (cChannelClient == null) {
-            final String[] parts = ClientInfo.parseHostFull(sHost);
-            frame.addLine(type, "", parts[0], parts[1], parts[2], sMessage,
-                    cChannel);
-        } else {
-            final ClientInfo client = cChannelClient.getClient();
-            frame.addLine(type, cChannelClient.getImportantModePrefix(),
-                    client.getNickname(), client.getIdent(), client.getHost(),
-                    sMessage, cChannel);
-        }
+        final String[] parts = getDetails(cChannelClient, sHost);
+        final String modes = cChannelClient.getImportantModePrefix();
+        
+        frame.addLine(type, modes, parts[0], parts[1], parts[2], sMessage, 
+                cChannel);
         
         sendNotification();
     }
@@ -376,7 +371,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      */
     public void onChannelAction(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-        final String[] parts = ClientInfo.parseHostFull(sHost);
+        final String[] parts = getDetails(cChannelClient, sHost);
         final String modes = getModes(cChannelClient);
         String type = "channelAction";
         if (parts[0].equals(tParser.getMyself().getNickname())) {
@@ -497,7 +492,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     public void onChannelKick(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient,
             final String sReason, final String sKickedByHost) {
-        final String[] kicker = ClientInfo.parseHostFull(sKickedByHost);
+        final String[] kicker = getDetails(cKickedByClient, sKickedByHost);
         final String kickermodes = getModes(cKickedByClient);
         final String victim = cKickedClient.getNickname();
         final String victimmodes = cKickedClient.getImportantModePrefix();
