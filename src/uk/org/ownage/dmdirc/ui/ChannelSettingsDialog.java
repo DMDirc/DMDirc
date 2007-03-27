@@ -373,9 +373,9 @@ public class ChannelSettingsDialog extends StandardDialog
         topicText.addKeyListener(this);
         topicText.setWrapStyleWord(true);
         scrollPane = new JScrollPane(topicText);
-        scrollPane.setMinimumSize(new Dimension(100, 
+        scrollPane.setMinimumSize(new Dimension(100,
                 getFont().getSize() * 4));
-        scrollPane.setPreferredSize(new Dimension(100, 
+        scrollPane.setPreferredSize(new Dimension(100,
                 getFont().getSize() * 4));
         topicsPanel.add(scrollPane, constraints);
         
@@ -433,7 +433,7 @@ public class ChannelSettingsDialog extends StandardDialog
         listModesPanel = new JPanel(new BorderLayout());
         listModesMenu = new JComboBox(listModesList.toArray());
         
-        for (char mode : listModesArray) {            
+        for (char mode : listModesArray) {
             panel = new JPanel(new BorderLayout());
             
             listModel = new DefaultListModel();
@@ -547,11 +547,11 @@ public class ChannelSettingsDialog extends StandardDialog
     private void setChangedTopic() {
         if (!channel.getChannelInfo().getTopic().equals(topicText.getText())) {
             System.out.println("Topic changed");
-            System.out.println("TOPIC " 
-                    + channel.getChannelInfo().getName() + ": " 
+            System.out.println("TOPIC "
+                    + channel.getChannelInfo().getName() + ": "
                     + topicText.getText());
-            channel.getServer().getParser().sendLine("TOPIC " 
-                    + channel.getChannelInfo().getName() + "" + " :" 
+            channel.getServer().getParser().sendLine("TOPIC "
+                    + channel.getChannelInfo().getName() + "" + " :"
                     + topicText.getText());
         }
     }
@@ -623,7 +623,7 @@ public class ChannelSettingsDialog extends StandardDialog
                 && keyEvent.getKeyCode() != KeyEvent.VK_DELETE)) {
             keyEvent.consume();
         }
-        topicLengthLabel.setText(topicLengthMax - topicText.getText().length() 
+        topicLengthLabel.setText(topicLengthMax - topicText.getText().length()
         + " of " + topicLengthMax + " available");
     }
     
@@ -633,6 +633,12 @@ public class ChannelSettingsDialog extends StandardDialog
      * @param keyEvent Key typed KeyEvent
      */
     public final void keyPressed(final KeyEvent keyEvent) {
+        if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER && keyEvent.getSource() == topicText) {
+            keyEvent.consume();
+            setChangedBooleanModes();
+            setChangedTopic();
+            setVisible(false);
+        }
     }
     
     /**

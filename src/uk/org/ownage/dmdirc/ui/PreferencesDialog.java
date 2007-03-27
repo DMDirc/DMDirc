@@ -195,6 +195,9 @@ public final class PreferencesDialog extends StandardDialog
         
         initListeners();
         
+        cardLayout.show(mainPanel, "General");
+        tabList.setSelectedIndex(0);
+        
         pack();
     }
     
