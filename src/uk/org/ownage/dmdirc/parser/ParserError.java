@@ -30,8 +30,8 @@ package uk.org.ownage.dmdirc.parser;
  * @author            Shane Mc Cormack
  * @version           $Id$
  */
-public class ParserError {
-	/** Error is potentially Fatal, Desync 99% Guarenteed! */
+public final class ParserError {
+	/** Error is potentially Fatal, Desync 99% Guaranteed! */
 	public static final int ERROR_FATAL = 1;
 	/** Error is not fatal, but is more severe than a warning. */
 	public static final int ERROR_ERROR = 2;
@@ -40,12 +40,12 @@ public class ParserError {
 	/** Error was an exception from elsewhere. */
 	public static final int ERROR_EXCEPTION = 8;
 	
-	/** Store the Error level */
-	protected int errorLevel = 0;
-	/** Store the Error Information */
-	protected String errorData = "";
-	/** Store the Exception object */
-	protected Exception exceptionInfo = null;
+	/** Store the Error level. */
+	private int errorLevel;
+	/** Store the Error Information. */
+	private String errorData;
+	/** Store the Exception object. */
+	private Exception exceptionInfo;
 
 	/**
 	 * Create a new Error.
@@ -53,7 +53,7 @@ public class ParserError {
 	 * @param level Set the error level.
 	 * @param data String containing information about the error.
 	 */
-	public ParserError(int level, String data) {
+	public ParserError(final int level, final String data) {
 		errorData = data;
 		errorLevel = level;
 	}
@@ -64,7 +64,7 @@ public class ParserError {
 	 * @return Returns true for a fatal error, false for a non-fatal error
 	 */
 	public boolean isFatal() {
-		return ((errorLevel & ERROR_FATAL) == ERROR_FATAL);
+		return (errorLevel & ERROR_FATAL) == ERROR_FATAL;
 	}
 	
 	/**
@@ -73,16 +73,16 @@ public class ParserError {
 	 * @return Returns true for an "Error" level error, else false.
 	 */
 	public boolean isError() {
-		return ((errorLevel & ERROR_ERROR) == ERROR_ERROR);
+		return (errorLevel & ERROR_ERROR) == ERROR_ERROR;
 	}
 	
 	/**
-	 * Check if this error is considered a warning
+	 * Check if this error is considered a warning.
 	 *
 	 * @return Returns true for a warning, else false.
 	 */
 	public boolean isWarning() {
-		return ((errorLevel & ERROR_WARNING) == ERROR_WARNING);
+		return (errorLevel & ERROR_WARNING) == ERROR_WARNING;
 	}
 	
 	/**
@@ -91,7 +91,7 @@ public class ParserError {
 	 * @return Returns true if getException will return an exception.
 	 */
 	public boolean isException() {
-		return ((errorLevel & ERROR_EXCEPTION) == ERROR_EXCEPTION);
+		return (errorLevel & ERROR_EXCEPTION) == ERROR_EXCEPTION;
 	}
 	
 	/**
@@ -99,10 +99,10 @@ public class ParserError {
 	 *
 	 * @param newException The exception object to store
 	 */
-	public void setException(Exception newException) {
+	public void setException(final Exception newException) {
 		exceptionInfo = newException;
 		if (!this.isException()) {
-			this.errorLevel = this.errorLevel+ERROR_EXCEPTION;
+			this.errorLevel = this.errorLevel + ERROR_EXCEPTION;
 		}
 	}
 	
@@ -135,9 +135,9 @@ public class ParserError {
 	
 	
 	/**
-	 * Get SVN Version information
+	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

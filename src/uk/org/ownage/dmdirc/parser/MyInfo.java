@@ -32,7 +32,9 @@ package uk.org.ownage.dmdirc.parser;
  * @version           $Id$
  * @see IRCParser
  */
-public class MyInfo {
+public final class MyInfo {
+	/** Character to prepend to nickname if in use (Default "_"). */
+	private char prependChar = '_';	
 	/** Nickname to attempt to use on IRC (Default: IRCParser). */
 	private String nickname = "IRCParser";
 	/**
@@ -46,15 +48,13 @@ public class MyInfo {
 	private String realname = "DMDIRC IRCParser";
 	/** Username to use, this doesn't matter when an ident server is running (Default: IRCParser). */
 	private String username = "IRCParser";
-	/** Character to prepend to nickname if in use (Default "_"). */
-	public char prependChar = '_';	
 	
 	/**
 	 * Set the Nickname.
 	 *
 	 * @param newValue Value to set to.
 	 */
-	public void setNickname(String newValue) { nickname = newValue; }
+	public void setNickname(final String newValue) { nickname = newValue; }
 	
 	/**
 	 * Get the Nickname.
@@ -68,7 +68,7 @@ public class MyInfo {
 	 *
 	 * @param newValue Value to set to.
 	 */
-	public void setAltNickname(String newValue) { altNickname = newValue; }
+	public void setAltNickname(final String newValue) { altNickname = newValue; }
 	
 	/**
 	 * Get the Alternative Nickname.
@@ -82,7 +82,7 @@ public class MyInfo {
 	 *
 	 * @param newValue Value to set to.
 	 */
-	public void setRealname(String newValue) { realname = newValue; }
+	public void setRealname(final String newValue) { realname = newValue; }
 	
 	/**
 	 * Get the Realname.
@@ -96,7 +96,7 @@ public class MyInfo {
 	 *
 	 * @param newValue Value to set to.
 	 */
-	public void setUsername(String newValue) { username = newValue; }
+	public void setUsername(final String newValue) { username = newValue; }
 	
 	/**
 	 * Get the Username.
@@ -110,7 +110,7 @@ public class MyInfo {
 	 *
 	 * @param newValue Value to set to.
 	 */
-	public void setPrependChar(char newValue) { prependChar = newValue; }
+	public void setPrependChar(final char newValue) { prependChar = newValue; }
 	
 	/**
 	 * Get the Prepend Character.
@@ -120,9 +120,9 @@ public class MyInfo {
 	public char getPrependChar() { return prependChar; }	
 	
 	/**
-	 * Get SVN Version information
+	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

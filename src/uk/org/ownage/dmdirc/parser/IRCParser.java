@@ -36,7 +36,6 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.Hashtable;
 
 import javax.net.ssl.SSLContext;
@@ -279,7 +278,7 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Callback to all objects implementing the DataIn Callback.
 	 *
-	 * @see IDataIn
+	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn
 	 * @param data Incomming Line.
 	 * @return true if a method was called, false otherwise
 	 */
@@ -295,7 +294,7 @@ public final class IRCParser implements Runnable {
      * @param data Outgoing Data
      * @param fromParser True if parser sent the data, false if sent using .sendLine
      * @return true if a method was called, false otherwise
-     * @see IDataOut
+     * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut
      */
 	protected boolean callDataOut(final String data, final boolean fromParser) {
 		final CallbackOnDataOut cb = (CallbackOnDataOut) myCallbackManager.getCallbackType("OnDataOut");
@@ -306,7 +305,7 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Callback to all objects implementing the DebugInfo Callback.
 	 *
-	 * @see IDebugInfo
+	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo
 	 * @param level Debugging Level (DEBUG_INFO, DEBUG_SOCKET etc)
 	 * @param data Debugging Information as a format string
 	 * @param args Formatting String Options
@@ -318,7 +317,7 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Callback to all objects implementing the DebugInfo Callback.
 	 *
-	 * @see IDebugInfo
+	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo
 	 * @param level Debugging Level (DEBUG_INFO, DEBUG_SOCKET etc)
 	 * @param data Debugging Information
 	 * @return true if a method was called, false otherwise
@@ -332,7 +331,7 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Callback to all objects implementing the IErrorInfo Interface.
 	 *
-	 * @see IErrorInfo
+	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo
 	 * @param errorInfo ParserError object representing the error.
 	 * @return true if a method was called, false otherwise
 	 */
@@ -345,7 +344,7 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Callback to all objects implementing the SocketClosed Callback.
 	 *
-	 * @see ISocketClosed
+	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.ISocketClosed
 	 * @return true if a method was called, false otherwise
 	 */	
 	protected boolean callSocketClosed() {

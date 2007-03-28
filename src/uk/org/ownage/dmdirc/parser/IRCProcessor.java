@@ -25,11 +25,6 @@
 package uk.org.ownage.dmdirc.parser;
 
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
-
-import java.util.Hashtable;
-import java.util.ArrayList;
 
 /**
  * IRCProcessor.
@@ -40,44 +35,59 @@ import java.util.ArrayList;
  */
 public abstract class IRCProcessor {
 	/** Reference to the IRCParser that owns this IRCProcessor. */
-	protected IRCParser myParser = null;
+	protected IRCParser myParser;
 	
 	/** Reference to the Processing in charge of this IRCProcessor. */
-	protected ProcessingManager myManager = null;
+	protected ProcessingManager myManager;
 
 	// Some functions from the main parser are useful, and having to use myParser.functionName
 	// is annoying, so we also implement them here (calling them again using myParser)
 
+        	
+	/**
+	 * Create a new instance of the IRCProcessor Object.
+	 *
+	 * @param parser IRCParser That owns this IRCProcessor
+	 * @param manager ProcessingManager that is in charge of this IRCProcessor
+	 */
+	protected IRCProcessor(final IRCParser parser, final ProcessingManager manager) {
+		this.myParser = parser;
+		this.myManager = manager;
+	}
+        
 	/**
 	 * Callback to all objects implementing the IErrorInfo Interface.
 	 *
-	 * @see IErrorInfo
+	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo
 	 * @param errorInfo ParserError object representing the error.
+         * @return true if a method was called, false otherwise
 	 */
-	protected final boolean callErrorInfo(ParserError errorInfo) {
+	protected final boolean callErrorInfo(final ParserError errorInfo) {
 		return myParser.callErrorInfo(errorInfo);
 	}
 	
 	/**
 	 * Callback to all objects implementing the DebugInfo Callback.
 	 *
-	 * @see IDebugInfo
+	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo
 	 * @param level Debugging Level (DEBUG_INFO, ndSocket etc)
 	 * @param data Debugging Information
 	 * @param args Formatting String Options
+         * @return true if a method was called, false otherwise
 	 */
-	protected boolean callDebugInfo(int level, String data, Object... args) {
+	protected final boolean callDebugInfo(final int level, final String data, final Object... args) {
 		return myParser.callDebugInfo(level, String.format(data, args));
 	}
 	
 	/**
 	 * Callback to all objects implementing the DebugInfo Callback.
 	 *
-	 * @see IDebugInfo
+	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo
 	 * @param level Debugging Level (DEBUG_INFO, ndSocket etc)
 	 * @param data Debugging Information
+         * @return true if a method was called, false otherwise
 	 */
-	protected boolean callDebugInfo(int level, String data) {
+	protected final boolean callDebugInfo(final int level, final String data) {
 		return myParser.callDebugInfo(level, data);
 	}
 	
@@ -85,8 +95,9 @@ public abstract class IRCProcessor {
 	 * Check if a channel name is valid .
 	 *
 	 * @param sChannelName Channel name to test
+         * @return true if name is valid on the current connection, false otherwise. (Always false before noMOTD/MOTDEnd)
 	 */
-	protected boolean isValidChannelName(String sChannelName) {
+	protected final boolean isValidChannelName(final String sChannelName) {
 		return myParser.isValidChannelName(sChannelName);
 	}
 	
@@ -96,7 +107,7 @@ public abstract class IRCProcessor {
 	 * @param sWho Who can be any valid identifier for a client as long as it contains a nickname (?:)nick(?!ident)(?@host)
 	 * @return ClientInfo Object for the client, or null
 	 */
-	protected ClientInfo getClientInfo(String sWho) {
+	protected final ClientInfo getClientInfo(final String sWho) {
 		return myParser.getClientInfo(sWho);
 	}
 	
@@ -106,16 +117,16 @@ public abstract class IRCProcessor {
 	 * @param sWhat This is the name of the channel.
 	 * @return ChannelInfo Object for the channel, or null
 	 */
-	protected ChannelInfo getChannelInfo(String sWhat) {
+	protected final ChannelInfo getChannelInfo(final String sWhat) {
 		return myParser.getChannelInfo(sWhat);
 	}
 	
 	/**
-	 * Get a reference to the CallbackManager
+	 * Get a reference to the CallbackManager.
 	 *
 	 * @return Reference to the CallbackManager
 	 */
-	protected CallbackManager getCallbackManager() {
+	protected final CallbackManager getCallbackManager() {
 		return myParser.getCallbackManager();
 	}
 	
@@ -124,19 +135,8 @@ public abstract class IRCProcessor {
 	 *
 	 * @param line Line to send (\r\n termination is added automatically)
 	 */
-	protected void sendString(String line) {
+	protected final void sendString(final String line) {
 		myParser.sendString(line);
-	}
-	
-	/**
-	 * Create a new instance of the IRCProcessor Object
-	 *
-	 * @param parser IRCParser That owns this IRCProcessor
-	 * @param manager ProcessingManager that is in charge of this IRCProcessor
-	 */
-	protected IRCProcessor (IRCParser parser, ProcessingManager manager) {
-		this.myParser = parser;
-		this.myManager = manager;
 	}
 	
 	/**
@@ -145,7 +145,7 @@ public abstract class IRCProcessor {
 	 * @param sParam Type of line to process ("005", "PRIVMSG" etc)
 	 * @param token IRCTokenised line to process
 	 */
-	public abstract void process(String sParam, String[] token);
+	public abstract void process(final String sParam, final String[] token);
 	
 	/**
 	 * What does this IRCProcessor handle.
@@ -154,28 +154,37 @@ public abstract class IRCProcessor {
 	 */
 	public abstract String[] handles();
 	
-	/** Get the name for this Processor */
-	public String getName() {
-		Package thisPackage = this.getClass().getPackage();
+	/** 
+         * Get the name for this Processor.
+         * @return the name of this processor
+         */
+	public final String getName() {
+		final Package thisPackage = this.getClass().getPackage();
 		int packageLength = 0;
 		if (thisPackage != null) {
-			packageLength = thisPackage.getName().length()+1;
+			packageLength = thisPackage.getName().length() + 1;
 		}
 		return this.getClass().getName().substring(packageLength);
 	}
 	
-	/** Get the name for this Processor in lowercase */
+	/** 
+         * Get the name for this Processor in lowercase.
+         * @return lower case name of this processor
+         */
 	public final String getLowerName() {
 		return this.getName().toLowerCase();
 	}
 	
-	/** Get the name for this Processor */
+	/** 
+         * Get the name for this Processor.
+         * @return the name of this processor
+         */
 	public final String toString() { return this.getName(); }
 	
 	/**
-	 * Get SVN Version information
+	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }
