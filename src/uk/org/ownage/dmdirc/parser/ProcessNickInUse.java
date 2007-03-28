@@ -53,10 +53,10 @@ public class ProcessNickInUse extends IRCProcessor {
 		if (!callNickInUse()) {
 			// Manually handle nick in use.
 			callDebugInfo(myParser.DEBUG_INFO,"No Nick in use Handler.");
-			if (!myParser.Got001) {
+			if (!myParser.got001) {
 				callDebugInfo(myParser.DEBUG_INFO,"Using inbuilt handler");
 				// If this is before 001 we will try and get a nickname, else we will leave the nick as-is
-				if (!myParser.TriedAlt) { myParser.setNickname(myParser.me.getAltNickname()); myParser.TriedAlt = true; }
+				if (!myParser.triedAlt) { myParser.setNickname(myParser.me.getAltNickname()); myParser.triedAlt = true; }
 				else {
 					if (myParser.sThinkNickname.equalsIgnoreCase(myParser.me.getAltNickname())) { myParser.sThinkNickname = myParser.me.getNickname(); }
 					myParser.setNickname(myParser.me.getPrependChar()+myParser.sThinkNickname);

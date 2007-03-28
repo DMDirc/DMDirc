@@ -327,7 +327,7 @@ public final class ChannelInfo {
 	protected void setListModeParam(final Character cMode, final ChannelListModeItem newItem, final boolean bAdd) { 
 		if (!myParser.hChanModesOther.containsKey(cMode)) { 
                     return; 
-                } else if (myParser.hChanModesOther.get(cMode) != myParser.cmList) { 
+                } else if (myParser.hChanModesOther.get(cMode) != myParser.LIST_MODE) { 
                     return; 
                 }
 		
@@ -358,7 +358,7 @@ public final class ChannelInfo {
 	public ArrayList<ChannelListModeItem> getListModeParam(final Character cMode) { 
 		if (!myParser.hChanModesOther.containsKey(cMode)) { 
                     return null; 
-                } else if (myParser.hChanModesOther.get(cMode) != myParser.cmList) { 
+                } else if (myParser.hChanModesOther.get(cMode) != myParser.LIST_MODE) { 
                     return null; 
                 }
 		
@@ -432,11 +432,11 @@ public final class ChannelInfo {
 				modestr = modestr + " " + parameter;
 			} else {
 				modecount = myParser.hChanModesOther.get(mode);
-				if ((modecount & myParser.cmList) == myParser.cmList) {
+				if ((modecount & myParser.LIST_MODE) == myParser.LIST_MODE) {
 					modestr = modestr + " " + parameter;
-				} else if (!positive && ((modecount & myParser.cmUnset) == myParser.cmUnset)) {
+				} else if (!positive && ((modecount & myParser.LIST_UNSET_MODE) == myParser.LIST_UNSET_MODE)) {
 					modestr = modestr + " " + parameter;
-				} else if (positive && ((modecount & myParser.cmSet) == myParser.cmSet)) {
+				} else if (positive && ((modecount & myParser.LIST_SET_MODE) == myParser.LIST_SET_MODE)) {
 					modestr = modestr + " " + parameter;
 				}
 			}

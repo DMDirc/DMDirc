@@ -24,8 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser;
 
-import java.util.Enumeration;
-
 /**
  * Contains information about known users.
  * 
@@ -34,7 +32,7 @@ import java.util.Enumeration;
  * @version           $Id$
  * @see IRCParser
  */
-public class ClientInfo {
+public final class ClientInfo {
 	/** Known nickname of client. */
 	private String sNickname = "";
 	/** Known ident of client. */
@@ -42,14 +40,26 @@ public class ClientInfo {
 	/** Known host of client. */
 	private String sHost = "";
 	/** Known user modes of client. */
-	private int nModes = 0;
+	private int nModes;
 	/** Known Away Reason of client. */
 	private String myAwayReason = "";
 	/** Known away state for client. */
-	private boolean bIsAway = false;
+	private boolean bIsAway;
 	/** Reference to the parser object that owns this channel, Used for modes. */
 	private IRCParser myParser;
 
+        /**
+	 * Create a new client object from a hostmask.
+	 *
+ 	 * @param tParser Refernce to parser that owns this channelclient (used for modes)	 
+	 * @param sHostmask Hostmask parsed by parseHost to get nickname
+	 * @see ClientInfo#parseHost
+	 */
+	public ClientInfo(final IRCParser tParser, final String sHostmask) { 
+		setUserBits(sHostmask, true);
+		myParser = tParser;
+	}
+        
 	/**
 	 * Get a nickname of a user from a hostmask.
 	 * Hostmask must match (?:)nick(?!ident)(?@host)
@@ -70,14 +80,14 @@ public class ClientInfo {
 	 * @return Array containing details. (result[0] -> Nick | result[1] -> Ident | result[2] -> Host)
 	 */
 	public static String[] parseHostFull(String sWho) {
-		String sTemp[] = null;
-		String result[] = new String[3];
+		String[] sTemp = null;
+		final String[] result = new String[3];
 		if (!sWho.equals("")) {
 			if (sWho.charAt(0) == ':') { sWho = sWho.substring(1); }
 		}
-		sTemp = sWho.split("@",2);
+		sTemp = sWho.split("@", 2);
 		if (sTemp.length != 1) { result[2] = sTemp[1]; } else { result[2] = ""; }
-		sTemp = sTemp[0].split("!",2);
+		sTemp = sTemp[0].split("!", 2);
 		if (sTemp.length != 1) { result[1] = sTemp[1]; } else { result[1] = ""; }
 		result[0] = sTemp[0];
 		
@@ -85,24 +95,13 @@ public class ClientInfo {
 	}
 
 	/**
-	 * Create a new client object from a hostmask.
-	 *
- 	 * @param tParser Refernce to parser that owns this channelclient (used for modes)	 
-	 * @param sHostmask Hostmask parsed by parseHost to get nickname
-	 * @see ClientInfo#parseHost
-	 */
-	public ClientInfo (final IRCParser tParser, final String sHostmask) { 
-		setUserBits(sHostmask,true);
-		myParser = tParser;
-	}
-	/**
 	 * Get a string representation of the user.
 	 *
 	 * @param sHostmask takes a host (?:)nick(?!ident)(?@host) and sets nick/host/ident variables
 	 * @param bUpdateNick if this is false, only host/ident will be updated.
 	 */	
-	public void setUserBits (final String sHostmask, final boolean bUpdateNick) {
-		String sTemp[] = parseHostFull(sHostmask);
+	public void setUserBits(final String sHostmask, final boolean bUpdateNick) {
+		final String[] sTemp = parseHostFull(sHostmask);
 		if (!sTemp[2].equals("")) { sHost = sTemp[2]; }
 		if (!sTemp[1].equals("")) { sIdent = sTemp[1]; }
 		if (bUpdateNick) { sNickname = sTemp[0]; }
@@ -113,7 +112,7 @@ public class ClientInfo {
 	 *
 	 * @return String representation of the user.
 	 */
-	public String toString() { return sNickname+"!"+sIdent+"@"+sHost; }
+	public String toString() { return sNickname + "!" + sIdent + "@" + sHost; }
 	
 	/**
 	 * Get the nickname for this user.
@@ -163,7 +162,7 @@ public class ClientInfo {
 	 *
 	 * @param newValue new away reason for user.
 	 */
-	protected void setAwayReason(String newValue) { myAwayReason = newValue; }
+	protected void setAwayReason(final String newValue) { myAwayReason = newValue; }
 	
 	/**
 	 * Set the user modes (as an integer).
@@ -184,14 +183,11 @@ public class ClientInfo {
 	 * @return string representing modes. (boolean and non-list)
 	 */	
 	public String getUserModeStr() { 
-		StringBuilder sModes = new StringBuilder("+");
-		String sTemp = "";
-		Character cTemp;
+		final StringBuilder sModes = new StringBuilder("+");
 		int nTemp = 0;
 		final int nChanModes = this.getUserMode();
 		
-		for (final Enumeration e = myParser.hUserModes.keys(); e.hasMoreElements();) {
-			cTemp = (Character)e.nextElement();
+                for (char cTemp : myParser.hUserModes.keySet()) {
 			nTemp = myParser.hUserModes.get(cTemp);
 			if ((nChanModes & nTemp) == nTemp) { sModes.append(cTemp); }
 		}
@@ -216,11 +212,9 @@ public class ClientInfo {
 	 */	
 	public boolean checkVisability(ChannelInfo cChannel) {
 		boolean bCanSee = false;
-		ChannelInfo iChannel;
 		ChannelClientInfo iChannelClient;
 		
-		for (Enumeration e = myParser.hChannelList.keys(); e.hasMoreElements();) {
-			iChannel = myParser.hChannelList.get(e.nextElement());
+                for (ChannelInfo iChannel : myParser.hChannelList.values()) {
 			if (iChannel == cChannel) { continue; }
 			iChannelClient = iChannel.getUser(this);
 			if (iChannelClient != null) {	bCanSee = true; break; }
@@ -234,5 +228,5 @@ public class ClientInfo {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

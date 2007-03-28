@@ -24,36 +24,32 @@
 
 package uk.org.ownage.dmdirc.parser;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Hashtable;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDataIn;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDataOut;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDebugInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnErrorInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnSocketClosed;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ISocketClosed;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.X509TrustManager;
-import javax.net.ssl.TrustManager;
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.security.NoSuchAlgorithmException;
-import java.security.KeyManagementException;
 
 /**
  * IRC Parser.
@@ -61,7 +57,10 @@ import java.security.KeyManagementException;
  * @author            Shane Mc Cormack
  * @version           $Id$
  */
-public class IRCParser implements Runnable {
+public final class IRCParser implements Runnable {
+    
+    	/** Max length an outgoing line should be (NOT including \r\n). */
+	public static final int MAX_LINELENGTH = 510;
 	
 	/** General Debug Information. */
 	public static final int DEBUG_INFO = 1;
@@ -77,29 +76,16 @@ public class IRCParser implements Runnable {
 	public static final byte STATE_CLOSED = 1;
 	/** Socket is Open. */	
 	public static final byte STATE_OPEN = 2;
-	
+        
 	/** Attempt to update user host all the time, not just on Who/Add/NickChange. */	
 	protected static final boolean ALWAYS_UPDATECLIENT = true;
-
-	/** Current Socket State */
-	private byte currentSocketState = 0;
-	
-	/** Max length an outgoing line should be (NOT including \r\n). */
-	public static final int MAX_LINELENGTH = 510;
-	
-	/**
-	 * Get the current socket State.
-	 *
-	 * @return Current SocketState (STATE_NULL, STATE_CLOSED or STATE_OPEN)
-	 */
-	public byte getSocketState() { return currentSocketState; }
-	
-	/** This is the socket used for reading from/writing to the IRC server. */
-	private Socket socket = null;
-	/** Used for writing to the server. */
-	private PrintWriter out = null;
-	/** Used for reading from the server. */
-	private BufferedReader in = null;
+        
+	/** Byte used to show that a non-boolean mode is a list (b). */
+	protected static final byte LIST_MODE = 1;
+	/** Byte used to show that a non-boolean mode is not a list, and requires a parameter to set (lk). */
+	protected static final byte LIST_SET_MODE = 2;	
+	/** Byte used to show that a non-boolean mode is not a list, and requires a parameter to unset (k). */
+	protected static final byte LIST_UNSET_MODE = 4;
 	
 	/**
 	 * This is what the user wants settings to be. 
@@ -118,48 +104,29 @@ public class IRCParser implements Runnable {
 
 	/** This is what we think the nickname should be. */
 	protected String sThinkNickname;
+        
 	/** When using inbuilt pre-001 NickInUse handler, have we tried our AltNick. */
-	protected boolean TriedAlt = false;
+	protected boolean triedAlt;
 	
 	/** Have we recieved the 001. */
-	protected boolean Got001 = false;
+	protected boolean got001;
 	/** Has the thread started execution yet, (Prevents run() being called multiple times). */
-	protected boolean HasBegan = false;
+	protected boolean hasBegan;
 	/** Is this line the first line we have seen? */
-	protected boolean IsFirst = true;
-	
-	/** Reference to the Processing Manager */
-	private ProcessingManager myProcessingManager = new ProcessingManager(this);
-	
-	/**
-	 * Get a reference to the Processing Manager
-	 *
-	 * @return Reference to the CallbackManager
-	 */
-	public ProcessingManager getProcessingManager() { return myProcessingManager;	}
-	
-	/** Reference to the callback Manager */
-	private CallbackManager myCallbackManager = new CallbackManager(this);
-	
-	/**
-	 * Get a reference to the CallbackManager
-	 *
-	 * @return Reference to the CallbackManager
-	 */
-	public CallbackManager getCallbackManager() { return myCallbackManager;	}
+	protected boolean isFirst = true;
 	
 	/** Hashtable storing known prefix modes (ohv). */	
-	protected Hashtable<Character,Integer> hPrefixModes = new Hashtable<Character,Integer>();
+	protected Hashtable<Character, Integer> hPrefixModes = new Hashtable<Character, Integer>();
 	/**
 	 * Hashtable maping known prefix modes (ohv) to prefixes (@%+) - Both ways.
 	 * Prefix map contains 2 pairs for each mode. (eg @ => o and o => @)
 	 */	
-	protected Hashtable<Character,Character> hPrefixMap = new Hashtable<Character,Character>();
+	protected Hashtable<Character, Character> hPrefixMap = new Hashtable<Character, Character>();
 	/** Integer representing the next avaliable integer value of a prefix mode. */
 	protected int nNextKeyPrefix = 1;
 	/** Hashtable storing known user modes (owxis etc). */
-	protected Hashtable<Character,Integer> hUserModes = new Hashtable<Character,Integer>();
-	/** Integer representing the next avaliable integer value of a User mode */	
+	protected Hashtable<Character, Integer> hUserModes = new Hashtable<Character, Integer>();
+	/** Integer representing the next avaliable integer value of a User mode. */	
 	protected int nNextKeyUser = 1;
 	/**
 	 * Hashtable storing known boolean chan modes (cntmi etc).
@@ -169,52 +136,113 @@ public class IRCParser implements Runnable {
 	 * <br>
 	 * Channel modes discovered but not listed in 005 are stored as boolean modes automatically (and a ERROR_WARNING Error is called)
 	 */
-	protected Hashtable<Character,Integer> hChanModesBool = new Hashtable<Character,Integer>();
+	protected Hashtable<Character, Integer> hChanModesBool = new Hashtable<Character, Integer>();
 	/** Integer representing the next avaliable integer value of a Boolean mode. */	
 	protected int nNextKeyCMBool = 1;
 	
 	/**
-	 * Hashtable storing known non-boolean chan modes (klbeI etc).
-	 * Non Boolean Modes (for Channels) are stored together in this hashtable, the value param
-	 * is used to show the type of variable. (List (1), Param just for set (2), Param for Set and Unset (2+4=6))<br><br>
-	 *<br>
-	 * see cmList<br>
-	 * see cmSet<br>
-	 * see cmUnset<br>
-	 */
-	protected Hashtable<Character,Byte> hChanModesOther = new Hashtable<Character,Byte>();	
-	/** Byte used to show that a non-boolean mode is a list (b). */
-	protected static final byte cmList = 1;
-	/** Byte used to show that a non-boolean mode is not a list, and requires a parameter to set (lk). */
-	protected static final byte cmSet = 2;	
-	/** Byte used to show that a non-boolean mode is not a list, and requires a parameter to unset (k). */
-	protected static final byte cmUnset = 4;
+     * Hashtable storing known non-boolean chan modes (klbeI etc).
+     * Non Boolean Modes (for Channels) are stored together in this hashtable, the value param
+     * is used to show the type of variable. (List (1), Param just for set (2), Param for Set and Unset (2+4=6))<br><br>
+     * <br>
+     * see LIST_MODE<br>
+     * see LIST_SET_MODE<br>
+     * see LIST_UNSET_MODE<br>
+     */
+	protected Hashtable<Character, Byte> hChanModesOther = new Hashtable<Character, Byte>();
 	
 	/** 
 	* Channel Prefixes (ie # + etc).
 	* The "value" for these is always true.
 	*/
-	protected Hashtable<Character,Boolean> hChanPrefix = new Hashtable<Character,Boolean>();
+	protected Hashtable<Character, Boolean> hChanPrefix = new Hashtable<Character, Boolean>();
 	/** Hashtable storing all known clients based on nickname (in lowercase). */	
-	protected Hashtable<String,ClientInfo> hClientList = new Hashtable<String,ClientInfo>();	
+	protected Hashtable<String, ClientInfo> hClientList = new Hashtable<String, ClientInfo>();	
 	/** Hashtable storing all known channels based on chanel name (inc prefix - in lowercase). */
-	protected Hashtable<String,ChannelInfo> hChannelList = new Hashtable<String,ChannelInfo>();
+	protected Hashtable<String, ChannelInfo> hChannelList = new Hashtable<String, ChannelInfo>();
 	/** Reference to the ClientInfo object that references ourself. */	
 	protected ClientInfo cMyself = null;
 	/** Hashtable storing all information gathered from 005. */
-	protected Hashtable<String,String> h005Info = new Hashtable<String,String>();
+	protected Hashtable<String, String> h005Info = new Hashtable<String, String>();
+        
+        /** Ignore List. */
+	protected RegexStringList myIgnoreList = new RegexStringList();
+        
+	/** Reference to the Processing Manager. */
+	private ProcessingManager myProcessingManager = new ProcessingManager(this);
+	/** Reference to the callback Manager. */
+	private CallbackManager myCallbackManager = new CallbackManager(this);
+        
+	/** Current Socket State. */
+	private byte currentSocketState;
 	
+	/** This is the socket used for reading from/writing to the IRC server. */
+	private Socket socket;
+	/** Used for writing to the server. */
+	private PrintWriter out;
+	/** Used for reading from the server. */
+	private BufferedReader in;
+        
 	/** This is the default TrustManager for SSL Sockets, it trusts all ssl certs. */
 	private TrustManager[] trustAllCerts = new TrustManager[]{
 			new X509TrustManager() {
-					public java.security.cert.X509Certificate[] getAcceptedIssuers() { return null;	}
-					public void checkClientTrusted(java.security.cert.X509Certificate[] certs, String authType) { }
-					public void checkServerTrusted(java.security.cert.X509Certificate[] certs, String authType) { }
-			}
+					public X509Certificate[] getAcceptedIssuers() { return null;	}
+					public void checkClientTrusted(final X509Certificate[] certs, final String authType) { }
+					public void checkServerTrusted(final X509Certificate[] certs, final String authType) { }
+			}, 
 	};
-	
+        
+        	
 	/** This is the TrustManager used for SSL Sockets. */
 	private TrustManager[] myTrustManager = trustAllCerts;
+        
+        /**
+	 * Default constructor, ServerInfo and MyInfo need to be added separately (using IRC.me and IRC.server).
+	 */
+	public IRCParser() { }
+	/**
+	 * Constructor with ServerInfo, MyInfo needs to be added separately (using IRC.me).
+	 *
+	 * @param serverDetails Server information.
+	 */
+	public IRCParser(final ServerInfo serverDetails) { this(null, serverDetails); }
+	/**
+	 * Constructor with MyInfo, ServerInfo needs to be added separately (using IRC.server).
+	 *
+	 * @param myDetails Client information.
+	 */
+	public IRCParser(final MyInfo myDetails) { this(myDetails, null); }
+	/**
+	 * Constructor with ServerInfo and MyInfo.
+	 *
+	 * @param serverDetails Server information.
+	 * @param myDetails Client information.
+	 */
+	public IRCParser(final MyInfo myDetails, final ServerInfo serverDetails) {
+		if (myDetails != null) { this.me = myDetails; }
+		if (serverDetails != null) { this.server = serverDetails; }
+	}
+        
+	/**
+	 * Get the current socket State.
+	 *
+	 * @return Current SocketState (STATE_NULL, STATE_CLOSED or STATE_OPEN)
+	 */
+	public byte getSocketState() { return currentSocketState; }
+	
+	/**
+	 * Get a reference to the Processing Manager.
+	 *
+	 * @return Reference to the CallbackManager
+	 */
+	public ProcessingManager getProcessingManager() { return myProcessingManager;	}
+	
+	/**
+	 * Get a reference to the CallbackManager.
+	 *
+	 * @return Reference to the CallbackManager
+	 */
+	public CallbackManager getCallbackManager() { return myCallbackManager;	}
 	
 	/**
 	 * Get a reference to the default TrustManager for SSL Sockets.
@@ -235,13 +263,10 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param newTrustManager Replacement TrustManager for SSL Sockets.
 	 */
-	public void setTrustManager(TrustManager[] newTrustManager) { myTrustManager = newTrustManager; }
-
-	/** Ignore List */
-	protected RegexStringList myIgnoreList = new RegexStringList();
+	public void setTrustManager(final TrustManager[] newTrustManager) { myTrustManager = newTrustManager; }
 	
 	/**
-	 * Get a reference to the ignorelist
+	 * Get a reference to the ignorelist.
 	 *
 	 * @return a reference to the ignorelist
 	 */
@@ -258,23 +283,23 @@ public class IRCParser implements Runnable {
 	 * @param data Incomming Line.
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callDataIn(String data) {
-		CallbackOnDataIn cb = (CallbackOnDataIn)myCallbackManager.getCallbackType("OnDataIn");
+	protected boolean callDataIn(final String data) {
+		final CallbackOnDataIn cb = (CallbackOnDataIn) myCallbackManager.getCallbackType("OnDataIn");
 		if (cb != null) { return cb.call(data); }
 		return false;
 	}
 
 	/**
-	 * Callback to all objects implementing the DataOut Callback.
-	 *
-	 * @see IDataOut
-	 * @param data Outgoing Data
-	 * @param FromParser True if parser sent the data, false if sent using .sendLine
-	 * @return true if a method was called, false otherwise
-	 */
-	protected boolean callDataOut(String data, boolean FromParser) {
-		CallbackOnDataOut cb = (CallbackOnDataOut)myCallbackManager.getCallbackType("OnDataOut");
-		if (cb != null) { return cb.call(data, FromParser); }
+     * Callback to all objects implementing the DataOut Callback.
+     * 
+     * @param data Outgoing Data
+     * @param fromParser True if parser sent the data, false if sent using .sendLine
+     * @return true if a method was called, false otherwise
+     * @see IDataOut
+     */
+	protected boolean callDataOut(final String data, final boolean fromParser) {
+		final CallbackOnDataOut cb = (CallbackOnDataOut) myCallbackManager.getCallbackType("OnDataOut");
+		if (cb != null) { return cb.call(data, fromParser); }
 		return false;
 	}
 
@@ -287,7 +312,7 @@ public class IRCParser implements Runnable {
 	 * @param args Formatting String Options
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callDebugInfo(int level, String data, Object... args) {
+	protected boolean callDebugInfo(final int level, final String data, final Object... args) {
 		return callDebugInfo(level, String.format(data, args));
 	}
 	/**
@@ -298,8 +323,8 @@ public class IRCParser implements Runnable {
 	 * @param data Debugging Information
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callDebugInfo(int level, String data) {
-		CallbackOnDebugInfo cb = (CallbackOnDebugInfo)myCallbackManager.getCallbackType("OnDebugInfo");
+	protected boolean callDebugInfo(final int level, final String data) {
+		final CallbackOnDebugInfo cb = (CallbackOnDebugInfo) myCallbackManager.getCallbackType("OnDebugInfo");
 		if (cb != null) { return cb.call(level, String.format(data)); }
 		return false;
 	}
@@ -311,8 +336,8 @@ public class IRCParser implements Runnable {
 	 * @param errorInfo ParserError object representing the error.
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callErrorInfo(ParserError errorInfo) {
-		CallbackOnErrorInfo cb = (CallbackOnErrorInfo)myCallbackManager.getCallbackType("OnErrorInfo");
+	protected boolean callErrorInfo(final ParserError errorInfo) {
+		final CallbackOnErrorInfo cb = (CallbackOnErrorInfo) myCallbackManager.getCallbackType("OnErrorInfo");
 		if (cb != null) { return cb.call(errorInfo); }
 		return false;
 	}
@@ -324,7 +349,7 @@ public class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */	
 	protected boolean callSocketClosed() {
-		CallbackOnSocketClosed cb = (CallbackOnSocketClosed)myCallbackManager.getCallbackType("OnSocketClosed");
+		final CallbackOnSocketClosed cb = (CallbackOnSocketClosed) myCallbackManager.getCallbackType("OnSocketClosed");
 		if (cb != null) { return cb.call(); }
 		return false;
 	}
@@ -332,39 +357,12 @@ public class IRCParser implements Runnable {
 	//---------------------------------------------------------------------------
 	// End Callbacks
 	//---------------------------------------------------------------------------
-
-	/**
-	 * Default constructor, ServerInfo and MyInfo need to be added separately (using IRC.me and IRC.server)
-	 */
-	public IRCParser() { }
-	/**
-	 * Constructor with ServerInfo, MyInfo needs to be added separately (using IRC.me)
-	 *
-	 * @param serverDetails Server information.
-	 */
-	public IRCParser(ServerInfo serverDetails) { this(null,serverDetails); }
-	/**
-	 * Constructor with MyInfo, ServerInfo needs to be added separately (using IRC.server)
-	 *
-	 * @param myDetails Client information.
-	 */
-	public IRCParser(MyInfo myDetails) { this(myDetails,null); }
-	/**
-	 * Constructor with ServerInfo and MyInfo.
-	 *
-	 * @param serverDetails Server information.
-	 * @param myDetails Client information.
-	 */
-	public IRCParser(MyInfo myDetails, ServerInfo serverDetails) {
-		if (myDetails != null) { this.me = myDetails; }
-		if (serverDetails != null) { this.server = serverDetails; }
-	}
 	
 	/** Reset internal state (use before connect). */
 	private void resetState() {
 		// Reset General State info
-		TriedAlt = false;
-		Got001 = false;
+		triedAlt = false;
+		got001 = false;
 		// Clear the hash tables
 		hChannelList.clear();
 		hClientList.clear();
@@ -392,20 +390,20 @@ public class IRCParser implements Runnable {
 	 * @throws NoSuchAlgorithmException if SSL is not available
 	 * @throws KeyManagementException if the trustManager is invalid
 	 */
-	private void connect() throws IOException, UnknownHostException, NoSuchAlgorithmException, KeyManagementException {
+	private void connect() throws UnknownHostException, IOException, NoSuchAlgorithmException, KeyManagementException {
 			resetState();
-			callDebugInfo(DEBUG_SOCKET, "Connecting to "+server.getHost()+":"+server.getPort());
+			callDebugInfo(DEBUG_SOCKET, "Connecting to " + server.getHost() + ":" + server.getPort());
 			
 			if (server.getUseSocks()) {
 				callDebugInfo(DEBUG_SOCKET, "Using Proxy");
-				Proxy.Type proxyType = Proxy.Type.SOCKS;
+				final Proxy.Type proxyType = Proxy.Type.SOCKS;
 				socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
 				
-				socket.connect(new InetSocketAddress(server.getHost(),server.getPort()));
+				socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
 			} else {
 				callDebugInfo(DEBUG_SOCKET, "Not using Proxy");
 				if (!server.getSSL()) {
-					socket = new Socket(server.getHost(),server.getPort());
+					socket = new Socket(server.getHost(), server.getPort());
 				}
 			}
 			
@@ -414,10 +412,10 @@ public class IRCParser implements Runnable {
 				
 				if (myTrustManager == null) { myTrustManager = trustAllCerts; }
 				
-				SSLContext sc = SSLContext.getInstance("SSL");
+				final SSLContext sc = SSLContext.getInstance("SSL");
 				sc.init(null, myTrustManager, new java.security.SecureRandom());
 				
-				SSLSocketFactory socketFactory = sc.getSocketFactory();
+				final SSLSocketFactory socketFactory = sc.getSocketFactory();
 				if (server.getUseSocks()) {
 					socket = socketFactory.createSocket(socket, server.getHost(), server.getPort(), false);
 				} else {
@@ -434,15 +432,15 @@ public class IRCParser implements Runnable {
 	}
 	
 	/**
-	 * Send server connection strings (NICK/USER/PASS)
+	 * Send server connection strings (NICK/USER/PASS).
 	 */
 	private void sendConnectionStrings() {
 		if (!server.getPassword().equals("")) {
-			sendString("PASS "+server.getPassword());
+			sendString("PASS " + server.getPassword());
 		}
 		setNickname(me.getNickname());
-		sendString("USER "+me.getUsername().toLowerCase()+" * * :"+me.getRealname());
-		IsFirst = false;	
+		sendString("USER " + me.getUsername().toLowerCase() + " * * :" + me.getRealname());
+		isFirst = false;	
 	}
 	
 	/**
@@ -451,11 +449,12 @@ public class IRCParser implements Runnable {
 	 */
 	public void run() {
 		callDebugInfo(DEBUG_INFO, "Begin Thread Execution");
-		if (HasBegan) { return; } else { HasBegan = true; }
-		try {connect(); }
-		catch (Exception e) {
-			callDebugInfo(DEBUG_SOCKET, "Error Connecting ("+e.getMessage()+"), Aborted");
-			ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Error connecting to server");
+		if (hasBegan) { return; } else { hasBegan = true; }
+		try { 
+                    connect(); 
+                } catch (Exception e) {
+			callDebugInfo(DEBUG_SOCKET, "Error Connecting (" + e.getMessage() + "), Aborted");
+			final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Error connecting to server");
 			ei.setException(e);
 			callErrorInfo(ei);
 			return;
@@ -470,7 +469,7 @@ public class IRCParser implements Runnable {
 		myProcessingManager.init();
 		
 		String line = "";
-		while(true) {
+		while (true) {
 			try {
 				line = in.readLine(); // Blocking :/
 				if (line == null) {
@@ -480,7 +479,7 @@ public class IRCParser implements Runnable {
 					callSocketClosed();
 					break;
 				} else {
-					if (IsFirst) { sendConnectionStrings(); }
+					if (isFirst) { sendConnectionStrings(); }
 					processLine(line);
 				}
 			} catch (IOException e) {
@@ -495,9 +494,12 @@ public class IRCParser implements Runnable {
 	}
 	
 	/** Close socket on destroy. */
-	protected void finalize(){
-		try { socket.close(); }
-		catch (IOException e) { callDebugInfo(DEBUG_SOCKET, "Could not close socket"); }
+	protected void finalize() {
+		try { 
+                    socket.close(); 
+                } catch (IOException e) { 
+                    callDebugInfo(DEBUG_SOCKET, "Could not close socket"); 
+                }
 	}
 
 	/**
@@ -507,10 +509,10 @@ public class IRCParser implements Runnable {
 	 * @param line Line to get parameter for
 	 * @return Parameter of the line
 	 */
-	protected String getParam(String line) {
+	protected String getParam(final String line) {
 		String[] params = null;
-		params = line.split(" :",2);
-		return params[params.length-1];
+		params = line.split(" :", 2);
+		return params[params.length - 1];
 	}
 	
 	/**
@@ -520,21 +522,19 @@ public class IRCParser implements Runnable {
 	 * @param line Line to tokenise
 	 * @return Array of tokens
 	 */
-	protected String[] tokeniseLine(String line) {
+	protected String[] tokeniseLine(final String line) {
 		if (line == null) {
-			String[] tokens = new String[1];
-			tokens[0] = "";
-			return tokens; // Return empty string[]
-		};
+			return new String[]{"", }; // Return empty string[]
+		}
 		String[] params = null;
 		String[] tokens = null;
-		params = line.split(" :",2);
+		params = line.split(" :", 2);
 		tokens = params[0].split(" ");
 		if (params.length == 2) { 
-			String[] temp = new String[tokens.length+1];
+			final String[] temp = new String[tokens.length + 1];
 			System.arraycopy(tokens, 0, temp, 0, tokens.length);
 			tokens = temp;
-			tokens[tokens.length-1] = params[1];
+			tokens[tokens.length - 1] = params[1];
 		}
 		return tokens;
 	}
@@ -567,14 +567,14 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param line Line to send (\r\n termination is added automatically)
 	 */
-	public void sendLine(String line) { doSendString(line,false); }
+	public void sendLine(final String line) { doSendString(line, false); }
 	
 	/** 
 	 * Send a line to the server and add proper line ending.
 	 *
 	 * @param line Line to send (\r\n termination is added automatically)
 	 */
-	protected void sendString(String line) { doSendString(line,true); }
+	protected void sendString(final String line) { doSendString(line, true); }
 	
 	/** 
 	 * Send a line to the server and add proper line ending.
@@ -582,11 +582,11 @@ public class IRCParser implements Runnable {
 	 * @param line Line to send (\r\n termination is added automatically)
 	 * @param fromParser is this line from the parser? (used for callDataOut)
 	 */
-	protected void doSendString(String line, boolean fromParser) {
+	protected void doSendString(final String line, final boolean fromParser) {
 		if (out == null) { return; }
-		callDataOut(line,fromParser);
-		out.printf("%s\r\n",line);
-		String[] newLine = tokeniseLine(line);
+		callDataOut(line, fromParser);
+		out.printf("%s\r\n", line);
+		final String[] newLine = tokeniseLine(line);
 		if (newLine[0].equalsIgnoreCase("away")) {
 			if (newLine.length > 1) {
 				// AWAY blah blah blah
@@ -619,17 +619,18 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param line IRC Line to process
 	 */
-	private void processLine(String line) {
-		String[] token = tokeniseLine(line);
+	private void processLine(final String line) {
+		final String[] token = tokeniseLine(line);
 		
 		int nParam;
 		callDataIn(line);
-		String sParam = token[1];
+		final String sParam = token[1];
 		
 		try {
-			if (token[0].equalsIgnoreCase("PING") || token[1].equalsIgnoreCase("PING")) { sendString("PONG :"+sParam); }
-			else {
-				if (!Got001) {
+			if (token[0].equalsIgnoreCase("PING") || token[1].equalsIgnoreCase("PING")) { 
+                            sendString("PONG :" + sParam); 
+                        } else {
+				if (!got001) {
 					// Before 001 we don't care about much.
 					try { nParam = Integer.parseInt(token[1]); } catch (Exception e) { nParam = -1; }
 					switch (nParam) {
@@ -644,12 +645,13 @@ public class IRCParser implements Runnable {
 					}
 				} else {
 					// After 001 we potentially care about everything!
-					try { myProcessingManager.process(sParam, token); }
-					catch (Exception e) { /* No Processor found */  }
+					try { 
+                                            myProcessingManager.process(sParam, token); 
+                                        } catch (Exception e) { /* No Processor found */  }
 				}
 			}
 		} catch (Exception e) {
-			ParserError ei = new ParserError(ParserError.ERROR_FATAL, "Exception in Parser. {"+line+"}");
+			final ParserError ei = new ParserError(ParserError.ERROR_FATAL, "Exception in Parser. {" + line + "}");
 			ei.setException(e);
 			callErrorInfo(ei);
 		}
@@ -669,17 +671,15 @@ public class IRCParser implements Runnable {
 		// Order isn't really important, and this code only takes 3 lines of we
 		// don't care about it but ordered guarentees that on a specific ircd this
 		// method will ALWAYs return the same value.
-		char[] modes = new char[hChanModesBool.size()];
-		Character cTemp;
-		Integer nTemp;
+		final char[] modes = new char[hChanModesBool.size()];
+		int nTemp;
 		
-		for (Enumeration e = hChanModesBool.keys(); e.hasMoreElements();) {
-			cTemp = (Character)e.nextElement();
+                for (char cTemp : hChanModesBool.keySet()) {
 			nTemp = hChanModesBool.get(cTemp);
 			// Is there an easier way to find out the power of 2 value for a number?
 			// ie 1024 = 10, 512 = 9 ?
 			for (int i = 0; i < modes.length; i++) {
-				if (Math.pow(2, i) == (double)nTemp) {
+				if (Math.pow(2, i) == (double) nTemp) {
 					modes[i] = cTemp;
 					break;
 				}
@@ -692,16 +692,19 @@ public class IRCParser implements Runnable {
 	 * Process CHANMODES from 005.
 	 */	
 	protected void parseChanModes() {
-		StringBuilder sDefaultModes = new StringBuilder("b,k,l,");
-		String[] Bits = null;
-		String ModeStr;
+		final StringBuilder sDefaultModes = new StringBuilder("b,k,l,");
+		String[] bits = null;
+		String modeStr;
 		if (h005Info.containsKey("USERCHANMODES")) {
-			if (getIRCD(true).equalsIgnoreCase("dancer")) { sDefaultModes.insert(0, "dqeI"); }
-			else if (getIRCD(true).equalsIgnoreCase("austirc")) { sDefaultModes.insert(0, "e"); }
-			ModeStr = h005Info.get("USERCHANMODES");
+			if (getIRCD(true).equalsIgnoreCase("dancer")) { 
+                            sDefaultModes.insert(0, "dqeI"); 
+                        } else if (getIRCD(true).equalsIgnoreCase("austirc")) { 
+                            sDefaultModes.insert(0, "e"); 
+                        }
+			modeStr = h005Info.get("USERCHANMODES");
 			char mode;
-			for (int i = 0; i < ModeStr.length(); ++i) {
-				mode = ModeStr.charAt(i);
+			for (int i = 0; i < modeStr.length(); ++i) {
+				mode = modeStr.charAt(i);
 				if (!hPrefixModes.containsKey(mode)) {
 					if (sDefaultModes.indexOf(Character.toString(mode)) < 0) {
 						sDefaultModes.append(mode);
@@ -711,14 +714,18 @@ public class IRCParser implements Runnable {
 		} else {
 			sDefaultModes.append("imnpstrc");
 		}
-		if (h005Info.containsKey("CHANMODES")) { ModeStr = h005Info.get("CHANMODES");	}
-		else { ModeStr = sDefaultModes.toString(); h005Info.put("CHANMODES",ModeStr); }
-		Bits = ModeStr.split(",",5);
-		if (Bits.length < 4) {
-			ModeStr = sDefaultModes.toString();
-			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "CHANMODES String not valid. Using default string of \""+ModeStr+"\""));
-			h005Info.put("CHANMODES",ModeStr);
-			Bits = ModeStr.split(",",5);
+		if (h005Info.containsKey("CHANMODES")) { 
+                    modeStr = h005Info.get("CHANMODES");	
+                } else { 
+                    modeStr = sDefaultModes.toString(); 
+                    h005Info.put("CHANMODES", modeStr); 
+                }
+		bits = modeStr.split(",", 5);
+		if (bits.length < 4) {
+			modeStr = sDefaultModes.toString();
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "CHANMODES String not valid. Using default string of \"" + modeStr + "\""));
+			h005Info.put("CHANMODES", modeStr);
+			bits = modeStr.split(",", 5);
 		}
 		
 		// resetState
@@ -727,34 +734,34 @@ public class IRCParser implements Runnable {
 		nNextKeyCMBool = 1;
 		
 		// List modes.
-		for (int i = 0; i < Bits[0].length(); ++i) {
-			Character cMode = Bits[0].charAt(i);
-			callDebugInfo(DEBUG_INFO, "Found List Mode: %c",cMode);
-			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode,cmList); }
+		for (int i = 0; i < bits[0].length(); ++i) {
+			final Character cMode = bits[0].charAt(i);
+			callDebugInfo(DEBUG_INFO, "Found List Mode: %c", cMode);
+			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode, LIST_MODE); }
 		}
 		
 		// Param for Set and Unset.
-		Byte nBoth = (cmSet+cmUnset);
-		for (int i = 0; i < Bits[1].length(); ++i) {
-			Character cMode = Bits[1].charAt(i);
-			callDebugInfo(DEBUG_INFO, "Found Set/Unset Mode: %c",cMode);
-			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode,nBoth); }
+		final Byte nBoth = LIST_SET_MODE + LIST_UNSET_MODE;
+		for (int i = 0; i < bits[1].length(); ++i) {
+			final Character cMode = bits[1].charAt(i);
+			callDebugInfo(DEBUG_INFO, "Found Set/Unset Mode: %c", cMode);
+			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode, nBoth); }
 		}
 		
 		// Param just for Set
-		for (int i = 0; i < Bits[2].length(); ++i) {
-			Character cMode = Bits[2].charAt(i);
-			callDebugInfo(DEBUG_INFO, "Found Set Only Mode: %c",cMode);
-			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode,cmSet); }
+		for (int i = 0; i < bits[2].length(); ++i) {
+			final Character cMode = bits[2].charAt(i);
+			callDebugInfo(DEBUG_INFO, "Found Set Only Mode: %c", cMode);
+			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode, LIST_SET_MODE); }
 		}
 		
 		// Boolean Mode
-		for (int i = 0; i < Bits[3].length(); ++i) {
-			Character cMode = Bits[3].charAt(i);
-			callDebugInfo(DEBUG_INFO, "Found Boolean Mode: %c [%d]",cMode,nNextKeyCMBool);
+		for (int i = 0; i < bits[3].length(); ++i) {
+			final Character cMode = bits[3].charAt(i);
+			callDebugInfo(DEBUG_INFO, "Found Boolean Mode: %c [%d]", cMode, nNextKeyCMBool);
 			if (!hChanModesBool.containsKey(cMode)) {
-				hChanModesBool.put(cMode,nNextKeyCMBool);
-				nNextKeyCMBool = nNextKeyCMBool*2;
+				hChanModesBool.put(cMode, nNextKeyCMBool);
+				nNextKeyCMBool = nNextKeyCMBool * 2;
 			}
 		}
 	}
@@ -766,10 +773,10 @@ public class IRCParser implements Runnable {
 	 * @return All the currently known boolean modes
 	 */	
 	public String getBoolChanModes() {
-		char[] modes = new char[hChanModesBool.size()];
+		final char[] modes = new char[hChanModesBool.size()];
 		int i = 0;
-		for (Enumeration e = hChanModesBool.keys(); e.hasMoreElements();) {
-			modes[i++] = (Character)e.nextElement();
+                for (char mode : hChanModesBool.keySet()) {
+			modes[i++] = mode;
 		}
 		// Alphabetically sort the array
 		Arrays.sort(modes);
@@ -783,7 +790,7 @@ public class IRCParser implements Runnable {
 	 * @return All the currently known List modes
 	 */	
 	public String getListChanModes() {
-		return getOtherModeString(cmList);
+		return getOtherModeString(LIST_MODE);
 	}
 	
 	/**
@@ -793,7 +800,7 @@ public class IRCParser implements Runnable {
 	 * @return All the currently known Set-Only modes
 	 */	
 	public String getSetOnlyChanModes() {
-		return getOtherModeString(cmSet);
+		return getOtherModeString(LIST_SET_MODE);
 	}
 	
 	/**
@@ -803,7 +810,7 @@ public class IRCParser implements Runnable {
 	 * @return All the currently known Set-Unset modes
 	 */	
 	public String getSetUnsetChanModes() {
-		return getOtherModeString((byte)(cmSet+cmUnset));
+		return getOtherModeString((byte) (LIST_SET_MODE + LIST_UNSET_MODE));
 	}
 
 	/**
@@ -813,13 +820,11 @@ public class IRCParser implements Runnable {
 	 * @param nValue Value mode must have to be included
 	 * @return All the currently known Set-Unset modes
 	 */	
-	protected String getOtherModeString(byte nValue) {
-		char[] modes = new char[hChanModesOther.size()];
-		Character cTemp;
+	protected String getOtherModeString(final byte nValue) {
+		final char[] modes = new char[hChanModesOther.size()];
 		Byte nTemp;
 		int i = 0;
-		for (Enumeration e = hChanModesOther.keys(); e.hasMoreElements();) {
-			cTemp = (Character)e.nextElement();
+                for (char cTemp : hChanModesOther.keySet()) {
 			nTemp = hChanModesOther.get(cTemp);
 			if (nTemp == nValue) { modes[i++] = cTemp; }
 		}
@@ -833,22 +838,24 @@ public class IRCParser implements Runnable {
 	 */	
 	protected void parseUserModes() {
 		final String sDefaultModes = "nwdoi";
-		String[] Bits = null;
-		String ModeStr;
-		if (h005Info.containsKey("USERMODES")) { ModeStr = h005Info.get("USERMODES");	}
-		else { ModeStr = sDefaultModes; h005Info.put("USERMODES", sDefaultModes); }
+		String modeStr;
+		if (h005Info.containsKey("USERMODES")) { 
+                    modeStr = h005Info.get("USERMODES");
+                } else { 
+                    modeStr = sDefaultModes; h005Info.put("USERMODES", sDefaultModes); 
+                }
 		
 		// resetState
 		hUserModes.clear();
 		nNextKeyUser = 1;
 		
 		// Boolean Mode
-		for (int i = 0; i < ModeStr.length(); ++i) {
-			Character cMode = ModeStr.charAt(i);
-			callDebugInfo(DEBUG_INFO, "Found User Mode: %c [%d]",cMode,nNextKeyUser);
+		for (int i = 0; i < modeStr.length(); ++i) {
+			final Character cMode = modeStr.charAt(i);
+			callDebugInfo(DEBUG_INFO, "Found User Mode: %c [%d]", cMode, nNextKeyUser);
 			if (!hUserModes.containsKey(cMode)) {
-				hUserModes.put(cMode,nNextKeyUser);
-				nNextKeyUser = nNextKeyUser*2;
+				hUserModes.put(cMode, nNextKeyUser);
+				nNextKeyUser = nNextKeyUser * 2;
 			}
 		}
 	}	
@@ -858,19 +865,22 @@ public class IRCParser implements Runnable {
 	 */	
 	protected void parseChanPrefix() {
 		final String sDefaultModes = "#&";
-		String[] Bits = null;
-		String ModeStr;
-		if (h005Info.containsKey("CHANTYPES")) { ModeStr = h005Info.get("CHANTYPES");	}
-		else { ModeStr = sDefaultModes; h005Info.put("CHANTYPES", sDefaultModes); }
+		String modeStr;
+		if (h005Info.containsKey("CHANTYPES")) { 
+                    modeStr = h005Info.get("CHANTYPES");
+                } else { 
+                    modeStr = sDefaultModes; 
+                    h005Info.put("CHANTYPES", sDefaultModes);
+                }
 		
 		// resetState
 		hChanPrefix.clear();
 		
 		// Boolean Mode
-		for (int i = 0; i < ModeStr.length(); ++i) {
-			Character cMode = ModeStr.charAt(i);
-			callDebugInfo(DEBUG_INFO, "Found Chan Prefix: %c",cMode);
-			if (!hChanPrefix.containsKey(cMode)) { hChanPrefix.put(cMode,true); }
+		for (int i = 0; i < modeStr.length(); ++i) {
+			final Character cMode = modeStr.charAt(i);
+			callDebugInfo(DEBUG_INFO, "Found Chan Prefix: %c", cMode);
+			if (!hChanPrefix.containsKey(cMode)) { hChanPrefix.put(cMode, true); }
 		}
 	}		
 	
@@ -879,20 +889,27 @@ public class IRCParser implements Runnable {
 	 */	
 	public void parsePrefixModes() {
 		final String sDefaultModes = "(ohv)@%+";
-		String[] Bits = null;
-		String ModeStr;
-		if (h005Info.containsKey("PREFIX")) { ModeStr = h005Info.get("PREFIX");	}
-		else { ModeStr = sDefaultModes; }
-		if (ModeStr.substring(0,1).equals("(")) { ModeStr = ModeStr.substring(1); }
-		else { ModeStr = sDefaultModes.substring(1); h005Info.put("PREFIX", sDefaultModes); }
+                String[] bits;
+		String modeStr;
+		if (h005Info.containsKey("PREFIX")) { 
+                    modeStr = h005Info.get("PREFIX");	
+                } else { 
+                    modeStr = sDefaultModes; 
+                }
+		if (modeStr.substring(0, 1).equals("(")) { 
+                    modeStr = modeStr.substring(1); 
+                } else { 
+                    modeStr = sDefaultModes.substring(1); 
+                    h005Info.put("PREFIX", sDefaultModes); 
+                }
 		
-		Bits = ModeStr.split("\\)",2);
-		if (Bits.length != 2 || Bits[0].length() != Bits[1].length()) {
-			ModeStr = sDefaultModes;
-			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "PREFIX String not valid. Using default string of \""+ModeStr+"\""));
-			h005Info.put("PREFIX",ModeStr);
-			ModeStr = ModeStr.substring(1);
-			Bits = ModeStr.split("\\)",2);
+		bits = modeStr.split("\\)", 2);
+		if (bits.length != 2 || bits[0].length() != bits[1].length()) {
+			modeStr = sDefaultModes;
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "PREFIX String not valid. Using default string of \"" + modeStr + "\""));
+			h005Info.put("PREFIX", modeStr);
+			modeStr = modeStr.substring(1);
+			bits = modeStr.split("\\)", 2);
 		}
 
 		// resetState
@@ -900,15 +917,15 @@ public class IRCParser implements Runnable {
 		hPrefixMap.clear();
 		nNextKeyPrefix = 1;
 
-		for (int i = Bits[0].length()-1; i > -1; --i) {
-			Character cMode = Bits[0].charAt(i);
-			Character cPrefix = Bits[1].charAt(i);
-			callDebugInfo(DEBUG_INFO, "Found Prefix Mode: %c => %c [%d]",cMode,cPrefix,nNextKeyPrefix);
+		for (int i = bits[0].length() - 1; i > -1; --i) {
+			final Character cMode = bits[0].charAt(i);
+			final Character cPrefix = bits[1].charAt(i);
+			callDebugInfo(DEBUG_INFO, "Found Prefix Mode: %c => %c [%d]", cMode, cPrefix, nNextKeyPrefix);
 			if (!hPrefixModes.containsKey(cMode)) {
-				hPrefixModes.put(cMode,nNextKeyPrefix);
-				hPrefixMap.put(cMode,cPrefix);
-				hPrefixMap.put(cPrefix,cMode);
-				nNextKeyPrefix = nNextKeyPrefix*2;
+				hPrefixModes.put(cMode, nNextKeyPrefix);
+				hPrefixMap.put(cMode, cPrefix);
+				hPrefixMap.put(cPrefix, cMode);
+				nNextKeyPrefix = nNextKeyPrefix * 2;
 			}
 		}	
 		
@@ -919,16 +936,16 @@ public class IRCParser implements Runnable {
 	 *
 	 * @return true if 001 has been recieved, false otherwise.
 	 */
-	public boolean isReady() { return Got001; }	
+	public boolean isReady() { return got001; }	
 	
 	/**
 	 * Join a Channel.
 	 *
 	 * @param sChannelName Name of channel to join
 	 */
-	public void joinChannel(String sChannelName) {
+	public void joinChannel(final String sChannelName) {
 		if (!isValidChannelName(sChannelName)) { return; }
-		sendString("JOIN "+sChannelName);
+		sendString("JOIN " + sChannelName);
 	}
 	
 	
@@ -938,10 +955,13 @@ public class IRCParser implements Runnable {
 	 * @param sChannelName Name of channel to part
 	 * @param sReason Reason for leaving (Nothing sent if sReason is "")
 	 */
-	public void partChannel(String sChannelName, String sReason) {
+	public void partChannel(final String sChannelName, final String sReason) {
 		if (getChannelInfo(sChannelName) == null) { return; }
-		if (sReason.equals("")) { sendString("PART "+sChannelName); }
-		else { sendString("PART "+sChannelName+" :"+sReason); }
+		if (sReason.equals("")) { 
+                    sendString("PART " + sChannelName); 
+                } else { 
+                    sendString("PART " + sChannelName + " :" + sReason); 
+                }
 	}	
 	
 	/**
@@ -949,14 +969,14 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param sNewNickName New nickname wanted.
 	 */
-	public void setNickname(String sNewNickName) {
+	public void setNickname(final String sNewNickName) {
 		if (this.getSocketState() != STATE_OPEN) {
 			me.setNickname(sNewNickName);
 		} else {
 			if (cMyself != null) {
 				if (cMyself.getNickname().equals(sNewNickName)) { return; }
 			}
-			sendString("NICK "+sNewNickName);
+			sendString("NICK " + sNewNickName);
 		}
 		sThinkNickname = sNewNickName;
 	}
@@ -968,13 +988,13 @@ public class IRCParser implements Runnable {
 	 * @param sTarget Target for message (eg #DMDirc)
 	 * @return Max Length message should be.
 	 */
-	public int getMaxLength(String sType, String sTarget) { 
+	public int getMaxLength(final String sType, final String sTarget) { 
 		// If my host is "nick!user@host" and we are sending "#Channel"
 		// a "PRIVMSG" this will find the length of ":nick!user@host PRIVMSG #channel :"
 		// and subtract it from the MAX_LINELENGTH. This should be sufficient in most cases.
 		// Lint = the 2 ":" at the start and end and the 3 separating " "s
-		final int LINE_LINT = 5;
-		return MAX_LINELENGTH - getMyself().toString().length() - sType.length() - sTarget.length() - LINE_LINT;
+		final int lineLint = 5;
+		return MAX_LINELENGTH - getMyself().toString().length() - sType.length() - sTarget.length() - lineLint;
 	}
 	
 	/**
@@ -986,7 +1006,7 @@ public class IRCParser implements Runnable {
 	public void sendMessage(final String sTarget, final String sMessage) { 
 		if (sTarget.equals("") || sMessage.equals("")) { return; }
 		
-		sendString("PRIVMSG "+sTarget+" :"+sMessage);	
+		sendString("PRIVMSG " + sTarget + " :" + sMessage);	
 	}
 	
 	/**
@@ -995,10 +1015,10 @@ public class IRCParser implements Runnable {
 	 * @param sTarget Target
 	 * @param sMessage Message to send
 	 */
-	public void sendNotice(String sTarget, String sMessage) { 
+	public void sendNotice(final String sTarget, final String sMessage) { 
 		if (sTarget.equals("") || sMessage.equals("")) { return; }
 		
-		sendString("NOTICE "+sTarget+" :"+sMessage);	
+		sendString("NOTICE " + sTarget + " :" + sMessage);	
 	}
 
 	/**
@@ -1007,7 +1027,7 @@ public class IRCParser implements Runnable {
 	 * @param sTarget Target
 	 * @param sMessage Action to send
 	 */
-	public void sendAction(String sTarget, String sMessage) { 
+	public void sendAction(final String sTarget, final String sMessage) { 
 		if (sTarget.equals("") || sMessage.equals("")) { return; }
 		sendCTCP(sTarget, "ACTION", sMessage);
 	}
@@ -1019,11 +1039,11 @@ public class IRCParser implements Runnable {
 	 * @param sType Type of CTCP
 	 * @param sMessage Optional Additional Parameters
 	 */
-	public void sendCTCP(String sTarget, String sType, String sMessage) { 
+	public void sendCTCP(final String sTarget, final String sType, String sMessage) { 
 		if (sTarget.equals("") || sType.equals("")) { return; }
-		Character Char1 = Character.valueOf((char)1);
-		if (!sMessage.equals("")) { sMessage = " "+sMessage; }
-		sendString("PRIVMSG "+sTarget+" :"+Char1+sType.toUpperCase()+sMessage+Char1);	
+		final char char1 = (char) 1;
+		if (!sMessage.equals("")) { sMessage = " " + sMessage; }
+		sendString("PRIVMSG " + sTarget + " :" + char1 + sType.toUpperCase() + sMessage + char1);	
 	}
 	
 	/**
@@ -1033,11 +1053,11 @@ public class IRCParser implements Runnable {
 	 * @param sType Type of CTCP
 	 * @param sMessage Optional Additional Parameters
 	 */
-	public void sendCTCPReply(String sTarget, String sType, String sMessage) { 
+	public void sendCTCPReply(final String sTarget, final String sType, String sMessage) { 
 		if (sTarget.equals("") || sType.equals("")) { return; }
-		Character Char1 = Character.valueOf((char)1);
-		if (!sMessage.equals("")) { sMessage = " "+sMessage; }
-		sendString("NOTICE "+sTarget+" :"+Char1+sType.toUpperCase()+sMessage+Char1);	
+		final char char1 = (char) 1;
+		if (!sMessage.equals("")) { sMessage = " " + sMessage; }
+		sendString("NOTICE " + sTarget + " :" + char1 + sType.toUpperCase() + sMessage + char1);	
 	}
 	
 	/**
@@ -1046,9 +1066,12 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param sReason Reason for quitting.
 	 */
-	public void quit(String sReason) { 
-		if (sReason.equals("")) { sendString("QUIT"); }
-		else { sendString("QUIT :"+sReason); }	
+	public void quit(final String sReason) { 
+		if (sReason.equals("")) { 
+                    sendString("QUIT"); 
+                } else { 
+                    sendString("QUIT :" + sReason); 
+                }	
 	}
 	/**
 	 * Disconnect from server.
@@ -1057,9 +1080,9 @@ public class IRCParser implements Runnable {
 	 *
 	 * @param sReason Reason for quitting.
 	 */
-	public void disconnect(String sReason) {
+	public void disconnect(final String sReason) {
 		quit(sReason);
-		try { socket.close(); } catch (Exception e) { };
+		try { socket.close(); } catch (Exception e) { }
 	}
 	
 	/**
@@ -1068,60 +1091,82 @@ public class IRCParser implements Runnable {
 	 * @param sChannelName Channel name to test
 	 * @return true if name is valid on the current connection, false otherwise. (Always false before noMOTD/MOTDEnd)
 	 */
-	public boolean isValidChannelName(String sChannelName) {
+	public boolean isValidChannelName(final String sChannelName) {
 		return hChanPrefix.containsKey(sChannelName.charAt(0));
 	}
 	
 	/**
-	 * Check if a given chanmode is user settable
+	 * Check if a given chanmode is user settable.
 	 *
 	 * @param mode Mode to test
 	 * @return true if mode is settable by users, false if servers only
 	 */
 	public boolean isUserSettable(final Character mode) {
 		String validmodes;
-		if (h005Info.containsKey("USERCHANMODES")) { validmodes = h005Info.get("USERCHANMODES"); }
-		else { validmodes = "bklimnpstrc"; }
-		return validmodes.matches(".*"+mode+".*");
+		if (h005Info.containsKey("USERCHANMODES")) { 
+                    validmodes = h005Info.get("USERCHANMODES"); 
+                } else { 
+                    validmodes = "bklimnpstrc"; 
+                }
+		return validmodes.matches(".*" + mode + ".*");
 	}
 	
 	/**
-	 * Get the 005 info
+	 * Get the 005 info.
 	 *
 	 * @return 005Info hashtable.
 	 */
-	public Hashtable<String,String> get005() { return h005Info; }
+	public Hashtable<String, String> get005() { return h005Info; }
 	
 	/**
-	 * Get the name of the ircd
+	 * Get the name of the ircd.
 	 *
-	 * @param getType if this is false the string frmo 004 is returned. Else a guess of the type (ircu, hybrid, ircnet)
+	 * @param getType if this is false the string from 004 is returned. Else a guess of the type (ircu, hybrid, ircnet)
 	 * @return IRCD Version or Type
 	 */ 
 	public String getIRCD(final boolean getType) {
 		if (h005Info.containsKey("004IRCD")) {
-			String version = h005Info.get("004IRCD");
+			final String version = h005Info.get("004IRCD");
 			if (getType) {
-				if (version.matches("(?i).*asuka.*")) { return "asuka"; }
-				else if (version.matches("(?i).*hyperion.*")) { return "hyperion"; }
-				else if (version.matches("(?i).*dancer.*")) { return "dancer"; }
-				else if (version.matches("(?i).*austhex.*")) { return "austhex"; }
-				else if (version.matches("(?i).*austirc.*")) { return "austirc"; }
-				else if (version.matches("(?i).*ratbox.*")) { return "ratbox"; }
-				else if (version.matches("(?i).*ircd.hybrid.*")) { return "hybrid7"; }
-				else if (version.matches("(?i).*hybrid.*")) { return "hybrid"; }
-				else if (version.matches("(?i).*beware.*")) { return "bircd"; }
-				else if (version.matches("(?i).*ircu.*")) { return "ircu"; }
-				else if (version.matches("(?i).*unreal.*")) { return "unreal"; }
-				else {
+				if (version.matches("(?i).*asuka.*")) { 
+                                    return "asuka"; 
+                                } else if (version.matches("(?i).*hyperion.*")) { 
+                                    return "hyperion"; 
+                                } else if (version.matches("(?i).*dancer.*")) { 
+                                    return "dancer"; 
+                                } else if (version.matches("(?i).*austhex.*")) { 
+                                    return "austhex"; 
+                                } else if (version.matches("(?i).*austirc.*")) { 
+                                    return "austirc"; 
+                                } else if (version.matches("(?i).*ratbox.*")) { 
+                                    return "ratbox"; 
+                                } else if (version.matches("(?i).*ircd.hybrid.*")) { 
+                                    return "hybrid7"; 
+                                } else if (version.matches("(?i).*hybrid.*")) { 
+                                    return "hybrid"; 
+                                } else if (version.matches("(?i).*beware.*")) { 
+                                    return "bircd"; 
+                                } else if (version.matches("(?i).*ircu.*")) {
+                                    return "ircu"; 
+                                } else if (version.matches("(?i).*unreal.*")) { 
+                                    return "unreal"; 
+                                } else {
 					// Stupid networks go here...
-					if (sNetworkName.equalsIgnoreCase("ircnet")) { return "ircnet"; }
-					else { return "generic"; }
+					if (sNetworkName.equalsIgnoreCase("ircnet")) { 
+                                            return "ircnet"; 
+                                        } else { 
+                                            return "generic";
+                                        }
 				}
-			} else { return version; }
+			} else { 
+                            return version; 
+                        }
 		} else {
-			if (getType) { return "generic"; }
-			else { return ""; }
+			if (getType) { 
+                            return "generic"; 
+                        } else { 
+                            return ""; 
+                        }
 		}
 	}
 	
@@ -1137,5 +1182,5 @@ public class IRCParser implements Runnable {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

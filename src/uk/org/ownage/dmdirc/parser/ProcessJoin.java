@@ -70,7 +70,7 @@ public class ProcessJoin extends IRCProcessor {
 			for (Enumeration e = myParser.hChanModesOther.keys(); e.hasMoreElements();) {
 				cTemp = (Character)e.nextElement();
 				nTemp = myParser.hChanModesOther.get(cTemp);
-				if (nTemp == myParser.cmList) { sendString("MODE "+iChannel.getName()+" "+cTemp); }
+				if (nTemp == myParser.LIST_MODE) { sendString("MODE "+iChannel.getName()+" "+cTemp); }
 			}
 			callChannelSelfJoin(iChannel);
 		} else {

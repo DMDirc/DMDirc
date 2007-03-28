@@ -163,7 +163,7 @@ public class ProcessMode extends IRCProcessor {
 					if (bPositive) { nCurrent = nCurrent + nValue; }
 					else { nCurrent = nCurrent - nValue; }
 				} else {
-					if (nValue == myParser.cmList) {
+					if (nValue == myParser.LIST_MODE) {
 						// List Mode
 						sModeParam = sModestr[nParam++];
 						sNonUserModeStrParams = sNonUserModeStrParams+" "+sModeParam;
@@ -182,7 +182,7 @@ public class ProcessMode extends IRCProcessor {
 							if (cbSingle != null) { cbSingle.call(iChannel, setterCCI, token[0], cPositive+cMode+" "+sModeParam ); }
 						} else {
 							// -Mode - parameter isn't always needed, we need to check
-							if ((nValue & myParser.cmUnset) == myParser.cmUnset) {
+							if ((nValue & myParser.LIST_UNSET_MODE) == myParser.LIST_UNSET_MODE) {
 								sModeParam = sModestr[nParam++];
 								sNonUserModeStrParams = sNonUserModeStrParams+" "+sModeParam;
 							} else {

@@ -38,7 +38,7 @@ public class Process001 extends IRCProcessor {
 	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
-		myParser.Got001 = true;
+		myParser.got001 = true;
 		// << :demon1.uk.quakenet.org 001 Java-Test :Welcome to the QuakeNet IRC Network, Java-Test
 		String sNick;
 		myParser.sServerName = token[0].substring(1,token[0].length());
