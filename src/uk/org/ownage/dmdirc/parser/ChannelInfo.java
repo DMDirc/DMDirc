@@ -32,9 +32,9 @@ import java.util.LinkedList;
 /**
  * Contains Channel information.
  * 
- * @author            Shane Mc Cormack
- * @author            Chris Smith
- * @version           $Id$
+ * @author Shane Mc Cormack
+ * @author Chris Smith
+ * @version $Id$
  * @see IRCParser
  */
 public final class ChannelInfo {
@@ -144,8 +144,8 @@ public final class ChannelInfo {
 		sWho = ClientInfo.parseHost(sWho);
 		sWho = sWho.toLowerCase();
 		if (hChannelUserList.containsKey(sWho)) { 
-                    return hChannelUserList.get(sWho); 
-                }
+			return hChannelUserList.get(sWho); 
+		}
 		return null;
 	}	
 	/**
@@ -157,8 +157,8 @@ public final class ChannelInfo {
 	public ChannelClientInfo getUser(final ClientInfo cWho) {
 		for (ChannelClientInfo client : hChannelUserList.values()) {
 			if (client.getClient() == cWho) { 
-                            return client; 
-                        }
+				return client; 
+			}
 		}
 		return null;
 	}
@@ -278,7 +278,7 @@ public final class ChannelInfo {
 			nTemp = myParser.hChanModesBool.get(cTemp);
 			if ((nChanModes & nTemp) == nTemp) { sModes.append(cTemp); }
 		}
-                for (char cTemp : hParamModes.keySet()) {
+		for (char cTemp : hParamModes.keySet()) {
 			sTemp = hParamModes.get(cTemp);
 			if (!sTemp.equals("")) {
 				sModes.append(cTemp);
@@ -312,8 +312,8 @@ public final class ChannelInfo {
 	 */	
 	public String getModeParam(final Character cMode) { 
 		if (hParamModes.containsKey(cMode)) { 
-                    return hParamModes.get(cMode); 
-                }
+			return hParamModes.get(cMode); 
+		}
 		return "";
 	}
 	
@@ -325,21 +325,17 @@ public final class ChannelInfo {
 	 * @param bAdd Add or remove the value. (true for add, false for remove)
 	 */
 	protected void setListModeParam(final Character cMode, final ChannelListModeItem newItem, final boolean bAdd) { 
-		if (!myParser.hChanModesOther.containsKey(cMode)) { 
-                    return; 
-                } else if (myParser.hChanModesOther.get(cMode) != myParser.LIST_MODE) { 
-                    return; 
-                }
+		if (!myParser.hChanModesOther.containsKey(cMode)) { return; }
+		else if (myParser.hChanModesOther.get(cMode) != myParser.MODE_LIST) { return; }
 		
 		if (!hListModes.containsKey(cMode)) { 
-                    hListModes.put(cMode, new ArrayList<ChannelListModeItem>());	
-                }
+			hListModes.put(cMode, new ArrayList<ChannelListModeItem>());	
+		}
 		final ArrayList<ChannelListModeItem> lModes = hListModes.get(cMode);
 		for (int i = 0; i < lModes.size(); i++) {
 			if (lModes.get(i).getItem().equalsIgnoreCase(newItem.getItem())) { 
-				if (bAdd) { 
-                                    return; 
-                                } else { 
+				if (bAdd) { return; }
+				else { 
 					lModes.remove(i);
 					break;
 				}
@@ -356,15 +352,12 @@ public final class ChannelInfo {
 	 * @return ArrayList containing ChannelListModeItem in the list, or null if mode is invalid
 	 */
 	public ArrayList<ChannelListModeItem> getListModeParam(final Character cMode) { 
-		if (!myParser.hChanModesOther.containsKey(cMode)) { 
-                    return null; 
-                } else if (myParser.hChanModesOther.get(cMode) != myParser.LIST_MODE) { 
-                    return null; 
-                }
+		if (!myParser.hChanModesOther.containsKey(cMode)) { return null; }
+		else if (myParser.hChanModesOther.get(cMode) != myParser.MODE_LIST) { return null; }
 		
 		if (!hListModes.containsKey(cMode)) { 
-                    hListModes.put(cMode, new ArrayList<ChannelListModeItem>());
-                }
+			hListModes.put(cMode, new ArrayList<ChannelListModeItem>());
+		}
 		return hListModes.get(cMode);
 	}
 	
@@ -408,23 +401,14 @@ public final class ChannelInfo {
 		String modestr = "";
 		if (myParser.h005Info.containsKey("MODES")) {
 			try { 
-                            modecount = Integer.parseInt(myParser.h005Info.get("MODES")); 
-                        } catch (NumberFormatException e) { 
-                            modecount = 1; 
-                        }
+				modecount = Integer.parseInt(myParser.h005Info.get("MODES")); 
+			} catch (NumberFormatException e) { 
+				modecount = 1; 
+			}
 		}
-		if (!myParser.isUserSettable(mode)) { 
-                    return; 
-                }
-		
-		if (lModeQueue.size() == modecount) { 
-                    sendModes(); 
-                }
-		if (positive) { 
-                    modestr = "+"; 
-                } else { 
-                    modestr = "-";
-                }
+		if (!myParser.isUserSettable(mode)) { return; }
+		if (lModeQueue.size() == modecount) { sendModes(); }
+		if (positive) { modestr = "+"; } else { modestr = "-"; }
 		modestr = modestr + mode;
 		if (!myParser.hChanModesBool.containsKey(mode)) {
 			// May need a param
@@ -432,11 +416,11 @@ public final class ChannelInfo {
 				modestr = modestr + " " + parameter;
 			} else {
 				modecount = myParser.hChanModesOther.get(mode);
-				if ((modecount & myParser.LIST_MODE) == myParser.LIST_MODE) {
+				if ((modecount & myParser.MODE_LIST) == myParser.MODE_LIST) {
 					modestr = modestr + " " + parameter;
-				} else if (!positive && ((modecount & myParser.LIST_UNSET_MODE) == myParser.LIST_UNSET_MODE)) {
+				} else if (!positive && ((modecount & myParser.MODE_UNSET) == myParser.MODE_UNSET)) {
 					modestr = modestr + " " + parameter;
-				} else if (positive && ((modecount & myParser.LIST_SET_MODE) == myParser.LIST_SET_MODE)) {
+				} else if (positive && ((modecount & myParser.MODE_SET) == myParser.MODE_SET)) {
 					modestr = modestr + " " + parameter;
 				}
 			}

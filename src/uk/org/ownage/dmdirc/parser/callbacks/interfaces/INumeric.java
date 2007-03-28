@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id: INumeric.java 632 2007-03-19 13:05:14Z greboid $
+ * SVN: $Id$
  */
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;

@@ -29,9 +29,9 @@ import java.util.Enumeration;
 /**
  * Contains information about a client on a channel.
  * 
- * @author            Shane Mc Cormack
- * @author            Chris Smith
- * @version           $Id$
+ * @author Shane Mc Cormack
+ * @author Chris Smith
+ * @version $Id$
  * @see IRCParser
  */
 public final class ChannelClientInfo {
@@ -96,7 +96,7 @@ public final class ChannelClientInfo {
 		StringBuilder sModes = new StringBuilder();
 		Character cTemp;
 		int nTemp = 0;
-                final int nCurrentModes = this.getChanMode();
+		final int nCurrentModes = this.getChanMode();
 
 		for (int i = myParser.nNextKeyPrefix; i > 0; i = i / 2) {
 			if ((nCurrentModes & i) == i) {

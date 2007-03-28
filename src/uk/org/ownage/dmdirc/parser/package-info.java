@@ -20,7 +20,7 @@
  * SOFTWARE.
  *
  *
- * SVN: $Id: ProcessNick.java 535 2007-03-09 23:07:18Z ShaneMcC $
+ * SVN: $Id$
  */
 
 /**

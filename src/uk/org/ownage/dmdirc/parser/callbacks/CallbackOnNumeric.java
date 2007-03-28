@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id: CallbackOnNumeric.java 636 2007-03-20 05:21:30Z ShaneMcC $
+ * SVN: $Id$
  */
 
 package uk.org.ownage.dmdirc.parser.callbacks;
@@ -69,5 +69,5 @@ public final class CallbackOnNumeric extends CallbackObject {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo() { return "$Id: CallbackOnNumeric.java 636 2007-03-20 05:21:30Z ShaneMcC $"; }
+	public static String getSvnInfo() { return "$Id$"; }
 }

@@ -27,9 +27,9 @@ package uk.org.ownage.dmdirc.parser;
 /**
  * Contains information about known users.
  * 
- * @author            Shane Mc Cormack
- * @author            Chris Smith
- * @version           $Id$
+ * @author Shane Mc Cormack
+ * @author Chris Smith
+ * @version $Id$
  * @see IRCParser
  */
 public final class ClientInfo {
@@ -48,7 +48,7 @@ public final class ClientInfo {
 	/** Reference to the parser object that owns this channel, Used for modes. */
 	private IRCParser myParser;
 
-        /**
+	/**
 	 * Create a new client object from a hostmask.
 	 *
  	 * @param tParser Refernce to parser that owns this channelclient (used for modes)	 
@@ -59,7 +59,7 @@ public final class ClientInfo {
 		setUserBits(sHostmask, true);
 		myParser = tParser;
 	}
-        
+
 	/**
 	 * Get a nickname of a user from a hostmask.
 	 * Hostmask must match (?:)nick(?!ident)(?@host)
@@ -187,7 +187,7 @@ public final class ClientInfo {
 		int nTemp = 0;
 		final int nChanModes = this.getUserMode();
 		
-                for (char cTemp : myParser.hUserModes.keySet()) {
+		for (char cTemp : myParser.hUserModes.keySet()) {
 			nTemp = myParser.hUserModes.get(cTemp);
 			if ((nChanModes & nTemp) == nTemp) { sModes.append(cTemp); }
 		}
@@ -214,7 +214,7 @@ public final class ClientInfo {
 		boolean bCanSee = false;
 		ChannelClientInfo iChannelClient;
 		
-                for (ChannelInfo iChannel : myParser.hChannelList.values()) {
+		for (ChannelInfo iChannel : myParser.hChannelList.values()) {
 			if (iChannel == cChannel) { continue; }
 			iChannelClient = iChannel.getUser(this);
 			if (iChannelClient != null) {	bCanSee = true; break; }

@@ -27,9 +27,9 @@ package uk.org.ownage.dmdirc.parser;
 /**
  * Contains Channel List Mode information.
  * 
- * @author            Shane Mc Cormack
- * @author            Chris Smith
- * @version           $Id$
+ * @author Shane Mc Cormack
+ * @author Chris Smith
+ * @version $Id$
  * @see IRCParser
  */
 public final class ChannelListModeItem {
@@ -47,8 +47,8 @@ public final class ChannelListModeItem {
 	 * The Person who created the item.
 	 */
 	private String myOwner;
-        
-        /**
+	
+	/**
 	 * Create a new Item.
 	 *
 	 * @param item The item (ie: test!joe@user.com)

@@ -53,12 +53,12 @@ import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnSocketClosed;
 /**
  * IRC Parser.
  *
- * @author            Shane Mc Cormack
- * @version           $Id$
+ * @author Shane Mc Cormack
+ * @version $Id$
  */
 public final class IRCParser implements Runnable {
-    
-    	/** Max length an outgoing line should be (NOT including \r\n). */
+
+	/** Max length an outgoing line should be (NOT including \r\n). */
 	public static final int MAX_LINELENGTH = 510;
 	
 	/** General Debug Information. */
@@ -75,16 +75,16 @@ public final class IRCParser implements Runnable {
 	public static final byte STATE_CLOSED = 1;
 	/** Socket is Open. */	
 	public static final byte STATE_OPEN = 2;
-        
+
 	/** Attempt to update user host all the time, not just on Who/Add/NickChange. */	
 	protected static final boolean ALWAYS_UPDATECLIENT = true;
-        
+
 	/** Byte used to show that a non-boolean mode is a list (b). */
-	protected static final byte LIST_MODE = 1;
+	protected static final byte MODE_LIST = 1;
 	/** Byte used to show that a non-boolean mode is not a list, and requires a parameter to set (lk). */
-	protected static final byte LIST_SET_MODE = 2;	
+	protected static final byte MODE_SET = 2;	
 	/** Byte used to show that a non-boolean mode is not a list, and requires a parameter to unset (k). */
-	protected static final byte LIST_UNSET_MODE = 4;
+	protected static final byte MODE_UNSET = 4;
 	
 	/**
 	 * This is what the user wants settings to be. 
@@ -103,7 +103,7 @@ public final class IRCParser implements Runnable {
 
 	/** This is what we think the nickname should be. */
 	protected String sThinkNickname;
-        
+
 	/** When using inbuilt pre-001 NickInUse handler, have we tried our AltNick. */
 	protected boolean triedAlt;
 	
@@ -140,14 +140,14 @@ public final class IRCParser implements Runnable {
 	protected int nNextKeyCMBool = 1;
 	
 	/**
-     * Hashtable storing known non-boolean chan modes (klbeI etc).
-     * Non Boolean Modes (for Channels) are stored together in this hashtable, the value param
-     * is used to show the type of variable. (List (1), Param just for set (2), Param for Set and Unset (2+4=6))<br><br>
-     * <br>
-     * see LIST_MODE<br>
-     * see LIST_SET_MODE<br>
-     * see LIST_UNSET_MODE<br>
-     */
+	 * Hashtable storing known non-boolean chan modes (klbeI etc).
+	 * Non Boolean Modes (for Channels) are stored together in this hashtable, the value param
+	 * is used to show the type of variable. (List (1), Param just for set (2), Param for Set and Unset (2+4=6))<br><br>
+	 * <br>
+	 * see MODE_LIST<br>
+	 * see MODE_SET<br>
+	 * see MODE_UNSET<br>
+*/
 	protected Hashtable<Character, Byte> hChanModesOther = new Hashtable<Character, Byte>();
 	
 	/** 
@@ -163,15 +163,15 @@ public final class IRCParser implements Runnable {
 	protected ClientInfo cMyself = null;
 	/** Hashtable storing all information gathered from 005. */
 	protected Hashtable<String, String> h005Info = new Hashtable<String, String>();
-        
-        /** Ignore List. */
+
+	/** Ignore List. */
 	protected RegexStringList myIgnoreList = new RegexStringList();
-        
+
 	/** Reference to the Processing Manager. */
 	private ProcessingManager myProcessingManager = new ProcessingManager(this);
 	/** Reference to the callback Manager. */
 	private CallbackManager myCallbackManager = new CallbackManager(this);
-        
+
 	/** Current Socket State. */
 	private byte currentSocketState;
 	
@@ -181,7 +181,7 @@ public final class IRCParser implements Runnable {
 	private PrintWriter out;
 	/** Used for reading from the server. */
 	private BufferedReader in;
-        
+
 	/** This is the default TrustManager for SSL Sockets, it trusts all ssl certs. */
 	private TrustManager[] trustAllCerts = new TrustManager[]{
 			new X509TrustManager() {
@@ -190,12 +190,11 @@ public final class IRCParser implements Runnable {
 					public void checkServerTrusted(final X509Certificate[] certs, final String authType) { }
 			}, 
 	};
-        
-        	
+		
 	/** This is the TrustManager used for SSL Sockets. */
 	private TrustManager[] myTrustManager = trustAllCerts;
-        
-        /**
+	
+	/**
 	 * Default constructor, ServerInfo and MyInfo need to be added separately (using IRC.me and IRC.server).
 	 */
 	public IRCParser() { }
@@ -221,7 +220,7 @@ public final class IRCParser implements Runnable {
 		if (myDetails != null) { this.me = myDetails; }
 		if (serverDetails != null) { this.server = serverDetails; }
 	}
-        
+	
 	/**
 	 * Get the current socket State.
 	 *
@@ -289,13 +288,13 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
-     * Callback to all objects implementing the DataOut Callback.
-     * 
-     * @param data Outgoing Data
-     * @param fromParser True if parser sent the data, false if sent using .sendLine
-     * @return true if a method was called, false otherwise
-     * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut
-     */
+	 * Callback to all objects implementing the DataOut Callback.
+	 * 
+	 * @param data Outgoing Data
+	 * @param fromParser True if parser sent the data, false if sent using .sendLine
+	 * @return true if a method was called, false otherwise
+	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut
+	 */
 	protected boolean callDataOut(final String data, final boolean fromParser) {
 		final CallbackOnDataOut cb = (CallbackOnDataOut) myCallbackManager.getCallbackType("OnDataOut");
 		if (cb != null) { return cb.call(data, fromParser); }
@@ -449,9 +448,8 @@ public final class IRCParser implements Runnable {
 	public void run() {
 		callDebugInfo(DEBUG_INFO, "Begin Thread Execution");
 		if (hasBegan) { return; } else { hasBegan = true; }
-		try { 
-                    connect(); 
-                } catch (Exception e) {
+		try { connect(); }
+		catch (Exception e) {
 			callDebugInfo(DEBUG_SOCKET, "Error Connecting (" + e.getMessage() + "), Aborted");
 			final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Error connecting to server");
 			ei.setException(e);
@@ -494,11 +492,10 @@ public final class IRCParser implements Runnable {
 	
 	/** Close socket on destroy. */
 	protected void finalize() {
-		try { 
-                    socket.close(); 
-                } catch (IOException e) { 
-                    callDebugInfo(DEBUG_SOCKET, "Could not close socket"); 
-                }
+		try { socket.close(); }
+		catch (IOException e) { 
+			callDebugInfo(DEBUG_SOCKET, "Could not close socket"); 
+		}
 	}
 
 	/**
@@ -627,8 +624,8 @@ public final class IRCParser implements Runnable {
 		
 		try {
 			if (token[0].equalsIgnoreCase("PING") || token[1].equalsIgnoreCase("PING")) { 
-                            sendString("PONG :" + sParam); 
-                        } else {
+				sendString("PONG :" + sParam); 
+			} else {
 				if (!got001) {
 					// Before 001 we don't care about much.
 					try { nParam = Integer.parseInt(token[1]); } catch (Exception e) { nParam = -1; }
@@ -644,9 +641,8 @@ public final class IRCParser implements Runnable {
 					}
 				} else {
 					// After 001 we potentially care about everything!
-					try { 
-                                            myProcessingManager.process(sParam, token); 
-                                        } catch (Exception e) { /* No Processor found */  }
+					try { myProcessingManager.process(sParam, token); }
+					catch (Exception e) { /* No Processor found */  }
 				}
 			}
 		} catch (Exception e) {
@@ -673,7 +669,7 @@ public final class IRCParser implements Runnable {
 		final char[] modes = new char[hChanModesBool.size()];
 		int nTemp;
 		
-                for (char cTemp : hChanModesBool.keySet()) {
+		for (char cTemp : hChanModesBool.keySet()) {
 			nTemp = hChanModesBool.get(cTemp);
 			// Is there an easier way to find out the power of 2 value for a number?
 			// ie 1024 = 10, 512 = 9 ?
@@ -696,10 +692,10 @@ public final class IRCParser implements Runnable {
 		String modeStr;
 		if (h005Info.containsKey("USERCHANMODES")) {
 			if (getIRCD(true).equalsIgnoreCase("dancer")) { 
-                            sDefaultModes.insert(0, "dqeI"); 
-                        } else if (getIRCD(true).equalsIgnoreCase("austirc")) { 
-                            sDefaultModes.insert(0, "e"); 
-                        }
+				sDefaultModes.insert(0, "dqeI"); 
+			} else if (getIRCD(true).equalsIgnoreCase("austirc")) { 
+				sDefaultModes.insert(0, "e"); 
+			}
 			modeStr = h005Info.get("USERCHANMODES");
 			char mode;
 			for (int i = 0; i < modeStr.length(); ++i) {
@@ -714,11 +710,11 @@ public final class IRCParser implements Runnable {
 			sDefaultModes.append("imnpstrc");
 		}
 		if (h005Info.containsKey("CHANMODES")) { 
-                    modeStr = h005Info.get("CHANMODES");	
-                } else { 
-                    modeStr = sDefaultModes.toString(); 
-                    h005Info.put("CHANMODES", modeStr); 
-                }
+			modeStr = h005Info.get("CHANMODES");	
+		} else { 
+			modeStr = sDefaultModes.toString(); 
+			h005Info.put("CHANMODES", modeStr); 
+		}
 		bits = modeStr.split(",", 5);
 		if (bits.length < 4) {
 			modeStr = sDefaultModes.toString();
@@ -736,11 +732,11 @@ public final class IRCParser implements Runnable {
 		for (int i = 0; i < bits[0].length(); ++i) {
 			final Character cMode = bits[0].charAt(i);
 			callDebugInfo(DEBUG_INFO, "Found List Mode: %c", cMode);
-			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode, LIST_MODE); }
+			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode, MODE_LIST); }
 		}
 		
 		// Param for Set and Unset.
-		final Byte nBoth = LIST_SET_MODE + LIST_UNSET_MODE;
+		final Byte nBoth = MODE_SET + MODE_UNSET;
 		for (int i = 0; i < bits[1].length(); ++i) {
 			final Character cMode = bits[1].charAt(i);
 			callDebugInfo(DEBUG_INFO, "Found Set/Unset Mode: %c", cMode);
@@ -751,7 +747,7 @@ public final class IRCParser implements Runnable {
 		for (int i = 0; i < bits[2].length(); ++i) {
 			final Character cMode = bits[2].charAt(i);
 			callDebugInfo(DEBUG_INFO, "Found Set Only Mode: %c", cMode);
-			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode, LIST_SET_MODE); }
+			if (!hChanModesOther.containsKey(cMode)) { hChanModesOther.put(cMode, MODE_SET); }
 		}
 		
 		// Boolean Mode
@@ -774,7 +770,7 @@ public final class IRCParser implements Runnable {
 	public String getBoolChanModes() {
 		final char[] modes = new char[hChanModesBool.size()];
 		int i = 0;
-                for (char mode : hChanModesBool.keySet()) {
+		for (char mode : hChanModesBool.keySet()) {
 			modes[i++] = mode;
 		}
 		// Alphabetically sort the array
@@ -789,7 +785,7 @@ public final class IRCParser implements Runnable {
 	 * @return All the currently known List modes
 	 */	
 	public String getListChanModes() {
-		return getOtherModeString(LIST_MODE);
+		return getOtherModeString(MODE_LIST);
 	}
 	
 	/**
@@ -799,7 +795,7 @@ public final class IRCParser implements Runnable {
 	 * @return All the currently known Set-Only modes
 	 */	
 	public String getSetOnlyChanModes() {
-		return getOtherModeString(LIST_SET_MODE);
+		return getOtherModeString(MODE_SET);
 	}
 	
 	/**
@@ -809,7 +805,7 @@ public final class IRCParser implements Runnable {
 	 * @return All the currently known Set-Unset modes
 	 */	
 	public String getSetUnsetChanModes() {
-		return getOtherModeString((byte) (LIST_SET_MODE + LIST_UNSET_MODE));
+		return getOtherModeString((byte) (MODE_SET + MODE_UNSET));
 	}
 
 	/**
@@ -823,7 +819,7 @@ public final class IRCParser implements Runnable {
 		final char[] modes = new char[hChanModesOther.size()];
 		Byte nTemp;
 		int i = 0;
-                for (char cTemp : hChanModesOther.keySet()) {
+		for (char cTemp : hChanModesOther.keySet()) {
 			nTemp = hChanModesOther.get(cTemp);
 			if (nTemp == nValue) { modes[i++] = cTemp; }
 		}
@@ -839,10 +835,10 @@ public final class IRCParser implements Runnable {
 		final String sDefaultModes = "nwdoi";
 		String modeStr;
 		if (h005Info.containsKey("USERMODES")) { 
-                    modeStr = h005Info.get("USERMODES");
-                } else { 
-                    modeStr = sDefaultModes; h005Info.put("USERMODES", sDefaultModes); 
-                }
+			modeStr = h005Info.get("USERMODES");
+		} else { 
+			modeStr = sDefaultModes; h005Info.put("USERMODES", sDefaultModes); 
+		}
 		
 		// resetState
 		hUserModes.clear();
@@ -866,11 +862,11 @@ public final class IRCParser implements Runnable {
 		final String sDefaultModes = "#&";
 		String modeStr;
 		if (h005Info.containsKey("CHANTYPES")) { 
-                    modeStr = h005Info.get("CHANTYPES");
-                } else { 
-                    modeStr = sDefaultModes; 
-                    h005Info.put("CHANTYPES", sDefaultModes);
-                }
+			modeStr = h005Info.get("CHANTYPES");
+		} else { 
+			modeStr = sDefaultModes; 
+			h005Info.put("CHANTYPES", sDefaultModes);
+		}
 		
 		// resetState
 		hChanPrefix.clear();
@@ -888,19 +884,19 @@ public final class IRCParser implements Runnable {
 	 */	
 	public void parsePrefixModes() {
 		final String sDefaultModes = "(ohv)@%+";
-                String[] bits;
+		String[] bits;
 		String modeStr;
 		if (h005Info.containsKey("PREFIX")) { 
-                    modeStr = h005Info.get("PREFIX");	
-                } else { 
-                    modeStr = sDefaultModes; 
-                }
+			modeStr = h005Info.get("PREFIX");	
+		} else { 
+			modeStr = sDefaultModes; 
+		}
 		if (modeStr.substring(0, 1).equals("(")) { 
-                    modeStr = modeStr.substring(1); 
-                } else { 
-                    modeStr = sDefaultModes.substring(1); 
-                    h005Info.put("PREFIX", sDefaultModes); 
-                }
+			modeStr = modeStr.substring(1); 
+		} else { 
+			modeStr = sDefaultModes.substring(1); 
+			h005Info.put("PREFIX", sDefaultModes); 
+		}
 		
 		bits = modeStr.split("\\)", 2);
 		if (bits.length != 2 || bits[0].length() != bits[1].length()) {
@@ -957,10 +953,10 @@ public final class IRCParser implements Runnable {
 	public void partChannel(final String sChannelName, final String sReason) {
 		if (getChannelInfo(sChannelName) == null) { return; }
 		if (sReason.equals("")) { 
-                    sendString("PART " + sChannelName); 
-                } else { 
-                    sendString("PART " + sChannelName + " :" + sReason); 
-                }
+			sendString("PART " + sChannelName); 
+		} else { 
+			sendString("PART " + sChannelName + " :" + sReason); 
+		}
 	}	
 	
 	/**
@@ -1067,10 +1063,10 @@ public final class IRCParser implements Runnable {
 	 */
 	public void quit(final String sReason) { 
 		if (sReason.equals("")) { 
-                    sendString("QUIT"); 
-                } else { 
-                    sendString("QUIT :" + sReason); 
-                }	
+			sendString("QUIT"); 
+		} else { 
+			sendString("QUIT :" + sReason); 
+		}	
 	}
 	/**
 	 * Disconnect from server.
@@ -1103,10 +1099,10 @@ public final class IRCParser implements Runnable {
 	public boolean isUserSettable(final Character mode) {
 		String validmodes;
 		if (h005Info.containsKey("USERCHANMODES")) { 
-                    validmodes = h005Info.get("USERCHANMODES"); 
-                } else { 
-                    validmodes = "bklimnpstrc"; 
-                }
+			validmodes = h005Info.get("USERCHANMODES"); 
+		} else { 
+			validmodes = "bklimnpstrc"; 
+		}
 		return validmodes.matches(".*" + mode + ".*");
 	}
 	
@@ -1127,45 +1123,28 @@ public final class IRCParser implements Runnable {
 		if (h005Info.containsKey("004IRCD")) {
 			final String version = h005Info.get("004IRCD");
 			if (getType) {
-				if (version.matches("(?i).*asuka.*")) { 
-                                    return "asuka"; 
-                                } else if (version.matches("(?i).*hyperion.*")) { 
-                                    return "hyperion"; 
-                                } else if (version.matches("(?i).*dancer.*")) { 
-                                    return "dancer"; 
-                                } else if (version.matches("(?i).*austhex.*")) { 
-                                    return "austhex"; 
-                                } else if (version.matches("(?i).*austirc.*")) { 
-                                    return "austirc"; 
-                                } else if (version.matches("(?i).*ratbox.*")) { 
-                                    return "ratbox"; 
-                                } else if (version.matches("(?i).*ircd.hybrid.*")) { 
-                                    return "hybrid7"; 
-                                } else if (version.matches("(?i).*hybrid.*")) { 
-                                    return "hybrid"; 
-                                } else if (version.matches("(?i).*beware.*")) { 
-                                    return "bircd"; 
-                                } else if (version.matches("(?i).*ircu.*")) {
-                                    return "ircu"; 
-                                } else if (version.matches("(?i).*unreal.*")) { 
-                                    return "unreal"; 
-                                } else {
+				if (version.matches("(?i).*asuka.*")) { return "asuka"; }
+				else if (version.matches("(?i).*hyperion.*")) { return "hyperion"; }
+				else if (version.matches("(?i).*dancer.*")) { return "dancer"; }
+				else if (version.matches("(?i).*austhex.*")) { return "austhex"; }
+				else if (version.matches("(?i).*austirc.*")) { return "austirc"; }
+				else if (version.matches("(?i).*ratbox.*")) { return "ratbox"; }
+				else if (version.matches("(?i).*ircd.hybrid.*")) { return "hybrid7"; }
+				else if (version.matches("(?i).*hybrid.*")) { return "hybrid"; }
+				else if (version.matches("(?i).*beware.*")) { return "bircd"; }
+				else if (version.matches("(?i).*ircu.*")) {return "ircu"; }
+				else if (version.matches("(?i).*unreal.*")) { return "unreal"; }
+				else {
 					// Stupid networks go here...
-					if (sNetworkName.equalsIgnoreCase("ircnet")) { 
-                                            return "ircnet"; 
-                                        } else { 
-                                            return "generic";
-                                        }
+					if (sNetworkName.equalsIgnoreCase("ircnet")) { return "ircnet"; }
+					else { return "generic"; }
 				}
-			} else { 
-                            return version; 
-                        }
+			} else {
+				return version; 
+			}
 		} else {
-			if (getType) { 
-                            return "generic"; 
-                        } else { 
-                            return ""; 
-                        }
+			if (getType) { return "generic"; }
+			else { return ""; }
 		}
 	}
 	

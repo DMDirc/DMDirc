@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * SVN: $Id: IGotNetwork.java 643 2007-03-21 15:31:31Z greboid $
+ * SVN: $Id$
  */
 
 package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
