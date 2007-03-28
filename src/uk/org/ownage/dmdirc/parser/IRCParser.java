@@ -1132,7 +1132,7 @@ public final class IRCParser implements Runnable {
 				else if (version.matches("(?i).*ircd.hybrid.*")) { return "hybrid7"; }
 				else if (version.matches("(?i).*hybrid.*")) { return "hybrid"; }
 				else if (version.matches("(?i).*beware.*")) { return "bircd"; }
-				else if (version.matches("(?i).*ircu.*")) {return "ircu"; }
+				else if (version.matches("(?i).*ircu.*")) { return "ircu"; }
 				else if (version.matches("(?i).*unreal.*")) { return "unreal"; }
 				else {
 					// Stupid networks go here...
