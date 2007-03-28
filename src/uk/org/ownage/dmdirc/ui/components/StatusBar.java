@@ -79,13 +79,13 @@ public final class StatusBar extends JPanel implements MouseListener,
     /** non error state image icon. */
     private ImageIcon normalIcon;
     
-    /** Error history storage */
+    /** Error history storage. */
     private ArrayList<Error> errors;
     
-    /** Timer to clear the error */
+    /** Timer to clear the error. */
     private TimerTask errorTimer;
     
-    /** Timer to clear the message */
+    /** Timer to clear the message. */
     private TimerTask messageTimer;
     
     /** Popupmenu for this frame. */
@@ -286,7 +286,12 @@ public final class StatusBar extends JPanel implements MouseListener,
         }
     }
     
-    private void addToHistory(Icon icon, StatusErrorNotifier notifier) {
+    /**
+     * Adds the error to the history.
+     * @param icon error icon
+     * @param notifier error notifier
+     */
+    private void addToHistory(final Icon icon, final StatusErrorNotifier notifier) {
         if (icon != null && notifier != null) {
             JMenuItem mi;
             final Error error = new Error(icon, notifier);
@@ -311,7 +316,10 @@ public final class StatusBar extends JPanel implements MouseListener,
         }
     }
 
-    public void actionPerformed(ActionEvent e) {
+    /**
+     * Shows the error from the history. {@inheritDoc}
+     */
+    public void actionPerformed(final ActionEvent e) {
         errors.get(Integer.valueOf(e.getActionCommand())).getNotifier().clickReceived();
     }
 }

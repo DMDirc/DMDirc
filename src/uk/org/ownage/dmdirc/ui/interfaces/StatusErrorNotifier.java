@@ -22,18 +22,12 @@
 
 package uk.org.ownage.dmdirc.ui.interfaces;
 
-import java.awt.event.MouseEvent;
-
 /**
  * Methods required to be implemented by classes wanting to respond to statusbar
  * error events.
  */
 public interface StatusErrorNotifier {
     
-    /**
-     * Called when a click event is received on the error component.
-     *
-     * @param mouseEvent mouse event
-     */
+    /** Called when a click event is received on the error component. */
     void clickReceived();
 }

@@ -23,26 +23,31 @@
 package uk.org.ownage.dmdirc;
 
 import java.util.Date;
+
 import javax.swing.Icon;
 
 import uk.org.ownage.dmdirc.ui.interfaces.StatusErrorNotifier;
 
 /**
- *
+ * Stores a program error and dialog.
  */
-public class Error {
+public final class Error {
     
     /** Error icon. */
-    private Icon icon;
+    private final Icon icon;
     
     /** Error Message. */
-    private StatusErrorNotifier notifier;
+    private final StatusErrorNotifier notifier;
     
     /** Time. */
-    private Date date;
+    private final Date date;
     
-    /** Creates a new instance of Error. */
-    public Error(Icon newIcon, StatusErrorNotifier newNotifier) {
+    /** 
+     * Creates a new instance of Error. 
+     * @param newIcon error icon
+     * @param newNotifier error notifier
+     */
+    public Error(final Icon newIcon, final StatusErrorNotifier newNotifier) {
         this.icon = newIcon;
         this.notifier = newNotifier;
         date = new Date(System.currentTimeMillis());

@@ -53,7 +53,7 @@ public final class Benchmark extends ChannelCommand {
      */
     public void execute(final CommandWindow origin, final Server server, 
             final Channel channel, final String... args) {
-        final String strings[] = {
+        final String[] strings = {
             "this is a test",
             "test number two",
             "this is a line that is significantly longer than the other lines",

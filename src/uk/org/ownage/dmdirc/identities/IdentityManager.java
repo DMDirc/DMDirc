@@ -25,7 +25,6 @@ package uk.org.ownage.dmdirc.identities;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 

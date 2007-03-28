@@ -29,7 +29,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -168,10 +167,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
         this.setVisible(false);
     }
 
-    /**
-     * Called when the user clicks on the status notifier.
-     * @param mouseEvent The event that triggered this callback
-     */
+    /** Called when the user clicks on the status notifier. */
     public void clickReceived() {
         MainFrame.getMainFrame().getStatusBar().clearError();
         this.setVisible(true);
