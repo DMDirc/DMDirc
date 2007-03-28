@@ -20,20 +20,56 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.interfaces;
+package uk.org.ownage.dmdirc;
 
-import java.awt.event.MouseEvent;
+import java.util.Date;
+import javax.swing.Icon;
+
+import uk.org.ownage.dmdirc.ui.interfaces.StatusErrorNotifier;
 
 /**
- * Methods required to be implemented by classes wanting to respond to statusbar
- * error events.
+ *
  */
-public interface StatusErrorNotifier {
+public class Error {
+    
+    /** Error icon. */
+    private Icon icon;
+    
+    /** Error Message. */
+    private StatusErrorNotifier notifier;
+    
+    /** Time. */
+    private Date date;
+    
+    /** Creates a new instance of Error. */
+    public Error(Icon newIcon, StatusErrorNotifier newNotifier) {
+        this.icon = newIcon;
+        this.notifier = newNotifier;
+        date = new Date(System.currentTimeMillis());
+    }
     
     /**
-     * Called when a click event is received on the error component.
-     *
-     * @param mouseEvent mouse event
+     * Returns this errors icon.
+     * @return error icon
      */
-    void clickReceived();
+    public Icon getIcon() {
+        return this.icon;
+    }
+    
+    /**
+     * Returns this errors notifier.
+     * @return error notifier
+     */
+    public StatusErrorNotifier getNotifier() {
+        return this.notifier;
+    }
+    
+    /**
+     * Returns this errors time.
+     * @return error time
+     */
+    public Date getDate() {
+        return this.date;
+    }
+    
 }

@@ -25,19 +25,27 @@ package uk.org.ownage.dmdirc.ui.components;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.Error;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.interfaces.StatusErrorNotifier;
@@ -46,7 +54,8 @@ import uk.org.ownage.dmdirc.ui.interfaces.StatusMessageNotifier;
 /**
  * Status bar, shows message and info on the gui.
  */
-public final class StatusBar extends JPanel implements MouseListener {
+public final class StatusBar extends JPanel implements MouseListener,
+        ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -70,10 +79,24 @@ public final class StatusBar extends JPanel implements MouseListener {
     /** non error state image icon. */
     private ImageIcon normalIcon;
     
+    /** Error history storage */
+    private ArrayList<Error> errors;
+    
+    /** Timer to clear the error */
+    private TimerTask errorTimer;
+    
+    /** Timer to clear the message */
+    private TimerTask messageTimer;
+    
+    /** Popupmenu for this frame. */
+    private JPopupMenu popup;
+    
     /** Creates a new instance of StatusBar. */
     public StatusBar() {
         super();
         final BorderLayout layout = new BorderLayout(5, 5);
+        errors = new ArrayList<Error>();
+        popup = new JPopupMenu();
         
         setBorder(new EmptyBorder(0, 5, 5, 5));
         
@@ -122,11 +145,17 @@ public final class StatusBar extends JPanel implements MouseListener {
                 Logger.error(ErrorLevel.WARNING, e);
             }
         }
-        new Timer().schedule(new TimerTask() {
+        if (messageTimer != null) {
+            messageTimer.cancel();
+            messageTimer = null;
+        }
+        messageTimer = new TimerTask() {
             public void run() {
-                clearMessage();
+                clearError();
             }
-        }, new Date(System.currentTimeMillis() + displayLength));
+        };
+        new Timer().schedule(messageTimer,
+                new Date(System.currentTimeMillis() + displayLength));
     }
     
     /**
@@ -154,21 +183,29 @@ public final class StatusBar extends JPanel implements MouseListener {
      */
     public void setError(final ImageIcon newIcon,
             final StatusErrorNotifier newNotifier) {
+        addToHistory(newIcon, newNotifier);
         iconLabel.setIcon(newIcon);
         errorNotifier = newNotifier;
         int displayLength = 10000;
         if (Config.hasOption("statusBar", "errorDisplayLength")) {
             try {
-                displayLength = Integer.parseInt(Config.getOption("statusBar", "errorDisplayLength"));
+                displayLength = Integer.parseInt(
+                        Config.getOption("statusBar", "errorDisplayLength"));
             } catch (NumberFormatException e) {
                 Logger.error(ErrorLevel.WARNING, e);
             }
         }
-        new Timer().schedule(new TimerTask() {
+        if (errorTimer != null) {
+            errorTimer.cancel();
+            errorTimer = null;
+        }
+        errorTimer = new TimerTask() {
             public void run() {
-                setError(normalIcon);
+                clearError();
             }
-        }, new Date(System.currentTimeMillis() + displayLength));
+        };
+        new Timer().schedule(errorTimer,
+                new Date(System.currentTimeMillis() + displayLength));
     }
     
     /**
@@ -193,6 +230,7 @@ public final class StatusBar extends JPanel implements MouseListener {
      * @param mouseEvent mouse event
      */
     public void mousePressed(final MouseEvent mouseEvent) {
+        processMouseEvent(mouseEvent);
     }
     
     /**
@@ -201,6 +239,7 @@ public final class StatusBar extends JPanel implements MouseListener {
      * @param mouseEvent mouse event
      */
     public void mouseReleased(final MouseEvent mouseEvent) {
+        processMouseEvent(mouseEvent);
     }
     
     /**
@@ -229,7 +268,50 @@ public final class StatusBar extends JPanel implements MouseListener {
         if (mouseEvent.getSource() == messageLabel && messageNotifier != null) {
             messageNotifier.clickReceived(mouseEvent);
         } else if (mouseEvent.getSource() == iconLabel && errorNotifier != null) {
-            errorNotifier.clickReceived(mouseEvent);
+            errorNotifier.clickReceived();
         }
+        processMouseEvent(mouseEvent);
+    }
+    
+    /**
+     * Processes every mouse button event to check for a popup trigger.
+     * @param e mouse event
+     */
+    public void processMouseEvent(final MouseEvent e) {
+        if (e.isPopupTrigger() && e.getSource() == iconLabel) {
+            final Point point = this.getMousePosition();
+            popup.show(this, (int) point.getX(), (int) point.getY());
+        } else {
+            super.processMouseEvent(e);
+        }
+    }
+    
+    private void addToHistory(Icon icon, StatusErrorNotifier notifier) {
+        if (icon != null && notifier != null) {
+            JMenuItem mi;
+            final Error error = new Error(icon, notifier);
+            int errorHistory = 10;
+            if (Config.hasOption("statusBar", "errorHistory")) {
+                try {
+                    errorHistory = Integer.parseInt(
+                            Config.getOption("statusBar", "errorHistory"));
+                } catch (NumberFormatException ex) {
+                    Logger.error(ErrorLevel.WARNING, ex);
+                }
+            }
+            errors.add(error);
+            mi = new JMenuItem(error.getDate().toString(), icon);
+            mi.addActionListener(this);
+            mi.setActionCommand(String.valueOf(errors.indexOf(error)));
+            popup.add(mi);
+            while (errors.size() > errorHistory) {
+                errors.remove(0);
+                popup.remove(0);
+            }
+        }
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        errors.get(Integer.valueOf(e.getActionCommand())).getNotifier().clickReceived();
     }
 }
