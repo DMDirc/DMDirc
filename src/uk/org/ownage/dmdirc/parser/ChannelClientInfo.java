@@ -34,11 +34,11 @@ import java.util.Enumeration;
  * @version           $Id$
  * @see IRCParser
  */
-public class ChannelClientInfo {
+public final class ChannelClientInfo {
 	/** Reference to ClientInfo object this represents. */
-	private ClientInfo cClient = null;
+	private ClientInfo cClient;
 	/** Integer representation of the channel modes assocated with this user. */
-	private int nModes = 0;
+	private int nModes;
 	/** Reference to the parser object that owns this channelclient, Used for modes. */
 	private IRCParser myParser;
 	/** Reference to the channel object that owns this channelclient. */
@@ -95,12 +95,13 @@ public class ChannelClientInfo {
 	public String getChanModeStr(final boolean bPrefix) {
 		StringBuilder sModes = new StringBuilder();
 		Character cTemp;
-		int nTemp = 0, nCurrentModes = this.getChanMode();
+		int nTemp = 0;
+                final int nCurrentModes = this.getChanMode();
 
-		for (int i = myParser.nNextKeyPrefix; i > 0; i = i/2) {
+		for (int i = myParser.nNextKeyPrefix; i > 0; i = i / 2) {
 			if ((nCurrentModes & i) == i) {
 				for (final Enumeration e = myParser.hPrefixModes.keys(); e.hasMoreElements();) {
-					cTemp = (Character)e.nextElement();
+					cTemp = (Character) e.nextElement();
 					nTemp = myParser.hPrefixModes.get(cTemp);
 					if (nTemp == i) {
 						if (bPrefix) { cTemp = myParser.hPrefixMap.get(cTemp); }
@@ -121,7 +122,7 @@ public class ChannelClientInfo {
 	 * @return integer representing the value of the most important mode.
 	 */
 	public int getImportantModeValue() {
-		for (int i = myParser.nNextKeyPrefix; i > 0; i = i/2) {
+		for (int i = myParser.nNextKeyPrefix; i > 0; i = i / 2) {
 			if ((nModes & i) == i) { return i; }
 		}
 		return 0;
@@ -134,7 +135,7 @@ public class ChannelClientInfo {
 	 */
 	public String getImportantMode() {
 		String sModes = this.getChanModeStr(false);
-		if (!sModes.equals("")) { sModes = ""+sModes.charAt(0); }
+		if (!sModes.equals("")) { sModes = "" + sModes.charAt(0); }
 		return sModes;
 	}
 
@@ -145,7 +146,7 @@ public class ChannelClientInfo {
 	 */
 	public String getImportantModePrefix() {
 		String sModes = this.getChanModeStr(true);
-		if (!sModes.equals("")) { sModes = ""+sModes.charAt(0); }
+		if (!sModes.equals("")) { sModes = "" + sModes.charAt(0); }
 		return sModes;
 	}
 	
@@ -156,8 +157,7 @@ public class ChannelClientInfo {
 	 * @return String Value of user (inc prefix) (ie @Nickname)
 	 */
 	public String toString() { 
-		String sModes = this.getImportantModePrefix();
-		return sModes+this.getNickname();
+		return this.getImportantModePrefix() + this.getNickname();
 	}	
 	
 	/**
@@ -166,8 +166,8 @@ public class ChannelClientInfo {
 	 * @param sReason Why are they being kicked? "" for no reason
 	 */
 	public void kick(String sReason) {
-		if (!sReason.equals("")) { sReason = " :"+sReason; }
-		myParser.sendString("KICK "+myChannel+" "+this.getNickname()+sReason);
+		if (!sReason.equals("")) { sReason = " :" + sReason; }
+		myParser.sendString("KICK " + myChannel + " " + this.getNickname() + sReason);
 	}
 	
 	/**
@@ -175,13 +175,13 @@ public class ChannelClientInfo {
 	 *
 	 * @return String Value of user (inc prefix) (ie @+Nickname)
 	 */
-	public String toFullString() { return this.getChanModeStr(true)+this.getNickname(); }	
+	public String toFullString() { return this.getChanModeStr(true) + this.getNickname(); }	
 	
 	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }
 

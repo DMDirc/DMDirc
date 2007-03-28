@@ -37,7 +37,7 @@ import java.util.LinkedList;
  * @version           $Id$
  * @see IRCParser
  */
-public class ChannelInfo {
+public final class ChannelInfo {
 	/**
 	 * Boolean repreenting the status of names requests.
 	 * When this is false, any new names reply will cause current known channelclients to be removed.
@@ -49,27 +49,27 @@ public class ChannelInfo {
 	/** Last known user to set the topic (Full host where possible). */
 	private String sTopicUser = "";
 	/** Unixtimestamp representing time when the topic was set. */
-	private long nTopicTime = 0;
+	private long nTopicTime;
 	
 	/** Known boolean-modes for channel. */
-	private int nModes = 0;
+	private int nModes;
 	/** Reference to the parser object that owns this channel, Used for modes. */
 	private IRCParser myParser; // Reference to parser object that owns this channel. Used for Modes
 	
 	/** Channel Name. */
 	private String sName = "";
 	/** Hashtable containing references to ChannelClients. */
-	private Hashtable<String,ChannelClientInfo> hChannelUserList = new Hashtable<String,ChannelClientInfo>();
+	private Hashtable<String, ChannelClientInfo> hChannelUserList = new Hashtable<String, ChannelClientInfo>();
 	/** Hashtable storing values for modes set in the channel that use parameters. */
-	private Hashtable<Character,String> hParamModes = new Hashtable<Character,String>();
+	private Hashtable<Character, String> hParamModes = new Hashtable<Character, String>();
 	/** Hashtable storing list modes. */
-	private Hashtable<Character,ArrayList<ChannelListModeItem>> hListModes = new Hashtable<Character,ArrayList<ChannelListModeItem>>();
+	private Hashtable<Character, ArrayList<ChannelListModeItem>> hListModes = new Hashtable<Character, ArrayList<ChannelListModeItem>>();
 	/**
 	 * LinkedList storing status of mode adding.
 	 * if an item is in this list for a mode, we are expecting new items for the list
 	 */
 	private LinkedList<Character> lAddingModes = new LinkedList<Character>();
-	/** Modes waiting to be sent to the server */
+	/** Modes waiting to be sent to the server. */
 	private LinkedList<String> lModeQueue = new LinkedList<String>();
 
 	/**
@@ -78,14 +78,14 @@ public class ChannelInfo {
 	 * @param tParser Refernce to parser that owns this channelclient (used for modes)	 
 	 * @param name Channel name.
 	 */
-	public ChannelInfo (final IRCParser tParser, final String name) { myParser = tParser; sName = name; }
+	public ChannelInfo(final IRCParser tParser, final String name) { myParser = tParser; sName = name; }
 	
 	/**
 	 * Set if we are getting a names request or not.
 	 *
 	 * @param newValue if false, any new names reply will cause current known channelclients to be removed.
 	 */
-	public void setAddingNames(boolean newValue) { bAddingNames = newValue; }
+	public void setAddingNames(final boolean newValue) { bAddingNames = newValue; }
 	
 	/**
 	 * Get if we are getting a names request or not.
@@ -113,7 +113,7 @@ public class ChannelInfo {
 	 * @return ArrayList of ChannelClients
 	 */
 	public ArrayList<ChannelClientInfo> getChannelClients() {
-		ArrayList<ChannelClientInfo> lClients = new ArrayList<ChannelClientInfo>();
+		final ArrayList<ChannelClientInfo> lClients = new ArrayList<ChannelClientInfo>();
 		for (final Enumeration e = hChannelUserList.keys(); e.hasMoreElements();) {
 			lClients.add(hChannelUserList.get(e.nextElement()));
 		}
@@ -125,8 +125,8 @@ public class ChannelInfo {
 	 */
 	protected void emptyChannel() {
 		ClientInfo cTemp = null;
-		for (Enumeration e = hChannelUserList.keys(); e.hasMoreElements();) {
-			cTemp = hChannelUserList.get(e.nextElement()).getClient();
+		for (ChannelClientInfo client : hChannelUserList.values()) {
+			cTemp = client.getClient();
 			if (!cTemp.checkVisability(this)) {
 				myParser.hClientList.remove(cTemp.getNickname().toLowerCase());
 			}
@@ -143,8 +143,10 @@ public class ChannelInfo {
 	public ChannelClientInfo getUser(String sWho) {
 		sWho = ClientInfo.parseHost(sWho);
 		sWho = sWho.toLowerCase();
-		if (hChannelUserList.containsKey(sWho)) { return hChannelUserList.get(sWho); }
-		else { return null; }
+		if (hChannelUserList.containsKey(sWho)) { 
+                    return hChannelUserList.get(sWho); 
+                }
+		return null;
 	}	
 	/**
 	 * Get the ChannelClientInfo object associated with a ClientInfo object.
@@ -153,13 +155,12 @@ public class ChannelInfo {
 	 * @return ChannelClientInfo object requested, or null if not found
 	 */	
 	public ChannelClientInfo getUser(final ClientInfo cWho) {
-		ChannelClientInfo cTemp = null;
-		for (Enumeration e = hChannelUserList.keys(); e.hasMoreElements();) {
-			cTemp = hChannelUserList.get(e.nextElement());
-			if (cTemp.getClient() == cWho) { return cTemp; }
+		for (ChannelClientInfo client : hChannelUserList.values()) {
+			if (client.getClient() == cWho) { 
+                            return client; 
+                        }
 		}
-		cTemp = null;
-		return cTemp;
+		return null;
 	}
 	
 	/**
@@ -169,11 +170,10 @@ public class ChannelInfo {
 	 * @return ChannelClientInfo object added, or an existing object if already known on channel
 	 */		
 	protected ChannelClientInfo addClient(final ClientInfo cClient) {
-		ChannelClientInfo cTemp = null;
-		cTemp = getUser(cClient);
+		ChannelClientInfo cTemp = getUser(cClient);
 		if (cTemp == null) { 
-			cTemp = new ChannelClientInfo(myParser,cClient,this);
-			hChannelUserList.put(cTemp.getNickname().toLowerCase(),cTemp);
+			cTemp = new ChannelClientInfo(myParser, cClient, this);
+			hChannelUserList.put(cTemp.getNickname().toLowerCase(), cTemp);
 		}
 		return cTemp;
 	}
@@ -269,20 +269,16 @@ public class ChannelInfo {
 	 * @return string representing modes. (boolean and non-list)
 	 */	
 	public String getModeStr() { 
-		StringBuilder sModes = new StringBuilder("+");
-		StringBuilder sModeParams = new StringBuilder();
+		final StringBuilder sModes = new StringBuilder("+");
+		final StringBuilder sModeParams = new StringBuilder();
 		String sTemp = "";
-		Character cTemp;
 		int nTemp = 0;
 		final int nChanModes = this.getMode();
-		
-		for (final Enumeration e = myParser.hChanModesBool.keys(); e.hasMoreElements();) {
-			cTemp = (Character)e.nextElement();
+		for (char cTemp : myParser.hChanModesBool.keySet()) {
 			nTemp = myParser.hChanModesBool.get(cTemp);
 			if ((nChanModes & nTemp) == nTemp) { sModes.append(cTemp); }
 		}
-		for (final Enumeration e = hParamModes.keys(); e.hasMoreElements();) {
-			cTemp = (Character)e.nextElement();
+                for (char cTemp : hParamModes.keySet()) {
 			sTemp = hParamModes.get(cTemp);
 			if (!sTemp.equals("")) {
 				sModes.append(cTemp);
@@ -305,7 +301,7 @@ public class ChannelInfo {
 				hParamModes.remove(cMode);
 			}
 		} else {
-			hParamModes.put(cMode,sValue);
+			hParamModes.put(cMode, sValue);
 		}
 	}
 	/**
@@ -315,8 +311,10 @@ public class ChannelInfo {
 	 * @return string representing the value of the mode ("" if mode not set)
 	 */	
 	public String getModeParam(final Character cMode) { 
-		if (hParamModes.containsKey(cMode)) { return hParamModes.get(cMode); }
-		else { return ""; }
+		if (hParamModes.containsKey(cMode)) { 
+                    return hParamModes.get(cMode); 
+                }
+		return "";
 	}
 	
 	/**
@@ -327,15 +325,21 @@ public class ChannelInfo {
 	 * @param bAdd Add or remove the value. (true for add, false for remove)
 	 */
 	protected void setListModeParam(final Character cMode, final ChannelListModeItem newItem, final boolean bAdd) { 
-		if (!myParser.hChanModesOther.containsKey(cMode)) { return; }
-		else if (myParser.hChanModesOther.get(cMode) != myParser.cmList) { return; }
+		if (!myParser.hChanModesOther.containsKey(cMode)) { 
+                    return; 
+                } else if (myParser.hChanModesOther.get(cMode) != myParser.cmList) { 
+                    return; 
+                }
 		
-		if (!hListModes.containsKey(cMode)) { hListModes.put(cMode, new ArrayList<ChannelListModeItem>());	}
-		ArrayList<ChannelListModeItem> lModes = hListModes.get(cMode);
+		if (!hListModes.containsKey(cMode)) { 
+                    hListModes.put(cMode, new ArrayList<ChannelListModeItem>());	
+                }
+		final ArrayList<ChannelListModeItem> lModes = hListModes.get(cMode);
 		for (int i = 0; i < lModes.size(); i++) {
 			if (lModes.get(i).getItem().equalsIgnoreCase(newItem.getItem())) { 
-				if (bAdd) { return; }
-				else { 
+				if (bAdd) { 
+                                    return; 
+                                } else { 
 					lModes.remove(i);
 					break;
 				}
@@ -352,10 +356,15 @@ public class ChannelInfo {
 	 * @return ArrayList containing ChannelListModeItem in the list, or null if mode is invalid
 	 */
 	public ArrayList<ChannelListModeItem> getListModeParam(final Character cMode) { 
-		if (!myParser.hChanModesOther.containsKey(cMode)) { return null; }
-		else if (myParser.hChanModesOther.get(cMode) != myParser.cmList) { return null; }
+		if (!myParser.hChanModesOther.containsKey(cMode)) { 
+                    return null; 
+                } else if (myParser.hChanModesOther.get(cMode) != myParser.cmList) { 
+                    return null; 
+                }
 		
-		if (!hListModes.containsKey(cMode)) { hListModes.put(cMode, new ArrayList<ChannelListModeItem>());	}
+		if (!hListModes.containsKey(cMode)) { 
+                    hListModes.put(cMode, new ArrayList<ChannelListModeItem>());
+                }
 		return hListModes.get(cMode);
 	}
 	
@@ -398,26 +407,37 @@ public class ChannelInfo {
 		int modecount = 1;
 		String modestr = "";
 		if (myParser.h005Info.containsKey("MODES")) {
-			try { modecount = Integer.parseInt(myParser.h005Info.get("MODES")); }
-			catch (Exception e) { modecount = 1; }
+			try { 
+                            modecount = Integer.parseInt(myParser.h005Info.get("MODES")); 
+                        } catch (NumberFormatException e) { 
+                            modecount = 1; 
+                        }
 		}
-		if (!myParser.isUserSettable(mode)) { return; }
+		if (!myParser.isUserSettable(mode)) { 
+                    return; 
+                }
 		
-		if (lModeQueue.size() == modecount) { sendModes(); }
-		if (positive) { modestr = "+"; } else { modestr = "-";}
-		modestr = modestr+mode;
+		if (lModeQueue.size() == modecount) { 
+                    sendModes(); 
+                }
+		if (positive) { 
+                    modestr = "+"; 
+                } else { 
+                    modestr = "-";
+                }
+		modestr = modestr + mode;
 		if (!myParser.hChanModesBool.containsKey(mode)) {
 			// May need a param
 			if (myParser.hPrefixModes.containsKey(mode)) {
-				modestr = modestr+" "+parameter;
+				modestr = modestr + " " + parameter;
 			} else {
 				modecount = myParser.hChanModesOther.get(mode);
 				if ((modecount & myParser.cmList) == myParser.cmList) {
-					modestr = modestr+" "+parameter;
+					modestr = modestr + " " + parameter;
 				} else if (!positive && ((modecount & myParser.cmUnset) == myParser.cmUnset)) {
-					modestr = modestr+" "+parameter;
+					modestr = modestr + " " + parameter;
 				} else if (positive && ((modecount & myParser.cmSet) == myParser.cmSet)) {
-					modestr = modestr+" "+parameter;
+					modestr = modestr + " " + parameter;
 				}
 			}
 		}
@@ -432,18 +452,18 @@ public class ChannelInfo {
 	 * Modes are always sent negative then positive and not mixed.
 	 */
 	public void sendModes() { 
-		StringBuilder positivemode = new StringBuilder();
-		StringBuilder positiveparam = new StringBuilder();
-		StringBuilder negativemode = new StringBuilder();
-		StringBuilder negativeparam = new StringBuilder();
-		StringBuilder sendModeStr = new StringBuilder();
+		final StringBuilder positivemode = new StringBuilder();
+		final StringBuilder positiveparam = new StringBuilder();
+		final StringBuilder negativemode = new StringBuilder();
+		final StringBuilder negativeparam = new StringBuilder();
+		final StringBuilder sendModeStr = new StringBuilder();
 		String modestr;
-		String modeparam[];
+		String[] modeparam;
 		boolean positive;
 		for (int i = 0; i < lModeQueue.size(); ++i) {
 			modeparam = lModeQueue.get(i).split(" ");
 			modestr = modeparam[0];
-			positive = (modestr.charAt(0) == '+');
+			positive = modestr.charAt(0) == '+';
 			if (positive) {
 				positivemode.append(modestr.charAt(1));
 				if (modeparam.length > 1) { positiveparam.append(" ").append(modeparam[1]); }
@@ -457,7 +477,7 @@ public class ChannelInfo {
 		if (negativeparam.length() > 0) { sendModeStr.append(negativeparam); }
 		if (positiveparam.length() > 0) { sendModeStr.append(positiveparam); }
 		myParser.callDebugInfo(myParser.DEBUG_INFO, "Sending mode: %s", sendModeStr.toString());
-		myParser.sendLine("MODE "+sName+" "+sendModeStr.toString());
+		myParser.sendLine("MODE " + sName + " " + sendModeStr.toString());
 		clearModeQueue();
 	}
 	
@@ -476,7 +496,7 @@ public class ChannelInfo {
 	public void sendMessage(final String sMessage) { 
 		if (sMessage.equals("")) { return; }
 		
-		myParser.sendString("PRIVMSG "+sName+" :"+sMessage);	
+		myParser.sendString("PRIVMSG " + sName + " :" + sMessage);	
 	}
 	
 	/**
@@ -487,7 +507,7 @@ public class ChannelInfo {
 	public void sendNotice(final String sMessage) { 
 		if (sMessage.equals("")) { return; }
 		
-		myParser.sendString("NOTICE "+sName+" :"+sMessage);	
+		myParser.sendString("NOTICE " + sName + " :" + sMessage);	
 	}
 
 	/**
@@ -508,9 +528,9 @@ public class ChannelInfo {
 	 */
 	public void sendCTCP(final String sType, String sMessage) { 
 		if (sType.equals("")) { return; }
-		final Character char1 = Character.valueOf((char)1);
-		if (!sMessage.equals("")) { sMessage = " "+sMessage; }
-		sendMessage(char1+sType.toUpperCase()+sMessage+char1);
+		final char char1 = (char) 1;
+		if (!sMessage.equals("")) { sMessage = " " + sMessage; }
+		sendMessage(char1 + sType.toUpperCase() + sMessage + char1);
 	}
 	
 	/**
@@ -521,9 +541,9 @@ public class ChannelInfo {
 	 */
 	public void sendCTCPReply(final String sType, String sMessage) { 
 		if (sType.equals("")) { return; }
-		final Character char1 = Character.valueOf((char)1);
-		if (!sMessage.equals("")) { sMessage = " "+sMessage; }
-		sendNotice(char1+sType.toUpperCase()+sMessage+char1);	
+		final char char1 = (char) 1;
+		if (!sMessage.equals("")) { sMessage = " " + sMessage; }
+		sendNotice(char1 + sType.toUpperCase() + sMessage + char1);	
 	}
 	
 	/**
@@ -534,10 +554,10 @@ public class ChannelInfo {
 	public String toString() { return sName; }
 	
 	/**
-	 * Get SVN Version information
+	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }
 

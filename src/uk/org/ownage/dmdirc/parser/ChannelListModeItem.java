@@ -24,10 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-
 /**
  * Contains Channel List Mode information.
  * 
@@ -36,21 +32,35 @@ import java.util.Hashtable;
  * @version           $Id$
  * @see IRCParser
  */
-public class ChannelListModeItem {
+public final class ChannelListModeItem {
 	/**
 	 * The Item itself.
 	 */
-	protected String myItem = "";
+	private String myItem;
 	
 	/**
 	 * The Time the item was created.
 	 */
-	protected long myTime = 0;
+	private long myTime;
 	
 	/**
-	 * The Person who created the item
+	 * The Person who created the item.
 	 */
-	protected String myOwner = "";
+	private String myOwner;
+        
+        /**
+	 * Create a new Item.
+	 *
+	 * @param item The item (ie: test!joe@user.com)
+	 * @param owner The owner (ie: Dataforce)
+	 * @param time The Time (ie: 1173389295)
+	 */
+	public ChannelListModeItem(final String item, final String owner, final long time) {
+		myItem = item;
+		myTime = time;
+		myOwner = owner;
+		if (!owner.equals("") && owner.charAt(0) == ':') { myOwner = owner.substring(1); }
+	}
 	
 	/**
 	 * Get The Item itself.
@@ -73,26 +83,11 @@ public class ChannelListModeItem {
 	 */
 	public long getTime() { return myTime; }
 	
-	
 	/**
-	 * Create a new Item.
-	 *
-	 * @param item The item (ie: test!joe@user.com)
-	 * @param owner The owner (ie: Dataforce)
-	 * @param time The Time (ie: 1173389295)
-	 */
-	public ChannelListModeItem(final String item, final String owner, final long time) {
-		myItem = item;
-		myTime = time;
-		myOwner = owner;
-		if (!owner.equals("") && owner.charAt(0) == ':') { myOwner = owner.substring(1); }
-	}
-	
-	/**
-		* Returns a String representation of this object.
-		*
-		* @return String representation of this object
-		*/
+	* Returns a String representation of this object.
+	*
+	* @return String representation of this object
+	*/
 	public String toString() {
 			return getItem();
 	}
@@ -102,6 +97,6 @@ public class ChannelListModeItem {
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }
+	public static String getSvnInfo() { return "$Id$"; }
 }
 
