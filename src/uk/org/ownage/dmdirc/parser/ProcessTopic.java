@@ -26,7 +26,6 @@ package uk.org.ownage.dmdirc.parser;
 
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelTopic;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelTopic;
-import java.util.Calendar;
 
 /**
  * Process a topic change.
@@ -59,7 +58,7 @@ public class ProcessTopic extends IRCProcessor {
 			}
 			iChannel = getChannelInfo(token[2]);
 			if (iChannel == null) { return; };
-			iChannel.setTopicTime(Calendar.getInstance().getTimeInMillis() / 1000);
+			iChannel.setTopicTime(System.currentTimeMillis() / 1000);
 			if (token[0].charAt(0) == ':') { token[0] = token[0].substring(1); }
 			iChannel.setTopicUser(token[0]);
 			iChannel.setTopic(token[token.length-1]);
