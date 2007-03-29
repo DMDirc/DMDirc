@@ -33,9 +33,9 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
@@ -193,8 +193,8 @@ public final class ChannelFrame extends Frame {
         
         nickScrollPane = new JScrollPane();
         nickList = new JList();
-        nickList.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER));
+        nickList.setCellRenderer(new NicklistRenderer(parent.getConfigManager()));
+	nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         
         splitPane.setBorder(null);
         final BasicSplitPaneDivider divider =

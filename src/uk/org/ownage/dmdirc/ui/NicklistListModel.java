@@ -96,7 +96,7 @@ public final class NicklistListModel extends AbstractListModel {
         }
         Collections.sort(nicknames,
                 new NicklistComparator(sortByMode, sortByCase));
-        this.fireContentsChanged(this, 0, nicknames.size());
+        this.rerender();
     }
     
     /**
@@ -138,7 +138,7 @@ public final class NicklistListModel extends AbstractListModel {
     public boolean remove(final ChannelClientInfo client) {
         boolean returnValue;
         returnValue = nicknames.remove(client);
-        this.fireIntervalRemoved(this, 0, nicknames.size());
+        this.rerender();
         return returnValue;
     }
     
@@ -150,7 +150,7 @@ public final class NicklistListModel extends AbstractListModel {
     public ChannelClientInfo remove(final int index) {
         ChannelClientInfo returnValue;
         returnValue = nicknames.remove(index);
-        this.fireIntervalRemoved(this, 0, nicknames.size());
+        this.rerender();
         return returnValue;
     }
     
