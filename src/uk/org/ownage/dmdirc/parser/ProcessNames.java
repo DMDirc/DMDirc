@@ -70,6 +70,8 @@ public class ProcessNames extends IRCProcessor {
 			int nPrefix = 0;
 			for (int j = 0; j < sNames.length; ++j) {
 				sNameBit = sNames[j];
+				// If name is empty (ie there was an extra space) ignore it.
+				if (sNameBit.equals("")) { continue; }
 				for (int i = 0; i < sNameBit.length(); ++i) {
 					Character cMode = sNameBit.charAt(i);
 					if (myParser.hPrefixMap.containsKey(cMode)) {
