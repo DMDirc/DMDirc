@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.border.EmptyBorder;
@@ -35,7 +36,7 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 /**
  *
  */
-public class NicklistRenderer extends DefaultListCellRenderer {
+public final class NicklistRenderer extends DefaultListCellRenderer {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -45,15 +46,19 @@ public class NicklistRenderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 1;
     
     /** ConfigManager. */
-    ConfigManager config;
+    private ConfigManager config;
     
     /**
      * Creates a new instance of NicklistRenderer.
+     * @param newConfig ConfigManager for the associated channel
      */
-    public NicklistRenderer(ConfigManager newConfig) {
+    public NicklistRenderer(final ConfigManager newConfig) {
 	config = newConfig;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public Component getListCellRendererComponent(final JList list,
 	    final Object value, final int index, final boolean selected,
 	    final boolean focused) {
@@ -62,7 +67,7 @@ public class NicklistRenderer extends DefaultListCellRenderer {
 	
 	if (config.hasOption("nicklist", "altBackground")
 	&& Boolean.parseBoolean(config.getOption("nicklist", "altBackground")) && !selected) {
-	    ChannelClientInfo client = (ChannelClientInfo) value;
+	    final ChannelClientInfo client = (ChannelClientInfo) value;
 	    if (index % 2 == 0) {
 		Color colour = ColourManager.getColour("f0f0f0");
 		if (config.hasOption("nicklist", "altBackgroundColour")) {
