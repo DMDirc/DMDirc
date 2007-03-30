@@ -139,8 +139,6 @@ public final class NewServerDialog extends StandardDialog {
         portField.setInputVerifier(new PortVerifier());
         
         addCallbacks();
-        
-	Logger.error(ErrorLevel.FATAL, "moo", new Exception("mooooo"));
     }
     
     /**
