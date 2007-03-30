@@ -229,7 +229,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             parser.getCallbackManager().addCallback("OnDataIn", raw);
             parser.getCallbackManager().addCallback("OnDataOut", raw);
         } catch (CallbackNotFound ex) {
-            Logger.error(ErrorLevel.FATAL, ex);
+            Logger.error(ErrorLevel.FATAL, "Unable to get server events", ex);
         }
         
         try {
@@ -733,7 +733,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         }
         
         if (errorInfo.isException()) {
-            Logger.error(errorLevel, errorInfo.getException());
+            Logger.error(errorLevel, errorInfo.getData(), errorInfo.getException());
         } else {
             Logger.error(errorLevel, errorInfo.getData());
         }
@@ -750,7 +750,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             try {
                 frame.setMaximum(true);
             } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
+                Logger.error(ErrorLevel.WARNING, "Unable to maximise server", ex);
             }
         }
     }
@@ -795,7 +795,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             try {
                 frame.setMaximum(true);
             } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
+                Logger.error(ErrorLevel.WARNING, "Unable to maximise server", ex);
             }
         }
         MainFrame.getMainFrame().getFrameManager().setSelected(this);

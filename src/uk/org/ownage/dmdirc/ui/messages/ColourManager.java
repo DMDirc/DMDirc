@@ -65,7 +65,7 @@ public final class ColourManager {
         try {
             return Color.decode("#" + hex);
         } catch (NumberFormatException ex) {
-            Logger.error(ErrorLevel.WARNING, ex);
+            Logger.error(ErrorLevel.WARNING, "Invalid colour #" + hex, ex);
             return Color.WHITE;
         }
     }

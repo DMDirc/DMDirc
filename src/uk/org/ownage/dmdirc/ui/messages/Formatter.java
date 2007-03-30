@@ -248,12 +248,12 @@ public final class Formatter {
             try {
                 properties.load(new FileInputStream(myFile));
             } catch (InvalidPropertiesFormatException ex) {
-                Logger.error(ErrorLevel.INFO, ex);
+                Logger.error(ErrorLevel.INFO, "Unable to load formatter", ex);
                 return false;
             } catch (FileNotFoundException ex) {
                 return false;
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
+                Logger.error(ErrorLevel.WARNING, "unable to load formatter", ex);
                 return false;
             }
             
@@ -278,10 +278,10 @@ public final class Formatter {
         try {
             properties.store(new FileOutputStream(myFile), null);
         } catch (FileNotFoundException ex) {
-            Logger.error(ErrorLevel.INFO, ex);
+            Logger.error(ErrorLevel.INFO, "Error saving formatter", ex);
             return false;
         } catch (IOException ex) {
-            Logger.error(ErrorLevel.WARNING, ex);
+            Logger.error(ErrorLevel.WARNING, "Error saving formatter", ex);
             return false;
         }
         

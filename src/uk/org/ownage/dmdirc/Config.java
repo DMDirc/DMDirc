@@ -227,11 +227,11 @@ public final class Config {
             try {
                 properties.loadFromXML(new FileInputStream(file));
             } catch (InvalidPropertiesFormatException ex) {
-                Logger.error(ErrorLevel.INFO, ex);
+                Logger.error(ErrorLevel.INFO, "Invalid properties file", ex);
             } catch (FileNotFoundException ex) {
                 Logger.log(LogLevel.CORE, "No config file, using defaults");
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
+                Logger.error(ErrorLevel.WARNING, "Unable to load config file", ex);
             }
         } else {
             try {
@@ -239,7 +239,7 @@ public final class Config {
                 file.createNewFile();
                 Config.save();
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
+                Logger.error(ErrorLevel.WARNING, "Unable to load config file", ex);
             }
         }
     }
@@ -269,9 +269,9 @@ public final class Config {
             output.storeToXML(new FileOutputStream(
                     new File(getConfigFile())), null);
         } catch (FileNotFoundException ex) {
-            Logger.error(ErrorLevel.INFO, ex);
+            Logger.error(ErrorLevel.INFO, "Unable to save config file", ex);
         } catch (IOException ex) {
-            Logger.error(ErrorLevel.WARNING, ex);
+            Logger.error(ErrorLevel.WARNING, "Unable to save config file", ex);
         }
     }
     

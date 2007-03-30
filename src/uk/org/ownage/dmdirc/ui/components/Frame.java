@@ -188,9 +188,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                         doc.remove(0, 1 + doc.getText(doc.getLength() - frameBufferSize, 512).indexOf('\n') + doc.getLength() - frameBufferSize);
                     }
                 } catch (NumberFormatException ex) {
-                    Logger.error(ErrorLevel.WARNING, ex);
+                    Logger.error(ErrorLevel.WARNING, "Invalid buffer length", ex);
                 } catch (BadLocationException ex) {
-                    Logger.error(ErrorLevel.WARNING, ex);
+                    Logger.error(ErrorLevel.WARNING, "Unable to trim buffer", ex);
                 }
                 
                 if (scrollBar.getValue() + Math.round(scrollBar.getVisibleAmount() * 1.5) < scrollBar.getMaximum()) {

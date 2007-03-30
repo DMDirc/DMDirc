@@ -140,6 +140,7 @@ public final class NewServerDialog extends StandardDialog {
         
         addCallbacks();
         
+	Logger.error(ErrorLevel.FATAL, "moo", new Exception("mooooo"));
     }
     
     /**

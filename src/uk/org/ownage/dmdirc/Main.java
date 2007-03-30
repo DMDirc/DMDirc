@@ -65,13 +65,13 @@ public final class Main {
                 UIManager.setLookAndFeel(Config.getOption("ui", "lookandfeel"));
             }
         } catch (InstantiationException ex) {
-            Logger.error(ErrorLevel.ERROR, ex);
+            Logger.error(ErrorLevel.ERROR, "Unable to set look and feel", ex);
         } catch (ClassNotFoundException ex) {
-            Logger.error(ErrorLevel.ERROR, ex);
+            Logger.error(ErrorLevel.ERROR, "Look and feel not available", ex);
         } catch (UnsupportedLookAndFeelException ex) {
-            Logger.error(ErrorLevel.ERROR, ex);
+            Logger.error(ErrorLevel.ERROR, "Look and feel not available", ex);
         } catch (IllegalAccessException ex) {
-            Logger.error(ErrorLevel.ERROR, ex);
+            Logger.error(ErrorLevel.ERROR, "Unable to set look and feel", ex);
         }
         
         IdentityManager.load();

@@ -100,13 +100,13 @@ public final class CipherUtils {
         try {
             return new String(ecipher.doFinal(str.getBytes("UTF8")));
         } catch (javax.crypto.BadPaddingException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to decrypt string", e);
         } catch (IllegalBlockSizeException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to decrypt string", e);
         } catch (UnsupportedEncodingException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to decrypt string", e);
         } catch (java.io.IOException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to decrypt string", e);
         }
         return null;
     }
@@ -128,13 +128,13 @@ public final class CipherUtils {
         try {
             return new String(dcipher.doFinal(str.getBytes()), "UTF8");
         } catch (javax.crypto.BadPaddingException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to decrypt string", e);
         } catch (IllegalBlockSizeException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to decrypt string", e);
         } catch (UnsupportedEncodingException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to decrypt string", e);
         } catch (java.io.IOException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to decrypt string", e);
         }
         return null;
     }
@@ -149,9 +149,9 @@ public final class CipherUtils {
             return new String(MessageDigest.getInstance("SHA-512")
             .digest(data.getBytes("UTF8")));
         } catch (NoSuchAlgorithmException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to hash string", e);
         } catch (IOException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to hash string", e);
         }
         return null;
     }
@@ -184,23 +184,23 @@ public final class CipherUtils {
             ecipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
             dcipher.init(Cipher.DECRYPT_MODE, key, paramSpec);
         } catch (java.security.InvalidAlgorithmParameterException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to create ciphers", e);
             ecipher = null;
             dcipher = null;
         } catch (java.security.spec.InvalidKeySpecException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to create ciphers", e);
             ecipher = null;
             dcipher = null;
         } catch (javax.crypto.NoSuchPaddingException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to create ciphers", e);
             ecipher = null;
             dcipher = null;
         } catch (java.security.NoSuchAlgorithmException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to create ciphers", e);
             ecipher = null;
             dcipher = null;
         } catch (java.security.InvalidKeyException e) {
-            Logger.error(ErrorLevel.WARNING, e);
+            Logger.error(ErrorLevel.WARNING, "Unable to create ciphers", e);
             ecipher = null;
             dcipher = null;
         }

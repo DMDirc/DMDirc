@@ -84,7 +84,7 @@ public final class Styliser {
             }
             
         } catch (BadLocationException ex) {
-            Logger.error(ErrorLevel.WARNING, ex);
+            Logger.error(ErrorLevel.WARNING, "Unable to insert styled string", ex);
         }
     }
     

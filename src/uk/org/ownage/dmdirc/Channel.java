@@ -123,9 +123,9 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
                 }
             });
         } catch (InvocationTargetException ex) {
-            Logger.error(ErrorLevel.FATAL, ex);
+            Logger.error(ErrorLevel.FATAL, "Unable to load channel", ex);
         } catch (InterruptedException ex) {
-            Logger.error(ErrorLevel.FATAL, ex);
+            Logger.error(ErrorLevel.FATAL, "Unable to load channel", ex);
         }
         
         try {
@@ -144,7 +144,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             callbackManager.addCallback("OnChannelModeChanged", this, channel);
             callbackManager.addCallback("OnChannelUserModeChanged", this, channel);
         } catch (CallbackNotFound ex) {
-            Logger.error(ErrorLevel.FATAL, ex);
+            Logger.error(ErrorLevel.FATAL, "Unable to load channel", ex);
         }
         
         updateTitle();
@@ -672,7 +672,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             try {
                 frame.setMaximum(true);
             } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
+                Logger.error(ErrorLevel.WARNING, "Unable to maximise channel", ex);
             }
         }
     }
@@ -718,7 +718,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             try {
                 frame.setMaximum(true);
             } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
+                Logger.error(ErrorLevel.WARNING, "Unable to maximise channel", ex);
             }
         }
         MainFrame.getMainFrame().getFrameManager().setSelected(this);

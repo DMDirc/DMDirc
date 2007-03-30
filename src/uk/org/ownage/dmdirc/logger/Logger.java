@@ -32,9 +32,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 
 import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.ui.ErrorDialog;
-import uk.org.ownage.dmdirc.ui.FatalErrorDialog;
 import uk.org.ownage.dmdirc.ui.MainFrame;
+import uk.org.ownage.dmdirc.ui.ErrorDialog;
 
 /**
  * Logger class for an applications, provides logging, error logging and debug
@@ -79,54 +78,36 @@ public final class Logger {
      * @param level error level.
      * @param message Error message/cause.
      */
-    public static void error(final ErrorLevel level, final String message) {
-        handleError(level, new String[]{message, });
-    }
-    
-    /**
-     * Record an error message for the application, notifying the user
-     * if appropriate.
-     * @param level error level.
-     * @param message Error message/cause.
-     */
-    private static void handleError(final ErrorLevel level, final String[] message) {
-        if (logWriter == null || debugWriter == null || errorWriter == null) {
-            createWriters();
-        }
-        
-        ImageIcon icon;
-        
-        switch (level) {
-            case FATAL:
-                errorWriter.println(formatter.format(new Date()) + ": ERROR: "
-                        + level + " :" + message);
-                dialog = new FatalErrorDialog(MainFrame.getMainFrame(), true,
-                        message);
-                dialog.pack();
-                dialog.setLocationRelativeTo(MainFrame.getMainFrame());
-                dialog.setVisible(true);
-                break;
-            case ERROR:
-                icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-                .getResource("uk/org/ownage/dmdirc/res/error.png"));
-                showError(level, icon, message);
-                break;
-            case WARNING:
-                icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-                .getResource("uk/org/ownage/dmdirc/res/warning.png"));
-                showError(level, icon, message);
-                break;
-            case INFO:
-                icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-                .getResource("uk/org/ownage/dmdirc/res/info.png"));
-                showError(level, icon, message);
-                break;
-            default:
-                icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-                .getResource("uk/org/ownage/dmdirc/res/error.png"));
-                showError(level, icon, message);
-                break;
-        }
+    private static void handleError(final ErrorLevel level, final String message, final String[] trace) {
+	if (logWriter == null || debugWriter == null || errorWriter == null) {
+	    createWriters();
+	}
+	
+	ImageIcon icon;
+	
+	switch (level) {
+	    case FATAL:
+		icon = new ImageIcon(ClassLoader.getSystemClassLoader()
+		.getResource("uk/org/ownage/dmdirc/res/error.png"));
+		break;
+	    case ERROR:
+		icon = new ImageIcon(ClassLoader.getSystemClassLoader()
+		.getResource("uk/org/ownage/dmdirc/res/error.png"));
+		break;
+	    case WARNING:
+		icon = new ImageIcon(ClassLoader.getSystemClassLoader()
+		.getResource("uk/org/ownage/dmdirc/res/warning.png"));
+		break;
+	    case INFO:
+		icon = new ImageIcon(ClassLoader.getSystemClassLoader()
+		.getResource("uk/org/ownage/dmdirc/res/info.png"));
+		break;
+	    default:
+		icon = new ImageIcon(ClassLoader.getSystemClassLoader()
+		.getResource("uk/org/ownage/dmdirc/res/error.png"));
+		break;
+	}
+	showError(level, icon, message, trace);
     }
     
     /**
@@ -135,25 +116,22 @@ public final class Logger {
      * @param icon The icon to use for the status bar
      * @param message The error message itself
      */
-    private static void showError(final ErrorLevel level, final ImageIcon icon, 
-            final String[] message) {
-        MainFrame.getMainFrame().getStatusBar().setError(icon,
-                new ErrorDialog(MainFrame.getMainFrame(),
-                false, message));
-        errorWriter.println(formatter.format(new Date()) + ": ERROR: "
-                + level + " :" + message[0]);
-        if (message.length > 1) {
-            for (int i = 1; i < message.length; i++) {
-                errorWriter.println("\t" + message[i]);
-            }
-        }
-        System.err.println(formatter.format(new Date()) + ": ERROR: "
-                + level + " :" + message[0]);
-        if (message.length > 1) {
-            for (int i = 1; i < message.length; i++) {
-                System.err.println("\t" + message[i]);
-            }
-        }
+    private static void showError(final ErrorLevel level, final ImageIcon icon,
+	    final String message, final String[] trace) {
+	ErrorDialog dialog = new ErrorDialog(level, icon, message, trace);
+	MainFrame.getMainFrame().getStatusBar().setError(icon, dialog);
+	if (level == ErrorLevel.FATAL) {
+	    dialog.clickReceived();
+	}
+	if (trace.length > 0) {
+	    errorWriter.println(formatter.format(new Date()) + ": ERROR: "
+		    + level + " :" + trace[0]);
+	    if (trace.length > 1) {
+		for (int i = 1; i < trace.length; i++) {
+		    errorWriter.println("\t" + trace[i]);
+		}
+	    }
+	}
     }
     
     /**
@@ -162,7 +140,26 @@ public final class Logger {
      * @param message Error message/cause.
      */
     public static void error(final String message) {
-        error(ErrorLevel.ERROR, message);
+	error(ErrorLevel.ERROR, message);
+    }
+    
+    /**
+     * Record an error message for the application, notifying the user
+     * if appropriate.
+     * @param level error level.
+     * @param message Error message/cause.
+     */
+    public static void error(final ErrorLevel level, final String message) {
+	handleError(level, message, new String[0]);
+    }
+    
+    /**
+     * Record an error message for the application at the error error level,
+     * notifying the user if appropriate.
+     * @param exception Cause of error.
+     */
+    public static void error(final String message, final Exception exception) {
+	error(ErrorLevel.ERROR, message, exception);
     }
     
     /**
@@ -171,30 +168,21 @@ public final class Logger {
      * @param level error level.
      * @param exception Cause of error.
      */
-    public static void error(final ErrorLevel level, final Exception exception) {
-        final StackTraceElement[] stackTrace = exception.getStackTrace();
-        
-        String[] message;
-        int i;
-        
-        message = new String[stackTrace.length + 1];
-        message[0] = exception.toString();
-        i = 1;
-        for (StackTraceElement traceElement : stackTrace) {
-            message[i] = "\t" + traceElement.toString();
-            i++;
-        }
-        
-        handleError(level, message);
-    }
-    
-    /**
-     * Record an error message for the application at the error error level,
-     * notifying the user if appropriate.
-     * @param exception Cause of error.
-     */
-    public static void error(final Exception exception) {
-        error(ErrorLevel.ERROR, exception);
+    public static void error(final ErrorLevel level, final String message,
+	    final Exception exception) {
+	final StackTraceElement[] stackTrace = exception.getStackTrace();
+	
+	String[] stackTraceMessage;
+	int i;
+	
+	stackTraceMessage = new String[stackTrace.length + 1];
+	stackTraceMessage[0] = exception.toString();
+	i = 1;
+	for (StackTraceElement traceElement : stackTrace) {
+	    stackTraceMessage[i] = "\t" + traceElement.toString();
+	    i++;
+	}
+	handleError(level, message, stackTraceMessage);
     }
     
     /**
@@ -204,27 +192,27 @@ public final class Logger {
      * @param message Debug message.
      */
     public static void debug(final DebugLevel level, final String message) {
-        if (!Config.hasOption("logging", "debugLogging")
-        && !Config.getOption("logging", "debugLogging").equals("true")) {
-            return;
-        }
-        if (logWriter == null || debugWriter == null || errorWriter == null) {
-            createWriters();
-        }
-        
-        switch(level) {
-            default:
-                if (Config.hasOption("logging", "debugLoggingSysOut")
-                && Config.getOption("logging", "debugLoggingSysOut")
-                .equals("true")) {
-                    System.out.println(formatter.format(new Date())
-                    + ": DEBUG: " + level + " :" + message);
-                }
-                
-                debugWriter.println(formatter.format(new Date())
-                + ": DEBUG: " + level + " :" + message);
-                break;
-        }
+	if (!Config.hasOption("logging", "debugLogging")
+	&& !Config.getOption("logging", "debugLogging").equals("true")) {
+	    return;
+	}
+	if (logWriter == null || debugWriter == null || errorWriter == null) {
+	    createWriters();
+	}
+	
+	switch(level) {
+	    default:
+		if (Config.hasOption("logging", "debugLoggingSysOut")
+		&& Config.getOption("logging", "debugLoggingSysOut")
+		.equals("true")) {
+		    System.out.println(formatter.format(new Date())
+		    + ": DEBUG: " + level + " :" + message);
+		}
+		
+		debugWriter.println(formatter.format(new Date())
+		+ ": DEBUG: " + level + " :" + message);
+		break;
+	}
     }
     
     /**
@@ -233,7 +221,7 @@ public final class Logger {
      * @param message Debug message.
      */
     public static void debug(final String message) {
-        debug(DebugLevel.NORMAL, message);
+	debug(DebugLevel.NORMAL, message);
     }
     
     /**
@@ -242,50 +230,50 @@ public final class Logger {
      * @param message Log message.
      */
     public static void log(final LogLevel level, final String message) {
-        if (!Config.hasOption("logging", "programLogging")
-        && !Config.getOption("logging", "programLogging").equals("true")) {
-            return;
-        }
-        if (logWriter == null || debugWriter == null || errorWriter == null) {
-            createWriters();
-        }
-        
-        switch(level) {
-            default:
-                logWriter.println(formatter.format(new Date())
-                + ": LOG: " + level + " :" + message);
-                break;
-        }
+	if (!Config.hasOption("logging", "programLogging")
+	&& !Config.getOption("logging", "programLogging").equals("true")) {
+	    return;
+	}
+	if (logWriter == null || debugWriter == null || errorWriter == null) {
+	    createWriters();
+	}
+	
+	switch(level) {
+	    default:
+		logWriter.println(formatter.format(new Date())
+		+ ": LOG: " + level + " :" + message);
+		break;
+	}
     }
     
     /**
      * Initialises the the loggers writers (debug, error, log) and date formatter.
      */
     private static void createWriters() {
-        try {
-            if (logWriter == null) {
-                logWriter = new PrintWriter(
-                        new FileWriter(Config.getConfigDir()
-                        + "log.log", true), true);
-            }
-            if (debugWriter == null) {
-                debugWriter = new PrintWriter(
-                        new FileWriter(Config.getConfigDir()
-                        + "debug.log", true), true);
-            }
-            if (errorWriter == null) {
-                errorWriter = new PrintWriter(
-                        new FileWriter(Config.getConfigDir()
-                        + "error.log", true), true);
-            }
-        } catch (IOException ex) {
-            Logger.error(ErrorLevel.WARNING, ex);
-        }
-        if (Config.hasOption("logging", "dateFormat")) {
-            formatter = new SimpleDateFormat(
-                    Config.getOption("logging", "dateFormat"));
-        } else {
-            formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
-        }
+	try {
+	    if (logWriter == null) {
+		logWriter = new PrintWriter(
+			new FileWriter(Config.getConfigDir()
+			+ "log.log", true), true);
+	    }
+	    if (debugWriter == null) {
+		debugWriter = new PrintWriter(
+			new FileWriter(Config.getConfigDir()
+			+ "debug.log", true), true);
+	    }
+	    if (errorWriter == null) {
+		errorWriter = new PrintWriter(
+			new FileWriter(Config.getConfigDir()
+			+ "error.log", true), true);
+	    }
+	} catch (IOException ex) {
+	    Logger.error(ErrorLevel.WARNING, "Error creating logfiles", ex);
+	}
+	if (Config.hasOption("logging", "dateFormat")) {
+	    formatter = new SimpleDateFormat(
+		    Config.getOption("logging", "dateFormat"));
+	} else {
+	    formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+	}
     }
 }

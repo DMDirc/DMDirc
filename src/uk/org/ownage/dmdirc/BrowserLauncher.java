@@ -78,17 +78,17 @@ public final class BrowserLauncher {
                 }
             }
         } catch (ClassNotFoundException e) {
-            Logger.error(ErrorLevel.ERROR, e);
+            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", e);
         } catch (NoSuchMethodException e) {
-            Logger.error(ErrorLevel.ERROR, e);
+            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", e);
         } catch (IllegalAccessException e) {
-            Logger.error(ErrorLevel.ERROR, e);
+            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", e);
         } catch (InterruptedException e) {
-            Logger.error(ErrorLevel.ERROR, e);
+            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", e);
         } catch (InvocationTargetException e) {
-            Logger.error(ErrorLevel.ERROR, e);
+            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", e);
         } catch (IOException e) {
-            Logger.error(ErrorLevel.ERROR, e);
+            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", e);
         }
     }
     

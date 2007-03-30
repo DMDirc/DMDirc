@@ -154,7 +154,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
             try {
                 frame.setMaximum(true);
             } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
+                Logger.error(ErrorLevel.WARNING, "Unable to maximise raw", ex);
             }
         }
     }
@@ -199,7 +199,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
             try {
                 frame.setMaximum(true);
             } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
+                Logger.error(ErrorLevel.WARNING, "Unable to maximise raw", ex);
             }
         }
         server.setActiveFrame(this);

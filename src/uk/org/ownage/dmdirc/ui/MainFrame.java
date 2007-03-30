@@ -190,7 +190,7 @@ public final class MainFrame extends JFrame implements WindowListener {
                 try {
                     getActiveFrame().setMaximum(!getActiveFrame().isMaximum());
                 } catch (PropertyVetoException ex) {
-                    Logger.error(ErrorLevel.WARNING, ex);
+                    Logger.error(ErrorLevel.WARNING, "Unable to maximise window", ex);
                 }
             }
         });
@@ -261,7 +261,7 @@ public final class MainFrame extends JFrame implements WindowListener {
         try {
             frame.setSelected(true);
         } catch (PropertyVetoException ex) {
-            Logger.error(ErrorLevel.ERROR, ex);
+            Logger.error(ErrorLevel.ERROR, "Unable to set active window", ex);
         }
         if (maximised) {
             setTitle(getTitlePrefix() + " - " + frame.getTitle());
@@ -309,7 +309,7 @@ public final class MainFrame extends JFrame implements WindowListener {
                 try {
                     frame.setMaximum(false);
                 } catch (PropertyVetoException ex) {
-                    Logger.error(ErrorLevel.ERROR, ex);
+                    Logger.error(ErrorLevel.ERROR, "Unable to maximise window", ex);
                 }
             }
         }

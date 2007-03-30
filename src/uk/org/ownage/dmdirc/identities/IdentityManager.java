@@ -76,9 +76,9 @@ public final class IdentityManager {
                     addIdentity(new Identity(res));
                 }
             } catch (InvalidIdentityFileException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
+                Logger.error(ErrorLevel.WARNING, "Invalid identity file", ex);
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.ERROR, ex);
+                Logger.error(ErrorLevel.ERROR, "Unable to load identity file", ex);
             }
         }
         
@@ -94,9 +94,9 @@ public final class IdentityManager {
                 try {
                     addIdentity(new Identity(file.toURI().toURL().openStream()));
                 } catch (InvalidIdentityFileException ex) {
-                    Logger.error(ErrorLevel.WARNING, ex);
+                    Logger.error(ErrorLevel.WARNING, "Invalid identity file", ex);
                 } catch (IOException ex) {
-                    Logger.error(ErrorLevel.ERROR, ex);
+                    Logger.error(ErrorLevel.ERROR, "Unable to load identity file", ex);
                 }
             }
         }

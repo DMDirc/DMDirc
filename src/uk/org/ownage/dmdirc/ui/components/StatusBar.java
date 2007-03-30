@@ -142,7 +142,7 @@ public final class StatusBar extends JPanel implements MouseListener,
             try {
                 displayLength = Integer.parseInt(Config.getOption("statusBar", "messageDisplayLength"));
             } catch (NumberFormatException e) {
-                Logger.error(ErrorLevel.WARNING, e);
+                Logger.error(ErrorLevel.WARNING, "Invalid message display length", e);
             }
         }
         if (messageTimer != null) {
@@ -192,7 +192,7 @@ public final class StatusBar extends JPanel implements MouseListener,
                 displayLength = Integer.parseInt(
                         Config.getOption("statusBar", "errorDisplayLength"));
             } catch (NumberFormatException e) {
-                Logger.error(ErrorLevel.WARNING, e);
+                Logger.error(ErrorLevel.WARNING, "Invalid error display length", e);
             }
         }
         if (errorTimer != null) {
@@ -301,7 +301,7 @@ public final class StatusBar extends JPanel implements MouseListener,
                     errorHistory = Integer.parseInt(
                             Config.getOption("statusBar", "errorHistory"));
                 } catch (NumberFormatException ex) {
-                    Logger.error(ErrorLevel.WARNING, ex);
+                    Logger.error(ErrorLevel.WARNING, "Invalid history size", ex);
                 }
             }
             errors.add(error);

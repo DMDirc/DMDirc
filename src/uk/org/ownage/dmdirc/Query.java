@@ -104,7 +104,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
             server.getParser().getCallbackManager().addCallback("onPrivateMessage", this, ClientInfo.parseHost(host));
             server.getParser().getCallbackManager().addCallback("onNickChanged", this);
         } catch (CallbackNotFound ex) {
-            Logger.error(ErrorLevel.FATAL, ex);
+            Logger.error(ErrorLevel.FATAL, "Unable to get query events", ex);
         }
         
         updateTitle();
@@ -192,7 +192,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
                 server.getParser().getCallbackManager().addCallback("onPrivateAction", this, client.getNickname());
                 server.getParser().getCallbackManager().addCallback("onPrivateMessage", this, client.getNickname());
             } catch (CallbackNotFound ex) {
-                Logger.error(ErrorLevel.FATAL, ex);
+                Logger.error(ErrorLevel.FATAL, "Unable to get query events", ex);
             }
             frame.addLine("queryNickChanged", oldNick, client.getIdent(), client.getHost(), client.getNickname());
             host = client.getNickname() + "!" + client.getIdent() + "@" + client.getHost();
@@ -244,7 +244,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
             try {
                 frame.setMaximum(true);
             } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
+                Logger.error(ErrorLevel.WARNING, "Unable to maximise query", ex);
             }
         }
     }
@@ -287,7 +287,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
             try {
                 frame.setMaximum(true);
             } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, ex);
+                Logger.error(ErrorLevel.WARNING, "Unable to maximise query", ex);
             }
         }
         MainFrame.getMainFrame().getFrameManager().setSelected(this);

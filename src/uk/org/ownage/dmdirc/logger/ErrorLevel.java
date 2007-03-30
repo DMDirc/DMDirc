@@ -29,5 +29,24 @@ public enum ErrorLevel {
     /**
      * error levels recognised by the logger.
      */
-    FATAL, ERROR, WARNING, INFO,
+    FATAL ("fatal error", "a fatal error"), 
+    ERROR ("error", "an error"), 
+    WARNING ("warning", "a warning"), 
+    INFO ("informative error", "an informational error");
+    
+    private String value;
+    private String sentenceValue;
+    
+    ErrorLevel(String value, String sentenceValue) {
+	this.value = value;
+	this.sentenceValue = sentenceValue;
+    }
+    
+    public String toString() {
+	return value;
+    }
+    
+    public String toSentenceString() {
+	return sentenceValue;
+    }
 }
