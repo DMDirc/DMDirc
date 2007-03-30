@@ -141,14 +141,19 @@ public final class ErrorDialog extends JDialog implements ActionListener,
 	
 	setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	this.addWindowListener(this);
-	setTitle("DMDirc - an error occured");
-	
-	infoLabel.setText("DMDirc has encountered " + level.toSentenceString() + ".");
+	setTitle("DMDirc: Error");
+
+	if (level == ErrorLevel.FATAL) {
+	    infoLabel.setText("<html>DMDirc has encountered " + level.toSentenceString() 
+	    + ", it is unable to recover from this error and will terminate.</html>");
+	} else {
+	    infoLabel.setText("DMDirc has encountered " + level.toSentenceString() + ".");
+	}
 	infoLabel.setIcon(icon);
 	
 	messageLabel.setText("<html>Message: <br>" + message + "</html>");
 	
-	showMore.setText("Show trace");
+	showMore.setText("Show details");
 	showMore.addActionListener(this);
 	
 	stacktraceField.setColumns(20);
@@ -198,21 +203,23 @@ public final class ErrorDialog extends JDialog implements ActionListener,
 	constraints.gridy = 1;
 	getContentPane().add(messageLabel, constraints);
 	
-	constraints.insets = new Insets(0, LARGE_BORDER, SMALL_BORDER,
-		LARGE_BORDER);
-	constraints.gridx = 0;
-	constraints.gridy = 2;
-	constraints.gridwidth = 3;
-	getContentPane().add(showMore, constraints);
-	
-	constraints.insets = new Insets(0, LARGE_BORDER, 0, LARGE_BORDER);
-	constraints.gridx = 0;
-	constraints.gridwidth = 3;
-	constraints.weightx = 1.0;
-	constraints.weighty = 1.0;
-	constraints.gridy = 3;
-	constraints.fill = GridBagConstraints.BOTH;
-	getContentPane().add(scrollPane, constraints);
+	if (trace.length > 0) {
+	    constraints.insets = new Insets(0, LARGE_BORDER, SMALL_BORDER,
+		    LARGE_BORDER);
+	    constraints.gridx = 0;
+	    constraints.gridy = 2;
+	    constraints.gridwidth = 3;
+	    getContentPane().add(showMore, constraints);
+	    
+	    constraints.insets = new Insets(0, LARGE_BORDER, 0, LARGE_BORDER);
+	    constraints.gridx = 0;
+	    constraints.gridwidth = 3;
+	    constraints.weightx = 1.0;
+	    constraints.weighty = 1.0;
+	    constraints.gridy = 3;
+	    constraints.fill = GridBagConstraints.BOTH;
+	    getContentPane().add(scrollPane, constraints);
+	}
 	
 	constraints.insets = new Insets(0, LARGE_BORDER, SMALL_BORDER,
 		LARGE_BORDER);
@@ -244,14 +251,16 @@ public final class ErrorDialog extends JDialog implements ActionListener,
      */
     public void actionPerformed(final ActionEvent actionEvent) {
 	if (actionEvent.getSource() == showMore) {
-	    if (showMore.getText().equals("Show trace")) {
+	    if (showMore.getText().equals("Show details")) {
 		scrollPane.setVisible(true);
-		showMore.setText("Hide trace");
+		showMore.setText("Hide details");
 		this.pack();
+		setLocationRelativeTo(MainFrame.getMainFrame());
 	    } else {
 		scrollPane.setVisible(false);
-		showMore.setText("Show trace");
+		showMore.setText("Show details");
 		this.pack();
+		setLocationRelativeTo(MainFrame.getMainFrame());
 	    }
 	} else {
 	    if (sendData.isSelected()) {
