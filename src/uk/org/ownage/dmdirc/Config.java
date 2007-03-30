@@ -201,6 +201,19 @@ public final class Config {
     }
     
     /**
+     * Unsets a specified option.
+     * @param domain domain of the option
+     * @param option name of the option
+     */
+    public static void unsetOption(final String domain, final String option) {
+	if (properties == null) {
+            initialise();
+        }
+	
+	properties.remove(domain + "." + option);
+    }
+    
+    /**
      * Loads the config file from disc, if it exists else initialises defaults
      * and creates file.
      */
