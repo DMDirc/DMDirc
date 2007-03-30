@@ -263,9 +263,9 @@ public final class NewServerDialog extends StandardDialog {
         autoConnectCheck.setEnabled(false);
         autoConnectCheck.setMargin(new Insets(0, 0, 0, 0));
         
-        button1.setText("OK");
+        getOkButton().setText("OK");
         
-        button2.setText("Cancel");
+        getCancelButton().setText("Cancel");
         
         sslCheck.setText("Use a secure (SSL) connection");
         sslCheck.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
