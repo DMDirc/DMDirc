@@ -33,7 +33,7 @@ public enum ErrorLevel {
     /** Warning error. */
     WARNING ("warning", "a warning"), 
     /** Info error. */
-    INFO ("informative error", "an informational error");
+    TRIVIAL ("trivial error", "a trivial error");
     /** toString value. */
     private String value;
     /** toSentenceString value. */

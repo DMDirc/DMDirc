@@ -99,7 +99,7 @@ public final class Logger {
 		icon = new ImageIcon(ClassLoader.getSystemClassLoader()
 		.getResource("uk/org/ownage/dmdirc/res/warning.png"));
 		break;
-	    case INFO:
+	    case TRIVIAL:
 		icon = new ImageIcon(ClassLoader.getSystemClassLoader()
 		.getResource("uk/org/ownage/dmdirc/res/info.png"));
 		break;
