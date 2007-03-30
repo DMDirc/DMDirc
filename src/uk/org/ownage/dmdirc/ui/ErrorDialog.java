@@ -30,16 +30,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.Box;
 import javax.swing.Icon;
@@ -143,9 +143,9 @@ public final class ErrorDialog extends JDialog implements ActionListener,
 	setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 	this.addWindowListener(this);
 	setTitle("DMDirc: Error");
-
+	
 	if (level == ErrorLevel.FATAL) {
-	    infoLabel.setText("<html>DMDirc has encountered " + level.toSentenceString() 
+	    infoLabel.setText("<html>DMDirc has encountered " + level.toSentenceString()
 	    + ", it is unable to recover from this error and will terminate.</html>");
 	} else {
 	    infoLabel.setText("DMDirc has encountered " + level.toSentenceString() + ".");
@@ -265,7 +265,11 @@ public final class ErrorDialog extends JDialog implements ActionListener,
 	    }
 	} else {
 	    if (sendData.isSelected()) {
-		sendData();
+		new Timer().schedule(new TimerTask() {
+		    public void run() {
+			sendData();
+		    }
+		}, 1);
 	    }
 	    if (level == ErrorLevel.FATAL) {
 		System.exit(-1);
@@ -311,6 +315,8 @@ public final class ErrorDialog extends JDialog implements ActionListener,
 	} catch (IOException ex) {
 	    System.err.println("IO Error, unable to send error report.");
 	}
+	sendData.setSelected(false);
+	getContentPane().remove(sendData);
     }
     
     /** {@inheritDoc} */
