@@ -257,10 +257,10 @@ public final class ErrorDialog extends JDialog implements ActionListener,
 	    if (sendData.isSelected()) {
 		sendData();
 	    }
-	    this.setVisible(false);
 	    if (level == ErrorLevel.FATAL) {
 		System.exit(-1);
 	    }
+	    this.dispose();
 	}
     }
     
@@ -319,6 +319,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
 	if (level == ErrorLevel.FATAL) {
 	    System.exit(-1);
 	}
+	this.dispose();
     }
     
     /** {@inheritDoc} */
