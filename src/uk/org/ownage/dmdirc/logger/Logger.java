@@ -128,7 +128,7 @@ public final class Logger {
 		    + level + " :" + trace[0]);
 	    if (trace.length > 1) {
 		for (int i = 1; i < trace.length; i++) {
-		    errorWriter.println("\t" + trace[i]);
+		    errorWriter.println(trace[i]);
 		}
 	    }
 	}
@@ -179,7 +179,7 @@ public final class Logger {
 	stackTraceMessage[0] = exception.toString();
 	i = 1;
 	for (StackTraceElement traceElement : stackTrace) {
-	    stackTraceMessage[i] = "\t" + traceElement.toString();
+	    stackTraceMessage[i] = traceElement.toString();
 	    i++;
 	}
 	handleError(level, message, stackTraceMessage);

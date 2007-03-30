@@ -39,6 +39,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.Arrays;
 
 import javax.swing.Box;
 import javax.swing.Icon;
@@ -285,11 +286,9 @@ public final class ErrorDialog extends JDialog implements ActionListener,
      * Sends an error report.
      */
     private void sendData() {
-	/*URL url;
+	URL url;
 	URLConnection urlConn;
 	DataOutputStream printout;
-	BufferedReader input;
-	String line;
 	try {
 	    url = new URL("http://www.dmdirc.com/error.php");
 	    urlConn = url.openConnection();
@@ -300,23 +299,18 @@ public final class ErrorDialog extends JDialog implements ActionListener,
 		    ("Content-Type", "application/x-www-form-urlencoded");
 	    printout = new DataOutputStream(urlConn.getOutputStream());
 	    String content =
-		    "message=" + URLEncoder.encode(messageLabel.getText(), "UTF-8") +
-		    "&trace=" + URLEncoder.encode(stacktraceField.getText(), "UTF-8");
+		    "message=" + URLEncoder.encode(message, "UTF-8") +
+		    "&trace=" + URLEncoder.encode(Arrays.toString(trace), "UTF-8");
 	    printout.writeBytes(content);
 	    printout.flush();
 	    printout.close();
-	    input = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-	    while ((line = input.readLine()) != null) {
-		System.out.println(line);
-	    }
-	    input.close();
 	} catch (MalformedURLException ex) {
 	    System.err.println("Malformed URL, unable to send error report.");
 	} catch (UnsupportedEncodingException ex) {
 	    System.err.println("Unsupported exception,  unable to send error report.");
 	} catch (IOException ex) {
 	    System.err.println("IO Error, unable to send error report.");
-	}*/
+	}
     }
     
     /** {@inheritDoc} */
