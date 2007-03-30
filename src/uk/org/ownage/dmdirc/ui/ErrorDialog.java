@@ -111,13 +111,14 @@ public final class ErrorDialog extends JDialog implements ActionListener,
     
     /**
      * Creates a new fatal error dialog.
-     * @param parent The parent frame
-     * @param modal Whether this dialog is modal or not
-     * @param message The message (error info) to be displayed
+     * @param newLevel Error level
+     * @param newIcon Error icon
+     * @param newMessage Error message
+     * @param newTrace Error trace
      */
     public ErrorDialog(final ErrorLevel newLevel, final Icon newIcon,
 	    final String newMessage, final String[] newTrace) {
-	super(MainFrame.getMainFrame(), (newLevel == ErrorLevel.FATAL ? true: false));
+	super(MainFrame.getMainFrame(), newLevel == ErrorLevel.FATAL ? true : false);
 	icon = newIcon;
 	level = newLevel;
 	message = newMessage;
@@ -182,7 +183,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
     }
     
     /**
-     * lays the components out in the dialog
+     * lays the components out in the dialog.
      */
     private void layoutComponents() {
 	final GridBagConstraints constraints = new GridBagConstraints();
@@ -299,12 +300,11 @@ public final class ErrorDialog extends JDialog implements ActionListener,
 	    urlConn.setDoInput(true);
 	    urlConn.setDoOutput(true);
 	    urlConn.setUseCaches(false);
-	    urlConn.setRequestProperty
-		    ("Content-Type", "application/x-www-form-urlencoded");
+	    urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 	    printout = new DataOutputStream(urlConn.getOutputStream());
-	    String content =
-		    "message=" + URLEncoder.encode(message, "UTF-8") +
-		    "&trace=" + URLEncoder.encode(Arrays.toString(trace), "UTF-8");
+	    final String content =
+		    "message=" + URLEncoder.encode(message, "UTF-8")
+		    + "&trace=" + URLEncoder.encode(Arrays.toString(trace), "UTF-8");
 	    printout.writeBytes(content);
 	    printout.flush();
 	    printout.close();
@@ -320,11 +320,11 @@ public final class ErrorDialog extends JDialog implements ActionListener,
     }
     
     /** {@inheritDoc} */
-    public void windowOpened(WindowEvent e) {
+    public void windowOpened(final WindowEvent e) {
     }
     
     /** {@inheritDoc} */
-    public void windowClosing(WindowEvent e) {
+    public void windowClosing(final WindowEvent e) {
 	if (level == ErrorLevel.FATAL) {
 	    System.exit(-1);
 	}
@@ -332,22 +332,22 @@ public final class ErrorDialog extends JDialog implements ActionListener,
     }
     
     /** {@inheritDoc} */
-    public void windowClosed(WindowEvent e) {
+    public void windowClosed(final WindowEvent e) {
     }
     
     /** {@inheritDoc} */
-    public void windowIconified(WindowEvent e) {
+    public void windowIconified(final WindowEvent e) {
     }
     
     /** {@inheritDoc} */
-    public void windowDeiconified(WindowEvent e) {
+    public void windowDeiconified(final WindowEvent e) {
     }
     
     /** {@inheritDoc} */
-    public void windowActivated(WindowEvent e) {
+    public void windowActivated(final WindowEvent e) {
     }
     
     /** {@inheritDoc} */
-    public void windowDeactivated(WindowEvent e) {
+    public void windowDeactivated(final WindowEvent e) {
     }
 }

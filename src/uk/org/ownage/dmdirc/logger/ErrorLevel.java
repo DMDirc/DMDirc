@@ -26,26 +26,42 @@ package uk.org.ownage.dmdirc.logger;
  * Specific error levels allowed by Logger.
  */
 public enum ErrorLevel {        
-    /**
-     * error levels recognised by the logger.
-     */
+    /** Fatal error. */
     FATAL ("fatal error", "a fatal error"), 
+    /** Normal error. */
     ERROR ("error", "an error"), 
+    /** Warning error. */
     WARNING ("warning", "a warning"), 
+    /** Info error. */
     INFO ("informative error", "an informational error");
-    
+    /** toString value. */
     private String value;
+    /** toSentenceString value. */
     private String sentenceValue;
     
-    ErrorLevel(String value, String sentenceValue) {
-	this.value = value;
-	this.sentenceValue = sentenceValue;
+    /** 
+     * Creates the error level. 
+     * @param newValue error level name
+     * @param newSentenceValue error level sentence name
+     */
+    ErrorLevel(final String newValue, final String newSentenceValue) {
+	this.value = newValue;
+	this.sentenceValue = newSentenceValue;
     }
+    
+    /** 
+     * returns the name of the error level.
+     * @return error name
+     */
     
     public String toString() {
 	return value;
     }
     
+    /**
+     * returns the name of the error level that can be used in a sentence.
+     * @return sentence error name
+     */
     public String toSentenceString() {
 	return sentenceValue;
     }

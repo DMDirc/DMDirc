@@ -32,8 +32,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 
 import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ErrorDialog;
+import uk.org.ownage.dmdirc.ui.MainFrame;
 
 /**
  * Logger class for an applications, provides logging, error logging and debug
@@ -77,6 +77,7 @@ public final class Logger {
      * if appropriate.
      * @param level error level.
      * @param message Error message/cause.
+     * @param trace error trace.
      */
     private static void handleError(final ErrorLevel level, final String message, final String[] trace) {
 	if (logWriter == null || debugWriter == null || errorWriter == null) {
@@ -115,13 +116,14 @@ public final class Logger {
      * @param level The level of the error
      * @param icon The icon to use for the status bar
      * @param message The error message itself
+     * @param trace error trace.
      */
     private static void showError(final ErrorLevel level, final ImageIcon icon,
 	    final String message, final String[] trace) {
-	ErrorDialog dialog = new ErrorDialog(level, icon, message, trace);
-	MainFrame.getMainFrame().getStatusBar().setError(icon, dialog);
+	final ErrorDialog errorDialog = new ErrorDialog(level, icon, message, trace);
+	MainFrame.getMainFrame().getStatusBar().setError(icon, errorDialog);
 	if (level == ErrorLevel.FATAL) {
-	    dialog.clickReceived();
+	    errorDialog.clickReceived();
 	}
 	if (trace.length > 0) {
 	    errorWriter.println(formatter.format(new Date()) + ": ERROR: "
@@ -157,6 +159,7 @@ public final class Logger {
      * Record an error message for the application at the error error level,
      * notifying the user if appropriate.
      * @param exception Cause of error.
+     * @param message Error message.
      */
     public static void error(final String message, final Exception exception) {
 	error(ErrorLevel.ERROR, message, exception);
@@ -167,6 +170,7 @@ public final class Logger {
      * appropriate.
      * @param level error level.
      * @param exception Cause of error.
+     * @param message Error message.
      */
     public static void error(final ErrorLevel level, final String message,
 	    final Exception exception) {
