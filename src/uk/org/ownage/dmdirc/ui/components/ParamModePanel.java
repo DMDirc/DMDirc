@@ -50,14 +50,13 @@ public final class ParamModePanel extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1;
     
     /** The checkbox used in this mode panel. */
-    private JCheckBox checkBox;
+    private final JCheckBox checkBox;
     
     /** The textfield for the value of the mode. */
-    private JTextField textField;
-    
+    private final JTextField textField;
     
     /** the mode this component represents. */
-    private String mode;
+    private final String mode;
     
     /**
      * Creates a new instance of ParamModePanel.
@@ -68,18 +67,18 @@ public final class ParamModePanel extends JPanel implements ActionListener {
      */
     public ParamModePanel(final String thisMode, final boolean state, 
             final String value, final ConfigManager configManager) {
-        
+        super();
         this.mode = thisMode;
-        String text = "Mode " + mode;
+        final String text;
         
         final SpringLayout layout = new SpringLayout();
         setLayout(layout);
         
         if (configManager.hasOption("server", "mode" + mode)) {
-            text = configManager.getOption("server", "mode" + mode);
-        }
-        
-        text += ": ";
+            text = configManager.getOption("server", "mode" + mode) + ": ";
+        } else {
+	    text = "Mode " + mode + ": ";
+	}
         
         checkBox = new JCheckBox(text, state);
         add(checkBox);
@@ -167,7 +166,7 @@ class ModeParameterVerifier extends InputVerifier {
      * Creates a new instance of LimitVerifier.
      */
     public ModeParameterVerifier() {
-        
+	super();
     }
     
     /**

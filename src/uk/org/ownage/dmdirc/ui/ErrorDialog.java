@@ -52,8 +52,9 @@ import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
-
 import uk.org.ownage.dmdirc.ui.interfaces.StatusErrorNotifier;
+
+import static uk.org.ownage.dmdirc.ui.UIConstants.*;
 
 /**
  * The fatal error dialog is used to inform the user that a fatal error has
@@ -70,23 +71,17 @@ public final class ErrorDialog extends JDialog implements ActionListener,
      */
     private static final long serialVersionUID = 1;
     
-    /** Size of the large borders in the dialog. */
-    private static final int LARGE_BORDER = 10;
-    
-    /** Size of the small borders in the dialog. */
-    private static final int SMALL_BORDER = 5;
-    
     /** error level. */
-    private ErrorLevel level;
+    private final ErrorLevel level;
     
     /** icon. */
-    private Icon icon;
+    private final Icon icon;
     
     /** message. */
-    private String message;
+    private final String message;
     
     /** trace. */
-    private String[] trace;
+    private final String[] trace;
     
     /** button. */
     private JButton okButton;
@@ -101,13 +96,10 @@ public final class ErrorDialog extends JDialog implements ActionListener,
     private JButton showMore;
     
     /** checkbox. */
-    private JCheckBox sendData;
+    private JCheckBox sendDataCheckbox;
     
-    /** Scroll pane. */
+    /** stack trace scroll pane. */
     private JScrollPane scrollPane;
-    
-    /** stack trace. */
-    private JTextArea stacktraceField;
     
     /**
      * Creates a new fatal error dialog.
@@ -133,12 +125,13 @@ public final class ErrorDialog extends JDialog implements ActionListener,
      * Initialises the components for this dialog.
      */
     private void initComponents() {
+	final JTextArea stacktraceField = new JTextArea();
+	
 	messageLabel = new JLabel();
 	infoLabel = new JLabel();
 	showMore = new JButton();
-	sendData = new JCheckBox();
+	sendDataCheckbox = new JCheckBox();
 	scrollPane = new JScrollPane();
-	stacktraceField = new JTextArea();
 	okButton = new JButton();
 	
 	setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -174,8 +167,8 @@ public final class ErrorDialog extends JDialog implements ActionListener,
 	scrollPane.setPreferredSize(new Dimension(600, 200));
 	scrollPane.setVisible(false);
 	
-	sendData.setText("Send error report to developers");
-	sendData.setSelected(true);
+	sendDataCheckbox.setText("Send error report to developers");
+	sendDataCheckbox.setSelected(true);
 	
 	okButton.setText("OK");
 	okButton.setPreferredSize(new Dimension(100, 25));
@@ -228,7 +221,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
 	constraints.gridx = 0;
 	constraints.gridy = 4;
 	constraints.gridwidth = 3;
-	getContentPane().add(sendData, constraints);
+	getContentPane().add(sendDataCheckbox, constraints);
 	
 	constraints.weightx = 1.0;
 	constraints.weighty = 0.0;
@@ -265,7 +258,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
 		setLocationRelativeTo(MainFrame.getMainFrame());
 	    }
 	} else {
-	    if (sendData.isSelected()) {
+	    if (sendDataCheckbox.isSelected()) {
 		new Timer().schedule(new TimerTask() {
 		    public void run() {
 			sendData();
@@ -315,12 +308,13 @@ public final class ErrorDialog extends JDialog implements ActionListener,
 	} catch (IOException ex) {
 	    System.err.println("IO Error, unable to send error report.");
 	}
-	sendData.setSelected(false);
-	getContentPane().remove(sendData);
+	sendDataCheckbox.setSelected(false);
+	getContentPane().remove(sendDataCheckbox);
     }
     
     /** {@inheritDoc} */
     public void windowOpened(final WindowEvent e) {
+	//ignore
     }
     
     /** {@inheritDoc} */
@@ -333,21 +327,26 @@ public final class ErrorDialog extends JDialog implements ActionListener,
     
     /** {@inheritDoc} */
     public void windowClosed(final WindowEvent e) {
+	//ignore
     }
     
     /** {@inheritDoc} */
     public void windowIconified(final WindowEvent e) {
+	//ignore
     }
     
     /** {@inheritDoc} */
     public void windowDeiconified(final WindowEvent e) {
+	//ignore
     }
     
     /** {@inheritDoc} */
     public void windowActivated(final WindowEvent e) {
+	//ignore
     }
     
     /** {@inheritDoc} */
     public void windowDeactivated(final WindowEvent e) {
+	//ignore
     }
 }

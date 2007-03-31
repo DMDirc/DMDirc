@@ -42,12 +42,12 @@ public final class NicklistComparator implements Comparator<ChannelClientInfo>,
     /**
      * whether to sort the nicklist by modes.
      */
-    private boolean sortByMode = true;
+    private final boolean sortByMode;
     
     /**
      * whether to sort the nicklist by case.
      */
-    private boolean sortByCase;
+    private final boolean sortByCase;
     
     /**
      * Creates a new instance of NicklistComparator.

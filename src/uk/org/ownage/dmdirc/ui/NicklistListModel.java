@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import javax.swing.AbstractListModel;
 
@@ -45,12 +46,13 @@ public final class NicklistListModel extends AbstractListModel {
     /**
      * stores the nicknames to be shown in this list.
      */
-    private ArrayList<ChannelClientInfo> nicknames;
+    private final List<ChannelClientInfo> nicknames;
     
     /**
      * Creates a new empty model.
      */
     public NicklistListModel() {
+	super();
         nicknames = new ArrayList<ChannelClientInfo>();
     }
     
@@ -58,7 +60,8 @@ public final class NicklistListModel extends AbstractListModel {
      * Creates a new model and initiliases it with the data provided.
      * @param newNicknames list of nicknames used for initialisation
      */
-    public NicklistListModel(final ArrayList<ChannelClientInfo> newNicknames) {
+    public NicklistListModel(final List<ChannelClientInfo> newNicknames) {
+	super();
         this.nicknames = newNicknames;
         this.sort();
     }
@@ -104,7 +107,7 @@ public final class NicklistListModel extends AbstractListModel {
      * @param clients replacement nicklist
      * @return boolean success
      */
-    public boolean replace(final ArrayList<ChannelClientInfo> clients) {
+    public boolean replace(final List<ChannelClientInfo> clients) {
         boolean returnValue = false;
         
         nicknames.clear();

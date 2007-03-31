@@ -26,7 +26,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import uk.org.ownage.dmdirc.Query;
@@ -49,17 +48,11 @@ public final class QueryFrame extends Frame {
      */
     private static final long serialVersionUID = 7;
     
-    /** The nick list model used for this channel's nickname list. */
-    private NicklistListModel nicklistModel;
-    
     /** This channel's command parser. */
-    private QueryCommandParser commandParser;
-    
-    /** scrollpane. */
-    private JScrollPane nickScrollPane;
+    private final QueryCommandParser commandParser;
     
     /** This frame's parent. */
-    private Query parent;
+    private final Query parent;
     
     /**
      * Creates a new QueryFrame.

@@ -32,6 +32,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -65,22 +66,22 @@ public final class StatusBar extends JPanel implements MouseListener,
     private static final long serialVersionUID = 1;
     
     /** message label. */
-    private JLabel messageLabel;
+    private final JLabel messageLabel;
     
     /** icon label. */
-    private JLabel iconLabel;
+    private final JLabel iconLabel;
     
     /** current status bar message notifier. */
-    private transient StatusMessageNotifier messageNotifier;
+    private StatusMessageNotifier messageNotifier;
     
     /** current status bar error notifier. */
-    private transient StatusErrorNotifier errorNotifier;
+    private StatusErrorNotifier errorNotifier;
     
     /** non error state image icon. */
-    private ImageIcon normalIcon;
+    private final ImageIcon normalIcon;
     
     /** Error history storage. */
-    private ArrayList<Error> errors;
+    private final List<Error> errors;
     
     /** Timer to clear the error. */
     private TimerTask errorTimer;
@@ -89,7 +90,7 @@ public final class StatusBar extends JPanel implements MouseListener,
     private TimerTask messageTimer;
     
     /** Popupmenu for this frame. */
-    private JPopupMenu popup;
+    private final JPopupMenu popup;
     
     /** Creates a new instance of StatusBar. */
     public StatusBar() {
@@ -248,6 +249,7 @@ public final class StatusBar extends JPanel implements MouseListener,
      * @param mouseEvent mouse event
      */
     public void mouseEntered(final MouseEvent mouseEvent) {
+	//Ignore.
     }
     
     /**
@@ -256,6 +258,7 @@ public final class StatusBar extends JPanel implements MouseListener,
      * @param mouseEvent mouse event
      */
     public void mouseExited(final MouseEvent mouseEvent) {
+	//Ignore.
     }
     
     /**

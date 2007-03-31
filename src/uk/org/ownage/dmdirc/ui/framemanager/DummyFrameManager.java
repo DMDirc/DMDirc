@@ -31,6 +31,7 @@ import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Raw;
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.ui.MainFrame;
 
 /**
  * A dummy frame manager. Does nothing.
@@ -40,6 +41,7 @@ public final class DummyFrameManager implements FrameManager {
     
     /** Creates a new instance of DummyFrameManager. */
     public DummyFrameManager() {
+	//Do nothing.
     }
     
     /**
@@ -56,7 +58,8 @@ public final class DummyFrameManager implements FrameManager {
      * @param server The server to be added
      */
     public void addServer(final Server server) {
-        System.out.println("DummyFrameManager: addServer: " + server);
+        MainFrame.getMainFrame().getStatusBar()
+	.setMessage("DummyFrameManager: addServer: " + server);
     }
     
     /**
@@ -64,7 +67,8 @@ public final class DummyFrameManager implements FrameManager {
      * @param server The server to be removed
      */
     public void delServer(final Server server) {
-        System.out.println("DummyFrameManager: delServer: " + server);
+        MainFrame.getMainFrame().getStatusBar()
+	.setMessage("DummyFrameManager: delServer: " + server);
     }
     
     /**
@@ -73,7 +77,8 @@ public final class DummyFrameManager implements FrameManager {
      * @param channel The channel to be added
      */
     public void addChannel(final Server server, final Channel channel) {
-        System.out.println("DummyFrameManager: addChannel: " + channel + "@" + server);
+        MainFrame.getMainFrame().getStatusBar()
+	.setMessage("DummyFrameManager: addChannel: " + channel + "@" + server);
     }
     
     /**
@@ -82,7 +87,8 @@ public final class DummyFrameManager implements FrameManager {
      * @param channel The channel to be removed
      */
     public void delChannel(final Server server, final Channel channel) {
-        System.out.println("DummyFrameManager: delChannel: " + channel + "@" + server);
+        MainFrame.getMainFrame().getStatusBar()
+	.setMessage("DummyFrameManager: delChannel: " + channel + "@" + server);
     }
     
     /**
@@ -91,7 +97,8 @@ public final class DummyFrameManager implements FrameManager {
      * @param query The query to be added
      */
     public void addQuery(final Server server, final Query query) {
-        System.out.println("DummyFrameManager: addQuery: " + query + "@" + server);
+        MainFrame.getMainFrame().getStatusBar()
+	.setMessage("DummyFrameManager: addQuery: " + query + "@" + server);
     }
     
     /**
@@ -100,7 +107,8 @@ public final class DummyFrameManager implements FrameManager {
      * @param query The query to be removed
      */
     public void delQuery(final Server server, final Query query) {
-        System.out.println("DummyFrameManager: delQuery: " + query + "@" + server);
+        MainFrame.getMainFrame().getStatusBar()
+	.setMessage("DummyFrameManager: delQuery: " + query + "@" + server);
     }
     
     /**
@@ -109,7 +117,8 @@ public final class DummyFrameManager implements FrameManager {
      * @param raw The raw instance to be added
      */
     public void addRaw(final Server server, final Raw raw) {
-        System.out.println("DummyFrameManager: addRaw: " + raw + "@" + server);
+        MainFrame.getMainFrame().getStatusBar()
+	.setMessage("DummyFrameManager: addRaw: " + raw + "@" + server);
     }
     
     /**
@@ -118,7 +127,8 @@ public final class DummyFrameManager implements FrameManager {
      * @param raw The raw instance to be removed
      */
     public void delRaw(final Server server, final Raw raw) {
-        System.out.println("DummyFrameManager: delRaw: " + raw + "@" + server);
+        MainFrame.getMainFrame().getStatusBar()
+	.setMessage("DummyFrameManager: delRaw: " + raw + "@" + server);
     }
     
     /**
@@ -146,7 +156,8 @@ public final class DummyFrameManager implements FrameManager {
      * @param colour The colour that should be used to indicate the notification
      */
     public void showNotification(final FrameContainer source, final Color colour) {
-        System.out.println("DummyFrameManager: Notifcation for " + source);
+        MainFrame.getMainFrame().getStatusBar()
+	.setMessage("DummyFrameManager: Notifcation for " + source);
     }
     
     /**
@@ -154,7 +165,8 @@ public final class DummyFrameManager implements FrameManager {
      * @param source The object whose notification should be cleared
      */
     public void clearNotification(final FrameContainer source) {
-        System.out.println("DummyFrameManager: Clear notification for " + source);
+        MainFrame.getMainFrame().getStatusBar()
+	.setMessage("DummyFrameManager: Clear notification for " + source);
     }
     
     /**
@@ -162,6 +174,7 @@ public final class DummyFrameManager implements FrameManager {
      * @param source The object that now has focus
      */
     public void setSelected(final FrameContainer source) {
-        System.out.println("DummyFrameManager: Now focused: " + source);
+        MainFrame.getMainFrame().getStatusBar()
+	.setMessage("DummyFrameManager: Now focused: " + source);
     }
 }

@@ -27,7 +27,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -60,24 +60,15 @@ public final class ChannelFrame extends Frame {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 6;
-    
-    /** Size of the large borders in the dialog. */
-    private static final int LARGE_BORDER = 10;
-    
-    /** Size of the small borders in the dialog. */
-    private static final int SMALL_BORDER = 5;
-    
+
     /** The nick list model used for this channel's nickname list. */
     private NicklistListModel nicklistModel;
     
     /** This channel's command parser. */
-    private ChannelCommandParser commandParser;
+    private final ChannelCommandParser commandParser;
     
     /** Nick list. */
     private JList nickList;
-    
-    /** scrollpane. */
-    private JScrollPane nickScrollPane;
     
     /** split pane. */
     private JSplitPane splitPane;
@@ -86,7 +77,7 @@ public final class ChannelFrame extends Frame {
     private JMenuItem settingsMI;
     
     /** The channel object that owns this frame. */
-    private Channel parent;
+    private final Channel parent;
     
     /**
      * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
@@ -123,7 +114,7 @@ public final class ChannelFrame extends Frame {
      * Updates the list of clients on this channel.
      * @param newNames The new list of clients
      */
-    public void updateNames(final ArrayList<ChannelClientInfo> newNames) {
+    public void updateNames(final List<ChannelClientInfo> newNames) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 nicklistModel.replace(newNames);
@@ -191,7 +182,7 @@ public final class ChannelFrame extends Frame {
         final GridBagConstraints constraints = new GridBagConstraints();
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         
-        nickScrollPane = new JScrollPane();
+        final JScrollPane nickScrollPane = new JScrollPane();
         nickList = new JList();
         nickList.setCellRenderer(new NicklistRenderer(parent.getConfigManager()));
 	nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);

@@ -51,7 +51,7 @@ public class TreeViewModel extends DefaultTreeModel {
      * @param root a TreeNode object that is the root of the tree.
      */
     public TreeViewModel(final TreeNode root) {
-        super(root);
+	super(root);
     }
     
     /**
@@ -62,7 +62,7 @@ public class TreeViewModel extends DefaultTreeModel {
      * @param root a root TreeNode.
      */
     public TreeViewModel(final TreeNode root, final boolean asksAllowsChildren) {
-        super(root, asksAllowsChildren);
+	super(root, asksAllowsChildren);
     }
     
     /**
@@ -71,10 +71,10 @@ public class TreeViewModel extends DefaultTreeModel {
      * @param parent parent child is to be added too.
      */
     public final void insertNodeInto(final DefaultMutableTreeNode newChild,
-            final DefaultMutableTreeNode parent) {
-        int index = 0;
-        index = getIndex(newChild, parent);
-        super.insertNodeInto(newChild, parent, index);
+	    final DefaultMutableTreeNode parent) {
+	int index = 0;
+	index = getIndex(newChild, parent);
+	super.insertNodeInto(newChild, parent, index);
     }
     
     /**
@@ -86,28 +86,27 @@ public class TreeViewModel extends DefaultTreeModel {
      * @return index where new node is to be inserted.
      */
     private int getIndex(final DefaultMutableTreeNode newChild,
-            final DefaultMutableTreeNode parent) {
-        
-        if (parent.equals(root) 
-        && !Boolean.parseBoolean(Config.getOption("ui", "sortservers"))) {
-            return parent.getChildCount();
-        }
-        
-        for (int i = 0; i < parent.getChildCount(); i++) {
-            final DefaultMutableTreeNode child = 
-                    (DefaultMutableTreeNode) parent.getChildAt(i);
-            if (sortBefore(newChild, child)) {
-                return i;
-            } else if (!sortAfter(newChild, child)
-            && Boolean.parseBoolean(Config.getOption("ui", "sortwindows"))) {
-                if (newChild.getUserObject().toString()
-                .compareToIgnoreCase(child.getUserObject().toString()) < 0) {
-                    return i;
-                }
-            }
-        }
-        
-        return parent.getChildCount();
+	    final DefaultMutableTreeNode parent) {
+	
+	if (parent.equals(root)
+	&& !Boolean.parseBoolean(Config.getOption("ui", "sortservers"))) {
+	    return parent.getChildCount();
+	}
+	
+	for (int i = 0; i < parent.getChildCount(); i++) {
+	    final DefaultMutableTreeNode child =
+		    (DefaultMutableTreeNode) parent.getChildAt(i);
+	    if (sortBefore(newChild, child)) {
+		return i;
+	    } else if (!sortAfter(newChild, child)
+	    && Boolean.parseBoolean(Config.getOption("ui", "sortwindows"))
+	    && newChild.getUserObject().toString().compareToIgnoreCase(
+		    child.getUserObject().toString()) < 0) {
+		return i;
+	    }
+	}
+	
+	return parent.getChildCount();
     }
     
     /**
@@ -118,10 +117,10 @@ public class TreeViewModel extends DefaultTreeModel {
      * @return True iff newChild should be sorted before child
      */
     private boolean sortBefore(final DefaultMutableTreeNode newChild,
-            final DefaultMutableTreeNode child) {
-        
-        return getPosition(newChild.getUserObject()) 
-        < getPosition(child.getUserObject());
+	    final DefaultMutableTreeNode child) {
+	
+	return getPosition(newChild.getUserObject())
+	< getPosition(child.getUserObject());
     }
     
     /**
@@ -132,10 +131,10 @@ public class TreeViewModel extends DefaultTreeModel {
      * @return True iff newChild should be sorted before child
      */
     private boolean sortAfter(final DefaultMutableTreeNode newChild,
-            final DefaultMutableTreeNode child) {
-        
-        return getPosition(newChild.getUserObject()) 
-        > getPosition(child.getUserObject());
+	    final DefaultMutableTreeNode child) {
+	
+	return getPosition(newChild.getUserObject())
+	> getPosition(child.getUserObject());
     }
     
     /**
@@ -144,17 +143,17 @@ public class TreeViewModel extends DefaultTreeModel {
      * @return Position of the object
      */
     private int getPosition(final Object object) {
-        if (object instanceof Server) {
-            return 1;
-        } else if (object instanceof Raw) {
-            return 2;
-        } else if (object instanceof Channel) {
-            return 3;
-        } else if (object instanceof Query) {
-            return 4;
-        } else {
-            return 5;
-        }
+	if (object instanceof Server) {
+	    return 1;
+	} else if (object instanceof Raw) {
+	    return 2;
+	} else if (object instanceof Channel) {
+	    return 3;
+	} else if (object instanceof Query) {
+	    return 4;
+	} else {
+	    return 5;
+	}
     }
 }
 

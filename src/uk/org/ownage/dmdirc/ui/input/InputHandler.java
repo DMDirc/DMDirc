@@ -62,7 +62,7 @@ public final class InputHandler implements KeyListener, ActionListener {
     /**
      * The maximum size of the buffer.
      */
-    private int bufferSize;
+    private final int bufferSize;
     /**
      * The maximum position we've got to in the buffer. This will be the
      * position that is inserted to next. Note that it will wrap around once
@@ -80,7 +80,7 @@ public final class InputHandler implements KeyListener, ActionListener {
     /**
      * The textfield that we're handling input for.
      */
-    private JTextField target;
+    private final JTextField target;
     /**
      * The TabCompleter to use for tab completion.
      */
@@ -88,11 +88,11 @@ public final class InputHandler implements KeyListener, ActionListener {
     /**
      * The CommandParser to use for our input.
      */
-    private CommandParser commandParser;
+    private final CommandParser commandParser;
     /**
      * The frame that we belong to.
      */
-    private CommandWindow parentWindow;
+    private final CommandWindow parentWindow;
     
     /**
      * Creates a new instance of InputHandler. Adds listeners to the target
@@ -133,7 +133,7 @@ public final class InputHandler implements KeyListener, ActionListener {
      * @param keyEvent The event that was fired
      */
     public void keyTyped(final KeyEvent keyEvent) {
-        
+	//Ignore.        
     }
     
     /**
@@ -197,7 +197,7 @@ public final class InputHandler implements KeyListener, ActionListener {
         if (keyEvent.getKeyCode() == KeyEvent.VK_TAB && tabCompleter != null) {
             String text = target.getText();
             
-            if (text.equals("")) {
+            if ("".equals(text)) {
                 return;
             }
             
@@ -252,6 +252,7 @@ public final class InputHandler implements KeyListener, ActionListener {
      * @param keyEvent The event that was fired
      */
     public void keyReleased(final KeyEvent keyEvent) {
+	//Ignore.
     }
     
     /**

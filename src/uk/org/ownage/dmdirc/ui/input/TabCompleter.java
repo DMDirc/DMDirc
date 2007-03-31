@@ -23,6 +23,8 @@
 package uk.org.ownage.dmdirc.ui.input;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import uk.org.ownage.dmdirc.Config;
 
@@ -40,10 +42,11 @@ public final class TabCompleter {
     /**
      * The entries in this completer.
      */
-    private ArrayList<String> entries = new ArrayList<String>();
+    private List<String> entries = new ArrayList<String>();
     
     /** Creates a new instance of TabCompleter. */
     public TabCompleter() {
+	//Do nothing.
     }
     
     /**
@@ -52,7 +55,7 @@ public final class TabCompleter {
      * local ones fail
      */
     public TabCompleter(final TabCompleter newParent) {
-        this.parent = newParent;
+	this.parent = newParent;
     }
     
     /**
@@ -61,24 +64,25 @@ public final class TabCompleter {
      * @return A TabCompleterResult containing any matches found
      */
     public TabCompleterResult complete(final String partial) {
-        final TabCompleterResult result = new TabCompleterResult();
-        
-        for (String entry : entries) {
-            if (Boolean.parseBoolean(Config.getOption("tabcompletion", "casesensitive"))) {
-                if (entry.startsWith(partial)) {
-                    result.addResult(entry);
-                }
-            } else {
-                if (entry.toLowerCase().startsWith(partial.toLowerCase())) {
-                    result.addResult(entry);
-                }
-            }
-        }
-        
-        if (parent != null) {
-            result.merge(parent.complete(partial));
-        }
-        return result;
+	final TabCompleterResult result = new TabCompleterResult();
+	
+	for (String entry : entries) {
+	    if (Boolean.parseBoolean(Config.getOption("tabcompletion", "casesensitive"))) {
+		if (entry.startsWith(partial)) {
+		    result.addResult(entry);
+		}
+	    } else {
+		if (entry.toLowerCase(Locale.getDefault())
+		.startsWith(partial.toLowerCase(Locale.getDefault()))) {
+		    result.addResult(entry);
+		}
+	    }
+	}
+	
+	if (parent != null) {
+	    result.merge(parent.complete(partial));
+	}
+	return result;
     }
     
     /**
@@ -86,21 +90,21 @@ public final class TabCompleter {
      * @param entry The new entry to be added
      */
     public void addEntry(final String entry) {
-        entries.add(entry);
+	entries.add(entry);
     }
     
     /**
      * Adds multiple new entries to this tab completer's list.
      * @param newEntries Entries to be added
      */
-    public void addEntries(final ArrayList<String> newEntries) {
-        if (newEntries == null) {
-            return;
-        }
-        
-        for (String entry : newEntries) {
-            addEntry(entry);
-        }
+    public void addEntries(final List<String> newEntries) {
+	if (newEntries == null) {
+	    return;
+	}
+	
+	for (String entry : newEntries) {
+	    addEntry(entry);
+	}
     }
     
     /**
@@ -108,15 +112,15 @@ public final class TabCompleter {
      * @param entry The entry to be removed
      */
     public void removeEntry(final String entry) {
-        entries.remove(entry);
+	entries.remove(entry);
     }
     
     /**
      * Replaces the current entries with the new list.
      * @param newEntries the new entries to use
      */
-    public void replaceEntries(final ArrayList<String> newEntries) {
-        entries = newEntries;
+    public void replaceEntries(final List<String> newEntries) {
+	entries = newEntries;
     }
     
 }

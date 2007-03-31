@@ -23,6 +23,8 @@
 package uk.org.ownage.dmdirc.ui.input;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import uk.org.ownage.dmdirc.Config;
 
@@ -35,21 +37,21 @@ public final class TabCompleterResult {
     /**
      * The result list for this tab completer.
      */
-    private ArrayList<String> results;
+    private final List<String> results;
     
     /**
      * Creates a new instance of TabCompleterResult with an empty result set.
      */
     public TabCompleterResult() {
-        this.results = new ArrayList<String>();
+	this.results = new ArrayList<String>();
     }
     
     /**
      * Creates a new instance of TabCompleterResult.
      * @param newResults The list of results that this result set contains
      */
-    public TabCompleterResult(final ArrayList<String> newResults) {
-        results = newResults;
+    public TabCompleterResult(final List<String> newResults) {
+	results = newResults;
     }
     
     /**
@@ -57,7 +59,7 @@ public final class TabCompleterResult {
      * @param result The result to be added
      */
     public void addResult(final String result) {
-        results.add(result);
+	results.add(result);
     }
     
     /**
@@ -65,7 +67,7 @@ public final class TabCompleterResult {
      * @param additional The results to merge
      */
     public void merge(final TabCompleterResult additional) {
-        results.addAll(additional.getResults());
+	results.addAll(additional.getResults());
     }
     
     /**
@@ -73,7 +75,7 @@ public final class TabCompleterResult {
      * @return the size of this result set
      */
     public int getResultCount() {
-        return results.size();
+	return results.size();
     }
     
     /**
@@ -81,34 +83,35 @@ public final class TabCompleterResult {
      * @return longest possible substring matching all results
      */
     public String getBestSubstring() {
-        if (getResultCount() == 0) {
-            return "";
-        }
-        
-        final boolean caseSensitive = Boolean.parseBoolean(Config.getOption("tabcompletion", "casesensitive"));
-        
-        String res = results.get(0);
-        for (String entry : results) {
-            if (caseSensitive) {
-                while (!entry.startsWith(res)) {
-                    res = res.substring(0, res.length() - 1);
-                }
-            } else {
-                while (!entry.toLowerCase().startsWith(res.toLowerCase())) {
-                    res = res.substring(0, res.length() - 1);
-                }
-            }
-        }
-        
-        return res;
+	if (getResultCount() == 0) {
+	    return "";
+	}
+	
+	final boolean caseSensitive = Boolean.parseBoolean(Config.getOption("tabcompletion", "casesensitive"));
+	
+	String res = results.get(0);
+	for (String entry : results) {
+	    if (caseSensitive) {
+		while (!entry.startsWith(res)) {
+		    res = res.substring(0, res.length() - 1);
+		}
+	    } else {
+		while (!entry.toLowerCase(Locale.getDefault()).startsWith(
+			res.toLowerCase(Locale.getDefault()))) {
+		    res = res.substring(0, res.length() - 1);
+		}
+	    }
+	}
+	
+	return res;
     }
     
     /**
      * Retrieves the list of results that this set contains.
      * @return An arraylist containing the results
      */
-    public ArrayList<String> getResults() {
-        return results;
+    public List<String> getResults() {
+	return results;
     }
     
 }

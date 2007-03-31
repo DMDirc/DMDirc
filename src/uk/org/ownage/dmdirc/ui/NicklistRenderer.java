@@ -30,11 +30,10 @@ import javax.swing.JList;
 import javax.swing.border.EmptyBorder;
 
 import uk.org.ownage.dmdirc.identities.ConfigManager;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
- *
+ * Renders the nicklist.
  */
 public final class NicklistRenderer extends DefaultListCellRenderer {
     
@@ -46,13 +45,14 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 1;
     
     /** ConfigManager. */
-    private ConfigManager config;
+    private final ConfigManager config;
     
     /**
      * Creates a new instance of NicklistRenderer.
      * @param newConfig ConfigManager for the associated channel
      */
     public NicklistRenderer(final ConfigManager newConfig) {
+	super();
 	config = newConfig;
     }
     
@@ -66,15 +66,13 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
 	super.getListCellRendererComponent(list, value, index, selected, focused);
 	
 	if (config.hasOption("nicklist", "altBackground")
-	&& Boolean.parseBoolean(config.getOption("nicklist", "altBackground")) && !selected) {
-	    final ChannelClientInfo client = (ChannelClientInfo) value;
-	    if (index % 2 == 0) {
+	&& Boolean.parseBoolean(config.getOption("nicklist", "altBackground")) 
+	&& !selected && index % 2 == 0) {
 		Color colour = ColourManager.getColour("f0f0f0");
 		if (config.hasOption("nicklist", "altBackgroundColour")) {
 		    colour = ColourManager.getColour(config.getOption("nicklist", "altBackgroundColour"));
 		}
 		this.setBackground(colour);
-	    }
 	}
 	this.setBorder(new EmptyBorder(0, 2, 0, 2));
 	

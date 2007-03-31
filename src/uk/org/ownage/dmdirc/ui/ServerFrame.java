@@ -26,7 +26,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
 import uk.org.ownage.dmdirc.Server;
@@ -49,17 +48,11 @@ public final class ServerFrame extends Frame {
      */
     private static final long serialVersionUID = 7;
     
-    /** The nick list model used for this channel's nickname list. */
-    private NicklistListModel nicklistModel;
-    
     /** This channel's command parser. */
-    private ServerCommandParser commandParser;
-    
-    /** scrollpane. */
-    private JScrollPane nickScrollPane;
+    private final ServerCommandParser commandParser;
     
     /** This frame's parent. */
-    private Server parent;
+    private final Server parent;
     
     /**
      * Creates a new ServerFrame.

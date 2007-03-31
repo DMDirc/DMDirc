@@ -53,6 +53,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.ui.components.StandardDialog;
+
+import static uk.org.ownage.dmdirc.ui.UIConstants.*;
 
 /**
  * Allows the user to modify global client preferences.
@@ -66,12 +69,6 @@ public final class PreferencesDialog extends StandardDialog
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 3;
-    
-    /** Size of the large borders in the dialog. */
-    private static final int LARGE_BORDER = 10;
-    
-    /** Size of the small borders in the dialog. */
-    private static final int SMALL_BORDER = 5;
     
     /** Acceptable input types for the config dialog. */
     private static enum OptionType { TEXTFIELD, CHECKBOX, COMBOBOX, };
@@ -107,6 +104,7 @@ public final class PreferencesDialog extends StandardDialog
 	comboBoxes = new Hashtable<String, JComboBox>();
 	
 	initComponents();
+	setLocationRelativeTo(MainFrame.getMainFrame());
     }
     
     /**

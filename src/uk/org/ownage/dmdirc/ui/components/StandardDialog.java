@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package uk.org.ownage.dmdirc.ui.components;
 
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -36,7 +36,6 @@ import javax.swing.KeyStroke;
 
 /**
  * Provides common methods for dialogs.
- * @author chris
  */
 public class StandardDialog extends JDialog  {
     
