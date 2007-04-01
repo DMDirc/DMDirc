@@ -167,21 +167,21 @@ public final class PreferencesDialog extends StandardDialog
 		SpringLayout.EAST, tabList);
 	layout.putConstraint(SpringLayout.NORTH, mainPanel, 5,
 		SpringLayout.NORTH, getContentPane());
-	//ok button
-	layout.putConstraint(SpringLayout.EAST, getOkButton(), -10,
+	//ok button 
+	layout.putConstraint(SpringLayout.EAST, getRightButton() , -10,
 		SpringLayout.EAST, getContentPane());
-	layout.putConstraint(SpringLayout.NORTH, getOkButton(), 5,
+	layout.putConstraint(SpringLayout.NORTH, getRightButton() , 5,
 		SpringLayout.SOUTH, mainPanel);
 	//cancel button
-	layout.putConstraint(SpringLayout.EAST, getCancelButton(), -10,
-		SpringLayout.WEST, getOkButton());
-	layout.putConstraint(SpringLayout.NORTH, getCancelButton(), 5,
+	layout.putConstraint(SpringLayout.EAST, getLeftButton(), -10,
+		SpringLayout.WEST, getRightButton() );
+	layout.putConstraint(SpringLayout.NORTH, getLeftButton(), 5,
 		SpringLayout.SOUTH, mainPanel);
 	//panel size
 	layout.putConstraint(SpringLayout.EAST, getContentPane(), 10,
 		SpringLayout.EAST, mainPanel);
 	layout.putConstraint(SpringLayout.SOUTH, getContentPane(), 10,
-		SpringLayout.SOUTH, getOkButton());
+		SpringLayout.SOUTH, getRightButton() );
 	
 	initGeneralTab(mainPanel);
 	

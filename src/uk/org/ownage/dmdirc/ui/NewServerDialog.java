@@ -255,10 +255,6 @@ public final class NewServerDialog extends StandardDialog {
 	autoConnectCheck.setEnabled(false);
 	autoConnectCheck.setMargin(new Insets(0, 0, 0, 0));
 	
-	getOkButton().setText("OK");
-	
-	getCancelButton().setText("Cancel");
-	
 	sslCheck.setText("Use a secure (SSL) connection");
 	sslCheck.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 	sslCheck.setMargin(new Insets(0, 0, 0, 0));
@@ -389,10 +385,10 @@ public final class NewServerDialog extends StandardDialog {
 	constraints.gridx = 1;
 	constraints.anchor = GridBagConstraints.EAST;
 	constraints.fill = GridBagConstraints.NONE;
-	getContentPane().add(getCancelButton(), constraints);
+	getContentPane().add(getLeftButton(), constraints);
 	
 	constraints.gridx = 2;
-	getContentPane().add(getOkButton(), constraints);
+	getContentPane().add(getRightButton(), constraints);
 	
 	pack();
     }

@@ -164,6 +164,8 @@ public class ChannelSettingsDialog extends StandardDialog
 	final JButton button1 = new JButton();
 	final JButton button2 = new JButton();
 	
+	orderButtons(button1, button2);
+	
 	constraints.gridx = 0;
 	constraints.gridy = 0;
 	constraints.gridwidth = 3;
@@ -186,12 +188,10 @@ public class ChannelSettingsDialog extends StandardDialog
 	constraints.gridy = 1;
 	constraints.anchor = GridBagConstraints.EAST;
 	constraints.fill = GridBagConstraints.NONE;
-	getContentPane().add(button1, constraints);
+	getContentPane().add(getLeftButton(), constraints);
 	
 	constraints.gridx = 2;
-	getContentPane().add(button2, constraints);
-	
-	orderButtons(button1, button2);
+	getContentPane().add(getRightButton(), constraints);
 	
 	initIrcTab(tabbedPane);
 	

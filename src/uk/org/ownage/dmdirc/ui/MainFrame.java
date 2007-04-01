@@ -64,7 +64,8 @@ import uk.org.ownage.dmdirc.ui.framemanager.tree.TreeFrameManager;
 /**
  * The main application frame.
  */
-public final class MainFrame extends JFrame implements WindowListener {
+public final class MainFrame extends JFrame implements WindowListener,
+	    ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -419,6 +420,7 @@ public final class MainFrame extends JFrame implements WindowListener {
 	desktopPane.setBackground(new Color(238, 238, 238));
 	mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 	statusBar = new StatusBar();
+	JMenuItem menuItem;
 	
 	mainSplitPane.setBorder(null);
 	final BasicSplitPaneDivider divider =
@@ -439,6 +441,8 @@ public final class MainFrame extends JFrame implements WindowListener {
 	
 	windowMenu.setMnemonic('w');
 	windowMenu.setText("Window");
+	
+	
 	toggleStateMenuItem.setMnemonic('m');
 	toggleStateMenuItem.setText("Maximise");
 	windowMenu.add(toggleStateMenuItem);
@@ -447,6 +451,13 @@ public final class MainFrame extends JFrame implements WindowListener {
 	
 	helpMenu.setMnemonic('h');
 	helpMenu.setText("Help");
+	
+	menuItem = new JMenuItem();
+	menuItem.setMnemonic('a');
+	menuItem.setText("About");
+	menuItem.setActionCommand("About");
+	menuItem.addActionListener(this);
+	helpMenu.add(menuItem);
 	
 	menuBar.add(helpMenu);
 	
@@ -480,4 +491,10 @@ public final class MainFrame extends JFrame implements WindowListener {
 	
 	pack();
     }
+
+	public void actionPerformed(ActionEvent e) {
+	    if (e.getActionCommand().equals("About")) {
+		//show dialog.
+	    }
+	}
 }
