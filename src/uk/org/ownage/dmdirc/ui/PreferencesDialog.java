@@ -47,13 +47,17 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
 import static uk.org.ownage.dmdirc.ui.UIConstants.*;
@@ -135,9 +139,10 @@ public final class PreferencesDialog extends StandardDialog
 	getContentPane().setLayout(layout);
 	
 	tabList.setPreferredSize(new Dimension(100, 450));
-	setMinimumSize(new Dimension(600, 500));
-	setPreferredSize(new Dimension(600, 500));
-	setMaximumSize(new Dimension(600, 500));
+	tabList.setMinimumSize(new Dimension(100, 450));
+	setMinimumSize(new Dimension(650, 500));
+	setPreferredSize(new Dimension(650, 500));
+	setMaximumSize(new Dimension(650, 500));
 	
 	orderButtons(button1, button2);
 	
@@ -498,6 +503,30 @@ public final class PreferencesDialog extends StandardDialog
 	    }
 	    Config.save();
 	    setVisible(false);
+	    if (!UIManager.getLookAndFeel().getClass().getName()
+	    .equals((String) comboBoxes.get("ui.lookandfeel").getSelectedItem())) {
+		SwingUtilities.invokeLater(new Runnable() {
+		    public void run() {
+			try {
+			    UIManager.setLookAndFeel(
+				    (String) comboBoxes.get("ui.lookandfeel").getSelectedItem());
+			    SwingUtilities.updateComponentTreeUI(MainFrame.getMainFrame());
+			} catch (UnsupportedLookAndFeelException ex) {
+			    Logger.error(ErrorLevel.WARNING, 
+				    "Unable to select new look and feel.", ex);
+			} catch (IllegalAccessException ex) {
+			    Logger.error(ErrorLevel.WARNING, 
+				    "Unable to select new look and feel.", ex);
+			} catch (InstantiationException ex) {
+			    Logger.error(ErrorLevel.WARNING, 
+				    "Unable to select new look and feel.", ex);
+			} catch (ClassNotFoundException ex) {
+			    Logger.error(ErrorLevel.WARNING, 
+				    "Unable to select new look and feel.", ex);
+			}
+		    }
+		});
+	    }
 	} else if (getCancelButton().equals(actionEvent.getSource())) {
 	    setVisible(false);
 	}
