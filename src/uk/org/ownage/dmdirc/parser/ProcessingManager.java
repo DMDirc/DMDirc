@@ -32,8 +32,8 @@ import java.util.Enumeration;
  * IRC Parser Processing Manager.
  * Manages adding/removing/calling processing stuff.
  *
- * @author            Shane Mc Cormack
- * @version           $Id$
+ * @author Shane Mc Cormack
+ * @version $Id$
  */
 public class ProcessingManager {
 	/** Reference to the parser object that owns this ProcessingManager */

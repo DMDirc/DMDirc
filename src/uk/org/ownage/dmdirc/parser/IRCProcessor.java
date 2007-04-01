@@ -30,8 +30,8 @@ import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
  * IRCProcessor.
  * Superclass for all IRCProcessor types.
  *
- * @author            Shane Mc Cormack
- * @version           $Id$
+ * @author Shane Mc Cormack
+ * @version $Id$
  */
 public abstract class IRCProcessor {
 	/** Reference to the IRCParser that owns this IRCProcessor. */
@@ -42,8 +42,6 @@ public abstract class IRCProcessor {
 
 	// Some functions from the main parser are useful, and having to use myParser.functionName
 	// is annoying, so we also implement them here (calling them again using myParser)
-
-        	
 	/**
 	 * Create a new instance of the IRCProcessor Object.
 	 *
@@ -54,13 +52,13 @@ public abstract class IRCProcessor {
 		this.myParser = parser;
 		this.myManager = manager;
 	}
-        
+
 	/**
 	 * Callback to all objects implementing the IErrorInfo Interface.
 	 *
 	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo
 	 * @param errorInfo ParserError object representing the error.
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected final boolean callErrorInfo(final ParserError errorInfo) {
 		return myParser.callErrorInfo(errorInfo);
@@ -73,7 +71,7 @@ public abstract class IRCProcessor {
 	 * @param level Debugging Level (DEBUG_INFO, ndSocket etc)
 	 * @param data Debugging Information
 	 * @param args Formatting String Options
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected final boolean callDebugInfo(final int level, final String data, final Object... args) {
 		return myParser.callDebugInfo(level, String.format(data, args));
@@ -85,7 +83,7 @@ public abstract class IRCProcessor {
 	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo
 	 * @param level Debugging Level (DEBUG_INFO, ndSocket etc)
 	 * @param data Debugging Information
-         * @return true if a method was called, false otherwise
+	 * @return true if a method was called, false otherwise
 	 */
 	protected final boolean callDebugInfo(final int level, final String data) {
 		return myParser.callDebugInfo(level, data);
@@ -95,7 +93,7 @@ public abstract class IRCProcessor {
 	 * Check if a channel name is valid .
 	 *
 	 * @param sChannelName Channel name to test
-         * @return true if name is valid on the current connection, false otherwise. (Always false before noMOTD/MOTDEnd)
+	 * @return true if name is valid on the current connection, false otherwise. (Always false before noMOTD/MOTDEnd)
 	 */
 	protected final boolean isValidChannelName(final String sChannelName) {
 		return myParser.isValidChannelName(sChannelName);
@@ -155,9 +153,9 @@ public abstract class IRCProcessor {
 	public abstract String[] handles();
 	
 	/** 
-         * Get the name for this Processor.
-         * @return the name of this processor
-         */
+	 * Get the name for this Processor.
+	 * @return the name of this processor
+	 */
 	public final String getName() {
 		final Package thisPackage = this.getClass().getPackage();
 		int packageLength = 0;
@@ -168,17 +166,17 @@ public abstract class IRCProcessor {
 	}
 	
 	/** 
-         * Get the name for this Processor in lowercase.
-         * @return lower case name of this processor
-         */
+	 * Get the name for this Processor in lowercase.
+	 * @return lower case name of this processor
+	 */
 	public final String getLowerName() {
 		return this.getName().toLowerCase();
 	}
 	
 	/** 
-         * Get the name for this Processor.
-         * @return the name of this processor
-         */
+	 * Get the name for this Processor.
+	 * @return the name of this processor
+	 */
 	public final String toString() { return this.getName(); }
 	
 	/**

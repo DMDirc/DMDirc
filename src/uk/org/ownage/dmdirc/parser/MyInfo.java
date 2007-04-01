@@ -27,9 +27,9 @@ package uk.org.ownage.dmdirc.parser;
 /**
  * Contains User information.
  * 
- * @author            Shane Mc Cormack
- * @author            Chris Smith
- * @version           $Id$
+ * @author Shane Mc Cormack
+ * @author Chris Smith
+ * @version $Id$
  * @see IRCParser
  */
 public final class MyInfo {

@@ -27,8 +27,8 @@ package uk.org.ownage.dmdirc.parser;
 /**
  * IRC Parser Processor Not Found Exception.
  *
- * @author            Shane Mc Cormack
- * @version           $Id$
+ * @author Shane Mc Cormack
+ * @version $Id$
  */
 public class ProcessorNotFound extends Exception {
 	/**

@@ -29,8 +29,8 @@ import java.util.ArrayList;
 /**
  * IRC Parser Ignore list.
  *
- * @author            Shane Mc Cormack
- * @version           $Id$
+ * @author Shane Mc Cormack
+ * @version $Id$
  */
 public class RegexStringList {
 	/** Arraylist storing ignore patterns */

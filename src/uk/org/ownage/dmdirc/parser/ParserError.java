@@ -27,8 +27,8 @@ package uk.org.ownage.dmdirc.parser;
 /**
  * IRC Parser Error.
  *
- * @author            Shane Mc Cormack
- * @version           $Id$
+ * @author Shane Mc Cormack
+ * @version $Id$
  */
 public final class ParserError {
 	/** Error is potentially Fatal, Desync 99% Guaranteed! */

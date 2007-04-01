@@ -668,17 +668,23 @@ public final class IRCParser implements Runnable {
 		// method will ALWAYs return the same value.
 		final char[] modes = new char[hChanModesBool.size()];
 		int nTemp;
+		double pos;
 		
 		for (char cTemp : hChanModesBool.keySet()) {
 			nTemp = hChanModesBool.get(cTemp);
-			// Is there an easier way to find out the power of 2 value for a number?
+			// nTemp should never be less than 0
+			if (nTemp > 0) {
+				pos = Math.log(nTemp) / Math.log(2);
+				modes[(int)pos] = cTemp;
+			}
+/*			// Is there an easier way to find out the power of 2 value for a number?
 			// ie 1024 = 10, 512 = 9 ?
 			for (int i = 0; i < modes.length; i++) {
 				if (Math.pow(2, i) == (double) nTemp) {
 					modes[i] = cTemp;
 					break;
 				}
-			}
+			}*/
 		}
 		return new String(modes);
 	}
@@ -686,7 +692,7 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Process CHANMODES from 005.
 	 */	
-	protected void parseChanModes() {
+	public void parseChanModes() {
 		final StringBuilder sDefaultModes = new StringBuilder("b,k,l,");
 		String[] bits = null;
 		String modeStr;
