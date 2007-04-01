@@ -49,6 +49,7 @@ import javax.swing.Spring;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
@@ -140,9 +141,9 @@ public final class PreferencesDialog extends StandardDialog
 	
 	tabList.setPreferredSize(new Dimension(100, 450));
 	tabList.setMinimumSize(new Dimension(100, 450));
-	setMinimumSize(new Dimension(650, 500));
-	setPreferredSize(new Dimension(650, 500));
-	setMaximumSize(new Dimension(650, 500));
+	setMinimumSize(new Dimension(600, 500));
+	setPreferredSize(new Dimension(600, 500));
+	setMaximumSize(new Dimension(600, 500));
 	
 	orderButtons(button1, button2);
 	
@@ -436,11 +437,11 @@ public final class PreferencesDialog extends StandardDialog
     private void initAdvancedTab(final JPanel cardLayoutPanel) {
 	final JPanel panel = new JPanel(new SpringLayout());
 	
-	UIManager.LookAndFeelInfo plaf[] = UIManager.getInstalledLookAndFeels();
+	final LookAndFeelInfo plaf[] = UIManager.getInstalledLookAndFeels();
 	String[] lafs = new String[plaf.length];
 	int i = 0;
-	for (UIManager.LookAndFeelInfo laf : plaf) {
-	    lafs[i++] = laf.getClassName();
+	for (LookAndFeelInfo laf : plaf) {
+	    lafs[i++] = laf.getName();
 	}
 	
 	addComponent(panel, "ui.lookandfeel", "Look and feel: ",
@@ -479,53 +480,11 @@ public final class PreferencesDialog extends StandardDialog
      */
     public void actionPerformed(final ActionEvent actionEvent) {
 	if (getOkButton().equals(actionEvent.getSource())) {
-	    String[] optionArgs;
-	    for (String option : textFields.keySet()) {
-		optionArgs = option.split("\\.");
-		if (textFields.get(option).getText().equals("")) {
-		    Config.unsetOption(optionArgs[0], optionArgs[1]);
-		} else {
-		    Config.setOption(optionArgs[0], optionArgs[1],
-			    textFields.get(option).getText());
-		}
-	    }
-	    for (String option : checkBoxes.keySet()) {
-		optionArgs = option.split("\\.");
-		Config.setOption(optionArgs[0], optionArgs[1],
-			"" + checkBoxes.get(option).isSelected());
-	    }
-	    for (String option : comboBoxes.keySet()) {
-		optionArgs = option.split("\\.");
-		if (comboBoxes.get(option).getSelectedItem() != null) {
-		    Config.setOption(optionArgs[0], optionArgs[1],
-			    (String) comboBoxes.get(option).getSelectedItem());
-		}
-	    }
-	    Config.save();
+	    saveOptions();
 	    setVisible(false);
-	    if (!UIManager.getLookAndFeel().getClass().getName()
+	    if (!UIManager.getLookAndFeel().getName()
 	    .equals((String) comboBoxes.get("ui.lookandfeel").getSelectedItem())) {
-		SwingUtilities.invokeLater(new Runnable() {
-		    public void run() {
-			try {
-			    UIManager.setLookAndFeel(
-				    (String) comboBoxes.get("ui.lookandfeel").getSelectedItem());
-			    SwingUtilities.updateComponentTreeUI(MainFrame.getMainFrame());
-			} catch (UnsupportedLookAndFeelException ex) {
-			    Logger.error(ErrorLevel.WARNING, 
-				    "Unable to select new look and feel.", ex);
-			} catch (IllegalAccessException ex) {
-			    Logger.error(ErrorLevel.WARNING, 
-				    "Unable to select new look and feel.", ex);
-			} catch (InstantiationException ex) {
-			    Logger.error(ErrorLevel.WARNING, 
-				    "Unable to select new look and feel.", ex);
-			} catch (ClassNotFoundException ex) {
-			    Logger.error(ErrorLevel.WARNING, 
-				    "Unable to select new look and feel.", ex);
-			}
-		    }
-		});
+		setLookAndFeel((String) comboBoxes.get("ui.lookandfeel").getSelectedItem());
 	    }
 	} else if (getCancelButton().equals(actionEvent.getSource())) {
 	    setVisible(false);
@@ -616,5 +575,73 @@ public final class PreferencesDialog extends StandardDialog
 	    cardLayout.show(mainPanel, (String) ((JList) selectionEvent.
 		    getSource()).getSelectedValue());
 	}
+    }
+    
+    /**
+     * Sets the new look and feel for the program.
+     * @param lookAndFeel classname of the look and feel to set
+     */
+    private void setLookAndFeel(final String lookAndFeel) {
+	StringBuilder classNameBuilder = new StringBuilder();
+	for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
+	    if (laf.getName().equals(lookAndFeel)) {
+		classNameBuilder.setLength(0);
+		classNameBuilder.append(laf.getClassName());
+		break;
+	    }
+	}
+	final String className = classNameBuilder.toString();
+	if (className != null) {
+	    SwingUtilities.invokeLater(new Runnable() {
+		public void run() {
+		    try {
+			UIManager.setLookAndFeel(className);
+			SwingUtilities.updateComponentTreeUI(
+				MainFrame.getMainFrame());
+		    } catch (UnsupportedLookAndFeelException ex) {
+			Logger.error(ErrorLevel.WARNING,
+				"Unable to select new look and feel.", ex);
+		    } catch (IllegalAccessException ex) {
+			Logger.error(ErrorLevel.WARNING,
+				"Unable to select new look and feel.", ex);
+		    } catch (InstantiationException ex) {
+			Logger.error(ErrorLevel.WARNING,
+				"Unable to select new look and feel.", ex);
+		    } catch (ClassNotFoundException ex) {
+			Logger.error(ErrorLevel.WARNING,
+				"Unable to select new look and feel.", ex);
+		    }
+		}
+	    });
+	}
+    }
+    
+    /**
+     * Saves the options in the dialog to the config.
+     */
+    private void saveOptions() {
+	String[] optionArgs;
+	for (String option : textFields.keySet()) {
+	    optionArgs = option.split("\\.");
+	    if (textFields.get(option).getText().equals("")) {
+		Config.unsetOption(optionArgs[0], optionArgs[1]);
+	    } else {
+		Config.setOption(optionArgs[0], optionArgs[1],
+			textFields.get(option).getText());
+	    }
+	}
+	for (String option : checkBoxes.keySet()) {
+	    optionArgs = option.split("\\.");
+	    Config.setOption(optionArgs[0], optionArgs[1],
+		    "" + checkBoxes.get(option).isSelected());
+	}
+	for (String option : comboBoxes.keySet()) {
+	    optionArgs = option.split("\\.");
+	    if (comboBoxes.get(option).getSelectedItem() != null) {
+		Config.setOption(optionArgs[0], optionArgs[1],
+			(String) comboBoxes.get(option).getSelectedItem());
+	    }
+	}
+	Config.save();
     }
 }

@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc;
 
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import uk.org.ownage.dmdirc.identities.IdentityManager;
@@ -52,31 +53,41 @@ public final class Main {
      * @param args the command line arguments
      */
     public static void main(final String[] args) {
-        if (Config.hasOption("ui", "antialias")) {
-            final String aaSetting = Config.getOption("ui", "antialias");
-            System.setProperty("awt.useSystemAAFontSettings", aaSetting);
-            System.setProperty("swing.aatext", aaSetting);
-        }
-        
-        try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-            
-            if (Config.hasOption("ui", "lookandfeel")) {
-                UIManager.setLookAndFeel(Config.getOption("ui", "lookandfeel"));
-            }
-        } catch (InstantiationException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to set look and feel", ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.error(ErrorLevel.ERROR, "Look and feel not available", ex);
-        } catch (UnsupportedLookAndFeelException ex) {
-            Logger.error(ErrorLevel.ERROR, "Look and feel not available", ex);
-        } catch (IllegalAccessException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to set look and feel", ex);
-        }
-        
-        IdentityManager.load();
-        
-        MainFrame.getMainFrame();
+	if (Config.hasOption("ui", "antialias")) {
+	    final String aaSetting = Config.getOption("ui", "antialias");
+	    System.setProperty("awt.useSystemAAFontSettings", aaSetting);
+	    System.setProperty("swing.aatext", aaSetting);
+	}
+	
+	try {
+	    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+	    
+	    if (Config.hasOption("ui", "lookandfeel")) {
+		StringBuilder classNameBuilder = new StringBuilder();
+		for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
+		    if (laf.getName().equals(Config.getOption("ui", "lookandfeel"))) {
+			classNameBuilder.setLength(0);
+			classNameBuilder.append(laf.getClassName());
+			break;
+		    }
+		}
+		final String className = classNameBuilder.toString();
+		
+		UIManager.setLookAndFeel(className);
+	    }
+	} catch (InstantiationException ex) {
+	    Logger.error(ErrorLevel.ERROR, "Unable to set look and feel", ex);
+	} catch (ClassNotFoundException ex) {
+	    Logger.error(ErrorLevel.ERROR, "Look and feel not available", ex);
+	} catch (UnsupportedLookAndFeelException ex) {
+	    Logger.error(ErrorLevel.ERROR, "Look and feel not available", ex);
+	} catch (IllegalAccessException ex) {
+	    Logger.error(ErrorLevel.ERROR, "Unable to set look and feel", ex);
+	}
+	
+	IdentityManager.load();
+	
+	MainFrame.getMainFrame();
     }
     
 }
