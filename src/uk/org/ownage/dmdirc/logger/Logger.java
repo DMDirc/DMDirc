@@ -27,9 +27,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
 
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.ui.ErrorDialog;
@@ -55,11 +55,6 @@ public final class Logger {
      * Error Printwriter.
      */
     private static PrintWriter errorWriter;
-    
-    /**
-     * dialog used to report errors to the ui.
-     */
-    private static JDialog dialog;
     
     /**
      * Date formatter, used for logging and displaying messages.
@@ -126,11 +121,13 @@ public final class Logger {
 	    errorDialog.clickReceived();
 	}
 	if (trace.length > 0) {
-	    errorWriter.println(formatter.format(new Date()) + ": ERROR: "
-		    + level + " :" + trace[0]);
-	    if (trace.length > 1) {
-		for (int i = 1; i < trace.length; i++) {
-		    errorWriter.println(trace[i]);
+	    synchronized (formatter) {
+		errorWriter.println(formatter.format(new Date()) + ": ERROR: "
+			+ level + " :" + trace[0]);
+		if (trace.length > 1) {
+		    for (int i = 1; i < trace.length; i++) {
+			errorWriter.println(trace[i]);
+		    }
 		}
 	    }
 	}
@@ -209,12 +206,14 @@ public final class Logger {
 		if (Config.hasOption("logging", "debugLoggingSysOut")
 		&& Config.getOption("logging", "debugLoggingSysOut")
 		.equals("true")) {
-		    System.out.println(formatter.format(new Date())
-		    + ": DEBUG: " + level + " :" + message);
+		    synchronized (formatter) {
+			System.out.println(formatter.format(new Date())
+			+ ": DEBUG: " + level + " :" + message);
+			
+			debugWriter.println(formatter.format(new Date())
+			+ ": DEBUG: " + level + " :" + message);
+		    }
 		}
-		
-		debugWriter.println(formatter.format(new Date())
-		+ ": DEBUG: " + level + " :" + message);
 		break;
 	}
     }
@@ -244,8 +243,10 @@ public final class Logger {
 	
 	switch(level) {
 	    default:
-		logWriter.println(formatter.format(new Date())
-		+ ": LOG: " + level + " :" + message);
+		synchronized (formatter) {
+		    logWriter.println(formatter.format(new Date())
+		    + ": LOG: " + level + " :" + message);
+		}
 		break;
 	}
     }
@@ -253,7 +254,7 @@ public final class Logger {
     /**
      * Initialises the the loggers writers (debug, error, log) and date formatter.
      */
-    private static void createWriters() {
+    private static synchronized void createWriters() {
 	try {
 	    if (logWriter == null) {
 		logWriter = new PrintWriter(
@@ -275,9 +276,9 @@ public final class Logger {
 	}
 	if (Config.hasOption("logging", "dateFormat")) {
 	    formatter = new SimpleDateFormat(
-		    Config.getOption("logging", "dateFormat"));
+		    Config.getOption("logging", "dateFormat"), Locale.getDefault());
 	} else {
-	    formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+	    formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.getDefault());
 	}
     }
 }

@@ -22,7 +22,7 @@
 
 package uk.org.ownage.dmdirc.identities;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The config manager manages the various config sources for each entity.
@@ -31,7 +31,7 @@ import java.util.ArrayList;
 public final class ConfigManager {
     
     /** A list of sources for this config manager. */
-    private ArrayList<ConfigSource> sources;
+    private List<ConfigSource> sources;
     
     /**
      * Creates a new instance of ConfigManager.
@@ -93,7 +93,7 @@ public final class ConfigManager {
      * Retrieves a list of sources for this config manager.
      * @return This config manager's sources.
      */
-    public ArrayList<ConfigSource> getSources() {
+    public List<ConfigSource> getSources() {
         return sources;
     }
 }

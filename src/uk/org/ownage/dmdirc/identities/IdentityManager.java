@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
@@ -42,7 +43,7 @@ public final class IdentityManager {
     /**
      * The identities that have been loaded into this manager.
      */
-    private static ArrayList<Identity> identities;
+    private static List<Identity> identities;
     
     /**
      * The GlobalConfig instance to use for new ConfigManagers.
@@ -116,8 +117,8 @@ public final class IdentityManager {
      * Retrieves a list of identities that serve as profiles.
      * @return A list of profiles
      */
-    public static ArrayList<ConfigSource> getProfiles() {
-        final ArrayList<ConfigSource> profiles = new ArrayList<ConfigSource>();
+    public static List<ConfigSource> getProfiles() {
+        final List<ConfigSource> profiles = new ArrayList<ConfigSource>();
         
         if (identities == null) {
             load();
@@ -141,10 +142,10 @@ public final class IdentityManager {
      * @param channel The channel name (in the form channel@network)
      * @return A list of all matching config sources
      */
-    public static ArrayList<ConfigSource> getSources(final String ircd,
+    public static List<ConfigSource> getSources(final String ircd,
             final String network, final String server, final String channel) {
         
-        final ArrayList<ConfigSource> sources = new ArrayList<ConfigSource>();
+        final List<ConfigSource> sources = new ArrayList<ConfigSource>();
         
         String comp = "";
         
@@ -187,7 +188,7 @@ public final class IdentityManager {
      * @param server The server's name
      * @return A list of all matching config sources
      */
-    public static ArrayList<ConfigSource> getSources(final String ircd,
+    public static List<ConfigSource> getSources(final String ircd,
             final String network, final String server) {
         return getSources(ircd, network, server, "<Unknown>");
     }

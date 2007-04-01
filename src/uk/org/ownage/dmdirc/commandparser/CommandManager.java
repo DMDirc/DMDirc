@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.commandparser.commands.channel.*;
@@ -39,15 +40,15 @@ public final class CommandManager {
     /**
      * The server commands that have been instansiated.
      */
-    private static ArrayList<Command> serverCommands;
+    private static List<Command> serverCommands;
     /**
      * The channel commands that have been instansiated.
      */
-    private static ArrayList<Command> channelCommands;
+    private static List<Command> channelCommands;
     /**
      * The query commands that have been instansiated.
      */
-    private static ArrayList<Command> queryCommands;
+    private static List<Command> queryCommands;
     
     /**
      * Prevents creation of a new command manager.
@@ -130,7 +131,7 @@ public final class CommandManager {
      * Loads all query commands into the specified parser.
      * @param parser The parser to load commands into
      */
-    static void loadQueryCommands(final QueryCommandParser parser) {
+    protected static void loadQueryCommands(final QueryCommandParser parser) {
         if (queryCommands == null)    {
             CommandManager.initLists();
         }
@@ -185,7 +186,7 @@ public final class CommandManager {
      * by this command manager.
      * @return An ArrayList of server commands, or null if none have been loaded
      */
-    public static ArrayList<Command> getServerCommands() {
+    public static List<Command> getServerCommands() {
         return serverCommands;
     }
     
@@ -194,7 +195,7 @@ public final class CommandManager {
      * by this command manager.
      * @return An ArrayList of channel commands, or null if none have been loaded
      */
-    public static ArrayList<Command> getChannelCommands() {
+    public static List<Command> getChannelCommands() {
         return channelCommands;
     }
     
@@ -203,7 +204,7 @@ public final class CommandManager {
      * by this command manager.
      * @return An ArrayList of query commands, or null if none have been loaded
      */
-    public static ArrayList<Command> getQueryCommands() {
+    public static List<Command> getQueryCommands() {
         return queryCommands;
     }
     
@@ -213,7 +214,7 @@ public final class CommandManager {
      * @return An ArrayList&lt;String&gt; containing all registered server command
      * names
      */
-    public static ArrayList<String> getServerCommandNames() {
+    public static List<String> getServerCommandNames() {
         if (serverCommands == null) {
             CommandManager.initLists();
         }
@@ -227,7 +228,7 @@ public final class CommandManager {
      * @return An ArrayList&lt;String&gt; containing all registered server command
      * names
      */
-    public static ArrayList<String> getChannelCommandNames() {
+    public static List<String> getChannelCommandNames() {
         if (channelCommands == null) {
             CommandManager.initLists();
         }
@@ -241,7 +242,7 @@ public final class CommandManager {
      * @return An ArrayList&lt;String&gt; containing all registered server command
      * names
      */
-    public static ArrayList<String> getQueryCommandNames() {
+    public static List<String> getQueryCommandNames() {
         if (queryCommands == null) {
             CommandManager.initLists();
         }
@@ -255,12 +256,12 @@ public final class CommandManager {
      * @param source The source vector to iterate over
      * @return A list of all commands in the source
      */
-    private static ArrayList<String> getCommandNames(final ArrayList<Command> source) {
+    private static List<String> getCommandNames(final List<Command> source) {
         if (source == null) {
             return null;
         }
         
-        final ArrayList<String> res = new ArrayList<String>();
+        final List<String> res = new ArrayList<String>();
         
         for (Command command : source) {
             res.add(Config.getOption("general", "commandchar") + command.getName());

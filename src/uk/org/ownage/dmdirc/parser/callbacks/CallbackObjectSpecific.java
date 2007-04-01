@@ -100,7 +100,7 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	 */
 	public void add(final ICallbackInterface eMethod, final String specificTarget) {
 		add(eMethod);
-		if (!specificTarget.equals("")) {
+		if (!"".equals(specificTarget)) {
 			specificData.put(eMethod, specificTarget);
 		}
 	}

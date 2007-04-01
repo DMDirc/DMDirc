@@ -26,6 +26,8 @@ import java.awt.Color;
 import java.beans.PropertyVetoException;
 import java.net.URL;
 import java.util.Hashtable;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
@@ -79,12 +81,12 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     /**
      * Open channels that currently exist on the server.
      */
-    private final Hashtable<String, Channel> channels  = new Hashtable<String, Channel>();
+    private final Map<String, Channel> channels  = new Hashtable<String, Channel>();
     
     /**
      * Open query windows on the server.
      */
-    private final Hashtable<String, Query> queries = new Hashtable<String, Query>();
+    private final Map<String, Query> queries = new Hashtable<String, Query>();
     
     /**
      * The ServerFrame corresponding to this server.
@@ -245,7 +247,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @return True iff the channel is known, false otherwise
      */
     public boolean hasChannel(final String channel) {
-        return channels.containsKey(channel.toLowerCase());
+        return channels.containsKey(channel.toLowerCase(Locale.getDefault()));
     }
     
     /**
@@ -254,7 +256,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @return The appropriate channel object
      */
     public Channel getChannel(final String channel) {
-        return channels.get(channel.toLowerCase());
+        return channels.get(channel.toLowerCase(Locale.getDefault()));
     }    
     
     /**
@@ -421,9 +423,10 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public void delChannel(final String chan) {
         tabCompleter.removeEntry(chan);
-        MainFrame.getMainFrame().getFrameManager().delChannel(this, channels.get(chan.toLowerCase()));
+        MainFrame.getMainFrame().getFrameManager().delChannel(
+		this, channels.get(chan.toLowerCase(Locale.getDefault())));
         if (!closing) {
-            channels.remove(chan.toLowerCase());
+            channels.remove(chan.toLowerCase(Locale.getDefault()));
         }
     }
     
@@ -769,6 +772,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**
@@ -776,6 +780,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**
@@ -783,6 +788,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**
@@ -808,6 +814,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**

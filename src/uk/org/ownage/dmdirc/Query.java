@@ -262,6 +262,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      * @param internalFrameEvent frame closed event
      */
     public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**
@@ -269,6 +270,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      * @param internalFrameEvent frame iconified event
      */
     public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**
@@ -276,6 +278,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      * @param internalFrameEvent frame deiconified event
      */
     public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**
@@ -300,6 +303,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      * @param internalFrameEvent frame deactivation event
      */
     public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**

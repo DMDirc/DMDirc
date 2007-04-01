@@ -52,7 +52,7 @@ public final class Motd extends ServerCommand {
      */    
     public void execute(final CommandWindow origin, final Server server, 
             final String... args) {
-        final String line = implodeArgs(args);
+        //final String line = implodeArgs(args);
         
         server.getParser().sendLine("MOTD");
     }

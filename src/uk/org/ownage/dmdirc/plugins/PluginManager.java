@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.plugins;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Managers plugins for the client, also forwards events from the client or irc
@@ -33,7 +34,7 @@ public final class PluginManager {
     /**
      * list of plugins currently loaded.
      */
-    private Hashtable<String, AbstractPlugin> loadedPlugins;
+    private final Map<String, AbstractPlugin> loadedPlugins;
     
     /**
      * Creates a new plugin manager.
@@ -43,25 +44,19 @@ public final class PluginManager {
     }
     
     /**
-     * forwards callbacks to the plugins.
-     */
-    public void forwardCallback() {
-    }
-    
-    /**
      * Adds a new plugin to the loaded plugins list.
      * @param pluginClassName plugin name
      * @param plugin boolean success
      * @return plugin instance
      */
-    public boolean addPlugin(final String pluginClassName, 
-            final AbstractPlugin plugin) {
-	if (!loadedPlugins.containsKey(pluginClassName)) {
+    public boolean addPlugin(final String pluginClassName,
+	    final AbstractPlugin plugin) {
+	if (loadedPlugins.containsKey(pluginClassName)) {
+	    return false;
+	} else {
 	    loadedPlugins.put(pluginClassName, plugin);
 	    
 	    plugin.onLoad();
-	} else {
-	    return false;
 	}
 	plugin.start();
 	return true;
@@ -74,9 +69,9 @@ public final class PluginManager {
      * @return plugin to remove
      */
     protected synchronized boolean removePlugin(final AbstractPlugin plugin) {
-	if (loadedPlugins.contains(plugin)) {
+	if (loadedPlugins.containsValue(plugin)) {
 	    loadedPlugins.remove(plugin.toString());
-            System.gc();
+	    System.gc();
 	    return true;
 	}
 	
@@ -84,7 +79,7 @@ public final class PluginManager {
     }
     
     /**
-     * Calls a plugins onunload events and removes it from the loaded plugins 
+     * Calls a plugins onunload events and removes it from the loaded plugins
      * list.
      * @param pluginClassName classname of the plugin to stop
      */

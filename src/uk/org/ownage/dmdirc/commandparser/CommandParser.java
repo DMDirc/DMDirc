@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser;
 
 import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Represents a generic command parser. A command parser takes a line of input
@@ -35,7 +36,7 @@ public abstract class CommandParser {
     /**
      * Commands that are associated with this parser.
      */
-    private final Hashtable<String, Command> commands;
+    private final Map<String, Command> commands;
     
     /** Creates a new instance of CommandParser. */
     public CommandParser() {
@@ -74,14 +75,13 @@ public abstract class CommandParser {
             if (args.length >= 2 && origin.getServer().getParser().isValidChannelName(args[1])) {
                 if (origin.getServer().hasChannel(args[1])) {
                     
-                    String newLine = "";
+                    StringBuilder newLine = new StringBuilder();
                     for (int i = 0; i < args.length; i++) {
                         if (i == 1) { continue; }
-                        newLine = newLine + " " + args[i];
+                        newLine.append(" ").append(args[i]);
                     }
-                    newLine = newLine.substring(1);
                     
-                    origin.getServer().getChannel(args[1]).getFrame().getCommandParser().parseCommand(origin, newLine);
+                    origin.getServer().getChannel(args[1]).getFrame().getCommandParser().parseCommand(origin, newLine.substring(1));
                     
                     return;
                 } else {

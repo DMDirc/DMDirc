@@ -46,6 +46,7 @@ public final class ConfigTarget implements Comparable {
     
     /** Creates a new instance of ConfigTarget. */
     public ConfigTarget() {
+	//Do nothing.
     }
     
     /** Sets this target to be a global config source. */

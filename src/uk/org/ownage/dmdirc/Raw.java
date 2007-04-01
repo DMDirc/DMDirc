@@ -173,6 +173,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**
@@ -180,6 +181,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**
@@ -187,6 +189,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**
@@ -211,6 +214,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**

@@ -31,7 +31,7 @@ public abstract class AbstractPlugin {
     /**
      * PluginManager associated with this plugin.
      */
-    private PluginManager pluginManager;
+    private final PluginManager pluginManager;
 
     /**
      * Creates a new instance of the plugin.
@@ -49,14 +49,12 @@ public abstract class AbstractPlugin {
     /**
      * Called once the plugin has been loaded and initialised.
      */
-    void onLoad() {
-    }
+    abstract void onLoad();
     
     /**
      * Called just before the plugin is to be unloaded.
      */
-    void onUnload() {
-    }
+    abstract void onUnload();
     
     /**
      * Called to terminate the plugins thread.

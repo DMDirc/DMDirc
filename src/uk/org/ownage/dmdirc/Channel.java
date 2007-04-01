@@ -692,6 +692,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**
@@ -699,6 +700,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**
@@ -706,6 +708,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**
@@ -731,6 +734,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
+	//Ignore.
     }
     
     /**

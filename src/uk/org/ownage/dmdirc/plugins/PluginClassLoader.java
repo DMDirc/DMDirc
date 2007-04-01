@@ -38,7 +38,7 @@ public final class PluginClassLoader extends ClassLoader {
     /**
      * Base directory for the class loader.
      */
-    private String baseDir;
+    private final String baseDir;
     
     /**
      * Constructs new PluginClassLoader.
@@ -46,6 +46,7 @@ public final class PluginClassLoader extends ClassLoader {
      * @param directory plugin loader base directory
      */
     public PluginClassLoader(final String directory) {
+	super();
         this.baseDir = directory;
     }
     

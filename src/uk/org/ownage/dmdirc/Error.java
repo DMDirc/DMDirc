@@ -74,7 +74,7 @@ public final class Error {
      * @return error time
      */
     public Date getDate() {
-        return this.date;
+        return (Date) date.clone();
     }
     
 }
