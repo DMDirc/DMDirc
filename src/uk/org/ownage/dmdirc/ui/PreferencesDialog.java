@@ -47,6 +47,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -430,8 +431,15 @@ public final class PreferencesDialog extends StandardDialog
     private void initAdvancedTab(final JPanel cardLayoutPanel) {
 	final JPanel panel = new JPanel(new SpringLayout());
 	
+	UIManager.LookAndFeelInfo plaf[] = UIManager.getInstalledLookAndFeels();
+	String[] lafs = new String[plaf.length];
+	int i = 0;
+	for (UIManager.LookAndFeelInfo laf : plaf) {
+	    lafs[i++] = laf.getClassName();
+	}
+	
 	addComponent(panel, "ui.lookandfeel", "Look and feel: ",
-		OptionType.TEXTFIELD);
+		OptionType.COMBOBOX, lafs, false);
 	
 	addComponent(panel, "ui.showversion", "Show version: ",
 		OptionType.CHECKBOX);
