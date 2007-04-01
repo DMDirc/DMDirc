@@ -494,7 +494,7 @@ public final class MainFrame extends JFrame implements WindowListener,
 
 	public void actionPerformed(ActionEvent e) {
 	    if (e.getActionCommand().equals("About")) {
-		//show dialog.
+		new AboutDialog().setVisible(true);
 	    }
 	}
 }

@@ -96,7 +96,6 @@ public final class BrowserLauncher {
      * Attempts to open the url in a linux browser.
      * @param url url to open
      * @throws IOException if unable to open browser
-     * @throws InterruptedException if unable to open browser
      */
     private static void openURLLinux(final String url) throws IOException {
 	String browser;

@@ -75,7 +75,7 @@ public abstract class CommandParser {
             if (args.length >= 2 && origin.getServer().getParser().isValidChannelName(args[1])) {
                 if (origin.getServer().hasChannel(args[1])) {
                     
-                    StringBuilder newLine = new StringBuilder();
+                    final StringBuilder newLine = new StringBuilder();
                     for (int i = 0; i < args.length; i++) {
                         if (i == 1) { continue; }
                         newLine.append(" ").append(args[i]);
