@@ -53,8 +53,18 @@ public final class BrowserLauncher {
 	    } else {
 		openURLLinux(url);
 	    }
-	} catch (IOException e) {
-	    Logger.error(ErrorLevel.ERROR, "Unable to launch browser", e);
+	} catch (SecurityException ex) {
+	    Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
+	} catch (ClassNotFoundException ex) {
+	    Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
+	} catch (InvocationTargetException ex) {
+	    Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
+	} catch (NoSuchMethodException ex) {
+	    Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
+	} catch (IllegalAccessException ex) {
+	    Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
+	} catch (IOException ex) {
+	    Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
 	}
     }
     
@@ -73,23 +83,13 @@ public final class BrowserLauncher {
      * @param url url to open
      * @throws IOException if unable to open browser
      */
-    private static void openURLOSX(final String url) throws IOException {
+    private static void openURLOSX(final String url) throws
+	    InvocationTargetException,  IllegalAccessException,
+	    SecurityException, NoSuchMethodException, ClassNotFoundException {
 	final Method openURL;
-	try {
-	    openURL = Class.forName("com.apple.eio.FileManager")
-	    .getDeclaredMethod("openURL", new Class[] {String.class});
-	    openURL.invoke(null, new Object[] {url});
-	} catch (InvocationTargetException ex) {
-	    throw new IOException(ex);
-	} catch (IllegalAccessException ex) {
-	    throw new IOException(ex);
-	} catch (SecurityException ex) {
-	    throw new IOException(ex);
-	} catch (NoSuchMethodException ex) {
-	    throw new IOException(ex);
-	} catch (ClassNotFoundException ex) {
-	    throw new IOException(ex);
-	}
+	openURL = Class.forName("com.apple.eio.FileManager")
+	.getDeclaredMethod("openURL", new Class[] {String.class});
+	openURL.invoke(null, new Object[] {url});
     }
     
     /**
