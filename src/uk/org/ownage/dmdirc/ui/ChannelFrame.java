@@ -220,7 +220,7 @@ public final class ChannelFrame extends Frame {
         splitPane.setRightComponent(nickScrollPane);
         
         splitPane.setResizeWeight(1.0);
-        splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth()-325);
+        splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth() - 325);
         splitPane.setDividerSize(5);
         splitPane.setContinuousLayout(true);
         

@@ -65,7 +65,7 @@ import uk.org.ownage.dmdirc.ui.framemanager.tree.TreeFrameManager;
  * The main application frame.
  */
 public final class MainFrame extends JFrame implements WindowListener,
-	    ActionListener {
+	ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -491,10 +491,13 @@ public final class MainFrame extends JFrame implements WindowListener,
 	
 	pack();
     }
-
-	public void actionPerformed(ActionEvent e) {
-	    if (e.getActionCommand().equals("About")) {
-		new AboutDialog().setVisible(true);
-	    }
+    
+    /**
+     * {@inheritDoc}.
+     */
+    public void actionPerformed(final ActionEvent e) {
+	if (e.getActionCommand().equals("About")) {
+	    new AboutDialog().setVisible(true);
 	}
+    }
 }

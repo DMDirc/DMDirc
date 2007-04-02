@@ -35,8 +35,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Date;
 import java.util.Locale;
-import javax.swing.BorderFactory;
 
+import javax.swing.BorderFactory;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -593,7 +593,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Checks text clicked on by the user, takes appropriate action.
      * @param text text to check
      */
-    private void checkClickText(String text) {
+    private void checkClickText(final String text) {
 	System.out.print("Clicked text: '" + text + "' ");
 	if (text.toLowerCase(Locale.getDefault()).startsWith("http://")
 	|| text.toLowerCase(Locale.getDefault()).startsWith("https://")

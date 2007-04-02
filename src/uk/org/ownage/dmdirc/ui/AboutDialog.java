@@ -35,6 +35,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
+
 import uk.org.ownage.dmdirc.BrowserLauncher;
 
 import static uk.org.ownage.dmdirc.ui.UIConstants.*;
@@ -42,7 +43,8 @@ import static uk.org.ownage.dmdirc.ui.UIConstants.*;
 /**
  *
  */
-public class AboutDialog extends JDialog implements ActionListener, MouseListener {
+public final class AboutDialog extends JDialog implements ActionListener, 
+	MouseListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -66,7 +68,8 @@ public class AboutDialog extends JDialog implements ActionListener, MouseListene
     private void initComponents() {
 	final GridBagConstraints constraints = new GridBagConstraints();
 	linkLabel = new JLabel();
-	final JLabel label = new JLabel();
+	final JLabel about = new JLabel();
+	final JLabel authors = new JLabel();
 	final JButton okButton = new JButton();
 	
 	setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -74,15 +77,18 @@ public class AboutDialog extends JDialog implements ActionListener, MouseListene
 	setTitle("About DMDirc");
 	setResizable(false);
 	
-	linkLabel.setText("<html><a href=\"http://www.dmdirc.com\">DMDirc</a></html>");
+	linkLabel.setText("<html>" 
+		+ "<a href=\"http://www.dmdirc.com\">http://www.dmdirc.com</a>" 
+		+ "</html>");
 	linkLabel.addMouseListener(this);
-	linkLabel.setHorizontalTextPosition(JLabel.CENTER);
 	
-	label.setText("<html>" +
-		"Chris 'MD87' Smith<br>" +
-		"Greg 'Greboid' Holmes<br>" +
-		"Shane 'Dataforce' Mc Cormack." +
-		"</html>");
+	authors.setText("<html>"
+		+ "Chris 'MD87' Smith<br>" 
+		+ "Greg 'Greboid' Holmes<br>" 
+		+ "Shane 'Dataforce' Mc Cormack." 
+		+ "</html>");
+	
+	about.setText("DMDirc - Cross platform IRC client.");
 	
 	okButton.setText("OK");
 	okButton.addActionListener(this);
@@ -95,22 +101,34 @@ public class AboutDialog extends JDialog implements ActionListener, MouseListene
 	constraints.weighty = 1.0;
 	constraints.fill = GridBagConstraints.BOTH;
 	constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER,
-		LARGE_BORDER, LARGE_BORDER);
-	getContentPane().add(linkLabel, constraints);
+		0, LARGE_BORDER);
+	getContentPane().add(about, constraints);
 	
+	constraints.anchor = GridBagConstraints.CENTER;
 	constraints.gridx = 0;
 	constraints.gridy = 1;
 	constraints.gridwidth = 3;
 	constraints.weightx = 1.0;
 	constraints.weighty = 1.0;
 	constraints.fill = GridBagConstraints.BOTH;
-	constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER,
+	constraints.insets = new Insets(0, LARGE_BORDER,
 		LARGE_BORDER, LARGE_BORDER);
-	getContentPane().add(label, constraints);
+	getContentPane().add(linkLabel, constraints);
+	
+	constraints.anchor = GridBagConstraints.LINE_START;
+	constraints.gridx = 0;
+	constraints.gridy = 2;
+	constraints.gridwidth = 3;
+	constraints.weightx = 1.0;
+	constraints.weighty = 1.0;
+	constraints.fill = GridBagConstraints.BOTH;
+	constraints.insets = new Insets(0, LARGE_BORDER,
+		LARGE_BORDER, LARGE_BORDER);
+	getContentPane().add(authors, constraints);
 	
 	constraints.weighty = 0.0;
 	constraints.gridx = 0;
-	constraints.gridy = 2;
+	constraints.gridy = 3;
 	constraints.gridwidth = 1;
 	constraints.insets = new Insets(0, 0,
 		0, 0);
@@ -125,7 +143,7 @@ public class AboutDialog extends JDialog implements ActionListener, MouseListene
     }
     
     /** {@inheritDoc}. */
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
 	if (e.getActionCommand().equals("OK")) {
 	    setVisible(false);
 	    dispose();
@@ -133,26 +151,26 @@ public class AboutDialog extends JDialog implements ActionListener, MouseListene
     }
     
     /** {@inheritDoc}. */
-    public void mouseClicked(MouseEvent e) {
+    public void mouseClicked(final MouseEvent e) {
 	if (e.getSource() == linkLabel) {
 	    BrowserLauncher.openURL("http://www.dmdirc.com");
 	}
     }
     
     /** {@inheritDoc}. */
-    public void mousePressed(MouseEvent e) {
+    public void mousePressed(final MouseEvent e) {
     }
     
     /** {@inheritDoc}. */
-    public void mouseReleased(MouseEvent e) {
+    public void mouseReleased(final MouseEvent e) {
     }
     
     /** {@inheritDoc}. */
-    public void mouseEntered(MouseEvent e) {
+    public void mouseEntered(final MouseEvent e) {
     }
     
     /** {@inheritDoc}. */
-    public void mouseExited(MouseEvent e) {
+    public void mouseExited(final MouseEvent e) {
     }
     
 }

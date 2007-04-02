@@ -174,14 +174,14 @@ public final class PreferencesDialog extends StandardDialog
 		SpringLayout.SOUTH, mainPanel);
 	//cancel button
 	layout.putConstraint(SpringLayout.EAST, getLeftButton(), -10,
-		SpringLayout.WEST, getRightButton() );
+		SpringLayout.WEST, getRightButton());
 	layout.putConstraint(SpringLayout.NORTH, getLeftButton(), 5,
 		SpringLayout.SOUTH, mainPanel);
 	//panel size
 	layout.putConstraint(SpringLayout.EAST, getContentPane(), 10,
 		SpringLayout.EAST, mainPanel);
 	layout.putConstraint(SpringLayout.SOUTH, getContentPane(), 10,
-		SpringLayout.SOUTH, getRightButton() );
+		SpringLayout.SOUTH, getRightButton());
 	
 	initGeneralTab(mainPanel);
 	
@@ -437,8 +437,8 @@ public final class PreferencesDialog extends StandardDialog
     private void initAdvancedTab(final JPanel cardLayoutPanel) {
 	final JPanel panel = new JPanel(new SpringLayout());
 	
-	final LookAndFeelInfo plaf[] = UIManager.getInstalledLookAndFeels();
-	String[] lafs = new String[plaf.length];
+	final LookAndFeelInfo[] plaf = UIManager.getInstalledLookAndFeels();
+	final String[] lafs = new String[plaf.length];
 	int i = 0;
 	for (LookAndFeelInfo laf : plaf) {
 	    lafs[i++] = laf.getName();
@@ -582,7 +582,7 @@ public final class PreferencesDialog extends StandardDialog
      * @param lookAndFeel classname of the look and feel to set
      */
     private void setLookAndFeel(final String lookAndFeel) {
-	StringBuilder classNameBuilder = new StringBuilder();
+	final StringBuilder classNameBuilder = new StringBuilder();
 	for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
 	    if (laf.getName().equals(lookAndFeel)) {
 		classNameBuilder.setLength(0);
