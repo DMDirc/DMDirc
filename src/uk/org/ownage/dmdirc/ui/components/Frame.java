@@ -35,6 +35,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Date;
 import java.util.Locale;
+import javax.swing.BorderFactory;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
@@ -152,7 +153,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
 	getInputField().setForeground(ColourManager.getColour(
 		Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
 	getInputField().setCaretColor(ColourManager.getColour(
-		Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));   
+		Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
     }
     
     /**
@@ -243,6 +244,10 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
 	setInputField(new JTextField());
 	setTextPane(new JTextPane());
 	
+	getInputField().setBorder(
+		BorderFactory.createCompoundBorder(
+		getInputField().getBorder(), new EmptyBorder(2, 2, 2, 2)));
+	
 	getTextPane().addMouseListener(this);
 	getTextPane().addKeyListener(this);
 	getScrollPane().addKeyListener(this);
@@ -328,7 +333,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
 	internalFrameEvent.getInternalFrame().setVisible(false);
-     }
+    }
     
     /**
      * Not needed for this class. {@inheritDoc}
@@ -478,19 +483,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
 	    return;
 	}
 	
-	if (text.toLowerCase(Locale.getDefault()).startsWith("http://")
-	|| text.toLowerCase(Locale.getDefault()).startsWith("https://")
-	|| text.toLowerCase(Locale.getDefault()).startsWith("www.")) {
-	    MainFrame.getMainFrame().getStatusBar().setMessage("Opening: " + text);
-	    BrowserLauncher.openURL(text);
-	}
-	if (parent.getServer().getParser().isValidChannelName(text)) {
-	    if (parent.getServer().getParser().getChannelInfo(text) == null) {
-		parent.getServer().getParser().joinChannel(text);
-	    } else {
-		parent.getServer().getChannel(text).activateFrame();
-	    }
-	}
+	checkClickText(text);
+	
 	processMouseEvent(mouseEvent);
     }
     
@@ -593,6 +587,33 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /** {@inheritDoc}. */
     public void keyReleased(final KeyEvent event) {
 	//Ignore.
+    }
+    
+    /**
+     * Checks text clicked on by the user, takes appropriate action.
+     * @param text text to check
+     */
+    private void checkClickText(String text) {
+	System.out.print("Clicked text: '" + text + "' ");
+	if (text.toLowerCase(Locale.getDefault()).startsWith("http://")
+	|| text.toLowerCase(Locale.getDefault()).startsWith("https://")
+	|| text.toLowerCase(Locale.getDefault()).startsWith("www.")) {
+	    System.out.print("opening browser.");
+	    MainFrame.getMainFrame().getStatusBar().setMessage("Opening: " + text);
+	    BrowserLauncher.openURL(text);
+	} else if (parent.getServer().getParser().isValidChannelName(text)) {
+	    System.out.print("is a valid channel ");
+	    if (parent.getServer().getParser().getChannelInfo(text) == null) {
+		System.out.print("joining.");
+		parent.getServer().getParser().joinChannel(text);
+	    } else {
+		System.out.print("activating.");
+		parent.getServer().getChannel(text).activateFrame();
+	    }
+	} else {
+	    System.out.print("ignoring.");
+	}
+	System.out.println();
     }
     
 }
