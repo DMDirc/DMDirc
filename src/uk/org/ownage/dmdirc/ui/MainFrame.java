@@ -458,6 +458,20 @@ public final class MainFrame extends JFrame implements WindowListener,
 	menuItem.setActionCommand("About");
 	menuItem.addActionListener(this);
 	helpMenu.add(menuItem);
+        
+        menuItem = new JMenuItem();
+	menuItem.setMnemonic('n');
+	menuItem.setText("Normal Error");
+	menuItem.setActionCommand("ErrorNormal");
+	menuItem.addActionListener(this);
+	helpMenu.add(menuItem);
+        
+        menuItem = new JMenuItem();
+	menuItem.setMnemonic('f');
+	menuItem.setText("Fatal Error");
+	menuItem.setActionCommand("ErrorFatal");
+	menuItem.addActionListener(this);
+	helpMenu.add(menuItem);
 	
 	menuBar.add(helpMenu);
 	
@@ -498,6 +512,10 @@ public final class MainFrame extends JFrame implements WindowListener,
     public void actionPerformed(final ActionEvent e) {
 	if (e.getActionCommand().equals("About")) {
 	    new AboutDialog().setVisible(true);
-	}
+	} else if (e.getActionCommand().equals("ErrorNormal")) {
+            Logger.error(ErrorLevel.ERROR, "This is a test error", new Exception("1 2 3"));
+        } else if (e.getActionCommand().equals("ErrorFatal")) {
+            Logger.error(ErrorLevel.FATAL, "This is a test fatal error", new Exception("1 2 3"));
+        }
     }
 }

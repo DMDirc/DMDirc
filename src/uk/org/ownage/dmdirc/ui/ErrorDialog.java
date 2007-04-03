@@ -49,6 +49,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
@@ -62,7 +63,7 @@ import static uk.org.ownage.dmdirc.ui.UIConstants.*;
  * @author  chris
  */
 public final class ErrorDialog extends JDialog implements ActionListener,
-	StatusErrorNotifier, WindowListener {
+        StatusErrorNotifier, WindowListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -109,244 +110,257 @@ public final class ErrorDialog extends JDialog implements ActionListener,
      * @param newTrace Error trace
      */
     public ErrorDialog(final ErrorLevel newLevel, final Icon newIcon,
-	    final String newMessage, final String[] newTrace) {
-	super(MainFrame.getMainFrame(), newLevel == ErrorLevel.FATAL ? true : false);
-	icon = newIcon;
-	level = newLevel;
-	message = newMessage;
-	trace = new String[newTrace.length];
-	System.arraycopy(newTrace, 0, trace, 0, newTrace.length);
-	initComponents();
-	layoutComponents();
-	setLocationRelativeTo(MainFrame.getMainFrame());
+            final String newMessage, final String[] newTrace) {
+        super(MainFrame.getMainFrame(), newLevel == ErrorLevel.FATAL ? true : false);
+        icon = newIcon;
+        level = newLevel;
+        message = newMessage;
+        trace = new String[newTrace.length];
+        System.arraycopy(newTrace, 0, trace, 0, newTrace.length);
+        initComponents();
+        layoutComponents();
+        setLocationRelativeTo(MainFrame.getMainFrame());
     }
     
     /**
      * Initialises the components for this dialog.
      */
     private void initComponents() {
-	final JTextArea stacktraceField = new JTextArea();
-	
-	messageLabel = new JLabel();
-	infoLabel = new JLabel();
-	showMore = new JButton();
-	sendDataCheckbox = new JCheckBox();
-	scrollPane = new JScrollPane();
-	okButton = new JButton();
-	
-	setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-	this.addWindowListener(this);
-	setTitle("DMDirc: Error");
-	
-	if (level == ErrorLevel.FATAL) {
-	    infoLabel.setText("<html>DMDirc has encountered " + level.toSentenceString()
-	    + ", it is unable to recover from this error and will terminate.</html>");
-	} else {
-	    infoLabel.setText("DMDirc has encountered " + level.toSentenceString() + ".");
-	}
-	infoLabel.setIcon(icon);
-	
-	messageLabel.setText("<html>Message: <br>" + message + "</html>");
-	
-	showMore.setText("Show details");
-	showMore.addActionListener(this);
-	
-	stacktraceField.setColumns(20);
-	stacktraceField.setEditable(false);
-	stacktraceField.setRows(5);
-	
-	if (trace.length > 0) {
-	    for (String line : trace) {
-		stacktraceField.append(line + "\n");
-	    }
-	    stacktraceField.setCaretPosition(0);
-	}
-	
-	scrollPane.setViewportView(stacktraceField);
-	scrollPane.setMinimumSize(new Dimension(600, 200));
-	scrollPane.setPreferredSize(new Dimension(600, 200));
-	scrollPane.setVisible(false);
-	
-	sendDataCheckbox.setText("Send error report to developers");
-	sendDataCheckbox.setSelected(true);
-	
-	okButton.setText("OK");
-	okButton.setPreferredSize(new Dimension(100, 25));
-	okButton.addActionListener(this);
+        final JTextArea stacktraceField = new JTextArea();
+        
+        messageLabel = new JLabel();
+        infoLabel = new JLabel();
+        showMore = new JButton();
+        sendDataCheckbox = new JCheckBox();
+        scrollPane = new JScrollPane();
+        okButton = new JButton();
+        
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(this);
+        setTitle("DMDirc: Error");
+        
+        if (level == ErrorLevel.FATAL) {
+            infoLabel.setText("DMDirc has encountered " + level.toSentenceString()
+            + ", it is unable to recover from this error and will terminate.");
+        } else {
+            infoLabel.setText("DMDirc has encountered " + level.toSentenceString() + ".");
+        }
+        infoLabel.setIcon(icon);
+        
+        messageLabel.setText("<html>Message: <br>" + message + "</html>");
+        
+        showMore.setText("Show details");
+        showMore.addActionListener(this);
+        
+        stacktraceField.setColumns(20);
+        stacktraceField.setEditable(false);
+        stacktraceField.setRows(5);
+        
+        if (trace.length > 0) {
+            for (String line : trace) {
+                stacktraceField.append(line + "\n");
+            }
+            stacktraceField.setCaretPosition(0);
+        }
+        
+        scrollPane.setViewportView(stacktraceField);
+        scrollPane.setMinimumSize(new Dimension(600, 200));
+        scrollPane.setPreferredSize(new Dimension(600, 200));
+        scrollPane.setVisible(false);
+        
+        sendDataCheckbox.setText("Send error report to developers");
+        sendDataCheckbox.setSelected(true);
+        
+        okButton.setText("OK");
+        okButton.setPreferredSize(new Dimension(100, 25));
+        okButton.addActionListener(this);
     }
     
     /**
      * lays the components out in the dialog.
      */
     private void layoutComponents() {
-	final GridBagConstraints constraints = new GridBagConstraints();
-	
-	getContentPane().setLayout(new GridBagLayout());
-	
-	constraints.gridx = 0;
-	constraints.gridy = 0;
-	constraints.gridwidth = 3;
-	constraints.weightx = 1.0;
-	constraints.weighty = 0.0;
-	constraints.fill = GridBagConstraints.HORIZONTAL;
-	constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER,
-		LARGE_BORDER, LARGE_BORDER);
-	getContentPane().add(infoLabel, constraints);
-	
-	constraints.insets = new Insets(0, LARGE_BORDER, SMALL_BORDER,
-		LARGE_BORDER);
-	constraints.gridy = 1;
-	getContentPane().add(messageLabel, constraints);
-	
-	if (trace.length > 0) {
-	    constraints.insets = new Insets(0, LARGE_BORDER, SMALL_BORDER,
-		    LARGE_BORDER);
-	    constraints.gridx = 0;
-	    constraints.gridy = 2;
-	    constraints.gridwidth = 3;
-	    getContentPane().add(showMore, constraints);
-	    
-	    constraints.insets = new Insets(0, LARGE_BORDER, 0, LARGE_BORDER);
-	    constraints.gridx = 0;
-	    constraints.gridwidth = 3;
-	    constraints.weightx = 1.0;
-	    constraints.weighty = 1.0;
-	    constraints.gridy = 3;
-	    constraints.fill = GridBagConstraints.BOTH;
-	    getContentPane().add(scrollPane, constraints);
-	}
-	
-	constraints.insets = new Insets(0, LARGE_BORDER, SMALL_BORDER,
-		LARGE_BORDER);
-	constraints.gridx = 0;
-	constraints.gridy = 4;
-	constraints.gridwidth = 3;
-	getContentPane().add(sendDataCheckbox, constraints);
-	
-	constraints.weightx = 1.0;
-	constraints.weighty = 0.0;
-	constraints.gridx = 0;
-	constraints.gridy = 5;
-	constraints.gridwidth = 1;
-	constraints.fill = GridBagConstraints.HORIZONTAL;
-	getContentPane().add(Box.createHorizontalGlue(), constraints);
-	
-	constraints.weightx = 0.0;
-	constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
-		LARGE_BORDER);
-	constraints.gridx = 2;
-	constraints.anchor = GridBagConstraints.EAST;
-	constraints.fill = GridBagConstraints.NONE;
-	getContentPane().add(okButton, constraints);
-	pack();
+        final GridBagConstraints constraints = new GridBagConstraints();
+        
+        getContentPane().setLayout(new GridBagLayout());
+        
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 3;
+        constraints.weightx = 1.0;
+        constraints.weighty = 0.0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER,
+                LARGE_BORDER, LARGE_BORDER);
+        getContentPane().add(infoLabel, constraints);
+        
+        constraints.insets = new Insets(0, LARGE_BORDER, SMALL_BORDER,
+                LARGE_BORDER);
+        constraints.gridy = 1;
+        getContentPane().add(messageLabel, constraints);
+        
+        if (trace.length > 0) {
+            constraints.insets = new Insets(0, LARGE_BORDER, SMALL_BORDER,
+                    LARGE_BORDER);
+            constraints.gridx = 0;
+            constraints.gridy = 2;
+            constraints.gridwidth = 3;
+            getContentPane().add(showMore, constraints);
+            
+            constraints.insets = new Insets(0, LARGE_BORDER, 0, LARGE_BORDER);
+            constraints.gridx = 0;
+            constraints.gridwidth = 3;
+            constraints.weightx = 1.0;
+            constraints.weighty = 1.0;
+            constraints.gridy = 3;
+            constraints.fill = GridBagConstraints.BOTH;
+            getContentPane().add(scrollPane, constraints);
+        }
+        
+        constraints.insets = new Insets(0, LARGE_BORDER, SMALL_BORDER,
+                LARGE_BORDER);
+        constraints.gridx = 0;
+        constraints.gridy = 4;
+        constraints.weightx = 0.0;
+        constraints.gridwidth = 3;
+        getContentPane().add(sendDataCheckbox, constraints);
+        
+        constraints.weightx = 1.0;
+        constraints.weighty = 0.0;
+        constraints.gridx = 0;
+        constraints.gridy = 5;
+        constraints.gridwidth = 1;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        getContentPane().add(Box.createHorizontalGlue(), constraints);
+        
+        constraints.weightx = 0.0;
+        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
+                LARGE_BORDER);
+        constraints.gridx = 2;
+        constraints.anchor = GridBagConstraints.EAST;
+        constraints.fill = GridBagConstraints.NONE;
+        getContentPane().add(okButton, constraints);
+        pack();
     }
     
     /**
      * Exits the program. {@inheritDoc}
      */
     public void actionPerformed(final ActionEvent actionEvent) {
-	if (actionEvent.getSource() == showMore) {
-	    if (showMore.getText().equals("Show details")) {
-		scrollPane.setVisible(true);
-		showMore.setText("Hide details");
-		this.pack();
-		setLocationRelativeTo(MainFrame.getMainFrame());
-	    } else {
-		scrollPane.setVisible(false);
-		showMore.setText("Show details");
-		this.pack();
-		setLocationRelativeTo(MainFrame.getMainFrame());
-	    }
-	} else {
-	    if (sendDataCheckbox.isSelected()) {
-		new Timer().schedule(new TimerTask() {
-		    public void run() {
-			sendData();
-		    }
-		}, 1);
-	    }
-	    if (level == ErrorLevel.FATAL) {
-		System.exit(-1);
-	    }
-	    this.dispose();
-	}
+        if (actionEvent.getSource() == showMore) {
+            if (showMore.getText().equals("Show details")) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        setVisible(false);
+                        scrollPane.setVisible(true);
+                        showMore.setText("Hide details");
+                        pack();
+                        setLocationRelativeTo(MainFrame.getMainFrame());
+                        setVisible(true);
+                    }});
+            } else {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        setVisible(false);
+                        scrollPane.setVisible(false);
+                        showMore.setText("Show details");
+                        pack();
+                        setLocationRelativeTo(MainFrame.getMainFrame());
+                        setVisible(true);
+                    }});
+            }
+        } else {
+            if (sendDataCheckbox.isSelected() && sendDataCheckbox.isEnabled()) {
+                new Timer().schedule(new TimerTask() {
+                    public void run() {
+                        sendData();
+                    }
+                }, 1);
+            }
+            if (level == ErrorLevel.FATAL) {
+                System.exit(-1);
+            }
+            this.dispose();
+        }
     }
     
     /** Called when the user clicks on the status notifier. */
     public void clickReceived() {
-	if (level != ErrorLevel.FATAL) {
-	    MainFrame.getMainFrame().getStatusBar().clearError();
-	}
-	this.setVisible(true);
+        if (level != ErrorLevel.FATAL) {
+            MainFrame.getMainFrame().getStatusBar().clearError();
+        }
+        this.setVisible(true);
     }
     
     /**
      * Sends an error report.
      */
     private void sendData() {
-	URL url;
-	URLConnection urlConn;
-	DataOutputStream printout;
-	try {
-	    url = new URL("http://www.dmdirc.com/error.php");
-	    urlConn = url.openConnection();
-	    urlConn.setDoInput(true);
-	    urlConn.setDoOutput(true);
-	    urlConn.setUseCaches(false);
-	    urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-	    printout = new DataOutputStream(urlConn.getOutputStream());
-	    final String content =
-		    "message=" + URLEncoder.encode(message, "UTF-8")
-		    + "&trace=" + URLEncoder.encode(Arrays.toString(trace), "UTF-8");
-	    printout.writeBytes(content);
-	    printout.flush();
-	    printout.close();
-	} catch (MalformedURLException ex) {
-	    System.err.println("Malformed URL, unable to send error report.");
-	} catch (UnsupportedEncodingException ex) {
-	    System.err.println("Unsupported exception,  unable to send error report.");
-	} catch (IOException ex) {
-	    System.err.println("IO Error, unable to send error report.");
-	}
-	sendDataCheckbox.setSelected(false);
-	getContentPane().remove(sendDataCheckbox);
+        URL url;
+        URLConnection urlConn;
+        DataOutputStream printout;
+        try {
+            url = new URL("http://www.dmdirc.com/error.php");
+            urlConn = url.openConnection();
+            urlConn.setDoInput(true);
+            urlConn.setDoOutput(true);
+            urlConn.setUseCaches(false);
+            urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            printout = new DataOutputStream(urlConn.getOutputStream());
+            final String content =
+                    "message=" + URLEncoder.encode(message, "UTF-8")
+                    + "&trace=" + URLEncoder.encode(Arrays.toString(trace), "UTF-8");
+            printout.writeBytes(content);
+            printout.flush();
+            printout.close();
+        } catch (MalformedURLException ex) {
+            System.err.println("Malformed URL, unable to send error report.");
+        } catch (UnsupportedEncodingException ex) {
+            System.err.println("Unsupported exception,  unable to send error report.");
+        } catch (IOException ex) {
+            System.err.println("IO Error, unable to send error report.");
+        }
+        sendDataCheckbox.setSelected(true);
+        sendDataCheckbox.setEnabled(false);
+        sendDataCheckbox.setText("Error has been reported to the developers.");
+        pack();
     }
     
     /** {@inheritDoc} */
     public void windowOpened(final WindowEvent e) {
-	//ignore
+        //ignore
     }
     
     /** {@inheritDoc} */
     public void windowClosing(final WindowEvent e) {
-	if (level == ErrorLevel.FATAL) {
-	    System.exit(-1);
-	}
-	this.dispose();
+        if (level == ErrorLevel.FATAL) {
+            System.exit(-1);
+        }
+        this.dispose();
     }
     
     /** {@inheritDoc} */
     public void windowClosed(final WindowEvent e) {
-	//ignore
+        //ignore
     }
     
     /** {@inheritDoc} */
     public void windowIconified(final WindowEvent e) {
-	//ignore
+        //ignore
     }
     
     /** {@inheritDoc} */
     public void windowDeiconified(final WindowEvent e) {
-	//ignore
+        //ignore
     }
     
     /** {@inheritDoc} */
     public void windowActivated(final WindowEvent e) {
-	//ignore
+        //ignore
     }
     
     /** {@inheritDoc} */
     public void windowDeactivated(final WindowEvent e) {
-	//ignore
+        //ignore
     }
 }

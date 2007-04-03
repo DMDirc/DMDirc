@@ -44,28 +44,28 @@ public final class BrowserLauncher {
      * @param url url to open in the browser
      */
     public static void openURL(final String url) {
-	final String osName = System.getProperty("os.name");
-	try {
-	    if (osName.startsWith("Mac OS")) {
-		openURLOSX(url);
-	    } else if (osName.startsWith("Windows")) {
-		openURLWindows(url);
-	    } else {
-		openURLLinux(url);
-	    }
-	} catch (SecurityException ex) {
-	    Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
-	} catch (ClassNotFoundException ex) {
-	    Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
-	} catch (InvocationTargetException ex) {
-	    Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
-	} catch (NoSuchMethodException ex) {
-	    Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
-	} catch (IllegalAccessException ex) {
-	    Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
-	} catch (IOException ex) {
-	    Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
-	}
+        final String osName = System.getProperty("os.name");
+        try {
+            if (osName.startsWith("Mac OS")) {
+                openURLOSX(url);
+            } else if (osName.startsWith("Windows")) {
+                openURLWindows(url);
+            } else {
+                openURLLinux(url);
+            }
+        } catch (SecurityException ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
+        } catch (InvocationTargetException ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
+        } catch (IllegalAccessException ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
+        } catch (IOException ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
+        }
     }
     
     /**
@@ -74,8 +74,8 @@ public final class BrowserLauncher {
      * @throws IOException if unable to open browser
      */
     private static void openURLWindows(final String url) throws IOException {
-	Runtime.getRuntime()
-	.exec("rundll32 url.dll,FileProtocolHandler " + url);
+        Runtime.getRuntime()
+        .exec("rundll32 url.dll,FileProtocolHandler " + url);
     }
     
     /**
@@ -84,12 +84,12 @@ public final class BrowserLauncher {
      * @throws IOException if unable to open browser
      */
     private static void openURLOSX(final String url) throws
-	    InvocationTargetException,  IllegalAccessException,
-	    SecurityException, NoSuchMethodException, ClassNotFoundException {
-	final Method openURL;
-	openURL = Class.forName("com.apple.eio.FileManager")
-	.getDeclaredMethod("openURL", new Class[] {String.class});
-	openURL.invoke(null, new Object[] {url});
+            InvocationTargetException,  IllegalAccessException,
+            SecurityException, NoSuchMethodException, ClassNotFoundException {
+        final Method openURL;
+        openURL = Class.forName("com.apple.eio.FileManager")
+        .getDeclaredMethod("openURL", new Class[] {String.class});
+        openURL.invoke(null, new Object[] {url});
     }
     
     /**
@@ -98,18 +98,18 @@ public final class BrowserLauncher {
      * @throws IOException if unable to open browser
      */
     private static void openURLLinux(final String url) throws IOException {
-	String browser;
-	try {
-	    browser = getBrowserLinux();
-	} catch (InterruptedException ex) {
-	    browser = null;
-	}
-	if (browser == null) {
-	    Logger.error(ErrorLevel.ERROR, "Unable to find browser, "
-		    + "please set in preferences.");
-	} else {
-	    runBrowser(url, browser);
-	}
+        String browser;
+        try {
+            browser = getBrowserLinux();
+        } catch (InterruptedException ex) {
+            browser = null;
+        }
+        if (browser == null) {
+            Logger.error(ErrorLevel.ERROR, "Unable to find browser, "
+                    + "please set in preferences.");
+        } else {
+            runBrowser(url, browser);
+        }
     }
     
     /**
@@ -120,22 +120,22 @@ public final class BrowserLauncher {
      * @return full browser binary path
      */
     private static String getBrowserLinux() throws IOException,
-	    InterruptedException {
-	String browser = null;
-	if (Config.hasOption("general", "browser")) {
-	    browser = Config.getOption("general", "browser");
-	} else {
-	    final String[] browsers =
-	    {"firefox", "konqueror", "epiphany", "opera", "mozilla", };
-	    for (int count = 0; count < browsers.length
-		    && browser == null; count++) {
-		if (Runtime.getRuntime()
-		.exec(new String[] {"which", browsers[count]}).waitFor() == 0) {
-		    browser = browsers[count];
-		}
-	    }
-	}
-	return browser;
+            InterruptedException {
+        String browser = null;
+        if (Config.hasOption("general", "browser")) {
+            browser = Config.getOption("general", "browser");
+        } else {
+            final String[] browsers =
+            {"firefox", "konqueror", "epiphany", "opera", "mozilla", };
+            for (int count = 0; count < browsers.length
+                    && browser == null; count++) {
+                if (Runtime.getRuntime()
+                .exec(new String[] {"which", browsers[count]}).waitFor() == 0) {
+                    browser = browsers[count];
+                }
+            }
+        }
+        return browser;
     }
     
     /**
@@ -146,7 +146,7 @@ public final class BrowserLauncher {
      */
     private static void runBrowser(final String url, final String browser)
     throws IOException {
-	Runtime.getRuntime().exec(new String[] {browser, url});
+        Runtime.getRuntime().exec(new String[] {browser, url});
     }
     
 }

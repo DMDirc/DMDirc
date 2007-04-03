@@ -153,6 +153,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
 	tree.setRowHeight(0);
 	tree.addMouseMotionListener(this);
 	tree.addMouseWheelListener(this);
+        tree.setShowsRootHandles(false);
     }
     /**
      * Indicates whether this frame manager can be positioned vertically

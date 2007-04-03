@@ -482,10 +482,10 @@ public final class PreferencesDialog extends StandardDialog
 	if (getOkButton().equals(actionEvent.getSource())) {
 	    saveOptions();
 	    setVisible(false);
-	    if (!UIManager.getLookAndFeel().getName()
+	    /*if (!UIManager.getLookAndFeel().getName()
 	    .equals((String) comboBoxes.get("ui.lookandfeel").getSelectedItem())) {
 		setLookAndFeel((String) comboBoxes.get("ui.lookandfeel").getSelectedItem());
-	    }
+	    }*/
 	} else if (getCancelButton().equals(actionEvent.getSource())) {
 	    setVisible(false);
 	}

@@ -53,7 +53,7 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
  * corresponding ServerFrame, and handles user input to a ServerFrame.
  * @author chris
  */
-public final class Query implements IPrivateAction, IPrivateMessage, 
+public final class Query implements IPrivateAction, IPrivateMessage,
         INickChanged, InternalFrameListener, FrameContainer {
     
     /**
@@ -116,7 +116,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      */
     public CommandWindow getFrame() {
         return frame;
-    }    
+    }
     
     /**
      * Sends a private message to the remote user.
@@ -144,7 +144,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      * @param message message received
      * @param remoteHost remote user host
      */
-    public void onPrivateMessage(final IRCParser parser, final String message, 
+    public void onPrivateMessage(final IRCParser parser, final String message,
             final String remoteHost) {
         final String[] parts = ClientInfo.parseHostFull(remoteHost);
         frame.addLine("queryMessage", parts[0], parts[1], parts[2], message);
@@ -157,7 +157,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      * @param message message received
      * @param remoteHost remote host
      */
-    public void onPrivateAction(final IRCParser parser, final String message, 
+    public void onPrivateAction(final IRCParser parser, final String message,
             final String remoteHost) {
         final String[] parts = ClientInfo.parseHostFull(host);
         frame.addLine("queryAction", parts[0], parts[1], parts[2], message);
@@ -183,7 +183,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      * @param client remote client changing nick
      * @param oldNick clients old nickname
      */
-    public void onNickChanged(final IRCParser parser, final ClientInfo client, 
+    public void onNickChanged(final IRCParser parser, final ClientInfo client,
             final String oldNick) {
         if (oldNick.equals(ClientInfo.parseHost(host))) {
             server.getParser().getCallbackManager().delCallback("onPrivateAction", this);
@@ -262,7 +262,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      * @param internalFrameEvent frame closed event
      */
     public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -270,7 +270,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      * @param internalFrameEvent frame iconified event
      */
     public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -278,7 +278,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      * @param internalFrameEvent frame deiconified event
      */
     public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -303,7 +303,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      * @param internalFrameEvent frame deactivation event
      */
     public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
