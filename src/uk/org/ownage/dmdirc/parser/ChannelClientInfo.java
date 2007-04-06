@@ -24,8 +24,6 @@
 
 package uk.org.ownage.dmdirc.parser;
 
-import java.util.Enumeration;
-
 /**
  * Contains information about a client on a channel.
  * 
@@ -94,14 +92,12 @@ public final class ChannelClientInfo {
 	 */
 	public String getChanModeStr(final boolean bPrefix) {
 		StringBuilder sModes = new StringBuilder();
-		Character cTemp;
 		int nTemp = 0;
 		final int nCurrentModes = this.getChanMode();
 
 		for (int i = myParser.nNextKeyPrefix; i > 0; i = i / 2) {
 			if ((nCurrentModes & i) == i) {
-				for (final Enumeration e = myParser.hPrefixModes.keys(); e.hasMoreElements();) {
-					cTemp = (Character) e.nextElement();
+                            for (char cTemp : myParser.hPrefixModes.keySet()) {
 					nTemp = myParser.hPrefixModes.get(cTemp);
 					if (nTemp == i) {
 						if (bPrefix) { cTemp = myParser.hPrefixMap.get(cTemp); }
