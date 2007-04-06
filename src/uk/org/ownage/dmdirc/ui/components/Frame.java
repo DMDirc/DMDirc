@@ -26,6 +26,7 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -44,6 +45,7 @@ import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -65,6 +67,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.MainFrame;
+import uk.org.ownage.dmdirc.ui.PasteDialog;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
@@ -574,7 +577,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     
     /** {@inheritDoc}. */
     public void keyPressed(final KeyEvent event) {
-        String[] clipboardContents = new String[]{"", };
+        String clipboardContents = null;
+        String[] clipboardContentsLines = new String[]{"", };
         if (event.getSource() == getTextPane()) {
             if (Boolean.parseBoolean(Config.getOption("ui", "quickCopy"))) {
                 getInputField().requestFocus();
@@ -591,21 +595,48 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         } else if (event.getSource() == getInputField()) {
             if ((event.getModifiers() & KeyEvent.CTRL_MASK) != 0
                     && event.getKeyCode() == KeyEvent.VK_V) {
-                    try {
-                        //FIXME do something
-                        clipboardContents =
-                                ((String) Toolkit.getDefaultToolkit().getSystemClipboard()
-                                .getData(DataFlavor.stringFlavor)).split(System.getProperty("line.separator"));
-                    } catch (HeadlessException ex) {
-                        Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
-                    } catch (IOException ex) {
-                        Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
-                    } catch (UnsupportedFlavorException ex) {
-                        Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
-                    }
+                try {
+                    clipboardContents =
+                            ((String) Toolkit.getDefaultToolkit().getSystemClipboard()
+                            .getData(DataFlavor.stringFlavor));
+                    clipboardContentsLines = clipboardContents.split(System.getProperty("line.separator"));
+                } catch (HeadlessException ex) {
+                    Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+                } catch (IOException ex) {
+                    Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+                } catch (UnsupportedFlavorException ex) {
+                    Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+                }
                 event.consume();
-                for (String clipboardLine : clipboardContents) {
-                    this.sendLine(clipboardLine);
+                if (clipboardContentsLines.length > 1) {
+                    String[] options = {"Send", "Edit", "Cancel", };
+                    int n = JOptionPane.showInternalOptionDialog(this,
+                            "Paste containts " + clipboardContentsLines.length + " lines",
+                            "Multi-line Paste",
+                            JOptionPane.YES_NO_CANCEL_OPTION,
+                            JOptionPane.QUESTION_MESSAGE,
+                            null,
+                            options,
+                            options[2]);
+                    switch (n) {
+                        case 0:
+                            for (String clipboardLine : clipboardContentsLines) {
+                                this.sendLine(clipboardLine);
+                            }
+                            break;
+                        case 1:
+                            new PasteDialog(this, clipboardContents).setVisible(true);
+                            break;
+                        case 2:
+                            break;
+                        default:
+                            break;
+                    }
+                    
+                } else {
+                    for (String clipboardLine : clipboardContentsLines) {
+                        this.sendLine(clipboardLine);
+                    }
                 }
             }
         }
@@ -648,5 +679,5 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      *
      * @param line the line to send
      */
-    public abstract void sendLine(final String line);    
+    public abstract void sendLine(final String line);
 }

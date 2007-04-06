@@ -129,6 +129,8 @@ public class StandardDialog extends JDialog  {
 	}
 	leftButton.setPreferredSize(new Dimension(100, 25));
 	rightButton.setPreferredSize(new Dimension(100, 25));
+        leftButton.setMinimumSize(new Dimension(100, 25));
+	rightButton.setMinimumSize(new Dimension(100, 25));
     }
     
     /**
