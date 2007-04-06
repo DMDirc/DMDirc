@@ -41,11 +41,11 @@ public class ProcessTopic extends IRCProcessor {
 		ChannelInfo iChannel;
 		if (sParam.equals("332")) {
 			iChannel = getChannelInfo(token[3]);
-			if (iChannel == null) { return; };
+			if (iChannel == null) { return; }
 			iChannel.setTopic(token[token.length-1]);
 		} else if (sParam.equals("333")) {
 			iChannel = getChannelInfo(token[3]);
-			if (iChannel == null) { return; };
+			if (iChannel == null) { return; }
 			iChannel.setTopicTime(Long.parseLong(token[5]));
 			iChannel.setTopicUser(token[4]);
 			callChannelTopic(iChannel,true);

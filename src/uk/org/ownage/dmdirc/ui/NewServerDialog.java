@@ -37,6 +37,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
@@ -207,7 +208,7 @@ public final class NewServerDialog extends StandardDialog {
 	portLabel = new JLabel();
 	portField = new JTextField();
 	passwordLabel = new JLabel();
-	passwordField = new JTextField();
+	passwordField = new JPasswordField();
 	newServerWindowCheck = new JCheckBox();
 	rememberPasswordCheck = new JCheckBox();
 	autoConnectCheck = new JCheckBox();

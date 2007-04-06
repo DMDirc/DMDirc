@@ -28,6 +28,7 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
@@ -124,8 +125,13 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      */
     public void sendLine(final String line) {
         final ClientInfo client = server.getParser().getMyself();
-        server.getParser().sendMessage(ClientInfo.parseHost(host), line);
-        frame.addLine("querySelfMessage", client.getNickname(), client.getIdent(), client.getHost(), line);
+        if (server.getParser().getMaxLength("PRIVMSG", host) >= line.length()) {
+            server.getParser().sendMessage(ClientInfo.parseHost(host), line);
+            frame.addLine("querySelfMessage", client.getNickname(), client.getIdent(), client.getHost(), line);
+        } else {
+            sendLine(line.substring(0, server.getParser().getMaxLength("PRIVMSG", host)));
+            sendLine(line.substring(server.getParser().getMaxLength("PRIVMSG", host) + 1));
+        }
     }
     
     /**

@@ -176,11 +176,17 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         final ClientInfo me = server.getParser().getMyself();
         final String modes = channelInfo.getUser(me).getImportantModePrefix();
+        final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName());
         
-        frame.addLine("channelSelfMessage", modes, me.getNickname(), me.getIdent(),
-                me.getHost(), line, channelInfo);
-        sendNotification();
-    }
+        if (maxLineLength >= line.length()) {
+            frame.addLine("channelSelfMessage", modes, me.getNickname(),
+                    me.getIdent(), me.getHost(), line, channelInfo);
+            sendNotification();
+        } else {
+            sendLine(line.substring(0, maxLineLength));
+            sendLine(line.substring(maxLineLength));
+        }
+    }   
     
     /**
      * Sends the specified string as an action (CTCP) to the channel that this object
@@ -355,7 +361,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         final String[] parts = getDetails(cChannelClient, sHost);
         final String modes = getModes(cChannelClient);
         
-        frame.addLine(type, modes, parts[0], parts[1], parts[2], sMessage, 
+        frame.addLine(type, modes, parts[0], parts[1], parts[2], sMessage,
                 cChannel);
         
         sendNotification();
@@ -692,7 +698,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -700,7 +706,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -708,7 +714,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -734,7 +740,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**

@@ -97,16 +97,7 @@ public final class CallbackManager {
 		addCallbackType(new CallbackOnUnknownNotice(myParser, this));
 		addCallbackType(new CallbackOnUserModeChanged(myParser, this));
 	}
-	
-	/**
-	 * Empty clone method to prevent cloning to get more copies of the CallbackManager.
-	 * @return Cloned Object
-	 * @throws CloneNotSupportedException whenever it is called
-	 */
-	public Object clone() throws CloneNotSupportedException {
-		throw new CloneNotSupportedException();
-	}
-	
+
 	/**
 	 * Add new callback type.
 	 *
@@ -143,8 +134,7 @@ public final class CallbackManager {
 	 */
 	public CallbackObject getCallbackType(final String callbackName) {
 		if (callbackHash.containsKey(callbackName.toLowerCase())) {
-			final CallbackObject res = callbackHash.get(callbackName.toLowerCase());
-			return res;
+			return callbackHash.get(callbackName.toLowerCase());
 		}
 		return null;
 	}

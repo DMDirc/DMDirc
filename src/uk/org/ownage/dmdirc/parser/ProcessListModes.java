@@ -82,8 +82,8 @@ public class ProcessListModes extends IRCProcessor {
 						// Assume mode is a 'd' mode
 						mode = 'd';
 						// Now work out if its not (or attempt to.)
-						int identstart = token[tokenStart].indexOf("!");
-						int hoststart = token[tokenStart].indexOf("@");
+						int identstart = token[tokenStart].indexOf('!');
+						int hoststart = token[tokenStart].indexOf('@');
 						// Check that ! and @ are both in the string - as required by +b and +q
 						if ((identstart >= 0) && (hoststart >= 0)) {
 							// Check that ! is BEFORE the @ - as required by +b and +q

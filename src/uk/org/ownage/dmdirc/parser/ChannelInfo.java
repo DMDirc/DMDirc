@@ -147,7 +147,8 @@ public final class ChannelInfo {
 			return hChannelUserList.get(sWho); 
 		}
 		return null;
-	}	
+	}
+        
 	/**
 	 * Get the ChannelClientInfo object associated with a ClientInfo object.
 	 *
@@ -342,7 +343,6 @@ public final class ChannelInfo {
 			}
 		}
 		if (bAdd) { lModes.add(newItem); }
-		return;
 	}
 	
 	/**
