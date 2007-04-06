@@ -120,4 +120,10 @@ public final class ServerFrame extends Frame {
         
         pack();
     }
+    
+        /** {@inheritDoc}. */
+    public void sendLine(final String line) {
+        this.parent.addLine(line);
+        this.parent.getParser().sendLine(line);
+    }
 }

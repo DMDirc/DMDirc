@@ -23,8 +23,12 @@
 package uk.org.ownage.dmdirc.ui.components;
 
 import java.awt.Dimension;
+import java.awt.HeadlessException;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -33,6 +37,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
 
@@ -70,8 +75,8 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
  * Frame component.
  */
 public abstract class Frame extends JInternalFrame implements CommandWindow,
-	PropertyChangeListener, InternalFrameListener,
-	MouseListener, ActionListener, KeyListener {
+        PropertyChangeListener, InternalFrameListener,
+        MouseListener, ActionListener, KeyListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -128,32 +133,32 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param owner FrameContainer owning this frame.
      */
     public Frame(final FrameContainer owner) {
-	super();
-	parent = owner;
-	
-	setFrameIcon(MainFrame.getMainFrame().getIcon());
-	
-	initComponents();
-	setMaximizable(true);
-	setClosable(true);
-	setResizable(true);
-	setIconifiable(true);
-	
-	addPropertyChangeListener("maximum", this);
-	addInternalFrameListener(this);
-	
-	scrollBar = getScrollPane().getVerticalScrollBar();
-	
-	getTextPane().setBackground(ColourManager.getColour(
-		Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
-	getTextPane().setForeground(ColourManager.getColour(
-		Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
-	getInputField().setBackground(ColourManager.getColour(
-		Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
-	getInputField().setForeground(ColourManager.getColour(
-		Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
-	getInputField().setCaretColor(ColourManager.getColour(
-		Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
+        super();
+        parent = owner;
+        
+        setFrameIcon(MainFrame.getMainFrame().getIcon());
+        
+        initComponents();
+        setMaximizable(true);
+        setClosable(true);
+        setResizable(true);
+        setIconifiable(true);
+        
+        addPropertyChangeListener("maximum", this);
+        addInternalFrameListener(this);
+        
+        scrollBar = getScrollPane().getVerticalScrollBar();
+        
+        getTextPane().setBackground(ColourManager.getColour(
+                Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
+        getTextPane().setForeground(ColourManager.getColour(
+                Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
+        getInputField().setBackground(ColourManager.getColour(
+                Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
+        getInputField().setForeground(ColourManager.getColour(
+                Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
+        getInputField().setCaretColor(ColourManager.getColour(
+                Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
     }
     
     /**
@@ -162,7 +167,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * the frame is opened.
      */
     public final void open() {
-	setVisible(true);
+        setVisible(true);
     }
     
     /**
@@ -170,45 +175,45 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param line text to add
      */
     public final void addLine(final String line) {
-	SwingUtilities.invokeLater(new Runnable() {
-	    public void run() {
-		for (String myLine : line.split("\n")) {
-		    String ts = Formatter.formatMessage("timestamp", new Date());
-		    if (!getTextPane().getText().equals("")) { ts = "\n" + ts; }
-		    Styliser.addStyledString(getTextPane().getStyledDocument(), ts);
-		    Styliser.addStyledString(getTextPane().getStyledDocument(), myLine);
-		}
-		try {
-		    int frameBufferSize = Integer.MAX_VALUE;
-		    if (parent.getConfigManager().hasOption("ui", "frameBufferSize")) {
-			frameBufferSize = Integer.parseInt(parent.getConfigManager().getOption("ui", "frameBufferSize"));
-		    }
-		    final Document doc = getTextPane().getDocument();
-		    if (doc.getLength() > frameBufferSize) {
-			doc.remove(0, 1 + doc.getText(doc.getLength() - frameBufferSize, 512).indexOf('\n') + doc.getLength() - frameBufferSize);
-		    }
-		} catch (NumberFormatException ex) {
-		    Logger.error(ErrorLevel.WARNING, "Invalid buffer length", ex);
-		} catch (BadLocationException ex) {
-		    Logger.error(ErrorLevel.WARNING, "Unable to trim buffer", ex);
-		}
-		
-		if (scrollBar.getValue() + Math.round(scrollBar.getVisibleAmount() * 1.5) < scrollBar.getMaximum()) {
-		    SwingUtilities.invokeLater(new Runnable() {
-			private Rectangle prevRect = getTextPane().getVisibleRect();
-			public void run() {
-			    getTextPane().scrollRectToVisible(prevRect);
-			}
-		    });
-		} else {
-		    SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-			    getTextPane().setCaretPosition(getTextPane().getDocument().getLength());
-			}
-		    });
-		}
-	    }
-	});
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                for (String myLine : line.split("\n")) {
+                    String ts = Formatter.formatMessage("timestamp", new Date());
+                    if (!getTextPane().getText().equals("")) { ts = "\n" + ts; }
+                    Styliser.addStyledString(getTextPane().getStyledDocument(), ts);
+                    Styliser.addStyledString(getTextPane().getStyledDocument(), myLine);
+                }
+                try {
+                    int frameBufferSize = Integer.MAX_VALUE;
+                    if (parent.getConfigManager().hasOption("ui", "frameBufferSize")) {
+                        frameBufferSize = Integer.parseInt(parent.getConfigManager().getOption("ui", "frameBufferSize"));
+                    }
+                    final Document doc = getTextPane().getDocument();
+                    if (doc.getLength() > frameBufferSize) {
+                        doc.remove(0, 1 + doc.getText(doc.getLength() - frameBufferSize, 512).indexOf('\n') + doc.getLength() - frameBufferSize);
+                    }
+                } catch (NumberFormatException ex) {
+                    Logger.error(ErrorLevel.WARNING, "Invalid buffer length", ex);
+                } catch (BadLocationException ex) {
+                    Logger.error(ErrorLevel.WARNING, "Unable to trim buffer", ex);
+                }
+                
+                if (scrollBar.getValue() + Math.round(scrollBar.getVisibleAmount() * 1.5) < scrollBar.getMaximum()) {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        private Rectangle prevRect = getTextPane().getVisibleRect();
+                        public void run() {
+                            getTextPane().scrollRectToVisible(prevRect);
+                        }
+                    });
+                } else {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            getTextPane().setCaretPosition(getTextPane().getDocument().getLength());
+                        }
+                    });
+                }
+            }
+        });
     }
     
     /**
@@ -218,14 +223,14 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param args The arguments for the message
      */
     public final void addLine(final String messageType, final Object... args) {
-	addLine(Formatter.formatMessage(messageType, args));
+        addLine(Formatter.formatMessage(messageType, args));
     }
     
     /**
      * Clears the main text area of the frame.
      */
     public final void clear() {
-	getTextPane().setText("");
+        getTextPane().setText("");
     }
     
     /**
@@ -233,48 +238,49 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param tabCompleter The tab completer to use
      */
     public final void setTabCompleter(final TabCompleter tabCompleter) {
-	getInputHandler().setTabCompleter(tabCompleter);
+        getInputHandler().setTabCompleter(tabCompleter);
     }
     
     /**
      * Initialises the components for this frame.
      */
     private void initComponents() {
-	setScrollPane(new JScrollPane());
-	setInputField(new JTextField());
-	setTextPane(new JTextPane());
-	
-	getInputField().setBorder(
-		BorderFactory.createCompoundBorder(
-		getInputField().getBorder(), new EmptyBorder(2, 2, 2, 2)));
-	
-	getTextPane().addMouseListener(this);
-	getTextPane().addKeyListener(this);
-	getScrollPane().addKeyListener(this);
-	getInputField().addMouseListener(this);
-	
-	popup = new JPopupMenu();
-	inputFieldPopup = new JPopupMenu();
-	
-	copyMI = new JMenuItem("Copy");
-	copyMI.addActionListener(this);
-	
-	inputPasteMI = new JMenuItem("Paste");
-	inputPasteMI.addActionListener(this);
-	inputCopyMI = new JMenuItem("Copy");
-	inputCopyMI.addActionListener(this);
-	inputCutMI = new JMenuItem("Cut");
-	inputCutMI.addActionListener(this);
-	
-	popup.add(copyMI);
-	popup.setOpaque(true);
-	popup.setLightWeightPopupEnabled(true);
-	
-	inputFieldPopup.add(inputCutMI);
-	inputFieldPopup.add(inputCopyMI);
-	inputFieldPopup.add(inputPasteMI);
-	inputFieldPopup.setOpaque(true);
-	inputFieldPopup.setLightWeightPopupEnabled(true);
+        setScrollPane(new JScrollPane());
+        setInputField(new JTextField());
+        setTextPane(new JTextPane());
+        
+        getInputField().setBorder(
+                BorderFactory.createCompoundBorder(
+                getInputField().getBorder(), new EmptyBorder(2, 2, 2, 2)));
+        
+        getTextPane().addMouseListener(this);
+        getTextPane().addKeyListener(this);
+        getScrollPane().addKeyListener(this);
+        getInputField().addKeyListener(this);
+        getInputField().addMouseListener(this);
+        
+        popup = new JPopupMenu();
+        inputFieldPopup = new JPopupMenu();
+        
+        copyMI = new JMenuItem("Copy");
+        copyMI.addActionListener(this);
+        
+        inputPasteMI = new JMenuItem("Paste");
+        inputPasteMI.addActionListener(this);
+        inputCopyMI = new JMenuItem("Copy");
+        inputCopyMI.addActionListener(this);
+        inputCutMI = new JMenuItem("Cut");
+        inputCutMI.addActionListener(this);
+        
+        popup.add(copyMI);
+        popup.setOpaque(true);
+        popup.setLightWeightPopupEnabled(true);
+        
+        inputFieldPopup.add(inputCutMI);
+        inputFieldPopup.add(inputCopyMI);
+        inputFieldPopup.add(inputPasteMI);
+        inputFieldPopup.setOpaque(true);
+        inputFieldPopup.setLightWeightPopupEnabled(true);
     }
     
     /**
@@ -282,78 +288,78 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * {@inheritDoc}
      */
     public final void propertyChange(final PropertyChangeEvent propertyChangeEvent) {
-	if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
-	    Frame.this.myborder = getBorder();
-	    Frame.this.titlebarSize =
-		    ((BasicInternalFrameUI) getUI())
-		    .getNorthPane().getPreferredSize();
-	    
-	    ((BasicInternalFrameUI) getUI()).getNorthPane()
-	    .setPreferredSize(new Dimension(0, 0));
-	    ((BasicInternalFrameUI) getUI()).getNorthPane()
-	    .setMaximumSize(new Dimension(0, 0));
-	    setBorder(new EmptyBorder(0, 0, 0, 0));
-	    
-	    MainFrame.getMainFrame().setMaximised(true);
-	} else {
-	    setBorder(Frame.this.myborder);
-	    ((BasicInternalFrameUI) getUI()).getNorthPane()
-	    .setPreferredSize(Frame.this.titlebarSize);
-	    ((BasicInternalFrameUI) getUI()).getNorthPane()
-	    .setMaximumSize(Frame.this.titlebarSize);
-	    
-	    MainFrame.getMainFrame().setMaximised(false);
-	    MainFrame.getMainFrame().setActiveFrame(Frame.this);
-	}
+        if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
+            Frame.this.myborder = getBorder();
+            Frame.this.titlebarSize =
+                    ((BasicInternalFrameUI) getUI())
+                    .getNorthPane().getPreferredSize();
+            
+            ((BasicInternalFrameUI) getUI()).getNorthPane()
+            .setPreferredSize(new Dimension(0, 0));
+            ((BasicInternalFrameUI) getUI()).getNorthPane()
+            .setMaximumSize(new Dimension(0, 0));
+            setBorder(new EmptyBorder(0, 0, 0, 0));
+            
+            MainFrame.getMainFrame().setMaximised(true);
+        } else {
+            setBorder(Frame.this.myborder);
+            ((BasicInternalFrameUI) getUI()).getNorthPane()
+            .setPreferredSize(Frame.this.titlebarSize);
+            ((BasicInternalFrameUI) getUI()).getNorthPane()
+            .setMaximumSize(Frame.this.titlebarSize);
+            
+            MainFrame.getMainFrame().setMaximised(false);
+            MainFrame.getMainFrame().setActiveFrame(Frame.this);
+        }
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
      * Makes the internal frame invisible. {@inheritDoc}
      */
     public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
-	internalFrameEvent.getInternalFrame().setVisible(false);
+        internalFrameEvent.getInternalFrame().setVisible(false);
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
      * Activates the input field on frame focus. {@inheritDoc}
      */
     public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
-	getInputField().requestFocus();
+        getInputField().requestFocus();
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -362,7 +368,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @return FrameContainer parent
      */
     public final FrameContainer getFrameParent() {
-	return parent;
+        return parent;
     }
     
     /**
@@ -371,7 +377,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @return Input handlers for this frame
      */
     public final InputHandler getInputHandler() {
-	return inputHandler;
+        return inputHandler;
     }
     
     /**
@@ -380,7 +386,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param newInputHandler input handler to set for this frame
      */
     public final void setInputHandler(final InputHandler newInputHandler) {
-	this.inputHandler = newInputHandler;
+        this.inputHandler = newInputHandler;
     }
     
     /**
@@ -389,7 +395,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @return JTextField input field for the frame.
      */
     public final JTextField getInputField() {
-	return inputField;
+        return inputField;
     }
     
     /**
@@ -398,7 +404,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @return JTextPane text pane for this frame
      */
     public final JTextPane getTextPane() {
-	return textPane;
+        return textPane;
     }
     
     /**
@@ -407,7 +413,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param newInputField new input field to use
      */
     protected final void setInputField(final JTextField newInputField) {
-	this.inputField = newInputField;
+        this.inputField = newInputField;
     }
     
     /**
@@ -416,7 +422,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param newTextPane new text pane to use
      */
     protected final void setTextPane(final JTextPane newTextPane) {
-	this.textPane = newTextPane;
+        this.textPane = newTextPane;
     }
     
     /**
@@ -425,7 +431,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @return returns the JScrollPane used in this frame.
      */
     protected final JScrollPane getScrollPane() {
-	return scrollPane;
+        return scrollPane;
     }
     
     /**
@@ -434,91 +440,91 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param newScrollPane new scroll pane to use
      */
     protected final void setScrollPane(final JScrollPane newScrollPane) {
-	this.scrollPane = newScrollPane;
+        this.scrollPane = newScrollPane;
     }
     
     /**
      * Checks for url's, channels and nicknames. {@inheritDoc}
      */
     public void mouseClicked(final MouseEvent mouseEvent) {
-	final int pos = getTextPane().getCaretPosition();
-	final int length = getTextPane().getDocument().getLength();
-	String text;
-	
-	if (pos == 0) {
-	    return;
-	}
-	
-	int start = (pos - 510 < 0) ? 0 : pos - 510;
-	int end = (pos + 510 > length) ? length : pos + 510;
-	
-	try {
-	    text = getTextPane().getText(start, end);
-	} catch (BadLocationException ex) {
-	    return;
-	}
-	
-	start = pos;
-	end = pos;
-	
-	// Traverse backwards
-	while (start > 0 && start < text.length() && text.charAt(start) != ' ') {
-	    start--;
-	}
-	if (start + 1 < text.length() && text.charAt(start) == ' ') { start++; }
-	
-	// And forwards
-	while (end < text.length() && end > 0 && text.charAt(end) != ' '
-		&& text.charAt(end) != '\n') {
-	    end++;
-	}
-	
-	if (start > end) {
-	    return;
-	}
-	
-	text = text.substring(start, end);
-	
-	if (text.length() < 4) {
-	    return;
-	}
-	
-	checkClickText(text);
-	
-	processMouseEvent(mouseEvent);
+        final int pos = getTextPane().getCaretPosition();
+        final int length = getTextPane().getDocument().getLength();
+        String text;
+        
+        if (pos == 0) {
+            return;
+        }
+        
+        int start = (pos - 510 < 0) ? 0 : pos - 510;
+        int end = (pos + 510 > length) ? length : pos + 510;
+        
+        try {
+            text = getTextPane().getText(start, end);
+        } catch (BadLocationException ex) {
+            return;
+        }
+        
+        start = pos;
+        end = pos;
+        
+        // Traverse backwards
+        while (start > 0 && start < text.length() && text.charAt(start) != ' ') {
+            start--;
+        }
+        if (start + 1 < text.length() && text.charAt(start) == ' ') { start++; }
+        
+        // And forwards
+        while (end < text.length() && end > 0 && text.charAt(end) != ' '
+                && text.charAt(end) != '\n') {
+            end++;
+        }
+        
+        if (start > end) {
+            return;
+        }
+        
+        text = text.substring(start, end);
+        
+        if (text.length() < 4) {
+            return;
+        }
+        
+        checkClickText(text);
+        
+        processMouseEvent(mouseEvent);
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void mousePressed(final MouseEvent mouseEvent) {
-	processMouseEvent(mouseEvent);
+        processMouseEvent(mouseEvent);
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void mouseReleased(final MouseEvent mouseEvent) {
-	if (Boolean.parseBoolean(Config.getOption("ui", "quickCopy"))) {
-	    getTextPane().copy();
-	    getTextPane().setCaretPosition(getTextPane().getCaretPosition());
-	    getTextPane().moveCaretPosition(getTextPane().getCaretPosition());
-	}
-	processMouseEvent(mouseEvent);
+        if (Boolean.parseBoolean(Config.getOption("ui", "quickCopy"))) {
+            getTextPane().copy();
+            getTextPane().setCaretPosition(getTextPane().getCaretPosition());
+            getTextPane().moveCaretPosition(getTextPane().getCaretPosition());
+        }
+        processMouseEvent(mouseEvent);
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void mouseEntered(final MouseEvent mouseEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void mouseExited(final MouseEvent mouseEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -526,31 +532,31 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param e mouse event
      */
     public void processMouseEvent(final MouseEvent e) {
-	if (e.isPopupTrigger() && e.getSource() == getTextPane()) {
-	    final Point point = getScrollPane().getMousePosition();
-	    getPopup().show(this, (int) point.getX(), (int) point.getY());
-	} else if (e.isPopupTrigger() && e.getSource() == getInputField()) {
-	    inputFieldPopup.show(this, e.getX(), e.getY() + getInputField().getY());
-	} else if (e.getSource() == getTextPane()) {
-	    getTextPane().requestFocus();
-	} else if (e.getSource() == getInputField()) {
-	    getInputField().requestFocus();
-	} else {
-	    super.processMouseEvent(e);
-	}
+        if (e.isPopupTrigger() && e.getSource() == getTextPane()) {
+            final Point point = getScrollPane().getMousePosition();
+            getPopup().show(this, (int) point.getX(), (int) point.getY());
+        } else if (e.isPopupTrigger() && e.getSource() == getInputField()) {
+            inputFieldPopup.show(this, e.getX(), e.getY() + getInputField().getY());
+        } else if (e.getSource() == getTextPane()) {
+            getTextPane().requestFocus();
+        } else if (e.getSource() == getInputField()) {
+            getInputField().requestFocus();
+        } else {
+            super.processMouseEvent(e);
+        }
     }
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent actionEvent) {
-	if (actionEvent.getSource() == copyMI) {
-	    getTextPane().copy();
-	} else if (actionEvent.getSource() == inputCopyMI) {
-	    getInputField().copy();
-	} else if (actionEvent.getSource() == inputPasteMI) {
-	    getInputField().paste();
-	} else if (actionEvent.getSource() == inputCutMI) {
-	    getInputField().cut();
-	}
+        if (actionEvent.getSource() == copyMI) {
+            getTextPane().copy();
+        } else if (actionEvent.getSource() == inputCopyMI) {
+            getInputField().copy();
+        } else if (actionEvent.getSource() == inputPasteMI) {
+            getInputField().paste();
+        } else if (actionEvent.getSource() == inputCutMI) {
+            getInputField().cut();
+        }
     }
     
     /**
@@ -558,35 +564,56 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @return JPopupMenu for this frame
      */
     public final JPopupMenu getPopup() {
-	return popup;
+        return popup;
     }
     
     /** {@inheritDoc}. */
     public void keyTyped(final KeyEvent event) {
-	//Ignore.
+        //Ignore.
     }
     
     /** {@inheritDoc}. */
     public void keyPressed(final KeyEvent event) {
-	if (event.getSource() == getTextPane()) {
-	    if (Boolean.parseBoolean(Config.getOption("ui", "quickCopy"))) {
-		getInputField().requestFocus();
-	    } else {
-		if ((event.getModifiers() & KeyEvent.CTRL_MASK) == 0) {
-		    getInputField().requestFocus();
-		} else {
-		    if (event.getKeyCode() == KeyEvent.VK_C) {
-			getTextPane().copy();
-		    }
-		}
-		
-	    }
-	}
+        String[] clipboardContents = new String[]{"", };
+        if (event.getSource() == getTextPane()) {
+            if (Boolean.parseBoolean(Config.getOption("ui", "quickCopy"))) {
+                getInputField().requestFocus();
+            } else {
+                if ((event.getModifiers() & KeyEvent.CTRL_MASK) == 0) {
+                    getInputField().requestFocus();
+                } else {
+                    if (event.getKeyCode() == KeyEvent.VK_C) {
+                        getTextPane().copy();
+                    }
+                }
+                
+            }
+        } else if (event.getSource() == getInputField()) {
+            if ((event.getModifiers() & KeyEvent.CTRL_MASK) != 0
+                    && event.getKeyCode() == KeyEvent.VK_V) {
+                    try {
+                        //FIXME do something
+                        clipboardContents =
+                                ((String) Toolkit.getDefaultToolkit().getSystemClipboard()
+                                .getData(DataFlavor.stringFlavor)).split(System.getProperty("line.separator"));
+                    } catch (HeadlessException ex) {
+                        Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+                    } catch (IOException ex) {
+                        Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+                    } catch (UnsupportedFlavorException ex) {
+                        Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+                    }
+                event.consume();
+                for (String clipboardLine : clipboardContents) {
+                    this.sendLine(clipboardLine);
+                }
+            }
+        }
     }
     
     /** {@inheritDoc}. */
     public void keyReleased(final KeyEvent event) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -594,26 +621,32 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param text text to check
      */
     private void checkClickText(final String text) {
-	System.out.print("Clicked text: '" + text + "' ");
-	if (text.toLowerCase(Locale.getDefault()).startsWith("http://")
-	|| text.toLowerCase(Locale.getDefault()).startsWith("https://")
-	|| text.toLowerCase(Locale.getDefault()).startsWith("www.")) {
-	    System.out.print("opening browser.");
-	    MainFrame.getMainFrame().getStatusBar().setMessage("Opening: " + text);
-	    BrowserLauncher.openURL(text);
-	} else if (parent.getServer().getParser().isValidChannelName(text)) {
-	    System.out.print("is a valid channel ");
-	    if (parent.getServer().getParser().getChannelInfo(text) == null) {
-		System.out.print("joining.");
-		parent.getServer().getParser().joinChannel(text);
-	    } else {
-		System.out.print("activating.");
-		parent.getServer().getChannel(text).activateFrame();
-	    }
-	} else {
-	    System.out.print("ignoring.");
-	}
-	System.out.println();
+        System.out.print("Clicked text: '" + text + "' ");
+        if (text.toLowerCase(Locale.getDefault()).startsWith("http://")
+        || text.toLowerCase(Locale.getDefault()).startsWith("https://")
+        || text.toLowerCase(Locale.getDefault()).startsWith("www.")) {
+            System.out.print("opening browser.");
+            MainFrame.getMainFrame().getStatusBar().setMessage("Opening: " + text);
+            BrowserLauncher.openURL(text);
+        } else if (parent.getServer().getParser().isValidChannelName(text)) {
+            System.out.print("is a valid channel ");
+            if (parent.getServer().getParser().getChannelInfo(text) == null) {
+                System.out.print("joining.");
+                parent.getServer().getParser().joinChannel(text);
+            } else {
+                System.out.print("activating.");
+                parent.getServer().getChannel(text).activateFrame();
+            }
+        } else {
+            System.out.print("ignoring.");
+        }
+        System.out.println();
     }
     
+    /**
+     * Send the line to the frame container.
+     *
+     * @param line the line to send
+     */
+    public abstract void sendLine(final String line);    
 }

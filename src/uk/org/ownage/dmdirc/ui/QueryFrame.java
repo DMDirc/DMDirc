@@ -121,4 +121,9 @@ public final class QueryFrame extends Frame {
         
         pack();
     }
+    
+        /** {@inheritDoc}. */
+    public void sendLine(final String line) {
+        this.parent.sendLine(line);
+    }
 }

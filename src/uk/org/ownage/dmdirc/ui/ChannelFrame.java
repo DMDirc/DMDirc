@@ -244,4 +244,9 @@ public final class ChannelFrame extends Frame {
     public JSplitPane getSplitPane() {
         return splitPane;
     }
+
+    /** {@inheritDoc}. */
+    public void sendLine(final String line) {
+        this.parent.sendLine(line);
+    }
 }

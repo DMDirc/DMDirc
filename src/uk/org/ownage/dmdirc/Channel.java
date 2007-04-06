@@ -172,8 +172,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param line The message to send
      */
     public void sendLine(final String line) {
-        channelInfo.sendMessage(line);
-        
         final ClientInfo me = server.getParser().getMyself();
         final String modes = channelInfo.getUser(me).getImportantModePrefix();
         final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName());
@@ -181,12 +179,13 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         if (maxLineLength >= line.length()) {
             frame.addLine("channelSelfMessage", modes, me.getNickname(),
                     me.getIdent(), me.getHost(), line, channelInfo);
+            channelInfo.sendMessage(line);
             sendNotification();
         } else {
             sendLine(line.substring(0, maxLineLength));
             sendLine(line.substring(maxLineLength));
         }
-    }   
+    }
     
     /**
      * Sends the specified string as an action (CTCP) to the channel that this object
@@ -194,14 +193,18 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param action The action to send
      */
     public void sendAction(final String action) {
-        channelInfo.sendAction(action);
-        
         final ClientInfo me = server.getParser().getMyself();
         final String modes = channelInfo.getUser(me).getImportantModePrefix();
         
-        frame.addLine("channelSelfAction", modes, me.getNickname(), me.getIdent(),
-                me.getHost(), action, channelInfo);
-        sendNotification();
+        if (server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName()) <= action.length()) {
+            frame.addLine("channelSelfMessage", modes, me.getNickname(), me.getIdent(), 
+                    me.getHost(), "Action too long to be sent", channelInfo);
+        } else {
+            frame.addLine("channelSelfAction", modes, me.getNickname(), me.getIdent(),
+                    me.getHost(), action, channelInfo);
+            channelInfo.sendAction(action);
+            sendNotification();
+        }
     }
     
     /**

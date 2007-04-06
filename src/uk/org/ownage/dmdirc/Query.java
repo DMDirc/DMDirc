@@ -125,12 +125,14 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      */
     public void sendLine(final String line) {
         final ClientInfo client = server.getParser().getMyself();
-        if (server.getParser().getMaxLength("PRIVMSG", host) >= line.length()) {
+        final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", host);
+        
+        if (maxLineLength >= line.length()) {
             server.getParser().sendMessage(ClientInfo.parseHost(host), line);
             frame.addLine("querySelfMessage", client.getNickname(), client.getIdent(), client.getHost(), line);
         } else {
-            sendLine(line.substring(0, server.getParser().getMaxLength("PRIVMSG", host)));
-            sendLine(line.substring(server.getParser().getMaxLength("PRIVMSG", host) + 1));
+            sendLine(line.substring(0, maxLineLength));
+            sendLine(line.substring(maxLineLength));
         }
     }
     
@@ -141,7 +143,13 @@ public final class Query implements IPrivateAction, IPrivateMessage,
     public void sendAction(final String action) {
         final ClientInfo client = server.getParser().getMyself();
         server.getParser().sendAction(ClientInfo.parseHost(host), action);
-        frame.addLine("querySelfAction", client.getNickname(), client.getIdent(), client.getHost(), action);
+        if (server.getParser().getMaxLength("PRIVMSG", host) <= action.length()) {
+            frame.addLine("querySelfAction", client.getNickname(), 
+                    client.getIdent(), client.getHost(), "Action too long to be sent");
+        } else {
+            frame.addLine("querySelfAction", client.getNickname(), 
+                    client.getIdent(), client.getHost(), action);
+        }
     }
     
     /**
