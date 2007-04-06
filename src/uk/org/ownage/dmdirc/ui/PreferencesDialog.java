@@ -314,8 +314,10 @@ public final class PreferencesDialog extends StandardDialog
 		OptionType.CHECKBOX);
 	addComponent(panel, "ui.quickCopy", "Quick Copy: ",
 		OptionType.CHECKBOX);
+        addComponent(panel, "ui.pasteProtectionLimit", "Paste protection trigger: ",
+		OptionType.TEXTFIELD);
 	
-	layoutGrid(panel, 7, 2, SMALL_BORDER, SMALL_BORDER,
+	layoutGrid(panel, 8, 2, SMALL_BORDER, SMALL_BORDER,
 		LARGE_BORDER, LARGE_BORDER);
 	
 	cardLayoutPanel.add(panel, "GUI");

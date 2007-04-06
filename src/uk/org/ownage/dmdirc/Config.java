@@ -137,6 +137,7 @@ public final class Config {
         defaults.setProperty("ui.showversion", "true");
         defaults.setProperty("ui.lookandfeel", UIManager.getCrossPlatformLookAndFeelClassName());
         defaults.setProperty("ui.quickCopy", "false");
+        defaults.setProperty("ui.pasteProtectionLimit", "1");
         
         // TODO: These should probably be renamed to treeview.* or so?
         defaults.setProperty("ui.rolloverEnabled", "true");

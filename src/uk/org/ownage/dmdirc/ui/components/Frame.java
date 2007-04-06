@@ -608,7 +608,15 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                     Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
                 }
                 event.consume();
-                if (clipboardContentsLines.length > 1) {
+                int pasteTrigger = 1;
+                if (Config.hasOption("ui", "pasteProtectionLimit")) {
+                    try {
+                        pasteTrigger = Integer.parseInt(Config.getOption("ui", "pasteProtectionLimit"));
+                    } catch (NumberFormatException ex) {
+                        //Ignore, use the default.
+                    }
+                }
+                if (clipboardContentsLines.length > pasteTrigger) {
                     String[] options = {"Send", "Edit", "Cancel", };
                     int n = JOptionPane.showInternalOptionDialog(this,
                             "Paste containts " + clipboardContentsLines.length + " lines",
