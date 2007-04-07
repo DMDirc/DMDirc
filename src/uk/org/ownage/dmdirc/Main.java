@@ -63,7 +63,7 @@ public final class Main {
 	    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 	    
 	    if (Config.hasOption("ui", "lookandfeel")) {
-		StringBuilder classNameBuilder = new StringBuilder();
+		final StringBuilder classNameBuilder = new StringBuilder();
 		for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
 		    if (laf.getName().equals(Config.getOption("ui", "lookandfeel"))) {
 			classNameBuilder.setLength(0);

@@ -257,7 +257,9 @@ public final class ErrorDialog extends JDialog implements ActionListener,
                         pack();
                         setLocationRelativeTo(MainFrame.getMainFrame());
                         setVisible(true);
-                    }});
+                    }
+                }
+                );
             } else {
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
@@ -267,7 +269,9 @@ public final class ErrorDialog extends JDialog implements ActionListener,
                         pack();
                         setLocationRelativeTo(MainFrame.getMainFrame());
                         setVisible(true);
-                    }});
+                    }
+                }
+                );
             }
         } else {
             if (sendDataCheckbox.isSelected() && sendDataCheckbox.isEnabled()) {

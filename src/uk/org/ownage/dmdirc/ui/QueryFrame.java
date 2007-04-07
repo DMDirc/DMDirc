@@ -114,15 +114,20 @@ public final class QueryFrame extends Frame {
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(0, 0, 5, 5);
         getContentPane().add(getScrollPane(), constraints);
+        
+        
         constraints.weighty = 0.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridy = 1;
+        getContentPane().add(getSearchBar(), constraints);
+        
+        constraints.gridy = 2;
         getContentPane().add(getInputField(), constraints);
         
         pack();
     }
     
-        /** {@inheritDoc}. */
+    /** {@inheritDoc}. */
     public void sendLine(final String line) {
         this.parent.sendLine(line);
     }

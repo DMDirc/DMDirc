@@ -81,11 +81,14 @@ public final class BrowserLauncher {
     /**
      * Attempts to open the url in the default OSX.
      * @param url url to open
-     * @throws IOException if unable to open browser
+     * @throws InvocationTargetException if unable to open browser
+     * @throws IllegalAccessException if unable to open browser
+     * @throws NoSuchMethodException if unable to open browser
+     * @throws ClassNotFoundException if unable to open browser
      */
     private static void openURLOSX(final String url) throws
             InvocationTargetException,  IllegalAccessException,
-            SecurityException, NoSuchMethodException, ClassNotFoundException {
+            NoSuchMethodException, ClassNotFoundException {
         final Method openURL;
         openURL = Class.forName("com.apple.eio.FileManager")
         .getDeclaredMethod("openURL", new Class[] {String.class});

@@ -26,7 +26,6 @@ import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -129,6 +128,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     
     /** popup menu item. */
     private JMenuItem inputCutMI;
+    
+    /** search bar. */
+    private SearchBar searchBar;
     
     /**
      * Creates a new instance of Frame.
@@ -284,6 +286,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         inputFieldPopup.add(inputPasteMI);
         inputFieldPopup.setOpaque(true);
         inputFieldPopup.setLightWeightPopupEnabled(true);
+        
+        searchBar = new SearchBar(this);
+        searchBar.setVisible(false);
     }
     
     /**
@@ -579,6 +584,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     public void keyPressed(final KeyEvent event) {
         String clipboardContents = null;
         String[] clipboardContentsLines = new String[]{"", };
+        if (event.getKeyCode() == KeyEvent.VK_F3) {
+            getSearchBar().open();
+        }
         if (event.getSource() == getTextPane()) {
             if (Boolean.parseBoolean(Config.getOption("ui", "quickCopy"))) {
                 getInputField().requestFocus();
@@ -597,8 +605,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                     && event.getKeyCode() == KeyEvent.VK_V) {
                 try {
                     clipboardContents =
-                            ((String) Toolkit.getDefaultToolkit().getSystemClipboard()
-                            .getData(DataFlavor.stringFlavor));
+                            (String) Toolkit.getDefaultToolkit().getSystemClipboard()
+                            .getData(DataFlavor.stringFlavor);
                     clipboardContentsLines = clipboardContents.split(System.getProperty("line.separator"));
                 } catch (HeadlessException ex) {
                     Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
@@ -618,7 +626,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 }
                 if (clipboardContentsLines.length > pasteTrigger) {
                     String[] options = {"Send", "Edit", "Cancel", };
-                    int n = JOptionPane.showInternalOptionDialog(this,
+                    final int n = JOptionPane.showInternalOptionDialog(this,
                             "Paste containts " + clipboardContentsLines.length + " lines",
                             "Multi-line Paste",
                             JOptionPane.YES_NO_CANCEL_OPTION,
@@ -688,4 +696,13 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param line the line to send
      */
     public abstract void sendLine(final String line);
+    
+    /**
+     * Gets the search bar.
+     *
+     * @return the frames search bar
+     */
+    public final SearchBar getSearchBar() {
+        return searchBar;
+    }
 }

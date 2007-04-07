@@ -211,9 +211,13 @@ public final class ChannelFrame extends Frame {
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(0, 0, 5, 5);
         getContentPane().add(splitPane, constraints);
+        
         constraints.weighty = 0.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridy = 1;
+        getContentPane().add(getSearchBar(), constraints);
+        
+        constraints.gridy = 2;
         getContentPane().add(getInputField(), constraints);
         
         splitPane.setLeftComponent(getScrollPane());

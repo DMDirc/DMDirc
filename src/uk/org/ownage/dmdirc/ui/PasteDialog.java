@@ -34,8 +34,8 @@ import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
-import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 import uk.org.ownage.dmdirc.ui.components.Frame;
+import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
 import static uk.org.ownage.dmdirc.ui.UIConstants.*;
 
@@ -59,10 +59,10 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
     
     /**
      * Creates a new instance of PreferencesDialog.
-     * @param parent The frame that owns this dialog
-     * @param modal Whether to show modally or not
+     * @param newParent The frame that owns this dialog
+     * @param text text to show in the paste dialog
      */
-    public PasteDialog(Frame newParent, String text) {
+    public PasteDialog(final Frame newParent, final String text) {
         super(MainFrame.getMainFrame(), false);
         
         this.parent = newParent;
@@ -74,11 +74,12 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
     
     /**
      * Initialises GUI components.
+     * @param text text to show in the dialog
      */
-    private void initComponents(String text) {
+    private void initComponents(final String text) {
         final GridBagConstraints constraints = new GridBagConstraints();
+        final JScrollPane scrollPane = new JScrollPane();
         textField = new JTextArea(text);
-        JScrollPane scrollPane = new JScrollPane();
         
         orderButtons(new JButton(), new JButton());
         
@@ -136,7 +137,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
      */
     public void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
-            String[] lines = textField.getText().split(System.getProperty("line.separator"));
+            final String[] lines = textField.getText().split(System.getProperty("line.separator"));
             for (String line : lines) {
                 parent.sendLine(line);
             }

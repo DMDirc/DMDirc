@@ -47,7 +47,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
@@ -60,6 +59,8 @@ import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.components.StatusBar;
 import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
 import uk.org.ownage.dmdirc.ui.framemanager.tree.TreeFrameManager;
+
+import static uk.org.ownage.dmdirc.ui.UIConstants.*;
 
 /**
  * The main application frame.
@@ -406,8 +407,6 @@ public final class MainFrame extends JFrame implements WindowListener,
      * Initialises the components for this frame.
      */
     private void initComponents() {
-	final SpringLayout springLayout = new SpringLayout();
-	
 	jPanel1 = new JPanel();
 	desktopPane = new JDesktopPane();
 	final JMenuBar menuBar = new JMenuBar();
@@ -472,18 +471,25 @@ public final class MainFrame extends JFrame implements WindowListener,
 	menuItem.setActionCommand("ErrorFatal");
 	menuItem.addActionListener(this);
 	helpMenu.add(menuItem);
+        
+        menuItem = new JMenuItem();
+	menuItem.setMnemonic('f');
+	menuItem.setText("Show search bar");
+	menuItem.setActionCommand("Search");
+	menuItem.addActionListener(this);
+	helpMenu.add(menuItem);
 	
 	menuBar.add(helpMenu);
 	
 	setJMenuBar(menuBar);
 	
 	setPreferredSize(new Dimension(800, 600));
+        
+        getContentPane().add(mainSplitPane, BorderLayout.CENTER);
+        
+        getContentPane().add(statusBar, BorderLayout.SOUTH);
 	
-	getContentPane().add(mainSplitPane, BorderLayout.CENTER);
-	
-	getContentPane().add(statusBar, BorderLayout.SOUTH);
-	
-	mainSplitPane.setDividerSize(5);
+	mainSplitPane.setDividerSize(SMALL_BORDER);
 	mainSplitPane.setOneTouchExpandable(false);
 	
 	mainSplitPane.setLeftComponent(jPanel1);
@@ -493,15 +499,10 @@ public final class MainFrame extends JFrame implements WindowListener,
 	mainSplitPane.setResizeWeight(0);
 	mainSplitPane.setContinuousLayout(true);
 	
-	springLayout.putConstraint(SpringLayout.EAST, getContentPane(), 10,
-		SpringLayout.EAST, mainSplitPane);
-	springLayout.putConstraint(SpringLayout.SOUTH, getContentPane(), 10,
-		SpringLayout.SOUTH, mainSplitPane);
-	
 	setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 	setTitle("DMDirc");
-	jPanel1.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 0));
-	desktopPane.setBorder(BorderFactory.createEmptyBorder(0, 5, 5, 0));
+	jPanel1.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER, SMALL_BORDER, 0));
+	desktopPane.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER, SMALL_BORDER, 0));
 	
 	pack();
     }
