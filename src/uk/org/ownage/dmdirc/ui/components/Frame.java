@@ -635,7 +635,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                             JOptionPane.QUESTION_MESSAGE,
                             null,
                             options,
-                            options[2]);
+                            options[0]);
                     switch (n) {
                         case 0:
                             for (String clipboardLine : clipboardContentsLines) {
