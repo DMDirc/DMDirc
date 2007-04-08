@@ -18,78 +18,165 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
+ * SVN: $Id$
  */
-
 package uk.org.ownage.dmdirc.plugins;
 
 import java.util.Hashtable;
-import java.util.Map;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
-/**
- * Managers plugins for the client, also forwards events from the client or irc
- * to the plugins as required.
- */
-public final class PluginManager {
-    
-    /**
-     * list of plugins currently loaded.
-     */
-    private final Map<String, AbstractPlugin> loadedPlugins;
-    
-    /**
-     * Creates a new plugin manager.
-     */
-    public PluginManager() {
-	loadedPlugins = new Hashtable<String, AbstractPlugin>();
-    }
-    
-    /**
-     * Adds a new plugin to the loaded plugins list.
-     * @param pluginClassName plugin name
-     * @param plugin boolean success
-     * @return plugin instance
-     */
-    public boolean addPlugin(final String pluginClassName,
-	    final AbstractPlugin plugin) {
-	if (loadedPlugins.containsKey(pluginClassName)) {
-	    return false;
-	} else {
-	    loadedPlugins.put(pluginClassName, plugin);
-	    
-	    plugin.onLoad();
-	}
-	plugin.start();
-	return true;
-    }
-    
-    /**
-     * Removes a plugin from the loaded plugins list, unloading the plugin class
-     * as it does so.
-     * @param plugin boolean success
-     * @return plugin to remove
-     */
-    protected synchronized boolean removePlugin(final AbstractPlugin plugin) {
-	if (loadedPlugins.containsValue(plugin)) {
-	    loadedPlugins.remove(plugin.toString());
-	    System.gc();
-	    return true;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+
+public class PluginManager {
+	/**
+	 * List of known plugins.
+	 */
+	private Hashtable<String,Plugin> knownPlugins = new Hashtable<String,Plugin>();
+	/**
+	 * List of known plugin classNames.
+	 */
+	private Hashtable<String,String> knownPluginNames = new Hashtable<String,String>();
+	
+	/**
+	 * Directory where plugins are stored.
+	 */
+	 private String myDir;
+	
+	/**
+	 * Create a new PluginManager.
+	 */
+	public PluginManager() {
+		myDir = ".";
 	}
 	
-	return false;
-    }
-    
-    /**
-     * Calls a plugins onunload events and removes it from the loaded plugins
-     * list.
-     * @param pluginClassName classname of the plugin to stop
-     */
-    public void stopPlugin(final String pluginClassName) {
-	AbstractPlugin plugin = null;
-	
-	if (loadedPlugins.containsKey(pluginClassName)) {
-	    plugin = loadedPlugins.get(pluginClassName);
-	    plugin.onUnload();
-	    plugin.stopPlugin();
+	/**
+	 * Create a new PluginManager.
+	 */
+	public PluginManager(final String directory) {
+		myDir = directory;
 	}
-    }
+	
+	/**
+	 * Add a new plugin.
+	 *
+	 * @param pluginName Name of plugin
+	 * @param className Class Name of Plugin object
+	 * @return True if loaded.
+	 */
+	public boolean addPlugin(final String pluginName, final String className) {
+		if (knownPlugins.containsKey(pluginName.toLowerCase())) { return false; }
+		Plugin plugin = loadPlugin(className);
+		if (plugin == null) { return false; }
+		knownPlugins.put(pluginName.toLowerCase(), plugin);
+		knownPluginNames.put(pluginName.toLowerCase(), className);
+		return true;
+	}
+	
+	/**
+	 * Remove a plugin.
+	 *
+	 * @param pluginName Name of plugin
+	 * @return True if removed.
+	 */
+	public boolean delPlugin(final String pluginName) {
+		if (!knownPlugins.containsKey(pluginName.toLowerCase())) { return false; }
+		Plugin plugin = getPlugin(pluginName);
+		plugin.onUnload();
+		knownPlugins.remove(pluginName.toLowerCase());
+		knownPluginNames.remove(pluginName.toLowerCase());
+		plugin = null;
+		return true;
+	}
+	
+	/**
+	 * Reload a plugin.
+	 *
+	 * @param pluginName Name of plugin
+	 * @return True if reloaded.
+	 */
+	public boolean reloadPlugin(final String pluginName) {
+		if (!knownPlugins.containsKey(pluginName.toLowerCase())) { return false; }
+		final String filename = knownPluginNames.get(pluginName.toLowerCase());
+		delPlugin(pluginName);
+		return addPlugin(pluginName, filename);
+	}
+	
+	/**
+	 * Get a plugin instance.
+	 *
+	 * @param pluginName Name of plugin
+	 * @return Plugin instance, or null
+	 */
+	public Plugin getPlugin(final String pluginName) {
+		if (!knownPlugins.containsKey(pluginName.toLowerCase())) { return null; }
+		return knownPlugins.get(pluginName.toLowerCase());
+	}
+	
+	/**
+	 * Get string[] of known plugin names.
+	 *
+	 * @return string[] of known plugin names.
+	 */
+	public String[] getNames() {
+		final String[] result = new String[knownPlugins.size()];
+		int i = 0;
+		for (String name : knownPlugins.keySet()) {
+			result[i++] = name;
+		}
+		return result;
+	}
+	
+	/**
+	 * Get classname of a given plugin name.
+	 *
+	 * @return classname of a given plugin name.
+	 */
+	public String getClassName(final String pluginName) {
+		if (!knownPluginNames.containsKey(pluginName)) { return ""; }
+		else { return knownPluginNames.get(pluginName); }
+	}
+	
+	/**
+	 * Load a plugin with a given className
+	 *
+	 * @param className Class Name of plugin to load.
+	 */
+	private Plugin loadPlugin(final String className) {
+		Plugin result;
+		
+		try {
+			ClassLoader cl = new PluginClassLoader(myDir);
+			
+			Class<?> c = (Class<?>)cl.loadClass(className);
+			Constructor<?> constructor = c.getConstructor(new Class[] {});
+		
+			result = (Plugin)constructor.newInstance(new Object[] {});
+		} catch (ClassNotFoundException cnfe) {
+			System.out.println("ClassNotFoundException "+cnfe.getMessage());
+			cnfe.printStackTrace();
+			result = null;
+		} catch (NoSuchMethodException nsme) {
+			System.out.println("NoSuchMethodException");
+			result = null;
+		} catch (IllegalAccessException iae) {
+			System.out.println("IllegalAccessException");
+			result = null;
+		} catch (InvocationTargetException ite) {
+			System.out.println("InvocationTargetException");
+			result = null;
+		} catch (InstantiationException ie) {
+			System.out.println("InstantiationException");
+			result = null;
+		}
+		
+		return result;
+	}
+
 }

@@ -18,53 +18,50 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
+ * SVN: $Id$
  */
-
 package uk.org.ownage.dmdirc.plugins;
 
-/**
- * Abstract plugin, all plugins will need to subclass this method to be accepted
- * by the plugin manager and loaded as a plugin.
- */
-public abstract class AbstractPlugin {
-    
-    /**
-     * PluginManager associated with this plugin.
-     */
-    private final PluginManager pluginManager;
+public interface Plugin {
+	/**
+	 * Called when the plugin is loaded.
+	 */
+	public void onLoad();
+	
+	/**
+	 * Called when the plugin is about to be unloaded.
+	 */
+	public void onUnload();
 
-    /**
-     * Creates a new instance of the plugin.
-     * @param newPluginManager PluginManager associated with this plugin
-     */
-    public AbstractPlugin(final PluginManager newPluginManager) {
-	this.pluginManager = newPluginManager;
-    }
-    
-    /**
-     * Starts the plugin running in its own thread.
-     */
-    abstract void start();
-
-    /**
-     * Called once the plugin has been loaded and initialised.
-     */
-    abstract void onLoad();
-    
-    /**
-     * Called just before the plugin is to be unloaded.
-     */
-    abstract void onUnload();
-    
-    /**
-     * Called to terminate the plugins thread.
-     */
-    abstract void stopPlugin(); 
-    
-    /**
-     * Returns the class name of the plugin.
-     *
-     * @return the class name of the plugin
-     */
-    public abstract String toString();
+	/**
+	 * Called when this plugin becomes active.
+	 */
+	public void onActivate();
+	
+	/**
+	 * Called when this plugin becomes active.
+	 */
+	public void onDeactivate();
+	
+	/**
+	 * Get the plugin version
+	 *
+	 * @return Plugin Version
+	 */
+	public int getVersion();
+	
+	/**
+	 * Get the plugin Author.
+	 *
+	 * @return Author of plugin
+	 */
+	public String getAuthor();
+	
+	/**
+	 * Get the plugin Description.
+	 *
+	 * @return Description of plugin
+	 */
+	public String getDescription();
 }

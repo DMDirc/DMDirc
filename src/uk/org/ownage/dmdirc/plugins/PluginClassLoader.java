@@ -18,92 +18,88 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
+ *
+ * SVN: $Id$
  */
-
 package uk.org.ownage.dmdirc.plugins;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
-import uk.org.ownage.dmdirc.logger.Logger;
+import java.util.Hashtable;
 
+public class PluginClassLoader extends ClassLoader {
+	/** Directory where plugins are stored. */
+	String myDir;
+	
+	/** Name of the package I am loading. */
+	String myPackage = "";
+	
+	/**
+	 * Create a new PluginClassLoader.
+	 *
+	 * @param directory Directory where plugins are stored.
+	 */
+	public PluginClassLoader(String directory) {
+		myDir = directory;
+	}
+	
+	/**
+	 * Load the plugin with the given className
+	 *
+	 * @param className Class Name of plugin
+	 * @return plugin class
+	 * @throws ClassNotFoundException if the class to be loaded could not be found.
+	 */
+	public Class< ? > loadClass(final String name) throws ClassNotFoundException {
+		Class< ? > loadedClass = null;
 
-/**
- * A custom ClassLoader to load and unload plugins.
- */
-public final class PluginClassLoader extends ClassLoader {
-    
-    /**
-     * Base directory for the class loader.
-     */
-    private final String baseDir;
-    
-    /**
-     * Constructs new PluginClassLoader.
-     *
-     * @param directory plugin loader base directory
-     */
-    public PluginClassLoader(final String directory) {
-	super();
-        this.baseDir = directory;
-    }
-    
-    /**
-     * Loads a plugin from disk.
-     *
-     * @param name plugin class name to load
-     * @return plugin class
-     * @throws ClassNotFoundException if the class to be loaded could not be
-     * found in the base directory for this classloader
-     */
-    public Class< ? > loadClass(final String name) throws ClassNotFoundException {
-        Class< ? > loadedClass = null;
-        String fileName;
-        
-        fileName = baseDir + File.separator
-                + name.replace('.', File.separatorChar) + ".class";
-        byte[] data = null;
-        
-        Logger.debug("Trying to load: " + fileName);
-        
-        try {
-            data = loadClassData(fileName);
-        } catch (IOException e) {
-            Logger.debug("" + e);
-            throw new ClassNotFoundException(e.getMessage());
-        }
-        
-        loadedClass = defineClass(name, data, 0, data.length);
-        
-        if (loadedClass == null) {
-            Logger.debug("loadedClass == null");
-            throw new ClassNotFoundException("Could not load " + name);
-        } else {
-            resolveClass(loadedClass);
-        }
-        
-        return loadedClass;
-    }
-    
-    /**
-     * Loads binary class data from disk.
-     *
-     * @param fileName file name
-     * @return bytecodes
-     * @throws IOException if unable to read the specified file
-     */
-    private byte[] loadClassData(final String fileName) throws IOException {
-        final File file = new File(fileName);
-        final byte[] buffer = new byte[(int) file.length()];
-        
-        final FileInputStream in = new FileInputStream(file);
-        final DataInputStream dataIn = new DataInputStream(in);
-        
-        dataIn.readFully(buffer);
-        dataIn.close();
-        
-        return buffer;
-    }
+		// Check to make sure we only load things in our own package!
+		if (myPackage.length() == 0) {
+			int i = name.lastIndexOf('.');
+			if (i != -1) { myPackage = name.substring(0, i); }
+			else { return getParent().loadClass(name); }
+		}
+		if (!name.startsWith(myPackage)) { return getParent().loadClass(name); }
+		
+		// We are ment to be loading this one!
+		final String fileName = myDir + File.separator + name.replace(myDir+".", "").replace('.', File.separatorChar) + ".class";
+		byte[] data = null;
+
+		try {
+			data = loadClassData(fileName);
+		} catch (IOException e) {
+			throw new ClassNotFoundException(e.getMessage());
+		}
+		
+		loadedClass = defineClass(name, data, 0, data.length);
+		
+		if (loadedClass == null) {
+			throw new ClassNotFoundException("Could not load " + name);
+		} else {
+			resolveClass(loadedClass);
+		}
+		
+		return loadedClass;
+	}
+	
+	/**
+	 * Load the class from the .class file
+	 *
+	 * @param filename Filename to load from
+	 * @throws IOException when the file doesn't exist or can't be read
+ 	 */
+	public byte[] loadClassData(String filename) throws IOException {
+		final File file = new File(filename);
+		final byte[] fileBuffer = new byte[(int)file.length()];
+		final DataInputStream fileInput = new DataInputStream(new FileInputStream(file));
+		
+		fileInput.readFully(fileBuffer);
+		fileInput.close();
+		
+		return fileBuffer;
+	}
 }
