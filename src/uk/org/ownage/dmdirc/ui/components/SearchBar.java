@@ -90,24 +90,29 @@ public final class SearchBar extends JPanel implements ActionListener {
         searchButton.setText("Search");
         nextButton.setText("Next");
         prevButton.setText("Prev");
-        caseCheck.setText("CS");
+        caseCheck.setText("Case sensitive");
         
         searchBox.setBorder(BorderFactory.createCompoundBorder(
                 searchBox.getBorder(), new EmptyBorder(2, 2, 2, 2)));
         
-        searchBox.setColumns(25);
+        //searchBox.setColumns(25);
+        searchBox.setMinimumSize(new Dimension(50, 25));
+        searchBox.setPreferredSize(new Dimension(150, 25));
+        searchBox.setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
         
         closeButton.addActionListener(this);
         
         closeButton.setIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/error.png")));
+        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
         closeButton.setRolloverIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/error.png")));
+        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+        closeButton.setPressedIcon(new ImageIcon(this.getClass()
+        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
         closeButton.setContentAreaFilled(false);
         closeButton.setBorder(new EmptyBorder(0, 0, 0, 0));
         closeButton.setPreferredSize(new Dimension(16, 16));
         
-        this.setLayout(new FlowLayout());
+        this.setLayout(new FlowLayout(FlowLayout.LEFT));
         
         add(closeButton);
         add(searchBox);

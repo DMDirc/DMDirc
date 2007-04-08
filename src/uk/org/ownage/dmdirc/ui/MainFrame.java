@@ -471,13 +471,6 @@ public final class MainFrame extends JFrame implements WindowListener,
 	menuItem.setActionCommand("ErrorFatal");
 	menuItem.addActionListener(this);
 	helpMenu.add(menuItem);
-        
-        menuItem = new JMenuItem();
-	menuItem.setMnemonic('f');
-	menuItem.setText("Show search bar");
-	menuItem.setActionCommand("Search");
-	menuItem.addActionListener(this);
-	helpMenu.add(menuItem);
 	
 	menuBar.add(helpMenu);
 	
