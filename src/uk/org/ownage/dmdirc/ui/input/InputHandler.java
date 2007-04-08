@@ -322,7 +322,7 @@ public final class InputHandler implements KeyListener, ActionListener {
     }
     
     /**
-     * Adds all items in the string[] to the buffer.
+     * Adds all items in the string array to the buffer.
      *
      * @param lines lines to add to the buffer
      */
