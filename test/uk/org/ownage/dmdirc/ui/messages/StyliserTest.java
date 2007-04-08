@@ -34,7 +34,7 @@ public class StyliserTest extends TestCase {
     }
     
     public void testStripControlCodes2() {
-        String input = "This is "+((char) 4)+"5a "+((char) 3)+"FF0000test";
+        String input = "This is "+((char) 3)+"5a "+((char) 4)+"FF0000test";
         
         String expResult = "This is a test";
         String result = Styliser.stipControlCodes(input);
