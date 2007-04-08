@@ -31,7 +31,7 @@ public class ServerManagerTest extends TestCase {
     }
     
     public void testRegisterServer() {
-        final Server server = new Server("127.0.0.1", 6667, "", false, IdentityManager.getProfiles().get(1));
+        final Server server = new Server("127.0.0.1", 6667, "", false, IdentityManager.getProfiles().get(0));
         
         final ServerManager instance = ServerManager.getServerManager();
         
@@ -41,7 +41,7 @@ public class ServerManagerTest extends TestCase {
     }
     
     public void testUnregisterServer() {
-        final Server server = new Server("127.0.0.1", 6667, "", false, IdentityManager.getProfiles().get(1));
+        final Server server = new Server("127.0.0.1", 6667, "", false, IdentityManager.getProfiles().get(0));
         
         server.close();
         
@@ -51,8 +51,8 @@ public class ServerManagerTest extends TestCase {
     }    
     
     public void testGetServerFromFrame() {
-        final Server serverA = new Server("127.0.0.1", 6667, "", false, IdentityManager.getProfiles().get(1));
-        final Server serverB = new Server("127.0.0.2", 6667, "", false, IdentityManager.getProfiles().get(1));
+        final Server serverA = new Server("127.0.0.1", 6667, "", false, IdentityManager.getProfiles().get(0));
+        final Server serverB = new Server("127.0.0.2", 6667, "", false, IdentityManager.getProfiles().get(0));
         
         final ServerManager sm = ServerManager.getServerManager();
         
