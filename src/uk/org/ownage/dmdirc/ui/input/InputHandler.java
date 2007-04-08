@@ -322,10 +322,22 @@ public final class InputHandler implements KeyListener, ActionListener {
     }
     
     /**
+     * Adds all items in the string[] to the buffer.
+     *
+     * @param lines lines to add to the buffer
+     */
+    public void addToBuffer(final String[] lines) {
+        for (String line : lines) {
+            addToBuffer(line);
+        }
+    }
+    
+    
+    /**
      * Adds the specified string to the buffer.
      * @param line The line to be added to the buffer
      */
-    private void addToBuffer(final String line) {
+    public void addToBuffer(final String line) {
         buffer[bufferMaximum] = line;
         bufferMaximum = normalise(bufferMaximum + 1);
         bufferPosition = bufferMaximum;

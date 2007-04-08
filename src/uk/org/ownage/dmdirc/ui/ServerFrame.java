@@ -129,5 +129,6 @@ public final class ServerFrame extends Frame {
     public void sendLine(final String line) {
         this.parent.addLine(line);
         this.parent.getParser().sendLine(line);
+        this.getInputHandler().addToBuffer(line);
     }
 }

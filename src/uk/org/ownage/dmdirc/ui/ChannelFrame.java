@@ -252,5 +252,6 @@ public final class ChannelFrame extends Frame {
     /** {@inheritDoc}. */
     public void sendLine(final String line) {
         this.parent.sendLine(line);
+        this.getInputHandler().addToBuffer(line);
     }
 }
