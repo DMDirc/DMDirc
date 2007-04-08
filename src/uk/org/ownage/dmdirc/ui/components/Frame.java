@@ -476,7 +476,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         end = pos;
         
         // Traverse backwards
-        while (start > 0 && start < text.length() && text.charAt(start) != ' ') {
+        while (start > 0 && start < text.length() && text.charAt(start) != ' '
+                && text.charAt(start) != '\n') {
             start--;
         }
         if (start + 1 < text.length() && text.charAt(start) == ' ') { start++; }
@@ -686,7 +687,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 parent.getServer().getChannel(text).activateFrame();
             }
         }// else {
-            //System.out.print("ignoring.");
+        //System.out.print("ignoring.");
         //}
         //System.out.println();
     }
