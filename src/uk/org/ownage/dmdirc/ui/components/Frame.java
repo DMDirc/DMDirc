@@ -600,21 +600,22 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 }
                 
             }
-        } else if (event.getSource() == getInputField()) {
-            if ((event.getModifiers() & KeyEvent.CTRL_MASK) != 0
-                    && event.getKeyCode() == KeyEvent.VK_V) {
-                try {
-                    clipboardContents =
-                            (String) Toolkit.getDefaultToolkit().getSystemClipboard()
-                            .getData(DataFlavor.stringFlavor);
-                    clipboardContentsLines = clipboardContents.split(System.getProperty("line.separator"));
-                } catch (HeadlessException ex) {
-                    Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
-                } catch (IOException ex) {
-                    Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
-                } catch (UnsupportedFlavorException ex) {
-                    Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
-                }
+        } else if (event.getSource() == getInputField()
+        && (event.getModifiers() & KeyEvent.CTRL_MASK) != 0
+                && event.getKeyCode() == KeyEvent.VK_V) {
+            try {
+                clipboardContents =
+                        (String) Toolkit.getDefaultToolkit().getSystemClipboard()
+                        .getData(DataFlavor.stringFlavor);
+                clipboardContentsLines = clipboardContents.split(System.getProperty("line.separator"));
+            } catch (HeadlessException ex) {
+                Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+            } catch (UnsupportedFlavorException ex) {
+                Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+            }
+            if (clipboardContents.indexOf('\n') >= 0) {
                 event.consume();
                 int pasteTrigger = 1;
                 if (Config.hasOption("ui", "pasteProtectionLimit")) {
@@ -625,7 +626,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                     }
                 }
                 if (clipboardContentsLines.length > pasteTrigger) {
-                    String[] options = {"Send", "Edit", "Cancel", };
+                    final String[] options = {"Send", "Edit", "Cancel", };
                     final int n = JOptionPane.showInternalOptionDialog(this,
                             "Paste containts " + clipboardContentsLines.length + " lines",
                             "Multi-line Paste",
@@ -668,26 +669,26 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param text text to check
      */
     private void checkClickText(final String text) {
-        System.out.print("Clicked text: '" + text + "' ");
+        //System.out.print("Clicked text: '" + text + "' ");
         if (text.toLowerCase(Locale.getDefault()).startsWith("http://")
         || text.toLowerCase(Locale.getDefault()).startsWith("https://")
         || text.toLowerCase(Locale.getDefault()).startsWith("www.")) {
-            System.out.print("opening browser.");
+            //System.out.print("opening browser.");
             MainFrame.getMainFrame().getStatusBar().setMessage("Opening: " + text);
             BrowserLauncher.openURL(text);
         } else if (parent.getServer().getParser().isValidChannelName(text)) {
-            System.out.print("is a valid channel ");
+            //System.out.print("is a valid channel ");
             if (parent.getServer().getParser().getChannelInfo(text) == null) {
-                System.out.print("joining.");
+                //System.out.print("joining.");
                 parent.getServer().getParser().joinChannel(text);
             } else {
-                System.out.print("activating.");
+                //System.out.print("activating.");
                 parent.getServer().getChannel(text).activateFrame();
             }
-        } else {
-            System.out.print("ignoring.");
-        }
-        System.out.println();
+        }// else {
+            //System.out.print("ignoring.");
+        //}
+        //System.out.println();
     }
     
     /**
