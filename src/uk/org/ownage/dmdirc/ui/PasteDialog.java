@@ -90,7 +90,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
         setTitle("Multi-line paste");
         setResizable(true);
         
-        infoLabel.setText("<html>Lines can be no longer than " 
+        infoLabel.setText("<html>Lines longer than " 
                 + parent.getMaxLineLength() 
                 + " characters will be automatically split.<br>"
                 + " This may cause more lines to be sent than you expect.</html>");
