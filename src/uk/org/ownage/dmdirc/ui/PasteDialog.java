@@ -29,6 +29,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
@@ -79,6 +80,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
     private void initComponents(final String text) {
         final GridBagConstraints constraints = new GridBagConstraints();
         final JScrollPane scrollPane = new JScrollPane();
+        final JLabel infoLabel = new JLabel();
         textField = new JTextArea(text);
         
         orderButtons(new JButton(), new JButton());
@@ -87,6 +89,11 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
         getContentPane().setLayout(new GridBagLayout());
         setTitle("Multi-line paste");
         setResizable(true);
+        
+        infoLabel.setText("<html>Lines can be no longer than " 
+                + parent.getMaxLineLength() 
+                + " characters will be automatically split.<br>"
+                + " This may cause more lines to be sent than you expect.</html>");
         
         textField.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         textField.setColumns(50);
@@ -100,11 +107,15 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
         constraints.gridwidth = 3;
         constraints.gridx = 0;
         constraints.gridy = 0;
+        getContentPane().add(infoLabel, constraints);
+        
+        constraints.insets.set(0, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER);
+        constraints.gridy = 2;
         getContentPane().add(scrollPane, constraints);
         
         constraints.weighty = 0.0;
         constraints.weightx = 1.0;
-        constraints.gridy = 1;
+        constraints.gridy = 3;
         constraints.gridwidth = 1;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         getContentPane().add(Box.createHorizontalGlue(), constraints);

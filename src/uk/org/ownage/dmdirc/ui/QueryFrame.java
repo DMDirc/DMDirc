@@ -48,6 +48,9 @@ public final class QueryFrame extends Frame {
      */
     private static final long serialVersionUID = 7;
     
+    /** max length a line can be. */
+    private final int maxLineLength;
+    
     /** This channel's command parser. */
     private final QueryCommandParser commandParser;
     
@@ -62,6 +65,8 @@ public final class QueryFrame extends Frame {
         super(owner);
         
         parent = owner;
+        
+        maxLineLength = this.getServer().getParser().getMaxLength("PRIVMSG", this.getFrameParent().toString());
         
         initComponents();
         
@@ -131,5 +136,10 @@ public final class QueryFrame extends Frame {
     public void sendLine(final String line) {
         this.parent.sendLine(line);
         this.getInputHandler().addToBuffer(line);
+    }
+    
+    /** {@inheritDoc}. */
+    public int getMaxLineLength() {
+        return maxLineLength;
     }
 }

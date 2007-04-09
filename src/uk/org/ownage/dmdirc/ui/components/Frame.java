@@ -627,10 +627,12 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                         //Ignore, use the default.
                     }
                 }
-                if (clipboardContentsLines.length > pasteTrigger) {
+                if (getNumLines(clipboardContents) > pasteTrigger) {
                     final String[] options = {"Send", "Edit", "Cancel", };
-                    final int n = JOptionPane.showInternalOptionDialog(this,
-                            "Paste containts " + clipboardContentsLines.length + " lines",
+                    final int n = JOptionPane.showOptionDialog(this,
+                            "<html>Paste would be sent as " 
+                            + clipboardContentsLines.length + " lines.<br>" 
+                            + "Do you want to continue?</html>",
                             "Multi-line Paste",
                             JOptionPane.YES_NO_CANCEL_OPTION,
                             JOptionPane.QUESTION_MESSAGE,
@@ -708,4 +710,25 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     public final SearchBar getSearchBar() {
         return searchBar;
     }
+    
+    /**
+     * Returns the number of lines the specified string would be sent as.
+     * @param line line to be checked
+     * @return number of lines that would be sent
+     */
+    public final int getNumLines(final String line) {
+        int lines;
+        String[] splitLines = line.split("\n");
+        lines = splitLines.length;
+        for (String splitLine : splitLines) {
+            lines += (int) Math.ceil(splitLine.length() / getMaxLineLength());
+        }
+        return lines;
+    }
+    
+    /**
+     * Returns the maximum length a line can be in this frame.
+     * @return max line length
+     */
+    public abstract int getMaxLineLength();
 }

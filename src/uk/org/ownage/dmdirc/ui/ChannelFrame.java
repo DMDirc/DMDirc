@@ -60,6 +60,9 @@ public final class ChannelFrame extends Frame {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 6;
+    
+    /** max length a line can be. */
+    private final int maxLineLength;
 
     /** The nick list model used for this channel's nickname list. */
     private NicklistListModel nicklistModel;
@@ -88,6 +91,8 @@ public final class ChannelFrame extends Frame {
         super(owner);
         
         parent = owner;
+        
+        maxLineLength = this.getServer().getParser().getMaxLength("PRIVMSG", this.getFrameParent().toString());
         
         initComponents();
         
@@ -253,5 +258,10 @@ public final class ChannelFrame extends Frame {
     public void sendLine(final String line) {
         this.parent.sendLine(line);
         this.getInputHandler().addToBuffer(line);
+    }
+
+    /** {@inheritDoc}. */
+    public int getMaxLineLength() {
+        return maxLineLength;
     }
 }

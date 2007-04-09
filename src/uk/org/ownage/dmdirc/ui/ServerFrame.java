@@ -48,6 +48,9 @@ public final class ServerFrame extends Frame {
      */
     private static final long serialVersionUID = 7;
     
+    /** max length a line can be. */
+    private final int maxLineLength;
+    
     /** This channel's command parser. */
     private final ServerCommandParser commandParser;
     
@@ -62,6 +65,8 @@ public final class ServerFrame extends Frame {
         super(owner);
         
         parent = owner;
+        
+        maxLineLength = this.getServer().getParser().MAX_LINELENGTH;
         
         initComponents();
         
@@ -130,5 +135,10 @@ public final class ServerFrame extends Frame {
         this.parent.addLine(line);
         this.parent.getParser().sendLine(line);
         this.getInputHandler().addToBuffer(line);
+    }
+    
+    /** {@inheritDoc}. */
+    public int getMaxLineLength() {
+        return maxLineLength;
     }
 }
