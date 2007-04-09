@@ -455,51 +455,52 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Checks for url's, channels and nicknames. {@inheritDoc}
      */
     public void mouseClicked(final MouseEvent mouseEvent) {
-        final int pos = getTextPane().getCaretPosition();
-        final int length = getTextPane().getDocument().getLength();
-        String text;
-        
-        if (pos == 0) {
-            return;
+        if (mouseEvent.getSource() == getTextPane()) {
+            final int pos = getTextPane().getCaretPosition();
+            final int length = getTextPane().getDocument().getLength();
+            String text;
+            
+            if (pos == 0) {
+                return;
+            }
+            
+            int start = (pos - 510 < 0) ? 0 : pos - 510;
+            int end = (pos + 510 > length) ? length : pos + 510;
+            
+            try {
+                text = getTextPane().getText(start, end);
+            } catch (BadLocationException ex) {
+                return;
+            }
+            
+            start = pos;
+            end = pos;
+            
+            // Traverse backwards
+            while (start > 0 && start < text.length() && text.charAt(start) != ' '
+                    && text.charAt(start) != '\n') {
+                start--;
+            }
+            if (start + 1 < text.length() && text.charAt(start) == ' ') { start++; }
+            
+            // And forwards
+            while (end < text.length() && end > 0 && text.charAt(end) != ' '
+                    && text.charAt(end) != '\n') {
+                end++;
+            }
+            
+            if (start > end) {
+                return;
+            }
+            
+            text = text.substring(start, end);
+            
+            if (text.length() < 4) {
+                return;
+            }
+            
+            checkClickText(text);
         }
-        
-        int start = (pos - 510 < 0) ? 0 : pos - 510;
-        int end = (pos + 510 > length) ? length : pos + 510;
-        
-        try {
-            text = getTextPane().getText(start, end);
-        } catch (BadLocationException ex) {
-            return;
-        }
-        
-        start = pos;
-        end = pos;
-        
-        // Traverse backwards
-        while (start > 0 && start < text.length() && text.charAt(start) != ' '
-                && text.charAt(start) != '\n') {
-            start--;
-        }
-        if (start + 1 < text.length() && text.charAt(start) == ' ') { start++; }
-        
-        // And forwards
-        while (end < text.length() && end > 0 && text.charAt(end) != ' '
-                && text.charAt(end) != '\n') {
-            end++;
-        }
-        
-        if (start > end) {
-            return;
-        }
-        
-        text = text.substring(start, end);
-        
-        if (text.length() < 4) {
-            return;
-        }
-        
-        checkClickText(text);
-        
         processMouseEvent(mouseEvent);
     }
     
