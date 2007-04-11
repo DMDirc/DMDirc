@@ -465,16 +465,18 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             }
             
             int start = (pos - 510 < 0) ? 0 : pos - 510;
-            int end = (pos + 510 > length) ? length : pos + 510;
+            int end = (start + 1020 >= length) ? length - start : 1020;
             
             try {
                 text = getTextPane().getText(start, end);
             } catch (BadLocationException ex) {
+                Logger.error(ErrorLevel.TRIVIAL, "Unable to select text (start: " +
+                        start + ", end: " + end + ")");
                 return;
             }
             
-            start = pos;
-            end = pos;
+            start = pos - start;
+            end = start;
             
             // Traverse backwards
             while (start > 0 && start < text.length() && text.charAt(start) != ' '
@@ -500,8 +502,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             }
             
             checkClickText(text);
+            
+            processMouseEvent(mouseEvent);
         }
-        processMouseEvent(mouseEvent);
     }
     
     /**
@@ -630,8 +633,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 if (getNumLines(clipboardContents) > pasteTrigger) {
                     final String[] options = {"Send", "Edit", "Cancel", };
                     final int n = JOptionPane.showOptionDialog(this,
-                            "<html>Paste would be sent as " 
-                            + clipboardContentsLines.length + " lines.<br>" 
+                            "<html>Paste would be sent as "
+                            + clipboardContentsLines.length + " lines.<br>"
                             + "Do you want to continue?</html>",
                             "Multi-line Paste",
                             JOptionPane.YES_NO_CANCEL_OPTION,
