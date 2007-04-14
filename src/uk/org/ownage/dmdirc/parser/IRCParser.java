@@ -106,6 +106,14 @@ public final class IRCParser implements Runnable {
 	private long pingTime;
 	/** Current Server Lag. */
 	private long serverLag;
+	/**
+	 * Count down to next ping.
+	 * The timer fires every 10 seconds, this value is decreased every time the
+	 * timer fires.<br>
+	 * Once it reaches 0, we send a ping, and reset it to 6, this means we ping
+	 * the server every minute.
+	 */
+	private byte pingCountDown;
 
 	/** Name the server calls itself. */
 	protected String sServerName;
@@ -1216,6 +1224,7 @@ public final class IRCParser implements Runnable {
 		if (pingTimer == null) { pingTimer = new Timer(); }
 		else { pingTimer.cancel(); }
 		pingTimer.schedule(new PingTimer(this), 0, 15000);
+		pingCountDown = 1;
 	}
 	
 	/**
@@ -1225,11 +1234,18 @@ public final class IRCParser implements Runnable {
 	 */
 	protected void pingTimerTask() {
 		if (pingNeeded) {
-			callPingFailed();
+			if (!callPingFailed()) {
+				pingTimer.cancel();
+				disconnect("Server not responding.");
+			}
 		} else {
-			sendLine("PING "+System.currentTimeMillis());
-			pingTime = System.currentTimeMillis();
-			setPingNeeded(true);
+			--pingCountDown;
+			if (pingCountDown < 1) {
+				sendLine("PING "+System.currentTimeMillis());
+				pingTime = System.currentTimeMillis();
+				setPingNeeded(true);
+				pingCountDown = 6;
+			}
 		}
 	}
 	
