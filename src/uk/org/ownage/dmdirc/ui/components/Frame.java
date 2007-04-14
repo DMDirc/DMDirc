@@ -164,6 +164,11 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
         getInputField().setCaretColor(ColourManager.getColour(
                 Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
+        
+        final Boolean pref = Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"));
+        if (pref || MainFrame.getMainFrame().getMaximised()) {
+            hideBorder();
+        }        
     }
     
     /**
@@ -297,8 +302,30 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     public final void propertyChange(final PropertyChangeEvent propertyChangeEvent) {
         if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
-            Frame.this.myborder = getBorder();
-            Frame.this.titlebarSize =
+            hideBorder();
+            
+            MainFrame.getMainFrame().setMaximised(true);
+        } else {
+            setBorder(myborder);
+            ((BasicInternalFrameUI) getUI()).getNorthPane()
+            .setPreferredSize(titlebarSize);
+            ((BasicInternalFrameUI) getUI()).getNorthPane()
+            .setMaximumSize(titlebarSize);
+            
+            myborder = null;
+            
+            MainFrame.getMainFrame().setMaximised(false);
+            MainFrame.getMainFrame().setActiveFrame(this);
+        }
+    }
+    
+    /**
+     * Hides the border around the frame.
+     */
+    private final void hideBorder() {
+        if (myborder == null) {
+            myborder = getBorder();
+            titlebarSize =
                     ((BasicInternalFrameUI) getUI())
                     .getNorthPane().getPreferredSize();
             
@@ -307,17 +334,6 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             ((BasicInternalFrameUI) getUI()).getNorthPane()
             .setMaximumSize(new Dimension(0, 0));
             setBorder(new EmptyBorder(0, 0, 0, 0));
-            
-            MainFrame.getMainFrame().setMaximised(true);
-        } else {
-            setBorder(Frame.this.myborder);
-            ((BasicInternalFrameUI) getUI()).getNorthPane()
-            .setPreferredSize(Frame.this.titlebarSize);
-            ((BasicInternalFrameUI) getUI()).getNorthPane()
-            .setMaximumSize(Frame.this.titlebarSize);
-            
-            MainFrame.getMainFrame().setMaximised(false);
-            MainFrame.getMainFrame().setActiveFrame(Frame.this);
         }
     }
     
