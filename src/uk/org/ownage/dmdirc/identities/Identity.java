@@ -87,7 +87,7 @@ public final class Identity implements ConfigSource {
      * Returns the properties object belonging to this identity.
      * @return This identity's property object
      */
-    public properties getProperties() {
+    public Properties getProperties() {
         return properties;
     }    
     
