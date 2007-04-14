@@ -37,6 +37,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.Timer;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -49,6 +50,8 @@ import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDataOut;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDebugInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnErrorInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnSocketClosed;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnPingFailed;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnPingSuccess;
 
 /**
  * IRC Parser.
@@ -94,6 +97,15 @@ public final class IRCParser implements Runnable {
 	public MyInfo me = new MyInfo();
 	/**	Server Info requested by user. */
 	public ServerInfo server = new ServerInfo();
+	
+	/**	Timer for server ping. */
+	private Timer pingTimer = null;
+	/** Is a ping needed? */
+	private Boolean pingNeeded = false; // This is Boolean not boolean for a reason.
+	/** Time last ping was sent at. */
+	private long pingTime;
+	/** Current Server Lag. */
+	private long serverLag;
 
 	/** Name the server calls itself. */
 	protected String sServerName;
@@ -184,11 +196,11 @@ public final class IRCParser implements Runnable {
 
 	/** This is the default TrustManager for SSL Sockets, it trusts all ssl certs. */
 	private TrustManager[] trustAllCerts = new TrustManager[]{
-			new X509TrustManager() {
-					public X509Certificate[] getAcceptedIssuers() { return null;	}
-					public void checkClientTrusted(final X509Certificate[] certs, final String authType) { }
-					public void checkServerTrusted(final X509Certificate[] certs, final String authType) { }
-			}, 
+		new X509TrustManager() {
+			public X509Certificate[] getAcceptedIssuers() { return null;	}
+			public void checkClientTrusted(final X509Certificate[] certs, final String authType) { }
+			public void checkServerTrusted(final X509Certificate[] certs, final String authType) { }
+		}, 
 	};
 		
 	/** This is the TrustManager used for SSL Sockets. */
@@ -197,7 +209,7 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Default constructor, ServerInfo and MyInfo need to be added separately (using IRC.me and IRC.server).
 	 */
-	public IRCParser() { }
+	public IRCParser() { this(null, null); }
 	/**
 	 * Constructor with ServerInfo, MyInfo needs to be added separately (using IRC.me).
 	 *
@@ -352,6 +364,30 @@ public final class IRCParser implements Runnable {
 		return false;
 	}
 	
+	/**
+	 * Callback to all objects implementing the PingFailed Callback.
+	 *
+	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPingFailed
+	 * @return true if a method was called, false otherwise
+	 */	
+	protected boolean callPingFailed() {
+		final CallbackOnPingFailed cb = (CallbackOnPingFailed) myCallbackManager.getCallbackType("OnPingFailed");
+		if (cb != null) { return cb.call(); }
+		return false;
+	}
+	
+	/**
+	 * Callback to all objects implementing the PingSuccess Callback.
+	 *
+	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPingSuccess
+	 * @return true if a method was called, false otherwise
+	 */	
+	protected boolean callPingSuccess() {
+		final CallbackOnPingSuccess cb = (CallbackOnPingSuccess) myCallbackManager.getCallbackType("OnPingSuccess");
+		if (cb != null) { return cb.call(); }
+		return false;
+	}
+	
 	//---------------------------------------------------------------------------
 	// End Callbacks
 	//---------------------------------------------------------------------------
@@ -438,7 +474,7 @@ public final class IRCParser implements Runnable {
 		}
 		setNickname(me.getNickname());
 		sendString("USER " + me.getUsername().toLowerCase() + " * * :" + me.getRealname());
-		isFirst = false;	
+		isFirst = false;
 	}
 	
 	/**
@@ -471,6 +507,7 @@ public final class IRCParser implements Runnable {
 				line = in.readLine(); // Blocking :/
 				if (line == null) {
 					currentSocketState = STATE_CLOSED;
+					pingTimer.cancel();
 					// Empty the ProcessingManager
 					myProcessingManager.empty();
 					callSocketClosed();
@@ -481,6 +518,7 @@ public final class IRCParser implements Runnable {
 				}
 			} catch (IOException e) {
 				currentSocketState = STATE_CLOSED;
+				pingTimer.cancel();
 				// Empty the ProcessingManager
 				myProcessingManager.empty();
 				callSocketClosed();
@@ -491,11 +529,12 @@ public final class IRCParser implements Runnable {
 	}
 	
 	/** Close socket on destroy. */
-	protected void finalize() {
+	protected void finalize() throws Throwable {
 		try { socket.close(); }
 		catch (IOException e) { 
 			callDebugInfo(DEBUG_SOCKET, "Could not close socket"); 
 		}
+		super.finalize();
 	}
 
 	/**
@@ -622,9 +661,14 @@ public final class IRCParser implements Runnable {
 		callDataIn(line);
 		final String sParam = token[1];
 		
+		setPingNeeded(false);
+		
 		try {
 			if (token[0].equalsIgnoreCase("PING") || token[1].equalsIgnoreCase("PING")) { 
 				sendString("PONG :" + sParam); 
+			} else if (token[0].equalsIgnoreCase("PONG") || token[1].equalsIgnoreCase("PONG")) { 
+				serverLag = System.currentTimeMillis() - pingTime;
+				callPingSuccess();
 			} else {
 				if (!got001) {
 					// Before 001 we don't care about much.
@@ -994,8 +1038,18 @@ public final class IRCParser implements Runnable {
 		// a "PRIVMSG" this will find the length of ":nick!user@host PRIVMSG #channel :"
 		// and subtract it from the MAX_LINELENGTH. This should be sufficient in most cases.
 		// Lint = the 2 ":" at the start and end and the 3 separating " "s
+		return getMaxLength(sType.length() + sTarget.length());
+	}
+	
+	/**
+	 * Get the max length a message can be.
+	 *
+	 * @param nLength Length of stuff. (Ie "PRIVMSG"+"#Channel")
+	 * @return Max Length message should be.
+	 */
+	public int getMaxLength(final int nLength) { 
 		final int lineLint = 5;
-		return MAX_LINELENGTH - getMyself().toString().length() - sType.length() - sTarget.length() - lineLint;
+		return MAX_LINELENGTH - getMyself().toString().length() - nLength - lineLint;
 	}
 	
 	/**
@@ -1151,6 +1205,62 @@ public final class IRCParser implements Runnable {
 		} else {
 			if (getType) { return "generic"; }
 			else { return ""; }
+		}
+	}
+	
+	/**
+	 * Start the pingTimer.
+	 */
+	protected void startPingTimer() {
+		setPingNeeded(false);
+		if (pingTimer == null) { pingTimer = new Timer(); }
+		else { pingTimer.cancel(); }
+		pingTimer.schedule(new PingTimer(this), 0, 15000);
+	}
+	
+	/**
+	 * This is called when the ping Timer has been executed.
+	 * As the timer is restarted on every incomming message, this will only be
+	 * called when there has been no incomming line for 15 seconds.
+	 */
+	protected void pingTimerTask() {
+		if (pingNeeded) {
+			callPingFailed();
+		} else {
+			sendLine("PING "+System.currentTimeMillis());
+			pingTime = System.currentTimeMillis();
+			setPingNeeded(true);
+		}
+	}
+	
+	/**
+	 * Get the current server lag.
+	 *
+	 * @return Time between sending a PING and recieving a PONG
+	 */
+	public long getServerLag() {
+		return serverLag;
+	}
+	
+	/**
+	 * Get if a ping is needed or not.
+	 *
+	 * @returns true if waiting for a ping reply, else false.
+	 */
+	private boolean getPingNeeded() {
+		synchronized (pingNeeded) {
+			return pingNeeded;
+		}
+	}
+
+	/**
+	 * Set if a ping is needed or not.
+	 *
+	 * @param newStatus new value to set pingNeeded to.
+	 */
+	private void setPingNeeded(boolean newStatus)  {
+		synchronized (pingNeeded) {
+			pingNeeded = newStatus;
 		}
 	}
 	

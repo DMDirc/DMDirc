@@ -47,6 +47,7 @@ public class ProcessMOTD extends IRCProcessor {
 		} else if (sParam.equals("372")) {
 			callMOTDLine(token[token.length-1]);
 		} else {
+			myParser.startPingTimer();
 			if (!myParser.h005Info.containsKey("CHANTYPES")) { myParser.parseChanPrefix(); }
 			if (!myParser.h005Info.containsKey("PREFIX")) { myParser.parsePrefixModes(); }
 			if (!myParser.h005Info.containsKey("USERMODES")) { myParser.parseUserModes(); }
