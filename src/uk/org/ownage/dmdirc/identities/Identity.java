@@ -27,7 +27,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.util.Enumeration;
 import java.util.Properties;
+
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -82,6 +84,14 @@ public final class Identity implements ConfigSource {
     }
     
     /**
+     * Returns the properties object belonging to this identity.
+     * @return This identity's property object
+     */
+    public properties getProperties() {
+        return properties;
+    }    
+    
+    /**
      * Returns the name of this identity.
      * @return The name of this identity
      */
@@ -119,7 +129,7 @@ public final class Identity implements ConfigSource {
     public String getOption(final String domain, final String option) {
         return (String) properties.get(domain + "." + option);
     }
-    
+        
     /**
      * Sets the specified option in this identity to the specified value.
      * @param domain The domain of the option
