@@ -46,7 +46,7 @@ public final class ConfigTarget implements Comparable {
     
     /** Creates a new instance of ConfigTarget. */
     public ConfigTarget() {
-	//Do nothing.
+        //Do nothing.
     }
     
     /** Sets this target to be a global config source. */
@@ -96,6 +96,27 @@ public final class ConfigTarget implements Comparable {
      */
     public int getType() {
         return type;
+    }
+    
+    /**
+     * Returns a string representation of the type of this target.
+     * @return A string describing this target's type
+     */
+    public String getTypeName() {
+        switch(type) {
+            case TYPE_GLOBAL:
+                return "global";
+            case TYPE_IRCD:
+                return "ircd";
+            case TYPE_NETWORK:
+                return "network";
+            case TYPE_SERVER:
+                return "server";
+            case TYPE_CHANNEL:
+                return "channel";
+            default:
+                return "Unknown";
+        }
     }
     
     /**

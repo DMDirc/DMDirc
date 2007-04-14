@@ -22,9 +22,15 @@
 
 package uk.org.ownage.dmdirc.identities;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.Properties;
+import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
  * An identity is a group of settings that are applied to a connection, server,
@@ -150,6 +156,44 @@ public final class Identity implements ConfigSource {
      */
     public int compareTo(final ConfigSource target) {
         return target.getTarget().compareTo(myTarget);
+    }
+    
+    /**
+     * Generates an empty identity for the specified target.
+     * @param target The target for the new identity
+     * @return An empty identity for the specified target
+     */
+    public static Identity buildIdentity(final ConfigTarget target) {
+        final Properties properties = new Properties();
+        properties.setProperty("identity.name", target.getData());
+        properties.setProperty("identity." + target.getTypeName(), target.getData());
+        
+        final String fs = System.getProperty("file.separator");
+        final String location = Config.getConfigDir() + "identities" + fs;
+        final FileWriter writer;
+        
+        try {
+            writer = new FileWriter(location + target.getData());
+            properties.store(writer, "");
+            writer.close();
+        } catch (IOException ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to write new identity file", ex);
+            return null;
+        }
+        
+        try {
+            final File file = new File(location + target.getData());
+            return new Identity(file.toURI().toURL().openStream());
+        } catch (MalformedURLException ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to open new identity file", ex);
+            return null;
+        } catch (InvalidIdentityFileException ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to open new identity file", ex);
+            return null;
+        } catch (IOException ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to open new identity file", ex);
+            return null;
+        }
     }
     
 }

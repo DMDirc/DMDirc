@@ -193,4 +193,36 @@ public final class IdentityManager {
         return getSources(ircd, network, server, "<Unknown>");
     }
     
+    /**
+     * Retrieves the config for the specified channel@network. The config is
+     * created if it doesn't exist.
+     * @param network The name of the network
+     * @param channel The name of the channel
+     * @return A config source for the channel
+     */
+    public static Identity getChannelConfig(final String network,
+            final String channel) {
+        final String myTarget = (channel + "@" + network).toLowerCase();
+        
+        for (ConfigSource identity : identities) {
+            if (identity.getTarget().getType() == ConfigTarget.TYPE_CHANNEL
+                    && identity.getTarget().getData() == myTarget) {
+                return (Identity) identity;
+            }
+        }
+        
+        // We need to create one
+        final ConfigTarget target = new ConfigTarget();
+        target.setChannel(myTarget);
+        
+        final Identity identity = Identity.buildIdentity(target);
+        
+        if (identity != null) {
+            addIdentity(identity);
+        }
+        
+        return identity;
+    }
+    
+    
 }
