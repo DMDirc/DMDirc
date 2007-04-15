@@ -36,9 +36,11 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -58,6 +60,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.identities.IdentityManager;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ChannelListModeItem;
 import uk.org.ownage.dmdirc.parser.IRCParser;
@@ -484,6 +487,8 @@ public class ChannelSettingsDialog extends StandardDialog
         JPanel addPanel = new JPanel();
         JLabel label;
         JButton button;
+        Properties settings;
+        JLabel infoLabel = new JLabel();
         JCheckBox splitUserModes = new JCheckBox();
         JTextField cycleText = new JTextField();
         JTextField kickText = new JTextField();
@@ -493,6 +498,7 @@ public class ChannelSettingsDialog extends StandardDialog
         JTextField frameBuffer = new JTextField();
         JTextField inputBuffer = new JTextField();
         JTextField newSettingField = new JTextField();
+        JComboBox newSettingDrop = new JComboBox(new DefaultComboBoxModel());
         
         currentSettingsPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
@@ -507,187 +513,227 @@ public class ChannelSettingsDialog extends StandardDialog
                 LARGE_BORDER)));
         addPanel.setLayout(new SpringLayout());
         
-        //channel.splitusermodes
-        label = new JLabel();
-        label.setText("Split user modes: ");
-        label.setPreferredSize(new Dimension(150,
-                label.getFont().getSize()));
-        splitUserModes.setSelected(false);
-        splitUserModes.setPreferredSize(new Dimension(150,
-                splitUserModes.getFont().getSize()));
-        label.setLabelFor(splitUserModes);
-        button = new JButton();
-        button.setIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-        button.setRolloverIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setPressedIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setContentAreaFilled(false);
-        button.setBorder(new EmptyBorder(0, 0, 0, 0));
-        button.setPreferredSize(new Dimension(16, 16));
-        currentSettingsPanel.add(label);
-        currentSettingsPanel.add(splitUserModes);
-        currentSettingsPanel.add(button);
-        //general.cyclemessage
-        label = new JLabel();
-        label.setText("Cycle message: ");
-        label.setPreferredSize(new Dimension(150,
-                label.getFont().getSize()));
-        cycleText.setText("");
-        cycleText.setPreferredSize(new Dimension(150,
-                cycleText.getFont().getSize()));
-        label.setLabelFor(cycleText);
-        button = new JButton();
-        button.setIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-        button.setRolloverIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setPressedIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setContentAreaFilled(false);
-        button.setBorder(new EmptyBorder(0, 0, 0, 0));
-        button.setPreferredSize(new Dimension(16, 16));
-        currentSettingsPanel.add(label);
-        currentSettingsPanel.add(cycleText);
-        currentSettingsPanel.add(button);
-        //general.kickmessage
-        label = new JLabel();
-        label.setText("Kick message: ");
-        label.setPreferredSize(new Dimension(150,
-                label.getFont().getSize()));
-        kickText.setText("");
-        kickText.setPreferredSize(new Dimension(150,
-                kickText.getFont().getSize()));
-        label.setLabelFor(kickText);
-        button = new JButton();
-        button.setIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-        button.setRolloverIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setPressedIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setContentAreaFilled(false);
-        button.setBorder(new EmptyBorder(0, 0, 0, 0));
-        button.setPreferredSize(new Dimension(16, 16));
-        currentSettingsPanel.add(label);
-        currentSettingsPanel.add(kickText);
-        currentSettingsPanel.add(button);
-        //general.partmessage
-        label = new JLabel();
-        label.setText("Part message: ");
-        label.setPreferredSize(new Dimension(150,
-                label.getFont().getSize()));
-        partText.setText("");
-        partText.setPreferredSize(new Dimension(150,
-                partText.getFont().getSize()));
-        label.setLabelFor(partText);
-        button = new JButton();
-        button.setIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-        button.setRolloverIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setPressedIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setContentAreaFilled(false);
-        button.setBorder(new EmptyBorder(0, 0, 0, 0));
-        button.setPreferredSize(new Dimension(16, 16));
-        currentSettingsPanel.add(label);
-        currentSettingsPanel.add(partText);
-        currentSettingsPanel.add(button);
-        //ui.backgroundcolour
-        label = new JLabel();
-        label.setText("Background colour: ");
-        label.setPreferredSize(new Dimension(150,
-                label.getFont().getSize()));
-        backColour.setText("");
-        backColour.setPreferredSize(new Dimension(150,
-                backColour.getFont().getSize()));
-        label.setLabelFor(backColour);
-        button = new JButton();
-        button.setIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-        button.setRolloverIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setPressedIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setContentAreaFilled(false);
-        button.setBorder(new EmptyBorder(0, 0, 0, 0));
-        button.setPreferredSize(new Dimension(16, 16));
-        currentSettingsPanel.add(label);
-        currentSettingsPanel.add(backColour);
-        currentSettingsPanel.add(button);
-        //ui.foregroundcolour
-        label = new JLabel();
-        label.setText("Foreground colour: ");
-        label.setPreferredSize(new Dimension(150,
-                label.getFont().getSize()));
-        foreColour.setText("");
-        foreColour.setPreferredSize(new Dimension(150,
-                foreColour.getFont().getSize()));
-        label.setLabelFor(foreColour);
-        button = new JButton();
-        button.setIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-        button.setRolloverIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setPressedIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setContentAreaFilled(false);
-        button.setBorder(new EmptyBorder(0, 0, 0, 0));
-        button.setPreferredSize(new Dimension(16, 16));
-        currentSettingsPanel.add(label);
-        currentSettingsPanel.add(foreColour);
-        currentSettingsPanel.add(button);
-        //ui.frameBufferSize
-        label = new JLabel();
-        label.setText("Frame buffer size: ");
-        label.setPreferredSize(new Dimension(150,
-                label.getFont().getSize()));
-        frameBuffer.setText("");
-        frameBuffer.setPreferredSize(new Dimension(150,
-                frameBuffer.getFont().getSize()));
-        label.setLabelFor(frameBuffer);
-        button = new JButton();
-        button.setIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-        button.setRolloverIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setPressedIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setContentAreaFilled(false);
-        button.setBorder(new EmptyBorder(0, 0, 0, 0));
-        button.setPreferredSize(new Dimension(16, 16));
-        currentSettingsPanel.add(label);
-        currentSettingsPanel.add(frameBuffer);
-        currentSettingsPanel.add(button);
-        //ui.inputbuffersize
-        label = new JLabel();
-        label.setText("Input buffer size: ");
-        label.setPreferredSize(new Dimension(150,
-                label.getFont().getSize()));
-        inputBuffer.setText("");
-        inputBuffer.setPreferredSize(new Dimension(150,
-                frameBuffer.getFont().getSize()));
-        label.setLabelFor(inputBuffer);
-        button = new JButton();
-        button.setIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-        button.setRolloverIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setPressedIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-        button.setContentAreaFilled(false);
-        button.setBorder(new EmptyBorder(0, 0, 0, 0));
-        button.setPreferredSize(new Dimension(16, 16));
-        currentSettingsPanel.add(label);
-        currentSettingsPanel.add(inputBuffer);
-        currentSettingsPanel.add(button);
+        infoLabel.setText("<html>These settings are specific to this channel on this network,<br>"
+                + "any settings specified here will overwrite global settings</html>");
         
-        layoutGrid(currentSettingsPanel, 8, 3, SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER);
+        settings = IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
+                channel.getChannelInfo().getName()).getProperties();
         
-        JComboBox newSettingDrop = new JComboBox(new String[]{"", });
+        if (settings.getProperty("channel.splitusermodes") != null) {
+            label = new JLabel();
+            label.setText("Split user modes: ");
+            label.setPreferredSize(new Dimension(150,
+                    label.getFont().getSize()));
+            splitUserModes.setSelected(false);
+            splitUserModes.setPreferredSize(new Dimension(150,
+                    splitUserModes.getFont().getSize()));
+            label.setLabelFor(splitUserModes);
+            button = new JButton();
+            button.setIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
+            button.setRolloverIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setPressedIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setContentAreaFilled(false);
+            button.setBorder(new EmptyBorder(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 16));
+            currentSettingsPanel.add(label);
+            currentSettingsPanel.add(splitUserModes);
+            currentSettingsPanel.add(button);
+        } else {
+            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Split user modes");
+        }
+        if (settings.getProperty("general.cyclemessage") != null) {
+            label = new JLabel();
+            label.setText("Cycle message: ");
+            label.setPreferredSize(new Dimension(150,
+                    label.getFont().getSize()));
+            cycleText.setText("");
+            cycleText.setPreferredSize(new Dimension(150,
+                    cycleText.getFont().getSize()));
+            label.setLabelFor(cycleText);
+            button = new JButton();
+            button.setIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
+            button.setRolloverIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setPressedIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setContentAreaFilled(false);
+            button.setBorder(new EmptyBorder(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 16));
+            currentSettingsPanel.add(label);
+            currentSettingsPanel.add(cycleText);
+            currentSettingsPanel.add(button);
+        } else {
+            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Cycle Message");
+        }
+        if (settings.getProperty("general.kickmessage") != null) {
+            label = new JLabel();
+            label.setText("Kick message: ");
+            label.setPreferredSize(new Dimension(150,
+                    label.getFont().getSize()));
+            kickText.setText("");
+            kickText.setPreferredSize(new Dimension(150,
+                    kickText.getFont().getSize()));
+            label.setLabelFor(kickText);
+            button = new JButton();
+            button.setIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
+            button.setRolloverIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setPressedIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setContentAreaFilled(false);
+            button.setBorder(new EmptyBorder(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 16));
+            currentSettingsPanel.add(label);
+            currentSettingsPanel.add(kickText);
+            currentSettingsPanel.add(button);
+        } else {
+            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Kick Message");
+        }
+        if (settings.getProperty("general.partmessage") != null) {
+            //general.partmessage
+            label = new JLabel();
+            label.setText("Part message: ");
+            label.setPreferredSize(new Dimension(150,
+                    label.getFont().getSize()));
+            partText.setText("");
+            partText.setPreferredSize(new Dimension(150,
+                    partText.getFont().getSize()));
+            label.setLabelFor(partText);
+            button = new JButton();
+            button.setIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
+            button.setRolloverIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setPressedIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setContentAreaFilled(false);
+            button.setBorder(new EmptyBorder(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 16));
+            currentSettingsPanel.add(label);
+            currentSettingsPanel.add(partText);
+            currentSettingsPanel.add(button);
+        } else {
+            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Part Message");
+        }
+        if (settings.getProperty("ui.backgroundcolour") != null) {
+            label = new JLabel();
+            label.setText("Background colour: ");
+            label.setPreferredSize(new Dimension(150,
+                    label.getFont().getSize()));
+            backColour.setText("");
+            backColour.setPreferredSize(new Dimension(150,
+                    backColour.getFont().getSize()));
+            label.setLabelFor(backColour);
+            button = new JButton();
+            button.setIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
+            button.setRolloverIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setPressedIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setContentAreaFilled(false);
+            button.setBorder(new EmptyBorder(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 16));
+            currentSettingsPanel.add(label);
+            currentSettingsPanel.add(backColour);
+            currentSettingsPanel.add(button);
+        } else {
+            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Background Colour");
+        }
+        if (settings.getProperty("ui.foregroundcolour") != null) {
+            label = new JLabel();
+            label.setText("Foreground colour: ");
+            label.setPreferredSize(new Dimension(150,
+                    label.getFont().getSize()));
+            foreColour.setText("");
+            foreColour.setPreferredSize(new Dimension(150,
+                    foreColour.getFont().getSize()));
+            label.setLabelFor(foreColour);
+            button = new JButton();
+            button.setIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
+            button.setRolloverIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setPressedIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setContentAreaFilled(false);
+            button.setBorder(new EmptyBorder(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 16));
+            currentSettingsPanel.add(label);
+            currentSettingsPanel.add(foreColour);
+            currentSettingsPanel.add(button);
+        } else {
+            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Foreground Colour");
+        }
+        if (settings.getProperty("ui.frameBufferSize") != null) {
+            label = new JLabel();
+            label.setText("Frame buffer size: ");
+            label.setPreferredSize(new Dimension(150,
+                    label.getFont().getSize()));
+            frameBuffer.setText("");
+            frameBuffer.setPreferredSize(new Dimension(150,
+                    frameBuffer.getFont().getSize()));
+            label.setLabelFor(frameBuffer);
+            button = new JButton();
+            button.setIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
+            button.setRolloverIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setPressedIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setContentAreaFilled(false);
+            button.setBorder(new EmptyBorder(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 16));
+            currentSettingsPanel.add(label);
+            currentSettingsPanel.add(frameBuffer);
+            currentSettingsPanel.add(button);
+        } else {
+            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Frame Buffer Size");
+        }
+        if (settings.getProperty("ui.inputbuffersize") != null) {
+            label = new JLabel();
+            label.setText("Input buffer size: ");
+            label.setPreferredSize(new Dimension(150,
+                    label.getFont().getSize()));
+            inputBuffer.setText("");
+            inputBuffer.setPreferredSize(new Dimension(150,
+                    frameBuffer.getFont().getSize()));
+            label.setLabelFor(inputBuffer);
+            button = new JButton();
+            button.setIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
+            button.setRolloverIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setPressedIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            button.setContentAreaFilled(false);
+            button.setBorder(new EmptyBorder(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 16));
+            currentSettingsPanel.add(label);
+            currentSettingsPanel.add(inputBuffer);
+            currentSettingsPanel.add(button);
+        } else {
+            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Input Buffer Size");
+        }
+        
+        if (8 - newSettingDrop.getModel().getSize() == 0) {
+            currentSettingsPanel.add(new JLabel("No channel specific settings."));
+        }
+        
+        int numItems = 8 - newSettingDrop.getModel().getSize();
+        if (8 - newSettingDrop.getModel().getSize() == 0) {
+            layoutGrid(currentSettingsPanel, 1,
+                1, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
+        } else {
+        layoutGrid(currentSettingsPanel, 8 - newSettingDrop.getModel().getSize(),
+                3, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
+        }
+        
         newSettingDrop.setPreferredSize(new Dimension(150,
                 newSettingDrop.getFont().getSize()));
         newSettingField.setText("");
@@ -701,11 +747,15 @@ public class ChannelSettingsDialog extends StandardDialog
         
         constraints.gridx = 0;
         constraints.gridy = 0;
-        constraints.weighty = 1.0;
+        constraints.weighty = 0.0;
         constraints.weightx = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
-        parent.add(currentSettingsPanel, constraints);
+        parent.add(infoLabel, constraints);
+        constraints.weighty = 1.0;
         constraints.gridy = 1;
+        parent.add(currentSettingsPanel, constraints);
+        constraints.weighty = 0.0;
+        constraints.gridy = 2;
         parent.add(addPanel, constraints);
     }
     
@@ -801,7 +851,6 @@ public class ChannelSettingsDialog extends StandardDialog
                         modeCheckBoxes.get(mode).isSelected(),
                         mode.toCharArray()[0],
                         "");
-                
             }
         }
         
