@@ -66,7 +66,7 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
 
-import static uk.org.ownage.dmdirc.ui.UIConstants.*;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
 
 /**
  * Manages open windows in the application in a tree style view.

@@ -61,7 +61,7 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
-import static uk.org.ownage.dmdirc.ui.UIConstants.*;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
 
 /**
  * Allows the user to modify global client preferences.
@@ -244,18 +244,24 @@ public final class PreferencesDialog extends StandardDialog
 	    case TEXTFIELD:
 		option = new JTextField();
 		((JTextField) option).setText(configValue);
+                ((JTextField) option).setPreferredSize(
+                        new Dimension(Short.MAX_VALUE, option.getFont().getSize()));
 		textFields.put(optionName, (JTextField) option);
 		break;
 	    case CHECKBOX:
 		option = new JCheckBox();
 		((JCheckBox) option).
 			setSelected(Boolean.parseBoolean(configValue));
+                ((JCheckBox) option).setPreferredSize(
+                        new Dimension(Short.MAX_VALUE, option.getFont().getSize()));
 		checkBoxes.put(optionName, (JCheckBox) option);
 		break;
 	    case COMBOBOX:
 		option = new JComboBox(comboOptions);
 		((JComboBox) option).setSelectedItem(configValue);
 		comboBoxes.put(optionName, (JComboBox) option);
+                ((JComboBox) option).setPreferredSize(
+                        new Dimension(Short.MAX_VALUE, option.getFont().getSize()));
 		((JComboBox) option).setEditable(comboEditable);
 		break;
 	    default:
@@ -491,80 +497,6 @@ public final class PreferencesDialog extends StandardDialog
 	} else if (getCancelButton().equals(actionEvent.getSource())) {
 	    setVisible(false);
 	}
-    }
-    
-    /**
-     * Aligns the components in a container horizontally and adds springs
-     * vertically.
-     *
-     * @param parent parent container
-     * @param rows number of rows
-     * @param columns number of columns
-     * @param initialXPadding initial x padding
-     * @param initialYPadding initial y padding
-     * @param xPadding x padding
-     * @param yPadding y padding
-     */
-    public void layoutGrid(final Container parent, final int rows,
-	    final int columns, final int initialXPadding,
-	    final int initialYPadding, final int xPadding, final int yPadding) {
-	final SpringLayout layout = (SpringLayout) parent.getLayout();
-	
-	Spring x = Spring.constant(initialXPadding);
-	Spring y = Spring.constant(initialYPadding);
-	SpringLayout.Constraints constraints;
-	
-	for (int c = 0; c < columns; c++) {
-	    Spring width = Spring.constant(0);
-	    for (int r = 0; r < rows; r++) {
-		width = Spring.max(width,
-			getConstraintsForCell(r, c, parent, columns).
-			getWidth());
-	    }
-	    for (int r = 0; r < rows; r++) {
-		constraints = getConstraintsForCell(r, c, parent, columns);
-		constraints.setX(x);
-		constraints.setWidth(width);
-	    }
-	    x = Spring.sum(x, Spring.sum(width, Spring.constant(xPadding)));
-	}
-	
-	for (int r = 0; r < rows; r++) {
-	    int height = 0;
-	    for (int c = 0; c < columns; c++) {
-		height +=
-			getConstraintsForCell(r, c, parent, columns).
-			getHeight().getValue();
-	    }
-	    for (int c = 0; c < columns; c++) {
-		constraints = getConstraintsForCell(r, c, parent, columns);
-		constraints.setY(y);
-		constraints.setHeight(Spring.constant(height));
-	    }
-	    y = Spring.sum(y, Spring.sum(Spring.constant(height),
-		    Spring.constant(yPadding)));
-	}
-	
-	final SpringLayout.Constraints pCons = layout.getConstraints(parent);
-	pCons.setConstraint(SpringLayout.SOUTH, y);
-	pCons.setConstraint(SpringLayout.EAST, x);
-    }
-    
-    /**
-     * Returns the constraints for a specific cell.
-     *
-     * @param row Row of cell
-     * @param column Column of cell
-     * @param parent parent container
-     * @param columns number of columns
-     *
-     * @return Constraits for a specific cell
-     */
-    private SpringLayout.Constraints getConstraintsForCell(final int row,
-	    final int column, final Container parent, final int columns) {
-	final SpringLayout layout = (SpringLayout) parent.getLayout();
-	final Component constraints = parent.getComponent(row * columns + column);
-	return layout.getConstraints(constraints);
     }
     
     /**

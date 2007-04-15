@@ -55,7 +55,7 @@ import javax.swing.WindowConstants;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.ui.interfaces.StatusErrorNotifier;
 
-import static uk.org.ownage.dmdirc.ui.UIConstants.*;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
 
 /**
  * The fatal error dialog is used to inform the user that a fatal error has

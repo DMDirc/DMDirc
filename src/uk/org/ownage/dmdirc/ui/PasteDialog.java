@@ -38,7 +38,7 @@ import javax.swing.border.EtchedBorder;
 import uk.org.ownage.dmdirc.ui.components.Frame;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
-import static uk.org.ownage.dmdirc.ui.UIConstants.*;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
 
 /**
  * Allows the user to modify global client preferences.

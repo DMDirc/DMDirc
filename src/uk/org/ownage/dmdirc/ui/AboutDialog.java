@@ -38,7 +38,7 @@ import javax.swing.WindowConstants;
 
 import uk.org.ownage.dmdirc.BrowserLauncher;
 
-import static uk.org.ownage.dmdirc.ui.UIConstants.*;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
 
 /**
  *
