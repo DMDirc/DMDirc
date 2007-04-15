@@ -104,8 +104,6 @@ public final class StatusBar extends JPanel implements MouseListener,
         messageLabel = new JLabel();
         iconLabel = new JLabel();
         
-        messageLabel.setFont(messageLabel.getFont().deriveFont(Font.PLAIN));
-        
         messageLabel.setBorder(new EtchedBorder());
         iconLabel.setBorder(new EtchedBorder());
         

@@ -128,10 +128,9 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
 	
 	if (manager != null && node.getUserObject().equals(manager.getSelected())) {
 	    setFont(getFont().deriveFont(Font.BOLD));
-	    setBorder(new LineBorder(Color.BLACK));
 	} else {
-	    setFont(getFont().deriveFont(Font.PLAIN));
-	}
+            setFont(getFont().deriveFont(Font.PLAIN));
+        }
 	setBorder(new EmptyBorder(1, 0, 2, 0));
 	
 	setToolTipText(null);

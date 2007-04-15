@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -453,8 +454,10 @@ public class ChannelSettingsDialog extends StandardDialog
             
             listModesPanels.add(panel);
         }
+        
         listModesPanel.add(listModesPanels.get(0), BorderLayout.CENTER);
         listModesPanel.setPreferredSize(parent.getPreferredSize());
+    
         constraints.weightx = 1.0;
         constraints.weighty = 0.0;
         constraints.fill = GridBagConstraints.BOTH;
@@ -499,6 +502,7 @@ public class ChannelSettingsDialog extends StandardDialog
         JTextField inputBuffer = new JTextField();
         JTextField newSettingField = new JTextField();
         JComboBox newSettingDrop = new JComboBox(new DefaultComboBoxModel());
+        JButton newSettingButton = new JButton();
         
         currentSettingsPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
@@ -515,6 +519,7 @@ public class ChannelSettingsDialog extends StandardDialog
         
         infoLabel.setText("<html>These settings are specific to this channel on this network,<br>"
                 + "any settings specified here will overwrite global settings</html>");
+        infoLabel.setBorder(new EmptyBorder(0, 0, LARGE_BORDER, 0));
         
         settings = IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
                 channel.getChannelInfo().getName()).getProperties();
@@ -537,14 +542,15 @@ public class ChannelSettingsDialog extends StandardDialog
             .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
             button.setContentAreaFilled(false);
             button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 16));
+            button.setMargin(new Insets(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 0));
             currentSettingsPanel.add(label);
             currentSettingsPanel.add(splitUserModes);
             currentSettingsPanel.add(button);
         } else {
             ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Split user modes");
         }
-        if (settings.getProperty("general.cyclemessage") != null) {
+       if (settings.getProperty("general.cyclemessage") != null) {
             label = new JLabel();
             label.setText("Cycle message: ");
             label.setPreferredSize(new Dimension(150,
@@ -562,7 +568,8 @@ public class ChannelSettingsDialog extends StandardDialog
             .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
             button.setContentAreaFilled(false);
             button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 16));
+            button.setMargin(new Insets(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 0));
             currentSettingsPanel.add(label);
             currentSettingsPanel.add(cycleText);
             currentSettingsPanel.add(button);
@@ -587,7 +594,8 @@ public class ChannelSettingsDialog extends StandardDialog
             .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
             button.setContentAreaFilled(false);
             button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 16));
+            button.setMargin(new Insets(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 0));
             currentSettingsPanel.add(label);
             currentSettingsPanel.add(kickText);
             currentSettingsPanel.add(button);
@@ -613,7 +621,8 @@ public class ChannelSettingsDialog extends StandardDialog
             .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
             button.setContentAreaFilled(false);
             button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 16));
+            button.setMargin(new Insets(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 0));
             currentSettingsPanel.add(label);
             currentSettingsPanel.add(partText);
             currentSettingsPanel.add(button);
@@ -638,7 +647,8 @@ public class ChannelSettingsDialog extends StandardDialog
             .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
             button.setContentAreaFilled(false);
             button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 16));
+            button.setMargin(new Insets(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 0));
             currentSettingsPanel.add(label);
             currentSettingsPanel.add(backColour);
             currentSettingsPanel.add(button);
@@ -663,7 +673,8 @@ public class ChannelSettingsDialog extends StandardDialog
             .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
             button.setContentAreaFilled(false);
             button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 16));
+            button.setMargin(new Insets(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 0));
             currentSettingsPanel.add(label);
             currentSettingsPanel.add(foreColour);
             currentSettingsPanel.add(button);
@@ -688,7 +699,8 @@ public class ChannelSettingsDialog extends StandardDialog
             .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
             button.setContentAreaFilled(false);
             button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 16));
+            button.setMargin(new Insets(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 0));
             currentSettingsPanel.add(label);
             currentSettingsPanel.add(frameBuffer);
             currentSettingsPanel.add(button);
@@ -713,7 +725,8 @@ public class ChannelSettingsDialog extends StandardDialog
             .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
             button.setContentAreaFilled(false);
             button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 16));
+            button.setMargin(new Insets(0, 0, 0, 0));
+            button.setPreferredSize(new Dimension(16, 0));
             currentSettingsPanel.add(label);
             currentSettingsPanel.add(inputBuffer);
             currentSettingsPanel.add(button);
@@ -722,16 +735,19 @@ public class ChannelSettingsDialog extends StandardDialog
         }
         
         if (8 - newSettingDrop.getModel().getSize() == 0) {
-            currentSettingsPanel.add(new JLabel("No channel specific settings."));
+            label = new JLabel();
+            label.setText("No channel specific settings.");
+            label.setBorder(new EmptyBorder(0, 0, 0, 0));
+            currentSettingsPanel.add(label);
         }
         
         int numItems = 8 - newSettingDrop.getModel().getSize();
         if (8 - newSettingDrop.getModel().getSize() == 0) {
             layoutGrid(currentSettingsPanel, 1,
-                1, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
+                    1, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
         } else {
-        layoutGrid(currentSettingsPanel, 8 - newSettingDrop.getModel().getSize(),
-                3, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
+            layoutGrid(currentSettingsPanel, 8 - newSettingDrop.getModel().getSize(),
+                    3, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
         }
         
         newSettingDrop.setPreferredSize(new Dimension(150,
@@ -739,10 +755,14 @@ public class ChannelSettingsDialog extends StandardDialog
         newSettingField.setText("");
         newSettingField.setPreferredSize(new Dimension(150,
                 newSettingField.getFont().getSize()));
+        newSettingButton.setText("Add");
+        newSettingButton.setMargin(new Insets(0, 0, 0, 0));
+        newSettingButton.setPreferredSize(new Dimension(45, 0));
         addPanel.add(newSettingDrop);
         addPanel.add(newSettingField);
+        addPanel.add(newSettingButton);
         
-        layoutGrid(addPanel, 1, 2, SMALL_BORDER, SMALL_BORDER,
+        layoutGrid(addPanel, 1, 3, SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER);
         
         constraints.gridx = 0;

@@ -143,6 +143,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
 	root = new DefaultMutableTreeNode("DMDirc");
 	model = new TreeViewModel(root);
 	tree = new JTree(model);
+        tree.putClientProperty("JTree.lineStyle", "Angled");
 	tree.addMouseListener(this);
 	tree.getSelectionModel().
 		setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);

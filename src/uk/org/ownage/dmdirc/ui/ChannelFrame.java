@@ -206,7 +206,6 @@ public final class ChannelFrame extends Frame {
         
         nicklistModel = new NicklistListModel();
         
-        nickList.setFont(new Font("Dialog", 0, 12));
         nickList.setModel(nicklistModel);
         nickScrollPane.setViewportView(nickList);
         

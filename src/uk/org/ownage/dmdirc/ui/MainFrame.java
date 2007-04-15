@@ -422,11 +422,6 @@ public final class MainFrame extends JFrame implements WindowListener,
 	JMenuItem menuItem;
 	
 	mainSplitPane.setBorder(null);
-	final BasicSplitPaneDivider divider =
-		((BasicSplitPaneUI) mainSplitPane.getUI()).getDivider();
-	if (divider != null) {
-	    divider.setBorder(null);
-	}
 	
 	fileMenu.setMnemonic('f');
 	fileMenu.setText("File");
