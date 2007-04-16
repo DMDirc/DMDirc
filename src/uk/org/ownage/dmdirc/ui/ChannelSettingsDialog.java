@@ -456,7 +456,7 @@ public class ChannelSettingsDialog extends StandardDialog
         
         listModesPanel.add(listModesPanels.get(0), BorderLayout.CENTER);
         listModesPanel.setPreferredSize(parent.getPreferredSize());
-    
+        
         constraints.weightx = 1.0;
         constraints.weighty = 0.0;
         constraints.fill = GridBagConstraints.BOTH;
@@ -520,8 +520,13 @@ public class ChannelSettingsDialog extends StandardDialog
                 + "any settings specified here will overwrite global settings</html>");
         infoLabel.setBorder(new EmptyBorder(0, 0, LARGE_BORDER, 0));
         
-        settings = IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
-                channel.getChannelInfo().getName()).getProperties();
+        if (IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
+                channel.getChannelInfo().getName()) == null) {
+            settings = new Properties();
+        } else {
+            settings = IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
+                    channel.getChannelInfo().getName()).getProperties();
+        }
         
         if (settings.getProperty("channel.splitusermodes") != null) {
             label = new JLabel();
@@ -549,7 +554,7 @@ public class ChannelSettingsDialog extends StandardDialog
         } else {
             ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Split user modes");
         }
-       if (settings.getProperty("general.cyclemessage") != null) {
+        if (settings.getProperty("general.cyclemessage") != null) {
             label = new JLabel();
             label.setText("Cycle message: ");
             label.setPreferredSize(new Dimension(150,
