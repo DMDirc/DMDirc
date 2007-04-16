@@ -24,7 +24,6 @@ package uk.org.ownage.dmdirc.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -486,23 +485,23 @@ public class ChannelSettingsDialog extends StandardDialog
     private void initSettingsPanel(final JPanel parent) {
         final GridBagConstraints constraints = new GridBagConstraints();
         final JPanel settingsPanel = new JPanel(new GridBagLayout());
-        JPanel currentSettingsPanel = new JPanel();
-        JPanel addPanel = new JPanel();
+        final JPanel currentSettingsPanel = new JPanel();
+        final JPanel addPanel = new JPanel();
         JLabel label;
         JButton button;
         Properties settings;
-        JLabel infoLabel = new JLabel();
-        JCheckBox splitUserModes = new JCheckBox();
-        JTextField cycleText = new JTextField();
-        JTextField kickText = new JTextField();
-        JTextField partText = new JTextField();
-        JTextField backColour = new JTextField();
-        JTextField foreColour = new JTextField();
-        JTextField frameBuffer = new JTextField();
-        JTextField inputBuffer = new JTextField();
-        JTextField newSettingField = new JTextField();
-        JComboBox newSettingDrop = new JComboBox(new DefaultComboBoxModel());
-        JButton newSettingButton = new JButton();
+        final JLabel infoLabel = new JLabel();
+        final JCheckBox splitUserModes = new JCheckBox();
+        final JTextField cycleText = new JTextField();
+        final JTextField kickText = new JTextField();
+        final JTextField partText = new JTextField();
+        final JTextField backColour = new JTextField();
+        final JTextField foreColour = new JTextField();
+        final JTextField frameBuffer = new JTextField();
+        final JTextField inputBuffer = new JTextField();
+        final JTextField newSettingField = new JTextField();
+        final JComboBox newSettingDrop = new JComboBox(new DefaultComboBoxModel());
+        final JButton newSettingButton = new JButton();
         
         currentSettingsPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
@@ -741,7 +740,7 @@ public class ChannelSettingsDialog extends StandardDialog
             currentSettingsPanel.add(label);
         }
         
-        int numItems = 8 - newSettingDrop.getModel().getSize();
+        final int numItems = 8 - newSettingDrop.getModel().getSize();
         if (8 - newSettingDrop.getModel().getSize() == 0) {
             layoutGrid(currentSettingsPanel, 1,
                     1, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);

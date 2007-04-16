@@ -78,7 +78,7 @@ public final class Main {
                 
                 UIManager.setLookAndFeel(classNameBuilder.toString());
                 
-                FontUIResource font = new FontUIResource("Dialog", Font.PLAIN , 12);
+                final FontUIResource font = new FontUIResource("Dialog", Font.PLAIN , 12);
                 
                 UIManager.put("Label.font", font);
                 UIManager.put("TextField.font", font);

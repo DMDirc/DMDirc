@@ -322,7 +322,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /**
      * Hides the border around the frame.
      */
-    private final void hideBorder() {
+    private void hideBorder() {
         if (myborder == null) {
             myborder = getBorder();
             titlebarSize =
@@ -486,8 +486,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             try {
                 text = getTextPane().getText(start, end);
             } catch (BadLocationException ex) {
-                Logger.error(ErrorLevel.TRIVIAL, "Unable to select text (start: " +
-                        start + ", end: " + end + ")");
+                Logger.error(ErrorLevel.TRIVIAL, "Unable to select text (start: " 
+                        + start + ", end: " + end + ")");
                 return;
             }
             
@@ -708,7 +708,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 //System.out.print("activating.");
                 parent.getServer().getChannel(text).activateFrame();
             }
-        }// else {
+        } // else {
         //System.out.print("ignoring.");
         //}
         //System.out.println();
@@ -737,7 +737,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     public final int getNumLines(final String line) {
         int lines;
-        String[] splitLines = line.split("\n");
+        final String[] splitLines = line.split("\n");
         lines = splitLines.length;
         for (String splitLine : splitLines) {
             lines += (int) Math.ceil(splitLine.length() / getMaxLineLength());

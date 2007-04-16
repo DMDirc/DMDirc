@@ -22,9 +22,10 @@
 
 package uk.org.ownage.dmdirc;
 
+import java.awt.Desktop;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -44,55 +45,25 @@ public final class BrowserLauncher {
      * @param url url to open in the browser
      */
     public static void openURL(final String url) {
-        final String osName = System.getProperty("os.name");
-        try {
-            if (osName.startsWith("Mac OS")) {
-                openURLOSX(url);
-            } else if (osName.startsWith("Windows")) {
-                openURLWindows(url);
-            } else {
-                openURLLinux(url);
-            }
-        } catch (SecurityException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
-        } catch (InvocationTargetException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
-        } catch (IllegalAccessException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
-        } catch (IOException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to launch browser", ex);
+        Desktop desktop = null;
+        if (Desktop.isDesktopSupported()) {
+            desktop = Desktop.getDesktop();
         }
-    }
-    
-    /**
-     * Attempts to open the url in the default windows browser.
-     * @param url url to open
-     * @throws IOException if unable to open browser
-     */
-    private static void openURLWindows(final String url) throws IOException {
-        Runtime.getRuntime()
-        .exec("rundll32 url.dll,FileProtocolHandler " + url);
-    }
-    
-    /**
-     * Attempts to open the url in the default OSX.
-     * @param url url to open
-     * @throws InvocationTargetException if unable to open browser
-     * @throws IllegalAccessException if unable to open browser
-     * @throws NoSuchMethodException if unable to open browser
-     * @throws ClassNotFoundException if unable to open browser
-     */
-    private static void openURLOSX(final String url) throws
-            InvocationTargetException,  IllegalAccessException,
-            NoSuchMethodException, ClassNotFoundException {
-        final Method openURL;
-        openURL = Class.forName("com.apple.eio.FileManager")
-        .getDeclaredMethod("openURL", new Class[] {String.class});
-        openURL.invoke(null, new Object[] {url});
+        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
+            try {
+                desktop.browse(new URI(url));
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
+            } catch (URISyntaxException ex) {
+                Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
+            }
+        } else {
+            try {
+                openURLLinux(url);
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
+            }
+        }
     }
     
     /**
