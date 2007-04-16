@@ -24,8 +24,8 @@ package uk.org.ownage.dmdirc;
 
 import java.awt.Desktop;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -51,18 +51,18 @@ public final class BrowserLauncher {
         }
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
-                desktop.browse(new URI(url));
+                desktop.browse(new URL("http://" + url).toURI());
+                return;
             } catch (IOException ex) {
                 Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
             } catch (URISyntaxException ex) {
                 Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
             }
-        } else {
-            try {
-                openURLLinux(url);
-            } catch (IOException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
-            }
+        }
+        try {
+            openURLLinux(url);
+        } catch (IOException ex) {
+            Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
         }
     }
     
