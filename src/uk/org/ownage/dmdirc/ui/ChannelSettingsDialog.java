@@ -533,7 +533,7 @@ public class ChannelSettingsDialog extends StandardDialog
             label.setText("Split user modes: ");
             label.setPreferredSize(new Dimension(150,
                     label.getFont().getSize()));
-            splitUserModes.setSelected(false);
+            splitUserModes.setSelected(Boolean.parseBoolean(settings.getProperty("channel.splitusermodes")));
             splitUserModes.setPreferredSize(new Dimension(150,
                     splitUserModes.getFont().getSize()));
             label.setLabelFor(splitUserModes);
@@ -559,7 +559,7 @@ public class ChannelSettingsDialog extends StandardDialog
             label.setText("Cycle message: ");
             label.setPreferredSize(new Dimension(150,
                     label.getFont().getSize()));
-            cycleText.setText("");
+            cycleText.setText(settings.getProperty("general.cyclemessage"));
             cycleText.setPreferredSize(new Dimension(150,
                     cycleText.getFont().getSize()));
             label.setLabelFor(cycleText);
@@ -585,7 +585,7 @@ public class ChannelSettingsDialog extends StandardDialog
             label.setText("Kick message: ");
             label.setPreferredSize(new Dimension(150,
                     label.getFont().getSize()));
-            kickText.setText("");
+            kickText.setText(settings.getProperty("general.kickmessage"));
             kickText.setPreferredSize(new Dimension(150,
                     kickText.getFont().getSize()));
             label.setLabelFor(kickText);
@@ -612,7 +612,7 @@ public class ChannelSettingsDialog extends StandardDialog
             label.setText("Part message: ");
             label.setPreferredSize(new Dimension(150,
                     label.getFont().getSize()));
-            partText.setText("");
+            partText.setText(settings.getProperty("general.partmessage"));
             partText.setPreferredSize(new Dimension(150,
                     partText.getFont().getSize()));
             label.setLabelFor(partText);
@@ -638,7 +638,7 @@ public class ChannelSettingsDialog extends StandardDialog
             label.setText("Background colour: ");
             label.setPreferredSize(new Dimension(150,
                     label.getFont().getSize()));
-            backColour.setText("");
+            backColour.setText(settings.getProperty("ui.backgroundcolour"));
             backColour.setPreferredSize(new Dimension(150,
                     backColour.getFont().getSize()));
             label.setLabelFor(backColour);
@@ -664,7 +664,7 @@ public class ChannelSettingsDialog extends StandardDialog
             label.setText("Foreground colour: ");
             label.setPreferredSize(new Dimension(150,
                     label.getFont().getSize()));
-            foreColour.setText("");
+            foreColour.setText(settings.getProperty("ui.foregroundcolour"));
             foreColour.setPreferredSize(new Dimension(150,
                     foreColour.getFont().getSize()));
             label.setLabelFor(foreColour);
@@ -690,7 +690,7 @@ public class ChannelSettingsDialog extends StandardDialog
             label.setText("Frame buffer size: ");
             label.setPreferredSize(new Dimension(150,
                     label.getFont().getSize()));
-            frameBuffer.setText("");
+            frameBuffer.setText(settings.getProperty("ui.frameBufferSize"));
             frameBuffer.setPreferredSize(new Dimension(150,
                     frameBuffer.getFont().getSize()));
             label.setLabelFor(frameBuffer);
@@ -716,7 +716,7 @@ public class ChannelSettingsDialog extends StandardDialog
             label.setText("Input buffer size: ");
             label.setPreferredSize(new Dimension(150,
                     label.getFont().getSize()));
-            inputBuffer.setText("");
+            inputBuffer.setText(settings.getProperty("ui.inputbuffersize"));
             inputBuffer.setPreferredSize(new Dimension(150,
                     frameBuffer.getFont().getSize()));
             label.setLabelFor(inputBuffer);
@@ -772,9 +772,11 @@ public class ChannelSettingsDialog extends StandardDialog
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.weighty = 0.0;
-        constraints.weightx = 1.0;
+        constraints.weightx = 0.0;
         constraints.fill = GridBagConstraints.BOTH;
+        constraints.anchor = GridBagConstraints.CENTER;
         parent.add(infoLabel, constraints);
+        constraints.weightx = 1.0;
         constraints.weighty = 1.0;
         constraints.gridy = 1;
         parent.add(currentSettingsPanel, constraints);

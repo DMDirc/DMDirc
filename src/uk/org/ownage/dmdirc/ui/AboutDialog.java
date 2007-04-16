@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -43,8 +44,8 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
 /**
  *
  */
-public final class AboutDialog extends JDialog implements ActionListener, 
-	MouseListener {
+public final class AboutDialog extends JDialog implements ActionListener,
+        MouseListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -59,102 +60,102 @@ public final class AboutDialog extends JDialog implements ActionListener,
     
     /** Creates a new instance of AboutDialog. */
     public AboutDialog() {
-	super(MainFrame.getMainFrame(), false);
-	initComponents();
-	setLocationRelativeTo(MainFrame.getMainFrame());
+        super(MainFrame.getMainFrame(), false);
+        initComponents();
+        setLocationRelativeTo(MainFrame.getMainFrame());
     }
     
     /** Initialises the main UI components. */
     private void initComponents() {
-	final GridBagConstraints constraints = new GridBagConstraints();
-	linkLabel = new JLabel();
-	final JLabel about = new JLabel();
-	final JLabel authors = new JLabel();
-	final JButton okButton = new JButton();
-	
-	setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-	getContentPane().setLayout(new GridBagLayout());
-	setTitle("About DMDirc");
-	setResizable(false);
-	
-	linkLabel.setText("<html>" 
-		+ "<a href=\"http://www.dmdirc.com\">http://www.dmdirc.com</a>" 
-		+ "</html>");
-	linkLabel.addMouseListener(this);
-	
-	authors.setText("<html>"
-		+ "Chris 'MD87' Smith<br>" 
-		+ "Greg 'Greboid' Holmes<br>" 
-		+ "Shane 'Dataforce' Mc Cormack." 
-		+ "</html>");
-	
-	about.setText("DMDirc - Cross platform IRC client.");
-	
-	okButton.setText("OK");
-	okButton.addActionListener(this);
-	okButton.setActionCommand("OK");
-	
-	constraints.gridx = 0;
-	constraints.gridy = 0;
-	constraints.gridwidth = 3;
-	constraints.weightx = 1.0;
-	constraints.weighty = 1.0;
-	constraints.fill = GridBagConstraints.BOTH;
-	constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER,
-		0, LARGE_BORDER);
-	getContentPane().add(about, constraints);
-	
-	constraints.anchor = GridBagConstraints.CENTER;
-	constraints.gridx = 0;
-	constraints.gridy = 1;
-	constraints.gridwidth = 3;
-	constraints.weightx = 1.0;
-	constraints.weighty = 1.0;
-	constraints.fill = GridBagConstraints.BOTH;
-	constraints.insets = new Insets(0, LARGE_BORDER,
-		LARGE_BORDER, LARGE_BORDER);
-	getContentPane().add(linkLabel, constraints);
-	
-	constraints.anchor = GridBagConstraints.LINE_START;
-	constraints.gridx = 0;
-	constraints.gridy = 2;
-	constraints.gridwidth = 3;
-	constraints.weightx = 1.0;
-	constraints.weighty = 1.0;
-	constraints.fill = GridBagConstraints.BOTH;
-	constraints.insets = new Insets(0, LARGE_BORDER,
-		LARGE_BORDER, LARGE_BORDER);
-	getContentPane().add(authors, constraints);
-	
-	constraints.weighty = 0.0;
-	constraints.gridx = 0;
-	constraints.gridy = 3;
-	constraints.gridwidth = 1;
-	constraints.insets = new Insets(0, 0,
-		0, 0);
-	getContentPane().add(Box.createHorizontalGlue(), constraints);
-	
-	constraints.gridx = 2;
-	constraints.insets = new Insets(0, LARGE_BORDER,
-		LARGE_BORDER, LARGE_BORDER);
-	getContentPane().add(okButton, constraints);
-	
-	pack();
+        final GridBagConstraints constraints = new GridBagConstraints();
+        linkLabel = new JLabel();
+        final JLabel about = new JLabel();
+        final JLabel authors = new JLabel();
+        final JButton okButton = new JButton();
+        
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        getContentPane().setLayout(new GridBagLayout());
+        setTitle("About DMDirc");
+        setResizable(false);
+        
+        linkLabel.setText("<html>"
+                + "<a href=\"http://www.dmdirc.com\">http://www.dmdirc.com</a>"
+                + "</html>");
+        linkLabel.addMouseListener(this);
+        
+        authors.setText("<html>"
+                + "Chris 'MD87' Smith<br>"
+                + "Greg 'Greboid' Holmes<br>"
+                + "Shane 'Dataforce' Mc Cormack."
+                + "</html>");
+        
+        about.setText("DMDirc - Cross platform IRC client.");
+        
+        okButton.setText("OK");
+        okButton.addActionListener(this);
+        okButton.setActionCommand("OK");
+        
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.gridwidth = 3;
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER,
+                0, LARGE_BORDER);
+        getContentPane().add(about, constraints);
+        
+        constraints.anchor = GridBagConstraints.CENTER;
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.gridwidth = 3;
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(0, LARGE_BORDER,
+                LARGE_BORDER, LARGE_BORDER);
+        getContentPane().add(linkLabel, constraints);
+        
+        constraints.anchor = GridBagConstraints.LINE_START;
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        constraints.gridwidth = 3;
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(0, LARGE_BORDER,
+                LARGE_BORDER, LARGE_BORDER);
+        getContentPane().add(authors, constraints);
+        
+        constraints.weighty = 0.0;
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        constraints.gridwidth = 1;
+        constraints.insets = new Insets(0, 0,
+                0, 0);
+        getContentPane().add(Box.createHorizontalGlue(), constraints);
+        
+        constraints.gridx = 2;
+        constraints.insets = new Insets(0, LARGE_BORDER,
+                LARGE_BORDER, LARGE_BORDER);
+        getContentPane().add(okButton, constraints);
+        
+        pack();
     }
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
-	if (e.getActionCommand().equals("OK")) {
-	    setVisible(false);
-	    dispose();
-	}
+        if (e.getActionCommand().equals("OK")) {
+            setVisible(false);
+            dispose();
+        }
     }
     
     /** {@inheritDoc}. */
     public void mouseClicked(final MouseEvent e) {
-	if (e.getSource() == linkLabel) {
-	    BrowserLauncher.openURL("http://www.dmdirc.com");
-	}
+        if (e.getSource() == linkLabel) {
+            BrowserLauncher.openURL("http://www.dmdirc.com");
+        }
     }
     
     /** {@inheritDoc}. */
@@ -167,10 +168,12 @@ public final class AboutDialog extends JDialog implements ActionListener,
     
     /** {@inheritDoc}. */
     public void mouseEntered(final MouseEvent e) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
     }
     
     /** {@inheritDoc}. */
     public void mouseExited(final MouseEvent e) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
     
 }

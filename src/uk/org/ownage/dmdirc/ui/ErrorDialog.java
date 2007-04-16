@@ -222,18 +222,16 @@ public final class ErrorDialog extends JDialog implements ActionListener,
         constraints.gridx = 0;
         constraints.gridy = 4;
         constraints.weightx = 0.0;
+        constraints.weighty = 0.0;
         constraints.gridwidth = 3;
         getContentPane().add(sendDataCheckbox, constraints);
         
-        constraints.weightx = 1.0;
-        constraints.weighty = 0.0;
         constraints.gridx = 0;
         constraints.gridy = 5;
         constraints.gridwidth = 1;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         getContentPane().add(Box.createHorizontalGlue(), constraints);
         
-        constraints.weightx = 0.0;
         constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
                 LARGE_BORDER);
         constraints.gridx = 2;
