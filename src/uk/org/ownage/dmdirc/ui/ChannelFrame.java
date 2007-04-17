@@ -46,6 +46,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.ui.components.Frame;
+import uk.org.ownage.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 

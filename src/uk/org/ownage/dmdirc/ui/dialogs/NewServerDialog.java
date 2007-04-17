@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package uk.org.ownage.dmdirc.ui.dialogs;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -49,6 +49,7 @@ import uk.org.ownage.dmdirc.identities.ConfigSource;
 import uk.org.ownage.dmdirc.identities.IdentityManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.ui.*;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.*;

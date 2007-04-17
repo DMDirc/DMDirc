@@ -55,6 +55,9 @@ import uk.org.ownage.dmdirc.ServerManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.components.StatusBar;
+import uk.org.ownage.dmdirc.ui.dialogs.AboutDialog;
+import uk.org.ownage.dmdirc.ui.dialogs.NewServerDialog;
+import uk.org.ownage.dmdirc.ui.dialogs.PreferencesDialog;
 import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
 import uk.org.ownage.dmdirc.ui.framemanager.tree.TreeFrameManager;
 

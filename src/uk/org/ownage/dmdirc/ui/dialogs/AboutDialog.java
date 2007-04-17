@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package uk.org.ownage.dmdirc.ui.dialogs;
 
 import java.awt.Cursor;
 import java.awt.GridBagConstraints;
@@ -38,6 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
 import uk.org.ownage.dmdirc.BrowserLauncher;
+import uk.org.ownage.dmdirc.ui.*;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
 

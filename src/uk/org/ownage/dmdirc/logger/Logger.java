@@ -32,7 +32,7 @@ import java.util.Locale;
 import javax.swing.ImageIcon;
 
 import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.ui.ErrorDialog;
+import uk.org.ownage.dmdirc.ui.dialogs.ErrorDialog;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 
 /**

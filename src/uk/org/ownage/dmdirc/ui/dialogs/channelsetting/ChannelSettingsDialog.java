@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package uk.org.ownage.dmdirc.ui.dialogs.channelsetting;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -36,13 +36,10 @@ import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -53,17 +50,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.identities.IdentityManager;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ChannelListModeItem;
 import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.ui.*;
 import uk.org.ownage.dmdirc.ui.components.ParamModePanel;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
@@ -81,7 +76,7 @@ public class ChannelSettingsDialog extends StandardDialog
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4;
+    private static final long serialVersionUID = 5;
     
     /**
      * The channel object that this dialog belongs to.
@@ -137,6 +132,9 @@ public class ChannelSettingsDialog extends StandardDialog
      * Topic text entry text area.
      */
     private JTextArea topicText;
+    
+    /** Client settings panel */
+    private ChannelSettingsPane channelSettingsPane;
     
     /**
      * Creates a new instance of ChannelSettingsDialog.
@@ -244,7 +242,7 @@ public class ChannelSettingsDialog extends StandardDialog
      * @param tabbedPane The pane to add the IRC Settings tab to
      */
     private void initSettingsTab(final JTabbedPane tabbedPane) {
-        final JPanel settingsPanel = new JPanel(new GridBagLayout());
+        final JPanel settingsPanel = new JPanel(new BorderLayout());
         
         tabbedPane.addTab("Client Settings", settingsPanel);
         
@@ -483,306 +481,8 @@ public class ChannelSettingsDialog extends StandardDialog
      * @param parent The panel to add the channel settings panel to
      */
     private void initSettingsPanel(final JPanel parent) {
-        final GridBagConstraints constraints = new GridBagConstraints();
-        final JPanel settingsPanel = new JPanel(new GridBagLayout());
-        final JPanel currentSettingsPanel = new JPanel();
-        final JPanel addPanel = new JPanel();
-        JLabel label;
-        JButton button;
-        Properties settings;
-        final JLabel infoLabel = new JLabel();
-        final JCheckBox splitUserModes = new JCheckBox();
-        final JTextField cycleText = new JTextField();
-        final JTextField kickText = new JTextField();
-        final JTextField partText = new JTextField();
-        final JTextField backColour = new JTextField();
-        final JTextField foreColour = new JTextField();
-        final JTextField frameBuffer = new JTextField();
-        final JTextField inputBuffer = new JTextField();
-        final JTextField newSettingField = new JTextField();
-        final JComboBox newSettingDrop = new JComboBox(new DefaultComboBoxModel());
-        final JButton newSettingButton = new JButton();
-        
-        currentSettingsPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(
-                new EtchedBorder(), "Current settings"),
-                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER)));
-        currentSettingsPanel.setLayout(new SpringLayout());
-        addPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(
-                new EtchedBorder(), "Add new setting"),
-                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER)));
-        addPanel.setLayout(new SpringLayout());
-        
-        infoLabel.setText("<html>These settings are specific to this channel on this network,<br>"
-                + "any settings specified here will overwrite global settings</html>");
-        infoLabel.setBorder(new EmptyBorder(0, 0, LARGE_BORDER, 0));
-        
-        if (IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
-                channel.getChannelInfo().getName()) == null) {
-            settings = new Properties();
-        } else {
-            settings = IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
-                    channel.getChannelInfo().getName()).getProperties();
-        }
-        
-        if (settings.getProperty("channel.splitusermodes") != null) {
-            label = new JLabel();
-            label.setText("Split user modes: ");
-            label.setPreferredSize(new Dimension(150,
-                    label.getFont().getSize()));
-            splitUserModes.setSelected(Boolean.parseBoolean(settings.getProperty("channel.splitusermodes")));
-            splitUserModes.setPreferredSize(new Dimension(150,
-                    splitUserModes.getFont().getSize()));
-            label.setLabelFor(splitUserModes);
-            button = new JButton();
-            button.setIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-            button.setRolloverIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setPressedIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setContentAreaFilled(false);
-            button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setMargin(new Insets(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 0));
-            currentSettingsPanel.add(label);
-            currentSettingsPanel.add(splitUserModes);
-            currentSettingsPanel.add(button);
-        } else {
-            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Split user modes");
-        }
-        if (settings.getProperty("general.cyclemessage") != null) {
-            label = new JLabel();
-            label.setText("Cycle message: ");
-            label.setPreferredSize(new Dimension(150,
-                    label.getFont().getSize()));
-            cycleText.setText(settings.getProperty("general.cyclemessage"));
-            cycleText.setPreferredSize(new Dimension(150,
-                    cycleText.getFont().getSize()));
-            label.setLabelFor(cycleText);
-            button = new JButton();
-            button.setIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-            button.setRolloverIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setPressedIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setContentAreaFilled(false);
-            button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setMargin(new Insets(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 0));
-            currentSettingsPanel.add(label);
-            currentSettingsPanel.add(cycleText);
-            currentSettingsPanel.add(button);
-        } else {
-            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Cycle Message");
-        }
-        if (settings.getProperty("general.kickmessage") != null) {
-            label = new JLabel();
-            label.setText("Kick message: ");
-            label.setPreferredSize(new Dimension(150,
-                    label.getFont().getSize()));
-            kickText.setText(settings.getProperty("general.kickmessage"));
-            kickText.setPreferredSize(new Dimension(150,
-                    kickText.getFont().getSize()));
-            label.setLabelFor(kickText);
-            button = new JButton();
-            button.setIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-            button.setRolloverIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setPressedIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setContentAreaFilled(false);
-            button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setMargin(new Insets(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 0));
-            currentSettingsPanel.add(label);
-            currentSettingsPanel.add(kickText);
-            currentSettingsPanel.add(button);
-        } else {
-            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Kick Message");
-        }
-        if (settings.getProperty("general.partmessage") != null) {
-            //general.partmessage
-            label = new JLabel();
-            label.setText("Part message: ");
-            label.setPreferredSize(new Dimension(150,
-                    label.getFont().getSize()));
-            partText.setText(settings.getProperty("general.partmessage"));
-            partText.setPreferredSize(new Dimension(150,
-                    partText.getFont().getSize()));
-            label.setLabelFor(partText);
-            button = new JButton();
-            button.setIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-            button.setRolloverIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setPressedIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setContentAreaFilled(false);
-            button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setMargin(new Insets(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 0));
-            currentSettingsPanel.add(label);
-            currentSettingsPanel.add(partText);
-            currentSettingsPanel.add(button);
-        } else {
-            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Part Message");
-        }
-        if (settings.getProperty("ui.backgroundcolour") != null) {
-            label = new JLabel();
-            label.setText("Background colour: ");
-            label.setPreferredSize(new Dimension(150,
-                    label.getFont().getSize()));
-            backColour.setText(settings.getProperty("ui.backgroundcolour"));
-            backColour.setPreferredSize(new Dimension(150,
-                    backColour.getFont().getSize()));
-            label.setLabelFor(backColour);
-            button = new JButton();
-            button.setIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-            button.setRolloverIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setPressedIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setContentAreaFilled(false);
-            button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setMargin(new Insets(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 0));
-            currentSettingsPanel.add(label);
-            currentSettingsPanel.add(backColour);
-            currentSettingsPanel.add(button);
-        } else {
-            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Background Colour");
-        }
-        if (settings.getProperty("ui.foregroundcolour") != null) {
-            label = new JLabel();
-            label.setText("Foreground colour: ");
-            label.setPreferredSize(new Dimension(150,
-                    label.getFont().getSize()));
-            foreColour.setText(settings.getProperty("ui.foregroundcolour"));
-            foreColour.setPreferredSize(new Dimension(150,
-                    foreColour.getFont().getSize()));
-            label.setLabelFor(foreColour);
-            button = new JButton();
-            button.setIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-            button.setRolloverIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setPressedIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setContentAreaFilled(false);
-            button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setMargin(new Insets(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 0));
-            currentSettingsPanel.add(label);
-            currentSettingsPanel.add(foreColour);
-            currentSettingsPanel.add(button);
-        } else {
-            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Foreground Colour");
-        }
-        if (settings.getProperty("ui.frameBufferSize") != null) {
-            label = new JLabel();
-            label.setText("Frame buffer size: ");
-            label.setPreferredSize(new Dimension(150,
-                    label.getFont().getSize()));
-            frameBuffer.setText(settings.getProperty("ui.frameBufferSize"));
-            frameBuffer.setPreferredSize(new Dimension(150,
-                    frameBuffer.getFont().getSize()));
-            label.setLabelFor(frameBuffer);
-            button = new JButton();
-            button.setIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-            button.setRolloverIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setPressedIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setContentAreaFilled(false);
-            button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setMargin(new Insets(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 0));
-            currentSettingsPanel.add(label);
-            currentSettingsPanel.add(frameBuffer);
-            currentSettingsPanel.add(button);
-        } else {
-            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Frame Buffer Size");
-        }
-        if (settings.getProperty("ui.inputbuffersize") != null) {
-            label = new JLabel();
-            label.setText("Input buffer size: ");
-            label.setPreferredSize(new Dimension(150,
-                    label.getFont().getSize()));
-            inputBuffer.setText(settings.getProperty("ui.inputbuffersize"));
-            inputBuffer.setPreferredSize(new Dimension(150,
-                    frameBuffer.getFont().getSize()));
-            label.setLabelFor(inputBuffer);
-            button = new JButton();
-            button.setIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
-            button.setRolloverIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setPressedIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
-            button.setContentAreaFilled(false);
-            button.setBorder(new EmptyBorder(0, 0, 0, 0));
-            button.setMargin(new Insets(0, 0, 0, 0));
-            button.setPreferredSize(new Dimension(16, 0));
-            currentSettingsPanel.add(label);
-            currentSettingsPanel.add(inputBuffer);
-            currentSettingsPanel.add(button);
-        } else {
-            ((DefaultComboBoxModel) newSettingDrop.getModel()).addElement("Input Buffer Size");
-        }
-        
-        if (8 - newSettingDrop.getModel().getSize() == 0) {
-            label = new JLabel();
-            label.setText("No channel specific settings.");
-            label.setBorder(new EmptyBorder(0, 0, 0, 0));
-            currentSettingsPanel.add(label);
-        }
-        
-        final int numItems = 8 - newSettingDrop.getModel().getSize();
-        if (8 - newSettingDrop.getModel().getSize() == 0) {
-            layoutGrid(currentSettingsPanel, 1,
-                    1, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
-        } else {
-            layoutGrid(currentSettingsPanel, 8 - newSettingDrop.getModel().getSize(),
-                    3, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
-        }
-        
-        newSettingDrop.setPreferredSize(new Dimension(150,
-                newSettingDrop.getFont().getSize()));
-        newSettingField.setText("");
-        newSettingField.setPreferredSize(new Dimension(150,
-                newSettingField.getFont().getSize()));
-        newSettingButton.setText("Add");
-        newSettingButton.setMargin(new Insets(0, 0, 0, 0));
-        newSettingButton.setPreferredSize(new Dimension(45, 0));
-        addPanel.add(newSettingDrop);
-        addPanel.add(newSettingField);
-        addPanel.add(newSettingButton);
-        
-        layoutGrid(addPanel, 1, 3, SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER);
-        
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.weighty = 0.0;
-        constraints.weightx = 0.0;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.anchor = GridBagConstraints.CENTER;
-        parent.add(infoLabel, constraints);
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        constraints.gridy = 1;
-        parent.add(currentSettingsPanel, constraints);
-        constraints.weighty = 0.0;
-        constraints.gridy = 2;
-        parent.add(addPanel, constraints);
+        channelSettingsPane = new ChannelSettingsPane(parent, channel);
+        parent.add(channelSettingsPane, BorderLayout.CENTER);
     }
     
     /** Initialises listeners for this dialog. */

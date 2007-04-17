@@ -66,7 +66,7 @@ import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.PasteDialog;
+import uk.org.ownage.dmdirc.ui.dialogs.PasteDialog;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;

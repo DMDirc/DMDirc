@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package uk.org.ownage.dmdirc.ui.dialogs;
 
 import java.awt.CardLayout;
 import java.awt.Dimension;
@@ -56,6 +56,7 @@ import javax.swing.event.ListSelectionListener;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.ui.*;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.*;

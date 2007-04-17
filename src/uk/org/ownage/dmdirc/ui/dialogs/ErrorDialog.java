@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package uk.org.ownage.dmdirc.ui.dialogs;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -53,6 +53,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.ui.*;
 import uk.org.ownage.dmdirc.ui.interfaces.StatusErrorNotifier;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.*;

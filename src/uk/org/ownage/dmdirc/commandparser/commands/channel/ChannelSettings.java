@@ -26,7 +26,7 @@ import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.ui.ChannelSettingsDialog;
+import uk.org.ownage.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
 
 /**
  * Opens the channel settings window for the channel.

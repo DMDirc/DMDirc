@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package uk.org.ownage.dmdirc.ui.dialogs;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -34,6 +34,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
+import uk.org.ownage.dmdirc.ui.*;
 
 import uk.org.ownage.dmdirc.ui.components.Frame;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;

@@ -65,6 +65,7 @@ import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
 
@@ -274,6 +275,10 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
 	parent.add(scrollPane);
 	scrollPane.setPreferredSize(new Dimension(parent.getWidth(), 0));
 	tree.setForeground(parent.getForeground());
+        tree.setBackground(ColourManager.getColour(
+                Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
+        tree.setForeground(ColourManager.getColour(
+                Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
 	tree.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
 		SMALL_BORDER, SMALL_BORDER));
 	tree.setVisible(true);
