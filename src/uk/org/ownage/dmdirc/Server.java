@@ -257,7 +257,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public Channel getChannel(final String channel) {
         return channels.get(channel.toLowerCase(Locale.getDefault()));
-    }    
+    }
     
     /**
      * Retrieves the parser used for this connection.
@@ -424,7 +424,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public void delChannel(final String chan) {
         tabCompleter.removeEntry(chan);
         MainFrame.getMainFrame().getFrameManager().delChannel(
-		this, channels.get(chan.toLowerCase(Locale.getDefault())));
+                this, channels.get(chan.toLowerCase(Locale.getDefault())));
         if (!closing) {
             channels.remove(chan.toLowerCase(Locale.getDefault()));
         }
@@ -698,13 +698,18 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             final String[] line) {
         final String withIrcd = "numeric_" + tParser.getIRCD(true) + "_" + numeric;
         final String sansIrcd = "numeric_" + numeric;
+        String target = null;
         
         if (Formatter.hasFormat(withIrcd)) {
-            frame.addLine(withIrcd, (Object[]) line);
+            target = withIrcd;
         } else if (Formatter.hasFormat(sansIrcd)) {
-            frame.addLine(sansIrcd, (Object[]) line);
+            target = sansIrcd;
         } else if (Formatter.hasFormat("numeric_unknown")) {
-            frame.addLine("numeric_unknown", (Object[]) line);
+            target = "numeric_unknown";
+        }
+        
+        if (target != null) {
+            handleNotification(target, (Object[]) line);
         }
     }
     
@@ -772,7 +777,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -780,7 +785,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -788,7 +793,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -814,7 +819,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**

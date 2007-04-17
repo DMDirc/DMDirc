@@ -129,6 +129,15 @@ public final class Config {
         defaults.setProperty("notifications.privateCTCP", "server");
         defaults.setProperty("notifications.privateCTCPreply", "server");
         
+        // Send whois info to active window by default
+        defaults.setProperty("notifications.numeric_301", "active");
+        defaults.setProperty("notifications.numeric_311", "active");
+        defaults.setProperty("notifications.numeric_312", "active");
+        defaults.setProperty("notifications.numeric_313", "active");
+        defaults.setProperty("notifications.numeric_318", "active");
+        defaults.setProperty("notifications.numeric_319", "active");
+        defaults.setProperty("notifications.numeric_330", "active");
+        
         defaults.setProperty("ui.backgroundcolour", "0");
         defaults.setProperty("ui.foregroundcolour", "1");
         defaults.setProperty("ui.maximisewindows", "false");
@@ -147,7 +156,7 @@ public final class Config {
         defaults.setProperty("ui.sortservers", "true");
         
         defaults.setProperty("channel.splitusermodes", "false");
-                
+        
         defaults.setProperty("tabcompletion.casesensitive", "false");
         
         defaults.setProperty("logging.dateFormat", "EEE, d MMM yyyy HH:mm:ss Z");
@@ -208,11 +217,11 @@ public final class Config {
      * @param option name of the option
      */
     public static void unsetOption(final String domain, final String option) {
-	if (properties == null) {
+        if (properties == null) {
             initialise();
         }
-	
-	properties.remove(domain + "." + option);
+        
+        properties.remove(domain + "." + option);
     }
     
     /**
