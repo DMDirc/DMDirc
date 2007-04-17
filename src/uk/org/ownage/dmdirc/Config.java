@@ -108,6 +108,12 @@ public final class Config {
         defaults.setProperty("general.cyclemessage", "Cycling");
         defaults.setProperty("general.kickmessage", "Bye!");
         
+        defaults.setProperty("general.closechannelsonquit", "false");
+        defaults.setProperty("general.closequeriesonquit", "false");
+        
+        defaults.setProperty("general.closechannelsondisconnect", "false");
+        defaults.setProperty("general.closequeriesondisconnect", "false");        
+        
         // These are temporary until we get server list support
         defaults.setProperty("general.server", "blueyonder.uk.quakenet.org");
         defaults.setProperty("general.port", "7000");

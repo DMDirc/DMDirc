@@ -179,8 +179,6 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         
         if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
             disconnect(configManager.getOption("general", "quitmessage"));
-            closeChannels();
-            closeQueries();
         }
         
         serverName = server;
@@ -382,6 +380,14 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public void disconnect(final String reason) {
         parser.quit(reason);
+        
+        if (Boolean.parseBoolean(Config.getOption("general", "closechannelsonquit"))) {
+            closeChannels();
+        }
+        
+        if (Boolean.parseBoolean(Config.getOption("general", "closequeriesonquit"))) {
+            closeQueries();
+        }
     }
     
     /**
@@ -563,9 +569,9 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param cChannel Channel being joined
      */
     public void onChannelSelfJoin(final IRCParser tParser, final ChannelInfo cChannel) {
-        if (channels.containsKey(cChannel.getName())) {
-            channels.get(cChannel.getName()).setChannelInfo(cChannel);
-            channels.get(cChannel.getName()).selfJoin();
+        if (hasChannel(cChannel.getName())) {
+            getChannel(cChannel.getName()).setChannelInfo(cChannel);
+            getChannel(cChannel.getName()).selfJoin();
         } else {
             addChannel(cChannel);
         }
@@ -719,6 +725,14 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public void onSocketClosed(final IRCParser tParser) {
         handleNotification("socketClosed", serverName);
+        
+        if (Boolean.parseBoolean(Config.getOption("general", "closechannelsondisconnect"))) {
+            closeChannels();
+        }
+        
+        if (Boolean.parseBoolean(Config.getOption("general", "closequeriesondisconnect"))) {
+            closeQueries();
+        }        
     }
     
     /**
