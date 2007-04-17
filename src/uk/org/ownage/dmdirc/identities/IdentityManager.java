@@ -93,7 +93,7 @@ public final class IdentityManager {
         } else {
             for (File file : dir.listFiles()) {
                 try {
-                    addIdentity(new Identity(file.toURI().toURL().openStream()));
+                    addIdentity(new Identity(file));
                 } catch (InvalidIdentityFileException ex) {
                     Logger.error(ErrorLevel.WARNING, "Invalid identity file", ex);
                 } catch (IOException ex) {
@@ -103,6 +103,17 @@ public final class IdentityManager {
         }
         
         globalConfig = new GlobalConfig();
+    }
+    
+    /**
+     * Saves all modified identity files to disk.
+     */
+    public static void save() {
+        if (identities != null) {
+            for (Identity identity : identities) {
+                identity.save();
+            }
+        }
     }
     
     /**

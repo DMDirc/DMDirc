@@ -23,11 +23,14 @@
 package uk.org.ownage.dmdirc.identities;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.MalformedURLException;
-import java.util.Enumeration;
 import java.util.Properties;
 
 import uk.org.ownage.dmdirc.Config;
@@ -51,18 +54,37 @@ public final class Identity implements ConfigSource {
     /** The configuration details for this identity. */
     private final Properties properties;
     
+    /** The file that this identity is read from. */
+    private File file;
+    
+    /** Whether this identity needs to be saved. */
+    private boolean needSave;
+    
     /**
      * Creates a new instance of Identity.
-     * @param file The InputStream to load this identity from.
+     * @param file The file to load this identity from.
      * @throws uk.org.ownage.dmdirc.identities.InvalidIdentityFileException
      * Missing required properties
+     * @throws IOException Input/output exception
      */
-    public Identity(final InputStream file) throws IOException,
+    public Identity(final File file) throws IOException,
             InvalidIdentityFileException {
-        
+        this(new FileInputStream(file));
+        this.file = file;
+    }
+    
+    /**
+     * Creates a new read-only identity.
+     * @param stream The input stream to read the identity from
+     * @throws uk.org.ownage.dmdirc.identities.InvalidIdentityFileException
+     * Missing required properties
+     * @throws IOException Input/output exception
+     */
+    public Identity(final InputStream stream) throws IOException,
+            InvalidIdentityFileException {
         properties = new Properties();
         
-        properties.load(file);
+        properties.load(stream);
         
         if (!properties.containsKey("identity.name")) {
             throw new InvalidIdentityFileException("No name specified");
@@ -81,6 +103,8 @@ public final class Identity implements ConfigSource {
         } else if (!isProfile()) {
             throw new InvalidIdentityFileException("No target and no profile");
         }
+        
+        stream.close();
     }
     
     /**
@@ -89,7 +113,7 @@ public final class Identity implements ConfigSource {
      */
     public Properties getProperties() {
         return properties;
-    }    
+    }
     
     /**
      * Returns the name of this identity.
@@ -129,7 +153,7 @@ public final class Identity implements ConfigSource {
     public String getOption(final String domain, final String option) {
         return (String) properties.get(domain + "." + option);
     }
-        
+    
     /**
      * Sets the specified option in this identity to the specified value.
      * @param domain The domain of the option
@@ -139,6 +163,36 @@ public final class Identity implements ConfigSource {
     public void setOption(final String domain, final String option,
             final String value) {
         properties.setProperty(domain + "." + option, value);
+        needSave = true;
+    }
+    
+    /**
+     * Deletes the specified option from this identity.
+     * @param domain The domain of the option
+     * @param option The name of the option
+     */
+    public void removeOption(final String domain, final String option) {
+        properties.remove(domain + "." + option);
+        needSave = true;
+    }
+    
+    /**
+     * Saves this identity to disk if it has been updated.
+     */
+    public void save() {
+        if (needSave && file != null) {
+            try {
+                final OutputStream stream = new FileOutputStream(file);
+                properties.store(stream, null);
+                stream.close();
+                
+                needSave = false;
+            } catch (FileNotFoundException ex) {
+                Logger.error(ErrorLevel.ERROR, "Unable to save identity file", ex);
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.ERROR, "Unable to save identity file", ex);
+            }
+        }
     }
     
     /**
@@ -193,7 +247,7 @@ public final class Identity implements ConfigSource {
         
         try {
             final File file = new File(location + target.getData());
-            return new Identity(file.toURI().toURL().openStream());
+            return new Identity(file);
         } catch (MalformedURLException ex) {
             Logger.error(ErrorLevel.ERROR, "Unable to open new identity file", ex);
             return null;

@@ -33,6 +33,7 @@ import java.util.Properties;
 
 import javax.swing.UIManager;
 
+import uk.org.ownage.dmdirc.identities.IdentityManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.LogLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -250,6 +251,8 @@ public final class Config {
      * Saves the config file to disc.
      */
     public static void save() {
+        IdentityManager.save();
+        
         if (properties == null) {
             return;
         }
