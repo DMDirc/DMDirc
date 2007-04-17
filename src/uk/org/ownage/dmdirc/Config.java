@@ -136,6 +136,7 @@ public final class Config {
         defaults.setProperty("notifications.numeric_318", "active");
         defaults.setProperty("notifications.numeric_319", "active");
         defaults.setProperty("notifications.numeric_330", "active");
+        defaults.setProperty("notifications.numeric_343", "active");
         
         defaults.setProperty("ui.backgroundcolour", "0");
         defaults.setProperty("ui.foregroundcolour", "1");

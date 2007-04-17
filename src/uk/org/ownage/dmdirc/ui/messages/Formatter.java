@@ -217,6 +217,7 @@ public final class Formatter {
         defaultProperties.setProperty("numeric_318", "End of WHOIS info for %4$s.\n-");
         defaultProperties.setProperty("numeric_319", "%4$s is on: %5$s");
         defaultProperties.setProperty("numeric_330", "%4$s %6$s %5$s.");
+        defaultProperties.setProperty("numeric_343", "%4$s %6$s %5$s.");
         
         return defaultProperties;
     }
