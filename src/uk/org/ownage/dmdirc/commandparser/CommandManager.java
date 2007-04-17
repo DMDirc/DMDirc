@@ -75,6 +75,7 @@ public final class CommandManager {
         channelCommands.add(new Benchmark());
         channelCommands.add(new ChannelSettings());
         channelCommands.add(new ShowTopic());
+        channelCommands.add(new SetTopic());
         
         serverCommands = new ArrayList<Command>();
         
