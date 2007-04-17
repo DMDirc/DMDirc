@@ -97,7 +97,7 @@ public final class ChannelClientInfo {
 
 		for (int i = myParser.nNextKeyPrefix; i > 0; i = i / 2) {
 			if ((nCurrentModes & i) == i) {
-                            for (char cTemp : myParser.hPrefixModes.keySet()) {
+				for (char cTemp : myParser.hPrefixModes.keySet()) {
 					nTemp = myParser.hPrefixModes.get(cTemp);
 					if (nTemp == i) {
 						if (bPrefix) { cTemp = myParser.hPrefixMap.get(cTemp); }

@@ -148,7 +148,7 @@ public final class ChannelInfo {
 		}
 		return null;
 	}
-        
+	
 	/**
 	 * Get the ChannelClientInfo object associated with a ClientInfo object.
 	 *
