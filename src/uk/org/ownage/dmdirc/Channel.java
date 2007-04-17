@@ -570,6 +570,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         if (nick.equals(tParser.getMyself().getNickname())) {
             type = "channelSelfNickChange";
         }
+        tabCompleter.removeEntry(sOldNick);
+        tabCompleter.addEntry(nick);
         frame.addLine(type, modes, sOldNick, ident, host, nick, cChannel);
         sendNotification();
     }
