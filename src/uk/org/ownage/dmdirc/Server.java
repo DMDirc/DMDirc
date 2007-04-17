@@ -55,6 +55,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDLine;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDStart;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INumeric;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPingFailed;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
@@ -76,7 +77,18 @@ import uk.org.ownage.dmdirc.ui.messages.Formatter;
 public final class Server implements IChannelSelfJoin, IPrivateMessage,
         IPrivateAction, IErrorInfo, IPrivateCTCP, IPrivateCTCPReply,
         InternalFrameListener, ISocketClosed, IPrivateNotice, IMOTDStart,
-        IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, FrameContainer {
+        IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed,
+        FrameContainer {
+    
+    /**
+     * The callbacks that should be registered for server instances.
+     */
+    private final static String[] callbacks = {
+        "OnChannelSelfJoin", "OnErrorInfo", "OnPrivateMessage",
+        "OnPrivateAction", "OnPrivateCTCP", "OnPrivateNotice",
+        "OnPrivateCTCPReply", "OnSocketClosed", "OnGotNetwork", "OnNumeric",
+        "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed"
+    };
     
     /**
      * Open channels that currently exist on the server.
@@ -212,24 +224,14 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         }
         
         try {
-            parser.getCallbackManager().addCallback("OnChannelSelfJoin", this);
-            parser.getCallbackManager().addCallback("OnErrorInfo", this);
-            parser.getCallbackManager().addCallback("OnPrivateMessage", this);
-            parser.getCallbackManager().addCallback("OnPrivateAction", this);
-            parser.getCallbackManager().addCallback("OnPrivateCTCP", this);
-            parser.getCallbackManager().addCallback("OnPrivateNotice", this);
-            parser.getCallbackManager().addCallback("OnPrivateCTCPReply", this);
-            parser.getCallbackManager().addCallback("OnSocketClosed", this);
-            parser.getCallbackManager().addCallback("OnGotNetwork", this);
-            parser.getCallbackManager().addCallback("OnNumeric", this);
-            parser.getCallbackManager().addCallback("OnMOTDStart", this);
-            parser.getCallbackManager().addCallback("OnMOTDLine", this);
-            parser.getCallbackManager().addCallback("OnMOTDEnd", this);
+            for(String callback : callbacks) {
+                parser.getCallbackManager().addCallback(callback, this);
+            }
             
             parser.getCallbackManager().addCallback("OnDataIn", raw);
             parser.getCallbackManager().addCallback("OnDataOut", raw);
         } catch (CallbackNotFound ex) {
-            Logger.error(ErrorLevel.FATAL, "Unable to get server events", ex);
+            Logger.error(ErrorLevel.FATAL, "Unable to register server event handlers", ex);
         }
         
         try {
@@ -327,19 +329,9 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public void close(final String reason) {
         // Unregister parser callbacks
-        parser.getCallbackManager().delCallback("OnChannelSelfJoin", this);
-        parser.getCallbackManager().delCallback("OnErrorInfo", this);
-        parser.getCallbackManager().delCallback("OnPrivateMessage", this);
-        parser.getCallbackManager().delCallback("OnPrivateAction", this);
-        parser.getCallbackManager().delCallback("OnPrivateCTCP", this);
-        parser.getCallbackManager().delCallback("OnPrivateNotice", this);
-        parser.getCallbackManager().delCallback("OnPrivateCTCPReply", this);
-        parser.getCallbackManager().delCallback("OnSocketClosed", this);
-        parser.getCallbackManager().delCallback("OnGotNetwork", this);
-        parser.getCallbackManager().delCallback("OnNumeric", this);
-        parser.getCallbackManager().delCallback("OnMOTDStart", this);
-        parser.getCallbackManager().delCallback("OnMOTDLine", this);
-        parser.getCallbackManager().delCallback("OnMOTDEnd", this);
+        for(String callback : callbacks) {
+            parser.getCallbackManager().delCallback(callback, this);
+        }
         // Unregister frame callbacks
         frame.removeInternalFrameListener(this);
         // Disconnect from the server
@@ -381,11 +373,11 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public void disconnect(final String reason) {
         parser.quit(reason);
         
-        if (Boolean.parseBoolean(Config.getOption("general", "closechannelsonquit"))) {
+        if (Boolean.parseBoolean(configManager.getOption("general", "closechannelsonquit"))) {
             closeChannels();
         }
         
-        if (Boolean.parseBoolean(Config.getOption("general", "closequeriesonquit"))) {
+        if (Boolean.parseBoolean(configManager.getOption("general", "closequeriesonquit"))) {
             closeQueries();
         }
     }
@@ -726,13 +718,23 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public void onSocketClosed(final IRCParser tParser) {
         handleNotification("socketClosed", serverName);
         
-        if (Boolean.parseBoolean(Config.getOption("general", "closechannelsondisconnect"))) {
+        if (Boolean.parseBoolean(configManager.getOption("general", "closechannelsondisconnect"))) {
             closeChannels();
         }
         
-        if (Boolean.parseBoolean(Config.getOption("general", "closequeriesondisconnect"))) {
+        if (Boolean.parseBoolean(configManager.getOption("general", "closequeriesondisconnect"))) {
             closeQueries();
-        }        
+        }
+    }
+    
+    /**
+     * Called when the parser misses a ping reply from the server.
+     * @param parser The IRC parser for this server
+     */
+    public void onPingFailed(final IRCParser parser) {
+        MainFrame.getMainFrame().getStatusBar().setMessage("No ping reply from "
+                + serverName + " for over "
+                + Math.floor(parser.getServerLag() / 1000.0) + " seconds.");
     }
     
     /**
