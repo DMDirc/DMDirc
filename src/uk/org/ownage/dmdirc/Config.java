@@ -108,14 +108,7 @@ public final class Config {
         defaults.setProperty("general.cyclemessage", "Cycling");
         defaults.setProperty("general.kickmessage", "Bye!");
         
-        // These two should no longer be used
-        // TODO: Check for any use of these (& update), then remove then
-        defaults.setProperty("general.globaldisconnectmessage", "true");
-        defaults.setProperty("general.sendinfomessagestoactive", "true");
-        
-        // These are temporary until we get identity support
-        defaults.setProperty("general.defaultnick", "DMDircUser");
-        defaults.setProperty("general.alternatenick", "DMDircUser_");
+        // These are temporary until we get server list support
         defaults.setProperty("general.server", "blueyonder.uk.quakenet.org");
         defaults.setProperty("general.port", "7000");
         defaults.setProperty("general.password", "");

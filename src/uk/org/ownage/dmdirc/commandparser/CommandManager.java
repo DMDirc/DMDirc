@@ -92,6 +92,7 @@ public final class CommandManager {
         serverCommands.add(new Away());
         serverCommands.add(new ConfigInfo());
         serverCommands.add(new Back());
+        serverCommands.add(new Whois());
         
         queryCommands = new ArrayList<Command>();
         
