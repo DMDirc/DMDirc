@@ -30,10 +30,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -114,7 +112,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
      * @param newTrace Error trace
      */
     public ErrorDialog(final ErrorLevel newLevel, final Icon newIcon,
-            final String newMessage, final String[] newTrace) {
+            final String newMessage, final String[] newTrace, final boolean autoSubmit) {
         super(MainFrame.getMainFrame(), newLevel == ErrorLevel.FATAL ? true : false);
         icon = newIcon;
         level = newLevel;
@@ -124,6 +122,9 @@ public final class ErrorDialog extends JDialog implements ActionListener,
         initComponents();
         layoutComponents();
         setLocationRelativeTo(MainFrame.getMainFrame());
+        if (autoSubmit && level != ErrorLevel.FATAL) {
+            sendData();
+        }
     }
     
     /**
@@ -284,7 +285,11 @@ public final class ErrorDialog extends JDialog implements ActionListener,
                 }, 1);
             }
             if (level == ErrorLevel.FATAL) {
-                MainFrame.getMainFrame().setVisible(false);
+                if (sendDataCheckbox.isSelected()) {
+                    MainFrame.getMainFrame().setVisible(false);
+                } else {
+                    System.exit(-1);
+                }
             }
             this.dispose();
         }
@@ -292,9 +297,6 @@ public final class ErrorDialog extends JDialog implements ActionListener,
     
     /** Called when the user clicks on the status notifier. */
     public void clickReceived() {
-        if (level != ErrorLevel.FATAL) {
-            MainFrame.getMainFrame().getStatusBar().clearError();
-        }
         this.setVisible(true);
     }
     
@@ -302,11 +304,9 @@ public final class ErrorDialog extends JDialog implements ActionListener,
      * Sends an error report.
      */
     private void sendData() {
-        System.out.println("sending data");
         URL url;
         URLConnection urlConn;
         DataOutputStream printout;
-        BufferedReader printin;
         try {
             url = new URL("http://www.dmdirc.com/error.php");
             urlConn = url.openConnection();
@@ -328,9 +328,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
         } catch (IOException ex) {
             System.err.println("IO Error, unable to send error report.");
         }
-        System.out.println("finished submitting");
         if (level == ErrorLevel.FATAL) {
-            System.out.println("exiting java");
             System.exit(-1);
         }
         sendDataCheckbox.setSelected(true);
@@ -347,7 +345,11 @@ public final class ErrorDialog extends JDialog implements ActionListener,
     /** {@inheritDoc} */
     public void windowClosing(final WindowEvent e) {
         if (level == ErrorLevel.FATAL) {
-            MainFrame.getMainFrame().setVisible(false);
+            if (sendDataCheckbox.isSelected()) {
+                MainFrame.getMainFrame().setVisible(false);
+            } else {
+                System.exit(-1);
+            }
         } else {
             this.dispose();
         }

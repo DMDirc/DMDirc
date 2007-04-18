@@ -291,8 +291,10 @@ public final class PreferencesDialog extends StandardDialog
 		OptionType.TEXTFIELD);
 	addComponent(panel, "general.kickmessage", "Kick message: ",
 		OptionType.TEXTFIELD);
+        addComponent(panel, "general.autoSubmitErrors", "Automatically submit errors: ",
+		OptionType.CHECKBOX);
 	
-	layoutGrid(panel, 5, 2, SMALL_BORDER, SMALL_BORDER,
+	layoutGrid(panel, 6, 2, SMALL_BORDER, SMALL_BORDER,
 		LARGE_BORDER, LARGE_BORDER);
 	
 	cardLayoutPanel.add(panel, "General");
