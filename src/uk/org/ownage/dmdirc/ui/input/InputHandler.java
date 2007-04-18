@@ -169,7 +169,7 @@ public final class InputHandler implements KeyListener, ActionListener {
             
             // Ctrl+Enter
             if (keyEvent.getKeyChar() == KeyEvent.VK_ENTER) {
-                commandParser.parseCommand(parentWindow, target.getText(), true);
+                commandParser.parseCommandCtrl(parentWindow, target.getText());
                 addToBuffer(target.getText());
             }
         }

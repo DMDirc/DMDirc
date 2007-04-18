@@ -59,8 +59,11 @@ public abstract class CommandParser {
      * Parses the specified string as a command.
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
+     * @param parseChannel Whether or not to try and parse the first argument
+     * as a channel name
      */
-    public final void parseCommand(final CommandWindow origin, final String line) {
+    public final void parseCommand(final CommandWindow origin,
+            final String line, final boolean parseChannel) {
         if (line.length() == 0) {
             return;
         }
@@ -72,7 +75,8 @@ public abstract class CommandParser {
             
             assert args.length > 0;
             
-            if (args.length >= 2 && origin.getServer().getParser().isValidChannelName(args[1])) {
+            if (args.length >= 2 && origin.getServer().getParser().isValidChannelName(args[1]) && parseChannel) {
+                // TODO: Make sure it's a channel command
                 if (origin.getServer().hasChannel(args[1])) {
                     
                     final StringBuilder newLine = new StringBuilder();
@@ -81,7 +85,7 @@ public abstract class CommandParser {
                         newLine.append(" ").append(args[i]);
                     }
                     
-                    origin.getServer().getChannel(args[1]).getFrame().getCommandParser().parseCommand(origin, newLine.substring(1));
+                    origin.getServer().getChannel(args[1]).getFrame().getCommandParser().parseCommand(origin, newLine.substring(1), false);
                     
                     return;
                 } else {
@@ -113,19 +117,22 @@ public abstract class CommandParser {
     }
     
     /**
-     * Parses the specified string as a command, taking the indicated status
-     * of the control key into account.
+     * Parses the specified string as a command.
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
-     * @param usedCtrl Whether the user used the control key or not
      */
-    public final void parseCommand(final CommandWindow origin, final String line,
-            final boolean usedCtrl) {
-        if (usedCtrl) {
-            handleNonCommand(origin, line);
-        } else {
-            parseCommand(origin, line);
-        }
+    public final void parseCommand(final CommandWindow origin,
+            final String line) {
+        parseCommand(origin, line, true);
+    }
+    
+    /**
+     * Handles the specified string as a non-command.
+     * @param origin The window in which the command was typed
+     * @param line The line to be parsed
+     */
+    public final void parseCommandCtrl(final CommandWindow origin, final String line) {
+        handleNonCommand(origin, line);
     }
     
     /**
