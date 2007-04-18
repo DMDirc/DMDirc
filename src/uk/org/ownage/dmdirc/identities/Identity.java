@@ -151,7 +151,7 @@ public final class Identity implements ConfigSource {
      * @return The value of the specified option
      */
     public String getOption(final String domain, final String option) {
-        return (String) properties.get(domain + "." + option);
+        return properties.getProperty(domain + "." + option);
     }
     
     /**
