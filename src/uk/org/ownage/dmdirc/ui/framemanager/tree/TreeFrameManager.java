@@ -468,7 +468,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event mouse event.
      */
     public void mouseClicked(final MouseEvent event) {
-	//Do nothing
+	processMouseEvent(event);
     }
     
     /**
@@ -476,15 +476,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event mouse event.
      */
     public void mousePressed(final MouseEvent event) {
-	if (event.isPopupTrigger()) {
-	    final JTree source = (JTree) event.getSource();
-	    final TreePath path = tree.getPathForLocation(event.getX(),
-		    event.getY());
-	    if (path != null) {
-		popupNode = (DefaultMutableTreeNode) path.getLastPathComponent();
-		popup.show(source, event.getX(), event.getY());
-	    }
-	}
+	processMouseEvent(event);
     }
     
     /**
@@ -492,7 +484,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event mouse event.
      */
     public void mouseReleased(final MouseEvent event) {
-	//Do nothing
+	processMouseEvent(event);
     }
     
     /**
@@ -509,6 +501,22 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      */
     public void mouseExited(final MouseEvent event) {
 	//Do nothing
+    }
+    
+        /**
+     * Processes every mouse button event to check for a popup trigger.
+     * @param e mouse event
+     */
+    public void processMouseEvent(final MouseEvent event) {
+        if (event.isPopupTrigger()) {
+	    final JTree source = (JTree) event.getSource();
+	    final TreePath path = tree.getPathForLocation(event.getX(),
+		    event.getY());
+	    if (path != null) {
+		popupNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+		popup.show(source, event.getX(), event.getY());
+	    }
+	}
     }
     
     /**
