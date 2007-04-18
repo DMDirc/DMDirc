@@ -200,6 +200,11 @@ public final class Formatter {
         defaultProperties.setProperty("querySelfAction", colour + "6* %1$s %4$s");
         defaultProperties.setProperty("queryNickChanged", colour + "3* %1$s is now know as %4$s.");
         
+        // Type: Outgoing message
+        //    1: Target
+        //    2: Message
+        defaultProperties.setProperty("selfCTCP", colour + "4->- [%1$s] %2$s");
+        
         // Type: Miscellaneous
         //    1: Miscellaneous data
         defaultProperties.setProperty("channelNoTopic", colour + "3* There is no topic set for %1$s.");

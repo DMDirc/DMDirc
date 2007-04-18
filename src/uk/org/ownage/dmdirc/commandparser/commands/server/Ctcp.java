@@ -22,37 +22,46 @@
 
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
 /**
- * Allows the user to change nickname.
+ * Allows the user to send CTCP messages.
  * @author chris
  */
-public final class Nick extends ServerCommand {
+public final class Ctcp extends ServerCommand {
     
     /**
-     * Creates a new instance of Nick.
+     * Creates a new instance of Ctcp.
      */
-    public Nick() {
-        description = "Changes your nickname";
-        arguments = "<new nickname>";
-        polyadic = false;
-        arity = 1;
-        name = "nick";
+    public Ctcp() {
+        description = "Sends a CTCP message";
+        arguments = "<target> <type> [arguments]";
+        polyadic = true;
+        arity = 0;
+        name = "ctcp";
         show = true;
     }
-
+    
     /**
      * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
-     */    
-    public void execute(final CommandWindow origin, final Server server, 
+     */
+    public void execute(final CommandWindow origin, final Server server,
             final String... args) {
-        server.getParser().setNickname(args[0]);
+        if (args.length < 2) {
+            origin.addLine("Usage: "
+                    + Config.getOption("general", "commandchar")
+                    + "ctcp <target> <type> [arguments]");
+        } else {
+            server.getParser().sendLine("PRIVMSG " + args[0] + " :"
+                    + ((char)1) + implodeArgs(1, args) + ((char)1));
+            origin.addLine("selfCTCP", args[0], implodeArgs(1, args));
+        }
     }
     
 }
