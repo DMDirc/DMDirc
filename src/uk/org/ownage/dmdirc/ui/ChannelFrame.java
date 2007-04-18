@@ -22,7 +22,6 @@
 
 package uk.org.ownage.dmdirc.ui;
 
-import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;

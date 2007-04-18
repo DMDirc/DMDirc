@@ -40,7 +40,8 @@ import javax.swing.WindowConstants;
 import uk.org.ownage.dmdirc.BrowserLauncher;
 import uk.org.ownage.dmdirc.ui.*;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  *

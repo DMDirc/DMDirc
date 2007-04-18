@@ -51,7 +51,11 @@ public final class BrowserLauncher {
         }
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
-                desktop.browse(new URL("http://" + url).toURI());
+                if (url.startsWith("http://")) {
+                    desktop.browse(new URL(url).toURI());
+                } else {
+                    desktop.browse(new URL("http://" + url).toURI());
+                }
                 return;
             } catch (IOException ex) {
                 Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);

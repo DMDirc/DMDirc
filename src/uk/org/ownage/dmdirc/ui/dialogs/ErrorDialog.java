@@ -56,7 +56,8 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.ui.*;
 import uk.org.ownage.dmdirc.ui.interfaces.StatusErrorNotifier;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * The fatal error dialog is used to inform the user that a fatal error has

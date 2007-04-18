@@ -62,7 +62,8 @@ import uk.org.ownage.dmdirc.ui.*;
 import uk.org.ownage.dmdirc.ui.components.ParamModePanel;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Allows the user to modify channel settings (modes, topics, etc).
@@ -133,7 +134,7 @@ public class ChannelSettingsDialog extends StandardDialog
      */
     private JTextArea topicText;
     
-    /** Client settings panel */
+    /** Client settings panel. */
     private ChannelSettingsPane channelSettingsPane;
     
     /**
@@ -482,7 +483,6 @@ public class ChannelSettingsDialog extends StandardDialog
      */
     private void initSettingsPanel(final JPanel parent) {
         channelSettingsPane = new ChannelSettingsPane(parent, channel);
-        parent.add(channelSettingsPane, BorderLayout.CENTER);
     }
     
     /** Initialises listeners for this dialog. */

@@ -22,12 +22,14 @@
 
 package uk.org.ownage.dmdirc.ui.dialogs.channelsetting;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
@@ -41,16 +43,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.identities.IdentityManager;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
- *
+ * Channel settings panel.
  */
 public final class ChannelSettingsPane extends JPanel implements ActionListener {
     
@@ -61,25 +66,46 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
      */
     private static final long serialVersionUID = 1;
     
-    final Channel channel;
-    final JPanel parent;
-    
-    final JLabel infoLabel;
-    final JCheckBox splitUserModes;
-    final JTextField cycleText;
-    final JTextField kickText;
-    final JTextField partText;
-    final JTextField backColour;
-    final JTextField foreColour;
-    final JTextField frameBuffer;
-    final JTextField inputBuffer;
-    final JTextField newSettingField;
-    final JComboBox newSettingComboBox;
-    final JButton newSettingButton;
-    
-    Properties settings;
-    int numCurrentSettings;
-    int numAddableSettings;
+    /** Parent channel. */
+    private final Channel channel;
+    /** Parent container panel. */
+    private final JPanel parent;
+    /** Current settings panel. */
+    private JPanel settingsPanel;
+    /** Information label. */
+    private final JLabel infoLabel;
+    /** No settings warning label. */
+    private final JLabel noCurrentSettingsLabel;
+    /** splut user modes checkbox. */
+    private final JCheckBox splitUserModes;
+    /** cycle text text field. */
+    private final JTextField cycleText;
+    /** kick text text field. */
+    private final JTextField kickText;
+    /** part text text field. */
+    private final JTextField partText;
+    /** background colour text field. */
+    private final JTextField backColour;
+    /** fore ground colour text field. */
+    private final JTextField foreColour;
+    /** frame buffer text field. */
+    private final JTextField frameBuffer;
+    /** input buffer text field. */
+    private final JTextField inputBuffer;
+    /** new setting value text field. */
+    private final JTextField newSettingField;
+    /** new setting combo box. */
+    private final JComboBox newSettingComboBox;
+    /** add new settinb button. */
+    private final JButton newSettingButton;
+    /** channel settings . */
+    private Properties settings;
+    /** number of current settings. */
+    private int numCurrentSettings;
+    /** number of addable settings. */
+    private int numAddableSettings;
+    /** hashmap, config option -> name */
+    private HashMap<String, String> optionMap;
     
     /**
      * Creates a new instance of ChannelSettingsPane.
@@ -90,6 +116,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         parent = newParent;
         channel = newChannel;
         infoLabel = new JLabel();
+        noCurrentSettingsLabel = new JLabel();
         splitUserModes = new JCheckBox();
         cycleText = new JTextField();
         kickText = new JTextField();
@@ -102,15 +129,33 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         newSettingComboBox = new JComboBox(new DefaultComboBoxModel());
         newSettingButton = new JButton();
         
+        optionMap = new HashMap<String, String>();
+        
+        optionMap.put("Split user modes", "channel.splitusermodes");
+        optionMap.put("Cycle message", "general.cyclemessage");
+        optionMap.put("Kick message", "general.kickmessage");
+        optionMap.put("Part message", "general.partmessage");
+        optionMap.put("Background colour", "ui.backgroundcolour");
+        optionMap.put("Foreground colour", "ui.foregroundcolour");
+        optionMap.put("Frame buffer size", "ui.frameBufferSize");
+        optionMap.put("Input buffer size", "ui.inputBufferSize");
+        
         initSettingsPanel();
     }
     
+    /**
+     * Initialises the settings panel.
+     */
     private void initSettingsPanel() {
+        this.setVisible(false);
+        this.removeAll();
         final GridBagConstraints constraints = new GridBagConstraints();
-        final JPanel settingsPanel = new JPanel();
         final JPanel addPanel = new JPanel();
+        settingsPanel = new JPanel();
         JLabel label;
         JButton button;
+        numCurrentSettings = 0;
+        numAddableSettings = 0;
         
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
@@ -151,7 +196,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
                     cycleText.getFont().getSize()));
             addCurrentOption("Cycle message: ", cycleText, settingsPanel);
         } else {
-            addAddableOption("Cycle Message");
+            addAddableOption("Cycle message");
         }
         if (settings.getProperty("general.kickmessage") != null) {
             kickText.setText(settings.getProperty("general.kickmessage"));
@@ -159,7 +204,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
                     kickText.getFont().getSize()));
             addCurrentOption("Kick message: ", kickText, settingsPanel);
         } else {
-            addAddableOption("Kick Message");
+            addAddableOption("Kick message");
         }
         if (settings.getProperty("general.partmessage") != null) {
             partText.setText(settings.getProperty("general.partmessage"));
@@ -167,7 +212,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
                     partText.getFont().getSize()));
             addCurrentOption("Part message: ", partText, settingsPanel);
         } else {
-            addAddableOption("Part Message");
+            addAddableOption("Part message");
         }
         if (settings.getProperty("ui.backgroundcolour") != null) {
             backColour.setText(settings.getProperty("ui.backgroundcolour"));
@@ -191,7 +236,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
                     frameBuffer.getFont().getSize()));
             addCurrentOption("Frame buffer size: ", frameBuffer, settingsPanel);
         } else {
-            addAddableOption("Frame Buffer Size");
+            addAddableOption("Frame buffer Size");
         }
         if (settings.getProperty("ui.inputbuffersize") != null) {
             inputBuffer.setText(settings.getProperty("ui.inputbuffersize"));
@@ -199,14 +244,13 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
                     frameBuffer.getFont().getSize()));
             addCurrentOption("Input buffer size: ", inputBuffer, settingsPanel);
         } else {
-            addAddableOption("Input Buffer Size");
+            addAddableOption("Input buffer Size");
         }
         
         if (numCurrentSettings == 0) {
-            label = new JLabel();
-            label.setText("No channel specific settings.");
-            label.setBorder(new EmptyBorder(0, 0, 0, 0));
-            settingsPanel.add(label);
+            noCurrentSettingsLabel.setText("No channel specific settings.");
+            noCurrentSettingsLabel.setBorder(new EmptyBorder(0, 0, 0, 0));
+            settingsPanel.add(noCurrentSettingsLabel);
             
             layoutGrid(settingsPanel, 1,
                     1, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
@@ -223,6 +267,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         newSettingButton.setText("Add");
         newSettingButton.setMargin(new Insets(0, 0, 0, 0));
         newSettingButton.setPreferredSize(new Dimension(45, 0));
+        newSettingButton.addActionListener(this);
         addPanel.add(newSettingComboBox);
         addPanel.add(newSettingField);
         addPanel.add(newSettingButton);
@@ -245,9 +290,15 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         constraints.weighty = 0.0;
         constraints.gridy = 2;
         this.add(addPanel, constraints);
+        this.setVisible(true);
+        parent.add(this, BorderLayout.CENTER);
     }
     
-    private void addCurrentOption(String displayName, JComponent component, JPanel panel) {
+    /**
+     * Adds an option to the current options pane.
+     */
+    private void addCurrentOption(final String displayName,
+            final JComponent component, final JPanel panel) {
         numCurrentSettings++;
         JLabel label = new JLabel();
         label.setText(displayName);
@@ -270,11 +321,38 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         panel.add(button);
     }
     
-    public void addAddableOption(String displayName) {
+    /**
+     * Adds an option to the addable options combo box.
+     */
+    public void addAddableOption(final String displayName) {
         numAddableSettings++;
         ((DefaultComboBoxModel) newSettingComboBox.getModel()).addElement(displayName);
     }
-
-    public void actionPerformed(ActionEvent e) {
+    
+    /**
+     * Adds an addable option to the current options.
+     * @param name option name
+     * @param value option value
+     */
+    private void addNewCurrentOption(final String name, final String value) {
+        if (IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
+                channel.getChannelInfo().getName()) != null && value != null) {
+            String[] optionValues = optionMap.get(name).split("\\.");
+            IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
+                    channel.getChannelInfo().getName()).setOption(optionValues[0], optionValues[1], value);
+            System.out.println(IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
+                    channel.getChannelInfo().getName()).getOption(optionValues[0], optionValues[1]));
+            initSettingsPanel();
+        }
+    }
+    
+    /** {@inheritDoc}. */
+    public void actionPerformed(final ActionEvent event) {
+        if (event.getSource() == newSettingButton) {
+            addNewCurrentOption((String) newSettingComboBox.getSelectedItem(),
+                    newSettingField.getText());
+        } else {
+            System.out.println(event);
+        }
     }
 }
