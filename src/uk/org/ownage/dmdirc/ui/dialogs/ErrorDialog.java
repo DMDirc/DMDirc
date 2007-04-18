@@ -30,8 +30,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -282,7 +284,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
                 }, 1);
             }
             if (level == ErrorLevel.FATAL) {
-                System.exit(-1);
+                MainFrame.getMainFrame().setVisible(false);
             }
             this.dispose();
         }
@@ -300,9 +302,11 @@ public final class ErrorDialog extends JDialog implements ActionListener,
      * Sends an error report.
      */
     private void sendData() {
+        System.out.println("sending data");
         URL url;
         URLConnection urlConn;
         DataOutputStream printout;
+        BufferedReader printin;
         try {
             url = new URL("http://www.dmdirc.com/error.php");
             urlConn = url.openConnection();
@@ -324,6 +328,11 @@ public final class ErrorDialog extends JDialog implements ActionListener,
         } catch (IOException ex) {
             System.err.println("IO Error, unable to send error report.");
         }
+        System.out.println("finished submitting");
+        if (level == ErrorLevel.FATAL) {
+            System.out.println("exiting java");
+            System.exit(-1);
+        }
         sendDataCheckbox.setSelected(true);
         sendDataCheckbox.setEnabled(false);
         sendDataCheckbox.setText("Error has been reported to the developers.");
@@ -338,9 +347,11 @@ public final class ErrorDialog extends JDialog implements ActionListener,
     /** {@inheritDoc} */
     public void windowClosing(final WindowEvent e) {
         if (level == ErrorLevel.FATAL) {
-            System.exit(-1);
+            MainFrame.getMainFrame().setVisible(false);
+        } else {
+            this.dispose();
         }
-        this.dispose();
+        
     }
     
     /** {@inheritDoc} */
