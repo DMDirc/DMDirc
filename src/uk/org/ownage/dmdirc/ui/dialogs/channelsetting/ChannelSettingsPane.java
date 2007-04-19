@@ -30,6 +30,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
@@ -43,11 +44,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.identities.Identity;
 import uk.org.ownage.dmdirc.identities.IdentityManager;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
@@ -106,6 +108,14 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     private int numAddableSettings;
     /** hashmap, config option -> name */
     private HashMap<String, String> optionMap;
+    /** Channel identity file. */
+    private Identity identity;
+    /** Valid option types */
+    private enum OPTION_TYPE { TEXTFIELD, CHECKBOX, }
+    /** text fields */
+    private HashMap<String, JTextField> textFields;
+    /** checkboxes */
+    private HashMap<String, JCheckBox> checkBoxes;
     
     /**
      * Creates a new instance of ChannelSettingsPane.
@@ -115,6 +125,10 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     public ChannelSettingsPane(final JPanel newParent, final Channel newChannel) {
         parent = newParent;
         channel = newChannel;
+        
+        identity = IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
+                channel.getChannelInfo().getName());
+        
         infoLabel = new JLabel();
         noCurrentSettingsLabel = new JLabel();
         splitUserModes = new JCheckBox();
@@ -129,16 +143,9 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         newSettingComboBox = new JComboBox(new DefaultComboBoxModel());
         newSettingButton = new JButton();
         
-        optionMap = new HashMap<String, String>();
-        
-        optionMap.put("Split user modes", "channel.splitusermodes");
-        optionMap.put("Cycle message", "general.cyclemessage");
-        optionMap.put("Kick message", "general.kickmessage");
-        optionMap.put("Part message", "general.partmessage");
-        optionMap.put("Background colour", "ui.backgroundcolour");
-        optionMap.put("Foreground colour", "ui.foregroundcolour");
-        optionMap.put("Frame buffer size", "ui.frameBufferSize");
-        optionMap.put("Input buffer size", "ui.inputBufferSize");
+        textFields = new HashMap<String, JTextField>();
+        checkBoxes = new HashMap<String, JCheckBox>();
+        optionMap = new LinkedHashMap<String, String>();
         
         initSettingsPanel();
     }
@@ -156,6 +163,9 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         JButton button;
         numCurrentSettings = 0;
         numAddableSettings = 0;
+        optionMap.clear();
+        textFields.clear();
+        checkBoxes.clear();
         
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
@@ -174,78 +184,20 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
                 + "any settings specified here will overwrite global settings</html>");
         infoLabel.setBorder(new EmptyBorder(0, 0, LARGE_BORDER, 0));
         
-        if (IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
-                channel.getChannelInfo().getName()) == null) {
+        if (identity == null) {
             settings = new Properties();
         } else {
-            settings = IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
-                    channel.getChannelInfo().getName()).getProperties();
+            settings = identity.getProperties();
         }
         
-        if (settings.getProperty("channel.splitusermodes") != null) {
-            splitUserModes.setSelected(Boolean.parseBoolean(settings.getProperty("channel.splitusermodes")));
-            splitUserModes.setPreferredSize(new Dimension(150,
-                    splitUserModes.getFont().getSize()));
-            addCurrentOption("Split user modes: ", splitUserModes, settingsPanel);
-        } else {
-            addAddableOption("Split user modes");
-        }
-        if (settings.getProperty("general.cyclemessage") != null) {
-            cycleText.setText(settings.getProperty("general.cyclemessage"));
-            cycleText.setPreferredSize(new Dimension(150,
-                    cycleText.getFont().getSize()));
-            addCurrentOption("Cycle message: ", cycleText, settingsPanel);
-        } else {
-            addAddableOption("Cycle message");
-        }
-        if (settings.getProperty("general.kickmessage") != null) {
-            kickText.setText(settings.getProperty("general.kickmessage"));
-            kickText.setPreferredSize(new Dimension(150,
-                    kickText.getFont().getSize()));
-            addCurrentOption("Kick message: ", kickText, settingsPanel);
-        } else {
-            addAddableOption("Kick message");
-        }
-        if (settings.getProperty("general.partmessage") != null) {
-            partText.setText(settings.getProperty("general.partmessage"));
-            partText.setPreferredSize(new Dimension(150,
-                    partText.getFont().getSize()));
-            addCurrentOption("Part message: ", partText, settingsPanel);
-        } else {
-            addAddableOption("Part message");
-        }
-        if (settings.getProperty("ui.backgroundcolour") != null) {
-            backColour.setText(settings.getProperty("ui.backgroundcolour"));
-            backColour.setPreferredSize(new Dimension(150,
-                    backColour.getFont().getSize()));
-            addCurrentOption("Background colour: ", backColour, settingsPanel);
-        } else {
-            addAddableOption("Background Colour");
-        }
-        if (settings.getProperty("ui.foregroundcolour") != null) {
-            foreColour.setText(settings.getProperty("ui.foregroundcolour"));
-            foreColour.setPreferredSize(new Dimension(150,
-                    foreColour.getFont().getSize()));
-            addCurrentOption("Foreground colour: ", foreColour, settingsPanel);
-        } else {
-            addAddableOption("Foreground Colour");
-        }
-        if (settings.getProperty("ui.frameBufferSize") != null) {
-            frameBuffer.setText(settings.getProperty("ui.frameBufferSize"));
-            frameBuffer.setPreferredSize(new Dimension(150,
-                    frameBuffer.getFont().getSize()));
-            addCurrentOption("Frame buffer size: ", frameBuffer, settingsPanel);
-        } else {
-            addAddableOption("Frame buffer Size");
-        }
-        if (settings.getProperty("ui.inputbuffersize") != null) {
-            inputBuffer.setText(settings.getProperty("ui.inputbuffersize"));
-            inputBuffer.setPreferredSize(new Dimension(150,
-                    frameBuffer.getFont().getSize()));
-            addCurrentOption("Input buffer size: ", inputBuffer, settingsPanel);
-        } else {
-            addAddableOption("Input buffer Size");
-        }
+        addOption("channel.splitusermodes", "Split user modes", OPTION_TYPE.CHECKBOX);
+        addOption("general.cyclemessage", "Cycle message", OPTION_TYPE.TEXTFIELD);
+        addOption("general.kickmessage", "Kick message", OPTION_TYPE.TEXTFIELD);
+        addOption("general.partmessage", "Part message", OPTION_TYPE.TEXTFIELD);
+        addOption("ui.backgroundcolour", "Background colour", OPTION_TYPE.TEXTFIELD);
+        addOption("ui.foregroundcolour", "Foreground colour", OPTION_TYPE.TEXTFIELD);
+        addOption("ui.frameBufferSize", "Frame buffer size", OPTION_TYPE.TEXTFIELD);
+        addOption("ui.inputbuffersize", "Input buffer size", OPTION_TYPE.TEXTFIELD);
         
         if (numCurrentSettings == 0) {
             noCurrentSettingsLabel.setText("No channel specific settings.");
@@ -295,13 +247,47 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     }
     
     /**
+     * Adds an option to the panel
+     * @param configName config option name
+     * @param type config option type
+     */
+    private void addOption(final String configName, final String displayName,
+            final OPTION_TYPE type) {
+        String optionValue;
+        
+        optionMap.put(displayName, configName);
+        if ((optionValue = settings.getProperty(configName)) != null) {
+            addCurrentOption(configName, displayName, settingsPanel, type, optionValue);
+        } else {
+            addAddableOption(displayName);
+        }
+    }
+    
+    /**
      * Adds an option to the current options pane.
      */
-    private void addCurrentOption(final String displayName,
-            final JComponent component, final JPanel panel) {
+    private void addCurrentOption(final String configName, final String displayName,
+            final JPanel panel, 
+            final OPTION_TYPE type, final String optionValue) {
+        JComponent component;
         numCurrentSettings++;
+        switch (type) {
+            case CHECKBOX:
+                component = new JCheckBox();
+                ((JCheckBox) component).setSelected(Boolean.parseBoolean(optionValue));
+                checkBoxes.put(configName, (JCheckBox) component);
+                break;
+            case TEXTFIELD:
+                component = new JTextField();
+                ((JTextField) component).setText(optionValue);
+                break;
+            default:
+                throw new IllegalArgumentException("Unrecognised option type");
+        }
+        component.setPreferredSize(new Dimension(150,
+                splitUserModes.getFont().getSize()));
         JLabel label = new JLabel();
-        label.setText(displayName);
+        label.setText(displayName + ": ");
         label.setPreferredSize(new Dimension(150,
                 label.getFont().getSize()));
         label.setLabelFor(component);
@@ -316,6 +302,8 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         button.setBorder(new EmptyBorder(0, 0, 0, 0));
         button.setMargin(new Insets(0, 0, 0, 0));
         button.setPreferredSize(new Dimension(16, 0));
+        button.setActionCommand(configName);
+        button.addActionListener(this);
         panel.add(label);
         panel.add(component);
         panel.add(button);
@@ -335,24 +323,28 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
      * @param value option value
      */
     private void addNewCurrentOption(final String name, final String value) {
-        if (IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
-                channel.getChannelInfo().getName()) != null && value != null) {
+        if (identity != null && value != null) {
             String[] optionValues = optionMap.get(name).split("\\.");
-            IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
-                    channel.getChannelInfo().getName()).setOption(optionValues[0], optionValues[1], value);
-            System.out.println(IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
-                    channel.getChannelInfo().getName()).getOption(optionValues[0], optionValues[1]));
+            identity.setOption(optionValues[0], optionValues[1], value);
             initSettingsPanel();
         }
     }
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
+        String option;
         if (event.getSource() == newSettingButton) {
             addNewCurrentOption((String) newSettingComboBox.getSelectedItem(),
                     newSettingField.getText());
         } else {
-            System.out.println(event);
+            String[] optionValues = event.getActionCommand().split("\\.");
+            identity.removeOption(optionValues[0], optionValues[1]);
+            initSettingsPanel();
         }
+    }
+    
+    /** Saves teh current options */
+    public void saveSettings() {
+        Config.save();
     }
 }
