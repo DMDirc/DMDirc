@@ -123,7 +123,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
                 }
             });
         } catch (InvocationTargetException ex) {
-            Logger.error(ErrorLevel.FATAL, "Unable to load channel", ex);
+            Logger.error(ErrorLevel.FATAL, "Unable to load channel", (Exception) ex.getCause());
         } catch (InterruptedException ex) {
             Logger.error(ErrorLevel.FATAL, "Unable to load channel", ex);
         }
