@@ -96,10 +96,18 @@ public final class ChannelFrame extends Frame {
         
         initComponents();
         
+        try {
         nickList.setBackground(ColourManager.getColour(
                 Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
+        } catch (NumberFormatException ex) {
+            //Ignore
+        }
+        try {
         nickList.setForeground(ColourManager.getColour(
                 Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
+        } catch (NumberFormatException ex) {
+            //Ignore
+        }
         
         commandParser = new ChannelCommandParser(((Channel) getFrameParent()).
                 getServer(), (Channel) getFrameParent());
