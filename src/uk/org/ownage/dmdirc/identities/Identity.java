@@ -234,19 +234,23 @@ public final class Identity implements ConfigSource {
         
         final String fs = System.getProperty("file.separator");
         final String location = Config.getConfigDir() + "identities" + fs;
-        final FileWriter writer;
         
-        try {
-            writer = new FileWriter(location + target.getData());
-            properties.store(writer, "");
-            writer.close();
-        } catch (IOException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to write new identity file", ex);
-            return null;
+        final File file = new File(location + target.getData());
+        
+        if (!file.exists()) {
+            final FileWriter writer;
+            
+            try {
+                writer = new FileWriter(location + target.getData());
+                properties.store(writer, "");
+                writer.close();
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.ERROR, "Unable to write new identity file", ex);
+                return null;
+            }
         }
         
         try {
-            final File file = new File(location + target.getData());
             return new Identity(file);
         } catch (MalformedURLException ex) {
             Logger.error(ErrorLevel.ERROR, "Unable to open new identity file", ex);
