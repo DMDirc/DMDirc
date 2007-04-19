@@ -88,6 +88,15 @@ public final class IdentityManager {
         final String location = Config.getConfigDir() + "identities" + fs;
         final File dir = new File(location);
         
+        if (!dir.exists()) {
+            try {
+                dir.mkdirs();
+                dir.createNewFile();
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.ERROR, "Unable to create identity dir", ex);
+            }
+        }
+        
         if (dir == null || dir.listFiles() == null) {
             Logger.error(ErrorLevel.WARNING, "Unable to load user identity files");
         } else {
