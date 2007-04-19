@@ -122,7 +122,7 @@ public class ChannelSettingsDialog extends StandardDialog
     /**
      * the maximum length allowed for a topic.
      */
-    private final int topicLengthMax;
+    private int topicLengthMax;
     
     /**
      * label showing the number of characters left in a topic.
@@ -146,14 +146,13 @@ public class ChannelSettingsDialog extends StandardDialog
         this.channel = newChannel;
         final Map<String, String> iSupport =
                 channel.getServer().getParser().get005();
+        topicLengthMax = 250;
         if (iSupport.containsKey("TOPICLEN")) {
             try {
-            topicLengthMax = Integer.parseInt(iSupport.get("TOPICLEN"));
+                topicLengthMax = Integer.parseInt(iSupport.get("TOPICLEN"));
             } catch (NumberFormatException ex) {
                 //Ignore
             }
-        } else {
-            topicLengthMax = 250;
         }
         
         initComponents();
