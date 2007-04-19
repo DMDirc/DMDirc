@@ -216,7 +216,12 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 try {
                     int frameBufferSize = Integer.MAX_VALUE;
                     if (parent.getConfigManager().hasOption("ui", "frameBufferSize")) {
-                        frameBufferSize = Integer.parseInt(parent.getConfigManager().getOption("ui", "frameBufferSize"));
+                        try {
+                            frameBufferSize = Integer.parseInt(
+                                    parent.getConfigManager().getOption("ui", "frameBufferSize"));
+                        } catch (NumberFormatException ex) {
+                            //Ignore
+                        }
                     }
                     final Document doc = getTextPane().getDocument();
                     if (doc.getLength() > frameBufferSize) {

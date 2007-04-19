@@ -97,7 +97,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     /** new setting value text field. */
     private final JTextField newSettingField;
     /** new setting combo box. */
-    private final JComboBox newSettingComboBox;
+    private JComboBox newSettingComboBox;
     /** add new settinb button. */
     private final JButton newSettingButton;
     /** channel settings . */
@@ -166,7 +166,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         optionMap.clear();
         textFields.clear();
         checkBoxes.clear();
-        newSettingComboBox.removeAllItems();
+        newSettingComboBox = new JComboBox(new DefaultComboBoxModel());
         
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(

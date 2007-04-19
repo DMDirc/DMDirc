@@ -147,7 +147,11 @@ public class ChannelSettingsDialog extends StandardDialog
         final Map<String, String> iSupport =
                 channel.getServer().getParser().get005();
         if (iSupport.containsKey("TOPICLEN")) {
+            try {
             topicLengthMax = Integer.parseInt(iSupport.get("TOPICLEN"));
+            } catch (NumberFormatException ex) {
+                //Ignore
+            }
         } else {
             topicLengthMax = 250;
         }

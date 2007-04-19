@@ -62,7 +62,7 @@ public final class InputHandler implements KeyListener, ActionListener {
     /**
      * The maximum size of the buffer.
      */
-    private final int bufferSize;
+    private int bufferSize;
     /**
      * The maximum position we've got to in the buffer. This will be the
      * position that is inserted to next. Note that it will wrap around once
@@ -101,12 +101,15 @@ public final class InputHandler implements KeyListener, ActionListener {
      * @param thisCommandParser The command parser to use for this text field.
      * @param thisParentWindow The window that owns this input handler
      */
-    public InputHandler(final JTextField thisTarget, 
+    public InputHandler(final JTextField thisTarget,
             final CommandParser thisCommandParser,
             final CommandWindow thisParentWindow) {
         
-        bufferSize = Integer.parseInt(thisParentWindow.getConfigManager().getOption("ui", "inputbuffersize"));
-        
+        try {
+            bufferSize = Integer.parseInt(thisParentWindow.getConfigManager().getOption("ui", "inputbuffersize"));
+        } catch (NumberFormatException ex) {
+            bufferSize = 50;
+        }
         this.commandParser = thisCommandParser;
         this.parentWindow = thisParentWindow;
         this.target = thisTarget;
@@ -133,7 +136,7 @@ public final class InputHandler implements KeyListener, ActionListener {
      * @param keyEvent The event that was fired
      */
     public void keyTyped(final KeyEvent keyEvent) {
-	//Ignore.        
+        //Ignore.
     }
     
     /**
@@ -252,7 +255,7 @@ public final class InputHandler implements KeyListener, ActionListener {
      * @param keyEvent The event that was fired
      */
     public void keyReleased(final KeyEvent keyEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
