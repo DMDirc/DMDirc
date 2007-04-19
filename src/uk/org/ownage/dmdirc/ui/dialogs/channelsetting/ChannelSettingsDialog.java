@@ -502,6 +502,7 @@ public class ChannelSettingsDialog extends StandardDialog
         if (getOkButton().equals(actionEvent.getSource())) {
             setChangedBooleanModes();
             setChangedTopic();
+            channelSettingsPane.saveSettings();
             setVisible(false);
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             setVisible(false);

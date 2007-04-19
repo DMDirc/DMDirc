@@ -73,9 +73,9 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
  * Manages open windows in the application in a tree style view.
  */
 public final class TreeFrameManager implements FrameManager, TreeModelListener,
-	TreeSelectionListener, TreeExpansionListener, TreeWillExpandListener,
-	MouseListener, ActionListener, MouseMotionListener, MouseWheelListener,
-	KeyListener {
+        TreeSelectionListener, TreeExpansionListener, TreeWillExpandListener,
+        MouseListener, ActionListener, MouseMotionListener, MouseWheelListener,
+        KeyListener {
     
     /**
      * display tree.
@@ -132,29 +132,29 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * creates a new instance of the TreeFrameManager.
      */
     public TreeFrameManager() {
-	nodes = new Hashtable<FrameContainer, DefaultMutableTreeNode>();
-	nodeColours = new Hashtable<FrameContainer, Color>();
-	popup = new JPopupMenu();
-	closeMenuItem = new JMenuItem("Close window");
-	closeMenuItem.addActionListener(this);
-	closeMenuItem.setActionCommand("Close");
-	popup.add(closeMenuItem);
-	popup.setOpaque(true);
-	popup.setLightWeightPopupEnabled(true);
-	root = new DefaultMutableTreeNode("DMDirc");
-	model = new TreeViewModel(root);
-	tree = new JTree(model);
+        nodes = new Hashtable<FrameContainer, DefaultMutableTreeNode>();
+        nodeColours = new Hashtable<FrameContainer, Color>();
+        popup = new JPopupMenu();
+        closeMenuItem = new JMenuItem("Close window");
+        closeMenuItem.addActionListener(this);
+        closeMenuItem.setActionCommand("Close");
+        popup.add(closeMenuItem);
+        popup.setOpaque(true);
+        popup.setLightWeightPopupEnabled(true);
+        root = new DefaultMutableTreeNode("DMDirc");
+        model = new TreeViewModel(root);
+        tree = new JTree(model);
         tree.putClientProperty("JTree.lineStyle", "Angled");
-	tree.addMouseListener(this);
-	tree.getSelectionModel().
-		setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-	tree.addTreeSelectionListener(this);
-	final TreeViewTreeCellRenderer renderer = new TreeViewTreeCellRenderer();
-	tree.setCellRenderer(renderer);
-	tree.setRootVisible(false);
-	tree.setRowHeight(0);
-	tree.addMouseMotionListener(this);
-	tree.addMouseWheelListener(this);
+        tree.addMouseListener(this);
+        tree.getSelectionModel().
+                setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        tree.addTreeSelectionListener(this);
+        final TreeViewTreeCellRenderer renderer = new TreeViewTreeCellRenderer();
+        tree.setCellRenderer(renderer);
+        tree.setRootVisible(false);
+        tree.setRowHeight(0);
+        tree.addMouseMotionListener(this);
+        tree.addMouseWheelListener(this);
         tree.setShowsRootHandles(false);
     }
     /**
@@ -163,7 +163,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @return True iff the frame manager can be positioned vertically.
      */
     public boolean canPositionVertically() {
-	return true;
+        return true;
     }
     
     /**
@@ -172,7 +172,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @return True iff the frame manager can be positioned horizontally.
      */
     public boolean canPositionHorizontally() {
-	return false;
+        return false;
     }
     
     /**
@@ -180,12 +180,12 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param source The object that now has focus.
      */
     public void setSelected(final FrameContainer source) {
-	selected = source;
-	if (nodes.containsKey(source)) {
-	    tree.scrollPathToVisible(new TreePath(nodes.get(source).getPath()));
-	    //tree.setSelectionPath(new TreePath(nodes.get(source).getPath()));
-	}
-	tree.repaint();
+        selected = source;
+        if (nodes.containsKey(source)) {
+            tree.scrollPathToVisible(new TreePath(nodes.get(source).getPath()));
+            //tree.setSelectionPath(new TreePath(nodes.get(source).getPath()));
+        }
+        tree.repaint();
     }
     
     /**
@@ -193,7 +193,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @return The object that is currently selected.
      */
     public FrameContainer getSelected() {
-	return selected;
+        return selected;
     }
     
     /**
@@ -201,7 +201,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @return The node that is currently selected.
      */
     public DefaultMutableTreeNode getSelectedNode() {
-	return nodes.get(selected);
+        return nodes.get(selected);
     }
     
     /**
@@ -211,14 +211,14 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param colour The colour that should be used to indicate the notification.
      */
     public void showNotification(final FrameContainer source, final Color colour) {
-	if (nodeColours != null) {
-	    nodeColours.put(source, colour);
-	    SwingUtilities.invokeLater(new Runnable() {
-		public void run() {
-		    tree.repaint();
-		}
-	    });
-	}
+        if (nodeColours != null) {
+            nodeColours.put(source, colour);
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    tree.repaint();
+                }
+            });
+        }
     }
     
     /**
@@ -226,12 +226,12 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param node rollover node.
      */
     public void showRollover(final DefaultMutableTreeNode node) {
-	rolloverNode = node;
-	SwingUtilities.invokeLater(new Runnable() {
-	    public void run() {
-		tree.repaint();
-	    }
-	});
+        rolloverNode = node;
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                tree.repaint();
+            }
+        });
     }
     
     /**
@@ -239,7 +239,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @return rollover node.
      */
     public DefaultMutableTreeNode getRollover() {
-	return rolloverNode;
+        return rolloverNode;
     }
     
     /**
@@ -247,9 +247,9 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param source Frame to remove notification from.
      */
     public void clearNotification(final FrameContainer source) {
-	if (nodeColours != null && nodeColours.containsKey(source)) {
-	    nodeColours.remove(source);
-	}
+        if (nodeColours != null && nodeColours.containsKey(source)) {
+            nodeColours.remove(source);
+        }
     }
     
     /**
@@ -258,10 +258,10 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @return colour of the node.
      */
     public Color getNodeColour(final FrameContainer source) {
-	if (nodeColours != null && nodeColours.containsKey(source)) {
-	    return nodeColours.get(source);
-	}
-	return null;
+        if (nodeColours != null && nodeColours.containsKey(source)) {
+            return nodeColours.get(source);
+        }
+        return null;
     }
     
     /**
@@ -269,20 +269,28 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param parent parent component.
      */
     public void setParent(final JComponent parent) {
-	final JScrollPane scrollPane = new JScrollPane(tree);
-	scrollPane.setAutoscrolls(false);
-	parent.setLayout(new BorderLayout());
-	parent.add(scrollPane);
-	scrollPane.setPreferredSize(new Dimension(parent.getWidth(), 0));
-	tree.setForeground(parent.getForeground());
-        tree.setBackground(ColourManager.getColour(
-                Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
-        tree.setForeground(ColourManager.getColour(
-                Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
-	tree.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
-		SMALL_BORDER, SMALL_BORDER));
-	tree.setVisible(true);
-	tree.addKeyListener(this);
+        final JScrollPane scrollPane = new JScrollPane(tree);
+        scrollPane.setAutoscrolls(false);
+        parent.setLayout(new BorderLayout());
+        parent.add(scrollPane);
+        scrollPane.setPreferredSize(new Dimension(parent.getWidth(), 0));
+        tree.setForeground(parent.getForeground());
+        try {
+            tree.setBackground(ColourManager.getColour(
+                    Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
+        } catch (NumberFormatException ex) {
+            //Ignore
+        }
+        try {
+            tree.setForeground(ColourManager.getColour(
+                    Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
+        } catch (NumberFormatException ex) {
+            //Ignore
+        }
+        tree.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER));
+        tree.setVisible(true);
+        tree.addKeyListener(this);
     }
     
     /**
@@ -290,14 +298,14 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param server associated server.
      */
     public void addServer(final Server server) {
-	final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-	nodes.put(server, node);
-	node.setUserObject(server);
-	model.insertNodeInto(node, root);
-	if (root.getChildCount() == 1) {
-	    selected = server;
-	}
-	tree.scrollPathToVisible(new TreePath(node.getPath()));
+        final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+        nodes.put(server, node);
+        node.setUserObject(server);
+        model.insertNodeInto(node, root);
+        if (root.getChildCount() == 1) {
+            selected = server;
+        }
+        tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
     /**
@@ -305,7 +313,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param server associated server.
      */
     public void delServer(final Server server) {
-	model.removeNodeFromParent(nodes.get(server));
+        model.removeNodeFromParent(nodes.get(server));
     }
     
     /**
@@ -314,11 +322,11 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param channel associated framecontainer.
      */
     public void addChannel(final Server server, final Channel channel) {
-	final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-	nodes.put(channel, node);
-	node.setUserObject(channel);
-	model.insertNodeInto(node, nodes.get(server));
-	tree.scrollPathToVisible(new TreePath(node.getPath()));
+        final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+        nodes.put(channel, node);
+        node.setUserObject(channel);
+        model.insertNodeInto(node, nodes.get(server));
+        tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
     /**
@@ -327,7 +335,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param channel associated framecontainer.
      */
     public void delChannel(final Server server, final Channel channel) {
-	model.removeNodeFromParent(nodes.get(channel));
+        model.removeNodeFromParent(nodes.get(channel));
     }
     
     /**
@@ -336,11 +344,11 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param query associated framecontainer.
      */
     public void addQuery(final Server server, final Query query) {
-	final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-	nodes.put(query, node);
-	node.setUserObject(query);
-	model.insertNodeInto(node, nodes.get(server));
-	tree.scrollPathToVisible(new TreePath(node.getPath()));
+        final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+        nodes.put(query, node);
+        node.setUserObject(query);
+        model.insertNodeInto(node, nodes.get(server));
+        tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
     /**
@@ -349,7 +357,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param query associated framecontainer.
      */
     public void delQuery(final Server server, final Query query) {
-	model.removeNodeFromParent(nodes.get(query));
+        model.removeNodeFromParent(nodes.get(query));
     }
     
     /**
@@ -358,11 +366,11 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param raw associated framecontainer.
      */
     public void addRaw(final Server server, final Raw raw) {
-	final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-	nodes.put(raw, node);
-	node.setUserObject(raw);
-	model.insertNodeInto(node, nodes.get(server));
-	tree.scrollPathToVisible(new TreePath(node.getPath()));
+        final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+        nodes.put(raw, node);
+        node.setUserObject(raw);
+        model.insertNodeInto(node, nodes.get(server));
+        tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
     /**
@@ -371,7 +379,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param raw associated framecontainer.
      */
     public void delRaw(final Server server, final Raw raw) {
-	model.removeNodeFromParent(nodes.get(raw));
+        model.removeNodeFromParent(nodes.get(raw));
     }
     
     /**
@@ -379,17 +387,17 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event selection event.
      */
     public void valueChanged(final TreeSelectionEvent event) {
-	final DefaultMutableTreeNode node =
-		(DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-	
-	if (node == null) { return; }
-	
-	final Object nodeInfo = node.getUserObject();
-	if (nodeInfo instanceof FrameContainer) {
-	    ((FrameContainer) nodeInfo).activateFrame();
-	} else {
-	    Logger.error(ErrorLevel.WARNING, "Unknown node type.");
-	}
+        final DefaultMutableTreeNode node =
+                (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+        
+        if (node == null) { return; }
+        
+        final Object nodeInfo = node.getUserObject();
+        if (nodeInfo instanceof FrameContainer) {
+            ((FrameContainer) nodeInfo).activateFrame();
+        } else {
+            Logger.error(ErrorLevel.WARNING, "Unknown node type.");
+        }
     }
     
     /**
@@ -397,7 +405,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event expansion event.
      */
     public void treeExpanded(final TreeExpansionEvent event) {
-	//Do nothing
+        //Do nothing
     }
     
     /**
@@ -405,7 +413,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event expansion event.
      */
     public void treeCollapsed(final TreeExpansionEvent event) {
-	//Do nothing
+        //Do nothing
     }
     
     /**
@@ -415,8 +423,8 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * node expanding
      */
     public void treeWillExpand(final TreeExpansionEvent event) throws
-	    ExpandVetoException {
-	//Do nothing
+            ExpandVetoException {
+        //Do nothing
     }
     
     /**
@@ -426,8 +434,8 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * node collapsing
      */
     public void treeWillCollapse(final TreeExpansionEvent event) throws
-	    ExpandVetoException {
-	//Do nothing
+            ExpandVetoException {
+        //Do nothing
     }
     
     /**
@@ -435,7 +443,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event change event.
      */
     public void treeNodesChanged(final TreeModelEvent event) {
-	//Do nothing
+        //Do nothing
     }
     
     /**
@@ -443,7 +451,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event change event.
      */
     public void treeNodesInserted(final TreeModelEvent event) {
-	//Do nothing
+        //Do nothing
     }
     
     /**
@@ -451,7 +459,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event change event.
      */
     public void treeNodesRemoved(final TreeModelEvent event) {
-	//Do nothing
+        //Do nothing
     }
     
     /**
@@ -459,7 +467,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event change event.
      */
     public void treeStructureChanged(final TreeModelEvent event) {
-	//Do nothing
+        //Do nothing
     }
     
     /**
@@ -468,7 +476,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event mouse event.
      */
     public void mouseClicked(final MouseEvent event) {
-	processMouseEvent(event);
+        processMouseEvent(event);
     }
     
     /**
@@ -476,7 +484,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event mouse event.
      */
     public void mousePressed(final MouseEvent event) {
-	processMouseEvent(event);
+        processMouseEvent(event);
     }
     
     /**
@@ -484,7 +492,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event mouse event.
      */
     public void mouseReleased(final MouseEvent event) {
-	processMouseEvent(event);
+        processMouseEvent(event);
     }
     
     /**
@@ -492,7 +500,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event mouse event.
      */
     public void mouseEntered(final MouseEvent event) {
-	//Do nothing
+        //Do nothing
     }
     
     /**
@@ -500,23 +508,23 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event mouse event.
      */
     public void mouseExited(final MouseEvent event) {
-	//Do nothing
+        //Do nothing
     }
     
-        /**
+    /**
      * Processes every mouse button event to check for a popup trigger.
      * @param e mouse event
      */
     public void processMouseEvent(final MouseEvent event) {
         if (event.isPopupTrigger()) {
-	    final JTree source = (JTree) event.getSource();
-	    final TreePath path = tree.getPathForLocation(event.getX(),
-		    event.getY());
-	    if (path != null) {
-		popupNode = (DefaultMutableTreeNode) path.getLastPathComponent();
-		popup.show(source, event.getX(), event.getY());
-	    }
-	}
+            final JTree source = (JTree) event.getSource();
+            final TreePath path = tree.getPathForLocation(event.getX(),
+                    event.getY());
+            if (path != null) {
+                popupNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+                popup.show(source, event.getX(), event.getY());
+            }
+        }
     }
     
     /**
@@ -524,9 +532,9 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event action event.
      */
     public void actionPerformed(final ActionEvent event) {
-	if (event.getSource() == closeMenuItem && popupNode != null) {
-	    ((FrameContainer) popupNode.getUserObject()).close();
-	}
+        if (event.getSource() == closeMenuItem && popupNode != null) {
+            ((FrameContainer) popupNode.getUserObject()).close();
+        }
     }
     
     /**
@@ -535,40 +543,40 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event mouse event.
      */
     public void mouseDragged(final MouseEvent event) {
-	TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
-	DefaultMutableTreeNode node = null;
-	if (tree.getRowForLocation(event.getX(), event.getY()) < 0) {
-	    currentSelectedPath = oldSelectedPath;
-	    if (currentSelectedPath == null) {
-		if (Config.hasOption("ui", "rolloverEnabled")
-		&& Config.getOption("ui", "rolloverEnabled").equals("true")) {
-		    this.showRollover(node);
-		}
-	    } else {
-		node = (DefaultMutableTreeNode) currentSelectedPath.getLastPathComponent();
-		if (Config.hasOption("ui", "rolloverEnabled")
-		&& Config.getOption("ui", "rolloverEnabled").equals("true")) {
-		    this.showRollover(node);
-		}
-		((FrameContainer) node.getUserObject()).activateFrame();
-	    }
-	} else {
-	    selectedPath = tree.getPathForLocation(event.getX(), event.getY());
-	    if ((oldSelectedPath == null) || !selectedPath.equals(oldSelectedPath)) {
-		oldSelectedPath = selectedPath;
-		node = (DefaultMutableTreeNode) oldSelectedPath.getLastPathComponent();
-		if (Config.hasOption("ui", "rolloverEnabled")
-		&& Config.getOption("ui", "rolloverEnabled").equals("true")) {
-		    this.showRollover(node);
-		}
-		((FrameContainer) node.getUserObject()).activateFrame();
-	    } else {
-		if (Config.hasOption("ui", "rolloverEnabled")
-		&& Config.getOption("ui", "rolloverEnabled").equals("true")) {
-		    this.showRollover(node);
-		}
-	    }
-	}
+        TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
+        DefaultMutableTreeNode node = null;
+        if (tree.getRowForLocation(event.getX(), event.getY()) < 0) {
+            currentSelectedPath = oldSelectedPath;
+            if (currentSelectedPath == null) {
+                if (Config.hasOption("ui", "rolloverEnabled")
+                && Config.getOption("ui", "rolloverEnabled").equals("true")) {
+                    this.showRollover(node);
+                }
+            } else {
+                node = (DefaultMutableTreeNode) currentSelectedPath.getLastPathComponent();
+                if (Config.hasOption("ui", "rolloverEnabled")
+                && Config.getOption("ui", "rolloverEnabled").equals("true")) {
+                    this.showRollover(node);
+                }
+                ((FrameContainer) node.getUserObject()).activateFrame();
+            }
+        } else {
+            selectedPath = tree.getPathForLocation(event.getX(), event.getY());
+            if ((oldSelectedPath == null) || !selectedPath.equals(oldSelectedPath)) {
+                oldSelectedPath = selectedPath;
+                node = (DefaultMutableTreeNode) oldSelectedPath.getLastPathComponent();
+                if (Config.hasOption("ui", "rolloverEnabled")
+                && Config.getOption("ui", "rolloverEnabled").equals("true")) {
+                    this.showRollover(node);
+                }
+                ((FrameContainer) node.getUserObject()).activateFrame();
+            } else {
+                if (Config.hasOption("ui", "rolloverEnabled")
+                && Config.getOption("ui", "rolloverEnabled").equals("true")) {
+                    this.showRollover(node);
+                }
+            }
+        }
     }
     
     /**
@@ -578,29 +586,29 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event mouse event.
      */
     public void mouseMoved(final MouseEvent event) {
-	if (Config.hasOption("ui", "rolloverEnabled")
-	&& Config.getOption("ui", "rolloverEnabled").equals("true")) {
-	    TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
-	    DefaultMutableTreeNode node;
-	    if (tree.getRowForLocation(event.getX(), event.getY()) < 0) {
-		currentSelectedPath = oldSelectedPath;
-		if (currentSelectedPath == null) {
-		    this.showRollover(null);
-		} else {
-		    node = (DefaultMutableTreeNode) currentSelectedPath.getLastPathComponent();
-		    this.showRollover(node);
-		}
-	    } else {
-		selectedPath = tree.getPathForLocation(event.getX(), event.getY());
-		if ((oldSelectedPath == null) || !selectedPath.equals(oldSelectedPath)) {
-		    oldSelectedPath = selectedPath;
-		    node = (DefaultMutableTreeNode) oldSelectedPath.getLastPathComponent();
-		    this.showRollover(node);
-		} else {
-		    this.showRollover(null);
-		}
-	    }
-	}
+        if (Config.hasOption("ui", "rolloverEnabled")
+        && Config.getOption("ui", "rolloverEnabled").equals("true")) {
+            TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
+            DefaultMutableTreeNode node;
+            if (tree.getRowForLocation(event.getX(), event.getY()) < 0) {
+                currentSelectedPath = oldSelectedPath;
+                if (currentSelectedPath == null) {
+                    this.showRollover(null);
+                } else {
+                    node = (DefaultMutableTreeNode) currentSelectedPath.getLastPathComponent();
+                    this.showRollover(node);
+                }
+            } else {
+                selectedPath = tree.getPathForLocation(event.getX(), event.getY());
+                if ((oldSelectedPath == null) || !selectedPath.equals(oldSelectedPath)) {
+                    oldSelectedPath = selectedPath;
+                    node = (DefaultMutableTreeNode) oldSelectedPath.getLastPathComponent();
+                    this.showRollover(node);
+                } else {
+                    this.showRollover(null);
+                }
+            }
+        }
     }
     
     /**
@@ -608,12 +616,12 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event mouse event.
      */
     public void mouseWheelMoved(final MouseWheelEvent event) {
-	//get the number of notches (used only for direction)
-	if (event.getWheelRotation() < 0) {
-	    changeFocus(true);
-	} else {
-	    changeFocus(false);
-	}
+        //get the number of notches (used only for direction)
+        if (event.getWheelRotation() < 0) {
+            changeFocus(true);
+        } else {
+            changeFocus(false);
+        }
     }
     
     /**
@@ -622,69 +630,69 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      *@param direction true = up, false = down.
      */
     private void changeFocus(final boolean direction) {
-	DefaultMutableTreeNode thisNode, nextNode;
-	
-	if (getSelectedNode() == null) {
-	    //no selected node, get the root node
-	    thisNode = root;
-	    //are there any servers to select?
-	    if (thisNode.getChildCount() > 0) {
-		thisNode = (DefaultMutableTreeNode) thisNode.getChildAt(0);
-	    } else {
-		//then wait till there are
-		return;
-	    }
-	} else {
-	    //use the selected node to start from
-	    thisNode = getSelectedNode();
-	}
-	//are we going up or down?
-	if (direction) {
-	    //up
-	    if (thisNode.getUserObject() instanceof Server) {
-		if (thisNode.getParent().getIndex(thisNode) == 0) {
-		    //first server - last child of parent's last child
-		    nextNode = (DefaultMutableTreeNode)
-		    ((DefaultMutableTreeNode) ((DefaultMutableTreeNode)
-		    thisNode.getParent()).getLastChild()).getLastChild();
-		} else {
-		    //other servers - last child of previous sibling
-		    nextNode = (DefaultMutableTreeNode)
-		    (thisNode.getPreviousSibling()).getLastChild();
-		}
-	    } else {
-		if (thisNode.getParent().getIndex(thisNode) == 0) {
-		    //first frame - parent
-		    nextNode = (DefaultMutableTreeNode) thisNode.getParent();
-		} else {
-		    //other frame - previous sibling
-		    nextNode = thisNode.getPreviousSibling();
-		}
-	    }
-	} else {
-	    //down
-	    if (thisNode.getUserObject() instanceof Server) {
-		//all servers - get the first child
-		nextNode = (DefaultMutableTreeNode) thisNode.getFirstChild();
-	    } else {
-		if (thisNode.getParent().getIndex(thisNode)
-		== thisNode.getParent().getChildCount() - 1) {
-		    //last frame - get the parents next sibling
-		    nextNode = ((DefaultMutableTreeNode) thisNode.getParent()).getNextSibling();
-		    //parent doesnt have a next sibling, get the first child of the grandparent
-		    if (nextNode == null) {
-			nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
-			thisNode.getParent().getParent()).getFirstChild();
-		    }
-		} else {
-		    //other frames - get the next sibling
-		    nextNode = thisNode.getNextSibling();
-		}
-	    }
-	}
-	//activate the nodes frame
-	//((FrameContainer) nextNode.getUserObject()).activateFrame();
-	tree.setSelectionPath(new TreePath(nextNode));
+        DefaultMutableTreeNode thisNode, nextNode;
+        
+        if (getSelectedNode() == null) {
+            //no selected node, get the root node
+            thisNode = root;
+            //are there any servers to select?
+            if (thisNode.getChildCount() > 0) {
+                thisNode = (DefaultMutableTreeNode) thisNode.getChildAt(0);
+            } else {
+                //then wait till there are
+                return;
+            }
+        } else {
+            //use the selected node to start from
+            thisNode = getSelectedNode();
+        }
+        //are we going up or down?
+        if (direction) {
+            //up
+            if (thisNode.getUserObject() instanceof Server) {
+                if (thisNode.getParent().getIndex(thisNode) == 0) {
+                    //first server - last child of parent's last child
+                    nextNode = (DefaultMutableTreeNode)
+                    ((DefaultMutableTreeNode) ((DefaultMutableTreeNode)
+                    thisNode.getParent()).getLastChild()).getLastChild();
+                } else {
+                    //other servers - last child of previous sibling
+                    nextNode = (DefaultMutableTreeNode)
+                    (thisNode.getPreviousSibling()).getLastChild();
+                }
+            } else {
+                if (thisNode.getParent().getIndex(thisNode) == 0) {
+                    //first frame - parent
+                    nextNode = (DefaultMutableTreeNode) thisNode.getParent();
+                } else {
+                    //other frame - previous sibling
+                    nextNode = thisNode.getPreviousSibling();
+                }
+            }
+        } else {
+            //down
+            if (thisNode.getUserObject() instanceof Server) {
+                //all servers - get the first child
+                nextNode = (DefaultMutableTreeNode) thisNode.getFirstChild();
+            } else {
+                if (thisNode.getParent().getIndex(thisNode)
+                == thisNode.getParent().getChildCount() - 1) {
+                    //last frame - get the parents next sibling
+                    nextNode = ((DefaultMutableTreeNode) thisNode.getParent()).getNextSibling();
+                    //parent doesnt have a next sibling, get the first child of the grandparent
+                    if (nextNode == null) {
+                        nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
+                        thisNode.getParent().getParent()).getFirstChild();
+                    }
+                } else {
+                    //other frames - get the next sibling
+                    nextNode = thisNode.getNextSibling();
+                }
+            }
+        }
+        //activate the nodes frame
+        //((FrameContainer) nextNode.getUserObject()).activateFrame();
+        tree.setSelectionPath(new TreePath(nextNode));
     }
     
     /**
@@ -692,7 +700,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event key event.
      */
     public void keyTyped(final KeyEvent event) {
-	//Do nothing
+        //Do nothing
     }
     
     /**
@@ -700,7 +708,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event key event.
      */
     public void keyPressed(final KeyEvent event) {
-	//Do nothing
+        //Do nothing
     }
     
     /**
@@ -708,6 +716,6 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event key event.
      */
     public void keyReleased(final KeyEvent event) {
-	//Do nothing
+        //Do nothing
     }
 }

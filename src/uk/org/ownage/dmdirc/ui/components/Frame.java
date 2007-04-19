@@ -154,21 +154,41 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         
         scrollBar = getScrollPane().getVerticalScrollBar();
         
-        getTextPane().setBackground(ColourManager.getColour(
-                Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
-        getTextPane().setForeground(ColourManager.getColour(
-                Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
-        getInputField().setBackground(ColourManager.getColour(
-                Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
-        getInputField().setForeground(ColourManager.getColour(
-                Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
-        getInputField().setCaretColor(ColourManager.getColour(
-                Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
+        try {
+            getTextPane().setBackground(ColourManager.getColour(
+                    Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
+        } catch (NumberFormatException ex) {
+            //Ignore
+        }
+        try {
+            getTextPane().setForeground(ColourManager.getColour(
+                    Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
+        } catch (NumberFormatException ex) {
+            //Ignore
+        }
+        try {
+            getInputField().setBackground(ColourManager.getColour(
+                    Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
+        } catch (NumberFormatException ex) {
+            //Ignore
+        }
+        try {
+            getInputField().setForeground(ColourManager.getColour(
+                    Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
+        } catch (NumberFormatException ex) {
+            //Ignore
+        }
+        try {
+            getInputField().setCaretColor(ColourManager.getColour(
+                    Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
+        } catch (NumberFormatException ex) {
+            //Ignore
+        }
         
         final Boolean pref = Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"));
         if (pref || MainFrame.getMainFrame().getMaximised()) {
             hideBorder();
-        }        
+        }
     }
     
     /**
@@ -486,7 +506,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             try {
                 text = getTextPane().getText(start, end);
             } catch (BadLocationException ex) {
-                Logger.error(ErrorLevel.TRIVIAL, "Unable to select text (start: " 
+                Logger.error(ErrorLevel.TRIVIAL, "Unable to select text (start: "
                         + start + ", end: " + end + ")");
                 return;
             }
