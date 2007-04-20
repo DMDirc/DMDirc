@@ -226,11 +226,11 @@ public final class IdentityManager {
         
         for (ConfigSource identity : identities) {
             if (identity.getTarget().getType() == ConfigTarget.TYPE_CHANNEL
-                    && identity.getTarget().getData() == myTarget) {
+                    && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                 return (Identity) identity;
             }
         }
-        
+                
         // We need to create one
         final ConfigTarget target = new ConfigTarget();
         target.setChannel(myTarget);
