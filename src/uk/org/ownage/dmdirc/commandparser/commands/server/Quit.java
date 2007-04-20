@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.commandparser.commands.server;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.ServerManager;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
@@ -40,12 +41,9 @@ public final class Quit extends ServerCommand {
      * Creates a new instance of Quit.
      */
     public Quit() {
-        description = "Quits DMDirc, sending the specified quit message to all servers";
-        arguments = "<quit message>";
-        polyadic = true;
-        arity = 0;
-        name = "quit";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -53,12 +51,38 @@ public final class Quit extends ServerCommand {
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
-     */    
-    public void execute(final CommandWindow origin, final Server server, 
+     */
+    public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         ServerManager.getServerManager().disconnectAll(implodeArgs(args));
         Config.save();
         System.exit(0);
+    }
+    
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "quit";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "quit <reason> - quits the server with the specified reason";
     }
     
 }

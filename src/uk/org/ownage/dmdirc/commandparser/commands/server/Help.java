@@ -42,12 +42,9 @@ public final class Help extends ServerCommand {
      * Creates a new instance of Help.
      */
     public Help() {
-        description = "Displays usage information for all implemented commands";
-        arguments = "";
-        polyadic = false;
-        arity = 0;
-        name = "help";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -55,8 +52,8 @@ public final class Help extends ServerCommand {
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
-     */    
-    public void execute(final CommandWindow origin, final Server server, 
+     */
+    public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         origin.addLine("-- Server commands ----------------------------------");
         for (Command com : CommandManager.getServerCommands()) {
@@ -81,6 +78,32 @@ public final class Help extends ServerCommand {
             }
         }
         origin.addLine("-----------------------------------------------------");
+    }
+    
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "help";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "help - shows all available client commands";
     }
     
 }

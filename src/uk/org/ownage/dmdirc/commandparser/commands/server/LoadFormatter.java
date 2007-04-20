@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
@@ -37,12 +38,9 @@ public final class LoadFormatter extends ServerCommand {
      * Creates a new instance of LoadFormatter.
      */
     public LoadFormatter() {
-        description = "Loads a message formatter from a file";
-        arguments = "<file name>";
-        polyadic = false;
-        arity = 1;
-        name = "loadformatter";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -51,13 +49,39 @@ public final class LoadFormatter extends ServerCommand {
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server, 
+    public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         if (Formatter.loadFile(args[0])) {
             origin.addLine("Formatter loaded.");
         } else {
             origin.addLine("Formatter load failed.");
         }
+    }
+    
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "loadformatter";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 1;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "loadformatter <file> - loads the specified file into the message formatter";
     }
     
 }

@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
@@ -36,12 +37,9 @@ public final class Motd extends ServerCommand {
      * Creates a new instance of Motd.
      */
     public Motd() {
-        description = "Retrieves the server's MOTD";
-        arguments = "";
-        polyadic = false;
-        arity = 0;
-        name = "motd";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -49,12 +47,38 @@ public final class Motd extends ServerCommand {
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
-     */    
-    public void execute(final CommandWindow origin, final Server server, 
+     */
+    public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         //final String line = implodeArgs(args);
         
         server.getParser().sendLine("MOTD");
+    }
+    
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "motd";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "motd - retrieves the server's message of the day";
     }
     
 }

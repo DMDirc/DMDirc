@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.commandparser.commands.server;
 
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
@@ -37,12 +38,9 @@ public final class Ctcp extends ServerCommand {
      * Creates a new instance of Ctcp.
      */
     public Ctcp() {
-        description = "Sends a CTCP message";
-        arguments = "<target> <type> [arguments]";
-        polyadic = true;
-        arity = 0;
-        name = "ctcp";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -62,6 +60,32 @@ public final class Ctcp extends ServerCommand {
                     + ((char)1) + implodeArgs(1, args) + ((char)1));
             origin.addLine("selfCTCP", args[0], implodeArgs(1, args));
         }
+    }
+    
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "ctcp";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "ctcp <target> <type> [arguments] - sends a CTCP message";
     }
     
 }

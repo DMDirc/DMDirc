@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
@@ -37,24 +38,47 @@ public final class ReloadFormatter extends ServerCommand {
      * Creates a new instance of ReloadFormatter.
      */
     public ReloadFormatter() {
-        description = "Reloads the message formatter";
-        arguments = "";
-        polyadic = false;
-        arity = 0;
-        name = "reloadformatter";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
-
+    
     /**
      * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
-     */    
-    public void execute(final CommandWindow origin, final Server server, 
+     */
+    public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         Formatter.reload();
         origin.addLine("Formatter reloaded.");
+    }
+    
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "reloadformatter";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "reloadformatter - reloads the message formatter";
     }
     
 }

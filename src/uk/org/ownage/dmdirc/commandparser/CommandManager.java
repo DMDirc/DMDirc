@@ -29,6 +29,8 @@ import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.commandparser.commands.channel.*;
 import uk.org.ownage.dmdirc.commandparser.commands.query.*;
 import uk.org.ownage.dmdirc.commandparser.commands.server.*;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
  * The command manager creates and manages a single instance of all commands,
@@ -58,48 +60,73 @@ public final class CommandManager {
     }
     
     /**
+     * Registers a command with the command manager.
+     * @param scope The scope of the command
+     * @param command The command to be registered
+     */
+    public static void registerCommand(final Command command) {
+        if (command instanceof ChannelCommand) {
+            channelCommands.add(command);
+        } else if (command instanceof ServerCommand) {
+            serverCommands.add(command);
+        } else if (command instanceof QueryCommand) {
+            queryCommands.add(command);
+        } else {
+            Logger.error(ErrorLevel.ERROR, "Attempted to register an invalid command", new RuntimeException());
+        }
+    }
+    
+    /**
      * Initialises the command manager's various command lists.
      */
     private static void initLists() {
         channelCommands = new ArrayList<Command>();
-        
-        channelCommands.add(new Cycle());
-        channelCommands.add(new Me());
-        channelCommands.add(new MeEmpty());
-        channelCommands.add(new Part());
-        channelCommands.add(new PartDefault());
-        channelCommands.add(new Kick());
-        channelCommands.add(new KickEmpty());
-        channelCommands.add(new KickReason());
-        channelCommands.add(new Ban());
-        channelCommands.add(new Benchmark());
-        channelCommands.add(new ChannelSettings());
-        channelCommands.add(new ShowTopic());
-        channelCommands.add(new SetTopic());
-        
         serverCommands = new ArrayList<Command>();
-        
-        serverCommands.add(new Help());
-        serverCommands.add(new Join());
-        serverCommands.add(new Nick());
-        serverCommands.add(new ReloadFormatter());
-        serverCommands.add(new SaveFormatter());
-        serverCommands.add(new LoadFormatter());
-        serverCommands.add(new Quit());
-        serverCommands.add(new QuitDefault());
-        serverCommands.add(new Raw());
-        serverCommands.add(new Clear());
-        serverCommands.add(new Ctcp());
-        serverCommands.add(new Motd());
-        serverCommands.add(new Away());
-        serverCommands.add(new ConfigInfo());
-        serverCommands.add(new Back());
-        serverCommands.add(new Whois());
-        
         queryCommands = new ArrayList<Command>();
         
-        queryCommands.add(new QueryMe());
-        queryCommands.add(new QueryMeEmpty());
+        initCommands();
+    }
+    
+    /**
+     * Instansiates the default commands.
+     */
+    private static void initCommands() {
+        // Channel commands
+        new Ban();
+        new Benchmark();
+        new ChannelSettings();
+        new Cycle();
+        new Kick();
+        new KickEmpty();
+        new KickReason();
+        new Me();
+        new MeEmpty();
+        new Part();
+        new PartDefault();
+        new SetTopic();
+        new ShowTopic();
+        
+        // Server commands
+        new Away();
+        new Back();
+        new Clear();
+        new ConfigInfo();
+        new Ctcp();
+        new Help();
+        new Join();
+        new LoadFormatter();
+        new Motd();
+        new Nick();
+        new Quit();
+        new QuitDefault();
+        new Raw();
+        new ReloadFormatter();
+        new SaveFormatter();
+        new Whois();
+        
+        // Query commands
+        new QueryMe();
+        new QueryMeEmpty();
     }
     
     /**

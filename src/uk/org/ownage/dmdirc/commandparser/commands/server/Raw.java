@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
@@ -37,12 +38,9 @@ public final class Raw extends ServerCommand {
      * Creates a new instance of Raw.
      */
     public Raw() {
-        description = "Sends a line of text directly to the IRC server";
-        arguments = "<raw command>";
-        polyadic = true;
-        arity = 0;
-        name = "raw";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -50,13 +48,39 @@ public final class Raw extends ServerCommand {
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
-     */    
-    public void execute(final CommandWindow origin, final Server server, 
+     */
+    public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         final String line = implodeArgs(args);
         
         server.getParser().sendLine(line);
         origin.addLine("rawCommand", line);
+    }
+    
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "raw";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "raw <text> - sends the specified text directly to the server";
     }
     
 }

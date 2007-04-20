@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.commandparser.commands.query;
 
 import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.QueryCommand;
 
@@ -35,14 +36,11 @@ public final class QueryMe extends QueryCommand {
     
     /** Creates a new instance of QueryMe. */
     public QueryMe() {
-        description = "sends an action to the query receipient";
-        arguments = "<action>";
-        polyadic = true;
-        arity = 0;
-        name = "me";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
-
+    
     /**
      * Executes this command.
      * @param origin The frame in which this command was issued
@@ -50,9 +48,34 @@ public final class QueryMe extends QueryCommand {
      * @param query The query object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server, 
+    public void execute(final CommandWindow origin, final Server server,
             final Query query, final String... args) {
         query.sendAction(implodeArgs(args));
+    }
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "me";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "me <action> - sends the specified action to the target";
     }
     
 }

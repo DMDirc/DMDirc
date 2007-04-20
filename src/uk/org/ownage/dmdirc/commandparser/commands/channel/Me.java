@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.commandparser.commands.channel;
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 
 /**
@@ -35,12 +36,9 @@ public final class Me extends ChannelCommand {
     
     /** Creates a new instance of Me. */
     public Me() {
-        description = "sends an action to the current channel";
-        arguments = "<action>";
-        polyadic = true;
-        arity = 0;
-        name = "me";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -50,9 +48,34 @@ public final class Me extends ChannelCommand {
      * @param channel The channel object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server, 
+    public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
         channel.sendAction(implodeArgs(args));
+    }
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "me";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "me <action> - sends the specified action to the channel";
     }
     
 }

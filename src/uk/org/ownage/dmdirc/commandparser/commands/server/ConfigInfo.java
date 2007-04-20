@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 import uk.org.ownage.dmdirc.identities.ConfigSource;
@@ -37,12 +38,9 @@ public class ConfigInfo extends ServerCommand {
      * Creates a new instance of ConfigInfo.
      */
     public ConfigInfo() {
-        description = "Displays information about the origin's config manager.";
-        arguments = "";
-        polyadic = false;
-        arity = 0;
-        name = "configinfo";
-        show = false;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -52,10 +50,36 @@ public class ConfigInfo extends ServerCommand {
      * @param args The user supplied arguments
      */
     public final void execute(final CommandWindow origin, final Server server,
-            final String... args) {        
+            final String... args) {
         for (ConfigSource source : origin.getConfigManager().getSources()) {
             origin.addLine(source.getTarget() + " - " + source);
         }
+    }
+    
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "configinfo";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return null;
     }
     
 }

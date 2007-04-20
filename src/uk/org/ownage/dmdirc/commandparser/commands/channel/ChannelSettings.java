@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.commandparser.commands.channel;
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
 
@@ -36,12 +37,9 @@ public final class ChannelSettings extends ChannelCommand {
     
     /** Creates a new instance of ChannelSettings. */
     public ChannelSettings() {
-        description = "opens the channel settings window";
-        arguments = "";
-        polyadic = false;
-        arity = 0;
-        name = "channelsettings";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -51,9 +49,33 @@ public final class ChannelSettings extends ChannelCommand {
      * @param channel The channel object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server, 
+    public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
         new ChannelSettingsDialog(channel).setVisible(true);
     }
     
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "channelsettings";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "channelsettings - opens the channel settings window";
+    }
 }

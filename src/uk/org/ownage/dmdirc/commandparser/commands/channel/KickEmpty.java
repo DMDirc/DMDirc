@@ -26,6 +26,7 @@ import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 
 /**
@@ -36,12 +37,9 @@ public final class KickEmpty extends ChannelCommand {
     
     /** Creates a new instance of KickEmpty. */
     public KickEmpty() {
-        description = "informs the user of the kick command";
-        arguments = "";
-        polyadic = false;
-        arity = 0;
-        name = "kick";
-        show = false;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -51,9 +49,34 @@ public final class KickEmpty extends ChannelCommand {
      * @param channel The channel object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server, 
+    public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
         origin.addLine("Usage: " + Config.getOption("general", "commandchar") + "kick <user> [reason]");
+    }
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "kick";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return null;
     }
     
 }

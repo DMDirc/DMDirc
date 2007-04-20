@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.commandparser.commands.channel;
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
@@ -36,12 +37,9 @@ public final class Ban extends ChannelCommand {
     
     /** Creates a new instance of Ban. */
     public Ban() {
-        description = "bans the specified user or host from the channel";
-        arguments = "<user|host>";
-        polyadic = false;
-        arity = 1;
-        name = "ban";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -51,9 +49,9 @@ public final class Ban extends ChannelCommand {
      * @param channel The channel object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server, 
+    public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
-
+        
         String host = args[0];
         final ChannelClientInfo user = channel.getChannelInfo().getUser(args[0]);
         if (user != null && user.getClient().getHost().length() > 0) {
@@ -62,6 +60,31 @@ public final class Ban extends ChannelCommand {
         }
         
         server.getParser().sendLine("MODE " + channel + " +b " + host);
+    }
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "ban";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 1;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "ban <user|host> - bans the specified user or host from the channel.";
     }
     
 }

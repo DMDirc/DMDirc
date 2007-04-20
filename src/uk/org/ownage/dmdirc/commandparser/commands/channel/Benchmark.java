@@ -25,23 +25,21 @@ package uk.org.ownage.dmdirc.commandparser.commands.channel;
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 
 /**
  * The benchmark command allows us to fake a stream of channel messages for
- * benchmarking purposes. 
+ * benchmarking purposes.
  * @author chris
  */
 public final class Benchmark extends ChannelCommand {
     
     /** Creates a new instance of Benchmark. */
     public Benchmark() {
-        description = "simulates a stream of channel messages";
-        arguments = "";
-        polyadic = false;
-        arity = 0;
-        name = "benchmark";
-        show = false;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -51,7 +49,7 @@ public final class Benchmark extends ChannelCommand {
      * @param channel The channel object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server, 
+    public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
         final String[] strings = {
             "this is a test",
@@ -64,17 +62,42 @@ public final class Benchmark extends ChannelCommand {
         
         for (int i = 0; i < 100; i++) {
             for (int j = 0; j < strings.length; j++) {
-                channel.onChannelMessage(server.getParser(), 
-                        channel.getChannelInfo(), null, strings[j], 
+                channel.onChannelMessage(server.getParser(),
+                        channel.getChannelInfo(), null, strings[j],
                         "benchmarker!dmdirc@dmdirc.com");
             }
             
             for (int j = 0; j < strings.length; j++) {
-                channel.onChannelMessage(server.getParser(), 
-                        channel.getChannelInfo(), 
+                channel.onChannelMessage(server.getParser(),
+                        channel.getChannelInfo(),
                         channel.getChannelInfo().getUser(server.getParser().getMyself()),
                         strings[j], "benchmarker!dmdirc@dmdirc.com");
-            }            
+            }
         }
+    }
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "benchmark";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return null;
     }
 }

@@ -39,12 +39,9 @@ public final class QuitDefault extends ServerCommand {
      * Creates a new instance of QuitDefault.
      */
     public QuitDefault() {
-        description = "Quits DMDirc, sending a default quit message to all servers";
-        arguments = "";
-        polyadic = false;
-        arity = 0;
-        name = "quit";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -53,10 +50,36 @@ public final class QuitDefault extends ServerCommand {
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server, 
+    public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         final String def = origin.getConfigManager().getOption("general", "quitmessage");
         CommandManager.getServerCommand("quit").execute(origin, server, def);
+    }
+    
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "quit";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "quit - quits the server with the default quit message";
     }
     
 }

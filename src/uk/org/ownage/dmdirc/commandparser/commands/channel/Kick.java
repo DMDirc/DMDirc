@@ -36,12 +36,9 @@ public final class Kick extends ChannelCommand {
     
     /** Creates a new instance of Kick. */
     public Kick() {
-        description = "kicks the specified user from the channel";
-        arguments = "<user>";
-        polyadic = false;
-        arity = 1;
-        name = "kick";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -51,13 +48,38 @@ public final class Kick extends ChannelCommand {
      * @param channel The channel object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server, 
+    public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
         final String[] newArgs = new String[2];
         newArgs[0] = args[0]; // Nickname
         newArgs[1] = origin.getConfigManager().getOption("general", "kickmessage");
         
         CommandManager.getChannelCommand("kick").execute(origin, server, channel, newArgs);
+    }
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "kick";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 1;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "kick <user> - kicks the specified user from the channel";
     }
     
 }

@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
@@ -36,12 +37,9 @@ public class Clear extends ServerCommand {
      * Creates a new instance of Clear.
      */
     public Clear() {
-        description = "Clear the buffer of the current window.";
-        arguments = "";
-        polyadic = false;
-        arity = 0;
-        name = "clear";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -51,8 +49,34 @@ public class Clear extends ServerCommand {
      * @param args The user supplied arguments
      */
     public final void execute(final CommandWindow origin, final Server server,
-            final String... args) {        
+            final String... args) {
         origin.clear();
+    }
+    
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "clear";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "clear - clears the current window's text area";
     }
     
 }

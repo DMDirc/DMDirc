@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.commandparser.commands.channel;
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 
@@ -36,12 +37,9 @@ public final class ShowTopic extends ChannelCommand {
     
     /** Creates a new instance of ShowTopic. */
     public ShowTopic() {
-        description = "displays the current topic";
-        arguments = "";
-        polyadic = false;
-        arity = 0;
-        name = "topic";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -56,11 +54,36 @@ public final class ShowTopic extends ChannelCommand {
         final ChannelInfo cChannel = channel.getChannelInfo();
         
         if (cChannel.getTopic().length() > 0) {
-        origin.addLine("channelJoinTopic", cChannel.getTopic(),
-                cChannel.getTopicUser(), 1000 * cChannel.getTopicTime(), cChannel);
+            origin.addLine("channelJoinTopic", cChannel.getTopic(),
+                    cChannel.getTopicUser(), 1000 * cChannel.getTopicTime(), cChannel);
         } else {
             origin.addLine("channelNoTopic", cChannel);
         }
+    }
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "topic";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "topic - displays the current topic";
     }
     
 }

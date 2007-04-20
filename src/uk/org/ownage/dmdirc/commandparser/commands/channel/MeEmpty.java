@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.commandparser.commands.channel;
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 
 /**
@@ -36,12 +37,9 @@ public final class MeEmpty extends ChannelCommand {
     
     /** Creates a new instance of MeEmpty. */
     public MeEmpty() {
-        description = "informs the user of the correct usage of the me command";
-        arguments = "";
-        polyadic = false;
-        arity = 0;
-        name = "me";
-        show = false;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -51,9 +49,34 @@ public final class MeEmpty extends ChannelCommand {
      * @param channel The channel object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server, 
+    public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
         origin.addLine("Usage: " + origin.getConfigManager().getOption("general", "commandchar") + "me <action>");
+    }
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "me";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return null;
     }
     
 }

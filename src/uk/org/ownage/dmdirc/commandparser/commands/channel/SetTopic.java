@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.commandparser.commands.channel;
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 
@@ -36,12 +37,9 @@ public final class SetTopic extends ChannelCommand {
     
     /** Creates a new instance of SetTopic. */
     public SetTopic() {
-        description = "sets the channel topic";
-        arguments = "<topic>";
-        polyadic = true;
-        arity = 0;
-        name = "topic";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -57,6 +55,31 @@ public final class SetTopic extends ChannelCommand {
         final String newTopic = implodeArgs(args);
         
         server.getParser().sendLine("TOPIC " + cChannel.getName() + " :" + newTopic);
+    }
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "topic";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "topic <new topic> - sets the channel topic to the one specified";
     }
     
 }

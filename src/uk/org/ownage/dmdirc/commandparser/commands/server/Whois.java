@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
@@ -36,12 +37,9 @@ public final class Whois extends ServerCommand {
      * Creates a new instance of Whois.
      */
     public Whois() {
-        description = "Requests information on another user";
-        arguments = "<user>";
-        polyadic = false;
-        arity = 1;
-        name = "whois";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -53,6 +51,32 @@ public final class Whois extends ServerCommand {
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         server.getParser().sendLine("WHOIS :" + args[0]);
+    }
+    
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "whois";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 1;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "whois <user> - requests information about another user";
     }
     
 }

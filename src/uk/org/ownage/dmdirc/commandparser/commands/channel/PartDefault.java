@@ -38,12 +38,9 @@ public final class PartDefault extends ChannelCommand {
     
     /** Creates a new instance of PartDefault. */
     public PartDefault() {
-        description = "parts the channel with the default reason";
-        arguments = "";
-        polyadic = false;
-        arity = 0;
-        name = "part";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -53,10 +50,35 @@ public final class PartDefault extends ChannelCommand {
      * @param channel The channel object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server, 
+    public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
         final ChannelCommand com = CommandManager.getChannelCommand("part");
         com.execute(origin, server, channel, origin.getConfigManager().getOption("general", "partmessage"));
+    }
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "part";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "part - parts the channel with the default message";
     }
     
 }

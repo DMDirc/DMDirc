@@ -27,32 +27,7 @@ package uk.org.ownage.dmdirc.commandparser;
  * @author chris
  */
 public abstract class Command {
-    
-    /**
-     * The name of this command (i.e., the string used by the user to execute it).
-     */
-    protected String name;
-    /**
-     * The arity of this command.
-     */
-    protected int arity;
-    /**
-     * Whether this command is polyadic or not.
-     */
-    protected boolean polyadic;
-    /**
-     * Whether this command should be shown in help output.
-     */
-    protected boolean show = true;
-    /**
-     * A textual description of this command's arguments.
-     */
-    protected String arguments = "<unknown>";
-    /**
-     * A description of this command.
-     */
-    protected String description = "unknown";
-        
+            
     /**
      * Returns the signature of this command. For polyadic commands, the signature
      * is simply the name. For other commands, the signature is a concatenation of
@@ -60,28 +35,42 @@ public abstract class Command {
      * @return The signature of this command
      */
     public final String getSignature() {
-        if (polyadic) {
-            return name;
+        if (isPolyadic()) {
+            return getName();
         } else {
-            return name + "/" + arity;
+            return getName() + "/" + getArity();
         }
     }
+        
+    /**
+     * Returns this command's name.
+     * @return The name of this command
+     */
+    public abstract String getName();
     
     /**
      * Returns whether or not this command should be shown in help messages.
      * @return True iff the command should be shown, false otherwise
      */
-    public final boolean showInHelp() {
-        return show;
-    }
+    public abstract boolean showInHelp();
+    
+    /**
+     * Indicates whether this command is polyadic or not.
+     * @return True iff this command is polyadic, false otherwise
+     */
+    public abstract boolean isPolyadic();
+    
+    /**
+     * Returns the arity of this command
+     * @return This command's arity
+     */
+    public abstract int getArity();
     
     /**
      * Returns a string representing the help message for this command.
      * @return the help message for this command
      */
-    public final String getHelp() {
-        return name + " " + arguments + " - " + description;
-    }
+    public abstract String getHelp();
     
     /**
      * Implodes the given list of arguments.
@@ -108,14 +97,6 @@ public abstract class Command {
      */
     protected final String implodeArgs(final String... args) {
         return implodeArgs(0, args);
-    }
-    
-    /**
-     * Returns this command's name.
-     * @return The name of this command
-     */
-    public final String getName() {
-        return name;
-    }
+    } 
     
 }

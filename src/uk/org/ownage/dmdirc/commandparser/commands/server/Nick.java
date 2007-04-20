@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
@@ -36,23 +37,46 @@ public final class Nick extends ServerCommand {
      * Creates a new instance of Nick.
      */
     public Nick() {
-        description = "Changes your nickname";
-        arguments = "<new nickname>";
-        polyadic = false;
-        arity = 1;
-        name = "nick";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
-
+    
     /**
      * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
-     */    
-    public void execute(final CommandWindow origin, final Server server, 
+     */
+    public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         server.getParser().setNickname(args[0]);
+    }
+    
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "nick";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 1;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "nick <new nickname> - attempts to change your nickname to the one specified";
     }
     
 }

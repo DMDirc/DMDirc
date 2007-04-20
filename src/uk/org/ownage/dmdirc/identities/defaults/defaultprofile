@@ -1,6 +1,6 @@
 # Default profile
 
-identity.name = Default profile
+identity.name = DMDirc profile
 
 profile.nickname = DMDircUser
 profile.realname = DMDirc user

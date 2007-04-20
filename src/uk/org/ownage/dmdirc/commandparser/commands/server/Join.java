@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
@@ -37,23 +38,46 @@ public final class Join extends ServerCommand {
      * Creates a new instance of Join.
      */
     public Join() {
-        description = "Joins the specified channel. Multiple channels may be seperated by commas.";
-        arguments = "<channel(s)>";
-        polyadic = false;
-        arity = 1;
-        name = "join";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
-
+    
     /**
      * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param args The user supplied arguments
-     */    
-    public void execute(final CommandWindow origin, final Server server, 
+     */
+    public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         server.getParser().joinChannel(args[0]);
+    }
+    
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "join";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 1;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "join <channel> - joins the specified channel";
     }
     
 }

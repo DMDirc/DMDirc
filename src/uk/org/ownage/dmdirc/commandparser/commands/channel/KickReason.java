@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.commandparser.commands.channel;
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
@@ -37,12 +38,9 @@ public final class KickReason extends ChannelCommand {
     
     /** Creates a new instance of KickReason. */
     public KickReason() {
-        description = "kicks the specified user from the channel";
-        arguments = "<user> <reason>";
-        polyadic = true;
-        arity = 0;
-        name = "kick";
-        show = true;
+        super();
+        
+        CommandManager.registerCommand(this);
     }
     
     /**
@@ -52,7 +50,7 @@ public final class KickReason extends ChannelCommand {
      * @param channel The channel object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server, 
+    public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
         
         final ChannelClientInfo victim = channel.getChannelInfo().getUser(args[0]);
@@ -62,6 +60,31 @@ public final class KickReason extends ChannelCommand {
         } else {
             victim.kick(implodeArgs(1, args));
         }
+    }
+    
+    /** {@inheritDoc}. */
+    public String getName() {
+        return "kick";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean showInHelp() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isPolyadic() {
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public int getArity() {
+        return 0;
+    }
+    
+    /** {@inheritDoc}. */
+    public String getHelp() {
+        return "kick <user> <reason> - kicks the specified user from the channel";
     }
     
 }
