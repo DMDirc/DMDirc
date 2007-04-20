@@ -74,6 +74,8 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     private final JPanel parent;
     /** Current settings panel. */
     private JPanel settingsPanel;
+    /** Add setting panel. */
+    private JPanel addPanel;
     /** Information label. */
     private final JLabel infoLabel;
     /** No settings warning label. */
@@ -95,11 +97,11 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     /** input buffer text field. */
     private final JTextField inputBuffer;
     /** new setting value text field. */
-    private final JTextField newSettingField;
+    private JTextField newSettingField;
     /** new setting combo box. */
     private JComboBox newSettingComboBox;
     /** add new settinb button. */
-    private final JButton newSettingButton;
+    private JButton newSettingButton;
     /** channel settings . */
     private Properties settings;
     /** number of current settings. */
@@ -139,13 +141,6 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         foreColour = new JTextField();
         frameBuffer = new JTextField();
         inputBuffer = new JTextField();
-        newSettingField = new JTextField();
-        newSettingComboBox = new JComboBox(new DefaultComboBoxModel());
-        newSettingButton = new JButton();
-        
-        textFields = new HashMap<String, JTextField>();
-        checkBoxes = new HashMap<String, JCheckBox>();
-        optionMap = new LinkedHashMap<String, String>();
         
         initSettingsPanel();
     }
@@ -154,32 +149,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
      * Initialises the settings panel.
      */
     private void initSettingsPanel() {
-        this.setVisible(false);
-        this.removeAll();
         final GridBagConstraints constraints = new GridBagConstraints();
-        final JPanel addPanel = new JPanel();
-        settingsPanel = new JPanel();
-        JLabel label;
-        JButton button;
-        numCurrentSettings = 0;
-        numAddableSettings = 0;
-        optionMap.clear();
-        textFields.clear();
-        checkBoxes.clear();
-        newSettingComboBox = new JComboBox(new DefaultComboBoxModel());
-        
-        settingsPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(
-                new EtchedBorder(), "Current settings"),
-                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER)));
-        settingsPanel.setLayout(new SpringLayout());
-        addPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(
-                new EtchedBorder(), "Add new setting"),
-                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER)));
-        addPanel.setLayout(new SpringLayout());
         
         infoLabel.setText("<html>These settings are specific to this channel on this network,<br>"
                 + "any settings specified here will overwrite global settings</html>");
@@ -190,6 +160,47 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         } else {
             settings = identity.getProperties();
         }
+        
+        this.setLayout(new GridBagLayout());
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.weighty = 0.0;
+        constraints.weightx = 0.0;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.anchor = GridBagConstraints.CENTER;
+        this.add(infoLabel, constraints);
+        
+        initAddPanel();
+        initCurrentSettingsPanel();
+        
+        parent.add(this, BorderLayout.CENTER);
+    }
+    
+    /** Initialises the current settings panel.  */
+    public void initCurrentSettingsPanel() {
+        final GridBagConstraints constraints = new GridBagConstraints();
+        
+        textFields = new HashMap<String, JTextField>();
+        checkBoxes = new HashMap<String, JCheckBox>();
+        optionMap = new LinkedHashMap<String, String>();
+        
+        if (settingsPanel == null) {
+            settingsPanel = new JPanel();
+            settingsPanel.setVisible(false);
+        } else {
+            settingsPanel.setVisible(false);
+            settingsPanel.removeAll();
+        }
+        
+        numCurrentSettings = 0;
+        
+        settingsPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(
+                new EtchedBorder(), "Current settings"),
+                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
+                LARGE_BORDER)));
+        
+        settingsPanel.setLayout(new SpringLayout());
         
         addOption("channel.splitusermodes", "Split user modes", OPTION_TYPE.CHECKBOX);
         addOption("general.cyclemessage", "Cycle message", OPTION_TYPE.TEXTFIELD);
@@ -212,8 +223,41 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
                     3, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
         }
         
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.anchor = GridBagConstraints.CENTER;
+        
+        this.add(settingsPanel, constraints);
+        
+        settingsPanel.setVisible(true);
+    }
+    
+    /** Initialises the add settings panel.  */
+    public void initAddPanel() {
+        final GridBagConstraints constraints = new GridBagConstraints();
+        
+        addPanel = new JPanel();
+        newSettingField = new JTextField();
+        newSettingButton = new JButton();
+        newSettingComboBox = new JComboBox(new DefaultComboBoxModel());
+        
+        numAddableSettings = 0;
+        
+        addPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createTitledBorder(
+                new EtchedBorder(), "Add new setting"),
+                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
+                LARGE_BORDER)));
+        
+        addPanel.setLayout(new SpringLayout());
+        
         newSettingComboBox.setPreferredSize(new Dimension(150,
                 newSettingComboBox.getFont().getSize()));
+        
+        
         
         newSettingField.setText("");
         newSettingField.setPreferredSize(new Dimension(150,
@@ -230,23 +274,14 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         layoutGrid(addPanel, 1, 3, SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER);
         
-        this.setLayout(new GridBagLayout());
         constraints.gridx = 0;
-        constraints.gridy = 0;
+        constraints.gridy = 2;
         constraints.weighty = 0.0;
         constraints.weightx = 0.0;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.anchor = GridBagConstraints.CENTER;
-        this.add(infoLabel, constraints);
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        constraints.gridy = 1;
-        this.add(settingsPanel, constraints);
-        constraints.weighty = 0.0;
-        constraints.gridy = 2;
+        
         this.add(addPanel, constraints);
-        this.setVisible(true);
-        parent.add(this, BorderLayout.CENTER);
     }
     
     /**
@@ -260,7 +295,9 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         String optionValue;
         
         optionMap.put(displayName, configName);
-        if ((optionValue = settings.getProperty(configName)) != null) {
+        optionValue = settings.getProperty(configName);
+        
+        if (optionValue != null) {
             addCurrentOption(configName, displayName, settingsPanel, type, optionValue);
         } else {
             addAddableOption(displayName);
@@ -323,8 +360,10 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
      * @param displayName option display name
      */
     public void addAddableOption(final String displayName) {
-        numAddableSettings++;
-        ((DefaultComboBoxModel) newSettingComboBox.getModel()).addElement(displayName);
+        if (((DefaultComboBoxModel) newSettingComboBox.getModel()).getIndexOf(displayName) == -1) {
+            numAddableSettings++;
+            ((DefaultComboBoxModel) newSettingComboBox.getModel()).addElement(displayName);
+        }
     }
     
     /**
@@ -334,24 +373,25 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
      */
     private void addNewCurrentOption(final String name, final String value) {
         if (identity != null && value != null) {
-            System.out.println("Adding: " + name + " -> " + value);
-            String[] optionValues = optionMap.get(name).split("\\.");
-            identity.setOption(optionValues[0], optionValues[1], value);
-            ((DefaultComboBoxModel) newSettingComboBox.getModel()).removeElement(name);
-            initSettingsPanel();
+            if (optionMap.get(name) != null) {
+                String[] optionValues = optionMap.get(name).split("\\.");
+                identity.setOption(optionValues[0], optionValues[1], value);
+                ((DefaultComboBoxModel) newSettingComboBox.getModel()).removeElement(name);
+                numAddableSettings--;
+                initCurrentSettingsPanel();
+            }
         }
     }
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
-        String option;
         if ("Add setting".equals(event.getActionCommand())) {
             addNewCurrentOption((String) newSettingComboBox.getSelectedItem(),
                     newSettingField.getText());
         } else {
             String[] optionValues = event.getActionCommand().split("\\.");
             identity.removeOption(optionValues[0], optionValues[1]);
-            initSettingsPanel();
+            initCurrentSettingsPanel();
         }
     }
     
@@ -360,18 +400,15 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         for (String configName : textFields.keySet()) {
             String[] optionValues = configName.split("\\.");
             JTextField textField = textFields.get(configName);
-            System.out.println("Saving " + configName + ": " + textField.getText());
             identity.setOption(optionValues[0], optionValues[1],
                     textField.getText());
         }
         for (String configName : checkBoxes.keySet()) {
             String[] optionValues = configName.split("\\.");
             JCheckBox checkBox = checkBoxes.get(configName);
-            System.out.println("Saving " + configName + ": " + Boolean.toString(checkBox.isSelected()));
             identity.setOption(optionValues[0], optionValues[1],
                     Boolean.toString(checkBox.isSelected()));
         }
-        System.out.println("Saving settings.");
         Config.save();
     }
 }
