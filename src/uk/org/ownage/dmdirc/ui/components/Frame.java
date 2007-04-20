@@ -148,6 +148,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         setClosable(true);
         setResizable(true);
         setIconifiable(true);
+        setPreferredSize(new Dimension(MainFrame.getMainFrame().getWidth()/2, 
+                MainFrame.getMainFrame().getHeight()/3));
         
         addPropertyChangeListener("maximum", this);
         addInternalFrameListener(this);
@@ -158,31 +160,31 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             getTextPane().setBackground(ColourManager.getColour(
                     Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
         } catch (NumberFormatException ex) {
-            //Ignore
+            Logger.error(ErrorLevel.TRIVIAL, "Unable to set textpane background colour", ex);
         }
         try {
             getTextPane().setForeground(ColourManager.getColour(
                     Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
         } catch (NumberFormatException ex) {
-            //Ignore
+            Logger.error(ErrorLevel.TRIVIAL, "Unable to set textpane foreground colour", ex);
         }
         try {
             getInputField().setBackground(ColourManager.getColour(
                     Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
         } catch (NumberFormatException ex) {
-            //Ignore
+            Logger.error(ErrorLevel.TRIVIAL, "Unable to set input field background colour", ex);
         }
         try {
             getInputField().setForeground(ColourManager.getColour(
                     Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
         } catch (NumberFormatException ex) {
-            //Ignore
+            Logger.error(ErrorLevel.TRIVIAL, "Unable to set input field background colour", ex);
         }
         try {
             getInputField().setCaretColor(ColourManager.getColour(
                     Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
         } catch (NumberFormatException ex) {
-            //Ignore
+            Logger.error(ErrorLevel.TRIVIAL, "Unable to set caret colour", ex);
         }
         
         final Boolean pref = Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"));
@@ -220,15 +222,13 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                             frameBufferSize = Integer.parseInt(
                                     parent.getConfigManager().getOption("ui", "frameBufferSize"));
                         } catch (NumberFormatException ex) {
-                            //Ignore
+                            Logger.error(ErrorLevel.TRIVIAL, "Unable to set frame buffer size", ex);
                         }
                     }
                     final Document doc = getTextPane().getDocument();
                     if (doc.getLength() > frameBufferSize) {
                         doc.remove(0, 1 + doc.getText(doc.getLength() - frameBufferSize, 512).indexOf('\n') + doc.getLength() - frameBufferSize);
                     }
-                } catch (NumberFormatException ex) {
-                    Logger.error(ErrorLevel.WARNING, "Invalid buffer length", ex);
                 } catch (BadLocationException ex) {
                     Logger.error(ErrorLevel.WARNING, "Unable to trim buffer", ex);
                 }
@@ -668,7 +668,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                     try {
                         pasteTrigger = Integer.parseInt(Config.getOption("ui", "pasteProtectionLimit"));
                     } catch (NumberFormatException ex) {
-                        //Ignore, use the default.
+                        Logger.error(ErrorLevel.TRIVIAL, "Unable to set paste protection limit", ex);
                     }
                 }
                 if (getNumLines(clipboardContents) > pasteTrigger) {

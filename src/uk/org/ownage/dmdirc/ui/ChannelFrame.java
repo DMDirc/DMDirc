@@ -39,10 +39,13 @@ import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.ui.components.Frame;
 import uk.org.ownage.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
@@ -63,7 +66,7 @@ public final class ChannelFrame extends Frame {
     
     /** max length a line can be. */
     private final int maxLineLength;
-
+    
     /** The nick list model used for this channel's nickname list. */
     private NicklistListModel nicklistModel;
     
@@ -97,16 +100,16 @@ public final class ChannelFrame extends Frame {
         initComponents();
         
         try {
-        nickList.setBackground(ColourManager.getColour(
-                Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
+            nickList.setBackground(ColourManager.getColour(
+                    Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
         } catch (NumberFormatException ex) {
-            //Ignore
+            Logger.error(ErrorLevel.TRIVIAL, "Unable to set nicklist background colour", ex);
         }
         try {
-        nickList.setForeground(ColourManager.getColour(
-                Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
+            nickList.setForeground(ColourManager.getColour(
+                    Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
         } catch (NumberFormatException ex) {
-            //Ignore
+            Logger.error(ErrorLevel.TRIVIAL, "Unable to set nicklist foreground colour", ex);
         }
         
         commandParser = new ChannelCommandParser(((Channel) getFrameParent()).
@@ -198,7 +201,7 @@ public final class ChannelFrame extends Frame {
         final JScrollPane nickScrollPane = new JScrollPane();
         nickList = new JList();
         nickList.setCellRenderer(new NicklistRenderer(parent.getConfigManager()));
-	nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         
         splitPane.setBorder(null);
         final BasicSplitPaneDivider divider =
@@ -236,7 +239,11 @@ public final class ChannelFrame extends Frame {
         splitPane.setRightComponent(nickScrollPane);
         
         splitPane.setResizeWeight(1.0);
-        splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth() - 325);
+        if (Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"))) {
+            splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth() - 325);
+        } else {
+            splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth()/2 - 150);
+        }
         splitPane.setDividerSize(5);
         splitPane.setContinuousLayout(true);
         
@@ -252,7 +259,7 @@ public final class ChannelFrame extends Frame {
             new ChannelSettingsDialog((Channel) getFrameParent()).setVisible(true);
         }
     }
-
+    
     /**
      * Returns the splitpane.
      * @return nicklist JSplitPane
@@ -260,13 +267,13 @@ public final class ChannelFrame extends Frame {
     public JSplitPane getSplitPane() {
         return splitPane;
     }
-
+    
     /** {@inheritDoc}. */
     public void sendLine(final String line) {
         this.parent.sendLine(line);
         this.getInputHandler().addToBuffer(line);
     }
-
+    
     /** {@inheritDoc}. */
     public int getMaxLineLength() {
         return maxLineLength;

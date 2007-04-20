@@ -279,13 +279,13 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
             tree.setBackground(ColourManager.getColour(
                     Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
         } catch (NumberFormatException ex) {
-            //Ignore
+            Logger.error(ErrorLevel.TRIVIAL, "Unable to set tree background colour", ex);
         }
         try {
             tree.setForeground(ColourManager.getColour(
                     Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
         } catch (NumberFormatException ex) {
-            //Ignore
+            Logger.error(ErrorLevel.TRIVIAL, "Unable to set tree foreground colour", ex);
         }
         tree.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER));

@@ -31,6 +31,8 @@ import javax.swing.JTextField;
 
 import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
 /**
@@ -109,6 +111,7 @@ public final class InputHandler implements KeyListener, ActionListener {
             bufferSize = Integer.parseInt(thisParentWindow.getConfigManager().getOption("ui", "inputbuffersize"));
         } catch (NumberFormatException ex) {
             bufferSize = 50;
+            Logger.error(ErrorLevel.TRIVIAL, "Unable to set input buffer size", ex);
         }
         this.commandParser = thisCommandParser;
         this.parentWindow = thisParentWindow;
