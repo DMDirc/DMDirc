@@ -30,6 +30,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -49,7 +50,7 @@ import uk.org.ownage.dmdirc.identities.ConfigSource;
 import uk.org.ownage.dmdirc.identities.IdentityManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.ui.*;
+import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
@@ -65,7 +66,7 @@ public final class NewServerDialog extends StandardDialog {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4;
     
     /**
      * A previously created instance of NewServerDialog.
@@ -116,6 +117,9 @@ public final class NewServerDialog extends StandardDialog {
     
     /** combo box. */
     private JComboBox serverListField;
+    
+    /** button. */
+    private JButton editProfileButton;
     
     /**
      * Creates a new instance of the dialog.
@@ -200,6 +204,11 @@ public final class NewServerDialog extends StandardDialog {
                 }
             }
         });
+        editProfileButton.addActionListener(new ActionListener() {
+            public void actionPerformed(final ActionEvent actionEvent) {
+                new ProfileEditorDialog();
+            }
+        });
     }
     
     /**
@@ -224,6 +233,7 @@ public final class NewServerDialog extends StandardDialog {
         identityField = new JComboBox(IdentityManager.getProfiles().toArray());
         serverListLabel = new JLabel();
         serverListField = new JComboBox(new String[]{});
+        editProfileButton = new JButton();
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         orderButtons(button2, button1);
@@ -244,6 +254,8 @@ public final class NewServerDialog extends StandardDialog {
         passwordLabel.setText("Password:");
         
         identityLabel.setText("Profile: ");
+        
+        editProfileButton.setText("Edit");
         
         serverListLabel.setText("Server: ");
         
@@ -356,10 +368,13 @@ public final class NewServerDialog extends StandardDialog {
         constraints.insets = new Insets(SMALL_BORDER, 0,
                 SMALL_BORDER, LARGE_BORDER);
         constraints.gridx = 1;
-        constraints.gridwidth = 3;
+        constraints.gridwidth = 2;
         constraints.weightx = 1.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         getContentPane().add(identityField, constraints);
+        constraints.gridwidth = 1;
+        constraints.gridx = 3;
+        getContentPane().add(editProfileButton, constraints);
         
         constraints.weightx = 0.0;
         constraints.gridwidth = 4;
@@ -390,12 +405,12 @@ public final class NewServerDialog extends StandardDialog {
         constraints.gridwidth = 1;
         constraints.weightx = 0.0;
         constraints.insets.set(LARGE_BORDER, 0, LARGE_BORDER, LARGE_BORDER);
-        constraints.gridx = 1;
+        constraints.gridx = 2;
         constraints.anchor = GridBagConstraints.EAST;
         constraints.fill = GridBagConstraints.NONE;
         getContentPane().add(getLeftButton(), constraints);
         
-        constraints.gridx = 2;
+        constraints.gridx = 3;
         getContentPane().add(getRightButton(), constraints);
         
         pack();

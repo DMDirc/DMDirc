@@ -328,7 +328,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
                 textFields.put(configName, (JTextField) component);
                 break;
             default:
-                throw new IllegalArgumentException("Unrecognised option type");
+                throw new IllegalArgumentException("Unrecognised option type: " + type);
         }
         component.setPreferredSize(new Dimension(150,
                 splitUserModes.getFont().getSize()));
