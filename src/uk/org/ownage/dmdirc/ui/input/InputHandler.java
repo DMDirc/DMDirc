@@ -266,9 +266,11 @@ public final class InputHandler implements KeyListener, ActionListener {
     public void actionPerformed(final ActionEvent actionEvent) {
         final String line = actionEvent.getActionCommand();
         
-        addToBuffer(line);
-        
-        commandParser.parseCommand(parentWindow, line);
+        if (line.length() > 0) {
+            addToBuffer(line);
+            
+            commandParser.parseCommand(parentWindow, line);
+        }
     }
     
     /**
