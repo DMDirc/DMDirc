@@ -54,8 +54,8 @@ public final class Config {
     }
     
     /**
-     * Returns the singleton instance of ServerManager.
-     * @return Instance of ServerManager
+     * Returns the singleton instance of Config properties.
+     * @return Instance of Config properties
      */
     public static Properties getConfig() {
         if (properties == null) {
