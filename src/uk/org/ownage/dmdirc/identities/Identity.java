@@ -223,25 +223,22 @@ public final class Identity implements ConfigSource {
     }
     
     /**
-     * Generates an empty identity for the specified target.
-     * @param target The target for the new identity
-     * @return An empty identity for the specified target
+     * Creates a new identity containing the specified properties.
+     * @param properties The properties to be included in the identity
+     * @return A new identity containing the specified properties
      */
-    public static Identity buildIdentity(final ConfigTarget target) {
-        final Properties properties = new Properties();
-        properties.setProperty("identity.name", target.getData());
-        properties.setProperty("identity." + target.getTypeName(), target.getData());
-        
+    private static Identity createIdentity(final Properties properties) {
         final String fs = System.getProperty("file.separator");
         final String location = Config.getConfigDir() + "identities" + fs;
+        final String name = properties.getProperty("identity.name");
         
-        final File file = new File(location + target.getData());
+        final File file = new File(location + name);
         
         if (!file.exists()) {
             final FileWriter writer;
             
             try {
-                writer = new FileWriter(location + target.getData());
+                writer = new FileWriter(location + name);
                 properties.store(writer, "");
                 writer.close();
             } catch (IOException ex) {
@@ -262,6 +259,34 @@ public final class Identity implements ConfigSource {
             Logger.error(ErrorLevel.ERROR, "Unable to open new identity file", ex);
             return null;
         }
+    }
+    
+    /**
+     * Generates an empty identity for the specified target.
+     * @param target The target for the new identity
+     * @return An empty identity for the specified target
+     */
+    public static Identity buildIdentity(final ConfigTarget target) {
+        final Properties properties = new Properties();
+        properties.setProperty("identity.name", target.getData());
+        properties.setProperty("identity." + target.getTypeName(), target.getData());
+        
+        return createIdentity(properties);
+    }
+    
+    /**
+     * Generates an empty profile witht he specified name. Note the name is used
+     * as a file name, so should be sanitised.
+     * @param name The name of the profile to create
+     * @return A new profile with the specified name
+     */
+    public static Identity buildProfile(final String name) {
+        final Properties properties = new Properties();
+        properties.setProperty("identity.name", name);
+        properties.setProperty("profile.nickname", "nickname");
+        properties.setProperty("profile.realname", "realname");
+        
+        return createIdentity(properties);
     }
     
 }
