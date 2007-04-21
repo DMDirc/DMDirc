@@ -78,6 +78,10 @@ public final class CommandManager {
      * @param command The command to be registered
      */
     public static void registerCommand(final Command command) {
+        if (channelCommands == null) {
+            initLists();
+        }
+        
         List<CommandParser> target = null;
         
         if (command instanceof ChannelCommand) {

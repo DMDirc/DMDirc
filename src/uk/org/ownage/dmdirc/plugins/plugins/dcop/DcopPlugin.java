@@ -22,10 +22,7 @@
 
 package uk.org.ownage.dmdirc.plugins.plugins.dcop;
 
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
+import uk.org.ownage.dmdirc.commandparser.commands.server.DcopCommand;
 import uk.org.ownage.dmdirc.plugins.Plugin;
 
 /**
@@ -39,27 +36,10 @@ public class DcopPlugin implements Plugin {
         
     }
     
-    public void onLoad() {
-        CommandManager.registerCommand(new ServerCommand() {
-            public void execute(CommandWindow origin, Server server, String ... args) {
-                origin.addLine("dcop test");
-            }
-            public int getArity() {
-                return 0;
-            }
-            public String getHelp() {
-                return null;
-            }
-            public String getName() {
-                return "dcoptest";
-            }
-            public boolean isPolyadic() {
-                return false;
-            }
-            public boolean showInHelp() {
-                return false;
-            }
-        });
+    public boolean onLoad() {
+        new DcopCommand();
+        
+        return true;
     }
     
     public void onUnload() {

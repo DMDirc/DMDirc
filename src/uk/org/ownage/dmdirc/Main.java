@@ -34,6 +34,7 @@ import javax.swing.plaf.FontUIResource;
 import uk.org.ownage.dmdirc.identities.IdentityManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.plugins.PluginManager;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 
 /**
@@ -113,6 +114,8 @@ public final class Main {
         }
         
         IdentityManager.load();
+        
+        PluginManager.getPluginManager();
         
         MainFrame.getMainFrame();
     }
