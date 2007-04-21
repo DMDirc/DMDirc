@@ -55,6 +55,13 @@ public class PluginManager {
 	private PluginManager() {
 		final String fs = System.getProperty("file.separator");
 		myDir = Config.getConfigDir() + "plugins" + fs;
+
+		if (Config.hasOption("plugins", "autoload")) {
+			String[] autoLoadList = Config.getOption("plugins", "autoload").split("\n");
+			for (String plugin : autoLoadList) {
+				addPlugin(plugin, plugin);
+			}
+		}
 	}
         
         /**
@@ -80,10 +87,13 @@ public class PluginManager {
 		if (knownPlugins.containsKey(pluginName.toLowerCase())) { return false; }
 		Plugin plugin = loadPlugin(className);
 		if (plugin == null) { return false; }
-		plugin.onLoad();
-		knownPlugins.put(pluginName.toLowerCase(), plugin);
-		knownPluginNames.put(pluginName.toLowerCase(), className);
-		return true;
+		if (plugin.onLoad()) {
+			knownPlugins.put(pluginName.toLowerCase(), plugin);
+			knownPluginNames.put(pluginName.toLowerCase(), className);
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	/**

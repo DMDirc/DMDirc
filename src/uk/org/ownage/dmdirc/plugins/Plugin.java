@@ -30,7 +30,7 @@ public interface Plugin {
 	/**
 	 * Called when the plugin is loaded.
 	 */
-	void onLoad();
+	boolean onLoad();
 	
 	/**
 	 * Called when the plugin is about to be unloaded.
