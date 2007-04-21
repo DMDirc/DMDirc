@@ -27,19 +27,23 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
-import uk.org.ownage.dmdirc.identities.ConfigSource;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
+import uk.org.ownage.dmdirc.identities.ConfigSource;
 import uk.org.ownage.dmdirc.identities.IdentityManager;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
@@ -51,7 +55,8 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
 /**
  * Profiel editing dialog.
  */
-public class ProfileEditorDialog extends StandardDialog implements ActionListener {
+public class ProfileEditorDialog extends StandardDialog implements
+        ActionListener, ListSelectionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -62,8 +67,16 @@ public class ProfileEditorDialog extends StandardDialog implements ActionListene
     
     private JPanel panel;
     
-    private JLabel profileNameLabel;
-    private JComboBox profileName;
+    private JList profileList;
+    
+    private int selectedProfile;
+    
+    private JButton addButton;
+    private JButton deleteButton;
+    private JButton renameButton;
+    private JButton revertButton;
+    
+    private JLabel infoLabel;
     
     private JLabel nicknameLabel;
     private JTextField nickname;
@@ -95,29 +108,53 @@ public class ProfileEditorDialog extends StandardDialog implements ActionListene
         orderButtons(new JButton(), new JButton());
         setTitle("Profile Editor");
         
+        setPreferredSize(new Dimension(500, 400));
+        
         panel = new JPanel(new SpringLayout());
         panel.setVisible(true);
         
-        profileNameLabel = new JLabel("Name: ");
-        profileNameLabel.setPreferredSize(new Dimension(80, 10));
+        profileList = new JList(new DefaultListModel());
+        profileList.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEtchedBorder(),
+                BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER)));
         
-        profileName = new JComboBox(profiles.toArray());
-        profileName.setPreferredSize(new Dimension(150, 10));
-        profileName.setEditable(true);
+        for (ConfigSource profile : profiles) {
+            ((DefaultListModel) profileList.getModel()).addElement(profile);
+        }
+        
+        profileList.setSelectedIndex(0);
+        selectedProfile = 0;
+        
+        profileList.addListSelectionListener(this);
+        
+        addButton = new JButton("Add");
+        addButton.addActionListener(this);
+        
+        deleteButton = new JButton("Delete");
+        deleteButton.addActionListener(this);
+        
+        renameButton = new JButton("Rename");
+        renameButton.addActionListener(this);
+        
+        infoLabel = new JLabel("Blah blah blah, this is a blurb.");
         
         nicknameLabel = new JLabel("Nickname: ");
         nicknameLabel.setPreferredSize(new Dimension(100, 10));
         
         nickname = new JTextField();
         nickname.setPreferredSize(new Dimension(150, 10));
-        nickname.setText(profiles.get(profileName.getSelectedIndex()).getOption("profile", "realname"));
+        nickname.setText(profiles.get(0).getOption("profile", "nickname"));
         
         realnameLabel = new JLabel("Realname: ");
         realnameLabel.setPreferredSize(new Dimension(80, 10));
         
         realname = new JTextField();
         realname.setPreferredSize(new Dimension(150, 10));
-        realname.setText(profiles.get(profileName.getSelectedIndex()).getOption("profile", "realname"));
+        realname.setText(profiles.get(0).getOption("profile", "realname"));
+        
+        revertButton = new JButton("Revert");
+        revertButton.addActionListener(this);
     }
     
     /** Lays out the dialog. */
@@ -125,36 +162,66 @@ public class ProfileEditorDialog extends StandardDialog implements ActionListene
         final GridBagConstraints constraints = new GridBagConstraints();
         getContentPane().setLayout(new GridBagLayout());
         
-        panel.add(profileNameLabel);
-        panel.add(profileName);
         panel.add(nicknameLabel);
         panel.add(nickname);
         panel.add(realnameLabel);
         panel.add(realname);
+        panel.add(Box.createHorizontalGlue());
+        panel.add(revertButton);
         
         layoutGrid(panel, 3, 2, LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, SMALL_BORDER);
         
-        constraints.weighty = 1.0;
-        constraints.weightx = 1.0;
+        constraints.weighty = 0.0;
+        constraints.weightx = 0.0;
         constraints.gridx = 0;
         constraints.gridy = 0;
-        constraints.gridwidth = 3;
+        constraints.gridwidth = 1;
+        constraints.gridheight = 3;
         constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, 0);
+        getContentPane().add(profileList, constraints);
+        
+        constraints.insets.set(0, LARGE_BORDER, 0, 0);
+        constraints.gridheight = 1;
+        constraints.gridy = 4;
+        getContentPane().add(addButton, constraints);
+        
+        constraints.gridy = 5;
+        getContentPane().add(deleteButton, constraints);
+        
+        constraints.gridy = 6;
+        constraints.insets.set(0, LARGE_BORDER, LARGE_BORDER, 0);
+        getContentPane().add(renameButton, constraints);
+        
+        constraints.weightx = 1.0;
+        constraints.weighty = 0.0;
+        constraints.gridx = 1;
+        constraints.gridy = 0;
+        constraints.gridheight = 1;
+        constraints.gridwidth = 2;
+        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, 0);
+        getContentPane().add(infoLabel, constraints);
+        
+        constraints.weighty = 1.0;
+        constraints.gridy = 1;
+        constraints.insets.set(0, SMALL_BORDER, 0, SMALL_BORDER);
         getContentPane().add(panel, constraints);
         
         constraints.gridwidth = 1;
         constraints.weighty = 0.0;
-        constraints.gridy = 1;
+        constraints.gridy = 6;
+        constraints.insets.set(0, 0, 0, 0);
         getContentPane().add(Box.createHorizontalGlue(), constraints);
         
+        constraints.gridx = 1;
         constraints.weightx = 0.0;
-        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, 0);
+        constraints.insets.set(0, LARGE_BORDER, LARGE_BORDER, 0);
         constraints.anchor = GridBagConstraints.EAST;
         constraints.fill = GridBagConstraints.NONE;
         getContentPane().add(getLeftButton(), constraints);
         
         constraints.gridx = 2;
-        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER);
+        constraints.insets.set(0, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER);
         getContentPane().add(getRightButton(), constraints);
         
         pack();
@@ -168,11 +235,49 @@ public class ProfileEditorDialog extends StandardDialog implements ActionListene
     
     /** {@inheritDoc}. */
     public void actionPerformed(ActionEvent event) {
-        if (event.getSource() == getOkButton()) {
+        if (event.getSource() == revertButton) {
+            nickname.setText(profiles.get(selectedProfile).getOption("profile", "nickname"));
+                realname.setText(profiles.get(selectedProfile).getOption("profile", "realname"));
+        } else if (event.getSource() == addButton) {
+            String newName = JOptionPane.showInputDialog(this,
+                    "Please enter the new profile's name", "New profile");
+            if (newName != null && !"".equals(newName)) {
+                //TODO create and add the new identity
+                profileList.repaint();
+            }
+        } else if (event.getSource() == deleteButton) {
+            int response = JOptionPane.showConfirmDialog(this, 
+                    "Are you sure you want to delete this profile?", 
+                    "Delete confirmaton", JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
+                //TODO delete profile
+            }
+        } else if (event.getSource() == renameButton) {
+            String newName = JOptionPane.showInputDialog(this,
+                    "Please enter the new name for the profile", 
+                    profileList.getSelectedValue());
+            if (newName != null && !"".equals(newName)) {
+                profiles.get(profileList.getSelectedIndex()).setOption("identity", "name", newName);
+                profileList.repaint();
+            }
+        } else if (event.getSource() == getOkButton()) {
             this.dispose();
         } else if (event.getSource() == getCancelButton()) {
             this.dispose();
         }
     }
     
+    /** {@inheritDoc}. */
+    public void valueChanged(final ListSelectionEvent selectionEvent) {
+        if (!selectionEvent.getValueIsAdjusting()) {
+            int selected = ((JList) selectionEvent.getSource()).getSelectedIndex();
+            if (selected >= 0) {
+                profiles.get(selectedProfile).setOption("profile", "nickname", nickname.getText());
+                profiles.get(selectedProfile).setOption("profile", "realname", realname.getText());
+                nickname.setText(profiles.get(selected).getOption("profile", "nickname"));
+                realname.setText(profiles.get(selected).getOption("profile", "realname"));
+                selectedProfile = selected;
+            }
+        }
+    }
 }

@@ -62,6 +62,7 @@ import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
 import uk.org.ownage.dmdirc.ui.framemanager.tree.TreeFrameManager;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
+import uk.org.ownage.dmdirc.ui.dialogs.ProfileEditorDialog;
 
 /**
  * The main application frame.
@@ -431,12 +432,25 @@ public final class MainFrame extends JFrame implements WindowListener,
 	
 	miPreferences.setText("Preferences");
 	fileMenu.add(miPreferences);
+        
+        menuItem = new JMenuItem();
+	menuItem.setMnemonic('p');
+	menuItem.setText("Profile Manager");
+	menuItem.setActionCommand("Profile");
+	menuItem.addActionListener(this);
+	fileMenu.add(menuItem);
+        
+        menuItem = new JMenuItem();
+	menuItem.setMnemonic('e');
+	menuItem.setText("Exit");
+	menuItem.setActionCommand("Exit");
+	menuItem.addActionListener(this);
+	fileMenu.add(menuItem);
 	
 	menuBar.add(fileMenu);
 	
 	windowMenu.setMnemonic('w');
 	windowMenu.setText("Window");
-	
 	
 	toggleStateMenuItem.setMnemonic('m');
 	toggleStateMenuItem.setText("Maximise");
@@ -506,6 +520,11 @@ public final class MainFrame extends JFrame implements WindowListener,
             Logger.error(ErrorLevel.ERROR, "This is a test error", new Exception("1 2 3"));
         } else if (e.getActionCommand().equals("ErrorFatal")) {
             Logger.error(ErrorLevel.FATAL, "This is a test fatal error", new Exception("1 2 3"));
-        }
+        } else if (e.getActionCommand().equals("Profile")) {
+            new ProfileEditorDialog();
+        } else if (e.getActionCommand().equals("Exit")) {
+            Config.save();
+            System.exit(1);
+        } 
     }
 }
