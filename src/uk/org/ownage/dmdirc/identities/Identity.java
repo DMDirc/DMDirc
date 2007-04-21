@@ -259,7 +259,10 @@ public final class Identity implements ConfigSource {
         }
         
         try {
-            return new Identity(file);
+            final Identity identity = new Identity(file);
+            IdentityManager.addIdentity(identity);
+            
+            return identity;
         } catch (MalformedURLException ex) {
             Logger.error(ErrorLevel.ERROR, "Unable to open new identity file", ex);
             return null;

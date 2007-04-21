@@ -243,13 +243,7 @@ public final class IdentityManager {
         final ConfigTarget target = new ConfigTarget();
         target.setChannel(myTarget);
         
-        final Identity identity = Identity.buildIdentity(target);
-        
-        if (identity != null) {
-            addIdentity(identity);
-        }
-        
-        return identity;
+        return Identity.buildIdentity(target);
     }
     
     
