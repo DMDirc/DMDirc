@@ -94,12 +94,10 @@ public class PluginManager {
 				knownPlugins.put(pluginName.toLowerCase(), plugin);
 				knownPluginNames.put(pluginName.toLowerCase(), className);
 				return true;
-			} else {
-				return false;
-			}
 		} catch (Exception e) {
 			Logger.error(ErrorLevel.ERROR, "[addPlugin] Error loading '"+pluginName+"' ["+className+"]", e);
 		}
+		return false;
 	}
 	
 	/**
