@@ -44,10 +44,7 @@ import uk.org.ownage.dmdirc.logger.Logger;
  * @author chris
  */
 public final class Identity implements ConfigSource {
-    
-    /** The name of this identity. */
-    private final String name;
-    
+        
     /** The target for this identity. */
     private final ConfigTarget myTarget = new ConfigTarget();
     
@@ -89,9 +86,7 @@ public final class Identity implements ConfigSource {
         if (!properties.containsKey("identity.name")) {
             throw new InvalidIdentityFileException("No name specified");
         }
-        
-        name = getOption("identity", "name");
-        
+               
         if (hasOption("identity", "ircd")) {
             myTarget.setIrcd(getOption("identity", "ircd"));
         } else if (hasOption("identity", "network")) {
@@ -120,7 +115,7 @@ public final class Identity implements ConfigSource {
      * @return The name of this identity
      */
     public String getName() {
-        return name;
+        return properties.getProperty("identity.name");
     }
     
     /**
@@ -219,7 +214,7 @@ public final class Identity implements ConfigSource {
      * @return A string representation of this object
      */
     public String toString() {
-        return name;
+        return getName();
     }
     
     /**
