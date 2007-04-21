@@ -196,6 +196,17 @@ public final class Identity implements ConfigSource {
     }
     
     /**
+     * Deletes this identity from disk.
+     */
+    public void delete() {
+        if (file != null) {
+            file.delete();
+        }
+        
+        IdentityManager.removeIdentity(this);
+    }
+    
+    /**
      * Retrieves this identity's target.
      * @return The target of this identity
      */

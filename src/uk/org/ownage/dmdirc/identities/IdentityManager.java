@@ -134,6 +134,14 @@ public final class IdentityManager {
     }
     
     /**
+     * Removes an identity from this manager.
+     * @param identity The identity to be removed
+     */
+    public static void removeIdentity(final Identity identity) {
+        identities.remove(identity);
+    }
+    
+    /**
      * Retrieves a list of identities that serve as profiles.
      * @return A list of profiles
      */
@@ -230,7 +238,7 @@ public final class IdentityManager {
                 return (Identity) identity;
             }
         }
-                
+        
         // We need to create one
         final ConfigTarget target = new ConfigTarget();
         target.setChannel(myTarget);
