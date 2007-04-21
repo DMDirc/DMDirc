@@ -85,14 +85,18 @@ public class PluginManager {
 	 */
 	public boolean addPlugin(final String pluginName, final String className) {
 		if (knownPlugins.containsKey(pluginName.toLowerCase())) { return false; }
-		Plugin plugin = loadPlugin(className);
-		if (plugin == null) { return false; }
-		if (plugin.onLoad()) {
-			knownPlugins.put(pluginName.toLowerCase(), plugin);
-			knownPluginNames.put(pluginName.toLowerCase(), className);
-			return true;
-		} else {
-			return false;
+		try {
+			Plugin plugin = loadPlugin(className);
+			if (plugin == null) { return false; }
+			if (plugin.onLoad()) {
+				knownPlugins.put(pluginName.toLowerCase(), plugin);
+				knownPluginNames.put(pluginName.toLowerCase(), className);
+				return true;
+			} else {
+				return false;
+			}
+		} catch (Exception e) {
+			Logger.error(ErrorLevel.ERROR, "[addPlugin] Error loading '"+pluginName+"' ["+className+"]", e);
 		}
 	}
 	
@@ -108,7 +112,7 @@ public class PluginManager {
 		try {
 			plugin.onUnload();
 		} catch (Exception e) {
-			// TODO: Log Unload Errors somewhere.
+			Logger.error(ErrorLevel.ERROR, "[delPlugin] Error in onUnload() for '"+pluginName+"'", e);
 		}
 		knownPlugins.remove(pluginName.toLowerCase());
 		knownPluginNames.remove(pluginName.toLowerCase());
@@ -180,20 +184,19 @@ public class PluginManager {
 		
 			result = (Plugin)constructor.newInstance(new Object[] {});
 		} catch (ClassNotFoundException cnfe) {
-			System.out.println("ClassNotFoundException "+cnfe.getMessage());
-			cnfe.printStackTrace();
+			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Class '"+className+"' not found", cnfe);
 			result = null;
 		} catch (NoSuchMethodException nsme) {
-			System.out.println("NoSuchMethodException");
+			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Method missing", nsme);
 			result = null;
 		} catch (IllegalAccessException iae) {
-			System.out.println("IllegalAccessException");
+			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to access method", iae);
 			result = null;
 		} catch (InvocationTargetException ite) {
-			System.out.println("InvocationTargetException");
+			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to invoke target", ite);
 			result = null;
 		} catch (InstantiationException ie) {
-			System.out.println("InstantiationException");
+			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to instantiate plugin", ie);
 			result = null;
 		}
 		
