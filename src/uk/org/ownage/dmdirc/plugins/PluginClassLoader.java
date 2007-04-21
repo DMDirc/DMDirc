@@ -50,7 +50,7 @@ public class PluginClassLoader extends ClassLoader {
 	/**
 	 * Load the plugin with the given className
 	 *
-	 * @param className Class Name of plugin
+	 * @param name Class Name of plugin
 	 * @return plugin class
 	 * @throws ClassNotFoundException if the class to be loaded could not be found.
 	 */
