@@ -51,6 +51,19 @@ public final class CommandManager {
      * The query commands that have been instansiated.
      */
     private static List<Command> queryCommands;
+    /**
+     * The parsers that have requested server commands.
+     */
+    private static List<CommandParser> serverParsers;
+    /**
+     * The parsers that have requested channel commands.
+     */
+    private static List<CommandParser> channelParsers;
+    /**
+     * The parsers that have requested query commands.
+     */
+    private static List<CommandParser> queryParsers;
+    
     
     /**
      * Prevents creation of a new command manager.
@@ -65,14 +78,29 @@ public final class CommandManager {
      * @param command The command to be registered
      */
     public static void registerCommand(final Command command) {
+        List<CommandParser> target = null;
+        
         if (command instanceof ChannelCommand) {
+            target = channelParsers;
             channelCommands.add(command);
         } else if (command instanceof ServerCommand) {
+            target = serverParsers;
             serverCommands.add(command);
         } else if (command instanceof QueryCommand) {
+            target = queryParsers;
             queryCommands.add(command);
         } else {
-            Logger.error(ErrorLevel.ERROR, "Attempted to register an invalid command", new RuntimeException());
+            Logger.error(ErrorLevel.ERROR, "Attempted to register an invalid command: " + command.getClass().getName());
+        }
+        
+        // FIXME: There's no way to kill old/dead entries in the *Parsers lists.
+        //        Ideally, they'd unregister themselves (or so) when unloaded.
+        if (target != null) {
+            for (CommandParser parser : target) {
+                if (parser != null) {
+                    parser.registerCommand(command);
+                }
+            }
         }
     }
     
@@ -83,6 +111,10 @@ public final class CommandManager {
         channelCommands = new ArrayList<Command>();
         serverCommands = new ArrayList<Command>();
         queryCommands = new ArrayList<Command>();
+        
+        channelParsers = new ArrayList<CommandParser>();
+        serverParsers = new ArrayList<CommandParser>();
+        queryParsers = new ArrayList<CommandParser>();
         
         initCommands();
     }
@@ -136,12 +168,14 @@ public final class CommandManager {
      */
     public static void loadChannelCommands(final CommandParser parser) {
         if (channelCommands == null) {
-            CommandManager.initLists();
+            initLists();
         }
         
         for (Command com : channelCommands) {
             parser.registerCommand(com);
         }
+        
+        channelParsers.add(parser);
     }
     
     /**
@@ -150,12 +184,14 @@ public final class CommandManager {
      */
     public static void loadServerCommands(final CommandParser parser) {
         if (serverCommands == null) {
-            CommandManager.initLists();
+            initLists();
         }
         
         for (Command com : serverCommands) {
             parser.registerCommand(com);
         }
+        
+        serverParsers.add(parser);
     }
     
     /**
@@ -164,12 +200,14 @@ public final class CommandManager {
      */
     protected static void loadQueryCommands(final QueryCommandParser parser) {
         if (queryCommands == null)    {
-            CommandManager.initLists();
+            initLists();
         }
         
         for (Command com : queryCommands) {
             parser.registerCommand(com);
         }
+        
+        queryParsers.add(parser);
     }
     
     /**
@@ -180,7 +218,7 @@ public final class CommandManager {
      */
     public static ServerCommand getServerCommand(final String signature) {
         if (serverCommands == null) {
-            CommandManager.initLists();
+            initLists();
         }
         
         for (Command com : serverCommands) {
@@ -200,7 +238,7 @@ public final class CommandManager {
      */
     public static ChannelCommand getChannelCommand(final String signature) {
         if (channelCommands == null) {
-            CommandManager.initLists();
+            initLists();
         }
         
         for (Command com : channelCommands) {
