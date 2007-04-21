@@ -292,8 +292,8 @@ public final class Identity implements ConfigSource {
     public static Identity buildProfile(final String name) {
         final Properties properties = new Properties();
         properties.setProperty("identity.name", name);
-        properties.setProperty("profile.nickname", "nickname");
-        properties.setProperty("profile.realname", "realname");
+        properties.setProperty("profile.nickname", "DMDircUser");
+        properties.setProperty("profile.realname", "DMDircUser");
         
         return createIdentity(properties);
     }
