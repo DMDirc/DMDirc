@@ -404,12 +404,13 @@ public final class NewServerDialog extends StandardDialog {
         
         constraints.gridwidth = 1;
         constraints.weightx = 0.0;
-        constraints.insets.set(LARGE_BORDER, 0, LARGE_BORDER, LARGE_BORDER);
+        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, 0);
         constraints.gridx = 2;
         constraints.anchor = GridBagConstraints.EAST;
         constraints.fill = GridBagConstraints.NONE;
         getContentPane().add(getLeftButton(), constraints);
         
+        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER);
         constraints.gridx = 3;
         getContentPane().add(getRightButton(), constraints);
         
