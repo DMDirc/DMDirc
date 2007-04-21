@@ -23,45 +23,48 @@
  */
 package uk.org.ownage.dmdirc.plugins;
 
+/**
+ * Defines the standard methods that should be implemented by plugins.
+ */
 public interface Plugin {
 	/**
 	 * Called when the plugin is loaded.
 	 */
-	public void onLoad();
+	void onLoad();
 	
 	/**
 	 * Called when the plugin is about to be unloaded.
 	 */
-	public void onUnload();
+	void onUnload();
 
 	/**
 	 * Called when this plugin becomes active.
 	 */
-	public void onActivate();
+	void onActivate();
 	
 	/**
-	 * Called when this plugin becomes active.
+	 * Called when this plugin is deactivated.
 	 */
-	public void onDeactivate();
+	void onDeactivate();
 	
 	/**
 	 * Get the plugin version
 	 *
 	 * @return Plugin Version
 	 */
-	public int getVersion();
+	int getVersion();
 	
 	/**
 	 * Get the plugin Author.
 	 *
 	 * @return Author of plugin
 	 */
-	public String getAuthor();
+	String getAuthor();
 	
 	/**
 	 * Get the plugin Description.
 	 *
 	 * @return Description of plugin
 	 */
-	public String getDescription();
+	String getDescription();
 }
