@@ -37,5 +37,5 @@ public abstract class ServerCommand extends Command {
      * @param server The server instance that this command is being executed on
      * @param args Arguments passed to this command
      */
-    public abstract void execute(CommandWindow origin, Server server, String... args);
+    public abstract void execute(CommandWindow origin, Server server, String ... args);
 }

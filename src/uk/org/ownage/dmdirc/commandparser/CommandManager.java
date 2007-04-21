@@ -115,6 +115,7 @@ public final class CommandManager {
         new Help();
         new Join();
         new LoadFormatter();
+        new LoadPlugin();
         new Motd();
         new Nick();
         new Quit();

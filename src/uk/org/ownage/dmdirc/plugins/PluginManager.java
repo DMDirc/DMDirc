@@ -23,16 +23,11 @@
  */
 package uk.org.ownage.dmdirc.plugins;
 
-import java.util.Hashtable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Hashtable;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
+import uk.org.ownage.dmdirc.Config;
 
 public class PluginManager {
 	/**
@@ -47,22 +42,33 @@ public class PluginManager {
 	/**
 	 * Directory where plugins are stored.
 	 */
-	 private String myDir;
+	 private final String myDir;
+         
+	/**
+         * Singleton instance of the plugin manager.
+         */
+         private static PluginManager me;
 	
 	/**
 	 * Create a new PluginManager.
 	 */
-	public PluginManager() {
-		myDir = ".";
+	private PluginManager() {
+		final String fs = System.getProperty("file.separator");
+		myDir = Config.getConfigDir() + "plugins" + fs;
 	}
-	
-	/**
-	 * Create a new PluginManager.
-	 */
-	public PluginManager(final String directory) {
-		myDir = directory;
-	}
-	
+        
+        /**
+         * Retrieves the singleton instance of the plugin manager.
+         * @return A singleton instance of PluginManager.
+         */
+        public final static synchronized PluginManager getPluginManager() {
+            if (me == null) {
+                me = new PluginManager();
+            }
+            
+            return me;
+        }
+		
 	/**
 	 * Add a new plugin.
 	 *
