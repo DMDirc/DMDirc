@@ -74,6 +74,7 @@ public class PluginManager {
 		if (knownPlugins.containsKey(pluginName.toLowerCase())) { return false; }
 		Plugin plugin = loadPlugin(className);
 		if (plugin == null) { return false; }
+		plugin.onLoad();
 		knownPlugins.put(pluginName.toLowerCase(), plugin);
 		knownPluginNames.put(pluginName.toLowerCase(), className);
 		return true;
@@ -88,7 +89,11 @@ public class PluginManager {
 	public boolean delPlugin(final String pluginName) {
 		if (!knownPlugins.containsKey(pluginName.toLowerCase())) { return false; }
 		Plugin plugin = getPlugin(pluginName);
-		plugin.onUnload();
+		try {
+			plugin.onUnload();
+		} catch (Exception e) {
+			// TODO: Log Unload Errors somewhere.
+		}
 		knownPlugins.remove(pluginName.toLowerCase());
 		knownPluginNames.remove(pluginName.toLowerCase());
 		plugin = null;
