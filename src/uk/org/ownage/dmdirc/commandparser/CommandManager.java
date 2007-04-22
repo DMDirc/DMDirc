@@ -74,7 +74,6 @@ public final class CommandManager {
     
     /**
      * Registers a command with the command manager.
-     * @param scope The scope of the command
      * @param command The command to be registered
      */
     public static void registerCommand(final Command command) {

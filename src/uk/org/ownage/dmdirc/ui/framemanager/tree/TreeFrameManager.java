@@ -513,7 +513,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /**
      * Processes every mouse button event to check for a popup trigger.
-     * @param e mouse event
+     * @param event mouse event
      */
     public void processMouseEvent(final MouseEvent event) {
         if (event.isPopupTrigger()) {
