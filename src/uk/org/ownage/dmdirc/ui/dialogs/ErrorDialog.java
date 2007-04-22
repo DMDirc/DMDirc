@@ -243,7 +243,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
         constraints.anchor = GridBagConstraints.EAST;
         constraints.fill = GridBagConstraints.NONE;
         getContentPane().add(okButton, constraints);
-        pack();
+        resize();
     }
     
     /**
@@ -252,29 +252,15 @@ public final class ErrorDialog extends JDialog implements ActionListener,
     public void actionPerformed(final ActionEvent actionEvent) {
         if (actionEvent.getSource() == showMore) {
             if (showMore.getText().equals("Show details")) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        setVisible(false);
-                        scrollPane.setVisible(true);
-                        showMore.setText("Hide details");
-                        pack();
-                        setLocationRelativeTo(MainFrame.getMainFrame());
-                        setVisible(true);
-                    }
-                }
-                );
+                scrollPane.setVisible(true);
+                showMore.setText("Hide details");
+                resize();
+                setLocationRelativeTo(MainFrame.getMainFrame());
             } else {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        setVisible(false);
-                        scrollPane.setVisible(false);
-                        showMore.setText("Show details");
-                        pack();
-                        setLocationRelativeTo(MainFrame.getMainFrame());
-                        setVisible(true);
-                    }
-                }
-                );
+                scrollPane.setVisible(false);
+                showMore.setText("Show details");
+                resize();
+                setLocationRelativeTo(MainFrame.getMainFrame());
             }
         } else {
             if (sendDataCheckbox.isSelected() && sendDataCheckbox.isEnabled()) {
@@ -334,7 +320,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
         sendDataCheckbox.setSelected(true);
         sendDataCheckbox.setEnabled(false);
         sendDataCheckbox.setText("Error has been reported to the developers.");
-        pack();
+        resize();
     }
     
     /** {@inheritDoc} */
@@ -379,5 +365,9 @@ public final class ErrorDialog extends JDialog implements ActionListener,
     /** {@inheritDoc} */
     public void windowDeactivated(final WindowEvent e) {
         //ignore
+    }
+    
+    private synchronized void resize() {
+        pack();
     }
 }
