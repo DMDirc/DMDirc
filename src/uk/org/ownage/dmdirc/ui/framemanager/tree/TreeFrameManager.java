@@ -182,8 +182,11 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     public void setSelected(final FrameContainer source) {
         selected = source;
         if (nodes.containsKey(source)) {
+            final TreePath path = new TreePath(nodes.get(source).getPath());
             tree.scrollPathToVisible(new TreePath(nodes.get(source).getPath()));
-            //tree.setSelectionPath(new TreePath(nodes.get(source).getPath()));
+            if (!path.equals(tree.getSelectionPath())) {
+                tree.setSelectionPath(path);
+            }
         }
         tree.repaint();
     }
