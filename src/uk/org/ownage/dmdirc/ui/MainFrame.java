@@ -417,6 +417,7 @@ public final class MainFrame extends JFrame implements WindowListener,
 	miPreferences = new JMenuItem();
 	final JMenu windowMenu = new JMenu();
 	final JMenu helpMenu = new JMenu();
+        final JMenu debugMenu = new JMenu();
 	toggleStateMenuItem = new JMenuItem();
 	desktopPane.setBackground(new Color(238, 238, 238));
 	mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -427,27 +428,29 @@ public final class MainFrame extends JFrame implements WindowListener,
 	
 	fileMenu.setMnemonic('f');
 	fileMenu.setText("File");
+        
 	miAddServer.setText("New Server...");
+        miAddServer.setMnemonic('n');
 	fileMenu.add(miAddServer);
 	
 	miPreferences.setText("Preferences");
+        miPreferences.setMnemonic('p');
 	fileMenu.add(miPreferences);
         
         menuItem = new JMenuItem();
-	menuItem.setMnemonic('p');
+	menuItem.setMnemonic('m');
 	menuItem.setText("Profile Manager");
 	menuItem.setActionCommand("Profile");
 	menuItem.addActionListener(this);
 	fileMenu.add(menuItem);
         
         menuItem = new JMenuItem();
-	menuItem.setMnemonic('e');
+	menuItem.setMnemonic('x');
 	menuItem.setText("Exit");
 	menuItem.setActionCommand("Exit");
 	menuItem.addActionListener(this);
 	fileMenu.add(menuItem);
 	
-	menuBar.add(fileMenu);
 	
 	windowMenu.setMnemonic('w');
 	windowMenu.setText("Window");
@@ -456,7 +459,6 @@ public final class MainFrame extends JFrame implements WindowListener,
 	toggleStateMenuItem.setText("Maximise");
 	windowMenu.add(toggleStateMenuItem);
 	
-	menuBar.add(windowMenu);
 	
 	helpMenu.setMnemonic('h');
 	helpMenu.setText("Help");
@@ -467,22 +469,29 @@ public final class MainFrame extends JFrame implements WindowListener,
 	menuItem.setActionCommand("About");
 	menuItem.addActionListener(this);
 	helpMenu.add(menuItem);
+	
+        
+        debugMenu.setMnemonic('d');
+	debugMenu.setText("Debug");
         
         menuItem = new JMenuItem();
 	menuItem.setMnemonic('n');
 	menuItem.setText("Normal Error");
 	menuItem.setActionCommand("ErrorNormal");
 	menuItem.addActionListener(this);
-	helpMenu.add(menuItem);
+	debugMenu.add(menuItem);
         
         menuItem = new JMenuItem();
 	menuItem.setMnemonic('f');
 	menuItem.setText("Fatal Error");
 	menuItem.setActionCommand("ErrorFatal");
 	menuItem.addActionListener(this);
-	helpMenu.add(menuItem);
-	
-	menuBar.add(helpMenu);
+	debugMenu.add(menuItem);
+        
+        menuBar.add(fileMenu);
+        menuBar.add(windowMenu);
+        menuBar.add(debugMenu);
+        menuBar.add(helpMenu);
 	
 	setJMenuBar(menuBar);
 	
