@@ -266,8 +266,8 @@ public class ProfileEditorDialog extends StandardDialog implements
                 profileList.repaint();
             }
         } else if (event.getSource() == getOkButton()) {
-            nickname.setText(profiles.get(selected).getOption("profile", "nickname"));
-            realname.setText(profiles.get(selected).getOption("profile", "realname"));
+            nickname.setText(profiles.get(selectedProfile).getOption("profile", "nickname"));
+            realname.setText(profiles.get(selectedProfile).getOption("profile", "realname"));
             this.dispose();
         } else if (event.getSource() == getCancelButton()) {
             this.dispose();
