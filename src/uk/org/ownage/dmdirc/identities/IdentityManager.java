@@ -134,6 +134,10 @@ public final class IdentityManager {
      * @param identity The identity to be added
      */
     public static void addIdentity(final Identity identity) {
+        if (identities == null) {
+            load();
+        }
+        
         identities.add(identity);
     }
     

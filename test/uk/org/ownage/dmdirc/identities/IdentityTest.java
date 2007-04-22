@@ -81,11 +81,11 @@ public class IdentityTest extends TestCase {
     }
 
     public void testSetOption() {
-        final Properties props = myIdent.getProperties();
-        final int count = props.size();
+        final int count = myIdent.getProperties().size();
         
         myIdent.setOption("foo", "bar", "baz");
-        assertEquals(count + 1, props.size());
+        
+        assertEquals(count + 1, myIdent.getProperties().size());
         
         myIdent.removeOption("foo", "bar");
     }
@@ -111,6 +111,7 @@ public class IdentityTest extends TestCase {
         assertEquals("baz!", myIdent.getOption("foo", "bar"));
         
         myIdent.removeOption("foo", "bar");
+        myIdent.save();
     }
 
     public void testGetTarget() {
