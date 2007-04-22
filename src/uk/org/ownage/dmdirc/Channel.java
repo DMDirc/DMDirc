@@ -197,7 +197,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         final String modes = channelInfo.getUser(me).getImportantModePrefix();
         
         if (server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName()) <= action.length()) {
-            frame.addLine("channelSelfMessage", modes, me.getNickname(), me.getIdent(), 
+            frame.addLine("channelSelfMessage", modes, me.getNickname(), me.getIdent(),
                     me.getHost(), "Action too long to be sent", channelInfo);
         } else {
             frame.addLine("channelSelfAction", modes, me.getNickname(), me.getIdent(),
@@ -760,11 +760,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * Requests that this object's frame be activated.
      */
     public void activateFrame() {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                MainFrame.getMainFrame().setActiveFrame(frame);
-            }
-        });
+        MainFrame.getMainFrame().setActiveFrame(frame);
     }
     
     /**
