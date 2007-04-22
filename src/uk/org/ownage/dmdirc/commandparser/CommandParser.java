@@ -78,7 +78,6 @@ public abstract class CommandParser {
             if (args.length >= 2 && parseChannel
                     && origin.getServer().getParser().isValidChannelName(args[1])
                     && CommandManager.isChannelCommand(command)) {
-                // TODO: Make sure it's a channel command
                 if (origin.getServer().hasChannel(args[1])) {
                     
                     final StringBuilder newLine = new StringBuilder();
