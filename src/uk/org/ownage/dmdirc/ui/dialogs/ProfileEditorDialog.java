@@ -242,9 +242,12 @@ public class ProfileEditorDialog extends StandardDialog implements
             String newName = JOptionPane.showInputDialog(this,
                     "Please enter the new profile's name", "New profile");
             if (newName != null && !"".equals(newName)) {
-                Identity.buildProfile(newName);
+                Identity newIdentity = Identity.buildProfile(newName);
                 profiles = IdentityManager.getProfiles();
                 populateList();
+                selectedProfile = profiles.indexOf(newIdentity);
+                nickname.setText(profiles.get(selectedProfile).getOption("profile", "nickname"));
+                realname.setText(profiles.get(selectedProfile).getOption("profile", "realname"));
                 profileList.repaint();
             }
         } else if (event.getSource() == deleteButton) {
@@ -252,9 +255,18 @@ public class ProfileEditorDialog extends StandardDialog implements
                     "Are you sure you want to delete this profile?",
                     "Delete confirmaton", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
-                ((Identity) profiles.get(profileList.getSelectedIndex())).delete();
+                Identity oldIdentity =
+                        ((Identity) profiles.get(profileList.getSelectedIndex()));
+                oldIdentity.delete();
                 profiles = IdentityManager.getProfiles();
                 populateList();
+                selectedProfile = profiles.indexOf(oldIdentity);
+                selectedProfile--;
+                if (selectedProfile < 0) {
+                    selectedProfile = 0;
+                }
+                nickname.setText(profiles.get(selectedProfile).getOption("profile", "nickname"));
+                realname.setText(profiles.get(selectedProfile).getOption("profile", "realname"));
                 profileList.repaint();
             }
         } else if (event.getSource() == renameButton) {
