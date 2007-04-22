@@ -281,6 +281,25 @@ public final class CommandManager {
     }
     
     /**
+     * Determines if the specified command is a valid channel command.
+     * @param command The name of the command to test
+     * @return True iff the command is a channel command, false otherwise
+     */
+    public static boolean isChannelCommand(final String command) {
+        if (channelCommands == null) {
+            CommandManager.initLists();
+        }
+        
+        for (Command chanCommand : channelCommands) {
+            if (chanCommand.getName().equalsIgnoreCase(command)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+    
+    /**
      * Returns the names (including command char) of all registered server
      * commands.
      * @return An ArrayList&lt;String&gt; containing all registered server command

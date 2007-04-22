@@ -70,12 +70,14 @@ public abstract class CommandParser {
         
         if (line.charAt(0) == origin.getConfigManager().getOption("general", "commandchar").charAt(0)) {
             final String[] args = line.split(" ");
+            final String command = args[0].substring(1);
             String[] comargs;
-            String command;
             
             assert args.length > 0;
             
-            if (args.length >= 2 && origin.getServer().getParser().isValidChannelName(args[1]) && parseChannel) {
+            if (args.length >= 2 && parseChannel
+                    && origin.getServer().getParser().isValidChannelName(args[1])
+                    && CommandManager.isChannelCommand(command)) {
                 // TODO: Make sure it's a channel command
                 if (origin.getServer().hasChannel(args[1])) {
                     
@@ -92,8 +94,6 @@ public abstract class CommandParser {
                     // Do something haxy involving external commands here...
                 }
             }
-            
-            command = args[0].substring(1);
             
             comargs = new String[args.length - 1];
             
