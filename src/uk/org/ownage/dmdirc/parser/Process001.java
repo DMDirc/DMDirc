@@ -58,6 +58,7 @@ public class Process001 extends IRCProcessor {
 		}
 		
 		callServerReady();
+		myParser.startPingTimer();
 	}
 	
 	/**

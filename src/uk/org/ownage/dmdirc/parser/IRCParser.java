@@ -1221,9 +1221,9 @@ public final class IRCParser implements Runnable {
 	 */
 	protected void startPingTimer() {
 		setPingNeeded(false);
-		if (pingTimer == null) { pingTimer = new Timer(); }
-		else { pingTimer.cancel(); }
-		pingTimer.schedule(new PingTimer(this), 0, 15000);
+		if (pingTimer != null) { pingTimer.cancel(); }
+		pingTimer = new Timer();
+		pingTimer.schedule(new PingTimer(this), 0, 10000);
 		pingCountDown = 1;
 	}
 	

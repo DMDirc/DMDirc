@@ -83,7 +83,7 @@ public final class CallbackManager {
 		addCallbackType(new CallbackOnNoticeAuth(myParser, this));
 		addCallbackType(new CallbackOnNumeric(myParser, this));
 		addCallbackType(new CallbackOnPingFailed(myParser, this));
-		addCallbackType(new CallbackOnPingSuccess(myParser, this));                
+		addCallbackType(new CallbackOnPingSuccess(myParser, this));
 		addCallbackType(new CallbackOnPrivateAction(myParser, this));
 		addCallbackType(new CallbackOnPrivateCTCP(myParser, this));
 		addCallbackType(new CallbackOnPrivateCTCPReply(myParser, this));
