@@ -53,6 +53,8 @@ public final class BrowserLauncher {
             try {
                 if (url.startsWith("http://")) {
                     desktop.browse(new URL(url).toURI());
+                } else if (url.startsWith("https://")) {
+                    desktop.browse(new URL(url).toURI());
                 } else {
                     desktop.browse(new URL("http://" + url).toURI());
                 }
