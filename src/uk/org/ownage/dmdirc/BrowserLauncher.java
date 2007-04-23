@@ -51,9 +51,7 @@ public final class BrowserLauncher {
         }
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
-                if (url.startsWith("http://")) {
-                    desktop.browse(new URL(url).toURI());
-                } else if (url.startsWith("https://")) {
+                if (url.startsWith("http://") || url.startsWith("https://")) {
                     desktop.browse(new URL(url).toURI());
                 } else {
                     desktop.browse(new URL("http://" + url).toURI());
