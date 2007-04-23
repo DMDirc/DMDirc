@@ -63,7 +63,7 @@ public final class IdentityManager {
         
         final String base = "uk/org/ownage/dmdirc/identities/defaults/";
         
-        final String[] urls = {"asuka", "bahamut", "hyperion"};
+        final String[] urls = {"asuka", "bahamut", "hyperion", "generic"};
         
         identities = new ArrayList<Identity>();
         
