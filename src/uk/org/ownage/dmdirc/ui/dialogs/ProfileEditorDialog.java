@@ -278,8 +278,8 @@ public class ProfileEditorDialog extends StandardDialog implements
                 profileList.repaint();
             }
         } else if (event.getSource() == getOkButton()) {
-            nickname.setText(profiles.get(selectedProfile).getOption("profile", "nickname"));
-            realname.setText(profiles.get(selectedProfile).getOption("profile", "realname"));
+            profiles.get(selectedProfile).setOption("profile", "nickname", nickname.getText());
+            profiles.get(selectedProfile).setOption("profile", "realname", realname.getText());
             this.dispose();
         } else if (event.getSource() == getCancelButton()) {
             this.dispose();
