@@ -8,9 +8,9 @@ WWWDIR="/home/dmdirc/www"
 # Path to trunk
 MYDIR="/home/dmdirc/google"
 # Path to ant binary
-ANT="/usr/ant/bin/ant"
+ANT="/usr/bin/ant"
 # Path to svn binary
-SVN="/usr/local/bin/svn"
+SVN="/usr/bin/svn"
 
 /bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Started"
 rm -Rf $MYDIR/dist
