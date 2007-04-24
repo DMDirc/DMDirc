@@ -123,7 +123,11 @@ public final class ErrorDialog extends JDialog implements ActionListener,
         layoutComponents();
         setLocationRelativeTo(MainFrame.getMainFrame());
         if (autoSubmit && level != ErrorLevel.FATAL) {
-            sendData();
+            new Timer().schedule(new TimerTask() {
+                public void run() {
+                    sendData();
+                }
+            }, 1);
         }
     }
     
