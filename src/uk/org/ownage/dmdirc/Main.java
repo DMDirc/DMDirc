@@ -46,7 +46,7 @@ public final class Main {
     /**
      * Stores the current program version.
      */
-    public static final String VERSION = "SVN";
+    public static final String VERSION = "0.3";
     
     /**
      * Prevents creation of main.
