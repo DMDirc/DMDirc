@@ -28,7 +28,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.org.ownage.dmdirc.commandparser.commands.server.DcopCommand;
 import uk.org.ownage.dmdirc.plugins.Plugin;
 
 /**
