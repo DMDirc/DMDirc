@@ -22,6 +22,12 @@
 
 package uk.org.ownage.dmdirc.plugins.plugins.dcop;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import uk.org.ownage.dmdirc.commandparser.commands.server.DcopCommand;
 import uk.org.ownage.dmdirc.plugins.Plugin;
 
@@ -36,8 +42,24 @@ public class DcopPlugin implements Plugin {
         
     }
     
+    public static List<String> getDcopResult(final String command) throws IOException {
+        final ArrayList<String> result = new ArrayList<String>();
+        
+        final Process process = Runtime.getRuntime().exec(command);
+        final BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        
+        String line = "";
+        
+        while ((line = input.readLine()) != null) {
+            result.add(line);
+        }
+        
+        return result;
+    }
+    
     public boolean onLoad() {
         new DcopCommand();
+        new NowPlayingCommand();
         
         return true;
     }
