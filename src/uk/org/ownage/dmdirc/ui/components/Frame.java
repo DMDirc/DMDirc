@@ -148,7 +148,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         setClosable(true);
         setResizable(true);
         setIconifiable(true);
-        setPreferredSize(new Dimension(MainFrame.getMainFrame().getWidth()/2, 
+        setPreferredSize(new Dimension(MainFrame.getMainFrame().getWidth()/2,
                 MainFrame.getMainFrame().getHeight()/3));
         
         addPropertyChangeListener("maximum", this);
@@ -634,17 +634,14 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             getSearchBar().open();
         }
         if (event.getSource() == getTextPane()) {
-            if (Boolean.parseBoolean(Config.getOption("ui", "quickCopy"))) {
+            if ((Boolean.parseBoolean(Config.getOption("ui", "quickCopy"))
+            || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)
+            && event.getKeyChar() >= 32 && event.getKeyChar() != 127
+                    && event.getKeyChar() != event.CHAR_UNDEFINED) {
+                getInputField().setText(getInputField().getText() + event.getKeyChar());
                 getInputField().requestFocus();
-            } else {
-                if ((event.getModifiers() & KeyEvent.CTRL_MASK) == 0) {
-                    getInputField().requestFocus();
-                } else {
-                    if (event.getKeyCode() == KeyEvent.VK_C) {
-                        getTextPane().copy();
-                    }
-                }
-                
+            } else if (event.getKeyCode() == KeyEvent.VK_C) {
+                    getTextPane().copy();
             }
         } else if (event.getSource() == getInputField()
         && (event.getModifiers() & KeyEvent.CTRL_MASK) != 0
