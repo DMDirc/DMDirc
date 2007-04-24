@@ -439,7 +439,11 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         channels.put(chan.getName().toLowerCase(), newChan);
         MainFrame.getMainFrame().getFrameManager().addChannel(this, newChan);
         
-        newChan.show();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                newChan.show();
+            }
+        });
     }
     
     /**
