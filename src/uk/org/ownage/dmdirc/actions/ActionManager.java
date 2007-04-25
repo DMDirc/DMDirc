@@ -22,6 +22,10 @@
 
 package uk.org.ownage.dmdirc.actions;
 
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.plugins.PluginManager;
+
 /**
  * Manages all actions for the client.
  * @author chris
@@ -39,7 +43,11 @@ public class ActionManager {
      * @param arguments The arguments for the event
      */
     public static void processEvent(final ActionType type, final Object ... arguments) {
-        assert(type.getType().getArity() == arguments.length);
+        if (type.getType().getArity() == arguments.length) {
+            PluginManager.getPluginManager().processEvent(type, arguments);
+        } else {
+            Logger.error(ErrorLevel.ERROR, "Invalid number of arguments for action " + type);
+        }
     }
     
 }

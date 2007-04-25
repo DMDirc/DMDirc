@@ -29,9 +29,11 @@ package uk.org.ownage.dmdirc.actions;
  */
 public enum ActionMetaType {
     
-    CHANNEL_EVENT(2),
-    CHANNEL_EVENT_WITH_ARG(3),
-    CHANNEL_EVENT_WITH_VICTIM(3);
+    CHANNEL_EVENT(1),
+
+    CHANNEL_SOURCED_EVENT(2),
+    CHANNEL_SOURCED_EVENT_WITH_ARG(3),
+    CHANNEL_SOURCED_EVENT_WITH_VICTIM(4);
     
     /** The arity of this type. */
     private final int arity;

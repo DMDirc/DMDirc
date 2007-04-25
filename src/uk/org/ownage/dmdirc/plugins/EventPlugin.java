@@ -23,6 +23,8 @@
  */
 package uk.org.ownage.dmdirc.plugins;
 
+import uk.org.ownage.dmdirc.actions.ActionType;
+
 /**
  * Defines the additional methods that should be implemented by plugins that require events.
  */

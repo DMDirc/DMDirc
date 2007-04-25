@@ -33,6 +33,8 @@ import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+import uk.org.ownage.dmdirc.actions.ActionManager;
+import uk.org.ownage.dmdirc.actions.CoreActionType;
 
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
@@ -368,6 +370,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
                 cChannel);
         
         sendNotification();
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_MESSAGE, cChannel, cChannelClient, sMessage);
     }
     
     /**
@@ -388,6 +392,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         }
         frame.addLine(type, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
         sendNotification();
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_ACTION, cChannel, cChannelClient, sMessage);
     }
     
     /**
@@ -406,6 +412,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         }
         tabCompleter.replaceEntries(names);
         tabCompleter.addEntries(CommandManager.getChannelCommandNames());
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_GOTNAMES, cChannel);
     }
     
     /**
@@ -421,12 +429,16 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         if (bIsJoinTopic) {
             frame.addLine("channelJoinTopic", cChannel.getTopic(),
                     cChannel.getTopicUser(), 1000 * cChannel.getTopicTime(), cChannel);
+            
+            ActionManager.processEvent(CoreActionType.CHANNEL_GOTTOPIC, cChannel);
         } else {
             final ChannelClientInfo user = cChannel.getUser(cChannel.getTopicUser());
             final String[] parts = ClientInfo.parseHostFull(cChannel.getTopicUser());
             final String modes = getModes(user);
             final String topic = cChannel.getTopic();
             frame.addLine("channelTopicChange", modes, parts[0], parts[1], parts[2], topic, cChannel);
+            
+            ActionManager.processEvent(CoreActionType.CHANNEL_TOPICCHANGE, cChannel, user, topic);
         }
         sendNotification();
         updateTitle();
@@ -449,6 +461,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         frame.addName(cChannelClient);
         tabCompleter.addEntry(cChannelClient.getNickname());
         sendNotification();
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_JOIN, cChannel, cChannelClient);
     }
     
     /**
@@ -486,6 +500,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         tabCompleter.removeEntry(cChannelClient.getNickname());
         sendNotification();
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_PART, cChannel, cChannelClient, sReason);
     }
     
     /**
@@ -525,6 +541,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         }
         
         sendNotification();
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_KICK, cChannel, cKickedByClient, cKickedClient);
     }
     
     /**
@@ -551,6 +569,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         frame.removeName(cChannelClient);
         
         sendNotification();
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, cChannel, cChannelClient);
     }
     
     /**
@@ -574,6 +594,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         tabCompleter.addEntry(nick);
         frame.addLine(type, modes, sOldNick, ident, host, nick, cChannel);
         sendNotification();
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_NICKCHANGE, cChannel, cChannelClient, sOldNick);
     }
     
     /**
@@ -602,6 +624,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         frame.updateNames();
         sendNotification();
+        
+        // TODO: Action hook
     }
     
     /**
@@ -637,6 +661,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
                     targetHost, sMode, cChannel);
         }
         
+        // TODO: Action hook
     }
     
     /**

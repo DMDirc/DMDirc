@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.actions.ActionType;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 

@@ -28,9 +28,20 @@ package uk.org.ownage.dmdirc.actions;
  */
 public enum CoreActionType implements ActionType {
     
-    CHANNEL_MESSAGE(ActionMetaType.CHANNEL_EVENT_WITH_ARG),
-    CHANNEL_ACTION(ActionMetaType.CHANNEL_EVENT_WITH_ARG),
-    CHANNEL_JOIN(ActionMetaType.CHANNEL_EVENT);
+    CHANNEL_GOTNAMES(ActionMetaType.CHANNEL_EVENT),
+    CHANNEL_GOTTOPIC(ActionMetaType.CHANNEL_EVENT),
+    
+    CHANNEL_MESSAGE(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
+    CHANNEL_ACTION(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
+    
+    CHANNEL_JOIN(ActionMetaType.CHANNEL_SOURCED_EVENT),
+    CHANNEL_PART(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
+    CHANNEL_QUIT(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
+    CHANNEL_KICK(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_VICTIM),
+    
+    CHANNEL_NICKCHANGE(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
+    
+    CHANNEL_TOPICCHANGE(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG);
     
     /** The type of this action. */
     private final ActionMetaType type;
