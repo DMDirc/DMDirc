@@ -36,11 +36,16 @@ import uk.org.ownage.dmdirc.plugins.Plugin;
  */
 public class DcopPlugin implements Plugin {
     
-    /** Creates a new instance of DcopPlugin */
+    /** Creates a new instance of DcopPlugin. */
     public DcopPlugin() {
         
     }
     
+    /**
+     * Retrieves the result from executing the specified command.
+     * @param command The command to be executed
+     * @return The output of the specified command
+     */
     public static List<String> getDcopResult(final String command) throws IOException {
         final ArrayList<String> result = new ArrayList<String>();
         
@@ -56,6 +61,7 @@ public class DcopPlugin implements Plugin {
         return result;
     }
     
+    /** {@inheritDoc}. */
     public boolean onLoad() {
         new DcopCommand();
         new NowPlayingCommand();
@@ -63,25 +69,40 @@ public class DcopPlugin implements Plugin {
         return true;
     }
     
+    /** {@inheritDoc}. */
     public void onUnload() {
     }
     
+    /** {@inheritDoc}. */
     public void onActivate() {
     }
     
+    /** {@inheritDoc}. */
     public void onDeactivate() {
     }
     
+    /** {@inheritDoc}. */
     public int getVersion() {
         return 0;
     }
     
+    /** {@inheritDoc}. */
     public String getAuthor() {
         return "Chris 'MD87' Smith - chris@dmdirc.com";
     }
     
+    /** {@inheritDoc}. */
     public String getDescription() {
         return "Provides commands to interface with DCOP applications";
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isConfigurable() {
+        return false;
+    }
+    
+    /** {@inheritDoc}. */
+    public void showConfig() {
     }
     
 }
