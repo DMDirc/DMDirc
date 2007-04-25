@@ -22,10 +22,14 @@
 
 package uk.org.ownage.dmdirc.ui.components;
 
+import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -132,6 +136,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /** search bar. */
     private SearchBar searchBar;
     
+    /** robot for the frame */
+    private Robot robot;
+    
     /**
      * Creates a new instance of Frame.
      *
@@ -140,6 +147,12 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     public Frame(final FrameContainer owner) {
         super();
         parent = owner;
+        
+        try {
+            robot = new Robot();
+        } catch (AWTException ex) {
+            Logger.error(ErrorLevel.TRIVIAL, "Error creating robot", ex);
+        }
         
         setFrameIcon(MainFrame.getMainFrame().getIcon());
         
@@ -635,13 +648,14 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         }
         if (event.getSource() == getTextPane()) {
             if ((Boolean.parseBoolean(Config.getOption("ui", "quickCopy"))
-            || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)
-            && event.getKeyChar() >= 32 && event.getKeyChar() != 127
-                    && event.getKeyChar() != event.CHAR_UNDEFINED) {
-                getInputField().setText(getInputField().getText() + event.getKeyChar());
+            || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
+                event.setSource(getInputField());
                 getInputField().requestFocus();
+                if (robot != null) {
+                    robot.keyPress(event.getKeyCode());
+                }
             } else if (event.getKeyCode() == KeyEvent.VK_C) {
-                    getTextPane().copy();
+                getTextPane().copy();
             }
         } else if (event.getSource() == getInputField()
         && (event.getModifiers() & KeyEvent.CTRL_MASK) != 0

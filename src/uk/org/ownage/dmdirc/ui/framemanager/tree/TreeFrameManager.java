@@ -278,7 +278,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         scrollPane.setAutoscrolls(false);
         parent.setLayout(new BorderLayout());
         parent.add(scrollPane);
-        scrollPane.setPreferredSize(new Dimension(parent.getWidth(), 0));
+        //scrollPane.setPreferredSize(new Dimension(parent.getWidth(), 0));
         tree.setForeground(parent.getForeground());
         try {
             tree.setBackground(ColourManager.getColour(
