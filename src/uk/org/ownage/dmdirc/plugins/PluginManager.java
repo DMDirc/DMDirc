@@ -45,11 +45,11 @@ public class PluginManager {
 	 * Directory where plugins are stored.
 	 */
 	 private final String myDir;
-         
+	
 	/**
-         * Singleton instance of the plugin manager.
-         */
-         private static PluginManager me;
+	 * Singleton instance of the plugin manager.
+	 */
+	private static PluginManager me;
 	
 	/**
 	 * Create a new PluginManager.
@@ -65,18 +65,17 @@ public class PluginManager {
 			}
 		}
 	}
-        
-        /**
-         * Retrieves the singleton instance of the plugin manager.
-         * @return A singleton instance of PluginManager.
-         */
-        public final static synchronized PluginManager getPluginManager() {
-            if (me == null) {
-                me = new PluginManager();
-            }
-            
-            return me;
-        }
+	
+	/**
+	 * Retrieves the singleton instance of the plugin manager.
+	 * @return A singleton instance of PluginManager.
+	 */
+	public final static synchronized PluginManager getPluginManager() {
+		if (me == null) {
+			me = new PluginManager();
+		}
+		return me;
+	}
 		
 	/**
 	 * Add a new plugin.
@@ -204,4 +203,14 @@ public class PluginManager {
 		return result;
 	}
 
+	/**
+	 * Send an event of the specified type to plugins.
+	 *
+	 * @param type The type of the event to process
+	 * @param arguments The arguments for the event
+	 */
+	public void processEvent(final ActionType type, final Object ... arguments) {
+		// Forward events!
+	}
+	
 }

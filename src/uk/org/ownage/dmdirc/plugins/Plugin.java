@@ -29,6 +29,8 @@ package uk.org.ownage.dmdirc.plugins;
 public interface Plugin {
 	/**
 	 * Called when the plugin is loaded.
+	 *
+	 * @returns false if the plugin can not be loaded
 	 */
 	boolean onLoad();
 	
@@ -46,6 +48,18 @@ public interface Plugin {
 	 * Called when this plugin is deactivated.
 	 */
 	void onDeactivate();
+	
+	/**
+	 * Called to see if the plugin has configuration options (via dialog).
+	 *
+	 * @returns true if the plugin has configuration options via a dialog.
+	 */
+	boolean isConfigurable();
+	
+	/**
+	 * Called to show the Configuration dialog of the plugin if appropriate.
+	 */
+	void showConfig();
 	
 	/**
 	 * Get the plugin version
