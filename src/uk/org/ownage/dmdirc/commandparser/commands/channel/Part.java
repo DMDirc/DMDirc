@@ -51,7 +51,7 @@ public final class Part extends ChannelCommand {
     public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
         channel.part(implodeArgs(args));
-        channel.close();
+        channel.closeWindow();
     }
     
     /** {@inheritDoc}. */

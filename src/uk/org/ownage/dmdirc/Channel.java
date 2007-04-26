@@ -720,7 +720,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
-        part(configManager.getOption("general", "partmessage"));
         close();
     }
     
