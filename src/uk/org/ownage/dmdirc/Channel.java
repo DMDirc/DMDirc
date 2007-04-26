@@ -571,7 +571,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         sendNotification();
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, cChannel, cChannelClient);
+        ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, cChannel, cChannelClient, sReason);
     }
     
     /**
