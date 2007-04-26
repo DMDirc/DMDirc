@@ -48,6 +48,7 @@ import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelAction;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelCTCP;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelJoin;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelKick;
@@ -74,7 +75,8 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
 public final class Channel implements IChannelMessage, IChannelGotNames,
         IChannelTopic, IChannelJoin, IChannelPart, IChannelKick, IChannelQuit,
         IChannelAction, IChannelNickChanged, IChannelModeChanged,
-        IChannelUserModeChanged, InternalFrameListener, FrameContainer {
+        IChannelUserModeChanged, IChannelCTCP, InternalFrameListener,
+        FrameContainer {
     
     /** The parser's pChannel class. */
     private ChannelInfo channelInfo;
@@ -138,6 +140,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             callbackManager.addCallback("OnChannelTopic", this, channel);
             callbackManager.addCallback("OnChannelMessage", this, channel);
             callbackManager.addCallback("OnChannelJoin", this, channel);
+            callbackManager.addCallback("OnChannelCTCP", this, channel);
             callbackManager.addCallback("OnChannelPart", this, channel);
             callbackManager.addCallback("OnChannelQuit", this, channel);
             callbackManager.addCallback("OnChannelKick", this, channel);
@@ -313,6 +316,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         callbackManager.delCallback("OnChannelMessage", this);
         callbackManager.delCallback("OnChannelTopic", this);
         callbackManager.delCallback("OnChannelGotNames", this);
+        callbackManager.delCallback("OnChannelCTCP", this);
         callbackManager.delCallback("OnChannelJoin", this);
         callbackManager.delCallback("OnChannelPart", this);
         callbackManager.delCallback("OnChannelQuit", this);
@@ -664,6 +668,30 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         // TODO: Action hook
     }
+    
+    /**
+     * Handles a channel CTCP.
+     * @param tParser The IRC parser for this server
+     * @param cChannel This channel's ChannelInfo object
+     * @param cChannelClient The source of the CTCP
+     * @param sType The CTCP type
+     * @param sMessage The CTCP contents (if any)
+     * @param sHost The full host of the source
+     */
+    public void onChannelCTCP(final IRCParser tParser,
+            final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
+            final String sType, final String sMessage, final String sHost) {
+        
+        final String modes = getModes(cChannelClient);
+        final String[] source = getDetails(cChannelClient, sHost);
+        
+        frame.addLine("channelCTCP", modes, source[0], source[1], source[2],
+                sType, sMessage, cChannel);
+        
+        server.sendCTCPReply(source[0], sType, sMessage);
+        
+        // TODO: Action hook
+    }    
     
     /**
      * Returns a string containing the most important mode for the specified client.

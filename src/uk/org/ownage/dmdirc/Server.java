@@ -630,13 +630,23 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         
         handleNotification("privateCTCP", parts[0], parts[1], parts[2], sType, sMessage);
         
-        if (sType.equalsIgnoreCase("VERSION")) {
-            tParser.sendCTCPReply(parts[0], "VERSION", "DMDirc " + Main.VERSION
-                    + " - http://dmdirc.ownage.org.uk/");
-        } else if (sType.equalsIgnoreCase("PING")) {
-            tParser.sendCTCPReply(parts[0], "PING", sMessage);
-        } else if (sType.equalsIgnoreCase("CLIENTINFO")) {
-            tParser.sendCTCPReply(parts[0], "CLIENTINFO", "VERSION PING CLIENTINFO");
+        sendCTCPReply(parts[0], sType, sMessage);
+    }
+    
+    /**
+     * Replies to an incoming CTCP message.
+     * @param source The source of the message
+     * @param type The CTCP type
+     * @param args The CTCP arguments
+     */
+    public void sendCTCPReply(final String source, final String type, final String args) {
+        if (type.equalsIgnoreCase("VERSION")) {
+            parser.sendCTCPReply(source, "VERSION", "DMDirc " + Main.VERSION
+                    + " - http://www.dmdirc.com/");
+        } else if (type.equalsIgnoreCase("PING")) {
+            parser.sendCTCPReply(source, "PING", args);
+        } else if (type.equalsIgnoreCase("CLIENTINFO")) {
+            parser.sendCTCPReply(source, "CLIENTINFO", "VERSION PING CLIENTINFO");
         }
     }
     

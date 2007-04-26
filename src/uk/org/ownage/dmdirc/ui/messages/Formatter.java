@@ -113,6 +113,16 @@ public final class Formatter {
         defaultProperties.setProperty("channelSelfExternalMessage", "<%1$s%2$s> %5$s");
         defaultProperties.setProperty("channelSelfExternalAction", colour + "6* %1$s%2$s %5$s");
         
+        // Type: Channel CTCP
+        //    1: User mode prefixes
+        //    2: User nickname
+        //    3: User ident
+        //    4: User host
+        //    5: CTCP type
+        //    6: CTCP content
+        //    7: Channel name
+        defaultProperties.setProperty("channelCTCP", colour + "4-!- CTCP %5$S from %1$s%2$s");        
+        
         // Type: Channel Event
         //    1: User mode prefixes
         //    2: User nickname
