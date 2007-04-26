@@ -243,6 +243,9 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     public void delChild(final JInternalFrame frame) {
 	desktopPane.remove(frame);
+        if (desktopPane.getAllFrames().length == 0) {
+            setTitle(getTitlePrefix());
+        }
     }
     
     /**
