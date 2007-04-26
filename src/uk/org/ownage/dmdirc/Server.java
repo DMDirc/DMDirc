@@ -761,7 +761,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public void onPingFailed(final IRCParser parser) {
         MainFrame.getMainFrame().getStatusBar().setMessage("No ping reply from "
                 + serverName + " for over "
-                + Math.floor(parser.getServerLag() / 1000.0) + " seconds.");
+                + Math.floor(parser.getPingTime(false) / 1000.0) + " seconds.");
     }
     
     /**

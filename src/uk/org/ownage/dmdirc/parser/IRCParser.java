@@ -1192,6 +1192,7 @@ public final class IRCParser implements Runnable {
 			final String version = h005Info.get("004IRCD");
 			if (getType) {
 				if (version.matches("(?i).*asuka.*")) { return "asuka"; }
+				else if (version.matches("(?i).*snircd.*")) { return "snircd"; }
 				else if (version.matches("(?i).*hyperion.*")) { return "hyperion"; }
 				else if (version.matches("(?i).*dancer.*")) { return "dancer"; }
 				else if (version.matches("(?i).*austhex.*")) { return "austhex"; }
@@ -1252,10 +1253,22 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Get the current server lag.
 	 *
-	 * @return Time between sending a PING and recieving a PONG
+	 * @return Last time between sending a PING and recieving a PONG
 	 */
 	public long getServerLag() {
 		return serverLag;
+	}
+	
+	/**
+	 * Get the current server lag.
+	 *
+	 * @param actualTime if True the value returned will be the actual time the ping was sent
+	 *                   else it will be the amount of time sinse the last ping was sent.
+	 * @return Time last ping was sent
+	 */
+	public long getPingTime(boolean actualTime) {
+		if (actualTime) { return pingTime; }
+		else { return System.currentTimeMillis() - pingTime; }
 	}
 	
 	/**
