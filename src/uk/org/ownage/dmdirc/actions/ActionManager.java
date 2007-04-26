@@ -22,6 +22,9 @@
 
 package uk.org.ownage.dmdirc.actions;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.plugins.PluginManager;
@@ -32,8 +35,29 @@ import uk.org.ownage.dmdirc.plugins.PluginManager;
  */
 public class ActionManager {
     
+    private static List<ActionType> actionTypes;
+    
     /** Creates a new instance of ActionManager. */
     private ActionManager() {
+        
+    }
+    
+    /** Initialises the action manager. */
+    private static void init() {
+         actionTypes = new ArrayList<ActionType>();
+         
+         registerActionTypes(CoreActionType.values());
+    }
+    
+    /**
+     * Registers a set of actiontypes with the manager.
+     * @param types An array of ActionTypes to be registered
+     */
+    public static void registerActionTypes(final ActionType[] types) {
+        
+        for (ActionType type : types) {
+            actionTypes.add(type);
+        }
         
     }
     
@@ -43,6 +67,10 @@ public class ActionManager {
      * @param arguments The arguments for the event
      */
     public static void processEvent(final ActionType type, final Object ... arguments) {
+        if (actionTypes == null) {
+            init();
+        }
+        
         if (type.getType().getArity() == arguments.length) {
             PluginManager.getPluginManager().processEvent(type, arguments);
         } else {

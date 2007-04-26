@@ -29,6 +29,8 @@ package uk.org.ownage.dmdirc.actions;
  */
 public enum ActionMetaType {
     
+    SERVER_EVENT(1),
+    
     CHANNEL_EVENT(1),
 
     CHANNEL_SOURCED_EVENT(2),

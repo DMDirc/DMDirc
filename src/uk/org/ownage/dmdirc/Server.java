@@ -35,6 +35,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
+import uk.org.ownage.dmdirc.actions.ActionManager;
+import uk.org.ownage.dmdirc.actions.CoreActionType;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
@@ -712,6 +714,10 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         
         if (target != null) {
             handleNotification(target, (Object[]) line);
+        }
+        
+        if (numeric == 1) {
+            ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, this);
         }
     }
     
