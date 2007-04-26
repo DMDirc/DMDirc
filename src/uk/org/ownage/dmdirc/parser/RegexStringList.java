@@ -62,6 +62,13 @@ public class RegexStringList {
 	}
 	
 	/**
+	 * Clear the ignore list
+	 */
+	public void clear() {
+		ignoreInfo.clear();
+	}	
+	
+	/**
 	 * Check if a string matches any of the ignores in the list
 	 *
 	 * @param check String to check (Patterns are matched case-insensitively as ^pattern$)
