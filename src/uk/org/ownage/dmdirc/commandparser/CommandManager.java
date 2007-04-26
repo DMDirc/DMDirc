@@ -148,6 +148,7 @@ public final class CommandManager {
         new ConfigInfo();
         new Ctcp();
         new Help();
+        new Ignore();
         new Join();
         new LoadFormatter();
         new LoadPlugin();
