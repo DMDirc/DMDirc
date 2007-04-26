@@ -37,6 +37,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
@@ -52,6 +53,7 @@ import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
  * Profiel editing dialog.
@@ -77,7 +79,7 @@ public class ProfileEditorDialog extends StandardDialog implements
     private JButton renameButton;
     private JButton revertButton;
     
-    private JLabel infoLabel;
+    private JTextArea infoLabel;
     
     private JLabel nicknameLabel;
     private JTextField nickname;
@@ -109,6 +111,7 @@ public class ProfileEditorDialog extends StandardDialog implements
         orderButtons(new JButton(), new JButton());
         setTitle("Profile Editor");
         
+        setMinimumSize(new Dimension(600, 400));
         setPreferredSize(new Dimension(600, 400));
         
         panel = new JPanel(new SpringLayout());
@@ -125,6 +128,7 @@ public class ProfileEditorDialog extends StandardDialog implements
         profileList.setSelectedIndex(0);
         selectedProfile = 0;
         
+        profileList.setMinimumSize(new Dimension(200, Integer.MAX_VALUE));
         profileList.setPreferredSize(new Dimension(200, Integer.MAX_VALUE));
         
         addButton = new JButton("Add");
@@ -133,17 +137,23 @@ public class ProfileEditorDialog extends StandardDialog implements
         
         renameButton = new JButton("Rename");
         
-        infoLabel = new JLabel("Blah blah blah, this is a blurb.");
+        infoLabel = new JTextArea("Profiles describe information needed to " 
+                + "connect to a server.  You can use a different profile for " 
+                + "each connection. Profiles are automatically saved when you " 
+                + "select another or click OK");
+        infoLabel.setEditable(false);
+        infoLabel.setWrapStyleWord(true);
+        infoLabel.setLineWrap(true);
+        infoLabel.setHighlighter(null);
+        infoLabel.setBackground(panel.getBackground());
         
         nicknameLabel = new JLabel("Nickname: ");
-        nicknameLabel.setPreferredSize(new Dimension(100, 10));
         
         nickname = new JTextField();
         nickname.setPreferredSize(new Dimension(150, 10));
         nickname.setText(profiles.get(0).getOption("profile", "nickname"));
         
         realnameLabel = new JLabel("Realname: ");
-        realnameLabel.setPreferredSize(new Dimension(80, 10));
         
         realname = new JTextField();
         realname.setPreferredSize(new Dimension(150, 10));
@@ -161,7 +171,7 @@ public class ProfileEditorDialog extends StandardDialog implements
         panel.add(nickname);
         panel.add(realnameLabel);
         panel.add(realname);
-        panel.add(Box.createHorizontalGlue());
+        panel.add(Box.createHorizontalBox());
         panel.add(revertButton);
         
         layoutGrid(panel, 3, 2, LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, SMALL_BORDER);
