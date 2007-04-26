@@ -567,6 +567,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         }
         
         frame.removeName(cChannelClient);
+        tabCompleter.removeEntry(cChannelClient.getNickname());
         
         sendNotification();
         
