@@ -241,6 +241,21 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         } catch (IllegalThreadStateException ex) {
             frame.addLine("ERROR: " + ex.getMessage());
         }
+        
+        updateIgnoreList();
+    }
+    
+    /**
+     * Updates the ignore list for this server.
+     */
+    public void updateIgnoreList() {
+        parser.getIgnoreList().clear();
+        
+        if (configManager.hasOption("network", "ignorelist")) {
+            for (String line : configManager.getOption("network", "ignorelist").split("\n")) {
+                parser.getIgnoreList().add(line);
+            }
+        }
     }
     
     /**
@@ -660,6 +675,8 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public void onGotNetwork(final IRCParser tParser, final String networkName,
             final String ircdVersion, final String ircdType) {
         configManager = new ConfigManager(ircdType, networkName, serverName);
+        
+        updateIgnoreList();
     }
     
     /**

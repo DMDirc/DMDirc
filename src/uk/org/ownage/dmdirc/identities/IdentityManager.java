@@ -253,6 +253,28 @@ public final class IdentityManager {
         
         return Identity.buildIdentity(target);
     }
-    
+
+    /**
+     * Retrieves the config for the specified network. The config is
+     * created if it doesn't exist.
+     * @param network The name of the network
+     * @return A config source for the network
+     */
+    public static Identity getNetworkConfig(final String network) {
+        final String myTarget = network.toLowerCase();
+        
+        for (ConfigSource identity : identities) {
+            if (identity.getTarget().getType() == ConfigTarget.TYPE_NETWORK
+                    && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
+                return (Identity) identity;
+            }
+        }
+        
+        // We need to create one
+        final ConfigTarget target = new ConfigTarget();
+        target.setNetwork(myTarget);
+        
+        return Identity.buildIdentity(target);
+    }    
     
 }
