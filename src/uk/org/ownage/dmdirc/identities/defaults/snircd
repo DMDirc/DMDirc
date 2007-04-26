@@ -26,4 +26,4 @@ server.enablemodeC = true
 server.modeN = No channel notices
 server.enablemodeN = true
 server.modeu = No quit mesages
-server.enableModeu = true
+server.enablemodeu = true
