@@ -157,6 +157,7 @@ public class ChannelSettingsDialog extends StandardDialog
         
         initComponents();
         initListeners();
+        setLocationRelativeTo(MainFrame.getMainFrame());
     }
     
     /** Initialises the main UI components. */
