@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.actions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
@@ -37,6 +38,8 @@ public class ActionManager {
     
     private static List<ActionType> actionTypes;
     
+    private static HashMap<ActionType, List<Action>> actions;
+    
     /** Creates a new instance of ActionManager. */
     private ActionManager() {
         
@@ -44,9 +47,10 @@ public class ActionManager {
     
     /** Initialises the action manager. */
     private static void init() {
-         actionTypes = new ArrayList<ActionType>();
-         
-         registerActionTypes(CoreActionType.values());
+        actionTypes = new ArrayList<ActionType>();
+        actions = new HashMap<ActionType, List<Action>>();
+        
+        registerActionTypes(CoreActionType.values());
     }
     
     /**
@@ -54,11 +58,25 @@ public class ActionManager {
      * @param types An array of ActionTypes to be registered
      */
     public static void registerActionTypes(final ActionType[] types) {
-        
         for (ActionType type : types) {
             actionTypes.add(type);
         }
+    }
+    
+    /**
+     * Registers an action with the manager.
+     * @param action The action to be registered
+     */
+    public static void registerAction(final Action action) {
+        if (actions == null) {
+            init();
+        }
         
+        if (!actions.containsKey(action.getTrigger())) {
+            actions.put(action.getTrigger(), new ArrayList<Action>());
+        }
+        
+        actions.get(action.getTrigger()).add(action);
     }
     
     /**
@@ -73,8 +91,22 @@ public class ActionManager {
         
         if (type.getType().getArity() == arguments.length) {
             PluginManager.getPluginManager().processEvent(type, arguments);
+            triggerActions(type, arguments);
         } else {
             Logger.error(ErrorLevel.ERROR, "Invalid number of arguments for action " + type);
+        }
+    }
+    
+    /**
+     * Triggers actions that respond to the specified type.
+     * @param type The type of the event to process
+     * @param arguments The arguments for the event
+     */
+    private static void triggerActions(final ActionType type, final Object ... arguments) {
+        if (actions.containsKey(type)) {
+            for (Action action : actions.get(type)) {
+                action.trigger(arguments);
+            }
         }
     }
     
