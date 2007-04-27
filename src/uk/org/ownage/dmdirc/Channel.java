@@ -691,7 +691,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         server.sendCTCPReply(source[0], sType, sMessage);
         
         // TODO: Action hook
-    }    
+    }
     
     /**
      * Returns a string containing the most important mode for the specified client.
@@ -846,9 +846,16 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * Sends a notification to the frame manager if this frame isn't active.
      */
     public void sendNotification() {
+        sendNotification(Color.RED);
+    }
+    
+    /**
+     * Sends a notification to the frame manager if this fame isn't active.
+     * @param colour The colour to use for the notification
+     */
+    public void sendNotification(final Color colour) {
         final JInternalFrame activeFrame = MainFrame.getMainFrame().getActiveFrame();
         if (activeFrame != null && !activeFrame.equals(frame)) {
-            final Color colour = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
         }
     }
