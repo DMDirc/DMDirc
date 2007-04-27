@@ -164,6 +164,8 @@ public final class Config {
         defaults.setProperty("logging.debugLogging", "true");
         defaults.setProperty("logging.debugLoggingSysOut", "true");
         
+        defaults.setProperty("server.friendlymodes", "true");
+        
         
         return defaults;
     }

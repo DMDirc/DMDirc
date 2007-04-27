@@ -298,8 +298,11 @@ public class ChannelSettingsDialog extends StandardDialog
                     .contains(mode.subSequence(0, 1));
             String text = "Mode " + mode;
             
-            if (channel.getConfigManager().hasOption("server", "mode" + mode)) {
-                text = channel.getConfigManager().getOption("server", "mode" + mode);
+            if (channel.getConfigManager().hasOption("server", "friendlymodes")
+            && Boolean.parseBoolean(channel.getConfigManager().getOption("server", "friendlymodes"))) {
+                if (channel.getConfigManager().hasOption("server", "mode" + mode)) {
+                    text = channel.getConfigManager().getOption("server", "mode" + mode);
+                }
             }
             
             final JCheckBox checkBox = new JCheckBox(text, state);
@@ -428,8 +431,11 @@ public class ChannelSettingsDialog extends StandardDialog
         
         for (char mode : listModesArray) {
             String modeText = mode + " list";
-            if (channel.getConfigManager().hasOption("server", "mode" + mode)) {
-                modeText = channel.getConfigManager().getOption("server", "mode" + mode) + " list";
+            if (channel.getConfigManager().hasOption("server", "friendlymodes")
+            && Boolean.parseBoolean(channel.getConfigManager().getOption("server", "friendlymodes"))) {
+                if (channel.getConfigManager().hasOption("server", "mode" + mode)) {
+                    modeText = channel.getConfigManager().getOption("server", "mode" + mode) + " list";
+                }
             }
             listModesList.add(modeText);
         }

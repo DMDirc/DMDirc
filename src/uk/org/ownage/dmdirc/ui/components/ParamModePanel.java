@@ -65,20 +65,23 @@ public final class ParamModePanel extends JPanel implements ActionListener {
      * @param value The current value of the mode
      * @param configManager The config manager to use to get mode names
      */
-    public ParamModePanel(final String thisMode, final boolean state, 
+    public ParamModePanel(final String thisMode, final boolean state,
             final String value, final ConfigManager configManager) {
         super();
         this.mode = thisMode;
-        final String text;
+        String text;
         
         final SpringLayout layout = new SpringLayout();
         setLayout(layout);
         
-        if (configManager.hasOption("server", "mode" + mode)) {
-            text = configManager.getOption("server", "mode" + mode) + ": ";
-        } else {
-	    text = "Mode " + mode + ": ";
-	}
+        text = "Mode " + mode + ": ";
+        
+        if (configManager.hasOption("server", "friendlymodes")
+        && Boolean.parseBoolean(configManager.getOption("server", "friendlymodes"))) {
+            if (configManager.hasOption("server", "mode" + mode)) {
+                text = configManager.getOption("server", "mode" + mode) + ": ";
+            }
+        }
         
         checkBox = new JCheckBox(text, state);
         add(checkBox);
@@ -166,7 +169,7 @@ class ModeParameterVerifier extends InputVerifier {
      * Creates a new instance of LimitVerifier.
      */
     public ModeParameterVerifier() {
-	super();
+        super();
     }
     
     /**
