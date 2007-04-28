@@ -23,6 +23,14 @@
 package uk.org.ownage.dmdirc.actions;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+import uk.org.ownage.dmdirc.FrameContainer;
+
+import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
  * Describes a single action.
@@ -36,6 +44,18 @@ public class Action {
     /** The name of this action. */
     private String name;
     
+    /** The file containing this action. */
+    private final File file;
+    
+    /** The properties read for this action. */
+    private Properties properties;
+    
+    /** The ActionType that triggers this action. */
+    private ActionType trigger;
+    
+    /** The commands to execute if this action is triggered. */
+    private String[] response;
+    
     /**
      * Creates a new instance of Action. The group and name specified must
      * be the group and name of a valid action already saved to disk.
@@ -46,15 +66,45 @@ public class Action {
         this.group = group;
         this.name = name;
         
-        final String fs = System.getProperty("file.seperator");
+        final String fs = System.getProperty("file.separator");
         final String location = ActionManager.getDirectory() + group + fs + name;
         
-        final File file = new File(location);
+        file = new File(location);
         
-        if (file.exists()) {
-            // Load the file
+        try {
+            final FileInputStream inputStream = new FileInputStream(file);
+            
+            properties = new Properties();
+            properties.load(inputStream);
+            
+            loadAction();
+        } catch (IOException ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to load action: " + group + "/" + name, ex);
+        }     
+    }
+    
+    /**
+     * Loads the various attributes of this action from the properties instance.
+     */
+    private void loadAction() {
+        boolean valid = true;
+        
+        if (properties.containsKey("trigger")) {
+            trigger = ActionManager.getActionType(properties.getProperty("trigger"));
         } else {
-            // Throw an exception?
+            valid = false;
+        }
+        
+        if (properties.containsKey("response")) {
+            response = properties.getProperty("response").split("\n");
+        } else {
+            valid = false;
+        }
+        
+        // TODO: Read conditions
+        
+        if (valid) {
+            ActionManager.registerAction(this);
         }
     }
     
@@ -63,7 +113,7 @@ public class Action {
      * @return The action type that triggers this action
      */
     public ActionType getTrigger() {
-        return null;
+        return trigger;
     }
     
     /**
@@ -79,7 +129,12 @@ public class Action {
      * @param arguments The arguments from the action that caused this trigger.
      */
     public void trigger(final Object ... arguments) {
+        // TODO: Check conditions
         
+        for (String command : response) {
+            final CommandWindow cw = ((FrameContainer) arguments[0]).getFrame();
+            cw.getCommandParser().parseCommand(cw, command);
+        }
     }
     
 }

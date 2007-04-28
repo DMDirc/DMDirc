@@ -375,7 +375,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         sendNotification();
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_MESSAGE, cChannel, cChannelClient, sMessage);
+        ActionManager.processEvent(CoreActionType.CHANNEL_MESSAGE, this, cChannelClient, sMessage);
     }
     
     /**
@@ -397,7 +397,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         frame.addLine(type, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
         sendNotification();
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_ACTION, cChannel, cChannelClient, sMessage);
+        ActionManager.processEvent(CoreActionType.CHANNEL_ACTION, this, cChannelClient, sMessage);
     }
     
     /**
@@ -417,7 +417,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         tabCompleter.replaceEntries(names);
         tabCompleter.addEntries(CommandManager.getChannelCommandNames());
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_GOTNAMES, cChannel);
+        ActionManager.processEvent(CoreActionType.CHANNEL_GOTNAMES, this);
     }
     
     /**
@@ -434,7 +434,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             frame.addLine("channelJoinTopic", cChannel.getTopic(),
                     cChannel.getTopicUser(), 1000 * cChannel.getTopicTime(), cChannel);
             
-            ActionManager.processEvent(CoreActionType.CHANNEL_GOTTOPIC, cChannel);
+            ActionManager.processEvent(CoreActionType.CHANNEL_GOTTOPIC, this);
         } else {
             final ChannelClientInfo user = cChannel.getUser(cChannel.getTopicUser());
             final String[] parts = ClientInfo.parseHostFull(cChannel.getTopicUser());
@@ -442,7 +442,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             final String topic = cChannel.getTopic();
             frame.addLine("channelTopicChange", modes, parts[0], parts[1], parts[2], topic, cChannel);
             
-            ActionManager.processEvent(CoreActionType.CHANNEL_TOPICCHANGE, cChannel, user, topic);
+            ActionManager.processEvent(CoreActionType.CHANNEL_TOPICCHANGE, this, user, topic);
         }
         sendNotification();
         updateTitle();
@@ -466,7 +466,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         tabCompleter.addEntry(cChannelClient.getNickname());
         sendNotification();
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_JOIN, cChannel, cChannelClient);
+        ActionManager.processEvent(CoreActionType.CHANNEL_JOIN, this, cChannelClient);
     }
     
     /**
@@ -505,7 +505,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         tabCompleter.removeEntry(cChannelClient.getNickname());
         sendNotification();
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_PART, cChannel, cChannelClient, sReason);
+        ActionManager.processEvent(CoreActionType.CHANNEL_PART, this, cChannelClient, sReason);
     }
     
     /**
@@ -546,7 +546,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         sendNotification();
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_KICK, cChannel, cKickedByClient, cKickedClient);
+        ActionManager.processEvent(CoreActionType.CHANNEL_KICK, this, cKickedByClient, cKickedClient);
     }
     
     /**
@@ -575,7 +575,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         sendNotification();
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, cChannel, cChannelClient, sReason);
+        ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, this, cChannelClient, sReason);
     }
     
     /**
@@ -600,7 +600,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         frame.addLine(type, modes, sOldNick, ident, host, nick, cChannel);
         sendNotification();
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_NICKCHANGE, cChannel, cChannelClient, sOldNick);
+        ActionManager.processEvent(CoreActionType.CHANNEL_NICKCHANGE, this, cChannelClient, sOldNick);
     }
     
     /**

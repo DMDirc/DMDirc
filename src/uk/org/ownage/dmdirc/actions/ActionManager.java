@@ -22,6 +22,8 @@
 
 package uk.org.ownage.dmdirc.actions;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,11 +49,13 @@ public class ActionManager {
     }
     
     /** Initialises the action manager. */
-    private static void init() {
+    public static void init() {
         actionTypes = new ArrayList<ActionType>();
         actions = new HashMap<ActionType, List<Action>>();
         
         registerActionTypes(CoreActionType.values());
+        
+        loadActions();
     }
     
     /**
@@ -61,6 +65,44 @@ public class ActionManager {
     public static void registerActionTypes(final ActionType[] types) {
         for (ActionType type : types) {
             actionTypes.add(type);
+        }
+    }
+    
+    /**
+     * Loads actions from the user's directory.
+     */
+    private static void loadActions() {
+        final String fs = System.getProperty("file.separator");
+        final String location = Config.getConfigDir() + "actions" + fs;
+        final File dir = new File(location);
+        
+        if (!dir.exists()) {
+            try {
+                dir.mkdirs();
+                dir.createNewFile();
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.ERROR, "Unable to create actions dir", ex);
+            }
+        }
+        
+        if (dir == null || dir.listFiles() == null) {
+            Logger.error(ErrorLevel.WARNING, "Unable to load user action files");
+        } else {
+            for (File file : dir.listFiles()) {
+                if (file.isDirectory()) {
+                    loadActions(file);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Loads action files from a specified group directory.
+     * @param dir The directory to scan.
+     */
+    private static void loadActions(final File dir) {
+        for (File file : dir.listFiles()) {
+            new Action(dir.getName(), file.getName());
         }
     }
     
@@ -127,6 +169,10 @@ public class ActionManager {
      * @return The actiontype with the specified name, or null on failure
      */
     public static ActionType getActionType(final String type) {
+        if (actionTypes == null) {
+            init();
+        }
+        
         for (ActionType target : actionTypes) {
             if (((Enum) target).name().equals(type)) {
                 return target;

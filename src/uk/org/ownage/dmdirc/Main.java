@@ -30,6 +30,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.FontUIResource;
+import uk.org.ownage.dmdirc.actions.ActionManager;
 
 import uk.org.ownage.dmdirc.identities.IdentityManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
@@ -118,6 +119,8 @@ public final class Main {
         IdentityManager.load();
         
         PluginManager.getPluginManager();
+        
+        ActionManager.init();
         
         MainFrame.getMainFrame();
     }
