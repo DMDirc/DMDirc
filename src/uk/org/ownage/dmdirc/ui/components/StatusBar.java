@@ -125,7 +125,8 @@ public final class StatusBar extends JPanel implements MouseListener,
     }
     
     /**
-     * sets the message in the status bar with a specified callback event.
+     * Sets the message in the status bar with a specified callback event 
+     * using the default timeout.
      *
      * @param newMessage Message to display
      * @param newNotifier status message notifier to be notified for events on
@@ -133,7 +134,7 @@ public final class StatusBar extends JPanel implements MouseListener,
      */
     public void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier) {
-        int timeout = 5000;
+        int timeout = 5;
         if (Config.hasOption("statusBar", "messageDisplayLength")) {
             try {
                 timeout = Integer.parseInt(Config.getOption("statusBar", "messageDisplayLength"));
@@ -144,6 +145,15 @@ public final class StatusBar extends JPanel implements MouseListener,
         setMessage(newMessage, newNotifier, timeout);
     }
     
+    /**
+     * Sets the message in the status bar with a specified callback event for 
+     * a specified time.
+     * 
+     * @param newMessage Message to display
+     * @param newNotifier status message notifier to be notified for events on
+     * this message
+     * @param timeout message timeout in seconds
+     */
     public void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout) {
         messageLabel.setText(newMessage);
@@ -159,7 +169,7 @@ public final class StatusBar extends JPanel implements MouseListener,
             }
         };
         new Timer().schedule(messageTimer,
-                new Date(System.currentTimeMillis() + timeout));
+                new Date(System.currentTimeMillis() + timeout*1000));
     }
     
     /**
@@ -201,7 +211,6 @@ public final class StatusBar extends JPanel implements MouseListener,
         }
         if (errorTimer != null) {
             errorTimer.cancel();
-            errorTimer = null;
         }
         errorTimer = new TimerTask() {
             public void run() {
