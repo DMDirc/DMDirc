@@ -113,11 +113,11 @@ public class ProcessMessage extends IRCProcessor {
 				// Some CTCPs have messages and some do not
 				if (bits.length > 1) { sMessage = bits[1]; } else { sMessage = ""; }
 				// Remove the leading char1
-				bits = bits[0].split(Char1.toString());
+				bits = bits[0].split(Char1.toString(),2);
 				sCTCP = bits[1];
 				// remove the trailing char1
-				if (!sMessage.equals("")) { sMessage = sMessage.split(Char1.toString())[0]; }
-				else { sCTCP = sCTCP.split(Char1.toString())[0]; }
+				if (!sMessage.equals("")) { sMessage = sMessage.split(Char1.toString(),2)[0]; }
+				else { sCTCP = sCTCP.split(Char1.toString(),2)[0]; }
 				callDebugInfo(myParser.DEBUG_INFO, "CTCP: \"%s\" \"%s\"",sCTCP,sMessage);
 			}
 		}
