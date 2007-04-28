@@ -268,7 +268,13 @@ public final class PreferencesDialog extends StandardDialog
                 try {
                     ((JSpinner) option).setValue(Integer.valueOf(configValue));
                 } catch (NumberFormatException ex) {
-                    ((JSpinner) option).setValue(new Integer(50));
+                    ((JSpinner) option).setValue(new Integer(-1));
+                }
+                try {
+                    ((JSpinner) option).setValue(Integer.parseInt(comboOptions[0]));
+                } catch (NumberFormatException ex) {
+                    ((JSpinner) option).setEnabled(false);
+                    Logger.error(ErrorLevel.TRIVIAL, "Default value incorrect", ex);
                 }
                 spinners.put(optionName, (JSpinner) option);
                 break;
@@ -458,10 +464,11 @@ public final class PreferencesDialog extends StandardDialog
         
         addComponent(panel, "ui.showversion", "Show version: ",
                 OptionType.CHECKBOX);
-        addComponent(panel, "ui.inputbuffersize", "Input bufer size: ",
-                OptionType.SPINNER);
-        addComponent(panel, "ui.frameBufferSize", "Frame buffer size: ",
-                OptionType.SPINNER);
+        addComponent(panel, "ui.inputbuffersize", "Input bufer size (lines): ",
+                OptionType.SPINNER, new String[]{"50"}, true);
+        addComponent(panel, "ui.frameBufferSize", "Frame buffer size (characters): ",
+                OptionType.SPINNER,
+                new String[]{Integer.toString(Integer.MAX_VALUE)}, true);
         addComponent(panel, "general.browser", "Browser: ",
                 OptionType.COMBOBOX, new String[]
         {"firefox", "konqueror", "epiphany", "opera", "mozilla", }, true);
