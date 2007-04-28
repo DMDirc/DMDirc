@@ -89,6 +89,8 @@ public final class Main {
             UIManager.put("InternalFrame.useTaskBar", false);
             UIManager.put("SplitPaneDivider.border", BorderFactory.createEmptyBorder());
             UIManager.put("TabbedPane.contentBorderInsets", new Insets(1, 1, 1, 1));
+            UIManager.put("Tree.scrollsOnExpand", true);
+            UIManager.put("Tree.scrollsHorizontallyAndVertically", true);
             
             if (Config.hasOption("ui", "lookandfeel")) {
                 for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
