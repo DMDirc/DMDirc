@@ -315,9 +315,12 @@ public final class StatusBar extends JPanel implements MouseListener,
             mi.addActionListener(this);
             mi.setActionCommand(String.valueOf(errors.indexOf(error)));
             popup.add(mi);
-            while (errors.size() > errorHistory) {
+            while (errors.size() >= errorHistory) {
                 errors.remove(0);
                 popup.remove(0);
+            }
+            for (int i = 0; i < popup.getComponentCount(); i++) {
+                ((JMenuItem) popup.getComponent(i)).setActionCommand(String.valueOf(i));
             }
         }
     }
