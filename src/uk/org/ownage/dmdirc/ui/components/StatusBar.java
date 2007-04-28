@@ -133,16 +133,22 @@ public final class StatusBar extends JPanel implements MouseListener,
      */
     public void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier) {
-        messageLabel.setText(newMessage);
-        messageNotifier = newNotifier;
-        int displayLength = 5000;
+        int timeout = 5000;
         if (Config.hasOption("statusBar", "messageDisplayLength")) {
             try {
-                displayLength = Integer.parseInt(Config.getOption("statusBar", "messageDisplayLength"));
+                timeout = Integer.parseInt(Config.getOption("statusBar", "messageDisplayLength"));
             } catch (NumberFormatException e) {
                 Logger.error(ErrorLevel.WARNING, "Invalid message display length", e);
             }
         }
+        setMessage(newMessage, newNotifier, timeout);
+    }
+    
+    public void setMessage(final String newMessage,
+            final StatusMessageNotifier newNotifier, final int timeout) {
+        messageLabel.setText(newMessage);
+        messageNotifier = newNotifier;
+        
         if (messageTimer != null) {
             messageTimer.cancel();
             messageTimer = null;
@@ -153,7 +159,7 @@ public final class StatusBar extends JPanel implements MouseListener,
             }
         };
         new Timer().schedule(messageTimer,
-                new Date(System.currentTimeMillis() + displayLength));
+                new Date(System.currentTimeMillis() + timeout));
     }
     
     /**
