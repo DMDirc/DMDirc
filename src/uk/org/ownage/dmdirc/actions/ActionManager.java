@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.plugins.PluginManager;
@@ -110,4 +111,28 @@ public class ActionManager {
         }
     }
     
+    /**
+     * Returns the directory that should be used to store actions.
+     * @return The directory that should be used to store actions
+     */
+    public static String getDirectory() {
+        final String fs = System.getProperty("file.separator");
+        return Config.getConfigDir() + "actions" + fs;
+    }
+    
+    /**
+     * Returns the action type specified by the given string, or null if it
+     * doesn't match a valid registered action type.
+     * @param type The name of the action type to try and find
+     * @return The actiontype with the specified name, or null on failure
+     */
+    public static ActionType getActionType(final String type) {
+        for (ActionType target : actionTypes) {
+            if (((Enum) target).name().equals(type)) {
+                return target;
+            }
+        }
+        
+        return null;
+    }
 }

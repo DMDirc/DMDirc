@@ -22,14 +22,40 @@
 
 package uk.org.ownage.dmdirc.actions;
 
+import java.io.File;
+
 /**
  * Describes a single action.
  * @author chris
  */
 public class Action {
     
-    /** Creates a new instance of Action. */
-    public Action() {
+    /** The group this action belongs to. */
+    private String group;
+    
+    /** The name of this action. */
+    private String name;
+    
+    /**
+     * Creates a new instance of Action. The group and name specified must
+     * be the group and name of a valid action already saved to disk.
+     * @param group The group the action belongs to
+     * @param name The name of the action
+     */
+    public Action(final String group, final String name) {
+        this.group = group;
+        this.name = name;
+        
+        final String fs = System.getProperty("file.seperator");
+        final String location = ActionManager.getDirectory() + group + fs + name;
+        
+        final File file = new File(location);
+        
+        if (file.exists()) {
+            // Load the file
+        } else {
+            // Throw an exception?
+        }
     }
     
     /**
@@ -38,6 +64,14 @@ public class Action {
      */
     public ActionType getTrigger() {
         return null;
+    }
+    
+    /**
+     * Retrieves this action's group name.
+     * @return This action's group name
+     */
+    public String getGroup() {
+        return group;
     }
     
     /**

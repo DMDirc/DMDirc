@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser.commands.channel;
 
 import java.awt.Color;
+
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
