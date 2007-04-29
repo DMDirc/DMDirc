@@ -30,8 +30,18 @@ package uk.org.ownage.dmdirc.actions;
 public enum ActionComparison {
     
     STRING_EQUALS {
-        boolean test(final Object arg1, final Object arg2) { return ((String) arg1).equals((String) arg2); }
+        boolean test(final Object arg1, final Object arg2) { return ((String) arg1).equalsIgnoreCase((String) arg2); }
         Class appliesTo() { return String.class; }
+    },
+    
+    STRING_STARTSWITH {
+        boolean test(final Object arg1, final Object arg2) { return ((String) arg1).startsWith((String) arg2); }
+        Class appliesTo() { return String.class; }        
+    },
+    
+    STRING_CONTAINS {
+        boolean test(final Object arg1, final Object arg2) { return ((String) arg1).indexOf((String) arg2) != -1; }
+        Class appliesTo() { return String.class; }        
     };
     
     /**

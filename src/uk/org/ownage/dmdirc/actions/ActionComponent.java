@@ -42,6 +42,18 @@ public enum ActionComponent {
         Object get(final Object argument) { return ((ChannelClientInfo) argument).getNickname(); }
         Class appliesTo() { return ChannelClientInfo.class; }
         Class getType() { return String.class; }
+    },
+    
+    USER_MODES {
+        Object get(final Object argument) { return ((ChannelClientInfo) argument).getChanModeStr(false); }
+        Class appliesTo() { return ChannelClientInfo.class; }
+        Class getType() { return String.class; }        
+    },
+    
+    STRING_STRING {
+        Object get(final Object argument) { return argument; }
+        Class appliesTo() { return String.class; }
+        Class getType() { return String.class; }
     };
     
     /**
