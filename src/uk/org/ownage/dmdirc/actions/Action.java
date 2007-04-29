@@ -239,7 +239,7 @@ public class Action {
         
         for (String command : response) {
             final CommandWindow cw = ((FrameContainer) arguments[0]).getFrame();
-            cw.getCommandParser().parseCommand(cw, command);
+            cw.getCommandParser().parseCommand(cw, ActionManager.substituteVars(command, arguments));
         }
     }
     

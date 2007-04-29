@@ -34,6 +34,11 @@ public enum ActionComparison {
         Class appliesTo() { return String.class; }
     },
     
+    STRING_NEQUALS {
+        boolean test(final Object arg1, final Object arg2) { return !((String) arg1).equalsIgnoreCase((String) arg2); }
+        Class appliesTo() { return String.class; }
+    },    
+    
     STRING_STARTSWITH {
         boolean test(final Object arg1, final Object arg2) { return ((String) arg1).startsWith((String) arg2); }
         Class appliesTo() { return String.class; }        

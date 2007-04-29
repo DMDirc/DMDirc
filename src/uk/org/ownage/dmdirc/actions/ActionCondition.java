@@ -61,7 +61,8 @@ public class ActionCondition {
      * @return True if the condition holds, false otherwise
      */
     public boolean test(final Object ... args) {
-        return comparison.test(component.get(args[arg]), target);
+        final String thisTarget = ActionManager.substituteVars(target, args);
+        return comparison.test(component.get(args[arg]), thisTarget);
     }
     
 }

@@ -27,10 +27,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import uk.org.ownage.dmdirc.Channel;
 
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.plugins.PluginManager;
 
 /**
@@ -180,5 +183,42 @@ public class ActionManager {
         }
         
         return null;
+    }
+    
+    /**
+     * Substitutes variables into the string based on the arguments.
+     * @param target The string to be altered 
+     * @param arguments The arguments for the action
+     */
+    public static String substituteVars(final String target, final Object ... arguments) {
+        String res = target;
+        Server server = null;
+        Channel channel = null;
+        ChannelClientInfo source = null;
+        
+        if (arguments[0] instanceof Server) {
+            server = (Server) arguments[0];
+        } else if (arguments[0] instanceof Channel) {
+            channel = (Channel) arguments[0];
+            server = channel.getServer();
+        }
+        
+        if (arguments[1] instanceof ChannelClientInfo) {
+            source = (ChannelClientInfo) arguments[1];
+        }
+        
+        if (server != null) {
+            res = res.replaceAll("\\$nick", server.getParser().getMyself().getNickname());
+        }
+        
+        if (channel != null) {
+            res = res.replaceAll("\\$chan", channel.getChannelInfo().getName());
+        }
+        
+        if (source != null) {
+            res = res.replaceAll("\\$source", source.getNickname());
+        }
+        
+        return res;
     }
 }
