@@ -23,54 +23,45 @@
 package uk.org.ownage.dmdirc.actions;
 
 import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /**
- * An enumeration of different types of actions (the type determines the
- * parameters an action expects).
+ * An ActionComponent represents a component of some object that the user can
+ * use as the subject of a condition within an action.
  * @author chris
  */
-public enum ActionMetaType {
+public enum ActionComponent {
     
-    SERVER_EVENT(1, Server.class),
+    CHANNEL_NAME {
+        Object get(final Object argument) { return ((Channel) argument).getChannelInfo().getName(); }
+        Class appliesTo() { return Channel.class; }
+        Class getType() { return String.class; }
+    },
     
-    CHANNEL_EVENT(1, Channel.class),
-
-    CHANNEL_SOURCED_EVENT(2, Channel.class, ChannelClientInfo.class),
-    CHANNEL_SOURCED_EVENT_WITH_ARG(3, Channel.class, ChannelClientInfo.class, String.class),
-    CHANNEL_SOURCED_EVENT_WITH_VICTIM(4, Channel.class, ChannelClientInfo.class, ChannelClientInfo.class, String.class);
-    
-    /** The arity of this type. */
-    private final int arity;
-    
-    /** The types of argument this type expects. */
-    private final Class[] argTypes;
+    USER_NAME {
+        Object get(final Object argument) { return ((ChannelClientInfo) argument).getNickname(); }
+        Class appliesTo() { return ChannelClientInfo.class; }
+        Class getType() { return String.class; }
+    };
     
     /**
-     * Constructs an instance of an ActionMetaType.
-     * @param arity The arity of the action type
+     * Retrieves the component of the specified argument that this enum
+     * represents.
+     * @param argument The object to retrieve the component from
+     * @return The relevant component of the object
      */
-    ActionMetaType(final int arity, final Class ... argTypes) {
-        this.arity = arity;
-        this.argTypes = argTypes;
-    }
+    abstract Object get(Object argument);
     
     /**
-     * Retrieves the arity of an ActionMetaType.
-     * @return The arity of this action type
+     * Retrieves the type of class that this component applies to.
+     * @return The Class that this component can be applied to
      */
-    public int getArity() {
-        return arity;
-    }
+    abstract Class appliesTo();
     
     /**
-     * Retrieves the type of arguments that actiontypes of this metatype should
-     * expect.
-     * @return The type of arguments expected
+     * Retrieves the type of this component.
+     * @return The Class of this component.
      */
-    public Class[] getArgTypes() {
-        return argTypes.clone();
-    }
+    abstract Class getType();
     
 }

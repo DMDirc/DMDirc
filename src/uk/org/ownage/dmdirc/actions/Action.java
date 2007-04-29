@@ -25,6 +25,8 @@ package uk.org.ownage.dmdirc.actions;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import uk.org.ownage.dmdirc.FrameContainer;
 
@@ -56,6 +58,9 @@ public class Action {
     /** The commands to execute if this action is triggered. */
     private String[] response;
     
+    /** The conditions for this action. */
+    private final List<ActionCondition> conditions = new ArrayList<ActionCondition>();
+    
     /**
      * Creates a new instance of Action. The group and name specified must
      * be the group and name of a valid action already saved to disk.
@@ -80,7 +85,7 @@ public class Action {
             loadAction();
         } catch (IOException ex) {
             Logger.error(ErrorLevel.ERROR, "Unable to load action: " + group + "/" + name, ex);
-        }     
+        }
     }
     
     /**
@@ -89,23 +94,120 @@ public class Action {
     private void loadAction() {
         boolean valid = true;
         
+        // Read the trigger
         if (properties.containsKey("trigger")) {
             trigger = ActionManager.getActionType(properties.getProperty("trigger"));
+            
+            if (trigger == null) {
+                System.out.println("Invalid trigger");
+                valid = false;
+            }
         } else {
             valid = false;
         }
         
+        // Read the response
         if (properties.containsKey("response")) {
             response = properties.getProperty("response").split("\n");
         } else {
+            System.out.println("Invalid response");
+            properties.list(System.out);
             valid = false;
         }
         
-        // TODO: Read conditions
+        // Read the conditions
+        int numConditions = 0;
+        
+        if (properties.containsKey("conditions")) {
+            try {
+                numConditions = Integer.parseInt(properties.getProperty("conditions"));
+            } catch (NumberFormatException ex) {
+                System.out.println("Invalid conditions");
+                valid = false;
+            }
+        }
+        
+        for (int i = 0; i < numConditions; i++) {
+            valid = valid & readCondition(i);
+        }
         
         if (valid) {
             ActionManager.registerAction(this);
         }
+    }
+    
+    /**
+     * Reads the specified condition.
+     * @param condition Condition number to read
+     * @return True if the condition was read successfully.
+     */
+    private boolean readCondition(final int condition) {
+        // It may help to close your eyes while reading this method.
+        
+        int arg = -1;
+        ActionComponent component = null;
+        ActionComparison comparison = null;
+        String target = "";
+        
+        if (properties.containsKey("condition" + condition + "-arg")) {
+            try {
+                arg = Integer.parseInt(properties.getProperty("condition" + condition + "-arg"));
+            } catch (NumberFormatException ex) {
+                System.out.println("Invalid condition arg");
+                return false;
+            }
+        }
+        
+        if (arg < 0 || arg >= trigger.getType().getArity()) {
+            System.out.println("Condition arg out of range");
+            return false;
+        }
+        
+        if (properties.containsKey("condition" + condition + "-component")) {
+            try {
+                component = ActionComponent.valueOf(properties.getProperty("condition" + condition + "-component"));
+            } catch (IllegalArgumentException ex) {
+                System.out.println("Invalid condition component");
+                return false;
+            }
+            
+            if (!component.appliesTo().equals(trigger.getType().getArgTypes()[arg])) {
+                System.out.println("Condition component cannot be applied to specified arg");
+                System.out.println(component.appliesTo().getName());
+                System.out.println(trigger.getType().getArgTypes()[arg].getName());
+                return false;
+            }
+        } else {
+            System.out.println("No component specified");
+            return false;
+        }
+        
+        if (properties.containsKey("condition" + condition + "-comparison")) {
+            try {
+                comparison = ActionComparison.valueOf(properties.getProperty("condition" + condition + "-comparison"));
+            } catch (IllegalArgumentException ex) {
+                System.out.println("Invalid comparison");
+                return false;
+            }
+            
+            if (!comparison.appliesTo().equals(component.getType())) {
+                System.out.println("Comparison cannot be applied to component type");
+                return false;
+            }
+        } else {
+            System.out.println("No comparison specified");
+            return false;
+        }
+        
+        if (properties.containsKey("condition" + condition + "-target")) {
+            target = properties.getProperty("condition" + condition + "-target");
+        } else {
+            System.out.println("No target specified");
+            return false;
+        }
+        
+        conditions.add(new ActionCondition(arg, component, comparison, target));
+        return true;
     }
     
     /**
@@ -129,7 +231,11 @@ public class Action {
      * @param arguments The arguments from the action that caused this trigger.
      */
     public void trigger(final Object ... arguments) {
-        // TODO: Check conditions
+        for (ActionCondition condition : conditions) {
+            if (!condition.test(arguments)) {
+                return;
+            }
+        }
         
         for (String command : response) {
             final CommandWindow cw = ((FrameContainer) arguments[0]).getFrame();
