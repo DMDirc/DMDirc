@@ -211,7 +211,12 @@ public class PluginManager {
 	 * @param arguments The arguments for the event
 	 */
 	public void processEvent(final ActionType type, final Object ... arguments) {
-		// Forward events!
+		for (String pluginName : knownPlugins.keySet()) {
+			Plugin plugin = knownPlugins.get(pluginName);
+			if (plugin instanceof EventPlugin) {
+				((EventPlugin)plugin).processEvent(type, arguments);
+			}
+		}
 	}
 	
 }

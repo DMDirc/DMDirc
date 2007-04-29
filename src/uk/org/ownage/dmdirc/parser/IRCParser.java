@@ -515,7 +515,10 @@ public final class IRCParser implements Runnable {
 				line = in.readLine(); // Blocking :/
 				if (line == null) {
 					currentSocketState = STATE_CLOSED;
-					pingTimer.cancel();
+					if (pingTimer != null) {
+						pingTimer.cancel();
+						pingTimer = null;
+					}
 					// Empty the ProcessingManager
 					myProcessingManager.empty();
 					callSocketClosed();
@@ -526,7 +529,10 @@ public final class IRCParser implements Runnable {
 				}
 			} catch (IOException e) {
 				currentSocketState = STATE_CLOSED;
-				pingTimer.cancel();
+				if (pingTimer != null) {
+					pingTimer.cancel();
+					pingTimer = null;
+				}
 				// Empty the ProcessingManager
 				myProcessingManager.empty();
 				callSocketClosed();
