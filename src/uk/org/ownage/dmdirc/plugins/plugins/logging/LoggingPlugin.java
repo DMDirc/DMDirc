@@ -125,6 +125,7 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	 */
 	public void showConfig() {
 		PreferencesPanel preferencesPanel = new PreferencesPanel(this);
+		preferencesPanel.setWindowTitle("Logging Plugin - Config");
 		preferencesPanel.addCategory("General", "General configuration for Logging plugin.");
 		preferencesPanel.addCategory("Advanced", "Advanced configuration for Logging plugin. You shouldn't need to edit this unless you know what you are doing.");
 		preferencesPanel.addOption("General", "general.directory", "Directory: ", PreferencesPanel.OptionType.TEXTFIELD, Config.getOption(myDomain, "general.directory"));

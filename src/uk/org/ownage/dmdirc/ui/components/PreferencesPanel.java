@@ -105,6 +105,9 @@ public final class PreferencesPanel extends StandardDialog
     /** Preferences owner. */
     private PreferencesInterface owner;
     
+    /** title of window. */
+    private String windowTitle = "Preferences";
+    
     
     
     /**
@@ -143,7 +146,7 @@ public final class PreferencesPanel extends StandardDialog
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new GridBagLayout());
-        setTitle("Preferences");
+        setTitle(windowTitle);
         setResizable(false);
         
         mainPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
@@ -270,6 +273,15 @@ public final class PreferencesPanel extends StandardDialog
                 new Dimension(Short.MAX_VALUE, option.getFont().getSize()));
         label.setLabelFor(option);
         ((JPanel) parent.getComponent(1)).add(option);
+    }
+    
+    /**
+     * Set the title of the window.
+     * @param newTitle New title for the window.
+     */
+    public void setWindowTitle(final String newTitle) {
+        windowTitle = newTitle;
+        setTitle(windowTitle);
     }
     
     public void addCategory(final String name) {
