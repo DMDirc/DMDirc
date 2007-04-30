@@ -273,6 +273,10 @@ public final class PreferencesPanel extends StandardDialog
     }
     
     public void addCategory(final String name) {
+        addCategory(name, "");
+    }
+    
+    public void addCategory(final String name, final String blurb) {
         final JPanel panel = new JPanel(new SpringLayout());
         categories.put(name, panel);
         mainPanel.add(panel, name);
