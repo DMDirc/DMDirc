@@ -106,18 +106,27 @@ public final class PreferencesPanel extends StandardDialog
     private PreferencesInterface owner;
     
     /** title of window. */
-    private String windowTitle = "Preferences";
-    
-    
+    private String windowTitle;
     
     /**
      * Creates a new instance of PreferencesPanel.
      *
-     * @param parent The frame that owns this dialog
-     * @param modal Whether to show modally or not
+     * @param preferencesOwner Owner of the preferences dialog
      */
     public PreferencesPanel(final PreferencesInterface preferencesOwner) {
+        this(preferencesOwner, "Preferences");
+    }
+    
+    /**
+     * Creates a new instance of PreferencesPanel.
+     *
+     * @param preferencesOwner Owner of the preferences dialog
+     */
+    public PreferencesPanel(final PreferencesInterface preferencesOwner, 
+            final String title) {
         super(MainFrame.getMainFrame(), false);
+        
+        windowTitle = title;
         
         owner = preferencesOwner;
         
@@ -273,15 +282,6 @@ public final class PreferencesPanel extends StandardDialog
                 new Dimension(Short.MAX_VALUE, option.getFont().getSize()));
         label.setLabelFor(option);
         ((JPanel) parent.getComponent(1)).add(option);
-    }
-    
-    /**
-     * Set the title of the window.
-     * @param newTitle New title for the window.
-     */
-    public void setWindowTitle(final String newTitle) {
-        windowTitle = newTitle;
-        setTitle(windowTitle);
     }
     
     public void addCategory(final String name) {
