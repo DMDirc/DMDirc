@@ -70,9 +70,9 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
      * Creates a new instance of TreeViewTreeCellRenderer.
      */
     public TreeViewTreeCellRenderer() {
-	super();
-	defaultIcon = new ImageIcon(this.getClass().getClassLoader()
-	.getResource("uk/org/ownage/dmdirc/res/icon.png"));
+        super();
+        defaultIcon = new ImageIcon(this.getClass().getClassLoader()
+        .getResource("uk/org/ownage/dmdirc/res/icon.png"));
     }
     
     /**
@@ -87,53 +87,57 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
      * @return RendererComponent for this node.
      */
     public final Component getTreeCellRendererComponent(final JTree tree,
-	    final Object value, final boolean sel, final boolean expanded,
-	    final boolean leaf, final int row, final boolean hasFocus) {
-	
-	super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-	
-	final DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-	
-	TreeFrameManager manager = null;
-	
-	if (MainFrame.hasMainFrame()) {
-	    manager = (TreeFrameManager) MainFrame.getMainFrame().getFrameManager();
-	}
-	
-	setBackground(null);
-	
-	if (manager != null && manager.getRollover() == value) {
-	    if (Config.hasOption("ui", "rolloverColour")) {
-		setBackground(ColourManager.getColour(
-			Config.getOption("ui", "rolloverColour")));
-	    } else {
-		setBackground(ColourManager.getColour("b8d6e6"));
-	    }
-	}
-	setForeground(tree.getForeground());
-	setPreferredSize(new Dimension(WIDTH, getFont().getSize() + HEIGHT_OFFSET));
-	
-	setOpaque(true);
-	if (node.getUserObject() instanceof FrameContainer && manager != null) {
-	    final Color colour = manager.getNodeColour((FrameContainer) node.getUserObject());
-	    if (colour != null) {
-		setForeground(colour);
-	    }
-	    setIcon(((FrameContainer) node.getUserObject()).getIcon());
-	} else {
-	    
-	    setIcon(defaultIcon);
-	}
-	
-	if (manager != null && node.getUserObject().equals(manager.getSelected())) {
-	    setFont(getFont().deriveFont(Font.BOLD));
-	} else {
-            setFont(getFont().deriveFont(Font.PLAIN));
+            final Object value, final boolean sel, final boolean expanded,
+            final boolean leaf, final int row, final boolean hasFocus) {
+        
+        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+        
+        final DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+        
+        TreeFrameManager manager = null;
+        
+        setBackground(tree.getBackground());
+        setOpaque(true);
+        setToolTipText(null);
+        setBorder(new EmptyBorder(1, 0, 2, 0));
+        setForeground(tree.getForeground());
+        setPreferredSize(new Dimension(WIDTH, getFont().getSize() 
+        + HEIGHT_OFFSET));
+        
+        if (MainFrame.hasMainFrame()) {
+            manager = (TreeFrameManager) MainFrame.getMainFrame().getFrameManager();
         }
-	setBorder(new EmptyBorder(1, 0, 2, 0));
-	
-	setToolTipText(null);
-	
-	return this;
+        
+        if (manager != null) {
+            if (manager.getRollover() == value) {
+                if (Config.hasOption("ui", "rolloverColour")) {
+                    setBackground(ColourManager.getColour(
+                            Config.getOption("ui", "rolloverColour")));
+                } else {
+                    setBackground(ColourManager.getColour("b8d6e6"));
+                }
+            }
+            
+            final Object nodeObject = node.getUserObject();
+            
+            if (nodeObject.equals(manager.getSelected())) {
+                setFont(getFont().deriveFont(Font.BOLD));
+            } else {
+                setFont(getFont().deriveFont(Font.PLAIN));
+            }
+            
+            if (nodeObject instanceof FrameContainer) {
+                final Color colour = 
+                        manager.getNodeColour((FrameContainer) nodeObject);
+                if (colour != null) {
+                    setForeground(colour);
+                }
+                setIcon(((FrameContainer) nodeObject).getIcon());
+            } else {
+                setIcon(defaultIcon);
+            }
+        }
+        
+        return this;
     }
 }

@@ -49,11 +49,10 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.ui.*;
+import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.interfaces.StatusErrorNotifier;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
@@ -110,6 +109,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
      * @param newIcon Error icon
      * @param newMessage Error message
      * @param newTrace Error trace
+     * @param autoSubmit whether to automatically submit the error
      */
     public ErrorDialog(final ErrorLevel newLevel, final Icon newIcon,
             final String newMessage, final String[] newTrace, final boolean autoSubmit) {
@@ -371,6 +371,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
         //ignore
     }
     
+    /** Synchronized method to pack the dialog. */
     private synchronized void resize() {
         pack();
     }

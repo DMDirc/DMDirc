@@ -242,7 +242,7 @@ public final class ChannelFrame extends Frame {
         if (Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"))) {
             splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth() - 325);
         } else {
-            splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth()/2 - 150);
+            splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth() / 2 - 150);
         }
         splitPane.setDividerSize(5);
         splitPane.setContinuousLayout(true);

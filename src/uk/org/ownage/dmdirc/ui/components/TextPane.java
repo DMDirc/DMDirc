@@ -41,6 +41,7 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JScrollBar;
@@ -48,7 +49,7 @@ import javax.swing.JScrollBar;
 /**
  * Styled, scrollable text pane.
  */
-public class TextPane extends JComponent implements AdjustmentListener,
+public final class TextPane extends JComponent implements AdjustmentListener,
         MouseWheelListener {
     
     /**
@@ -60,7 +61,7 @@ public class TextPane extends JComponent implements AdjustmentListener,
     
     /** Scrollbar for the component. */
     private JScrollBar scrollBar;
-    /** Canvas object, used to draw text */
+    /** Canvas object, used to draw text. */
     private TextPaneCanvas textPane;
     
     /**
@@ -88,20 +89,19 @@ public class TextPane extends JComponent implements AdjustmentListener,
      * Adds text to the textpane.
      * @param text text to add
      */
-    public void addText(String text) {
-        AttributedString attributedString = new AttributedString(text);
-        addText(attributedString);
+    public void addText(final String text) {
+        addText(new AttributedString(text));
     }
     
     /**
      * Adds styled text to the textpane.
      * @param text styled text to add
      */
-    public void addText(AttributedString text) {
+    public void addText(final AttributedString text) {
         textPane.addText(text);
         scrollBar.setMaximum(textPane.getNumLines());
         if (!scrollBar.getValueIsAdjusting() 
-        && (scrollBar.getValue() == scrollBar.getMaximum()-1)) {
+        && (scrollBar.getValue() == scrollBar.getMaximum() - 1)) {
             setScrollBarPosition(textPane.getNumLines());
         }
     }
@@ -111,13 +111,13 @@ public class TextPane extends JComponent implements AdjustmentListener,
      * to render the text from.
      * @param position new position of the scrollbar
      */
-    private void setScrollBarPosition(int position) {
+    private void setScrollBarPosition(final int position) {
         scrollBar.setValue(position);
         textPane.setScrollBarPosition(position);
     }
     
     /** {@inheritDoc}. */
-    public void adjustmentValueChanged(AdjustmentEvent e) {
+    public void adjustmentValueChanged(final AdjustmentEvent e) {
         if (e.getValue() < textPane.getNumLines()) {
             scrollBar.setValue(e.getValue());
             textPane.setScrollBarPosition(e.getValue());
@@ -125,7 +125,7 @@ public class TextPane extends JComponent implements AdjustmentListener,
     }
     
     /** {@inheritDoc}. */
-    public void mouseWheelMoved(MouseWheelEvent e) {
+    public void mouseWheelMoved(final MouseWheelEvent e) {
         if (scrollBar.isEnabled()) {
             if (e.getWheelRotation() > 0) {
                 setScrollBarPosition(scrollBar.getValue() + e.getScrollAmount());
@@ -171,13 +171,17 @@ public class TextPane extends JComponent implements AdjustmentListener,
         setScrollBarPosition(textPane.getNumLines());
     }
     
-    /** temporary method to text the textpane */
-    public static void main(String[] args) {
-        TextPane tpc = new TextPane();
+    /** 
+     * temporary method to text the textpane. 
+     * @param args command line arguments
+     */
+    public static void main(final String[] args) {
+        final TextPane tpc = new TextPane();
+        final JFrame frame = new JFrame("Test textpane");
+        
         tpc.setDoubleBuffered(true);
         tpc.setBackground(Color.WHITE);
         
-        JFrame frame = new JFrame("Test textpane");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         frame.add(tpc);
@@ -199,7 +203,7 @@ public class TextPane extends JComponent implements AdjustmentListener,
         private static final long serialVersionUID = 1;
         
         /** Font render context to be used for the text in this pane. */
-        private final FontRenderContext DEFAULT_FRC =
+        private final FontRenderContext defaultFRC =
                 new FontRenderContext(null, false, false);
         
         /** list of stylised lines of text. */
@@ -221,7 +225,7 @@ public class TextPane extends JComponent implements AdjustmentListener,
          * Creates a new text pane canvas.
          * @param parent parent text pane for the canvas
          */
-        public TextPaneCanvas(TextPane parent) {
+        public TextPaneCanvas(final TextPane parent) {
             iterators = new ArrayList<AttributedCharacterIterator>();
             scrollBarPosition = 0;
             textPane = parent;
@@ -231,11 +235,11 @@ public class TextPane extends JComponent implements AdjustmentListener,
          * Paints the text onto the canvas.
          * @param g graphics object to draw onto
          */
-        public void paint(Graphics g) {
-            Graphics2D graphics2D = (Graphics2D) g;
+        public void paint(final Graphics g) {
+            final Graphics2D graphics2D = (Graphics2D) g;
             
-            float formatWidth = (float) getWidth();
-            float formatHeight = (float) getHeight();
+            final float formatWidth = getWidth();
+            final float formatHeight = getHeight();
             
             float drawPosY = formatHeight;
             
@@ -248,15 +252,15 @@ public class TextPane extends JComponent implements AdjustmentListener,
             }
             
             for (int i = startLine; i >= 0; i--) {
-                AttributedCharacterIterator iterator = iterators.get(i);
+                final AttributedCharacterIterator iterator = iterators.get(i);
                 paragraphStart = iterator.getBeginIndex();
-                paragraphEnd = iterator.getEndIndex();;
-                lineMeasurer = new LineBreakMeasurer(iterator, DEFAULT_FRC);
+                paragraphEnd = iterator.getEndIndex();
+                lineMeasurer = new LineBreakMeasurer(iterator, defaultFRC);
                 lineMeasurer.setPosition(paragraphStart);
                 
                 while (lineMeasurer.getPosition() < paragraphEnd) {
                     
-                    TextLayout layout = lineMeasurer.nextLayout(formatWidth);
+                    final TextLayout layout = lineMeasurer.nextLayout(formatWidth);
                     drawPosY -= layout.getDescent() + layout.getLeading();
                     
                     float drawPosX;
@@ -280,9 +284,9 @@ public class TextPane extends JComponent implements AdjustmentListener,
          * Repaints the canvas offscreen.
          * @param g graphics object to draw onto
          */
-        public void update(Graphics g) {
-            Image offScreen = this.createImage(getWidth(), getHeight());
-            Graphics graphics = offScreen.getGraphics();
+        public void update(final Graphics g) {
+            final Image offScreen = this.createImage(getWidth(), getHeight());
+            final Graphics graphics = offScreen.getGraphics();
             
             graphics.clearRect(0, 0, this.getWidth(), this.getHeight());
             
@@ -303,7 +307,7 @@ public class TextPane extends JComponent implements AdjustmentListener,
          * Adds the stylised string to the canvas.
          * @param text stylised string to add to the text
          */
-        public void addText(AttributedString text) {
+        public void addText(final AttributedString text) {
             synchronized (iterators) {
                 iterators.add(text.getIterator());
             }
@@ -313,7 +317,7 @@ public class TextPane extends JComponent implements AdjustmentListener,
          * sets the position of the scroll bar, and repaints if required.
          * @param position scroll bar position
          */
-        public void setScrollBarPosition(int position) {
+        public void setScrollBarPosition(final int position) {
             if (scrollBarPosition != position) {
                 scrollBarPosition = position;
                 this.repaint();

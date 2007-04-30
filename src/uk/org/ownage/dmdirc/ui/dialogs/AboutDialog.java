@@ -38,7 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
 import uk.org.ownage.dmdirc.BrowserLauncher;
-import uk.org.ownage.dmdirc.ui.*;
+import uk.org.ownage.dmdirc.ui.MainFrame;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;

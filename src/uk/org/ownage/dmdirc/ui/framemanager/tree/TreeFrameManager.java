@@ -24,7 +24,6 @@ package uk.org.ownage.dmdirc.ui.framemanager.tree;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -132,30 +131,41 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * creates a new instance of the TreeFrameManager.
      */
     public TreeFrameManager() {
+        final TreeViewTreeCellRenderer renderer = new TreeViewTreeCellRenderer();
+        
         nodes = new Hashtable<FrameContainer, DefaultMutableTreeNode>();
         nodeColours = new Hashtable<FrameContainer, Color>();
         popup = new JPopupMenu();
         closeMenuItem = new JMenuItem("Close window");
-        closeMenuItem.addActionListener(this);
-        closeMenuItem.setActionCommand("Close");
-        popup.add(closeMenuItem);
-        popup.setOpaque(true);
-        popup.setLightWeightPopupEnabled(true);
         root = new DefaultMutableTreeNode("DMDirc");
         model = new TreeViewModel(root);
         tree = new JTree(model);
+        
+        closeMenuItem.setActionCommand("Close");
+        popup.add(closeMenuItem);
+        
+        popup.setOpaque(true);
+        popup.setLightWeightPopupEnabled(true);
+        
         tree.putClientProperty("JTree.lineStyle", "Angled");
-        tree.addMouseListener(this);
         tree.getSelectionModel().
                 setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        tree.addTreeSelectionListener(this);
-        final TreeViewTreeCellRenderer renderer = new TreeViewTreeCellRenderer();
         tree.setCellRenderer(renderer);
         tree.setRootVisible(false);
         tree.setRowHeight(0);
+        tree.setShowsRootHandles(false);
+        tree.setOpaque(true);
+        tree.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER));
+        tree.setVisible(true);
+        
+        closeMenuItem.addActionListener(this);
+        
+        tree.addTreeSelectionListener(this);
+        tree.addMouseListener(this);
         tree.addMouseMotionListener(this);
         tree.addMouseWheelListener(this);
-        tree.setShowsRootHandles(false);
+        tree.addKeyListener(this);
     }
     /**
      * Indicates whether this frame manager can be positioned vertically
@@ -190,7 +200,11 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
                 tree.setSelectionPath(path);
             }
         }
-        tree.repaint();
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                tree.repaint();
+            }
+        });
     }
     
     /**
@@ -276,10 +290,12 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     public void setParent(final JComponent parent) {
         final JScrollPane scrollPane = new JScrollPane(tree);
         scrollPane.setAutoscrolls(false);
+        
         parent.setLayout(new BorderLayout());
         parent.add(scrollPane);
-        //scrollPane.setPreferredSize(new Dimension(parent.getWidth(), 0));
+        
         tree.setForeground(parent.getForeground());
+        
         try {
             tree.setBackground(ColourManager.getColour(
                     Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
@@ -292,10 +308,6 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         } catch (NumberFormatException ex) {
             Logger.error(ErrorLevel.TRIVIAL, "Unable to set tree foreground colour", ex);
         }
-        tree.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER));
-        tree.setVisible(true);
-        tree.addKeyListener(this);
     }
     
     /**

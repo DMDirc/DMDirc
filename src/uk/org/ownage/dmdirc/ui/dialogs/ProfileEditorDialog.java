@@ -53,12 +53,11 @@ import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
  * Profiel editing dialog.
  */
-public class ProfileEditorDialog extends StandardDialog implements
+public final class ProfileEditorDialog extends StandardDialog implements
         ActionListener, ListSelectionListener {
     
     /**
@@ -68,25 +67,38 @@ public class ProfileEditorDialog extends StandardDialog implements
      */
     private static final long serialVersionUID = 1;
     
+    /** Component panel. */
     private JPanel panel;
     
+    /** profile list. */
     private JList profileList;
     
+    /** Selected profile index. */
     private int selectedProfile;
     
+    /** add button. */
     private JButton addButton;
+    /** delete button. */
     private JButton deleteButton;
+    /** rename button. */
     private JButton renameButton;
+    /** revert button. */
     private JButton revertButton;
     
+    /** info label. */
     private JTextArea infoLabel;
     
+    /** nickname label. */
     private JLabel nicknameLabel;
+    /** nickname field. */
     private JTextField nickname;
     
+    /** realname label. */
     private JLabel realnameLabel;
+    /** realname field. */
     private JTextField realname;
     
+    /** profiles. */
     private List<ConfigSource> profiles;
     
     /** Creates a new instance of ProfileEditorDialog. */
@@ -244,15 +256,15 @@ public class ProfileEditorDialog extends StandardDialog implements
     }
     
     /** {@inheritDoc}. */
-    public void actionPerformed(ActionEvent event) {
+    public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == revertButton) {
             nickname.setText(profiles.get(selectedProfile).getOption("profile", "nickname"));
             realname.setText(profiles.get(selectedProfile).getOption("profile", "realname"));
         } else if (event.getSource() == addButton) {
-            String newName = JOptionPane.showInputDialog(this,
+            final String newName = JOptionPane.showInputDialog(this,
                     "Please enter the new profile's name", "New profile");
             if (newName != null && !"".equals(newName)) {
-                Identity newIdentity = Identity.buildProfile(newName);
+                final Identity newIdentity = Identity.buildProfile(newName);
                 profiles = IdentityManager.getProfiles();
                 populateList();
                 selectedProfile = profiles.indexOf(newIdentity);
@@ -261,12 +273,12 @@ public class ProfileEditorDialog extends StandardDialog implements
                 profileList.repaint();
             }
         } else if (event.getSource() == deleteButton) {
-            int response = JOptionPane.showConfirmDialog(this,
+            final int response = JOptionPane.showConfirmDialog(this,
                     "Are you sure you want to delete this profile?",
                     "Delete confirmaton", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
-                Identity oldIdentity =
-                        ((Identity) profiles.get(profileList.getSelectedIndex()));
+                final Identity oldIdentity =
+                        (Identity) profiles.get(profileList.getSelectedIndex());
                 oldIdentity.delete();
                 profiles = IdentityManager.getProfiles();
                 populateList();
@@ -280,7 +292,7 @@ public class ProfileEditorDialog extends StandardDialog implements
                 profileList.repaint();
             }
         } else if (event.getSource() == renameButton) {
-            String newName = JOptionPane.showInputDialog(this,
+            final String newName = JOptionPane.showInputDialog(this,
                     "Please enter the new name for the profile",
                     profileList.getSelectedValue());
             if (newName != null && !"".equals(newName)) {
@@ -299,7 +311,7 @@ public class ProfileEditorDialog extends StandardDialog implements
     /** {@inheritDoc}. */
     public void valueChanged(final ListSelectionEvent selectionEvent) {
         if (!selectionEvent.getValueIsAdjusting()) {
-            int selected = ((JList) selectionEvent.getSource()).getSelectedIndex();
+            final int selected = ((JList) selectionEvent.getSource()).getSelectedIndex();
             if (selected >= 0) {
                 profiles.get(selectedProfile).setOption("profile", "nickname", nickname.getText());
                 profiles.get(selectedProfile).setOption("profile", "realname", realname.getText());
@@ -310,6 +322,7 @@ public class ProfileEditorDialog extends StandardDialog implements
         }
     }
     
+    /** Populates the identity list with identities from the identity manager. */
     private void populateList() {
         ((DefaultListModel) profileList.getModel()).clear();
         for (ConfigSource profile : profiles) {

@@ -102,21 +102,21 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     private JComboBox newSettingComboBox;
     /** add new settinb button. */
     private JButton newSettingButton;
-    /** channel settings . */
+    /** channel settings. */
     private Properties settings;
     /** number of current settings. */
     private int numCurrentSettings;
     /** number of addable settings. */
     private int numAddableSettings;
-    /** hashmap, config option -> name */
+    /** hashmap, config option -> name. */
     private HashMap<String, String> optionMap;
     /** Channel identity file. */
     private Identity identity;
-    /** Valid option types */
+    /** Valid option types. */
     private enum OPTION_TYPE { TEXTFIELD, CHECKBOX, }
-    /** text fields */
+    /** text fields. */
     private HashMap<String, JTextField> textFields;
-    /** checkboxes */
+    /** checkboxes. */
     private HashMap<String, JCheckBox> checkBoxes;
     
     /**
@@ -285,7 +285,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     }
     
     /**
-     * Adds an option to the panel
+     * Adds an option to the panel.
      * @param configName config option name
      * @param displayName config option display name
      * @param type config option type
@@ -308,14 +308,18 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
      * Adds an option to the current options pane.
      * @param configName config option name
      * @param displayName config option display name
-     * @param parent panel
+     * @param panel parent panel
      * @param type Option type
      * @param optionValue config option value
      */
     private void addCurrentOption(final String configName, final String displayName,
             final JPanel panel, final OPTION_TYPE type, final String optionValue) {
+        final JLabel label = new JLabel();
+        final JButton button = new JButton();
+        
         JComponent component;
         numCurrentSettings++;
+        
         switch (type) {
             case CHECKBOX:
                 component = new JCheckBox();
@@ -330,14 +334,15 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
             default:
                 throw new IllegalArgumentException("Unrecognised option type: " + type);
         }
+        
         component.setPreferredSize(new Dimension(150,
                 splitUserModes.getFont().getSize()));
-        JLabel label = new JLabel();
+        
         label.setText(displayName + ": ");
         label.setPreferredSize(new Dimension(150,
                 label.getFont().getSize()));
         label.setLabelFor(component);
-        JButton button = new JButton();
+        
         button.setIcon(new ImageIcon(this.getClass()
         .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
         button.setRolloverIcon(new ImageIcon(this.getClass()
@@ -350,6 +355,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         button.setPreferredSize(new Dimension(16, 0));
         button.setActionCommand(configName);
         button.addActionListener(this);
+        
         panel.add(label);
         panel.add(component);
         panel.add(button);
@@ -374,7 +380,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     private void addNewCurrentOption(final String name, final String value) {
         if (identity != null && value != null) {
             if (optionMap.get(name) != null) {
-                String[] optionValues = optionMap.get(name).split("\\.");
+                final String[] optionValues = optionMap.get(name).split("\\.");
                 identity.setOption(optionValues[0], optionValues[1], value);
                 ((DefaultComboBoxModel) newSettingComboBox.getModel()).removeElement(name);
                 numAddableSettings--;
@@ -389,7 +395,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
             addNewCurrentOption((String) newSettingComboBox.getSelectedItem(),
                     newSettingField.getText());
         } else {
-            String[] optionValues = event.getActionCommand().split("\\.");
+            final String[] optionValues = event.getActionCommand().split("\\.");
             identity.removeOption(optionValues[0], optionValues[1]);
             initCurrentSettingsPanel();
         }
@@ -398,14 +404,14 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     /** Saves the current options. */
     public void saveSettings() {
         for (String configName : textFields.keySet()) {
-            String[] optionValues = configName.split("\\.");
-            JTextField textField = textFields.get(configName);
+            final String[] optionValues = configName.split("\\.");
+            final JTextField textField = textFields.get(configName);
             identity.setOption(optionValues[0], optionValues[1],
                     textField.getText());
         }
         for (String configName : checkBoxes.keySet()) {
-            String[] optionValues = configName.split("\\.");
-            JCheckBox checkBox = checkBoxes.get(configName);
+            final String[] optionValues = configName.split("\\.");
+            final JCheckBox checkBox = checkBoxes.get(configName);
             identity.setOption(optionValues[0], optionValues[1],
                     Boolean.toString(checkBox.isSelected()));
         }

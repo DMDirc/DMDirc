@@ -25,8 +25,6 @@ package uk.org.ownage.dmdirc.ui.components;
 import java.awt.AWTException;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
-import java.awt.KeyEventDispatcher;
-import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Robot;
@@ -136,7 +134,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /** search bar. */
     private SearchBar searchBar;
     
-    /** robot for the frame */
+    /** Robot for the frame. */
     private Robot robot;
     
     /**
@@ -161,8 +159,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         setClosable(true);
         setResizable(true);
         setIconifiable(true);
-        setPreferredSize(new Dimension(MainFrame.getMainFrame().getWidth()/2,
-                MainFrame.getMainFrame().getHeight()/3));
+        setPreferredSize(new Dimension(MainFrame.getMainFrame().getWidth() / 2,
+                MainFrame.getMainFrame().getHeight() / 3));
         
         addPropertyChangeListener("maximum", this);
         addInternalFrameListener(this);

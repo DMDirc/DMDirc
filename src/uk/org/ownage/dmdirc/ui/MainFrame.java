@@ -183,7 +183,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         miPreferences.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
-                new PreferencesDialog(MainFrame.getMainFrame(), false).setVisible(true);
+                new PreferencesDialog();
             }
         });
         
@@ -582,6 +582,15 @@ public final class MainFrame extends JFrame implements WindowListener,
             UIManager.put("TabbedPane.contentBorderInsets", new Insets(1, 1, 1, 1));
             UIManager.put("Tree.scrollsOnExpand", true);
             UIManager.put("Tree.scrollsHorizontallyAndVertically", true);
+            
+            UIManager.put("Tree.dropCellBackground", Color.WHITE);
+            UIManager.put("Tree.selectionBackground", Color.WHITE);
+            UIManager.put("Tree.textBackground", Color.WHITE);
+            UIManager.put("Tree.selectionBorderColor", Color.WHITE);
+            UIManager.put("Tree.drawsFocusBorder", false);
+            UIManager.put("Tree.drawHorizontalLines", true);
+            UIManager.put("Tree.drawVerticalLines", true);
+            UIManager.put("Tree.background", Color.WHITE);
             
             if (Config.hasOption("ui", "lookandfeel")) {
                 for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {

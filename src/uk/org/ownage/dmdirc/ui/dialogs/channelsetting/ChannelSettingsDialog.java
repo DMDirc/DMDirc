@@ -55,10 +55,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ChannelListModeItem;
 import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.ui.*;
+import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.ParamModePanel;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
@@ -151,7 +153,7 @@ public class ChannelSettingsDialog extends StandardDialog
             try {
                 topicLengthMax = Integer.parseInt(iSupport.get("TOPICLEN"));
             } catch (NumberFormatException ex) {
-                //Ignore
+                Logger.error(ErrorLevel.TRIVIAL, "IRCD doesnt supply topic length");
             }
         }
         
