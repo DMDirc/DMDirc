@@ -73,7 +73,7 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 		// Set default options if they don't exist
 		updateOption(config, "general.directory", Config.getConfigDir()+"logs"+System.getProperty("file.separator"));
 		updateOption(config, "general.networkfolders", "true");
-		updateOption(config, "general.filenamehash", "false");
+		updateOption(config, "advanced.filenamehash", "false");
 		updateOption(config, "general.addtime", "true");
 		updateOption(config, "general.timestamp", "[dd/MM/yyyy HH:mm:ss]");
 		updateOption(config, "general.stripcodes", "true");
@@ -126,13 +126,14 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	public void showConfig() {
 		PreferencesPanel preferencesPanel = new PreferencesPanel(this);
 		preferencesPanel.addCategory("General", "General configuration for Logging plugin.");
+		preferencesPanel.addCategory("Advanced", "Advanced configuration for Logging plugin. You shouldn't need to edit this unless you know what you are doing.");
 		preferencesPanel.addOption("General", "general.directory", "Directory: ", PreferencesPanel.OptionType.TEXTFIELD, Config.getOption(myDomain, "general.directory"));
 		preferencesPanel.addOption("General", "general.networkfolders", "Separate logs by network: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(myDomain, "general.networkfolders")));
 		preferencesPanel.addOption("General", "general.addtime", "Timestamp logs: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(myDomain, "general.addtime")));
 		preferencesPanel.addOption("General", "general.timestamp", "Timestamp format: ", PreferencesPanel.OptionType.TEXTFIELD, Config.getOption(myDomain, "general.timestamp"));
 		preferencesPanel.addOption("General", "general.stripcodes", "Strip Control Codes: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(myDomain, "general.stripcodes")));
 		preferencesPanel.addOption("General", "general.channelmodeprefix", "Show channel mode prefix: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(myDomain, "general.channelmodeprefix")));
-		preferencesPanel.addOption("General", "general.filenamehash", "Add Filename hash: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(myDomain, "general.filenamehash")));
+		preferencesPanel.addOption("Advanced", "advanced.filenamehash", "Add Filename hash: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(myDomain, "advanced.filenamehash")));
 		
 		preferencesPanel.display();
 	}
@@ -188,7 +189,7 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	
 		// Update Config options
 		updateOption(properties, "general.networkfolders", null);
-		updateOption(properties, "general.filenamehash", null);
+		updateOption(properties, "advanced.filenamehash", null);
 		updateOption(properties, "general.addtime", null);
 		updateOption(properties, "general.timestamp", null);
 		updateOption(properties, "general.stripcodes", null);
@@ -397,7 +398,7 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 			ChannelInfo channel = (ChannelInfo)obj;
 			result = addNetworkDir(result, channel.getParser().getNetworkName());
 			result = result+sanitise(channel.getName().toLowerCase());
-			if (Boolean.parseBoolean(Config.getOption(myDomain, "general.filenamehash"))) {
+			if (Boolean.parseBoolean(Config.getOption(myDomain, "advanced.filenamehash"))) {
 				result = result+'.'+md5(channel.getName());
 			}
 			result = result+".log";
@@ -405,13 +406,13 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 			ClientInfo client = (ClientInfo)obj;
 			result = addNetworkDir(result, client.getParser().getNetworkName());
 			result = result+sanitise(client.getNickname().toLowerCase());
-			if (Boolean.parseBoolean(Config.getOption(myDomain, "general.filenamehash"))) {
+			if (Boolean.parseBoolean(Config.getOption(myDomain, "advanced.filenamehash"))) {
 				result = result+'.'+md5(client.getNickname());
 			}
 			result = result+".log";
 		} else {
 			result = result+sanitise(obj.toString().toLowerCase());
-			if (Boolean.parseBoolean(Config.getOption(myDomain, "general.filenamehash"))) {
+			if (Boolean.parseBoolean(Config.getOption(myDomain, "advanced.filenamehash"))) {
 				result = result+'.'+md5(obj.toString());
 			}
 			result = result+".log";
