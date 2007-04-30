@@ -96,6 +96,9 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     /** The config manager for this channel. */
     private final ConfigManager configManager;
     
+    /** The colour of this channel's notifications. */
+    private Color notification = Color.BLACK;
+    
     /**
      * Creates a new instance of Channel.
      * @param newServer The server object that this channel belongs to
@@ -185,7 +188,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             frame.addLine("channelSelfMessage", modes, me.getNickname(),
                     me.getIdent(), me.getHost(), line, channelInfo);
             channelInfo.sendMessage(line);
-            sendNotification();
         } else {
             sendLine(line.substring(0, maxLineLength));
             sendLine(line.substring(maxLineLength));
@@ -208,7 +210,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             frame.addLine("channelSelfAction", modes, me.getNickname(), me.getIdent(),
                     me.getHost(), action, channelInfo);
             channelInfo.sendAction(action);
-            sendNotification();
         }
     }
     
@@ -253,7 +254,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         final ClientInfo me = server.getParser().getMyself();
         frame.addLine("channelSelfJoin", "", me.getNickname(), me.getIdent(),
                 me.getHost(), channelInfo.getName());
-        sendNotification();
     }
     
     /**
@@ -372,9 +372,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         frame.addLine(type, modes, parts[0], parts[1], parts[2], sMessage,
                 cChannel);
-        
-        sendNotification();
-        
+               
         ActionManager.processEvent(CoreActionType.CHANNEL_MESSAGE, this, cChannelClient, sMessage);
     }
     
@@ -395,7 +393,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             type = "channelSelfExternalAction";
         }
         frame.addLine(type, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
-        sendNotification();
         
         ActionManager.processEvent(CoreActionType.CHANNEL_ACTION, this, cChannelClient, sMessage);
     }
@@ -444,7 +441,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             
             ActionManager.processEvent(CoreActionType.CHANNEL_TOPICCHANGE, this, user, topic);
         }
-        sendNotification();
         updateTitle();
     }
     
@@ -464,7 +460,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         frame.addName(cChannelClient);
         tabCompleter.addEntry(cChannelClient.getNickname());
-        sendNotification();
         
         ActionManager.processEvent(CoreActionType.CHANNEL_JOIN, this, cChannelClient);
     }
@@ -503,7 +498,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         frame.removeName(cChannelClient);
         
         tabCompleter.removeEntry(cChannelClient.getNickname());
-        sendNotification();
         
         ActionManager.processEvent(CoreActionType.CHANNEL_PART, this, cChannelClient, sReason);
     }
@@ -543,9 +537,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         if (cKickedClient.getClient().equals(tParser.getMyself())) {
             resetWindow();
         }
-        
-        sendNotification();
-        
+                
         ActionManager.processEvent(CoreActionType.CHANNEL_KICK, this, cKickedByClient, cKickedClient, sReason);
     }
     
@@ -573,8 +565,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         frame.removeName(cChannelClient);
         tabCompleter.removeEntry(cChannelClient.getNickname());
         
-        sendNotification();
-        
         ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, this, cChannelClient, sReason);
     }
     
@@ -598,7 +588,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         tabCompleter.removeEntry(sOldNick);
         tabCompleter.addEntry(nick);
         frame.addLine(type, modes, sOldNick, ident, host, nick, cChannel);
-        sendNotification();
         
         ActionManager.processEvent(CoreActionType.CHANNEL_NICKCHANGE, this, cChannelClient, sOldNick);
     }
@@ -628,7 +617,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         }
         
         frame.updateNames();
-        sendNotification();
         
         // TODO: Action hook
     }
@@ -857,6 +845,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         final JInternalFrame activeFrame = MainFrame.getMainFrame().getActiveFrame();
         if (activeFrame != null && !activeFrame.equals(frame)) {
             MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
+            notification = colour;
         }
     }
     
@@ -865,6 +854,15 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      */
     private void clearNotification() {
         MainFrame.getMainFrame().getFrameManager().clearNotification(this);
+        notification = Color.BLACK;
+    }
+    
+    /**
+     * Retrieves the current notification colour of this channel.
+     * @return This channel's notification colour
+     */
+    public Color getNotification() {
+        return notification;
     }
     
 }

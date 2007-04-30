@@ -22,6 +22,8 @@
 
 package uk.org.ownage.dmdirc.actions;
 
+import java.awt.Color;
+
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
@@ -37,6 +39,12 @@ public enum ActionComponent {
         Class appliesTo() { return Channel.class; }
         Class getType() { return String.class; }
     },
+    
+    CHANNEL_COLOUR {
+        Object get(final Object argument) { return ((Channel) argument).getNotification(); }
+        Class appliesTo() { return Channel.class; }
+        Class getType() { return Color.class; }
+    },    
     
     USER_NAME {
         Object get(final Object argument) { return ((ChannelClientInfo) argument).getNickname(); }

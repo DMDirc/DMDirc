@@ -27,8 +27,10 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.InvalidPropertiesFormatException;
+import java.util.List;
 import java.util.Properties;
 
 import javax.swing.UIManager;
@@ -112,7 +114,7 @@ public final class Config {
         defaults.setProperty("general.closequeriesonquit", "false");
         
         defaults.setProperty("general.closechannelsondisconnect", "false");
-        defaults.setProperty("general.closequeriesondisconnect", "false");        
+        defaults.setProperty("general.closequeriesondisconnect", "false");
         
         // These are temporary until we get server list support
         defaults.setProperty("general.server", "blueyonder.uk.quakenet.org");
@@ -166,6 +168,10 @@ public final class Config {
         
         defaults.setProperty("server.friendlymodes", "true");
         
+        // Some defaults for use in actions
+        defaults.setProperty("actions.textcolour", "2");
+        defaults.setProperty("actions.eventcolour", "3");
+        defaults.setProperty("actions.highlightcolour", "4");
         
         return defaults;
     }
@@ -196,6 +202,27 @@ public final class Config {
         }
         
         return properties.getProperty(domain + "." + option);
+    }
+    
+    /**
+     * Returns the name of all the options in the specified domain.
+     * @param domain The domain to search
+     * @return A list of options in the specified domain
+     */
+    public static List<String> getOptions(final String domain) {
+        if (properties == null) {
+            initialise();
+        }
+        
+        final ArrayList<String> res = new ArrayList<String>();
+        
+        for (Object key : properties.keySet()) {
+            if (((String) key).startsWith(domain + ".")) {
+                res.add(((String) key).substring(domain.length() + 1));
+            }
+        }
+        
+        return res;
     }
     
     /**

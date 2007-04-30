@@ -22,6 +22,10 @@
 
 package uk.org.ownage.dmdirc.actions;
 
+import java.awt.Color;
+
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+
 /**
  * An ActionComparison represents a possible comparison between two types of
  * data used in an action condition.
@@ -35,18 +39,42 @@ public enum ActionComparison {
     },
     
     STRING_NEQUALS {
-        boolean test(final Object arg1, final Object arg2) { return !((String) arg1).equalsIgnoreCase((String) arg2); }
+        boolean test(final Object arg1, final Object arg2) { return !STRING_EQUALS.test(arg1, arg2); }
         Class appliesTo() { return String.class; }
-    },    
+    },
     
     STRING_STARTSWITH {
         boolean test(final Object arg1, final Object arg2) { return ((String) arg1).startsWith((String) arg2); }
-        Class appliesTo() { return String.class; }        
+        Class appliesTo() { return String.class; }
     },
     
     STRING_CONTAINS {
         boolean test(final Object arg1, final Object arg2) { return ((String) arg1).indexOf((String) arg2) != -1; }
-        Class appliesTo() { return String.class; }        
+        Class appliesTo() { return String.class; }
+    },
+    
+    COLOUR_EQUALS {
+        boolean test(final Object arg1, final Object arg2) {
+            Color target = null;
+            if (((String) arg2).length() > 3) {
+                target = ColourManager.getColour((String) arg2);
+            } else {
+                try {
+                    target = ColourManager.getColour(Integer.parseInt((String) arg2));
+                } catch (NumberFormatException ex) {
+                    target = null;
+                }
+            }
+            
+            return ((Color) arg1).equals(target);
+        }
+        
+        Class appliesTo() { return Color.class; }
+    },
+    
+    COLOUR_NEQUALS {
+        boolean test(final Object arg1, final Object arg2) { return !COLOUR_EQUALS.test(arg1, arg2); }
+        Class appliesTo() { return Color.class; }
     };
     
     /**

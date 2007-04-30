@@ -219,6 +219,10 @@ public class ActionManager {
             res = res.replaceAll("\\$source", source.getNickname());
         }
         
+        for (String key : Config.getOptions("actions")) {
+            res = res.replaceAll("\\$" + key, Config.getOption("actions", key));
+        }
+        
         return res;
     }
 }
