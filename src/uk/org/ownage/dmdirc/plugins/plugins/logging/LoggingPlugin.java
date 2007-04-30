@@ -57,6 +57,9 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	/** What domain do we store all settings in the global config under. */
 	private static final String myDomain = "plugin-Logging";
 
+	/** Is this plugin active? */
+	private boolean isActive = false;
+
 	/**
 	 * Creates a new instance of the Logging Plugin
 	 */
@@ -106,19 +109,32 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	/**
 	 * Called when this plugin becomes active.
 	 */
-	public void onActivate() { }
+	public void onActivate() {
+		isActive = true;
+	}
+	
+	/**
+	 * Check to see if a plugin is active.
+	 * (Non-Active PLugins will not recieve Events)
+	 *
+	 * @return True if active, else False.
+	 */
+	public boolean isActive() { return isActive; }
+		
 	
 	/**
 	 * Called when this plugin is deactivated.
 	 */
-	public void onDeactivate() { }
+	public void onDeactivate() {
+		isActive = false;
+	}
 	
 	/**
 	 * Called to see if the plugin has configuration options (via dialog).
 	 *
 	 * @return true if the plugin has configuration options via a dialog.
 	 */
-	public boolean isConfigurable() { return false; }
+	public boolean isConfigurable() { return true; }
 	
 	/**
 	 * Called to show the Configuration dialog of the plugin if appropriate.
@@ -243,6 +259,7 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	 * @param arguments The arguments for the event
 	 */
 	public void processEvent(final ActionType type, final Object ... arguments) {
+		if (!isActive) { return; }
 		if (type instanceof CoreActionType) {
 			CoreActionType thisType = (CoreActionType)type;
 			ChannelInfo channel;

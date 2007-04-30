@@ -45,6 +45,14 @@ public interface Plugin {
 	void onActivate();
 	
 	/**
+	 * Check to see if a plugin is active.
+	 * (Non-Active PLugins will not recieve Events)
+	 *
+	 * @return True if active, else False.
+	 */
+	boolean isActive();
+	
+	/**
 	 * Called when this plugin is deactivated.
 	 */
 	void onDeactivate();

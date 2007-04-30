@@ -35,6 +35,8 @@ import uk.org.ownage.dmdirc.plugins.Plugin;
  * @author chris
  */
 public class DcopPlugin implements Plugin {
+    /** Is this plugin active? */
+    private boolean isActive = false;
     
     /** Creates a new instance of DcopPlugin. */
     public DcopPlugin() {
@@ -75,10 +77,17 @@ public class DcopPlugin implements Plugin {
     
     /** {@inheritDoc}. */
     public void onActivate() {
+        isActive = true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isActive() {
+        return isActive;
     }
     
     /** {@inheritDoc}. */
     public void onDeactivate() {
+        isActive = false;
     }
     
     /** {@inheritDoc}. */

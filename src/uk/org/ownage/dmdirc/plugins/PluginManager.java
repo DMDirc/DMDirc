@@ -215,7 +215,9 @@ public class PluginManager {
 		for (String pluginName : knownPlugins.keySet()) {
 			Plugin plugin = knownPlugins.get(pluginName);
 			if (plugin instanceof EventPlugin) {
-				((EventPlugin)plugin).processEvent(type, arguments);
+				if (plugin.isActive()) {
+					((EventPlugin)plugin).processEvent(type, arguments);
+				}
 			}
 		}
 	}
