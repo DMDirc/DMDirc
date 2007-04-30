@@ -63,6 +63,7 @@ public class PluginManager {
 			String[] autoLoadList = Config.getOption("plugins", "autoload").split("\n");
 			for (String plugin : autoLoadList) {
 				addPlugin(plugin, plugin);
+				getPlugin(plugin).onActivate();
 			}
 		}
 	}
