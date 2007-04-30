@@ -169,7 +169,7 @@ public final class Config {
         defaults.setProperty("server.friendlymodes", "true");
         
         // Some defaults for use in actions
-        defaults.setProperty("actions.textcolour", "2");
+        defaults.setProperty("actions.textcolour", "12");
         defaults.setProperty("actions.eventcolour", "3");
         defaults.setProperty("actions.highlightcolour", "4");
         

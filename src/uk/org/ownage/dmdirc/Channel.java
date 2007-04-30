@@ -33,9 +33,9 @@ import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+
 import uk.org.ownage.dmdirc.actions.ActionManager;
 import uk.org.ownage.dmdirc.actions.CoreActionType;
-
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
@@ -62,7 +62,6 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
 import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
@@ -188,6 +187,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             frame.addLine("channelSelfMessage", modes, me.getNickname(),
                     me.getIdent(), me.getHost(), line, channelInfo);
             channelInfo.sendMessage(line);
+            ActionManager.processEvent(CoreActionType.CHANNEL_SELF_MESSAGE, this, channelInfo.getUser(me), line);
         } else {
             sendLine(line.substring(0, maxLineLength));
             sendLine(line.substring(maxLineLength));
@@ -210,6 +210,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             frame.addLine("channelSelfAction", modes, me.getNickname(), me.getIdent(),
                     me.getHost(), action, channelInfo);
             channelInfo.sendAction(action);
+            ActionManager.processEvent(CoreActionType.CHANNEL_SELF_ACTION, this, channelInfo.getUser(me), action);
         }
     }
     
@@ -618,7 +619,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         frame.updateNames();
         
-        // TODO: Action hook
+        ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, this, cChannelClient, sModes);
     }
     
     /**
