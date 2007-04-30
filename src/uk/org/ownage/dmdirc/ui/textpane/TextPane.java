@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.components;
+package uk.org.ownage.dmdirc.ui.textpane;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;

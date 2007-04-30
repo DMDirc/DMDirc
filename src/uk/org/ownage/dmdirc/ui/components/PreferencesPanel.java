@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui.components;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
@@ -42,6 +43,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
@@ -50,8 +52,6 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.MainFrame;
@@ -225,7 +225,7 @@ public final class PreferencesPanel extends StandardDialog
         
         JComponent option;
         
-        parent.add(label);
+        ((JPanel) parent.getComponent(1)).add(label);
         switch (type) {
             case TEXTFIELD:
                 option = new JTextField();
@@ -269,7 +269,7 @@ public final class PreferencesPanel extends StandardDialog
         option.setPreferredSize(
                 new Dimension(Short.MAX_VALUE, option.getFont().getSize()));
         label.setLabelFor(option);
-        parent.add(option);
+        ((JPanel) parent.getComponent(1)).add(option);
     }
     
     public void addCategory(final String name) {
@@ -277,10 +277,23 @@ public final class PreferencesPanel extends StandardDialog
     }
     
     public void addCategory(final String name, final String blurb) {
-        final JPanel panel = new JPanel(new SpringLayout());
+        final JPanel panel = new JPanel(new BorderLayout(SMALL_BORDER, LARGE_BORDER));
         categories.put(name, panel);
         mainPanel.add(panel, name);
         ((DefaultListModel) tabList.getModel()).addElement(name);
+        
+        JTextArea infoLabel = new JTextArea(blurb);
+        infoLabel.setEditable(false);
+        infoLabel.setWrapStyleWord(true);
+        infoLabel.setLineWrap(true);
+        infoLabel.setHighlighter(null);
+        infoLabel.setBackground(panel.getBackground());
+        if ("".equals(blurb)) {
+            infoLabel.setVisible(false);
+        } 
+        
+        panel.add(infoLabel, BorderLayout.PAGE_START);
+        panel.add(new JPanel(new SpringLayout()), BorderLayout.CENTER);
     }
     
     public void addOption(final String category, final String name,
@@ -346,8 +359,9 @@ public final class PreferencesPanel extends StandardDialog
     
     public void display() {
         for (JPanel panel : categories.values()) {
-            layoutGrid(panel, panel.getComponentCount() / 2, 2, SMALL_BORDER,
-                    SMALL_BORDER, LARGE_BORDER, LARGE_BORDER);
+            layoutGrid((JPanel) panel.getComponent(1),
+                    ((JPanel) panel.getComponent(1)).getComponentCount() / 2,
+                    2, SMALL_BORDER, SMALL_BORDER, LARGE_BORDER, LARGE_BORDER);
         }
         cardLayout.first(mainPanel);
         tabList.setSelectedIndex(0);

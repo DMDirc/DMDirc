@@ -49,6 +49,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -614,5 +615,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         } catch (IllegalAccessException ex) {
             Logger.error(ErrorLevel.ERROR, "Unable to set look and feel: " + classNameBuilder.toString(), ex);
         }
+        SwingUtilities.updateComponentTreeUI(this);
     }
 }
