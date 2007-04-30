@@ -38,6 +38,9 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
  */
 public class SystrayPlugin implements Plugin {
     
+    /** Is this plugin active? */
+    private boolean isActive = false;
+    
     /** The tray icon we're currently using. */
     private TrayIcon icon;
     
@@ -91,11 +94,17 @@ public class SystrayPlugin implements Plugin {
     
     /** {@inheritDoc}. */
     public void onActivate() {
-        
+        isActive = true;
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isActive() {
+        return isActive;
     }
     
     /** {@inheritDoc}. */
     public void onDeactivate() {
+        isActive = false;
         final SystemTray tray = SystemTray.getSystemTray();
         
         tray.remove(icon);

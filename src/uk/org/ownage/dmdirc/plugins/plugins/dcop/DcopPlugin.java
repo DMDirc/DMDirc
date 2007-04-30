@@ -35,6 +35,7 @@ import uk.org.ownage.dmdirc.plugins.Plugin;
  * @author chris
  */
 public class DcopPlugin implements Plugin {
+    
     /** Is this plugin active? */
     private boolean isActive = false;
     

@@ -121,7 +121,6 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	 */
 	public boolean isActive() { return isActive; }
 		
-	
 	/**
 	 * Called when this plugin is deactivated.
 	 */
