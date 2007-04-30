@@ -68,8 +68,6 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	 * @return false if the plugin can not be loaded
 	 */
 	public boolean onLoad() {
-		System.out.println("Loaded!");
-
 		Properties config = Config.getConfig();
 		
 		// Set default options if they don't exist
@@ -187,9 +185,7 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	 * @param properties user preferences
 	 */
 	public void configClosed(Properties properties) {
-		System.out.println("Got Properties!");
-		System.out.println(properties);
-		
+	
 		// Update Config options
 		updateOption(properties, "general.networkfolders", null);
 		updateOption(properties, "general.filenamehash", null);
@@ -367,7 +363,6 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 		if (Boolean.parseBoolean(Config.getOption(myDomain, "general.stripcodes"))) {
 			finalLine = Styliser.stipControlCodes(finalLine);
 		}
-//		System.out.println("[Adding] to "+filename+" -> "+finalLine);
 
 		BufferedWriter out = null;
 		try {
