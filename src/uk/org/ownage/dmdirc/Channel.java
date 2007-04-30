@@ -364,16 +364,16 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
         
         String type = "channelMessage";
-        if (cChannelClient != null && cChannelClient.getClient().equals(tParser.getMyself())) {
+        if (cChannelClient.getClient().equals(tParser.getMyself())) {
             type = "channelSelfExternalMessage";
         }
         
-        final String[] parts = getDetails(cChannelClient, sHost);
+        final String[] parts = getDetails(cChannelClient);
         final String modes = getModes(cChannelClient);
         
         frame.addLine(type, modes, parts[0], parts[1], parts[2], sMessage,
                 cChannel);
-               
+        
         ActionManager.processEvent(CoreActionType.CHANNEL_MESSAGE, this, cChannelClient, sMessage);
     }
     
@@ -387,7 +387,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      */
     public void onChannelAction(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-        final String[] parts = getDetails(cChannelClient, sHost);
+        final String[] parts = getDetails(cChannelClient);
         final String modes = getModes(cChannelClient);
         String type = "channelAction";
         if (parts[0].equals(tParser.getMyself().getNickname())) {
@@ -516,7 +516,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     public void onChannelKick(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient,
             final String sReason, final String sKickedByHost) {
-        final String[] kicker = getDetails(cKickedByClient, sKickedByHost);
+        final String[] kicker = getDetails(cKickedByClient);
         final String kickermodes = getModes(cKickedByClient);
         final String victim = cKickedClient.getNickname();
         final String victimmodes = cKickedClient.getImportantModePrefix();
@@ -538,7 +538,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         if (cKickedClient.getClient().equals(tParser.getMyself())) {
             resetWindow();
         }
-                
+        
         ActionManager.processEvent(CoreActionType.CHANNEL_KICK, this, cKickedByClient, cKickedClient, sReason);
     }
     
@@ -607,10 +607,10 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             frame.addLine("channelModeDiscovered", sModes, cChannel.getName());
         } else {
             final String modes = getModes(cChannelClient);
-            final String[] details = getDetails(cChannelClient, sHost);
+            final String[] details = getDetails(cChannelClient);
             final String myNick = tParser.getMyself().getNickname();
             String type = "channelModeChange";
-            if (cChannelClient != null && myNick.equals(cChannelClient.getNickname())) {
+            if (myNick.equals(cChannelClient.getNickname())) {
                 type = "channelSelfModeChange";
             }
             frame.addLine(type,  modes, details[0], details[1],
@@ -639,7 +639,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         if (Boolean.parseBoolean(configManager.getOption("channel", "splitusermodes"))) {
             final String sourceModes = getModes(cSetByClient);
-            final String[] sourceHost = getDetails(cSetByClient, sHost);
+            final String[] sourceHost = getDetails(cSetByClient);
             final String targetModes = cChangedClient.getImportantModePrefix();
             final String targetNick = cChangedClient.getClient().getNickname();
             final String targetIdent = cChangedClient.getClient().getIdent();
@@ -672,7 +672,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             final String sType, final String sMessage, final String sHost) {
         
         final String modes = getModes(cChannelClient);
-        final String[] source = getDetails(cChannelClient, sHost);
+        final String[] source = getDetails(cChannelClient);
         
         frame.addLine("channelCTCP", modes, source[0], source[1], source[2],
                 sType, sMessage, cChannel);
@@ -697,22 +697,16 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     }
     
     /**
-     * Returns a string[] containing the nickname/ident/host of the client, or
-     * server, where applicable.
+     * Returns a string[] containing the nickname/ident/host of the client.
      * @param channelClient The channel client to check
-     * @param host The hostname to check if the channel client doesn't exist
      * @return A string[] containing displayable components
      */
-    private String[] getDetails(final ChannelClientInfo channelClient, final String host) {
-        if (channelClient == null) {
-            return ClientInfo.parseHostFull(host);
-        } else {
-            final String[] res = new String[3];
-            res[0] = channelClient.getNickname();
-            res[1] = channelClient.getClient().getIdent();
-            res[2] = channelClient.getClient().getHost();
-            return res;
-        }
+    private String[] getDetails(final ChannelClientInfo channelClient) {
+        final String[] res = new String[3];
+        res[0] = channelClient.getNickname();
+        res[1] = channelClient.getClient().getIdent();
+        res[2] = channelClient.getClient().getHost();
+        return res;
     }
     
     /**
