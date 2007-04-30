@@ -24,6 +24,7 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
+import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.IRCParser;
@@ -54,7 +55,10 @@ public final class CallbackOnChannelUserModeChanged extends CallbackObjectSpecif
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cChangedClient, final ChannelClientInfo cSetByClient, final String sHost, final String sMode) {
+	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, final String sHost, final String sMode) {
+		if (cSetByClient == null && myParser.getCreateFake()) {
+			cSetByClient = new ChannelClientInfo(cChannel.getParser(), (new ClientInfo(cChannel.getParser(), sHost)).setFake(true) ,cChannel);
+		}
 		boolean bResult = false;
 		IChannelUserModeChanged eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {

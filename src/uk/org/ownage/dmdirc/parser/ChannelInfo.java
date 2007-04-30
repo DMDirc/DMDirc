@@ -538,6 +538,13 @@ public final class ChannelInfo {
 	public String toString() { return sName; }
 	
 	/**
+	 * Get the parser object that owns this channel
+	 *
+	 * @return The parser object that owns this channel
+	 */
+	public IRCParser getParser() { return myParser; }
+	
+	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String

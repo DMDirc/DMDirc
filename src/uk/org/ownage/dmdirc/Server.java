@@ -218,7 +218,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         
         final ServerInfo serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);
-        parser = new IRCParser(myInfo, serverInfo);
+        parser = new IRCParser(myInfo, serverInfo).setCreateFake(true);
         
         if (raw == null) {
             raw = new Raw(this);

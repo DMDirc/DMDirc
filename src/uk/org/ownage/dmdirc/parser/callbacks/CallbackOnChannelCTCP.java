@@ -24,6 +24,7 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
+import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.IRCParser;
@@ -54,7 +55,10 @@ public final class CallbackOnChannelCTCP extends CallbackObjectSpecific {
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sType, final String sMessage, final String sHost) {
+	public boolean call(final ChannelInfo cChannel, ChannelClientInfo cChannelClient, final String sType, final String sMessage, final String sHost) {
+		if (cChannelClient == null && myParser.getCreateFake()) {
+			cChannelClient = new ChannelClientInfo(cChannel.getParser(), (new ClientInfo(cChannel.getParser(), sHost)).setFake(true) ,cChannel);
+		}
 		boolean bResult = false;
 		IChannelCTCP eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {

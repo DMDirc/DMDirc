@@ -56,6 +56,12 @@ public final class ChannelClientInfo {
 	}
 	
 	/**
+	 * Check if this ChannelClient is linked to a fake client.
+	 *
+	 * @return True if this ChannelClient is linked to a fake client, else false
+	 */
+	public boolean isFake() { return cClient.isFake(); }
+	/**
 	 * Get the client object represented by this channelclient.
 	 *
 	 * @return Client object represented by this channelclient

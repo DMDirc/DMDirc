@@ -210,6 +210,9 @@ public final class IRCParser implements Runnable {
 			public void checkServerTrusted(final X509Certificate[] certs, final String authType) { }
 		}, 
 	};
+	
+	/** Should fake (channel)clients be created for callbacks where they do not exist? */
+	protected boolean createFake = false;
 		
 	/** This is the TrustManager used for SSL Sockets. */
 	private TrustManager[] myTrustManager = trustAllCerts;
@@ -240,6 +243,22 @@ public final class IRCParser implements Runnable {
 		if (myDetails != null) { this.me = myDetails; }
 		if (serverDetails != null) { this.server = serverDetails; }
 	}
+	
+	/**
+	 * Get the current Value of createFake.
+	 *
+	 * @return Value of createFake (true if fake clients will be added for callbacks, else false)
+	 */
+	public boolean getCreateFake() { return createFake; }
+	
+	/**
+	 * Get the current Value of createFake.
+	 * This returns "this" and thus can be used in the construction line.
+	 *
+	 * @param newValue New balue to set createFake
+	 */
+	public IRCParser setCreateFake(boolean newValue) { createFake = newValue; return this; }	
+	
 	
 	/**
 	 * Get the current socket State.

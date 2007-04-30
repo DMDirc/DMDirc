@@ -24,6 +24,7 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
+import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.IRCParser;
@@ -53,7 +54,10 @@ public final class CallbackOnChannelNonUserModeChanged extends CallbackObjectSpe
 	 * @param sModes Exact String parsed (not including user modes)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
+	public boolean call(final ChannelInfo cChannel, ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
+		if (cChannelClient == null && myParser.getCreateFake()) {
+			cChannelClient = new ChannelClientInfo(cChannel.getParser(), (new ClientInfo(cChannel.getParser(), sHost)).setFake(true) ,cChannel);
+		}
 		boolean bResult = false;
 		IChannelNonUserModeChanged eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {

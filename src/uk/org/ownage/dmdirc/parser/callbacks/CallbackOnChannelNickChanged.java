@@ -24,6 +24,7 @@
 
 package uk.org.ownage.dmdirc.parser.callbacks;
 
+import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.IRCParser;

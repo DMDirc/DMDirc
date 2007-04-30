@@ -45,6 +45,8 @@ public final class ClientInfo {
 	private String myAwayReason = "";
 	/** Known away state for client. */
 	private boolean bIsAway;
+	/** Is this a fake client created just for a callback? */
+	private boolean bIsFake;
 	/** Reference to the parser object that owns this channel, Used for modes. */
 	private IRCParser myParser;
 
@@ -59,6 +61,26 @@ public final class ClientInfo {
 		setUserBits(sHostmask, true);
 		myParser = tParser;
 	}
+
+	/**
+	 * Check if this is a fake client.
+	 *
+	 * @return True if this is a fake client, else false
+	 */
+	public boolean isFake() { return bIsFake; }
+	/**
+	 * Check if this client is actually a server.
+	 *
+	 * @return True if this client is actually a server.
+	 */
+	public boolean isServer() { return !(sNickname.indexOf(":") == -1); }
+	/**
+	 * Set if this is a fake client.
+	 * This returns "this" and thus can be used in the construction line.
+	 *
+	 * @param newValue new value for isFake - True if this is a fake client, else false
+	 */
+	public ClientInfo setFake(boolean newValue) { bIsFake = newValue; return this; }
 
 	/**
 	 * Get a nickname of a user from a hostmask.
@@ -217,11 +239,18 @@ public final class ClientInfo {
 		for (ChannelInfo iChannel : myParser.hChannelList.values()) {
 			if (iChannel == cChannel) { continue; }
 			iChannelClient = iChannel.getUser(this);
-			if (iChannelClient != null) {	bCanSee = true; break; }
+			if (iChannelClient != null) { bCanSee = true; break; }
 		}
 
 		return bCanSee;
 	}
+	
+	/**
+	 * Get the parser object that owns this client
+	 *
+	 * @return The parser object that owns this client
+	 */
+	public IRCParser getParser() { return myParser; }
 	
 	/**
 	 * Get SVN Version information.
