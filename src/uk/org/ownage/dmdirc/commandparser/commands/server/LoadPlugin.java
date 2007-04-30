@@ -56,7 +56,7 @@ public final class LoadPlugin extends ServerCommand {
             PluginManager.getPluginManager().getPlugin(args[0]).onActivate();
             origin.addLine("Plugin loaded.");
         } else {
-            origin.addLine("Load failed: " + ex.getMessage());
+            origin.addLine("Pluging Loading failed");
         }
     }
     
