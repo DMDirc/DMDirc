@@ -49,7 +49,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -82,7 +81,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4;
     
     /**
      * The number of pixels each new internal frame is offset by.
@@ -140,8 +139,6 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     private MainFrame() {
         super();
-        
-        initUISettings();
         
         initComponents();
         
@@ -209,6 +206,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     public static synchronized MainFrame getMainFrame() {
         if (me == null) {
+            initUISettings();
             me = new MainFrame();
         }
         return me;
@@ -550,7 +548,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
     
-    private void initUISettings() {
+    private static void initUISettings() {
         final StringBuilder classNameBuilder = new StringBuilder();
         if (Config.hasOption("ui", "antialias")) {
             final String aaSetting = Config.getOption("ui", "antialias");
@@ -615,6 +613,5 @@ public final class MainFrame extends JFrame implements WindowListener,
         } catch (IllegalAccessException ex) {
             Logger.error(ErrorLevel.ERROR, "Unable to set look and feel: " + classNameBuilder.toString(), ex);
         }
-        SwingUtilities.updateComponentTreeUI(this);
     }
 }
