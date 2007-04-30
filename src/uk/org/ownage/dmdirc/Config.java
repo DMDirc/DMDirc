@@ -226,6 +226,28 @@ public final class Config {
     }
     
     /**
+     * Returns the name of all domains in the global config.
+     * @return A list of domains in this config
+     */
+    public static List<String> getDomains() {
+        if (properties == null) {
+            initialise();
+        }
+        
+        final ArrayList<String> res = new ArrayList<String>();
+        String domain;
+        
+        for (Object key : properties.keySet()) {
+            domain = ((String) key).substring(0, ((String) key).indexOf('.'));
+            if (!res.contains(domain)) {
+                res.add(domain);
+            }
+        }
+        
+        return res;
+    }
+    
+    /**
      * Sets a specified option.
      * @param domain domain of the option
      * @param option name of the option

@@ -160,6 +160,7 @@ public final class CommandManager {
         new Raw();
         new ReloadFormatter();
         new SaveFormatter();
+        new Set();
         new Whois();
         
         // Query commands
