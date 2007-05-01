@@ -58,4 +58,21 @@ public final class Main {
         MainFrame.getMainFrame();
     }
     
+    /**
+     * Quits the client nicely.
+     * @param reason The quit reason to send
+     */
+    public static void quit(final String reason) {
+        ServerManager.getServerManager().disconnectAll(reason);
+        Config.save();
+        System.exit(0);
+    }
+    
+    /**
+     * Quits the client nicely, with the default closing message.
+     */
+    public static void quit() {
+        quit(Config.getOption("general", "closemessage"));
+    }
+    
 }

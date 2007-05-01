@@ -196,14 +196,14 @@ public class ActionManager {
         Channel channel = null;
         ChannelClientInfo source = null;
         
-        if (arguments[0] instanceof Server) {
+        if (arguments.length > 0 && arguments[0] instanceof Server) {
             server = (Server) arguments[0];
         } else if (arguments[0] instanceof Channel) {
             channel = (Channel) arguments[0];
             server = channel.getServer();
         }
         
-        if (arguments[1] instanceof ChannelClientInfo) {
+        if (arguments.length > 1 && arguments[1] instanceof ChannelClientInfo) {
             source = (ChannelClientInfo) arguments[1];
         }
         
@@ -219,7 +219,7 @@ public class ActionManager {
             res = res.replaceAll("\\$source", source.getNickname());
         }
         
-        if (arguments[2] instanceof String) {
+        if (arguments.length > 2 && arguments[2] instanceof String) {
             res = res.replaceAll("\\$message", (String) arguments[2]);
         }
         

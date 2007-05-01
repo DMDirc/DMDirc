@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.Main;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.ServerManager;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
@@ -54,9 +55,7 @@ public final class Quit extends ServerCommand {
      */
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
-        ServerManager.getServerManager().disconnectAll(implodeArgs(args));
-        Config.save();
-        System.exit(0);
+        Main.quit(implodeArgs(args));
     }
     
     

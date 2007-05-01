@@ -23,11 +23,19 @@
 package uk.org.ownage.dmdirc.plugins.plugins.systray;
 
 import java.awt.AWTException;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.net.URL;
 
 import javax.swing.ImageIcon;
 
+import uk.org.ownage.dmdirc.Main;
 import uk.org.ownage.dmdirc.plugins.Plugin;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 
@@ -36,13 +44,29 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
  * notifications to be disabled.
  * @author chris
  */
-public class SystrayPlugin implements Plugin {
+public class SystrayPlugin implements Plugin, ActionListener, MouseListener {
     
     /** Is this plugin active? */
     private boolean isActive = false;
     
     /** The tray icon we're currently using. */
     private TrayIcon icon;
+    
+    /** The menu to use for the tray icon. */
+    private final PopupMenu menu;
+    
+    /** Creates a new system tray plugin. */
+    public SystrayPlugin() {
+        final MenuItem show = new MenuItem("Show/hide");
+        final MenuItem quit = new MenuItem("Quit");
+        
+        menu = new PopupMenu();
+        menu.add(show);
+        menu.add(quit);
+        
+        show.addActionListener(this);
+        quit.addActionListener(this);
+    }
     
     /**
      * Sends a notification via the system tray icon.
@@ -61,21 +85,28 @@ public class SystrayPlugin implements Plugin {
      */
     public void notify(final String title, final String message) {
         notify(title, message, TrayIcon.MessageType.NONE);
-    }    
+    }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    public void actionPerformed(final ActionEvent e) {
+        if (e.getActionCommand().equals("Show/hide")) {
+            MainFrame.getMainFrame().setVisible(!MainFrame.getMainFrame().isVisible());
+        } else if (e.getActionCommand().equals("Quit")) {
+            Main.quit();
+        }
+    }
+    
+    /** {@inheritDoc} */
     public boolean onLoad() {
         if (SystemTray.isSupported()) {
-            final SystemTray tray = SystemTray.getSystemTray();
-            
-            final ImageIcon image = MainFrame.getMainFrame().getIcon();
-            
-            icon = new TrayIcon(image.getImage());
-            
-            icon.setImageAutoSize(false);
+            final ClassLoader cldr = this.getClass().getClassLoader();
+            final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/logo.png");
+            icon = new TrayIcon(new ImageIcon(imageURL).getImage(), "DMDirc", menu);
+            icon.setImageAutoSize(true);
+            icon.addMouseListener(this);
             
             try {
-                tray.add(icon);
+                SystemTray.getSystemTray().add(icon);
             } catch (AWTException ex) {
                 return false;
             }
@@ -88,50 +119,82 @@ public class SystrayPlugin implements Plugin {
         return true;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public void onUnload() {
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public void onActivate() {
         isActive = true;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public boolean isActive() {
         return isActive;
     }
     
     /** {@inheritDoc}. */
     public void onDeactivate() {
+        SystemTray.getSystemTray().remove(icon);
         isActive = false;
-        final SystemTray tray = SystemTray.getSystemTray();
-        
-        tray.remove(icon);
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public boolean isConfigurable() {
         return false;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public void showConfig() {
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public int getVersion() {
         return 0;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public String getAuthor() {
         return "Chris 'MD87' Smith - chris@dmdirc.com";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public String getDescription() {
         return "Adds a system tray icon";
+    }
+    
+    /** {@inheritDoc} */
+    public void mouseClicked(final MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            if (MainFrame.getMainFrame().isVisible()) {
+                // TODO: Uncomment the code below, with an appropriate replacement
+                //       for requestFocus() that does something more than flash.
+                
+                //if (MainFrame.getMainFrame().isActive()) {
+                MainFrame.getMainFrame().setVisible(false);
+                //} else {
+                //    MainFrame.getMainFrame().requestFocus();
+                //}
+            } else {
+                MainFrame.getMainFrame().setVisible(true);
+            }
+        }
+    }
+    
+    /** {@inheritDoc} */
+    public void mousePressed(final MouseEvent e) {
+    }
+    
+    /** {@inheritDoc} */
+    public void mouseReleased(final MouseEvent e) {
+    }
+    
+    /** {@inheritDoc} */
+    public void mouseEntered(final MouseEvent e) {
+    }
+    
+    /** {@inheritDoc} */
+    public void mouseExited(final MouseEvent e) {
     }
     
 }

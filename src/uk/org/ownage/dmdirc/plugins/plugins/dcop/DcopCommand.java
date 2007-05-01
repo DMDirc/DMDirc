@@ -56,7 +56,7 @@ public final class DcopCommand extends ServerCommand {
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         try {
-            final List<String> res = DcopPlugin.getDcopResult("dcop" + implodeArgs(args));
+            final List<String> res = DcopPlugin.getDcopResult("dcop " + implodeArgs(args));
             for (String line : res) {
                 origin.addLine(line);
             }
