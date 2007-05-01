@@ -212,18 +212,29 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     public final void open() {
         setVisible(true);
     }
+
+    /**
+     * Adds a line of text to the main text area (with a timestamp).
+     * @param line text to add
+     */    
+    public final void addLine(final String line) {
+        addLine(line, true);
+    }
     
     /**
      * Adds a line of text to the main text area.
      * @param line text to add
+     * @param timestamp Whether to timestamp the line or not
      */
-    public final void addLine(final String line) {
+    public final void addLine(final String line, final boolean timestamp) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 for (String myLine : line.split("\n")) {
-                    String ts = Formatter.formatMessage("timestamp", new Date());
-                    if (!getTextPane().getText().equals("")) { ts = "\n" + ts; }
-                    Styliser.addStyledString(getTextPane().getStyledDocument(), ts);
+                    if (timestamp) {
+                        String ts = Formatter.formatMessage("timestamp", new Date());
+                        if (!getTextPane().getText().equals("")) { ts = "\n" + ts; }
+                        Styliser.addStyledString(getTextPane().getStyledDocument(), ts);
+                    }
                     Styliser.addStyledString(getTextPane().getStyledDocument(), myLine);
                 }
                 
