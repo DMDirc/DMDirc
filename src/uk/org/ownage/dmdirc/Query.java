@@ -341,6 +341,14 @@ public final class Query implements IPrivateAction, IPrivateMessage,
     }
     
     /**
+     * Returns the host that this query is with.
+     * @return The full host that this query is with
+     */
+    public String getHost() {
+        return host;
+    }
+    
+    /**
      * Requests that this object's frame be activated.
      */
     public void activateFrame() {
