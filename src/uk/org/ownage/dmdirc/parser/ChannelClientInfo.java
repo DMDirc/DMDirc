@@ -41,6 +41,8 @@ public final class ChannelClientInfo {
 	private IRCParser myParser;
 	/** Reference to the channel object that owns this channelclient. */
 	private ChannelInfo myChannel;
+	/** Misc object attached to this object. */
+	private Object miscObject;
 	
 	/**
 	 * Create a ChannelClient instance of a CLient.
@@ -53,6 +55,24 @@ public final class ChannelClientInfo {
 		myParser = tParser;
 		cClient = client;
 		myChannel = channel;
+	}
+	
+	/**
+	 * Set the misc object attatched to this 
+	 *
+	 * @param newObject New object to attatch.
+	 */
+	public void setMiscObject(Object newObject) {
+		miscObject = newObject;
+	}
+	
+	/**
+	 * Get the misc object attatched to this 
+	 *
+	 * @return object to attatched to this .
+	 */
+	public Object getMiscObject() {
+		return miscObject;
 	}
 	
 	/**

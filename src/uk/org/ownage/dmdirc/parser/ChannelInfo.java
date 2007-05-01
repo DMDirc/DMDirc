@@ -71,6 +71,8 @@ public final class ChannelInfo {
 	private LinkedList<Character> lAddingModes = new LinkedList<Character>();
 	/** Modes waiting to be sent to the server. */
 	private LinkedList<String> lModeQueue = new LinkedList<String>();
+	/** Misc object attached to this object. */
+	private Object miscObject;
 
 	/**
 	 * Create a new channel object.
@@ -79,6 +81,24 @@ public final class ChannelInfo {
 	 * @param name Channel name.
 	 */
 	public ChannelInfo(final IRCParser tParser, final String name) { myParser = tParser; sName = name; }
+	
+	/**
+	 * Set the misc object attatched to this 
+	 *
+	 * @param newObject New object to attatch.
+	 */
+	public void setMiscObject(Object newObject) {
+		miscObject = newObject;
+	}
+	
+	/**
+	 * Get the misc object attatched to this 
+	 *
+	 * @return object to attatched to this .
+	 */
+	public Object getMiscObject() {
+		return miscObject;
+	}
 	
 	/**
 	 * Set if we are getting a names request or not.

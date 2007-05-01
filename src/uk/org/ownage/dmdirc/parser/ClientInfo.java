@@ -49,6 +49,8 @@ public final class ClientInfo {
 	private boolean bIsFake;
 	/** Reference to the parser object that owns this channel, Used for modes. */
 	private IRCParser myParser;
+	/** Misc object attached to this object. */
+	private Object miscObject;
 
 	/**
 	 * Create a new client object from a hostmask.
@@ -60,6 +62,24 @@ public final class ClientInfo {
 	public ClientInfo(final IRCParser tParser, final String sHostmask) { 
 		setUserBits(sHostmask, true);
 		myParser = tParser;
+	}
+
+	/**
+	 * Set the misc object attatched to this 
+	 *
+	 * @param newObject New object to attatch.
+	 */
+	public void setMiscObject(Object newObject) {
+		miscObject = newObject;
+	}
+	
+	/**
+	 * Get the misc object attatched to this 
+	 *
+	 * @return object to attatched to this .
+	 */
+	public Object getMiscObject() {
+		return miscObject;
 	}
 
 	/**
