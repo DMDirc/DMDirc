@@ -36,10 +36,12 @@ import java.util.Date;
 
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.actions.ActionType;
 import uk.org.ownage.dmdirc.actions.CoreActionType;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
@@ -81,6 +83,9 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 		updateOption(config, "general.timestamp", "[dd/MM/yyyy HH:mm:ss]");
 		updateOption(config, "general.stripcodes", "true");
 		updateOption(config, "general.channelmodeprefix", "true");
+		updateOption(config, "backbuffer.autobackbuffer", "true");
+		updateOption(config, "backbuffer.lines", "10");
+		updateOption(config, "backbuffer.colour", "14");
 		
 		final File dir = new File(Config.getOption(myDomain, "general.directory"));
 		if (!dir.exists()) {
@@ -141,13 +146,20 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	public void showConfig() {
 		PreferencesPanel preferencesPanel = new PreferencesPanel(this, "Logging Plugin - Config");
 		preferencesPanel.addCategory("General", "General configuration for Logging plugin.");
+		preferencesPanel.addCategory("Back Buffer", "Options related to the automatic backbuffer");
 		preferencesPanel.addCategory("Advanced", "Advanced configuration for Logging plugin. You shouldn't need to edit this unless you know what you are doing.");
+		
 		preferencesPanel.addOption("General", "general.directory", "Directory: ", PreferencesPanel.OptionType.TEXTFIELD, Config.getOption(myDomain, "general.directory"));
 		preferencesPanel.addOption("General", "general.networkfolders", "Separate logs by network: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(myDomain, "general.networkfolders")));
 		preferencesPanel.addOption("General", "general.addtime", "Timestamp logs: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(myDomain, "general.addtime")));
 		preferencesPanel.addOption("General", "general.timestamp", "Timestamp format: ", PreferencesPanel.OptionType.TEXTFIELD, Config.getOption(myDomain, "general.timestamp"));
 		preferencesPanel.addOption("General", "general.stripcodes", "Strip Control Codes: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(myDomain, "general.stripcodes")));
 		preferencesPanel.addOption("General", "general.channelmodeprefix", "Show channel mode prefix: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(myDomain, "general.channelmodeprefix")));
+		
+		preferencesPanel.addOption("Back Buffer", "backbuffer.autobackbuffer", "Automatically display: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(myDomain, "backbuffer.autobackbuffer")));
+		preferencesPanel.addOption("Back Buffer", "backbuffer.colour", "Colour to use for display: ", PreferencesPanel.OptionType.TEXTFIELD, Config.getOption(myDomain, "backbuffer.colour"));
+		preferencesPanel.addOption("Back Buffer", "backbuffer.lines", "Number of lines to show: ", PreferencesPanel.OptionType.SPINNER, Integer.parseInt(Config.getOption(myDomain, "backbuffer.lines")));
+		
 		preferencesPanel.addOption("Advanced", "advanced.filenamehash", "Add Filename hash: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(myDomain, "advanced.filenamehash")));
 		
 		preferencesPanel.display();
@@ -209,6 +221,9 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 		updateOption(properties, "general.timestamp", null);
 		updateOption(properties, "general.stripcodes", null);
 		updateOption(properties, "general.channelmodeprefix", null);
+		updateOption(properties, "backbuffer.autobackbuffer", null);
+		updateOption(properties, "backbuffer.lines", null);
+		updateOption(properties, "backbuffer.colour", null);
 		
 		// Check new dir exists before changing
 		final File dir = new File(properties.getProperty("general.directory"));
@@ -263,23 +278,77 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 			ChannelInfo channel;
 			ChannelClientInfo channelClient;
 			ClientInfo client;
+			IRCParser parser;
 			String line = "";
 			String reason = "";
+			Query query;
+			final DateFormat openedAtFormat = new SimpleDateFormat("EEEE MMMM dd, yyyy - HH:mm:ss");
 
 			switch (thisType) {
+				case SERVER_CONNECTED:
+					// Do Nothing
+					break;
+				case QUERY_OPENED:
+					// ActionManager.processEvent(CoreActionType.QUERY_OPENED, this);
+					query = ((Query)arguments[0]);
+					parser = query.getServer().getParser();
+					client = parser.getClientInfo(query.getHost());
+					if (client == null) {
+						client = new ClientInfo(parser, query.getHost()).setFake(true);
+					}
+					
+					// Backbuffer Display goes here!
+					if (Boolean.parseBoolean(Config.getOption(myDomain, "backbuffer.autobackbuffer"))) {
+					}
+					
+					appendLine(getLogFile(client), "*** Query opened at: "+openedAtFormat.format(new Date()));
+					appendLine(getLogFile(client), "*** Query with User: "+query.getHost());
+					appendLine(getLogFile(client), "");
+					break;
+				case CHANNEL_OPENED:
+					// ActionManager.processEvent(CoreActionType.CHANNEL_OPENED, this);
+					channel = ((Channel)arguments[0]).getChannelInfo();
+					
+					// Backbuffer Display goes here!
+					if (Boolean.parseBoolean(Config.getOption(myDomain, "backbuffer.autobackbuffer"))) {
+					}
+					
+					appendLine(getLogFile(channel), "*** Channel opened at: "+openedAtFormat.format(new Date()));
+					appendLine(getLogFile(channel), "");
+					break;
+				case QUERY_MESSAGE:
+				case QUERY_SELF_MESSAGE:
+				case QUERY_ACTION:
+				case QUERY_SELF_ACTION:
+					// ActionManager.processEvent(CoreActionType.QUERY_MESSAGE, this, message);
+					query = ((Query)arguments[0]);
+					parser = query.getServer().getParser();
+					String overrideNick = "";
+					if (thisType == CoreActionType.QUERY_SELF_MESSAGE || thisType == CoreActionType.QUERY_SELF_ACTION) {
+						overrideNick = getDisplayName(parser.getMyself());
+					}
+					client = parser.getClientInfo(query.getHost());
+					if (client == null) {
+						client = new ClientInfo(parser, query.getHost()).setFake(true);
+					}
+					if (thisType == CoreActionType.QUERY_MESSAGE || thisType == CoreActionType.QUERY_SELF_MESSAGE) {
+						appendLine(getLogFile(client), "<"+getDisplayName(client, overrideNick)+"> "+arguments[1]);
+					} else {
+						appendLine(getLogFile(client), "* "+getDisplayName(client, overrideNick)+" "+arguments[1]);
+					}
+					break;
 				case CHANNEL_MESSAGE:
 				case CHANNEL_SELF_MESSAGE:
+				case CHANNEL_ACTION:
+				case CHANNEL_SELF_ACTION:
 					// ActionManager.processEvent(CoreActionType.CHANNEL_MESSAGE, this, cChannelClient, sMessage);
 					channel = ((Channel)arguments[0]).getChannelInfo();
 					channelClient = (ChannelClientInfo)arguments[1];
-					appendLine(getLogFile(channel), "<"+getDisplayName(channelClient)+"> "+arguments[2]);
-					break;
-				case CHANNEL_ACTION:
-				case CHANNEL_SELF_ACTION:
-					// ActionManager.processEvent(CoreActionType.CHANNEL_ACTION, this, cChannelClient, sMessage);
-					channel = ((Channel)arguments[0]).getChannelInfo();
-					channelClient = (ChannelClientInfo)arguments[1];
-					appendLine(getLogFile(channel), "* "+getDisplayName(channelClient)+" "+(String)arguments[2]);
+					if (thisType == CoreActionType.CHANNEL_MESSAGE || thisType == CoreActionType.CHANNEL_SELF_MESSAGE) {
+						appendLine(getLogFile(channel), "<"+getDisplayName(channelClient)+"> "+(String)arguments[2]);
+					} else {
+						appendLine(getLogFile(channel), "* "+getDisplayName(channelClient)+" "+(String)arguments[2]);
+					}
 					break;
 				case CHANNEL_GOTTOPIC:
 					// ActionManager.processEvent(CoreActionType.CHANNEL_GOTTOPIC, this);
@@ -380,7 +449,7 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 		if (Boolean.parseBoolean(Config.getOption(myDomain, "general.stripcodes"))) {
 			finalLine = Styliser.stipControlCodes(finalLine);
 		}
-
+//		System.out.println("[Adding] "+filename+" => "+finalLine);
 		BufferedWriter out = null;
 		try {
 			out = new BufferedWriter(new FileWriter(filename, true));
@@ -426,12 +495,55 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 				result = result+'.'+md5(client.getNickname());
 			}
 			result = result+".log";
+		} else if (obj instanceof IRCParser) {
+			IRCParser parser = (IRCParser)obj;
+			result = addNetworkDir(result, parser.getNetworkName());
+			result = result+"log";
+			if (Boolean.parseBoolean(Config.getOption(myDomain, "advanced.filenamehash"))) {
+				result = result+'.'+md5("log");
+			}
+			result = result+".log";
 		} else {
 			result = result+sanitise(obj.toString().toLowerCase());
 			if (Boolean.parseBoolean(Config.getOption(myDomain, "advanced.filenamehash"))) {
 				result = result+'.'+md5(obj.toString());
 			}
 			result = result+".log";
+		}
+		return result;
+	}
+	
+	/**
+	 * Get name to display for client
+	 *
+	 * @param client The client to get the display name for
+	 * @return name to display
+	 */
+	private String getDisplayName(final ClientInfo client) {
+		return getDisplayName(client, "");
+	}
+	
+	/**
+	 * Get name to display for client
+	 *
+	 * @param client The client to get the display name for
+	 * @param overrideNick Nickname to display instead of real nickname
+	 * @return name to display
+	 */
+	private String getDisplayName(final ClientInfo client, final String overrideNick) {
+		String result = "";
+		if (client == null) {
+			if (overrideNick.equals("")) {
+				result = "Unknown Client";
+			} else {
+				result = overrideNick;
+			}
+		} else {
+			if (overrideNick.equals("")) {
+				result = client.getNickname();
+			} else {
+				result = overrideNick;
+			}
 		}
 		return result;
 	}
@@ -471,7 +583,7 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 			} else {
 				result = overrideNick;
 				if (Boolean.parseBoolean(Config.getOption(myDomain, "general.channelmodeprefix"))) {
-					result = channelClient.getImportantModePrefix()+overrideNick;
+					result = channelClient.getImportantModePrefix()+result;
 				}
 			}
 		}
