@@ -22,6 +22,8 @@
 
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
+import java.util.Collections;
+import java.util.List;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.Command;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
@@ -56,30 +58,33 @@ public final class Help extends ServerCommand {
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         origin.addLine("-- Server commands ----------------------------------");
-        for (Command com : CommandManager.getServerCommands()) {
-            if (com.showInHelp()) {
-                origin.addLine(com.getHelp());
-            }
-        }
+        showCommands(CommandManager.getServerCommands(), origin);
         if (origin instanceof ChannelFrame) {
             origin.addLine("-- Channel commands ---------------------------------");
-            for (Command com : CommandManager.getChannelCommands()) {
-                if (com.showInHelp()) {
-                    origin.addLine(com.getHelp());
-                }
-            }
+            showCommands(CommandManager.getChannelCommands(), origin);
         }
         if (origin instanceof QueryFrame) {
             origin.addLine("-- Query commands -----------------------------------");
-            for (Command com : CommandManager.getQueryCommands()) {
-                if (com.showInHelp()) {
-                    origin.addLine(com.getHelp());
-                }
-            }
+            showCommands(CommandManager.getQueryCommands(), origin);
+            
         }
         origin.addLine("-----------------------------------------------------");
     }
     
+    /**
+     * Shows the user the commands from the specified list.
+     * @param commands The commands to be displayed
+     * @param origin The window to output to
+     */
+    private void showCommands(final List<Command> commands,
+            final CommandWindow origin) {
+        Collections.sort(commands);
+        for (Command com : commands) {
+            if (com.showInHelp()) {
+                origin.addLine(com.getHelp());
+            }
+        }
+    }
     
     /** {@inheritDoc}. */
     public String getName() {

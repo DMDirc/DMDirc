@@ -26,7 +26,7 @@ package uk.org.ownage.dmdirc.commandparser;
  * Represents a generic command.
  * @author chris
  */
-public abstract class Command {
+public abstract class Command implements Comparable<Command> {
             
     /**
      * Returns the signature of this command. For polyadic commands, the signature
@@ -99,4 +99,8 @@ public abstract class Command {
         return implodeArgs(0, args);
     } 
     
+    /** {@inheritDoc} */
+    public int compareTo(final Command o) {
+        return getSignature().compareTo(o.getSignature());
+    }
 }
