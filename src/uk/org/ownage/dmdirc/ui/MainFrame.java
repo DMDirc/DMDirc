@@ -48,6 +48,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -81,7 +82,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4;
+    private static final long serialVersionUID = 5;
     
     /**
      * The number of pixels each new internal frame is offset by.
@@ -115,6 +116,9 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /** Dekstop pane. */
     private JDesktopPane desktopPane;
+    
+    /** Plugin menu item. */
+    private JMenu pluginsMenu;
     
     /** Main panel. */
     private JPanel jPanel1;
@@ -296,6 +300,31 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     public JInternalFrame getActiveFrame() {
         return desktopPane.getSelectedFrame();
+    }
+    
+    /**
+     * Adds a JMenuItem to the plugin menu.
+     * @param menuItem The menu item to be added.
+     */
+    public void addPluginMenu(final JMenuItem menuItem) {
+        if (pluginsMenu.getComponents().length == 1) {
+            final JSeparator seperator = new JSeparator();
+            pluginsMenu.add(seperator);
+        }
+        
+        pluginsMenu.add(menuItem);
+    }
+    
+    /**
+     * Removes a JMenuItem from the plugin menu.
+     * @param menuItem The menu item to be removed.
+     */
+    public void removePluginMenu(final JMenuItem menuItem) {
+        pluginsMenu.remove(menuItem);
+        
+        if (pluginsMenu.getComponents().length == 2) {
+            pluginsMenu.remove(2);
+        }
     }
     
     /**
@@ -499,8 +528,19 @@ public final class MainFrame extends JFrame implements WindowListener,
         menuItem.addActionListener(this);
         debugMenu.add(menuItem);
         
+        pluginsMenu = new JMenu("Plugins");
+        pluginsMenu.setMnemonic('p');
+        
+        menuItem = new JMenuItem();
+        menuItem.setMnemonic('m');
+        menuItem.setText("Manage plugins");
+        menuItem.setActionCommand("ManagePlugins");
+        menuItem.addActionListener(this);
+        pluginsMenu.add(menuItem);
+        
         menuBar.add(fileMenu);
         menuBar.add(windowMenu);
+        menuBar.add(pluginsMenu);
         menuBar.add(debugMenu);
         menuBar.add(helpMenu);
         
@@ -544,6 +584,8 @@ public final class MainFrame extends JFrame implements WindowListener,
             new ProfileEditorDialog();
         } else if (e.getActionCommand().equals("Exit")) {
             Main.quit();
+        } else if (e.getActionCommand().equals("ManagePlugins")) {
+            // Manage plugins
         }
     }
     
