@@ -125,7 +125,7 @@ public final class StatusBar extends JPanel implements MouseListener,
     }
     
     /**
-     * Sets the message in the status bar with a specified callback event 
+     * Sets the message in the status bar with a specified callback event
      * using the default timeout.
      *
      * @param newMessage Message to display
@@ -146,9 +146,9 @@ public final class StatusBar extends JPanel implements MouseListener,
     }
     
     /**
-     * Sets the message in the status bar with a specified callback event for 
+     * Sets the message in the status bar with a specified callback event for
      * a specified time.
-     * 
+     *
      * @param newMessage Message to display
      * @param newNotifier status message notifier to be notified for events on
      * this message
@@ -200,25 +200,27 @@ public final class StatusBar extends JPanel implements MouseListener,
         addToHistory(newIcon, newNotifier);
         iconLabel.setIcon(newIcon);
         errorNotifier = newNotifier;
-        int displayLength = 10000;
-        if (Config.hasOption("statusBar", "errorDisplayLength")) {
-            try {
-                displayLength = Integer.parseInt(
-                        Config.getOption("statusBar", "errorDisplayLength"));
-            } catch (NumberFormatException e) {
-                Logger.error(ErrorLevel.WARNING, "Invalid error display length", e);
-            }
-        }
         if (errorTimer != null) {
             errorTimer.cancel();
         }
-        errorTimer = new TimerTask() {
-            public void run() {
-                clearError();
+        if (newIcon != normalIcon) {
+            int displayLength = 10000;
+            if (Config.hasOption("statusBar", "errorDisplayLength")) {
+                try {
+                    displayLength = Integer.parseInt(
+                            Config.getOption("statusBar", "errorDisplayLength"));
+                } catch (NumberFormatException e) {
+                    Logger.error(ErrorLevel.WARNING, "Invalid error display length", e);
+                }
             }
-        };
-        new Timer().schedule(errorTimer,
-                new Date(System.currentTimeMillis() + displayLength));
+            errorTimer = new TimerTask() {
+                public void run() {
+                    clearError();
+                }
+            };
+            new Timer().schedule(errorTimer,
+                    new Date(System.currentTimeMillis() + displayLength));
+        }
     }
     
     /**
@@ -261,7 +263,7 @@ public final class StatusBar extends JPanel implements MouseListener,
      * @param mouseEvent mouse event
      */
     public void mouseEntered(final MouseEvent mouseEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -270,7 +272,7 @@ public final class StatusBar extends JPanel implements MouseListener,
      * @param mouseEvent mouse event
      */
     public void mouseExited(final MouseEvent mouseEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -293,7 +295,7 @@ public final class StatusBar extends JPanel implements MouseListener,
      * @param e mouse event
      */
     public void processMouseEvent(final MouseEvent e) {
-        if (e.isPopupTrigger() && e.getSource() == iconLabel) {
+        if (e.isPopupTrigger() && e.getSource() == iconLabel && errors.size() > 0) {
             final Point point = this.getMousePosition();
             popup.show(this, (int) point.getX(), (int) point.getY());
         } else {
@@ -324,6 +326,10 @@ public final class StatusBar extends JPanel implements MouseListener,
             mi.addActionListener(this);
             mi.setActionCommand(String.valueOf(errors.indexOf(error)));
             popup.add(mi);
+            if (popup.getComponentCount() > 2) {
+                popup.remove(popup.getComponentCount() - 1);
+                popup.remove(popup.getComponentCount() - 1);
+            }
             while (errors.size() >= errorHistory) {
                 errors.remove(0);
                 popup.remove(0);
@@ -331,13 +337,24 @@ public final class StatusBar extends JPanel implements MouseListener,
             for (int i = 0; i < popup.getComponentCount(); i++) {
                 ((JMenuItem) popup.getComponent(i)).setActionCommand(String.valueOf(i));
             }
+            popup.addSeparator();
+            mi = new JMenuItem("Clear errors");
+            mi.addActionListener(this);
+            mi.setActionCommand("Clear");
+            popup.add(mi);
         }
     }
-
+    
     /**
      * Shows the error from the history. {@inheritDoc}
      */
     public void actionPerformed(final ActionEvent e) {
-        errors.get(Integer.valueOf(e.getActionCommand())).getNotifier().clickReceived();
+        if ("Clear".equals(e.getActionCommand())) {
+            errors.clear();
+            popup.removeAll();
+            clearError();
+        } else {
+            errors.get(Integer.valueOf(e.getActionCommand())).getNotifier().clickReceived();
+        }
     }
 }
