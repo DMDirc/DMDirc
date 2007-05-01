@@ -89,6 +89,14 @@ public final class ServerManager {
     }
     
     /**
+     * Returns a list of all servers.
+     * @return A list of all servers
+     */
+    public List<Server> getServers() {
+        return servers;
+    }
+    
+    /**
      * Makes all servers disconnected with the specified quit message.
      * @param message The quit message to send to the IRC servers
      */

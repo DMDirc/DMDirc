@@ -178,6 +178,8 @@ public final class CommandManager {
         new ShowTopic();
         
         // Server commands
+        new AllChannels();
+        new AllServers();
         new Away();
         new Back();
         new Clear();

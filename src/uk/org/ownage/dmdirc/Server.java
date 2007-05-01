@@ -25,7 +25,9 @@ package uk.org.ownage.dmdirc;
 import java.awt.Color;
 import java.beans.PropertyVetoException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -274,6 +276,20 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public Channel getChannel(final String channel) {
         return channels.get(channel.toLowerCase(Locale.getDefault()));
+    }
+    
+    /**
+     * Retrieves a list of channel names belonging to this server.
+     * @return list of channel names belonging to this server
+     */
+    public List<String> getChannels() {
+        final ArrayList<String> res = new ArrayList<String>();
+        
+        for (String channel : channels.keySet()) {
+            res.add(channel);
+        }
+        
+        return res;
     }
     
     /**
