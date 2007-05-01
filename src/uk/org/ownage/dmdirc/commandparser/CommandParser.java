@@ -56,6 +56,14 @@ public abstract class CommandParser {
     }
     
     /**
+     * Unregisters the specified command with this parser.
+     * @param command Command to be unregistered
+     */
+    public final void unregisterCommand(final Command command) {
+        commands.remove(command.getSignature());
+    }    
+    
+    /**
      * Parses the specified string as a command.
      * @param origin The window in which the command was typed
      * @param line The line to be parsed

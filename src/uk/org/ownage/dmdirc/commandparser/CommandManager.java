@@ -108,6 +108,41 @@ public final class CommandManager {
     }
     
     /**
+     * Unregisters a command with the command manager.
+     * @param command The command to be unregistered
+     */
+    public static void unregisterCommand(final Command command) {
+        if (channelCommands == null) {
+            return;
+        }
+        
+        List<CommandParser> target = null;        
+        
+        if (command instanceof ChannelCommand) {
+            target = channelParsers;
+            channelCommands.remove(command);
+        } else if (command instanceof ServerCommand) {
+            target = serverParsers;
+            serverCommands.remove(command);
+        } else if (command instanceof QueryCommand) {
+            target = queryParsers;
+            queryCommands.remove(command);
+        } else {
+            Logger.error(ErrorLevel.ERROR, "Attempted to unregister an invalid command: " + command.getClass().getName());
+        }     
+        
+        // FIXME: There's no way to kill old/dead entries in the *Parsers lists.
+        //        Ideally, they'd unregister themselves (or so) when unloaded.
+        if (target != null) {
+            for (CommandParser parser : target) {
+                if (parser != null) {
+                    parser.unregisterCommand(command);
+                }
+            }
+        }        
+    }
+    
+    /**
      * Initialises the command manager's various command lists.
      */
     private static void initLists() {
