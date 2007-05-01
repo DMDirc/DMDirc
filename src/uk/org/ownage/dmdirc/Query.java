@@ -30,6 +30,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+import uk.org.ownage.dmdirc.actions.ActionManager;
+import uk.org.ownage.dmdirc.actions.CoreActionType;
 
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
@@ -90,6 +92,9 @@ public final class Query implements IPrivateAction, IPrivateMessage,
         imageIcon = new ImageIcon(imageURL);
         
         frame = new QueryFrame(this);
+        
+        ActionManager.processEvent(CoreActionType.QUERY_OPENED, this);
+        
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
         frame.setFrameIcon(imageIcon);
@@ -143,10 +148,10 @@ public final class Query implements IPrivateAction, IPrivateMessage,
         final ClientInfo client = server.getParser().getMyself();
         server.getParser().sendAction(ClientInfo.parseHost(host), action);
         if (server.getParser().getMaxLength("PRIVMSG", host) <= action.length()) {
-            frame.addLine("querySelfAction", client.getNickname(), 
+            frame.addLine("querySelfAction", client.getNickname(),
                     client.getIdent(), client.getHost(), "Action too long to be sent");
         } else {
-            frame.addLine("querySelfAction", client.getNickname(), 
+            frame.addLine("querySelfAction", client.getNickname(),
                     client.getIdent(), client.getHost(), action);
         }
     }
@@ -161,7 +166,10 @@ public final class Query implements IPrivateAction, IPrivateMessage,
             final String remoteHost) {
         final String[] parts = ClientInfo.parseHostFull(remoteHost);
         frame.addLine("queryMessage", parts[0], parts[1], parts[2], message);
+        
         sendNotification();
+        
+        ActionManager.processEvent(CoreActionType.QUERY_MESSAGE, this, message);
     }
     
     /**
@@ -174,7 +182,10 @@ public final class Query implements IPrivateAction, IPrivateMessage,
             final String remoteHost) {
         final String[] parts = ClientInfo.parseHostFull(host);
         frame.addLine("queryAction", parts[0], parts[1], parts[2], message);
+        
         sendNotification();
+        
+        ActionManager.processEvent(CoreActionType.QUERY_ACTION, this, message);
     }
     
     /**

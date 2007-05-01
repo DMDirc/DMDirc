@@ -30,6 +30,10 @@ public enum CoreActionType implements ActionType {
     
     SERVER_CONNECTED(ActionMetaType.SERVER_EVENT),
     
+    QUERY_OPENED(ActionMetaType.QUERY_EVENT),
+    QUERY_MESSAGE(ActionMetaType.QUERY_EVENT_WITH_ARG),
+    QUERY_ACTION(ActionMetaType.QUERY_EVENT_WITH_ARG),
+    
     CHANNEL_OPENED(ActionMetaType.CHANNEL_EVENT),
     CHANNEL_GOTNAMES(ActionMetaType.CHANNEL_EVENT),
     CHANNEL_GOTTOPIC(ActionMetaType.CHANNEL_EVENT),

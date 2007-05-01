@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.actions;
 
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
@@ -34,9 +35,11 @@ import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 public enum ActionMetaType {
     
     SERVER_EVENT(1, Server.class),
-    
     CHANNEL_EVENT(1, Channel.class),
-
+    QUERY_EVENT(1, Query.class),
+    
+    QUERY_EVENT_WITH_ARG(2, Query.class, String.class),
+    
     CHANNEL_SOURCED_EVENT(2, Channel.class, ChannelClientInfo.class),
     CHANNEL_SOURCED_EVENT_WITH_ARG(3, Channel.class, ChannelClientInfo.class, String.class),
     CHANNEL_SOURCED_EVENT_WITH_VICTIM(4, Channel.class, ChannelClientInfo.class, ChannelClientInfo.class, String.class);
