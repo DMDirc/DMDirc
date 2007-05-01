@@ -696,7 +696,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                     final String[] options = {"Send", "Edit", "Cancel", };
                     final int n = JOptionPane.showOptionDialog(this,
                             "<html>Paste would be sent as "
-                            + clipboardContentsLines.length + " lines.<br>"
+                            + getNumLines(clipboardContents) + " lines.<br>"
                             + "Do you want to continue?</html>",
                             "Multi-line Paste",
                             JOptionPane.YES_NO_CANCEL_OPTION,
