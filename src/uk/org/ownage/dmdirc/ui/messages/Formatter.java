@@ -214,6 +214,7 @@ public final class Formatter {
         //    1: Target
         //    2: Message
         defaultProperties.setProperty("selfCTCP", colour + "4->- [%1$s] %2$s");
+        defaultProperties.setProperty("selfNotice", colour + "5>%1$s> %2$s");
         
         // Type: Miscellaneous
         //    1: Miscellaneous data

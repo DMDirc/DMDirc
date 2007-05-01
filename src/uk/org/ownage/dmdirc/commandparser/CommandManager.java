@@ -155,6 +155,7 @@ public final class CommandManager {
         new LoadPlugin();
         new Motd();
         new Nick();
+        new Notice();
         new Quit();
         new QuitDefault();
         new Raw();
