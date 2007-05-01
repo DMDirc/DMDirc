@@ -159,9 +159,9 @@ public final class StatusBar extends JPanel implements MouseListener,
         messageLabel.setText(newMessage);
         messageNotifier = newNotifier;
         
-        if (messageTimer != null) {
+        if (messageTimer != null && (System.currentTimeMillis() -
+                messageTimer.scheduledExecutionTime()) <= 0) {
             messageTimer.cancel();
-            messageTimer = null;
         }
         messageTimer = new TimerTask() {
             public void run() {
@@ -200,7 +200,8 @@ public final class StatusBar extends JPanel implements MouseListener,
         addToHistory(newIcon, newNotifier);
         iconLabel.setIcon(newIcon);
         errorNotifier = newNotifier;
-        if (errorTimer != null) {
+        if (errorTimer != null && (System.currentTimeMillis() -
+                errorTimer.scheduledExecutionTime()) <= 0) {
             errorTimer.cancel();
         }
         if (newIcon != normalIcon) {
@@ -322,20 +323,15 @@ public final class StatusBar extends JPanel implements MouseListener,
                 }
             }
             errors.add(error);
-            mi = new JMenuItem(error.getDate().toString(), icon);
-            mi.addActionListener(this);
-            mi.setActionCommand(String.valueOf(errors.indexOf(error)));
-            popup.add(mi);
-            if (popup.getComponentCount() > 2) {
-                popup.remove(popup.getComponentCount() - 1);
-                popup.remove(popup.getComponentCount() - 1);
-            }
+            popup.removeAll();
             while (errors.size() >= errorHistory) {
                 errors.remove(0);
-                popup.remove(0);
             }
-            for (int i = 0; i < popup.getComponentCount(); i++) {
-                ((JMenuItem) popup.getComponent(i)).setActionCommand(String.valueOf(i));
+            for (Error thisError : errors) {
+                mi = new JMenuItem(thisError.getDate().toString(), icon);
+                mi.addActionListener(this);
+                mi.setActionCommand(String.valueOf(errors.indexOf(thisError)));
+                popup.add(mi);
             }
             popup.addSeparator();
             mi = new JMenuItem("Clear errors");
