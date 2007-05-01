@@ -154,6 +154,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             Logger.error(ErrorLevel.FATAL, "Unable to load channel", ex);
         }
         
+        ActionManager.processEvent(CoreActionType.CHANNEL_OPENED, this);
+        
         updateTitle();
         selfJoin();
     }
