@@ -558,7 +558,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         final Query newQuery = new Query(this, host);
         
         tabCompleter.addEntry(ClientInfo.parseHost(host));
-        queries.put(ClientInfo.parseHost(host), newQuery);
+        queries.put(ClientInfo.parseHost(host).toLowerCase(), newQuery);
         MainFrame.getMainFrame().getFrameManager().addQuery(this, newQuery);
     }
     
@@ -568,9 +568,9 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public void delQuery(final String host) {
         tabCompleter.removeEntry(ClientInfo.parseHost(host));
-        MainFrame.getMainFrame().getFrameManager().delQuery(this, queries.get(ClientInfo.parseHost(host)));
+        MainFrame.getMainFrame().getFrameManager().delQuery(this, queries.get(ClientInfo.parseHost(host).toLowerCase()));
         if (!closing) {
-            queries.remove(ClientInfo.parseHost(host));
+            queries.remove(ClientInfo.parseHost(host).toLowerCase());
         }
     }
     
@@ -686,7 +686,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public void onPrivateMessage(final IRCParser tParser, final String message,
             final String host) {
-        if (!queries.containsKey(ClientInfo.parseHost(host))) {
+        if (!queries.containsKey(ClientInfo.parseHost(host).toLowerCase())) {
             addQuery(host);
         }
     }
@@ -699,7 +699,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param host host of remote client
      */
     public void onPrivateAction(final IRCParser tParser, final String action, final String host) {
-        if (!queries.containsKey(ClientInfo.parseHost(host))) {
+        if (!queries.containsKey(ClientInfo.parseHost(host).toLowerCase())) {
             addQuery(host);
         }
     }
