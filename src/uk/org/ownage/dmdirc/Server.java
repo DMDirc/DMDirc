@@ -308,6 +308,46 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     }
     
     /**
+     * Determines whether the server knows of the specified query.
+     * @param query The query to be checked
+     * @return True iff the query is known, false otherwise
+     */
+    public boolean hasQuery(final String query) {
+        return queries.containsKey(query.toLowerCase(Locale.getDefault()));
+    }
+    
+    /**
+     * Retrieves the specified query belonging to this server.
+     * @param query The query to be retrieved
+     * @return The appropriate query object
+     */
+    public Query getQuery(final String query) {
+        return queries.get(query.toLowerCase(Locale.getDefault()));
+    }
+    
+    /**
+     * Retrieves a list of queries belonging to this server.
+     * @return list of queries belonging to this server
+     */
+    public List<String> getQueries() {
+        final ArrayList<String> res = new ArrayList<String>();
+        
+        for (String query : queries.keySet()) {
+            res.add(query);
+        }
+        
+        return res;
+    }
+    
+    /**
+     * Retrieves the raw window associated with this server.
+     * @return The raw window associated with this server.
+     */
+    public Raw getRaw() {
+        return raw;
+    }
+    
+    /**
      * Retrieves the parser used for this connection.
      * @return IRCParser this connection's parser
      */
@@ -812,7 +852,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         }
         
         frame.setAway(away);
-    }    
+    }
     
     /**
      * Called when the IRC socket is closed for any reason.
@@ -988,5 +1028,5 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public Server getServer() {
         return this;
-    }    
+    }
 }
