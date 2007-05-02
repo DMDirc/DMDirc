@@ -26,6 +26,7 @@ package uk.org.ownage.dmdirc.parser.callbacks;
 
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.ParserError;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelKick;
@@ -56,7 +57,7 @@ public final class CallbackOnChannelKick extends CallbackObjectSpecific {
 	 */
 	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, final String sReason, final String sKickedByHost) {
 		if (cKickedByClient == null && myParser.getCreateFake()) {
-			cKickedByClient = new ChannelClientInfo(cChannel.getParser(), new ClientInfo(cChannel.getParser(), sHost).setFake(true) ,cChannel);
+			cKickedByClient = new ChannelClientInfo(cChannel.getParser(), new ClientInfo(cChannel.getParser(), sKickedByHost).setFake(true) ,cChannel);
 		}
 		boolean bResult = false;
 		IChannelKick eMethod = null;

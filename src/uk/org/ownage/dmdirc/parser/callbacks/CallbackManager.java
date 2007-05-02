@@ -70,6 +70,7 @@ public final class CallbackManager {
 		addCallbackType(new CallbackOnChannelSingleModeChanged(myParser, this));
 		addCallbackType(new CallbackOnChannelTopic(myParser, this));
 		addCallbackType(new CallbackOnChannelUserModeChanged(myParser, this));
+		addCallbackType(new CallbackOnConnectError(myParser, this));
 		addCallbackType(new CallbackOnDataIn(myParser, this));
 		addCallbackType(new CallbackOnDataOut(myParser, this));
 		addCallbackType(new CallbackOnDebugInfo(myParser, this));

@@ -39,6 +39,7 @@ import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.actions.ActionType;
 import uk.org.ownage.dmdirc.actions.CoreActionType;
+import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.parser.IRCParser;
@@ -299,6 +300,7 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 					
 					// Backbuffer Display goes here!
 					if (Boolean.parseBoolean(Config.getOption(myDomain, "backbuffer.autobackbuffer"))) {
+						showBackBuffer(query.getFrame(), getLogFile(client));
 					}
 					
 					appendLine(getLogFile(client), "*** Query opened at: "+openedAtFormat.format(new Date()));
@@ -311,6 +313,7 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 					
 					// Backbuffer Display goes here!
 					if (Boolean.parseBoolean(Config.getOption(myDomain, "backbuffer.autobackbuffer"))) {
+						showBackBuffer(((Channel)arguments[0]).getFrame(), getLogFile(channel));
 					}
 					
 					appendLine(getLogFile(channel), "*** Channel opened at: "+openedAtFormat.format(new Date()));
@@ -431,6 +434,17 @@ public class LoggingPlugin implements EventPlugin, PreferencesInterface {
 					break;
 			}
 		}
+	}
+	
+	/**
+	 * Add a backbuffer to a frame.
+	 *
+	 * @param frame The frame to add the backbuffer lines to
+	 * @param filename File to get backbuffer from
+	 */
+	private void showBackBuffer(final CommandWindow frame, final String filename) {
+		int linesRemaining = Integer.parseInt(Config.getOption(myDomain, "backbuffer.lines"));
+		return;
 	}
 	
 	/**

@@ -45,6 +45,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnConnectError;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDataIn;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDataOut;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDebugInfo;
@@ -378,6 +379,19 @@ public final class IRCParser implements Runnable {
 		if (cb != null) { return cb.call(errorInfo); }
 		return false;
 	}
+	
+	/**
+	 * Callback to all objects implementing the IConnectError Interface.
+	 *
+	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IConnectError
+	 * @param errorInfo ParserError object representing the error.
+	 * @return true if a method was called, false otherwise
+	 */
+	protected boolean callConnectError(final ParserError errorInfo) {
+		final CallbackOnConnectError cb = (CallbackOnConnectError) myCallbackManager.getCallbackType("OnConnectError");
+		if (cb != null) { return cb.call(errorInfo); }
+		return false;
+	}
 
 	/**
 	 * Callback to all objects implementing the SocketClosed Callback.
@@ -516,7 +530,7 @@ public final class IRCParser implements Runnable {
 			callDebugInfo(DEBUG_SOCKET, "Error Connecting (" + e.getMessage() + "), Aborted");
 			final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Error connecting to server");
 			ei.setException(e);
-			callErrorInfo(ei);
+			callConnectError(ei);
 			return;
 		}
 		
@@ -657,7 +671,7 @@ public final class IRCParser implements Runnable {
 		final String[] newLine = tokeniseLine(line);
 		if (newLine[0].equalsIgnoreCase("away")) {
 			if (newLine.length > 1) {
-				cMyself.setAwayReason(newLine[newLine.length()-1]);
+				cMyself.setAwayReason(newLine[newLine.length-1]);
 			}
 		}
 	}
