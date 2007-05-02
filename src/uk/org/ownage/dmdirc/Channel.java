@@ -134,6 +134,18 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             Logger.error(ErrorLevel.FATAL, "Unable to load channel", ex);
         }
         
+        registerCallbacks();
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_OPENED, this);
+        
+        updateTitle();
+        selfJoin();
+    }
+    
+    /**
+     * Registers callbacks with the parser for this channel.
+     */
+    private void registerCallbacks() {
         try {
             final CallbackManager callbackManager = server.getParser().getCallbackManager();
             final String channel = channelInfo.getName();
@@ -153,11 +165,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.FATAL, "Unable to load channel", ex);
         }
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_OPENED, this);
-        
-        updateTitle();
-        selfJoin();
     }
     
     /**
@@ -240,6 +247,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      */
     public void setChannelInfo(final ChannelInfo newChannelInfo) {
         channelInfo = newChannelInfo;
+        registerCallbacks();
     }
     
     /**
