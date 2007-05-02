@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.ServerManager;
 import uk.org.ownage.dmdirc.commandparser.commands.channel.*;
 import uk.org.ownage.dmdirc.commandparser.commands.query.*;
 import uk.org.ownage.dmdirc.commandparser.commands.server.*;
@@ -104,6 +106,22 @@ public final class CommandManager {
                     parser.registerCommand(command);
                 }
             }
+            
+            final String commandName = Config.getOption("general", "commandchar") + command.getName();
+            
+            for (Server server : ServerManager.getServerManager().getServers()) {
+                if (command instanceof ServerCommand) {
+                    server.getTabCompleter().addEntry(commandName);
+                } else if (command instanceof ChannelCommand) {
+                    for (String channelName : server.getChannels()) {
+                        server.getChannel(channelName).getTabCompleter().addEntry(commandName);
+                    }
+                } else if (command instanceof QueryCommand) {
+                    for (String queryName : server.getQueries()) {
+                        server.getQuery(queryName).getTabCompleter().addEntry(commandName);
+                    }                    
+                }
+            }
         }
     }
     
@@ -139,6 +157,22 @@ public final class CommandManager {
                     parser.unregisterCommand(command);
                 }
             }
+            
+            final String commandName = Config.getOption("general", "commandchar") + command.getName();
+            
+            for (Server server : ServerManager.getServerManager().getServers()) {
+                if (command instanceof ServerCommand) {
+                    server.getTabCompleter().removeEntry(commandName);
+                } else if (command instanceof ChannelCommand) {
+                    for (String channelName : server.getChannels()) {
+                        server.getChannel(channelName).getTabCompleter().removeEntry(commandName);
+                    }
+                } else if (command instanceof QueryCommand) {
+                    for (String queryName : server.getQueries()) {
+                        server.getQuery(queryName).getTabCompleter().removeEntry(commandName);
+                    }                    
+                }
+            }            
         }        
     }
     

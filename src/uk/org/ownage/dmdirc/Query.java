@@ -79,6 +79,11 @@ public final class Query implements IPrivateAction, IPrivateMessage,
     private final ImageIcon imageIcon;
     
     /**
+     * The tab completer for this frame.
+     */
+    private final TabCompleter tabCompleter;
+    
+    /**
      * Creates a new instance of Query.
      * @param newHost host of the remove client
      * @param newServer The server object that this Query belongs to
@@ -100,7 +105,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
         frame.setFrameIcon(imageIcon);
         frame.open();
         
-        final TabCompleter tabCompleter = new TabCompleter(server.getTabCompleter());
+        tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(CommandManager.getQueryCommandNames());
         frame.setTabCompleter(tabCompleter);
         
@@ -121,6 +126,14 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      */
     public CommandWindow getFrame() {
         return frame;
+    }
+    
+    /**
+     * Returns the tab completer for this query.
+     * @return This query's tab completer
+     */
+    public TabCompleter getTabCompleter() {
+        return tabCompleter;
     }
     
     /**

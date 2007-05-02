@@ -259,6 +259,14 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     }
     
     /**
+     * Returns the tab completer for this channel.
+     * @return This channel's tab completer
+     */
+    public TabCompleter getTabCompleter() {
+        return tabCompleter;
+    }
+    
+    /**
      * Called when we join this channel. Just needs to output a message.
      */
     public void selfJoin() {
