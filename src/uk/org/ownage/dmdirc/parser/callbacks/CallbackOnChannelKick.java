@@ -54,7 +54,10 @@ public final class CallbackOnChannelKick extends CallbackObjectSpecific {
 	 * @param sKickedByHost Hostname of Kicker (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient, final String sReason, final String sKickedByHost) {
+	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, final String sReason, final String sKickedByHost) {
+		if (cKickedByClient == null && myParser.getCreateFake()) {
+			cKickedByClient = new ChannelClientInfo(cChannel.getParser(), new ClientInfo(cChannel.getParser(), sHost).setFake(true) ,cChannel);
+		}
 		boolean bResult = false;
 		IChannelKick eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
