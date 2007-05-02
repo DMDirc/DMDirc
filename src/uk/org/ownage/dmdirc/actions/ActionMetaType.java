@@ -23,15 +23,21 @@
 package uk.org.ownage.dmdirc.actions;
 
 /**
- * Encapsulates the methods that all actions are required to implement.
+ * Encapsulates the methods that all action types are required to implement.
  * @author chris
  */
-public interface ActionType {
+public interface ActionMetaType {
     
     /**
-     * Retrieves the type of this action.
-     * @return This action's type
+     * Retrieves the arity of this type.
+     * @return The arity of this action type
      */
-    ActionMetaType getType();
+    int getArity();
+    
+    /**
+     * Retrieves the type of arguments that actions of this type should expect.
+     * @return The type of arguments expected
+     */
+    Class[] getArgTypes();
     
 }

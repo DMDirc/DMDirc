@@ -60,13 +60,13 @@ public enum CoreActionType implements ActionType {
     CHANNEL_TOPICCHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG);
     
     /** The type of this action. */
-    private final CoreActionMetaType type;
+    private final ActionMetaType type;
     
     /**
      * Constructs a new core action.
      * @param type The type of this action
      */
-    CoreActionType(CoreActionMetaType type) {
+    CoreActionType(ActionMetaType type) {
         this.type = type;
     }
     
@@ -74,7 +74,7 @@ public enum CoreActionType implements ActionType {
      * Retrieves the type of this action.
      * @return This action's type
      */
-    public CoreActionMetaType getType() {
+    public ActionMetaType getType() {
         return type;
     }
     
