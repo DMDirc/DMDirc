@@ -99,7 +99,7 @@ public class Action {
             trigger = ActionManager.getActionType(properties.getProperty("trigger"));
             
             if (trigger == null) {
-                System.out.println("Invalid trigger");
+                error("Invalid trigger specified");
                 valid = false;
             }
         } else {
@@ -110,7 +110,7 @@ public class Action {
         if (properties.containsKey("response")) {
             response = properties.getProperty("response").split("\n");
         } else {
-            System.out.println("Invalid response");
+            error("No response specified");
             properties.list(System.out);
             valid = false;
         }
@@ -122,7 +122,7 @@ public class Action {
             try {
                 numConditions = Integer.parseInt(properties.getProperty("conditions"));
             } catch (NumberFormatException ex) {
-                System.out.println("Invalid conditions");
+                error("Invalid number of conditions specified");
                 valid = false;
             }
         }
@@ -153,13 +153,13 @@ public class Action {
             try {
                 arg = Integer.parseInt(properties.getProperty("condition" + condition + "-arg"));
             } catch (NumberFormatException ex) {
-                System.out.println("Invalid condition arg");
+                error("Invalid argument number for condition " + condition);
                 return false;
             }
         }
         
         if (arg < 0 || arg >= trigger.getType().getArity()) {
-            System.out.println("Condition arg out of range");
+            error("Invalid argument number for condition " + condition);
             return false;
         }
         
@@ -167,18 +167,16 @@ public class Action {
             try {
                 component = ActionComponent.valueOf(properties.getProperty("condition" + condition + "-component"));
             } catch (IllegalArgumentException ex) {
-                System.out.println("Invalid condition component");
+                error("Invalid component for condition " + condition);
                 return false;
             }
             
             if (!component.appliesTo().equals(trigger.getType().getArgTypes()[arg])) {
-                System.out.println("Condition component cannot be applied to specified arg");
-                System.out.println(component.appliesTo().getName());
-                System.out.println(trigger.getType().getArgTypes()[arg].getName());
+                error("Component cannot be applied to specified arg in condition " + condition);
                 return false;
             }
         } else {
-            System.out.println("No component specified");
+            error("No component specified for condition " + condition);
             return false;
         }
         
@@ -186,28 +184,36 @@ public class Action {
             try {
                 comparison = ActionComparison.valueOf(properties.getProperty("condition" + condition + "-comparison"));
             } catch (IllegalArgumentException ex) {
-                System.out.println("Invalid comparison");
+                error("Invalid comparison for condition " + condition);
                 return false;
             }
             
             if (!comparison.appliesTo().equals(component.getType())) {
-                System.out.println("Comparison cannot be applied to component type");
+                error("Comparison cannot be applied to specified component in condition " + condition);
                 return false;
             }
         } else {
-            System.out.println("No comparison specified");
+            error("No comparison specified for condition " + condition);
             return false;
         }
         
         if (properties.containsKey("condition" + condition + "-target")) {
             target = properties.getProperty("condition" + condition + "-target");
         } else {
-            System.out.println("No target specified");
+            error("No target specified for condition " + condition);
             return false;
         }
         
         conditions.add(new ActionCondition(arg, component, comparison, target));
         return true;
+    }
+    
+    /**
+     * Raises a trivial error, informing the user of the problem.
+     * @param message The message to be raised
+     */
+    private void error(final String message) {
+        Logger.error(ErrorLevel.TRIVIAL, "Unable to parse action " + group + "/" + name + ": " + message);
     }
     
     /**
