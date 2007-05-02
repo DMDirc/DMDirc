@@ -122,7 +122,7 @@ public final class PreferencesPanel extends StandardDialog
      *
      * @param preferencesOwner Owner of the preferences dialog
      */
-    public PreferencesPanel(final PreferencesInterface preferencesOwner, 
+    public PreferencesPanel(final PreferencesInterface preferencesOwner,
             final String title) {
         super(MainFrame.getMainFrame(), false);
         
@@ -232,8 +232,12 @@ public final class PreferencesPanel extends StandardDialog
      * </ul>
      */
     private void addComponent(final JPanel parent, final String optionName,
-            final String title, final OptionType type, final Object... args) {
+            final String title, final String helpText, final OptionType type,
+            final Object... args) {
         final JLabel label = new JLabel(title, JLabel.TRAILING);
+        if (!"".equals(helpText)) {
+            label.setToolTipText(helpText);
+        }
         
         JComponent option;
         
@@ -284,10 +288,19 @@ public final class PreferencesPanel extends StandardDialog
         ((JPanel) parent.getComponent(1)).add(option);
     }
     
+    /**
+     * Adds a named category to the preferences panel sans blurb.
+     * @param name Category name
+     */
     public void addCategory(final String name) {
         addCategory(name, "");
     }
     
+    /**
+     * Adds a named category to the preferences panel.
+     * @param name Category name
+     *@param blurb category blurb
+     */
     public void addCategory(final String name, final String blurb) {
         final JPanel panel = new JPanel(new BorderLayout(SMALL_BORDER, LARGE_BORDER));
         categories.put(name, panel);
@@ -302,15 +315,55 @@ public final class PreferencesPanel extends StandardDialog
         infoLabel.setBackground(panel.getBackground());
         if ("".equals(blurb)) {
             infoLabel.setVisible(false);
-        } 
+        }
         
         panel.add(infoLabel, BorderLayout.PAGE_START);
         panel.add(new JPanel(new SpringLayout()), BorderLayout.CENTER);
     }
     
+    /**
+     * Adds an option to the specified category.
+     * @param category category option is to be added to
+     * @param name config name for the option
+     * @param displayName displayable name for the option
+     * @param helpText Help text to be displayed for the option
+     * @param type option type
+     * @param args type specific options<p>
+     * <ul>
+     * <li>TEXTFIELD takes a String as its default value</li>
+     * <li>CHECKBOX takes a boolean as its default state</li>
+     * <li>COMBOBOX takes a String[] of options, a String selected option
+     * and a boolean to specify if its editable</li>
+     * <li>SPINNER takes an Integer value to specify the default value
+     * or 4 Integers, default, minimum, maximum, step size</li>
+     * </ul>
+     */
     public void addOption(final String category, final String name,
-            final String displayName,final OptionType type, final Object... args) {
-        addComponent(categories.get(category), name, displayName, type, args);
+            final String displayName, final String helpText,
+            final OptionType type, final Object... args) {
+        addComponent(categories.get(category), name, displayName, helpText, type, args);
+    }
+    
+    /**
+     * Adds an option to the specified category.
+     * @param category category option is to be added to
+     * @param name config name for the option
+     * @param displayName displayable name for the option
+     * @param type option type
+     * @param args type specific options<p>
+     * <ul>
+     * <li>TEXTFIELD takes a String as its default value</li>
+     * <li>CHECKBOX takes a boolean as its default state</li>
+     * <li>COMBOBOX takes a String[] of options, a String selected option
+     * and a boolean to specify if its editable</li>
+     * <li>SPINNER takes an Integer value to specify the default value
+     * or 4 Integers, default, minimum, maximum, step size</li>
+     * </ul>
+     */
+    public void addOption(final String category, final String name,
+            final String displayName, final OptionType type,
+            final Object... args) {
+        addComponent(categories.get(category), name, displayName, "", type, args);
     }
     
     /**
@@ -369,6 +422,9 @@ public final class PreferencesPanel extends StandardDialog
         owner.configClosed(properties);
     }
     
+    /**
+     * Lays out the preferences panel and displays it.
+     */
     public void display() {
         for (JPanel panel : categories.values()) {
             layoutGrid((JPanel) panel.getComponent(1),
