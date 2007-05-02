@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.ui.components;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -73,10 +74,10 @@ public final class PreferencesPanel extends StandardDialog
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4;
+    private static final long serialVersionUID = 5;
     
     /** Acceptable input types for the config dialog. */
-    public static enum OptionType { TEXTFIELD, CHECKBOX, COMBOBOX, SPINNER, };
+    public static enum OptionType { TEXTFIELD, CHECKBOX, COMBOBOX, SPINNER, COLOUR, };
     
     /** All text fields in the dialog, used to apply settings. */
     private final Map<String, JTextField> textFields;
@@ -87,8 +88,11 @@ public final class PreferencesPanel extends StandardDialog
     /** All combo boxes in the dialog, used to apply settings. */
     private final Map<String, JComboBox> comboBoxes;
     
-    /** All combo boxes in the dialog, used to apply settings. */
+    /** All spinners in the dialog, used to apply settings. */
     private final Map<String, JSpinner> spinners;
+    
+    /** All colours in the dialog, used to apply settings. */
+    private final Map<String, ColourChooser> colours;
     
     /** Categories in the dialog. */
     private final Map<String, JPanel> categories;
@@ -136,6 +140,7 @@ public final class PreferencesPanel extends StandardDialog
         checkBoxes = new Hashtable<String, JCheckBox>();
         comboBoxes = new Hashtable<String, JComboBox>();
         spinners = new Hashtable<String, JSpinner>();
+        colours = new Hashtable<String, ColourChooser>();
         
         initComponents();
     }
@@ -229,6 +234,7 @@ public final class PreferencesPanel extends StandardDialog
      * and a boolean to specify if its editable</li>
      * <li>SPINNER takes an Integer value to specify the default value
      * or 4 Integers, default, minimum, maximum, step size</li>
+     * <li>COLOUR takes a String as the initial value</li>
      * </ul>
      */
     private void addComponent(final JPanel parent, final String optionName,
@@ -272,13 +278,17 @@ public final class PreferencesPanel extends StandardDialog
                         Logger.error(ErrorLevel.TRIVIAL,
                                 "Default value incorrect", ex);
                     }
-                }else {
+                } else {
                     option = new JSpinner(
                             new SpinnerNumberModel((Integer) args[0],
                             (Integer) args[1], (Integer) args[2],
                             (Integer) args[3]));
                 }
                 spinners.put(optionName, (JSpinner) option);
+                break;
+            case COLOUR:
+                option = new ColourChooser((String) args[0]);
+                colours.put(optionName, (ColourChooser) option);
                 break;
             default:
                 throw new IllegalArgumentException(type
@@ -338,6 +348,7 @@ public final class PreferencesPanel extends StandardDialog
      * and a boolean to specify if its editable</li>
      * <li>SPINNER takes an Integer value to specify the default value
      * or 4 Integers, default, minimum, maximum, step size</li>
+     * <li>COLOUR takes a String as the initial value</li>
      * </ul>
      */
     public void addOption(final String category, final String name,
@@ -420,6 +431,10 @@ public final class PreferencesPanel extends StandardDialog
         for (String option : spinners.keySet()) {
             properties.setProperty(option,
                     "" + spinners.get(option).getValue().toString());
+        }
+        for (String option : colours.keySet()) {
+            properties.setProperty(option,
+                    "" + colours.get(option).getColour());
         }
         owner.configClosed(properties);
     }
