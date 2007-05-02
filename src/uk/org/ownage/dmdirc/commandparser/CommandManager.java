@@ -219,6 +219,7 @@ public final class CommandManager {
         new Clear();
         new ConfigInfo();
         new Ctcp();
+        new Echo();
         new Help();
         new Ignore();
         new Join();

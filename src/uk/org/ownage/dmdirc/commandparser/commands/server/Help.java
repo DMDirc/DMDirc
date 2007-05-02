@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.commandparser.commands.server;
 
 import java.util.Collections;
 import java.util.List;
+
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.Command;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;

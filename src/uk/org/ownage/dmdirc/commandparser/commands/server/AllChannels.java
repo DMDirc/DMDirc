@@ -50,9 +50,11 @@ public class AllChannels extends ServerCommand {
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         final String command = implodeArgs(args);
+        CommandWindow window;
         
         for (String channel : server.getChannels()) {
-            server.getChannel(channel).getFrame().getCommandParser().parseCommand(origin, command);
+            window = server.getChannel(channel).getFrame();
+            window.getCommandParser().parseCommand(window, command);
         }
     }
     

@@ -22,20 +22,27 @@
 
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
+import java.util.Collections;
+import java.util.List;
+
 import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.ServerManager;
+import uk.org.ownage.dmdirc.commandparser.Command;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
+import uk.org.ownage.dmdirc.ui.ChannelFrame;
+import uk.org.ownage.dmdirc.ui.QueryFrame;
 
 /**
- * The AllServers command allows users to issue commands to all servers.
+ * The echo commands simply echos text to the current window.
  * @author chris
  */
-public class AllServers extends ServerCommand {
+public final class Echo extends ServerCommand {
     
-    /** Creates a new instance of AllServers. */
-    public AllServers() {
+    /**
+     * Creates a new instance of Echo.
+     */
+    public Echo() {
         super();
         
         CommandManager.registerCommand(this);
@@ -49,19 +56,12 @@ public class AllServers extends ServerCommand {
      */
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
-        final String command = implodeArgs(args);
-        CommandWindow window;
-        
-        for (Server target : ServerManager.getServerManager().getServers()) {
-            window = target.getFrame();
-            window.getCommandParser().parseCommand(window, command);
-        }
+        origin.addLine(implodeArgs(args));
     }
-    
-    
+        
     /** {@inheritDoc}. */
     public String getName() {
-        return "allservers";
+        return "echo";
     }
     
     /** {@inheritDoc}. */
@@ -81,7 +81,7 @@ public class AllServers extends ServerCommand {
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "allservers <command> - executes the command as though it had been entered on all servers";
+        return "echo <line> - echos the specified line to the window";
     }
     
 }
