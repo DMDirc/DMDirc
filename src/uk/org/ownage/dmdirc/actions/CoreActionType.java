@@ -29,6 +29,8 @@ package uk.org.ownage.dmdirc.actions;
 public enum CoreActionType implements ActionType {
     
     SERVER_CONNECTED(ActionMetaType.SERVER_EVENT),
+    SERVER_BACK(ActionMetaType.SERVER_EVENT),
+    SERVER_AWAY(ActionMetaType.SERVER_EVENT_WITH_ARG),
     
     QUERY_OPENED(ActionMetaType.QUERY_EVENT),
     QUERY_MESSAGE(ActionMetaType.QUERY_EVENT_WITH_ARG),

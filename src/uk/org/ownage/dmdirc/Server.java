@@ -846,9 +846,13 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         if (currentState) {
             away = true;
             awayMessage = reason;
+            
+            ActionManager.processEvent(CoreActionType.SERVER_AWAY, this, awayMessage);
         } else {
             away = false;
             awayMessage = null;
+            
+            ActionManager.processEvent(CoreActionType.SERVER_BACK, this);
         }
         
         frame.setAway(away);

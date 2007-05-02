@@ -38,6 +38,7 @@ public enum ActionMetaType {
     CHANNEL_EVENT(1, Channel.class),
     QUERY_EVENT(1, Query.class),
     
+    SERVER_EVENT_WITH_ARG(2, Server.class, String.class),
     QUERY_EVENT_WITH_ARG(2, Query.class, String.class),
     
     CHANNEL_SOURCED_EVENT(2, Channel.class, ChannelClientInfo.class),

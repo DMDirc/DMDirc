@@ -187,7 +187,7 @@ public class ActionManager {
     
     /**
      * Substitutes variables into the string based on the arguments.
-     * @param target The string to be altered 
+     * @param target The string to be altered
      * @param arguments The arguments for the action
      */
     public static String substituteVars(final String target, final Object ... arguments) {
@@ -209,6 +209,9 @@ public class ActionManager {
         
         if (server != null) {
             res = res.replaceAll("\\$nick", server.getParser().getMyself().getNickname());
+            if (server.isAway()) {
+                res = res.replaceAll("\\$awaymsg", server.getAwayMessage());
+            }
         }
         
         if (channel != null) {
