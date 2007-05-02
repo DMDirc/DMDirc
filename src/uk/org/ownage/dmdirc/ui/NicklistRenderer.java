@@ -28,6 +28,7 @@ import java.awt.Component;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.border.EmptyBorder;
+import uk.org.ownage.dmdirc.Channel;
 
 import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
@@ -47,13 +48,18 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
     /** ConfigManager. */
     private final ConfigManager config;
     
+    /** associated channel */
+    private final Channel channel;
+    
     /**
      * Creates a new instance of NicklistRenderer.
      * @param newConfig ConfigManager for the associated channel
      */
-    public NicklistRenderer(final ConfigManager newConfig) {
+    public NicklistRenderer(final ConfigManager newConfig, 
+            final Channel newChannel) {
 	super();
 	config = newConfig;
+        channel = newChannel;
     }
     
     /**

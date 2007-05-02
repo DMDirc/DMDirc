@@ -201,7 +201,7 @@ public final class ChannelFrame extends Frame {
         
         final JScrollPane nickScrollPane = new JScrollPane();
         nickList = new JList();
-        nickList.setCellRenderer(new NicklistRenderer(parent.getConfigManager()));
+        nickList.setCellRenderer(new NicklistRenderer(parent.getConfigManager(), parent));
         nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         
         splitPane.setBorder(null);
