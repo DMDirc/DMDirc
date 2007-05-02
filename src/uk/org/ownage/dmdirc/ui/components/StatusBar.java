@@ -96,7 +96,13 @@ public final class StatusBar extends JPanel implements MouseListener,
         super();
         final BorderLayout layout = new BorderLayout(5, 5);
         errors = new ArrayList<Error>();
+        
         popup = new JPopupMenu();
+        
+        JMenuItem mi = new JMenuItem("No errors");
+        mi.addActionListener(this);
+        mi.setActionCommand("None");
+        popup.add(mi);
         
         setBorder(new EmptyBorder(0, 5, 5, 5));
         
@@ -296,7 +302,7 @@ public final class StatusBar extends JPanel implements MouseListener,
      * @param e mouse event
      */
     public void processMouseEvent(final MouseEvent e) {
-        if (e.isPopupTrigger() && e.getSource() == iconLabel && errors.size() > 0) {
+        if (e.isPopupTrigger() && e.getSource() == iconLabel) {
             final Point point = this.getMousePosition();
             popup.show(this, (int) point.getX(), (int) point.getY());
         } else {
@@ -348,7 +354,13 @@ public final class StatusBar extends JPanel implements MouseListener,
         if ("Clear".equals(e.getActionCommand())) {
             errors.clear();
             popup.removeAll();
+            JMenuItem mi = new JMenuItem("No errors");
+            mi.addActionListener(this);
+            mi.setActionCommand("Clear");
+            popup.add(mi);
             clearError();
+        } else if ("None".equals(e.getActionCommand())) {
+            //Ignore
         } else {
             errors.get(Integer.valueOf(e.getActionCommand())).getNotifier().clickReceived();
         }
