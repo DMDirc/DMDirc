@@ -657,9 +657,7 @@ public final class IRCParser implements Runnable {
 		final String[] newLine = tokeniseLine(line);
 		if (newLine[0].equalsIgnoreCase("away")) {
 			if (newLine.length > 1) {
-				// AWAY blah blah blah
-				// 01234^-5
-				cMyself.setAwayReason(line.substring(5));
+				cMyself.setAwayReason(newLine[newLine.length()-1]);
 			}
 		}
 	}
