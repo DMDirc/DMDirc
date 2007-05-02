@@ -220,7 +220,7 @@ public final class StatusBar extends JPanel implements MouseListener,
                 errorTimer.scheduledExecutionTime()) <= 0) {
             errorTimer.cancel();
         }
-        if (newIcon != normalIcon) {
+        if (newIcon != iconLabel.getIcon()) {
             int displayLength = 10000;
             if (Config.hasOption("statusBar", "errorDisplayLength")) {
                 try {
