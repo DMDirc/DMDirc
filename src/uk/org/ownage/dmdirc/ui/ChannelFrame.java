@@ -27,6 +27,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import javax.swing.JLabel;
 
 import javax.swing.JList;
 import javax.swing.JMenuItem;
@@ -233,7 +234,7 @@ public final class ChannelFrame extends Frame {
         getContentPane().add(getSearchBar(), constraints);
         
         constraints.gridy = 2;
-        getContentPane().add(getInputField(), constraints);
+        getContentPane().add(getInputPanel(), constraints);
         
         splitPane.setLeftComponent(getScrollPane());
         splitPane.setRightComponent(nickScrollPane);

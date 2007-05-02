@@ -22,11 +22,14 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
+import javax.swing.JLabel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.border.EmptyBorder;
 
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandParser;
@@ -34,6 +37,8 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.ui.components.Frame;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
+
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 
 /**
@@ -56,6 +61,9 @@ public final class ServerFrame extends Frame {
     
     /** This frame's parent. */
     private final Server parent;
+    
+    /** Away label */
+    private JLabel awayLabel = new JLabel();
     
     /**
      * Creates a new ServerFrame.
@@ -100,12 +108,34 @@ public final class ServerFrame extends Frame {
     }
     
     /**
+     * Returns the away label for this server connection.
+     *
+     * @return JLabel away label
+     */
+    public JLabel getAwayLabel() {
+        return awayLabel;
+    }
+    
+    public void setAway(boolean newAwayState) {
+        if (newAwayState) {
+            getInputPanel().add(awayLabel, BorderLayout.LINE_START);
+            awayLabel.setVisible(true);
+        } else {
+            awayLabel.setVisible(false);
+        }
+    }
+    
+    /**
      * Initialises components in this frame.
      */
     private void initComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
         
         setTitle("Server Frame");
+        
+        awayLabel.setText("(away)");
+        awayLabel.setVisible(true);
+        awayLabel.setBorder(new EmptyBorder(0, 0, 0, SMALL_BORDER));
         
         getScrollPane().setVerticalScrollBarPolicy(
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -125,7 +155,7 @@ public final class ServerFrame extends Frame {
         getContentPane().add(getSearchBar(), constraints);
         
         constraints.gridy = 2;
-        getContentPane().add(getInputField(), constraints);
+        getContentPane().add(getInputPanel(), constraints);
         
         pack();
     }

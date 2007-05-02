@@ -127,7 +127,7 @@ public final class QueryFrame extends Frame {
         getContentPane().add(getSearchBar(), constraints);
         
         constraints.gridy = 2;
-        getContentPane().add(getInputField(), constraints);
+        getContentPane().add(getInputPanel(), constraints);
         
         pack();
     }

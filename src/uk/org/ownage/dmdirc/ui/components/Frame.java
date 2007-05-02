@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.ui.components;
 
 import java.awt.AWTException;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Point;
@@ -44,9 +45,11 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
@@ -75,6 +78,8 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 /**
  * Frame component.
  */
@@ -88,6 +93,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    
+    /** Input field panel */
+    private JPanel inputPanel;
     
     /** Frame input field. */
     private JTextField inputField;
@@ -212,11 +220,11 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     public final void open() {
         setVisible(true);
     }
-
+    
     /**
      * Adds a line of text to the main text area (with a timestamp).
      * @param line text to add
-     */    
+     */
     public final void addLine(final String line) {
         addLine(line, true);
     }
@@ -342,6 +350,11 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         
         searchBar = new SearchBar(this);
         searchBar.setVisible(false);
+        
+        inputPanel = new JPanel(new BorderLayout());
+        inputPanel.add(Box.createHorizontalBox(),
+                BorderLayout.LINE_START);
+        inputPanel.add(inputField, BorderLayout.CENTER);
     }
     
     /**
@@ -468,6 +481,15 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     public final JTextField getInputField() {
         return inputField;
+    }
+    
+    /**
+     * Returns the input panel for this frame.
+     *
+     * @return JPanel input panel
+     */
+    public final JPanel getInputPanel() {
+        return inputPanel;
     }
     
     /**

@@ -29,18 +29,27 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
+import java.awt.font.TextHitInfo;
 import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -100,7 +109,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void addText(final AttributedString text) {
         textPane.addText(text);
         scrollBar.setMaximum(textPane.getNumLines());
-        if (!scrollBar.getValueIsAdjusting() 
+        if (!scrollBar.getValueIsAdjusting()
         && (scrollBar.getValue() == scrollBar.getMaximum() - 1)) {
             setScrollBarPosition(textPane.getNumLines());
         }
@@ -138,31 +147,31 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     /** temporary method to add some text to the text pane. */
     public void addTestText() {
         for (int i = 0; i <= 100; i++) {
-            AttributedString attributedString = 
+            AttributedString attributedString =
                     new AttributedString("this is line #" + i);
             textPane.addText(attributedString);
             i++;
             attributedString = new AttributedString("this is line #" + i);
-            attributedString.addAttribute(TextAttribute.UNDERLINE, 
+            attributedString.addAttribute(TextAttribute.UNDERLINE,
                     TextAttribute.UNDERLINE_ON,
                     0, attributedString.getIterator().getEndIndex());
             textPane.addText(attributedString);
             i++;
             attributedString = new AttributedString("this is line #" + i);
-            attributedString.addAttribute(TextAttribute.WEIGHT, 
+            attributedString.addAttribute(TextAttribute.WEIGHT,
                     TextAttribute.WEIGHT_ULTRABOLD,
                     0, attributedString.getIterator().getEndIndex());
             textPane.addText(attributedString);
             i++;
             attributedString = new AttributedString("this is line #" + i);
-            attributedString.addAttribute(TextAttribute.UNDERLINE, 
+            attributedString.addAttribute(TextAttribute.UNDERLINE,
                     TextAttribute.UNDERLINE_ON,
                     5, attributedString.getIterator().getEndIndex());
             attributedString.addAttribute(TextAttribute.FOREGROUND, Color.GREEN,
                     5, 10);
             textPane.addText(attributedString);
-            attributedString = new AttributedString("this is long, long, long, " 
-                    + "long, long, long, long, long, long, long, long, long, " 
+            attributedString = new AttributedString("this is long, long, long, "
+                    + "long, long, long, long, long, long, long, long, long, "
                     + "long, long, long, long, long, long, long, long, long, "
                     + "long, long, long line #" + i);
             textPane.addText(attributedString);
@@ -171,8 +180,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         setScrollBarPosition(textPane.getNumLines());
     }
     
-    /** 
-     * temporary method to text the textpane. 
+    /**
+     * temporary method to text the textpane.
      * @param args command line arguments
      */
     public static void main(final String[] args) {
@@ -193,11 +202,12 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     }
     
     /** Canvas object to draw text. */
-    private class TextPaneCanvas extends Canvas {
+    private class TextPaneCanvas extends Canvas implements MouseListener,
+            MouseMotionListener {
         
         /**
-         * A version number for this class. It should be changed whenever the 
-         * class structure is changed (or anything else that would prevent 
+         * A version number for this class. It should be changed whenever the
+         * class structure is changed (or anything else that would prevent
          * serialized objects being unserialized with the new class).
          */
         private static final long serialVersionUID = 1;
@@ -221,14 +231,27 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         /** parent textpane. */
         private TextPane textPane;
         
+        private Map<TextLayout, Rectangle> currentTextLayouts;
+        
+        private TextLayout line;
+        
+        private TextHitInfo startHit;
+        
+        private TextHitInfo endHit;
+        
+        private Shape highlightShape = null;
+        
         /**
          * Creates a new text pane canvas.
          * @param parent parent text pane for the canvas
          */
         public TextPaneCanvas(final TextPane parent) {
             iterators = new ArrayList<AttributedCharacterIterator>();
+            currentTextLayouts = new LinkedHashMap<TextLayout, Rectangle>();
             scrollBarPosition = 0;
             textPane = parent;
+            this.addMouseListener(this);
+            this.addMouseMotionListener(this);
         }
         
         /**
@@ -251,6 +274,14 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                 startLine = 0;
             }
             
+            Rectangle highlightLineRectangle = null;
+            
+            if (line != null) {
+                highlightLineRectangle = currentTextLayouts.get(line);
+            }
+            
+            currentTextLayouts.clear();
+            
             for (int i = startLine; i >= 0; i--) {
                 final AttributedCharacterIterator iterator = iterators.get(i);
                 paragraphStart = iterator.getBeginIndex();
@@ -271,12 +302,29 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                     }
                     
                     layout.draw(graphics2D, drawPosX, drawPosY);
+                    currentTextLayouts.put(layout,
+                            new Rectangle(
+                            new Point((int) drawPosX, (int) (drawPosY + layout.getDescent())),
+                            new Dimension(
+                            (int) layout.getAdvance(),
+                            (int) (
+                            layout.getDescent() + layout.getLeading() + layout.getAscent()
+                            ))));
                     
                     drawPosY -= layout.getAscent();
                 }
                 if (drawPosY <= 0) {
                     break;
                 }
+            }
+            
+            if (highlightShape != null && highlightLineRectangle != null) {
+                graphics2D.setPaint(Color.RED);
+                graphics2D.fillRect(
+                        (int) highlightShape.getBounds().getX(),
+                        (int) highlightLineRectangle.getBounds().getY(),
+                        (int) highlightShape.getBounds().getWidth(),
+                        (int) highlightShape.getBounds().getHeight());
             }
         }
         
@@ -322,6 +370,63 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                 scrollBarPosition = position;
                 this.repaint();
             }
+        }
+        
+        public void mouseClicked(MouseEvent e) {
+        }
+        
+        public void mousePressed(MouseEvent e) {
+            TextLayout startLine = null;
+            Rectangle rectangle = null;
+            TextHitInfo hit;
+            Point point = e.getPoint();
+            for (TextLayout layout : currentTextLayouts.keySet()) {
+                rectangle = currentTextLayouts.get(layout);
+                if (rectangle.contains(point)) {
+                    startLine = layout;
+                    break;
+                }
+            }
+            if (startLine != null) {
+                startHit = startLine.hitTestChar((float) (point.getX() - rectangle.getX()), (float) (point.getY() - rectangle.getY()));
+            }
+            
+            line = startLine;
+        }
+        
+        public void mouseReleased(MouseEvent e) {
+        }
+        
+        public void mouseEntered(MouseEvent e) {
+        }
+        
+        public void mouseExited(MouseEvent e) {
+        }
+        
+        public void mouseDragged(MouseEvent e) {
+            TextLayout endLine = null;
+            Rectangle rectangle = null;
+            TextHitInfo hit;
+            Point point = e.getPoint();
+            for (TextLayout layout : currentTextLayouts.keySet()) {
+                rectangle = currentTextLayouts.get(layout);
+                if (rectangle.contains(point)) {
+                    endLine = layout;
+                    break;
+                }
+            }
+            if (line != null && endLine == line) {
+                if (endLine != null) {
+                    endHit = endLine.hitTestChar((float) (point.getX() - rectangle.getX()), (float) (point.getY() - rectangle.getY()));
+                }
+                if (startHit != null && endHit != null) {
+                    highlightShape = line.getVisualHighlightShape(startHit, endHit);
+                    this.repaint();
+                }
+            }
+        }
+        
+        public void mouseMoved(MouseEvent e) {
         }
     }
 }

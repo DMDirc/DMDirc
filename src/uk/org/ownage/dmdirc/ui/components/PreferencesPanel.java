@@ -237,6 +237,8 @@ public final class PreferencesPanel extends StandardDialog
         final JLabel label = new JLabel(title, JLabel.TRAILING);
         if (!"".equals(helpText)) {
             label.setToolTipText(helpText);
+        } else {
+            label.setToolTipText("No help available.");
         }
         
         JComponent option;
