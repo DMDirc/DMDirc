@@ -91,6 +91,12 @@ public final class StatusBar extends JPanel implements MouseListener,
     /** Popupmenu for this frame. */
     private final JPopupMenu popup;
     
+    /** Clear error menu menu item */
+    private final JMenuItem clearErrors;
+    
+    /** No errors menu menu item */
+    private final JMenuItem noErrors;
+    
     /** Creates a new instance of StatusBar. */
     public StatusBar() {
         super();
@@ -99,10 +105,14 @@ public final class StatusBar extends JPanel implements MouseListener,
         
         popup = new JPopupMenu();
         
-        JMenuItem mi = new JMenuItem("No errors");
-        mi.addActionListener(this);
-        mi.setActionCommand("None");
-        popup.add(mi);
+        noErrors = new JMenuItem("No errors");
+        noErrors.addActionListener(this);
+        noErrors.setActionCommand("None");
+        popup.add(noErrors);
+        
+        clearErrors = new JMenuItem("Clear errors");
+        clearErrors.addActionListener(this);
+        clearErrors.setActionCommand("Clear");
         
         setBorder(new EmptyBorder(0, 5, 5, 5));
         
@@ -340,10 +350,7 @@ public final class StatusBar extends JPanel implements MouseListener,
                 popup.add(mi);
             }
             popup.addSeparator();
-            mi = new JMenuItem("Clear errors");
-            mi.addActionListener(this);
-            mi.setActionCommand("Clear");
-            popup.add(mi);
+            popup.add(clearErrors);
         }
     }
     
@@ -354,10 +361,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         if ("Clear".equals(e.getActionCommand())) {
             errors.clear();
             popup.removeAll();
-            JMenuItem mi = new JMenuItem("No errors");
-            mi.addActionListener(this);
-            mi.setActionCommand("Clear");
-            popup.add(mi);
+            popup.add(noErrors);
             clearError();
         } else if ("None".equals(e.getActionCommand())) {
             //Ignore
