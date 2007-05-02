@@ -22,14 +22,11 @@
 
 package uk.org.ownage.dmdirc.ui;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
-import javax.swing.JLabel;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.border.EmptyBorder;
+import uk.org.ownage.dmdirc.Config;
 
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandParser;
@@ -61,9 +58,6 @@ public final class ServerFrame extends Frame {
     
     /** This frame's parent. */
     private final Server parent;
-    
-    /** Away label */
-    private JLabel awayLabel = new JLabel();
     
     /**
      * Creates a new ServerFrame.
@@ -107,21 +101,17 @@ public final class ServerFrame extends Frame {
         return parent;
     }
     
-    /**
-     * Returns the away label for this server connection.
-     *
-     * @return JLabel away label
-     */
-    public JLabel getAwayLabel() {
-        return awayLabel;
-    }
-    
     public void setAway(boolean newAwayState) {
-        if (newAwayState) {
-            getInputPanel().add(awayLabel, BorderLayout.LINE_START);
-            awayLabel.setVisible(true);
-        } else {
-            awayLabel.setVisible(false);
+        if (Config.hasOption("ui", "awayindicator")
+        && Boolean.parseBoolean(Config.getOption("ui", "awayindicator"))) {
+            setAwayIndicator(newAwayState);
+            ((Frame) getServer().getRaw().getFrame()).setAwayIndicator(newAwayState);
+            for(String channel : getServer().getChannels()) {
+                ((Frame) getServer().getChannel(channel).getFrame()).setAwayIndicator(newAwayState);
+            }
+            for (String query : getServer().getQueries()) {
+                ((Frame) getServer().getQuery(query).getFrame()).setAwayIndicator(newAwayState);
+            }
         }
     }
     
@@ -132,10 +122,6 @@ public final class ServerFrame extends Frame {
         final GridBagConstraints constraints = new GridBagConstraints();
         
         setTitle("Server Frame");
-        
-        awayLabel.setText("(away)");
-        awayLabel.setVisible(true);
-        awayLabel.setBorder(new EmptyBorder(0, 0, 0, SMALL_BORDER));
         
         getScrollPane().setVerticalScrollBarPolicy(
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);

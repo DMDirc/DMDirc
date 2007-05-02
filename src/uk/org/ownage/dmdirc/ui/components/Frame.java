@@ -45,8 +45,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -145,6 +145,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /** Robot for the frame. */
     private Robot robot;
     
+    /** Away label */
+    private JLabel awayLabel;
+    
     /**
      * Creates a new instance of Frame.
      *
@@ -219,6 +222,10 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     public final void open() {
         setVisible(true);
+        if (Config.hasOption("ui", "awayindicator")
+        && Boolean.parseBoolean(Config.getOption("ui", "awayindicator"))) {
+            awayLabel.setVisible(getServer().isAway());
+        }
     }
     
     /**
@@ -351,9 +358,13 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         searchBar = new SearchBar(this);
         searchBar.setVisible(false);
         
+        awayLabel = new JLabel();
+        awayLabel.setText("(away)");
+        awayLabel.setVisible(false);
+        awayLabel.setBorder(new EmptyBorder(0, 0, 0, SMALL_BORDER));
+        
         inputPanel = new JPanel(new BorderLayout());
-        inputPanel.add(Box.createHorizontalBox(),
-                BorderLayout.LINE_START);
+        inputPanel.add(awayLabel, BorderLayout.LINE_START);
         inputPanel.add(inputField, BorderLayout.CENTER);
     }
     
@@ -535,6 +546,28 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     protected final void setScrollPane(final JScrollPane newScrollPane) {
         this.scrollPane = newScrollPane;
+    }
+    
+    /**
+     * Returns the away label for this server connection.
+     *
+     * @return JLabel away label
+     */
+    public JLabel getAwayLabel() {
+        return awayLabel;
+    }
+    
+    /**
+     * Sets the away indicator on or off.
+     * @param awayState away state
+     */
+    public void setAwayIndicator(boolean awayState) {
+        if (awayState) {
+            getInputPanel().add(awayLabel, BorderLayout.LINE_START);
+            awayLabel.setVisible(true);
+        } else {
+            awayLabel.setVisible(false);
+        }
     }
     
     /**

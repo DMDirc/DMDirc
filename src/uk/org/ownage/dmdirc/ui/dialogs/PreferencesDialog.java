@@ -130,6 +130,8 @@ public final class PreferencesDialog implements PreferencesInterface {
                 Boolean.parseBoolean(Config.getOption("ui", "quickCopy")));
         preferencesPanel.addOption(tabName, "ui.pasteProtectionLimit", "Paste protection trigger: ",
                 PreferencesPanel.OptionType.SPINNER, Integer.parseInt(Config.getOption("ui", "pasteProtectionLimit")));
+        preferencesPanel.addOption(tabName, "ui.awayindicator", "Away indicator: ", "Shows an away indicator in the input field.",
+                PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption("ui", "awayindicator")));
     }
     
     /**
@@ -253,11 +255,13 @@ public final class PreferencesDialog implements PreferencesInterface {
     
     /** {@inheritDoc}. */
     public void configClosed(final Properties properties) {
-        if (!Config.getOption("ui", "lookandfeel").equals(properties.getProperty("ui.lookandfeel)"))) {
-            JOptionPane.showMessageDialog(MainFrame.getMainFrame(), 
-                    "The look and feel will not be changed until DMDirc is " 
+        /*if (properties.getProperty("ui.lookandfeel") != null
+                && !Config.getOption("ui", "lookandfeel")
+                    .equals(properties.getProperty("ui.lookandfeel)"))) {
+            JOptionPane.showMessageDialog(MainFrame.getMainFrame(),
+                    "The look and feel will not be changed until DMDirc is "
                     + "restarted", "Look and Feel", JOptionPane.OK_OPTION);
-        }
+        }*/
         for (Object configOption : properties.keySet()) {
             String[] args = ((String) configOption).split("\\.");
             Config.setOption(args[0], args[1], (String) properties.get(configOption));
