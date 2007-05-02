@@ -52,6 +52,7 @@ import uk.org.ownage.dmdirc.parser.MyInfo;
 import uk.org.ownage.dmdirc.parser.ParserError;
 import uk.org.ownage.dmdirc.parser.ServerInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IAwayState;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IGotNetwork;
@@ -82,7 +83,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         IPrivateAction, IErrorInfo, IPrivateCTCP, IPrivateCTCPReply,
         InternalFrameListener, ISocketClosed, IPrivateNotice, IMOTDStart,
         IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed,
-        FrameContainer {
+        IAwayState, FrameContainer {
     
     /**
      * The callbacks that should be registered for server instances.
@@ -91,7 +92,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         "OnChannelSelfJoin", "OnErrorInfo", "OnPrivateMessage",
         "OnPrivateAction", "OnPrivateCTCP", "OnPrivateNotice",
         "OnPrivateCTCPReply", "OnSocketClosed", "OnGotNetwork", "OnNumeric",
-        "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed"
+        "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed", "OnAwayState"
     };
     
     /**
@@ -150,6 +151,16 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * The config manager for this server.
      */
     private ConfigManager configManager;
+    
+    /**
+     * Whether we're marked as away or not.
+     */
+    private boolean away;
+    
+    /**
+     * Our reason for being away, if any.
+     */
+    private String awayMessage;
     
     /**
      * Creates a new instance of Server.
@@ -238,6 +249,10 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             Logger.error(ErrorLevel.FATAL, "Unable to register server event handlers", ex);
         }
         
+        away = false;
+        awayMessage = null;
+        frame.setAway(false);
+        
         try {
             new Thread(parser).start();
         } catch (IllegalThreadStateException ex) {
@@ -322,6 +337,22 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public String getIrcd() {
         return parser.getIRCD(true);
+    }
+    
+    /**
+     * Returns the current away status.
+     * @return True if the client is marked as away, false otherwise
+     */
+    public boolean isAway() {
+        return away;
+    }
+    
+    /**
+     * Gets the current away message.
+     * @return Null if the client isn't away, or a textual away message if it is
+     */
+    public String getAwayMessage() {
+        return awayMessage;
     }
     
     /**
@@ -765,6 +796,25 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     }
     
     /**
+     * Called when our away state changes.
+     * @param tParser The IRC parser for this server
+     * @param currentState The current (new?) away state
+     * @param reason The textual reason for being away, if any
+     */
+    public void onAwayState(final IRCParser tParser, final boolean currentState,
+            final String reason) {
+        if (currentState) {
+            away = true;
+            awayMessage = reason;
+        } else {
+            away = false;
+            awayMessage = null;
+        }
+        
+        frame.setAway(away);
+    }    
+    
+    /**
      * Called when the IRC socket is closed for any reason.
      * @param tParser The IRC parser for this server
      */
@@ -938,6 +988,5 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public Server getServer() {
         return this;
-    }
-    
+    }    
 }
