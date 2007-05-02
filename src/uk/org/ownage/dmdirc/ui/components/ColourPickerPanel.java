@@ -27,12 +27,17 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import javax.swing.JFrame;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
@@ -66,6 +71,11 @@ public class ColourPickerPanel extends JPanel implements MouseListener, MouseMot
     /** The height of the preview area. */
     private static final int PREVIEW_HEIGHT = 20;
     
+    /** ActionEvent ID for when a hex colour is selected. */
+    public static final int ACTION_HEX = 10001;
+    /** ActionEvent ID for when an irc colour is selected. */
+    public static final int ACTION_IRC = 10002;
+    
     /** Whether to show IRC colours. */
     private final boolean showIrc;
     
@@ -89,6 +99,9 @@ public class ColourPickerPanel extends JPanel implements MouseListener, MouseMot
     
     /** Rectangle we use to indicate that only the preview should be drawn. */
     private Rectangle previewRect;
+    
+    /** A list of registered actionlisteners. */
+    private final List<ActionListener> listeners = new ArrayList<ActionListener>();
     
     /**
      * Creates a new instance of ColourPickerPanel.
@@ -209,20 +222,11 @@ public class ColourPickerPanel extends JPanel implements MouseListener, MouseMot
     }
     
     /**
-     * Temporary method to allow easy debugging.
-     * @param args Command line args
+     * Retrieves the hex colour beneath the mouse. It is assumed that this
+     * method is only called if the mouse is within the hex area.
+     * @param e The mouse event that triggered this call
+     * @return A colour object representing the colour beneat the mouse
      */
-    public static void main(String ... args) {
-        JFrame temp = new JFrame("Colour picker");
-        ColourPickerPanel me = new ColourPickerPanel();
-        temp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        temp.add(me);
-        temp.pack();
-        temp.setResizable(false);
-        //temp.setSize(me.getSize());
-        temp.setVisible(true);
-    }
-    
     private Color getHexColour(final MouseEvent e) {
         final int i = e.getX() - BORDER_SIZE;
         final int j = HEX_HEIGHT - (e.getY() - hexOffset);
@@ -230,12 +234,64 @@ public class ColourPickerPanel extends JPanel implements MouseListener, MouseMot
         return new Color(Color.HSBtoRGB((float)i / HEX_WIDTH, saturation, (float)j / HEX_HEIGHT));
     }
     
+    /**
+     * Retrieves the irc colour beneath the mouse. It is assumed that this
+     * method is only called if the mouse is within the irc colour area.
+     * @param e The mouse event that triggered this call
+     * @return A colour object representing the colour beneat the mouse
+     */
     private Color getIrcColour(final MouseEvent e) {
         final int i = (e.getX() - BORDER_SIZE) / IRC_WIDTH;
         
         return ColourManager.getColour(i);
     }
     
+    /**
+     * Adds an action listener to this object. Action events are generated (and
+     * passed to all action listeners) when the user selects a colour. The two
+     * IDs used by this object are ACTION_HEX and ACTION_IRC, to indicate a
+     * hex colour or an irc colour was selected, respectively.
+     * @param listener The action listener to register
+     */
+    public void addActionListener(final ActionListener listener) {
+        listeners.add(listener);
+    }
+ 
+    /**
+     * Removes an action listener from this object.
+     * @param listener The listener to be removed
+     */
+    public void removeActionListener(final ActionListener listener) {
+        listeners.remove(listener);
+    }
+ 
+    /**
+     * Throws a new action event to all listeners.
+     * @param id The id of the action
+     * @param message The 'message' to use for the event
+     */
+    private void throwAction(final int id, final String message) {
+        final ActionEvent event = new ActionEvent(this, id, message);
+ 
+        for (ActionListener listener : listeners) {
+            listener.actionPerformed(event);
+        }
+    }
+ 
+    /**
+     * Converts the specified integer (in the range 0-255) into a hex string.
+     * @param value The integer to convert
+     * @return A char digit hex string representing the specified integer
+     */
+    private String toHex(final int value) {
+        final char[] chars = {
+            '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
+        };
+        
+        return ("" + chars[(value / 16)]) + chars[(value % 16)];
+    }
+    
+    /** {@inheritDoc} */
     public void mouseClicked(final MouseEvent e) {
         if (showIrc && e.getY() > ircOffset
                 && e.getY() < ircOffset + IRC_HEIGHT && e.getX() > BORDER_SIZE
@@ -243,7 +299,7 @@ public class ColourPickerPanel extends JPanel implements MouseListener, MouseMot
             
             final int i = (e.getX() - BORDER_SIZE) / IRC_WIDTH;
             
-            System.out.println("IRC colour picked: " + i);
+            throwAction(ACTION_IRC, "" + i);
             
         } else if (showHex
                 && e.getY() > hexOffset && e.getY() < hexOffset + HEX_HEIGHT) {
@@ -252,7 +308,7 @@ public class ColourPickerPanel extends JPanel implements MouseListener, MouseMot
                 
                 final Color color = getHexColour(e);
                 
-                System.out.println("Hex colour: " + toHex(color.getRed()) + toHex(color.getGreen()) + toHex(color.getBlue()));
+                throwAction(ACTION_HEX, toHex(color.getRed()) + toHex(color.getGreen()) + toHex(color.getBlue()));
                 
             } else if (e.getX() > BORDER_SIZE*2 + HEX_WIDTH
                     && e.getX() < BORDER_SIZE*3 + HEX_WIDTH + SLIDER_WIDTH) {
@@ -262,29 +318,32 @@ public class ColourPickerPanel extends JPanel implements MouseListener, MouseMot
         }
     }
     
-    private String toHex(final int value) {       
-        final char[] chars = {
-            '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'
-        };
-        
-        return ("" + chars[(value / 16)]) + chars[(value % 16)];
-    }
-    
+    /** {@inheritDoc} */
     public void mousePressed(final MouseEvent e) {
+        // Do nothing
     }
     
+    /** {@inheritDoc} */
     public void mouseReleased(final MouseEvent e) {
+        // Do nothing
     }
     
+    /** {@inheritDoc} */
     public void mouseEntered(final MouseEvent e) {
+        // Do nothing
     }
     
+    /** {@inheritDoc} */
     public void mouseExited(final MouseEvent e) {
+        // Do nothing
     }
     
+    /** {@inheritDoc} */
     public void mouseDragged(final MouseEvent e) {
+        // Do nothing
     }
     
+    /** {@inheritDoc} */
     public void mouseMoved(final MouseEvent e) {
         if (showIrc && e.getY() > ircOffset
                 && e.getY() < ircOffset + IRC_HEIGHT && e.getX() > BORDER_SIZE
@@ -301,4 +360,22 @@ public class ColourPickerPanel extends JPanel implements MouseListener, MouseMot
         repaint(previewRect);
     }
     
+    /**
+     * Temporary method to allow easy debugging.
+     * @param args Command line args
+     */
+    public static void main(final String ... args) {
+        final JFrame temp = new JFrame("Colour picker");
+        final ColourPickerPanel me = new ColourPickerPanel(true, true);
+        me.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Action: " + e.getID() + " " + e.getActionCommand());
+            }
+        });
+        temp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        temp.add(me);
+        temp.pack();
+        temp.setResizable(false);
+        temp.setVisible(true);
+    }
 }
