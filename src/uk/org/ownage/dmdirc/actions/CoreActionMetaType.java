@@ -32,7 +32,7 @@ import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
  * parameters an action expects).
  * @author chris
  */
-public enum ActionMetaType {
+public enum CoreActionMetaType {
     
     SERVER_EVENT(1, Server.class),
     CHANNEL_EVENT(1, Channel.class),
@@ -52,16 +52,18 @@ public enum ActionMetaType {
     private final Class[] argTypes;
     
     /**
-     * Constructs an instance of an ActionMetaType.
+     * Constructs an instance of an CoreActionMetaType.
+     * 
      * @param arity The arity of the action type
      */
-    ActionMetaType(final int arity, final Class ... argTypes) {
+    CoreActionMetaType(final int arity, final Class ... argTypes) {
         this.arity = arity;
         this.argTypes = argTypes;
     }
     
     /**
-     * Retrieves the arity of an ActionMetaType.
+     * Retrieves the arity of an CoreActionMetaType.
+     * 
      * @return The arity of this action type
      */
     public int getArity() {

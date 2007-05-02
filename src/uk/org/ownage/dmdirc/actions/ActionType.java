@@ -32,6 +32,6 @@ public interface ActionType {
      * Retrieves the type of this action.
      * @return This action's type
      */
-    ActionMetaType getType();
+    CoreActionMetaType getType();
     
 }

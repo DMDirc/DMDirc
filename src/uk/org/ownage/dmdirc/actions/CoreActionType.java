@@ -28,45 +28,45 @@ package uk.org.ownage.dmdirc.actions;
  */
 public enum CoreActionType implements ActionType {
     
-    SERVER_CONNECTED(ActionMetaType.SERVER_EVENT),
-    SERVER_BACK(ActionMetaType.SERVER_EVENT),
-    SERVER_AWAY(ActionMetaType.SERVER_EVENT_WITH_ARG),
+    SERVER_CONNECTED(CoreActionMetaType.SERVER_EVENT),
+    SERVER_BACK(CoreActionMetaType.SERVER_EVENT),
+    SERVER_AWAY(CoreActionMetaType.SERVER_EVENT_WITH_ARG),
     
-    QUERY_OPENED(ActionMetaType.QUERY_EVENT),
-    QUERY_MESSAGE(ActionMetaType.QUERY_EVENT_WITH_ARG),
-    QUERY_ACTION(ActionMetaType.QUERY_EVENT_WITH_ARG),
-    QUERY_SELF_MESSAGE(ActionMetaType.QUERY_EVENT_WITH_ARG),
-    QUERY_SELF_ACTION(ActionMetaType.QUERY_EVENT_WITH_ARG),    
+    QUERY_OPENED(CoreActionMetaType.QUERY_EVENT),
+    QUERY_MESSAGE(CoreActionMetaType.QUERY_EVENT_WITH_ARG),
+    QUERY_ACTION(CoreActionMetaType.QUERY_EVENT_WITH_ARG),
+    QUERY_SELF_MESSAGE(CoreActionMetaType.QUERY_EVENT_WITH_ARG),
+    QUERY_SELF_ACTION(CoreActionMetaType.QUERY_EVENT_WITH_ARG),    
     
-    CHANNEL_OPENED(ActionMetaType.CHANNEL_EVENT),
-    CHANNEL_GOTNAMES(ActionMetaType.CHANNEL_EVENT),
-    CHANNEL_GOTTOPIC(ActionMetaType.CHANNEL_EVENT),
+    CHANNEL_OPENED(CoreActionMetaType.CHANNEL_EVENT),
+    CHANNEL_GOTNAMES(CoreActionMetaType.CHANNEL_EVENT),
+    CHANNEL_GOTTOPIC(CoreActionMetaType.CHANNEL_EVENT),
     
-    CHANNEL_SELF_MESSAGE(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
-    CHANNEL_SELF_ACTION(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
+    CHANNEL_SELF_MESSAGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
+    CHANNEL_SELF_ACTION(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
     
-    CHANNEL_MESSAGE(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
-    CHANNEL_ACTION(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
+    CHANNEL_MESSAGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
+    CHANNEL_ACTION(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
     
-    CHANNEL_JOIN(ActionMetaType.CHANNEL_SOURCED_EVENT),
-    CHANNEL_PART(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
-    CHANNEL_QUIT(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
-    CHANNEL_KICK(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_VICTIM),
+    CHANNEL_JOIN(CoreActionMetaType.CHANNEL_SOURCED_EVENT),
+    CHANNEL_PART(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
+    CHANNEL_QUIT(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
+    CHANNEL_KICK(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_VICTIM),
     
-    CHANNEL_MODECHANGE(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
+    CHANNEL_MODECHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
     
-    CHANNEL_NICKCHANGE(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
+    CHANNEL_NICKCHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG),
     
-    CHANNEL_TOPICCHANGE(ActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG);
+    CHANNEL_TOPICCHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG);
     
     /** The type of this action. */
-    private final ActionMetaType type;
+    private final CoreActionMetaType type;
     
     /**
      * Constructs a new core action.
      * @param type The type of this action
      */
-    CoreActionType(ActionMetaType type) {
+    CoreActionType(CoreActionMetaType type) {
         this.type = type;
     }
     
@@ -74,7 +74,7 @@ public enum CoreActionType implements ActionType {
      * Retrieves the type of this action.
      * @return This action's type
      */
-    public ActionMetaType getType() {
+    public CoreActionMetaType getType() {
         return type;
     }
     
