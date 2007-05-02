@@ -586,7 +586,8 @@ public class ChannelSettingsDialog extends StandardDialog
             final boolean state = ourBooleanModes.split(" ")[0]
                     .contains(mode.subSequence(0, 1));
             
-            if (state != modeCheckBoxes.get(mode).isSelected()) {
+            if (modeCheckBoxes.get(mode) != null 
+                    && state != modeCheckBoxes.get(mode).isSelected()) {
                 changed = true;
                 channel.getChannelInfo().alterMode(
                         modeCheckBoxes.get(mode).isSelected(),
