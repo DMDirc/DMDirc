@@ -98,7 +98,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
         
         frame = new QueryFrame(this);
         
-        ActionManager.processEvent(CoreActionType.QUERY_OPENED, this);
+        ActionManager.processEvent(CoreActionType.QUERY_OPENED, null, this);
         
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
@@ -146,8 +146,12 @@ public final class Query implements IPrivateAction, IPrivateMessage,
         
         if (maxLineLength >= line.length()) {
             server.getParser().sendMessage(ClientInfo.parseHost(host), line);
-            frame.addLine("querySelfMessage", client.getNickname(), client.getIdent(), client.getHost(), line);
-            ActionManager.processEvent(CoreActionType.QUERY_SELF_MESSAGE, this, line);
+            
+            final StringBuffer buff = new StringBuffer("querySelfMessage");
+            
+            ActionManager.processEvent(CoreActionType.QUERY_SELF_MESSAGE, buff, this, line);
+            
+            frame.addLine(buff, client.getNickname(), client.getIdent(), client.getHost(), line);
         } else {
             sendLine(line.substring(0, maxLineLength));
             sendLine(line.substring(maxLineLength));
@@ -164,8 +168,12 @@ public final class Query implements IPrivateAction, IPrivateMessage,
         
         if (maxLineLength >= action.length() + 2) {
             server.getParser().sendAction(ClientInfo.parseHost(host), action);
-            frame.addLine("querySelfAction", client.getNickname(), client.getIdent(), client.getHost(), action);
-            ActionManager.processEvent(CoreActionType.QUERY_SELF_ACTION, this, action);
+            
+            final StringBuffer buff = new StringBuffer("querySelfAction");
+            
+            ActionManager.processEvent(CoreActionType.QUERY_SELF_ACTION, buff, this, action);
+            
+            frame.addLine(buff, client.getNickname(), client.getIdent(), client.getHost(), action);
         } else {
             frame.addLine("Warning: action too long to be sent");
         }
@@ -180,11 +188,14 @@ public final class Query implements IPrivateAction, IPrivateMessage,
     public void onPrivateMessage(final IRCParser parser, final String message,
             final String remoteHost) {
         final String[] parts = ClientInfo.parseHostFull(remoteHost);
-        frame.addLine("queryMessage", parts[0], parts[1], parts[2], message);
+        
+        final StringBuffer buff = new StringBuffer("queryMessage");
+        
+        ActionManager.processEvent(CoreActionType.QUERY_MESSAGE, buff, this, message);
+        
+        frame.addLine(buff, parts[0], parts[1], parts[2], message);
         
         sendNotification();
-        
-        ActionManager.processEvent(CoreActionType.QUERY_MESSAGE, this, message);
     }
     
     /**
@@ -196,11 +207,14 @@ public final class Query implements IPrivateAction, IPrivateMessage,
     public void onPrivateAction(final IRCParser parser, final String message,
             final String remoteHost) {
         final String[] parts = ClientInfo.parseHostFull(host);
-        frame.addLine("queryAction", parts[0], parts[1], parts[2], message);
+        
+        final StringBuffer buff = new StringBuffer("queryAction");
+        
+        ActionManager.processEvent(CoreActionType.QUERY_ACTION, buff, this, message);
+        
+        frame.addLine(buff, parts[0], parts[1], parts[2], message);
         
         sendNotification();
-        
-        ActionManager.processEvent(CoreActionType.QUERY_ACTION, this, message);
     }
     
     /**

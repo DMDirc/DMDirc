@@ -850,7 +850,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         }
         
         if (numeric == 1) {
-            ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, this);
+            ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
         }
     }
     
@@ -866,12 +866,12 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             away = true;
             awayMessage = reason;
             
-            ActionManager.processEvent(CoreActionType.SERVER_AWAY, this, awayMessage);
+            ActionManager.processEvent(CoreActionType.SERVER_AWAY, null, this, awayMessage);
         } else {
             away = false;
             awayMessage = null;
             
-            ActionManager.processEvent(CoreActionType.SERVER_BACK, this);
+            ActionManager.processEvent(CoreActionType.SERVER_BACK, null, this);
         }
         
         frame.setAway(away);

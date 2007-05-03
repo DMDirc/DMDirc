@@ -164,9 +164,13 @@ public abstract class CommandParser {
      */
     protected void handleInvalidCommand(final CommandWindow origin,
             final String command, final String... args) {
-        origin.addLine("Unknown command: " + command + "/" + args.length);
         
-        ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, origin.getContainer(), command, args);
+        final StringBuffer buff = new StringBuffer("unknownCommand");
+        
+        ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, buff, 
+                origin.getContainer(), command, args);
+        
+        origin.addLine(buff, command + "/" + args.length);
     }
     
     /**

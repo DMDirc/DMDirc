@@ -128,16 +128,20 @@ public class ActionManager {
     /**
      * Processes an event of the specified type.
      * @param type The type of the event to process
+     * @param format The format of the message that's going to be displayed for
+     * the event. Actions may change this format.
      * @param arguments The arguments for the event
      */
-    public static void processEvent(final ActionType type, final Object ... arguments) {
+    public static void processEvent(final ActionType type,
+            final StringBuffer format, final Object ... arguments) {
         if (actionTypes == null) {
             init();
         }
         
         if (type.getType().getArity() == arguments.length) {
+            // TODO: Work with shane to pass format buffer
             PluginManager.getPluginManager().processEvent(type, arguments);
-            triggerActions(type, arguments);
+            triggerActions(type, format, arguments);
         } else {
             Logger.error(ErrorLevel.ERROR, "Invalid number of arguments for action " + type);
         }
@@ -146,12 +150,15 @@ public class ActionManager {
     /**
      * Triggers actions that respond to the specified type.
      * @param type The type of the event to process
+          * @param format The format of the message that's going to be displayed for
+     * the event. Actions may change this format.*
      * @param arguments The arguments for the event
      */
-    private static void triggerActions(final ActionType type, final Object ... arguments) {
+    private static void triggerActions(final ActionType type,
+            final StringBuffer format, final Object ... arguments) {
         if (actions.containsKey(type)) {
             for (Action action : actions.get(type)) {
-                action.trigger(arguments);
+                action.trigger(format, arguments);
             }
         }
     }

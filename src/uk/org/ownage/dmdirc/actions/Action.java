@@ -58,6 +58,9 @@ public class Action {
     /** The commands to execute if this action is triggered. */
     private String[] response;
     
+    /** The change that should be made to the format string, if any. */
+    private String newFormat = null;
+    
     /** The conditions for this action. */
     private final List<ActionCondition> conditions = new ArrayList<ActionCondition>();
     
@@ -113,6 +116,11 @@ public class Action {
             error("No response specified");
             properties.list(System.out);
             valid = false;
+        }
+        
+        // Read the format change
+        if (properties.containsKey("format")) {
+            newFormat = properties.getProperty("format");
         }
         
         // Read the conditions
@@ -234,9 +242,10 @@ public class Action {
     
     /**
      * Triggers this action.
+     * @param format The format of the message that's going to be displayed.
      * @param arguments The arguments from the action that caused this trigger.
      */
-    public void trigger(final Object ... arguments) {
+    public void trigger(final StringBuffer format, final Object ... arguments) {
         for (ActionCondition condition : conditions) {
             if (!condition.test(arguments)) {
                 return;
@@ -246,6 +255,11 @@ public class Action {
         for (String command : response) {
             final CommandWindow cw = ((FrameContainer) arguments[0]).getFrame();
             cw.getCommandParser().parseCommand(cw, ActionManager.substituteVars(command, arguments));
+        }
+        
+        if (newFormat != null && format != null) {
+            format.setLength(0);
+            format.append(newFormat);
         }
     }
     

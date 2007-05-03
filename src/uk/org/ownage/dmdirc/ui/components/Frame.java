@@ -297,7 +297,21 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param args The arguments for the message
      */
     public final void addLine(final String messageType, final Object... args) {
-        addLine(Formatter.formatMessage(messageType, args));
+        if (messageType.length() > 0) {
+            addLine(Formatter.formatMessage(messageType, args));
+        }
+    }
+    
+    /**
+     * Formats the arguments using the Formatter, then adds the result to the
+     * main text area.
+     * @param messageType The type of this message
+     * @param args The arguments for the message
+     */
+    public final void addLine(final StringBuffer messageType, final Object... args) {
+        if (messageType != null) {
+            addLine(messageType.toString(), args);
+        }
     }
     
     /**

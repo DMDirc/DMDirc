@@ -136,7 +136,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         registerCallbacks();
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_OPENED, this);
+        ActionManager.processEvent(CoreActionType.CHANNEL_OPENED, null, this);
         
         updateTitle();
         selfJoin();
@@ -193,10 +193,14 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName());
         
         if (maxLineLength >= line.length()) {
-            frame.addLine("channelSelfMessage", modes, me.getNickname(),
-                    me.getIdent(), me.getHost(), line, channelInfo);
+            final StringBuffer buff = new StringBuffer("channelSelfMessage");
+            
+            ActionManager.processEvent(CoreActionType.CHANNEL_SELF_MESSAGE, buff,
+                    this, channelInfo.getUser(me), line);
+            
+            frame.addLine(buff, modes, me.getNickname(), me.getIdent(),
+                    me.getHost(), line, channelInfo);
             channelInfo.sendMessage(line);
-            ActionManager.processEvent(CoreActionType.CHANNEL_SELF_MESSAGE, this, channelInfo.getUser(me), line);
         } else {
             sendLine(line.substring(0, maxLineLength));
             sendLine(line.substring(maxLineLength));
@@ -216,10 +220,15 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             frame.addLine("channelSelfMessage", modes, me.getNickname(), me.getIdent(),
                     me.getHost(), "Action too long to be sent", channelInfo);
         } else {
-            frame.addLine("channelSelfAction", modes, me.getNickname(), me.getIdent(),
+            final StringBuffer buff = new StringBuffer("channelSelfAction");
+            
+            ActionManager.processEvent(CoreActionType.CHANNEL_SELF_ACTION, buff,
+                    this, channelInfo.getUser(me), action);
+            
+            frame.addLine(buff, modes, me.getNickname(), me.getIdent(),
                     me.getHost(), action, channelInfo);
+            
             channelInfo.sendAction(action);
-            ActionManager.processEvent(CoreActionType.CHANNEL_SELF_ACTION, this, channelInfo.getUser(me), action);
         }
     }
     
@@ -389,10 +398,11 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         final String[] parts = getDetails(cChannelClient);
         final String modes = getModes(cChannelClient);
         
-        frame.addLine(type, modes, parts[0], parts[1], parts[2], sMessage,
-                cChannel);
+        final StringBuffer buff = new StringBuffer(type);
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_MESSAGE, this, cChannelClient, sMessage);
+        ActionManager.processEvent(CoreActionType.CHANNEL_MESSAGE, buff, this, cChannelClient, sMessage);
+        
+        frame.addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
     }
     
     /**
@@ -411,9 +421,12 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         if (parts[0].equals(tParser.getMyself().getNickname())) {
             type = "channelSelfExternalAction";
         }
-        frame.addLine(type, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_ACTION, this, cChannelClient, sMessage);
+        final StringBuffer buff = new StringBuffer(type);
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_ACTION, buff, this, cChannelClient, sMessage);
+        
+        frame.addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
     }
     
     /**
@@ -433,7 +446,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         tabCompleter.replaceEntries(names);
         tabCompleter.addEntries(CommandManager.getChannelCommandNames());
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_GOTNAMES, this);
+        ActionManager.processEvent(CoreActionType.CHANNEL_GOTNAMES, null, this);
     }
     
     /**
@@ -447,18 +460,23 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     public void onChannelTopic(final IRCParser tParser, final ChannelInfo cChannel,
             final boolean bIsJoinTopic) {
         if (bIsJoinTopic) {
-            frame.addLine("channelJoinTopic", cChannel.getTopic(),
-                    cChannel.getTopicUser(), 1000 * cChannel.getTopicTime(), cChannel);
+            final StringBuffer buff = new StringBuffer("channelJoinTopic");
             
-            ActionManager.processEvent(CoreActionType.CHANNEL_GOTTOPIC, this);
+            ActionManager.processEvent(CoreActionType.CHANNEL_GOTTOPIC, buff, this);
+            
+            frame.addLine(buff, cChannel.getTopic(), cChannel.getTopicUser(),
+                    1000 * cChannel.getTopicTime(), cChannel);
         } else {
             final ChannelClientInfo user = cChannel.getUser(cChannel.getTopicUser());
             final String[] parts = ClientInfo.parseHostFull(cChannel.getTopicUser());
             final String modes = getModes(user);
             final String topic = cChannel.getTopic();
-            frame.addLine("channelTopicChange", modes, parts[0], parts[1], parts[2], topic, cChannel);
             
-            ActionManager.processEvent(CoreActionType.CHANNEL_TOPICCHANGE, this, user, topic);
+            final StringBuffer buff = new StringBuffer("channelTopicChange");
+            
+            ActionManager.processEvent(CoreActionType.CHANNEL_TOPICCHANGE, buff, this, user, topic);
+            
+            frame.addLine(buff, modes, parts[0], parts[1], parts[2], cChannel, topic);
         }
         updateTitle();
     }
@@ -474,13 +492,15 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             final ChannelClientInfo cChannelClient) {
         final ClientInfo client = cChannelClient.getClient();
         
-        frame.addLine("channelJoin", "", client.getNickname(), client.getIdent(),
+        final StringBuffer buff = new StringBuffer("channelJoin");
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_JOIN, buff, this, cChannelClient);
+        
+        frame.addLine(buff, "", client.getNickname(), client.getIdent(),
                 client.getHost(), cChannel);
         
         frame.addName(cChannelClient);
         tabCompleter.addEntry(cChannelClient.getNickname());
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_JOIN, this, cChannelClient);
     }
     
     /**
@@ -499,26 +519,32 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         final String host = client.getHost();
         final String modes = cChannelClient.getImportantModePrefix();
         
+        String type = "";
+        
         if (nick.equals(tParser.getMyself().getNickname())) {
             if (sReason.length() == 0) {
-                frame.addLine("channelSelfPart", modes, nick, ident, host, cChannel);
+                type = "channelSelfPart";
             } else {
-                frame.addLine("channelSelfPartReason", modes, nick, ident, host, cChannel, sReason);
+                type = "channelSelfPartReason";
             }
             resetWindow();
         } else {
             if (sReason.length() == 0) {
-                frame.addLine("channelPart", modes, nick, ident, host, cChannel);
+                type = "channelPart";
             } else {
-                frame.addLine("channelPartReason", modes, nick, ident, host, sReason, cChannel);
+                type = "channelPartReason";
             }
         }
+        
+        final StringBuffer buff = new StringBuffer(type);
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_PART, buff, this, cChannelClient, sReason);
+        
+        frame.addLine(buff, modes, nick, ident, host, cChannel, sReason);
         
         frame.removeName(cChannelClient);
         
         tabCompleter.removeEntry(cChannelClient.getNickname());
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_PART, this, cChannelClient, sReason);
     }
     
     /**
@@ -541,13 +567,21 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         final String victimident = cKickedClient.getClient().getIdent();
         final String victimhost = cKickedClient.getClient().getHost();
         
+        String type = "";
+        
         if (sReason.length() == 0) {
-            frame.addLine("channelKick", kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,
-                    victim, victimident, victimhost, cChannel.getName());
+            type = "channelKick";
         } else {
-            frame.addLine("channelKickReason", kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,
-                    victim, victimident, victimhost, sReason, cChannel.getName());
+            type = "channelKickReason";
         }
+        
+        final StringBuffer buff = new StringBuffer(type);
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_KICK, buff, this, 
+                cKickedByClient, cKickedClient, sReason);
+        
+        frame.addLine(buff, kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,
+                victim, victimident, victimhost, cChannel.getName(), sReason);
         
         frame.removeName(cKickedClient);
         
@@ -556,8 +590,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         if (cKickedClient.getClient().equals(tParser.getMyself())) {
             resetWindow();
         }
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_KICK, this, cKickedByClient, cKickedClient, sReason);
     }
     
     /**
@@ -573,18 +605,24 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         final ClientInfo client = cChannelClient.getClient();
         final String source = cChannelClient.getNickname();
         final String modes = cChannelClient.getImportantModePrefix();
+        
+        String type = "";
+        
         if (sReason.length() == 0) {
-            frame.addLine("channelQuit", modes, source, client.getIdent(),
-                    client.getHost(), cChannel);
+            type = "channelQuit";
         } else {
-            frame.addLine("channelQuitReason", modes, source, client.getIdent(),
-                    client.getHost(), sReason, cChannel);
+            type = "channelQuitReason";
         }
+        
+        final StringBuffer buff = new StringBuffer(type);
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, buff, this, cChannelClient, sReason);
+        
+        frame.addLine(buff, modes, source, client.getIdent(),
+                    client.getHost(), cChannel, sReason);
         
         frame.removeName(cChannelClient);
         tabCompleter.removeEntry(cChannelClient.getNickname());
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, this, cChannelClient, sReason);
     }
     
     /**
@@ -606,9 +644,12 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         }
         tabCompleter.removeEntry(sOldNick);
         tabCompleter.addEntry(nick);
-        frame.addLine(type, modes, sOldNick, ident, host, nick, cChannel);
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_NICKCHANGE, this, cChannelClient, sOldNick);
+        final StringBuffer buff = new StringBuffer(type);
+        
+        ActionManager.processEvent(CoreActionType.CHANNEL_NICKCHANGE, buff, this, cChannelClient, sOldNick);
+        
+        frame.addLine(buff, modes, sOldNick, ident, host, nick, cChannel);
     }
     
     /**
@@ -622,22 +663,30 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     public void onChannelModeChanged(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
         if (sHost.length() == 0) {
-            frame.addLine("channelModeDiscovered", sModes, cChannel.getName());
+            final StringBuffer buff = new StringBuffer("channelModeDiscovered");
+            
+            ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, buff, this, cChannelClient, sModes);
+            
+            frame.addLine(buff, sModes, cChannel.getName());
         } else {
             final String modes = getModes(cChannelClient);
             final String[] details = getDetails(cChannelClient);
             final String myNick = tParser.getMyself().getNickname();
+            
             String type = "channelModeChange";
             if (myNick.equals(cChannelClient.getNickname())) {
                 type = "channelSelfModeChange";
             }
+            
+            final StringBuffer buff = new StringBuffer(type);
+            
+            ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, buff, this, cChannelClient, sModes);
+            
             frame.addLine(type,  modes, details[0], details[1],
-                    details[2], sModes, cChannel.getName());
+                    details[2], cChannel.getName(), sModes);
         }
         
         frame.updateNames();
-        
-        ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, this, cChannelClient, sModes);
     }
     
     /**
@@ -670,7 +719,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             
             frame.addLine(format, sourceModes, sourceHost[0], sourceHost[1],
                     sourceHost[2], targetModes, targetNick, targetIdent,
-                    targetHost, sMode, cChannel);
+                    targetHost, cChannel, sMode);
         }
         
         // TODO: Action hook
