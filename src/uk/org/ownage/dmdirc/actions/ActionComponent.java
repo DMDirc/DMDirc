@@ -62,6 +62,12 @@ public enum ActionComponent {
         Object get(final Object argument) { return argument; }
         Class appliesTo() { return String.class; }
         Class getType() { return String.class; }
+    },
+    
+    STRINGARRAY_LENGTH {
+        Object get(final Object argument) { return new Integer(((String[]) argument).length); }
+        Class appliesTo() { return String[].class; }
+        Class getType() { return Integer.class; }        
     };
     
     /**

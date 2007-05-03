@@ -75,6 +75,39 @@ public enum ActionComparison {
     COLOUR_NEQUALS {
         boolean test(final Object arg1, final Object arg2) { return !COLOUR_EQUALS.test(arg1, arg2); }
         Class appliesTo() { return Color.class; }
+    },
+    
+    INT_EQUALS {
+        boolean test(final Object arg1, final Object arg2) {
+            try {
+                return 0 == ((Integer) arg1).compareTo(Integer.parseInt((String) arg2));
+            } catch (NumberFormatException ex) {
+                return false;
+            }
+        }
+        Class appliesTo() { return Integer.class; }
+    },
+    
+    INT_GREATER {
+        boolean test(final Object arg1, final Object arg2) {
+            try {
+                return 0 < ((Integer) arg1).compareTo(Integer.parseInt((String) arg2));
+            } catch (NumberFormatException ex) {
+                return false;
+            }
+        }
+        Class appliesTo() { return Integer.class; }        
+    },
+    
+    INT_LESS {
+        boolean test(final Object arg1, final Object arg2) {
+            try {
+                return 0 > ((Integer) arg1).compareTo(Integer.parseInt((String) arg2));
+            } catch (NumberFormatException ex) {
+                return false;
+            }
+        }
+        Class appliesTo() { return Integer.class; }            
     };
     
     /**
