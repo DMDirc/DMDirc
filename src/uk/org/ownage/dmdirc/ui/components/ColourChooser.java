@@ -26,8 +26,6 @@ import java.awt.BorderLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -53,10 +51,13 @@ public final class ColourChooser extends JPanel implements ActionListener {
     /** Edit button. */
     private JButton editButton;
     
+    /** Colours picking dialog. */
     private ColourPickerDialog cpd;
     
+    /** show irc colours. */
     private boolean showIRC;
     
+    /** show hex colours. */
     private boolean showHex;
     
     /** Creates a new instance of ColourChooser. */
@@ -67,8 +68,11 @@ public final class ColourChooser extends JPanel implements ActionListener {
     /**
      * Creates a new instance of ColourChooser.
      * @param initialColour initial colour
+     * @param ircColours show irc colours
+     * @param hexColours show hex colours
      */
-    public ColourChooser(final String initialColour, boolean ircColours, boolean hexColours) {
+    public ColourChooser(final String initialColour, final boolean ircColours, 
+            final boolean hexColours) {
         showIRC = ircColours;
         showHex = hexColours;
         textField = new JTextField(initialColour);
@@ -93,7 +97,7 @@ public final class ColourChooser extends JPanel implements ActionListener {
     }
     
     /** {@inheritDoc}. */
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == editButton) {
             cpd = ColourPickerDialog.showColourPicker(showIRC, showHex);
             cpd.setLocationRelativeTo(editButton);

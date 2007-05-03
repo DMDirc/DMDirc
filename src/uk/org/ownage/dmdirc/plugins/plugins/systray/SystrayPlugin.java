@@ -44,7 +44,7 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
  * notifications to be disabled.
  * @author chris
  */
-public class SystrayPlugin implements Plugin, ActionListener, MouseListener {
+public final class SystrayPlugin implements Plugin, ActionListener, MouseListener {
     
     /** Is this plugin active? */
     private boolean isActive = false;

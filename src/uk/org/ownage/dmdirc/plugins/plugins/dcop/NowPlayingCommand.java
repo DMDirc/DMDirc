@@ -24,8 +24,8 @@ package uk.org.ownage.dmdirc.plugins.plugins.dcop;
 
 import java.io.IOException;
 import java.util.List;
-import uk.org.ownage.dmdirc.Channel;
 
+import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
@@ -35,7 +35,7 @@ import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
  * The now playing command retrieves the currently playing song from a
- * variety of media players
+ * variety of media players.
  * @author chris
  */
 public final class NowPlayingCommand extends ChannelCommand {

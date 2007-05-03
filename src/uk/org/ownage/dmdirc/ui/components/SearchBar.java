@@ -97,7 +97,7 @@ public final class SearchBar extends JPanel implements ActionListener {
         
         //searchBox.setColumns(25);
         searchBox.setMinimumSize(new Dimension(50, 25));
-        searchBox.setPreferredSize(new Dimension(150, 25));
+        searchBox.setPreferredSize(new Dimension(300, 25));
         searchBox.setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
         
         closeButton.addActionListener(this);

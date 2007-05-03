@@ -146,34 +146,31 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     
     /** temporary method to add some text to the text pane. */
     public void addTestText() {
-        for (int i = 0; i <= 100; i++) {
+        for (int i = 0; i <= 20; i++) {
             AttributedString attributedString =
-                    new AttributedString("this is line #" + i);
+                    new AttributedString("this is a line");
             textPane.addText(attributedString);
-            i++;
-            attributedString = new AttributedString("this is line #" + i);
+            attributedString = new AttributedString("this is a line");
             attributedString.addAttribute(TextAttribute.UNDERLINE,
                     TextAttribute.UNDERLINE_ON,
                     0, attributedString.getIterator().getEndIndex());
             textPane.addText(attributedString);
-            i++;
-            attributedString = new AttributedString("this is line #" + i);
+            attributedString = new AttributedString("this is a line");
             attributedString.addAttribute(TextAttribute.WEIGHT,
                     TextAttribute.WEIGHT_ULTRABOLD,
                     0, attributedString.getIterator().getEndIndex());
             textPane.addText(attributedString);
-            i++;
-            attributedString = new AttributedString("this is line #" + i);
+            attributedString = new AttributedString("this is a line");
             attributedString.addAttribute(TextAttribute.UNDERLINE,
                     TextAttribute.UNDERLINE_ON,
                     5, attributedString.getIterator().getEndIndex());
             attributedString.addAttribute(TextAttribute.FOREGROUND, Color.GREEN,
                     5, 10);
             textPane.addText(attributedString);
-            attributedString = new AttributedString("this is long, long, long, "
+            attributedString = new AttributedString("this is a long, long, long, "
                     + "long, long, long, long, long, long, long, long, long, "
                     + "long, long, long, long, long, long, long, long, long, "
-                    + "long, long, long line #" + i);
+                    + "long, long, long line");
             textPane.addText(attributedString);
         }
         scrollBar.setMaximum(textPane.getNumLines());
@@ -231,15 +228,20 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         /** parent textpane. */
         private TextPane textPane;
         
+        /** Current on screen textlayouts and bounds. */
         private Map<TextLayout, Rectangle> currentTextLayouts;
         
+        /** currently selected line. */
         private TextLayout line;
         
+        /** current start hurt. */
         private TextHitInfo startHit;
         
+        /** current end hit. */
         private TextHitInfo endHit;
         
-        private Shape highlightShape = null;
+        /** current highlight shape. */
+        private Shape highlightShape;
         
         /**
          * Creates a new text pane canvas.
@@ -372,14 +374,17 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             }
         }
         
-        public void mouseClicked(MouseEvent e) {
+        /** {@inheritDoc}. */
+        public void mouseClicked(final MouseEvent e) {
+            //Ignore
         }
         
-        public void mousePressed(MouseEvent e) {
+        /** {@inheritDoc}. */
+        public void mousePressed(final MouseEvent e) {
             TextLayout startLine = null;
             Rectangle rectangle = null;
-            TextHitInfo hit;
-            Point point = e.getPoint();
+            final TextHitInfo hit;
+            final Point point = e.getPoint();
             for (TextLayout layout : currentTextLayouts.keySet()) {
                 rectangle = currentTextLayouts.get(layout);
                 if (rectangle.contains(point)) {
@@ -394,20 +399,27 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             line = startLine;
         }
         
-        public void mouseReleased(MouseEvent e) {
+        /** {@inheritDoc}. */
+        public void mouseReleased(final MouseEvent e) {
+            //Ignore
         }
         
-        public void mouseEntered(MouseEvent e) {
+        /** {@inheritDoc}. */
+        public void mouseEntered(final MouseEvent e) {
+            //Ignore
         }
         
-        public void mouseExited(MouseEvent e) {
+        /** {@inheritDoc}. */
+        public void mouseExited(final MouseEvent e) {
+            //Ignore
         }
         
-        public void mouseDragged(MouseEvent e) {
+        /** {@inheritDoc}. */
+        public void mouseDragged(final MouseEvent e) {
             TextLayout endLine = null;
             Rectangle rectangle = null;
-            TextHitInfo hit;
-            Point point = e.getPoint();
+            final TextHitInfo hit;
+            final Point point = e.getPoint();
             for (TextLayout layout : currentTextLayouts.keySet()) {
                 rectangle = currentTextLayouts.get(layout);
                 if (rectangle.contains(point)) {
@@ -426,7 +438,9 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             }
         }
         
-        public void mouseMoved(MouseEvent e) {
+        /** {@inheritDoc}. */
+        public void mouseMoved(final MouseEvent e) {
+            //Ignore
         }
     }
 }

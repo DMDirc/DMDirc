@@ -22,9 +22,10 @@
 
 package uk.org.ownage.dmdirc.ui.components;
 
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JDialog;
+
 import uk.org.ownage.dmdirc.ui.MainFrame;
 
 /**
@@ -54,7 +55,7 @@ public final class ColourPickerDialog extends StandardDialog {
      * @param showIRC show irc colours
      * @param showHex show hex colours
      */
-    public ColourPickerDialog(boolean showIRC, boolean showHex) {
+    public ColourPickerDialog(final boolean showIRC, final boolean showHex) {
         super(MainFrame.getMainFrame(), false);
         
         colourChooser = new ColourPickerPanel(showIRC, showHex);
@@ -78,14 +79,15 @@ public final class ColourPickerDialog extends StandardDialog {
      * @param showIRC show irc colours
      * @param showHex show hex colours
      */
-    public static ColourPickerDialog showColourPicker(boolean showIRC, boolean showHex) {
-        ColourPickerDialog cpd = new ColourPickerDialog(showIRC, showHex);
+    public static ColourPickerDialog showColourPicker(final boolean showIRC, 
+            final boolean showHex) {
+        final ColourPickerDialog cpd = new ColourPickerDialog(showIRC, showHex);
         cpd.setVisible(true);
         return cpd;
     }
     
     /** {@inheritDoc}. */
-    public void addActionListener(ActionListener listener) {
+    public void addActionListener(final ActionListener listener) {
         colourChooser.addActionListener(listener);
     }
     

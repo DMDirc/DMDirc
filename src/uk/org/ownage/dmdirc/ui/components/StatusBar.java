@@ -91,10 +91,10 @@ public final class StatusBar extends JPanel implements MouseListener,
     /** Popupmenu for this frame. */
     private final JPopupMenu popup;
     
-    /** Clear error menu menu item */
+    /** Clear error menu menu item. */
     private final JMenuItem clearErrors;
     
-    /** No errors menu menu item */
+    /** No errors menu menu item. */
     private final JMenuItem noErrors;
     
     /** Creates a new instance of StatusBar. */
@@ -175,8 +175,8 @@ public final class StatusBar extends JPanel implements MouseListener,
         messageLabel.setText(newMessage);
         messageNotifier = newNotifier;
         
-        if (messageTimer != null && (System.currentTimeMillis() -
-                messageTimer.scheduledExecutionTime()) <= 0) {
+        if (messageTimer != null && (System.currentTimeMillis()
+        - messageTimer.scheduledExecutionTime()) <= 0) {
             messageTimer.cancel();
         }
         messageTimer = new TimerTask() {
@@ -216,28 +216,26 @@ public final class StatusBar extends JPanel implements MouseListener,
         addToHistory(newIcon, newNotifier);
         iconLabel.setIcon(newIcon);
         errorNotifier = newNotifier;
-        if (errorTimer != null && (System.currentTimeMillis() -
-                errorTimer.scheduledExecutionTime()) <= 0) {
+        if (errorTimer != null && (System.currentTimeMillis()
+        - errorTimer.scheduledExecutionTime()) <= 0) {
             errorTimer.cancel();
         }
-        if (newIcon != iconLabel.getIcon()) {
-            int displayLength = 10000;
-            if (Config.hasOption("statusBar", "errorDisplayLength")) {
-                try {
-                    displayLength = Integer.parseInt(
-                            Config.getOption("statusBar", "errorDisplayLength"));
-                } catch (NumberFormatException e) {
-                    Logger.error(ErrorLevel.WARNING, "Invalid error display length", e);
-                }
+        int displayLength = 10000;
+        if (Config.hasOption("statusBar", "errorDisplayLength")) {
+            try {
+                displayLength = Integer.parseInt(
+                        Config.getOption("statusBar", "errorDisplayLength"));
+            } catch (NumberFormatException e) {
+                Logger.error(ErrorLevel.WARNING, "Invalid error display length", e);
             }
-            errorTimer = new TimerTask() {
-                public void run() {
-                    clearError();
-                }
-            };
-            new Timer().schedule(errorTimer,
-                    new Date(System.currentTimeMillis() + displayLength));
         }
+        errorTimer = new TimerTask() {
+            public void run() {
+                clearError();
+            }
+        };
+        new Timer().schedule(errorTimer,
+                new Date(System.currentTimeMillis() + displayLength));
     }
     
     /**

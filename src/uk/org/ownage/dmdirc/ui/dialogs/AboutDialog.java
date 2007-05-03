@@ -38,6 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
 import uk.org.ownage.dmdirc.BrowserLauncher;
+import uk.org.ownage.dmdirc.Main;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
@@ -91,7 +92,8 @@ public final class AboutDialog extends JDialog implements ActionListener,
                 + "Shane 'Dataforce' Mc Cormack."
                 + "</html>");
         
-        about.setText("DMDirc - Cross platform IRC client.");
+        about.setText("<html>DMDirc - Cross platform IRC client.<br>" 
+                + " Version: " + Main.VERSION + "</html>");
         
         okButton.setText("OK");
         okButton.addActionListener(this);
@@ -104,7 +106,7 @@ public final class AboutDialog extends JDialog implements ActionListener,
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER,
-                0, LARGE_BORDER);
+                SMALL_BORDER, LARGE_BORDER);
         getContentPane().add(about, constraints);
         
         constraints.anchor = GridBagConstraints.CENTER;

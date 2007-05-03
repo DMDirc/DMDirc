@@ -595,6 +595,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
     
+    /** Initialises UI Settings. */
     private static void initUISettings() {
         final StringBuilder classNameBuilder = new StringBuilder();
         if (Config.hasOption("ui", "antialias")) {

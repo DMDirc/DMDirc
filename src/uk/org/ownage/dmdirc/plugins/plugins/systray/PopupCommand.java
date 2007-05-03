@@ -32,19 +32,19 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommand;
  * tray icon.
  * @author chris
  */
-public class PopupCommand extends ServerCommand {
+public final class PopupCommand extends ServerCommand {
     
     /** The SystrayPlugin that we belong to. */
     private SystrayPlugin parent;
     
     /**
      * Creates a new instance of PopupCommand.
-     * @param parent The plugin that this command belongs to
+     * @param newParent The plugin that this command belongs to
      */
-    public PopupCommand(final SystrayPlugin parent) {
+    public PopupCommand(final SystrayPlugin newParent) {
         super();
         
-        this.parent = parent;
+        this.parent = newParent;
         
         CommandManager.registerCommand(this);
     }

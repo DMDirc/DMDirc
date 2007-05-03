@@ -108,14 +108,21 @@ public final class ServerFrame extends Frame {
         return parent;
     }
     
-    public void setAway(boolean newAwayState) {
+    /** 
+     * Sets the away status for this and all associated frames. 
+     * @param newAwayState away state
+     */
+    public void setAway(final boolean newAwayState) {
         if (Config.hasOption("ui", "awayindicator")
         && Boolean.parseBoolean(Config.getOption("ui", "awayindicator"))) {
             setAwayIndicator(newAwayState);
+            
             ((Frame) getServer().getRaw().getFrame()).setAwayIndicator(newAwayState);
-            for(String channel : getServer().getChannels()) {
+            
+            for (String channel : getServer().getChannels()) {
                 ((Frame) getServer().getChannel(channel).getFrame()).setAwayIndicator(newAwayState);
             }
+            
             for (String query : getServer().getQueries()) {
                 ((Frame) getServer().getQuery(query).getFrame()).setAwayIndicator(newAwayState);
             }

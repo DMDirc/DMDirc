@@ -40,7 +40,6 @@ import uk.org.ownage.dmdirc.ui.components.Frame;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Allows the user to modify global client preferences.

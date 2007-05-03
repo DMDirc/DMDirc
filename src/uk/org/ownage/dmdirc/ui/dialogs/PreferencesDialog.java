@@ -23,13 +23,11 @@
 package uk.org.ownage.dmdirc.ui.dialogs;
 
 import java.util.Properties;
-import javax.swing.JOptionPane;
 
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
 import uk.org.ownage.dmdirc.ui.components.PreferencesPanel;
 
@@ -81,8 +79,6 @@ public final class PreferencesDialog implements PreferencesInterface {
     
     /**
      * Initialises the preferences tab.
-     *
-     * @param cardLayoutPanel parent pane
      */
     private void initGeneralTab() {
         final String tabName = "General";
@@ -102,8 +98,6 @@ public final class PreferencesDialog implements PreferencesInterface {
     
     /**
      * Initialises the UI tab.
-     *
-     * @param cardLayoutPanel parent pane
      */
     private void initUITab() {
         final String tabName = "GUI";
@@ -141,8 +135,6 @@ public final class PreferencesDialog implements PreferencesInterface {
     
     /**
      * Initialises the TreeView tab.
-     *
-     * @param cardLayoutPanel parent pane
      */
     private void initTreeViewTab() {
         final String tabName = "Treeview";
@@ -163,8 +155,6 @@ public final class PreferencesDialog implements PreferencesInterface {
     
     /**
      * Initialises the Notifications tab.
-     *
-     * @param cardLayoutPanel parent pane
      */
     private void initNotificationsTab() {
         final String tabName = "Notifications";
@@ -184,8 +174,6 @@ public final class PreferencesDialog implements PreferencesInterface {
     
     /**
      * Initialises the input tab.
-     *
-     * @param cardLayoutPanel parent pane
      */
     private void initInputTab() {
         final String tabName = "Input";
@@ -201,8 +189,6 @@ public final class PreferencesDialog implements PreferencesInterface {
     
     /**
      * Initialises the logging tab.
-     *
-     * @param cardLayoutPanel parent pane
      */
     private void initLoggingTab() {
         final String tabName = "Error Handling";
@@ -228,8 +214,6 @@ public final class PreferencesDialog implements PreferencesInterface {
     
     /**
      * Initialises the advanced tab.
-     *
-     * @param cardLayoutPanel parent pane
      */
     private void initAdvancedTab() {
         final String tabName = "Advanced";
@@ -266,15 +250,8 @@ public final class PreferencesDialog implements PreferencesInterface {
     
     /** {@inheritDoc}. */
     public void configClosed(final Properties properties) {
-        /*if (properties.getProperty("ui.lookandfeel") != null
-                && !Config.getOption("ui", "lookandfeel")
-                    .equals(properties.getProperty("ui.lookandfeel)"))) {
-            JOptionPane.showMessageDialog(MainFrame.getMainFrame(),
-                    "The look and feel will not be changed until DMDirc is "
-                    + "restarted", "Look and Feel", JOptionPane.OK_OPTION);
-        }*/
         for (Object configOption : properties.keySet()) {
-            String[] args = ((String) configOption).split("\\.");
+            final String[] args = ((String) configOption).split("\\.");
             Config.setOption(args[0], args[1], (String) properties.get(configOption));
         }
     }

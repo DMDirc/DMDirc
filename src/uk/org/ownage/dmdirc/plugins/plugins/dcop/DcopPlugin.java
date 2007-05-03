@@ -34,7 +34,7 @@ import uk.org.ownage.dmdirc.plugins.Plugin;
  * Allows the user to execute dcop commands (and read the results).
  * @author chris
  */
-public class DcopPlugin implements Plugin {
+public final class DcopPlugin implements Plugin {
     
     /** Is this plugin active? */
     private boolean isActive = false;
@@ -48,6 +48,7 @@ public class DcopPlugin implements Plugin {
      * Retrieves the result from executing the specified command.
      * @param command The command to be executed
      * @return The output of the specified command
+     * @throws IOException on dcop failure
      */
     public static List<String> getDcopResult(final String command) throws IOException {
         final ArrayList<String> result = new ArrayList<String>();

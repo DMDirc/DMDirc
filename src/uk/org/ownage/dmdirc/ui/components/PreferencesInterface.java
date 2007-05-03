@@ -33,5 +33,5 @@ public interface PreferencesInterface {
      * Called when the preferences dialog is closed.
      * @param properties user preferences
      */
-    public void configClosed(Properties properties);
+    void configClosed(Properties properties);
 }

@@ -58,7 +58,6 @@ import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
@@ -95,7 +94,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     private static final long serialVersionUID = 1;
     
-    /** Input field panel */
+    /** Input field panel. */
     private JPanel inputPanel;
     
     /** Frame input field. */
@@ -146,7 +145,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /** Robot for the frame. */
     private Robot robot;
     
-    /** Away label */
+    /** Away label. */
     private JLabel awayLabel;
     
     /**
@@ -576,7 +575,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Sets the away indicator on or off.
      * @param awayState away state
      */
-    public void setAwayIndicator(boolean awayState) {
+    public void setAwayIndicator(final boolean awayState) {
         if (awayState) {
             getInputPanel().add(awayLabel, BorderLayout.LINE_START);
             awayLabel.setVisible(true);
@@ -683,7 +682,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             final Point point = getScrollPane().getMousePosition();
             getPopup().show(this, (int) point.getX(), (int) point.getY());
         } else if (e.isPopupTrigger() && e.getSource() == getInputField()) {
-            inputFieldPopup.show(this, e.getX(), e.getY() + getInputField().getY());
+            final Point point = getMousePosition();
+            inputFieldPopup.show(this, (int) point.getX(), (int) point.getY());
         } else if (e.getSource() == getTextPane()) {
             getTextPane().requestFocus();
         } else if (e.getSource() == getInputField()) {

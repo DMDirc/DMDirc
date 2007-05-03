@@ -24,13 +24,16 @@ package uk.org.ownage.dmdirc.ui.dialogs;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
 /**
- *
+ * Actions editor dialog, used to edit a particular actions.
  */
-public class ActionsEditorDialog extends StandardDialog implements
+public final class ActionsEditorDialog extends StandardDialog implements
         ActionListener {
     
     /**
@@ -47,16 +50,19 @@ public class ActionsEditorDialog extends StandardDialog implements
         addListeners();
     }
     
+    /** Initialises the components. */
     private void initComponents() {
-        //Do something.
+        orderButtons(new JButton(), new JButton());
     }
     
+    /** Adds listeners to components. */
     private void addListeners() {
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
     }
 
-    public void actionPerformed(ActionEvent e) {
+    /** {@inheritDoc}. */
+    public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == getOkButton()) {
             this.dispose();
         } else if (e.getSource() == getCancelButton()) {

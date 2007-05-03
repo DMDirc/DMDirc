@@ -24,7 +24,6 @@ package uk.org.ownage.dmdirc.ui.components;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -53,11 +52,10 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
-import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -125,6 +123,7 @@ public final class PreferencesPanel extends StandardDialog
      * Creates a new instance of PreferencesPanel.
      *
      * @param preferencesOwner Owner of the preferences dialog
+     * @param title preferences dialog title
      */
     public PreferencesPanel(final PreferencesInterface preferencesOwner,
             final String title) {
@@ -225,6 +224,7 @@ public final class PreferencesPanel extends StandardDialog
      * @param parent parent panel
      * @param optionName option name to use
      * @param title option display name
+     * @param helpText help text for the option
      * @param type the type of component to use
      * @param args component specific arguments<p>
      * <ul>
@@ -321,7 +321,7 @@ public final class PreferencesPanel extends StandardDialog
         mainPanel.add(panel, name);
         ((DefaultListModel) tabList.getModel()).addElement(name);
         
-        JTextArea infoLabel = new JTextArea(blurb);
+        final JTextArea infoLabel = new JTextArea(blurb);
         infoLabel.setEditable(false);
         infoLabel.setWrapStyleWord(true);
         infoLabel.setLineWrap(true);
