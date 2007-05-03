@@ -25,9 +25,11 @@ package uk.org.ownage.dmdirc.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.ScrollPaneConstants;
-import uk.org.ownage.dmdirc.Config;
 
+import javax.swing.ScrollPaneConstants;
+
+import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
@@ -98,6 +100,11 @@ public final class ServerFrame extends Frame {
      * @return This window's associated server instance
      */
     public Server getServer() {
+        return parent;
+    }
+    
+    /** {@inheritDoc} */
+    public FrameContainer getContainer() {
         return parent;
     }
     

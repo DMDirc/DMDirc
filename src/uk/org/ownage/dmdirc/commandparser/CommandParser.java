@@ -25,6 +25,9 @@ package uk.org.ownage.dmdirc.commandparser;
 import java.util.Hashtable;
 import java.util.Map;
 
+import uk.org.ownage.dmdirc.actions.ActionManager;
+import uk.org.ownage.dmdirc.actions.CoreActionType;
+
 /**
  * Represents a generic command parser. A command parser takes a line of input
  * from the user, determines if it is an attempt at executing a command (based
@@ -159,8 +162,12 @@ public abstract class CommandParser {
      * @param command The command the user tried to execute
      * @param args The arguments passed to the command
      */
-    protected abstract void handleInvalidCommand(final CommandWindow origin,
-            final String command, final String... args);
+    protected void handleInvalidCommand(final CommandWindow origin,
+            final String command, final String... args) {
+        origin.addLine("Unknown command: " + command + "/" + args.length);
+        
+        ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, origin.getContainer(), command, args);
+    }
     
     /**
      * Called when the input was a line of text that was not a command. This normally

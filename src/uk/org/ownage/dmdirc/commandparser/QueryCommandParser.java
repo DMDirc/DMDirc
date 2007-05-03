@@ -73,20 +73,7 @@ public final class QueryCommandParser extends CommandParser {
             ((ServerCommand) command).execute(origin, server, args);
         }
     }
-    
-    /**
-     * Called when the user attempted to issue a command (i.e., used the command
-     * character) that wasn't found. It could be that the command has a different
-     * arity, or that it plain doesn't exist.
-     * @param origin The window in which the command was typed
-     * @param command The command the user tried to execute
-     * @param args The arguments passed to the command
-     */
-    protected void handleInvalidCommand(final CommandWindow origin, 
-            final String command, final String... args) {
-        origin.addLine("Unknown command: " + command + "/" + args.length);
-    }
-    
+        
     /**
      * Called when the input was a line of text that was not a command. This normally
      * means it is sent to the server/channel/user as-is, with no further processing.

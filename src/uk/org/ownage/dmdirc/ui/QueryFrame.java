@@ -28,6 +28,7 @@ import java.awt.Insets;
 
 import javax.swing.ScrollPaneConstants;
 
+import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandParser;
@@ -98,6 +99,11 @@ public final class QueryFrame extends Frame {
      */
     public Server getServer() {
         return parent.getServer();
+    }
+    
+    /** {@inheritDoc} */
+    public FrameContainer getContainer() {
+        return parent;
     }
     
     /**

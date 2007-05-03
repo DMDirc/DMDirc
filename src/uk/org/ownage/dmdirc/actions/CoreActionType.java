@@ -28,6 +28,8 @@ package uk.org.ownage.dmdirc.actions;
  */
 public enum CoreActionType implements ActionType {
     
+    UNKNOWN_COMMAND(CoreActionMetaType.UNKNOWN_COMMAND),
+    
     SERVER_CONNECTED(CoreActionMetaType.SERVER_EVENT),
     SERVER_BACK(CoreActionMetaType.SERVER_EVENT),
     SERVER_AWAY(CoreActionMetaType.SERVER_EVENT_WITH_ARG),

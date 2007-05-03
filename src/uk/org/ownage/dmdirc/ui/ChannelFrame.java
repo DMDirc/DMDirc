@@ -27,8 +27,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.List;
-import javax.swing.JLabel;
 
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
@@ -41,6 +41,7 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandParser;
@@ -184,6 +185,11 @@ public final class ChannelFrame extends Frame {
      */
     public Server getServer() {
         return parent.getServer();
+    }
+    
+    /** {@inheritDoc} */
+    public FrameContainer getContainer() {
+        return parent;
     }
     
     /**

@@ -27,8 +27,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import uk.org.ownage.dmdirc.Channel;
 
+import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
@@ -228,6 +228,14 @@ public class ActionManager {
         
         for (String key : Config.getOptions("actions")) {
             res = res.replaceAll("\\$" + key, Config.getOption("actions", key));
+        }
+        
+        if (arguments.length > 2 && arguments[2] instanceof String[]) {
+            int i = 1;
+            for (String arg : (String[]) arguments[2]) {
+                res = res.replaceAll("\\$" + i, arg);
+                i++;
+            }
         }
         
         return res;

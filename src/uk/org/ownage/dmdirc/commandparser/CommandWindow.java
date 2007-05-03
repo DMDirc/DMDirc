@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.commandparser;
 
+import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
 
@@ -69,6 +70,12 @@ public interface CommandWindow {
      * @return This window's associated server instance
      */
     Server getServer();
+    
+    /**
+     * Retrieves the container that owns this command window.
+     * @return The container that owns this command window.
+     */
+    FrameContainer getContainer();
     
     /**
      * Determines if the current frame is visible.

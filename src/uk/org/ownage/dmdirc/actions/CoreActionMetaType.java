@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.actions;
 
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
@@ -33,6 +34,8 @@ import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
  * @author chris
  */
 public enum CoreActionMetaType implements ActionMetaType {
+    
+    UNKNOWN_COMMAND(3, FrameContainer.class, String.class, String[].class),
     
     SERVER_EVENT(1, Server.class),
     CHANNEL_EVENT(1, Channel.class),
