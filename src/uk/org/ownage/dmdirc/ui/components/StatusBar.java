@@ -170,7 +170,7 @@ public final class StatusBar extends JPanel implements MouseListener,
      * this message
      * @param timeout message timeout in seconds
      */
-    public void setMessage(final String newMessage,
+    public synchronized void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout) {
         messageLabel.setText(newMessage);
         messageNotifier = newNotifier;
@@ -211,7 +211,7 @@ public final class StatusBar extends JPanel implements MouseListener,
      * @param newNotifier status error notifier to be notified for events on
      * this error
      */
-    public void setError(final ImageIcon newIcon,
+    public synchronized void setError(final ImageIcon newIcon,
             final StatusErrorNotifier newNotifier) {
         addToHistory(newIcon, newNotifier);
         iconLabel.setIcon(newIcon);
