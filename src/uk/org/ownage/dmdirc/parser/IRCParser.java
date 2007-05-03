@@ -45,7 +45,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-//import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnConnectError;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnConnectError;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDataIn;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDataOut;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnDebugInfo;
@@ -388,8 +388,8 @@ public final class IRCParser implements Runnable {
 	 * @return true if a method was called, false otherwise
 	 */
 	protected boolean callConnectError(final ParserError errorInfo) {
-//		final CallbackOnConnectError cb = (CallbackOnConnectError) myCallbackManager.getCallbackType("OnConnectError");
-//		if (cb != null) { return cb.call(errorInfo); }
+		final CallbackOnConnectError cb = (CallbackOnConnectError) myCallbackManager.getCallbackType("OnConnectError");
+		if (cb != null) { return cb.call(errorInfo); }
 		return false;
 	}
 

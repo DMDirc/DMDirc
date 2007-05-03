@@ -128,8 +128,13 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addOption(tabName, "ui.quickCopy", "Quick Copy: ",
                 PreferencesPanel.OptionType.CHECKBOX,
                 Boolean.parseBoolean(Config.getOption("ui", "quickCopy")));
-        preferencesPanel.addOption(tabName, "ui.pasteProtectionLimit", "Paste protection trigger: ",
-                PreferencesPanel.OptionType.SPINNER, Integer.parseInt(Config.getOption("ui", "pasteProtectionLimit")));
+        try {
+            preferencesPanel.addOption(tabName, "ui.pasteProtectionLimit", "Paste protection trigger: ",
+                    PreferencesPanel.OptionType.SPINNER, Integer.parseInt(Config.getOption("ui", "pasteProtectionLimit")));
+        } catch (NumberFormatException e) {
+            preferencesPanel.addOption(tabName, "ui.pasteProtectionLimit", "Paste protection trigger: ",
+                    PreferencesPanel.OptionType.SPINNER, 1);
+        }
         preferencesPanel.addOption(tabName, "ui.awayindicator", "Away indicator: ", "Shows an away indicator in the input field.",
                 PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption("ui", "awayindicator")));
     }
@@ -245,9 +250,15 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addOption(tabName, "ui.inputbuffersize", "Input bufer size (lines): ",
                 PreferencesPanel.OptionType.SPINNER,
                 Integer.parseInt(Config.getOption("ui", "inputbuffersize")));
-        preferencesPanel.addOption(tabName, "ui.frameBufferSize", "Frame buffer size (characters): ",
-                PreferencesPanel.OptionType.SPINNER,
-                Integer.parseInt(Config.getOption("ui", "frameBufferSize")));
+        try {
+            preferencesPanel.addOption(tabName, "ui.frameBufferSize", "Frame buffer size (characters): ",
+                    PreferencesPanel.OptionType.SPINNER,
+                    Integer.parseInt(Config.getOption("ui", "frameBufferSize")));
+        } catch (NumberFormatException e) {
+            preferencesPanel.addOption(tabName, "ui.frameBufferSize", "Frame buffer size (characters): ",
+                    PreferencesPanel.OptionType.SPINNER,
+                    Integer.MAX_VALUE);
+        }
         preferencesPanel.addOption(tabName, "general.browser", "Browser: ",
                 PreferencesPanel.OptionType.TEXTFIELD,
                 Config.getOption("general", "browser"));
