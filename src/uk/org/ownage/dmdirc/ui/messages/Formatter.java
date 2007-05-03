@@ -45,6 +45,11 @@ public final class Formatter {
     private static Properties properties;
     
     /**
+     * The default properties we fall back to if the user hasn't defined their
+     * own. */
+    private static Properties defaultProperties;
+    
+    /**
      * Creates a new instance of Formatter.
      */
     private Formatter() {
@@ -57,7 +62,7 @@ public final class Formatter {
      * @param arguments The arguments to this message type
      * @return A formatted string
      */
-    public static String formatMessage(final String messageType, 
+    public static String formatMessage(final String messageType,
             final Object... arguments) {
         if (properties == null) {
             initialise();
@@ -88,8 +93,8 @@ public final class Formatter {
      * Returns the default format strings for the client.
      * @return The default format strings
      */
-    private static Properties getDefaults() {
-        final Properties defaultProperties = new Properties();
+    private static void loadDefaults() {
+        defaultProperties = new Properties();
         
         final char colour = Styliser.CODE_COLOUR;
         final char stop = Styliser.CODE_STOP;
@@ -121,7 +126,7 @@ public final class Formatter {
         //    5: CTCP type
         //    6: CTCP content
         //    7: Channel name
-        defaultProperties.setProperty("channelCTCP", colour + "4-!- CTCP %5$S from %1$s%2$s");        
+        defaultProperties.setProperty("channelCTCP", colour + "4-!- CTCP %5$S from %1$s%2$s");
         
         // Type: Channel Event
         //    1: User mode prefixes
@@ -240,8 +245,19 @@ public final class Formatter {
         defaultProperties.setProperty("numeric_319", "%4$s is on: %5$s");
         defaultProperties.setProperty("numeric_330", "%4$s %6$s %5$s.");
         defaultProperties.setProperty("numeric_343", "%4$s %6$s %5$s.");
+    }
+    
+    /**
+     * Allows plugins (etc) to register new default formats.
+     * @param name The name of the format
+     * @param format The actual format itself
+     */
+    public static void registerDefault(final String name, final String format) {
+        if (defaultProperties == null) {
+            loadDefaults();
+        }
         
-        return defaultProperties;
+        defaultProperties.setProperty(name, format);
     }
     
     /**
@@ -249,15 +265,17 @@ public final class Formatter {
      * properties object.
      */
     private static void initialise() {
+        if (defaultProperties == null) {
+            loadDefaults();
+        }
         
-        properties = getDefaults();
+        properties = new Properties(defaultProperties);
         
         if (Config.hasOption("general", "formatters")) {
             for (String file : Config.getOption("general", "formatters").split("\n")) {
                 loadFile(file);
             }
         }
-        
     }
     
     /**
