@@ -58,6 +58,7 @@ import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
@@ -405,7 +406,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             .setPreferredSize(new Dimension(0, 0));
             ((BasicInternalFrameUI) getUI()).getNorthPane()
             .setMaximumSize(new Dimension(0, 0));
-            setBorder(new EmptyBorder(0, 0, 0, 0));
+            setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         }
     }
     

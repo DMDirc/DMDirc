@@ -114,7 +114,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
             server.getParser().getCallbackManager().addCallback("onPrivateMessage", this, ClientInfo.parseHost(host));
             server.getParser().getCallbackManager().addCallback("onNickChanged", this);
         } catch (CallbackNotFound ex) {
-            Logger.error(ErrorLevel.FATAL, "Unable to get query events", ex);
+            Logger.error(ErrorLevel.ERROR, "Unable to get query events", ex);
         }
         
         updateTitle();
@@ -211,7 +211,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
         
         frame.setTitle(title);
         
-        if (frame.isMaximum() && MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
+        if (frame.isMaximum() && frame.equals(MainFrame.getMainFrame().getActiveFrame())) {
             MainFrame.getMainFrame().setTitle(MainFrame.getMainFrame().getTitlePrefix() + " - " + title);
         }
     }

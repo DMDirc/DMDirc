@@ -54,6 +54,8 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
+import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.FontUIResource;
 
 import uk.org.ownage.dmdirc.Config;
@@ -548,9 +550,13 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         setPreferredSize(new Dimension(800, 600));
         
+        getContentPane().setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
+        
         getContentPane().add(mainSplitPane, BorderLayout.CENTER);
         
         getContentPane().add(statusBar, BorderLayout.SOUTH);
+        
+        mainSplitPane.setBorder(new EmptyBorder(0, 0, 0, SMALL_BORDER));
         
         mainSplitPane.setDividerSize(SMALL_BORDER);
         mainSplitPane.setOneTouchExpandable(false);
@@ -564,8 +570,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("DMDirc");
-        jPanel1.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER, SMALL_BORDER, 0));
-        desktopPane.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER, SMALL_BORDER, 0));
+        jPanel1.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER, 0, 0));
+        desktopPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
         
         pack();
     }

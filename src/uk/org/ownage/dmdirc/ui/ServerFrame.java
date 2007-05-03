@@ -139,7 +139,7 @@ public final class ServerFrame extends Frame {
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(0, 0, 5, 5);
+        constraints.insets = new Insets(0, 0, 0, 0);
         getContentPane().add(getScrollPane(), constraints);
         
         constraints.weighty = 0.0;
@@ -148,6 +148,7 @@ public final class ServerFrame extends Frame {
         getContentPane().add(getSearchBar(), constraints);
         
         constraints.gridy = 2;
+        constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
         getContentPane().add(getInputPanel(), constraints);
         
         pack();

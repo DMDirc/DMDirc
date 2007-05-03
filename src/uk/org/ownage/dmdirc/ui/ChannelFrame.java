@@ -54,6 +54,8 @@ import uk.org.ownage.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 /**
  * The channel frame is the GUI component that represents a channel to the user.
  */
@@ -231,7 +233,7 @@ public final class ChannelFrame extends Frame {
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(0, 0, 5, 5);
+        constraints.insets = new Insets(0, 0, 0, 0);
         getContentPane().add(splitPane, constraints);
         
         constraints.weighty = 0.0;
@@ -240,6 +242,7 @@ public final class ChannelFrame extends Frame {
         getContentPane().add(getSearchBar(), constraints);
         
         constraints.gridy = 2;
+        constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
         getContentPane().add(getInputPanel(), constraints);
         
         splitPane.setLeftComponent(getScrollPane());

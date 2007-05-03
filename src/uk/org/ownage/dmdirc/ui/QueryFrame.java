@@ -37,6 +37,8 @@ import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.ui.components.Frame;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
 
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 /**
  * The QueryFrame is the MDI window that shows query messages to the user.
  */
@@ -123,7 +125,7 @@ public final class QueryFrame extends Frame {
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(0, 0, 5, 5);
+        constraints.insets = new Insets(0, 0, 0, 0);
         getContentPane().add(getScrollPane(), constraints);
         
         
@@ -133,6 +135,7 @@ public final class QueryFrame extends Frame {
         getContentPane().add(getSearchBar(), constraints);
         
         constraints.gridy = 2;
+        constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
         getContentPane().add(getInputPanel(), constraints);
         
         pack();
