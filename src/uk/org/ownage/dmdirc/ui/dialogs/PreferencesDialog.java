@@ -113,9 +113,9 @@ public final class PreferencesDialog implements PreferencesInterface {
                 PreferencesPanel.OptionType.CHECKBOX,
                 Boolean.parseBoolean(Config.getOption("ui", "maximisewindows")));
         preferencesPanel.addOption(tabName, "ui.backgroundcolour", "Window background colour: ",
-                PreferencesPanel.OptionType.COLOUR, Config.getOption("ui", "backgroundcolour"));
+                PreferencesPanel.OptionType.COLOUR, Config.getOption("ui", "backgroundcolour"), true, false);
         preferencesPanel.addOption(tabName, "ui.foregroundcolour", "Window foreground colour: ",
-                PreferencesPanel.OptionType.COLOUR, Config.getOption("ui", "foregroundcolour"));
+                PreferencesPanel.OptionType.COLOUR, Config.getOption("ui", "foregroundcolour"), true, false);
         preferencesPanel.addOption(tabName, "ui.sortByMode", "Nicklist sort by mode: ",
                 PreferencesPanel.OptionType.CHECKBOX,
                 Boolean.parseBoolean(Config.getOption("ui", "sortByMode")));
@@ -147,7 +147,7 @@ public final class PreferencesDialog implements PreferencesInterface {
                 PreferencesPanel.OptionType.CHECKBOX,
                 Boolean.parseBoolean(Config.getOption("ui", "rolloverEnabled")));
         preferencesPanel.addOption(tabName, "ui.rolloverColour", "Rollover colour: ",
-                PreferencesPanel.OptionType.COLOUR, Config.getOption("ui", "rolloverColour"));
+                PreferencesPanel.OptionType.COLOUR, Config.getOption("ui", "rolloverColour"), true, true);
         preferencesPanel.addOption(tabName, "ui.sortwindows", "Sort windows: ",
                 PreferencesPanel.OptionType.CHECKBOX,
                 Boolean.parseBoolean(Config.getOption("ui", "sortwindows")));

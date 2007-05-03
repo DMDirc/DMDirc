@@ -234,7 +234,8 @@ public final class PreferencesPanel extends StandardDialog
      * and a boolean to specify if its editable</li>
      * <li>SPINNER takes an Integer value to specify the default value
      * or 4 Integers, default, minimum, maximum, step size</li>
-     * <li>COLOUR takes a String as the initial value</li>
+     * <li>COLOUR takes a String as the initial value, and two booleans, 
+     * one to show irc colours, one to show hex colours</li>
      * </ul>
      */
     private void addComponent(final JPanel parent, final String optionName,
@@ -287,7 +288,8 @@ public final class PreferencesPanel extends StandardDialog
                 spinners.put(optionName, (JSpinner) option);
                 break;
             case COLOUR:
-                option = new ColourChooser((String) args[0]);
+                option = new ColourChooser((String) args[0], 
+                        (Boolean) args[1], (Boolean) args[2]);
                 colours.put(optionName, (ColourChooser) option);
                 break;
             default:
@@ -348,7 +350,8 @@ public final class PreferencesPanel extends StandardDialog
      * and a boolean to specify if its editable</li>
      * <li>SPINNER takes an Integer value to specify the default value
      * or 4 Integers, default, minimum, maximum, step size</li>
-     * <li>COLOUR takes a String as the initial value</li>
+     * <li>COLOUR takes a String as the initial value, and two booleans, 
+     * one to show irc colours, one to show hex colours</li>
      * </ul>
      */
     public void addOption(final String category, final String name,

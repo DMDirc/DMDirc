@@ -55,16 +55,22 @@ public final class ColourChooser extends JPanel implements ActionListener {
     
     private ColourPickerDialog cpd;
     
+    private boolean showIRC;
+    
+    private boolean showHex;
+    
     /** Creates a new instance of ColourChooser. */
     public ColourChooser() {
-        this("");
+        this("", true, true);
     }
     
     /**
      * Creates a new instance of ColourChooser.
      * @param initialColour initial colour
      */
-    public ColourChooser(final String initialColour) {
+    public ColourChooser(final String initialColour, boolean ircColours, boolean hexColours) {
+        showIRC = ircColours;
+        showHex = hexColours;
         textField = new JTextField(initialColour);
         
         editButton = new JButton("Edit");
@@ -89,7 +95,7 @@ public final class ColourChooser extends JPanel implements ActionListener {
     /** {@inheritDoc}. */
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == editButton) {
-            cpd = ColourPickerDialog.showColourPicker();
+            cpd = ColourPickerDialog.showColourPicker(showIRC, showHex);
             cpd.addActionListener(this);
         } else {
             textField.setText(e.getActionCommand());

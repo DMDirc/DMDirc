@@ -46,9 +46,18 @@ public final class ColourPickerDialog extends StandardDialog {
      * Creates a new instance of ColourPickerDialog.
      */
     public ColourPickerDialog() {
+        this(true, true);
+    }
+    
+    /**
+     * Creates a new instance of ColourPickerDialog.
+     * @param showIRC show irc colours
+     * @param showHex show hex colours
+     */
+    public ColourPickerDialog(boolean showIRC, boolean showHex) {
         super(MainFrame.getMainFrame(), false);
         
-        colourChooser = new ColourPickerPanel();
+        colourChooser = new ColourPickerPanel(showIRC, showHex);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.add(colourChooser);
         this.pack();
@@ -60,7 +69,17 @@ public final class ColourPickerDialog extends StandardDialog {
      * @return Colour picker dialog
      */
     public static ColourPickerDialog showColourPicker() {
-        ColourPickerDialog cpd = new ColourPickerDialog();
+        return showColourPicker(true, true);
+    }
+    
+    /** 
+     * Creates and shows a new Colour picker dialog. 
+     * @return Colour picker dialog
+     * @param showIRC show irc colours
+     * @param showHex show hex colours
+     */
+    public static ColourPickerDialog showColourPicker(boolean showIRC, boolean showHex) {
+        ColourPickerDialog cpd = new ColourPickerDialog(showIRC, showHex);
         cpd.setVisible(true);
         return cpd;
     }
