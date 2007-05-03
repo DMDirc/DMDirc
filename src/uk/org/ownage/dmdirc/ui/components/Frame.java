@@ -406,7 +406,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             .setPreferredSize(new Dimension(0, 0));
             ((BasicInternalFrameUI) getUI()).getNorthPane()
             .setMaximumSize(new Dimension(0, 0));
-            setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+            setBorder(new EmptyBorder(0, 0, 0, 0));
         }
     }
     
