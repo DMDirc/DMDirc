@@ -104,6 +104,7 @@ public final class Config {
         final Properties defaults = new Properties();
         
         defaults.setProperty("general.commandchar", "/");
+        defaults.setProperty("general.reconnectmessage", "Reconnecting");
         defaults.setProperty("general.closemessage", "DMDirc exiting");
         defaults.setProperty("general.quitmessage", "Using DMDirc");
         defaults.setProperty("general.partmessage", "Using DMDirc");
@@ -116,6 +117,9 @@ public final class Config {
         defaults.setProperty("general.closechannelsondisconnect", "false");
         defaults.setProperty("general.closequeriesondisconnect", "false");
         
+        defaults.setProperty("general.reconnectonconnectfailure", "true");
+        defaults.setProperty("general.reconnectdelay", "5");
+        
         // These are temporary until we get server list support
         defaults.setProperty("general.server", "blueyonder.uk.quakenet.org");
         defaults.setProperty("general.port", "7000");
@@ -125,6 +129,8 @@ public final class Config {
         // "active", "all", or "server".
         // TODO: Some kind of validation in the config class itself, rather
         //       than elsewhere?
+        defaults.setProperty("notifications.connectError", "server");
+        defaults.setProperty("notifications.connectRetry", "server");
         defaults.setProperty("notifications.socketClosed", "all");
         defaults.setProperty("notifications.privateNotice", "all");
         defaults.setProperty("notifications.privateCTCP", "server");
@@ -202,6 +208,44 @@ public final class Config {
         }
         
         return properties.getProperty(domain + "." + option);
+    }
+    
+    /**
+     * Returns the specified option parsed as a boolean.
+     * @return the boolean value of the specified option
+     * @param domain the domain of the option
+     * @param option the name of the option
+     */
+    public static boolean getOptionBool(final String domain, final String option) {
+        if (properties == null) {
+            initialise();
+        }
+        
+        return Boolean.parseBoolean(getOption(domain, option));
+    }
+    
+    /**
+     * Returns the specified option parsed as an integer.
+     * @return the integer value of the specified option
+     * @param domain the domain of the option
+     * @param option the name of the option
+     * @param fallback The value to use if the option can't be parsed
+     */
+    public static int getOptionInt(final String domain, final String option, final int fallback) {
+        if (properties == null) {
+            initialise();
+        }
+        
+        int res;
+        
+        try {
+            res = Integer.parseInt(getOption(domain, option));
+        } catch (NumberFormatException ex) {
+            Logger.error(ErrorLevel.WARNING, "Invalid number format for " + domain + "." + option, ex);
+            res = fallback;
+        }
+        
+        return res;
     }
     
     /**

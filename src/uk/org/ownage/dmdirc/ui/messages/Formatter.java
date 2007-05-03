@@ -216,6 +216,12 @@ public final class Formatter {
         defaultProperties.setProperty("selfCTCP", colour + "4->- [%1$s] %2$s");
         defaultProperties.setProperty("selfNotice", colour + "5>%1$s> %2$s");
         
+        // Type: Miscellaneous server
+        //    1: Server name
+        //    2: Miscellaneous argument
+        defaultProperties.setProperty("connectError", colour + "2Error connecting: %2$s");
+        defaultProperties.setProperty("connectRetry", colour + "2Reconnecting in %2$s seconds...");
+        
         // Type: Miscellaneous
         //    1: Miscellaneous data
         defaultProperties.setProperty("channelNoTopic", colour + "3* There is no topic set for %1$s.");

@@ -30,6 +30,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
@@ -54,6 +56,7 @@ import uk.org.ownage.dmdirc.parser.ServerInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IAwayState;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IConnectError;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IGotNetwork;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
@@ -83,14 +86,14 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         IPrivateAction, IErrorInfo, IPrivateCTCP, IPrivateCTCPReply,
         InternalFrameListener, ISocketClosed, IPrivateNotice, IMOTDStart,
         IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed,
-        IAwayState, FrameContainer {
+        IAwayState, IConnectError, FrameContainer {
     
     /**
      * The callbacks that should be registered for server instances.
      */
     private final static String[] callbacks = {
         "OnChannelSelfJoin", "OnErrorInfo", "OnPrivateMessage",
-        "OnPrivateAction", "OnPrivateCTCP", "OnPrivateNotice",
+        "OnPrivateAction", "OnPrivateCTCP", "OnPrivateNotice", "OnConnectError",
         "OnPrivateCTCPReply", "OnSocketClosed", "OnGotNetwork", "OnNumeric",
         "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed", "OnAwayState"
     };
@@ -120,10 +123,16 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     private Raw raw;
     
-    /**
-     * The name of the server we're connecting to.
-     */
-    private String serverName;
+    /** The name of the server we're connecting to. */
+    private String server;
+    /** The port we're connecting to. */
+    private int port;
+    /** The password we're using to connect. */
+    private String password;
+    /** Whether we're using SSL or not. */
+    private boolean ssl;
+    /** The profile we're using. */
+    private ConfigSource profile;
     
     /**
      * Used to indicate that this server is in the process of closing all of its
@@ -173,7 +182,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public Server(final String server, final int port, final String password,
             final boolean ssl, final ConfigSource profile) {
         
-        serverName = server;
+        this.server = server;
         
         ServerManager.getServerManager().registerServer(this);
         
@@ -208,7 +217,11 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             disconnect(configManager.getOption("general", "quitmessage"));
         }
         
-        serverName = server;
+        this.server = server;
+        this.port = port;
+        this.password = password;
+        this.ssl = ssl;
+        this.profile = profile;
         
         configManager = new ConfigManager("", "", server);
         
@@ -260,6 +273,12 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         }
         
         updateIgnoreList();
+    }
+    
+    /** Reconnects to the IRC server. */
+    public void reconnect() {
+        disconnect(Config.getOption("general", "reconnectmessage"));
+        connect(server, port, password, ssl, profile);
     }
     
     /**
@@ -360,7 +379,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @return The name of this server
      */
     public String getName() {
-        return serverName;
+        return this.server;
     }
     
     /**
@@ -771,7 +790,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public void onGotNetwork(final IRCParser tParser, final String networkName,
             final String ircdVersion, final String ircdType) {
-        configManager = new ConfigManager(ircdType, networkName, serverName);
+        configManager = new ConfigManager(ircdType, networkName, this.server);
         
         updateIgnoreList();
     }
@@ -863,7 +882,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param tParser The IRC parser for this server
      */
     public void onSocketClosed(final IRCParser tParser) {
-        handleNotification("socketClosed", serverName);
+        handleNotification("socketClosed", this.server);
         
         if (Boolean.parseBoolean(configManager.getOption("general", "closechannelsondisconnect"))) {
             closeChannels();
@@ -875,12 +894,52 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     }
     
     /**
+     * Called when the parser encounters an error trying to connect.
+     * @param tParser The Parser for this server
+     * @param errorInfo Information about the error.
+     */
+    public void onConnectError(final IRCParser tParser, final ParserError errorInfo) {
+        String description = "";
+        
+        if (errorInfo.getException() == null) {
+            description = errorInfo.getData();
+        } else {
+            final Exception ex = errorInfo.getException();
+            
+            if (ex instanceof java.net.UnknownHostException) {
+                description = "Unknown host (unable to resolve)";
+            } else if (ex instanceof java.net.NoRouteToHostException) {
+                description = "No route to host";
+            } else if (ex instanceof java.net.SocketException) {
+                description = ex.getMessage();
+            } else {
+                Logger.error(ErrorLevel.TRIVIAL, "Unknown socket error", ex);
+                description = "Unknown error: " + ex.getMessage();
+            }
+        }
+        
+        handleNotification("connectError", server, description);
+        
+        if (Config.getOptionBool("general", "reconnectonconnectfailure")) {
+            final int delay = Config.getOptionInt("general", "reconnectdelay", 5);
+            
+            handleNotification("connectRetry", server, delay);
+            
+            new Timer().schedule(new TimerTask() {
+                public void run() {
+                    reconnect();
+                }
+            }, delay * 1000);
+        }
+    }
+    
+    /**
      * Called when the parser misses a ping reply from the server.
      * @param parser The IRC parser for this server
      */
     public void onPingFailed(final IRCParser parser) {
         MainFrame.getMainFrame().getStatusBar().setMessage("No ping reply from "
-                + serverName + " for over "
+                + this.server + " for over "
                 + Math.floor(parser.getPingTime(false) / 1000.0) + " seconds.", null, 10);
     }
     
@@ -990,7 +1049,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @return A string representation of this server (i.e., its name)
      */
     public String toString() {
-        return serverName;
+        return this.server;
     }
     
     /**
