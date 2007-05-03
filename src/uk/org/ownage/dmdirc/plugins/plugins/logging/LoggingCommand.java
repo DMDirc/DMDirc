@@ -27,11 +27,11 @@ import java.util.Properties;
 
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.plugins.PluginManager;
-import uk.org.ownage.dmdirc.plugins.Plugin;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.commandparser.ServerCommand;
+import uk.org.ownage.dmdirc.plugins.Plugin;
+import uk.org.ownage.dmdirc.plugins.PluginManager;
 
 /**
  * The dcop command retrieves information from a dcop application.
@@ -56,14 +56,14 @@ public final class LoggingCommand extends ServerCommand {
 	 * @param args The user supplied arguments
 	 */
 	public void execute(final CommandWindow origin, final Server server, final String... args) {
-		Plugin gotPlugin = PluginManager.getPluginManager().getPlugin("uk.org.ownage.dmdirc.plugins.plugins.logging.LoggingPlugin");
+		final Plugin gotPlugin = PluginManager.getPluginManager().getPlugin("uk.org.ownage.dmdirc.plugins.plugins.logging.LoggingPlugin");
 		
 		if (gotPlugin == null || !(gotPlugin instanceof LoggingPlugin)) {
 			origin.addLine("**Error** Logging Plugin is not loaded.");
 			return;
 		}
 		
-		LoggingPlugin plugin = (LoggingPlugin)gotPlugin;
+		final LoggingPlugin plugin = (LoggingPlugin) gotPlugin;
 		
 		if (args.length > 0) {		
 			if (args[0].equalsIgnoreCase("config")) {
@@ -75,43 +75,43 @@ public final class LoggingCommand extends ServerCommand {
 					origin.addLine("** Plugin failed to reload.");
 				}
 			} else if (args[0].equalsIgnoreCase("help")) {
-				origin.addLine("** "+getName()+" reload                     - Reload the logging plugin.");
-				origin.addLine("** "+getName()+" help                       - Show this help.");
-				origin.addLine("** "+getName()+" config                     - Show the logging plugin configuration.");
-				origin.addLine("** "+getName()+" set <help|option> [value]  - Set a configuration option.");
+				origin.addLine("** " + getName() + " reload                     - Reload the logging plugin.");
+				origin.addLine("** " + getName() + " help                       - Show this help.");
+				origin.addLine("** " + getName() + " config                     - Show the logging plugin configuration.");
+				origin.addLine("** " + getName() + " set <help|option> [value]  - Set a configuration option.");
 			} else if (args[0].equalsIgnoreCase("set")) {
 				if (args.length < 2 || args[1].equalsIgnoreCase("help")) {
-					Properties config = Config.getConfig();
+					final Properties config = Config.getConfig();
 					origin.addLine("** Current Values:");
-					Enumeration values = config.propertyNames();
+					final Enumeration values = config.propertyNames();
 					while (values.hasMoreElements()) {
-						String property = (String)values.nextElement();
+						final String property = (String) values.nextElement();
 						
-						if (property.toLowerCase().startsWith(plugin.getDomain().toLowerCase()+".")) {
-							origin.addLine("** ["+property.substring(property.indexOf(".")+1)+"] => "+config.getProperty(property));
+						if (property.toLowerCase().startsWith(plugin.getDomain().toLowerCase() + ".")) {
+							origin.addLine("** [" + property.substring(property.indexOf(".") + 1) + "] => " + config.getProperty(property));
 						}
 					}
 					origin.addLine("** ");
-					origin.addLine("** Use "+getName()+" set <option> [value] to change the value. (if [value] is not given, the current value will be displayed)");
+					origin.addLine("** Use " + getName() + " set <option> [value] to change the value. (if [value] is not given, the current value will be displayed)");
 				} else if (args.length > 1) {
 					if (Config.hasOption(plugin.getDomain(), args[1].toLowerCase())) {
 						String newValue = "";
 						if (args.length > 2) { newValue = implodeArgs(2, args); }
 						if (newValue.equals("")) {
-							origin.addLine("** Current value of '"+args[1]+"' is '"+Config.getOption(plugin.getDomain(), args[1].toLowerCase())+"'");
+							origin.addLine("** Current value of '" + args[1] + "' is '" + Config.getOption(plugin.getDomain(), args[1].toLowerCase()) + "'");
 						} else {
 							plugin.updateOption(null, args[1], newValue);
-							origin.addLine("** Setting '"+args[1]+"' to '"+newValue+"'");
+							origin.addLine("** Setting '" + args[1] + "' to '" + newValue + "'");
 						}
 					} else {
-						origin.addLine("** '"+args[1]+"' is not a valid option");
+						origin.addLine("** '" + args[1] + "' is not a valid option");
 					}
 				}
 			} else {
-				origin.addLine("** Unknown command '"+args[0]+"'. Use "+getName()+" help for a list of commands.");
+				origin.addLine("** Unknown command '" + args[0] + "'. Use " + getName() + " help for a list of commands.");
 			}
 		} else {
-			origin.addLine("** Use "+getName()+" help for a list of commands.");
+			origin.addLine("** Use " + getName() + " help for a list of commands.");
 		}
 	}
 
@@ -137,7 +137,7 @@ public final class LoggingCommand extends ServerCommand {
 	public boolean isPolyadic() { return true; }
 	
 	/**
-	 * Returns the arity of this command
+	 * Returns the arity of this command.
 	 *
 	 * @return This command's arity
 	 */
@@ -148,7 +148,7 @@ public final class LoggingCommand extends ServerCommand {
 	 *
 	 * @return the help message for this command
 	 */
-	public String getHelp() { return this.getName()+" <config|set|help> [parameters]"; }
+	public String getHelp() { return this.getName() + " <config|set|help> [parameters]"; }
 	
 	/**
 	 * Get SVN Version information.
