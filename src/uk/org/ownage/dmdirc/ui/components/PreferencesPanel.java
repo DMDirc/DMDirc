@@ -259,7 +259,7 @@ public final class PreferencesPanel extends StandardDialog implements
      * <li>CHECKBOX takes a boolean as its default state</li>
      * <li>COMBOBOX takes a String[] of options, a String
      *   selected option and a boolean to specify if its editable</li>
-     * <li>SPINNER takes an Integer value to specify the default value or 
+     * <li>SPINNER takes an Integer value to specify the default value or
      *   4 Integers, default, minimum maximum, step size</li>
      * <li>COLOUR takes a String as the initial value, and
      *   two booleans, one to show irc colours, one to show hex colours</li>
@@ -343,6 +343,19 @@ public final class PreferencesPanel extends StandardDialog implements
      * @param parentCategory parent category
      * @param name Category name
      * @param blurb category blurb
+     */
+    public void addCategory(final String parentCategory, final String name,
+            final String blurb) {
+        addCategory(parentCategory, name, blurb, null);
+    }
+    
+    /**
+     * Adds a named category to the preferences panel.
+     *
+     * @param parentCategory parent category
+     * @param name Category name
+     * @param blurb category blurb
+     * @param nodeIcon icon for the node
      */
     public void addCategory(final String parentCategory, final String name,
             final String blurb, final Icon nodeIcon) {
@@ -510,7 +523,7 @@ public final class PreferencesPanel extends StandardDialog implements
      */
     public void valueChanged(final TreeSelectionEvent selectionEvent) {
         cardLayout.show(mainPanel, ((JTree) selectionEvent.getSource())
-        	.getSelectionPath().getLastPathComponent().toString());
+        .getSelectionPath().getLastPathComponent().toString());
     }
     
     /**
@@ -564,56 +577,56 @@ public final class PreferencesPanel extends StandardDialog implements
     }
     
     private class PreferencesTreeCellRenderer extends DefaultTreeCellRenderer {
-	
-	/**
-	     * A version number for this class. It should be changed whenever the class
-	     * structure is changed (or anything else that would prevent serialized
-	     * objects being unserialized with the new class).
-	     */
-	    private static final long serialVersionUID = 1;
-	    
-	    /**
-	     * Creates a new instance of PreferencesTreeCellRenderer.
-	     */
-	    public PreferencesTreeCellRenderer() {
-	        super();
-	    }
-	    /**
-	     * Configures the renderer based on the passed parameters.
-	     * @param tree JTree for this renderer.
-	     * @param value node to be renderered.
-	     * @param sel whether the node is selected.
-	     * @param expanded whether the node is expanded.
-	     * @param leaf whether the node is a leaf.
-	     * @param row the node's row.
-	     * @param focused whether the node has focus.
-	     * @return RendererComponent for this node.
-	     */
-	    @Override
-	    public final Component getTreeCellRendererComponent(final JTree tree,
-	            final Object value, final boolean sel, final boolean expanded,
-	            final boolean leaf, final int row, final boolean focused) {
-	        
-	        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, focused);
-	        
-	        final DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-	        
-	        setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER, 
-	        	SMALL_BORDER, SMALL_BORDER));
-	        
-	        setPreferredSize(new Dimension((int) tabList.getPreferredSize().getWidth() - 20,
-	        	getFont().getSize() + SMALL_BORDER));
-	        
-	            if (selected) {
-	                setFont(getFont().deriveFont(Font.BOLD));
-	            } else {
-	                setFont(getFont().deriveFont(Font.PLAIN));
-	            }
-	        
-	        setIcon(nodeIcons.get(node));
-	        
-	        return this;
-	    }
+        
+        /**
+         * A version number for this class. It should be changed whenever the class
+         * structure is changed (or anything else that would prevent serialized
+         * objects being unserialized with the new class).
+         */
+        private static final long serialVersionUID = 1;
+        
+        /**
+         * Creates a new instance of PreferencesTreeCellRenderer.
+         */
+        public PreferencesTreeCellRenderer() {
+            super();
+        }
+        /**
+         * Configures the renderer based on the passed parameters.
+         * @param tree JTree for this renderer.
+         * @param value node to be renderered.
+         * @param sel whether the node is selected.
+         * @param expanded whether the node is expanded.
+         * @param leaf whether the node is a leaf.
+         * @param row the node's row.
+         * @param focused whether the node has focus.
+         * @return RendererComponent for this node.
+         */
+        @Override
+        public final Component getTreeCellRendererComponent(final JTree tree,
+                final Object value, final boolean sel, final boolean expanded,
+                final boolean leaf, final int row, final boolean focused) {
+            
+            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, focused);
+            
+            final DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+            
+            setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
+                    SMALL_BORDER, SMALL_BORDER));
+            
+            setPreferredSize(new Dimension((int) tabList.getPreferredSize().getWidth() - 20,
+                    getFont().getSize() + SMALL_BORDER));
+            
+            if (selected) {
+                setFont(getFont().deriveFont(Font.BOLD));
+            } else {
+                setFont(getFont().deriveFont(Font.PLAIN));
+            }
+            
+            setIcon(nodeIcons.get(node));
+            
+            return this;
+        }
     }
     
 }

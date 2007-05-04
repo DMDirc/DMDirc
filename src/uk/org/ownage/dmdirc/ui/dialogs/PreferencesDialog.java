@@ -82,19 +82,51 @@ public final class PreferencesDialog implements PreferencesInterface {
      * Initialises the preferences tab.
      */
     private void initGeneralTab() {
-        final String tabName = "General";
-        preferencesPanel.addCategory(tabName, "");
+        final String general = "General";
+        final String messages = "Messages";
+        final String windows = "Windows";
+        preferencesPanel.addCategory(general, "");
         
-        preferencesPanel.addTextfieldOption(tabName, "general.closemessage",
+        preferencesPanel.addCategory(general, messages, "");
+        preferencesPanel.addCategory(general, windows, "");
+        
+        preferencesPanel.addCheckboxOption(general, "ui.antialias",
+                "System anti-alias: ", "", Config.getOptionBool("ui", "antialias"));
+        
+        preferencesPanel.addCheckboxOption(general, "server.friendlymodes",
+                "Friendly modes: ", "", Config.getOptionBool("server", "friendlymodes"));
+        preferencesPanel.addCheckboxOption(general, "general.hidequeries",
+                "Hide queries : ", "", Config.getOptionBool("general", "hidequeries"));
+        preferencesPanel.addSpinnerOption(general, "general.reconnectdelay",
+                "Reconnect delay: ", "", Config.getOptionInt("general", "reconnectdelay", 30));
+        preferencesPanel.addCheckboxOption(general, "general.reconnectonconnectfailure",
+                "Reconnect on failure: ", "", Config.getOptionBool("general", "reconnectonconnectfailure"));
+        preferencesPanel.addCheckboxOption(general, "general.reconnectondisconnect",
+                "Reconnect on disconnect: ", "", Config.getOptionBool("general", "reconnectondisconnect"));
+        preferencesPanel.addCheckboxOption(general, "general.showcolourdialog",
+                "Show colour dialog: ", "", Config.getOptionBool("general", "showcolourdialog"));
+        
+        preferencesPanel.addTextfieldOption(messages, "general.closemessage",
                 "Close message: ", "", Config.getOption("general", "closemessage"));
-        preferencesPanel.addTextfieldOption(tabName, "general.partmessage",
+        preferencesPanel.addTextfieldOption(messages, "general.partmessage",
                 "Part message: ", "", Config.getOption("general", "partmessage"));
-        preferencesPanel.addTextfieldOption(tabName, "general.quitmessage",
+        preferencesPanel.addTextfieldOption(messages, "general.quitmessage",
                 "Quit message: ", "", Config.getOption("general", "quitmessage"));
-        preferencesPanel.addTextfieldOption(tabName, "general.cyclemessage",
+        preferencesPanel.addTextfieldOption(messages, "general.cyclemessage",
                 "Cycle message: ", "", Config.getOption("general", "cyclemessage"));
-        preferencesPanel.addTextfieldOption(tabName, "general.kickmessage",
+        preferencesPanel.addTextfieldOption(messages, "general.kickmessage",
                 "Kick message: ", "", Config.getOption("general", "kickmessage"));
+        preferencesPanel.addTextfieldOption(messages, "general.reconnectmessage",
+                "Reconnect message: ", "", Config.getOption("general", "reconnectmessage"));
+                
+        preferencesPanel.addCheckboxOption(windows, "general.closechannelsonquit", 
+                "Close channels on quit: ", "", Config.getOptionBool("general", "closechannelsonquit"));
+        preferencesPanel.addCheckboxOption(windows, "general.closechannelsondisconnect", 
+                "Close channels on disconnect: ", "", Config.getOptionBool("general", "closechannelsondisconnect"));
+        preferencesPanel.addCheckboxOption(windows, "general.closequeriesonquit", 
+                "Close queries on quit: ", "", Config.getOptionBool("general", "closequeriesonquit"));
+        preferencesPanel.addCheckboxOption(windows, "general.closequeriesondisconnect", 
+                "Close queries on disconnect: ", "", Config.getOptionBool("general", "closequeriesondisconnect"));         
     }
     
     /**
