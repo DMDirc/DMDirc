@@ -139,18 +139,18 @@ public final class PreferencesDialog implements PreferencesInterface {
         final String tabName = "Treeview";
         preferencesPanel.addCategory(tabName);
         
-        preferencesPanel.addCheckboxOption(tabName, "ui.rolloverEnabled",
+        preferencesPanel.addCheckboxOption(tabName, "ui.treeviewRolloverEnabled",
                 "Rollover enabled: ", "",
-                Config.getOptionBool("ui", "rolloverEnabled"));
-        preferencesPanel.addColourOption(tabName, "ui.rolloverColour",
-                "Rollover colour: ", "", Config.getOption("ui", "rolloverColour"),
+                Config.getOptionBool("ui", "treeviewRolloverEnabled"));
+        preferencesPanel.addColourOption(tabName, "ui.treeviewRolloverColour",
+                "Rollover colour: ", "", Config.getOption("ui", "treeviewRolloverColour"),
                 true, true);
-        preferencesPanel.addCheckboxOption(tabName, "ui.sortwindows",
+        preferencesPanel.addCheckboxOption(tabName, "treeview.sortwindows",
                 "Sort windows: ", "",
-                Config.getOptionBool("ui", "sortwindows"));
-        preferencesPanel.addCheckboxOption(tabName, "ui.sortservers",
+                Config.getOptionBool("treeview", "sortwindows"));
+        preferencesPanel.addCheckboxOption(tabName, "treeview.sortservers",
                 "Sort servers: ", "",
-                Config.getOptionBool("ui", "sortservers"));
+                Config.getOptionBool("treeview", "sortservers"));
     }
     
     /**

@@ -28,11 +28,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JTextField;
+import uk.org.ownage.dmdirc.Config;
 
 import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.ui.components.ColourPickerDialog;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
 /**
@@ -96,6 +98,9 @@ public final class InputHandler implements KeyListener, ActionListener {
      */
     private final CommandWindow parentWindow;
     
+    /** Colour picker dialog. */
+    private ColourPickerDialog colourPicker;
+    
     /**
      * Creates a new instance of InputHandler. Adds listeners to the target
      * that we need to operate.
@@ -148,6 +153,10 @@ public final class InputHandler implements KeyListener, ActionListener {
      * @param keyEvent The event that was fired
      */
     public void keyPressed(final KeyEvent keyEvent) {
+        if (colourPicker != null) {
+            colourPicker.dispose();
+            colourPicker = null;
+        }
         // Formatting codes
         if ((keyEvent.getModifiers() & KeyEvent.CTRL_MASK) != 0) {
             if (keyEvent.getKeyCode() == KeyEvent.VK_B) {
@@ -167,9 +176,11 @@ public final class InputHandler implements KeyListener, ActionListener {
             }
             if (keyEvent.getKeyCode() == KeyEvent.VK_K) {
                 if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) != 0) {
-                    addControlCode(Styliser.CODE_HEXCOLOUR, POSITION_START);
+                    showColourPicker(false, true);
+                    
                 } else {
                     addControlCode(Styliser.CODE_COLOUR, POSITION_START);
+                    showColourPicker(true, false);
                 }
             }
             
@@ -358,4 +369,23 @@ public final class InputHandler implements KeyListener, ActionListener {
         target.setText("");
     }
     
+    /**
+     * Displays a colour picker for the target.
+     *
+     * @param irc show irc colours in the colour picker
+     * @param hex show hex colours in the colour picker
+     */
+    private void showColourPicker(final boolean irc, final boolean hex) {
+        if (Config.getOptionBool("general", "showcolourdialog")) {
+            colourPicker = new ColourPickerDialog(irc, hex);
+            colourPicker.addActionListener(new ActionListener() {
+                public void actionPerformed(final ActionEvent actionEvent) {
+                    target.setText(target.getText() + actionEvent.getActionCommand());
+                    colourPicker.dispose();
+                    colourPicker = null;
+                }});
+                colourPicker.setLocation((int) target.getLocationOnScreen().getX(), (int) target.getLocationOnScreen().getY() - colourPicker.getHeight());
+                colourPicker.setVisible(true);
+        }
+    }
 }

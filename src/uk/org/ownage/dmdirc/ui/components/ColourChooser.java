@@ -122,9 +122,10 @@ public final class ColourChooser extends JPanel implements ActionListener {
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == editButton) {
-            cpd = ColourPickerDialog.showColourPicker(showIRC, showHex);
+            cpd = new ColourPickerDialog(showIRC, showHex);
             cpd.setLocationRelativeTo(editButton);
             cpd.addActionListener(this);
+            cpd.setVisible(true);
         } else {
             value = e.getActionCommand();
             updateColour(e.getActionCommand());

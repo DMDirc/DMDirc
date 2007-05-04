@@ -163,10 +163,10 @@ public final class Config {
         defaults.setProperty("ui.pasteProtectionLimit", "1");
         
         // TODO: These should probably be renamed to treeview.* or so?
-        defaults.setProperty("ui.rolloverEnabled", "true");
-        defaults.setProperty("ui.rolloverColour", "f0f0f0");
-        defaults.setProperty("ui.sortwindows", "true");
-        defaults.setProperty("ui.sortservers", "true");
+        defaults.setProperty("ui.treeviewRolloverEnabled", "true");
+        defaults.setProperty("ui.treeviewRolloverColour", "f0f0f0");
+        defaults.setProperty("treeview.sortwindows", "true");
+        defaults.setProperty("treeview.sortservers", "true");
         
         defaults.setProperty("channel.splitusermodes", "false");
         
