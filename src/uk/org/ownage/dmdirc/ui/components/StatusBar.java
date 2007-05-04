@@ -374,14 +374,22 @@ public final class StatusBar extends JPanel implements MouseListener,
         }
     }
     
-    /** Adds a component to the status bar. */
-    public void addComponent(Component component) {
+    /** 
+     * Adds a component to the status bar. 
+     *
+     * @param component component to add
+     */
+    public void addComponent(final Component component) {
         add(component, this.getComponentCount() - 1);
         layoutBar();
     }
     
-    /** Removes a component to the status bar. */
-    public void removeComponent(Component component) {
+    /** 
+     * Removes a component to the status bar. 
+     *
+     * @param component component to add
+     */
+    public void removeComponent(final Component component) {
         remove(component);
         layoutBar();
     }
@@ -391,8 +399,6 @@ public final class StatusBar extends JPanel implements MouseListener,
         this.setVisible(false);
         final SpringLayout layout = (SpringLayout) this.getLayout();
         final int numComponents = this.getComponentCount() - 1;
-        
-        System.out.println(numComponents);
         
         SpringLayout.Constraints constraints;
         
