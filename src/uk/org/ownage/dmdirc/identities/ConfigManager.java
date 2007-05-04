@@ -77,7 +77,7 @@ public final class ConfigManager {
     }
     
     /**
-     * Retrieves a colour represnetation of the specified option.
+     * Retrieves a colour representation of the specified option.
      * @param domain The domain of the option
      * @param option The name of the option
      * @param fallback The colour that should be used in case of error
@@ -91,6 +91,20 @@ public final class ConfigManager {
         
         return ColourManager.parseColour(getOption(domain, option), fallback);
     }
+    
+    /**
+     * Retrieves a boolean representation of the specified option.
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @return The boolean representation of the option
+     */
+    public boolean getOptionBool(final String domain, final String option) {
+        if (!hasOption(domain, option)) {
+            return false;
+        }
+        
+        return Boolean.parseBoolean(getOption(domain, option));
+    }    
     
     /**
      * Returns the scope of the specified option.

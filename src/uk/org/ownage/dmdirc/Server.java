@@ -88,9 +88,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed,
         IAwayState, IConnectError, FrameContainer {
     
-    /**
-     * The callbacks that should be registered for server instances.
-     */
+    /** The callbacks that should be registered for server instances. */
     private final static String[] callbacks = {
         "OnChannelSelfJoin", "OnErrorInfo", "OnPrivateMessage",
         "OnPrivateAction", "OnPrivateCTCP", "OnPrivateNotice", "OnConnectError",
@@ -98,30 +96,17 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed", "OnAwayState"
     };
     
-    /**
-     * Open channels that currently exist on the server.
-     */
+    /** Open channels that currently exist on the server. */
     private final Map<String, Channel> channels  = new Hashtable<String, Channel>();
-    
-    /**
-     * Open query windows on the server.
-     */
+    /** Open query windows on the server. */
     private final Map<String, Query> queries = new Hashtable<String, Query>();
     
-    /**
-     * The ServerFrame corresponding to this server.
-     */
-    private ServerFrame frame;
-    
-    /**
-     * The IRC Parser instance handling this server.
-     */
+    /** The IRC Parser instance handling this server. */
     private IRCParser parser;
-    
-    /**
-     * The raw frame used for this server instance.
-     */
+    /** The raw frame used for this server instance. */
     private Raw raw;
+    /** The ServerFrame corresponding to this server. */
+    private ServerFrame frame;
     
     /** The name of the server we're connecting to. */
     private String server;
@@ -141,35 +126,21 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     private boolean closing;
     
-    /**
-     * The tabcompleter used for this server.
-     */
+    /** The tabcompleter used for this server. */
     private final TabCompleter tabCompleter = new TabCompleter();
-    
-    /**
-     * The icon being used for this server.
-     */
+    /** The icon being used for this server. */
     private ImageIcon imageIcon;
-    
-    /**
-     * The last activated internal frame for this server.
-     */
+    /** The last activated internal frame for this server. */
     private FrameContainer activeFrame = this;
-    
-    /**
-     * The config manager for this server.
-     */
+    /** The config manager for this server. */
     private ConfigManager configManager;
     
-    /**
-     * Whether we're marked as away or not.
-     */
+    /** Whether we're marked as away or not. */
     private boolean away;
-    
-    /**
-     * Our reason for being away, if any.
-     */
+    /** Our reason for being away, if any. */
     private String awayMessage;
+    /** Whether we should attempt to reconnect or not. */
+    private boolean reconnect = true;
     
     /**
      * Creates a new instance of Server.
@@ -212,6 +183,8 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public void connect(final String server, final int port, final String password,
             final boolean ssl, final ConfigSource profile) {
+        
+        reconnect = true;
         
         if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
             disconnect(configManager.getOption("general", "quitmessage"));
@@ -494,14 +467,18 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param reason disconnect reason
      */
     public void disconnect(final String reason) {
-        parser.quit(reason);
+        reconnect = false;
         
-        if (Boolean.parseBoolean(configManager.getOption("general", "closechannelsonquit"))) {
-            closeChannels();
-        }
-        
-        if (Boolean.parseBoolean(configManager.getOption("general", "closequeriesonquit"))) {
-            closeQueries();
+        if (parser.isReady()) {
+            parser.quit(reason);
+            
+            if (configManager.getOptionBool("general", "closechannelsonquit")) {
+                closeChannels();
+            }
+            
+            if (configManager.getOptionBool("general", "closequeriesonquit")) {
+                closeQueries();
+            }
         }
     }
     
@@ -884,12 +861,16 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public void onSocketClosed(final IRCParser tParser) {
         handleNotification("socketClosed", this.server);
         
-        if (Boolean.parseBoolean(configManager.getOption("general", "closechannelsondisconnect"))) {
+        if (configManager.getOptionBool("general", "closechannelsondisconnect")) {
             closeChannels();
         }
         
-        if (Boolean.parseBoolean(configManager.getOption("general", "closequeriesondisconnect"))) {
+        if (configManager.getOptionBool("general", "closequeriesondisconnect")) {
             closeQueries();
+        }
+        
+        if (reconnect && Config.getOptionBool("general", "reconnectondisconnect")) {
+            reconnect();
         }
     }
     

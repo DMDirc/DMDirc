@@ -122,6 +122,7 @@ public final class Config {
         defaults.setProperty("general.closequeriesondisconnect", "false");
         
         defaults.setProperty("general.reconnectonconnectfailure", "true");
+        defaults.setProperty("general.reconnectondisconnect", "true");
         defaults.setProperty("general.reconnectdelay", "5");
         
         // These are temporary until we get server list support
