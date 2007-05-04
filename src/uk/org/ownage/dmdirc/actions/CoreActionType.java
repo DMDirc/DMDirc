@@ -34,6 +34,9 @@ public enum CoreActionType implements ActionType {
     SERVER_BACK(CoreActionMetaType.SERVER_EVENT),
     SERVER_AWAY(CoreActionMetaType.SERVER_EVENT_WITH_ARG),
     
+    SERVER_GOTPING(CoreActionMetaType.SERVER_PING),
+    SERVER_NOPING(CoreActionMetaType.SERVER_PING),
+    
     QUERY_OPENED(CoreActionMetaType.QUERY_EVENT),
     QUERY_MESSAGE(CoreActionMetaType.QUERY_EVENT_WITH_ARG),
     QUERY_ACTION(CoreActionMetaType.QUERY_EVENT_WITH_ARG),

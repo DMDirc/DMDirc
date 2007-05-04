@@ -64,6 +64,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDLine;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDStart;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INumeric;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPingFailed;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPingSuccess;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
@@ -85,12 +86,12 @@ import uk.org.ownage.dmdirc.ui.messages.Formatter;
 public final class Server implements IChannelSelfJoin, IPrivateMessage,
         IPrivateAction, IErrorInfo, IPrivateCTCP, IPrivateCTCPReply,
         InternalFrameListener, ISocketClosed, IPrivateNotice, IMOTDStart,
-        IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed,
+        IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed, IPingSuccess,
         IAwayState, IConnectError, FrameContainer {
     
     /** The callbacks that should be registered for server instances. */
     private final static String[] callbacks = {
-        "OnChannelSelfJoin", "OnErrorInfo", "OnPrivateMessage",
+        "OnChannelSelfJoin", "OnErrorInfo", "OnPrivateMessage", "OnPingSuccess",
         "OnPrivateAction", "OnPrivateCTCP", "OnPrivateNotice", "OnConnectError",
         "OnPrivateCTCPReply", "OnSocketClosed", "OnGotNetwork", "OnNumeric",
         "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed", "OnAwayState"
@@ -922,7 +923,16 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         MainFrame.getMainFrame().getStatusBar().setMessage("No ping reply from "
                 + this.server + " for over "
                 + Math.floor(parser.getPingTime(false) / 1000.0) + " seconds.", null, 10);
+        
+        ActionManager.processEvent(CoreActionType.SERVER_NOPING, null, this,
+                new Long(parser.getPingTime(false)));
     }
+    
+    /** {@inheritDoc} */
+    public void onPingSuccess(final IRCParser tParser) {
+        ActionManager.processEvent(CoreActionType.SERVER_GOTPING, null, this,
+                new Long(parser.getServerLag()));
+    }    
     
     /**
      * Parses the parser error and notifies the Logger.

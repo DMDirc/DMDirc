@@ -49,6 +49,8 @@ public final class Main {
      * @param args the command line arguments
      */
     public static void main(final String[] args) {
+        MainFrame.initUISettings();
+        
         IdentityManager.load();
         
         PluginManager.getPluginManager();
