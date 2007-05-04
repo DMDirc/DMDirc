@@ -181,7 +181,7 @@ public class PluginManager {
 		try {
 			ClassLoader cl = new PluginClassLoader(myDir);
 			
-			Class<?> c = (Class<?>)cl.loadClass(className);
+			Class<?> c = cl.loadClass(className);
 			Constructor<?> constructor = c.getConstructor(new Class[] {});
 		
 			result = (Plugin)constructor.newInstance(new Object[] {});

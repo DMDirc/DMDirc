@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.ui.dialogs;
 
 import java.util.Properties;
 
+import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -82,7 +83,7 @@ public final class PreferencesDialog implements PreferencesInterface {
      */
     private void initGeneralTab() {
         final String tabName = "General";
-        preferencesPanel.addCategory(tabName);
+        preferencesPanel.addCategory(tabName, "");
         
         preferencesPanel.addTextfieldOption(tabName, "general.closemessage",
                 "Close message: ", "", Config.getOption("general", "closemessage"));
@@ -101,7 +102,7 @@ public final class PreferencesDialog implements PreferencesInterface {
      */
     private void initUITab() {
         final String tabName = "GUI";
-        preferencesPanel.addCategory(tabName);
+        preferencesPanel.addCategory(tabName, "");
         
         preferencesPanel.addCheckboxOption(tabName, "ui.maximisewindows",
                 "Auto-Maximise windows: ","",
@@ -137,7 +138,7 @@ public final class PreferencesDialog implements PreferencesInterface {
      */
     private void initTreeViewTab() {
         final String tabName = "Treeview";
-        preferencesPanel.addCategory(tabName);
+        preferencesPanel.addCategory(tabName, "");
         
         preferencesPanel.addCheckboxOption(tabName, "ui.treeviewRolloverEnabled",
                 "Rollover enabled: ", "",
@@ -158,7 +159,7 @@ public final class PreferencesDialog implements PreferencesInterface {
      */
     private void initNotificationsTab() {
         final String tabName = "Notifications";
-        preferencesPanel.addCategory(tabName);
+        preferencesPanel.addCategory(tabName, "");
         final String[] windowOptions
                 = new String[] {"all", "active", "server", };
         
@@ -181,7 +182,7 @@ public final class PreferencesDialog implements PreferencesInterface {
      */
     private void initInputTab() {
         final String tabName = "Input";
-        preferencesPanel.addCategory(tabName);
+        preferencesPanel.addCategory(tabName, "");
         
         preferencesPanel.addTextfieldOption(tabName, "general.commandchar",
                 "Command character: ", "", Config.getOption("general", "commandchar"));
@@ -195,7 +196,7 @@ public final class PreferencesDialog implements PreferencesInterface {
      */
     private void initLoggingTab() {
         final String tabName = "Error Handling";
-        preferencesPanel.addCategory(tabName);
+        preferencesPanel.addCategory(tabName, "");
         
         preferencesPanel.addCheckboxOption(tabName, "general.autoSubmitErrors",
                 "Automatically submit errors: ", "",
@@ -220,7 +221,7 @@ public final class PreferencesDialog implements PreferencesInterface {
      */
     private void initAdvancedTab() {
         final String tabName = "Advanced";
-        preferencesPanel.addCategory(tabName);
+        preferencesPanel.addCategory(tabName, "");
         
         final LookAndFeelInfo[] plaf = UIManager.getInstalledLookAndFeels();
         final String[] lafs = new String[plaf.length];
