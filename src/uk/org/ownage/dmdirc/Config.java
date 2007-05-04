@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,6 +40,7 @@ import uk.org.ownage.dmdirc.identities.IdentityManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.LogLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
  * Reads/writes the application's config file.
@@ -223,7 +225,11 @@ public final class Config {
             initialise();
         }
         
-        return Boolean.parseBoolean(getOption(domain, option));
+        if (hasOption(domain, option)) {
+            return Boolean.parseBoolean(getOption(domain, option));
+        } else {
+            return false;
+        }
     }
     
     /**
@@ -244,6 +250,45 @@ public final class Config {
             res = Integer.parseInt(getOption(domain, option));
         } catch (NumberFormatException ex) {
             Logger.error(ErrorLevel.WARNING, "Invalid number format for " + domain + "." + option, ex);
+            res = fallback;
+        }
+        
+        return res;
+    }
+    
+    /**
+     * Returns the specified option parsed as a colour.
+     * @return the colour object representing the specified option
+     * @param domain the domain of the option
+     * @param option the name of the option
+     * @param fallback The value to use if the colour can't be parsed
+     */
+    public static Color getOptionColor(final String domain, final String option, final Color fallback) {
+        if (properties == null) {
+            initialise();
+        }
+        
+        Color res = null;
+        final String prop = getOption(domain, option);
+        
+        if (prop.length() < 3) {
+            int num;
+            
+            try {
+                num = Integer.parseInt(prop);
+            } catch (NumberFormatException ex) {
+                num = -1;
+            }
+            
+            if (num >= 0 && num <= 15) {
+                res = ColourManager.getColour(num);
+            }
+        } else if (prop.length() == 6) {
+            res = ColourManager.getColour(prop);
+        }
+        
+        if (res == null) {
+            Logger.error(ErrorLevel.WARNING, "Invalid colour format for " + domain + "." + option);
             res = fallback;
         }
         

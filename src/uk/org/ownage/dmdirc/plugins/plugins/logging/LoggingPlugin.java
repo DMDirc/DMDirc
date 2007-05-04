@@ -302,7 +302,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 					}
 					
 					// Backbuffer Display goes here!
-					if (Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "backbuffer.autobackbuffer"))) {
+					if (Config.getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
 						showBackBuffer(query.getFrame(), getLogFile(client));
 					}
 					
@@ -315,7 +315,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 					channel = ((Channel) arguments[0]).getChannelInfo();
 					
 					// Backbuffer Display goes here!
-					if (Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "backbuffer.autobackbuffer"))) {
+					if (Config.getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
 						showBackBuffer(((Channel) arguments[0]).getFrame(), getLogFile(channel));
 					}
 					
@@ -448,7 +448,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	 * @param filename File to get backbuffer from
 	 */
 	private void showBackBuffer(final CommandWindow frame, final String filename) {
-		final int linesRemaining = Integer.parseInt(Config.getOption(MY_DOMAIN, "backbuffer.lines"));
+		final int linesRemaining = Config.getOptionInt(MY_DOMAIN, "backbuffer.lines", 0);
 		return;
 	}
 	
@@ -461,11 +461,11 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	 */
 	private boolean appendLine(final String filename, final String line) {
 		String finalLine = line;
-		if (Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "general.addtime"))) {
+		if (Config.getOptionBool(MY_DOMAIN, "general.addtime")) {
 			final DateFormat dateFormat = new SimpleDateFormat(Config.getOption(MY_DOMAIN, "general.timestamp"));
 			finalLine = dateFormat.format(new Date()) + " " + finalLine;
 		}
-		if (Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "general.stripcodes"))) {
+		if (Config.getOptionBool(MY_DOMAIN, "general.stripcodes")) {
 			finalLine = Styliser.stipControlCodes(finalLine);
 		}
 //		System.out.println("[Adding] "+filename+" => "+finalLine);
@@ -502,7 +502,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 			final ChannelInfo channel = (ChannelInfo) obj;
 			result = addNetworkDir(result, channel.getParser().getNetworkName());
 			result = result + sanitise(channel.getName().toLowerCase());
-			if (Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "advanced.filenamehash"))) {
+			if (Config.getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
 				result = result + '.' + md5(channel.getName());
 			}
 			result = result + ".log";
@@ -510,7 +510,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 			final ClientInfo client = (ClientInfo) obj;
 			result = addNetworkDir(result, client.getParser().getNetworkName());
 			result = result + sanitise(client.getNickname().toLowerCase());
-			if (Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "advanced.filenamehash"))) {
+			if (Config.getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
 				result = result + '.' + md5(client.getNickname());
 			}
 			result = result + ".log";
@@ -518,13 +518,13 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 			final IRCParser parser = (IRCParser) obj;
 			result = addNetworkDir(result, parser.getNetworkName());
 			result = result + "log";
-			if (Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "advanced.filenamehash"))) {
+			if (Config.getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
 				result = result + '.' + md5("log");
 			}
 			result = result + ".log";
 		} else {
 			result = result + sanitise(obj.toString().toLowerCase());
-			if (Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "advanced.filenamehash"))) {
+			if (Config.getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
 				result = result + '.' + md5(obj.toString());
 			}
 			result = result + ".log";

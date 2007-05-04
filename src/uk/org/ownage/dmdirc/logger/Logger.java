@@ -117,8 +117,7 @@ public final class Logger {
             final String message, final String[] trace) {
         boolean autoSubmit = false;
         
-        if (Config.hasOption("general", "autoSubmitErrors")
-        && Boolean.parseBoolean(Config.getOption("general", "autoSubmitErrors"))) {
+        if (Config.getOptionBool("general", "autoSubmitErrors")) {
             autoSubmit = true;
         }
         
@@ -201,8 +200,7 @@ public final class Logger {
      * @param message Debug message.
      */
     public static void debug(final DebugLevel level, final String message) {
-        if (!Config.hasOption("logging", "debugLogging")
-        && !Config.getOption("logging", "debugLogging").equals("true")) {
+        if (!Config.getOptionBool("logging", "debugLogging")) {
             return;
         }
         if (logWriter == null || debugWriter == null || errorWriter == null) {
@@ -211,9 +209,7 @@ public final class Logger {
         
         switch(level) {
             default:
-                if (Config.hasOption("logging", "debugLoggingSysOut")
-                && Config.getOption("logging", "debugLoggingSysOut")
-                .equals("true")) {
+                if (Config.getOptionBool("logging", "debugLoggingSysOut")) {
                     synchronized (formatter) {
                         System.out.println(formatter.format(new Date())
                         + ": DEBUG: " + level + " :" + message);
@@ -241,8 +237,7 @@ public final class Logger {
      * @param message Log message.
      */
     public static void log(final LogLevel level, final String message) {
-        if (!Config.hasOption("logging", "programLogging")
-        && !Config.getOption("logging", "programLogging").equals("true")) {
+        if (!Config.getOptionBool("logging", "programLogging")) {
             return;
         }
         if (logWriter == null || debugWriter == null || errorWriter == null) {
