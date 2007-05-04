@@ -42,8 +42,10 @@ import uk.org.ownage.dmdirc.plugins.PluginManager;
  */
 public class ActionManager {
     
+    /** A list of registered action types. */
     private static List<ActionType> actionTypes;
     
+    /** A map linking types and a list of actions that're registered for them. */
     private static HashMap<ActionType, List<Action>> actions;
     
     /** Creates a new instance of ActionManager. */

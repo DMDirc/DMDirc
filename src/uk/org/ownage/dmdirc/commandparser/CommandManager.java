@@ -231,6 +231,7 @@ public final class CommandManager {
         new Quit();
         new QuitDefault();
         new Raw();
+        new ReloadActions();
         new ReloadFormatter();
         new SaveFormatter();
         new Set();
