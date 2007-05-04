@@ -341,23 +341,14 @@ public final class PreferencesPanel extends StandardDialog
      * @param name config name for the option
      * @param displayName displayable name for the option
      * @param helpText Help text to be displayed for the option
-     * @param type option type
-     * @param args type specific options<p>
-     * <ul>
-     * <li>TEXTFIELD takes a String as its default value</li>
-     * <li>CHECKBOX takes a boolean as its default state</li>
-     * <li>COMBOBOX takes a String[] of options, a String selected option
-     * and a boolean to specify if its editable</li>
-     * <li>SPINNER takes an Integer value to specify the default value
-     * or 4 Integers, default, minimum, maximum, step size</li>
-     * <li>COLOUR takes a String as the initial value, and two booleans, 
-     * one to show irc colours, one to show hex colours</li>
-     * </ul>
+     * @param args type specific options
+     * @param defaultValue default value
      */
-    public void addOption(final String category, final String name,
+    public void addTextfieldOption(final String category, final String name,
             final String displayName, final String helpText,
-            final OptionType type, final Object... args) {
-        addComponent(categories.get(category), name, displayName, helpText, type, args);
+            final String defaultValue) {
+        addComponent(categories.get(category), name, displayName, helpText, 
+                OptionType.TEXTFIELD, defaultValue);
     }
     
     /**
@@ -365,21 +356,88 @@ public final class PreferencesPanel extends StandardDialog
      * @param category category option is to be added to
      * @param name config name for the option
      * @param displayName displayable name for the option
-     * @param type option type
-     * @param args type specific options<p>
-     * <ul>
-     * <li>TEXTFIELD takes a String as its default value</li>
-     * <li>CHECKBOX takes a boolean as its default state</li>
-     * <li>COMBOBOX takes a String[] of options, a String selected option
-     * and a boolean to specify if its editable</li>
-     * <li>SPINNER takes an Integer value to specify the default value
-     * or 4 Integers, default, minimum, maximum, step size</li>
-     * </ul>
+     * @param helpText Help text to be displayed for the option
+     * @param args type specific options
+     * @param defaultValue default value
      */
-    public void addOption(final String category, final String name,
-            final String displayName, final OptionType type,
-            final Object... args) {
-        addComponent(categories.get(category), name, displayName, "", type, args);
+    public void addCheckboxOption(final String category, final String name,
+            final String displayName, final String helpText,
+            final boolean defaultValue) {
+        addComponent(categories.get(category), name, displayName, helpText, 
+                OptionType.CHECKBOX, defaultValue);
+    }
+    
+    /**
+     * Adds an option to the specified category.
+     * @param category category option is to be added to
+     * @param name config name for the option
+     * @param displayName displayable name for the option
+     * @param helpText Help text to be displayed for the option
+     * @param args type specific options
+     * @param defaultValue default value
+     * @param editable editable combo box
+     */
+    public void addComboboxOption(final String category, final String name,
+            final String displayName, final String helpText,
+            final String[] options, final String defaultValue, 
+            final boolean editable) {
+        addComponent(categories.get(category), name, displayName, helpText, 
+                OptionType.COMBOBOX, options, defaultValue, editable);
+    }
+    
+    /**
+     * Adds an option to the specified category.
+     * @param category category option is to be added to
+     * @param name config name for the option
+     * @param displayName displayable name for the option
+     * @param helpText Help text to be displayed for the option
+     * @param args type specific options
+     * @param defaultValue default value
+     */
+    public void addSpinnerOption(final String category, final String name,
+            final String displayName, final String helpText,
+            final int defaultValue) {
+        addComponent(categories.get(category), name, displayName, helpText, 
+                OptionType.SPINNER, defaultValue);
+    }
+    
+    /**
+     * Adds an option to the specified category.
+     * @param category category option is to be added to
+     * @param name config name for the option
+     * @param displayName displayable name for the option
+     * @param helpText Help text to be displayed for the option
+     * @param args type specific options
+     * @param defaultValue default value
+     * @param minimum minimum value
+     * @param maximum maximum value
+     * @param stepSize step size interval
+     */
+    public void addSpinnerOption(final String category, final String name,
+            final String displayName, final String helpText,
+            final int defaultValue, final int minimum, final int maximum, 
+            final int stepSize) {
+        addComponent(categories.get(category), name, displayName, helpText, 
+                OptionType.SPINNER, defaultValue, minimum, maximum, stepSize);
+    }
+    
+    /**
+     * Adds an option to the specified category.
+     * @param category category option is to be added to
+     * @param name config name for the option
+     * @param displayName displayable name for the option
+     * @param helpText Help text to be displayed for the option
+     * @param args type specific options
+     * @param defaultValue default value
+     * @param showIrcColours show irc colours in the colour picker
+     * @param showHexColours show hex colours in the colour picker
+     */
+    public void addColourOption(final String category, final String name,
+            final String displayName, final String helpText,
+            final String defaultValue, final boolean showIrcColours, 
+            final boolean showHexColours) {
+        addComponent(categories.get(category), name, displayName, helpText, 
+                OptionType.COLOUR, defaultValue, showIrcColours, showHexColours);
     }
     
     /**

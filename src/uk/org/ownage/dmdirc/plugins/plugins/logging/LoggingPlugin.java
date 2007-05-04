@@ -150,19 +150,19 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 		preferencesPanel.addCategory("General", "General configuration for Logging plugin.");
 		preferencesPanel.addCategory("Back Buffer", "Options related to the automatic backbuffer");
 		preferencesPanel.addCategory("Advanced", "Advanced configuration for Logging plugin. You shouldn't need to edit this unless you know what you are doing.");
+
+		preferencesPanel.addTextfieldOption("General", "general.directory", "Directory: ", "", Config.getOption(MY_DOMAIN, "general.directory"));
+		preferencesPanel.addCheckboxOption("General", "general.networkfolders", "Separate logs by network: ", "", Config.getOptionBool(MY_DOMAIN, "general.networkfolders"));
+		preferencesPanel.addCheckboxOption("General", "general.addtime", "Timestamp logs: ", "", Config.getOptionBool(MY_DOMAIN, "general.addtime"));
+		preferencesPanel.addTextfieldOption("General", "general.timestamp", "Timestamp format: ", "", Config.getOption(MY_DOMAIN, "general.timestamp"));
+		preferencesPanel.addCheckboxOption("General", "general.stripcodes", "Strip Control Codes: ", "", Config.getOptionBool(MY_DOMAIN, "general.stripcodes"));
+		preferencesPanel.addCheckboxOption("General", "general.channelmodeprefix", "Show channel mode prefix: ", "", Config.getOptionBool(MY_DOMAIN, "general.channelmodeprefix"));
 		
-		preferencesPanel.addOption("General", "general.directory", "Directory: ", PreferencesPanel.OptionType.TEXTFIELD, Config.getOption(MY_DOMAIN, "general.directory"));
-		preferencesPanel.addOption("General", "general.networkfolders", "Separate logs by network: ", PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool(MY_DOMAIN, "general.networkfolders"));
-		preferencesPanel.addOption("General", "general.addtime", "Timestamp logs: ", PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool(MY_DOMAIN, "general.addtime"));
-		preferencesPanel.addOption("General", "general.timestamp", "Timestamp format: ", PreferencesPanel.OptionType.TEXTFIELD, Config.getOption(MY_DOMAIN, "general.timestamp"));
-		preferencesPanel.addOption("General", "general.stripcodes", "Strip Control Codes: ", PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool(MY_DOMAIN, "general.stripcodes"));
-		preferencesPanel.addOption("General", "general.channelmodeprefix", "Show channel mode prefix: ", PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool(MY_DOMAIN, "general.channelmodeprefix"));
+		preferencesPanel.addCheckboxOption("Back Buffer", "backbuffer.autobackbuffer", "Automatically display: ", "", Config.getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer"));
+		preferencesPanel.addTextfieldOption("Back Buffer", "backbuffer.colour", "Colour to use for display: ", "", Config.getOption(MY_DOMAIN, "backbuffer.colour"));
+		preferencesPanel.addSpinnerOption("Back Buffer", "backbuffer.lines", "Number of lines to show: ", "", Config.getOptionInt(MY_DOMAIN, "backbuffer.lines", 0));
 		
-		preferencesPanel.addOption("Back Buffer", "backbuffer.autobackbuffer", "Automatically display: ", PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer"));
-		preferencesPanel.addOption("Back Buffer", "backbuffer.colour", "Colour to use for display: ", PreferencesPanel.OptionType.TEXTFIELD, Config.getOption(MY_DOMAIN, "backbuffer.colour"));
-		preferencesPanel.addOption("Back Buffer", "backbuffer.lines", "Number of lines to show: ", PreferencesPanel.OptionType.SPINNER, Config.getOptionInt(MY_DOMAIN, "backbuffer.lines", 0));
-		
-		preferencesPanel.addOption("Advanced", "advanced.filenamehash", "Add Filename hash: ", PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool(MY_DOMAIN, "advanced.filenamehash"));
+		preferencesPanel.addCheckboxOption("Advanced", "advanced.filenamehash", "Add Filename hash: ", "", Config.getOptionBool(MY_DOMAIN, "advanced.filenamehash"));
 		
 		preferencesPanel.display();
 	}
