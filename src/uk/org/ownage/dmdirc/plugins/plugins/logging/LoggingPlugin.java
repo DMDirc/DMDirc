@@ -152,17 +152,17 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 		preferencesPanel.addCategory("Advanced", "Advanced configuration for Logging plugin. You shouldn't need to edit this unless you know what you are doing.");
 		
 		preferencesPanel.addOption("General", "general.directory", "Directory: ", PreferencesPanel.OptionType.TEXTFIELD, Config.getOption(MY_DOMAIN, "general.directory"));
-		preferencesPanel.addOption("General", "general.networkfolders", "Separate logs by network: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "general.networkfolders")));
-		preferencesPanel.addOption("General", "general.addtime", "Timestamp logs: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "general.addtime")));
+		preferencesPanel.addOption("General", "general.networkfolders", "Separate logs by network: ", PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool(MY_DOMAIN, "general.networkfolders"));
+		preferencesPanel.addOption("General", "general.addtime", "Timestamp logs: ", PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool(MY_DOMAIN, "general.addtime"));
 		preferencesPanel.addOption("General", "general.timestamp", "Timestamp format: ", PreferencesPanel.OptionType.TEXTFIELD, Config.getOption(MY_DOMAIN, "general.timestamp"));
-		preferencesPanel.addOption("General", "general.stripcodes", "Strip Control Codes: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "general.stripcodes")));
-		preferencesPanel.addOption("General", "general.channelmodeprefix", "Show channel mode prefix: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "general.channelmodeprefix")));
+		preferencesPanel.addOption("General", "general.stripcodes", "Strip Control Codes: ", PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool(MY_DOMAIN, "general.stripcodes"));
+		preferencesPanel.addOption("General", "general.channelmodeprefix", "Show channel mode prefix: ", PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool(MY_DOMAIN, "general.channelmodeprefix"));
 		
-		preferencesPanel.addOption("Back Buffer", "backbuffer.autobackbuffer", "Automatically display: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "backbuffer.autobackbuffer")));
+		preferencesPanel.addOption("Back Buffer", "backbuffer.autobackbuffer", "Automatically display: ", PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer"));
 		preferencesPanel.addOption("Back Buffer", "backbuffer.colour", "Colour to use for display: ", PreferencesPanel.OptionType.TEXTFIELD, Config.getOption(MY_DOMAIN, "backbuffer.colour"));
 		preferencesPanel.addOption("Back Buffer", "backbuffer.lines", "Number of lines to show: ", PreferencesPanel.OptionType.SPINNER, Integer.parseInt(Config.getOption(MY_DOMAIN, "backbuffer.lines")));
 		
-		preferencesPanel.addOption("Advanced", "advanced.filenamehash", "Add Filename hash: ", PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "advanced.filenamehash")));
+		preferencesPanel.addOption("Advanced", "advanced.filenamehash", "Add Filename hash: ", PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool(MY_DOMAIN, "advanced.filenamehash"));
 		
 		preferencesPanel.display();
 	}
@@ -594,14 +594,14 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 			}
 		} else {
 			if (overrideNick.equals("")) {
-				if (Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "general.channelmodeprefix"))) {
+				if (Config.getOptionBool(MY_DOMAIN, "general.channelmodeprefix")) {
 					result = channelClient.toString();
 				} else {
 					result = channelClient.getNickname();
 				}
 			} else {
 				result = overrideNick;
-				if (Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "general.channelmodeprefix"))) {
+				if (Config.getOptionBool(MY_DOMAIN, "general.channelmodeprefix")) {
 					result = channelClient.getImportantModePrefix() + result;
 				}
 			}
@@ -620,7 +620,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	 */
 	private String addNetworkDir(final String input, final String networkName) {
 		String result = input;
-		if (Boolean.parseBoolean(Config.getOption(MY_DOMAIN, "general.networkfolders"))) {
+		if (Config.getOptionBool(MY_DOMAIN, "general.networkfolders")) {
 			result = result + sanitise(networkName.toLowerCase()) + System.getProperty("file.separator");
 			// Check dir exists
 			final File dir = new File(result);

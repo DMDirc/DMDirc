@@ -39,7 +39,6 @@ import uk.org.ownage.dmdirc.ui.input.InputHandler;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
-
 /**
  * The ServerFrame is the MDI window that shows server messages to the user.
  */
@@ -114,7 +113,7 @@ public final class ServerFrame extends Frame {
      */
     public void setAway(final boolean newAwayState) {
         if (Config.hasOption("ui", "awayindicator")
-        && Boolean.parseBoolean(Config.getOption("ui", "awayindicator"))) {
+        && Config.getOptionBool("ui", "awayindicator")) {
             setAwayIndicator(newAwayState);
             
             ((Frame) getServer().getRaw().getFrame()).setAwayIndicator(newAwayState);

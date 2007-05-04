@@ -360,7 +360,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      * @return Titlebar prefix
      */
     public String getTitlePrefix() {
-        if (Boolean.parseBoolean(Config.getOption("ui", "showversion"))) {
+        if (Config.getOptionBool("ui", "showversion")) {
             return "DMDirc " + Main.VERSION;
         } else {
             return "DMDirc";

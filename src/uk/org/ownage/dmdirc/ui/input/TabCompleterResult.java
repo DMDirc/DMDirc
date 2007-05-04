@@ -87,7 +87,7 @@ public final class TabCompleterResult {
 	    return "";
 	}
 	
-	final boolean caseSensitive = Boolean.parseBoolean(Config.getOption("tabcompletion", "casesensitive"));
+	final boolean caseSensitive = Config.getOptionBool("tabcompletion", "casesensitive");
 	
 	String res = results.get(0);
 	for (String entry : results) {

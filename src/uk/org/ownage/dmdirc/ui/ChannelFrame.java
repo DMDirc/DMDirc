@@ -248,7 +248,7 @@ public final class ChannelFrame extends Frame {
         splitPane.setRightComponent(nickScrollPane);
         
         splitPane.setResizeWeight(1.0);
-        if (Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"))) {
+        if (Config.getOptionBool("ui", "maximisewindows")) {
             splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth() - 325);
         } else {
             splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth() / 2 - 150);

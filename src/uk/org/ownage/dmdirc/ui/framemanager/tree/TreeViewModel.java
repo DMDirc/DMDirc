@@ -89,7 +89,7 @@ public class TreeViewModel extends DefaultTreeModel {
 	    final DefaultMutableTreeNode parent) {
 	
 	if (parent.equals(root)
-	&& !Boolean.parseBoolean(Config.getOption("ui", "sortservers"))) {
+	&& !Config.getOptionBool("ui", "sortservers")) {
 	    return parent.getChildCount();
 	}
 	
@@ -99,7 +99,7 @@ public class TreeViewModel extends DefaultTreeModel {
 	    if (sortBefore(newChild, child)) {
 		return i;
 	    } else if (!sortAfter(newChild, child)
-	    && Boolean.parseBoolean(Config.getOption("ui", "sortwindows"))
+	    && Config.getOptionBool("ui", "sortwindows")
 	    && newChild.getUserObject().toString().compareToIgnoreCase(
 		    child.getUserObject().toString()) < 0) {
 		return i;

@@ -22,7 +22,11 @@
 
 package uk.org.ownage.dmdirc.identities;
 
+import java.awt.Color;
 import java.util.List;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
  * The config manager manages the various config sources for each entity.
@@ -72,6 +76,46 @@ public final class ConfigManager {
         
         throw new IndexOutOfBoundsException("Config option not found: " + domain + "." + option);
     }
+    
+    /**
+     * Retrieves a colour represnetation of the specified option.
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @param fallback The colour that should be used in case of error
+     * @return The colour representation of the option
+     */
+    public Color getOptionColour(final String domain, final String option,
+            final Color fallback) {
+        if (!hasOption(domain, option)) {
+            return fallback;
+        }
+        
+        final String prop = getOption(domain, option);
+        Color res = null;
+        
+        if (prop.length() < 3) {
+            int num;
+            
+            try {
+                num = Integer.parseInt(prop);
+            } catch (NumberFormatException ex) {
+                num = -1;
+            }
+            
+            if (num >= 0 && num <= 15) {
+                res = ColourManager.getColour(num);
+            }
+        } else if (prop.length() == 6) {
+            res = ColourManager.getColour(prop);
+        }
+        
+        if (res == null) {
+            Logger.error(ErrorLevel.WARNING, "Invalid colour format for " + domain + "." + option);
+            res = fallback;
+        }
+        
+        return res;        
+    }    
     
     /**
      * Returns the scope of the specified option.

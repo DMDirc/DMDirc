@@ -105,23 +105,23 @@ public final class PreferencesDialog implements PreferencesInterface {
         
         preferencesPanel.addOption(tabName, "ui.maximisewindows", "Auto-Maximise windows: ",
                 PreferencesPanel.OptionType.CHECKBOX,
-                Boolean.parseBoolean(Config.getOption("ui", "maximisewindows")));
+                Config.getOptionBool("ui", "maximisewindows"));
         preferencesPanel.addOption(tabName, "ui.backgroundcolour", "Window background colour: ",
                 PreferencesPanel.OptionType.COLOUR, Config.getOption("ui", "backgroundcolour"), true, false);
         preferencesPanel.addOption(tabName, "ui.foregroundcolour", "Window foreground colour: ",
                 PreferencesPanel.OptionType.COLOUR, Config.getOption("ui", "foregroundcolour"), true, false);
         preferencesPanel.addOption(tabName, "ui.sortByMode", "Nicklist sort by mode: ",
                 PreferencesPanel.OptionType.CHECKBOX,
-                Boolean.parseBoolean(Config.getOption("ui", "sortByMode")));
+                Config.getOptionBool("ui", "sortByMode"));
         preferencesPanel.addOption(tabName, "ui.sortByCase", "Nicklist sort by case: ",
                 PreferencesPanel.OptionType.CHECKBOX,
-                Boolean.parseBoolean(Config.getOption("ui", "sortByCase")));
+                Config.getOptionBool("ui", "sortByCase"));
         preferencesPanel.addOption(tabName, "channel.splitusermodes", "Split user modes: ",
                 PreferencesPanel.OptionType.CHECKBOX,
-                Boolean.parseBoolean(Config.getOption("channel", "splitusermodes")));
+                Config.getOptionBool("channel", "splitusermodes"));
         preferencesPanel.addOption(tabName, "ui.quickCopy", "Quick Copy: ",
                 PreferencesPanel.OptionType.CHECKBOX,
-                Boolean.parseBoolean(Config.getOption("ui", "quickCopy")));
+                Config.getOptionBool("ui", "quickCopy"));
         try {
             preferencesPanel.addOption(tabName, "ui.pasteProtectionLimit", "Paste protection trigger: ",
                     PreferencesPanel.OptionType.SPINNER, Integer.parseInt(Config.getOption("ui", "pasteProtectionLimit")));
@@ -130,7 +130,7 @@ public final class PreferencesDialog implements PreferencesInterface {
                     PreferencesPanel.OptionType.SPINNER, 1);
         }
         preferencesPanel.addOption(tabName, "ui.awayindicator", "Away indicator: ", "Shows an away indicator in the input field.",
-                PreferencesPanel.OptionType.CHECKBOX, Boolean.parseBoolean(Config.getOption("ui", "awayindicator")));
+                PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool("ui", "awayindicator"));
     }
     
     /**
@@ -142,15 +142,15 @@ public final class PreferencesDialog implements PreferencesInterface {
         
         preferencesPanel.addOption(tabName, "ui.rolloverEnabled", "Rollover enabled: ",
                 PreferencesPanel.OptionType.CHECKBOX,
-                Boolean.parseBoolean(Config.getOption("ui", "rolloverEnabled")));
+                Config.getOptionBool("ui", "rolloverEnabled"));
         preferencesPanel.addOption(tabName, "ui.rolloverColour", "Rollover colour: ",
                 PreferencesPanel.OptionType.COLOUR, Config.getOption("ui", "rolloverColour"), true, true);
         preferencesPanel.addOption(tabName, "ui.sortwindows", "Sort windows: ",
                 PreferencesPanel.OptionType.CHECKBOX,
-                Boolean.parseBoolean(Config.getOption("ui", "sortwindows")));
+                Config.getOptionBool("ui", "sortwindows"));
         preferencesPanel.addOption(tabName, "ui.sortservers", "Sort servers: ",
                 PreferencesPanel.OptionType.CHECKBOX,
-                Boolean.parseBoolean(Config.getOption("ui", "sortservers")));
+                Config.getOptionBool("ui", "sortservers"));
     }
     
     /**
@@ -184,7 +184,7 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addOption(tabName, "tabcompletion.casesensitive",
                 "Case-sensitive tab completion: ",
                 PreferencesPanel.OptionType.CHECKBOX,
-                Boolean.parseBoolean(Config.getOption("tabcompletion", "casesensitive")));
+                Config.getOptionBool("tabcompletion", "casesensitive"));
     }
     
     /**
@@ -196,20 +196,20 @@ public final class PreferencesDialog implements PreferencesInterface {
         
         preferencesPanel.addOption(tabName, "general.autoSubmitErrors", "Automatically submit errors: ",
                 PreferencesPanel.OptionType.CHECKBOX,
-                Boolean.parseBoolean(Config.getOption("general", "autoSubmitErrors")));
+                Config.getOptionBool("general", "autoSubmitErrors"));
         preferencesPanel.addOption(tabName, "logging.dateFormat", "Date format: ",
                 PreferencesPanel.OptionType.COMBOBOX, new String[]
         {"EEE, d MMM yyyy HH:mm:ss Z", "d MMM yyyy HH:mm:ss", }, Config.getOption("logging", "dateFormat"), true);
         preferencesPanel.addOption(tabName, "logging.programLogging", "Program logs: ",
                 PreferencesPanel.OptionType.CHECKBOX,
-                Boolean.parseBoolean(Config.getOption("logging", "programLogging")));
+                Config.getOptionBool("logging", "programLogging"));
         preferencesPanel.addOption(tabName, "logging.debugLogging", "Debug logs: ",
                 PreferencesPanel.OptionType.CHECKBOX,
-                Boolean.parseBoolean(Config.getOption("logging", "debugLogging")));
+                Config.getOptionBool("logging", "debugLogging"));
         preferencesPanel.addOption(tabName, "logging.debugLoggingSysOut",
                 "Debug console output: ",
                 PreferencesPanel.OptionType.CHECKBOX,
-                Boolean.parseBoolean(Config.getOption("logging", "debugLoggingSysOut")));
+                Config.getOptionBool("logging", "debugLoggingSysOut"));
     }
     
     /**
@@ -230,7 +230,7 @@ public final class PreferencesDialog implements PreferencesInterface {
                 PreferencesPanel.OptionType.COMBOBOX, lafs, Config.getOption("ui", "lookandfeel"), false);
         preferencesPanel.addOption(tabName, "ui.showversion", "Show version: ",
                 PreferencesPanel.OptionType.CHECKBOX,
-                Boolean.parseBoolean(Config.getOption("ui", "showversion")));
+                Config.getOptionBool("ui", "showversion"));
         preferencesPanel.addOption(tabName, "ui.inputbuffersize", "Input bufer size (lines): ",
                 PreferencesPanel.OptionType.SPINNER,
                 Integer.parseInt(Config.getOption("ui", "inputbuffersize")));

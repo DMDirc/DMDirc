@@ -209,7 +209,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             Logger.error(ErrorLevel.TRIVIAL, "Unable to set caret colour", ex);
         }
         
-        final Boolean pref = Boolean.parseBoolean(Config.getOption("ui", "maximisewindows"));
+        final Boolean pref = Config.getOptionBool("ui", "maximisewindows");
         if (pref || MainFrame.getMainFrame().getMaximised()) {
             hideBorder();
         }
@@ -223,7 +223,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     public final void open() {
         setVisible(true);
         if (Config.hasOption("ui", "awayindicator")
-        && Boolean.parseBoolean(Config.getOption("ui", "awayindicator"))) {
+        && Config.getOptionBool("ui", "awayindicator")) {
             awayLabel.setVisible(getServer().isAway());
         }
     }
@@ -651,7 +651,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Not needed for this class. {@inheritDoc}
      */
     public void mouseReleased(final MouseEvent mouseEvent) {
-        if (Boolean.parseBoolean(Config.getOption("ui", "quickCopy"))) {
+        if (Config.getOptionBool("ui", "quickCopy")) {
             getTextPane().copy();
             getTextPane().setCaretPosition(getTextPane().getCaretPosition());
             getTextPane().moveCaretPosition(getTextPane().getCaretPosition());
@@ -727,7 +727,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             getSearchBar().open();
         }
         if (event.getSource() == getTextPane()) {
-            if ((Boolean.parseBoolean(Config.getOption("ui", "quickCopy"))
+            if ((Config.getOptionBool("ui", "quickCopy")
             || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
                 event.setSource(getInputField());
                 getInputField().requestFocus();
