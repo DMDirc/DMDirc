@@ -577,7 +577,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         final StringBuffer buff = new StringBuffer(type);
         
-        ActionManager.processEvent(CoreActionType.CHANNEL_KICK, buff, this, 
+        ActionManager.processEvent(CoreActionType.CHANNEL_KICK, buff, this,
                 cKickedByClient, cKickedClient, sReason);
         
         frame.addLine(buff, kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,
@@ -619,7 +619,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, buff, this, cChannelClient, sReason);
         
         frame.addLine(buff, modes, source, client.getIdent(),
-                    client.getHost(), cChannel, sReason);
+                client.getHost(), cChannel, sReason);
         
         frame.removeName(cChannelClient);
         tabCompleter.removeEntry(cChannelClient.getNickname());
@@ -704,7 +704,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             final ChannelClientInfo cSetByClient, final String sHost,
             final String sMode) {
         
-        if (Boolean.parseBoolean(configManager.getOption("channel", "splitusermodes"))) {
+        if (configManager.getOptionBool("channel", "splitusermodes")) {
             final String sourceModes = getModes(cSetByClient);
             final String[] sourceHost = getDetails(cSetByClient);
             final String targetModes = cChangedClient.getImportantModePrefix();
@@ -782,7 +782,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        final Boolean pref = Boolean.parseBoolean(configManager.getOption("ui", "maximisewindows"));
+        final boolean pref = configManager.getOptionBool("ui", "maximisewindows");
         if (pref || MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);

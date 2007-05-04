@@ -24,6 +24,8 @@ package uk.org.ownage.dmdirc.identities;
 
 import java.awt.Color;
 import java.util.List;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
@@ -104,7 +106,32 @@ public final class ConfigManager {
         }
         
         return Boolean.parseBoolean(getOption(domain, option));
-    }    
+    }
+    
+    /**
+     * Retrieves an integral representation of the specified option.
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @param fallback The value to use if the config isn't valud
+     * @return The integer representation of the option
+     */
+    public int getOptionInt(final String domain, final String option,
+            final int fallback) {
+                if (!hasOption(domain, option)) {
+            return fallback;
+        }
+        
+        int res;
+        
+        try {
+            res = Integer.parseInt(getOption(domain, option));
+        } catch (NumberFormatException ex) {
+            Logger.error(ErrorLevel.WARNING, "Invalid number format for " + domain + "." + option, ex);
+            res = fallback;
+        }
+        
+        return res;
+    }
     
     /**
      * Returns the scope of the specified option.

@@ -966,7 +966,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        final Boolean pref = Boolean.parseBoolean(configManager.getOption("ui", "maximisewindows"));
+        final boolean pref = configManager.getOptionBool("ui", "maximisewindows");
         if (pref || MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);

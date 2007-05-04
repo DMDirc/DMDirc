@@ -56,10 +56,10 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
      * @param newConfig ConfigManager for the associated channel
      * @param newChannel Associated channel
      */
-    public NicklistRenderer(final ConfigManager newConfig, 
+    public NicklistRenderer(final ConfigManager newConfig,
             final Channel newChannel) {
-	super();
-	config = newConfig;
+        super();
+        config = newConfig;
         channel = newChannel;
     }
     
@@ -67,21 +67,20 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
      * {@inheritDoc}
      */
     public Component getListCellRendererComponent(final JList list,
-	    final Object value, final int index, final boolean selected,
-	    final boolean focused) {
-	
-	super.getListCellRendererComponent(list, value, index, selected, focused);
-	
-	if (config.hasOption("nicklist", "altBackground")
-	&& Boolean.parseBoolean(config.getOption("nicklist", "altBackground")) 
-	&& !selected && index % 2 == 1) {
-		final Color fallback = ColourManager.getColour("f0f0f0");
-		
-		this.setBackground(config.getOptionColour("nicklist", "altBackgroundColour", fallback));
-	}
-	this.setBorder(new EmptyBorder(0, 2, 0, 2));
-	
-	return this;
+            final Object value, final int index, final boolean selected,
+            final boolean focused) {
+        
+        super.getListCellRendererComponent(list, value, index, selected, focused);
+        
+        if (config.getOptionBool("nicklist", "altBackground") && !selected
+                && index % 2 == 1) {
+            final Color fallback = ColourManager.getColour("f0f0f0");
+            
+            this.setBackground(config.getOptionColour("nicklist", "altBackgroundColour", fallback));
+        }
+        this.setBorder(new EmptyBorder(0, 2, 0, 2));
+        
+        return this;
     }
     
 }

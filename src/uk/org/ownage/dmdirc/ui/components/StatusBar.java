@@ -219,15 +219,9 @@ public final class StatusBar extends JPanel implements MouseListener,
         - errorTimer.scheduledExecutionTime()) <= 0) {
             errorTimer.cancel();
         }
-        int displayLength = 10000;
-        if (Config.hasOption("statusBar", "errorDisplayLength")) {
-            try {
-                displayLength = Integer.parseInt(
-                        Config.getOption("statusBar", "errorDisplayLength"));
-            } catch (NumberFormatException e) {
-                Logger.error(ErrorLevel.WARNING, "Invalid error display length", e);
-            }
-        }
+        
+        final int displayLength = Config.getOptionInt("statusBar", "errorDisplayLength", 10000);
+        
         errorTimer = new TimerTask() {
             public void run() {
                 clearError();
@@ -326,15 +320,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         if (icon != null && notifier != null) {
             JMenuItem mi;
             final Error error = new Error(icon, notifier);
-            int errorHistory = 10;
-            if (Config.hasOption("statusBar", "errorHistory")) {
-                try {
-                    errorHistory = Integer.parseInt(
-                            Config.getOption("statusBar", "errorHistory"));
-                } catch (NumberFormatException ex) {
-                    Logger.error(ErrorLevel.WARNING, "Invalid history size", ex);
-                }
-            }
+            final int errorHistory = Config.getOptionInt("statusBar", "errorHistory", 10);
             errors.add(error);
             popup.removeAll();
             while (errors.size() >= errorHistory) {
@@ -367,8 +353,8 @@ public final class StatusBar extends JPanel implements MouseListener,
         }
     }
     
-    /** 
-     * Adds a component to the status bar. 
+    /**
+     * Adds a component to the status bar.
      *
      * @param component component to add
      */
@@ -377,8 +363,8 @@ public final class StatusBar extends JPanel implements MouseListener,
         layoutBar();
     }
     
-    /** 
-     * Removes a component to the status bar. 
+    /**
+     * Removes a component to the status bar.
      *
      * @param component component to add
      */

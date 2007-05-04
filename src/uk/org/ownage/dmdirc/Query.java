@@ -302,7 +302,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      * @param internalFrameEvent frame opened event
      */
     public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        final Boolean pref = Boolean.parseBoolean(server.getConfigManager().getOption("ui", "maximisewindows"));
+        final boolean pref = server.getConfigManager().getOptionBool("ui", "maximisewindows");
         if (pref || MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);

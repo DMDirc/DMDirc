@@ -300,11 +300,9 @@ public class ChannelSettingsDialog extends StandardDialog
                     .contains(mode.subSequence(0, 1));
             String text = "Mode " + mode;
             
-            if (channel.getConfigManager().hasOption("server", "friendlymodes")
-            && Boolean.parseBoolean(channel.getConfigManager().getOption("server", "friendlymodes"))) {
-                if (channel.getConfigManager().hasOption("server", "mode" + mode)) {
-                    text = channel.getConfigManager().getOption("server", "mode" + mode);
-                }
+            if (channel.getConfigManager().getOptionBool("server", "friendlymodes")
+            && channel.getConfigManager().hasOption("server", "mode" + mode)) {
+                text = channel.getConfigManager().getOption("server", "mode" + mode);
             }
             
             final JCheckBox checkBox = new JCheckBox(text, state);
@@ -317,8 +315,7 @@ public class ChannelSettingsDialog extends StandardDialog
                 constraints.gridx = 0;
             }
             
-            if (channel.getConfigManager().hasOption("server", "enablemode" + modeChar)
-            && Boolean.parseBoolean(channel.getConfigManager().getOption("server", "enablemode" + modeChar))) {
+            if (channel.getConfigManager().getOptionBool("server", "enablemode" + modeChar)) {
                 modeCheckBoxes.put(mode, checkBox);
             } else if (!channel.getServer().getParser().isUserSettable(modeChar)) {
                 checkBox.setEnabled(false);
@@ -433,11 +430,9 @@ public class ChannelSettingsDialog extends StandardDialog
         
         for (char mode : listModesArray) {
             String modeText = mode + " list";
-            if (channel.getConfigManager().hasOption("server", "friendlymodes")
-            && Boolean.parseBoolean(channel.getConfigManager().getOption("server", "friendlymodes"))) {
-                if (channel.getConfigManager().hasOption("server", "mode" + mode)) {
-                    modeText = channel.getConfigManager().getOption("server", "mode" + mode) + " list";
-                }
+            if (channel.getConfigManager().getOptionBool("server", "friendlymodes")
+            && channel.getConfigManager().hasOption("server", "mode" + mode)) {
+                modeText = channel.getConfigManager().getOption("server", "mode" + mode) + " list";
             }
             listModesList.add(modeText);
         }
@@ -586,7 +581,7 @@ public class ChannelSettingsDialog extends StandardDialog
             final boolean state = ourBooleanModes.split(" ")[0]
                     .contains(mode.subSequence(0, 1));
             
-            if (modeCheckBoxes.get(mode) != null 
+            if (modeCheckBoxes.get(mode) != null
                     && state != modeCheckBoxes.get(mode).isSelected()) {
                 changed = true;
                 channel.getChannelInfo().alterMode(

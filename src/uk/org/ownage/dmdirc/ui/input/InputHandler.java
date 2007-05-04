@@ -28,12 +28,10 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JTextField;
-import uk.org.ownage.dmdirc.Config;
 
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.components.ColourPickerDialog;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
@@ -112,12 +110,8 @@ public final class InputHandler implements KeyListener, ActionListener {
             final CommandParser thisCommandParser,
             final CommandWindow thisParentWindow) {
         
-        try {
-            bufferSize = Integer.parseInt(thisParentWindow.getConfigManager().getOption("ui", "inputbuffersize"));
-        } catch (NumberFormatException ex) {
-            bufferSize = 50;
-            Logger.error(ErrorLevel.TRIVIAL, "Unable to set input buffer size", ex);
-        }
+        bufferSize = thisParentWindow.getConfigManager().getOptionInt("ui", "inputbuffersize", 50);
+        
         this.commandParser = thisCommandParser;
         this.parentWindow = thisParentWindow;
         this.target = thisTarget;

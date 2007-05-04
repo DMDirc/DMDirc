@@ -42,8 +42,6 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
-
-
 /**
  * Handles the raw window (which shows the user raw data being sent and
  * received to/from the server).
@@ -149,7 +147,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        final Boolean pref = Boolean.parseBoolean(server.getConfigManager().getOption("ui", "maximisewindows"));
+        final boolean pref = server.getConfigManager().getOptionBool("ui", "maximisewindows");
         if (pref || MainFrame.getMainFrame().getMaximised()) {
             try {
                 frame.setMaximum(true);
@@ -173,7 +171,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -181,7 +179,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -189,7 +187,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -214,7 +212,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      * @param internalFrameEvent The event that triggered this callback
      */
     public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
-	//Ignore.
+        //Ignore.
     }
     
     /**
@@ -273,6 +271,6 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      */
     public ConfigManager getConfigManager() {
         return server.getConfigManager();
-    }    
+    }
     
 }

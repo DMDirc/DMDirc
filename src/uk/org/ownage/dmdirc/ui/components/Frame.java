@@ -230,15 +230,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                     Styliser.addStyledString(getTextPane().getStyledDocument(), myLine);
                 }
                 
-                int frameBufferSize = Integer.MAX_VALUE;
-                if (parent.getConfigManager().hasOption("ui", "frameBufferSize")) {
-                    try {
-                        frameBufferSize = Integer.parseInt(
-                                parent.getConfigManager().getOption("ui", "frameBufferSize"));
-                    } catch (NumberFormatException ex) {
-                        Logger.error(ErrorLevel.TRIVIAL, "Unable to set frame buffer size", ex);
-                    }
-                }
+                final int frameBufferSize = parent.getConfigManager().getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE);
+                
                 final Document doc = getTextPane().getDocument();
                 try {
                     if (doc.getLength() > frameBufferSize) {
