@@ -111,6 +111,8 @@ public final class Config {
         defaults.setProperty("general.cyclemessage", "Cycling");
         defaults.setProperty("general.kickmessage", "Bye!");
         
+        defaults.setProperty("general.hidequeries", "false");
+        
         defaults.setProperty("general.closechannelsonquit", "false");
         defaults.setProperty("general.closequeriesonquit", "false");
         

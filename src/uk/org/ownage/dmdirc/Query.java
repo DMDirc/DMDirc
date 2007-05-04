@@ -103,7 +103,10 @@ public final class Query implements IPrivateAction, IPrivateMessage,
         MainFrame.getMainFrame().addChild(frame);
         frame.addInternalFrameListener(this);
         frame.setFrameIcon(imageIcon);
-        frame.open();
+        
+        if (!Config.getOptionBool("general", "hidequeries")) {
+            frame.open();
+        }
         
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(CommandManager.getQueryCommandNames());
@@ -118,6 +121,13 @@ public final class Query implements IPrivateAction, IPrivateMessage,
         }
         
         updateTitle();
+    }
+    
+    /**
+     * Shows this query's frame.
+     */
+    public void show() {
+        frame.open();
     }
     
     /**
@@ -379,6 +389,10 @@ public final class Query implements IPrivateAction, IPrivateMessage,
      * Requests that this object's frame be activated.
      */
     public void activateFrame() {
+        if (!frame.isVisible()) {
+            show();
+        }
+        
         MainFrame.getMainFrame().setActiveFrame(frame);
     }
     
