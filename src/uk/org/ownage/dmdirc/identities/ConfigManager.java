@@ -24,8 +24,7 @@ package uk.org.ownage.dmdirc.identities;
 
 import java.awt.Color;
 import java.util.List;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
+
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
@@ -90,32 +89,8 @@ public final class ConfigManager {
             return fallback;
         }
         
-        final String prop = getOption(domain, option);
-        Color res = null;
-        
-        if (prop.length() < 3) {
-            int num;
-            
-            try {
-                num = Integer.parseInt(prop);
-            } catch (NumberFormatException ex) {
-                num = -1;
-            }
-            
-            if (num >= 0 && num <= 15) {
-                res = ColourManager.getColour(num);
-            }
-        } else if (prop.length() == 6) {
-            res = ColourManager.getColour(prop);
-        }
-        
-        if (res == null) {
-            Logger.error(ErrorLevel.WARNING, "Invalid colour format for " + domain + "." + option);
-            res = fallback;
-        }
-        
-        return res;        
-    }    
+        return ColourManager.parseColour(getOption(domain, option), fallback);
+    }
     
     /**
      * Returns the scope of the specified option.
@@ -131,7 +106,7 @@ public final class ConfigManager {
         }
         
         throw new IndexOutOfBoundsException("Config option not found: " + domain + "." + option);
-    }    
+    }
     
     /**
      * Determines if this manager has the specified option.

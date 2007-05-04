@@ -110,12 +110,8 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         
         if (manager != null) {
             if (manager.getRollover() == value) {
-                if (Config.hasOption("ui", "rolloverColour")) {
-                    setBackground(ColourManager.getColour(
-                            Config.getOption("ui", "rolloverColour")));
-                } else {
-                    setBackground(ColourManager.getColour("b8d6e6"));
-                }
+                final Color fallback = ColourManager.getColour("b8d6e6");
+                setBackground(Config.getOptionColor("ui", "rolloverColour", fallback));
             }
             
             final Object nodeObject = node.getUserObject();

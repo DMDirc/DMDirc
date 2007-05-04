@@ -54,23 +54,7 @@ public final class Notify extends ChannelCommand {
      */
     public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
-        Color colour = null;
-        
-        if (args[0].length() > 0 && args[0].length() <= 2) {
-            int num = -1;
-            
-            try {
-                num = Integer.parseInt(args[0]);
-            } catch (NumberFormatException ex) {
-                // Do nothing
-            }
-            
-            if (num >= 0 && num <= 15) {
-                colour = ColourManager.getColour(num);
-            }
-        } else if (args[0].length() == 6) {
-            colour = ColourManager.getColour(args[0]);
-        }
+        final Color colour = ColourManager.parseColour(args[0], null);
         
         if (colour == null) {
             origin.addLine("Usage: notify <colour> - colour must be an IRC colour code (0-15) or a hex string (e.g. FFFF00).");

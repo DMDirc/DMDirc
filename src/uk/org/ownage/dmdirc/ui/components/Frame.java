@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.ui.components;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Point;
@@ -68,13 +69,13 @@ import uk.org.ownage.dmdirc.BrowserLauncher;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.dialogs.PasteDialog;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
@@ -178,36 +179,12 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         
         scrollBar = getScrollPane().getVerticalScrollBar();
         
-        try {
-            getTextPane().setBackground(ColourManager.getColour(
-                    Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
-        } catch (NumberFormatException ex) {
-            Logger.error(ErrorLevel.TRIVIAL, "Unable to set textpane background colour", ex);
-        }
-        try {
-            getTextPane().setForeground(ColourManager.getColour(
-                    Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
-        } catch (NumberFormatException ex) {
-            Logger.error(ErrorLevel.TRIVIAL, "Unable to set textpane foreground colour", ex);
-        }
-        try {
-            getInputField().setBackground(ColourManager.getColour(
-                    Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
-        } catch (NumberFormatException ex) {
-            Logger.error(ErrorLevel.TRIVIAL, "Unable to set input field background colour", ex);
-        }
-        try {
-            getInputField().setForeground(ColourManager.getColour(
-                    Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
-        } catch (NumberFormatException ex) {
-            Logger.error(ErrorLevel.TRIVIAL, "Unable to set input field background colour", ex);
-        }
-        try {
-            getInputField().setCaretColor(ColourManager.getColour(
-                    Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
-        } catch (NumberFormatException ex) {
-            Logger.error(ErrorLevel.TRIVIAL, "Unable to set caret colour", ex);
-        }
+        final ConfigManager config = owner.getConfigManager();
+        getTextPane().setBackground(config.getOptionColour("ui", "backgroundcolour", Color.WHITE));
+        getTextPane().setForeground(config.getOptionColour("ui", "foregroundcolour", Color.BLACK));
+        getInputField().setBackground(config.getOptionColour("ui", "backgroundcolour", Color.WHITE));
+        getInputField().setForeground(config.getOptionColour("ui", "foregroundcolour", Color.BLACK));
+        getInputField().setCaretColor(config.getOptionColour("ui", "foregroundcolour", Color.BLACK));
         
         final Boolean pref = Config.getOptionBool("ui", "maximisewindows");
         if (pref || MainFrame.getMainFrame().getMaximised()) {

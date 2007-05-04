@@ -75,11 +75,9 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
 	if (config.hasOption("nicklist", "altBackground")
 	&& Boolean.parseBoolean(config.getOption("nicklist", "altBackground")) 
 	&& !selected && index % 2 == 1) {
-		Color colour = ColourManager.getColour("f0f0f0");
-		if (config.hasOption("nicklist", "altBackgroundColour")) {
-		    colour = ColourManager.getColour(config.getOption("nicklist", "altBackgroundColour"));
-		}
-		this.setBackground(colour);
+		final Color fallback = ColourManager.getColour("f0f0f0");
+		
+		this.setBackground(config.getOptionColour("nicklist", "altBackgroundColour", fallback));
 	}
 	this.setBorder(new EmptyBorder(0, 2, 0, 2));
 	

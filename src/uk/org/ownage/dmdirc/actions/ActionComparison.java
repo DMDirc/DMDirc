@@ -55,20 +55,8 @@ public enum ActionComparison {
     
     COLOUR_EQUALS {
         boolean test(final Object arg1, final Object arg2) {
-            Color target = null;
-            if (((String) arg2).length() > 3) {
-                target = ColourManager.getColour((String) arg2);
-            } else {
-                try {
-                    target = ColourManager.getColour(Integer.parseInt((String) arg2));
-                } catch (NumberFormatException ex) {
-                    target = null;
-                }
-            }
-            
-            return ((Color) arg1).equals(target);
-        }
-        
+            return ((Color) arg1).equals(ColourManager.parseColour((String) arg2));
+        }        
         Class appliesTo() { return Color.class; }
     },
     

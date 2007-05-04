@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -45,13 +46,10 @@ import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.ui.components.Frame;
 import uk.org.ownage.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
 import uk.org.ownage.dmdirc.ui.input.InputHandler;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
@@ -102,18 +100,8 @@ public final class ChannelFrame extends Frame {
         
         initComponents();
         
-        try {
-            nickList.setBackground(ColourManager.getColour(
-                    Integer.parseInt(owner.getConfigManager().getOption("ui", "backgroundcolour"))));
-        } catch (NumberFormatException ex) {
-            Logger.error(ErrorLevel.TRIVIAL, "Unable to set nicklist background colour", ex);
-        }
-        try {
-            nickList.setForeground(ColourManager.getColour(
-                    Integer.parseInt(owner.getConfigManager().getOption("ui", "foregroundcolour"))));
-        } catch (NumberFormatException ex) {
-            Logger.error(ErrorLevel.TRIVIAL, "Unable to set nicklist foreground colour", ex);
-        }
+        nickList.setBackground(owner.getConfigManager().getOptionColour("ui", "backgroundcolour", Color.WHITE));
+        nickList.setForeground(owner.getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK));
         
         commandParser = new ChannelCommandParser(((Channel) getFrameParent()).
                 getServer(), (Channel) getFrameParent());
