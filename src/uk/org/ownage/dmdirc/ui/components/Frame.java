@@ -754,14 +754,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             }
             if (clipboardContents.indexOf('\n') >= 0) {
                 event.consume();
-                int pasteTrigger = 1;
-                if (Config.hasOption("ui", "pasteProtectionLimit")) {
-                    try {
-                        pasteTrigger = Integer.parseInt(Config.getOption("ui", "pasteProtectionLimit"));
-                    } catch (NumberFormatException ex) {
-                        Logger.error(ErrorLevel.TRIVIAL, "Unable to set paste protection limit", ex);
-                    }
-                }
+                final int pasteTrigger = Config.getOptionInt("ui", "pasteProtectionLimit", 1);
                 if (getNumLines(clipboardContents) > pasteTrigger) {
                     final String[] options = {"Send", "Edit", "Cancel", };
                     final int n = JOptionPane.showOptionDialog(this,

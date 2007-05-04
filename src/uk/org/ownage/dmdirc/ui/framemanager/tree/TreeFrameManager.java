@@ -294,20 +294,8 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         parent.setLayout(new BorderLayout());
         parent.add(scrollPane);
         
-        tree.setForeground(parent.getForeground());
-        
-        try {
-            tree.setBackground(ColourManager.getColour(
-                    Integer.parseInt(Config.getOption("ui", "backgroundcolour"))));
-        } catch (NumberFormatException ex) {
-            Logger.error(ErrorLevel.TRIVIAL, "Unable to set tree background colour", ex);
-        }
-        try {
-            tree.setForeground(ColourManager.getColour(
-                    Integer.parseInt(Config.getOption("ui", "foregroundcolour"))));
-        } catch (NumberFormatException ex) {
-            Logger.error(ErrorLevel.TRIVIAL, "Unable to set tree foreground colour", ex);
-        }
+        tree.setBackground(Config.getOptionColor("ui", "backgroundcolour", Color.WHITE));
+        tree.setForeground(Config.getOptionColor("ui", "foregroundcolour", Color.BLACK));
     }
     
     /**

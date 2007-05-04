@@ -244,6 +244,10 @@ public final class Config {
             initialise();
         }
         
+        if (!hasOption(domain, option)) {
+            return fallback;
+        }
+        
         int res;
         
         try {

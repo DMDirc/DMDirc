@@ -156,14 +156,7 @@ public final class StatusBar extends JPanel implements MouseListener,
      */
     public void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier) {
-        int timeout = 5;
-        if (Config.hasOption("statusBar", "messageDisplayLength")) {
-            try {
-                timeout = Integer.parseInt(Config.getOption("statusBar", "messageDisplayLength"));
-            } catch (NumberFormatException e) {
-                Logger.error(ErrorLevel.WARNING, "Invalid message display length", e);
-            }
-        }
+        final int timeout = Config.getOptionInt("statusBar", "messageDisplayLength", 5);
         setMessage(newMessage, newNotifier, timeout);
     }
     

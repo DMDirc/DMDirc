@@ -160,7 +160,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 		
 		preferencesPanel.addOption("Back Buffer", "backbuffer.autobackbuffer", "Automatically display: ", PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer"));
 		preferencesPanel.addOption("Back Buffer", "backbuffer.colour", "Colour to use for display: ", PreferencesPanel.OptionType.TEXTFIELD, Config.getOption(MY_DOMAIN, "backbuffer.colour"));
-		preferencesPanel.addOption("Back Buffer", "backbuffer.lines", "Number of lines to show: ", PreferencesPanel.OptionType.SPINNER, Integer.parseInt(Config.getOption(MY_DOMAIN, "backbuffer.lines")));
+		preferencesPanel.addOption("Back Buffer", "backbuffer.lines", "Number of lines to show: ", PreferencesPanel.OptionType.SPINNER, Config.getOptionInt(MY_DOMAIN, "backbuffer.lines", 0));
 		
 		preferencesPanel.addOption("Advanced", "advanced.filenamehash", "Add Filename hash: ", PreferencesPanel.OptionType.CHECKBOX, Config.getOptionBool(MY_DOMAIN, "advanced.filenamehash"));
 		

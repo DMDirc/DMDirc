@@ -124,7 +124,7 @@ public final class PreferencesDialog implements PreferencesInterface {
                 Config.getOptionBool("ui", "quickCopy"));
         try {
             preferencesPanel.addOption(tabName, "ui.pasteProtectionLimit", "Paste protection trigger: ",
-                    PreferencesPanel.OptionType.SPINNER, Integer.parseInt(Config.getOption("ui", "pasteProtectionLimit")));
+                    PreferencesPanel.OptionType.SPINNER, Config.getOptionInt("ui", "pasteProtectionLimit", 1));
         } catch (NumberFormatException e) {
             preferencesPanel.addOption(tabName, "ui.pasteProtectionLimit", "Paste protection trigger: ",
                     PreferencesPanel.OptionType.SPINNER, 1);
@@ -233,16 +233,10 @@ public final class PreferencesDialog implements PreferencesInterface {
                 Config.getOptionBool("ui", "showversion"));
         preferencesPanel.addOption(tabName, "ui.inputbuffersize", "Input bufer size (lines): ",
                 PreferencesPanel.OptionType.SPINNER,
-                Integer.parseInt(Config.getOption("ui", "inputbuffersize")));
-        try {
-            preferencesPanel.addOption(tabName, "ui.frameBufferSize", "Frame buffer size (characters): ",
-                    PreferencesPanel.OptionType.SPINNER,
-                    Integer.parseInt(Config.getOption("ui", "frameBufferSize")));
-        } catch (NumberFormatException e) {
-            preferencesPanel.addOption(tabName, "ui.frameBufferSize", "Frame buffer size (characters): ",
-                    PreferencesPanel.OptionType.SPINNER,
-                    Integer.MAX_VALUE);
-        }
+                Config.getOptionInt("ui", "inputbuffersize", 50));
+        preferencesPanel.addOption(tabName, "ui.frameBufferSize", "Frame buffer size (characters): ",
+                PreferencesPanel.OptionType.SPINNER,
+                Config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE));
         preferencesPanel.addOption(tabName, "general.browser", "Browser: ",
                 PreferencesPanel.OptionType.TEXTFIELD,
                 Config.getOption("general", "browser"));
