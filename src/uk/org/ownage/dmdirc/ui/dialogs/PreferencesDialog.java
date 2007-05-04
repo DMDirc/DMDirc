@@ -107,9 +107,9 @@ public final class PreferencesDialog implements PreferencesInterface {
                 PreferencesPanel.OptionType.CHECKBOX,
                 Config.getOptionBool("ui", "maximisewindows"));
         preferencesPanel.addOption(tabName, "ui.backgroundcolour", "Window background colour: ",
-                PreferencesPanel.OptionType.COLOUR, Config.getOption("ui", "backgroundcolour"), true, false);
+                PreferencesPanel.OptionType.COLOUR, Config.getOption("ui", "backgroundcolour"), true, true);
         preferencesPanel.addOption(tabName, "ui.foregroundcolour", "Window foreground colour: ",
-                PreferencesPanel.OptionType.COLOUR, Config.getOption("ui", "foregroundcolour"), true, false);
+                PreferencesPanel.OptionType.COLOUR, Config.getOption("ui", "foregroundcolour"), true, true);
         preferencesPanel.addOption(tabName, "ui.sortByMode", "Nicklist sort by mode: ",
                 PreferencesPanel.OptionType.CHECKBOX,
                 Config.getOptionBool("ui", "sortByMode"));
