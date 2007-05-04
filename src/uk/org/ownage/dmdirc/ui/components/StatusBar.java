@@ -22,7 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui.components;
 
-import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -41,6 +41,8 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.Spring;
+import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
@@ -50,6 +52,8 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.interfaces.StatusErrorNotifier;
 import uk.org.ownage.dmdirc.ui.interfaces.StatusMessageNotifier;
+
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Status bar, shows message and info on the gui.
@@ -100,7 +104,7 @@ public final class StatusBar extends JPanel implements MouseListener,
     /** Creates a new instance of StatusBar. */
     public StatusBar() {
         super();
-        final BorderLayout layout = new BorderLayout(5, 5);
+        final SpringLayout layout = new SpringLayout();
         errors = new ArrayList<Error>();
         
         popup = new JPopupMenu();
@@ -116,7 +120,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         
         setBorder(new EmptyBorder(0, 5, 5, 5));
         
-        messageLabel = new JLabel();
+        messageLabel = new JLabel("Ready");
         iconLabel = new JLabel();
         
         messageLabel.setBorder(new EtchedBorder());
@@ -127,17 +131,20 @@ public final class StatusBar extends JPanel implements MouseListener,
         
         this.setLayout(layout);
         
-        add(messageLabel, BorderLayout.CENTER);
-        add(iconLabel, BorderLayout.LINE_END);
+        add(messageLabel);
+        add(iconLabel);
         
-        setPreferredSize(new Dimension(Short.MAX_VALUE, 26));
-        iconLabel.setPreferredSize(new Dimension(21, 26));
+        setPreferredSize(new Dimension(Short.MAX_VALUE, 25));
+        setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
+        iconLabel.setPreferredSize(new Dimension(20, 25));
         
         normalIcon = new ImageIcon(this.getClass()
         .getClassLoader().getResource("uk/org/ownage/dmdirc/res/normal.png"));
         
-        clearMessage();
+        //clearMessage();
         clearError();
+        
+        layoutBar();
     }
     
     /**
@@ -366,5 +373,53 @@ public final class StatusBar extends JPanel implements MouseListener,
         } else {
             errors.get(Integer.valueOf(e.getActionCommand())).getNotifier().clickReceived();
         }
+    }
+    
+    /** Adds a component to the status bar. */
+    public void addComponent(Component component) {
+        add(component, this.getComponentCount() - 1);
+        layoutBar();
+    }
+    
+    /** Removes a component to the status bar. */
+    public void removeComponent(Component component) {
+        remove(component);
+        layoutBar();
+    }
+    
+    /** Layout the status bar. */
+    private void layoutBar() {
+        this.setVisible(false);
+        final SpringLayout layout = (SpringLayout) this.getLayout();
+        final int numComponents = this.getComponentCount() - 1;
+        
+        System.out.println(numComponents);
+        
+        SpringLayout.Constraints constraints;
+        
+        layout.putConstraint(SpringLayout.WEST, getComponent(0),
+                Spring.constant(0), SpringLayout.WEST, this);
+        layout.putConstraint(SpringLayout.EAST, getComponent(0),
+                Spring.constant(-SMALL_BORDER), SpringLayout.WEST, getComponent(1));
+        constraints = layout.getConstraints(getComponent(0));
+        constraints.setHeight(Spring.constant(20));
+        
+        if (numComponents > 1) {
+            for (int i = 1; i < numComponents; i++) {
+                layout.putConstraint(SpringLayout.EAST, getComponent(i),
+                        Spring.constant(-SMALL_BORDER), SpringLayout.WEST,
+                        getComponent(i + 1));
+                constraints = layout.getConstraints(getComponent(i));
+                constraints.setHeight(Spring.constant(20));
+                constraints.setWidth(constraints.getWidth());
+            }
+        }
+        
+        layout.putConstraint(SpringLayout.EAST, getComponent(numComponents),
+                Spring.constant(0), SpringLayout.EAST, this);
+        constraints = layout.getConstraints(getComponent(numComponents));
+        constraints.setHeight(Spring.constant(20));
+        constraints.setWidth(constraints.getWidth());
+        this.setVisible(true);
     }
 }

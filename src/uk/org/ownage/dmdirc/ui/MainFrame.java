@@ -399,7 +399,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     }
     
     /**
-     * returns the status bar instance.
+     * Returns the status bar instance.
      *
      * @return StatusBar instance
      */
