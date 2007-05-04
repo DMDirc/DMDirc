@@ -39,11 +39,59 @@ public final class ColourManager {
     }
     
     /**
+     * Parses either a 1-2 digit IRC colour, or a 6 digit hex colour from the
+     * target string, and returns the corresponding colour. Returns the
+     * specified fallback colour if the spec can't be parsed.
+     * @param spec The string to parse
+     * @param fallback The colour to use if the spec isn't valid
+     * @return A colour representation of the specified string
+     */
+    public static Color parseColour(final String spec, final Color fallback) {
+        Color res = null;
+        
+        if (spec.length() < 3) {
+            int num;
+            
+            try {
+                num = Integer.parseInt(spec);
+            } catch (NumberFormatException ex) {
+                num = -1;
+            }
+            
+            if (num >= 0 && num <= 15) {
+                res = getColour(num);
+            }
+        } else if (spec.length() == 6) {
+            res = getColour(spec);
+        }
+        
+        if (res == null) {
+            Logger.error(ErrorLevel.WARNING, "Invalid colour format: " + spec);
+            res = fallback;
+        }
+        
+        return res;
+    }
+    
+    /**
+     * Parses either a 1-2 digit IRC colour, or a 6 digit hex colour from the
+     * target string, and returns the corresponding colour. Returns white if the
+     * spec can't be parsed.
+     * @param spec The string to parse
+     * @return A colour representation of the specified string
+     */
+    public static Color parseColour(final String spec) {
+        return parseColour(spec, Color.WHITE);
+    }    
+    
+    /**
      * Retrieves a colour specified by either an IRC colour code (as an int),
      * or a hex string.
      * @param spec The colour specification
      * @return A colour corresponding to the spec, or WHITE on error
+     * @deprecated in favour of {@link #parseColour(String)()}
      */
+    @Deprecated
     public static Color getColour(final Object spec) {
         if (spec instanceof Integer) {
             return getColour(((Integer) spec).intValue());

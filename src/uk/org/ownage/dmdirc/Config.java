@@ -272,31 +272,7 @@ public final class Config {
             initialise();
         }
         
-        Color res = null;
-        final String prop = getOption(domain, option);
-        
-        if (prop.length() < 3) {
-            int num;
-            
-            try {
-                num = Integer.parseInt(prop);
-            } catch (NumberFormatException ex) {
-                num = -1;
-            }
-            
-            if (num >= 0 && num <= 15) {
-                res = ColourManager.getColour(num);
-            }
-        } else if (prop.length() == 6) {
-            res = ColourManager.getColour(prop);
-        }
-        
-        if (res == null) {
-            Logger.error(ErrorLevel.WARNING, "Invalid colour format for " + domain + "." + option);
-            res = fallback;
-        }
-        
-        return res;
+        return ColourManager.parseColour(getOption(domain, option), fallback);
     }
     
     /**
