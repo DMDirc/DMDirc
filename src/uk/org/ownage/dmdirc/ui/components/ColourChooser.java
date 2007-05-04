@@ -23,13 +23,17 @@
 package uk.org.ownage.dmdirc.ui.components;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
@@ -45,11 +49,11 @@ public final class ColourChooser extends JPanel implements ActionListener {
      */
     private static final long serialVersionUID = 1;
     
-    /** Text field showing current colour. */
-    private JTextField textField;
-    
     /** Edit button. */
     private JButton editButton;
+    
+    /** Panel to show the colour preview. */
+    private JPanel previewPanel;
     
     /** Colours picking dialog. */
     private ColourPickerDialog cpd;
@@ -59,6 +63,9 @@ public final class ColourChooser extends JPanel implements ActionListener {
     
     /** show hex colours. */
     private boolean showHex;
+    
+    /** The value of this component. */
+    private String value;
     
     /** Creates a new instance of ColourChooser. */
     public ColourChooser() {
@@ -71,21 +78,29 @@ public final class ColourChooser extends JPanel implements ActionListener {
      * @param ircColours show irc colours
      * @param hexColours show hex colours
      */
-    public ColourChooser(final String initialColour, final boolean ircColours, 
+    public ColourChooser(final String initialColour, final boolean ircColours,
             final boolean hexColours) {
+        super();
+        
         showIRC = ircColours;
         showHex = hexColours;
-        textField = new JTextField(initialColour);
+        value = initialColour;
         
         editButton = new JButton("Edit");
         editButton.setMargin(new Insets(0, 2, 0, 2));
         
         editButton.addActionListener(this);
         
+        previewPanel = new JPanel();
+        previewPanel.setPreferredSize(new Dimension(40, 10));
+        previewPanel.setBorder(new LineBorder(Color.DARK_GRAY));
+        
         this.setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
         
-        this.add(textField, BorderLayout.CENTER);
         this.add(editButton, BorderLayout.LINE_END);
+        this.add(previewPanel, BorderLayout.CENTER);
+        
+        updateColour(initialColour);
     }
     
     /**
@@ -93,7 +108,15 @@ public final class ColourChooser extends JPanel implements ActionListener {
      * @return This components colour, as a string
      */
     public String getColour() {
-        return textField.getText();
+        return value;
+    }
+    
+    /**
+     * Updates the colour panel.
+     * @param newColour The new colour to use.
+     */
+    private void updateColour(final String newColour) {
+        previewPanel.setBackground(ColourManager.parseColour(newColour));
     }
     
     /** {@inheritDoc}. */
@@ -103,7 +126,8 @@ public final class ColourChooser extends JPanel implements ActionListener {
             cpd.setLocationRelativeTo(editButton);
             cpd.addActionListener(this);
         } else {
-            textField.setText(e.getActionCommand());
+            value = e.getActionCommand();
+            updateColour(e.getActionCommand());
             cpd.dispose();
         }
     }
