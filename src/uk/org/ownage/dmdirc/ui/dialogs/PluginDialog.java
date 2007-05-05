@@ -40,10 +40,11 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 import uk.org.ownage.dmdirc.plugins.PluginManager;
 import uk.org.ownage.dmdirc.plugins.Plugin;
+import uk.org.ownage.dmdirc.ui.MainFrame;
+import uk.org.ownage.dmdirc.ui.components.StandardDialog;
+import uk.org.ownage.dmdirc.ui.components.PluginCellRenderer;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -73,12 +74,6 @@ public final class PluginDialog extends StandardDialog implements
     /** The OK Button */
     private JButton myOkButton;
     
-    /** The plugin Author. */
-    private JTextArea pluginAuthor;
-    
-    /** The plugin Description. */
-    private JTextArea pluginDescription;
-    
     /** Currently selected plugin. */
     private int selectedPlugin = 0;
     
@@ -106,36 +101,20 @@ public final class PluginDialog extends StandardDialog implements
         myOkButton.setDefaultCapable(true);
         setTitle("Manage Plugins");
         
-        setMinimumSize(new Dimension(350, 400));
-        setPreferredSize(new Dimension(350, 400));
+        setMinimumSize(new Dimension(400, 400));
+        setPreferredSize(new Dimension(400, 400));
         
         panel = new JPanel(new SpringLayout());
         panel.setVisible(true);
         
-        pluginAuthor = new JTextArea("Author:\n<Nothing Selected>");
-        pluginAuthor.setEditable(false);
-        pluginAuthor.setWrapStyleWord(true);
-        pluginAuthor.setLineWrap(true);
-        pluginAuthor.setHighlighter(null);
-        pluginAuthor.setBackground(panel.getBackground());
-        
-        pluginDescription = new JTextArea("Description:\n<Nothing Selected>");
-        pluginDescription.setEditable(false);
-        pluginDescription.setWrapStyleWord(true);
-        pluginDescription.setLineWrap(true);
-        pluginAuthor.setHighlighter(null);
-        pluginDescription.setBackground(panel.getBackground());;
-        
         pluginList = new JList(new DefaultListModel());
-        pluginList.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEtchedBorder(),
-                BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER)));
+        pluginList.setCellRenderer(new PluginCellRenderer());
+        pluginList.setBorder(BorderFactory.createEtchedBorder());
         
         populateList();
         
-        pluginList.setMinimumSize(new Dimension(325, Integer.MAX_VALUE));
-        pluginList.setPreferredSize(new Dimension(325, Integer.MAX_VALUE));
+        pluginList.setMinimumSize(new Dimension(375, Integer.MAX_VALUE));
+        pluginList.setPreferredSize(new Dimension(375, Integer.MAX_VALUE));
         
         configureButton = new JButton("Configure Plugin");
     }
@@ -161,17 +140,6 @@ public final class PluginDialog extends StandardDialog implements
         getContentPane().add(pluginList, constraints);
         i = i+4;
         
-        constraints.insets.set(0, 0, LARGE_BORDER, 0);
-        constraints.gridheight = 1;
-        constraints.gridy = i++;
-        getContentPane().add(pluginAuthor, constraints);
-        
-        constraints.insets.set(0, 0, LARGE_BORDER, 0);
-        constraints.gridheight = 2;
-        constraints.gridy = i++;
-        getContentPane().add(pluginDescription, constraints);
-        i = i+2;
-        
         constraints.insets.set(0, 0, 0, 0);
         constraints.gridheight = 1;
         constraints.gridy = i++;
@@ -188,7 +156,7 @@ public final class PluginDialog extends StandardDialog implements
         
         pack();
     }
-
+    
     
     /** Populates the plugins list with plugins from the plugin manager. */
     private void populateList() {
@@ -204,7 +172,7 @@ public final class PluginDialog extends StandardDialog implements
         configureButton.addActionListener(this);
         pluginList.addListSelectionListener(this);
     }
-
+    
     /**
      * Invoked when an action occurs.
      * @param e The event related to this action.
@@ -212,12 +180,10 @@ public final class PluginDialog extends StandardDialog implements
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == myOkButton) {
             this.dispose();
-        } else if (e.getSource() == configureButton) {
-            if (selectedPlugin >= 0) {
-                Plugin plugin = (Plugin) pluginList.getSelectedValue();
-                if (plugin.isConfigurable()) {
-                    plugin.showConfig();
-                }
+        } else if (e.getSource() == configureButton && selectedPlugin >= 0) {
+            final Plugin plugin = (Plugin) pluginList.getSelectedValue();
+            if (plugin.isConfigurable()) {
+                plugin.showConfig();
             }
         }
     }
@@ -227,10 +193,8 @@ public final class PluginDialog extends StandardDialog implements
         if (!selectionEvent.getValueIsAdjusting()) {
             final int selected = ((JList) selectionEvent.getSource()).getSelectedIndex();
             if (selected >= 0) {
-                Plugin plugin = (Plugin) ((JList) selectionEvent.getSource()).getSelectedValue();
+                final Plugin plugin = (Plugin) ((JList) selectionEvent.getSource()).getSelectedValue();
                 configureButton.setEnabled(plugin.isConfigurable());
-                pluginAuthor.setText("Author:\n"+plugin.getAuthor());
-                pluginDescription.setText("Description:\n"+plugin.getDescription());
             }
             selectedPlugin = selected;
         }

@@ -267,7 +267,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	 *
 	 * @return Author of plugin
 	 */
-	public String getAuthor() { return "Shane 'Dataforce' McCormack - shane@dmdirc.com"; }
+	public String getAuthor() { return "Shane <shane@dmdirc.com>"; }
 	
 	/**
 	 * Get the plugin Description.

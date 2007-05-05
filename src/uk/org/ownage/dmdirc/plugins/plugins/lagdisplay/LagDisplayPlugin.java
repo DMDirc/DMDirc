@@ -101,7 +101,7 @@ public final class LagDisplayPlugin implements EventPlugin {
     
     /** {@inheritDoc} */
     public String getAuthor() {
-        return "Chris 'MD87' Smith - chris@dmdirc.com";
+        return "Chris <chris@dmdirc.com>";
     }
     
     /** {@inheritDoc} */
@@ -120,7 +120,7 @@ public final class LagDisplayPlugin implements EventPlugin {
     
     /** {@inheritDoc}. */
     public String toString() {
-        return "Lag Display Plugin";
+        return "Lag Displayer";
     }
     
     /** {@inheritDoc} */

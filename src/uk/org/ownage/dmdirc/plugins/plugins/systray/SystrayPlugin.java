@@ -155,7 +155,7 @@ public final class SystrayPlugin implements Plugin, ActionListener, MouseListene
     
     /** {@inheritDoc} */
     public String getAuthor() {
-        return "Chris 'MD87' Smith - chris@dmdirc.com";
+        return "Chris <chris@dmdirc.com>";
     }
     
     /** {@inheritDoc} */

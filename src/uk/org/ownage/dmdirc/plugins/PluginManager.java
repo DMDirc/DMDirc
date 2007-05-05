@@ -186,8 +186,8 @@ public class PluginManager {
 				// Change / to .
 				target = target.replace('/', '.');
 				
-				if (knownPlugins.containsKey(target)) {
-					res.add(knownPlugins.get(target));
+				if (knownPlugins.containsKey(target.toLowerCase())) {
+					res.add(knownPlugins.get(target.toLowerCase()));
 				} else {
 					res.add(loadPlugin(target));
 				}
