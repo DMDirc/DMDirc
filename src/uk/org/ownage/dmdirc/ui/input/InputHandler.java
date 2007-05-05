@@ -170,8 +170,8 @@ public final class InputHandler implements KeyListener, ActionListener {
             }
             if (keyEvent.getKeyCode() == KeyEvent.VK_K) {
                 if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) != 0) {
+                    addControlCode(Styliser.CODE_HEXCOLOUR, POSITION_START);
                     showColourPicker(false, true);
-                    
                 } else {
                     addControlCode(Styliser.CODE_COLOUR, POSITION_START);
                     showColourPicker(true, false);
