@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.plugins.plugins.logging;
 
+import java.awt.Color;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -32,6 +33,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Stack;
 import java.util.Properties;
 
 import uk.org.ownage.dmdirc.Channel;
@@ -47,12 +49,14 @@ import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.plugins.EventPlugin;
+import uk.org.ownage.dmdirc.ui.components.Frame;
 import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
 import uk.org.ownage.dmdirc.ui.components.PreferencesPanel;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
- * Adds logging facility to client. (Currently only logs channels)
+ * Adds logging facility to client.
  *
  * @author Shane 'Dataforce' McCormack
  * @version $Id: LoggingPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
@@ -88,6 +92,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 		updateOption(config, "backbuffer.autobackbuffer", "true");
 		updateOption(config, "backbuffer.lines", "10");
 		updateOption(config, "backbuffer.colour", "14");
+		updateOption(config, "backbuffer.timestamp", "false");
 		
 		final File dir = new File(Config.getOption(MY_DOMAIN, "general.directory"));
 		if (!dir.exists()) {
@@ -151,26 +156,27 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 		preferencesPanel.addCategory("Back Buffer", "Options related to the automatic backbuffer");
 		preferencesPanel.addCategory("Advanced", "Advanced configuration for Logging plugin. You shouldn't need to edit this unless you know what you are doing.");
 
-		preferencesPanel.addTextfieldOption("General", "general.directory", "Directory: ", "", Config.getOption(MY_DOMAIN, "general.directory"));
-		preferencesPanel.addCheckboxOption("General", "general.networkfolders", "Separate logs by network: ", "", Config.getOptionBool(MY_DOMAIN, "general.networkfolders"));
-		preferencesPanel.addCheckboxOption("General", "general.addtime", "Timestamp logs: ", "", Config.getOptionBool(MY_DOMAIN, "general.addtime"));
-		preferencesPanel.addTextfieldOption("General", "general.timestamp", "Timestamp format: ", "", Config.getOption(MY_DOMAIN, "general.timestamp"));
-		preferencesPanel.addCheckboxOption("General", "general.stripcodes", "Strip Control Codes: ", "", Config.getOptionBool(MY_DOMAIN, "general.stripcodes"));
-		preferencesPanel.addCheckboxOption("General", "general.channelmodeprefix", "Show channel mode prefix: ", "", Config.getOptionBool(MY_DOMAIN, "general.channelmodeprefix"));
+		preferencesPanel.addTextfieldOption("General", "general.directory", "Directory: ", "Directory for log files", Config.getOption(MY_DOMAIN, "general.directory"));
+		preferencesPanel.addCheckboxOption("General", "general.networkfolders", "Separate logs by network: ", "Should the files be stored in a sub-dir with the networks name", Config.getOptionBool(MY_DOMAIN, "general.networkfolders"));
+		preferencesPanel.addCheckboxOption("General", "general.addtime", "Timestamp logs: ", "Should a timestamp be added to the log files", Config.getOptionBool(MY_DOMAIN, "general.addtime"));
+		preferencesPanel.addTextfieldOption("General", "general.timestamp", "Timestamp format: ", "The String to pass to 'SimpleDateFormat' to format the timestamp", Config.getOption(MY_DOMAIN, "general.timestamp"));
+		preferencesPanel.addCheckboxOption("General", "general.stripcodes", "Strip Control Codes: ", "Remove known irc control codes from lines before saving", Config.getOptionBool(MY_DOMAIN, "general.stripcodes"));
+		preferencesPanel.addCheckboxOption("General", "general.channelmodeprefix", "Show channel mode prefix: ", "Show the @,+ etc next to nicknames", Config.getOptionBool(MY_DOMAIN, "general.channelmodeprefix"));
 		
-		preferencesPanel.addCheckboxOption("Back Buffer", "backbuffer.autobackbuffer", "Automatically display: ", "", Config.getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer"));
-		preferencesPanel.addTextfieldOption("Back Buffer", "backbuffer.colour", "Colour to use for display: ", "", Config.getOption(MY_DOMAIN, "backbuffer.colour"));
-		preferencesPanel.addSpinnerOption("Back Buffer", "backbuffer.lines", "Number of lines to show: ", "", Config.getOptionInt(MY_DOMAIN, "backbuffer.lines", 0));
+		preferencesPanel.addCheckboxOption("Back Buffer", "backbuffer.autobackbuffer", "Automatically display: ", "Automatically display the backbuffer when a channel is joined", Config.getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer"));
+		preferencesPanel.addTextfieldOption("Back Buffer", "backbuffer.colour", "Colour to use for display: ", "Colour used when displaying the backbuffer (IRC Colour or 6-digit hex String)", Config.getOption(MY_DOMAIN, "backbuffer.colour"));
+		preferencesPanel.addSpinnerOption("Back Buffer", "backbuffer.lines", "Number of lines to show: ", "Number of lines used when displaying backbuffer", Config.getOptionInt(MY_DOMAIN, "backbuffer.lines", 0));
+		preferencesPanel.addCheckboxOption("Back Buffer", "backbuffer.timestamp", "Show Formatter-Timestamp: ", "Should the line be added to the frame with the timestamp from the formatter aswell as the file contents", Config.getOptionBool(MY_DOMAIN, "backbuffer.timestamp"));
 		
-		preferencesPanel.addCheckboxOption("Advanced", "advanced.filenamehash", "Add Filename hash: ", "", Config.getOptionBool(MY_DOMAIN, "advanced.filenamehash"));
+		preferencesPanel.addCheckboxOption("Advanced", "advanced.filenamehash", "Add Filename hash: ", "Add the MD5 hash of the channel/client name to the filename. (This is used to allow channels with similar names (ie a _ not a  -) to be logged separately)", Config.getOptionBool(MY_DOMAIN, "advanced.filenamehash"));
 		
 		preferencesPanel.display();
 	}
 	
 	/**
 	 * Get the name of the domain we store all settings in the global config under.
-         *
-         * @return the plugins domain
+	 *
+	 * @return the plugins domain
 	 */
 	 protected static String getDomain() { return MY_DOMAIN; }
 	
@@ -228,6 +234,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 		updateOption(properties, "backbuffer.autobackbuffer", null);
 		updateOption(properties, "backbuffer.lines", null);
 		updateOption(properties, "backbuffer.colour", null);
+		updateOption(properties, "backbuffer.timestamp", null);
 		
 		// Check new dir exists before changing
 		final File dir = new File(properties.getProperty("general.directory"));
@@ -294,7 +301,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 					break;
 				case QUERY_OPENED:
 					// ActionManager.processEvent(CoreActionType.QUERY_OPENED, this);
-					query = (Query) arguments[0];
+					query = (Query)arguments[0];
 					parser = query.getServer().getParser();
 					client = parser.getClientInfo(query.getHost());
 					if (client == null) {
@@ -303,7 +310,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 					
 					// Backbuffer Display goes here!
 					if (Config.getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
-						showBackBuffer(query.getFrame(), getLogFile(client));
+						showBackBuffer((Frame)query.getFrame(), getLogFile(client));
 					}
 					
 					appendLine(getLogFile(client), "*** Query opened at: " + openedAtFormat.format(new Date()));
@@ -312,11 +319,11 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 					break;
 				case CHANNEL_OPENED:
 					// ActionManager.processEvent(CoreActionType.CHANNEL_OPENED, this);
-					channel = ((Channel) arguments[0]).getChannelInfo();
+					channel = ((Channel)arguments[0]).getChannelInfo();
 					
 					// Backbuffer Display goes here!
 					if (Config.getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
-						showBackBuffer(((Channel) arguments[0]).getFrame(), getLogFile(channel));
+						showBackBuffer((Frame)(((Channel)arguments[0]).getFrame()), getLogFile(channel));
 					}
 					
 					appendLine(getLogFile(channel), "*** Channel opened at: " + openedAtFormat.format(new Date()));
@@ -327,7 +334,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 				case QUERY_ACTION:
 				case QUERY_SELF_ACTION:
 					// ActionManager.processEvent(CoreActionType.QUERY_MESSAGE, this, message);
-					query = (Query) arguments[0];
+					query = (Query)arguments[0];
 					parser = query.getServer().getParser();
 					String overrideNick = "";
 					if (thisType == CoreActionType.QUERY_SELF_MESSAGE || thisType == CoreActionType.QUERY_SELF_ACTION) {
@@ -348,7 +355,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 				case CHANNEL_ACTION:
 				case CHANNEL_SELF_ACTION:
 					// ActionManager.processEvent(CoreActionType.CHANNEL_MESSAGE, this, cChannelClient, sMessage);
-					channel = ((Channel) arguments[0]).getChannelInfo();
+					channel = ((Channel)arguments[0]).getChannelInfo();
 					channelClient = (ChannelClientInfo) arguments[1];
 					if (thisType == CoreActionType.CHANNEL_MESSAGE || thisType == CoreActionType.CHANNEL_SELF_MESSAGE) {
 						appendLine(getLogFile(channel), "<" + getDisplayName(channelClient) + "> " + (String) arguments[2]);
@@ -358,7 +365,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 					break;
 				case CHANNEL_GOTTOPIC:
 					// ActionManager.processEvent(CoreActionType.CHANNEL_GOTTOPIC, this);
-					channel = ((Channel) arguments[0]).getChannelInfo();
+					channel = ((Channel)arguments[0]).getChannelInfo();
 					final DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 					final DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 					final String topicTime = timeFormat.format(1000 * channel.getTopicTime()) + " on " + dateFormat.format(1000 * channel.getTopicTime());
@@ -368,20 +375,20 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 					break;
 				case CHANNEL_TOPICCHANGE:
 					// ActionManager.processEvent(CoreActionType.CHANNEL_TOPICCHANGE, this, user, topic);
-					channel = ((Channel) arguments[0]).getChannelInfo();
+					channel = ((Channel)arguments[0]).getChannelInfo();
 					channelClient = (ChannelClientInfo) arguments[1];
 					appendLine(getLogFile(channel), "*** " + getDisplayName(channelClient) + " Changed the topic to: " + (String) arguments[2]);
 					break;
 				case CHANNEL_JOIN:
 					// ActionManager.processEvent(CoreActionType.CHANNEL_JOIN, this, cChannelClient);
-					channel = ((Channel) arguments[0]).getChannelInfo();
+					channel = ((Channel)arguments[0]).getChannelInfo();
 					channelClient = (ChannelClientInfo) arguments[1];
 					client = channelClient.getClient();
 					appendLine(getLogFile(channel), "*** " + getDisplayName(channelClient) + " (" + client.toString() + ") joined the channel");
 					break;
 				case CHANNEL_PART:
 					// ActionManager.processEvent(CoreActionType.CHANNEL_PART, this, cChannelClient, sReason);
-					channel = ((Channel) arguments[0]).getChannelInfo();
+					channel = ((Channel)arguments[0]).getChannelInfo();
 					channelClient = (ChannelClientInfo) arguments[1];
 					client = channelClient.getClient();
 					line = "*** " + getDisplayName(channelClient) + " (" + client.toString() + ") left the channel";
@@ -394,7 +401,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 					break;
 				case CHANNEL_QUIT:
 					// ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, this, cChannelClient, sReason);
-					channel = ((Channel) arguments[0]).getChannelInfo();
+					channel = ((Channel)arguments[0]).getChannelInfo();
 					channelClient = (ChannelClientInfo) arguments[1];
 					client = channelClient.getClient();
 					line = "*** " + getDisplayName(channelClient) + " (" + client.toString() + ") Quit IRC";
@@ -407,7 +414,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 					break;
 				case CHANNEL_KICK:
 					// ActionManager.processEvent(CoreActionType.CHANNEL_KICK, this, cKickedByClient, cKickedClient, sReason);
-					channel = ((Channel) arguments[0]).getChannelInfo();
+					channel = ((Channel)arguments[0]).getChannelInfo();
 					channelClient = (ChannelClientInfo) arguments[2];
 					final ChannelClientInfo kickerClient = (ChannelClientInfo) arguments[1];
 					line = "*** " + getDisplayName(channelClient) + " was kicked by " + getDisplayName(kickerClient);
@@ -420,14 +427,14 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 					break;
 				case CHANNEL_NICKCHANGE:
 					// ActionManager.processEvent(CoreActionType.CHANNEL_NICKCHANGE, this, cChannelClient, sOldNick);
-					channel = ((Channel) arguments[0]).getChannelInfo();
+					channel = ((Channel)arguments[0]).getChannelInfo();
 					channelClient = (ChannelClientInfo) arguments[1];
 					final String oldnick = (String) arguments[2];
 					appendLine(getLogFile(channel), "*** " + getDisplayName(channelClient, oldnick) + " is now " + getDisplayName(channelClient));
 					break;
 				case CHANNEL_MODECHANGE:
 					// ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, this, cChannelClient, sModes);
-					channel = ((Channel) arguments[0]).getChannelInfo();
+					channel = ((Channel)arguments[0]).getChannelInfo();
 					channelClient = (ChannelClientInfo) arguments[1];
 					if (channelClient.getNickname().length() == 0) {
 						appendLine(getLogFile(channel), "*** Channel modes are: " + (String) arguments[2]);
@@ -435,8 +442,8 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 						appendLine(getLogFile(channel), "*** " + getDisplayName(channelClient) + " set modes: " + (String) arguments[2]);
 					}
 					break;
-                                default:
-                                        break;
+				default:
+					break;
 			}
 		}
 	}
@@ -447,10 +454,66 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	 * @param frame The frame to add the backbuffer lines to
 	 * @param filename File to get backbuffer from
 	 */
-	private void showBackBuffer(final CommandWindow frame, final String filename) {
-		final int linesRemaining = Config.getOptionInt(MY_DOMAIN, "backbuffer.lines", 0);
-		return;
+	private void showBackBuffer(final Frame frame, final String filename) {
+		final int numLines = Config.getOptionInt(MY_DOMAIN, "backbuffer.lines", 0);
+		final String colour = Config.getOption(MY_DOMAIN, "backbuffer.colour");
+		final boolean showTimestamp = Config.getOptionBool(MY_DOMAIN, "backbuffer.timestamp");
+		
+		File testFile = new File(filename);
+		if (testFile.exists()) {
+			try {
+				ReverseFileReader file = new ReverseFileReader(testFile);
+				Stack<String> lines = file.getLines(numLines);
+				while (!lines.empty()) {
+					frame.addLine(getColouredString(colour,lines.pop()), showTimestamp);
+				}
+				file.close();
+			} catch (Exception e) {
+				Logger.error(ErrorLevel.ERROR, "Unable to show backbuffer (Filename: "+filename+")", e);
+			}
+		}
 	}
+	
+	/**
+	 * Get a coloured String.
+	 * If colour is invalid, IRC Colour 14 will be used.
+	 *
+	 * @param colour The colour the string should be (IRC Colour or 6-digit hex colour)
+	 * @param line the line to colour
+	 * @return The given line with the appropriate irc codes appended/prepended to colour it.
+	 */
+	private String getColouredString(String colour, String line) {
+		String res = null;
+		if (colour.length() < 3) {
+			int num;
+			
+			try {
+					num = Integer.parseInt(colour);
+			} catch (NumberFormatException ex) {
+					num = -1;
+			}
+			
+			if (num >= 0 && num <= 15) {
+				if (num > 10) {
+					res = Styliser.CODE_COLOUR+""+num+""+line+Styliser.CODE_COLOUR;
+				} else {
+					res = Styliser.CODE_COLOUR+"0"+num+""+line+Styliser.CODE_COLOUR;
+				}
+			}
+		} else if (colour.length() == 6) {
+			Color col;
+			try {
+				col = Color.decode("#" + colour);
+				res = Styliser.CODE_HEXCOLOUR+""+colour+""+line+Styliser.CODE_HEXCOLOUR;
+			} catch (NumberFormatException ex) { /* Do Nothing */ }
+		}
+		
+		if (res == null) {
+			res = Styliser.CODE_COLOUR+"14"+line+""+Styliser.CODE_COLOUR;
+		}
+		return res;
+	}
+	
 	
 	/**
 	 * Add a line to a file.
