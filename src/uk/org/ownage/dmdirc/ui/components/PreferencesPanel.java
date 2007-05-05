@@ -66,6 +66,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.MainFrame;
@@ -175,14 +176,20 @@ public final class PreferencesPanel extends StandardDialog implements
         mainPanel = new JPanel(cardLayout);
         
         rootNode = new DefaultMutableTreeNode("root");
+        
         tabList = new JTree(new DefaultTreeModel(rootNode));
         tabList.getSelectionModel().setSelectionMode(
                 TreeSelectionModel.SINGLE_TREE_SELECTION);
         tabList.putClientProperty("JTree.lineStyle", "Angled");
+        tabList.setUI(new javax.swing.plaf.metal.MetalTreeUI());
         tabList.setRootVisible(false);
         tabList.setShowsRootHandles(false);
         tabList.setCellRenderer(new PreferencesTreeCellRenderer());
         tabList.addTreeSelectionListener(this);
+        tabList.setBackground(Config.getOptionColor("treeview", "backgroundcolour",
+                Config.getOptionColor("ui", "backgroundcolour", Color.WHITE)));
+        tabList.setForeground(Config.getOptionColor("treeview", "foregroundcolour",
+                Config.getOptionColor("ui", "foregroundcolour", Color.BLACK)));
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new GridBagLayout());
@@ -611,6 +618,10 @@ public final class PreferencesPanel extends StandardDialog implements
             
             final DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
             
+            setBackground(tree.getBackground());
+            setForeground(tree.getForeground());
+            setOpaque(true);
+            setToolTipText(null);
             setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
                     SMALL_BORDER, SMALL_BORDER));
             

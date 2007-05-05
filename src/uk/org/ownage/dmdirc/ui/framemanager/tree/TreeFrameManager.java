@@ -147,6 +147,8 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         popup.setLightWeightPopupEnabled(true);
         
         tree.putClientProperty("JTree.lineStyle", "Angled");
+        tree.setUI(new javax.swing.plaf.metal.MetalTreeUI());
+        
         tree.getSelectionModel().
                 setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         tree.setCellRenderer(renderer);
