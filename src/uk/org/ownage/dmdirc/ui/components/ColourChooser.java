@@ -117,6 +117,7 @@ public final class ColourChooser extends JPanel implements ActionListener {
      */
     private void updateColour(final String newColour) {
         previewPanel.setBackground(ColourManager.parseColour(newColour));
+        previewPanel.setToolTipText(newColour);
     }
     
     /** {@inheritDoc}. */
