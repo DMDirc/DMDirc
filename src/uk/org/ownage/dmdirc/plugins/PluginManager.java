@@ -62,8 +62,14 @@ public class PluginManager {
 		if (Config.hasOption("plugins", "autoload")) {
 			String[] autoLoadList = Config.getOption("plugins", "autoload").split("\n");
 			for (String plugin : autoLoadList) {
-				addPlugin(plugin, plugin);
-				getPlugin(plugin).onActivate();
+				if (!plugin.equals("")) {
+					plugin = plugin.trim();
+					if (plugin.charAt(0) != '#') {
+						if (addPlugin(plugin, plugin)) {
+							getPlugin(plugin).onActivate();
+						}
+					}
+				}
 			}
 		}
 	}
@@ -161,6 +167,20 @@ public class PluginManager {
 	}
 	
 	/**
+	 * Get Plugin[] of known plugins.
+	 *
+	 * @return Plugin[] of known plugins.
+	 */
+	public Plugin[] getPlugins() {
+		final Plugin[] result = new Plugin[knownPlugins.size()];
+		int i = 0;
+		for (String name : knownPlugins.keySet()) {
+			result[i++] = getPlugin(name);
+		}
+		return result;
+	}
+	
+	/**
 	 * Get classname of a given plugin name.
 	 *
 	 * @return classname of a given plugin name.
@@ -177,7 +197,6 @@ public class PluginManager {
 	 */
 	private Plugin loadPlugin(final String className) {
 		Plugin result;
-		
 		try {
 			ClassLoader cl = new PluginClassLoader(myDir);
 			

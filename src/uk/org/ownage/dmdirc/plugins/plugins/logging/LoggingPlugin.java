@@ -277,6 +277,13 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	public String getDescription() { return "Allows logging of conversations"; }
 	
 	/**
+	 * Get the name of the plugin (used in "Manage Plugins" dialog).
+	 *
+	 * @return Name of plugin
+	 */
+	public String toString() { return "Logging Plugin"; }
+	
+	/**
 	 * Process an event of the specified type.
 	 *
 	 * @param type The type of the event to process

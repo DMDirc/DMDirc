@@ -118,6 +118,11 @@ public final class LagDisplayPlugin implements EventPlugin {
     public void showConfig() {
     }
     
+    /** {@inheritDoc}. */
+    public String toString() {
+        return "Lag Display Plugin";
+    }
+    
     /** {@inheritDoc} */
     public void processEvent(final ActionType type, final Object... arguments) {
         if (type.equals(CoreActionType.SERVER_GOTPING)) {

@@ -89,4 +89,11 @@ public interface Plugin {
 	 * @return Description of plugin
 	 */
 	String getDescription();
+	
+	/**
+	 * Get the name of the plugin (used in "Manage Plugins" dialog).
+	 *
+	 * @return Name of plugin
+	 */
+	String toString();
 }

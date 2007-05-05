@@ -163,6 +163,11 @@ public final class SystrayPlugin implements Plugin, ActionListener, MouseListene
         return "Adds a system tray icon";
     }
     
+    /** {@inheritDoc}. */
+    public String toString() {
+        return "Systray Plugin";
+    }
+    
     /** {@inheritDoc} */
     public void mouseClicked(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {

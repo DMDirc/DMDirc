@@ -116,4 +116,8 @@ public final class DcopPlugin implements Plugin {
     public void showConfig() {
     }
     
+    /** {@inheritDoc}. */
+    public String toString() {
+        return "DCOP Plugin";
+    }
 }
