@@ -24,13 +24,16 @@ package uk.org.ownage.dmdirc.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.Map;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.border.EmptyBorder;
 
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.ChannelClientProperty;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
+import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
@@ -43,9 +46,9 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
-    /** ConfigManager. */
+    /** The config manager to be used for this nick list. */
     private final ConfigManager config;
     
     /** Associated channel. */
@@ -63,9 +66,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
         channel = newChannel;
     }
     
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public Component getListCellRendererComponent(final JList list,
             final Object value, final int index, final boolean selected,
             final boolean focused) {
@@ -78,6 +79,18 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
             
             this.setBackground(config.getOptionColour("nicklist", "altBackgroundColour", fallback));
         }
+        
+        final Map<ChannelClientProperty, Object> map
+                = (Map<ChannelClientProperty, Object>) ((ChannelClientInfo) value).getMiscObject();
+        
+        if (map.containsKey(ChannelClientProperty.COLOUR_FOREGROUND)) {
+            setForeground((Color) map.get(ChannelClientProperty.COLOUR_FOREGROUND));
+        }
+        
+        if (map.containsKey(ChannelClientProperty.COLOUR_BACKGROUND)) {
+            setBackground((Color) map.get(ChannelClientProperty.COLOUR_BACKGROUND));
+        }        
+        
         this.setBorder(new EmptyBorder(0, 2, 0, 2));
         
         return this;
