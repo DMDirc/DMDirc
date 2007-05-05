@@ -551,7 +551,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * Adds a query query to this server.
      * @param host host of the remote client being queried
      */
-    private void addQuery(final String host) {
+    public void addQuery(final String host) {
         final Query newQuery = new Query(this, host);
         
         tabCompleter.addEntry(ClientInfo.parseHost(host));

@@ -263,6 +263,7 @@ public final class CommandManager {
         new Motd();
         new Nick();
         new Notice();
+        new Query();
         new Quit();
         new QuitDefault();
         new Raw();
