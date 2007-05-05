@@ -27,6 +27,7 @@ import java.beans.PropertyVetoException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
@@ -377,6 +378,16 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     }
     
     /**
+     * Ensures that a channel client's map is set up correctly.
+     * @param target The ChannelClientInfo to check
+     */
+    private void mapClient(final ChannelClientInfo target) {
+        if (target.getMiscObject() == null) {
+            target.setMiscObject(new HashMap<ChannelClientProperty, Object>());
+        }
+    }
+    
+    /**
      * Called whenever a message is sent to this channel. NB that the ChannelClient
      * passed may be null if the message was not sent by a client on the channel
      * (i.e., it was sent by a server, or a client outside of the channel). In these
@@ -441,6 +452,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         final ArrayList<String> names = new ArrayList<String>();
         for (ChannelClientInfo channelClient : cChannel.getChannelClients()) {
+            mapClient(channelClient);
             names.add(channelClient.getNickname());
         }
         tabCompleter.replaceEntries(names);
@@ -493,6 +505,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         final ClientInfo client = cChannelClient.getClient();
         
         final StringBuffer buff = new StringBuffer("channelJoin");
+        
+        mapClient(cChannelClient);
         
         ActionManager.processEvent(CoreActionType.CHANNEL_JOIN, buff, this, cChannelClient);
         
