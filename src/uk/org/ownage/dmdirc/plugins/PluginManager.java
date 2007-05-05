@@ -189,7 +189,10 @@ public class PluginManager {
 				if (knownPlugins.containsKey(target.toLowerCase())) {
 					res.add(knownPlugins.get(target.toLowerCase()));
 				} else {
-					res.add(loadPlugin(target));
+					final Plugin temp = loadPlugin(target);
+					if (temp != null) {
+						res.add(temp);
+                                        }
 				}
 			}
 		}
