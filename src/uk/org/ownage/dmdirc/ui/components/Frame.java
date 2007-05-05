@@ -227,6 +227,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                         if (!getTextPane().getText().equals("")) { ts = "\n" + ts; }
                         Styliser.addStyledString(getTextPane().getStyledDocument(), ts);
                     }
+                    if (!timestamp && !getTextPane().getText().equals("")) { myLine = "\n" + myLine; }
                     Styliser.addStyledString(getTextPane().getStyledDocument(), myLine);
                 }
                 
