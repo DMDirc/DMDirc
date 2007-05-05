@@ -193,7 +193,7 @@ public final class PluginDialog extends StandardDialog implements
     /** Populates the plugins list with plugins from the plugin manager. */
     private void populateList() {
         ((DefaultListModel) pluginList.getModel()).clear();
-        for (Plugin plugin : PluginManager.getPluginManager().getPlugins()) {
+        for (Plugin plugin : PluginManager.getPluginManager().getPossiblePlugins()) {
             ((DefaultListModel) pluginList.getModel()).addElement(plugin);
         }
     }

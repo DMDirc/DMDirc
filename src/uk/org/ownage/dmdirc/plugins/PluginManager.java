@@ -172,8 +172,8 @@ public class PluginManager {
 	 * *Plugin.class is deemed to be a valid plugin.
 	 * @return A list of all installed plugins
 	 */
-	public List<String> getPossiblePlugins() {
-		final ArrayList<String> res = new ArrayList<String>();
+	public List<Plugin> getPossiblePlugins() {
+		final ArrayList<Plugin> res = new ArrayList<Plugin>();
 		
 		final LinkedList<File> dirs = new LinkedList<File>();
 		
@@ -188,7 +188,17 @@ public class PluginManager {
 					dirs.add(file);
 				}
 			} else if (dir.isFile() && dir.getName().matches("^.*Plugin\\.class$")) {
-				res.add(dir.getPath().substring(myDir.length()));
+				String target = dir.getPath();
+				// Remove the plugin dir & .class suffix
+				target = target.substring(myDir.length(), target.length() - 6);
+				// Change / to .
+				target = target.replace('/', '.');
+				
+				if (knownPlugins.containsKey(target)) {
+					res.add(knownPlugins.get(target));
+				} else {
+					res.add(loadPlugin(target));
+				}
 			}
 		}
 		
