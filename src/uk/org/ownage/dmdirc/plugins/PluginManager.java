@@ -23,9 +23,13 @@
  */
 package uk.org.ownage.dmdirc.plugins;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
 
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.actions.ActionType;
@@ -36,11 +40,11 @@ public class PluginManager {
 	/**
 	 * List of known plugins.
 	 */
-	private Hashtable<String,Plugin> knownPlugins = new Hashtable<String,Plugin>();
+	private final Hashtable<String,Plugin> knownPlugins = new Hashtable<String,Plugin>();
 	/**
 	 * List of known plugin classNames.
 	 */
-	private Hashtable<String,String> knownPluginNames = new Hashtable<String,String>();
+	private final Hashtable<String,String> knownPluginNames = new Hashtable<String,String>();
 	
 	/**
 	 * Directory where plugins are stored.
@@ -60,15 +64,11 @@ public class PluginManager {
 		myDir = Config.getConfigDir() + "plugins" + fs;
 
 		if (Config.hasOption("plugins", "autoload")) {
-			String[] autoLoadList = Config.getOption("plugins", "autoload").split("\n");
+			final String[] autoLoadList = Config.getOption("plugins", "autoload").split("\n");
 			for (String plugin : autoLoadList) {
-				if (!plugin.equals("")) {
-					plugin = plugin.trim();
-					if (plugin.charAt(0) != '#') {
-						if (addPlugin(plugin, plugin)) {
-							getPlugin(plugin).onActivate();
-						}
-					}
+                        	plugin = plugin.trim();
+				if (plugin.length() > 0 && plugin.charAt(0) != '#' && addPlugin(plugin, plugin)) {
+					getPlugin(plugin).onActivate();
 				}
 			}
 		}
@@ -95,7 +95,7 @@ public class PluginManager {
 	public boolean addPlugin(final String pluginName, final String className) {
 		if (knownPlugins.containsKey(pluginName.toLowerCase())) { return false; }
 		try {
-			Plugin plugin = loadPlugin(className);
+			final Plugin plugin = loadPlugin(className);
 			if (plugin == null) { return false; }
 			if (plugin.onLoad()) {
 				knownPlugins.put(pluginName.toLowerCase(), plugin);
@@ -165,6 +165,35 @@ public class PluginManager {
 		}
 		return result;
 	}
+        
+	/**
+	 * Retrieves a list of all installed plugins. Any file under the
+	 * main plugin directory (~/.DMDirc/plugins or similar) that matches
+	 * *Plugin.class is deemed to be a valid plugin.
+	 * @return A list of all installed plugins
+	 */
+	public List<String> getPossiblePlugins() {
+		final ArrayList<String> res = new ArrayList<String>();
+		
+		final LinkedList<File> dirs = new LinkedList<File>();
+		
+		dirs.add(new File(myDir));
+		
+		// I guess a mess of symlinks could make this loop forever.
+		// TODO: Add a list of things we've checked
+		while (!dirs.isEmpty()) {
+			final File dir = dirs.pop();
+			if (dir.isDirectory()) {
+				for (File file : dir.listFiles()) {
+					dirs.add(file);
+				}
+			} else if (dir.isFile() && dir.getName().matches("^.*Plugin\\.class$")) {
+				res.add(dir.getPath().substring(myDir.length()));
+			}
+		}
+		
+		return res;
+	}
 	
 	/**
 	 * Get Plugin[] of known plugins.
@@ -186,8 +215,11 @@ public class PluginManager {
 	 * @return classname of a given plugin name.
 	 */
 	public String getClassName(final String pluginName) {
-		if (!knownPluginNames.containsKey(pluginName)) { return ""; }
-		else { return knownPluginNames.get(pluginName); }
+		if (knownPluginNames.containsKey(pluginName)) {
+			return knownPluginNames.get(pluginName);
+		} else {
+			return "";
+		}
 	}
 	
 	/**
@@ -198,20 +230,20 @@ public class PluginManager {
 	private Plugin loadPlugin(final String className) {
 		Plugin result;
 		try {
-			ClassLoader cl = new PluginClassLoader(myDir);
+			final ClassLoader cl = new PluginClassLoader(myDir);
 			
-			Class<?> c = cl.loadClass(className);
-			Constructor<?> constructor = c.getConstructor(new Class[] {});
+			final Class<?> c = cl.loadClass(className);
+			final Constructor<?> constructor = c.getConstructor(new Class[] {});
 		
 			result = (Plugin)constructor.newInstance(new Object[] {});
 		} catch (ClassNotFoundException cnfe) {
 			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Class '"+className+"' not found", cnfe);
 			result = null;
 		} catch (NoSuchMethodException nsme) {
-			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Method missing", nsme);
+			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Constructor missing", nsme);
 			result = null;
 		} catch (IllegalAccessException iae) {
-			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to access method", iae);
+			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to access constructor", iae);
 			result = null;
 		} catch (InvocationTargetException ite) {
 			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to invoke target", ite);
@@ -232,11 +264,9 @@ public class PluginManager {
 	 */
 	public void processEvent(final ActionType type, final Object ... arguments) {
 		for (String pluginName : knownPlugins.keySet()) {
-			Plugin plugin = knownPlugins.get(pluginName);
-			if (plugin instanceof EventPlugin) {
-				if (plugin.isActive()) {
-					((EventPlugin)plugin).processEvent(type, arguments);
-				}
+			final Plugin plugin = knownPlugins.get(pluginName);
+			if (plugin instanceof EventPlugin && plugin.isActive()) {
+				((EventPlugin)plugin).processEvent(type, arguments);
 			}
 		}
 	}
