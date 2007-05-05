@@ -165,7 +165,7 @@ public final class Logger {
      * @param exception Cause of error.
      * @param message Error message.
      */
-    public static void error(final String message, final Exception exception) {
+    public static void error(final String message, final Throwable exception) {
         error(ErrorLevel.ERROR, message, exception);
     }
     
@@ -177,7 +177,7 @@ public final class Logger {
      * @param message Error message.
      */
     public static void error(final ErrorLevel level, final String message,
-            final Exception exception) {
+            final Throwable exception) {
         final StackTraceElement[] stackTrace = exception.getStackTrace();
         
         String[] stackTraceMessage;

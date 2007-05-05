@@ -27,15 +27,16 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import uk.org.ownage.dmdirc.BrowserLauncher;
@@ -53,7 +54,7 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
  * Plugin manager dialog. Allows the user to manage their plugins.
  */
 public final class PluginDialog extends StandardDialog implements
-        ActionListener, ListSelectionListener, MouseListener {
+        ActionListener, ListSelectionListener, HyperlinkListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -84,7 +85,7 @@ public final class PluginDialog extends StandardDialog implements
     private JTextArea blurbLabel;
     
     /** Info Label */
-    private JTextArea infoLabel;
+    private JEditorPane infoLabel;
     
     /** Creates a new instance of PluginDialog. */
     public PluginDialog() {
@@ -133,10 +134,10 @@ public final class PluginDialog extends StandardDialog implements
         blurbLabel.setHighlighter(null);
         blurbLabel.setBackground(this.getBackground());
         
-        infoLabel = new JTextArea("You can get more plugins from http://plugins.dmdirc.com/");
+        infoLabel = new JEditorPane("text/html", "<html><center>You can get "
+                + "more plugins from the <a href=\"http://plugins.dmdirc.com/\">"
+                + "plugins site</a></center></html>");
         infoLabel.setEditable(false);
-        infoLabel.setWrapStyleWord(true);
-        infoLabel.setLineWrap(true);
         infoLabel.setHighlighter(null);
         infoLabel.setBackground(this.getBackground());
     }
@@ -198,7 +199,7 @@ public final class PluginDialog extends StandardDialog implements
         for (Plugin plugin : PluginManager.getPluginManager().getPossiblePlugins()) {
             ((DefaultListModel) pluginList.getModel()).addElement(plugin);
         }
-
+        
     }
     
     /** Adds listeners to components. */
@@ -207,7 +208,7 @@ public final class PluginDialog extends StandardDialog implements
         configureButton.addActionListener(this);
         toggleButton.addActionListener(this);
         pluginList.addListSelectionListener(this);
-        infoLabel.addMouseListener(this);
+        infoLabel.addHyperlinkListener(this);
     }
     
     /**
@@ -255,29 +256,10 @@ public final class PluginDialog extends StandardDialog implements
         }
     }
 
-    /** {@inheritDoc}. */
-    public void mouseClicked(MouseEvent e) {
-        if (e.getSource() == infoLabel) {
-            if (infoLabel.getCaretPosition() >= 30 && infoLabel.getCaretPosition() <= 56) {
-                BrowserLauncher.openURL("http://plugins.dmdirc.com");
-            }
+    public void hyperlinkUpdate(HyperlinkEvent e) {
+        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+            BrowserLauncher.openURL(e.getURL());
         }
-    }
-
-    /** {@inheritDoc}. */
-    public void mousePressed(MouseEvent e) {
-    }
-
-    /** {@inheritDoc}. */
-    public void mouseReleased(MouseEvent e) {
-    }
-
-    /** {@inheritDoc}. */
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    /** {@inheritDoc}. */
-    public void mouseExited(MouseEvent e) {
     }
     
 }

@@ -45,18 +45,31 @@ public final class BrowserLauncher {
      * @param url url to open in the browser
      */
     public static void openURL(final String url) {
+        try {
+            if (url.startsWith("http://") || url.startsWith("https://")) {
+                openURL(new URL(url));
+            } else {
+                openURL(new URL("http://" + url));
+            }
+            return;
+        } catch (IOException ex) {
+            Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
+        }
+    }
+    
+    /**
+     * Opens a URL in the default browser where possible, else any availble
+     * browser it finds.
+     * @param url url to open in the browser
+     */
+    public static void openURL(final URL url) {
         Desktop desktop = null;
         if (Desktop.isDesktopSupported()) {
             desktop = Desktop.getDesktop();
         }
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
             try {
-                if (url.startsWith("http://") || url.startsWith("https://")) {
-                    desktop.browse(new URL(url).toURI());
-                } else {
-                    desktop.browse(new URL("http://" + url).toURI());
-                }
-                return;
+                desktop.browse(url.toURI());
             } catch (IOException ex) {
                 Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
             } catch (URISyntaxException ex) {
@@ -64,7 +77,7 @@ public final class BrowserLauncher {
             }
         }
         try {
-            openURLLinux(url);
+            openURLLinux(url.toString());
         } catch (IOException ex) {
             Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
         }
