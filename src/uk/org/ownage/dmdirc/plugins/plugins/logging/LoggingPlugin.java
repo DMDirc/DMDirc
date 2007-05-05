@@ -164,7 +164,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 		preferencesPanel.addCheckboxOption("General", "general.channelmodeprefix", "Show channel mode prefix: ", "Show the @,+ etc next to nicknames", Config.getOptionBool(MY_DOMAIN, "general.channelmodeprefix"));
 		
 		preferencesPanel.addCheckboxOption("Back Buffer", "backbuffer.autobackbuffer", "Automatically display: ", "Automatically display the backbuffer when a channel is joined", Config.getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer"));
-		preferencesPanel.addTextfieldOption("Back Buffer", "backbuffer.colour", "Colour to use for display: ", "Colour used when displaying the backbuffer (IRC Colour or 6-digit hex String)", Config.getOption(MY_DOMAIN, "backbuffer.colour"));
+		preferencesPanel.addColourOption("Back Buffer", "backbuffer.colour", "Colour to use for display: ", "Colour used when displaying the backbuffer", Config.getOption(MY_DOMAIN, "backbuffer.colour"), true, true);
 		preferencesPanel.addSpinnerOption("Back Buffer", "backbuffer.lines", "Number of lines to show: ", "Number of lines used when displaying backbuffer", Config.getOptionInt(MY_DOMAIN, "backbuffer.lines", 0));
 		preferencesPanel.addCheckboxOption("Back Buffer", "backbuffer.timestamp", "Show Formatter-Timestamp: ", "Should the line be added to the frame with the timestamp from the formatter aswell as the file contents", Config.getOptionBool(MY_DOMAIN, "backbuffer.timestamp"));
 		
