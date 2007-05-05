@@ -62,7 +62,7 @@ public class PluginManager {
 		if (Config.hasOption("plugins", "autoload")) {
 			final String[] autoLoadList = Config.getOption("plugins", "autoload").split("\n");
 			for (String plugin : autoLoadList) {
-                        	plugin = plugin.trim();
+				plugin = plugin.trim();
 				if (plugin.length() > 0 && plugin.charAt(0) != '#' && addPlugin(plugin)) {
 					getPlugin(plugin).onActivate();
 				}
@@ -157,11 +157,12 @@ public class PluginManager {
 		}
 		return result;
 	}
-        
+	
 	/**
-	 * Retrieves a list of all installed plugins. Any file under the
-	 * main plugin directory (~/.DMDirc/plugins or similar) that matches
-	 * *Plugin.class is deemed to be a valid plugin.
+	 * Retrieves a list of all installed plugins.
+	 * Any file under the main plugin directory (~/.DMDirc/plugins or similar)
+	 * that matches *Plugin.class is deemed to be a valid plugin.
+	 *
 	 * @return A list of all installed plugins
 	 */
 	public List<Plugin> getPossiblePlugins() {
@@ -192,7 +193,7 @@ public class PluginManager {
 					final Plugin temp = loadPlugin(target);
 					if (temp != null) {
 						res.add(temp);
-                                        }
+					}
 				}
 			}
 		}
@@ -259,13 +260,14 @@ public class PluginManager {
 	 * Send an event of the specified type to plugins.
 	 *
 	 * @param type The type of the event to process
+	 * @param format Format of messages that are about to be sent. (May be null)
 	 * @param arguments The arguments for the event
 	 */
-	public void processEvent(final ActionType type, final Object ... arguments) {
+	public void processEvent(final ActionType type, final StringBuffer format, final Object ... arguments) {
 		for (String pluginName : knownPlugins.keySet()) {
 			final Plugin plugin = knownPlugins.get(pluginName);
 			if (plugin instanceof EventPlugin && plugin.isActive()) {
-				((EventPlugin)plugin).processEvent(type, arguments);
+				((EventPlugin)plugin).processEvent(type, format, arguments);
 			}
 		}
 	}

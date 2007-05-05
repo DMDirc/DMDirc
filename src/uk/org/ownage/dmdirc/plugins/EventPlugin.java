@@ -33,7 +33,8 @@ public interface EventPlugin extends Plugin {
 	 * Process an event of the specified type.
 	 *
 	 * @param type The type of the event to process
+	 * @param format Format of messages that are about to be sent. (May be null)
 	 * @param arguments The arguments for the event
 	 */
-	void processEvent(final ActionType type, final Object ... arguments);	
+	void processEvent(final ActionType type, final StringBuffer format, final Object ... arguments);	
 }

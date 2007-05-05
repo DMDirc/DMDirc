@@ -260,7 +260,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	 *
 	 * @return Plugin Version
 	 */
-	public int getVersion() { return 1; }
+	public String getVersion() { return "0.3"; }
 	
 	/**
 	 * Get the plugin Author.
@@ -287,9 +287,10 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	 * Process an event of the specified type.
 	 *
 	 * @param type The type of the event to process
+	 * @param format Format of messages that are about to be sent. (May be null)
 	 * @param arguments The arguments for the event
 	 */
-	public void processEvent(final ActionType type, final Object ... arguments) {
+	public void processEvent(final ActionType type, final StringBuffer format, final Object ... arguments) {
 		if (!isActive) { return; }
 		if (type instanceof CoreActionType) {
 			final CoreActionType thisType = (CoreActionType) type;

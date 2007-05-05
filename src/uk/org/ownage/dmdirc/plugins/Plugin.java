@@ -74,7 +74,7 @@ public interface Plugin {
 	 *
 	 * @return Plugin Version
 	 */
-	int getVersion();
+	String getVersion();
 	
 	/**
 	 * Get the plugin Author.

@@ -95,8 +95,8 @@ public final class LagDisplayPlugin implements EventPlugin {
     }
     
     /** {@inheritDoc} */
-    public int getVersion() {
-        return 0;
+    public String getVersion() {
+        return "0.1";
     }
     
     /** {@inheritDoc} */
@@ -124,7 +124,7 @@ public final class LagDisplayPlugin implements EventPlugin {
     }
     
     /** {@inheritDoc} */
-    public void processEvent(final ActionType type, final Object... arguments) {
+    public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
         if (type.equals(CoreActionType.SERVER_GOTPING)) {
             final JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
             if (((Server) arguments[0]).ownsFrame(active)) {

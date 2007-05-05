@@ -93,8 +93,8 @@ public final class DcopPlugin implements Plugin {
     }
     
     /** {@inheritDoc}. */
-    public int getVersion() {
-        return 0;
+    public String getVersion() {
+        return "0.1";
     }
     
     /** {@inheritDoc}. */

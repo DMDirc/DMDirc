@@ -149,8 +149,8 @@ public final class SystrayPlugin implements Plugin, ActionListener, MouseListene
     }
     
     /** {@inheritDoc} */
-    public int getVersion() {
-        return 0;
+    public String getVersion() {
+        return "0.1";
     }
     
     /** {@inheritDoc} */
