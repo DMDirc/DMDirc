@@ -39,6 +39,7 @@ public final class Kick extends ChannelCommand {
         super();
         
         CommandManager.registerCommand(this);
+        CommandManager.registerPopupCommand(this);
     }
     
     /**

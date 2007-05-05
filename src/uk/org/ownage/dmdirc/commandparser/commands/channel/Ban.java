@@ -40,6 +40,7 @@ public final class Ban extends ChannelCommand {
         super();
         
         CommandManager.registerCommand(this);
+        CommandManager.registerPopupCommand(this);
     }
     
     /**

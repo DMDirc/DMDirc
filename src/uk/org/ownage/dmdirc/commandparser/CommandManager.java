@@ -66,6 +66,11 @@ public final class CommandManager {
      */
     private static List<CommandParser> queryParsers;
     
+    /**
+     * Channel commands that have been registered to appear in the nicklist
+     * popup.
+     */
+    private static List<ChannelCommand> channelPopupCommands;
     
     /**
      * Prevents creation of a new command manager.
@@ -120,7 +125,7 @@ public final class CommandManager {
                 } else if (command instanceof QueryCommand) {
                     for (String queryName : server.getQueries()) {
                         server.getQuery(queryName).getTabCompleter().addEntry(commandName);
-                    }                    
+                    }
                 }
             }
         }
@@ -135,7 +140,7 @@ public final class CommandManager {
             return;
         }
         
-        List<CommandParser> target = null;        
+        List<CommandParser> target = null;
         
         if (command instanceof ChannelCommand) {
             target = channelParsers;
@@ -149,7 +154,7 @@ public final class CommandManager {
         } else {
             Logger.error(ErrorLevel.ERROR, "Attempted to unregister an invalid command: "
                     + command.getClass().getName());
-        }     
+        }
         
         // FIXME: There's no way to kill old/dead entries in the *Parsers lists.
         //        Ideally, they'd unregister themselves (or so) when unloaded.
@@ -172,10 +177,34 @@ public final class CommandManager {
                 } else if (command instanceof QueryCommand) {
                     for (String queryName : server.getQueries()) {
                         server.getQuery(queryName).getTabCompleter().removeEntry(commandName);
-                    }                    
+                    }
                 }
-            }            
-        }        
+            }
+        }
+    }
+    
+    /**
+     * Registers a command for use in the nicklist popup.
+     * @param command The command to be registered
+     */
+    public static void registerPopupCommand(final ChannelCommand command) {
+        if (channelPopupCommands == null) {
+            initLists();
+        }
+        
+        channelPopupCommands.add(command);
+    }
+    
+    /**
+     * Retrieves the commands for use in the nicklist popup.
+     * @return A list of commands suitable for use in the nicklist popup
+     */
+    public static List<ChannelCommand> getNicklistCommands() {
+        if (channelPopupCommands == null) {
+            initLists();
+        }
+        
+        return channelPopupCommands;
     }
     
     /**
@@ -189,6 +218,8 @@ public final class CommandManager {
         channelParsers = new ArrayList<CommandParser>();
         serverParsers = new ArrayList<CommandParser>();
         queryParsers = new ArrayList<CommandParser>();
+        
+        channelPopupCommands = new ArrayList<ChannelCommand>();
         
         initCommands();
     }
