@@ -180,11 +180,16 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         scrollBar = getScrollPane().getVerticalScrollBar();
         
         final ConfigManager config = owner.getConfigManager();
+        
         getTextPane().setBackground(config.getOptionColour("ui", "backgroundcolour", Color.WHITE));
         getTextPane().setForeground(config.getOptionColour("ui", "foregroundcolour", Color.BLACK));
-        getInputField().setBackground(config.getOptionColour("ui", "backgroundcolour", Color.WHITE));
-        getInputField().setForeground(config.getOptionColour("ui", "foregroundcolour", Color.BLACK));
-        getInputField().setCaretColor(config.getOptionColour("ui", "foregroundcolour", Color.BLACK));
+        
+        getInputField().setBackground(config.getOptionColour("ui", "inputbackgroundcolour",
+                config.getOptionColour("ui", "backgroundcolour", Color.WHITE)));
+        getInputField().setForeground(config.getOptionColour("ui", "inputforegroundcolour",
+                config.getOptionColour("ui", "foregroundcolour", Color.BLACK)));
+        getInputField().setCaretColor(config.getOptionColour("ui", "inputforegroundcolour",
+                config.getOptionColour("ui", "foregroundcolour", Color.BLACK)));
         
         final Boolean pref = Config.getOptionBool("ui", "maximisewindows");
         if (pref || MainFrame.getMainFrame().getMaximised()) {

@@ -100,8 +100,10 @@ public final class ChannelFrame extends Frame {
         
         initComponents();
         
-        nickList.setBackground(owner.getConfigManager().getOptionColour("ui", "backgroundcolour", Color.WHITE));
-        nickList.setForeground(owner.getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK));
+        nickList.setBackground(owner.getConfigManager().getOptionColour("ui", "nicklistbackgroundcolour",
+                owner.getConfigManager().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
+        nickList.setForeground(owner.getConfigManager().getOptionColour("ui", "nicklistforegroundcolour", 
+                owner.getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
         
         commandParser = new ChannelCommandParser(((Channel) getFrameParent()).
                 getServer(), (Channel) getFrameParent());

@@ -273,6 +273,10 @@ public final class Config {
             initialise();
         }
         
+        if (!hasOption(domain, option)) {
+            return fallback;
+        }
+        
         return ColourManager.parseColour(getOption(domain, option), fallback);
     }
     
