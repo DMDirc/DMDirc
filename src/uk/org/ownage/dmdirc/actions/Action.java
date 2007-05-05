@@ -52,8 +52,8 @@ public class Action {
     /** The properties read for this action. */
     private Properties properties;
     
-    /** The ActionType that triggers this action. */
-    private ActionType trigger;
+    /** The ActionTypes that trigger this action. */
+    private ActionType[] triggers;
     
     /** The commands to execute if this action is triggered. */
     private String[] response;
@@ -84,7 +84,6 @@ public class Action {
             
             properties = new Properties();
             properties.load(inputStream);
-            
             loadAction();
         } catch (IOException ex) {
             Logger.error(ErrorLevel.ERROR, "Unable to load action: " + group + "/" + name, ex);
@@ -95,18 +94,35 @@ public class Action {
      * Loads the various attributes of this action from the properties instance.
      */
     private void loadAction() {
-        boolean valid = true;
-        
-        // Read the trigger
+        // Read the triggers
         if (properties.containsKey("trigger")) {
-            trigger = ActionManager.getActionType(properties.getProperty("trigger"));
+            final String[] triggerStrings = properties.getProperty("trigger").split("\\|");
             
-            if (trigger == null) {
-                error("Invalid trigger specified");
-                valid = false;
+            Class[] args = null;
+            
+            triggers = new ActionType[triggerStrings.length];
+            
+            for (int i = 0; i < triggerStrings.length; i++) {
+                triggers[i] = ActionManager.getActionType(triggerStrings[i]);
+                
+                if (triggers[i] == null) {
+                    error("Invalid trigger specified");
+                    return;
+                } else {
+                    if (i == 0) {
+                        args = triggers[i].getType().getArgTypes();
+                    } else {
+                        if (!checkArgs(args, triggers[i].getType().getArgTypes())) {
+                            error("Triggers are not compatible");
+                            return;
+                        }
+                    }
+                }
             }
+            
         } else {
-            valid = false;
+            error("No trigger specified");
+            return;
         }
         
         // Read the response
@@ -115,7 +131,7 @@ public class Action {
         } else {
             error("No response specified");
             properties.list(System.out);
-            valid = false;
+            return;
         }
         
         // Read the format change
@@ -131,9 +147,11 @@ public class Action {
                 numConditions = Integer.parseInt(properties.getProperty("conditions"));
             } catch (NumberFormatException ex) {
                 error("Invalid number of conditions specified");
-                valid = false;
+                return;
             }
         }
+        
+        boolean valid = true;
         
         for (int i = 0; i < numConditions; i++) {
             valid = valid & readCondition(i);
@@ -142,6 +160,26 @@ public class Action {
         if (valid) {
             ActionManager.registerAction(this);
         }
+    }
+    
+    /**
+     * Checks to see if the two sets of arguments are equal.
+     * @param arg1 The first argument to be tested
+     * @param arg2 The second argument to be tested
+     * @return True iff the args are equal, false otherwise
+     */
+    private boolean checkArgs(Class[] arg1, Class[] arg2) {
+        if (arg1.length != arg2.length) {
+            return false;
+        }
+        
+        for (int i = 0; i < arg1.length; i++) {
+            if (!arg1[i].getName().equals(arg2[i].getName())) {
+                return false;
+            }
+        }
+        
+        return true;
     }
     
     /**
@@ -166,7 +204,7 @@ public class Action {
             }
         }
         
-        if (arg < 0 || arg >= trigger.getType().getArity()) {
+        if (arg < 0 || arg >= triggers[0].getType().getArity()) {
             error("Invalid argument number for condition " + condition);
             return false;
         }
@@ -179,7 +217,7 @@ public class Action {
                 return false;
             }
             
-            if (!component.appliesTo().equals(trigger.getType().getArgTypes()[arg])) {
+            if (!component.appliesTo().equals(triggers[0].getType().getArgTypes()[arg])) {
                 error("Component cannot be applied to specified arg in condition " + condition);
                 return false;
             }
@@ -228,8 +266,8 @@ public class Action {
      * Retrieves this action's trigger.
      * @return The action type that triggers this action
      */
-    public ActionType getTrigger() {
-        return trigger;
+    public ActionType[] getTrigger() {
+        return triggers;
     }
     
     /**

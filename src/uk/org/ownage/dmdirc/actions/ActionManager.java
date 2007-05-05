@@ -120,11 +120,13 @@ public class ActionManager {
             init();
         }
         
-        if (!actions.containsKey(action.getTrigger())) {
-            actions.put(action.getTrigger(), new ArrayList<Action>());
+        for (ActionType trigger : action.getTrigger()) {
+            if (!actions.containsKey(trigger)) {
+                actions.put(trigger, new ArrayList<Action>());
+            }
+            
+            actions.get(trigger).add(action);
         }
-        
-        actions.get(action.getTrigger()).add(action);
     }
     
     /**
@@ -151,7 +153,7 @@ public class ActionManager {
     /**
      * Triggers actions that respond to the specified type.
      * @param type The type of the event to process
-          * @param format The format of the message that's going to be displayed for
+     * @param format The format of the message that's going to be displayed for
      * the event. Actions may change this format.*
      * @param arguments The arguments for the event
      */
