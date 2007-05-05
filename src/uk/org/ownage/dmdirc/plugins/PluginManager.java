@@ -85,7 +85,7 @@ public class PluginManager {
 	 * Add a new plugin.
 	 *
 	 * @param className Class Name of Plugin object
-	 * @return True if loaded.
+	 * @return True if loaded, false if failed to load or if already loaded.
 	 */
 	public boolean addPlugin(final String className) {
 		if (knownPlugins.containsKey(className.toLowerCase())) { return false; }
@@ -187,18 +187,48 @@ public class PluginManager {
 				// Change / to .
 				target = target.replace('/', '.');
 				
-				if (knownPlugins.containsKey(target.toLowerCase())) {
-					res.add(knownPlugins.get(target.toLowerCase()));
-				} else {
-					final Plugin temp = loadPlugin(target);
-					if (temp != null) {
-						res.add(temp);
-					}
-				}
+				addPlugin(target);
 			}
 		}
 		
+		for (String name : knownPlugins.keySet()) {
+			res.add(getPlugin(name));
+		}
+		
 		return res;
+	}
+	
+	/**
+	 * Update the autoLoadList
+	 *
+	 * @param plugin to add/remove (Decided automatically based on isActive())
+	 */
+	public void updateAutoLoad(final Plugin plugin) {
+		if (Config.hasOption("plugins", "autoload")) {
+			final String[] autoLoadList = Config.getOption("plugins", "autoload").split("\n");
+			final StringBuffer newAutoLoadList = new StringBuffer("\n");
+			int i = 0;
+			boolean found = false;
+			for (String pluginName : autoLoadList) {
+				pluginName = pluginName.trim();
+				if (pluginName.equals(plugin.getClass().getName())) {
+					found = true;
+					if (plugin.isActive()) {
+						newAutoLoadList.append("\t"+pluginName+"\n");
+					}
+				} else if (pluginName.length() > 0) {
+					newAutoLoadList.append("\t"+pluginName+"\n");
+				}
+			}
+			if (!found && plugin.isActive()) {
+				newAutoLoadList.append("\t"+plugin.getClass().getName()+"\n");
+			}
+			Config.setOption("plugins", "autoload", newAutoLoadList.toString());
+		} else if (plugin.isActive()) {
+			Config.setOption("plugins", "autoload", plugin.getClass().getName());
+		}
+		
+		Config.save();
 	}
 	
 	/**
@@ -237,19 +267,19 @@ public class PluginManager {
 				result = null;
 			}
 		} catch (ClassNotFoundException cnfe) {
-			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Class '"+className+"' not found", cnfe);
+			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Class not found ('"+className+"')", cnfe);
 			result = null;
 		} catch (NoSuchMethodException nsme) {
-			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Constructor missing", nsme);
+			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Constructor missing ('"+className+"')", nsme);
 			result = null;
 		} catch (IllegalAccessException iae) {
-			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to access constructor", iae);
+			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to access constructor ('"+className+"')", iae);
 			result = null;
 		} catch (InvocationTargetException ite) {
-			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to invoke target", ite);
+			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to invoke target ('"+className+"')", ite);
 			result = null;
 		} catch (InstantiationException ie) {
-			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to instantiate plugin", ie);
+			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to instantiate plugin ('"+className+"')", ie);
 			result = null;
 		}
 		

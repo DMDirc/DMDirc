@@ -46,6 +46,9 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
  */
 public final class SystrayPlugin implements Plugin, ActionListener, MouseListener {
     
+    /** The command we registered. */
+    PopupCommand command;
+    
     /** Is this plugin active? */
     private boolean isActive = false;
     
@@ -75,7 +78,9 @@ public final class SystrayPlugin implements Plugin, ActionListener, MouseListene
      * @param type The type of notification
      */
     public void notify(final String title, final String message, final TrayIcon.MessageType type) {
-        icon.displayMessage(title, message, type);
+        if (isActive) {
+            icon.displayMessage(title, message, type);
+        }
     }
     
     /**
@@ -98,25 +103,7 @@ public final class SystrayPlugin implements Plugin, ActionListener, MouseListene
     
     /** {@inheritDoc} */
     public boolean onLoad() {
-        if (SystemTray.isSupported()) {
-            final ClassLoader cldr = this.getClass().getClassLoader();
-            final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/logo.png");
-            icon = new TrayIcon(new ImageIcon(imageURL).getImage(), "DMDirc", menu);
-            icon.setImageAutoSize(true);
-            icon.addMouseListener(this);
-            
-            try {
-                SystemTray.getSystemTray().add(icon);
-            } catch (AWTException ex) {
-                return false;
-            }
-            
-            new PopupCommand(this);
-        } else {
-            return false;
-        }
-        
-        return true;
+        return SystemTray.isSupported();
     }
     
     /** {@inheritDoc} */
@@ -126,6 +113,20 @@ public final class SystrayPlugin implements Plugin, ActionListener, MouseListene
     /** {@inheritDoc} */
     public void onActivate() {
         isActive = true;
+        
+        final ClassLoader cldr = this.getClass().getClassLoader();
+        final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/logo.png");
+        icon = new TrayIcon(new ImageIcon(imageURL).getImage(), "DMDirc", menu);
+        icon.setImageAutoSize(true);
+        icon.addMouseListener(this);
+        
+        try {
+            SystemTray.getSystemTray().add(icon);
+            command = new PopupCommand(this);
+        } catch (AWTException ex) {
+            // Should probably unload ourself here instead?
+            isActive = false;
+        }
     }
     
     /** {@inheritDoc} */
@@ -135,7 +136,10 @@ public final class SystrayPlugin implements Plugin, ActionListener, MouseListene
     
     /** {@inheritDoc}. */
     public void onDeactivate() {
-        SystemTray.getSystemTray().remove(icon);
+        if (isActive) {
+            SystemTray.getSystemTray().remove(icon);
+            command.unregister();
+        }
         isActive = false;
     }
     

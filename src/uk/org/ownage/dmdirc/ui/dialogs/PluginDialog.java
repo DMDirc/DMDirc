@@ -226,11 +226,15 @@ public final class PluginDialog extends StandardDialog implements
             final Plugin plugin = (Plugin) pluginList.getSelectedValue();
             if (plugin.isActive()) {
                 plugin.onDeactivate();
-                // Needs to remove from plugins.autoload
+                toggleButton.setText("Enable");
             } else {
                 plugin.onActivate();
-                // Needs to add to plugins.autoload
+                toggleButton.setText("Disable");
             }
+            
+            PluginManager.getPluginManager().updateAutoLoad(plugin);
+            
+            pluginList.repaint();
         }
     }
     

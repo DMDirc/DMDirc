@@ -80,4 +80,9 @@ public final class PopupCommand extends ServerCommand {
         return "popup <message> - shows the message as a system tray popup";
     }
     
+    /** Unregisters this command from the CommandManager. */
+    public void unregister() {
+        CommandManager.unregisterCommand(this);
+    }
+    
 }
