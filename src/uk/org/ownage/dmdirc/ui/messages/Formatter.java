@@ -223,6 +223,7 @@ public final class Formatter {
         //    2: Message
         defaultProperties.setProperty("selfCTCP", colour + "4->- [%1$s] %2$s");
         defaultProperties.setProperty("selfNotice", colour + "5>%1$s> %2$s");
+        defaultProperties.setProperty("selfMessage", ">[%1$s]> %2$s");
         
         // Type: Miscellaneous server
         //    1: Server name

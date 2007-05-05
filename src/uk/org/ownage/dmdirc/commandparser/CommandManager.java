@@ -95,7 +95,8 @@ public final class CommandManager {
             target = queryParsers;
             queryCommands.add(command);
         } else {
-            Logger.error(ErrorLevel.ERROR, "Attempted to register an invalid command: " + command.getClass().getName());
+            Logger.error(ErrorLevel.ERROR, "Attempted to register an invalid command: "
+                    + command.getClass().getName());
         }
         
         // FIXME: There's no way to kill old/dead entries in the *Parsers lists.
@@ -146,7 +147,8 @@ public final class CommandManager {
             target = queryParsers;
             queryCommands.remove(command);
         } else {
-            Logger.error(ErrorLevel.ERROR, "Attempted to unregister an invalid command: " + command.getClass().getName());
+            Logger.error(ErrorLevel.ERROR, "Attempted to unregister an invalid command: "
+                    + command.getClass().getName());
         }     
         
         // FIXME: There's no way to kill old/dead entries in the *Parsers lists.
@@ -226,6 +228,7 @@ public final class CommandManager {
         new Join();
         new LoadFormatter();
         new LoadPlugin();
+        new Message();
         new Motd();
         new Nick();
         new Notice();
