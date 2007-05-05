@@ -53,8 +53,11 @@ import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+import javax.swing.plaf.TabbedPaneUI;
 
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.identities.Identity;
+import uk.org.ownage.dmdirc.identities.IdentityManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
@@ -139,13 +142,23 @@ public class ChannelSettingsDialog extends StandardDialog
     /** Client settings panel. */
     private ChannelSettingsPane channelSettingsPane;
     
+    /** Channel identity file. */
+    private Identity identity;
+    
+    /** Tabbed pane. */
+    private JTabbedPane tabbedPane;
+    
     /**
      * Creates a new instance of ChannelSettingsDialog.
      * @param newChannel The channel object that we're editing settings for
      */
     public ChannelSettingsDialog(final Channel newChannel) {
         super(MainFrame.getMainFrame(), false);
-        this.channel = newChannel;
+        
+        channel = newChannel;
+        identity = IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
+                channel.getChannelInfo().getName());
+        
         final Map<String, String> iSupport =
                 channel.getServer().getParser().get005();
         topicLengthMax = 250;
@@ -165,7 +178,7 @@ public class ChannelSettingsDialog extends StandardDialog
     /** Initialises the main UI components. */
     private void initComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
-        final JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane = new JTabbedPane();
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new GridBagLayout());
@@ -209,6 +222,9 @@ public class ChannelSettingsDialog extends StandardDialog
         initListModesTab(tabbedPane);
         
         initSettingsTab(tabbedPane);
+        
+        tabbedPane.setSelectedIndex(channel.getConfigManager().
+                getOptionInt("dialogstate", "channelsettingsdialog", 0));
         
         pack();
     }
@@ -491,7 +507,7 @@ public class ChannelSettingsDialog extends StandardDialog
      * @param parent The panel to add the channel settings panel to
      */
     private void initSettingsPanel(final JPanel parent) {
-        channelSettingsPane = new ChannelSettingsPane(parent, channel);
+        channelSettingsPane = new ChannelSettingsPane(parent, channel, identity);
     }
     
     /** Initialises listeners for this dialog. */
@@ -512,6 +528,8 @@ public class ChannelSettingsDialog extends StandardDialog
             setChangedBooleanModes();
             setChangedTopic();
             channelSettingsPane.saveSettings();
+            identity.setOption("dialogstate", "channelsettingsdialog", 
+                    String.valueOf(tabbedPane.getSelectedIndex()));
             setVisible(false);
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             setVisible(false);

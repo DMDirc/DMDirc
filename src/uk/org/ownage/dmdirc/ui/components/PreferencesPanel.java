@@ -30,6 +30,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
@@ -54,7 +55,6 @@ import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
@@ -516,6 +516,8 @@ public final class PreferencesPanel extends StandardDialog implements
      */
     public void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
+            Config.setOption("dialogstate", owner.getClass().getName(), 
+        	    tabList.getSelectionPath().getLastPathComponent().toString());
             saveOptions();
             setVisible(false);
         } else if (getCancelButton().equals(actionEvent.getSource())) {
@@ -576,8 +578,15 @@ public final class PreferencesPanel extends StandardDialog implements
                     .getComponent(1)).getComponentCount() / 2, 2, SMALL_BORDER,
                     SMALL_BORDER, LARGE_BORDER, LARGE_BORDER);
         }
-        cardLayout.first(mainPanel);
-        tabList.setSelectionPath(tabList.getPathForRow(0));
+        String tabName = Config.getOption("dialogstate", owner.getClass().getName());
+                
+        if (tabName == null || "".equals(tabName)) {
+            cardLayout.first(mainPanel);
+            tabList.setSelectionPath(tabList.getPathForRow(0));
+        } else {
+            tabList.setSelectionPath(tabList.getNextMatch(
+        	    tabName, 0, Position.Bias.Forward));
+        }
         pack();
         setLocationRelativeTo(MainFrame.getMainFrame());
         this.setVisible(true);

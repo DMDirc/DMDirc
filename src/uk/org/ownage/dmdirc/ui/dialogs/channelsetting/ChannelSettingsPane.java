@@ -124,12 +124,11 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
      * @param newParent parent panel
      * @param newChannel parent Channel
      */
-    public ChannelSettingsPane(final JPanel newParent, final Channel newChannel) {
+    public ChannelSettingsPane(final JPanel newParent, final Channel newChannel,
+            final Identity newIdentity) {
         parent = newParent;
         channel = newChannel;
-        
-        identity = IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
-                channel.getChannelInfo().getName());
+        identity = newIdentity;
         
         infoLabel = new JLabel();
         noCurrentSettingsLabel = new JLabel();
