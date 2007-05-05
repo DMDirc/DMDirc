@@ -41,10 +41,6 @@ public class PluginManager {
 	 * List of known plugins.
 	 */
 	private final Hashtable<String,Plugin> knownPlugins = new Hashtable<String,Plugin>();
-	/**
-	 * List of known plugin classNames.
-	 */
-	private final Hashtable<String,String> knownPluginNames = new Hashtable<String,String>();
 	
 	/**
 	 * Directory where plugins are stored.
@@ -67,7 +63,7 @@ public class PluginManager {
 			final String[] autoLoadList = Config.getOption("plugins", "autoload").split("\n");
 			for (String plugin : autoLoadList) {
                         	plugin = plugin.trim();
-				if (plugin.length() > 0 && plugin.charAt(0) != '#' && addPlugin(plugin, plugin)) {
+				if (plugin.length() > 0 && plugin.charAt(0) != '#' && addPlugin(plugin)) {
 					getPlugin(plugin).onActivate();
 				}
 			}
@@ -88,22 +84,20 @@ public class PluginManager {
 	/**
 	 * Add a new plugin.
 	 *
-	 * @param pluginName Name of plugin
 	 * @param className Class Name of Plugin object
 	 * @return True if loaded.
 	 */
-	public boolean addPlugin(final String pluginName, final String className) {
-		if (knownPlugins.containsKey(pluginName.toLowerCase())) { return false; }
+	public boolean addPlugin(final String className) {
+		if (knownPlugins.containsKey(className.toLowerCase())) { return false; }
 		try {
 			final Plugin plugin = loadPlugin(className);
 			if (plugin == null) { return false; }
 			if (plugin.onLoad()) {
-				knownPlugins.put(pluginName.toLowerCase(), plugin);
-				knownPluginNames.put(pluginName.toLowerCase(), className);
+				knownPlugins.put(className.toLowerCase(), plugin);
 				return true;
 			}
 		} catch (Exception e) {
-			Logger.error(ErrorLevel.ERROR, "[addPlugin] Error loading '"+pluginName+"' ["+className+"]", e);
+			Logger.error(ErrorLevel.ERROR, "[addPlugin] Error loading "+className, e);
 		}
 		return false;
 	}
@@ -111,19 +105,18 @@ public class PluginManager {
 	/**
 	 * Remove a plugin.
 	 *
-	 * @param pluginName Name of plugin
+	 * @param className Class name of plugin
 	 * @return True if removed.
 	 */
-	public boolean delPlugin(final String pluginName) {
-		if (!knownPlugins.containsKey(pluginName.toLowerCase())) { return false; }
-		Plugin plugin = getPlugin(pluginName);
+	public boolean delPlugin(final String className) {
+		if (!knownPlugins.containsKey(className.toLowerCase())) { return false; }
+		Plugin plugin = getPlugin(className);
 		try {
 			plugin.onUnload();
 		} catch (Exception e) {
-			Logger.error(ErrorLevel.ERROR, "[delPlugin] Error in onUnload() for '"+pluginName+"'", e);
+			Logger.error(ErrorLevel.ERROR, "[delPlugin] Error in onUnload() for '"+className+"'", e);
 		}
-		knownPlugins.remove(pluginName.toLowerCase());
-		knownPluginNames.remove(pluginName.toLowerCase());
+		knownPlugins.remove(className.toLowerCase());
 		plugin = null;
 		return true;
 	}
@@ -131,25 +124,24 @@ public class PluginManager {
 	/**
 	 * Reload a plugin.
 	 *
-	 * @param pluginName Name of plugin
+	 * @param className Class name of plugin
 	 * @return True if reloaded.
 	 */
-	public boolean reloadPlugin(final String pluginName) {
-		if (!knownPlugins.containsKey(pluginName.toLowerCase())) { return false; }
-		final String filename = knownPluginNames.get(pluginName.toLowerCase());
-		delPlugin(pluginName);
-		return addPlugin(pluginName, filename);
+	public boolean reloadPlugin(final String className) {
+		if (!knownPlugins.containsKey(className.toLowerCase())) { return false; }
+		delPlugin(className);
+		return addPlugin(className);
 	}
 	
 	/**
 	 * Get a plugin instance.
 	 *
-	 * @param pluginName Name of plugin
+	 * @param className Class name of plugin
 	 * @return Plugin instance, or null
 	 */
-	public Plugin getPlugin(final String pluginName) {
-		if (!knownPlugins.containsKey(pluginName.toLowerCase())) { return null; }
-		return knownPlugins.get(pluginName.toLowerCase());
+	public Plugin getPlugin(final String className) {
+		if (!knownPlugins.containsKey(className.toLowerCase())) { return null; }
+		return knownPlugins.get(className.toLowerCase());
 	}
 	
 	/**
@@ -219,18 +211,6 @@ public class PluginManager {
 		return result;
 	}
 	
-	/**
-	 * Get classname of a given plugin name.
-	 *
-	 * @return classname of a given plugin name.
-	 */
-	public String getClassName(final String pluginName) {
-		if (knownPluginNames.containsKey(pluginName)) {
-			return knownPluginNames.get(pluginName);
-		} else {
-			return "";
-		}
-	}
 	
 	/**
 	 * Load a plugin with a given className

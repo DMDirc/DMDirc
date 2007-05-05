@@ -49,7 +49,7 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
 /**
- * Actions editor dialog, used to edit a particular actions.
+ * Plugin manager dialog. Allows the user to manage their plugins.
  */
 public final class PluginDialog extends StandardDialog implements
         ActionListener, ListSelectionListener {
