@@ -70,7 +70,7 @@ public final class CommandManager {
      * Channel commands that have been registered to appear in the nicklist
      * popup.
      */
-    private static List<ChannelCommand> channelPopupCommands;
+    private static List<Command> channelPopupCommands;
     
     /**
      * Prevents creation of a new command manager.
@@ -187,7 +187,7 @@ public final class CommandManager {
      * Registers a command for use in the nicklist popup.
      * @param command The command to be registered
      */
-    public static void registerPopupCommand(final ChannelCommand command) {
+    public static void registerPopupCommand(final Command command) {
         if (channelPopupCommands == null) {
             initLists();
         }
@@ -199,7 +199,7 @@ public final class CommandManager {
      * Retrieves the commands for use in the nicklist popup.
      * @return A list of commands suitable for use in the nicklist popup
      */
-    public static List<ChannelCommand> getNicklistCommands() {
+    public static List<Command> getNicklistCommands() {
         if (channelPopupCommands == null) {
             initLists();
         }
@@ -219,7 +219,7 @@ public final class CommandManager {
         serverParsers = new ArrayList<CommandParser>();
         queryParsers = new ArrayList<CommandParser>();
         
-        channelPopupCommands = new ArrayList<ChannelCommand>();
+        channelPopupCommands = new ArrayList<Command>();
         
         initCommands();
     }

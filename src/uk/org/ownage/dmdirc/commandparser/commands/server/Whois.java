@@ -40,6 +40,7 @@ public final class Whois extends ServerCommand {
         super();
         
         CommandManager.registerCommand(this);
+        CommandManager.registerPopupCommand(this);
     }
     
     /**
