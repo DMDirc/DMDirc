@@ -55,7 +55,7 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
- * Profiel editing dialog.
+ * Profile editing dialog.
  */
 public final class ProfileEditorDialog extends StandardDialog implements
         ActionListener, ListSelectionListener {

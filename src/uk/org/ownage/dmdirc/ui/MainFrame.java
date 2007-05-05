@@ -68,6 +68,7 @@ import uk.org.ownage.dmdirc.ui.dialogs.AboutDialog;
 import uk.org.ownage.dmdirc.ui.dialogs.NewServerDialog;
 import uk.org.ownage.dmdirc.ui.dialogs.PreferencesDialog;
 import uk.org.ownage.dmdirc.ui.dialogs.ProfileEditorDialog;
+import uk.org.ownage.dmdirc.ui.dialogs.PluginDialog;
 import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
 import uk.org.ownage.dmdirc.ui.framemanager.tree.TreeFrameManager;
 
@@ -590,7 +591,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         } else if (e.getActionCommand().equals("Exit")) {
             Main.quit();
         } else if (e.getActionCommand().equals("ManagePlugins")) {
-            // Manage plugins
+            new PluginDialog();
         }
     }
     
