@@ -163,6 +163,9 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addCheckboxOption(tabName, "ui.awayindicator",
                 "Away indicator: ", "Shows an away indicator in the input field.",
                 Config.getOptionBool("ui", "awayindicator"));
+        preferencesPanel.addCheckboxOption(tabName, "nicklist.altBackground", 
+                "Alternating nicklist", "", 
+                Config.getOptionBool("nicklist", "altBackground"));
     }
     
     /**
