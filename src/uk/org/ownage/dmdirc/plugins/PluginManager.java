@@ -228,7 +228,13 @@ public class PluginManager {
 			final Class<?> c = cl.loadClass(className);
 			final Constructor<?> constructor = c.getConstructor(new Class[] {});
 		
-			result = (Plugin)constructor.newInstance(new Object[] {});
+			final Object temp = constructor.newInstance(new Object[] {});
+			
+			if (temp instanceof Plugin) {
+				result = (Plugin) temp;
+			} else {
+				result = null;
+			}
 		} catch (ClassNotFoundException cnfe) {
 			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Class '"+className+"' not found", cnfe);
 			result = null;
