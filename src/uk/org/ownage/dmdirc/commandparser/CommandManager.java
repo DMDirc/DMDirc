@@ -208,6 +208,7 @@ public final class CommandManager {
         new Notify();
         new Part();
         new PartDefault();
+        new SetNickColour();
         new SetTopic();
         new ShowTopic();
         

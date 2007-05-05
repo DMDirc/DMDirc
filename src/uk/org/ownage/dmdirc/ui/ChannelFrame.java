@@ -63,7 +63,7 @@ public final class ChannelFrame extends Frame {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 6;
+    private static final long serialVersionUID = 7;
     
     /** max length a line can be. */
     private final int maxLineLength;
@@ -180,6 +180,14 @@ public final class ChannelFrame extends Frame {
     public FrameContainer getContainer() {
         return parent;
     }
+    
+    /**
+     * Retrieves this channel frame's nicklist component.
+     * @return This channel's nicklist
+     */
+    public JList getNickList() {
+        return nickList;
+    }    
     
     /**
      * Initialises the compoents in this frame.
