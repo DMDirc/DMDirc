@@ -141,8 +141,7 @@ public class ActionManager {
         }
         
         if (type.getType().getArity() == arguments.length) {
-            // TODO: Work with shane to pass format buffer
-            PluginManager.getPluginManager().processEvent(type, arguments);
+            PluginManager.getPluginManager().processEvent(type, format, arguments);
             triggerActions(type, format, arguments);
         } else {
             Logger.error(ErrorLevel.ERROR, "Invalid number of arguments for action " + type);
