@@ -267,8 +267,16 @@ public class Action {
      * @return The action type that triggers this action
      */
     public ActionType[] getTrigger() {
-        return triggers;
+        return triggers.clone();
     }
+    
+    /**
+     * Retrieves this action's response.
+     * @return The commands that will be executed if this action is triggered
+     */
+    public String[] getResponse() {
+        return response.clone();
+    }    
     
     /**
      * Retrieves this action's group name.

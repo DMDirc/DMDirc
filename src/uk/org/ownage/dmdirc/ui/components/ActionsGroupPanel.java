@@ -75,6 +75,22 @@ public class ActionsGroupPanel extends JPanel {
         initComponents();
     }
     
+    /**
+     * Implodes an array into a string, separating arguments with ", ".
+     * @param args The arguments to be imploded
+     * @return A string representation of the arguments.
+     */
+    private String implode(final Object[] args) {
+       final StringBuffer res = new StringBuffer();
+       
+       for (Object object : args) {
+           res.append(", ");
+           res.append(object.toString());
+       }
+       
+       return res.substring(2);
+    }
+    
     /** Initialises the components for this panel. */
     private void initComponents() {
         Object[][] data = new Object[actions.size()][3];
@@ -82,8 +98,8 @@ public class ActionsGroupPanel extends JPanel {
         int i = 0;
         for (Action action : actions) {
             data[i][0] = action.getName();
-            data[i][1] = action.getTrigger()[0];
-            data[i][2] = "Response";
+            data[i][1] = implode(action.getTrigger());
+            data[i][2] = implode(action.getResponse());
             i++;
         }
         
