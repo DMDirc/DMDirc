@@ -28,11 +28,12 @@ import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /**
- * An ActionComponent represents a component of some object that the user can
+ * An CoreActionComponent represents a component of some object that the user can
  * use as the subject of a condition within an action.
+ * 
  * @author chris
  */
-public enum ActionComponent {
+public enum CoreActionComponent {
     
     CHANNEL_NAME {
         Object get(final Object argument) { return ((Channel) argument).getChannelInfo().getName(); }

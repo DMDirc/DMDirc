@@ -27,11 +27,12 @@ import java.awt.Color;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
- * An ActionComparison represents a possible comparison between two types of
+ * An CoreActionComparison represents a possible comparison between two types of
  * data used in an action condition.
+ * 
  * @author chris
  */
-public enum ActionComparison {
+public enum CoreActionComparison {
     
     STRING_EQUALS {
         boolean test(final Object arg1, final Object arg2) { return ((String) arg1).equalsIgnoreCase((String) arg2); }

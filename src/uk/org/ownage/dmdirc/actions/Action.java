@@ -191,8 +191,8 @@ public class Action {
         // It may help to close your eyes while reading this method.
         
         int arg = -1;
-        ActionComponent component = null;
-        ActionComparison comparison = null;
+        CoreActionComponent component = null;
+        CoreActionComparison comparison = null;
         String target = "";
         
         if (properties.containsKey("condition" + condition + "-arg")) {
@@ -211,7 +211,7 @@ public class Action {
         
         if (properties.containsKey("condition" + condition + "-component")) {
             try {
-                component = ActionComponent.valueOf(properties.getProperty("condition" + condition + "-component"));
+                component = CoreActionComponent.valueOf(properties.getProperty("condition" + condition + "-component"));
             } catch (IllegalArgumentException ex) {
                 error("Invalid component for condition " + condition);
                 return false;
@@ -228,7 +228,7 @@ public class Action {
         
         if (properties.containsKey("condition" + condition + "-comparison")) {
             try {
-                comparison = ActionComparison.valueOf(properties.getProperty("condition" + condition + "-comparison"));
+                comparison = CoreActionComparison.valueOf(properties.getProperty("condition" + condition + "-comparison"));
             } catch (IllegalArgumentException ex) {
                 error("Invalid comparison for condition " + condition);
                 return false;
