@@ -65,6 +65,7 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.components.StatusBar;
 import uk.org.ownage.dmdirc.ui.dialogs.AboutDialog;
+import uk.org.ownage.dmdirc.ui.dialogs.ActionsManagerDialog;
 import uk.org.ownage.dmdirc.ui.dialogs.NewServerDialog;
 import uk.org.ownage.dmdirc.ui.dialogs.PreferencesDialog;
 import uk.org.ownage.dmdirc.ui.dialogs.ProfileEditorDialog;
@@ -457,6 +458,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         final JMenu fileMenu = new JMenu();
         miAddServer = new JMenuItem();
         miPreferences = new JMenuItem();
+        final JMenu settingsMenu = new JMenu();
         final JMenu windowMenu = new JMenu();
         final JMenu helpMenu = new JMenu();
         final JMenu debugMenu = new JMenu();
@@ -468,6 +470,9 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         mainSplitPane.setBorder(null);
         
+        settingsMenu.setText("Settings");
+        settingsMenu.setMnemonic('s');
+        
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
         
@@ -477,14 +482,21 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         miPreferences.setText("Preferences");
         miPreferences.setMnemonic('p');
-        fileMenu.add(miPreferences);
+        settingsMenu.add(miPreferences);
         
         menuItem = new JMenuItem();
         menuItem.setMnemonic('m');
         menuItem.setText("Profile Manager");
         menuItem.setActionCommand("Profile");
         menuItem.addActionListener(this);
-        fileMenu.add(menuItem);
+        settingsMenu.add(menuItem);
+        
+        menuItem = new JMenuItem();
+        menuItem.setMnemonic('a');
+        menuItem.setText("Actions Manager");
+        menuItem.setActionCommand("Actions");
+        menuItem.addActionListener(this);
+        settingsMenu.add(menuItem);
         
         menuItem = new JMenuItem();
         menuItem.setMnemonic('x');
@@ -532,6 +544,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         pluginsMenu = new JMenu("Plugins");
         pluginsMenu.setMnemonic('p');
+        settingsMenu.add(pluginsMenu);
         
         menuItem = new JMenuItem();
         menuItem.setMnemonic('m');
@@ -542,7 +555,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         menuBar.add(fileMenu);
         menuBar.add(windowMenu);
-        menuBar.add(pluginsMenu);
+        menuBar.add(settingsMenu);
         menuBar.add(debugMenu);
         menuBar.add(helpMenu);
         
@@ -592,6 +605,8 @@ public final class MainFrame extends JFrame implements WindowListener,
             Main.quit();
         } else if (e.getActionCommand().equals("ManagePlugins")) {
             new PluginDialog();
+        } else if (e.getActionCommand().equals("Actions")) {
+            new ActionsManagerDialog();
         }
     }
     

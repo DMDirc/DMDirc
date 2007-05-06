@@ -39,8 +39,8 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import uk.org.ownage.dmdirc.BrowserLauncher;
 
+import uk.org.ownage.dmdirc.BrowserLauncher;
 import uk.org.ownage.dmdirc.plugins.PluginManager;
 import uk.org.ownage.dmdirc.plugins.Plugin;
 import uk.org.ownage.dmdirc.ui.MainFrame;
@@ -48,8 +48,7 @@ import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 import uk.org.ownage.dmdirc.ui.components.PluginCellRenderer;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
+
 /**
  * Plugin manager dialog. Allows the user to manage their plugins.
  */
@@ -262,7 +261,7 @@ public final class PluginDialog extends StandardDialog implements
         }
     }
 
-    public void hyperlinkUpdate(HyperlinkEvent e) {
+    public void hyperlinkUpdate(final HyperlinkEvent e) {
         if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
             BrowserLauncher.openURL(e.getURL());
         }
