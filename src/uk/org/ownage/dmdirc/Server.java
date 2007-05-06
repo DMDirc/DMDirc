@@ -164,7 +164,6 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         frame.setTitle(server + ":" + port);
         frame.setTabCompleter(tabCompleter);
         frame.addInternalFrameListener(this);
-        frame.setFrameIcon(imageIcon);
         MainFrame.getMainFrame().addChild(frame);
         
         frame.open();
@@ -207,6 +206,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/server.png");
         }
         imageIcon = new ImageIcon(imageURL);
+        frame.setFrameIcon(imageIcon);
         
         // TODO: Use formatter
         frame.addLine("Connecting to " + server + ":" + port);
