@@ -32,10 +32,10 @@ public class ActionCondition {
     private final int arg;
     
     /** The component that this action condition applies to. */
-    private final CoreActionComponent component;
+    private final ActionComponent component;
     
     /** The comparison that should be used for this condition. */
-    private final CoreActionComparison comparison;
+    private final ActionComparison comparison;
     
     /** The target of the comparison for this condition. */
     private final String target;
@@ -47,8 +47,8 @@ public class ActionCondition {
      * @param comparison The comparison to be used
      * @param target The target of the comparison
      */
-    public ActionCondition(final int arg, final CoreActionComponent component,
-            final CoreActionComparison comparison, final String target) {
+    public ActionCondition(final int arg, final ActionComponent component,
+            final ActionComparison comparison, final String target) {
         this.arg = arg;
         this.component = component;
         this.comparison = comparison;

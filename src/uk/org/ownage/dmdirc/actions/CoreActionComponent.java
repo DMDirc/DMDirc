@@ -28,67 +28,55 @@ import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /**
- * An CoreActionComponent represents a component of some object that the user can
+ * A CoreActionComponent represents a component of some object that the user can
  * use as the subject of a condition within an action.
- * 
  * @author chris
  */
-public enum CoreActionComponent {
-    
+public enum CoreActionComponent implements ActionComponent {
+        
     CHANNEL_NAME {
-        Object get(final Object argument) { return ((Channel) argument).getChannelInfo().getName(); }
-        Class appliesTo() { return Channel.class; }
-        Class getType() { return String.class; }
+        public Object get(final Object argument) { return ((Channel) argument).getChannelInfo().getName(); }
+        public Class appliesTo() { return Channel.class; }
+        public Class getType() { return String.class; }
     },
     
     CHANNEL_COLOUR {
-        Object get(final Object argument) { return ((Channel) argument).getNotification(); }
-        Class appliesTo() { return Channel.class; }
-        Class getType() { return Color.class; }
-    },    
+        public Object get(final Object argument) { return ((Channel) argument).getNotification(); }
+        public Class appliesTo() { return Channel.class; }
+        public Class getType() { return Color.class; }
+    },
     
     USER_NAME {
-        Object get(final Object argument) { return ((ChannelClientInfo) argument).getNickname(); }
-        Class appliesTo() { return ChannelClientInfo.class; }
-        Class getType() { return String.class; }
+        public Object get(final Object argument) { return ((ChannelClientInfo) argument).getNickname(); }
+        public Class appliesTo() { return ChannelClientInfo.class; }
+        public Class getType() { return String.class; }
     },
     
     USER_MODES {
-        Object get(final Object argument) { return ((ChannelClientInfo) argument).getChanModeStr(false); }
-        Class appliesTo() { return ChannelClientInfo.class; }
-        Class getType() { return String.class; }        
+        public Object get(final Object argument) { return ((ChannelClientInfo) argument).getChanModeStr(false); }
+        public Class appliesTo() { return ChannelClientInfo.class; }
+        public Class getType() { return String.class; }
     },
     
     STRING_STRING {
-        Object get(final Object argument) { return argument; }
-        Class appliesTo() { return String.class; }
-        Class getType() { return String.class; }
+        public Object get(final Object argument) { return argument; }
+        public Class appliesTo() { return String.class; }
+        public Class getType() { return String.class; }
     },
     
     STRINGARRAY_LENGTH {
-        Object get(final Object argument) { return new Integer(((String[]) argument).length); }
-        Class appliesTo() { return String[].class; }
-        Class getType() { return Integer.class; }        
+        public Object get(final Object argument) { return new Integer(((String[]) argument).length); }
+        public Class appliesTo() { return String[].class; }
+        public Class getType() { return Integer.class; }
     };
     
-    /**
-     * Retrieves the component of the specified argument that this enum
-     * represents.
-     * @param argument The object to retrieve the component from
-     * @return The relevant component of the object
-     */
-    abstract Object get(Object argument);
+    /** {@inheritDoc} */
+    public abstract Object get(Object argument);
     
-    /**
-     * Retrieves the type of class that this component applies to.
-     * @return The Class that this component can be applied to
-     */
-    abstract Class appliesTo();
+    /** {@inheritDoc} */
+    public abstract Class appliesTo();
     
-    /**
-     * Retrieves the type of this component.
-     * @return The Class of this component.
-     */
-    abstract Class getType();
+    /** {@inheritDoc} */
+    public abstract Class getType();
     
 }

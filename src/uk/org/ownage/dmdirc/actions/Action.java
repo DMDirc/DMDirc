@@ -168,7 +168,7 @@ public class Action {
      * @param arg2 The second argument to be tested
      * @return True iff the args are equal, false otherwise
      */
-    private boolean checkArgs(Class[] arg1, Class[] arg2) {
+    private boolean checkArgs(final Class[] arg1, final Class[] arg2) {
         if (arg1.length != arg2.length) {
             return false;
         }
@@ -191,8 +191,8 @@ public class Action {
         // It may help to close your eyes while reading this method.
         
         int arg = -1;
-        CoreActionComponent component = null;
-        CoreActionComparison comparison = null;
+        ActionComponent component = null;
+        ActionComparison comparison = null;
         String target = "";
         
         if (properties.containsKey("condition" + condition + "-arg")) {
@@ -210,9 +210,8 @@ public class Action {
         }
         
         if (properties.containsKey("condition" + condition + "-component")) {
-            try {
-                component = CoreActionComponent.valueOf(properties.getProperty("condition" + condition + "-component"));
-            } catch (IllegalArgumentException ex) {
+            component = ActionManager.getActionComponent(properties.getProperty("condition" + condition + "-component"));
+            if (component == null) {
                 error("Invalid component for condition " + condition);
                 return false;
             }
@@ -227,9 +226,8 @@ public class Action {
         }
         
         if (properties.containsKey("condition" + condition + "-comparison")) {
-            try {
-                comparison = CoreActionComparison.valueOf(properties.getProperty("condition" + condition + "-comparison"));
-            } catch (IllegalArgumentException ex) {
+            comparison = ActionManager.getActionComparison(properties.getProperty("condition" + condition + "-comparison"));
+            if (comparison == null) {
                 error("Invalid comparison for condition " + condition);
                 return false;
             }

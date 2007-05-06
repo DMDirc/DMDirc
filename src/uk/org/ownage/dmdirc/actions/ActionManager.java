@@ -45,6 +45,12 @@ public class ActionManager {
     /** A list of registered action types. */
     private static List<ActionType> actionTypes;
     
+    /** A list of registered action components. */
+    private static List<ActionComponent> actionComponents;
+    
+    /** A list of registered action comparisons. */
+    private static List<ActionComparison> actionComparisons;
+    
     /** A map linking types and a list of actions that're registered for them. */
     private static HashMap<ActionType, List<Action>> actions;
     
@@ -56,9 +62,13 @@ public class ActionManager {
     /** Initialises the action manager. */
     public static void init() {
         actionTypes = new ArrayList<ActionType>();
+        actionComparisons = new ArrayList<ActionComparison>();
+        actionComponents = new ArrayList<ActionComponent>();
         actions = new HashMap<ActionType, List<Action>>();
         
         registerActionTypes(CoreActionType.values());
+        registerActionComparisons(CoreActionComparison.values());
+        registerActionComponents(CoreActionComponent.values());
         
         loadActions();
     }
@@ -72,6 +82,26 @@ public class ActionManager {
             actionTypes.add(type);
         }
     }
+    
+    /**
+     * Registers a set of action components with the manager.
+     * @param types An array of ActionComponents to be registered
+     */
+    public static void registerActionComponents(final ActionComponent[] comps) {
+        for (ActionComponent comp : comps) {
+            actionComponents.add(comp);
+        }
+    }
+    
+    /**
+     * Registers a set of action comparisons with the manager.
+     * @param types An array of ActionComparisons to be registered
+     */
+    public static void registerActionComparisons(final ActionComparison[] comps) {
+        for (ActionComparison comp : comps) {
+            actionComparisons.add(comp);
+        }
+    }    
     
     /**
      * Loads actions from the user's directory.
@@ -176,10 +206,10 @@ public class ActionManager {
     }
     
     /**
-     * Returns the action type specified by the given string, or null if it
-     * doesn't match a valid registered action type.
-     * @param type The name of the action type to try and find
-     * @return The actiontype with the specified name, or null on failure
+     * Returns the action comparison specified by the given string, or null if it
+     * doesn't match a valid registered action comparison.
+     * @param type The name of the action comparison to try and find
+     * @return The actioncomparison with the specified name, or null on failure
      */
     public static ActionType getActionType(final String type) {
         if (actionTypes == null) {
@@ -194,6 +224,46 @@ public class ActionManager {
         
         return null;
     }
+    
+    /**
+     * Returns the action component specified by the given string, or null if it
+     * doesn't match a valid registered action component.
+     * @param type The name of the action component to try and find
+     * @return The actioncomponent with the specified name, or null on failure
+     */
+    public static ActionComponent getActionComponent(final String type) {
+        if (actionComponents == null) {
+            init();
+        }
+        
+        for (ActionComponent target : actionComponents) {
+            if (((Enum) target).name().equals(type)) {
+                return target;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Returns the action type specified by the given string, or null if it
+     * doesn't match a valid registered action type.
+     * @param type The name of the action type to try and find
+     * @return The actiontype with the specified name, or null on failure
+     */
+    public static ActionComparison getActionComparison(final String type) {
+        if (actionComparisons == null) {
+            init();
+        }
+        
+        for (ActionComparison target : actionComparisons) {
+            if (((Enum) target).name().equals(type)) {
+                return target;
+            }
+        }
+        
+        return null;
+    }    
     
     /**
      * Substitutes variables into the string based on the arguments.
