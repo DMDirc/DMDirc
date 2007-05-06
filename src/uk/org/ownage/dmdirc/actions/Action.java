@@ -29,10 +29,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import uk.org.ownage.dmdirc.FrameContainer;
+import uk.org.ownage.dmdirc.ServerManager;
 
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
+import uk.org.ownage.dmdirc.ui.MainFrame;
 
 /**
  * Describes a single action.
@@ -288,8 +290,20 @@ public class Action {
             }
         }
         
+        CommandWindow cw;
+        
+        if (arguments[0] instanceof FrameContainer) {
+            cw = ((FrameContainer) arguments[0]).getFrame();
+        } else if (MainFrame.getMainFrame().getActiveFrame() != null) {
+            cw = (CommandWindow) MainFrame.getMainFrame().getActiveFrame();
+        } else if (ServerManager.getServerManager().numServers() > 0) {
+            cw = ServerManager.getServerManager().getServers().get(0).getFrame();
+        } else {
+            Logger.error(ErrorLevel.TRIVIAL, "No windows to execute actions in");
+            return;
+        }
+        
         for (String command : response) {
-            final CommandWindow cw = ((FrameContainer) arguments[0]).getFrame();
             cw.getCommandParser().parseCommand(cw, ActionManager.substituteVars(command, arguments));
         }
         

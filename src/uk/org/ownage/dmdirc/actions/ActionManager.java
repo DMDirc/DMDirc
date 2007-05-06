@@ -69,8 +69,6 @@ public class ActionManager {
         registerActionTypes(CoreActionType.values());
         registerActionComparisons(CoreActionComparison.values());
         registerActionComponents(CoreActionComponent.values());
-        
-        loadActions();
     }
     
     /**
@@ -106,7 +104,9 @@ public class ActionManager {
     /**
      * Loads actions from the user's directory.
      */
-    private static void loadActions() {
+    public static void loadActions() {
+        actions = new HashMap<ActionType, List<Action>>();
+        
         final String fs = System.getProperty("file.separator");
         final String location = Config.getConfigDir() + "actions" + fs;
         final File dir = new File(location);

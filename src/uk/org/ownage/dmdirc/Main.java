@@ -53,9 +53,11 @@ public final class Main {
         
         IdentityManager.load();
         
+        ActionManager.init();
+        
         PluginManager.getPluginManager();
         
-        ActionManager.init();
+        ActionManager.loadActions();
         
         MainFrame.getMainFrame();
     }

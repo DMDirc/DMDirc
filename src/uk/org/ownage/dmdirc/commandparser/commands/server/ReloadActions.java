@@ -51,7 +51,7 @@ public final class ReloadActions extends ServerCommand {
      */
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
-        ActionManager.init();
+        ActionManager.loadActions();
         origin.addLine("Actions reloaded.");
     }
     
