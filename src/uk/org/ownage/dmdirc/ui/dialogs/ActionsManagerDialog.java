@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.ui.dialogs;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
@@ -107,6 +108,7 @@ public class ActionsManagerDialog extends StandardDialog implements ActionListen
         myButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         myButton.setActionCommand("group.add");
         myButton.addActionListener(this);
+        myButton.setMargin(new Insets(0, 0, 0, 0));
         add(myButton, constraints);
         
         constraints.gridx++;
@@ -115,6 +117,7 @@ public class ActionsManagerDialog extends StandardDialog implements ActionListen
         myButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         myButton.setActionCommand("group.delete");
         myButton.addActionListener(this);
+        myButton.setMargin(new Insets(0, 0, 0, 0));
         add(myButton, constraints);
         
         constraints.gridx++;
@@ -123,6 +126,7 @@ public class ActionsManagerDialog extends StandardDialog implements ActionListen
         myButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         myButton.setActionCommand("group.rename");
         myButton.addActionListener(this);
+        myButton.setMargin(new Insets(0, 0, 0, 0));
         add(myButton, constraints);
         
         constraints.gridx++;
@@ -131,6 +135,7 @@ public class ActionsManagerDialog extends StandardDialog implements ActionListen
         myButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         myButton.setActionCommand("action.new");
         myButton.addActionListener(this);
+        myButton.setMargin(new Insets(0, 0, 0, 0));
         add(myButton, constraints);
         
         constraints.gridx++;
@@ -139,6 +144,7 @@ public class ActionsManagerDialog extends StandardDialog implements ActionListen
         myButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         myButton.setActionCommand("action.edit");
         myButton.addActionListener(this);
+        myButton.setMargin(new Insets(0, 0, 0, 0));
         add(myButton, constraints);
         
         constraints.gridx++;
@@ -147,6 +153,7 @@ public class ActionsManagerDialog extends StandardDialog implements ActionListen
         myButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
         myButton.setActionCommand("close");
         myButton.addActionListener(this);
+        myButton.setMargin(new Insets(0, 0, 0, 0));
         add(myButton, constraints);
         
         loadGroups();
