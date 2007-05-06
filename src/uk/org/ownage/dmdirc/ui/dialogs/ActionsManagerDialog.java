@@ -27,12 +27,16 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
+import uk.org.ownage.dmdirc.actions.Action;
+import uk.org.ownage.dmdirc.actions.ActionManager;
 
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
@@ -143,7 +147,22 @@ public class ActionsManagerDialog extends StandardDialog implements ActionListen
         myButton.addActionListener(this);
         add(myButton, constraints);
         
+        loadGroups();
+        
         pack();
+    }
+    
+    /**
+     * Retrieves known actions from the action manager and displays the
+     * appropriate groups in the dialog.
+     */
+    private void loadGroups() {
+        
+        final Map<String, List<Action>> actionGroups = ActionManager.getGroups();
+                
+        for (String group : actionGroups.keySet()) {
+            groups.addTab(group, null);
+        }
     }
 
     /** {@inheritDoc} */

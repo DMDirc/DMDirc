@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
@@ -54,6 +55,9 @@ public class ActionManager {
     /** A map linking types and a list of actions that're registered for them. */
     private static HashMap<ActionType, List<Action>> actions;
     
+    /** A map linking groups and a list of actions that're in them. */
+    private static HashMap<String, List<Action>> groups;
+    
     /** Creates a new instance of ActionManager. */
     private ActionManager() {
         
@@ -64,7 +68,6 @@ public class ActionManager {
         actionTypes = new ArrayList<ActionType>();
         actionComparisons = new ArrayList<ActionComparison>();
         actionComponents = new ArrayList<ActionComponent>();
-        actions = new HashMap<ActionType, List<Action>>();
         
         registerActionTypes(CoreActionType.values());
         registerActionComparisons(CoreActionComparison.values());
@@ -99,13 +102,22 @@ public class ActionManager {
         for (ActionComparison comp : comps) {
             actionComparisons.add(comp);
         }
-    }    
+    }
+    
+    /**
+     * Returns a map of groups to action lists.
+     * @return a map of groups to action lists
+     */
+    public static Map<String, List<Action>> getGroups() {
+        return groups;
+    }
     
     /**
      * Loads actions from the user's directory.
      */
     public static void loadActions() {
         actions = new HashMap<ActionType, List<Action>>();
+        groups = new HashMap<String, List<Action>>();
         
         final String fs = System.getProperty("file.separator");
         final String location = Config.getConfigDir() + "actions" + fs;
@@ -157,6 +169,12 @@ public class ActionManager {
             
             actions.get(trigger).add(action);
         }
+        
+        if (!groups.containsKey(action.getGroup())) {
+            groups.put(action.getGroup(), new ArrayList<Action>());
+        }
+        
+        groups.get(action.getGroup()).add(action);
     }
     
     /**
@@ -263,7 +281,7 @@ public class ActionManager {
         }
         
         return null;
-    }    
+    }
     
     /**
      * Substitutes variables into the string based on the arguments.
