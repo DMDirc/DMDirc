@@ -116,15 +116,15 @@ public final class PluginDialog extends StandardDialog implements
         pluginList = new JList(new DefaultListModel());
         pluginList.setCellRenderer(new PluginCellRenderer());
         
-        populateList();
-        
         scrollPane = new JScrollPane(pluginList);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         
         configureButton = new JButton("Configure");
+        configureButton.setEnabled(false);
         
-        toggleButton = new JButton("");
+        toggleButton = new JButton("Enable");
+        toggleButton.setEnabled(false);
         
         blurbLabel = new JTextArea("Plugins allow you to extend the functionality of DMDirc."
                 + " Plugins enabled here will be enabled next time you start the client.");
@@ -140,6 +140,8 @@ public final class PluginDialog extends StandardDialog implements
         infoLabel.setEditable(false);
         infoLabel.setHighlighter(null);
         infoLabel.setBackground(this.getBackground());
+        
+        populateList();
     }
     
     /** Lays out the dialog. */
@@ -199,6 +201,10 @@ public final class PluginDialog extends StandardDialog implements
         for (Plugin plugin : PluginManager.getPluginManager().getPossiblePlugins()) {
             ((DefaultListModel) pluginList.getModel()).addElement(plugin);
         }
+        if (((DefaultListModel) pluginList.getModel()).size() > 0) {
+            toggleButton.setEnabled(true);
+        }
+        pluginList.repaint();
         
     }
     
