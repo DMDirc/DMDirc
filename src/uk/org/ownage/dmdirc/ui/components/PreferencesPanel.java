@@ -374,7 +374,7 @@ public final class PreferencesPanel extends StandardDialog implements
         
         newNode = new DefaultMutableTreeNode(name);
         
-        if (parentCategory != "") {
+        if (!"".equals(parentCategory)) {
             parent = (DefaultMutableTreeNode) tabList.getNextMatch(
                     parentCategory, 0, Position.Bias.Forward)
                     .getLastPathComponent();
