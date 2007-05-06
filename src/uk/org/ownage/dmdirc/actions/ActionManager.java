@@ -137,6 +137,7 @@ public class ActionManager {
         } else {
             for (File file : dir.listFiles()) {
                 if (file.isDirectory()) {
+                    groups.put(file.getName(), new ArrayList<Action>());
                     loadActions(file);
                 }
             }

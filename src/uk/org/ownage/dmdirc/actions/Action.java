@@ -279,6 +279,14 @@ public class Action {
     }
     
     /**
+     * Retrieves this action's name.
+     * @return This action's name
+     */
+    public String getName() {
+        return name;
+    }    
+    
+    /**
      * Triggers this action.
      * @param format The format of the message that's going to be displayed.
      * @param arguments The arguments from the action that caused this trigger.
