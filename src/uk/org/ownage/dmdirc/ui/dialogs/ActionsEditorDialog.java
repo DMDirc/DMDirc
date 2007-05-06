@@ -43,22 +43,33 @@ public final class ActionsEditorDialog extends StandardDialog implements
      */
     private static final long serialVersionUID = 1;
     
+    /** Delete button. */
+    private JButton deleteButton;
+    
     /** Creates a new instance of ActionsEditorDialog. */
     public ActionsEditorDialog() {
         super(MainFrame.getMainFrame(), false);
         initComponents();
+        layoutComponents();
         addListeners();
     }
     
     /** Initialises the components. */
     private void initComponents() {
         orderButtons(new JButton(), new JButton());
+        deleteButton = new JButton("Delete");
+    }
+    
+    /** lays out the components.  */
+    private void layoutComponents() {
+        
     }
     
     /** Adds listeners to components. */
     private void addListeners() {
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
+        deleteButton.addActionListener(this);
     }
 
     /** {@inheritDoc}. */

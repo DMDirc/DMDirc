@@ -509,9 +509,8 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 				}
 			}
 		} else if (colour.length() == 6) {
-			Color col;
 			try {
-				col = Color.decode("#" + colour);
+				Color.decode("#" + colour);
 				res = Styliser.CODE_HEXCOLOUR+""+colour+""+line+Styliser.CODE_HEXCOLOUR;
 			} catch (NumberFormatException ex) { /* Do Nothing */ }
 		}

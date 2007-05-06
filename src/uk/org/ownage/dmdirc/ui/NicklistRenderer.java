@@ -74,7 +74,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
         super.getListCellRendererComponent(list, value, index, selected, focused);
         
         if (config.getOptionBool("nicklist", "altBackground") && !selected
-                && index % 2 == 1) {
+                && (index & 1) == 1) {
             final Color fallback = ColourManager.getColour("f0f0f0");
             
             this.setBackground(config.getOptionColour("nicklist", "altBackgroundColour", fallback));

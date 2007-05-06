@@ -551,35 +551,10 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event mouse event.
      */
     public void mouseDragged(final MouseEvent event) {
-        TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
-        DefaultMutableTreeNode node = null;
-        if (tree.getRowForLocation(event.getX(), event.getY()) < 0) {
-            currentSelectedPath = oldSelectedPath;
-            if (currentSelectedPath == null) {
-                if (Config.getOptionBool("ui", "treeviewRolloverEnabled")) {
-                    this.showRollover(node);
-                }
-            } else {
-                node = (DefaultMutableTreeNode) currentSelectedPath.getLastPathComponent();
-                if (Config.getOptionBool("ui", "treeviewRolloverEnabled")) {
-                    this.showRollover(node);
-                }
-                ((FrameContainer) node.getUserObject()).activateFrame();
-            }
-        } else {
-            selectedPath = tree.getPathForLocation(event.getX(), event.getY());
-            if ((oldSelectedPath == null) || !selectedPath.equals(oldSelectedPath)) {
-                oldSelectedPath = selectedPath;
-                node = (DefaultMutableTreeNode) oldSelectedPath.getLastPathComponent();
-                if (Config.getOptionBool("ui", "treeviewRolloverEnabled")) {
-                    this.showRollover(node);
-                }
-                ((FrameContainer) node.getUserObject()).activateFrame();
-            } else {
-                if (Config.getOptionBool("ui", "treeviewRolloverEnabled")) {
-                    this.showRollover(node);
-                }
-            }
+        final DefaultMutableTreeNode node = getNodeForLocation(event.getX(), event.getY());
+        this.showRollover(node);
+        if (node != null) {
+            ((FrameContainer) node.getUserObject()).activateFrame();
         }
     }
     
@@ -590,28 +565,31 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * @param event mouse event.
      */
     public void mouseMoved(final MouseEvent event) {
+        final DefaultMutableTreeNode node = getNodeForLocation(event.getX(), event.getY());
+        this.showRollover(node);
+    }
+    
+    /**
+     * Returns the node for the specified location, returning null if rollover
+     * is disabled or there is no node at the specified location.
+     *
+     * @param x x coordiantes
+     * @param y y coordiantes
+     *
+     * @return node or null
+     */
+    private DefaultMutableTreeNode getNodeForLocation(int x, int y) {
+        DefaultMutableTreeNode node = null;
         if (Config.getOptionBool("ui", "treeviewRolloverEnabled")) {
-            TreePath selectedPath, currentSelectedPath, oldSelectedPath = null;
-            DefaultMutableTreeNode node;
-            if (tree.getRowForLocation(event.getX(), event.getY()) < 0) {
-                currentSelectedPath = oldSelectedPath;
-                if (currentSelectedPath == null) {
-                    this.showRollover(null);
-                } else {
-                    node = (DefaultMutableTreeNode) currentSelectedPath.getLastPathComponent();
-                    this.showRollover(node);
-                }
+            final TreePath selectedPath = tree.getPathForLocation(x, y);
+            if (selectedPath == null) {
+                this.showRollover(null);
             } else {
-                selectedPath = tree.getPathForLocation(event.getX(), event.getY());
-                if ((oldSelectedPath == null) || !selectedPath.equals(oldSelectedPath)) {
-                    oldSelectedPath = selectedPath;
-                    node = (DefaultMutableTreeNode) oldSelectedPath.getLastPathComponent();
-                    this.showRollover(node);
-                } else {
-                    this.showRollover(null);
-                }
+                node = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+                this.showRollover((DefaultMutableTreeNode) selectedPath.getLastPathComponent());
             }
         }
+        return node;
     }
     
     /**

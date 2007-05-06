@@ -184,7 +184,7 @@ public final class StatusBar extends JPanel implements MouseListener,
             }
         };
         new Timer().schedule(messageTimer,
-                new Date(System.currentTimeMillis() + timeout * 1000));
+                new Date(System.currentTimeMillis() + timeout * 1000L));
     }
     
     /**
