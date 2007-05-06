@@ -35,6 +35,7 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 
@@ -167,6 +168,8 @@ public class ActionsManagerDialog extends StandardDialog implements ActionListen
      */
     private void loadGroups() {
         
+        groups.removeAll();
+        
         final Map<String, List<Action>> actionGroups = ActionManager.getGroups();
         
         final Object[] keys = actionGroups.keySet().toArray();
@@ -177,11 +180,36 @@ public class ActionsManagerDialog extends StandardDialog implements ActionListen
             groups.addTab((String) group, new ActionsGroupPanel(this, actionGroups.get(group)));
         }
     }
-
+    
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
         if (e.getActionCommand().equals("close")) {
             dispose();
+        } else if (e.getActionCommand().equals("group.add")) {
+            final String newGroup = JOptionPane.showInputDialog(this,
+                    "Please enter the name of the group to be created.");
+            if (newGroup != null && newGroup.length() > 0) {
+                ActionManager.makeGroup(newGroup);
+                loadGroups();
+            }
+        } else if (e.getActionCommand().equals("group.delete")
+        && groups.getSelectedIndex() > -1) {
+            final String group = groups.getTitleAt(groups.getSelectedIndex());
+            final Map<String, List<Action>> actionGroups = ActionManager.getGroups();
+            
+            if (actionGroups.get(group).size() > 0) {
+                final int response = JOptionPane.showConfirmDialog(this,
+                        "Are you sure you wish to delete the '" + group
+                        + "' group and all actions within it?",
+                        "Confirm deletion", JOptionPane.YES_NO_OPTION);
+                if (response == JOptionPane.YES_OPTION) {
+                    ActionManager.removeGroup(group);
+                }
+            } else {
+                ActionManager.removeGroup(group);
+            }
+            
+            loadGroups();
         }
     }
     

@@ -111,7 +111,7 @@ public class ActionManager {
     public static Map<String, List<Action>> getGroups() {
         return groups;
     }
-    
+        
     /**
      * Loads actions from the user's directory.
      */
@@ -119,9 +119,7 @@ public class ActionManager {
         actions = new HashMap<ActionType, List<Action>>();
         groups = new HashMap<String, List<Action>>();
         
-        final String fs = System.getProperty("file.separator");
-        final String location = Config.getConfigDir() + "actions" + fs;
-        final File dir = new File(location);
+        final File dir = new File(getDirectory());
         
         if (!dir.exists()) {
             try {
@@ -223,6 +221,39 @@ public class ActionManager {
         final String fs = System.getProperty("file.separator");
         return Config.getConfigDir() + "actions" + fs;
     }
+    
+    /**
+     * Creates a new group with the specified name
+     * @param group The group to be created
+     */
+    public static void makeGroup(final String group) {
+        if (!groups.containsKey(group) && new File(getDirectory() + group).mkdir()) {
+            groups.put(group, new ArrayList<Action>());
+        }
+    }
+    
+    /**
+     * Removes the group with the specified name.
+     * @param group The group to be removed
+     */
+    public static void removeGroup(final String group) {
+        if (groups.containsKey(group)) {
+            final File dir = new File(getDirectory() + group);
+            for (File file : dir.listFiles()) {
+                if (!file.delete()) {
+                    Logger.error(ErrorLevel.ERROR, "Unable to remove file: " + file.getAbsoluteFile());
+                    return;
+                }
+            }
+            
+            if (!dir.delete()) {
+                Logger.error(ErrorLevel.ERROR, "Unable to remove dir: " + dir.getAbsoluteFile());
+                return;
+            }
+            
+            groups.remove(group);
+        }
+    }    
     
     /**
      * Returns the action comparison specified by the given string, or null if it
