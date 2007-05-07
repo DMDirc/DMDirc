@@ -30,7 +30,7 @@ public interface Plugin {
 	/**
 	 * Called when the plugin is loaded.
 	 *
-	 * @returns false if the plugin can not be loaded
+	 * @return false if the plugin can not be loaded
 	 */
 	boolean onLoad();
 	
@@ -60,7 +60,7 @@ public interface Plugin {
 	/**
 	 * Called to see if the plugin has configuration options (via dialog).
 	 *
-	 * @returns true if the plugin has configuration options via a dialog.
+	 * @return true if the plugin has configuration options via a dialog.
 	 */
 	boolean isConfigurable();
 	

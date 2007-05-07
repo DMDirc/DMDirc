@@ -86,7 +86,11 @@ public final class ColourPickerDialog extends StandardDialog {
         return cpd;
     }
     
-    /** {@inheritDoc}. */
+    /** 
+     * Adds an actions listener to this dialog.
+     *
+     * @param listener the listener to add
+     */
     public void addActionListener(final ActionListener listener) {
         colourChooser.addActionListener(listener);
     }

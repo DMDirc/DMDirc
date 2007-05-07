@@ -86,7 +86,7 @@ public class ActionManager {
     
     /**
      * Registers a set of action components with the manager.
-     * @param types An array of ActionComponents to be registered
+     * @param comps An array of ActionComponents to be registered
      */
     public static void registerActionComponents(final ActionComponent[] comps) {
         for (ActionComponent comp : comps) {
@@ -96,7 +96,7 @@ public class ActionManager {
     
     /**
      * Registers a set of action comparisons with the manager.
-     * @param types An array of ActionComparisons to be registered
+     * @param comps An array of ActionComparisons to be registered
      */
     public static void registerActionComparisons(final ActionComparison[] comps) {
         for (ActionComparison comp : comps) {
