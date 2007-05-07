@@ -31,7 +31,9 @@ import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -44,7 +46,9 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
@@ -54,6 +58,7 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.table.TableModel;
 import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -81,18 +86,18 @@ public final class PreferencesPanel extends StandardDialog implements
      * class structure is changed (or anything else that would prevent
      * serialized objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 5;
+    private static final long serialVersionUID = 6;
     
     /** Acceptable input types for the config dialog. */
     public static enum OptionType {
         /** JTextfield. */
-        TEXTFIELD, 
+        TEXTFIELD,
         /** JCheckBox. */
-        CHECKBOX, 
+        CHECKBOX,
         /** JComboBox. */
-        COMBOBOX, 
+        COMBOBOX,
         /** JSpinner. */
-        SPINNER, 
+        SPINNER,
         /** ColourChoose. */
         COLOUR,
     };
@@ -114,6 +119,9 @@ public final class PreferencesPanel extends StandardDialog implements
     
     /** Categories in the dialog. */
     private final Map<String, JPanel> categories;
+    
+    /** Custom panels, not to be laid out automatically. */
+    private final List<JPanel> panels;
     
     /** Preferences tab list, used to switch option types. */
     private JTree tabList;
@@ -166,6 +174,8 @@ public final class PreferencesPanel extends StandardDialog implements
         comboBoxes = new HashMap<String, JComboBox>();
         spinners = new HashMap<String, JSpinner>();
         colours = new HashMap<String, ColourChooser>();
+        
+        panels = new ArrayList<JPanel>();
         
         nodeIcons = new HashMap<DefaultMutableTreeNode, Icon>();
         
@@ -278,6 +288,7 @@ public final class PreferencesPanel extends StandardDialog implements
      *   4 Integers, default, minimum maximum, step size</li>
      * <li>COLOUR takes a String as the initial value, and
      *   two booleans, one to show irc colours, one to show hex colours</li>
+     * <li>TABLE takes a table model param</li>
      * </ul>
      */
     private void addComponent(final JPanel parent, final String optionName,
@@ -410,6 +421,18 @@ public final class PreferencesPanel extends StandardDialog implements
         
         panel.add(infoLabel, BorderLayout.PAGE_START);
         panel.add(new JPanel(new SpringLayout()), BorderLayout.CENTER);
+    }
+    
+    /**
+     * Replaces the option panel in a category with the specified panel, this
+     * panel will be be automatically laid out.
+     * 
+     * @param category category to replace the options panel in
+     * @param panel panel to replace options panel with
+     */
+    public void replaceOptionPanel(final String category, JPanel panel) {
+        panels.add(panel);
+        categories.get(category).add(panel, 1);
     }
     
     /**
@@ -583,9 +606,11 @@ public final class PreferencesPanel extends StandardDialog implements
      */
     public void display() {
         for (JPanel panel : categories.values()) {
-            layoutGrid((JPanel) panel.getComponent(1), ((JPanel) panel
-                    .getComponent(1)).getComponentCount() / 2, 2, SMALL_BORDER,
-                    SMALL_BORDER, LARGE_BORDER, LARGE_BORDER);
+            if (!panels.contains((JPanel) panel.getComponent(1))) {
+                layoutGrid((JPanel) panel.getComponent(1), ((JPanel) panel
+                        .getComponent(1)).getComponentCount() / 2, 2, SMALL_BORDER,
+                        SMALL_BORDER, LARGE_BORDER, LARGE_BORDER);
+            }
         }
         final String tabName = Config.getOption("dialogstate", owner.getClass().getName());
         
