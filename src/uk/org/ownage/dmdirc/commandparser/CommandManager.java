@@ -238,6 +238,7 @@ public final class CommandManager {
         new KickReason();
         new Me();
         new MeEmpty();
+        new Mode();
         new Notify();
         new Part();
         new PartDefault();

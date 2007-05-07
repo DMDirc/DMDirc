@@ -28,7 +28,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import javax.swing.DefaultListModel;
 
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
