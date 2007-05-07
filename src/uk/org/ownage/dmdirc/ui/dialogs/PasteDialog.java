@@ -57,7 +57,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
     private JTextArea textField;
     
     /** parent frame. */
-    private Frame parent;
+    private final Frame parent;
     
     /**
      * Creates a new instance of PreferencesDialog.

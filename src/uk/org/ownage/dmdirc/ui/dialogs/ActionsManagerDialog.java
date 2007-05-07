@@ -51,7 +51,7 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 /**
  * Allows the user to manage actions.
  */
-public class ActionsManagerDialog extends StandardDialog implements ActionListener {
+public final class ActionsManagerDialog extends StandardDialog implements ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -91,8 +91,8 @@ public class ActionsManagerDialog extends StandardDialog implements ActionListen
         constraints.gridy = 0;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.gridwidth = 6;
-        final JLabel blurb = new JLabel("Actions allow you to make DMDirc " +
-                "respond automatically to events.");
+        final JLabel blurb = new JLabel("Actions allow you to make DMDirc " 
+                + "respond automatically to events.");
         blurb.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
         add(blurb, constraints);
         

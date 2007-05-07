@@ -578,7 +578,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      *
      * @return node or null
      */
-    private DefaultMutableTreeNode getNodeForLocation(int x, int y) {
+    private DefaultMutableTreeNode getNodeForLocation(final int x, final int y) {
         DefaultMutableTreeNode node = null;
         if (Config.getOptionBool("ui", "treeviewRolloverEnabled")) {
             final TreePath selectedPath = tree.getPathForLocation(x, y);

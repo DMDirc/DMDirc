@@ -31,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
@@ -47,10 +48,8 @@ import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
-import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.identities.Identity;
-import uk.org.ownage.dmdirc.identities.IdentityManager;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -68,78 +67,45 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
      */
     private static final long serialVersionUID = 1;
     
-    /** Parent channel. */
-    private final Channel channel;
     /** Parent container panel. */
     private final JPanel parent;
     /** Current settings panel. */
     private JPanel settingsPanel;
-    /** Add setting panel. */
-    private JPanel addPanel;
     /** Information label. */
     private final JLabel infoLabel;
     /** No settings warning label. */
     private final JLabel noCurrentSettingsLabel;
-    /** splut user modes checkbox. */
-    private final JCheckBox splitUserModes;
-    /** cycle text text field. */
-    private final JTextField cycleText;
-    /** kick text text field. */
-    private final JTextField kickText;
-    /** part text text field. */
-    private final JTextField partText;
-    /** background colour text field. */
-    private final JTextField backColour;
-    /** fore ground colour text field. */
-    private final JTextField foreColour;
-    /** frame buffer text field. */
-    private final JTextField frameBuffer;
-    /** input buffer text field. */
-    private final JTextField inputBuffer;
     /** new setting value text field. */
     private JTextField newSettingField;
     /** new setting combo box. */
     private JComboBox newSettingComboBox;
-    /** add new settinb button. */
-    private JButton newSettingButton;
     /** channel settings. */
     private Properties settings;
     /** number of current settings. */
     private int numCurrentSettings;
-    /** number of addable settings. */
-    private int numAddableSettings;
     /** hashmap, config option -> name. */
-    private HashMap<String, String> optionMap;
+    private Map<String, String> optionMap;
     /** Channel identity file. */
-    private Identity identity;
+    private final Identity identity;
     /** Valid option types. */
     private enum OPTION_TYPE { TEXTFIELD, CHECKBOX, }
     /** text fields. */
-    private HashMap<String, JTextField> textFields;
+    private Map<String, JTextField> textFields;
     /** checkboxes. */
-    private HashMap<String, JCheckBox> checkBoxes;
+    private Map<String, JCheckBox> checkBoxes;
     
     /**
      * Creates a new instance of ChannelSettingsPane.
      * @param newParent parent panel
-     * @param newChannel parent Channel
+     * @param newIdentity parent identity
      */
-    public ChannelSettingsPane(final JPanel newParent, final Channel newChannel,
-            final Identity newIdentity) {
+    public ChannelSettingsPane(final JPanel newParent, final Identity newIdentity) {
+        super();
         parent = newParent;
-        channel = newChannel;
         identity = newIdentity;
         
         infoLabel = new JLabel();
         noCurrentSettingsLabel = new JLabel();
-        splitUserModes = new JCheckBox();
-        cycleText = new JTextField();
-        kickText = new JTextField();
-        partText = new JTextField();
-        backColour = new JTextField();
-        foreColour = new JTextField();
-        frameBuffer = new JTextField();
-        inputBuffer = new JTextField();
         
         initSettingsPanel();
     }
@@ -237,13 +203,15 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     /** Initialises the add settings panel.  */
     public void initAddPanel() {
         final GridBagConstraints constraints = new GridBagConstraints();
+        final JButton newSettingButton;
+        
+        final JPanel addPanel;
         
         addPanel = new JPanel();
+        
         newSettingField = new JTextField();
         newSettingButton = new JButton();
         newSettingComboBox = new JComboBox(new DefaultComboBoxModel());
-        
-        numAddableSettings = 0;
         
         addPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
@@ -296,10 +264,10 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         optionMap.put(displayName, configName);
         optionValue = settings.getProperty(configName);
         
-        if (optionValue != null) {
-            addCurrentOption(configName, displayName, settingsPanel, type, optionValue);
-        } else {
+        if (optionValue == null) {
             addAddableOption(displayName);
+        } else {
+            addCurrentOption(configName, displayName, settingsPanel, type, optionValue);
         }
     }
     
@@ -335,7 +303,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         }
         
         component.setPreferredSize(new Dimension(150,
-                splitUserModes.getFont().getSize()));
+                component.getFont().getSize()));
         
         label.setText(displayName + ": ");
         label.setPreferredSize(new Dimension(150,
@@ -366,7 +334,6 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
      */
     public void addAddableOption(final String displayName) {
         if (((DefaultComboBoxModel) newSettingComboBox.getModel()).getIndexOf(displayName) == -1) {
-            numAddableSettings++;
             ((DefaultComboBoxModel) newSettingComboBox.getModel()).addElement(displayName);
         }
     }
@@ -377,14 +344,11 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
      * @param value option value
      */
     private void addNewCurrentOption(final String name, final String value) {
-        if (identity != null && value != null) {
-            if (optionMap.get(name) != null) {
-                final String[] optionValues = optionMap.get(name).split("\\.");
-                identity.setOption(optionValues[0], optionValues[1], value);
-                ((DefaultComboBoxModel) newSettingComboBox.getModel()).removeElement(name);
-                numAddableSettings--;
-                initCurrentSettingsPanel();
-            }
+        if (identity != null && value != null && optionMap.get(name) != null) {
+            final String[] optionValues = optionMap.get(name).split("\\.");
+            identity.setOption(optionValues[0], optionValues[1], value);
+            ((DefaultComboBoxModel) newSettingComboBox.getModel()).removeElement(name);
+            initCurrentSettingsPanel();
         }
     }
     

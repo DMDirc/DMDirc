@@ -30,7 +30,6 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.border.EmptyBorder;
 
-import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.ChannelClientProperty;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
@@ -51,19 +50,14 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
     /** The config manager to be used for this nick list. */
     private final ConfigManager config;
     
-    /** Associated channel. */
-    private final Channel channel;
-    
     /**
      * Creates a new instance of NicklistRenderer.
+     *
      * @param newConfig ConfigManager for the associated channel
-     * @param newChannel Associated channel
      */
-    public NicklistRenderer(final ConfigManager newConfig,
-            final Channel newChannel) {
+    public NicklistRenderer(final ConfigManager newConfig) {
         super();
         config = newConfig;
-        channel = newChannel;
     }
     
     /** {@inheritDoc} */

@@ -27,6 +27,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -41,11 +42,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import uk.org.ownage.dmdirc.BrowserLauncher;
-import uk.org.ownage.dmdirc.plugins.PluginManager;
 import uk.org.ownage.dmdirc.plugins.Plugin;
+import uk.org.ownage.dmdirc.plugins.PluginManager;
 import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 import uk.org.ownage.dmdirc.ui.components.PluginCellRenderer;
+import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 
@@ -78,12 +79,12 @@ public final class PluginDialog extends StandardDialog implements
     private JButton myOkButton;
     
     /** Currently selected plugin. */
-    private int selectedPlugin = 0;
+    private int selectedPlugin;
     
     /** Blurb label. */
     private JTextArea blurbLabel;
     
-    /** Info Label */
+    /** Info Label. */
     private JEditorPane infoLabel;
     
     /** Creates a new instance of PluginDialog. */
@@ -261,6 +262,7 @@ public final class PluginDialog extends StandardDialog implements
         }
     }
 
+    /** {@inheritDoc}. */
     public void hyperlinkUpdate(final HyperlinkEvent e) {
         if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
             BrowserLauncher.openURL(e.getURL());

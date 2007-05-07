@@ -43,7 +43,7 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
  * Handles the rendering of the JList used for plugin management.
  * @author chris
  */
-public class PluginCellRenderer implements ListCellRenderer {
+public final class PluginCellRenderer implements ListCellRenderer {
     
     /** Creates a new instance of PluginCellRenderer. */
     public PluginCellRenderer() {

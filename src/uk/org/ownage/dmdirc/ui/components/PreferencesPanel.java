@@ -22,15 +22,10 @@
 
 package uk.org.ownage.dmdirc.ui.components;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
-
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridBagLayout;
@@ -71,6 +66,10 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 
+import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
+
 /**
  * Allows the user to modify global client preferences.
  */
@@ -86,7 +85,16 @@ public final class PreferencesPanel extends StandardDialog implements
     
     /** Acceptable input types for the config dialog. */
     public static enum OptionType {
-        TEXTFIELD, CHECKBOX, COMBOBOX, SPINNER, COLOUR,
+        /** JTextfield. */
+        TEXTFIELD, 
+        /** JCheckBox. */
+        CHECKBOX, 
+        /** JComboBox. */
+        COMBOBOX, 
+        /** JSpinner. */
+        SPINNER, 
+        /** ColourChoose. */
+        COLOUR,
     };
     
     /** All text fields in the dialog, used to apply settings. */
@@ -125,7 +133,7 @@ public final class PreferencesPanel extends StandardDialog implements
     /** root node. */
     private DefaultMutableTreeNode rootNode;
     
-    /** Node icons */
+    /** Node icons. */
     private Map<DefaultMutableTreeNode, Icon> nodeIcons;
     
     /**
@@ -276,10 +284,10 @@ public final class PreferencesPanel extends StandardDialog implements
             final String title, final String helpText, final OptionType type,
             final Object... args) {
         final JLabel label = new JLabel(title, JLabel.TRAILING);
-        if (!"".equals(helpText)) {
-            label.setToolTipText(helpText);
-        } else {
+        if ("".equals(helpText)) {
             label.setToolTipText("No help available.");
+        } else {
+            label.setToolTipText(helpText);
         }
         
         JComponent option;
@@ -374,12 +382,12 @@ public final class PreferencesPanel extends StandardDialog implements
         
         newNode = new DefaultMutableTreeNode(name);
         
-        if (!"".equals(parentCategory)) {
+        if ("".equals(parentCategory)) {
+            parent = rootNode;
+        } else {
             parent = (DefaultMutableTreeNode) tabList.getNextMatch(
                     parentCategory, 0, Position.Bias.Forward)
                     .getLastPathComponent();
-        } else {
-            parent = rootNode;
         }
         
         nodeIcons.put(newNode, nodeIcon);
@@ -443,6 +451,7 @@ public final class PreferencesPanel extends StandardDialog implements
      * @param name config name for the option
      * @param displayName displayable name for the option
      * @param helpText Help text to be displayed for the option
+     * @param options Default combo box options
      * @param defaultValue default value
      * @param editable editable combo box
      */
@@ -516,8 +525,8 @@ public final class PreferencesPanel extends StandardDialog implements
      */
     public void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
-            Config.setOption("dialogstate", owner.getClass().getName(), 
-        	    tabList.getSelectionPath().getLastPathComponent().toString());
+            Config.setOption("dialogstate", owner.getClass().getName(),
+                    tabList.getSelectionPath().getLastPathComponent().toString());
             saveOptions();
             setVisible(false);
         } else if (getCancelButton().equals(actionEvent.getSource())) {
@@ -578,20 +587,23 @@ public final class PreferencesPanel extends StandardDialog implements
                     .getComponent(1)).getComponentCount() / 2, 2, SMALL_BORDER,
                     SMALL_BORDER, LARGE_BORDER, LARGE_BORDER);
         }
-        String tabName = Config.getOption("dialogstate", owner.getClass().getName());
-                
+        final String tabName = Config.getOption("dialogstate", owner.getClass().getName());
+        
         if (tabName == null || "".equals(tabName)) {
             cardLayout.first(mainPanel);
             tabList.setSelectionPath(tabList.getPathForRow(0));
         } else {
             tabList.setSelectionPath(tabList.getNextMatch(
-        	    tabName, 0, Position.Bias.Forward));
+                    tabName, 0, Position.Bias.Forward));
         }
         pack();
         setLocationRelativeTo(MainFrame.getMainFrame());
         this.setVisible(true);
     }
     
+    /**
+     * Preferences tree cell renderer.
+     */
     private class PreferencesTreeCellRenderer extends DefaultTreeCellRenderer {
         
         /**

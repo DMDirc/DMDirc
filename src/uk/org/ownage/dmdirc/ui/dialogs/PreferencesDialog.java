@@ -24,7 +24,6 @@ package uk.org.ownage.dmdirc.ui.dialogs;
 
 import java.util.Properties;
 
-import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -45,7 +44,7 @@ public final class PreferencesDialog implements PreferencesInterface {
     private static final long serialVersionUID = 5;
     
     /** preferences panel. */
-    private PreferencesPanel preferencesPanel;
+    private final PreferencesPanel preferencesPanel;
     
     /**
      * Creates a new instance of PreferencesDialog.
@@ -137,7 +136,7 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addCategory(tabName, "");
         
         preferencesPanel.addCheckboxOption(tabName, "ui.maximisewindows",
-                "Auto-Maximise windows: ","",
+                "Auto-Maximise windows: ", "",
                 Config.getOptionBool("ui", "maximisewindows"));
         preferencesPanel.addColourOption(tabName, "ui.backgroundcolour",
                 "Window background colour: ", "",
@@ -266,7 +265,7 @@ public final class PreferencesDialog implements PreferencesInterface {
         }
         
         preferencesPanel.addComboboxOption(tabName, "ui.lookandfeel",
-                "Look and feel: ","", lafs,
+                "Look and feel: ", "", lafs,
                 Config.getOption("ui", "lookandfeel"), false);
         preferencesPanel.addCheckboxOption(tabName, "ui.showversion",
                 "Show version: ", "",

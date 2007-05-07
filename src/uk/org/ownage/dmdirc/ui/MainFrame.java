@@ -67,9 +67,9 @@ import uk.org.ownage.dmdirc.ui.components.StatusBar;
 import uk.org.ownage.dmdirc.ui.dialogs.AboutDialog;
 import uk.org.ownage.dmdirc.ui.dialogs.ActionsManagerDialog;
 import uk.org.ownage.dmdirc.ui.dialogs.NewServerDialog;
+import uk.org.ownage.dmdirc.ui.dialogs.PluginDialog;
 import uk.org.ownage.dmdirc.ui.dialogs.PreferencesDialog;
 import uk.org.ownage.dmdirc.ui.dialogs.ProfileEditorDialog;
-import uk.org.ownage.dmdirc.ui.dialogs.PluginDialog;
 import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
 import uk.org.ownage.dmdirc.ui.framemanager.tree.TreeFrameManager;
 
@@ -116,7 +116,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /**
      * The frame manager that's being used.
      */
-    private FrameManager frameManager;
+    private final FrameManager frameManager;
     
     /** Dekstop pane. */
     private JDesktopPane desktopPane;
@@ -135,9 +135,6 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /** Toggle state menu item. */
     private JMenuItem toggleStateMenuItem;
-    
-    /** split pane. */
-    private JSplitPane mainSplitPane;
     
     /** status bar. */
     private StatusBar statusBar;
@@ -452,6 +449,8 @@ public final class MainFrame extends JFrame implements WindowListener,
      * Initialises the components for this frame.
      */
     private void initComponents() {
+        JSplitPane mainSplitPane;
+        
         jPanel1 = new JPanel();
         desktopPane = new JDesktopPane();
         final JMenuBar menuBar = new JMenuBar();
@@ -528,20 +527,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         debugMenu.setMnemonic('d');
         debugMenu.setText("Debug");
         
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('n');
-        menuItem.setText("Normal Error");
-        menuItem.setActionCommand("ErrorNormal");
-        menuItem.addActionListener(this);
-        debugMenu.add(menuItem);
-        
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('f');
-        menuItem.setText("Fatal Error");
-        menuItem.setActionCommand("ErrorFatal");
-        menuItem.addActionListener(this);
-        debugMenu.add(menuItem);
-        
         pluginsMenu = new JMenu("Plugins");
         pluginsMenu.setMnemonic('p');
         settingsMenu.add(pluginsMenu);
@@ -595,10 +580,6 @@ public final class MainFrame extends JFrame implements WindowListener,
     public void actionPerformed(final ActionEvent e) {
         if (e.getActionCommand().equals("About")) {
             new AboutDialog().setVisible(true);
-        } else if (e.getActionCommand().equals("ErrorNormal")) {
-            Logger.error(ErrorLevel.ERROR, "This is a test error", new Exception("1 2 3"));
-        } else if (e.getActionCommand().equals("ErrorFatal")) {
-            Logger.error(ErrorLevel.FATAL, "This is a test fatal error", new Exception("1 2 3"));
         } else if (e.getActionCommand().equals("Profile")) {
             new ProfileEditorDialog();
         } else if (e.getActionCommand().equals("Exit")) {

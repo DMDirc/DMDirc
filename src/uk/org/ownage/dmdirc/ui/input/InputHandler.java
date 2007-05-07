@@ -377,7 +377,7 @@ public final class InputHandler implements KeyListener, ActionListener {
                     target.setText(target.getText() + actionEvent.getActionCommand());
                     colourPicker.dispose();
                     colourPicker = null;
-                }});
+                } });
                 colourPicker.setLocation((int) target.getLocationOnScreen().getX(), (int) target.getLocationOnScreen().getY() - colourPicker.getHeight());
                 colourPicker.setVisible(true);
         }

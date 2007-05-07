@@ -372,7 +372,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
     }
     
     /** Synchronized method to pack the dialog. */
-    private synchronized void resize() {
+    private void resize() {
         pack();
     }
 }

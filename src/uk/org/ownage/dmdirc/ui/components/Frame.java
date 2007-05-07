@@ -232,8 +232,12 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                         if (!getTextPane().getText().equals("")) { ts = "\n" + ts; }
                         Styliser.addStyledString(getTextPane().getStyledDocument(), ts);
                     }
-                    if (!timestamp && !getTextPane().getText().equals("")) { myLine = "\n" + myLine; }
-                    Styliser.addStyledString(getTextPane().getStyledDocument(), myLine);
+                    if (timestamp && getTextPane().getText().equals("")) { 
+                        Styliser.addStyledString(getTextPane().getStyledDocument(), myLine);
+                    } else {
+                        Styliser.addStyledString(getTextPane().getStyledDocument(), '\n' + myLine);
+                    }
+                    
                 }
                 
                 final int frameBufferSize = parent.getConfigManager().getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE);

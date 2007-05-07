@@ -23,8 +23,8 @@
 package uk.org.ownage.dmdirc.ui.components;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.util.List;
+
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -32,9 +32,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
+
 import uk.org.ownage.dmdirc.actions.Action;
 import uk.org.ownage.dmdirc.ui.dialogs.ActionsManagerDialog;
+
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
@@ -53,18 +54,23 @@ public class ActionsGroupPanel extends JPanel {
     private static final long serialVersionUID = 1;
     
     /** The column headers we use. */
-    private static final String[] headers = {"Name", "Trigger", "Response"};
+    private static final String[] HEADERS = {"Name", "Trigger", "Response"};
     
     /** The dialog that owns this group panel. */
     private final ActionsManagerDialog parent;
     
     /** The actions that belong in this pane. */
-    private List<Action> actions;
+    private final List<Action> actions;
     
     /** The JTable we use to display data. */
     private JTable table;
     
-    /** Creates a new instance of ActionsGroupPanel. */
+    /** 
+     * Creates a new instance of ActionsGroupPanel. 
+     *
+     * @param parent parent dialog
+     * @param actions Actions list to show
+     */
     public ActionsGroupPanel(final ActionsManagerDialog parent,
             final List<Action> actions) {
         super();
@@ -93,7 +99,7 @@ public class ActionsGroupPanel extends JPanel {
     
     /** Initialises the components for this panel. */
     private void initComponents() {
-        Object[][] data = new Object[actions.size()][3];
+        final Object[][] data = new Object[actions.size()][3];
         
         int i = 0;
         for (Action action : actions) {
@@ -103,7 +109,7 @@ public class ActionsGroupPanel extends JPanel {
             i++;
         }
         
-        table = new JTable(data, headers) {
+        table = new JTable(data, HEADERS) {
             private static final long serialVersionUID = 1;
             
             public boolean isCellEditable(final int x, final int y) {

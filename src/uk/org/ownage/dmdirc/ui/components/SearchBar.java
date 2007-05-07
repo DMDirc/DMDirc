@@ -69,7 +69,7 @@ public final class SearchBar extends JPanel implements ActionListener {
     private JTextField searchBox;
     
     /** Frame parent. */
-    private Frame parent;
+    private final Frame parent;
     
     /**
      * Creates a new instance of StatusBar.
@@ -80,6 +80,13 @@ public final class SearchBar extends JPanel implements ActionListener {
         
         this.parent = newParent;
         
+        initComponents();
+        layoutComponents();
+        addListeners();
+    }
+    
+    /** Initialises components. */
+    private void initComponents() {
         closeButton = new JButton();
         searchButton = new JButton();
         nextButton = new JButton();
@@ -95,12 +102,9 @@ public final class SearchBar extends JPanel implements ActionListener {
         searchBox.setBorder(BorderFactory.createCompoundBorder(
                 searchBox.getBorder(), new EmptyBorder(2, 2, 2, 2)));
         
-        //searchBox.setColumns(25);
         searchBox.setMinimumSize(new Dimension(50, 25));
         searchBox.setPreferredSize(new Dimension(300, 25));
         searchBox.setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
-        
-        closeButton.addActionListener(this);
         
         closeButton.setIcon(new ImageIcon(this.getClass()
         .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
@@ -111,7 +115,10 @@ public final class SearchBar extends JPanel implements ActionListener {
         closeButton.setContentAreaFilled(false);
         closeButton.setBorder(new EmptyBorder(0, 0, 0, 0));
         closeButton.setPreferredSize(new Dimension(16, 16));
-        
+    }
+    
+    /** Lays out components. */
+    private void layoutComponents() {
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
         
         add(closeButton);
@@ -120,6 +127,11 @@ public final class SearchBar extends JPanel implements ActionListener {
         add(nextButton);
         add(prevButton);
         add(caseCheck);
+    }
+    
+    /** Adds listeners to components. */
+    private void addListeners() {
+        closeButton.addActionListener(this);
     }
     
     /** {@inheritDoc}. */
