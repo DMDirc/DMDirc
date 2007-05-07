@@ -523,10 +523,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         menuItem.addActionListener(this);
         helpMenu.add(menuItem);
         
-        
-        debugMenu.setMnemonic('d');
-        debugMenu.setText("Debug");
-        
         pluginsMenu = new JMenu("Plugins");
         pluginsMenu.setMnemonic('p');
         settingsMenu.add(pluginsMenu);
@@ -539,9 +535,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         pluginsMenu.add(menuItem);
         
         menuBar.add(fileMenu);
-        menuBar.add(windowMenu);
         menuBar.add(settingsMenu);
-        menuBar.add(debugMenu);
+        menuBar.add(windowMenu);
         menuBar.add(helpMenu);
         
         setJMenuBar(menuBar);
