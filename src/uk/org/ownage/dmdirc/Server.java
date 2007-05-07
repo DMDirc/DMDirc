@@ -926,6 +926,10 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         
         ActionManager.processEvent(CoreActionType.SERVER_NOPING, null, this,
                 new Long(parser.getPingTime(false)));
+        
+        if (parser.getPingTime(false) >= configManager.getOptionInt("server", "pingtimeout", 60000)) {
+            handleNotification("stonedServer", server);
+        }
     }
     
     /** {@inheritDoc} */

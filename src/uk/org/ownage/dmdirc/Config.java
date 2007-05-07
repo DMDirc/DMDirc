@@ -137,6 +137,7 @@ public final class Config {
         defaults.setProperty("notifications.connectError", "server");
         defaults.setProperty("notifications.connectRetry", "server");
         defaults.setProperty("notifications.socketClosed", "all");
+        defaults.setProperty("notifications.stonedServer", "all");
         defaults.setProperty("notifications.privateNotice", "all");
         defaults.setProperty("notifications.privateCTCP", "server");
         defaults.setProperty("notifications.privateCTCPreply", "server");
@@ -178,6 +179,7 @@ public final class Config {
         defaults.setProperty("logging.debugLoggingSysOut", "true");
         
         defaults.setProperty("server.friendlymodes", "true");
+        defaults.setProperty("server.pingtimeout", "60000");
         
         // Some defaults for use in actions
         defaults.setProperty("actions.textcolour", "12");

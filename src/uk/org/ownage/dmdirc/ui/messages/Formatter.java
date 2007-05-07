@@ -237,6 +237,7 @@ public final class Formatter {
         defaultProperties.setProperty("rawCommand", colour + "10>>> %1$s");
         defaultProperties.setProperty("unknownCommand", colour + "14Unknown command %1$s.");
         defaultProperties.setProperty("socketClosed", colour + "2-!- You have been disconnected from the server.");
+        defaultProperties.setProperty("stonedServer", colour + "2-!- Disconnected from a non-responsive server.");
         defaultProperties.setProperty("motdStart", colour + "10%1$s");
         defaultProperties.setProperty("motdLine", colour + "10" + fixed + "%1$s");
         defaultProperties.setProperty("motdEnd", colour + "10%1$s");
