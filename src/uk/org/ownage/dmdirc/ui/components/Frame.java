@@ -42,6 +42,8 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.Locale;
 
@@ -57,11 +59,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
+import javax.swing.plaf.synth.SynthLookAndFeel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
@@ -193,7 +197,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         
         final Boolean pref = Config.getOptionBool("ui", "maximisewindows");
         if (pref || MainFrame.getMainFrame().getMaximised()) {
-            hideBorder();
+            hideTitlebar();
         }
     }
     
@@ -232,7 +236,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                         if (!getTextPane().getText().equals("")) { ts = "\n" + ts; }
                         Styliser.addStyledString(getTextPane().getStyledDocument(), ts);
                     }
-                    if (timestamp && getTextPane().getText().equals("")) { 
+                    if (timestamp && getTextPane().getText().equals("")) {
                         Styliser.addStyledString(getTextPane().getStyledDocument(), myLine);
                     } else {
                         Styliser.addStyledString(getTextPane().getStyledDocument(), '\n' + myLine);
@@ -368,39 +372,55 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     public final void propertyChange(final PropertyChangeEvent propertyChangeEvent) {
         if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
-            hideBorder();
-            
+            hideTitlebar();
             MainFrame.getMainFrame().setMaximised(true);
         } else {
-            setBorder(myborder);
-            ((BasicInternalFrameUI) getUI()).getNorthPane()
-            .setPreferredSize(titlebarSize);
-            ((BasicInternalFrameUI) getUI()).getNorthPane()
-            .setMaximumSize(titlebarSize);
-            
-            myborder = null;
+            showTitlebar();
             
             MainFrame.getMainFrame().setMaximised(false);
             MainFrame.getMainFrame().setActiveFrame(this);
         }
     }
     
-    /**
-     * Hides the border around the frame.
-     */
-    private void hideBorder() {
-        if (myborder == null) {
-            myborder = getBorder();
-            titlebarSize =
-                    ((BasicInternalFrameUI) getUI())
-                    .getNorthPane().getPreferredSize();
-            
-            ((BasicInternalFrameUI) getUI()).getNorthPane()
-            .setPreferredSize(new Dimension(0, 0));
-            ((BasicInternalFrameUI) getUI()).getNorthPane()
-            .setMaximumSize(new Dimension(0, 0));
-            setBorder(new EmptyBorder(0, 0, 0, 0));
+    /** Hides the titlebar for this frame. */
+    private void hideTitlebar() {
+        setBorder(new EmptyBorder(0, 0, 0, 0));
+        ((BasicInternalFrameUI) getUI()).setNorthPane(null);
+    }
+    
+    /** Shows tht titlebar for this frame. */
+    private void showTitlebar() {
+        final Class<?> c;
+        Object temp = null;
+        Constructor<?> constructor;
+        
+        String componentUI = (String) UIManager.get("InternalFrameUI");
+        
+        if ("javax.swing.plaf.synth.SynthLookAndFeel".equals(componentUI)) {
+            temp = SynthLookAndFeel.createUI(this);
+        } else {
+            try {
+                c = getClass().getClassLoader().loadClass(componentUI);
+                constructor = c.getConstructor(new Class[] {javax.swing.JInternalFrame.class});
+                temp = constructor.newInstance(new Object[] {this});
+            } catch (ClassNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (NoSuchMethodException ex) {
+                ex.printStackTrace();
+            } catch (InstantiationException ex) {
+                ex.printStackTrace();
+            } catch (IllegalAccessException ex) {
+                ex.printStackTrace();
+            } catch (InvocationTargetException ex) {
+                ex.printStackTrace();
+            }
         }
+        
+        setBorder(UIManager.getBorder("InternalFrame.border"));
+        if (temp == null) {
+            temp = new BasicInternalFrameUI(this);
+        }
+        this.setUI((BasicInternalFrameUI) temp);
     }
     
     /**
