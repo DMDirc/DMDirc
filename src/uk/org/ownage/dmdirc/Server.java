@@ -249,10 +249,18 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         updateIgnoreList();
     }
     
+    /**
+     * Reconnects to the IRC server with a specified reason
+     * @param reason The quit reason to send
+     */
+    public void reconnect(final String reason) {
+        disconnect(reason);
+        connect(server, port, password, ssl, profile);
+    }    
+    
     /** Reconnects to the IRC server. */
     public void reconnect() {
-        disconnect(Config.getOption("general", "reconnectmessage"));
-        connect(server, port, password, ssl, profile);
+        reconnect(Config.getOption("general", "reconnectmessage"));
     }
     
     /**
@@ -475,6 +483,8 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             
             if (configManager.getOptionBool("general", "closechannelsonquit")) {
                 closeChannels();
+            } else {
+                clearChannels();
             }
             
             if (configManager.getOptionBool("general", "closequeriesonquit")) {
@@ -494,6 +504,15 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         channels.clear();
         closing = false;
     }
+    
+    /**
+     * Clears the nicklist of all open channels.
+     */
+    private void clearChannels() {
+        for (Channel channel : channels.values()) {
+            channel.clearNicklist();
+        }
+    }    
     
     /**
      * closes all open query windows associated with this server.

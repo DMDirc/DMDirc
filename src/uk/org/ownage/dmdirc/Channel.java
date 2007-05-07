@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import javax.swing.DefaultListModel;
 
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
@@ -62,6 +63,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelTopic;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
 import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
+import uk.org.ownage.dmdirc.ui.NicklistListModel;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
@@ -365,6 +367,13 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
                 server = null;
             }
         });
+    }
+    
+    /**
+     * Clears this channel's nicklist (used on disconnection).
+     */
+    public void clearNicklist() {
+        ((NicklistListModel) frame.getNickList().getModel()).replace(new ArrayList<ChannelClientInfo>());
     }
     
     /**
@@ -940,5 +949,4 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     public Color getNotification() {
         return notification;
     }
-    
 }

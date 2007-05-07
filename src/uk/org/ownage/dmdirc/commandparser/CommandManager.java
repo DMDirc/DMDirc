@@ -253,6 +253,7 @@ public final class CommandManager {
         new Clear();
         new ConfigInfo();
         new Ctcp();
+        new Disconnect();
         new Echo();
         new Help();
         new Ignore();
@@ -267,6 +268,7 @@ public final class CommandManager {
         new Quit();
         new QuitDefault();
         new Raw();
+        new Reconnect();
         new ReloadActions();
         new ReloadFormatter();
         new SaveFormatter();
