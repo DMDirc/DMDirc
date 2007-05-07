@@ -453,7 +453,46 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         jPanel1 = new JPanel();
         desktopPane = new JDesktopPane();
+        desktopPane.setBackground(new Color(238, 238, 238));
+        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+        statusBar = new StatusBar();
+        
+        mainSplitPane.setBorder(null);
+        
+        initMenuBar();
+        
+        setPreferredSize(new Dimension(800, 600));
+        
+        getContentPane().setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
+        
+        getContentPane().add(mainSplitPane, BorderLayout.CENTER);
+        
+        getContentPane().add(statusBar, BorderLayout.SOUTH);
+        
+        mainSplitPane.setBorder(new EmptyBorder(0, 0, 0, SMALL_BORDER));
+        
+        mainSplitPane.setDividerSize(SMALL_BORDER);
+        mainSplitPane.setOneTouchExpandable(false);
+        
+        mainSplitPane.setLeftComponent(jPanel1);
+        mainSplitPane.setRightComponent(desktopPane);
+        
+        mainSplitPane.setDividerLocation(155);
+        mainSplitPane.setResizeWeight(0);
+        mainSplitPane.setContinuousLayout(true);
+        
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setTitle("DMDirc");
+        jPanel1.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER, 0, 0));
+        desktopPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        
+        pack();
+    }
+    
+    private void initMenuBar() {
         final JMenuBar menuBar = new JMenuBar();
+        JMenuItem menuItem;
+        
         final JMenu fileMenu = new JMenu();
         miAddServer = new JMenuItem();
         miPreferences = new JMenuItem();
@@ -462,12 +501,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         final JMenu helpMenu = new JMenu();
         final JMenu debugMenu = new JMenu();
         toggleStateMenuItem = new JMenuItem();
-        desktopPane.setBackground(new Color(238, 238, 238));
-        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-        statusBar = new StatusBar();
-        JMenuItem menuItem;
-        
-        mainSplitPane.setBorder(null);
         
         settingsMenu.setText("Settings");
         settingsMenu.setMnemonic('s');
@@ -505,13 +538,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         fileMenu.add(menuItem);
         
         
-        windowMenu.setMnemonic('w');
-        windowMenu.setText("Window");
-        
-        toggleStateMenuItem.setMnemonic('m');
-        toggleStateMenuItem.setText("Maximise");
-        windowMenu.add(toggleStateMenuItem);
-        
+        initWindowMenu(windowMenu);
+
         
         helpMenu.setMnemonic('h');
         helpMenu.setText("Help");
@@ -540,33 +568,15 @@ public final class MainFrame extends JFrame implements WindowListener,
         menuBar.add(helpMenu);
         
         setJMenuBar(menuBar);
+    }
+    
+    private void initWindowMenu(JMenu windowMenu) {
+        windowMenu.setMnemonic('w');
+        windowMenu.setText("Window");
         
-        setPreferredSize(new Dimension(800, 600));
-        
-        getContentPane().setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
-        
-        getContentPane().add(mainSplitPane, BorderLayout.CENTER);
-        
-        getContentPane().add(statusBar, BorderLayout.SOUTH);
-        
-        mainSplitPane.setBorder(new EmptyBorder(0, 0, 0, SMALL_BORDER));
-        
-        mainSplitPane.setDividerSize(SMALL_BORDER);
-        mainSplitPane.setOneTouchExpandable(false);
-        
-        mainSplitPane.setLeftComponent(jPanel1);
-        mainSplitPane.setRightComponent(desktopPane);
-        
-        mainSplitPane.setDividerLocation(155);
-        mainSplitPane.setResizeWeight(0);
-        mainSplitPane.setContinuousLayout(true);
-        
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle("DMDirc");
-        jPanel1.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER, 0, 0));
-        desktopPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-        
-        pack();
+        toggleStateMenuItem.setMnemonic('m');
+        toggleStateMenuItem.setText("Maximise");
+        windowMenu.add(toggleStateMenuItem);
     }
     
     /**

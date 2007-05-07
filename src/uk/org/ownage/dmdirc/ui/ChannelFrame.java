@@ -26,11 +26,18 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JList;
 import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
@@ -43,8 +50,12 @@ import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
+import uk.org.ownage.dmdirc.commandparser.Command;
+import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandParser;
+import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.ui.components.Frame;
@@ -56,7 +67,8 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 /**
  * The channel frame is the GUI component that represents a channel to the user.
  */
-public final class ChannelFrame extends Frame {
+public final class ChannelFrame extends Frame implements MouseListener,
+        ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -86,6 +98,12 @@ public final class ChannelFrame extends Frame {
     /** The channel object that owns this frame. */
     private final Channel parent;
     
+    /** nicklist popup menu. */
+    private JPopupMenu nicklistPopup;
+    
+    /** Command map. */
+    private Map<String, Command> commands;
+    
     /**
      * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
      * and default options for the form.
@@ -96,13 +114,15 @@ public final class ChannelFrame extends Frame {
         
         parent = owner;
         
+        commands = new HashMap<String, Command>();
+        
         maxLineLength = this.getServer().getParser().getMaxLength("PRIVMSG", this.getFrameParent().toString());
         
         initComponents();
         
         nickList.setBackground(owner.getConfigManager().getOptionColour("ui", "nicklistbackgroundcolour",
                 owner.getConfigManager().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
-        nickList.setForeground(owner.getConfigManager().getOptionColour("ui", "nicklistforegroundcolour", 
+        nickList.setForeground(owner.getConfigManager().getOptionColour("ui", "nicklistforegroundcolour",
                 owner.getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
         
         commandParser = new ChannelCommandParser(((Channel) getFrameParent()).
@@ -189,7 +209,7 @@ public final class ChannelFrame extends Frame {
      */
     public JList getNickList() {
         return nickList;
-    }    
+    }
     
     /**
      * Initialises the compoents in this frame.
@@ -200,6 +220,9 @@ public final class ChannelFrame extends Frame {
         getPopup().addSeparator();
         getPopup().add(settingsMI);
         
+        nicklistPopup = new JPopupMenu();
+        popuplateNicklistPopup();
+        
         
         final GridBagConstraints constraints = new GridBagConstraints();
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -208,6 +231,8 @@ public final class ChannelFrame extends Frame {
         nickList = new JList();
         nickList.setCellRenderer(new NicklistRenderer(parent.getConfigManager()));
         nickList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        
+        nickList.addMouseListener(this);
         
         splitPane.setBorder(null);
         final BasicSplitPaneDivider divider =
@@ -261,9 +286,37 @@ public final class ChannelFrame extends Frame {
      * {@inheritDoc}.
      */
     public void actionPerformed(final ActionEvent actionEvent) {
+        if (commands.containsKey(actionEvent.getActionCommand())) {
+            Command command = commands.get(actionEvent.getActionCommand());
+            for (Object nickname : nickList.getSelectedValues()) {
+                if (command instanceof ChannelCommand) {
+                    ((ChannelCommand) commands.get(actionEvent.getActionCommand())).
+                            execute(this, this.getServer(),
+                            (Channel)this.getContainer(), ((ChannelClientInfo) nickname).getNickname());
+                } else if (command instanceof ServerCommand) {
+                    ((ServerCommand) commands.get(actionEvent.getActionCommand())).
+                            execute(this, this.getServer(), ((ChannelClientInfo) nickname).getNickname());
+                }
+            }
+        }
         super.actionPerformed(actionEvent);
         if (actionEvent.getSource() == settingsMI) {
             new ChannelSettingsDialog((Channel) getFrameParent()).setVisible(true);
+        }
+    }
+    
+    /** Popuplates the nicklist popup. */
+    private void popuplateNicklistPopup() {
+        nicklistPopup.removeAll();
+        commands.clear();
+        
+        List<Command> commandList = CommandManager.getNicklistCommands();
+        for (Command command : commandList) {
+            commands.put(command.getName(), command);
+            JMenuItem mi = new JMenuItem(command.getName());
+            mi.setActionCommand(command.getName());
+            mi.addActionListener(this);
+            nicklistPopup.add(mi);
         }
     }
     
@@ -284,5 +337,82 @@ public final class ChannelFrame extends Frame {
     /** {@inheritDoc}. */
     public int getMaxLineLength() {
         return maxLineLength;
+    }
+    
+    /** {@inheritDoc}. */
+    public void actionEvent(final ActionEvent actionEvent) {
+        System.out.println(actionEvent.getActionCommand());
+    }
+    
+    /**
+     * Checks for url's, channels and nicknames. {@inheritDoc}
+     */
+    public void mouseClicked(final MouseEvent mouseEvent) {
+        processMouseEvent(mouseEvent);
+    }
+    
+    /**
+     * Not needed for this class. {@inheritDoc}
+     */
+    public void mousePressed(final MouseEvent mouseEvent) {
+        processMouseEvent(mouseEvent);
+    }
+    
+    /**
+     * Not needed for this class. {@inheritDoc}
+     */
+    public void mouseReleased(final MouseEvent mouseEvent) {
+        processMouseEvent(mouseEvent);
+    }
+    
+    /**
+     * Not needed for this class. {@inheritDoc}
+     */
+    public void mouseEntered(final MouseEvent mouseEvent) {
+        //Ignore.
+    }
+    
+    /**
+     * Not needed for this class. {@inheritDoc}
+     */
+    public void mouseExited(final MouseEvent mouseEvent) {
+        //Ignore.
+    }
+    
+    /**
+     * Processes every mouse button event to check for a popup trigger.
+     * @param e mouse event
+     */
+    public void processMouseEvent(final MouseEvent e) {
+        if (e.getSource() == nickList && nickList.getMousePosition() != null) {
+            boolean showMenu = false;
+            for (int i = 0; i < nickList.getModel().getSize(); i++) {
+                if (nickList.getCellBounds(i, i).contains(nickList.getMousePosition())
+                && nickList.isSelectedIndex(i)) {
+                    showMenu = true;
+                    break;
+                }
+            }
+            if (!showMenu) {
+                for (int i = 0; i < nickList.getModel().getSize(); i++) {
+                    if (nickList.getCellBounds(i, i).contains(nickList.getMousePosition())) {
+                        nickList.setSelectedIndex(i);
+                        showMenu = true;
+                        break;
+                    }
+                }
+            }
+            if (showMenu) {
+                if (e.isPopupTrigger()) {
+                    final Point point = getMousePosition();
+                    popuplateNicklistPopup();
+                    nicklistPopup.show(this, (int) point.getX(), (int) point.getY());
+                }
+            } else {
+                nickList.clearSelection();
+            }
+        } else {
+            super.processMouseEvent(e);
+        }
     }
 }
