@@ -100,6 +100,8 @@ public final class PreferencesPanel extends StandardDialog implements
         SPINNER,
         /** ColourChoose. */
         COLOUR,
+        /** JPanel. */
+        PANEL,
     };
     
     /** All text fields in the dialog, used to apply settings. */
@@ -344,6 +346,9 @@ public final class PreferencesPanel extends StandardDialog implements
                         (Boolean) args[2]);
                 colours.put(optionName, (ColourChooser) option);
                 break;
+            case PANEL:
+                option = (JComponent) args[0];
+                break;
             default:
                 throw new IllegalArgumentException(type + " is not a valid option");
         }
@@ -539,6 +544,22 @@ public final class PreferencesPanel extends StandardDialog implements
             final boolean showHexColours) {
         addComponent(categories.get(category), name, displayName, helpText,
                 OptionType.COLOUR, defaultValue, showIrcColours, showHexColours);
+    }
+    
+    /**
+     * Adds an option to the specified category.
+     *
+     * @param category category option is to be added to
+     * @param name config name for the option
+     * @param displayName displayable name for the option
+     * @param helpText Help text to be displayed for the option
+     * @param panel panel to add
+     */
+    public void addPanelOption(final String category, final String name, 
+            final String displayName, final String helpText, 
+            final JPanel panel) {
+        addComponent(categories.get(category), name, displayName, helpText,
+                OptionType.PANEL, panel);
     }
     
     /**
