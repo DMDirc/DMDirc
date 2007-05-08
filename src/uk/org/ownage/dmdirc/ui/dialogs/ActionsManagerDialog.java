@@ -166,7 +166,7 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
      * Retrieves known actions from the action manager and displays the
      * appropriate groups in the dialog.
      */
-    private void loadGroups() {
+    public void loadGroups() {
         
         groups.removeAll();
         
@@ -210,6 +210,10 @@ public final class ActionsManagerDialog extends StandardDialog implements Action
             }
             
             loadGroups();
+        } else if (e.getActionCommand().equals("action.edit")) {
+            new ActionsEditorDialog(this);
+        } else if (e.getActionCommand().equals("action.new")) {
+            new ActionsEditorDialog(this);
         }
     }
     

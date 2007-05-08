@@ -499,7 +499,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         final JMenu settingsMenu = new JMenu();
         final JMenu windowMenu = new JMenu();
         final JMenu helpMenu = new JMenu();
-        final JMenu debugMenu = new JMenu();
         toggleStateMenuItem = new JMenuItem();
         
         settingsMenu.setText("Settings");

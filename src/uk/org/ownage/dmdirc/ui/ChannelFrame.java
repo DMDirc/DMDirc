@@ -33,6 +33,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.swing.JList;
@@ -313,7 +314,8 @@ public final class ChannelFrame extends Frame implements MouseListener,
         List<Command> commandList = CommandManager.getNicklistCommands();
         for (Command command : commandList) {
             commands.put(command.getName(), command);
-            JMenuItem mi = new JMenuItem(command.getName());
+            JMenuItem mi = new JMenuItem(command.getName().substring(0, 1).
+                    toUpperCase(Locale.getDefault()) + command.getName().substring(1));
             mi.setActionCommand(command.getName());
             mi.addActionListener(this);
             nicklistPopup.add(mi);
