@@ -206,10 +206,6 @@ public final class PreferencesPanel extends StandardDialog implements
         tabList.setShowsRootHandles(false);
         tabList.setCellRenderer(new PreferencesTreeCellRenderer());
         tabList.addTreeSelectionListener(this);
-        tabList.setBackground(Config.getOptionColor("treeview", "backgroundcolour",
-                Config.getOptionColor("ui", "backgroundcolour", Color.WHITE)));
-        tabList.setForeground(Config.getOptionColor("treeview", "foregroundcolour",
-                Config.getOptionColor("ui", "foregroundcolour", Color.BLACK)));
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new GridBagLayout());
