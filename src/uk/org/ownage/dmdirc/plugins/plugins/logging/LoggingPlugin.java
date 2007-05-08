@@ -471,11 +471,17 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 		if (testFile.exists()) {
 			try {
 				ReverseFileReader file = new ReverseFileReader(testFile);
+				// Because the file includes a newline char at the end, an empty line
+				// is returned by getLines. To counter this, we call getLines(1) and do
+				// nothing with the output.
+				file.getLines(1);
 				Stack<String> lines = file.getLines(numLines);
+				lines.pop();
 				while (!lines.empty()) {
 					frame.addLine(getColouredString(colour,lines.pop()), showTimestamp);
 				}
 				file.close();
+				frame.addLine(getColouredString(colour,"--- End of backbuffer\n"), showTimestamp);
 			} catch (Exception e) {
 				Logger.error(ErrorLevel.ERROR, "Unable to show backbuffer (Filename: "+filename+")", e);
 			}
