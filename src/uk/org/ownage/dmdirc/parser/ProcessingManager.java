@@ -74,9 +74,12 @@ public class ProcessingManager {
 		addProcessor(new Process004005(myParser, this));
 		// 464
 		addProcessor(new Process464(myParser, this));
+		// 301
 		// 305
 		// 306
 		addProcessor(new ProcessAway(myParser, this));
+		// 352
+		addProcessor(new ProcessWho(myParser, this));
 		// JOIN
 		addProcessor(new ProcessJoin(myParser, this));
 		// KICK
