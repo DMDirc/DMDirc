@@ -220,6 +220,25 @@ public final class Config {
     }
     
     /**
+     * Returns the specified option.
+     * @return the value of the specified option
+     * @param domain the domain of the option
+     * @param option the name of the option
+     * @param fallback the balue to be returned if the option is not found
+     */
+    public static String getOption(final String domain, final String option, final String fallback) {
+        if (properties == null) {
+            initialise();
+        }
+        
+        if (hasOption(domain, option)) {
+            return getOption(domain, option);
+        } else {
+            return fallback;
+        }
+    }
+    
+    /**
      * Returns the specified option parsed as a boolean.
      * @return the boolean value of the specified option
      * @param domain the domain of the option
