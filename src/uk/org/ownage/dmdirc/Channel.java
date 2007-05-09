@@ -28,6 +28,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
@@ -108,6 +110,9 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     
     /** The colour of this channel's notifications. */
     private Color notification = Color.BLACK;
+    
+    /** Whether we're in this channel or not. */
+    private boolean onChannel;
     
     /**
      * Creates a new instance of Channel.
@@ -281,6 +286,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * Called when we join this channel. Just needs to output a message.
      */
     public void selfJoin() {
+        onChannel = true;
+        
         final ClientInfo me = server.getParser().getMyself();
         frame.addLine("channelSelfJoin", "", me.getNickname(), me.getIdent(),
                 me.getHost(), channelInfo.getName());
@@ -325,7 +332,9 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     /**
      * Resets the window state after the client has left a channel.
      */
-    private void resetWindow() {
+    public void resetWindow() {
+        onChannel = false;
+        
         frame.updateNames(new ArrayList<ChannelClientInfo>());
     }
     
@@ -360,14 +369,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             }
         });
     }
-    
-    /**
-     * Clears this channel's nicklist (used on disconnection).
-     */
-    public void clearNicklist() {
-        ((NicklistListModel) frame.getNickList().getModel()).replace(new ArrayList<ChannelClientInfo>());
-    }
-    
+        
     /**
      * Determines if the specified frame is owned by this object.
      *
@@ -385,6 +387,16 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     private void mapClient(final ChannelClientInfo target) {
         if (target.getMiscObject() == null) {
             target.setMiscObject(new HashMap<ChannelClientProperty, Object>());
+        }
+    }
+    
+    /**
+     * Called every {general.whotime} seconds to check if the channel needs
+     * to send a who request.
+     */
+    public void checkWho() {
+        if (onChannel && configManager.getOptionBool("channel", "sendwho")) {
+            server.getParser().sendLine("WHO :" + channelInfo.getName());
         }
     }
     
@@ -775,7 +787,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
                         null, this, channelClient);
             } else {
                 ActionManager.processEvent(CoreActionType.CHANNEL_USERBACK,
-                        null, this, channelClient);                
+                        null, this, channelClient);
             }
         }
     }

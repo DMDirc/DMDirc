@@ -172,6 +172,14 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         
         tabCompleter.addEntries(CommandManager.getServerCommandNames());
         
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                for (Channel channel : channels.values()) {
+                    channel.checkWho();
+                }
+            }
+        }, 0, Config.getOptionInt("general", "whotime", 60000));
+        
         connect(server, port, password, ssl, profile);
     }
     
@@ -512,7 +520,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     private void clearChannels() {
         for (Channel channel : channels.values()) {
-            channel.clearNicklist();
+            channel.resetWindow();
         }
     }
     
