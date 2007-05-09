@@ -96,27 +96,27 @@ public final class Ignore extends ServerCommand {
             
             final String host = implodeArgs(1, args);
             
-            String list = "";
-            String newlist = "";
+            final StringBuffer newlist = new StringBuffer();
             boolean found = false;
             
             if (identity.hasOption("network", "ignorelist")) {
-                list = identity.getOption("network", "ignorelist");
-            }
-            
-            for (String entry : list.split("\n")) {
-                if (entry.toLowerCase().equals(host)) {
-                    found = true;
-                } else {
-                    if (newlist.length() > 0) {
-                    newlist = newlist + "\n";
+                final String list = identity.getOption("network", "ignorelist");
+                
+                
+                for (String entry : list.split("\n")) {
+                    if (entry.toLowerCase().equals(host)) {
+                        found = true;
+                    } else {
+                        if (newlist.length() > 0) {
+                            newlist.append('\n');
+                        }
+                        newlist.append(entry);
                     }
-                    newlist = newlist + entry;
                 }
             }
             
             if (found) {
-                identity.setOption("network", "ignorelist", newlist);
+                identity.setOption("network", "ignorelist", newlist.toString());
                 origin.addLine("Removed " + host + " from the ignore list.");
             } else {
                 origin.addLine("Host '" + host + "' not found.");

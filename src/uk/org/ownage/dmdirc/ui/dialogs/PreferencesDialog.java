@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.ui.dialogs;
 
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.UIManager;
@@ -30,7 +31,6 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
 import uk.org.ownage.dmdirc.ui.components.PreferencesPanel;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
  * Allows the user to modify global client preferences.
@@ -105,14 +105,14 @@ public final class PreferencesDialog implements PreferencesInterface {
                 "Reconnect on disconnect: ", "", Config.getOptionBool("general", "reconnectondisconnect"));
         preferencesPanel.addCheckboxOption(general, "general.showcolourdialog",
                 "Show colour dialog: ", "", Config.getOptionBool("general", "showcolourdialog"));
-        preferencesPanel.addSpinnerOption(general, "general.whotime", 
-                "Who request interval (ms): ", "", 
+        preferencesPanel.addSpinnerOption(general, "general.whotime",
+                "Who request interval (ms): ", "",
                 Config.getOptionInt("general", "whotime", 600000),
                 10000, Integer.MAX_VALUE, 10000);
-        preferencesPanel.addSpinnerOption(general, "server.pingtimeout", 
-                "Server timeout (ms): ", "", Config.getOptionInt("server", "pingtimeout", 60000), 
+        preferencesPanel.addSpinnerOption(general, "server.pingtimeout",
+                "Server timeout (ms): ", "", Config.getOptionInt("server", "pingtimeout", 60000),
                 5000, Integer.MAX_VALUE, 5000);
-        preferencesPanel.addCheckboxOption(general, "channel.sendwho", 
+        preferencesPanel.addCheckboxOption(general, "channel.sendwho",
                 "Send channel WHOs: ", "", Config.getOptionBool("channel", "sendwho"));
         
         preferencesPanel.addTextfieldOption(messages, "general.closemessage",
@@ -127,15 +127,15 @@ public final class PreferencesDialog implements PreferencesInterface {
                 "Kick message: ", "", Config.getOption("general", "kickmessage"));
         preferencesPanel.addTextfieldOption(messages, "general.reconnectmessage",
                 "Reconnect message: ", "", Config.getOption("general", "reconnectmessage"));
-                
-        preferencesPanel.addCheckboxOption(windows, "general.closechannelsonquit", 
+        
+        preferencesPanel.addCheckboxOption(windows, "general.closechannelsonquit",
                 "Close channels on quit: ", "", Config.getOptionBool("general", "closechannelsonquit"));
-        preferencesPanel.addCheckboxOption(windows, "general.closechannelsondisconnect", 
+        preferencesPanel.addCheckboxOption(windows, "general.closechannelsondisconnect",
                 "Close channels on disconnect: ", "", Config.getOptionBool("general", "closechannelsondisconnect"));
-        preferencesPanel.addCheckboxOption(windows, "general.closequeriesonquit", 
+        preferencesPanel.addCheckboxOption(windows, "general.closequeriesonquit",
                 "Close queries on quit: ", "", Config.getOptionBool("general", "closequeriesonquit"));
-        preferencesPanel.addCheckboxOption(windows, "general.closequeriesondisconnect", 
-                "Close queries on disconnect: ", "", Config.getOptionBool("general", "closequeriesondisconnect"));  
+        preferencesPanel.addCheckboxOption(windows, "general.closequeriesondisconnect",
+                "Close queries on disconnect: ", "", Config.getOptionBool("general", "closequeriesondisconnect"));
     }
     
     /**
@@ -172,11 +172,11 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addCheckboxOption(tabName, "ui.awayindicator",
                 "Away indicator: ", "Shows an away indicator in the input field.",
                 Config.getOptionBool("ui", "awayindicator"));
-        preferencesPanel.addCheckboxOption(tabName, "nicklist.altBackground", 
-                "Alternating nicklist", "", 
+        preferencesPanel.addCheckboxOption(tabName, "nicklist.altBackground",
+                "Alternating nicklist", "",
                 Config.getOptionBool("nicklist", "altBackground"));
         preferencesPanel.addColourOption(tabName, "nicklist.altBackgroundColour",
-                "Alternate nicklist colour: ", "", 
+                "Alternate nicklist colour: ", "",
                 Config.getOption("nicklist", "nicklist.altBackgroundColour", "f0f0f0"),
                 false, true);
     }
@@ -306,9 +306,9 @@ public final class PreferencesDialog implements PreferencesInterface {
     
     /** {@inheritDoc}. */
     public void configClosed(final Properties properties) {
-        for (Object configOption : properties.keySet()) {
-            final String[] args = ((String) configOption).split("\\.");
-            Config.setOption(args[0], args[1], (String) properties.get(configOption));
+        for (Map.Entry<Object,Object> entry : properties.entrySet()) {
+            final String[] args = ((String) entry.getKey()).split("\\.");
+            Config.setOption(args[0], args[1], (String) entry.getValue());
         }
     }
 }

@@ -87,6 +87,8 @@ public class Action {
             properties = new Properties();
             properties.load(inputStream);
             loadAction();
+            
+            inputStream.close();
         } catch (IOException ex) {
             Logger.error(ErrorLevel.ERROR, "Unable to load action: " + group + "/" + name, ex);
         }

@@ -954,7 +954,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
                 + Math.floor(parser.getPingTime(false) / 1000.0) + " seconds.", null, 10);
         
         ActionManager.processEvent(CoreActionType.SERVER_NOPING, null, this,
-                new Long(parser.getPingTime(false)));
+                Long.valueOf(parser.getPingTime(false)));
         
         if (parser.getPingTime(false) >= configManager.getOptionInt("server", "pingtimeout", 60000)) {
             handleNotification("stonedServer", server);
@@ -965,7 +965,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     /** {@inheritDoc} */
     public void onPingSuccess(final IRCParser tParser) {
         ActionManager.processEvent(CoreActionType.SERVER_GOTPING, null, this,
-                new Long(parser.getServerLag()));
+                Long.valueOf(parser.getServerLag()));
     }
     
     /** {@inheritDoc} */

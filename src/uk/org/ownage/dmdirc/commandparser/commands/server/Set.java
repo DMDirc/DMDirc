@@ -71,12 +71,15 @@ public final class Set extends ServerCommand {
      * @param origin The window the command was issued from
      */
     private void doDomainList(final CommandWindow origin) {
-        String output = "Valid domains (use "
-                + Config.getOption("general", "commandchar") + "set <domain> to"
-                + " see options within a domain): ";
+        final StringBuffer output = new StringBuffer(67);
+        
+        output.append("Valid domains (use ");
+        output.append(Config.getOption("general", "commandchar"));
+        output.append("set <domain> to see options within a domain): ");
         
         for (String domain : Config.getDomains()) {
-            output = output + domain + ", ";
+            output.append(domain);
+            output.append(", ");
         }
         
         origin.addLine(output.substring(0, output.length() - 2));
@@ -88,12 +91,17 @@ public final class Set extends ServerCommand {
      * @param domain The domain to be inspected
      */
     private void doOptionsList(final CommandWindow origin, final String domain) {
-        String output = "Options in domain '" + domain + "': ";
+        final StringBuffer output = new StringBuffer(24);
+        
+        output.append("Options in domain '");
+        output.append(domain);
+        output.append("': ");
         
         boolean found = false;
         
         for (String option : Config.getOptions(domain)) {
-            output = output + option + ", ";
+            output.append(option);
+            output.append(", ");
             found = true;
         }
         
