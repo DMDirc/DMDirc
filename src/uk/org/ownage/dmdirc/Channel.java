@@ -48,6 +48,7 @@ import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelAction;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelCTCP;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
@@ -76,8 +77,16 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
 public final class Channel implements IChannelMessage, IChannelGotNames,
         IChannelTopic, IChannelJoin, IChannelPart, IChannelKick, IChannelQuit,
         IChannelAction, IChannelNickChanged, IChannelModeChanged,
-        IChannelUserModeChanged, IChannelCTCP, InternalFrameListener,
-        FrameContainer {
+        IChannelUserModeChanged, IChannelCTCP, IAwayStateOther,
+        InternalFrameListener, FrameContainer {
+    
+    /** The callbacks that should be registered for channel instances. */
+    private final static String[] callbacks = {
+        "OnChannelMessage", "OnChannelGotNames", "OnChannelTopic",
+        "OnChannelJoin", "OnChannelPart", "OnChannelKick", "OnChannelQuit",
+        "OnChannelAction", "OnChannelNickChanged", "OnChannelModeChanged",
+        "OnChannelUserModeChanged", "OnChannelCTCP"
+    };
     
     /** The parser's pChannel class. */
     private ChannelInfo channelInfo;
@@ -152,18 +161,9 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             final CallbackManager callbackManager = server.getParser().getCallbackManager();
             final String channel = channelInfo.getName();
             
-            callbackManager.addCallback("OnChannelGotNames", this, channel);
-            callbackManager.addCallback("OnChannelTopic", this, channel);
-            callbackManager.addCallback("OnChannelMessage", this, channel);
-            callbackManager.addCallback("OnChannelJoin", this, channel);
-            callbackManager.addCallback("OnChannelCTCP", this, channel);
-            callbackManager.addCallback("OnChannelPart", this, channel);
-            callbackManager.addCallback("OnChannelQuit", this, channel);
-            callbackManager.addCallback("OnChannelKick", this, channel);
-            callbackManager.addCallback("OnChannelAction", this, channel);
-            callbackManager.addCallback("OnChannelNickChanged", this, channel);
-            callbackManager.addCallback("OnChannelModeChanged", this, channel);
-            callbackManager.addCallback("OnChannelUserModeChanged", this, channel);
+            for (String callback : callbacks) {
+                callbackManager.addCallback(callback, this, channel);
+            }
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.FATAL, "Unable to load channel", ex);
         }
@@ -343,18 +343,9 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     public void closeWindow() {
         final CallbackManager callbackManager = server.getParser().getCallbackManager();
         
-        callbackManager.delCallback("OnChannelMessage", this);
-        callbackManager.delCallback("OnChannelTopic", this);
-        callbackManager.delCallback("OnChannelGotNames", this);
-        callbackManager.delCallback("OnChannelCTCP", this);
-        callbackManager.delCallback("OnChannelJoin", this);
-        callbackManager.delCallback("OnChannelPart", this);
-        callbackManager.delCallback("OnChannelQuit", this);
-        callbackManager.delCallback("OnChannelKick", this);
-        callbackManager.delCallback("OnChannelAction", this);
-        callbackManager.delCallback("OnChannelNickChanged", this);
-        callbackManager.delCallback("OnChannelModeChanged", this);
-        callbackManager.delCallback("OnChannelUserModeChanged", this);
+        for (String callback : callbacks) {
+            callbackManager.delCallback(callback, this);
+        }
         
         ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, null, this);
         
@@ -771,6 +762,22 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         server.sendCTCPReply(source[0], sType, sMessage);
         
         // TODO: Action hook
+    }
+    
+    /** {@inheritDoc} */
+    public void onAwayStateOther(final IRCParser tParser,
+            final ClientInfo client, final boolean state) {
+        final ChannelClientInfo channelClient = channelInfo.getUser(client);
+        
+        if (channelClient != null) {
+            if (state) {
+                ActionManager.processEvent(CoreActionType.CHANNEL_USERAWAY,
+                        null, this, channelClient);
+            } else {
+                ActionManager.processEvent(CoreActionType.CHANNEL_USERBACK,
+                        null, this, channelClient);                
+            }
+        }
     }
     
     /**

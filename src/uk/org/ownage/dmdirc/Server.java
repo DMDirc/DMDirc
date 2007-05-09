@@ -55,6 +55,7 @@ import uk.org.ownage.dmdirc.parser.ParserError;
 import uk.org.ownage.dmdirc.parser.ServerInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IAwayState;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IConnectError;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
@@ -87,14 +88,15 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         IPrivateAction, IErrorInfo, IPrivateCTCP, IPrivateCTCPReply,
         InternalFrameListener, ISocketClosed, IPrivateNotice, IMOTDStart,
         IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed, IPingSuccess,
-        IAwayState, IConnectError, FrameContainer {
+        IAwayState, IConnectError, IAwayStateOther, FrameContainer {
     
     /** The callbacks that should be registered for server instances. */
     private final static String[] callbacks = {
         "OnChannelSelfJoin", "OnErrorInfo", "OnPrivateMessage", "OnPingSuccess",
         "OnPrivateAction", "OnPrivateCTCP", "OnPrivateNotice", "OnConnectError",
         "OnPrivateCTCPReply", "OnSocketClosed", "OnGotNetwork", "OnNumeric",
-        "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed", "OnAwayState"
+        "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed", "OnAwayState",
+        "OnAwayStateOther"
     };
     
     /** Open channels that currently exist on the server. */
@@ -256,7 +258,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public void reconnect(final String reason) {
         disconnect(reason);
         connect(server, port, password, ssl, profile);
-    }    
+    }
     
     /** Reconnects to the IRC server. */
     public void reconnect() {
@@ -512,7 +514,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         for (Channel channel : channels.values()) {
             channel.clearNicklist();
         }
-    }    
+    }
     
     /**
      * closes all open query windows associated with this server.
@@ -956,7 +958,15 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public void onPingSuccess(final IRCParser tParser) {
         ActionManager.processEvent(CoreActionType.SERVER_GOTPING, null, this,
                 new Long(parser.getServerLag()));
-    }    
+    }
+    
+    /** {@inheritDoc} */
+    public void onAwayStateOther(final IRCParser tParser,
+            final ClientInfo client, final boolean state) {
+        for (Channel chan : channels.values()) {
+            chan.onAwayStateOther(tParser, client, state);
+        }
+    }
     
     /**
      * Parses the parser error and notifies the Logger.
