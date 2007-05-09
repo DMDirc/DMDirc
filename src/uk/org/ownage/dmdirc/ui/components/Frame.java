@@ -680,7 +680,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     public void processMouseEvent(final MouseEvent e) {
         if (e.isPopupTrigger() && e.getSource() == getTextPane()) {
             final Point point = getScrollPane().getMousePosition();
-            getPopup().show(this, (int) point.getX(), (int) point.getY());
+            if (point != null) {
+                getPopup().show(this, (int) point.getX(), (int) point.getY());
+            }
         } else if (e.isPopupTrigger() && e.getSource() == getInputField()) {
             final Point point = getMousePosition();
             inputFieldPopup.show(this, (int) point.getX(), (int) point.getY());
