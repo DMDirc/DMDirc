@@ -57,7 +57,7 @@ public final class CallbackOnAwayStateOther extends CallbackObjectSpecific {
 			eMethod = (IAwayStateOther) callbackInfo.get(i);
 			if (!this.isValidUser(eMethod, sHost)) { continue; }
 			try {
-				eMethod.onAwayStateOther(myParser, sMessage, sHost);
+				eMethod.onAwayStateOther(myParser, client, state);
 			} catch (Exception e) {
 				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onAwayStateOther");
 				ei.setException(e);
