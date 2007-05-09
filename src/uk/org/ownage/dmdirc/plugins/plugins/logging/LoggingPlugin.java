@@ -35,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Stack;
 import java.util.Properties;
+import java.util.Hashtable;
 
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Config;
@@ -66,7 +67,10 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	private static final String MY_DOMAIN = "plugin-Logging";
 
 	/** Is this plugin active? */
-	private boolean isActive= false;
+	private boolean isActive = false;
+	
+	/** Hashtable of open files */
+	Hashtable<String,BufferedWriter> openFiles = new Hashtable<String,BufferedWriter>();
 
 	/**
 	 * Creates a new instance of the Logging Plugin.
@@ -306,6 +310,42 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 			switch (thisType) {
 				case SERVER_CONNECTED:
 					// Do Nothing
+					break;
+				case QUERY_CLOSED:
+					// ActionManager.processEvent(CoreActionType.QUERY_CLOSED, this);
+					query = (Query)arguments[0];
+					parser = query.getServer().getParser();
+					client = parser.getClientInfo(query.getHost());
+					if (client == null) {
+						client = new ClientInfo(parser, query.getHost()).setFake(true);
+					}
+					line = getLogFile(client);
+					if (openFiles.containsKey(line)) {
+						appendLine(line, "*** Query closed at: " + openedAtFormat.format(new Date()));
+						BufferedWriter file = openFiles.get(line);
+						try {
+							file.close();
+						} catch (IOException e) {
+							Logger.error(ErrorLevel.ERROR, "Unable to close file (Filename: "+line+")", e);
+						}
+						openFiles.remove(line);
+					}
+					break;
+				case CHANNEL_CLOSED:
+					// ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, this);
+					channel = ((Channel)arguments[0]).getChannelInfo();
+					
+					line = getLogFile(channel);
+					if (openFiles.containsKey(line)) {
+						appendLine(line, "*** Channel closed at: " + openedAtFormat.format(new Date()));
+						BufferedWriter file = openFiles.get(line);
+						try {
+							file.close();
+						} catch (IOException e) {
+							Logger.error(ErrorLevel.ERROR, "Unable to close file (Filename: "+line+")", e);
+						}
+						openFiles.remove(line);
+					}
 					break;
 				case QUERY_OPENED:
 					// ActionManager.processEvent(CoreActionType.QUERY_OPENED, this);
@@ -547,18 +587,23 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 //		System.out.println("[Adding] "+filename+" => "+finalLine);
 		BufferedWriter out = null;
 		try {
-			out = new BufferedWriter(new FileWriter(filename, true));
+			if (openFiles.containsKey(filename)) {
+				out = openFiles.get(filename);
+			} else {
+				out = new BufferedWriter(new FileWriter(filename, true));
+				openFiles.put(filename, out);
+			}
 			out.write(finalLine);
 			out.newLine();
-			out.close();
 			return true;
 		} catch (IOException e) {
-			/* Do Nothing */
-		} finally {
-			// Try to close the file.
-			try {
-				if (out != null) { out.close(); }
-			} catch (IOException e) { /* Do Nothing */ }
+			/*
+			 * Do Nothing
+			 *
+			 * Makes no sense to keep adding errors to the logger when we can't
+			 * write to the file, as chances are it will happen on every incomming
+			 * line.
+			 */
 		}
 		return false;
 	}
