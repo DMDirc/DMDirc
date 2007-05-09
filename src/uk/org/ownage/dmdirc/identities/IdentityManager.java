@@ -40,9 +40,7 @@ import uk.org.ownage.dmdirc.logger.Logger;
  */
 public final class IdentityManager {
     
-    /**
-     * The identities that have been loaded into this manager.
-     */
+    /** The identities that have been loaded into this manager. */
     private static List<Identity> identities;
     
     /**
@@ -51,23 +49,36 @@ public final class IdentityManager {
      */
     private static GlobalConfig globalConfig;
     
+    /** The config managers that have registered with this manager. */
+    private static List<ConfigManager> managers;
+    
     /** Creates a new instance of IdentityManager. */
     private IdentityManager() {
     }
     
-    /**
-     * Loads all identity files.
-     */
+    /** Loads all identity files. */
     public static void load() {
+        identities = new ArrayList<Identity>();
+        managers = new ArrayList<ConfigManager>();
+        
+        loadDefaults();
+        loadUser();
+        
+        globalConfig = new GlobalConfig();
+        
+        if (getProfiles().size() == 0) {
+            Identity.buildProfile("Default Profile");
+        }
+    }
+    
+    /** Loads the default (built in) identities. */
+    private static void loadDefaults() {
         final ClassLoader cldr = IdentityManager.class.getClassLoader();
         
         final String base = "uk/org/ownage/dmdirc/identities/defaults/";
         
         final String[] urls = {"asuka", "snircd", "bahamut", "hyperion", "generic"};
         
-        identities = new ArrayList<Identity>();
-        
-        // Load the defaults
         for (String url : urls) {
             try {
                 final InputStream res = cldr.getResourceAsStream(base + url);
@@ -82,8 +93,10 @@ public final class IdentityManager {
                 Logger.error(ErrorLevel.ERROR, "Unable to load identity file", ex);
             }
         }
-        
-        // And load the user's identities
+    }
+    
+    /** Loads user-defined identity files. */
+    private static void loadUser() {
         final String fs = System.getProperty("file.separator");
         final String location = Config.getConfigDir() + "identities" + fs;
         final File dir = new File(location);
@@ -110,12 +123,6 @@ public final class IdentityManager {
                 }
             }
         }
-        
-        globalConfig = new GlobalConfig();
-        
-        if (getProfiles().size() == 0) {
-            Identity.buildProfile("Default Profile");
-        }
     }
     
     /**
@@ -139,6 +146,10 @@ public final class IdentityManager {
         }
         
         identities.add(identity);
+        
+        for (ConfigManager manager : managers) {
+            manager.checkIdentity(identity);
+        }
     }
     
     /**
@@ -147,6 +158,18 @@ public final class IdentityManager {
      */
     public static void removeIdentity(final Identity identity) {
         identities.remove(identity);
+    }
+    
+    /**
+     * Adds a config manager to this manager.
+     * @param manager The ConfigManager to add
+     */
+    public static void addConfigManager(final ConfigManager manager) {
+        if (managers == null) {
+            load();
+        }
+        
+        managers.add(manager);
     }
     
     /**
@@ -253,7 +276,7 @@ public final class IdentityManager {
         
         return Identity.buildIdentity(target);
     }
-
+    
     /**
      * Retrieves the config for the specified network. The config is
      * created if it doesn't exist.
@@ -275,6 +298,6 @@ public final class IdentityManager {
         target.setNetwork(myTarget);
         
         return Identity.buildIdentity(target);
-    }    
+    }
     
 }

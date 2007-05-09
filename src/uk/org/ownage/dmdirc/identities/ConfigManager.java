@@ -23,10 +23,11 @@
 package uk.org.ownage.dmdirc.identities;
 
 import java.awt.Color;
+import java.util.Collections;
 import java.util.List;
+
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
-
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
@@ -37,6 +38,15 @@ public final class ConfigManager {
     
     /** A list of sources for this config manager. */
     private List<ConfigSource> sources;
+    
+    /** The ircd this manager is for. */
+    private final String ircd;
+    /** The network this manager is for. */
+    private final String network;
+    /** The server this manager is for. */
+    private final String server;
+    /** The channel this manager is for. */
+    private final String channel;
     
     /**
      * Creates a new instance of ConfigManager.
@@ -60,6 +70,13 @@ public final class ConfigManager {
             final String server, final String channel) {
         final String chanName = channel + "@" + network;
         sources = IdentityManager.getSources(ircd, network, server, chanName);
+        
+        this.ircd = ircd;
+        this.network = network;
+        this.server = server;
+        this.channel = chanName;
+        
+        IdentityManager.addConfigManager(this);
     }
     
     /**
@@ -117,7 +134,7 @@ public final class ConfigManager {
      */
     public int getOptionInt(final String domain, final String option,
             final int fallback) {
-                if (!hasOption(domain, option)) {
+        if (!hasOption(domain, option)) {
             return fallback;
         }
         
@@ -163,6 +180,38 @@ public final class ConfigManager {
         }
         
         return false;
+    }
+    
+    /**
+     * Called whenever there is a new identity available. Checks if the
+     * identity is relevant for this manager, and adds it if it is.
+     * @param identity The identity to be checked
+     */
+    public void checkIdentity(final Identity identity) {
+        String comp = "";
+        
+        switch (identity.getTarget().getType()) {
+            case ConfigTarget.TYPE_IRCD:
+                comp = ircd;
+                break;
+            case ConfigTarget.TYPE_NETWORK:
+                comp = network;
+                break;
+            case ConfigTarget.TYPE_SERVER:
+                comp = server;
+                break;
+            case ConfigTarget.TYPE_CHANNEL:
+                comp = channel;
+                break;
+            default:
+                comp = "<Unknown>";
+                break;
+        }
+        
+        if (comp != null && comp.equalsIgnoreCase(identity.getTarget().getData())) {
+            sources.add(identity);
+            Collections.sort(sources);
+        }
     }
     
     /**
