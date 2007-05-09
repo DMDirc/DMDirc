@@ -54,6 +54,7 @@ public final class CallbackManager {
 		// Add callbacks
 		addCallbackType(new CallbackOnAwayState(myParser, this));
 		addCallbackType(new CallbackOnAwayStateOther(myParser, this));
+		addCallbackType(new CallbackOnChannelAwayStateOther(myParser, this));
 		addCallbackType(new CallbackOnChannelAction(myParser, this));
 		addCallbackType(new CallbackOnChannelCTCP(myParser, this));
 		addCallbackType(new CallbackOnChannelCTCPReply(myParser, this));

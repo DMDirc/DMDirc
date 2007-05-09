@@ -24,11 +24,15 @@
 
 package uk.org.ownage.dmdirc.parser;
 
+import java.util.Enumeration;
+
 import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnAwayStateOther;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelAwayStateOther;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelAwayStateOther;
 
 /**
  * Process a /who reply
@@ -64,6 +68,16 @@ public class ProcessWho extends IRCProcessor {
 //				System.out.println("Away state for '"+client+"' changed to: "+isAway);
 				client.setAwayState(isAway);
 				callAwayStateOther(client, isAway);
+				
+				ChannelInfo iChannel;
+				ChannelClientInfo iChannelClient;
+				for (Enumeration e = myParser.hChannelList.keys(); e.hasMoreElements();) {
+					iChannel = myParser.hChannelList.get(e.nextElement());
+					iChannelClient = iChannel.getUser(client);
+					if (iChannelClient != null) {
+						callChannelAwayStateOther(iChannel,iChannelClient,isAway);
+					}
+				}
 			}
 		}
 	}
@@ -79,6 +93,21 @@ public class ProcessWho extends IRCProcessor {
 	protected boolean callAwayStateOther(ClientInfo client, boolean state) {
 		CallbackOnAwayStateOther cb = (CallbackOnAwayStateOther)myParser.getCallbackManager().getCallbackType("OnAwayStateOther");
 		if (cb != null) { return cb.call(client, state); }
+		return false;
+	}
+	
+	/**
+	 * Callback to all objects implementing the onChannelAwayStateOther Callback.
+	 *
+	 * @see IAwayStateOther
+	 * @param channel Channel this is for
+	 * @param channelClient ChannelClient this is for
+	 * @param state Away State (true if away, false if here)
+	 * @return true if a method was called, false otherwise
+	 */
+	protected boolean callChannelAwayStateOther(ChannelInfo channel, ChannelClientInfo channelClient, boolean state) {
+		CallbackOnChannelAwayStateOther cb = (CallbackOnChannelAwayStateOther)myParser.getCallbackManager().getCallbackType("OnChannelAwayStateOther");
+		if (cb != null) { return cb.call(channel, channelClient, state); }
 		return false;
 	}
 	
