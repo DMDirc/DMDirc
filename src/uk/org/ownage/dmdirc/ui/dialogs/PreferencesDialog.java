@@ -30,6 +30,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
 import uk.org.ownage.dmdirc.ui.components.PreferencesPanel;
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
  * Allows the user to modify global client preferences.
@@ -104,6 +105,15 @@ public final class PreferencesDialog implements PreferencesInterface {
                 "Reconnect on disconnect: ", "", Config.getOptionBool("general", "reconnectondisconnect"));
         preferencesPanel.addCheckboxOption(general, "general.showcolourdialog",
                 "Show colour dialog: ", "", Config.getOptionBool("general", "showcolourdialog"));
+        preferencesPanel.addSpinnerOption(general, "general.whotime", 
+                "Who request interval (ms): ", "", 
+                Config.getOptionInt("general", "whotime", 600000),
+                10000, Integer.MAX_VALUE, 10000);
+        preferencesPanel.addSpinnerOption(general, "server.pingtimeout", 
+                "Server timeout (ms): ", "", Config.getOptionInt("server", "pingtimeout", 60000), 
+                5000, Integer.MAX_VALUE, 5000);
+        preferencesPanel.addCheckboxOption(general, "channel.sendwho", 
+                "Send channel WHOs: ", "", Config.getOptionBool("channel", "sendwho"));
         
         preferencesPanel.addTextfieldOption(messages, "general.closemessage",
                 "Close message: ", "", Config.getOption("general", "closemessage"));
@@ -125,7 +135,7 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addCheckboxOption(windows, "general.closequeriesonquit", 
                 "Close queries on quit: ", "", Config.getOptionBool("general", "closequeriesonquit"));
         preferencesPanel.addCheckboxOption(windows, "general.closequeriesondisconnect", 
-                "Close queries on disconnect: ", "", Config.getOptionBool("general", "closequeriesondisconnect"));         
+                "Close queries on disconnect: ", "", Config.getOptionBool("general", "closequeriesondisconnect"));  
     }
     
     /**
@@ -165,6 +175,10 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addCheckboxOption(tabName, "nicklist.altBackground", 
                 "Alternating nicklist", "", 
                 Config.getOptionBool("nicklist", "altBackground"));
+        preferencesPanel.addColourOption(tabName, "nicklist.altBackgroundColour",
+                "Alternate nicklist colour: ", "", 
+                Config.getOption("nicklist", "nicklist.altBackgroundColour", "f0f0f0"),
+                false, true);
     }
     
     /**
@@ -209,6 +223,16 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addComboboxOption(tabName, "notifications.privateCTCPreply",
                 "CTCP reply: ", "", windowOptions,
                 Config.getOption("notifications", "privateCTCPreply"), false);
+        
+        preferencesPanel.addComboboxOption(tabName, "notifications.connectError",
+                "Connect error: ", "", windowOptions,
+                Config.getOption("notifications", "connectError"), false);
+        preferencesPanel.addComboboxOption(tabName, "notifications.connectRetry",
+                "Connect retry: ", "", windowOptions,
+                Config.getOption("notifications", "connectRetry"), false);
+        preferencesPanel.addComboboxOption(tabName, "notifications.stonedServer",
+                "Stoned server: ", "", windowOptions,
+                Config.getOption("notifications", "stonedServer"), false);
     }
     
     /**
