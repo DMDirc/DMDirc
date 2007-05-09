@@ -97,8 +97,6 @@ public final class ActionsEditorDialog extends StandardDialog implements
     private final JTextArea responses;
     /** Delete button. */
     private final JButton deleteButton;
-    /** Information label. */
-    private final JTextArea infoLabel;
     /** No settings warning label. */
     private final JLabel noCurrentSettingsLabel;
     /** new setting value text field. */
@@ -134,6 +132,8 @@ public final class ActionsEditorDialog extends StandardDialog implements
         owner = parent;
         action = newAction;
         
+        this.setTitle("Action editor");
+        
         settingsPanel = new JPanel();
         addPanel = new JPanel();
         responsePanel = new JPanel();
@@ -147,7 +147,6 @@ public final class ActionsEditorDialog extends StandardDialog implements
         
         responses = new JTextArea();
         
-        infoLabel = new JTextArea();
         noCurrentSettingsLabel = new JLabel();
         
         orderButtons(new JButton(), new JButton());
@@ -170,24 +169,13 @@ public final class ActionsEditorDialog extends StandardDialog implements
     private void initSettingsPanel() {
         final SpringLayout layout = new SpringLayout();
         
-        infoLabel.setText("These settings are specific to this channel on "
-                + "this network, any settings specified here will overwrite "
-                + "global settings");
-        infoLabel.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER));
-        infoLabel.setEditable(false);
-        infoLabel.setWrapStyleWord(true);
-        infoLabel.setLineWrap(true);
-        infoLabel.setHighlighter(null);
-        infoLabel.setBackground(this.getBackground());
-        
         initInfoPanel();
         initAddPanel();
         initCurrentSettingsPanel();
         initResponsePanel();
         initButtonsPanel();
         
-        this.add(infoLabel);
+        //this.add(infoLabel);
         this.add(infoPanel);
         this.add(settingsPanel);
         this.add(addPanel);
@@ -198,15 +186,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
         
         //info label SMALL_BORDER from top, left and right
         layout.putConstraint(SpringLayout.NORTH, this.getContentPane(), -SMALL_BORDER,
-                SpringLayout.NORTH, infoLabel);
-        layout.putConstraint(SpringLayout.WEST, infoLabel, SMALL_BORDER,
-                SpringLayout.WEST, this.getContentPane());
-        layout.putConstraint(SpringLayout.EAST, infoLabel, -SMALL_BORDER,
-                SpringLayout.EAST, this.getContentPane());
-        
-        //info panel SMALL_BORDER from the infoLabel left
-        layout.putConstraint(SpringLayout.NORTH, infoPanel, SMALL_BORDER,
-                SpringLayout.SOUTH, infoLabel);
+                SpringLayout.NORTH, infoPanel);
         layout.putConstraint(SpringLayout.WEST, infoPanel, SMALL_BORDER,
                 SpringLayout.WEST, this.getContentPane());
         layout.putConstraint(SpringLayout.EAST, infoPanel, -SMALL_BORDER,
@@ -429,6 +409,8 @@ public final class ActionsEditorDialog extends StandardDialog implements
         settingsPanel.add(value);
         settingsPanel.add(button);
         
+        settingsPanel.setLayout(new SpringLayout());
+        
         layoutGrid(settingsPanel, numCurrentSettings,
                 4, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
         
@@ -438,16 +420,25 @@ public final class ActionsEditorDialog extends StandardDialog implements
     }
     
     public void removeCurrentOption(int optionNumber) {
-        int removeItem = optionNumber - 1;
+        int removeItem = (optionNumber - 1) * 4;
         
         settingsPanel.setVisible(false);
         
-        settingsPanel.remove(removeItem++);
-        settingsPanel.remove(removeItem++);
-        settingsPanel.remove(removeItem++);
-        settingsPanel.remove(removeItem++);
+        settingsPanel.remove(removeItem);
+        settingsPanel.remove(removeItem);
+        settingsPanel.remove(removeItem);
+        settingsPanel.remove(removeItem);
         
         numCurrentSettings--;
+        
+        settingsPanel.setLayout(new SpringLayout());
+        
+        layoutGrid(settingsPanel, numCurrentSettings,
+                4, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
+        
+        if (numCurrentSettings == 0) {
+            settingsPanel.add(noCurrentSettingsLabel);
+        }
         
         settingsPanel.setVisible(true);
         
