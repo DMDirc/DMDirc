@@ -54,6 +54,7 @@ import uk.org.ownage.dmdirc.identities.Identity;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
+import uk.org.ownage.dmdirc.ui.components.ColourChooser;
 
 /**
  * Channel settings panel.
@@ -88,11 +89,13 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     /** Channel identity file. */
     private final Identity identity;
     /** Valid option types. */
-    private enum OPTION_TYPE { TEXTFIELD, CHECKBOX, }
+    private enum OPTION_TYPE { TEXTFIELD, CHECKBOX, COLOUR, }
     /** text fields. */
     private Map<String, JTextField> textFields;
     /** checkboxes. */
     private Map<String, JCheckBox> checkBoxes;
+    /** colours. */
+    private Map<String, ColourChooser> colours;
     
     /**
      * Creates a new instance of ChannelSettingsPane.
@@ -147,6 +150,8 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         
         textFields = new HashMap<String, JTextField>();
         checkBoxes = new HashMap<String, JCheckBox>();
+        colours = new HashMap<String, ColourChooser>();
+        
         optionMap = new LinkedHashMap<String, String>();
         
         if (settingsPanel == null) {
@@ -171,8 +176,8 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         addOption("general.cyclemessage", "Cycle message", OPTION_TYPE.TEXTFIELD);
         addOption("general.kickmessage", "Kick message", OPTION_TYPE.TEXTFIELD);
         addOption("general.partmessage", "Part message", OPTION_TYPE.TEXTFIELD);
-        addOption("ui.backgroundcolour", "Background colour", OPTION_TYPE.TEXTFIELD);
-        addOption("ui.foregroundcolour", "Foreground colour", OPTION_TYPE.TEXTFIELD);
+        addOption("ui.backgroundcolour", "Background colour", OPTION_TYPE.COLOUR);
+        addOption("ui.foregroundcolour", "Foreground colour", OPTION_TYPE.COLOUR);
         addOption("ui.frameBufferSize", "Frame buffer size", OPTION_TYPE.TEXTFIELD);
         addOption("ui.inputbuffersize", "Input buffer size", OPTION_TYPE.TEXTFIELD);
         
@@ -298,6 +303,10 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
                 ((JTextField) component).setText(optionValue);
                 textFields.put(configName, (JTextField) component);
                 break;
+            case COLOUR:
+                component = new ColourChooser(optionValue, true, true);
+                colours.put(configName, (ColourChooser) component);
+                break;
             default:
                 throw new IllegalArgumentException("Unrecognised option type: " + type);
         }
@@ -377,6 +386,12 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
             final JCheckBox checkBox = checkBoxes.get(configName);
             identity.setOption(optionValues[0], optionValues[1],
                     Boolean.toString(checkBox.isSelected()));
+        }
+        for (String configName : colours.keySet()) {
+            final String[] optionValues = configName.split("\\.");
+            final ColourChooser colour = colours.get(configName);
+            identity.setOption(optionValues[0], optionValues[1],
+                    colour.getColour());
         }
         Config.save();
     }
