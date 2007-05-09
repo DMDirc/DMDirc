@@ -32,7 +32,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
 /**
  * Callback to all objects implementing the IAwayStateOther Interface.
  */
-public final class CallbackOnAwayStateOther extends CallbackObject {
+public final class CallbackOnAwayStateOther extends CallbackObjectSpecific {
 	
 	/**
 	 * Create a new instance of the Callback Object.
@@ -52,9 +52,12 @@ public final class CallbackOnAwayStateOther extends CallbackObject {
 	 */
 	public boolean call(ClientInfo client, boolean state) {
 		boolean bResult = false;
+		IAwayStateOther eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
+			eMethod = (IAwayStateOther) callbackInfo.get(i);
+			if (!this.isValidUser(eMethod, sHost)) { continue; }
 			try {
-				((IAwayStateOther) callbackInfo.get(i)).onAwayStateOther(myParser, client, state);
+				eMethod.onAwayStateOther(myParser, sMessage, sHost);
 			} catch (Exception e) {
 				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onAwayStateOther");
 				ei.setException(e);
@@ -63,7 +66,7 @@ public final class CallbackOnAwayStateOther extends CallbackObject {
 			bResult = true;
 		}
 		return bResult;
-	}
+	}	
 	
 	/**
 	 * Get SVN Version information.
