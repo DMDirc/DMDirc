@@ -398,6 +398,5 @@ public final class ChannelFrame extends Frame implements MouseListener,
                 nickList.clearSelection();
             }
         }
-        super.processMouseEvent(e);
     }
 }

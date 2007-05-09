@@ -23,9 +23,10 @@
 package uk.org.ownage.dmdirc.ui.components;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.font.FontRenderContext;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -33,6 +34,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
@@ -48,7 +50,7 @@ public final class SearchBar extends JPanel implements ActionListener {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Close button. */
     private JButton closeButton;
@@ -99,12 +101,24 @@ public final class SearchBar extends JPanel implements ActionListener {
         prevButton.setText("Prev");
         caseCheck.setText("Case sensitive");
         
+        closeButton.setMargin(new Insets(0, 0, 0, 0));
+        closeButton.setPreferredSize(new Dimension(50, 0));
+        
+        searchButton.setMargin(new Insets(0, 0, 0, 0));
+        searchButton.setPreferredSize(new Dimension(50, 0));
+        
+        nextButton.setMargin(new Insets(0, 0, 0, 0));
+        nextButton.setPreferredSize(new Dimension(50, 0));
+        
+        prevButton.setMargin(new Insets(0, 0, 0, 0));
+        prevButton.setPreferredSize(new Dimension(50, 0));
+        
+        caseCheck.setPreferredSize(new Dimension(110, 0));
+        
         searchBox.setBorder(BorderFactory.createCompoundBorder(
                 searchBox.getBorder(), new EmptyBorder(2, 2, 2, 2)));
         
-        searchBox.setMinimumSize(new Dimension(50, 25));
-        searchBox.setPreferredSize(new Dimension(300, 25));
-        searchBox.setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
+        searchBox.setPreferredSize(new Dimension(300, searchBox.getFont().getSize()));
         
         closeButton.setIcon(new ImageIcon(this.getClass()
         .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
@@ -119,7 +133,7 @@ public final class SearchBar extends JPanel implements ActionListener {
     
     /** Lays out components. */
     private void layoutComponents() {
-        this.setLayout(new FlowLayout(FlowLayout.LEFT));
+        this.setLayout(new SpringLayout());
         
         add(closeButton);
         add(searchBox);
@@ -127,6 +141,8 @@ public final class SearchBar extends JPanel implements ActionListener {
         add(nextButton);
         add(prevButton);
         add(caseCheck);
+        
+        layoutGrid(this, 1, 6, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
     }
     
     /** Adds listeners to components. */

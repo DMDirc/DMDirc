@@ -306,7 +306,7 @@ public final class PreferencesDialog implements PreferencesInterface {
     
     /** {@inheritDoc}. */
     public void configClosed(final Properties properties) {
-        for (Map.Entry<Object,Object> entry : properties.entrySet()) {
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             final String[] args = ((String) entry.getKey()).split("\\.");
             Config.setOption(args[0], args[1], (String) entry.getValue());
         }

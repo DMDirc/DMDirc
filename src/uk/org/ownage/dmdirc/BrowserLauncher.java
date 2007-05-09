@@ -75,11 +75,12 @@ public final class BrowserLauncher {
             } catch (URISyntaxException ex) {
                 Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
             }
-        }
-        try {
-            openURLLinux(url.toString());
-        } catch (IOException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
+        } else {
+            try {
+                openURLLinux(url.toString());
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
+            }
         }
     }
     
