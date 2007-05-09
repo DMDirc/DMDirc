@@ -55,7 +55,7 @@ public final class CallbackOnAwayStateOther extends CallbackObjectSpecific {
 		IAwayStateOther eMethod = null;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			eMethod = (IAwayStateOther) callbackInfo.get(i);
-			if (!this.isValidUser(eMethod, sHost)) { continue; }
+			if (!this.isValidUser(eMethod, client.getNickname())) { continue; }
 			try {
 				eMethod.onAwayStateOther(myParser, client, state);
 			} catch (Exception e) {
