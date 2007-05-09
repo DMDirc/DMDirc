@@ -207,9 +207,9 @@ public final class Styliser {
 		    count++;
 		}
 		foreground = foreground % 16;
-		setForeground(attribs, foreground);
+		setForeground(attribs, String.valueOf(foreground));
 		if (isStart) {
-		    setDefaultForeground(attribs, foreground);
+		    setDefaultForeground(attribs, String.valueOf(foreground));
 		}
 		
 		// Now background
@@ -223,9 +223,9 @@ public final class Styliser {
 			count++;
 		    }
 		    background = background % 16;
-		    setBackground(attribs, background);
+		    setBackground(attribs, String.valueOf(background));
 		    if (isStart) {
-			setDefaultBackground(attribs, background);
+			setDefaultBackground(attribs, String.valueOf(background));
 		    }
 		}
 	    } else {
@@ -366,11 +366,11 @@ public final class Styliser {
      * @param foreground The colour code/hex of the new foreground colour
      */
     private static void setForeground(final SimpleAttributeSet attribs,
-	    final Object foreground) {
+	    final String foreground) {
 	if (attribs.isDefined(StyleConstants.Foreground)) {
 	    attribs.removeAttribute(StyleConstants.Foreground);
 	}
-	attribs.addAttribute(StyleConstants.Foreground, ColourManager.getColour(foreground));
+	attribs.addAttribute(StyleConstants.Foreground, ColourManager.parseColour(foreground));
     }
     
     /**
@@ -380,11 +380,11 @@ public final class Styliser {
      * @param background The colour code/hex of the new background colour
      */
     private static void setBackground(final SimpleAttributeSet attribs,
-	    final Object background) {
+	    final String background) {
 	if (attribs.isDefined(StyleConstants.Background)) {
 	    attribs.removeAttribute(StyleConstants.Background);
 	}
-	attribs.addAttribute(StyleConstants.Background, ColourManager.getColour(background));
+	attribs.addAttribute(StyleConstants.Background, ColourManager.parseColour(background));
     }
     
     /**
@@ -393,8 +393,8 @@ public final class Styliser {
      * @param foreground The default foreground colour
      */
     private static void setDefaultForeground(final SimpleAttributeSet attribs,
-	    final Object foreground) {
-	attribs.addAttribute("DefaultForeground", ColourManager.getColour(foreground));
+	    final String foreground) {
+	attribs.addAttribute("DefaultForeground", ColourManager.parseColour(foreground));
     }
     
     /**
@@ -403,8 +403,8 @@ public final class Styliser {
      * @param background The default background colour
      */
     private static void setDefaultBackground(final SimpleAttributeSet attribs,
-	    final Object background) {
-	attribs.addAttribute("DefaultBackground", ColourManager.getColour(background));
+	    final String background) {
+	attribs.addAttribute("DefaultBackground", ColourManager.parseColour(background));
     }
     
 }

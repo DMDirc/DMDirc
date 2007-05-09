@@ -83,26 +83,7 @@ public final class ColourManager {
     public static Color parseColour(final String spec) {
         return parseColour(spec, Color.WHITE);
     }    
-    
-    /**
-     * Retrieves a colour specified by either an IRC colour code (as an int),
-     * or a hex string.
-     * @param spec The colour specification
-     * @return A colour corresponding to the spec, or WHITE on error
-     * @deprecated in favour of {@link #parseColour(String)()}
-     */
-    @Deprecated
-    public static Color getColour(final Object spec) {
-        if (spec instanceof Integer) {
-            return getColour(((Integer) spec).intValue());
-        } else if (spec instanceof String) {
-            return getColour((String) spec);
-        } else {
-            Logger.error(ErrorLevel.WARNING, "(ColourManager.getColour) Unknown object type: " + spec);
-            return Color.WHITE;
-        }
-    }
-    
+        
     /**
      * Returns a Color object that corresponds to the specified 6-digit hex
      * string. If the string is invalid, logs a warning and returns white.
