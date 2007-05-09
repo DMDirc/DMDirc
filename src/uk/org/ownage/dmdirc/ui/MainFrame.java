@@ -623,6 +623,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             UIManager.put("TabbedPane.font", font);
             UIManager.put("Tree.font", font);
             UIManager.put("InternalFrame.titleFont", font);
+            UIManager.put("EditorPane.font", font);
             UIManager.put("swing.boldMetal", false);
             UIManager.put("InternalFrame.useTaskBar", false);
             UIManager.put("SplitPaneDivider.border", BorderFactory.createEmptyBorder());
