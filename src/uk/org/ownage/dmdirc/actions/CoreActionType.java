@@ -38,12 +38,14 @@ public enum CoreActionType implements ActionType {
     SERVER_NOPING(CoreActionMetaType.SERVER_PING),
     
     QUERY_OPENED(CoreActionMetaType.QUERY_EVENT),
+    QUERY_CLOSED(CoreActionMetaType.QUERY_EVENT),
     QUERY_MESSAGE(CoreActionMetaType.QUERY_EVENT_WITH_ARG),
     QUERY_ACTION(CoreActionMetaType.QUERY_EVENT_WITH_ARG),
     QUERY_SELF_MESSAGE(CoreActionMetaType.QUERY_EVENT_WITH_ARG),
     QUERY_SELF_ACTION(CoreActionMetaType.QUERY_EVENT_WITH_ARG),    
     
     CHANNEL_OPENED(CoreActionMetaType.CHANNEL_EVENT),
+    CHANNEL_CLOSED(CoreActionMetaType.CHANNEL_EVENT),
     CHANNEL_GOTNAMES(CoreActionMetaType.CHANNEL_EVENT),
     CHANNEL_GOTTOPIC(CoreActionMetaType.CHANNEL_EVENT),
     

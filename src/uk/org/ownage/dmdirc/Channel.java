@@ -356,6 +356,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         callbackManager.delCallback("OnChannelModeChanged", this);
         callbackManager.delCallback("OnChannelUserModeChanged", this);
         
+        ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, null, this);
+        
         server.delChannel(channelInfo.getName());
         
         SwingUtilities.invokeLater(new Runnable() {

@@ -65,7 +65,7 @@ public enum CoreActionComponent implements ActionComponent {
     },
     
     STRINGARRAY_LENGTH {
-        public Object get(final Object argument) { return new Integer(((String[]) argument).length); }
+        public Object get(final Object argument) { return Integer.valueOf(((String[]) argument).length); }
         public Class appliesTo() { return String[].class; }
         public Class getType() { return Integer.class; }
     };

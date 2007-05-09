@@ -285,10 +285,12 @@ public final class Query implements IPrivateAction, IPrivateMessage,
     /**
      * Closes the query and associated frame.
      */
-    public void close() {
+    public void close() {        
         server.getParser().getCallbackManager().delCallback("onPrivateAction", this);
         server.getParser().getCallbackManager().delCallback("onPrivateMessage", this);
         server.getParser().getCallbackManager().delCallback("onNickChanged", this);
+        
+        ActionManager.processEvent(CoreActionType.QUERY_CLOSED, null, this);
         
         frame.setVisible(false);
         server.delQuery(host);
