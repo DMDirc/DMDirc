@@ -24,8 +24,6 @@ package uk.org.ownage.dmdirc.ui.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,23 +31,29 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.Spring;
 import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
+
 import uk.org.ownage.dmdirc.actions.Action;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
@@ -81,10 +85,14 @@ public final class ActionsEditorDialog extends StandardDialog implements
     private final JPanel responsePanel;
     /** info panel. */
     private final JPanel infoPanel;
+    /** buttons panel. */
+    private final JPanel buttonsPanel;
     /** name field. */
     private final JTextField name;
     /** event dropdown. */
     private final JComboBox event;
+    /** other event lists. */
+    private final JList otherEvents;
     /** response text area. */
     private final JTextArea responses;
     /** Delete button. */
@@ -103,14 +111,8 @@ public final class ActionsEditorDialog extends StandardDialog implements
     private Properties settings;
     /** number of current settings. */
     private int numCurrentSettings;
-    /** hashmap, config option -> name. */
-    private Map<String, String> optionMap;
     /** Valid option types. */
     private enum OPTION_TYPE { TEXTFIELD, CHECKBOX, COMBOBOX, }
-    /** text fields. */
-    private Map<String, JTextField> textFields;
-    /** checkboxes. */
-    private Map<String, JCheckBox> checkBoxes;
     /** Action being edited. */
     private Action action;
     
@@ -125,7 +127,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
      * Creates a new instance of ChannelSettingsPane.
      * @param newAction parent action
      */
-    public ActionsEditorDialog(final ActionsManagerDialog parent, 
+    public ActionsEditorDialog(final ActionsManagerDialog parent,
             final Action newAction) {
         super(MainFrame.getMainFrame(), false);
         
@@ -136,9 +138,12 @@ public final class ActionsEditorDialog extends StandardDialog implements
         addPanel = new JPanel();
         responsePanel = new JPanel();
         infoPanel = new JPanel();
+        buttonsPanel = new JPanel();
         
         name = new JTextField();
-        event = new JComboBox(new String[]{"Event 1", "Event 2", });
+        event = new JComboBox(new String[]{});
+        otherEvents = new JList(new DefaultListModel());
+        otherEvents.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         
         responses = new JTextArea();
         
@@ -147,13 +152,14 @@ public final class ActionsEditorDialog extends StandardDialog implements
         
         orderButtons(new JButton(), new JButton());
         deleteButton = new JButton("Delete");
-        deleteButton.setActionCommand("delete");
         
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
         deleteButton.addActionListener(this);
         
         initSettingsPanel();
+        
+        this.setMinimumSize(new Dimension(600, 625));
         
         this.setVisible(true);
     }
@@ -162,10 +168,10 @@ public final class ActionsEditorDialog extends StandardDialog implements
      * Initialises the settings panel.
      */
     private void initSettingsPanel() {
-        final GridBagConstraints constraints = new GridBagConstraints();
+        final SpringLayout layout = new SpringLayout();
         
-        infoLabel.setText("These settings are specific to this channel on " 
-                + "this network, any settings specified here will overwrite " 
+        infoLabel.setText("These settings are specific to this channel on "
+                + "this network, any settings specified here will overwrite "
                 + "global settings");
         infoLabel.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER));
@@ -175,58 +181,82 @@ public final class ActionsEditorDialog extends StandardDialog implements
         infoLabel.setHighlighter(null);
         infoLabel.setBackground(this.getBackground());
         
-        this.setLayout(new GridBagLayout());
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.gridwidth = 4;
-        constraints.weightx = 1.0;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.anchor = GridBagConstraints.CENTER;
-        this.add(infoLabel, constraints);
-        
-        constraints.gridy = 1;
-        this.add(infoPanel, constraints);
-        
-        constraints.gridy = 2;
-        constraints.weighty = 1.0;
-        this.add(settingsPanel, constraints);
-        
-        constraints.gridy = 3;
-        constraints.weighty = 0.0;
-        this.add(addPanel, constraints);
-        
-        constraints.gridy = 4;
-        this.add(responsePanel, constraints);
-        
-        constraints.gridy = 5;
-        constraints.gridwidth = 1;
-        constraints.insets = new Insets(LARGE_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER);
-        this.add(deleteButton, constraints);
-        
-        constraints.gridx = 1;
-        this.add(Box.createHorizontalGlue(), constraints);
-        
-        constraints.gridx = 2;
-        this.add(getLeftButton(), constraints);
-        
-        constraints.gridx = 3;
-        this.add(getRightButton(), constraints);
-        
         initInfoPanel();
         initAddPanel();
         initCurrentSettingsPanel();
         initResponsePanel();
+        initButtonsPanel();
+        
+        this.add(infoLabel);
+        this.add(infoPanel);
+        this.add(settingsPanel);
+        this.add(addPanel);
+        this.add(responsePanel);
+        this.add(buttonsPanel);
+        
+        this.getContentPane().setLayout(layout);
+        
+        //info label SMALL_BORDER from top, left and right
+        layout.putConstraint(SpringLayout.NORTH, this.getContentPane(), -SMALL_BORDER,
+                SpringLayout.NORTH, infoLabel);
+        layout.putConstraint(SpringLayout.WEST, infoLabel, SMALL_BORDER,
+                SpringLayout.WEST, this.getContentPane());
+        layout.putConstraint(SpringLayout.EAST, infoLabel, -SMALL_BORDER,
+                SpringLayout.EAST, this.getContentPane());
+        
+        //info panel SMALL_BORDER from the infoLabel left
+        layout.putConstraint(SpringLayout.NORTH, infoPanel, SMALL_BORDER,
+                SpringLayout.SOUTH, infoLabel);
+        layout.putConstraint(SpringLayout.WEST, infoPanel, SMALL_BORDER,
+                SpringLayout.WEST, this.getContentPane());
+        layout.putConstraint(SpringLayout.EAST, infoPanel, -SMALL_BORDER,
+                SpringLayout.EAST, this.getContentPane());
+        
+        //settings panel SMALL_BORDER from the infoPanel and left
+        layout.putConstraint(SpringLayout.NORTH, settingsPanel, SMALL_BORDER,
+                SpringLayout.SOUTH, infoPanel);
+        layout.putConstraint(SpringLayout.SOUTH, settingsPanel, -SMALL_BORDER,
+                SpringLayout.NORTH, addPanel);
+        layout.putConstraint(SpringLayout.WEST, settingsPanel, SMALL_BORDER,
+                SpringLayout.WEST, this.getContentPane());
+        layout.putConstraint(SpringLayout.EAST, settingsPanel, -SMALL_BORDER,
+                SpringLayout.EAST, this.getContentPane());
+        
+        //add panel SMALL_BORDER from the settingsPanel and left
+        layout.putConstraint(SpringLayout.SOUTH, addPanel, -SMALL_BORDER,
+                SpringLayout.NORTH, responsePanel);
+        layout.putConstraint(SpringLayout.WEST, addPanel, SMALL_BORDER,
+                SpringLayout.WEST, this.getContentPane());
+        layout.putConstraint(SpringLayout.EAST, addPanel, -SMALL_BORDER,
+                SpringLayout.EAST, this.getContentPane());
+        
+        //response panel SMALL_BORDER from the addPanel and left
+        layout.putConstraint(SpringLayout.SOUTH, responsePanel, -SMALL_BORDER,
+                SpringLayout.NORTH, buttonsPanel);
+        layout.putConstraint(SpringLayout.WEST, responsePanel, SMALL_BORDER,
+                SpringLayout.WEST, this.getContentPane());
+        layout.putConstraint(SpringLayout.EAST, responsePanel, -SMALL_BORDER,
+                SpringLayout.EAST, this.getContentPane());
+        
+        //buttons panel SMALL_BORDER from the left and bottom
+        layout.putConstraint(SpringLayout.SOUTH, buttonsPanel, -SMALL_BORDER,
+                SpringLayout.SOUTH, this.getContentPane());
+        layout.putConstraint(SpringLayout.WEST, buttonsPanel, SMALL_BORDER,
+                SpringLayout.WEST, this.getContentPane());
+        layout.putConstraint(SpringLayout.EAST, buttonsPanel, -SMALL_BORDER,
+                SpringLayout.EAST, this.getContentPane());
         
         pack();
     }
     
     /** Initialises the info panel. */
-    private void initInfoPanel() {        
+    private void initInfoPanel() {
         infoPanel.add(new JLabel("Name: "));
         infoPanel.add(name);
         infoPanel.add(new JLabel("Event: "));
         infoPanel.add(event);
+        infoPanel.add(new JLabel("Other Events: "));
+        infoPanel.add(new JScrollPane(otherEvents));
         
         name.setPreferredSize(new Dimension(150,
                 name.getFont().getSize()));
@@ -236,19 +266,15 @@ public final class ActionsEditorDialog extends StandardDialog implements
         
         infoPanel.setLayout(new SpringLayout());
         
-        layoutGrid(infoPanel, 2,
-                    2, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
+        ((SpringLayout) infoPanel.getLayout()).getConstraints(otherEvents)
+        .setHeight(Spring.constant(100));
+        
+        layoutGrid(infoPanel, 3,
+                2, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
     }
     
     /** Initialises the current settings panel.  */
     public void initCurrentSettingsPanel() {
-        textFields = new HashMap<String, JTextField>();
-        checkBoxes = new HashMap<String, JCheckBox>();
-        optionMap = new LinkedHashMap<String, String>();
-        
-        settingsPanel.setVisible(false);
-        settingsPanel.removeAll();
-        
         numCurrentSettings = 0;
         
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -259,21 +285,12 @@ public final class ActionsEditorDialog extends StandardDialog implements
         
         settingsPanel.setLayout(new SpringLayout());
         
-        //add posible things to stuff
+        noCurrentSettingsLabel.setText("No conditions set.");
+        noCurrentSettingsLabel.setBorder(new EmptyBorder(0, 0, 0, 0));
+        settingsPanel.add(noCurrentSettingsLabel);
         
-        if (numCurrentSettings == 0) {           
-            noCurrentSettingsLabel.setText("No conditions set.");
-            noCurrentSettingsLabel.setBorder(new EmptyBorder(0, 0, 0, 0));
-            settingsPanel.add(noCurrentSettingsLabel);
-            
-            layoutGrid(settingsPanel, 1,
-                    1, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
-        } else {
-            layoutGrid(settingsPanel, numCurrentSettings,
-                    4, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
-        }
-        
-        settingsPanel.setVisible(true);
+        layoutGrid(settingsPanel, numCurrentSettings,
+                4, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
     }
     
     /** Initialises the add settings panel.  */
@@ -284,10 +301,10 @@ public final class ActionsEditorDialog extends StandardDialog implements
         newSettingButton = new JButton();
         newTypeComboBox = new JComboBox(
                 new DefaultComboBoxModel(
-                new String[]{"type 1", "type 2", }));
+                new String[]{}));
         newComparisonComboBox = new JComboBox(
                 new DefaultComboBoxModel(
-                new String[]{"Comparison 1", "Comparson 2", }));
+                new String[]{}));
         
         addPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
@@ -298,13 +315,14 @@ public final class ActionsEditorDialog extends StandardDialog implements
         addPanel.setLayout(new SpringLayout());
         
         newTypeComboBox.setPreferredSize(new Dimension(150,
-                newTypeComboBox.getFont().getSize()));
+                0));
         newComparisonComboBox.setPreferredSize(new Dimension(150,
-                newComparisonComboBox.getFont().getSize()));
+                newComparisonComboBox.getFont().getSize() + LARGE_BORDER
+                + SMALL_BORDER));
         
         newSettingField.setText("");
         newSettingField.setPreferredSize(new Dimension(150,
-                newSettingField.getFont().getSize()));
+                0));
         
         newSettingButton.setText("Add");
         newSettingButton.setMargin(new Insets(0, 0, 0, 0));
@@ -331,8 +349,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
                 new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
                 LARGE_BORDER)));
         
-        scrollPane.setMinimumSize(new Dimension(150,
-                responses.getFont().getSize() * 5));
+        responses.setRows(5);
         
         responses.setWrapStyleWord(true);
         responses.setLineWrap(true);
@@ -340,6 +357,17 @@ public final class ActionsEditorDialog extends StandardDialog implements
         responsePanel.setLayout(new BorderLayout());
         
         responsePanel.add(scrollPane, BorderLayout.CENTER);
+    }
+    
+    /** Initialises the buttons panel. */
+    private void initButtonsPanel() {
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
+        
+        buttonsPanel.add(deleteButton);
+        buttonsPanel.add(Box.createHorizontalGlue());
+        buttonsPanel.add(getLeftButton());
+        buttonsPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
+        buttonsPanel.add(getRightButton());
     }
     
     /**
@@ -350,39 +378,35 @@ public final class ActionsEditorDialog extends StandardDialog implements
      * @param type Option type
      * @param optionValue config option value
      */
-    private void addCurrentOption(final String configName, 
-            final String displayName, final JPanel panel, 
-            final OPTION_TYPE type, final String optionValue) {
-        final JLabel label = new JLabel();
+    private void addCurrentOption(final OPTION_TYPE type1,
+            final OPTION_TYPE type2, final String optionValue) {
         final JButton button = new JButton();
         
-        JComponent component;
-        numCurrentSettings++;
+        JComboBox type;
+        JComboBox comparison;
+        JTextField value;
         
-        switch (type) {
-            case CHECKBOX:
-                component = new JCheckBox();
-                ((JCheckBox) component).setSelected(
-                        Boolean.parseBoolean(optionValue));
-                checkBoxes.put(configName, (JCheckBox) component);
-                break;
-            case TEXTFIELD:
-                component = new JTextField();
-                ((JTextField) component).setText(optionValue);
-                textFields.put(configName, (JTextField) component);
-                break;
-            default:
-                throw new IllegalArgumentException("Unrecognised option type: " 
-                        + type);
+        settingsPanel.setVisible(false);
+        
+        if (numCurrentSettings == 0) {
+            settingsPanel.remove(0);
         }
         
-        component.setPreferredSize(new Dimension(150,
-                component.getFont().getSize()));
+        numCurrentSettings++;
         
-        label.setText(displayName + ": ");
-        label.setPreferredSize(new Dimension(150,
-                label.getFont().getSize()));
-        label.setLabelFor(component);
+        type = new JComboBox(new OPTION_TYPE[]{});
+        type.setSelectedItem(type1);
+        comparison = new JComboBox(new OPTION_TYPE[]{});
+        comparison.setSelectedItem(type2);
+        value = new JTextField();
+        value.setText(optionValue);
+        
+        type.setPreferredSize(new Dimension(150,
+                type.getFont().getSize()));
+        comparison.setPreferredSize(new Dimension(150,
+                comparison.getFont().getSize()));
+        value.setPreferredSize(new Dimension(150,
+                value.getFont().getSize()));
         
         button.setIcon(new ImageIcon(this.getClass()
         .getClassLoader().getResource(
@@ -397,25 +421,37 @@ public final class ActionsEditorDialog extends StandardDialog implements
         button.setBorder(new EmptyBorder(0, 0, 0, 0));
         button.setMargin(new Insets(0, 0, 0, 0));
         button.setPreferredSize(new Dimension(16, 0));
-        button.setActionCommand(configName);
+        button.setActionCommand(String.valueOf(numCurrentSettings));
         button.addActionListener(this);
         
-        panel.add(label);
-        panel.add(component);
-        panel.add(button);
+        settingsPanel.add(type);
+        settingsPanel.add(comparison);
+        settingsPanel.add(value);
+        settingsPanel.add(button);
+        
+        layoutGrid(settingsPanel, numCurrentSettings,
+                4, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
+        
+        settingsPanel.setVisible(true);
+        
+        pack();
     }
     
-    /**
-     * Adds an addable option to the current options.
-     * @param name option name
-     * @param value option value
-     */
-    private void addNewCurrentOption(final String type, final String comparison,
-            final String value) {
-        if (action != null && value != null) {
-            //identity.setOption(optionValues[0], optionValues[1], value);
-            initCurrentSettingsPanel();
-        }
+    public void removeCurrentOption(int optionNumber) {
+        int removeItem = optionNumber - 1;
+        
+        settingsPanel.setVisible(false);
+        
+        settingsPanel.remove(removeItem++);
+        settingsPanel.remove(removeItem++);
+        settingsPanel.remove(removeItem++);
+        settingsPanel.remove(removeItem++);
+        
+        numCurrentSettings--;
+        
+        settingsPanel.setVisible(true);
+        
+        pack();
     }
     
     /** {@inheritDoc}. */
@@ -430,13 +466,15 @@ public final class ActionsEditorDialog extends StandardDialog implements
             saveSettings();
             this.dispose();
         } else if ("add".equals(event.getActionCommand())) {
-            addNewCurrentOption((String) newTypeComboBox.getSelectedItem(),
-                    (String) newComparisonComboBox.getSelectedItem(),
+            addCurrentOption((OPTION_TYPE) newTypeComboBox.getSelectedItem(),
+                    (OPTION_TYPE) newComparisonComboBox.getSelectedItem(),
                     newSettingField.getText());
         } else {
-            final String[] optionValues = event.getActionCommand().split("\\.");
-            //identity.removeOption(optionValues[0], optionValues[1]);
-            initCurrentSettingsPanel();
+            try {
+                removeCurrentOption(Integer.parseInt(event.getActionCommand()));
+            } catch (NumberFormatException ex) {
+                //Ignore
+            }
         }
     }
     
