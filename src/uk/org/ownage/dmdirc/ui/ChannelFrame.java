@@ -76,7 +76,7 @@ public final class ChannelFrame extends Frame implements MouseListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 7;
+    private static final long serialVersionUID = 8;
     
     /** max length a line can be. */
     private final int maxLineLength;
@@ -287,6 +287,7 @@ public final class ChannelFrame extends Frame implements MouseListener,
      * {@inheritDoc}.
      */
     public void actionPerformed(final ActionEvent actionEvent) {
+        super.actionPerformed(actionEvent);
         if (commands.containsKey(actionEvent.getActionCommand())) {
             Command command = commands.get(actionEvent.getActionCommand());
             for (Object nickname : nickList.getSelectedValues()) {
@@ -300,7 +301,6 @@ public final class ChannelFrame extends Frame implements MouseListener,
                 }
             }
         }
-        super.actionPerformed(actionEvent);
         if (actionEvent.getSource() == settingsMI) {
             new ChannelSettingsDialog((Channel) getFrameParent()).setVisible(true);
         }
@@ -341,16 +341,12 @@ public final class ChannelFrame extends Frame implements MouseListener,
         return maxLineLength;
     }
     
-    /** {@inheritDoc}. */
-    public void actionEvent(final ActionEvent actionEvent) {
-        System.out.println(actionEvent.getActionCommand());
-    }
-    
     /**
      * Checks for url's, channels and nicknames. {@inheritDoc}
      */
     public void mouseClicked(final MouseEvent mouseEvent) {
         processMouseEvent(mouseEvent);
+        super.mouseClicked(mouseEvent);
     }
     
     /**
@@ -358,6 +354,7 @@ public final class ChannelFrame extends Frame implements MouseListener,
      */
     public void mousePressed(final MouseEvent mouseEvent) {
         processMouseEvent(mouseEvent);
+        super.mousePressed(mouseEvent);
     }
     
     /**
@@ -365,20 +362,7 @@ public final class ChannelFrame extends Frame implements MouseListener,
      */
     public void mouseReleased(final MouseEvent mouseEvent) {
         processMouseEvent(mouseEvent);
-    }
-    
-    /**
-     * Not needed for this class. {@inheritDoc}
-     */
-    public void mouseEntered(final MouseEvent mouseEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Not needed for this class. {@inheritDoc}
-     */
-    public void mouseExited(final MouseEvent mouseEvent) {
-        //Ignore.
+        super.mouseReleased(mouseEvent);
     }
     
     /**
@@ -413,8 +397,7 @@ public final class ChannelFrame extends Frame implements MouseListener,
             } else {
                 nickList.clearSelection();
             }
-        } else {
-            super.processMouseEvent(e);
         }
+        super.processMouseEvent(e);
     }
 }
