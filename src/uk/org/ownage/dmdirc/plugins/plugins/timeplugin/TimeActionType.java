@@ -30,12 +30,34 @@ import uk.org.ownage.dmdirc.actions.ActionType;
  * @author chris
  */
 public enum TimeActionType implements ActionType {
-
-    TIME_MINUTE, TIME_HOUR, TIME_DAY;
+    
+    TIME_MINUTE("Every minute"),
+    TIME_HOUR("Every hour"),
+    TIME_DAY("Every day");
+    
+    private final String name;
+    
+    /**
+     * Creates a new instance of a TimeActionType.
+     * @param name The name of the action type
+     */
+    TimeActionType(final String name) {
+        this.name = name;
+    }
     
     /** {@inheritDoc} */
     public ActionMetaType getType() {
         return TimeActionMetaType.TIME_TIME;
+    }
+    
+    /** {@inheritDoc} */
+    public String getName() {
+        return name;
+    }
+    
+    /** {@inheritDoc} */
+    public String toString() {
+        return getName();
     }
     
 }

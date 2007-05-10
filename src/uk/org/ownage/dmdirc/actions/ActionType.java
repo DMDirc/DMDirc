@@ -34,4 +34,10 @@ public interface ActionType {
      */
     ActionMetaType getType();
     
+    /**
+     * Retrieves this type's name.
+     * @return The name of this type
+     */
+    String getName();
+    
 }
