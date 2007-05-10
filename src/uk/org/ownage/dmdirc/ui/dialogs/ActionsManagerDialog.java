@@ -44,6 +44,7 @@ import uk.org.ownage.dmdirc.actions.ActionManager;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.ActionsGroupPanel;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
+import uk.org.ownage.dmdirc.ui.dialogs.actionseditor.ActionsEditorDialog;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
