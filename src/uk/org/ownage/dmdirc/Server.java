@@ -444,9 +444,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public void close(final String reason) {
         // Unregister parser callbacks
-        for(String callback : callbacks) {
-            parser.getCallbackManager().delCallback(callback, this);
-        }
+        parser.getCallbackManager().delAllCallback(this);
         // Unregister frame callbacks
         frame.removeInternalFrameListener(this);
         // Disconnect from the server
