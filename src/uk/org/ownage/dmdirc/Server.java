@@ -607,9 +607,9 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      */
     public boolean ownsFrame(final JInternalFrame target) {
         // Check if it's our server frame
-        if (frame.equals(target)) { return true; }
+        if (frame != null && frame.equals(target)) { return true; }
         // Check if it's the raw frame
-        if (raw.ownsFrame(target)) { return true; }
+        if (raw != null && raw.ownsFrame(target)) { return true; }
         // Check if it's a channel frame
         for (Channel channel : channels.values()) {
             if (channel.ownsFrame(target)) { return true; }
