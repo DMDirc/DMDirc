@@ -28,7 +28,9 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +57,9 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 
 import uk.org.ownage.dmdirc.actions.Action;
+import uk.org.ownage.dmdirc.actions.ActionComparison;
+import uk.org.ownage.dmdirc.actions.ActionManager;
+import uk.org.ownage.dmdirc.actions.ActionType;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
@@ -113,12 +118,14 @@ public final class ActionsEditorDialog extends StandardDialog implements
     private enum OPTION_TYPE { TEXTFIELD, CHECKBOX, COMBOBOX, }
     /** Action being edited. */
     private Action action;
-    /** Component map. */
-    private Map<String, Component> componentMap;
     /** Settings scroll pane. */
     private JScrollPane sp;
     /** currentSettingsPanel. */
     private JPanel currentSettingsPanel;
+    /** Action types. */
+    private ActionType[] types;
+    /** Action comparisons. */
+    private ActionComparison[] comparisons;
     
     /**
      * Creates a new instance of ChannelSettingsPane.
@@ -140,7 +147,8 @@ public final class ActionsEditorDialog extends StandardDialog implements
         
         this.setTitle("Action editor");
         
-        componentMap = new HashMap<String, Component>();
+        types = ActionManager.getTypes().toArray(new ActionType[0]);
+        comparisons = ActionManager.getComparisons().toArray(new ActionComparison[0]);
         
         currentSettingsPanel = new JPanel();
         sp = new JScrollPane(currentSettingsPanel);
@@ -151,7 +159,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
         buttonsPanel = new JPanel();
         
         name = new JTextField();
-        event = new JComboBox(new String[]{});
+        event = new JComboBox(types);
         otherEvents = new JList(new DefaultListModel());
         otherEvents.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         
@@ -240,12 +248,35 @@ public final class ActionsEditorDialog extends StandardDialog implements
     
     /** Initialises the info panel. */
     private void initInfoPanel() {
+        int[] selections;
+        ActionType[] types;
         infoPanel.add(new JLabel("Name: "));
         infoPanel.add(name);
         infoPanel.add(new JLabel("Event: "));
         infoPanel.add(event);
         infoPanel.add(new JLabel("Other Events: "));
         infoPanel.add(new JScrollPane(otherEvents));
+        
+        if (action != null) {
+            if (action.getName() != null) {
+                name.setText(action.getName());
+            }
+            
+            event.setSelectedItem(action.getTrigger()[0]);
+            
+            //Add list of compatible types
+            
+            selections = new int[otherEvents.getModel().getSize()];
+            types = action.getTrigger();
+            
+            if (types.length != 0 && selections.length != 0) {
+                for (int i = 0; i < types.length; i++) {
+                    selections[i] = ((DefaultListModel) otherEvents.getModel()).indexOf(types[i]);
+                }
+            }
+            
+            otherEvents.setSelectedIndices(selections);
+        }
         
         name.setPreferredSize(new Dimension(150,
                 name.getFont().getSize()));
@@ -288,11 +319,9 @@ public final class ActionsEditorDialog extends StandardDialog implements
         newSettingField = new JTextField();
         newSettingButton = new JButton();
         newTypeComboBox = new JComboBox(
-                new DefaultComboBoxModel(
-                new String[]{}));
+                new DefaultComboBoxModel(types));
         newComparisonComboBox = new JComboBox(
-                new DefaultComboBoxModel(
-                new String[]{}));
+                new DefaultComboBoxModel(comparisons));
         
         addPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
@@ -339,6 +368,10 @@ public final class ActionsEditorDialog extends StandardDialog implements
         
         responses.setRows(5);
         
+        for (String response : action.getResponse()) {
+            responses.setText(responses.getText() + response);
+        }
+        
         responses.setWrapStyleWord(true);
         responses.setLineWrap(true);
         
@@ -366,8 +399,8 @@ public final class ActionsEditorDialog extends StandardDialog implements
      * @param type Option type
      * @param optionValue config option value
      */
-    private void addCurrentOption(final OPTION_TYPE type1,
-            final OPTION_TYPE type2, final String optionValue) {
+    private void addCurrentOption(final ActionType newType,
+            final ActionComparison newComparison, final String optionValue) {
         final JButton button = new JButton();
         
         JComboBox type;
@@ -382,10 +415,10 @@ public final class ActionsEditorDialog extends StandardDialog implements
         
         numCurrentSettings++;
         
-        type = new JComboBox(new OPTION_TYPE[]{});
-        type.setSelectedItem(type1);
-        comparison = new JComboBox(new OPTION_TYPE[]{});
-        comparison.setSelectedItem(type2);
+        type = new JComboBox(types);
+        type.setSelectedItem(newType);
+        comparison = new JComboBox(comparisons);
+        comparison.setSelectedItem(newComparison);
         value = new JTextField();
         value.setText(optionValue);
         
@@ -466,8 +499,8 @@ public final class ActionsEditorDialog extends StandardDialog implements
             saveSettings();
             this.dispose();
         } else if ("add".equals(event.getActionCommand())) {
-            addCurrentOption((OPTION_TYPE) newTypeComboBox.getSelectedItem(),
-                    (OPTION_TYPE) newComparisonComboBox.getSelectedItem(),
+            addCurrentOption((ActionType) newTypeComboBox.getSelectedItem(),
+                    (ActionComparison) newComparisonComboBox.getSelectedItem(),
                     newSettingField.getText());
         } else {
             try {

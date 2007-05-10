@@ -276,6 +276,20 @@ public class ActionManager {
     }
     
     /**
+     * Returns a list of all the action types registered by this manager.
+     */
+    public static List<ActionType> getTypes() {
+        return actionTypes;
+    }
+    
+    /**
+     * Returns a list of all the action types registered by this manager.
+     */
+    public static List<ActionComparison> getComparisons() {
+        return actionComparisons;
+    }
+    
+    /**
      * Returns the action component specified by the given string, or null if it
      * doesn't match a valid registered action component.
      * @param type The name of the action component to try and find

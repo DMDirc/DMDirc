@@ -65,8 +65,8 @@ public class ActionsGroupPanel extends JPanel {
     /** The JTable we use to display data. */
     private JTable table;
     
-    /** 
-     * Creates a new instance of ActionsGroupPanel. 
+    /**
+     * Creates a new instance of ActionsGroupPanel.
      *
      * @param parent parent dialog
      * @param actions Actions list to show
@@ -87,14 +87,14 @@ public class ActionsGroupPanel extends JPanel {
      * @return A string representation of the arguments.
      */
     private String implode(final Object[] args) {
-       final StringBuffer res = new StringBuffer();
-       
-       for (Object object : args) {
-           res.append(", ");
-           res.append(object.toString());
-       }
-       
-       return res.substring(2);
+        final StringBuffer res = new StringBuffer();
+        
+        for (Object object : args) {
+            res.append(", ");
+            res.append(object.toString());
+        }
+        
+        return res.substring(2);
     }
     
     /** Initialises the components for this panel. */
@@ -132,6 +132,18 @@ public class ActionsGroupPanel extends JPanel {
         
         setLayout(new BorderLayout());
         add(pane);
+    }
+    
+    /**
+     * Returns the table for this panel.
+     */
+    public JTable getTable() {
+        return table;
+    }
+    
+    /** Returns the action at the specified index. */
+    public Action getAction(int index) {
+        return actions.get(index);
     }
     
 }
