@@ -23,12 +23,14 @@
 package uk.org.ownage.dmdirc.ui.dialogs;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -39,9 +41,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -78,7 +78,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
     /** Actions manager dialog. */
     private final ActionsManagerDialog owner;
     /** Current settings panel. */
-    private JPanel settingsPanel;
+    //private JPanel settingsPanel;
     /** Add settings panel. */
     private final JPanel addPanel;
     /** Response panel. */
@@ -113,6 +113,12 @@ public final class ActionsEditorDialog extends StandardDialog implements
     private enum OPTION_TYPE { TEXTFIELD, CHECKBOX, COMBOBOX, }
     /** Action being edited. */
     private Action action;
+    /** Component map. */
+    private Map<String, Component> componentMap;
+    /** Settings scroll pane. */
+    private JScrollPane sp;
+    /** currentSettingsPanel. */
+    private JPanel currentSettingsPanel;
     
     /**
      * Creates a new instance of ChannelSettingsPane.
@@ -134,7 +140,11 @@ public final class ActionsEditorDialog extends StandardDialog implements
         
         this.setTitle("Action editor");
         
-        settingsPanel = new JPanel();
+        componentMap = new HashMap<String, Component>();
+        
+        currentSettingsPanel = new JPanel();
+        sp = new JScrollPane(currentSettingsPanel);
+        
         addPanel = new JPanel();
         responsePanel = new JPanel();
         infoPanel = new JPanel();
@@ -175,9 +185,8 @@ public final class ActionsEditorDialog extends StandardDialog implements
         initResponsePanel();
         initButtonsPanel();
         
-        //this.add(infoLabel);
         this.add(infoPanel);
-        this.add(settingsPanel);
+        this.add(sp);
         this.add(addPanel);
         this.add(responsePanel);
         this.add(buttonsPanel);
@@ -193,13 +202,13 @@ public final class ActionsEditorDialog extends StandardDialog implements
                 SpringLayout.EAST, this.getContentPane());
         
         //settings panel SMALL_BORDER from the infoPanel and left
-        layout.putConstraint(SpringLayout.NORTH, settingsPanel, SMALL_BORDER,
+        layout.putConstraint(SpringLayout.NORTH, sp, SMALL_BORDER,
                 SpringLayout.SOUTH, infoPanel);
-        layout.putConstraint(SpringLayout.SOUTH, settingsPanel, -SMALL_BORDER,
+        layout.putConstraint(SpringLayout.SOUTH, sp, -SMALL_BORDER,
                 SpringLayout.NORTH, addPanel);
-        layout.putConstraint(SpringLayout.WEST, settingsPanel, SMALL_BORDER,
+        layout.putConstraint(SpringLayout.WEST, sp, SMALL_BORDER,
                 SpringLayout.WEST, this.getContentPane());
-        layout.putConstraint(SpringLayout.EAST, settingsPanel, -SMALL_BORDER,
+        layout.putConstraint(SpringLayout.EAST, sp, -SMALL_BORDER,
                 SpringLayout.EAST, this.getContentPane());
         
         //add panel SMALL_BORDER from the settingsPanel and left
@@ -257,19 +266,18 @@ public final class ActionsEditorDialog extends StandardDialog implements
     public void initCurrentSettingsPanel() {
         numCurrentSettings = 0;
         
-        settingsPanel.setBorder(BorderFactory.createCompoundBorder(
+        sp.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
                 new EtchedBorder(), "Conditions"),
-                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER)));
+                new EmptyBorder(0, SMALL_BORDER, 0, 0)));
         
-        settingsPanel.setLayout(new SpringLayout());
+        currentSettingsPanel.setLayout(new SpringLayout());
         
         noCurrentSettingsLabel.setText("No conditions set.");
         noCurrentSettingsLabel.setBorder(new EmptyBorder(0, 0, 0, 0));
-        settingsPanel.add(noCurrentSettingsLabel);
+        currentSettingsPanel.add(noCurrentSettingsLabel);
         
-        layoutGrid(settingsPanel, numCurrentSettings,
+        layoutGrid(currentSettingsPanel, numCurrentSettings,
                 4, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
     }
     
@@ -366,10 +374,10 @@ public final class ActionsEditorDialog extends StandardDialog implements
         JComboBox comparison;
         JTextField value;
         
-        settingsPanel.setVisible(false);
+        currentSettingsPanel.setVisible(false);
         
         if (numCurrentSettings == 0) {
-            settingsPanel.remove(0);
+            currentSettingsPanel.remove(0);
         }
         
         numCurrentSettings++;
@@ -401,46 +409,47 @@ public final class ActionsEditorDialog extends StandardDialog implements
         button.setBorder(new EmptyBorder(0, 0, 0, 0));
         button.setMargin(new Insets(0, 0, 0, 0));
         button.setPreferredSize(new Dimension(16, 0));
-        button.setActionCommand(String.valueOf(numCurrentSettings));
         button.addActionListener(this);
         
-        settingsPanel.add(type);
-        settingsPanel.add(comparison);
-        settingsPanel.add(value);
-        settingsPanel.add(button);
+        currentSettingsPanel.add(type);
+        currentSettingsPanel.add(comparison);
+        currentSettingsPanel.add(value);
+        currentSettingsPanel.add(button);
         
-        settingsPanel.setLayout(new SpringLayout());
+        currentSettingsPanel.setLayout(new SpringLayout());
         
-        layoutGrid(settingsPanel, numCurrentSettings,
+        layoutGrid(currentSettingsPanel, numCurrentSettings,
                 4, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
         
-        settingsPanel.setVisible(true);
+        currentSettingsPanel.setVisible(true);
         
         pack();
     }
     
-    public void removeCurrentOption(int optionNumber) {
-        int removeItem = (optionNumber - 1) * 4;
+    public void removeCurrentOption(Object optionNumber) {
+        int removeItem;
         
-        settingsPanel.setVisible(false);
+        removeItem = Arrays.asList(currentSettingsPanel.getComponents()).indexOf(optionNumber);
         
-        settingsPanel.remove(removeItem);
-        settingsPanel.remove(removeItem);
-        settingsPanel.remove(removeItem);
-        settingsPanel.remove(removeItem);
+        currentSettingsPanel.setVisible(false);
+        
+        currentSettingsPanel.remove(removeItem--);
+        currentSettingsPanel.remove(removeItem--);
+        currentSettingsPanel.remove(removeItem--);
+        currentSettingsPanel.remove(removeItem);
         
         numCurrentSettings--;
         
-        settingsPanel.setLayout(new SpringLayout());
+        currentSettingsPanel.setLayout(new SpringLayout());
         
-        layoutGrid(settingsPanel, numCurrentSettings,
+        layoutGrid(currentSettingsPanel, numCurrentSettings,
                 4, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
         
         if (numCurrentSettings == 0) {
-            settingsPanel.add(noCurrentSettingsLabel);
+            currentSettingsPanel.add(noCurrentSettingsLabel);
         }
         
-        settingsPanel.setVisible(true);
+        currentSettingsPanel.setVisible(true);
         
         pack();
     }
@@ -462,7 +471,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
                     newSettingField.getText());
         } else {
             try {
-                removeCurrentOption(Integer.parseInt(event.getActionCommand()));
+                removeCurrentOption(event.getSource());
             } catch (NumberFormatException ex) {
                 //Ignore
             }
