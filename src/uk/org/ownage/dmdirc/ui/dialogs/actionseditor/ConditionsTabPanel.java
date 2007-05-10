@@ -22,9 +22,19 @@
 
 package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
 
+import java.awt.BorderLayout;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.border.EmptyBorder;
 
 import uk.org.ownage.dmdirc.actions.Action;
+
+import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Conditions tab panel, conditions editing for the actions editor dialog.
@@ -41,6 +51,18 @@ public class ConditionsTabPanel extends JPanel {
     /** The action. */
     private Action action;
     
+    /** New button panel. */
+    private JPanel buttonsPanel;
+    /** Comparisons components panel. */
+    private JPanel comparisonsPanel;
+    
+    /** Info blurb. */
+    private JTextArea infoLabel;
+    /** No conditions label. */
+    private JLabel noConditions;
+    /** New comparison button. */
+    private JButton newComparison;
+    
     /** Creates a new instance of ConditionsTabPanel. */
     public ConditionsTabPanel(final Action action) {
         super();
@@ -51,17 +73,64 @@ public class ConditionsTabPanel extends JPanel {
         addListeners();
         layoutComponents();
     }
-
+    
     /** Initialises the components. */
-    private void initComponents() {
+    private void initComponents() {     
+        comparisonsPanel = new JPanel();
+        noConditions = new JLabel("No conditions set.");
+        newComparison = new JButton("New");
+        infoLabel = new JTextArea("This action will only be executed if the " 
+                + "following are true:");
+        
+        infoLabel.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, 
+                SMALL_BORDER));
+        
+        comparisonsPanel.setBorder(new EmptyBorder(0, SMALL_BORDER, SMALL_BORDER, 
+                SMALL_BORDER));
+        
+        infoLabel.setEditable(false);
+        infoLabel.setWrapStyleWord(true);
+        infoLabel.setLineWrap(true);
+        infoLabel.setHighlighter(null);
+        infoLabel.setBackground(this.getBackground());
+        
+        initButtonsPanel();
     }
-
+    
     /** Adds listeners to the components. */
     private void addListeners() {
     }
-
+    
     /** Lays out components. */
     private void layoutComponents() {
+        layoutComparisonPanel();
+        
+        this.setLayout(new BorderLayout());
+        
+        this.add(infoLabel, BorderLayout.PAGE_START);
+        this.add(comparisonsPanel, BorderLayout.CENTER);
+        this.add(buttonsPanel, BorderLayout.PAGE_END);
+    }
+    
+    private void layoutComparisonPanel() {
+        if (comparisonsPanel.getComponentCount() == 0) {
+            comparisonsPanel.add(noConditions);
+        } else {
+            
+        }
+    }
+    
+    /** Initialises the button panel. */
+    private void initButtonsPanel() {        
+        buttonsPanel = new JPanel();
+        
+        buttonsPanel.setBorder(new EmptyBorder(0, SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER));
+        
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
+        
+        buttonsPanel.add(Box.createHorizontalGlue());
+        buttonsPanel.add(newComparison);
     }
     
 }

@@ -32,6 +32,7 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -80,6 +81,8 @@ public class ConditionEditorDialog extends StandardDialog implements
     private ColourChooser targetColour;
     /** Target spinner. */
     private JSpinner targetSpinner;
+    /** Current target. */
+    private JComponent currentTarget;
     
     /** Creates a new instance of ConditionEditorDialog. */
     public ConditionEditorDialog(final ActionsEditorDialog parent) {
@@ -111,6 +114,12 @@ public class ConditionEditorDialog extends StandardDialog implements
         component.setPreferredSize(new Dimension(300, component.getFont().getSize()));
         comparison.setPreferredSize(new Dimension(300, comparison.getFont().getSize()));
         targetText.setPreferredSize(new Dimension(300, targetText.getFont().getSize()));
+        
+        currentTarget = targetText;
+        
+        component.setEnabled(false);
+        comparison.setEnabled(false);
+        currentTarget.setEnabled(false);
     }
     
     /** Initialises the button panel. */
@@ -137,7 +146,14 @@ public class ConditionEditorDialog extends StandardDialog implements
     }
     
     /** Lays out the components in the dialog. */
-    private void layoutComponents() {
+    private void layoutComponents() {        
+        layoutConditionsPanel();
+        layoutButtonPanel();
+        
+        pack();
+    }
+    
+    private void layoutConditionsPanel() {
         conditionsPanel.setLayout(new SpringLayout());
         
         conditionsPanel.add(new JLabel("Argument: "));
@@ -147,21 +163,30 @@ public class ConditionEditorDialog extends StandardDialog implements
         conditionsPanel.add(new JLabel("Comparison: "));
         conditionsPanel.add(comparison);
         conditionsPanel.add(new JLabel("Target: "));
-        conditionsPanel.add(targetText);
+        conditionsPanel.add(currentTarget);
         
         layoutGrid(conditionsPanel, 4, 2, SMALL_BORDER, SMALL_BORDER, 
                 SMALL_BORDER, SMALL_BORDER);
-        
+    }
+    
+    private void layoutButtonPanel() {
         this.setLayout(new BorderLayout());
         
         this.add(conditionsPanel, BorderLayout.CENTER);
-        this.add(buttonsPanel, BorderLayout.PAGE_END);
-        
-        pack();
+        this.add(buttonsPanel, BorderLayout.PAGE_END);        
     }
     
     /** {@inheritDoc}. */
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == argument) {
+            component.setEnabled(false);
+        } else if (e.getSource() == component) {
+            comparison.setEnabled(true);
+        } else if (e.getSource() == comparison) {
+            //switch current target and relay out
+            layoutConditionsPanel();            
+            currentTarget.setEnabled(true);
+        }
         if (e.getSource() == getOkButton()) {
             //notify the parent.
             this.dispose();

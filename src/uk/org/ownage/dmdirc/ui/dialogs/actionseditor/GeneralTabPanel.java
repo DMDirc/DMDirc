@@ -23,6 +23,8 @@
 package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
@@ -31,11 +33,9 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
 import uk.org.ownage.dmdirc.actions.Action;
-import uk.org.ownage.dmdirc.actions.ActionType;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -44,7 +44,7 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
 /**
  * General tab panel, name and trigger editing for the actions editor dialog.
  */
-public class GeneralTabPanel extends JPanel {
+public class GeneralTabPanel extends JPanel implements ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -84,10 +84,12 @@ public class GeneralTabPanel extends JPanel {
         trigger.setPreferredSize(new Dimension(100, trigger.getFont().getSize()));
         
         otherTriggers.setVisibleRowCount(2);
+        otherTriggers.setEnabled(false);
     }
     
     /** Adds listeners to the components. */
     private void addListeners() {
+        trigger.addActionListener(this);
     }
     
     /** Lays out components. */
@@ -103,6 +105,12 @@ public class GeneralTabPanel extends JPanel {
         
         layoutGrid(this, 3,
                 2, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == trigger) {
+            otherTriggers.setEnabled(true);
+        }
     }
     
 }
