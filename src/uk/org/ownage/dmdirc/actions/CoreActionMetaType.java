@@ -35,20 +35,20 @@ import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
  */
 public enum CoreActionMetaType implements ActionMetaType {
     
-    UNKNOWN_COMMAND(3, FrameContainer.class, String.class, String[].class),
+    UNKNOWN_COMMAND(3, new String[]{"Source", "Command", "Arguments"}, FrameContainer.class, String.class, String[].class),
     
-    SERVER_PING(2, Server.class, Long.class),
+    SERVER_PING(2, new String[]{"Server", "Ping"}, Server.class, Long.class),
     
-    SERVER_EVENT(1, Server.class),
-    CHANNEL_EVENT(1, Channel.class),
-    QUERY_EVENT(1, Query.class),
+    SERVER_EVENT(1, new String[]{"Server"}, Server.class),
+    CHANNEL_EVENT(1, new String[]{"Channel"}, Channel.class),
+    QUERY_EVENT(1, new String[]{"Query"}, Query.class),
     
-    SERVER_EVENT_WITH_ARG(2, Server.class, String.class),
-    QUERY_EVENT_WITH_ARG(2, Query.class, String.class),
+    SERVER_EVENT_WITH_ARG(2, new String[]{"Server", "Message"}, Server.class, String.class),
+    QUERY_EVENT_WITH_ARG(2, new String[]{"Query", "Message"}, Query.class, String.class),
     
-    CHANNEL_SOURCED_EVENT(2, Channel.class, ChannelClientInfo.class),
-    CHANNEL_SOURCED_EVENT_WITH_ARG(3, Channel.class, ChannelClientInfo.class, String.class),
-    CHANNEL_SOURCED_EVENT_WITH_VICTIM(4, Channel.class, ChannelClientInfo.class, ChannelClientInfo.class, String.class);
+    CHANNEL_SOURCED_EVENT(2, new String[]{"Channel", "User"}, Channel.class, ChannelClientInfo.class),
+    CHANNEL_SOURCED_EVENT_WITH_ARG(3, new String[]{"Channel", "User", "Message"}, Channel.class, ChannelClientInfo.class, String.class),
+    CHANNEL_SOURCED_EVENT_WITH_VICTIM(4, new String[]{"Channel", "User", "Victim", "Message"}, Channel.class, ChannelClientInfo.class, ChannelClientInfo.class, String.class);
     
     /** The arity of this type. */
     private final int arity;
@@ -56,13 +56,18 @@ public enum CoreActionMetaType implements ActionMetaType {
     /** The types of argument this type expects. */
     private final Class[] argTypes;
     
+    /** The names of the arguments that this type expects. */
+    private final String[] argNames;
+    
     /**
      * Constructs an instance of an CoreActionMetaType.
-     *
      * @param arity The arity of the action type
+     * @param argNames The names of the arguments
+     * @param argTypes The types of the argument
      */
-    CoreActionMetaType(final int arity, final Class ... argTypes) {
+    CoreActionMetaType(final int arity, final String[] argNames, final Class ... argTypes) {
         this.arity = arity;
+        this.argNames = argNames;
         this.argTypes = argTypes;
     }
     
@@ -74,6 +79,11 @@ public enum CoreActionMetaType implements ActionMetaType {
     /** {@inheritDoc} */
     public Class[] getArgTypes() {
         return argTypes.clone();
+    }
+    
+    /** {@inheritDoc} */
+    public String[] getArgNames() {
+        return argNames.clone();
     }
     
 }

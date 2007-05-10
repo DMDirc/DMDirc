@@ -35,6 +35,7 @@ public enum TimeActionMetaType implements ActionMetaType {
     TIME_TIME {
       public int getArity() { return 1; }
       public Class[] getArgTypes() { return new Class[]{Calendar.class}; }
+      public String[] getArgNames() { return new String[]{"Date"}; }
     };
     
     /** {@inheritDoc} */
@@ -42,5 +43,8 @@ public enum TimeActionMetaType implements ActionMetaType {
     
     /** {@inheritDoc} */
     public abstract Class[] getArgTypes();
+    
+    /** {@inheritDoc} */
+    public abstract String[] getArgNames();
     
 }

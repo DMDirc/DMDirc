@@ -40,4 +40,11 @@ public interface ActionMetaType {
      */
     Class[] getArgTypes();
     
+    /**
+     * Retrieves the names of the arguments that actions of this type should
+     * expect.
+     * @return The names of the expected arguments
+     */
+    String[] getArgNames();
+    
 }
