@@ -38,6 +38,7 @@ public enum CoreActionComparison implements ActionComparison {
             return ((String) arg1).equalsIgnoreCase((String) arg2);
         }
         public Class appliesTo() { return String.class; }
+        public String getName() { return "equals"; }
     },
     
     STRING_NEQUALS {
@@ -45,6 +46,7 @@ public enum CoreActionComparison implements ActionComparison {
             return !STRING_EQUALS.test(arg1, arg2);
         }
         public Class appliesTo() { return String.class; }
+        public String getName() { return "does not equal"; }
     },
     
     STRING_STARTSWITH {
@@ -52,6 +54,7 @@ public enum CoreActionComparison implements ActionComparison {
             return ((String) arg1).startsWith((String) arg2);
         }
         public Class appliesTo() { return String.class; }
+        public String getName() { return "starts with"; }
     },
     
     STRING_CONTAINS {
@@ -59,13 +62,15 @@ public enum CoreActionComparison implements ActionComparison {
             return ((String) arg1).indexOf((String) arg2) != -1;
         }
         public Class appliesTo() { return String.class; }
+        public String getName() { return "contains"; }
     },
     
     COLOUR_EQUALS {
         public boolean test(final Object arg1, final Object arg2) {
             return ((Color) arg1).equals(ColourManager.parseColour((String) arg2));
-        }        
+        }
         public Class appliesTo() { return Color.class; }
+        public String getName() { return "equals"; }
     },
     
     COLOUR_NEQUALS {
@@ -73,6 +78,7 @@ public enum CoreActionComparison implements ActionComparison {
             return !COLOUR_EQUALS.test(arg1, arg2);
         }
         public Class appliesTo() { return Color.class; }
+        public String getName() { return "does not equal"; }
     },
     
     INT_EQUALS {
@@ -84,6 +90,7 @@ public enum CoreActionComparison implements ActionComparison {
             }
         }
         public Class appliesTo() { return Integer.class; }
+        public String getName() { return "equals"; }
     },
     
     INT_GREATER {
@@ -94,7 +101,8 @@ public enum CoreActionComparison implements ActionComparison {
                 return false;
             }
         }
-        public Class appliesTo() { return Integer.class; }        
+        public Class appliesTo() { return Integer.class; }
+        public String getName() { return "is greater than"; }
     },
     
     INT_LESS {
@@ -105,7 +113,8 @@ public enum CoreActionComparison implements ActionComparison {
                 return false;
             }
         }
-        public Class appliesTo() { return Integer.class; }            
+        public Class appliesTo() { return Integer.class; }
+        public String getName() { return "is less than"; }
     };
     
     /** {@inheritDoc} */
@@ -113,5 +122,13 @@ public enum CoreActionComparison implements ActionComparison {
     
     /** {@inheritDoc} */
     public abstract Class appliesTo();
+    
+    /** {@inheritDoc} */
+    public abstract String getName();
+    
+    /** {@inheritDoc} */
+    public String toString() {
+        return getName();
+    }
     
 }

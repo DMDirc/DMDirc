@@ -50,4 +50,10 @@ public interface ActionComponent {
      */
     Class getType();
     
+    /**
+     * Retrives a friendly name for this component.
+     * @return This component's name
+     */
+    String getName();
+    
 }

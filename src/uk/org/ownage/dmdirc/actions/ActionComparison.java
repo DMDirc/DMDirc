@@ -43,6 +43,12 @@ public interface ActionComparison {
      * Returns the class that this comparison deals with.
      * @return The Class that this comparison can compare
      */
-    Class appliesTo();    
+    Class appliesTo();
+    
+    /**
+     * Returns a friendly name for this comparison.
+     * @return This comparion's name
+     */
+    String getName();
     
 }

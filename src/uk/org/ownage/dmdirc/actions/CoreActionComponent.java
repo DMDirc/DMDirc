@@ -33,41 +33,54 @@ import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
  * @author chris
  */
 public enum CoreActionComponent implements ActionComponent {
-        
+    
     CHANNEL_NAME {
         public Object get(final Object argument) { return ((Channel) argument).getChannelInfo().getName(); }
         public Class appliesTo() { return Channel.class; }
         public Class getType() { return String.class; }
+        public String getName() { return "Name"; }
     },
     
     CHANNEL_COLOUR {
         public Object get(final Object argument) { return ((Channel) argument).getNotification(); }
         public Class appliesTo() { return Channel.class; }
         public Class getType() { return Color.class; }
+        public String getName() { return "Notification colour"; }
     },
     
     USER_NAME {
         public Object get(final Object argument) { return ((ChannelClientInfo) argument).getNickname(); }
         public Class appliesTo() { return ChannelClientInfo.class; }
         public Class getType() { return String.class; }
+        public String getName() { return "Nickname"; }
     },
     
     USER_MODES {
         public Object get(final Object argument) { return ((ChannelClientInfo) argument).getChanModeStr(false); }
         public Class appliesTo() { return ChannelClientInfo.class; }
         public Class getType() { return String.class; }
+        public String getName() { return "Modes"; }
     },
     
     STRING_STRING {
         public Object get(final Object argument) { return argument; }
         public Class appliesTo() { return String.class; }
         public Class getType() { return String.class; }
+        public String getName() { return "Contents"; }
+    },
+    
+    STRING_LENGTH {
+        public Object get(final Object argument) { return ((String) argument).length(); }
+        public Class appliesTo() { return String.class; }
+        public Class getType() { return Integer.class; }
+        public String getName() { return "Length"; }
     },
     
     STRINGARRAY_LENGTH {
         public Object get(final Object argument) { return Integer.valueOf(((String[]) argument).length); }
         public Class appliesTo() { return String[].class; }
         public Class getType() { return Integer.class; }
+        public String getName() { return "Size"; }
     };
     
     /** {@inheritDoc} */
@@ -78,5 +91,13 @@ public enum CoreActionComponent implements ActionComponent {
     
     /** {@inheritDoc} */
     public abstract Class getType();
+    
+    /** {@inheritDoc} */
+    public abstract String getName();
+    
+    /** {@inheritDoc} */
+    public String toString() {
+        return getName();
+    }
     
 }
