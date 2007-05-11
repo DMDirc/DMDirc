@@ -36,6 +36,8 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 import uk.org.ownage.dmdirc.actions.Action;
+import uk.org.ownage.dmdirc.actions.ActionManager;
+import uk.org.ownage.dmdirc.actions.ActionType;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -79,12 +81,23 @@ public class GeneralTabPanel extends JPanel implements ActionListener {
         trigger = new JComboBox(new DefaultComboBoxModel());
         otherTriggers = new JList(new DefaultListModel());
         
+        ((DefaultComboBoxModel) trigger.getModel()).addElement("");
+        for (ActionType type : ActionManager.getTypes().toArray(new ActionType[0])) {
+            ((DefaultComboBoxModel) trigger.getModel()).addElement(type);
+        }
+        
         name.setPreferredSize(new Dimension(100, name.getFont().getSize()));
         
         trigger.setPreferredSize(new Dimension(100, trigger.getFont().getSize()));
         
         otherTriggers.setVisibleRowCount(2);
         otherTriggers.setEnabled(false);
+        
+        if (action != null) {
+            name.setText(action.getName());
+            
+            trigger.setSelectedItem(action.getTrigger()[0]);
+        }
     }
     
     /** Adds listeners to the components. */
@@ -106,7 +119,7 @@ public class GeneralTabPanel extends JPanel implements ActionListener {
         layoutGrid(this, 3,
                 2, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
     }
-
+    
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == trigger) {
             otherTriggers.setEnabled(true);

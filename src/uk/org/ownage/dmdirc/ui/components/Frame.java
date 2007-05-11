@@ -686,8 +686,10 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 getPopup().show(this, (int) point.getX(), (int) point.getY());
             }
         } else if (e.isPopupTrigger() && e.getSource() == getInputField()) {
-            final Point point = getMousePosition();
-            inputFieldPopup.show(this, (int) point.getX(), (int) point.getY());
+            final Point point = inputFieldPopup.getMousePosition();
+            if (point != null) {
+                inputFieldPopup.show(this, (int) point.getX(), (int) point.getY());
+            }
         } else if (e.getSource() == getTextPane()) {
             getTextPane().requestFocus();
         } else if (e.getSource() == getInputField()) {

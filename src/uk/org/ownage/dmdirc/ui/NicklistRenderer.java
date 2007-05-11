@@ -69,9 +69,8 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
         
         if (config.getOptionBool("nicklist", "altBackground") && !selected
                 && (index & 1) == 1) {
-            final Color fallback = ColourManager.getColour("f0f0f0");
-            
-            this.setBackground(config.getOptionColour("nicklist", "altBackgroundColour", fallback));
+            this.setBackground(config.getOptionColour("nicklist", "altBackgroundColour",
+                    ColourManager.getColour("f0f0f0")));
         }
         
         final Map<ChannelClientProperty, Object> map
@@ -83,7 +82,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
         
         if (map.containsKey(ChannelClientProperty.COLOUR_BACKGROUND)) {
             setBackground((Color) map.get(ChannelClientProperty.COLOUR_BACKGROUND));
-        }        
+        }
         
         this.setBorder(new EmptyBorder(0, 2, 0, 2));
         

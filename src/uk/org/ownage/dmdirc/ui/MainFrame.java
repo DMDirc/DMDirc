@@ -180,7 +180,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         miAddServer.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
-                NewServerDialog.showNewServerDialog();
+                new NewServerDialog();
             }
         });
         

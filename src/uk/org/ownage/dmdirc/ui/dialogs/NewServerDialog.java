@@ -58,7 +58,8 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 /**
  * Dialog that allows the user to enter details of a new server to connect to.
  */
-public final class NewServerDialog extends StandardDialog {
+public final class NewServerDialog extends StandardDialog
+        implements ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -66,11 +67,6 @@ public final class NewServerDialog extends StandardDialog {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 4;
-    
-    /**
-     * A previously created instance of NewServerDialog.
-     */
-    private static NewServerDialog me;
     
     /** checkbox. */
     private JCheckBox newServerWindowCheck;
@@ -123,7 +119,7 @@ public final class NewServerDialog extends StandardDialog {
     /**
      * Creates a new instance of the dialog.
      */
-    private NewServerDialog() {
+    public NewServerDialog() {
         super(MainFrame.getMainFrame(), false);
         
         initComponents();
@@ -136,78 +132,28 @@ public final class NewServerDialog extends StandardDialog {
         portField.setInputVerifier(new PortVerifier());
         
         addCallbacks();
-    }
-    
-    /**
-     * Creates the new server dialog if one doesn't exist, and displays it.
-     */
-    public static synchronized void showNewServerDialog() {
-        if (me == null) {
-            me = new NewServerDialog();
-            me.setLocationRelativeTo(MainFrame.getMainFrame());
-            me.setVisible(true);
-        } else {
-            me.setLocationRelativeTo(MainFrame.getMainFrame());
-            me.setVisible(true);
-            me.requestFocus();
-        }
         
-        me.serverField.requestFocus();
+        this.serverField.requestFocus();
         
         if (ServerManager.getServerManager().numServers() == 0
                 || MainFrame.getMainFrame().getActiveFrame() == null) {
-            me.newServerWindowCheck.setSelected(true);
-            me.newServerWindowCheck.setEnabled(false);
+            this.newServerWindowCheck.setSelected(true);
+            this.newServerWindowCheck.setEnabled(false);
         } else {
-            me.newServerWindowCheck.setEnabled(true);
+            this.newServerWindowCheck.setEnabled(true);
         }
+        
+        this.setLocationRelativeTo(MainFrame.getMainFrame());
+        this.setVisible(true);
     }
     
     /**
      * Adds listeners for various objects in the dialog.
      */
     private void addCallbacks() {
-        getCancelButton().addActionListener(new ActionListener() {
-            public void actionPerformed(final ActionEvent actionEvent) {
-                NewServerDialog.this.setVisible(false);
-            }
-        });
-        getOkButton().addActionListener(new ActionListener() {
-            public void actionPerformed(final ActionEvent actionEvent) {
-                final String host = serverField.getText();
-                final String pass = passwordField.getText();
-                int port;
-                try {
-                    port = Integer.parseInt(portField.getText());
-                } catch (NumberFormatException ex) {
-                    port = 6667;
-                }
-                
-                NewServerDialog.this.setVisible(false);
-                
-                final ConfigSource profile = (ConfigSource) identityField.getSelectedItem();
-                
-                // Open in a new window?
-                if (newServerWindowCheck.isSelected()
-                || ServerManager.getServerManager().numServers() == 0
-                        || MainFrame.getMainFrame().getActiveFrame() == null) {
-                    new Server(host, port, pass, sslCheck.isSelected(), profile);
-                } else {
-                    final JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
-                    final Server server = ServerManager.getServerManager().getServerFromFrame(active);
-                    if (server == null) {
-                        Logger.error(ErrorLevel.ERROR, "Cannot determine active server window");
-                    } else {
-                        server.connect(host, port, pass, sslCheck.isSelected(), profile);
-                    }
-                }
-            }
-        });
-        editProfileButton.addActionListener(new ActionListener() {
-            public void actionPerformed(final ActionEvent actionEvent) {
-                new ProfileEditorDialog();
-            }
-        });
+        getCancelButton().addActionListener(this);
+        getOkButton().addActionListener(this);
+        editProfileButton.addActionListener(this);
     }
     
     /**
@@ -414,6 +360,42 @@ public final class NewServerDialog extends StandardDialog {
         getContentPane().add(getRightButton(), constraints);
         
         pack();
+    }
+    
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == editProfileButton) {
+            new ProfileEditorDialog();
+        } else if (e.getSource() == getOkButton()) {
+            final String host = serverField.getText();
+            final String pass = passwordField.getText();
+            int port;
+            try {
+                port = Integer.parseInt(portField.getText());
+            } catch (NumberFormatException ex) {
+                port = 6667;
+            }
+            
+            this.dispose();
+            
+            final ConfigSource profile = (ConfigSource) identityField.getSelectedItem();
+            
+            // Open in a new window?
+            if (newServerWindowCheck.isSelected()
+            || ServerManager.getServerManager().numServers() == 0
+                    || MainFrame.getMainFrame().getActiveFrame() == null) {
+                new Server(host, port, pass, sslCheck.isSelected(), profile);
+            } else {
+                final JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
+                final Server server = ServerManager.getServerManager().getServerFromFrame(active);
+                if (server == null) {
+                    Logger.error(ErrorLevel.ERROR, "Cannot determine active server window");
+                } else {
+                    server.connect(host, port, pass, sslCheck.isSelected(), profile);
+                }
+            }
+        } else if (e.getSource() == getCancelButton()) {
+            this.dispose();
+        }
     }
     
 }

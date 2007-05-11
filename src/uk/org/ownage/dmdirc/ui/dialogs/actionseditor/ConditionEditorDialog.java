@@ -62,11 +62,10 @@ public class ConditionEditorDialog extends StandardDialog implements
      */
     private static final long serialVersionUID = 1;
     
+    /** Parent dialog, informed of changes on close. */
+    private ConditionsTabPanel parent;
     /** Buttons panel. */
     private JPanel buttonsPanel;
-    
-    /** Parent dialog, informed of changes on close. */
-    private ActionsEditorDialog parent;
     /** conditions panel. */
     private JPanel conditionsPanel;
     /** Argument combobox. */
@@ -85,16 +84,18 @@ public class ConditionEditorDialog extends StandardDialog implements
     private JComponent currentTarget;
     
     /** Creates a new instance of ConditionEditorDialog. */
-    public ConditionEditorDialog(final ActionsEditorDialog parent) {
+    public ConditionEditorDialog(final ConditionsTabPanel parent) {
         super(MainFrame.getMainFrame(), false);
         
         this.parent = parent;
-        
+
         this.setTitle("Condition Editor");
         
         initComponents();
         addListeners();
         layoutComponents();
+        
+        this.setLocationRelativeTo(MainFrame.getMainFrame());
         
         this.setVisible(true);
     }

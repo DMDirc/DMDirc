@@ -34,6 +34,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.BadLocationException;
 
 import uk.org.ownage.dmdirc.actions.Action;
 
@@ -42,7 +43,7 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
- * Response tab panel, response and formatter editing for the actions editor 
+ * Response tab panel, response and formatter editing for the actions editor
  * dialog.
  */
 public class ResponseTabPanel extends JPanel {
@@ -73,7 +74,7 @@ public class ResponseTabPanel extends JPanel {
         addListeners();
         layoutComponents();
     }
-
+    
     /** Initialises the components. */
     private void initComponents() {
         responses = new JTextArea();
@@ -86,13 +87,26 @@ public class ResponseTabPanel extends JPanel {
                 ));
         
         responses.setRows(3);
-        formatter.setPreferredSize(new Dimension(100, formatter.getFont().getSize() + LARGE_BORDER));
+        formatter.setPreferredSize(
+                new Dimension(100, formatter.getFont().getSize()
+                + LARGE_BORDER));
+        
+        if (action != null) {
+            for (String response: action.getResponse()) {
+                responses.setText(responses.getText() + '\n' + response);
+            }
+            try {
+                responses.setText(responses.getText(1, responses.getText().length()));
+            } catch (BadLocationException ex) {
+                //Ignore
+            }
+        }
     }
-
+    
     /** Adds listeners to the components. */
     private void addListeners() {
     }
-
+    
     /** Lays out components. */
     private void layoutComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
@@ -108,7 +122,7 @@ public class ResponseTabPanel extends JPanel {
         constraints.gridx = 0;
         constraints.gridy = 0;
         add(new JLabel("Execute the following commands: "), constraints);
-
+        
         constraints.weighty = 1.0;
         constraints.gridy = 1;
         add(scrollPane, constraints);

@@ -23,6 +23,9 @@
 package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
 
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -39,7 +42,7 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 /**
  * Conditions tab panel, conditions editing for the actions editor dialog.
  */
-public class ConditionsTabPanel extends JPanel {
+public class ConditionsTabPanel extends JPanel implements ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -99,6 +102,7 @@ public class ConditionsTabPanel extends JPanel {
     
     /** Adds listeners to the components. */
     private void addListeners() {
+        newComparison.addActionListener(this);
     }
     
     /** Lays out components. */
@@ -131,6 +135,12 @@ public class ConditionsTabPanel extends JPanel {
         
         buttonsPanel.add(Box.createHorizontalGlue());
         buttonsPanel.add(newComparison);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == newComparison) {
+            new ConditionEditorDialog(this);
+        }
     }
     
 }

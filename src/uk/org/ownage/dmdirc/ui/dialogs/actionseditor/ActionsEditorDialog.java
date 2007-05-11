@@ -151,7 +151,6 @@ public class ActionsEditorDialog extends StandardDialog implements
             saveSettings();
             this.dispose();
         } else if (e.getSource() == getCancelButton()) {
-            new ConditionEditorDialog(this);
             this.dispose();
         }
     }
