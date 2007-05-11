@@ -180,13 +180,13 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         miAddServer.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
-                new NewServerDialog();
+                NewServerDialog.showNewServerDialog();
             }
         });
         
         miPreferences.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
-                new PreferencesDialog();
+                PreferencesDialog.showPreferencesDialog();
             }
         });
         
@@ -583,15 +583,15 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     public void actionPerformed(final ActionEvent e) {
         if (e.getActionCommand().equals("About")) {
-            new AboutDialog().setVisible(true);
+            AboutDialog.showAboutDialog();
         } else if (e.getActionCommand().equals("Profile")) {
             new ProfileEditorDialog();
         } else if (e.getActionCommand().equals("Exit")) {
             Main.quit();
         } else if (e.getActionCommand().equals("ManagePlugins")) {
-            new PluginDialog();
+            PluginDialog.showPluginDialog();
         } else if (e.getActionCommand().equals("Actions")) {
-            new ActionsManagerDialog();
+            ActionsManagerDialog.showActionsManagerDialog();
         }
     }
     

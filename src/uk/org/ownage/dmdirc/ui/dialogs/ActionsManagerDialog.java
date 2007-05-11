@@ -60,7 +60,10 @@ public final class ActionsManagerDialog extends StandardDialog
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
+    
+    /** Previously created instance of ActionsManagerDialog. */
+    private static ActionsManagerDialog me;
     
     /** Height of the buttons, in pixels. */
     private static final int BUTTON_HEIGHT = 25;
@@ -71,7 +74,7 @@ public final class ActionsManagerDialog extends StandardDialog
     private JTabbedPane groups;
     
     /** Creates a new instance of ActionsManagerDialog. */
-    public ActionsManagerDialog() {
+    private ActionsManagerDialog() {
         super(MainFrame.getMainFrame(), false);
         
         initComponents();
@@ -81,6 +84,16 @@ public final class ActionsManagerDialog extends StandardDialog
         setResizable(false);
         setLocationRelativeTo(MainFrame.getMainFrame());
         setVisible(true);
+    }
+    
+    /** Creates the dialog if one doesn't exist, and displays it. */
+    public static synchronized void showActionsManagerDialog() {
+        if (me == null) {
+            me = new ActionsManagerDialog();
+        } else {
+            me.setVisible(true);
+            me.requestFocus();
+        }
     }
     
     /** Initialiases the components for this dialog. */

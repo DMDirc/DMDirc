@@ -61,7 +61,10 @@ public final class PluginDialog extends StandardDialog implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
+    
+    /** Previously created instance of PluginDialog. */
+    private static PluginDialog me;
     
     /** List of plugins. */
     private JList pluginList;
@@ -88,7 +91,7 @@ public final class PluginDialog extends StandardDialog implements
     private JEditorPane infoLabel;
     
     /** Creates a new instance of PluginDialog. */
-    public PluginDialog() {
+    private  PluginDialog() {
         super(MainFrame.getMainFrame(), false);
         setResizable(false);
         initComponents();
@@ -100,6 +103,16 @@ public final class PluginDialog extends StandardDialog implements
         
         this.setLocationRelativeTo(MainFrame.getMainFrame());
         this.setVisible(true);
+    }
+    
+    /** Creates the dialog if one doesn't exist, and displays it. */
+    public static synchronized void showPluginDialog() {
+        if (me == null) {
+            me = new PluginDialog();
+        } else {
+            me.setVisible(true);
+            me.requestFocus();
+        }
     }
     
     /** Initialises the components. */

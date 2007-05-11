@@ -45,7 +45,7 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
- *
+ * About dialog.
  */
 public final class AboutDialog extends JDialog implements ActionListener,
         MouseListener {
@@ -55,17 +55,30 @@ public final class AboutDialog extends JDialog implements ActionListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
+    /** Previously created instance of AboutDialog. */
+    private static AboutDialog me;
     
     /** link label. */
     private JLabel linkLabel;
     
     /** Creates a new instance of AboutDialog. */
-    public AboutDialog() {
+    private AboutDialog() {
         super(MainFrame.getMainFrame(), false);
         initComponents();
         setLocationRelativeTo(MainFrame.getMainFrame());
+        this.setVisible(true);
+    }
+    
+    /** Creates the dialog if one doesn't exist, and displays it. */
+    public static synchronized void showAboutDialog() {
+        if (me == null) {
+            me = new AboutDialog();
+        } else {
+            me.setVisible(true);
+            me.requestFocus();
+        }
     }
     
     /** Initialises the main UI components. */

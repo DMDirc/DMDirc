@@ -29,6 +29,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import uk.org.ownage.dmdirc.Config;
+import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
 import uk.org.ownage.dmdirc.ui.components.PreferencesPanel;
 
@@ -42,24 +43,38 @@ public final class PreferencesDialog implements PreferencesInterface {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 5;
+    private static final long serialVersionUID = 6;
+    
+    /** A previously created instance of PreferencesDialog. */
+    private static PreferencesDialog me;
     
     /** preferences panel. */
-    private final PreferencesPanel preferencesPanel;
+    private PreferencesPanel preferencesPanel;
     
     /**
      * Creates a new instance of PreferencesDialog.
      */
-    public PreferencesDialog() {
-        preferencesPanel = new PreferencesPanel(this);
-        
-        initComponents();
+    private PreferencesDialog() {
+    }
+    
+    /** Creates the dialog if one doesn't exist, and displays it. */
+    public static synchronized void showPreferencesDialog() {
+        if (me == null) {
+            me = new PreferencesDialog();
+        }
+        if (me.preferencesPanel == null) {
+            me.initComponents();
+        } else {
+            me.preferencesPanel.requestFocus();
+        }
     }
     
     /**
      * Initialises GUI components.
      */
     private void initComponents() {
+        
+        preferencesPanel = new PreferencesPanel(this);
         
         initGeneralTab();
         
@@ -310,5 +325,6 @@ public final class PreferencesDialog implements PreferencesInterface {
             final String[] args = ((String) entry.getKey()).split("\\.");
             Config.setOption(args[0], args[1], (String) entry.getValue());
         }
+        preferencesPanel = null;
     }
 }

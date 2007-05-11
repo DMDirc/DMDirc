@@ -302,8 +302,10 @@ public final class ProfileEditorDialog extends StandardDialog implements
         } else if (event.getSource() == getOkButton()) {
             profiles.get(selectedProfile).setOption("profile", "nickname", nickname.getText());
             profiles.get(selectedProfile).setOption("profile", "realname", realname.getText());
+            NewServerDialog.getNewServerDialog().populateProfiles();
             this.dispose();
         } else if (event.getSource() == getCancelButton()) {
+            NewServerDialog.getNewServerDialog().populateProfiles();
             this.dispose();
         }
     }

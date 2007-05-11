@@ -568,9 +568,9 @@ public final class PreferencesPanel extends StandardDialog implements
             Config.setOption("dialogstate", owner.getClass().getName(),
                     tabList.getSelectionPath().getLastPathComponent().toString());
             saveOptions();
-            setVisible(false);
+            dispose();
         } else if (getCancelButton().equals(actionEvent.getSource())) {
-            setVisible(false);
+            dispose();
         }
     }
     
