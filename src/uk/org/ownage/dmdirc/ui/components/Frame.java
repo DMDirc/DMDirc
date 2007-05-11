@@ -217,7 +217,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /**
      * Adds a line of text to the main text area (with a timestamp).
      * @param line text to add
+     * @deprecated All lines should use a formatter
      */
+    @Deprecated
     public final void addLine(final String line) {
         addLine(line, true);
     }
@@ -394,7 +396,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         Object temp = null;
         Constructor<?> constructor;
         
-        String componentUI = (String) UIManager.get("InternalFrameUI");
+        final String componentUI = (String) UIManager.get("InternalFrameUI");
         
         if ("javax.swing.plaf.synth.SynthLookAndFeel".equals(componentUI)) {
             temp = SynthLookAndFeel.createUI(this);
