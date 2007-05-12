@@ -52,8 +52,7 @@ public final class Message extends ServerCommand {
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         if (args.length < 2) {
-            origin.addLine("commandUsage",
-                    Config.getOption("general", "commandchar"), "msg",
+            origin.addLine("commandUsage", Config.getCommandChar(), "msg",
                     "<target> <message>");
         } else {
             server.getParser().sendLine("PRIVMSG " + args[0] + " :"

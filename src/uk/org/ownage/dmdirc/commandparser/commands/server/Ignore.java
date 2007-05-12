@@ -123,8 +123,7 @@ public final class Ignore extends ServerCommand {
             }
             
         } else {
-            origin.addLine("commandUsage", 
-                    Config.getOption("general", "commandchar"), "ignore",
+            origin.addLine("commandUsage", Config.getCommandChar(), "ignore",
                     "<add|remove|view> [host]");
         }
         

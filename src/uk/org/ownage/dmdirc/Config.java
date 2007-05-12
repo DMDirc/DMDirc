@@ -205,6 +205,14 @@ public final class Config {
     }
     
     /**
+     * Returns the application's command character.
+     * @return The command character (general.commandchar)
+     */
+    public static String getCommandChar() {
+        return getOption("general", "commandchar", "/");
+    }
+    
+    /**
      * Returns the specified option.
      * @return the value of the specified option
      * @param domain the domain of the option

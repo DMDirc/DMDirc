@@ -113,7 +113,7 @@ public final class CommandManager {
                 }
             }
             
-            final String commandName = Config.getOption("general", "commandchar") + command.getName();
+            final String commandName = Config.getCommandChar() + command.getName();
             
             for (Server server : ServerManager.getServerManager().getServers()) {
                 if (command instanceof ServerCommand) {
@@ -165,7 +165,7 @@ public final class CommandManager {
                 }
             }
             
-            final String commandName = Config.getOption("general", "commandchar") + command.getName();
+            final String commandName = Config.getCommandChar() + command.getName();
             
             for (Server server : ServerManager.getServerManager().getServers()) {
                 if (command instanceof ServerCommand) {
@@ -471,7 +471,7 @@ public final class CommandManager {
         final List<String> res = new ArrayList<String>();
         
         for (Command command : source) {
-            res.add(Config.getOption("general", "commandchar") + command.getName());
+            res.add(Config.getCommandChar() + command.getName());
         }
         
         return res;

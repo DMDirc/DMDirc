@@ -58,8 +58,7 @@ public final class Notify extends ChannelCommand {
         final Color colour = ColourManager.parseColour(args[0], null);
         
         if (colour == null) {
-            origin.addLine("commandUsage",
-                    Config.getOption("general", "commandchar"), "notify",
+            origin.addLine("commandUsage", Config.getCommandChar(), "notify",
                     "<colour> - colour must be an IRC colour code (0-15) or a hex string (e.g. FFFF00).");
         } else {
             channel.sendNotification(colour);

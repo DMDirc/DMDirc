@@ -74,7 +74,7 @@ public final class Set extends ServerCommand {
         final StringBuffer output = new StringBuffer(67);
         
         output.append("Valid domains (use ");
-        output.append(Config.getOption("general", "commandchar"));
+        output.append(Config.getCommandChar());
         output.append("set <domain> to see options within a domain): ");
         
         for (String domain : Config.getDomains()) {

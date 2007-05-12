@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.commandparser;
 import java.util.Hashtable;
 import java.util.Map;
 
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.actions.ActionManager;
 import uk.org.ownage.dmdirc.actions.CoreActionType;
 
@@ -79,7 +80,7 @@ public abstract class CommandParser {
             return;
         }
         
-        if (line.charAt(0) == origin.getConfigManager().getOption("general", "commandchar").charAt(0)) {
+        if (line.charAt(0) == Config.getCommandChar().charAt(0)) {
             final String[] args = line.split(" ");
             final String command = args[0].substring(1);
             String[] comargs;

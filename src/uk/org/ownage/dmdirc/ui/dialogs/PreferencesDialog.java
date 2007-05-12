@@ -257,7 +257,7 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addCategory(tabName, "");
         
         preferencesPanel.addTextfieldOption(tabName, "general.commandchar",
-                "Command character: ", "", Config.getOption("general", "commandchar"));
+                "Command character: ", "", Config.getCommandChar());
         preferencesPanel.addCheckboxOption(tabName, "tabcompletion.casesensitive",
                 "Case-sensitive tab completion: ", "",
                 Config.getOptionBool("tabcompletion", "casesensitive"));
