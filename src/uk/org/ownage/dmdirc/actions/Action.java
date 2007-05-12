@@ -116,7 +116,7 @@ public class Action {
                     if (i == 0) {
                         args = triggers[i].getType().getArgTypes();
                     } else {
-                        if (!ActionManager.checkArgs(args, triggers[i].getType().getArgTypes())) {
+                        if (!triggers[i].getType().equals(triggers[0].getType())) {
                             error("Triggers are not compatible");
                             return;
                         }

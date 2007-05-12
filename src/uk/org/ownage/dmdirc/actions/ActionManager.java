@@ -284,7 +284,7 @@ public class ActionManager {
     public static List<ActionType> getCompatibleTypes(final ActionType type) {
         final List<ActionType> res = new ArrayList<ActionType>();
         for (ActionType target : actionTypes) {
-            if (target != type && checkArgs(target.getType().getArgTypes(), type.getType().getArgTypes())) {
+            if (!target.equals(type) && target.getType().equals(type.getType())) {
                 res.add(target);
             }
         }
@@ -434,25 +434,5 @@ public class ActionManager {
         }
         
         return res;
-    }
-    
-    /**
-     * Checks to see if the two sets of arguments are equal.
-     * @param arg1 The first argument to be tested
-     * @param arg2 The second argument to be tested
-     * @return True iff the args are equal, false otherwise
-     */
-    public static boolean checkArgs(final Class[] arg1, final Class[] arg2) {
-        if (arg1.length != arg2.length) {
-            return false;
-        }
-        
-        for (int i = 0; i < arg1.length; i++) {
-            if (!arg1[i].getName().equals(arg2[i].getName())) {
-                return false;
-            }
-        }
-        
-        return true;
     }
 }
