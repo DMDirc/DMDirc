@@ -77,12 +77,14 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
         final Map<ChannelClientProperty, Object> map
                 = (Map<ChannelClientProperty, Object>) ((ChannelClientInfo) value).getMiscObject();
         
-        if (map.containsKey(ChannelClientProperty.COLOUR_FOREGROUND)) {
-            setForeground((Color) map.get(ChannelClientProperty.COLOUR_FOREGROUND));
-        }
-        
-        if (map.containsKey(ChannelClientProperty.COLOUR_BACKGROUND)) {
-            setBackground((Color) map.get(ChannelClientProperty.COLOUR_BACKGROUND));
+        if (map != null) {
+            if (map.containsKey(ChannelClientProperty.COLOUR_FOREGROUND)) {
+                setForeground((Color) map.get(ChannelClientProperty.COLOUR_FOREGROUND));
+            }
+            
+            if (map.containsKey(ChannelClientProperty.COLOUR_BACKGROUND)) {
+                setBackground((Color) map.get(ChannelClientProperty.COLOUR_BACKGROUND));
+            }
         }
         
         this.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
