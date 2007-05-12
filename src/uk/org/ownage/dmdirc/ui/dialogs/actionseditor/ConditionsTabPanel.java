@@ -27,6 +27,9 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -71,6 +74,9 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     /** New comparison button. */
     private JButton newComparison;
     
+    /** List of conditions. */
+    private List<ActionCondition> conditions;
+    
     /**
      * Creates a new instance of ConditionsTabPanel.
      *
@@ -80,6 +86,11 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         super();
         
         this.action = action;
+        if (action != null) {
+            this.conditions = new ArrayList<ActionCondition>(action.getConditions());
+        } else {
+            this.conditions = new ArrayList<ActionCondition>();
+        }
         
         initComponents();
         addListeners();
@@ -112,11 +123,50 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             return;
         }
         
-        if (action.getConditions().size() == 0) {
-            return;
-        }
+        doConditions();
+    }
+    
+    /** Adds listeners to the components. */
+    private void addListeners() {
+        newComparison.addActionListener(this);
+    }
+    
+    /** Lays out components. */
+    private void layoutComponents() {
+        this.setLayout(new BorderLayout());
         
-        for (ActionCondition condition : action.getConditions()) {
+        this.add(infoLabel, BorderLayout.PAGE_START);
+        this.add(comparisonsPanel, BorderLayout.CENTER);
+        this.add(buttonsPanel, BorderLayout.PAGE_END);
+    }
+    
+    /** Initialises the button panel. */
+    private void initButtonsPanel() {
+        buttonsPanel = new JPanel();
+        
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER));
+        
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
+        
+        buttonsPanel.add(Box.createHorizontalGlue());
+        buttonsPanel.add(newComparison);
+    }
+    
+    private void doConditions() {
+        comparisonsPanel.setVisible(false);
+        
+        initConditions();
+        layoutComparisonPanel();
+        
+        comparisonsPanel.setVisible(true);
+    }
+    
+    private void initConditions() {
+        
+        comparisonsPanel.removeAll();
+        
+        for (ActionCondition condition : conditions) {
             JLabel label = new JLabel("The "
                     + action.getTriggers()[0].getType().getArgNames()[condition.getArg()]
                     + "'s " + condition.getComponent() + " "
@@ -126,6 +176,10 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             JButton delete = new JButton();
             
             edit.setIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/edit-inactive.png")));
+            edit.setRolloverIcon(new ImageIcon(this.getClass()
+            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/edit.png")));
+            edit.setPressedIcon(new ImageIcon(this.getClass()
             .getClassLoader().getResource("uk/org/ownage/dmdirc/res/edit.png")));
             edit.setContentAreaFilled(false);
             edit.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -154,25 +208,10 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         }
     }
     
-    /** Adds listeners to the components. */
-    private void addListeners() {
-        newComparison.addActionListener(this);
-    }
-    
-    /** Lays out components. */
-    private void layoutComponents() {
-        layoutComparisonPanel();
-        
-        this.setLayout(new BorderLayout());
-        
-        this.add(infoLabel, BorderLayout.PAGE_START);
-        this.add(comparisonsPanel, BorderLayout.CENTER);
-        this.add(buttonsPanel, BorderLayout.PAGE_END);
-    }
-    
     /** Lays out the comparisons panel. */
     private void layoutComparisonPanel() {
         comparisonsPanel.setLayout(new SpringLayout());
+        
         if (comparisonsPanel.getComponentCount() == 0) {
             comparisonsPanel.add(noConditions);
         } else {
@@ -182,28 +221,26 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         }
     }
     
-    /** Initialises the button panel. */
-    private void initButtonsPanel() {
-        buttonsPanel = new JPanel();
+    public void addCondition(ActionCondition newCondition) {
+        conditions.add(newCondition);
         
-        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER));
+        doConditions();
+    }
+    
+    public void delCondition(int index) {
+        conditions.remove(index);
         
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
-        
-        buttonsPanel.add(Box.createHorizontalGlue());
-        buttonsPanel.add(newComparison);
+        doConditions();
     }
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == newComparison) {
-            new ConditionEditorDialog(null);
+            new ConditionEditorDialog(this, action, null);
         } else if ("edit".equals(event.getActionCommand())) {
-            new ConditionEditorDialog(null);
+            new ConditionEditorDialog(this, action, conditions.get(Arrays.asList(comparisonsPanel.getComponents()).indexOf(event.getSource()) - 2));
         } else if ("delete".equals(event.getActionCommand())) {
-            //delete the condition
+            delCondition(Arrays.asList(comparisonsPanel.getComponents()).indexOf(event.getSource()) - 3);
         }
     }
-    
 }

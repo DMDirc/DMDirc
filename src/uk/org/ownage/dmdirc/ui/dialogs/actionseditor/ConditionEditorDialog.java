@@ -40,7 +40,10 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
+import uk.org.ownage.dmdirc.actions.Action;
+import uk.org.ownage.dmdirc.actions.ActionComponent;
 import uk.org.ownage.dmdirc.actions.ActionCondition;
+import uk.org.ownage.dmdirc.actions.ActionManager;
 
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.ColourChooser;
@@ -63,17 +66,22 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private static final long serialVersionUID = 1;
     
     /** Parent dialog, informed of changes on close. */
+    private ConditionsTabPanel parent;
+    /** Parent action. */
+    private Action action;
+    /** Parent condition. */
     private ActionCondition condition;
+    
     /** Buttons panel. */
     private JPanel buttonsPanel;
-    /** conditions panel. */
+    /** Parent conditions panel. */
     private JPanel conditionsPanel;
     /** Argument combobox. */
-    private JComboBox argument;
+    private JComboBox arguments;
     /** Component combobox. */
-    private JComboBox component;
+    private JComboBox components;
     /** Comparison combobox. */
-    private JComboBox comparison;
+    private JComboBox comparisons;
     /** Target textfield. */
     private JTextField targetText;
     /** Target colour chooser. */
@@ -87,10 +95,15 @@ public final class ConditionEditorDialog extends StandardDialog implements
      * Creates a new instance of ConditionEditorDialog. 
      *
      * @param parent parent conditions panel.
+     * @param action parent action
+     * @param condition condition to be edited (or null)
      */
-    public ConditionEditorDialog(final ActionCondition condition) {
+    public ConditionEditorDialog(final ConditionsTabPanel parent, 
+            final Action action, final ActionCondition condition) {
         super(MainFrame.getMainFrame(), false);
         
+        this.parent = parent;
+        this.action = action;
         this.condition = condition;
 
         this.setTitle("Condition Editor");
@@ -108,23 +121,39 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private void initComponents() {
         initButtonsPanel();
         conditionsPanel = new JPanel();
-        argument = new JComboBox(new DefaultComboBoxModel());
-        component = new JComboBox(new DefaultComboBoxModel());
-        comparison = new JComboBox(new DefaultComboBoxModel());
+        arguments = new JComboBox(new DefaultComboBoxModel());
+        components = new JComboBox(new DefaultComboBoxModel());
+        comparisons = new JComboBox(new DefaultComboBoxModel());
         targetText = new JTextField();
         targetColour = new ColourChooser("", true, true);
         targetSpinner = new JSpinner(new SpinnerNumberModel());
         
-        argument.setPreferredSize(new Dimension(300, argument.getFont().getSize()));
-        component.setPreferredSize(new Dimension(300, component.getFont().getSize()));
-        comparison.setPreferredSize(new Dimension(300, comparison.getFont().getSize()));
+        arguments.setPreferredSize(new Dimension(300, arguments.getFont().getSize()));
+        components.setPreferredSize(new Dimension(300, components.getFont().getSize()));
+        comparisons.setPreferredSize(new Dimension(300, comparisons.getFont().getSize()));
         targetText.setPreferredSize(new Dimension(300, targetText.getFont().getSize()));
         
         currentTarget = targetText;
         
-        component.setEnabled(false);
-        comparison.setEnabled(false);
+        components.setEnabled(false);
+        comparisons.setEnabled(false);
         currentTarget.setEnabled(false);
+        
+        if (condition == null || action == null) {
+            return;
+        }
+        
+        for (String argument : action.getTriggers()[0].getType().getArgNames()) {
+            ((DefaultComboBoxModel) arguments.getModel()).addElement(argument);
+        }
+        arguments.setSelectedItem(action.getTriggers()[0].getType().getArgNames()[condition.getArg()]);
+        components.setEnabled(true);
+        
+        for (ActionComponent component : ActionManager.getCompatibleComponents(arguments.getSelectedItem().getClass())) {
+            ((DefaultComboBoxModel) components.getModel()).addElement(component);
+        }
+        components.setSelectedItem(condition.getComponent());
+        comparisons.setEnabled(true);
     }
     
     /** Initialises the button panel. */
@@ -163,11 +192,11 @@ public final class ConditionEditorDialog extends StandardDialog implements
         conditionsPanel.setLayout(new SpringLayout());
         
         conditionsPanel.add(new JLabel("Argument: "));
-        conditionsPanel.add(argument);
+        conditionsPanel.add(arguments);
         conditionsPanel.add(new JLabel("Component: "));
-        conditionsPanel.add(component);
+        conditionsPanel.add(components);
         conditionsPanel.add(new JLabel("Comparison: "));
-        conditionsPanel.add(comparison);
+        conditionsPanel.add(comparisons);
         conditionsPanel.add(new JLabel("Target: "));
         conditionsPanel.add(currentTarget);
         
@@ -185,11 +214,11 @@ public final class ConditionEditorDialog extends StandardDialog implements
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
-        if (event.getSource() == argument) {
-            component.setEnabled(false);
-        } else if (event.getSource() == component) {
-            comparison.setEnabled(true);
-        } else if (event.getSource() == comparison) {
+        if (event.getSource() == arguments) {
+            components.setEnabled(false);
+        } else if (event.getSource() == components) {
+            comparisons.setEnabled(true);
+        } else if (event.getSource() == comparisons) {
             //switch current target and relay out
             layoutConditionsPanel();            
             currentTarget.setEnabled(true);
