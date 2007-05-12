@@ -52,9 +52,9 @@ public final class LoadFormatter extends ServerCommand {
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         if (Formatter.loadFile(args[0])) {
-            origin.addLine("Formatter loaded.");
+            origin.addLine("commandOutput", "Formatter loaded.");
         } else {
-            origin.addLine("Formatter load failed.");
+            origin.addLine("commandError", "Formatter load failed.");
         }
     }
     

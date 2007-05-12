@@ -52,9 +52,9 @@ public final class Ctcp extends ServerCommand {
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         if (args.length < 2) {
-            origin.addLine("Usage: "
-                    + Config.getOption("general", "commandchar")
-                    + "ctcp <target> <type> [arguments]");
+            origin.addLine("CommandUsage",
+                    Config.getOption("general", "commandchar"),
+                    "ctcp", "<target> <type> [arguments]");
         } else {
             server.getParser().sendLine("PRIVMSG " + args[0] + " :"
                     + ((char)1) + implodeArgs(1, args) + ((char)1));

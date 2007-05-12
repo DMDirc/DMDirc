@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.commandparser.commands.channel;
 import java.awt.Color;
 
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
@@ -57,7 +58,9 @@ public final class Notify extends ChannelCommand {
         final Color colour = ColourManager.parseColour(args[0], null);
         
         if (colour == null) {
-            origin.addLine("Usage: notify <colour> - colour must be an IRC colour code (0-15) or a hex string (e.g. FFFF00).");
+            origin.addLine("commandUsage",
+                    Config.getOption("general", "commandchar"), "notify",
+                    "<colour> - colour must be an IRC colour code (0-15) or a hex string (e.g. FFFF00).");
         } else {
             channel.sendNotification(colour);
         }

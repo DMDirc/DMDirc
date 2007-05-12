@@ -243,7 +243,15 @@ public final class Formatter {
         defaultProperties.setProperty("motdEnd", colour + "10%1$s");
         defaultProperties.setProperty("rawIn", "<< %1$s");
         defaultProperties.setProperty("rawOut", "<< %1$s");
+        defaultProperties.setProperty("commandOutput", "%1$s");
+        defaultProperties.setProperty("commandError", colour + "7%1$s");
         defaultProperties.setProperty("actionTooLong", "Warning: action too long to be sent");
+        
+        // Type: Command usage
+        //    1: Command char
+        //    2: Command name
+        //    3: Arguments
+        defaultProperties.setProperty("commandUsage", colour + "7Usage: %1$s%2$s %3$s");
         
         // Type: Numerical data
         defaultProperties.setProperty("numeric_301", "%4$s is away: %5$s");

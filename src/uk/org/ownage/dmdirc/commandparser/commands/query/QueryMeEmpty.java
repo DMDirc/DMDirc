@@ -22,6 +22,7 @@
 
 package uk.org.ownage.dmdirc.commandparser.commands.query;
 
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Query;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
@@ -51,7 +52,7 @@ public final class QueryMeEmpty extends QueryCommand {
      */
     public void execute(final CommandWindow origin, final Server server,
             final Query query, final String... args) {
-        origin.addLine("Usage: " + origin.getConfigManager().getOption("general", "commandchar") + "me <action>");
+        origin.addLine("commandUsage", Config.getOption("general", "commandchar"), "me", "<action>");
     }
     
     /** {@inheritDoc}. */

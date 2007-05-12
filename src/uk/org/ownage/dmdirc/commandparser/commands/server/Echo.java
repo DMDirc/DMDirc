@@ -56,7 +56,7 @@ public final class Echo extends ServerCommand {
      */
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
-        origin.addLine(implodeArgs(args));
+        origin.addLine("commandOutput", implodeArgs(args));
     }
         
     /** {@inheritDoc}. */

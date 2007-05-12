@@ -38,6 +38,7 @@ public interface CommandWindow {
      * Adds a line of text to the main text area of the window.
      * @param line The line to be added
      */
+    @Deprecated
     void addLine(String line);
     
     /**

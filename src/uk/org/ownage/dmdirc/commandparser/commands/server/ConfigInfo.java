@@ -52,7 +52,7 @@ public class ConfigInfo extends ServerCommand {
     public final void execute(final CommandWindow origin, final Server server,
             final String... args) {
         for (ConfigSource source : origin.getConfigManager().getSources()) {
-            origin.addLine(source.getTarget() + " - " + source);
+            origin.addLine("commandOutput", source.getTarget() + " - " + source);
         }
     }
     

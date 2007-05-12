@@ -82,7 +82,7 @@ public final class Set extends ServerCommand {
             output.append(", ");
         }
         
-        origin.addLine(output.substring(0, output.length() - 2));
+        origin.addLine("commandOutput", output.substring(0, output.length() - 2));
     }
     
     /**
@@ -106,9 +106,9 @@ public final class Set extends ServerCommand {
         }
         
         if (found) {
-            origin.addLine(output.substring(0, output.length() - 2));
+            origin.addLine("commandOutput", output.substring(0, output.length() - 2));
         } else {
-            origin.addLine("There are no options in the domain '" + domain + "'.");
+            origin.addLine("commandError", "There are no options in the domain '" + domain + "'.");
         }
     }
     
@@ -121,10 +121,10 @@ public final class Set extends ServerCommand {
     private void doShowOption(final CommandWindow origin, final String domain,
             final String option) {
         if (Config.hasOption(domain, option)) {
-            origin.addLine("The current value of " + domain + "." + option
+            origin.addLine("commandOutput", "The current value of " + domain + "." + option
                     + " is: " + Config.getOption(domain, option));
         } else {
-            origin.addLine("Option not found: " + domain + "." + option);
+            origin.addLine("commandError", "Option not found: " + domain + "." + option);
         }
     }
     
@@ -139,7 +139,7 @@ public final class Set extends ServerCommand {
             final String option, final String newvalue) {
         Config.setOption(domain, option, newvalue);
         
-        origin.addLine(domain + "." + option + " has been set to: " + newvalue);
+        origin.addLine("commandOutput", domain + "." + option + " has been set to: " + newvalue);
     }
     
     /** {@inheritDoc}. */

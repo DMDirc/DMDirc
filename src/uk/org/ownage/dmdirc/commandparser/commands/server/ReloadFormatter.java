@@ -52,7 +52,7 @@ public final class ReloadFormatter extends ServerCommand {
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         Formatter.reload();
-        origin.addLine("Formatter reloaded.");
+        origin.addLine("commandOutput", "Formatter reloaded.");
     }
     
     

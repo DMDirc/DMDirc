@@ -52,9 +52,9 @@ public final class SaveFormatter extends ServerCommand {
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
         if (Formatter.saveAs(args[0])) {
-            origin.addLine("Formatter saved.");
+            origin.addLine("commandOutput", "Formatter saved.");
         } else {
-            origin.addLine("Formatter save failed.");
+            origin.addLine("commandError", "Formatter save failed.");
         }
     }
     

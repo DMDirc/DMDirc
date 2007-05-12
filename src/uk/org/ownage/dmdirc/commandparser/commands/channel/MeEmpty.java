@@ -51,7 +51,9 @@ public final class MeEmpty extends ChannelCommand {
      */
     public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
-        origin.addLine("Usage: " + origin.getConfigManager().getOption("general", "commandchar") + "me <action>");
+        origin.addLine("commandUsage",
+                origin.getConfigManager().getOption("general", "commandchar"),
+                "me", "<action>");
     }
     
     /** {@inheritDoc}. */

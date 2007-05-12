@@ -58,14 +58,14 @@ public final class SetNickColour extends ChannelCommand {
     @SuppressWarnings("unchecked")
     public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
-        ChannelClientInfo target = channel.getChannelInfo().getUser(args[0]);
+        final ChannelClientInfo target = channel.getChannelInfo().getUser(args[0]);
         
         if (target == null) {
-            origin.addLine("No such nickname!");
+            origin.addLine("commandError", "No such nickname!");
         } else {
-            Color newColour = ColourManager.parseColour(args[1], null);
+            final Color newColour = ColourManager.parseColour(args[1], null);
             if (newColour == null) {
-                origin.addLine("Invalid colour specified.");
+                origin.addLine("commandError", "Invalid colour specified.");
             } else {
                 ((Map<ChannelClientProperty, Object>) target.getMiscObject()).put(ChannelClientProperty.COLOUR_FOREGROUND, newColour);
                 ((ChannelFrame) channel.getFrame()).getNickList().repaint();

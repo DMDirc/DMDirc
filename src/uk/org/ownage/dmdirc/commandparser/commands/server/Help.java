@@ -58,18 +58,18 @@ public final class Help extends ServerCommand {
      */
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
-        origin.addLine("-- Server commands ----------------------------------");
+        origin.addLine("commandOutput", "-- Server commands ----------------------------------");
         showCommands(CommandManager.getServerCommands(), origin);
         if (origin instanceof ChannelFrame) {
-            origin.addLine("-- Channel commands ---------------------------------");
+            origin.addLine("commandOutput", "-- Channel commands ---------------------------------");
             showCommands(CommandManager.getChannelCommands(), origin);
         }
         if (origin instanceof QueryFrame) {
-            origin.addLine("-- Query commands -----------------------------------");
+            origin.addLine("commandOutput", "-- Query commands -----------------------------------");
             showCommands(CommandManager.getQueryCommands(), origin);
             
         }
-        origin.addLine("-----------------------------------------------------");
+        origin.addLine("commandOutput", "-----------------------------------------------------");
     }
     
     /**
@@ -82,7 +82,7 @@ public final class Help extends ServerCommand {
         Collections.sort(commands);
         for (Command com : commands) {
             if (com.showInHelp()) {
-                origin.addLine(com.getHelp());
+                origin.addLine("commandOutput", com.getHelp());
             }
         }
     }
