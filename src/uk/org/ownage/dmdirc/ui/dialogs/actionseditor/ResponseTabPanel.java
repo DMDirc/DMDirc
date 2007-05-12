@@ -39,6 +39,7 @@ import uk.org.ownage.dmdirc.actions.Action;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import uk.org.ownage.dmdirc.ui.messages.Formatter;
 
 /**
  * Response tab panel, response and formatter editing for the actions editor
@@ -62,8 +63,8 @@ public final class ResponseTabPanel extends JPanel {
     /** Formatter scrollpane. */
     private JScrollPane scrollPane;
     
-    /** 
-     * Creates a new instance of ResponseTabPanel. 
+    /**
+     * Creates a new instance of ResponseTabPanel.
      *
      * @param action action to be edited
      */
@@ -93,17 +94,27 @@ public final class ResponseTabPanel extends JPanel {
                 new Dimension(100, formatter.getFont().getSize()
                 + LARGE_BORDER));
         
-        if (action != null) {
-            for (String response : action.getResponse()) {
-                responses.setText(responses.getText() + '\n' + response);
-            }
-            try {
-                responses.setText(responses.getText(1, responses.getText().length()));
-            } catch (BadLocationException ex) {
-                //Ignore
-            }
-            responses.setText(responses.getText().substring(0, responses.getText().length() -1));
+        if (action == null) {
+            return;
         }
+        
+        for (String response : action.getResponse()) {
+            responses.setText(responses.getText() + '\n' + response);
+        }
+        
+        try {
+            responses.setText(responses.getText(1, responses.getText().length()));
+        } catch (BadLocationException ex) {
+            //Ignore
+        }
+        
+        responses.setText(responses.getText().substring(0, responses.getText().length() - 1));
+        
+        ((DefaultComboBoxModel) formatter.getModel()).addElement("");
+        for (String format : Formatter.getFormats()) {
+            ((DefaultComboBoxModel) formatter.getModel()).addElement(format);
+        }
+        formatter.setSelectedItem(action.getNewFormat());
     }
     
     /** Adds listeners to the components. */
@@ -114,7 +125,7 @@ public final class ResponseTabPanel extends JPanel {
     private void layoutComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
         
-        this.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
+        this.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         this.setLayout(new GridBagLayout());
         

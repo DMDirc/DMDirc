@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
+import java.util.Set;
 
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
@@ -78,6 +79,14 @@ public final class Formatter {
         }
     }
     
+    
+    public static Set<String> getFormats() {
+        if (properties == null) {
+            initialise();
+        }
+        
+        return properties.stringPropertyNames();
+    }
     /**
      * Determines whether the formatter knows of a specific message type.
      * @param messageType the message type to check

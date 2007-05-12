@@ -25,7 +25,6 @@ package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -103,9 +102,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         }
         name.setText(action.getName());
         
-        for (ActionType type : ActionManager.getCompatibleTypes(action.getTriggers()[0])) {
-            ((DefaultListModel) otherTriggers.getModel()).addElement(type);
-        }
+        populateOtherTriggers();
         
         trigger.setSelectedItem(action.getTriggers()[0]);
         otherTriggers.setEnabled(true);
@@ -117,6 +114,19 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
             }
             
         }
+    }
+    
+    private void populateOtherTriggers() {
+        otherTriggers.removeAll();
+        if (trigger.getSelectedIndex() == 0) {
+            otherTriggers.setEnabled(false);
+        } else {
+            for (ActionType type : ActionManager.getCompatibleTypes((ActionType) trigger.getSelectedItem())) {
+                System.out.println("adding " + type);
+                ((DefaultListModel) otherTriggers.getModel()).addElement(type);
+            }
+        }
+        otherTriggers.repaint();
     }
     
     /** Adds listeners to the components. */
@@ -143,6 +153,8 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == trigger) {
             otherTriggers.setEnabled(true);
+            
+            populateOtherTriggers();
         }
     }
     

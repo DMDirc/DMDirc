@@ -237,10 +237,15 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == newComparison) {
             new ConditionEditorDialog(this, action, null);
-        } else if ("edit".equals(event.getActionCommand())) {
-            new ConditionEditorDialog(this, action, conditions.get(Arrays.asList(comparisonsPanel.getComponents()).indexOf(event.getSource()) - 2));
-        } else if ("delete".equals(event.getActionCommand())) {
-            delCondition(Arrays.asList(comparisonsPanel.getComponents()).indexOf(event.getSource()) - 3);
+        } else {
+            if ("edit".equals(event.getActionCommand())) {
+                new ConditionEditorDialog(this, action,
+                        conditions.get((Arrays.asList(
+                        comparisonsPanel.getComponents()).indexOf(event.getSource()) - 2) / 4));
+            } else if ("delete".equals(event.getActionCommand())) {
+                delCondition((Arrays.asList(
+                        comparisonsPanel.getComponents()).indexOf(event.getSource()) - 3) / 4);
+            }
         }
     }
 }

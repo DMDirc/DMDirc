@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,6 +42,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import uk.org.ownage.dmdirc.actions.Action;
+import uk.org.ownage.dmdirc.actions.ActionComparison;
 import uk.org.ownage.dmdirc.actions.ActionComponent;
 import uk.org.ownage.dmdirc.actions.ActionCondition;
 import uk.org.ownage.dmdirc.actions.ActionManager;
@@ -84,28 +86,28 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private JComboBox comparisons;
     /** Target textfield. */
     private JTextField targetText;
-    /** Target colour chooser. */
-    private ColourChooser targetColour;
-    /** Target spinner. */
-    private JSpinner targetSpinner;
-    /** Current target. */
-    private JComponent currentTarget;
     
-    /** 
-     * Creates a new instance of ConditionEditorDialog. 
+    /**
+     * Creates a new instance of ConditionEditorDialog.
      *
      * @param parent parent conditions panel.
      * @param action parent action
      * @param condition condition to be edited (or null)
      */
-    public ConditionEditorDialog(final ConditionsTabPanel parent, 
+    public ConditionEditorDialog(final ConditionsTabPanel parent,
             final Action action, final ActionCondition condition) {
         super(MainFrame.getMainFrame(), false);
         
         this.parent = parent;
         this.action = action;
-        this.condition = condition;
-
+        if (condition == null) {
+            this.condition = null;
+        } else {
+            this.condition = new ActionCondition(condition.getArg(),
+                    condition.getComponent(), condition.getComparison(),
+                    condition.getTarget());
+        }
+        
         this.setTitle("Condition Editor");
         
         initComponents();
@@ -125,23 +127,25 @@ public final class ConditionEditorDialog extends StandardDialog implements
         components = new JComboBox(new DefaultComboBoxModel());
         comparisons = new JComboBox(new DefaultComboBoxModel());
         targetText = new JTextField();
-        targetColour = new ColourChooser("", true, true);
-        targetSpinner = new JSpinner(new SpinnerNumberModel());
         
         arguments.setPreferredSize(new Dimension(300, arguments.getFont().getSize()));
         components.setPreferredSize(new Dimension(300, components.getFont().getSize()));
         comparisons.setPreferredSize(new Dimension(300, comparisons.getFont().getSize()));
         targetText.setPreferredSize(new Dimension(300, targetText.getFont().getSize()));
         
-        currentTarget = targetText;
-        
         components.setEnabled(false);
         comparisons.setEnabled(false);
-        currentTarget.setEnabled(false);
+        targetText.setEnabled(false);
         
         if (condition == null || action == null) {
             return;
         }
+        
+        populateArguments();
+    }
+    
+    private void populateArguments() {
+        conditionsPanel.setVisible(false);
         
         for (String argument : action.getTriggers()[0].getType().getArgNames()) {
             ((DefaultComboBoxModel) arguments.getModel()).addElement(argument);
@@ -149,11 +153,33 @@ public final class ConditionEditorDialog extends StandardDialog implements
         arguments.setSelectedItem(action.getTriggers()[0].getType().getArgNames()[condition.getArg()]);
         components.setEnabled(true);
         
+        populateComponents();
+    }
+    
+    private void populateComponents() {
         for (ActionComponent component : ActionManager.getCompatibleComponents(arguments.getSelectedItem().getClass())) {
             ((DefaultComboBoxModel) components.getModel()).addElement(component);
         }
         components.setSelectedItem(condition.getComponent());
         comparisons.setEnabled(true);
+        
+        populateComparisons();
+    }
+    
+    private void populateComparisons() {
+        for (ActionComparison comparison : ActionManager.getCompatibleComparisons(arguments.getSelectedItem().getClass())) {
+            ((DefaultComboBoxModel) comparisons.getModel()).addElement(comparison);
+        }
+        comparisons.setSelectedItem(condition.getComparison());
+        targetText.setEnabled(true);
+        
+        populateTarget();
+    }
+    
+    private void populateTarget() {
+        targetText.setText(condition.getTarget());
+        
+        conditionsPanel.setVisible(true);
     }
     
     /** Initialises the button panel. */
@@ -180,7 +206,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
     }
     
     /** Lays out the components in the dialog. */
-    private void layoutComponents() {        
+    private void layoutComponents() {
         layoutConditionsPanel();
         layoutButtonPanel();
         
@@ -198,9 +224,9 @@ public final class ConditionEditorDialog extends StandardDialog implements
         conditionsPanel.add(new JLabel("Comparison: "));
         conditionsPanel.add(comparisons);
         conditionsPanel.add(new JLabel("Target: "));
-        conditionsPanel.add(currentTarget);
+        conditionsPanel.add(targetText);
         
-        layoutGrid(conditionsPanel, 4, 2, SMALL_BORDER, SMALL_BORDER, 
+        layoutGrid(conditionsPanel, 4, 2, SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER);
     }
     
@@ -209,19 +235,17 @@ public final class ConditionEditorDialog extends StandardDialog implements
         this.setLayout(new BorderLayout());
         
         this.add(conditionsPanel, BorderLayout.CENTER);
-        this.add(buttonsPanel, BorderLayout.PAGE_END);        
+        this.add(buttonsPanel, BorderLayout.PAGE_END);
     }
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == arguments) {
-            components.setEnabled(false);
+            populateArguments();
         } else if (event.getSource() == components) {
-            comparisons.setEnabled(true);
+            populateArguments();
         } else if (event.getSource() == comparisons) {
-            //switch current target and relay out
-            layoutConditionsPanel();            
-            currentTarget.setEnabled(true);
+            populateArguments();
         }
         if (event.getSource() == getOkButton()) {
             //notify the parent.
