@@ -272,7 +272,7 @@ public final class ChannelFrame extends Frame implements MouseListener,
         splitPane.setRightComponent(nickScrollPane);
         
         splitPane.setResizeWeight(1.0);
-        if (Config.getOptionBool("ui", "maximisewindows")) {
+        if (Config.getOptionBool("ui", "maximisewindows") || MainFrame.getMainFrame().getMaximised()) {
             splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth() - 325);
         } else {
             splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth() / 2 - 150);

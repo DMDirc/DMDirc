@@ -119,12 +119,6 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /** The channel object that owns this frame. */
     private final FrameContainer parent;
     
-    /** The border used when the frame is not maximised. */
-    private Border myborder;
-    
-    /** The dimensions of the titlebar of the frame. **/
-    private Dimension titlebarSize;
-    
     /** Popupmenu for this frame. */
     private JPopupMenu popup;
     
@@ -207,8 +201,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     public final void open() {
         setVisible(true);
-        if (Config.hasOption("ui", "awayindicator")
-        && Config.getOptionBool("ui", "awayindicator")) {
+        if (Config.getOptionBool("ui", "awayindicator")) {
             awayLabel.setVisible(getServer().isAway());
         }
     }
