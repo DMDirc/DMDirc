@@ -40,6 +40,7 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
+import uk.org.ownage.dmdirc.actions.ActionCondition;
 
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.ColourChooser;
@@ -62,7 +63,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private static final long serialVersionUID = 1;
     
     /** Parent dialog, informed of changes on close. */
-    private ConditionsTabPanel parent;
+    private ActionCondition condition;
     /** Buttons panel. */
     private JPanel buttonsPanel;
     /** conditions panel. */
@@ -87,10 +88,10 @@ public final class ConditionEditorDialog extends StandardDialog implements
      *
      * @param parent parent conditions panel.
      */
-    public ConditionEditorDialog(final ConditionsTabPanel parent) {
+    public ConditionEditorDialog(final ActionCondition condition) {
         super(MainFrame.getMainFrame(), false);
         
-        this.parent = parent;
+        this.condition = condition;
 
         this.setTitle("Condition Editor");
         

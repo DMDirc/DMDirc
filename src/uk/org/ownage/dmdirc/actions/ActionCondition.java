@@ -61,8 +61,44 @@ public class ActionCondition {
      * @return True if the condition holds, false otherwise
      */
     public boolean test(final Object ... args) {
-        final String thisTarget = ActionManager.substituteVars(target, args);
-        return comparison.test(component.get(args[arg]), thisTarget);
+        final String thisTarget = ActionManager.substituteVars(getTarget(), args);
+        return getComparison().test(getComponent().get(args[getArg()]), thisTarget);
+    }
+    
+    /**
+     * Returns the argument number this condition applies to.
+     *
+     * @return Argument number
+     */
+    public int getArg() {
+        return arg;
+    }
+    
+    /**
+     * Returns the component this condition applies to.
+     *
+     * @return Component to apply condition to
+     */
+    public ActionComponent getComponent() {
+        return component;
+    }
+    
+    /**
+     * Returns the comparison this condition applies to.
+     *
+     * @return Comparison to be used
+     */
+    public ActionComparison getComparison() {
+        return comparison;
+    }
+    
+    /**
+     * Returns the target of the comparison for this condition
+     *
+     * @return Target for comparison
+     */
+    public String getTarget() {
+        return target;
     }
     
 }

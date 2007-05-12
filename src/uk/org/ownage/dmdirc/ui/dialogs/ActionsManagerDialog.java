@@ -233,12 +233,12 @@ public final class ActionsManagerDialog extends StandardDialog
             final int row = ((ActionsGroupPanel)
             groups.getSelectedComponent()).getTable().getSelectedRow();
             if (row != -1) {
-                new ActionsEditorDialog(this,
+                ActionsEditorDialog.showActionsEditorDialog(this,
                         ((ActionsGroupPanel)
                         groups.getSelectedComponent()).getAction(row));
             }
         } else if (e.getActionCommand().equals("action.new")) {
-            new ActionsEditorDialog(this);
+            ActionsEditorDialog.showActionsEditorDialog(this);
         }
     }
     

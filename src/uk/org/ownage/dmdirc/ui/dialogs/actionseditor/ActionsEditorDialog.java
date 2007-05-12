@@ -51,7 +51,10 @@ public final class ActionsEditorDialog extends StandardDialog implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
+    
+    /** Previously created instance of ActionsEditorDialog. */
+    private static ActionsEditorDialog me;
     
     /** Parent dialog, informed of changes on close. */
     private ActionsManagerDialog parent;
@@ -62,22 +65,13 @@ public final class ActionsEditorDialog extends StandardDialog implements
     /** Buttons panel. */
     private JPanel buttonsPanel;
     
-    /** 
-     * Creates a new instance of ActionsEditorDialog. 
-     *
-     * @param parent parent dialog
-     */
-    public ActionsEditorDialog(final ActionsManagerDialog parent) {
-        this(parent, null);
-    }
-    
-    /** 
-     * Creates a new instance of ActionsEditorDialog. 
+    /**
+     * Creates a new instance of ActionsEditorDialog.
      *
      * @param parent parent dialog
      * @param action actions to be edited
      */
-    public ActionsEditorDialog(final ActionsManagerDialog parent,
+    private ActionsEditorDialog(final ActionsManagerDialog parent,
             final Action action) {
         super(MainFrame.getMainFrame(), false);
         
@@ -95,14 +89,40 @@ public final class ActionsEditorDialog extends StandardDialog implements
         this.setVisible(true);
     }
     
+    /**
+     * Creates the dialog if one doesn't exist, and displays it.
+     *
+     * @param parent parent dialog
+     */
+    public static synchronized void showActionsEditorDialog(
+            final ActionsManagerDialog parent) {
+        showActionsEditorDialog(parent, null);
+    }
+    
+    /**
+     * Creates the dialog if one doesn't exist, and displays it.
+     *
+     * @param parent parent dialog
+     * @param action actions to be edited
+     */
+    public static synchronized void showActionsEditorDialog(
+            final ActionsManagerDialog parent, final Action action) {
+        if (me != null) {
+            me.dispose();
+        }
+        me = new ActionsEditorDialog(parent, action);
+        me.setVisible(true);
+        me.requestFocus();
+    }
+    
     /** Initialises the components. */
     private void initComponents() {
         initButtonsPanel();
         
         tabbedPane = new JTabbedPane();
         
-            tabbedPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
-                    SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
+        tabbedPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         
         tabbedPane.addTab("General", new GeneralTabPanel(action));
         
@@ -143,7 +163,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
         
         pack();
     }
-
+    
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == getOkButton()) {

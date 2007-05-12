@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -64,8 +65,8 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     /** Secondary trigger list. */
     private JList otherTriggers;
     
-    /** 
-     * Creates a new instance of GeneralTabPanel. 
+    /**
+     * Creates a new instance of GeneralTabPanel.
      *
      * @param action action to be edited
      */
@@ -97,10 +98,24 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         otherTriggers.setVisibleRowCount(2);
         otherTriggers.setEnabled(false);
         
-        if (action != null) {
-            name.setText(action.getName());
+        if (action == null) {
+            return;
+        }
+        name.setText(action.getName());
+        
+        for (ActionType type : ActionManager.getCompatibleTypes(action.getTriggers()[0])) {
+            ((DefaultListModel) otherTriggers.getModel()).addElement(type);
+        }
+        
+        trigger.setSelectedItem(action.getTriggers()[0]);
+        otherTriggers.setEnabled(true);
+        
+        for (ActionType type : action.getTriggers()) {
+            int index = ((DefaultListModel) otherTriggers.getModel()).indexOf(type);
+            if (index != -1) {
+                otherTriggers.getSelectionModel().addSelectionInterval(index, index);
+            }
             
-            trigger.setSelectedItem(action.getTriggers()[0]);
         }
     }
     

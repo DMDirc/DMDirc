@@ -102,6 +102,7 @@ public final class ResponseTabPanel extends JPanel {
             } catch (BadLocationException ex) {
                 //Ignore
             }
+            responses.setText(responses.getText().substring(0, responses.getText().length() -1));
         }
     }
     
