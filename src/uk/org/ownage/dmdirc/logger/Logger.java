@@ -141,16 +141,6 @@ public final class Logger {
     }
     
     /**
-     * Record an error message for the application at the error error level,
-     * notifying the user if appropriate.
-     * @param message Error message/cause.
-     */
-    @Deprecated
-    public static void error(final String message) {
-        error(ErrorLevel.ERROR, message);
-    }
-    
-    /**
      * Record an error message for the application, notifying the user
      * if appropriate.
      * @param level error level.
@@ -159,18 +149,7 @@ public final class Logger {
     public static void error(final ErrorLevel level, final String message) {
         handleError(level, message, new String[0]);
     }
-    
-    /**
-     * Record an error message for the application at the error error level,
-     * notifying the user if appropriate.
-     * @param exception Cause of error.
-     * @param message Error message.
-     */
-    @Deprecated
-    public static void error(final String message, final Throwable exception) {
-        error(ErrorLevel.ERROR, message, exception);
-    }
-    
+       
     /**
      * Record an error message for the application, notifying the user if
      * appropriate.
@@ -193,71 +172,7 @@ public final class Logger {
             i++;
         }
         handleError(level, message, stackTraceMessage);
-    }
-    
-    /**
-     * Record an debug message for the application, notifying the user if
-     * appropriate.
-     * @param level debug level.
-     * @param message Debug message.
-     */
-    @Deprecated
-    public static void debug(final DebugLevel level, final String message) {
-        if (!Config.getOptionBool("logging", "debugLogging")) {
-            return;
-        }
-        if (logWriter == null || debugWriter == null || errorWriter == null) {
-            createWriters();
-        }
-        
-        switch(level) {
-            default:
-                if (Config.getOptionBool("logging", "debugLoggingSysOut")) {
-                    synchronized (formatter) {
-                        System.out.println(formatter.format(new Date())
-                        + ": DEBUG: " + level + " :" + message);
-                        
-                        debugWriter.println(formatter.format(new Date())
-                        + ": DEBUG: " + level + " :" + message);
-                    }
-                }
-                break;
-        }
-    }
-    
-    /**
-     * Record an debug message for the application at the normal debug level,
-     * notifying the user if appropriate.
-     * @param message Debug message.
-     */
-    @Deprecated
-    public static void debug(final String message) {
-        debug(DebugLevel.NORMAL, message);
-    }
-    
-    /**
-     * Record a log message for the application.
-     * @param level log level.
-     * @param message Log message.
-     */
-    @Deprecated
-    public static void log(final LogLevel level, final String message) {
-        if (!Config.getOptionBool("logging", "programLogging")) {
-            return;
-        }
-        if (logWriter == null || debugWriter == null || errorWriter == null) {
-            createWriters();
-        }
-        
-        switch(level) {
-            default:
-                synchronized (formatter) {
-                    logWriter.println(formatter.format(new Date())
-                    + ": LOG: " + level + " :" + message);
-                }
-                break;
-        }
-    }
+    }    
     
     /**
      * Initialises the the loggers writers (debug, error, log) and date formatter.

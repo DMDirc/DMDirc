@@ -224,8 +224,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         final String modes = channelInfo.getUser(me).getImportantModePrefix();
         
         if (server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName()) <= action.length()) {
-            frame.addLine("channelSelfMessage", modes, me.getNickname(), me.getIdent(),
-                    me.getHost(), "Action too long to be sent", channelInfo);
+            frame.addLine("actionTooLong", action.length());
         } else {
             final StringBuffer buff = new StringBuffer("channelSelfAction");
             

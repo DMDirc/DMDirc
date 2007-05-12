@@ -243,6 +243,7 @@ public final class Formatter {
         defaultProperties.setProperty("motdEnd", colour + "10%1$s");
         defaultProperties.setProperty("rawIn", "<< %1$s");
         defaultProperties.setProperty("rawOut", "<< %1$s");
+        defaultProperties.setProperty("actionTooLong", "Warning: action too long to be sent");
         
         // Type: Numerical data
         defaultProperties.setProperty("numeric_301", "%4$s is away: %5$s");

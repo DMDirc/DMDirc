@@ -185,7 +185,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
             
             frame.addLine(buff, client.getNickname(), client.getIdent(), client.getHost(), action);
         } else {
-            frame.addLine("Warning: action too long to be sent");
+            frame.addLine("actionTooLong", action.length());
         }
     }
     
