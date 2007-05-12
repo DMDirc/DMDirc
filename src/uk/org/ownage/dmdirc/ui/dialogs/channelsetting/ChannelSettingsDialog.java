@@ -51,8 +51,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.identities.Identity;
@@ -234,7 +232,7 @@ public final class ChannelSettingsDialog extends StandardDialog
         
         tabbedPane.addTab("IRC Settings", settingsPanel);
         
-        settingsPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
+        settingsPanel.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
                 LARGE_BORDER, LARGE_BORDER));
         
         initModesPanel(settingsPanel);
@@ -247,7 +245,7 @@ public final class ChannelSettingsDialog extends StandardDialog
         
         tabbedPane.addTab("List Modes", listModesMainPanel);
         
-        listModesMainPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
+        listModesMainPanel.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
                 LARGE_BORDER, LARGE_BORDER));
         
         initListModesPanel(listModesMainPanel);
@@ -259,7 +257,7 @@ public final class ChannelSettingsDialog extends StandardDialog
         
         tabbedPane.addTab("Client Settings", settingsPanel);
         
-        settingsPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
+        settingsPanel.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
                 LARGE_BORDER, LARGE_BORDER));
         
         initSettingsPanel(settingsPanel);
@@ -285,8 +283,8 @@ public final class ChannelSettingsDialog extends StandardDialog
         
         modesPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
-                new EtchedBorder(), "Channel Modes"),
-                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
+                BorderFactory.createEtchedBorder(), "Channel Modes"),
+                BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
                 LARGE_BORDER)));
         parent.add(modesPanel, constraints);
         
@@ -312,7 +310,8 @@ public final class ChannelSettingsDialog extends StandardDialog
             }
             
             final JCheckBox checkBox = new JCheckBox(text, state);
-            checkBox.setBorder(new EmptyBorder(5, 0, 0, 10));
+            checkBox.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
+                    0, 0, LARGE_BORDER));
             modesPanel.add(checkBox, constraints);
             
             constraints.gridx++;
@@ -347,7 +346,8 @@ public final class ChannelSettingsDialog extends StandardDialog
             
             final ParamModePanel panel = new ParamModePanel(mode, state, value,
                     channel.getConfigManager());
-            panel.setBorder(new EmptyBorder(5, 0, 0, 0));
+            panel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
+                    0, 0, 0));
             modesPanel.add(panel, constraints);
             
             modeInputs.put(mode, panel);
@@ -377,8 +377,8 @@ public final class ChannelSettingsDialog extends StandardDialog
         
         topicsPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
-                new EtchedBorder(), "Channel Topic"),
-                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
+                BorderFactory.createEtchedBorder(), "Channel Topic"),
+                BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
                 LARGE_BORDER)));
         parent.add(topicsPanel, constraints);
         
@@ -403,7 +403,7 @@ public final class ChannelSettingsDialog extends StandardDialog
         constraints.anchor = GridBagConstraints.LINE_START;
         constraints.gridy = 4;
         topicWho.setSize(30, 0);
-        topicWho.setBorder(new EmptyBorder(SMALL_BORDER, 0, 0, 0));
+        topicWho.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0, 0, 0));
         if ("".equals(topic)) {
             topicWho.setText("No topic set.");
         } else {
@@ -454,7 +454,7 @@ public final class ChannelSettingsDialog extends StandardDialog
             
             listModel = new DefaultListModel();
             list = new JList(listModel);
-            list.setBorder(new EtchedBorder());
+            list.setBorder(BorderFactory.createEtchedBorder());
             
             listItems = channelInfo.getListModeParam(mode);
             
@@ -463,7 +463,7 @@ public final class ChannelSettingsDialog extends StandardDialog
             }
             
             panel.add(list, BorderLayout.CENTER);
-            panel.setBorder(new EmptyBorder(SMALL_BORDER, 0, SMALL_BORDER, 0));
+            panel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0, SMALL_BORDER, 0));
             
             listModesPanels.add(panel);
         }

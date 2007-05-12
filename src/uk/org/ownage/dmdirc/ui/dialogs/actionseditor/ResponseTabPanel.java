@@ -25,28 +25,26 @@ package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import javax.swing.BorderFactory;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.border.EmptyBorder;
 import javax.swing.text.BadLocationException;
 
 import uk.org.ownage.dmdirc.actions.Action;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * Response tab panel, response and formatter editing for the actions editor
  * dialog.
  */
-public class ResponseTabPanel extends JPanel {
+public final class ResponseTabPanel extends JPanel {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -64,7 +62,11 @@ public class ResponseTabPanel extends JPanel {
     /** Formatter scrollpane. */
     private JScrollPane scrollPane;
     
-    /** Creates a new instance of ResponseTabPanel. */
+    /** 
+     * Creates a new instance of ResponseTabPanel. 
+     *
+     * @param action action to be edited
+     */
     public ResponseTabPanel(final Action action) {
         super();
         
@@ -92,7 +94,7 @@ public class ResponseTabPanel extends JPanel {
                 + LARGE_BORDER));
         
         if (action != null) {
-            for (String response: action.getResponse()) {
+            for (String response : action.getResponse()) {
                 responses.setText(responses.getText() + '\n' + response);
             }
             try {
@@ -111,8 +113,8 @@ public class ResponseTabPanel extends JPanel {
     private void layoutComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
         
-        this.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER));
+        this.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
+                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         this.setLayout(new GridBagLayout());
         
         constraints.fill = GridBagConstraints.BOTH;

@@ -26,7 +26,8 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.font.FontRenderContext;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -38,19 +39,21 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * Status bar, shows message and info on the gui.
  */
-public final class SearchBar extends JPanel implements ActionListener {
+public final class SearchBar extends JPanel implements ActionListener, 
+        KeyListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Close button. */
     private JButton closeButton;
@@ -127,7 +130,7 @@ public final class SearchBar extends JPanel implements ActionListener {
         closeButton.setPressedIcon(new ImageIcon(this.getClass()
         .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
         closeButton.setContentAreaFilled(false);
-        closeButton.setBorder(new EmptyBorder(0, 0, 0, 0));
+        closeButton.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         closeButton.setPreferredSize(new Dimension(16, 16));
     }
     
@@ -148,6 +151,8 @@ public final class SearchBar extends JPanel implements ActionListener {
     /** Adds listeners to components. */
     private void addListeners() {
         closeButton.addActionListener(this);
+        this.addKeyListener(this);
+        searchBox.addKeyListener(this);
     }
     
     /** {@inheritDoc}. */
@@ -175,5 +180,20 @@ public final class SearchBar extends JPanel implements ActionListener {
             }
         }
         );
+    }
+    
+    /** {@inheritDoc}. */
+    public void keyTyped(final KeyEvent event) {
+    }
+    
+    /** {@inheritDoc}. */
+    public void keyPressed(final KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.VK_F3) {
+            close();
+        }
+    }
+    
+    /** {@inheritDoc}. */
+    public void keyReleased(final KeyEvent event) {
     }
 }

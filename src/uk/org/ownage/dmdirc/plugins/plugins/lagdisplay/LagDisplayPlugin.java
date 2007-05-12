@@ -24,12 +24,12 @@ package uk.org.ownage.dmdirc.plugins.plugins.lagdisplay;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import javax.swing.BorderFactory;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import javax.swing.border.EtchedBorder;
 
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.actions.ActionType;
@@ -58,7 +58,7 @@ public final class LagDisplayPlugin implements EventPlugin {
         
         panel.setLayout(new BorderLayout());
         panel.setPreferredSize(new Dimension(70, 25));
-        panel.setBorder(new EtchedBorder());
+        panel.setBorder(BorderFactory.createEtchedBorder());
         
         label.setHorizontalAlignment(SwingConstants.CENTER);
         

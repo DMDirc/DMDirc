@@ -26,23 +26,22 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.border.EmptyBorder;
 
 import uk.org.ownage.dmdirc.actions.Action;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Conditions tab panel, conditions editing for the actions editor dialog.
  */
-public class ConditionsTabPanel extends JPanel implements ActionListener {
+public final class ConditionsTabPanel extends JPanel implements ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -66,7 +65,11 @@ public class ConditionsTabPanel extends JPanel implements ActionListener {
     /** New comparison button. */
     private JButton newComparison;
     
-    /** Creates a new instance of ConditionsTabPanel. */
+    /** 
+     * Creates a new instance of ConditionsTabPanel. 
+     *
+     * @param action action to be edited
+     */
     public ConditionsTabPanel(final Action action) {
         super();
         
@@ -85,11 +88,11 @@ public class ConditionsTabPanel extends JPanel implements ActionListener {
         infoLabel = new JTextArea("This action will only be executed if the " 
                 + "following are true:");
         
-        infoLabel.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, 
-                SMALL_BORDER));
+        infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
+                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         
-        comparisonsPanel.setBorder(new EmptyBorder(0, SMALL_BORDER, SMALL_BORDER, 
-                SMALL_BORDER));
+        comparisonsPanel.setBorder(BorderFactory.createEmptyBorder(0, 
+                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         
         infoLabel.setEditable(false);
         infoLabel.setWrapStyleWord(true);
@@ -116,11 +119,12 @@ public class ConditionsTabPanel extends JPanel implements ActionListener {
         this.add(buttonsPanel, BorderLayout.PAGE_END);
     }
     
+    /** Lays out the comparisons panel. */
     private void layoutComparisonPanel() {
         if (comparisonsPanel.getComponentCount() == 0) {
             comparisonsPanel.add(noConditions);
         } else {
-            
+            //Do some layout of the stuff.
         }
     }
     
@@ -128,7 +132,7 @@ public class ConditionsTabPanel extends JPanel implements ActionListener {
     private void initButtonsPanel() {        
         buttonsPanel = new JPanel();
         
-        buttonsPanel.setBorder(new EmptyBorder(0, SMALL_BORDER,
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER));
         
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
@@ -137,8 +141,9 @@ public class ConditionsTabPanel extends JPanel implements ActionListener {
         buttonsPanel.add(newComparison);
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == newComparison) {
+    /** {@inheritDoc}. */
+    public void actionPerformed(final ActionEvent event) {
+        if (event.getSource() == newComparison) {
             new ConditionEditorDialog(this);
         }
     }

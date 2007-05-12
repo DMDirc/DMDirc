@@ -45,16 +45,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.identities.Identity;
+import uk.org.ownage.dmdirc.ui.components.ColourChooser;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
-import uk.org.ownage.dmdirc.ui.components.ColourChooser;
 
 /**
  * Channel settings panel.
@@ -121,7 +119,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         
         infoLabel.setText("<html>These settings are specific to this channel on this network,<br>"
                 + "any settings specified here will overwrite global settings</html>");
-        infoLabel.setBorder(new EmptyBorder(0, 0, LARGE_BORDER, 0));
+        infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, LARGE_BORDER, 0));
         
         if (identity == null) {
             settings = new Properties();
@@ -166,8 +164,8 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         
         settingsPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
-                new EtchedBorder(), "Current settings"),
-                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
+                BorderFactory.createEtchedBorder(), "Current settings"),
+                BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
                 LARGE_BORDER)));
         
         settingsPanel.setLayout(new SpringLayout());
@@ -183,7 +181,8 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         
         if (numCurrentSettings == 0) {
             noCurrentSettingsLabel.setText("No channel specific settings.");
-            noCurrentSettingsLabel.setBorder(new EmptyBorder(0, 0, 0, 0));
+            noCurrentSettingsLabel.setBorder(
+                    BorderFactory.createEmptyBorder(0, 0, 0, 0));
             settingsPanel.add(noCurrentSettingsLabel);
             
             layoutGrid(settingsPanel, 1,
@@ -220,8 +219,8 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         
         addPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
-                new EtchedBorder(), "Add new setting"),
-                new EmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
+                BorderFactory.createEtchedBorder(), "Add new setting"),
+                BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
                 LARGE_BORDER)));
         
         addPanel.setLayout(new SpringLayout());
@@ -326,7 +325,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         button.setPressedIcon(new ImageIcon(this.getClass()
         .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
         button.setContentAreaFilled(false);
-        button.setBorder(new EmptyBorder(0, 0, 0, 0));
+        button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         button.setMargin(new Insets(0, 0, 0, 0));
         button.setPreferredSize(new Dimension(16, 0));
         button.setActionCommand(configName);

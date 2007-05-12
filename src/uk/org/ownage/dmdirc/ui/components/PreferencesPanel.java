@@ -24,7 +24,6 @@ package uk.org.ownage.dmdirc.ui.components;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -46,19 +45,15 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
-import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.table.TableModel;
 import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -212,8 +207,8 @@ public final class PreferencesPanel extends StandardDialog implements
         setTitle(windowTitle);
         setResizable(false);
         
-        mainPanel.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                SMALL_BORDER, LARGE_BORDER));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, 
+                LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
         tabList.setBorder(BorderFactory.createCompoundBorder(BorderFactory
                 .createEtchedBorder(), BorderFactory.createEmptyBorder(
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER)));
@@ -242,29 +237,29 @@ public final class PreferencesPanel extends StandardDialog implements
         getCancelButton().addActionListener(this);
         
         // tab list
-        layout.putConstraint(SpringLayout.WEST, tabList, 10, SpringLayout.WEST,
-                getContentPane());
-        layout.putConstraint(SpringLayout.NORTH, tabList, 10,
+        layout.putConstraint(SpringLayout.WEST, tabList, LARGE_BORDER, 
+                SpringLayout.WEST, getContentPane());
+        layout.putConstraint(SpringLayout.NORTH, tabList, LARGE_BORDER,
                 SpringLayout.NORTH, getContentPane());
         // main panel
-        layout.putConstraint(SpringLayout.WEST, mainPanel, 5,
+        layout.putConstraint(SpringLayout.WEST, mainPanel, SMALL_BORDER,
                 SpringLayout.EAST, tabList);
-        layout.putConstraint(SpringLayout.NORTH, mainPanel, 5,
+        layout.putConstraint(SpringLayout.NORTH, mainPanel, SMALL_BORDER,
                 SpringLayout.NORTH, getContentPane());
         // ok button
-        layout.putConstraint(SpringLayout.EAST, getRightButton(), -10,
+        layout.putConstraint(SpringLayout.EAST, getRightButton(), -LARGE_BORDER,
                 SpringLayout.EAST, getContentPane());
-        layout.putConstraint(SpringLayout.NORTH, getRightButton(), 5,
+        layout.putConstraint(SpringLayout.NORTH, getRightButton(), SMALL_BORDER,
                 SpringLayout.SOUTH, mainPanel);
         // cancel button
-        layout.putConstraint(SpringLayout.EAST, getLeftButton(), -10,
+        layout.putConstraint(SpringLayout.EAST, getLeftButton(), -LARGE_BORDER,
                 SpringLayout.WEST, getRightButton());
-        layout.putConstraint(SpringLayout.NORTH, getLeftButton(), 5,
+        layout.putConstraint(SpringLayout.NORTH, getLeftButton(), SMALL_BORDER,
                 SpringLayout.SOUTH, mainPanel);
         // panel size
-        layout.putConstraint(SpringLayout.EAST, getContentPane(), 10,
+        layout.putConstraint(SpringLayout.EAST, getContentPane(), LARGE_BORDER,
                 SpringLayout.EAST, mainPanel);
-        layout.putConstraint(SpringLayout.SOUTH, getContentPane(), 10,
+        layout.putConstraint(SpringLayout.SOUTH, getContentPane(), LARGE_BORDER,
                 SpringLayout.SOUTH, getRightButton());
     }
     
@@ -431,7 +426,7 @@ public final class PreferencesPanel extends StandardDialog implements
      * @param category category to replace the options panel in
      * @param panel panel to replace options panel with
      */
-    public void replaceOptionPanel(final String category, JPanel panel) {
+    public void replaceOptionPanel(final String category, final JPanel panel) {
         panels.add(panel);
         categories.get(category).add(panel, 1);
     }
@@ -685,8 +680,8 @@ public final class PreferencesPanel extends StandardDialog implements
             setForeground(tree.getForeground());
             setOpaque(true);
             setToolTipText(null);
-            setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                    SMALL_BORDER, SMALL_BORDER));
+            setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
+                    SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
             
             setPreferredSize(new Dimension((int) tabList.getPreferredSize().getWidth() - 20,
                     getFont().getSize() + SMALL_BORDER));

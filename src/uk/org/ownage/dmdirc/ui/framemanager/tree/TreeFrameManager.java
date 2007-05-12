@@ -36,13 +36,13 @@ import java.awt.event.MouseWheelListener;
 import java.util.Hashtable;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeModelEvent;
@@ -65,7 +65,7 @@ import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Manages open windows in the application in a tree style view.
@@ -156,8 +156,8 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.setRowHeight(0);
         tree.setShowsRootHandles(false);
         tree.setOpaque(true);
-        tree.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER));
+        tree.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
+                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         tree.setVisible(true);
         
         closeMenuItem.addActionListener(this);

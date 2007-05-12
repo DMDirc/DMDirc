@@ -27,6 +27,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -39,20 +40,18 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
-import javax.swing.border.EmptyBorder;
 
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.ColourChooser;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * Action conditions editing dialog, used in the actions editor dialog.
  */
-public class ConditionEditorDialog extends StandardDialog implements
+public final class ConditionEditorDialog extends StandardDialog implements
         ActionListener {
     
     /**
@@ -83,7 +82,11 @@ public class ConditionEditorDialog extends StandardDialog implements
     /** Current target. */
     private JComponent currentTarget;
     
-    /** Creates a new instance of ConditionEditorDialog. */
+    /** 
+     * Creates a new instance of ConditionEditorDialog. 
+     *
+     * @param parent parent conditions panel.
+     */
     public ConditionEditorDialog(final ConditionsTabPanel parent) {
         super(MainFrame.getMainFrame(), false);
         
@@ -129,7 +132,7 @@ public class ConditionEditorDialog extends StandardDialog implements
         
         buttonsPanel = new JPanel();
         
-        buttonsPanel.setBorder(new EmptyBorder(0, SMALL_BORDER,
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER));
         
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
@@ -154,6 +157,7 @@ public class ConditionEditorDialog extends StandardDialog implements
         pack();
     }
     
+    /** Lays out the conditions panel. */
     private void layoutConditionsPanel() {
         conditionsPanel.setLayout(new SpringLayout());
         
@@ -170,6 +174,7 @@ public class ConditionEditorDialog extends StandardDialog implements
                 SMALL_BORDER, SMALL_BORDER);
     }
     
+    /** Lays out the button panel. */
     private void layoutButtonPanel() {
         this.setLayout(new BorderLayout());
         
@@ -178,20 +183,20 @@ public class ConditionEditorDialog extends StandardDialog implements
     }
     
     /** {@inheritDoc}. */
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == argument) {
+    public void actionPerformed(final ActionEvent event) {
+        if (event.getSource() == argument) {
             component.setEnabled(false);
-        } else if (e.getSource() == component) {
+        } else if (event.getSource() == component) {
             comparison.setEnabled(true);
-        } else if (e.getSource() == comparison) {
+        } else if (event.getSource() == comparison) {
             //switch current target and relay out
             layoutConditionsPanel();            
             currentTarget.setEnabled(true);
         }
-        if (e.getSource() == getOkButton()) {
+        if (event.getSource() == getOkButton()) {
             //notify the parent.
             this.dispose();
-        } else if (e.getSource() == getCancelButton()) {
+        } else if (event.getSource() == getCancelButton()) {
             this.dispose();
         }
     }

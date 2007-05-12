@@ -25,15 +25,18 @@ package uk.org.ownage.dmdirc.ui.components;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.InputVerifier;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-import javax.swing.border.EmptyBorder;
 
 import uk.org.ownage.dmdirc.identities.ConfigManager;
+
+import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * A component to encapsulate one parameter-requiring channel mode, displaying
@@ -93,22 +96,23 @@ public final class ParamModePanel extends JPanel implements ActionListener {
         }
         
         checkBox.addActionListener(this);
-        checkBox.setBorder(new EmptyBorder(0, 0, 0, 10));
+        checkBox.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 
+                LARGE_BORDER));
         
         layout.putConstraint(SpringLayout.WEST, checkBox,
                 0,
                 SpringLayout.WEST, this);
         layout.putConstraint(SpringLayout.NORTH, checkBox,
-                5,
+                SMALL_BORDER,
                 SpringLayout.NORTH, this);
         layout.putConstraint(SpringLayout.WEST, textField,
-                5,
+                SMALL_BORDER,
                 SpringLayout.EAST, checkBox);
         layout.putConstraint(SpringLayout.NORTH, textField,
-                5,
+                SMALL_BORDER,
                 SpringLayout.NORTH, this);
         layout.putConstraint(SpringLayout.EAST, this,
-                5,
+                SMALL_BORDER,
                 SpringLayout.EAST, textField);
         layout.putConstraint(SpringLayout.SOUTH, this,
                 0,

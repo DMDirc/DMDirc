@@ -164,8 +164,13 @@ public final class NewServerDialog extends StandardDialog {
         me.requestFocus();
     }
     
+    /** 
+     * Returns the current instance of the NewServerDialog. 
+     *
+     * @return The current NewServerDialog instance
+     */
     public static NewServerDialog getNewServerDialog() {
-        synchronized(me) {
+        synchronized (me) {
             if (me == null) {
                 me = new NewServerDialog();
             }
@@ -195,7 +200,8 @@ public final class NewServerDialog extends StandardDialog {
                 
                 NewServerDialog.this.setVisible(false);
                 
-                final ConfigSource profile = (ConfigSource) identityField.getSelectedItem();
+                final ConfigSource profile = 
+                        (ConfigSource) identityField.getSelectedItem();
                 
                 // Open in a new window?
                 if (newServerWindowCheck.isSelected()
@@ -203,12 +209,16 @@ public final class NewServerDialog extends StandardDialog {
                         || MainFrame.getMainFrame().getActiveFrame() == null) {
                     new Server(host, port, pass, sslCheck.isSelected(), profile);
                 } else {
-                    final JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
-                    final Server server = ServerManager.getServerManager().getServerFromFrame(active);
+                    final JInternalFrame active = 
+                            MainFrame.getMainFrame().getActiveFrame();
+                    final Server server = ServerManager.getServerManager().
+                            getServerFromFrame(active);
                     if (server == null) {
-                        Logger.error(ErrorLevel.ERROR, "Cannot determine active server window");
+                        Logger.error(ErrorLevel.ERROR, "Cannot determine " 
+                                + "active server window");
                     } else {
-                        server.connect(host, port, pass, sslCheck.isSelected(), profile);
+                        server.connect(host, port, pass, sslCheck.isSelected(),
+                                profile);
                     }
                 }
             }
@@ -253,7 +263,8 @@ public final class NewServerDialog extends StandardDialog {
         
         serverField.setText("blueyonder.uk.quakenet.org");
         
-        instructionLabel.setText("To connect to a new IRC server, enter the server name below");
+        instructionLabel.setText("To connect to a new IRC server, enter " 
+                + "the server name below");
         
         portLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         portLabel.setText("Port:");
@@ -272,16 +283,20 @@ public final class NewServerDialog extends StandardDialog {
         serverListField.setEnabled(false);
         
         newServerWindowCheck.setText("Open in a new server window");
-        newServerWindowCheck.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        newServerWindowCheck.setBorder(
+                BorderFactory.createEmptyBorder(0, 0, 0, 0));
         newServerWindowCheck.setMargin(new Insets(0, 0, 0, 0));
         
         rememberPasswordCheck.setText("Remember server password");
-        rememberPasswordCheck.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        rememberPasswordCheck.setBorder(
+                BorderFactory.createEmptyBorder(0, 0, 0, 0));
         rememberPasswordCheck.setEnabled(false);
         rememberPasswordCheck.setMargin(new Insets(0, 0, 0, 0));
         
-        autoConnectCheck.setText("Connect to this server automatically in the future");
-        autoConnectCheck.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        autoConnectCheck.setText("Connect to this server automatically " 
+                + "in the future");
+        autoConnectCheck.setBorder(
+                BorderFactory.createEmptyBorder(0, 0, 0, 0));
         autoConnectCheck.setEnabled(false);
         autoConnectCheck.setMargin(new Insets(0, 0, 0, 0));
         
@@ -292,10 +307,12 @@ public final class NewServerDialog extends StandardDialog {
     
     /** Populates the profiles list. */
     public void populateProfiles() {
-        ConfigSource[] profiles = IdentityManager.getProfiles().toArray(new ConfigSource[0]);
+        final ConfigSource[] profiles = 
+                IdentityManager.getProfiles().toArray(new ConfigSource[0]);
         ((DefaultComboBoxModel) identityField.getModel()).removeAllElements();
         for (ConfigSource profile : profiles) {
-            ((DefaultComboBoxModel) identityField.getModel()).addElement((profile));
+            ((DefaultComboBoxModel) 
+            identityField.getModel()).addElement(profile);
         }
     }
     
@@ -429,7 +446,8 @@ public final class NewServerDialog extends StandardDialog {
         constraints.fill = GridBagConstraints.NONE;
         getContentPane().add(getLeftButton(), constraints);
         
-        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER);
+        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, 
+                LARGE_BORDER);
         constraints.gridx = 3;
         getContentPane().add(getRightButton(), constraints);
         

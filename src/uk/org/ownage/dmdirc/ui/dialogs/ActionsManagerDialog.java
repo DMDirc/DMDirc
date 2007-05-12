@@ -32,12 +32,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
-import javax.swing.border.EmptyBorder;
 
 import uk.org.ownage.dmdirc.actions.Action;
 import uk.org.ownage.dmdirc.actions.ActionManager;
@@ -108,14 +108,14 @@ public final class ActionsManagerDialog extends StandardDialog
         constraints.gridwidth = 6;
         final JLabel blurb = new JLabel("Actions allow you to make DMDirc "
                 + "respond automatically to events.");
-        blurb.setBorder(new EmptyBorder(LARGE_BORDER, LARGE_BORDER, 
+        blurb.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, 
                 SMALL_BORDER, LARGE_BORDER));
         add(blurb, constraints);
         
         constraints.gridy++;
         groups = new JTabbedPane();
         groups.setPreferredSize(new Dimension(400, 200));
-        groups.setBorder(new EmptyBorder(SMALL_BORDER, LARGE_BORDER, 
+        groups.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, LARGE_BORDER, 
                 SMALL_BORDER, LARGE_BORDER));
         add(groups, constraints);
         
@@ -230,7 +230,7 @@ public final class ActionsManagerDialog extends StandardDialog
             
             loadGroups();
         } else if (e.getActionCommand().equals("action.edit")) {
-            int row = ((ActionsGroupPanel)
+            final int row = ((ActionsGroupPanel)
             groups.getSelectedComponent()).getTable().getSelectedRow();
             if (row != -1) {
                 new ActionsEditorDialog(this,

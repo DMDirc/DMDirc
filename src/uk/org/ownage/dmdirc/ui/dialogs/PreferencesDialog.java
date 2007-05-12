@@ -29,7 +29,6 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
 import uk.org.ownage.dmdirc.ui.components.PreferencesPanel;
 

@@ -25,13 +25,11 @@ package uk.org.ownage.dmdirc.ui.components;
 import java.awt.BorderLayout;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 
 import uk.org.ownage.dmdirc.actions.Action;
 import uk.org.ownage.dmdirc.ui.dialogs.ActionsManagerDialog;
@@ -44,7 +42,7 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
  * a particular group.
  * @author chris
  */
-public class ActionsGroupPanel extends JPanel {
+public final class ActionsGroupPanel extends JPanel {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -125,9 +123,10 @@ public class ActionsGroupPanel extends JPanel {
         
         final JScrollPane pane = new JScrollPane(table);
         
-        pane.setBorder(new CompoundBorder(
-                new EmptyBorder(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER),
-                new EtchedBorder()
+        pane.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER, 
+                SMALL_BORDER, SMALL_BORDER),
+                BorderFactory.createEtchedBorder()
                 ));
         
         setLayout(new BorderLayout());
@@ -136,13 +135,21 @@ public class ActionsGroupPanel extends JPanel {
     
     /**
      * Returns the table for this panel.
+     *
+     * @return The table in this panel
      */
     public JTable getTable() {
         return table;
     }
     
-    /** Returns the action at the specified index. */
-    public Action getAction(int index) {
+    /** 
+     * Returns the action at the specified index. 
+     *
+     * @param index index of the action
+     *
+     * @return Returns the action at the specified index
+     */
+    public Action getAction(final int index) {
         return actions.get(index);
     }
     

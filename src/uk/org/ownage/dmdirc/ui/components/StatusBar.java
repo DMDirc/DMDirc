@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -43,8 +44,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
 
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Error;
@@ -116,13 +115,14 @@ public final class StatusBar extends JPanel implements MouseListener,
         clearErrors.addActionListener(this);
         clearErrors.setActionCommand("Clear");
         
-        setBorder(new EmptyBorder(0, 5, 5, 5));
+        setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER, SMALL_BORDER, 
+                SMALL_BORDER));
         
         messageLabel = new JLabel("Ready");
         iconLabel = new JLabel();
         
-        messageLabel.setBorder(new EtchedBorder());
-        iconLabel.setBorder(new EtchedBorder());
+        messageLabel.setBorder(BorderFactory.createEtchedBorder());
+        iconLabel.setBorder(BorderFactory.createEtchedBorder());
         
         messageLabel.addMouseListener(this);
         iconLabel.addMouseListener(this);

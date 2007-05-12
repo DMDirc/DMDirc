@@ -25,26 +25,25 @@ package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.border.EmptyBorder;
 
 import uk.org.ownage.dmdirc.actions.Action;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 import uk.org.ownage.dmdirc.ui.dialogs.ActionsManagerDialog;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Actions editor dialog, used for adding and creating new actions.
  */
-public class ActionsEditorDialog extends StandardDialog implements
+public final class ActionsEditorDialog extends StandardDialog implements
         ActionListener {
     
     /**
@@ -76,7 +75,7 @@ public class ActionsEditorDialog extends StandardDialog implements
      * Creates a new instance of ActionsEditorDialog. 
      *
      * @param parent parent dialog
-     * @param newAction actions to be edited
+     * @param action actions to be edited
      */
     public ActionsEditorDialog(final ActionsManagerDialog parent,
             final Action action) {
@@ -102,8 +101,8 @@ public class ActionsEditorDialog extends StandardDialog implements
         
         tabbedPane = new JTabbedPane();
         
-        tabbedPane.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER));
+            tabbedPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
+                    SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         
         tabbedPane.addTab("General", new GeneralTabPanel(action));
         
@@ -118,7 +117,7 @@ public class ActionsEditorDialog extends StandardDialog implements
         
         buttonsPanel = new JPanel();
         
-        buttonsPanel.setBorder(new EmptyBorder(0, SMALL_BORDER,
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER));
         
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
@@ -146,11 +145,11 @@ public class ActionsEditorDialog extends StandardDialog implements
     }
 
     /** {@inheritDoc}. */
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == getOkButton()) {
+    public void actionPerformed(final ActionEvent event) {
+        if (event.getSource() == getOkButton()) {
             saveSettings();
             this.dispose();
-        } else if (e.getSource() == getCancelButton()) {
+        } else if (event.getSource() == getCancelButton()) {
             this.dispose();
         }
     }

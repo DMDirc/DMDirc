@@ -27,6 +27,7 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -96,7 +97,8 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
                 + " characters will be automatically split.<br>"
                 + " This may cause more lines to be sent than you expect.</html>");
         
-        textField.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        textField.setBorder(
+                BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         textField.setColumns(50);
         textField.setRows(10);
         scrollPane.setViewportView(textField);

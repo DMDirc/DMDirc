@@ -27,9 +27,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
-import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
@@ -37,6 +37,8 @@ import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+
+import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Displays a node in a tree according to its type.
@@ -54,12 +56,6 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
      * The preferred width of each cell.
      */
     private static final int WIDTH = 110;
-    
-    /**
-     * How much to offset the font size by in order to determine the height
-     * of the cell.
-     */
-    private static final int HEIGHT_OFFSET = 5;
     
     /**
      * The default icon to use for unknown frames.
@@ -99,10 +95,10 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         setBackground(tree.getBackground());
         setOpaque(true);
         setToolTipText(null);
-        setBorder(new EmptyBorder(1, 0, 2, 0));
+        setBorder(BorderFactory.createEmptyBorder(1, 0, 2, 0));
         setForeground(tree.getForeground());
         setPreferredSize(new Dimension(WIDTH, getFont().getSize() 
-        + HEIGHT_OFFSET));
+        + SMALL_BORDER));
         
         if (MainFrame.hasMainFrame()) {
             manager = (TreeFrameManager) MainFrame.getMainFrame().getFrameManager();

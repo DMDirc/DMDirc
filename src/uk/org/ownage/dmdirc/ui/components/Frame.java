@@ -61,7 +61,6 @@ import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
-import javax.swing.border.EmptyBorder;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
@@ -324,7 +323,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         
         getInputField().setBorder(
                 BorderFactory.createCompoundBorder(
-                getInputField().getBorder(), new EmptyBorder(2, 2, 2, 2)));
+                getInputField().getBorder(), 
+                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         
         getTextPane().addMouseListener(this);
         getTextPane().addKeyListener(this);
@@ -361,7 +361,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         awayLabel = new JLabel();
         awayLabel.setText("(away)");
         awayLabel.setVisible(false);
-        awayLabel.setBorder(new EmptyBorder(0, 0, 0, SMALL_BORDER));
+        awayLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 
+                SMALL_BORDER));
         
         inputPanel = new JPanel(new BorderLayout());
         inputPanel.add(awayLabel, BorderLayout.LINE_START);
@@ -386,15 +387,15 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     
     /** Hides the titlebar for this frame. */
     private void hideTitlebar() {
-        setBorder(new EmptyBorder(0, 0, 0, 0));
+        setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         ((BasicInternalFrameUI) getUI()).setNorthPane(null);
     }
     
     /** Shows tht titlebar for this frame. */
     private void showTitlebar() {
-        final Class<?> c;
+        final Class< ? > c;
         Object temp = null;
-        Constructor<?> constructor;
+        Constructor< ? > constructor;
         
         final String componentUI = (String) UIManager.get("InternalFrameUI");
         
@@ -730,7 +731,11 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         String clipboardContents = null;
         String[] clipboardContentsLines = new String[]{"", };
         if (event.getKeyCode() == KeyEvent.VK_F3) {
-            getSearchBar().open();
+            if (getSearchBar().isVisible()) {
+                getSearchBar().close();
+            } else {
+                getSearchBar().open();
+            }
         }
         if (event.getSource() == getTextPane()) {
             if ((Config.getOptionBool("ui", "quickCopy")
@@ -739,6 +744,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 getInputField().requestFocus();
                 if (robot != null) {
                     robot.keyPress(event.getKeyCode());
+                    if (event.getKeyCode() == KeyEvent.VK_SHIFT) {
+                        robot.keyRelease(event.getKeyCode());
+                    }
                 }
             } else if (event.getKeyCode() == KeyEvent.VK_C) {
                 getTextPane().copy();

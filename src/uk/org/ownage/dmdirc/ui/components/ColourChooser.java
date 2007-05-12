@@ -29,9 +29,9 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.border.LineBorder;
 
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
@@ -93,7 +93,7 @@ public final class ColourChooser extends JPanel implements ActionListener {
         
         previewPanel = new JPanel();
         previewPanel.setPreferredSize(new Dimension(40, 10));
-        previewPanel.setBorder(new LineBorder(Color.DARK_GRAY));
+        previewPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         
         this.setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
         

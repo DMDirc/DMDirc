@@ -54,7 +54,6 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.FontUIResource;
 
@@ -469,7 +468,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         getContentPane().add(statusBar, BorderLayout.SOUTH);
         
-        mainSplitPane.setBorder(new EmptyBorder(0, 0, 0, SMALL_BORDER));
+        mainSplitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 
+                SMALL_BORDER));
         
         mainSplitPane.setDividerSize(SMALL_BORDER);
         mainSplitPane.setOneTouchExpandable(false);
@@ -483,12 +483,15 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("DMDirc");
-        jPanel1.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER, 0, 0));
-        desktopPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        jPanel1.setBorder(
+                BorderFactory.createEmptyBorder(0, SMALL_BORDER, 0, 0));
+        desktopPane.setBorder(
+                BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         
         pack();
     }
     
+    /** Initialises the menu bar. */
     private void initMenuBar() {
         final JMenuBar menuBar = new JMenuBar();
         JMenuItem menuItem;
@@ -569,7 +572,12 @@ public final class MainFrame extends JFrame implements WindowListener,
         setJMenuBar(menuBar);
     }
     
-    private void initWindowMenu(JMenu windowMenu) {
+    /** 
+     * Initialises the window menu. 
+     *
+     * @param windowMenu the window menu to initialise
+     */
+    private void initWindowMenu(final JMenu windowMenu) {
         windowMenu.setMnemonic('w');
         windowMenu.setText("Window");
         

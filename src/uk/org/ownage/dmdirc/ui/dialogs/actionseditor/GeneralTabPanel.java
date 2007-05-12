@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
@@ -39,14 +40,13 @@ import uk.org.ownage.dmdirc.actions.Action;
 import uk.org.ownage.dmdirc.actions.ActionManager;
 import uk.org.ownage.dmdirc.actions.ActionType;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * General tab panel, name and trigger editing for the actions editor dialog.
  */
-public class GeneralTabPanel extends JPanel implements ActionListener {
+public final class GeneralTabPanel extends JPanel implements ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -64,7 +64,11 @@ public class GeneralTabPanel extends JPanel implements ActionListener {
     /** Secondary trigger list. */
     private JList otherTriggers;
     
-    /** Creates a new instance of GeneralTabPanel. */
+    /** 
+     * Creates a new instance of GeneralTabPanel. 
+     *
+     * @param action action to be edited
+     */
     public GeneralTabPanel(final Action action) {
         super();
         
@@ -120,8 +124,9 @@ public class GeneralTabPanel extends JPanel implements ActionListener {
                 2, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
     }
     
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == trigger) {
+    /** {@inheritDoc}. */
+    public void actionPerformed(final ActionEvent event) {
+        if (event.getSource() == trigger) {
             otherTriggers.setEnabled(true);
         }
     }

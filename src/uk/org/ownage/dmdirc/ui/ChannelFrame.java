@@ -277,7 +277,7 @@ public final class ChannelFrame extends Frame implements MouseListener,
         } else {
             splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth() / 2 - 150);
         }
-        splitPane.setDividerSize(5);
+        splitPane.setDividerSize(SMALL_BORDER);
         splitPane.setContinuousLayout(true);
         
         pack();
@@ -289,12 +289,12 @@ public final class ChannelFrame extends Frame implements MouseListener,
     public void actionPerformed(final ActionEvent actionEvent) {
         super.actionPerformed(actionEvent);
         if (commands.containsKey(actionEvent.getActionCommand())) {
-            Command command = commands.get(actionEvent.getActionCommand());
+            final Command command = commands.get(actionEvent.getActionCommand());
             for (Object nickname : nickList.getSelectedValues()) {
                 if (command instanceof ChannelCommand) {
                     ((ChannelCommand) commands.get(actionEvent.getActionCommand())).
                             execute(this, this.getServer(),
-                            (Channel)this.getContainer(), ((ChannelClientInfo) nickname).getNickname());
+                            (Channel) this.getContainer(), ((ChannelClientInfo) nickname).getNickname());
                 } else if (command instanceof ServerCommand) {
                     ((ServerCommand) commands.get(actionEvent.getActionCommand())).
                             execute(this, this.getServer(), ((ChannelClientInfo) nickname).getNickname());
@@ -311,10 +311,10 @@ public final class ChannelFrame extends Frame implements MouseListener,
         nicklistPopup.removeAll();
         commands.clear();
         
-        List<Command> commandList = CommandManager.getNicklistCommands();
+        final List<Command> commandList = CommandManager.getNicklistCommands();
         for (Command command : commandList) {
             commands.put(command.getName(), command);
-            JMenuItem mi = new JMenuItem(command.getName().substring(0, 1).
+            final JMenuItem mi = new JMenuItem(command.getName().substring(0, 1).
                     toUpperCase(Locale.getDefault()) + command.getName().substring(1));
             mi.setActionCommand(command.getName());
             mi.addActionListener(this);

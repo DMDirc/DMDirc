@@ -93,7 +93,6 @@ public final class Formatter {
     
     /**
      * Returns the default format strings for the client.
-     * @return The default format strings
      */
     private static void loadDefaults() {
         defaultProperties = new Properties();

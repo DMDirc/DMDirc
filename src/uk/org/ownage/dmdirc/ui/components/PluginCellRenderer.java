@@ -28,12 +28,12 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.ListCellRenderer;
-import javax.swing.border.EmptyBorder;
 
 import uk.org.ownage.dmdirc.plugins.Plugin;
 
@@ -60,7 +60,8 @@ public final class PluginCellRenderer implements ListCellRenderer {
         
         res.setLayout(new BorderLayout());
         
-        res.setBorder(new EmptyBorder(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
+        res.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
+                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         
         if (isSelected) {
             res.setBackground(list.getSelectionBackground());
@@ -93,7 +94,7 @@ public final class PluginCellRenderer implements ListCellRenderer {
         
         final JLabel desc = new JLabel(plugin.getDescription());
         desc.setForeground(foreground);
-        desc.setBorder(new EmptyBorder(SMALL_BORDER, 0, 0, 0));
+        desc.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0, 0, 0));
         
         res.add(version, BorderLayout.CENTER);
         res.add(name, BorderLayout.WEST);

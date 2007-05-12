@@ -26,9 +26,9 @@ import java.awt.Color;
 import java.awt.Component;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
-import javax.swing.border.EmptyBorder;
 
 import uk.org.ownage.dmdirc.ChannelClientProperty;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
@@ -84,7 +84,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
             setBackground((Color) map.get(ChannelClientProperty.COLOUR_BACKGROUND));
         }
         
-        this.setBorder(new EmptyBorder(0, 2, 0, 2));
+        this.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
         
         return this;
     }

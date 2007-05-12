@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.ui;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
@@ -38,6 +39,9 @@ public final class UIUtilities {
     
     /** Size of a small border. */
     public static final int SMALL_BORDER = 5;
+    
+    /** Standard button size. */
+    public static final Dimension BUTTON_SIZE = new Dimension(100, 25);
     
     /** Not intended to be instatiated. */
     private UIUtilities() {
