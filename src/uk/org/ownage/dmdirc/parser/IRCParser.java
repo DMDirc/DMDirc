@@ -1201,12 +1201,10 @@ public final class IRCParser implements Runnable {
 		// Remove all known channels
 		for (ChannelInfo channel : hChannelList.values()) {
 			channel.emptyChannel();
-			hChannelList.remove(channel.getName().toLowerCase());
 		}
+		hChannelList.clear();
 		// Remove all known clients
-		for (String clientName : hClientList.keySet()) {
-			hClientList.remove(clientName);
-		}
+		hClientList.remove(clientName);
 		// Remove the pingTimer
 		if (pingTimer != null) {
 			pingTimer.cancel();
@@ -1227,7 +1225,7 @@ public final class IRCParser implements Runnable {
 	 * @return true if name is valid on the current connection, false otherwise. (Always false before noMOTD/MOTDEnd)
 	 */
 	public boolean isValidChannelName(final String sChannelName) {
-		return hChanPrefix.size() == 0 || hChanPrefix.containsKey(sChannelName.charAt(0));
+		return hChanPrefix.containsKey(sChannelName.charAt(0));
 	}
 	
 	/**
