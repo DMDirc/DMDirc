@@ -229,6 +229,7 @@ public final class Formatter {
         //    2: Miscellaneous argument
         defaultProperties.setProperty("connectError", colour + "2Error connecting: %2$s");
         defaultProperties.setProperty("connectRetry", colour + "2Reconnecting in %2$s seconds...");
+        defaultProperties.setProperty("serverConnecting", "Connecting to %1$s:%2$s...");
         
         // Type: Miscellaneous
         //    1: Miscellaneous data
@@ -240,6 +241,8 @@ public final class Formatter {
         defaultProperties.setProperty("motdStart", colour + "10%1$s");
         defaultProperties.setProperty("motdLine", colour + "10" + fixed + "%1$s");
         defaultProperties.setProperty("motdEnd", colour + "10%1$s");
+        defaultProperties.setProperty("rawIn", "<< %1$s");
+        defaultProperties.setProperty("rawOut", "<< %1$s");
         
         // Type: Numerical data
         defaultProperties.setProperty("numeric_301", "%4$s is away: %5$s");

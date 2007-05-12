@@ -162,7 +162,6 @@ public final class ServerFrame extends Frame {
     
     /** {@inheritDoc}. */
     public void sendLine(final String line) {
-        this.parent.addLine(line);
         this.parent.getParser().sendLine(line);
         this.getInputHandler().addToBuffer(line);
     }

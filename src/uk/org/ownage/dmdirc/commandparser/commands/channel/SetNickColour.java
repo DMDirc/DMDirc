@@ -55,6 +55,7 @@ public final class SetNickColour extends ChannelCommand {
      * @param channel The channel object that this command is associated with
      * @param args The user supplied arguments
      */
+    @SuppressWarnings("unchecked")
     public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
         ChannelClientInfo target = channel.getChannelInfo().getUser(args[0]);

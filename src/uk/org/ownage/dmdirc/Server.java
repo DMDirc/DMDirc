@@ -219,7 +219,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         frame.setFrameIcon(imageIcon);
         
         // TODO: Use formatter
-        frame.addLine("Connecting to " + server + ":" + port);
+        frame.addLine("serverConnecting", server, port);
         sendNotification();
         
         final MyInfo myInfo = new MyInfo();
@@ -253,7 +253,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         try {
             new Thread(parser).start();
         } catch (IllegalThreadStateException ex) {
-            frame.addLine("ERROR: " + ex.getMessage());
+            Logger.error(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
         }
         
         updateIgnoreList();
@@ -434,6 +434,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
      * Adds a line to the server window.
      * @param line line to be added
      */
+    @Deprecated
     public void addLine(final String line) {
         frame.addLine(line);
     }

@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.logger;
 /**
  * Specific debug levels allowed by Logger.
  */
+@Deprecated
 public enum DebugLevel {        
     /**
      * debug levels recognised by the logger.

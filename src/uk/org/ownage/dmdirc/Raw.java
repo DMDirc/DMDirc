@@ -116,7 +116,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      * @param data The data that was received
      */
     public void onDataIn(final IRCParser parser, final String data) {
-        frame.addLine("<<< " + data);
+        frame.addLine("rawIn", data);
     }
     
     /**
@@ -128,7 +128,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      */
     public void onDataOut(final IRCParser parser, final String data,
             final boolean fromParser) {
-        frame.addLine(">>> " + data);
+        frame.addLine("rawOut", data);
     }
     
     /**
@@ -234,6 +234,7 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
      * Adds a line of text to the main text area of the raw frame.
      * @param line The line to add
      */
+    @Deprecated
     public void addLine(final String line) {
         frame.addLine(line);
     }

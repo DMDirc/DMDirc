@@ -38,7 +38,6 @@ import javax.swing.UIManager;
 
 import uk.org.ownage.dmdirc.identities.IdentityManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.LogLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
@@ -390,7 +389,7 @@ public final class Config {
             } catch (InvalidPropertiesFormatException ex) {
                 Logger.error(ErrorLevel.TRIVIAL, "Invalid properties file", ex);
             } catch (FileNotFoundException ex) {
-                Logger.log(LogLevel.CORE, "No config file, using defaults");
+                Logger.error(ErrorLevel.TRIVIAL, "No config file, using defaults");
             } catch (IOException ex) {
                 Logger.error(ErrorLevel.WARNING, "Unable to load config file", ex);
             }

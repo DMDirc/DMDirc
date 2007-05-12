@@ -61,6 +61,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
     }
     
     /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     public Component getListCellRendererComponent(final JList list,
             final Object value, final int index, final boolean selected,
             final boolean focused) {
