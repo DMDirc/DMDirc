@@ -38,49 +38,49 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((Channel) argument).getChannelInfo().getName(); }
         public Class appliesTo() { return Channel.class; }
         public Class getType() { return String.class; }
-        public String getName() { return "Name"; }
+        public String getName() { return "name"; }
     },
     
     CHANNEL_COLOUR {
         public Object get(final Object argument) { return ((Channel) argument).getNotification(); }
         public Class appliesTo() { return Channel.class; }
         public Class getType() { return Color.class; }
-        public String getName() { return "Notification colour"; }
+        public String getName() { return "notification colour"; }
     },
     
     USER_NAME {
         public Object get(final Object argument) { return ((ChannelClientInfo) argument).getNickname(); }
         public Class appliesTo() { return ChannelClientInfo.class; }
         public Class getType() { return String.class; }
-        public String getName() { return "Nickname"; }
+        public String getName() { return "nickname"; }
     },
     
     USER_MODES {
         public Object get(final Object argument) { return ((ChannelClientInfo) argument).getChanModeStr(false); }
         public Class appliesTo() { return ChannelClientInfo.class; }
         public Class getType() { return String.class; }
-        public String getName() { return "Modes"; }
+        public String getName() { return "modes"; }
     },
     
     STRING_STRING {
         public Object get(final Object argument) { return argument; }
         public Class appliesTo() { return String.class; }
         public Class getType() { return String.class; }
-        public String getName() { return "Contents"; }
+        public String getName() { return "content"; }
     },
     
     STRING_LENGTH {
         public Object get(final Object argument) { return ((String) argument).length(); }
         public Class appliesTo() { return String.class; }
         public Class getType() { return Integer.class; }
-        public String getName() { return "Length"; }
+        public String getName() { return "length"; }
     },
     
     STRINGARRAY_LENGTH {
         public Object get(final Object argument) { return Integer.valueOf(((String[]) argument).length); }
         public Class appliesTo() { return String[].class; }
         public Class getType() { return Integer.class; }
-        public String getName() { return "Size"; }
+        public String getName() { return "size"; }
     };
     
     /** {@inheritDoc} */
