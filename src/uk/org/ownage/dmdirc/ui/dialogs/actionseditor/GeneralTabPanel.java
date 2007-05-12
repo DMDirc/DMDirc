@@ -100,7 +100,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         if (action != null) {
             name.setText(action.getName());
             
-            trigger.setSelectedItem(action.getTrigger()[0]);
+            trigger.setSelectedItem(action.getTriggers()[0]);
         }
     }
     

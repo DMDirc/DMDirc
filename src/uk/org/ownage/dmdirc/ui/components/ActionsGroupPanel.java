@@ -102,7 +102,7 @@ public final class ActionsGroupPanel extends JPanel {
         int i = 0;
         for (Action action : actions) {
             data[i][0] = action.getName();
-            data[i][1] = implode(action.getTrigger());
+            data[i][1] = implode(action.getTriggers());
             data[i][2] = implode(action.getResponse());
             i++;
         }

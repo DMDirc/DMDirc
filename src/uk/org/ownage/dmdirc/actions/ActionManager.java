@@ -111,7 +111,7 @@ public class ActionManager {
     public static Map<String, List<Action>> getGroups() {
         return groups;
     }
-        
+    
     /**
      * Loads actions from the user's directory.
      */
@@ -161,7 +161,7 @@ public class ActionManager {
             init();
         }
         
-        for (ActionType trigger : action.getTrigger()) {
+        for (ActionType trigger : action.getTriggers()) {
             if (!actions.containsKey(trigger)) {
                 actions.put(trigger, new ArrayList<Action>());
             }
@@ -253,7 +253,7 @@ public class ActionManager {
             
             groups.remove(group);
         }
-    }    
+    }
     
     /**
      * Returns the action comparison specified by the given string, or null if it
@@ -273,6 +273,57 @@ public class ActionManager {
         }
         
         return null;
+    }
+    
+    /**
+     * Returns a list of action types that are compatible with the one
+     * specified.
+     * @param type The type to be checked against
+     * @return A list of compatible action types
+     */
+    public static List<ActionType> getCompatibleTypes(final ActionType type) {
+        final List<ActionType> res = new ArrayList<ActionType>();
+        for (ActionType target : actionTypes) {
+            if (target != type && checkArgs(target.getType().getArgTypes(), type.getType().getArgTypes())) {
+                res.add(target);
+            }
+        }
+        
+        return res;
+    }
+    
+    /**
+     * Returns a list of action components that are compatible with the
+     * specified class
+     * @param target The class to be tested
+     * @return A list of compatible action components
+     */
+    public static List<ActionComponent> getCompatibleComponents(final Class target) {
+        final List<ActionComponent> res = new ArrayList<ActionComponent>();
+        for (ActionComponent subject : actionComponents) {
+            if (subject.appliesTo().equals(target)) {
+                res.add(subject);
+            }
+        }
+        
+        return res;
+    }
+    
+    /**
+     * Returns a list of action comparisons that are compatible with the
+     * specified class
+     * @param target The class to be tested
+     * @return A list of compatible action comparisons
+     */
+    public static List<ActionComparison> getCompatibleComparisons(final Class target) {
+        final List<ActionComparison> res = new ArrayList<ActionComparison>();
+        for (ActionComparison subject : actionComparisons) {
+            if (subject.appliesTo().equals(target)) {
+                res.add(subject);
+            }
+        }
+        
+        return res;
     }
     
     /**
@@ -383,5 +434,25 @@ public class ActionManager {
         }
         
         return res;
+    }
+    
+    /**
+     * Checks to see if the two sets of arguments are equal.
+     * @param arg1 The first argument to be tested
+     * @param arg2 The second argument to be tested
+     * @return True iff the args are equal, false otherwise
+     */
+    public static boolean checkArgs(final Class[] arg1, final Class[] arg2) {
+        if (arg1.length != arg2.length) {
+            return false;
+        }
+        
+        for (int i = 0; i < arg1.length; i++) {
+            if (!arg1[i].getName().equals(arg2[i].getName())) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 }

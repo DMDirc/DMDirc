@@ -28,9 +28,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.ServerManager;
-
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
@@ -64,7 +64,7 @@ public class Action {
     private String newFormat = null;
     
     /** The conditions for this action. */
-    private final List<ActionCondition> conditions = new ArrayList<ActionCondition>();
+    private List<ActionCondition> conditions = new ArrayList<ActionCondition>();
     
     /**
      * Creates a new instance of Action. The group and name specified must
@@ -116,7 +116,7 @@ public class Action {
                     if (i == 0) {
                         args = triggers[i].getType().getArgTypes();
                     } else {
-                        if (!checkArgs(args, triggers[i].getType().getArgTypes())) {
+                        if (!ActionManager.checkArgs(args, triggers[i].getType().getArgTypes())) {
                             error("Triggers are not compatible");
                             return;
                         }
@@ -164,26 +164,6 @@ public class Action {
         if (valid) {
             ActionManager.registerAction(this);
         }
-    }
-    
-    /**
-     * Checks to see if the two sets of arguments are equal.
-     * @param arg1 The first argument to be tested
-     * @param arg2 The second argument to be tested
-     * @return True iff the args are equal, false otherwise
-     */
-    private boolean checkArgs(final Class[] arg1, final Class[] arg2) {
-        if (arg1.length != arg2.length) {
-            return false;
-        }
-        
-        for (int i = 0; i < arg1.length; i++) {
-            if (!arg1[i].getName().equals(arg2[i].getName())) {
-                return false;
-            }
-        }
-        
-        return true;
     }
     
     /**
@@ -265,11 +245,51 @@ public class Action {
     }
     
     /**
-     * Retrieves this action's trigger.
-     * @return The action type that triggers this action
+     * Retrieves a list of this action's conditions.
+     * @return A list of this action's conditions
      */
-    public ActionType[] getTrigger() {
+    public List<ActionCondition> getConditions() {
+        return conditions;
+    }
+    
+    /**
+     * Sets this action's conditions
+     * @param conditions A list of conditions to use
+     */
+    public void setConditions(final List<ActionCondition> conditions) {
+        this.conditions = conditions;
+    }
+    
+    /**
+     * Retrieves this action's triggers.
+     * @return The triggers used by this action
+     */
+    public ActionType[] getTriggers() {
         return triggers.clone();
+    }
+    
+    /**
+     * Sets this action's triggers.
+     * @param triggers The new triggers to use
+     */
+    public void setTriggers(final ActionType[] triggers) {
+        this.triggers = triggers.clone();
+    }
+    
+    /**
+     * Retrieves this action's new format setting
+     * @return The format that this action will use, or null if no change
+     */
+    public String getNewFormat() {
+        return newFormat;
+    }
+    
+    /**
+     * Sets this action's new format setting
+     * @param newFormat The new 'new format' setting
+     */
+    public void setNewFormat(final String newFormat) {
+        this.newFormat = newFormat;
     }
     
     /**
@@ -278,7 +298,15 @@ public class Action {
      */
     public String[] getResponse() {
         return response.clone();
-    }    
+    }
+    
+    /**
+     * Sets this action's response.
+     * @param The new response to use
+     */
+    public void setResponse(final String[] response) {
+        this.response = response.clone();
+    }
     
     /**
      * Retrieves this action's group name.
@@ -294,7 +322,7 @@ public class Action {
      */
     public String getName() {
         return name;
-    }    
+    }
     
     /**
      * Triggers this action.
