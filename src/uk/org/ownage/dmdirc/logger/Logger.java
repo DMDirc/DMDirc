@@ -145,6 +145,7 @@ public final class Logger {
      * notifying the user if appropriate.
      * @param message Error message/cause.
      */
+    @Deprecated
     public static void error(final String message) {
         error(ErrorLevel.ERROR, message);
     }
@@ -165,6 +166,7 @@ public final class Logger {
      * @param exception Cause of error.
      * @param message Error message.
      */
+    @Deprecated
     public static void error(final String message, final Throwable exception) {
         error(ErrorLevel.ERROR, message, exception);
     }
@@ -199,6 +201,7 @@ public final class Logger {
      * @param level debug level.
      * @param message Debug message.
      */
+    @Deprecated
     public static void debug(final DebugLevel level, final String message) {
         if (!Config.getOptionBool("logging", "debugLogging")) {
             return;
@@ -227,6 +230,7 @@ public final class Logger {
      * notifying the user if appropriate.
      * @param message Debug message.
      */
+    @Deprecated
     public static void debug(final String message) {
         debug(DebugLevel.NORMAL, message);
     }
@@ -236,6 +240,7 @@ public final class Logger {
      * @param level log level.
      * @param message Log message.
      */
+    @Deprecated
     public static void log(final LogLevel level, final String message) {
         if (!Config.getOptionBool("logging", "programLogging")) {
             return;
