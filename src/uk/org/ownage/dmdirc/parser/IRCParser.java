@@ -1204,7 +1204,7 @@ public final class IRCParser implements Runnable {
 		}
 		hChannelList.clear();
 		// Remove all known clients
-		hClientList.remove(clientName);
+		hClientList.clear();
 		// Remove the pingTimer
 		if (pingTimer != null) {
 			pingTimer.cancel();
