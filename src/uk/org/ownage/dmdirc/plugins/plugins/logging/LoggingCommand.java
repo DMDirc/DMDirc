@@ -59,7 +59,7 @@ public final class LoggingCommand extends ServerCommand {
 		final Plugin gotPlugin = PluginManager.getPluginManager().getPlugin("uk.org.ownage.dmdirc.plugins.plugins.logging.LoggingPlugin");
 		
 		if (gotPlugin == null || !(gotPlugin instanceof LoggingPlugin)) {
-			origin.addLine("**Error** Logging Plugin is not loaded.");
+			origin.addLine("commandError", "Logging Plugin is not loaded.");
 			return;
 		}
 		
@@ -70,48 +70,48 @@ public final class LoggingCommand extends ServerCommand {
 				plugin.showConfig();
 			} else if (args[0].equalsIgnoreCase("reload")) {
 				if (PluginManager.getPluginManager().reloadPlugin("uk.org.ownage.dmdirc.plugins.plugins.logging.LoggingPlugin")) {
-					origin.addLine("** Plugin reloaded.");
+					origin.addLine("commandOutput", "Plugin reloaded.");
 				} else {
-					origin.addLine("** Plugin failed to reload.");
+					origin.addLine("commandOutput", "Plugin failed to reload.");
 				}
 			} else if (args[0].equalsIgnoreCase("help")) {
-				origin.addLine("** " + getName() + " reload                     - Reload the logging plugin.");
-				origin.addLine("** " + getName() + " help                       - Show this help.");
-				origin.addLine("** " + getName() + " config                     - Show the logging plugin configuration.");
-				origin.addLine("** " + getName() + " set <help|option> [value]  - Set a configuration option.");
+				origin.addLine("commandOutput", getName() + " reload                     - Reload the logging plugin.");
+				origin.addLine("commandOutput", getName() + " help                       - Show this help.");
+				origin.addLine("commandOutput", getName() + " config                     - Show the logging plugin configuration.");
+				origin.addLine("commandOutput", getName() + " set <help|option> [value]  - Set a configuration option.");
 			} else if (args[0].equalsIgnoreCase("set")) {
 				if (args.length < 2 || args[1].equalsIgnoreCase("help")) {
 					final Properties config = Config.getConfig();
-					origin.addLine("** Current Values:");
+					origin.addLine("commandOutput", "Current Values:");
 					final Enumeration values = config.propertyNames();
 					while (values.hasMoreElements()) {
 						final String property = (String) values.nextElement();
 						
 						if (property.toLowerCase().startsWith(plugin.getDomain().toLowerCase() + ".")) {
-							origin.addLine("** [" + property.substring(property.indexOf(".") + 1) + "] => " + config.getProperty(property));
+							origin.addLine("commandOutput", "[" + property.substring(property.indexOf(".") + 1) + "] => " + config.getProperty(property));
 						}
 					}
-					origin.addLine("** ");
-					origin.addLine("** Use " + getName() + " set <option> [value] to change the value. (if [value] is not given, the current value will be displayed)");
+					origin.addLine("commandOutput", "");
+					origin.addLine("commandOutput", "Use " + getName() + " set <option> [value] to change the value. (if [value] is not given, the current value will be displayed)");
 				} else if (args.length > 1) {
 					if (Config.hasOption(plugin.getDomain(), args[1].toLowerCase())) {
 						String newValue = "";
 						if (args.length > 2) { newValue = implodeArgs(2, args); }
 						if (newValue.equals("")) {
-							origin.addLine("** Current value of '" + args[1] + "' is '" + Config.getOption(plugin.getDomain(), args[1].toLowerCase()) + "'");
+							origin.addLine("commandOutput", "Current value of '" + args[1] + "' is '" + Config.getOption(plugin.getDomain(), args[1].toLowerCase()) + "'");
 						} else {
 							plugin.updateOption(null, args[1], newValue);
-							origin.addLine("** Setting '" + args[1] + "' to '" + newValue + "'");
+							origin.addLine("commandOutput", "Setting '" + args[1] + "' to '" + newValue + "'");
 						}
 					} else {
-						origin.addLine("** '" + args[1] + "' is not a valid option");
+						origin.addLine("commandOutput", "'" + args[1] + "' is not a valid option");
 					}
 				}
 			} else {
-				origin.addLine("** Unknown command '" + args[0] + "'. Use " + getName() + " help for a list of commands.");
+				origin.addLine("commandOutput", "Unknown command '" + args[0] + "'. Use " + getName() + " help for a list of commands.");
 			}
 		} else {
-			origin.addLine("** Use " + getName() + " help for a list of commands.");
+			origin.addLine("commandOutput", "Use " + getName() + " help for a list of commands.");
 		}
 	}
 

@@ -145,16 +145,21 @@ public final class CallbackManager {
 	}
 	
 	/**
-	 * Remove all callbacks.
+	 * Remove all callbacks associated with a specific object.
 	 *
 	 * @param o instance of ICallbackInterface to remove.
 	 */
 	public void delAllCallback(final ICallbackInterface o) {
-		CallbackObject cb;
-		for (final Enumeration e = callbackHash.keys(); e.hasMoreElements();) {
-			cb = callbackHash.get(e.nextElement());
+		for (CallbackObject cb : callbackHash.values()) {
 			if (cb != null) { cb.del(o); }
 		}
+	}
+	
+	/**
+	 * Remove all callbacks.
+	 */
+	public void clearCallbacks() {
+		callbackHash.clear();
 	}
 	
 	/**

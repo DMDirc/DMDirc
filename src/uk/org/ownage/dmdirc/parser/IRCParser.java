@@ -99,8 +99,10 @@ public final class IRCParser implements Runnable {
 	/**	Server Info requested by user. */
 	public ServerInfo server = new ServerInfo();
 	
-	/**	Timer for server ping. */
+	/** Timer for server ping. */
 	private Timer pingTimer = null;
+	/** Length of time to wait between ping stuff. */
+	private long pingTimerLength = 10000;
 	/** Is a ping needed? */
 	private Boolean pingNeeded = false; // This is Boolean not boolean for a reason.
 	/** Time last ping was sent at. */
@@ -113,8 +115,16 @@ public final class IRCParser implements Runnable {
 	 * timer fires.<br>
 	 * Once it reaches 0, we send a ping, and reset it to 6, this means we ping
 	 * the server every minute.
+	 *
+	 * @see setPingCountDownLength
 	 */
 	private byte pingCountDown;
+	/**
+	 * Amount of times the timer has to fire for inactivity before sending a ping.
+	 *
+	 * @see setPingCountDownLength
+	 */
+	private byte pingCountDownLength = 6;
 
 	/** Name the server calls itself. */
 	protected String sServerName;
@@ -548,13 +558,8 @@ public final class IRCParser implements Runnable {
 				line = in.readLine(); // Blocking :/
 				if (line == null) {
 					currentSocketState = STATE_CLOSED;
-					if (pingTimer != null) {
-						pingTimer.cancel();
-						pingTimer = null;
-					}
-					// Empty the ProcessingManager
-					myProcessingManager.empty();
 					callSocketClosed();
+					reset();
 					break;
 				} else {
 					if (isFirst) { sendConnectionStrings(); }
@@ -562,13 +567,8 @@ public final class IRCParser implements Runnable {
 				}
 			} catch (IOException e) {
 				currentSocketState = STATE_CLOSED;
-				if (pingTimer != null) {
-					pingTimer.cancel();
-					pingTimer = null;
-				}
-				// Empty the ProcessingManager
-				myProcessingManager.empty();
 				callSocketClosed();
+				reset();
 				break;
 			}
 		}
@@ -707,6 +707,7 @@ public final class IRCParser implements Runnable {
 		final String sParam = token[1];
 		
 		setPingNeeded(false);
+		pingCountDown = pingCountDownLength;
 		
 		try {
 			if (token[0].equalsIgnoreCase("PING") || token[1].equalsIgnoreCase("PING")) { 
@@ -1182,9 +1183,43 @@ public final class IRCParser implements Runnable {
 	 */
 	public void disconnect(final String sReason) {
 		quit(sReason);
-		try { socket.close(); } catch (Exception e) { }
+		try {
+			socket.close();
+		} catch (Exception e) {
+			/* Do Nothing */
+		} finally {
+			currentSocketState = STATE_CLOSED;
+			callSocketClosed();
+			reset();
+		}
 	}
 	
+	/**
+	 * Remove all clients/channels/channelclients/callbacks.
+	 */
+	protected void reset() {
+		// Remove all known channels
+		for (ChannelInfo channel : hChannelList.values()) {
+			channel.emptyChannel();
+			hChannelList.remove(channel.getName().toLowerCase());
+		}
+		// Remove all known clients
+		for (String clientName : hClientList.keySet()) {
+			hClientList.remove(clientName);
+		}
+		// Remove the pingTimer
+		if (pingTimer != null) {
+			pingTimer.cancel();
+			pingTimer = null;
+		}
+		// Make sure the socket state is closed
+		currentSocketState = STATE_CLOSED;
+		// Empty the processing manager
+		myProcessingManager.empty();
+		// Remove all callbacks
+		myCallbackManager.clearCallbacks();
+	}
+
 	/**
 	 * Check if a channel name is valid.
 	 *
@@ -1254,6 +1289,63 @@ public final class IRCParser implements Runnable {
 		}
 	}
 	
+	
+	/**
+	 * Get the time used for the ping Timer.
+	 *
+	 * @return current time used.
+	 * @see setPingCountDownLength
+	 */
+	public long getPingTimerLength() { return pingTimerLength; }
+	
+	/**
+	 * Set the time used for the ping Timer.
+	 * This will also reset the pingTimer.
+	 *
+	 * @param newValue New value to use.
+	 * @see setPingCountDownLength
+	 */
+	public void setPingTimerLength(long newValue) {
+		pingTimerLength = newValue;
+		startPingTimer();
+	}
+	
+	/**
+	 * Get the time used for the pingCountdown.
+	 *
+	 * @return current time used.
+	 * @see setPingCountDownLength
+	 */
+	public byte getPingCountDownLength() { return pingCountDownLength; }
+	
+	/**
+	 * Set the time used for the ping countdown.
+	 * The pingTimer fires every pingTimerLength seconds, whenever a line of data
+	 * is received, the pingCountDown is reset to pingCountDownLength, and the
+	 * "waiting for ping" flag is set to false, if the line is a "PONG", then
+	 * onPingSuccess is also called.
+	 *
+	 * When waiting for a ping reply, onPingFailed() is called every time the 
+	 * timer is fired.
+	 *
+	 * When not waiting for a ping reply, the pingCountDown is decreased by 1
+	 * every time the timer fires, when it reaches 0 is is reset to
+	 * pingCountDownLength and a PING is sent to the server.
+	 *
+	 * To ping the server after 30 seconds of inactivity you could use:
+	 * pingTimerLength = 20000, pingCountDown = 6
+	 * or
+	 * pingTimerLength = 10000, pingCountDown = 3
+	 *
+	 * @param newValue New value to use.
+	 * @see pingCountDown
+	 * @see pingTimerLength
+	 * @see pingTimerTask
+	 */
+	public void setPingCountDownLength(byte newValue) {
+		pingCountDownLength = newValue;
+	}
+	
 	/**
 	 * Start the pingTimer.
 	 */
@@ -1261,14 +1353,14 @@ public final class IRCParser implements Runnable {
 		setPingNeeded(false);
 		if (pingTimer != null) { pingTimer.cancel(); }
 		pingTimer = new Timer();
-		pingTimer.schedule(new PingTimer(this), 0, 10000);
+		pingTimer.schedule(new PingTimer(this), 0, pingTimerLength);
 		pingCountDown = 1;
 	}
 	
 	/**
 	 * This is called when the ping Timer has been executed.
 	 * As the timer is restarted on every incomming message, this will only be
-	 * called when there has been no incomming line for 15 seconds.
+	 * called when there has been no incomming line for 10 seconds.
 	 */
 	protected void pingTimerTask() {
 		if (pingNeeded) {
@@ -1282,7 +1374,7 @@ public final class IRCParser implements Runnable {
 				sendLine("PING "+System.currentTimeMillis());
 				pingTime = System.currentTimeMillis();
 				setPingNeeded(true);
-				pingCountDown = 6;
+				pingCountDown = pingCountDownLength;
 			}
 		}
 	}
