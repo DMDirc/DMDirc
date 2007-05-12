@@ -907,16 +907,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     public void activateFrame() {
         MainFrame.getMainFrame().setActiveFrame(frame);
     }
-    
-    /**
-     * Adds a line of text to the main text area of the channel frame.
-     * @param line The line to add
-     */
-    @Deprecated
-    public void addLine(final String line) {
-        frame.addLine(line);
-    }
-    
+        
     /**
      * Formats the specified arguments using the supplied message type, and
      * outputs to the main text area.

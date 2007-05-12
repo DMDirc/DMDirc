@@ -47,13 +47,7 @@ public interface FrameContainer {
      * @return true iff the frame is owned by this object, false otherwise
      */
     boolean ownsFrame(JInternalFrame target);
-    
-    /**
-     * Adds a line to the main text area of the frame.
-     * @param line line to be added
-     */
-    void addLine(String line);
-    
+       
     /**
      * Sends a notification to the frame manager that this object has been
      * updated.

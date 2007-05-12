@@ -35,13 +35,6 @@ import uk.org.ownage.dmdirc.identities.ConfigManager;
 public interface CommandWindow {
     
     /**
-     * Adds a line of text to the main text area of the window.
-     * @param line The line to be added
-     */
-    @Deprecated
-    void addLine(String line);
-    
-    /**
      * Formats the arguments using the Formatter, then adds the result to the
      * main text area.
      * @param messageType The type of this message
@@ -55,7 +48,7 @@ public interface CommandWindow {
      * @param messageType The type of this message
      * @param args The arguments for the message
      */
-    void addLine(StringBuffer messageType, Object... args);    
+    void addLine(StringBuffer messageType, Object... args);
     
     /**
      * Clears the main text area of the command window.

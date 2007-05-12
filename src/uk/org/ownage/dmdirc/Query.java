@@ -399,15 +399,6 @@ public final class Query implements IPrivateAction, IPrivateMessage,
     }
     
     /**
-     * Adds a line of text to the main text area of the query frame.
-     * @param line The line to add
-     */
-    @Deprecated
-    public void addLine(final String line) {
-        frame.addLine(line);
-    }
-    
-    /**
      * Formats the specified arguments using the supplied message type, and
      * outputs to the main text area.
      * @param messageType the message type to use

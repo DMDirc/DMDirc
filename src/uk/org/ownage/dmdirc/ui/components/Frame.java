@@ -212,17 +212,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             awayLabel.setVisible(getServer().isAway());
         }
     }
-    
-    /**
-     * Adds a line of text to the main text area (with a timestamp).
-     * @param line text to add
-     * @deprecated All lines should use a formatter
-     */
-    @Deprecated
-    public final void addLine(final String line) {
-        addLine(line, true);
-    }
-    
+        
     /**
      * Adds a line of text to the main text area.
      * @param line text to add
@@ -282,7 +272,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     public final void addLine(final String messageType, final Object... args) {
         if (messageType.length() > 0) {
-            addLine(Formatter.formatMessage(messageType, args));
+            addLine(Formatter.formatMessage(messageType, args), true);
         }
     }
     

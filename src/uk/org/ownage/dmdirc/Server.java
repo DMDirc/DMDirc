@@ -431,15 +431,6 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     }
     
     /**
-     * Adds a line to the server window.
-     * @param line line to be added
-     */
-    @Deprecated
-    public void addLine(final String line) {
-        frame.addLine(line);
-    }
-    
-    /**
      * closes this server connection and associated windows.
      * @param reason reason for closing
      */

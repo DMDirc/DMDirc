@@ -231,15 +231,6 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
     }
     
     /**
-     * Adds a line of text to the main text area of the raw frame.
-     * @param line The line to add
-     */
-    @Deprecated
-    public void addLine(final String line) {
-        frame.addLine(line);
-    }
-    
-    /**
      * Retrieves the icon used by the raw frame.
      * @return The raw frame's icon
      */
