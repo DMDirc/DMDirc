@@ -56,7 +56,7 @@ public abstract class CommandParser {
      * @param command Command to be registered
      */
     public final void registerCommand(final Command command) {
-        commands.put(command.getSignature(), command);
+        commands.put(command.getSignature().toLowerCase(), command);
     }
     
     /**
@@ -64,7 +64,7 @@ public abstract class CommandParser {
      * @param command Command to be unregistered
      */
     public final void unregisterCommand(final Command command) {
-        commands.remove(command.getSignature());
+        commands.remove(command.getSignature().toLowerCase());
     }    
     
     /**
@@ -115,10 +115,10 @@ public abstract class CommandParser {
             // Check the specific signature first, so that polyadic commands can
             // have error handlers if there are too few arguments (e.g., msg/0 and
             // msg/1 would return errors, so msg only gets called with 2+ args).
-            if (commands.containsKey(signature)) {
-                executeCommand(origin, commands.get(signature), comargs);
-            } else if (commands.containsKey(command)) {
-                executeCommand(origin, commands.get(command), comargs);
+            if (commands.containsKey(signature.toLowerCase())) {
+                executeCommand(origin, commands.get(signature.toLowerCase()), comargs);
+            } else if (commands.containsKey(command.toLowerCase())) {
+                executeCommand(origin, commands.get(command.toLowerCase()), comargs);
             } else {
                 handleInvalidCommand(origin, command, comargs);
             }

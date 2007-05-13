@@ -341,7 +341,7 @@ public final class CommandManager {
         }
         
         for (Command com : serverCommands) {
-            if (com.getSignature().equals(signature)) {
+            if (com.getSignature().equalsIgnoreCase(signature)) {
                 return (ServerCommand) com;
             }
         }
@@ -361,7 +361,7 @@ public final class CommandManager {
         }
         
         for (Command com : channelCommands) {
-            if (com.getSignature().equals(signature)) {
+            if (com.getSignature().equalsIgnoreCase(signature)) {
                 return (ChannelCommand) com;
             }
         }
