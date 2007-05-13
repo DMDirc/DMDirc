@@ -71,6 +71,7 @@ public class NickColourPlugin implements EventPlugin {
      * Colours the specified client according to the user's config.
      * @param client The client to be coloured
      */
+    @SuppressWarnings("unchecked")
     private void colourClient(final ChannelClientInfo client) {
         final Map<ChannelClientProperty, Object> map = (Map<ChannelClientProperty, Object>) client.getMiscObject();
         
@@ -90,7 +91,7 @@ public class NickColourPlugin implements EventPlugin {
             count += nick.charAt(i);
         }
         
-        count = (count + nick.length()) % randColours.length;
+        count = count % randColours.length;
         
         return ColourManager.parseColour(randColours[count]);
     }
