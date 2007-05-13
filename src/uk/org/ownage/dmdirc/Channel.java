@@ -386,8 +386,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param target The ChannelClientInfo to check
      */
     private void mapClient(final ChannelClientInfo target) {
-        if (target.getMiscObject() == null) {
-            target.setMiscObject(new HashMap<ChannelClientProperty, Object>());
+        if (target.getMap() == null) {
+            target.setMap(new HashMap<ChannelClientProperty, Object>());
         }
     }
     
@@ -821,7 +821,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         
         if (configManager.getOptionBool("ui", "shownickcoloursintext")) {
             final Map<ChannelClientProperty, Object> map =
-                    (Map<ChannelClientProperty, Object>) client.getMiscObject();
+                    (Map<ChannelClientProperty, Object>) client.getMap();
             String prefix = null;
             Color colour;
             

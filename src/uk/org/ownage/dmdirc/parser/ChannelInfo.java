@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * Contains Channel information.
@@ -71,8 +72,8 @@ public final class ChannelInfo {
 	private LinkedList<Character> lAddingModes = new LinkedList<Character>();
 	/** Modes waiting to be sent to the server. */
 	private LinkedList<String> lModeQueue = new LinkedList<String>();
-	/** Misc object attached to this object. */
-	private Object miscObject;
+	/** A Map to allow applications to attach misc data to this object */
+	private Map myMap;
 
 	/**
 	 * Create a new channel object.
@@ -83,21 +84,21 @@ public final class ChannelInfo {
 	public ChannelInfo(final IRCParser tParser, final String name) { myParser = tParser; sName = name; }
 	
 	/**
-	 * Set the misc object attatched to this 
+	 * Set the Map object attatched to this object.
 	 *
-	 * @param newObject New object to attatch.
+	 * @param newMap New Map to attatch.
 	 */
-	public void setMiscObject(Object newObject) {
-		miscObject = newObject;
+	public void setMap(Map newMap) {
+		myMap = newMap;
 	}
 	
 	/**
-	 * Get the misc object attatched to this 
+	 * Get the Map object attatched to this object.
 	 *
-	 * @return object to attatched to this .
+	 * @return Map to attatched to this.
 	 */
-	public Object getMiscObject() {
-		return miscObject;
+	public Map getMap() {
+		return myMap;
 	}
 	
 	/**

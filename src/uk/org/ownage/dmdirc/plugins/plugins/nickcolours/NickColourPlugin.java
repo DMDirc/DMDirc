@@ -73,7 +73,7 @@ public class NickColourPlugin implements EventPlugin {
      */
     @SuppressWarnings("unchecked")
     private void colourClient(final ChannelClientInfo client) {
-        final Map<ChannelClientProperty, Object> map = (Map<ChannelClientProperty, Object>) client.getMiscObject();
+        final Map<ChannelClientProperty, Object> map = (Map<ChannelClientProperty, Object>) client.getMap();
         
         if (Config.getOptionBool("plugin-NickColour", "userandomcolour")) {
             map.put(ChannelClientProperty.COLOUR_FOREGROUND, getColour(client.getNickname()));

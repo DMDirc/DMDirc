@@ -24,6 +24,8 @@
 
 package uk.org.ownage.dmdirc.parser;
 
+import java.util.Map;
+
 /**
  * Contains information about a client on a channel.
  * 
@@ -41,8 +43,8 @@ public final class ChannelClientInfo {
 	private IRCParser myParser;
 	/** Reference to the channel object that owns this channelclient. */
 	private ChannelInfo myChannel;
-	/** Misc object attached to this object. */
-	private Object miscObject;
+	/** A Map to allow applications to attach misc data to this object */
+	private Map myMap;
 	
 	/**
 	 * Create a ChannelClient instance of a CLient.
@@ -58,21 +60,21 @@ public final class ChannelClientInfo {
 	}
 	
 	/**
-	 * Set the misc object attatched to this 
+	 * Set the Map object attatched to this object.
 	 *
-	 * @param newObject New object to attatch.
+	 * @param newMap New Map to attatch.
 	 */
-	public void setMiscObject(Object newObject) {
-		miscObject = newObject;
+	public void setMap(Map newMap) {
+		myMap = newMap;
 	}
 	
 	/**
-	 * Get the misc object attatched to this 
+	 * Get the Map object attatched to this object.
 	 *
-	 * @return object to attatched to this .
+	 * @return Map to attatched to this.
 	 */
-	public Object getMiscObject() {
-		return miscObject;
+	public Map getMap() {
+		return myMap;
 	}
 	
 	/**

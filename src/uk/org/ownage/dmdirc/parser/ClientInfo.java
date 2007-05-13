@@ -24,6 +24,8 @@
 
 package uk.org.ownage.dmdirc.parser;
 
+import java.util.Map;
+
 /**
  * Contains information about known users.
  * 
@@ -49,8 +51,8 @@ public final class ClientInfo {
 	private boolean bIsFake;
 	/** Reference to the parser object that owns this channel, Used for modes. */
 	private IRCParser myParser;
-	/** Misc object attached to this object. */
-	private Object miscObject;
+	/** A Map to allow applications to attach misc data to this object */
+	private Map myMap;
 
 	/**
 	 * Create a new client object from a hostmask.
@@ -65,21 +67,21 @@ public final class ClientInfo {
 	}
 
 	/**
-	 * Set the misc object attatched to this 
+	 * Set the Map object attatched to this object.
 	 *
-	 * @param newObject New object to attatch.
+	 * @param newMap New Map to attatch.
 	 */
-	public void setMiscObject(Object newObject) {
-		miscObject = newObject;
+	public void setMap(Map newMap) {
+		myMap = newMap;
 	}
 	
 	/**
-	 * Get the misc object attatched to this 
+	 * Get the Map object attatched to this object.
 	 *
-	 * @return object to attatched to this .
+	 * @return Map to attatched to this.
 	 */
-	public Object getMiscObject() {
-		return miscObject;
+	public Map getMap() {
+		return myMap;
 	}
 
 	/**
