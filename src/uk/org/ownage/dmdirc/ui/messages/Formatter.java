@@ -251,7 +251,7 @@ public final class Formatter {
         defaultProperties.setProperty("motdLine", colour + "10" + fixed + "%1$s");
         defaultProperties.setProperty("motdEnd", colour + "10%1$s");
         defaultProperties.setProperty("rawIn", "<< %1$s");
-        defaultProperties.setProperty("rawOut", "<< %1$s");
+        defaultProperties.setProperty("rawOut", ">> %1$s");
         defaultProperties.setProperty("commandOutput", "%1$s");
         defaultProperties.setProperty("commandError", colour + "7%1$s");
         defaultProperties.setProperty("actionTooLong", "Warning: action too long to be sent");

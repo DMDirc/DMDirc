@@ -63,6 +63,7 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IGotNetwork;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDLine;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDStart;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INickInUse;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INumeric;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPingFailed;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPingSuccess;
@@ -88,7 +89,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         IPrivateAction, IErrorInfo, IPrivateCTCP, IPrivateCTCPReply,
         InternalFrameListener, ISocketClosed, IPrivateNotice, IMOTDStart,
         IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed, IPingSuccess,
-        IAwayState, IConnectError, IAwayStateOther, FrameContainer {
+        IAwayState, IConnectError, IAwayStateOther, INickInUse, FrameContainer {
     
     /** The callbacks that should be registered for server instances. */
     private final static String[] callbacks = {
@@ -96,7 +97,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         "OnPrivateAction", "OnPrivateCTCP", "OnPrivateNotice", "OnConnectError",
         "OnPrivateCTCPReply", "OnSocketClosed", "OnGotNetwork", "OnNumeric",
         "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed", "OnAwayState",
-        "OnAwayStateOther"
+        "OnAwayStateOther", "OnNickInUse"
     };
     
     /** Open channels that currently exist on the server. */
@@ -218,13 +219,16 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         imageIcon = new ImageIcon(imageURL);
         frame.setFrameIcon(imageIcon);
         
-        // TODO: Use formatter
         frame.addLine("serverConnecting", server, port);
         sendNotification();
         
         final MyInfo myInfo = new MyInfo();
         myInfo.setNickname(profile.getOption("profile", "nickname"));
         myInfo.setRealname(profile.getOption("profile", "realname"));
+        
+        if (profile.hasOption("profile", "ident")) {
+            myInfo.setUsername(profile.getOption("profile", "ident"));
+        }
         
         final ServerInfo serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);
@@ -776,6 +780,42 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
             final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
         handleNotification("privateNotice", parts[0], parts[1], parts[2], sMessage);
+    }
+    
+    /** {@inheritDoc} */
+    public void onNickInUse(final IRCParser tParser, final String nickName) {
+        final String lastNick = tParser.getMyNickname();
+                
+        // If our last nick is still valid, ignore the in use message
+        if (!lastNick.equalsIgnoreCase(nickName)) {
+            return;
+        }
+        
+        String newNick = null;
+        
+        if (profile.hasOption("profile", "altnicks")) {
+            final String[] alts = profile.getOption("profile", "altnicks").split("\n");
+            int offset = -1;
+            
+            if (!lastNick.equalsIgnoreCase(profile.getOption("profile", "nickname"))) {
+                for (String alt : alts) {
+                    offset++;
+                    if (alt.equalsIgnoreCase(lastNick)) {
+                        break;
+                    }
+                }
+            }
+            
+            if (offset + 1 < alts.length) {
+                newNick = alts[offset + 1];
+            }
+        }
+        
+        if (newNick == null) {
+            newNick = lastNick + (int) (Math.random()*10);
+        }
+        
+        parser.setNickname(newNick);
     }
     
     /**
