@@ -72,6 +72,8 @@ public final class ActionsManagerDialog extends StandardDialog
     
     /** The tapped pane used for displaying groups. */
     private JTabbedPane groups;
+    /** Edit action button. */
+    private JButton editAction;
     
     /** Creates a new instance of ActionsManagerDialog. */
     private ActionsManagerDialog() {
@@ -158,12 +160,13 @@ public final class ActionsManagerDialog extends StandardDialog
         
         constraints.gridx++;
         constraints.insets.set(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, 0);
-        myButton = new JButton("Edit Action");
-        myButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        myButton.setActionCommand("action.edit");
-        myButton.addActionListener(this);
-        myButton.setMargin(new Insets(0, 0, 0, 0));
-        add(myButton, constraints);
+        editAction = new JButton("Edit Action");
+        editAction.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        editAction.setActionCommand("action.edit");
+        editAction.addActionListener(this);
+        editAction.setMargin(new Insets(0, 0, 0, 0));
+        editAction.setEnabled(false);
+        add(editAction, constraints);
         
         constraints.gridx++;
         constraints.insets.set(SMALL_BORDER, LARGE_BORDER, SMALL_BORDER, 
@@ -178,6 +181,11 @@ public final class ActionsManagerDialog extends StandardDialog
         loadGroups();
         
         pack();
+    }
+    
+    /** Enable or disable the edit action button. */
+    public void setEditState(final boolean state) {
+        editAction.setEnabled(state);
     }
     
     /**

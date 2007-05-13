@@ -30,6 +30,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import uk.org.ownage.dmdirc.actions.Action;
 import uk.org.ownage.dmdirc.ui.dialogs.ActionsManagerDialog;
@@ -42,7 +44,8 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
  * a particular group.
  * @author chris
  */
-public final class ActionsGroupPanel extends JPanel {
+public final class ActionsGroupPanel extends JPanel
+        implements ListSelectionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -120,11 +123,12 @@ public final class ActionsGroupPanel extends JPanel {
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setAutoCreateRowSorter(true);
+        table.getSelectionModel().addListSelectionListener(this);
         
         final JScrollPane pane = new JScrollPane(table);
         
         pane.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER, 
+                BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER),
                 BorderFactory.createEtchedBorder()
                 ));
@@ -142,8 +146,8 @@ public final class ActionsGroupPanel extends JPanel {
         return table;
     }
     
-    /** 
-     * Returns the action at the specified index. 
+    /**
+     * Returns the action at the specified index.
      *
      * @param index index of the action
      *
@@ -151,6 +155,16 @@ public final class ActionsGroupPanel extends JPanel {
      */
     public Action getAction(final int index) {
         return actions.get(index);
+    }
+    
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            if (table.getSelectedRow() > -1) {
+                parent.setEditState(true);
+            } else {
+                parent.setEditState(false);
+            }
+        }
     }
     
 }

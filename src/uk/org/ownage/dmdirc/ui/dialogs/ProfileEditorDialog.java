@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.ui.dialogs;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -37,6 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
@@ -65,7 +67,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Component panel. */
     private JPanel panel;
@@ -97,6 +99,18 @@ public final class ProfileEditorDialog extends StandardDialog implements
     private JLabel realnameLabel;
     /** realname field. */
     private JTextField realname;
+    
+    /** Ident label. */
+    private JLabel identLabel;
+    /**  Ident field. */
+    private JTextField ident;
+    
+    /** Alternate nicknames label. */
+    private JLabel altNickLabel;
+    /** Alternate nicknames list. */
+    private JList altNick;
+    /** Alternate nicknames button panel. */
+    private JPanel altNickButtonsPanel;
     
     /** profiles. */
     private List<ConfigSource> profiles;
@@ -149,9 +163,9 @@ public final class ProfileEditorDialog extends StandardDialog implements
         
         renameButton = new JButton("Rename");
         
-        infoLabel = new JTextArea("Profiles describe information needed to " 
-                + "connect to a server.  You can use a different profile for " 
-                + "each connection. Profiles are automatically saved when you " 
+        infoLabel = new JTextArea("Profiles describe information needed to "
+                + "connect to a server.  You can use a different profile for "
+                + "each connection. Profiles are automatically saved when you "
                 + "select another or click OK");
         infoLabel.setEditable(false);
         infoLabel.setWrapStyleWord(true);
@@ -171,6 +185,38 @@ public final class ProfileEditorDialog extends StandardDialog implements
         realname.setPreferredSize(new Dimension(150, 10));
         realname.setText(profiles.get(0).getOption("profile", "realname"));
         
+        identLabel = new JLabel("Ident: ");
+        
+        ident = new JTextField();
+        ident.setPreferredSize(new Dimension(150, 10));
+        ident.setText(profiles.get(0).getOption("profile", "ident"));
+        
+        altNickLabel = new JLabel("Alt nicknames: ");
+        
+        altNick = new JList(new DefaultListModel());
+        altNick.setVisibleRowCount(2);
+        altNick.setFixedCellHeight(altNick.getFont().getSize());
+        populateAltNicks(0);
+        
+        altNickButtonsPanel = new JPanel();
+        altNickButtonsPanel.setLayout(new GridLayout(1, 3, SMALL_BORDER,
+                SMALL_BORDER));
+        
+        JButton button = new JButton("Add");
+        button.setActionCommand("addAltNick");
+        button.addActionListener(this);
+        altNickButtonsPanel.add(button);
+        
+        button = new JButton("Edit");
+        button.setActionCommand("editAltNick");
+        button.addActionListener(this);
+        altNickButtonsPanel.add(button);
+        
+        button = new JButton("Delete");
+        button.setActionCommand("deleteAltNick");
+        button.addActionListener(this);
+        altNickButtonsPanel.add(button);
+        
         revertButton = new JButton("Revert");
     }
     
@@ -183,10 +229,16 @@ public final class ProfileEditorDialog extends StandardDialog implements
         panel.add(nickname);
         panel.add(realnameLabel);
         panel.add(realname);
+        panel.add(identLabel);
+        panel.add(ident);
+        panel.add(altNickLabel);
+        panel.add(new JScrollPane(altNick));
+        panel.add(Box.createHorizontalBox());
+        panel.add(altNickButtonsPanel);
         panel.add(Box.createHorizontalBox());
         panel.add(revertButton);
         
-        layoutGrid(panel, 3, 2, LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, SMALL_BORDER);
+        layoutGrid(panel, 6, 2, LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, SMALL_BORDER);
         
         constraints.weighty = 0.0;
         constraints.weightx = 0.0;
@@ -258,8 +310,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == revertButton) {
-            nickname.setText(profiles.get(selectedProfile).getOption("profile", "nickname"));
-            realname.setText(profiles.get(selectedProfile).getOption("profile", "realname"));
+            populateProfile(selectedProfile);
         } else if (event.getSource() == addButton) {
             final String newName = JOptionPane.showInputDialog(this,
                     "Please enter the new profile's name", "New profile");
@@ -268,8 +319,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
                 profiles = IdentityManager.getProfiles();
                 populateList();
                 selectedProfile = profiles.indexOf(newIdentity);
-                nickname.setText(profiles.get(selectedProfile).getOption("profile", "nickname"));
-                realname.setText(profiles.get(selectedProfile).getOption("profile", "realname"));
+                populateProfile(selectedProfile);
                 profileList.repaint();
             }
         } else if (event.getSource() == deleteButton) {
@@ -287,8 +337,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
                 if (selectedProfile < 0) {
                     selectedProfile = 0;
                 }
-                nickname.setText(profiles.get(selectedProfile).getOption("profile", "nickname"));
-                realname.setText(profiles.get(selectedProfile).getOption("profile", "realname"));
+                populateProfile(selectedProfile);
                 profileList.repaint();
             }
         } else if (event.getSource() == renameButton) {
@@ -299,9 +348,32 @@ public final class ProfileEditorDialog extends StandardDialog implements
                 profiles.get(profileList.getSelectedIndex()).setOption("identity", "name", newName);
                 profileList.repaint();
             }
+        } else if ("addAltNick".equals(event.getActionCommand())) {
+            final String newName = JOptionPane.showInputDialog(this,
+                    "Please enter the new nickname", "New alt nickname");
+            if (newName != null && !"".equals(newName)) {
+                ((DefaultListModel) altNick.getModel()).addElement(newName);
+            }
+        } else if ("editAltNick".equals(event.getActionCommand())) {
+            if (altNick.getSelectedIndex() != -1) {
+                final String newName = JOptionPane.showInputDialog(this,
+                        "Please enter the nickname for the alt nickname",
+                        altNick.getSelectedValue());
+                if (newName != null && !"".equals(newName)) {
+                    ((DefaultListModel) altNick.getModel()).setElementAt(newName, altNick.getSelectedIndex());
+                }
+            }
+        } else if ("deleteAltNick".equals(event.getActionCommand())) {
+            if (altNick.getSelectedIndex() != -1) {
+                final int response = JOptionPane.showConfirmDialog(this,
+                        "Are you sure you want to delete this nick?",
+                        "Delete confirmaton", JOptionPane.YES_NO_OPTION);
+                if (response == JOptionPane.YES_OPTION) {
+                    ((DefaultListModel) altNick.getModel()).removeElementAt(altNick.getSelectedIndex());
+                }
+            }
         } else if (event.getSource() == getOkButton()) {
-            profiles.get(selectedProfile).setOption("profile", "nickname", nickname.getText());
-            profiles.get(selectedProfile).setOption("profile", "realname", realname.getText());
+            saveProfile(selectedProfile);
             NewServerDialog.getNewServerDialog().populateProfiles();
             this.dispose();
         } else if (event.getSource() == getCancelButton()) {
@@ -315,10 +387,8 @@ public final class ProfileEditorDialog extends StandardDialog implements
         if (!selectionEvent.getValueIsAdjusting()) {
             final int selected = ((JList) selectionEvent.getSource()).getSelectedIndex();
             if (selected >= 0) {
-                profiles.get(selectedProfile).setOption("profile", "nickname", nickname.getText());
-                profiles.get(selectedProfile).setOption("profile", "realname", realname.getText());
-                nickname.setText(profiles.get(selected).getOption("profile", "nickname"));
-                realname.setText(profiles.get(selected).getOption("profile", "realname"));
+                saveProfile(selectedProfile);
+                populateProfile(selected);
             }
             selectedProfile = selected;
         }
@@ -330,5 +400,63 @@ public final class ProfileEditorDialog extends StandardDialog implements
         for (ConfigSource profile : profiles) {
             ((DefaultListModel) profileList.getModel()).addElement(profile);
         }
+    }
+    
+    /**
+     *  Sets the profile options for the given index.
+     *
+     * @param index profile number to populate
+     */
+    private void populateProfile(final int index) {
+        ConfigSource profile = profiles.get(index);
+        
+        nickname.setText(profile.getOption("profile", "nickname"));
+        realname.setText(profile.getOption("profile", "realname"));
+        ident.setText(profile.getOption("profile", "ident"));
+        populateAltNicks(index);
+    }
+    
+    /**
+     *  Saves the profile options for the given index.
+     *
+     * @param index profile number to save
+     */
+    private void saveProfile(final int index) {
+        StringBuffer altNicks;
+        
+        ConfigSource profile = profiles.get(index);
+        
+        profile.setOption("profile", "nickname", nickname.getText());
+        profile.setOption("profile", "realname", realname.getText());
+        profile.setOption("profile", "ident", ident.getText());
+        
+        altNicks = new StringBuffer();
+        
+        for (int i = 0; i < altNick.getModel().getSize() ; i++) {
+            altNicks.append(altNick.getModel().getElementAt(i)).append('\n');
+        }
+        
+        profile.setOption("profile", "altnicks", altNicks.toString().trim());
+    }
+    
+    /**
+     * Populates the alternate nick list.
+     *
+     * @param index profile number to populate from
+     */
+    private void populateAltNicks(final int index) {
+        String[] altNicks;
+        
+        ((DefaultListModel) altNick.getModel()).clear();
+        
+        if (profiles.get(index).getOption("profile", "altnicks") != null &&
+                profiles.get(index).getOption("profile", "altnicks").length() != 0) {
+            altNicks = profiles.get(index).getOption("profile", "altnicks").split("\\n");
+            
+            for (String altNickname: altNicks) {
+                ((DefaultListModel) altNick.getModel()).addElement(altNickname);
+            }
+        }
+        altNick.repaint();
     }
 }
