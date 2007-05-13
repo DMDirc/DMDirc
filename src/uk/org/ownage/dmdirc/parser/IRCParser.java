@@ -1197,7 +1197,7 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Remove all clients/channels/channelclients/callbacks.
 	 */
-	protected void reset() {
+	protected synchronized void reset() {
 		// Remove all known channels
 		for (ChannelInfo channel : hChannelList.values()) {
 			channel.emptyChannel();
