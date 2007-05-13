@@ -33,6 +33,7 @@ import uk.org.ownage.dmdirc.actions.ActionType;
 import uk.org.ownage.dmdirc.actions.CoreActionType;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.plugins.EventPlugin;
 import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
 import uk.org.ownage.dmdirc.ui.components.PreferencesPanel;
@@ -77,17 +78,12 @@ public class NickColourPlugin implements EventPlugin, PreferencesInterface {
     @SuppressWarnings("unchecked")
     private void colourClient(final ChannelClientInfo client) {
         final Map map = client.getMap();
-        
-        if (Config.getOptionBool("plugin-NickColour", "userandomcolour")) {
-            if (Config.getOptionBool("plugin-NickColour", "useowncolour")) {
-                if (client.getClient() == client.getClient().getParser().getMyself()) {
-                    map.put(ChannelClientProperty.COLOUR_FOREGROUND, ColourManager.parseColour(Config.getOption("plugin-NickColour", "owncolour")));
-                } else {
-                    map.put(ChannelClientProperty.COLOUR_FOREGROUND, getColour(client.getNickname()));
-                }
-            } else {
-                map.put(ChannelClientProperty.COLOUR_FOREGROUND, getColour(client.getNickname()));
-            }
+        final ClientInfo myself = client.getClient().getParser().getMyself();
+        if (Config.getOptionBool("plugin-NickColour", "useowncolour") && client.getClient().equals(myself)) {
+            final Color color = ColourManager.parseColour(Config.getOption("plugin-NickColour", "owncolour"));
+            map.put(ChannelClientProperty.COLOUR_FOREGROUND, color);
+        } else if (Config.getOptionBool("plugin-NickColour", "userandomcolour")) {
+            map.put(ChannelClientProperty.COLOUR_FOREGROUND, getColour(client.getNickname()));
         }
     }
     
@@ -145,9 +141,22 @@ public class NickColourPlugin implements EventPlugin, PreferencesInterface {
         final PreferencesPanel preferencesPanel = new PreferencesPanel(this, "NickColour Plugin - Config");
         preferencesPanel.addCategory("General", "General configuration for NickColour plugin.");
         
-        preferencesPanel.addCheckboxOption("General", "userandomcolour", "Enable Random Colour: ", "Use a pseudo-random colour for each person?", Config.getOptionBool("plugin-NickColour", "userandomcolour"));
-        preferencesPanel.addCheckboxOption("General", "useowncolour", "Use own colour: ", "Always use the same colour for own-nick?", Config.getOptionBool("plugin-NickColour", "useowncolour"));
-        preferencesPanel.addColourOption("General", "owncolour", "Colour to use for own nick: ", "Use a pseudo-random colour for each person", Config.getOption("plugin-NickColour", "owncolour", "1"), true, true);
+        preferencesPanel.addCheckboxOption("General", "showintext",
+                "Show colours in text area: ", "Colour nicknames in main text area?",
+                Config.getOptionBool("ui", "shownickcoloursintext"));
+        preferencesPanel.addCheckboxOption("General", "showinlist",
+                "Show colours in nick list: ", "Colour nicknames in channel user lists?",
+                Config.getOptionBool("ui", "shownickcoloursinnicklist"));
+        
+        preferencesPanel.addCheckboxOption("General", "userandomcolour",
+                "Enable Random Colour: ", "Use a pseudo-random colour for each person?",
+                Config.getOptionBool("plugin-NickColour", "userandomcolour"));
+        preferencesPanel.addCheckboxOption("General", "useowncolour",
+                "Use colour for own nick: ", "Always use the same colour for own nick?",
+                Config.getOptionBool("plugin-NickColour", "useowncolour"));
+        preferencesPanel.addColourOption("General", "owncolour",
+                "Colour to use for own nick: ", "Colour used for own nick",
+                Config.getOption("plugin-NickColour", "owncolour", "1"), true, true);
         
         preferencesPanel.display();
     }
@@ -158,6 +167,8 @@ public class NickColourPlugin implements EventPlugin, PreferencesInterface {
      * @param properties user preferences
      */
     public void configClosed(final Properties properties) {
+        Config.setOption("ui", "shownickcoloursintext", properties.getProperty("showintext"));
+        Config.setOption("ui", "shownickcoloursinnicklist", properties.getProperty("showinlist"));
         Config.setOption("plugin-NickColour", "userandomcolour", properties.getProperty("userandomcolour"));
         Config.setOption("plugin-NickColour", "useowncolour", properties.getProperty("useowncolour"));
         Config.setOption("plugin-NickColour", "owncolour", properties.getProperty("owncolour"));

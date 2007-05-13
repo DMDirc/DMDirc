@@ -462,10 +462,12 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         frame.updateNames(channelInfo.getChannelClients());
         
         final ArrayList<String> names = new ArrayList<String>();
+        
         for (ChannelClientInfo channelClient : cChannel.getChannelClients()) {
             mapClient(channelClient);
             names.add(channelClient.getNickname());
         }
+        
         tabCompleter.replaceEntries(names);
         tabCompleter.addEntries(CommandManager.getChannelCommandNames());
         
