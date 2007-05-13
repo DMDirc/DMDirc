@@ -233,6 +233,13 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         doConditions();
     }
     
+    /** Clears all conditions. */
+    public void clearConditions() {
+        conditions.clear();
+        
+        doConditions();
+    }
+    
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == newComparison) {

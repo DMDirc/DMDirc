@@ -31,10 +31,12 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import javax.swing.SwingUtilities;
 
 import uk.org.ownage.dmdirc.actions.Action;
 import uk.org.ownage.dmdirc.actions.ActionManager;
@@ -55,6 +57,9 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
      */
     private static final long serialVersionUID = 1;
     
+    /** Parent ActionsEditorDialog. */
+    private ActionsEditorDialog owner;
+    
     /** The action. */
     private Action action;
     /** Name textfield. */
@@ -64,14 +69,19 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     /** Secondary trigger list. */
     private JList otherTriggers;
     
+    /** Currently selected trigger. */
+    private ActionType type;
+    
     /**
      * Creates a new instance of GeneralTabPanel.
      *
      * @param action action to be edited
      */
-    public GeneralTabPanel(final Action action) {
+    public GeneralTabPanel(final ActionsEditorDialog owner,
+            final Action action) {
         super();
         
+        this.owner = owner;
         this.action = action;
         
         initComponents();
@@ -105,8 +115,27 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         populateOtherTriggers();
         
         trigger.setSelectedItem(action.getTriggers()[0]);
+        type = (ActionType) trigger.getSelectedItem();
         otherTriggers.setEnabled(true);
         
+        selectOtherTriggers();
+    }
+    
+    /** Populates the other triggers list with compatible types. */
+    private void populateOtherTriggers() {
+        otherTriggers.removeAll();
+        if (trigger.getSelectedIndex() == 0) {
+            otherTriggers.setEnabled(false);
+        } else {
+            for (ActionType type : ActionManager.getCompatibleTypes((ActionType) trigger.getSelectedItem())) {
+                ((DefaultListModel) otherTriggers.getModel()).addElement(type);
+            }
+        }
+        otherTriggers.repaint();
+    }
+    
+    /** Selects other triggers that are part of this action. */
+    private void selectOtherTriggers() {
         for (ActionType type : action.getTriggers()) {
             int index = ((DefaultListModel) otherTriggers.getModel()).indexOf(type);
             if (index != -1) {
@@ -114,19 +143,6 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
             }
             
         }
-    }
-    
-    private void populateOtherTriggers() {
-        otherTriggers.removeAll();
-        if (trigger.getSelectedIndex() == 0) {
-            otherTriggers.setEnabled(false);
-        } else {
-            for (ActionType type : ActionManager.getCompatibleTypes((ActionType) trigger.getSelectedItem())) {
-                System.out.println("adding " + type);
-                ((DefaultListModel) otherTriggers.getModel()).addElement(type);
-            }
-        }
-        otherTriggers.repaint();
     }
     
     /** Adds listeners to the components. */
@@ -152,9 +168,39 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == trigger) {
-            otherTriggers.setEnabled(true);
-            
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    handleTriggerChange();
+                }
+            } );
+        }
+    }
+    
+    /** Prompts the user for confirmation of type change. */
+    private void handleTriggerChange() {
+        boolean compatible = false;
+        if (type == null || trigger.getSelectedIndex() == 0) {
+            compatible = false;
+        } else if (ActionManager.getCompatibleTypes(type).contains(trigger.getSelectedItem())
+        || trigger.getSelectedItem() == type) {
+            compatible = true;
+        }
+        
+        if (compatible) {
             populateOtherTriggers();
+            selectOtherTriggers();
+            type = ((ActionType) trigger.getSelectedItem());
+        } else {
+            final int response = JOptionPane.showConfirmDialog(this,
+                    "Changing to this trigger will remove your existing "
+                    + "conditions. Are you sure?", "Incompatible triggers",
+                    JOptionPane.OK_CANCEL_OPTION);
+            if (response == JOptionPane.OK_OPTION) {
+                type = ((ActionType) trigger.getSelectedItem());
+                owner.clearConditions();
+            } else {
+                trigger.setSelectedItem(type);
+            }
         }
     }
     

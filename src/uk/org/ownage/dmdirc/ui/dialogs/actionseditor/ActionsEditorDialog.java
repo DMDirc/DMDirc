@@ -124,7 +124,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         
-        tabbedPane.addTab("General", new GeneralTabPanel(action));
+        tabbedPane.addTab("General", new GeneralTabPanel(this, action));
         
         tabbedPane.addTab("Conditions", new ConditionsTabPanel(action));
         
@@ -172,6 +172,11 @@ public final class ActionsEditorDialog extends StandardDialog implements
         } else if (event.getSource() == getCancelButton()) {
             this.dispose();
         }
+    }
+    
+    /** Clears all conditions. */
+    public void clearConditions() {
+        ((ConditionsTabPanel) tabbedPane.getComponentAt(1)).clearConditions();
     }
     
     /** Saves this (new|edited) actions. */
