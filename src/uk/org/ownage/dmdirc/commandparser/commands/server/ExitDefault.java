@@ -59,7 +59,7 @@ public final class ExitDefault extends ServerCommand {
     
     /** {@inheritDoc}. */
     public String getName() {
-        return "quit";
+        return "exit";
     }
     
     /** {@inheritDoc}. */

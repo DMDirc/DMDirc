@@ -35,7 +35,7 @@ import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
  */
 public enum CoreActionMetaType implements ActionMetaType {
     
-    CLIENT_EVENT(0),
+    CLIENT_EVENT(0, new String[]{}),
     
     UNKNOWN_COMMAND(3, new String[]{"source", "command", "arguments"}, FrameContainer.class, String.class, String[].class),
     
