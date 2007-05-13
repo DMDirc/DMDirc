@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.plugins.plugins.nickcolours;
 
 import java.awt.Color;
 import java.util.Map;
+import java.util.Properties;
 
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.ChannelClientProperty;
@@ -33,13 +34,15 @@ import uk.org.ownage.dmdirc.actions.CoreActionType;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.plugins.EventPlugin;
+import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
+import uk.org.ownage.dmdirc.ui.components.PreferencesPanel;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
  *
  * @author chris
  */
-public class NickColourPlugin implements EventPlugin {
+public class NickColourPlugin implements EventPlugin, PreferencesInterface {
     
     private boolean isActive;
     
@@ -76,7 +79,15 @@ public class NickColourPlugin implements EventPlugin {
         final Map map = client.getMap();
         
         if (Config.getOptionBool("plugin-NickColour", "userandomcolour")) {
-            map.put(ChannelClientProperty.COLOUR_FOREGROUND, getColour(client.getNickname()));
+            if (Config.getOptionBool("plugin-NickColour", "useowncolour")) {
+                if (client.getClient() == client.getClient().getParser().getMyself()) {
+                    map.put(ChannelClientProperty.COLOUR_FOREGROUND, ColourManager.parseColour(Config.getOption("plugin-NickColour", "owncolour")));
+                } else {
+                    map.put(ChannelClientProperty.COLOUR_FOREGROUND, getColour(client.getNickname()));
+                }
+            } else {
+                map.put(ChannelClientProperty.COLOUR_FOREGROUND, getColour(client.getNickname()));
+            }
         }
     }
     
@@ -126,11 +137,30 @@ public class NickColourPlugin implements EventPlugin {
     
     /** {@inheritDoc} */
     public boolean isConfigurable() {
-        return false;
+        return true;
     }
     
     /** {@inheritDoc} */
     public void showConfig() {
+        final PreferencesPanel preferencesPanel = new PreferencesPanel(this, "NickColour Plugin - Config");
+        preferencesPanel.addCategory("General", "General configuration for NickColour plugin.");
+        
+        preferencesPanel.addCheckboxOption("General", "userandomcolour", "Enable Random Colour: ", "Use a pseudo-random colour for each person?", Config.getOptionBool("plugin-NickColour", "userandomcolour"));
+        preferencesPanel.addCheckboxOption("General", "useowncolour", "Use own colour: ", "Always use the same colour for own-nick?", Config.getOptionBool("plugin-NickColour", "useowncolour"));
+        preferencesPanel.addColourOption("General", "owncolour", "Colour to use for own nick: ", "Use a pseudo-random colour for each person", Config.getOption("plugin-NickColour", "owncolour", "1"), true, true);
+        
+        preferencesPanel.display();
+    }
+    
+    /**
+     * Called when the preferences dialog is closed.
+     *
+     * @param properties user preferences
+     */
+    public void configClosed(final Properties properties) {
+        Config.setOption("plugin-NickColour", "userandomcolour", properties.getProperty("userandomcolour"));
+        Config.setOption("plugin-NickColour", "useowncolour", properties.getProperty("useowncolour"));
+        Config.setOption("plugin-NickColour", "owncolour", properties.getProperty("owncolour"));
     }
     
     /** {@inheritDoc} */
