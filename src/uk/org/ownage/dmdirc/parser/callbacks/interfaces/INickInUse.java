@@ -32,9 +32,10 @@ import uk.org.ownage.dmdirc.parser.IRCParser;
 public interface INickInUse extends ICallbackInterface {
 	/**
 	 * Called when requested nickname is in use.
-	 * 
+	 *
+	 * @param nickname Nickname that was wanted.
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @see uk.org.ownage.dmdirc.parser.ProcessNickInUse#callNickInUse
 	 */
-	void onNickInUse(IRCParser tParser);
+	void onNickInUse(IRCParser tParser, String nickname);
 }

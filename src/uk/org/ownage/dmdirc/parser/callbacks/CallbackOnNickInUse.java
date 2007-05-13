@@ -44,14 +44,15 @@ public final class CallbackOnNickInUse extends CallbackObject {
 	/**
 	 * Callback to all objects implementing the INickInUse Interface.
 	 *
+	 * @param nickname Nickname that was wanted.
 	 * @see INickInUse
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call() {
+	public boolean call(String nickname) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((INickInUse) callbackInfo.get(i)).onNickInUse(myParser);
+				((INickInUse) callbackInfo.get(i)).onNickInUse(myParser, nickname);
 				bResult = true;
 			} catch (Exception e) {
 				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onNickInUse");

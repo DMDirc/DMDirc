@@ -50,7 +50,7 @@ public class ProcessNickInUse extends IRCProcessor {
 	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
-		if (!callNickInUse()) {
+		if (!callNickInUse(token[3])) {
 			// Manually handle nick in use.
 			callDebugInfo(myParser.DEBUG_INFO,"No Nick in use Handler.");
 			if (!myParser.got001) {
@@ -68,11 +68,12 @@ public class ProcessNickInUse extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the NickInUse Callback.
 	 *
+	 * @param nickname Nickname that was wanted.
 	 * @see INickInUse
 	 */
-	protected boolean callNickInUse() {
+	protected boolean callNickInUse(final String nickname) {
 		CallbackOnNickInUse cb = (CallbackOnNickInUse)getCallbackManager().getCallbackType("OnNickInUse");
-		if (cb != null) { return cb.call(); }
+		if (cb != null) { return cb.call(nickname); }
 		return false;
 	}
 	
