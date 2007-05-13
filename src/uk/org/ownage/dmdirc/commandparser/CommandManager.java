@@ -266,8 +266,8 @@ public final class CommandManager {
         new Nick();
         new Notice();
         new Query();
-        new Quit();
-        new QuitDefault();
+        new Exit();
+        new ExitDefault();
         new Raw();
         new Reconnect();
         new ReloadActions();

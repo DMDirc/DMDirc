@@ -22,26 +22,23 @@
 
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Main;
 import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.ServerManager;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
 /**
- * The quit command allows the user to quit DMDirc with a custom quit message.
- * When the client quits, it disconnects all servers (with the quit message
- * supplied) and saves the config file.
+ * Represents the exit/0 command (i.e., an exit with no arguments). Reads the
+ * default exit message from the config file and calls the normal exit command
+ * with it as an argument.
  * @author chris
  */
-public final class Quit extends ServerCommand {
+public final class ExitDefault extends ServerCommand {
     
     /**
-     * Creates a new instance of Quit.
+     * Creates a new instance of ExitDefault.
      */
-    public Quit() {
+    public ExitDefault() {
         super();
         
         CommandManager.registerCommand(this);
@@ -55,7 +52,8 @@ public final class Quit extends ServerCommand {
      */
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
-        Main.quit(implodeArgs(args));
+        final String def = origin.getConfigManager().getOption("general", "closemessage");
+        CommandManager.getServerCommand("exit").execute(origin, server, def);
     }
     
     
@@ -71,7 +69,7 @@ public final class Quit extends ServerCommand {
     
     /** {@inheritDoc}. */
     public boolean isPolyadic() {
-        return true;
+        return false;
     }
     
     /** {@inheritDoc}. */
@@ -81,7 +79,7 @@ public final class Quit extends ServerCommand {
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "quit <reason> - quits the server with the specified reason";
+        return "exit - exits the client with the default closing message";
     }
     
 }

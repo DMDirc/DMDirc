@@ -22,23 +22,24 @@
 
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
+import uk.org.ownage.dmdirc.Main;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
 
 /**
- * Represents the quit/0 command (i.e., a quit with no arguments). Reads the
- * default quit message from the config file and calls the normal quit command
- * with it as an argument.
+ * The exit command allows the user to quit DMDirc with a custom quit message.
+ * When the client quits, it disconnects all servers (with the quit message
+ * supplied) and saves the config file.
  * @author chris
  */
-public final class QuitDefault extends ServerCommand {
+public final class Exit extends ServerCommand {
     
     /**
-     * Creates a new instance of QuitDefault.
+     * Creates a new instance of Exit.
      */
-    public QuitDefault() {
+    public Exit() {
         super();
         
         CommandManager.registerCommand(this);
@@ -52,14 +53,13 @@ public final class QuitDefault extends ServerCommand {
      */
     public void execute(final CommandWindow origin, final Server server,
             final String... args) {
-        final String def = origin.getConfigManager().getOption("general", "quitmessage");
-        CommandManager.getServerCommand("quit").execute(origin, server, def);
+        Main.quit(implodeArgs(args));
     }
     
     
     /** {@inheritDoc}. */
     public String getName() {
-        return "quit";
+        return "exit";
     }
     
     /** {@inheritDoc}. */
@@ -69,7 +69,7 @@ public final class QuitDefault extends ServerCommand {
     
     /** {@inheritDoc}. */
     public boolean isPolyadic() {
-        return false;
+        return true;
     }
     
     /** {@inheritDoc}. */
@@ -79,7 +79,7 @@ public final class QuitDefault extends ServerCommand {
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "quit - quits the server with the default quit message";
+        return "exit <reason> - exits the client with the specified reason";
     }
     
 }
