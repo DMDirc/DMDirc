@@ -40,13 +40,18 @@ import uk.org.ownage.dmdirc.ui.components.PreferencesPanel;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
- *
+ * Provides various features related to nickname colouring.
  * @author chris
  */
 public class NickColourPlugin implements EventPlugin, PreferencesInterface {
     
+    /** The config domain to use for this plugin. */
+    private static final String DOMAIN = "plugin-NickColour";
+    
+    /** Whether this plugin is active or not. */
     private boolean isActive;
     
+    /** "Random" colours to use to colour nicknames. */
     private String[] randColours = new String[] {
         "E90E7F", "8E55E9", "B30E0E", "18B33C",
         "58ADB3", "9E54B3", "B39875", "3176B3"
@@ -79,10 +84,15 @@ public class NickColourPlugin implements EventPlugin, PreferencesInterface {
     private void colourClient(final ChannelClientInfo client) {
         final Map map = client.getMap();
         final ClientInfo myself = client.getClient().getParser().getMyself();
-        if (Config.getOptionBool("plugin-NickColour", "useowncolour") && client.getClient().equals(myself)) {
-            final Color color = ColourManager.parseColour(Config.getOption("plugin-NickColour", "owncolour"));
+        final String nickOption = "colour-" + client.getNickname();
+        
+        if (Config.getOptionBool(DOMAIN, "useowncolour") && client.getClient().equals(myself)) {
+            final Color color = ColourManager.parseColour(Config.getOption(DOMAIN, "owncolour"));
             map.put(ChannelClientProperty.COLOUR_FOREGROUND, color);
-        } else if (Config.getOptionBool("plugin-NickColour", "userandomcolour")) {
+        } else if (Config.hasOption(DOMAIN, nickOption)) {
+            final Color color = ColourManager.parseColour(Config.getOption(DOMAIN, nickOption));
+            map.put(ChannelClientProperty.COLOUR_FOREGROUND, color);            
+        }  else if (Config.getOptionBool(DOMAIN, "userandomcolour")) {
             map.put(ChannelClientProperty.COLOUR_FOREGROUND, getColour(client.getNickname()));
         }
     }
@@ -116,8 +126,8 @@ public class NickColourPlugin implements EventPlugin, PreferencesInterface {
     public void onActivate() {
         isActive = true;
         
-        if (Config.hasOption("plugin-NickColour", "randomcolours")) {
-            randColours = Config.getOption("plugin-NickColour", "randomcolours").split("\n");
+        if (Config.hasOption(DOMAIN, "randomcolours")) {
+            randColours = Config.getOption(DOMAIN, "randomcolours").split("\n");
         }
     }
     
@@ -169,9 +179,9 @@ public class NickColourPlugin implements EventPlugin, PreferencesInterface {
     public void configClosed(final Properties properties) {
         Config.setOption("ui", "shownickcoloursintext", properties.getProperty("showintext"));
         Config.setOption("ui", "shownickcoloursinnicklist", properties.getProperty("showinlist"));
-        Config.setOption("plugin-NickColour", "userandomcolour", properties.getProperty("userandomcolour"));
-        Config.setOption("plugin-NickColour", "useowncolour", properties.getProperty("useowncolour"));
-        Config.setOption("plugin-NickColour", "owncolour", properties.getProperty("owncolour"));
+        Config.setOption(DOMAIN, "userandomcolour", properties.getProperty("userandomcolour"));
+        Config.setOption(DOMAIN, "useowncolour", properties.getProperty("useowncolour"));
+        Config.setOption(DOMAIN, "owncolour", properties.getProperty("owncolour"));
     }
     
     /** {@inheritDoc} */
