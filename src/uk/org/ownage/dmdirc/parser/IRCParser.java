@@ -1104,7 +1104,8 @@ public final class IRCParser implements Runnable {
 	 * @param sTarget Target
 	 * @param sMessage Message to send
 	 */
-	public void sendMessage(final String sTarget, final String sMessage) { 
+	public void sendMessage(final String sTarget, final String sMessage) {
+		if (sTarget == null || sMessage == null) { return; }
 		if (sTarget.equals("") || sMessage.equals("")) { return; }
 		
 		sendString("PRIVMSG " + sTarget + " :" + sMessage);	
@@ -1116,7 +1117,8 @@ public final class IRCParser implements Runnable {
 	 * @param sTarget Target
 	 * @param sMessage Message to send
 	 */
-	public void sendNotice(final String sTarget, final String sMessage) { 
+	public void sendNotice(final String sTarget, final String sMessage) {
+		if (sTarget == null || sMessage == null) { return; }
 		if (sTarget.equals("") || sMessage.equals("")) { return; }
 		
 		sendString("NOTICE " + sTarget + " :" + sMessage);	
@@ -1128,8 +1130,7 @@ public final class IRCParser implements Runnable {
 	 * @param sTarget Target
 	 * @param sMessage Action to send
 	 */
-	public void sendAction(final String sTarget, final String sMessage) { 
-		if (sTarget.equals("") || sMessage.equals("")) { return; }
+	public void sendAction(final String sTarget, final String sMessage) {
 		sendCTCP(sTarget, "ACTION", sMessage);
 	}
 	
@@ -1140,7 +1141,8 @@ public final class IRCParser implements Runnable {
 	 * @param sType Type of CTCP
 	 * @param sMessage Optional Additional Parameters
 	 */
-	public void sendCTCP(final String sTarget, final String sType, String sMessage) { 
+	public void sendCTCP(final String sTarget, final String sType, String sMessage) {
+		if (sTarget == null || sMessage == null) { return; }
 		if (sTarget.equals("") || sType.equals("")) { return; }
 		final char char1 = (char) 1;
 		if (!sMessage.equals("")) { sMessage = " " + sMessage; }
@@ -1155,6 +1157,7 @@ public final class IRCParser implements Runnable {
 	 * @param sMessage Optional Additional Parameters
 	 */
 	public void sendCTCPReply(final String sTarget, final String sType, String sMessage) { 
+		if (sTarget == null || sMessage == null) { return; }
 		if (sTarget.equals("") || sType.equals("")) { return; }
 		final char char1 = (char) 1;
 		if (!sMessage.equals("")) { sMessage = " " + sMessage; }
@@ -1168,11 +1171,11 @@ public final class IRCParser implements Runnable {
 	 * @param sReason Reason for quitting.
 	 */
 	public void quit(final String sReason) { 
-		if (sReason.equals("")) { 
-			sendString("QUIT"); 
-		} else { 
-			sendString("QUIT :" + sReason); 
-		}	
+		if (sReason.equals("")) {
+			sendString("QUIT");
+		} else {
+			sendString("QUIT :" + sReason);
+		}
 	}
 	/**
 	 * Disconnect from server.
