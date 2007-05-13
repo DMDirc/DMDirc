@@ -678,6 +678,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         ActionManager.processEvent(CoreActionType.CHANNEL_NICKCHANGE, buff, this, cChannelClient, sOldNick);
         
         frame.addLine(buff, modes, sOldNick, ident, host, cChannel, nick);
+        frame.updateNames();
     }
     
     /**
