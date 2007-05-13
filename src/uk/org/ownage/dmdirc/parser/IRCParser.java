@@ -707,7 +707,7 @@ public final class IRCParser implements Runnable {
 		final String sParam = token[1];
 		
 		setPingNeeded(false);
-		pingCountDown = pingCountDownLength;
+//		pingCountDown = pingCountDownLength;
 		
 		try {
 			if (token[0].equalsIgnoreCase("PING") || token[1].equalsIgnoreCase("PING")) { 
@@ -1322,9 +1322,8 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Set the time used for the ping countdown.
 	 * The pingTimer fires every pingTimerLength seconds, whenever a line of data
-	 * is received, the pingCountDown is reset to pingCountDownLength, and the
-	 * "waiting for ping" flag is set to false, if the line is a "PONG", then
-	 * onPingSuccess is also called.
+	 * is received, the "waiting for ping" flag is set to false, if the line is
+	 * a "PONG", then onPingSuccess is also called.
 	 *
 	 * When waiting for a ping reply, onPingFailed() is called every time the 
 	 * timer is fired.
