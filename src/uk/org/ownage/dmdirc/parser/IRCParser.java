@@ -1428,6 +1428,21 @@ public final class IRCParser implements Runnable {
 	public ClientInfo getMyself() { return cMyself; }
 	
 	/**
+	 * Get the current nickname.
+	 * If after 001 this returns the exact same as getMyself.getNickname();
+	 * Before 001 it returns the nickname that the parser Thinks it has.
+	 *
+	 * @return cMyself reference
+	 */
+	public String getMyNickname() {
+		if (cMyself == null) {
+			return sThinkNickname;
+		} else {
+			return cMyself.getNickname();
+		}
+	}
+	
+	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
