@@ -247,9 +247,11 @@ public final class PluginDialog extends StandardDialog implements
             if (plugin.isActive()) {
                 plugin.onDeactivate();
                 toggleButton.setText("Enable");
+                configureButton.setEnabled(false);
             } else {
                 plugin.onActivate();
                 toggleButton.setText("Disable");
+                configureButton.setEnabled(plugin.isConfigurable());
             }
             
             PluginManager.getPluginManager().updateAutoLoad(plugin);
@@ -264,10 +266,11 @@ public final class PluginDialog extends StandardDialog implements
             final int selected = ((JList) selectionEvent.getSource()).getSelectedIndex();
             if (selected >= 0) {
                 final Plugin plugin = (Plugin) ((JList) selectionEvent.getSource()).getSelectedValue();
-                configureButton.setEnabled(plugin.isConfigurable());
                 if (plugin.isActive()) {
+                    configureButton.setEnabled(plugin.isConfigurable());
                     toggleButton.setText("Disable");
                 } else {
+                    configureButton.setEnabled(false);
                     toggleButton.setText("Enable");
                 }
             }
