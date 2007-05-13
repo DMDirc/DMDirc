@@ -29,8 +29,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
@@ -66,7 +64,6 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelTopic;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
 import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.NicklistListModel;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;

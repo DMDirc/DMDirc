@@ -43,7 +43,7 @@ public class NickColourPlugin implements EventPlugin {
     
     private boolean isActive;
     
-    private final String[] randColours = new String[] {
+    private String[] randColours = new String[] {
         "E90E7F", "8E55E9", "B30E0E", "18B33C",
         "58ADB3", "9E54B3", "B39875", "3176B3"
     };
@@ -108,6 +108,10 @@ public class NickColourPlugin implements EventPlugin {
     /** {@inheritDoc} */
     public void onActivate() {
         isActive = true;
+        
+        if (Config.hasOption("plugin-NickColour", "randomcolours")) {
+            randColours = Config.getOption("plugin-NickColour", "randomcolours").split("\n");
+        }
     }
     
     /** {@inheritDoc} */
