@@ -35,19 +35,42 @@ package uk.org.ownage.dmdirc.parser;
 public final class MyInfo {
 	/** Character to prepend to nickname if in use (Default "_"). */
 	private char prependChar = '_';	
-	/** Nickname to attempt to use on IRC (Default: IRCParser). */
-	private String nickname = "IRCParser";
+	/** Nickname to attempt to use on IRC. */
+	private String nickname;
 	/**
-	 * Alternative nickname to attempt to use on IRC (Default: IRC-Parser).
+	 * Alternative nickname to attempt to use on IRC.
 	 * If the first nickname is in use, and a NickInUse message is recieved before 001, we
 	 * will attempt to use this nickname instead.<br>
 	 * If this also fails, we will start prepending the prependChar character (_) to the main nickname
 	 */
-	private String altNickname = "IRC-Parser";
-	/** Realname string to use (Default: "DMDIRC IRCParser"). */
-	private String realname = "DMDIRC IRCParser";
-	/** Username to use, this doesn't matter when an ident server is running (Default: IRCParser). */
-	private String username = "IRCParser";
+	private String altNickname;
+	/** Realname string to use */
+	private String realname;
+	/** Username to use, this doesn't matter when an ident server is running*/
+	private String username;
+	
+	/**
+	 * Create a new MyInfo object.
+	 */
+	public MyInfo() {
+		String result;
+		try {
+			result = System.getProperty("user.name");
+		} catch (SecurityException e) {
+			result = null;
+		}
+		if (result != null && !result.equals("")) {
+			nickname = result;
+			username = nickname;
+			realname = nickname+" - DMDIrc";
+			altNickname = nickname+"-";
+		} else {
+			nickname = "IRCParser";
+			username = "IRCParser";
+			realname = "DMDIrc IRCParser";
+			altNickname = "IRC-Parser";
+		}
+	}
 	
 	/**
 	 * Set the Nickname.
