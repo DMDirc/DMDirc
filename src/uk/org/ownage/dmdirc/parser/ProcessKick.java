@@ -72,7 +72,7 @@ public class ProcessKick extends IRCProcessor {
 				myParser.hChannelList.remove(iChannel.getName().toLowerCase());
 			} else { 
 				// Check if client is still on any channel we are on
-				if (!iClient.checkVisability()) {
+				if (!iClient.checkVisibility()) {
 					// if not, remove them from memory incase they quit without us seeing
 					myParser.hClientList.remove(iClient.getNickname().toLowerCase());
 				}

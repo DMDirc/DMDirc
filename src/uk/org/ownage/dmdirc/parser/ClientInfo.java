@@ -242,8 +242,8 @@ public final class ClientInfo {
 	 *
 	 * @return Boolean to see if client is still visable.
 	 */	
-	public boolean checkVisability() {
-		return checkVisability(null);
+	public boolean checkVisibility() {
+		return checkVisibility(null);
 	}
 	
 	/**
@@ -252,7 +252,7 @@ public final class ClientInfo {
 	 * @param cChannel Channel to ignore when checking.
 	 * @return Boolean to see if client is still visable.
 	 */	
-	public boolean checkVisability(ChannelInfo cChannel) {
+	public boolean checkVisibility(ChannelInfo cChannel) {
 		boolean bCanSee = false;
 		ChannelClientInfo iChannelClient;
 		

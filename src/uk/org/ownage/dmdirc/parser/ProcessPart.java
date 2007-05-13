@@ -72,7 +72,7 @@ public class ProcessPart extends IRCProcessor {
 			if (iClient == myParser.cMyself) {
 				iChannel.emptyChannel();
 				myParser.hChannelList.remove(iChannel.getName().toLowerCase());
-			} else { iClient.checkVisability(); }
+			} else { iClient.checkVisibility(); }
 		}
 	}
 	

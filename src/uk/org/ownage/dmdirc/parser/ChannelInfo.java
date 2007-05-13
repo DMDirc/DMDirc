@@ -147,7 +147,7 @@ public final class ChannelInfo {
 		ClientInfo cTemp = null;
 		for (ChannelClientInfo client : hChannelUserList.values()) {
 			cTemp = client.getClient();
-			if (!cTemp.checkVisability(this)) {
+			if (!cTemp.checkVisibility(this)) {
 				myParser.hClientList.remove(cTemp.getNickname().toLowerCase());
 			}
 		}
