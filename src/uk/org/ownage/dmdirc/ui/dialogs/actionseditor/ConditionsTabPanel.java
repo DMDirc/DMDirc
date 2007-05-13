@@ -240,6 +240,15 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         doConditions();
     }
     
+    /**
+     * Returns the conditions for this panel.
+     *
+     * @return Conditions list
+     */
+    public List<ActionCondition> getConditions() {
+        return conditions;
+    }
+    
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == newComparison) {

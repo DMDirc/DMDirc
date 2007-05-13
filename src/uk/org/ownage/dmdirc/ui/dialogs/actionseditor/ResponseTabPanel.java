@@ -110,11 +110,20 @@ public final class ResponseTabPanel extends JPanel {
         
         responses.setText(responses.getText().substring(0, responses.getText().length() - 1));
         
-        ((DefaultComboBoxModel) formatter.getModel()).addElement("");
+        ((DefaultComboBoxModel) formatter.getModel()).addElement("Normal");
+        ((DefaultComboBoxModel) formatter.getModel()).addElement("No response");
+        
         for (String format : Formatter.getFormats()) {
             ((DefaultComboBoxModel) formatter.getModel()).addElement(format);
         }
-        formatter.setSelectedItem(action.getNewFormat());
+        
+        if (action.getNewFormat() == null) {
+            formatter.setSelectedIndex(0);
+        } else if ("".equals(action.getNewFormat())) {
+            formatter.setSelectedIndex(1);
+        } else {
+            formatter.setSelectedItem(action.getNewFormat());
+        }
     }
     
     /** Adds listeners to the components. */
@@ -151,6 +160,31 @@ public final class ResponseTabPanel extends JPanel {
         constraints.gridx = 1;
         constraints.gridwidth = 3;
         add(formatter, constraints);
+    }
+    
+    /**
+     * Returns the responses for this panel.
+     *
+     * @return Responses
+     */
+    public String getResponses() {
+        String format = responses.getText();
+        if ("No response".equals(format)) {
+            format = null;
+        }
+        if ("Current".equals(format)) {
+            format = "";
+        }
+        return format;
+    }
+    
+    /**
+     * Returns the name for this panel.
+     *
+     * @return Action name
+     */
+    public String getFormatter() {
+        return (String) formatter.getSelectedItem();
     }
     
 }

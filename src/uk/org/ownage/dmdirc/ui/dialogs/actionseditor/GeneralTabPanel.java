@@ -25,6 +25,8 @@ package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -163,6 +165,35 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         
         layoutGrid(this, 3,
                 2, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
+    }
+    
+    /**
+     * Returns the name for this panel.
+     *
+     * @return Action name
+     */
+    public String getName() {
+        return name.getText();
+    }
+    
+    /**
+     * Returns the triggers for this panel.
+     *
+     * @return Trigger list
+     */
+    public List<ActionType> getTriggers() {
+        final List<ActionType> triggers = new ArrayList<ActionType>();
+        
+        if (trigger.getSelectedIndex() == 0) {
+            return null;
+        }
+        triggers.add((ActionType) trigger.getSelectedItem());
+        
+        for (Object type : otherTriggers.getSelectedValues()) {
+                triggers.add((ActionType) type);
+        }
+        
+        return triggers;
     }
     
     /** {@inheritDoc}. */

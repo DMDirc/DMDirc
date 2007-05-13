@@ -93,6 +93,7 @@ public final class ActionsManagerDialog extends StandardDialog
         if (me == null) {
             me = new ActionsManagerDialog();
         } else {
+            me.loadGroups();
             me.setVisible(true);
             me.requestFocus();
         }
@@ -206,6 +207,16 @@ public final class ActionsManagerDialog extends StandardDialog
             groups.addTab((String) group, 
                     new ActionsGroupPanel(this, actionGroups.get(group)));
         }
+    }
+    
+    /** 
+     * Returns the currently selected group.
+     *
+     * @return Selected groups name
+     */
+    public String getSelectedGroup() {
+        return groups.getTitleAt(groups.getSelectedIndex());
+                
     }
     
     /** {@inheritDoc} */

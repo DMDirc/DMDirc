@@ -166,6 +166,11 @@ public class Action {
         }
     }
     
+    /** Called to save the action. */
+    public void save() {
+        //TODO: Please implement me.
+    }
+    
     /**
      * Reads the specified condition.
      * @param condition Condition number to read
@@ -242,6 +247,10 @@ public class Action {
      */
     private void error(final String message) {
         Logger.error(ErrorLevel.TRIVIAL, "Unable to parse action " + group + "/" + name + ": " + message);
+    }
+    
+    public void rename(final String newName) {
+        //TODO: Please implement me.
     }
     
     /**

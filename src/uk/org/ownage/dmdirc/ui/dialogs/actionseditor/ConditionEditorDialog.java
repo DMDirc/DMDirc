@@ -71,8 +71,14 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private ConditionsTabPanel parent;
     /** Parent action. */
     private Action action;
-    /** Parent condition. */
-    private ActionCondition condition;
+    /** Condition argument. */
+    private int argument;
+    /** Condition component. */
+    private ActionComponent component;
+    /** Condition comparison. */
+    private ActionComparison comparison;
+    /** Condition target. */
+    private String target;
     
     /** Buttons panel. */
     private JPanel buttonsPanel;
@@ -101,11 +107,15 @@ public final class ConditionEditorDialog extends StandardDialog implements
         this.parent = parent;
         this.action = action;
         if (condition == null) {
-            this.condition = null;
+            this.argument = -1;
+            this.component = null;
+            this.comparison = null;
+            this.target = null;
         } else {
-            this.condition = new ActionCondition(condition.getArg(),
-                    condition.getComponent(), condition.getComparison(),
-                    condition.getTarget());
+            this.argument = condition.getArg();
+            this.component = condition.getComponent();
+            this.comparison = condition.getComparison();
+            this.target = condition.getTarget();
         }
         
         this.setTitle("Condition Editor");
@@ -137,47 +147,85 @@ public final class ConditionEditorDialog extends StandardDialog implements
         comparisons.setEnabled(false);
         targetText.setEnabled(false);
         
-        if (condition == null || action == null) {
-            return;
-        }
-        
         populateArguments();
     }
     
     private void populateArguments() {
         conditionsPanel.setVisible(false);
         
+        ((DefaultComboBoxModel) arguments.getModel()).removeAllElements();
+        
+        ((DefaultComboBoxModel) arguments.getModel()).addElement("");
+        
         for (String argument : action.getTriggers()[0].getType().getArgNames()) {
             ((DefaultComboBoxModel) arguments.getModel()).addElement(argument);
         }
-        arguments.setSelectedItem(action.getTriggers()[0].getType().getArgNames()[condition.getArg()]);
-        components.setEnabled(true);
+        
+        if (argument == -1) {
+            arguments.setSelectedIndex(0);
+            components.setEnabled(false);
+            component = null;
+            comparison = null;
+            target = null;
+            getOkButton().setEnabled(false);
+        } else {
+            arguments.setSelectedIndex(argument);
+            components.setEnabled(true);
+        }
         
         populateComponents();
     }
     
     private void populateComponents() {
-        for (ActionComponent component : ActionManager.getCompatibleComponents(arguments.getSelectedItem().getClass())) {
+        ((DefaultComboBoxModel) components.getModel()).removeAllElements();
+        
+        ((DefaultComboBoxModel) components.getModel()).addElement("");
+        
+        for (ActionComponent component : ActionManager.getCompatibleComponents(
+                arguments.getSelectedItem().getClass())) {
             ((DefaultComboBoxModel) components.getModel()).addElement(component);
         }
-        components.setSelectedItem(condition.getComponent());
-        comparisons.setEnabled(true);
+        
+        if (component == null) {
+            components.setSelectedIndex(0);
+            comparisons.setEnabled(false);
+            comparison = null;
+            target = null;
+            getOkButton().setEnabled(false);
+        } else {
+            components.setSelectedItem(component);
+            comparisons.setEnabled(true);
+        }
         
         populateComparisons();
     }
     
     private void populateComparisons() {
-        for (ActionComparison comparison : ActionManager.getCompatibleComparisons(arguments.getSelectedItem().getClass())) {
+        ((DefaultComboBoxModel) comparisons.getModel()).removeAllElements();
+        
+        ((DefaultComboBoxModel) comparisons.getModel()).addElement("");
+        
+        for (ActionComparison comparison : ActionManager.getCompatibleComparisons(
+                arguments.getSelectedItem().getClass())) {
             ((DefaultComboBoxModel) comparisons.getModel()).addElement(comparison);
         }
-        comparisons.setSelectedItem(condition.getComparison());
-        targetText.setEnabled(true);
+        
+        if (comparison == null) {
+            comparisons.setSelectedIndex(0);
+            targetText.setEnabled(false);
+            target = null;
+            getOkButton().setEnabled(false);
+        } else {
+            comparisons.setSelectedItem(comparison);
+            targetText.setEnabled(true);
+            getOkButton().setEnabled(true);
+        }
         
         populateTarget();
     }
     
     private void populateTarget() {
-        targetText.setText(condition.getTarget());
+        targetText.setText(target);
         
         conditionsPanel.setVisible(true);
     }
@@ -185,6 +233,8 @@ public final class ConditionEditorDialog extends StandardDialog implements
     /** Initialises the button panel. */
     private void initButtonsPanel() {
         orderButtons(new JButton(), new JButton());
+        
+        getOkButton().setEnabled(false);
         
         buttonsPanel = new JPanel();
         
@@ -203,6 +253,10 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private void addListeners() {
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
+        
+        arguments.addActionListener(this);
+        components.addActionListener(this);
+        comparisons.addActionListener(this);
     }
     
     /** Lays out the components in the dialog. */
@@ -241,14 +295,33 @@ public final class ConditionEditorDialog extends StandardDialog implements
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == arguments) {
+            if (arguments.getSelectedIndex() != 0
+                    && arguments.getSelectedItem() != null) {
+                argument = arguments.getSelectedIndex();
+            } else {
+                argument = -1;
+            }
             populateArguments();
         } else if (event.getSource() == components) {
-            populateArguments();
+            if (components.getSelectedIndex() != 0
+                    && components.getSelectedItem() != null) {
+                component = (ActionComponent) components.getSelectedItem();
+            } else {
+                component = null;
+            }
+            populateComponents();
         } else if (event.getSource() == comparisons) {
-            populateArguments();
+            if (comparisons.getSelectedIndex() != 0
+                    && comparisons.getSelectedItem() != null) {
+                comparison = (ActionComparison) comparisons.getSelectedItem();
+            } else {
+                comparison = null;
+            }
+            populateComparisons();
         }
         if (event.getSource() == getOkButton()) {
-            //notify the parent.
+            parent.addCondition(new ActionCondition(argument - 1, component,
+                    comparison, targetText.getText()));
             this.dispose();
         } else if (event.getSource() == getCancelButton()) {
             this.dispose();

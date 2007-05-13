@@ -34,6 +34,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import uk.org.ownage.dmdirc.actions.Action;
+import uk.org.ownage.dmdirc.actions.ActionCondition;
+import uk.org.ownage.dmdirc.actions.ActionType;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 import uk.org.ownage.dmdirc.ui.dialogs.ActionsManagerDialog;
@@ -181,6 +183,23 @@ public final class ActionsEditorDialog extends StandardDialog implements
     
     /** Saves this (new|edited) actions. */
     private void saveSettings() {
-        //Save settings.
+        if (action == null) {
+            action = new Action(parent.getSelectedGroup(),
+                    ((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName());
+            action.setTriggers(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getTriggers().toArray(new ActionType[0]));
+            action.setConditions(((ConditionsTabPanel) tabbedPane.getComponentAt(1)).getConditions());
+            action.setResponse(((ResponseTabPanel) tabbedPane.getComponentAt(2)).getResponses().split("\\n"));
+            action.setNewFormat(((ResponseTabPanel) tabbedPane.getComponentAt(2)).getFormatter());
+        } else {
+            if (!action.getName().equals(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName())) {
+                action.rename(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName());
+            }
+            action.setTriggers(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getTriggers().toArray(new ActionType[0]));
+            action.setConditions(((ConditionsTabPanel) tabbedPane.getComponentAt(1)).getConditions());
+            action.setResponse(((ResponseTabPanel) tabbedPane.getComponentAt(2)).getResponses().split("\\n"));
+            action.setNewFormat(((ResponseTabPanel) tabbedPane.getComponentAt(2)).getFormatter());
+        }
+        action.save();
+        parent.loadGroups();
     }
 }
