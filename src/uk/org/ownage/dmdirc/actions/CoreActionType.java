@@ -28,6 +28,9 @@ package uk.org.ownage.dmdirc.actions;
  */
 public enum CoreActionType implements ActionType {
     
+    CLIENT_OPENED(CoreActionMetaType.CLIENT_EVENT, "Client opened"),
+    CLIENT_CLOSED(CoreActionMetaType.CLIENT_EVENT, "Client closed"),
+    
     UNKNOWN_COMMAND(CoreActionMetaType.UNKNOWN_COMMAND, "Unknown command entered"),
     
     SERVER_CONNECTED(CoreActionMetaType.SERVER_EVENT, "Server connected"),

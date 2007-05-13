@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc;
 
 import uk.org.ownage.dmdirc.actions.ActionManager;
+import uk.org.ownage.dmdirc.actions.CoreActionType;
 import uk.org.ownage.dmdirc.identities.IdentityManager;
 import uk.org.ownage.dmdirc.plugins.PluginManager;
 import uk.org.ownage.dmdirc.ui.MainFrame;
@@ -60,6 +61,8 @@ public final class Main {
         ActionManager.loadActions();
         
         MainFrame.getMainFrame();
+        
+        ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);
     }
     
     /**
@@ -67,8 +70,12 @@ public final class Main {
      * @param reason The quit reason to send
      */
     public static void quit(final String reason) {
+        ActionManager.processEvent(CoreActionType.CLIENT_CLOSED, null);
+        
         ServerManager.getServerManager().disconnectAll(reason);
+        
         Config.save();
+        
         System.exit(0);
     }
     
