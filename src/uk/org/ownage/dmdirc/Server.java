@@ -478,7 +478,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     public void disconnect(final String reason) {
         reconnect = false;
         
-        if (parser.isReady()) {
+        if (parser != null && parser.isReady()) {
             parser.disconnect(reason);
             
             if (configManager.getOptionBool("general", "closechannelsonquit")) {
