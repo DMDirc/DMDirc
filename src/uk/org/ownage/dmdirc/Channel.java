@@ -812,7 +812,6 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * @param client The channel client to check
      * @return A string[] containing displayable components
      */
-    @SuppressWarnings("unchecked")
     private String[] getDetails(final ChannelClientInfo client) {
         final String[] res = new String[3];
         res[0] = client.getNickname();
@@ -820,8 +819,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
         res[2] = client.getClient().getHost();
         
         if (configManager.getOptionBool("ui", "shownickcoloursintext")) {
-            final Map<ChannelClientProperty, Object> map =
-                    (Map<ChannelClientProperty, Object>) client.getMap();
+            final Map map = client.getMap();
             String prefix = null;
             Color colour;
             

@@ -61,7 +61,6 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
     }
     
     /** {@inheritDoc} */
-    @SuppressWarnings("unchecked")
     public Component getListCellRendererComponent(final JList list,
             final Object value, final int index, final boolean selected,
             final boolean focused) {
@@ -74,8 +73,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
                     ColourManager.getColour("f0f0f0")));
         }
         
-        final Map<ChannelClientProperty, Object> map
-                = (Map<ChannelClientProperty, Object>) ((ChannelClientInfo) value).getMap();
+        final Map map = ((ChannelClientInfo) value).getMap();
         
         if (config.getOptionBool("ui", "shownickcoloursinnicklist") && map != null) {
             if (map.containsKey(ChannelClientProperty.COLOUR_FOREGROUND)) {
