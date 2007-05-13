@@ -77,7 +77,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
         final Map<ChannelClientProperty, Object> map
                 = (Map<ChannelClientProperty, Object>) ((ChannelClientInfo) value).getMiscObject();
         
-        if (map != null) {
+        if (config.getOptionBool("ui", "shownickcoloursinnicklist") && map != null) {
             if (map.containsKey(ChannelClientProperty.COLOUR_FOREGROUND)) {
                 setForeground((Color) map.get(ChannelClientProperty.COLOUR_FOREGROUND));
             }

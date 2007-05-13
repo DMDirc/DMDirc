@@ -28,6 +28,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -67,6 +68,7 @@ import uk.org.ownage.dmdirc.ui.ChannelFrame;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.NicklistListModel;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
+import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 import uk.org.ownage.dmdirc.ui.messages.Styliser;
 
@@ -807,14 +809,36 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     
     /**
      * Returns a string[] containing the nickname/ident/host of the client.
-     * @param channelClient The channel client to check
+     * @param client The channel client to check
      * @return A string[] containing displayable components
      */
-    private String[] getDetails(final ChannelClientInfo channelClient) {
+    @SuppressWarnings("unchecked")
+    private String[] getDetails(final ChannelClientInfo client) {
         final String[] res = new String[3];
-        res[0] = channelClient.getNickname();
-        res[1] = channelClient.getClient().getIdent();
-        res[2] = channelClient.getClient().getHost();
+        res[0] = client.getNickname();
+        res[1] = client.getClient().getIdent();
+        res[2] = client.getClient().getHost();
+        
+        if (configManager.getOptionBool("ui", "shownickcoloursintext")) {
+            final Map<ChannelClientProperty, Object> map =
+                    (Map<ChannelClientProperty, Object>) client.getMiscObject();
+            String prefix = null;
+            Color colour;
+            
+            if (map.containsKey(ChannelClientProperty.COLOUR_FOREGROUND)) {
+                colour = (Color) map.get(ChannelClientProperty.COLOUR_FOREGROUND);
+                prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex(colour);
+                if (map.containsKey(ChannelClientProperty.COLOUR_BACKGROUND)) {
+                    colour = (Color) map.get(ChannelClientProperty.COLOUR_BACKGROUND);
+                    prefix = "," + ColourManager.getHex(colour);
+                }
+            }
+                        
+            if (prefix != null) {
+                res[0] = prefix + res[0] + Styliser.CODE_HEXCOLOUR;
+            }
+        }
+
         return res;
     }
     

@@ -145,5 +145,32 @@ public final class ColourManager {
                 return Color.WHITE;
         }
     }
+
+    /**
+     * Retrieves the hex representation of the specified colour.
+     * @param colour The colour to be parsed
+     * @return A 6-digit hex string representing the colour
+     */
+    public static String getHex(final Color colour) {
+        final int r = colour.getRed();
+        final int g = colour.getGreen();
+        final int b = colour.getBlue();
+        
+        return toHex(r) + toHex(g) + toHex(b);
+    }
+    
+    /**
+     * Converts the specified integer (in the range 0-255) into a hex string.
+     * @param value The integer to convert
+     * @return A char digit hex string representing the specified integer
+     */
+    private static String toHex(final int value) {
+        final char[] chars = {
+            '0', '1', '2', '3', '4', '5', '6', '7', 
+            '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
+        };
+        
+        return ("" + chars[value / 16]) + chars[value % 16];
+    }    
     
 }
