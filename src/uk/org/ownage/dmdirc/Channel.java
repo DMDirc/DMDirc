@@ -195,7 +195,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      */
     public void sendLine(final String line) {
         final ClientInfo me = server.getParser().getMyself();
-        final String modes = channelInfo.getUser(me).getImportantModePrefix();
+        final String modes = getModes(channelInfo.getUser(me));
+        final String[] details = getDetails(channelInfo.getUser(me));
         final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName());
         
         if (maxLineLength >= line.length()) {
@@ -204,8 +205,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             ActionManager.processEvent(CoreActionType.CHANNEL_SELF_MESSAGE, buff,
                     this, channelInfo.getUser(me), line);
             
-            frame.addLine(buff, modes, me.getNickname(), me.getIdent(),
-                    me.getHost(), line, channelInfo);
+            frame.addLine(buff, modes, details[0], details[1], details[2],
+                    line, channelInfo);
             channelInfo.sendMessage(line);
         } else {
             sendLine(line.substring(0, maxLineLength));
