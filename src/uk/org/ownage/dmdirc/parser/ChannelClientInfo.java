@@ -88,6 +88,12 @@ public final class ChannelClientInfo {
 	 */
 	public ClientInfo getClient() { return cClient; }
 	/**
+	 * Get the Channel object that owns this ChannelClient
+	 *
+	 * @return Channel object that owns this ChannelClient
+	 */
+	public ChannelInfo getChannel() { return myChannel; }
+	/**
 	 * Get the nickname of the client object represented by this channelclient.
 	 *
 	 * @return Nickname of the Client object represented by this channelclient
