@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.actions;
 
 import java.awt.Color;
+import java.util.regex.PatternSyntaxException;
 
 import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
@@ -32,6 +33,18 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
  * @author chris
  */
 public enum CoreActionComparison implements ActionComparison {
+    
+    STRING_REGEX {
+        public boolean test(final Object arg1, final Object arg2) {
+            try {
+                return ((String) arg1).matches((String) arg2);
+            } catch (PatternSyntaxException pse) {
+                return false;
+            }
+        }
+        public Class appliesTo() { return String.class; }
+        public String getName() { return "matches regex"; }
+    },
     
     STRING_EQUALS {
         public boolean test(final Object arg1, final Object arg2) {
