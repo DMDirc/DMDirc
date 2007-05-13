@@ -170,6 +170,7 @@ public final class Config {
         
         defaults.setProperty("channel.splitusermodes", "false");
         defaults.setProperty("channel.sendwho", "false");
+        defaults.setProperty("channel.showmodeprefix", "true");
         defaults.setProperty("general.whotime", "60000");
         
         defaults.setProperty("tabcompletion.casesensitive", "false");

@@ -800,7 +800,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
      * if there are no (known) modes.
      */
     private String getModes(final ChannelClientInfo channelClient) {
-        if (channelClient == null) {
+        if (channelClient == null || !configManager.getOptionBool("channel", "showmodeprefix")) {
             return "";
         } else {
             return channelClient.getImportantModePrefix();
