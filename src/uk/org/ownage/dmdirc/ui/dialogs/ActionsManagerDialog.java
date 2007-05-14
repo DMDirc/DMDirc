@@ -38,6 +38,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 
 import uk.org.ownage.dmdirc.actions.Action;
 import uk.org.ownage.dmdirc.actions.ActionManager;
@@ -52,7 +53,7 @@ import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
 /**
  * Allows the user to manage actions.
  */
-public final class ActionsManagerDialog extends StandardDialog 
+public final class ActionsManagerDialog extends StandardDialog
         implements ActionListener {
     
     /**
@@ -111,14 +112,14 @@ public final class ActionsManagerDialog extends StandardDialog
         constraints.gridwidth = 6;
         final JLabel blurb = new JLabel("Actions allow you to make DMDirc "
                 + "respond automatically to events.");
-        blurb.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, 
+        blurb.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
                 SMALL_BORDER, LARGE_BORDER));
         add(blurb, constraints);
         
         constraints.gridy++;
         groups = new JTabbedPane();
         groups.setPreferredSize(new Dimension(400, 200));
-        groups.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, LARGE_BORDER, 
+        groups.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, LARGE_BORDER,
                 SMALL_BORDER, LARGE_BORDER));
         add(groups, constraints);
         
@@ -170,7 +171,7 @@ public final class ActionsManagerDialog extends StandardDialog
         add(editAction, constraints);
         
         constraints.gridx++;
-        constraints.insets.set(SMALL_BORDER, LARGE_BORDER, SMALL_BORDER, 
+        constraints.insets.set(SMALL_BORDER, LARGE_BORDER, SMALL_BORDER,
                 LARGE_BORDER);
         myButton = new JButton("Close");
         myButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
@@ -204,19 +205,19 @@ public final class ActionsManagerDialog extends StandardDialog
         Arrays.sort(keys);
         
         for (Object group : keys) {
-            groups.addTab((String) group, 
+            groups.addTab((String) group,
                     new ActionsGroupPanel(this, actionGroups.get(group)));
         }
     }
     
-    /** 
+    /**
      * Returns the currently selected group.
      *
      * @return Selected groups name
      */
     public String getSelectedGroup() {
         return groups.getTitleAt(groups.getSelectedIndex());
-                
+        
     }
     
     /** {@inheritDoc} */
@@ -249,8 +250,8 @@ public final class ActionsManagerDialog extends StandardDialog
             
             loadGroups();
         } else if (e.getActionCommand().equals("action.edit")) {
-            final int row = ((ActionsGroupPanel)
-            groups.getSelectedComponent()).getTable().getSelectedRow();
+            final JTable table = ((ActionsGroupPanel) groups.getSelectedComponent()).getTable();
+            final int row = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
             if (row != -1) {
                 ActionsEditorDialog.showActionsEditorDialog(this,
                         ((ActionsGroupPanel)
