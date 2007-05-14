@@ -128,14 +128,27 @@ public final class LagDisplayPlugin implements EventPlugin {
         if (type.equals(CoreActionType.SERVER_GOTPING)) {
             final JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
             if (((Server) arguments[0]).ownsFrame(active)) {
-                label.setText(((Long) arguments[1]).toString() + "ms");
+                label.setText(formatTime(arguments[1]));
             }
         } else if (type.equals(CoreActionType.SERVER_NOPING)) {
             final JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
             if (((Server) arguments[0]).ownsFrame(active)) {
-                label.setText(((Long) arguments[1]).toString() + "ms+");
+                label.setText(formatTime(arguments[1]) + "+");
             }
         }
     }
     
+    /**
+     * Formats the specified time so it's a nice size to display in the label.
+     * @param object An uncast Long representing the time to be formatted
+     */
+    private String formatTime(final Object object) {
+        final Long time = (Long) object;
+        
+        if (time >= 10000) {
+            return Math.round(time / 1000.0) + "s";
+        } else {
+            return time + "ms";
+        }
+    }
 }
