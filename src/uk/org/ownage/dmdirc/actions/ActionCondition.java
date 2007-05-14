@@ -29,16 +29,16 @@ package uk.org.ownage.dmdirc.actions;
 public class ActionCondition {
     
     /** The argument number that this action condition applies to. */
-    private final int arg;
+    private int arg;
     
     /** The component that this action condition applies to. */
-    private final ActionComponent component;
+    private ActionComponent component;
     
     /** The comparison that should be used for this condition. */
-    private final ActionComparison comparison;
+    private ActionComparison comparison;
     
     /** The target of the comparison for this condition. */
-    private final String target;
+    private String target;
     
     /**
      * Creates a new instance of ActionCondition.
@@ -99,6 +99,41 @@ public class ActionCondition {
      */
     public String getTarget() {
         return target;
+    }
+    
+    /**
+     * Sets the argument number this condition applies to.
+     *
+     * @param arg Argument number
+     */
+    public void setArg(final int arg) {
+        this.arg = arg;
+    }
+    
+    /**
+     * Sets the component this condition applies to.
+     *
+     * @param component Component to apply condition to
+     */
+    public void setComponent(final ActionComponent component) {
+        this.component = component;
+    }
+    
+    /**
+     * Sets the comparison this condition applies to.
+     *
+     * @param comparison Comparison to be used
+     */
+    public void setComparison(final ActionComparison comparison) {
+        this.comparison = comparison;
+    }
+    
+    /**
+     * Sets the target of the comparison for this condition
+     * @param target Target for comparison
+     */
+    public void setTarget(final String target) {
+        this.target = target;
     }
     
 }

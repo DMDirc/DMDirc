@@ -153,7 +153,8 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         buttonsPanel.add(newComparison);
     }
     
-    private void doConditions() {
+    /** Initialises and lays out the conditions panel. */
+    public void doConditions() {
         comparisonsPanel.setVisible(false);
         
         initConditions();
@@ -162,6 +163,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         comparisonsPanel.setVisible(true);
     }
     
+    /** Initialises the conditions panel. */
     private void initConditions() {
         
         comparisonsPanel.removeAll();
@@ -221,13 +223,23 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         }
     }
     
-    public void addCondition(ActionCondition newCondition) {
+    /** 
+     * Adds a new condition to the panel.
+     * 
+     * @param newCondition Condition to add
+     */
+    public void addCondition(final ActionCondition newCondition) {
         conditions.add(newCondition);
         
         doConditions();
     }
     
-    public void delCondition(int index) {
+    /**
+     * Removes a condition from the panel.
+     *
+     * @param index Index of the condition to remove
+     */
+    public void delCondition(final int index) {
         conditions.remove(index);
         
         doConditions();
@@ -239,6 +251,8 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         
         doConditions();
     }
+     
+    
     
     /**
      * Returns the conditions for this panel.

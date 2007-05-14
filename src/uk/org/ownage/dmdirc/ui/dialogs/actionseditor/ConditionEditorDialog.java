@@ -71,6 +71,8 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private ConditionsTabPanel parent;
     /** Parent action. */
     private Action action;
+    /** conditions to be edited, or null if new. */
+    private ActionCondition condition;
     /** Condition argument. */
     private int argument;
     /** Condition component. */
@@ -106,6 +108,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
         
         this.parent = parent;
         this.action = action;
+        this.condition = condition;
         if (condition == null) {
             this.argument = -1;
             this.component = null;
@@ -119,6 +122,8 @@ public final class ConditionEditorDialog extends StandardDialog implements
         }
         
         this.setTitle("Condition Editor");
+        
+        this.setResizable(false);
         
         initComponents();
         addListeners();
@@ -169,7 +174,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
             target = null;
             getOkButton().setEnabled(false);
         } else {
-            arguments.setSelectedIndex(argument);
+            arguments.setSelectedIndex(argument + 1);
             components.setEnabled(true);
         }
         
@@ -320,8 +325,16 @@ public final class ConditionEditorDialog extends StandardDialog implements
             populateComparisons();
         }
         if (event.getSource() == getOkButton()) {
-            parent.addCondition(new ActionCondition(argument - 1, component,
-                    comparison, targetText.getText()));
+            if (condition == null) {
+                parent.addCondition(new ActionCondition(argument, component,
+                        comparison, targetText.getText()));
+            } else {
+                condition.setArg(argument);
+                condition.setComponent(component);
+                condition.setComparison(comparison);
+                condition.setTarget(targetText.getText());
+                parent.doConditions();
+            }
             this.dispose();
         } else if (event.getSource() == getCancelButton()) {
             this.dispose();
