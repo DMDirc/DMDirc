@@ -77,7 +77,11 @@ public final class MyInfo {
 	 *
 	 * @param newValue Value to set to.
 	 */
-	public void setNickname(final String newValue) { nickname = newValue; }
+	public void setNickname(final String newValue) {
+		if (newValue != null && !newValue.equals("")) {
+			nickname = newValue;
+		}
+	}
 	
 	/**
 	 * Get the Nickname.
@@ -91,7 +95,11 @@ public final class MyInfo {
 	 *
 	 * @param newValue Value to set to.
 	 */
-	public void setAltNickname(final String newValue) { altNickname = newValue; }
+	public void setAltNickname(final String newValue) {
+		if (newValue != null && !newValue.equals("")) {
+			altNickname = newValue;
+		}
+	}
 	
 	/**
 	 * Get the Alternative Nickname.
@@ -105,7 +113,11 @@ public final class MyInfo {
 	 *
 	 * @param newValue Value to set to.
 	 */
-	public void setRealname(final String newValue) { realname = newValue; }
+	public void setRealname(final String newValue) {
+		if (newValue != null && !newValue.equals("")) {
+			realname = newValue;
+		}
+	}
 	
 	/**
 	 * Get the Realname.
@@ -119,7 +131,11 @@ public final class MyInfo {
 	 *
 	 * @param newValue Value to set to.
 	 */
-	public void setUsername(final String newValue) { username = newValue; }
+	public void setUsername(final String newValue) {
+		if (newValue != null && !newValue.equals("")) {
+			username = newValue;
+		}
+	}
 	
 	/**
 	 * Get the Username.
