@@ -56,7 +56,7 @@ public final class Mode extends ChannelCommand {
         if (args.length == 0) {
             origin.addLine("channelModeDiscovered", cChannel.getModeStr(), cChannel);
         } else {
-            server.getParser().sendLine("MODE " + cChannel + " :" + implodeArgs(args));
+            server.getParser().sendLine("MODE " + cChannel + " " + implodeArgs(args));
         }
     }
     
