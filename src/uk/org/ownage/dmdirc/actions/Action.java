@@ -249,8 +249,13 @@ public class Action {
         Logger.error(ErrorLevel.TRIVIAL, "Unable to parse action " + group + "/" + name + ": " + message);
     }
     
+    /**
+     * Renames this action to the specified new name.
+     * @param newName The new name for this action
+     */
     public void rename(final String newName) {
-        //TODO: Please implement me.
+        file.renameTo(new File(file.getParent() + System.getProperty("file.separator") + newName));
+        name = newName;
     }
     
     /**
