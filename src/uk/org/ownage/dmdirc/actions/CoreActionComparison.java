@@ -138,10 +138,5 @@ public enum CoreActionComparison implements ActionComparison {
     
     /** {@inheritDoc} */
     public abstract String getName();
-    
-    /** {@inheritDoc} */
-    public String toString() {
-        return getName();
-    }
-    
+       
 }

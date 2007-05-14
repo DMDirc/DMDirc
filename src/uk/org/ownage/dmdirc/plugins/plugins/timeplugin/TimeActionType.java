@@ -55,9 +55,4 @@ public enum TimeActionType implements ActionType {
         return name;
     }
     
-    /** {@inheritDoc} */
-    public String toString() {
-        return getName();
-    }
-    
 }

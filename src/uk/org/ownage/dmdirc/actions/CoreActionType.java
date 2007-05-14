@@ -97,9 +97,4 @@ public enum CoreActionType implements ActionType {
         return name;
     }
     
-    /** {@inheritDoc} */
-    public String toString() {
-        return getName();
-    }
-    
 }

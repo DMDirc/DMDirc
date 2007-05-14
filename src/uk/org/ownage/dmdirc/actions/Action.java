@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc.actions;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -168,7 +169,44 @@ public class Action {
     
     /** Called to save the action. */
     public void save() {
-        //TODO: Please implement me.
+        final Properties properties = new Properties();
+        final StringBuffer triggerString = new StringBuffer();
+        final StringBuffer responseString = new StringBuffer();
+        
+        for (ActionType trigger : triggers) {
+            triggerString.append('|');
+            triggerString.append(trigger.toString());
+        }
+        
+        for (String line : response) {
+            responseString.append('\n');
+            responseString.append(line);
+        }
+        
+        properties.setProperty("trigger", triggerString.substring(1));
+        properties.setProperty("conditions", "" + conditions.size());
+        properties.setProperty("response", responseString.substring(1));
+        
+        if (newFormat != null) {
+            properties.setProperty("formatter", newFormat);
+        }
+        
+        int i = 0;
+        for (ActionCondition condition : conditions) {
+            properties.setProperty("condition" + i + "-arg", "" + condition.getArg());
+            properties.setProperty("condition" + i + "-component", condition.getComponent().toString());
+            properties.setProperty("condition" + i + "-comparison", condition.getComparison().toString());
+            properties.setProperty("condition" + i + "-target", condition.getTarget());
+            i++;
+        }
+        
+        try {
+            final FileOutputStream outputStream = new FileOutputStream(file);
+            properties.store(outputStream, "Created by GUI actions editor");
+            outputStream.close();
+        } catch (IOException ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to save action: " + group + "/" + name, ex);
+        }
     }
     
     /**
