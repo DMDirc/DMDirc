@@ -38,7 +38,6 @@ import uk.org.ownage.dmdirc.actions.ActionType;
 import uk.org.ownage.dmdirc.ui.dialogs.ActionsManagerDialog;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import uk.org.ownage.dmdirc.ui.dialogs.actionseditor.ActionTypeTableCellRenderer;
 
 /**
  * The actions group panel is the control displayed within the tabbed control
