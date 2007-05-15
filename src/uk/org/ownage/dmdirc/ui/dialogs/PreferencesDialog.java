@@ -61,11 +61,8 @@ public final class PreferencesDialog implements PreferencesInterface {
         if (me == null) {
             me = new PreferencesDialog();
         }
-        if (me.preferencesPanel == null) {
-            me.initComponents();
-        } else {
-            me.preferencesPanel.requestFocus();
-        }
+        me.initComponents();
+        me.preferencesPanel.requestFocus();
     }
     
     /**
