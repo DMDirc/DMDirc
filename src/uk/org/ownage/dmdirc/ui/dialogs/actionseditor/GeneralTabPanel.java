@@ -97,6 +97,9 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         trigger = new JComboBox(new DefaultComboBoxModel());
         otherTriggers = new JList(new DefaultListModel());
         
+        trigger.setRenderer(new ActionCellRenderer());
+        otherTriggers.setCellRenderer(new ActionCellRenderer());
+        
         ((DefaultComboBoxModel) trigger.getModel()).addElement("");
         for (ActionType type : ActionManager.getTypes().toArray(new ActionType[0])) {
             ((DefaultComboBoxModel) trigger.getModel()).addElement(type);
@@ -114,11 +117,11 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         }
         name.setText(action.getName());
         
-        populateOtherTriggers();
-        
         trigger.setSelectedItem(action.getTriggers()[0]);
         type = (ActionType) trigger.getSelectedItem();
         otherTriggers.setEnabled(true);
+        
+        populateOtherTriggers();
         
         selectOtherTriggers();
     }

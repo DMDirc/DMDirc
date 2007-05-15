@@ -143,6 +143,10 @@ public final class ConditionEditorDialog extends StandardDialog implements
         comparisons = new JComboBox(new DefaultComboBoxModel());
         targetText = new JTextField();
         
+        arguments.setRenderer(new ActionCellRenderer());
+        components.setRenderer(new ActionCellRenderer());
+        comparisons.setRenderer(new ActionCellRenderer());
+        
         arguments.setPreferredSize(new Dimension(300, arguments.getFont().getSize()));
         components.setPreferredSize(new Dimension(300, components.getFont().getSize()));
         comparisons.setPreferredSize(new Dimension(300, comparisons.getFont().getSize()));
