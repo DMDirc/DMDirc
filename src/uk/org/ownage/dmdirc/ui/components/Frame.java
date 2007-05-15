@@ -738,7 +738,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         && (event.getModifiers() & KeyEvent.CTRL_MASK) != 0
                 && event.getKeyCode() == KeyEvent.VK_V) {
             try {
-                clipboardContents =
+                clipboardContents = getInputField().getText() + 
                         (String) Toolkit.getDefaultToolkit().getSystemClipboard()
                         .getData(DataFlavor.stringFlavor);
                 clipboardContentsLines = clipboardContents.split(System.getProperty("line.separator"));

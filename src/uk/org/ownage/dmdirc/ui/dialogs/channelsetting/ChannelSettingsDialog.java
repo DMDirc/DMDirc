@@ -387,11 +387,9 @@ public final class ChannelSettingsDialog extends StandardDialog
         topicText.setLineWrap(true);
         topicText.addKeyListener(this);
         topicText.setWrapStyleWord(true);
+        topicText.setRows(5);
+        topicText.setColumns(30);
         scrollPane = new JScrollPane(topicText);
-        scrollPane.setMinimumSize(new Dimension(100,
-                getFont().getSize() * 4));
-        scrollPane.setPreferredSize(new Dimension(100,
-                getFont().getSize() * 4));
         topicsPanel.add(scrollPane, constraints);
         
         constraints.gridy = 3;

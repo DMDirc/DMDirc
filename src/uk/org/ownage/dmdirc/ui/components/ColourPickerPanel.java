@@ -360,23 +360,4 @@ public final class ColourPickerPanel extends JPanel implements MouseListener, Mo
         
         repaint(previewRect);
     }
-    
-    /**
-     * Temporary method to allow easy debugging.
-     * @param args Command line args
-     */
-    public static void main(final String ... args) {
-        final JFrame temp = new JFrame("Colour picker");
-        final ColourPickerPanel me = new ColourPickerPanel(true, true);
-        me.addActionListener(new ActionListener() {
-            public void actionPerformed(final ActionEvent e) {
-                System.out.println("Action: " + e.getID() + " " + e.getActionCommand());
-            }
-        });
-        temp.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        temp.add(me);
-        temp.pack();
-        temp.setResizable(false);
-        temp.setVisible(true);
-    }
 }
