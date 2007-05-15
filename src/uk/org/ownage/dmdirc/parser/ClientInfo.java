@@ -24,6 +24,7 @@
 
 package uk.org.ownage.dmdirc.parser;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -62,6 +63,7 @@ public final class ClientInfo {
 	 * @see ClientInfo#parseHost
 	 */
 	public ClientInfo(final IRCParser tParser, final String sHostmask) { 
+		myMap = new HashMap<Object, Object>();
 		setUserBits(sHostmask, true);
 		myParser = tParser;
 	}

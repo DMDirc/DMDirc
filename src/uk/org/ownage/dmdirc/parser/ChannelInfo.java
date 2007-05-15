@@ -27,6 +27,7 @@ package uk.org.ownage.dmdirc.parser;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -81,7 +82,11 @@ public final class ChannelInfo {
 	 * @param tParser Refernce to parser that owns this channelclient (used for modes)	 
 	 * @param name Channel name.
 	 */
-	public ChannelInfo(final IRCParser tParser, final String name) { myParser = tParser; sName = name; }
+	public ChannelInfo(final IRCParser tParser, final String name) {
+		myMap = new HashMap<Object, Object>();
+		myParser = tParser;
+		sName = name;
+	}
 	
 	/**
 	 * Set the Map object attatched to this object.

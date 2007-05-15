@@ -24,6 +24,7 @@
 
 package uk.org.ownage.dmdirc.parser;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -54,6 +55,7 @@ public final class ChannelClientInfo {
 	 * @param channel Channel that owns this channelclient
 	 */	
 	public ChannelClientInfo(final IRCParser tParser, final ClientInfo client, final ChannelInfo channel) {
+		myMap = new HashMap<Object, Object>();
 		myParser = tParser;
 		cClient = client;
 		myChannel = channel;
