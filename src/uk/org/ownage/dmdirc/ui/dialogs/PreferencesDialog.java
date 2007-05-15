@@ -188,7 +188,7 @@ public final class PreferencesDialog implements PreferencesInterface {
                 Config.getOptionBool("nicklist", "altBackground"));
         preferencesPanel.addColourOption(tabName, "nicklist.altBackgroundColour",
                 "Alternate nicklist colour: ", "",
-                Config.getOption("nicklist", "nicklist.altBackgroundColour", "f0f0f0"),
+                Config.getOption("nicklist", "altBackgroundColour", "f0f0f0"),
                 false, true);
     }
     
