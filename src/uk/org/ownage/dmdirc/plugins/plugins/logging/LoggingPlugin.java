@@ -142,6 +142,18 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	 */
 	public void onDeactivate() {
 		isActive = false;
+		BufferedWriter file;
+		synchronized (openFiles) {
+			for (String filename : openFiles.keySet()) {
+				file = openFiles.get(filename);
+				try {
+					file.close();
+				} catch (IOException e) {
+					Logger.error(ErrorLevel.ERROR, "Unable to close file (File: "+filename+")", e);
+				}
+			}
+			openFiles.clear();
+		}
 	}
 	
 	/**
