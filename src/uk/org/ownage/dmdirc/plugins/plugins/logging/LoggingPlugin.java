@@ -595,6 +595,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 			}
 			out.write(finalLine);
 			out.newLine();
+			out.flush();
 			return true;
 		} catch (IOException e) {
 			/*
