@@ -28,7 +28,7 @@ import uk.org.ownage.dmdirc.actions.ActionType;
 /**
  * Defines the additional methods that should be implemented by plugins that require events.
  */
-public interface EventPlugin extends Plugin {
+public interface EventPlugin {
 	/**
 	 * Process an event of the specified type.
 	 *
@@ -36,5 +36,5 @@ public interface EventPlugin extends Plugin {
 	 * @param format Format of messages that are about to be sent. (May be null)
 	 * @param arguments The arguments for the event
 	 */
-	void processEvent(final ActionType type, final StringBuffer format, final Object ... arguments);	
+	void processEvent(final ActionType type, final StringBuffer format, final Object ... arguments);
 }

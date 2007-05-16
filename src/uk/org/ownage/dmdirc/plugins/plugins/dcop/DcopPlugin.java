@@ -34,10 +34,7 @@ import uk.org.ownage.dmdirc.plugins.Plugin;
  * Allows the user to execute dcop commands (and read the results).
  * @author chris
  */
-public final class DcopPlugin implements Plugin {
-    
-    /** Is this plugin active? */
-    private boolean isActive = false;
+public final class DcopPlugin extends Plugin {
     
     /** Creates a new instance of DcopPlugin. */
     public DcopPlugin() {
@@ -74,25 +71,6 @@ public final class DcopPlugin implements Plugin {
     }
     
     /** {@inheritDoc}. */
-    public void onUnload() {
-    }
-    
-    /** {@inheritDoc}. */
-    public void onActivate() {
-        isActive = true;
-    }
-    
-    /** {@inheritDoc}. */
-    public boolean isActive() {
-        return isActive;
-    }
-    
-    /** {@inheritDoc}. */
-    public void onDeactivate() {
-        isActive = false;
-    }
-    
-    /** {@inheritDoc}. */
     public String getVersion() {
         return "0.1";
     }
@@ -110,10 +88,6 @@ public final class DcopPlugin implements Plugin {
     /** {@inheritDoc}. */
     public boolean isConfigurable() {
         return false;
-    }
-    
-    /** {@inheritDoc}. */
-    public void showConfig() {
     }
     
     /** {@inheritDoc}. */

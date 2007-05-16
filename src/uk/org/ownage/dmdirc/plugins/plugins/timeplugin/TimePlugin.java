@@ -34,10 +34,7 @@ import uk.org.ownage.dmdirc.plugins.Plugin;
  * Provides various time-related features
  * @author chris
  */
-public final class TimePlugin implements Plugin {
-    
-    /** Is this plugin active? */
-    private boolean isActive = false;
+public final class TimePlugin  extends Plugin {
     
     /** Have we registered our types already? */
     private static boolean registered;
@@ -47,7 +44,7 @@ public final class TimePlugin implements Plugin {
     
     /** Creates a new instance of TimePlugin. */
     public TimePlugin() {
-        
+        super();
     }
     
     /** {@inheritDoc} */
@@ -61,13 +58,7 @@ public final class TimePlugin implements Plugin {
     }
     
     /** {@inheritDoc} */
-    public void onUnload() {
-    }
-    
-    /** {@inheritDoc} */
     public void onActivate() {
-        isActive = true;
-        
         final int offset = 60 - Calendar.getInstance().get(Calendar.SECOND);
         
         timer = new Timer();
@@ -94,15 +85,9 @@ public final class TimePlugin implements Plugin {
         }
     }
     
-    /** {@inheritDoc} */
-    public boolean isActive() {
-        return isActive;
-    }
     
     /** {@inheritDoc} */
     public void onDeactivate() {
-        isActive = false;
-        
         timer.cancel();
         timer = null;
     }
@@ -120,15 +105,6 @@ public final class TimePlugin implements Plugin {
     /** {@inheritDoc} */
     public String getDescription() {
         return "Provides time-related actions";
-    }
-    
-    /** {@inheritDoc} */
-    public boolean isConfigurable() {
-        return false;
-    }
-    
-    /** {@inheritDoc} */
-    public void showConfig() {
     }
     
     /** {@inheritDoc} */

@@ -64,7 +64,7 @@ public class PluginManager {
 			for (String plugin : autoLoadList) {
 				plugin = plugin.trim();
 				if (plugin.length() > 0 && plugin.charAt(0) != '#' && addPlugin(plugin)) {
-					getPlugin(plugin).onActivate();
+					getPlugin(plugin).setActive(true);
 				}
 			}
 		}
@@ -112,6 +112,7 @@ public class PluginManager {
 		if (!knownPlugins.containsKey(className.toLowerCase())) { return false; }
 		Plugin plugin = getPlugin(className);
 		try {
+			plugin.setActive(false);
 			plugin.onUnload();
 		} catch (Exception e) {
 			Logger.error(ErrorLevel.ERROR, "[delPlugin] Error in onUnload() for '"+className+"'", e);

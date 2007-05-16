@@ -34,6 +34,7 @@ import uk.org.ownage.dmdirc.actions.CoreActionType;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
+import uk.org.ownage.dmdirc.plugins.Plugin;
 import uk.org.ownage.dmdirc.plugins.EventPlugin;
 import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
 import uk.org.ownage.dmdirc.ui.components.PreferencesPanel;
@@ -43,13 +44,10 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
  * Provides various features related to nickname colouring.
  * @author chris
  */
-public class NickColourPlugin implements EventPlugin, PreferencesInterface {
+public class NickColourPlugin extends Plugin implements EventPlugin, PreferencesInterface {
     
     /** The config domain to use for this plugin. */
     private static final String DOMAIN = "plugin-NickColour";
-    
-    /** Whether this plugin is active or not. */
-    private boolean isActive;
     
     /** "Random" colours to use to colour nicknames. */
     private String[] randColours = new String[] {
@@ -119,26 +117,10 @@ public class NickColourPlugin implements EventPlugin, PreferencesInterface {
     }
     
     /** {@inheritDoc} */
-    public void onUnload() {
-    }
-    
-    /** {@inheritDoc} */
     public void onActivate() {
-        isActive = true;
-        
         if (Config.hasOption(DOMAIN, "randomcolours")) {
             randColours = Config.getOption(DOMAIN, "randomcolours").split("\n");
         }
-    }
-    
-    /** {@inheritDoc} */
-    public boolean isActive() {
-        return isActive;
-    }
-    
-    /** {@inheritDoc} */
-    public void onDeactivate() {
-        isActive = false;
     }
     
     /** {@inheritDoc} */

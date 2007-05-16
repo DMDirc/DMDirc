@@ -34,6 +34,7 @@ import javax.swing.SwingConstants;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.actions.ActionType;
 import uk.org.ownage.dmdirc.actions.CoreActionType;
+import uk.org.ownage.dmdirc.plugins.Plugin;
 import uk.org.ownage.dmdirc.plugins.EventPlugin;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 
@@ -41,10 +42,7 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
  * Displays the current server's lag in the status bar.
  * @author chris
  */
-public final class LagDisplayPlugin implements EventPlugin {
-    
-    /** Is this plugin active? */
-    private boolean isActive = false;
+public final class LagDisplayPlugin extends Plugin implements EventPlugin {
     
     /** The panel we use in the status bar. */
     private final JPanel panel = new JPanel();
@@ -72,25 +70,12 @@ public final class LagDisplayPlugin implements EventPlugin {
     }
     
     /** {@inheritDoc} */
-    public void onUnload() {
-    }
-    
-    /** {@inheritDoc} */
     public void onActivate() {
-        isActive = true;
-        
         MainFrame.getMainFrame().getStatusBar().addComponent(panel);
     }
     
     /** {@inheritDoc} */
-    public boolean isActive() {
-        return isActive;
-    }
-    
-    /** {@inheritDoc} */
     public void onDeactivate() {
-        isActive = false;
-        
         MainFrame.getMainFrame().getStatusBar().removeComponent(panel);
     }
     

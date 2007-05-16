@@ -26,74 +26,99 @@ package uk.org.ownage.dmdirc.plugins;
 /**
  * Defines the standard methods that should be implemented by plugins.
  */
-public interface Plugin {
+public abstract class Plugin {
+	/** Is this plugin active? */
+	private boolean isActive = false;
+
+	/**
+	 * Called when the plugin is constructed.
+	 */
+	public Plugin() { }
+
 	/**
 	 * Called when the plugin is loaded.
 	 *
 	 * @return false if the plugin can not be loaded
 	 */
-	boolean onLoad();
+	public abstract boolean onLoad();
 	
 	/**
 	 * Called when the plugin is about to be unloaded.
 	 */
-	void onUnload();
+	public void onUnload() { }
 
 	/**
-	 * Called when this plugin becomes active.
+	 * Change the active state of this plugin.
+	 * (Non-Active Plugins will not recieve Events)
+	 *
+	 * @param newState True if activating, else False.
 	 */
-	void onActivate();
+	public final void setActive(boolean newState) {
+		if (isActive != newState) {
+			isActive = newState;
+			if (isActive) {
+				onActivate();
+			} else {
+				onDeactivate();
+			}
+		}
+	}
 	
 	/**
 	 * Check to see if a plugin is active.
-	 * (Non-Active PLugins will not recieve Events)
+	 * (Non-Active Plugins will not recieve Events)
 	 *
 	 * @return True if active, else False.
 	 */
-	boolean isActive();
+	public final boolean isActive() { return isActive; }
+	
+	/**
+	 * Called when this plugin becomes active.
+	 */
+	protected void onActivate() { }
 	
 	/**
 	 * Called when this plugin is deactivated.
 	 */
-	void onDeactivate();
+	protected void onDeactivate() { }
 	
 	/**
 	 * Called to see if the plugin has configuration options (via dialog).
 	 *
 	 * @return true if the plugin has configuration options via a dialog.
 	 */
-	boolean isConfigurable();
+	public boolean isConfigurable() { return false; }
 	
 	/**
 	 * Called to show the Configuration dialog of the plugin if appropriate.
 	 */
-	void showConfig();
+	public void showConfig() { }
 	
 	/**
 	 * Get the plugin version
 	 *
 	 * @return Plugin Version
 	 */
-	String getVersion();
+	public abstract String getVersion();
 	
 	/**
 	 * Get the plugin Author.
 	 *
 	 * @return Author of plugin
 	 */
-	String getAuthor();
+	public abstract String getAuthor();
 	
 	/**
 	 * Get the plugin Description.
 	 *
 	 * @return Description of plugin
 	 */
-	String getDescription();
+	public abstract String getDescription();
 	
 	/**
 	 * Get the name of the plugin (used in "Manage Plugins" dialog).
 	 *
 	 * @return Name of plugin
 	 */
-	String toString();
+	public abstract String toString();
 }

@@ -49,6 +49,7 @@ import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 import uk.org.ownage.dmdirc.parser.ChannelInfo;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
 import uk.org.ownage.dmdirc.parser.IRCParser;
+import uk.org.ownage.dmdirc.plugins.Plugin;
 import uk.org.ownage.dmdirc.plugins.EventPlugin;
 import uk.org.ownage.dmdirc.ui.components.Frame;
 import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
@@ -62,12 +63,9 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
  * @author Shane 'Dataforce' McCormack
  * @version $Id: LoggingPlugin.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
+public final class LoggingPlugin extends Plugin implements EventPlugin, PreferencesInterface {
 	/** What domain do we store all settings in the global config under. */
 	private static final String MY_DOMAIN = "plugin-Logging";
-
-	/** Is this plugin active? */
-	private boolean isActive = false;
 	
 	/** Hashtable of open files */
 	Hashtable<String,BufferedWriter> openFiles = new Hashtable<String,BufferedWriter>();
@@ -75,7 +73,7 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	/**
 	 * Creates a new instance of the Logging Plugin.
 	 */
-	public LoggingPlugin() { }
+	public LoggingPlugin() { super(); }
 
 	/**
 	 * Called when the plugin is loaded.
@@ -118,30 +116,9 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	}
 	
 	/**
-	 * Called when the plugin is about to be unloaded.
-	 */
-	public void onUnload() { }
-
-	/**
-	 * Called when this plugin becomes active.
-	 */
-	public void onActivate() {
-		isActive = true;
-	}
-	
-	/**
-	 * Check to see if a plugin is active.
-	 * (Non-Active PLugins will not recieve Events)
-	 *
-	 * @return True if active, else False.
-	 */
-	public boolean isActive() { return isActive; }
-		
-	/**
 	 * Called when this plugin is deactivated.
 	 */
 	public void onDeactivate() {
-		isActive = false;
 		BufferedWriter file;
 		synchronized (openFiles) {
 			for (String filename : openFiles.keySet()) {
@@ -307,7 +284,6 @@ public final class LoggingPlugin implements EventPlugin, PreferencesInterface {
 	 * @param arguments The arguments for the event
 	 */
 	public void processEvent(final ActionType type, final StringBuffer format, final Object ... arguments) {
-		if (!isActive) { return; }
 		if (type instanceof CoreActionType) {
 			final CoreActionType thisType = (CoreActionType) type;
 			ChannelInfo channel;

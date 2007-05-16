@@ -245,11 +245,11 @@ public final class PluginDialog extends StandardDialog implements
         } else if (e.getSource() == toggleButton && selectedPlugin >= 0) {
             final Plugin plugin = (Plugin) pluginList.getSelectedValue();
             if (plugin.isActive()) {
-                plugin.onDeactivate();
+                plugin.setActive(false);
                 toggleButton.setText("Enable");
                 configureButton.setEnabled(false);
             } else {
-                plugin.onActivate();
+                plugin.setActive(true);
                 toggleButton.setText("Disable");
                 configureButton.setEnabled(plugin.isConfigurable());
             }

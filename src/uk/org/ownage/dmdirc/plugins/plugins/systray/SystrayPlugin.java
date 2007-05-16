@@ -44,13 +44,10 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
  * notifications to be disabled.
  * @author chris
  */
-public final class SystrayPlugin implements Plugin, ActionListener, MouseListener {
+public final class SystrayPlugin  extends Plugin implements ActionListener, MouseListener {
     
     /** The command we registered. */
     PopupCommand command;
-    
-    /** Is this plugin active? */
-    private boolean isActive = false;
     
     /** The tray icon we're currently using. */
     private TrayIcon icon;
@@ -60,6 +57,7 @@ public final class SystrayPlugin implements Plugin, ActionListener, MouseListene
     
     /** Creates a new system tray plugin. */
     public SystrayPlugin() {
+        super();
         final MenuItem show = new MenuItem("Show/hide");
         final MenuItem quit = new MenuItem("Quit");
         
@@ -78,7 +76,7 @@ public final class SystrayPlugin implements Plugin, ActionListener, MouseListene
      * @param type The type of notification
      */
     public void notify(final String title, final String message, final TrayIcon.MessageType type) {
-        if (isActive) {
+        if (isActive()) {
             icon.displayMessage(title, message, type);
         }
     }
@@ -107,12 +105,7 @@ public final class SystrayPlugin implements Plugin, ActionListener, MouseListene
     }
     
     /** {@inheritDoc} */
-    public void onUnload() {
-    }
-    
-    /** {@inheritDoc} */
     public void onActivate() {
-        isActive = true;
         
         final ClassLoader cldr = this.getClass().getClassLoader();
         final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/logo.png");
@@ -124,32 +117,14 @@ public final class SystrayPlugin implements Plugin, ActionListener, MouseListene
             SystemTray.getSystemTray().add(icon);
             command = new PopupCommand(this);
         } catch (AWTException ex) {
-            // Should probably unload ourself here instead?
-            isActive = false;
+            // Should probably unload ourself here?
         }
-    }
-    
-    /** {@inheritDoc} */
-    public boolean isActive() {
-        return isActive;
     }
     
     /** {@inheritDoc}. */
     public void onDeactivate() {
-        if (isActive) {
-            SystemTray.getSystemTray().remove(icon);
-            command.unregister();
-        }
-        isActive = false;
-    }
-    
-    /** {@inheritDoc} */
-    public boolean isConfigurable() {
-        return false;
-    }
-    
-    /** {@inheritDoc} */
-    public void showConfig() {
+        SystemTray.getSystemTray().remove(icon);
+        command.unregister();
     }
     
     /** {@inheritDoc} */
