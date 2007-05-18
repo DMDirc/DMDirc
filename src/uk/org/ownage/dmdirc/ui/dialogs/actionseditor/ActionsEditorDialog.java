@@ -23,6 +23,7 @@
 package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -34,7 +35,6 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import uk.org.ownage.dmdirc.actions.Action;
-import uk.org.ownage.dmdirc.actions.ActionCondition;
 import uk.org.ownage.dmdirc.actions.ActionType;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
@@ -122,6 +122,8 @@ public final class ActionsEditorDialog extends StandardDialog implements
         initButtonsPanel();
         
         tabbedPane = new JTabbedPane();
+        
+        tabbedPane.setPreferredSize(new Dimension(400, 160));
         
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));

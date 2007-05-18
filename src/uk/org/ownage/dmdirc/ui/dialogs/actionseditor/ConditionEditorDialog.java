@@ -173,7 +173,11 @@ public final class ConditionEditorDialog extends StandardDialog implements
             target = null;
             getOkButton().setEnabled(false);
         } else {
-            arguments.setSelectedIndex(argument + 1);
+            if (arguments.getModel().getSize() > argument + 1) {
+                arguments.setSelectedIndex(argument + 1);
+            } else {
+                arguments.setSelectedIndex(argument);
+            }
             components.setEnabled(true);
         }
         

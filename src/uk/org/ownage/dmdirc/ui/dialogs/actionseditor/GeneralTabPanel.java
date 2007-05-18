@@ -115,7 +115,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         
         name.setText(owner.getAction().getName());
         
-        trigger.setSelectedItem(owner.getTrigger());
+        trigger.setSelectedItem(owner.getAction().getTriggers()[0]);
         type = (ActionType) trigger.getSelectedItem();
         otherTriggers.setEnabled(true);
         
@@ -139,7 +139,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     
     /** Selects other triggers that are part of this action. */
     private void selectOtherTriggers() {
-        for (ActionType type : owner.getTriggers()) {
+        for (ActionType type : owner.getAction().getTriggers()) {
             int index = ((DefaultListModel) otherTriggers.getModel()).indexOf(type);
             if (index != -1) {
                 otherTriggers.getSelectionModel().addSelectionInterval(index, index);
