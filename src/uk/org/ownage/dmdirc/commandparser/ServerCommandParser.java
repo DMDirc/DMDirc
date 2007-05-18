@@ -57,11 +57,15 @@ public final class ServerCommandParser extends CommandParser {
      * @param command The command to be executed
      * @param args The arguments to the command
      */
-    protected void executeCommand(final CommandWindow origin, 
+    protected void executeCommand(final CommandWindow origin,
             final Command command, final String... args) {
-        ((ServerCommand) command).execute(origin, server, args);
+        if (command instanceof ServerCommand) {
+            ((ServerCommand) command).execute(origin, server, args);
+        } else {
+            ((GlobalCommand) command).execute(origin, args);
+        }
     }
-        
+    
     /**
      * Called when the input was a line of text that was not a command. This normally
      * means it is sent to the server/channel/user as-is, with no further processing.

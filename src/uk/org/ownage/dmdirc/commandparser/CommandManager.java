@@ -485,6 +485,20 @@ public final class CommandManager {
     }
     
     /**
+     * Returns the names (including command char) of all registered global
+     * commands.
+     * @return An ArrayList&lt;String&gt; containing all registered global command
+     * names
+     */
+    public static List<String> getGlobalCommandNames() {
+        if (globalCommands == null) {
+            CommandManager.initLists();
+        }
+        
+        return getCommandNames(globalCommands);
+    }    
+    
+    /**
      * Returns the names (including command char) of all registered channel
      * commands.
      * @return An ArrayList&lt;String&gt; containing all registered server command

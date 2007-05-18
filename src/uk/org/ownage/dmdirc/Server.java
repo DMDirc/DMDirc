@@ -172,6 +172,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         frame.open();
         
         tabCompleter.addEntries(CommandManager.getServerCommandNames());
+        tabCompleter.addEntries(CommandManager.getGlobalCommandNames());
         
         new Timer().scheduleAtFixedRate(new TimerTask() {
             public void run() {

@@ -70,8 +70,10 @@ public final class ChannelCommandParser extends CommandParser {
             final Command command, final String... args) {
         if (command instanceof ChannelCommand) {
             ((ChannelCommand) command).execute(origin, server, channel, args);
-        } else {
+        } else if (command instanceof ServerCommand) {
             ((ServerCommand) command).execute(origin, server, args);
+        } else {
+            ((GlobalCommand) command).execute(origin, args);
         }
     }
     

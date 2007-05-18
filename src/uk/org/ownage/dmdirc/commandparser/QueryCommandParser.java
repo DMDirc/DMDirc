@@ -70,8 +70,10 @@ public final class QueryCommandParser extends CommandParser {
             final Command command, final String... args) {
         if (command instanceof QueryCommand) {
             ((QueryCommand) command).execute(origin, server, query, args);
-        } else {
+        } else if (command instanceof ServerCommand) {
             ((ServerCommand) command).execute(origin, server, args);
+        } else {
+            ((GlobalCommand) command).execute(origin, args);
         }
     }
     
