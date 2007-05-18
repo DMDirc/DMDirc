@@ -59,8 +59,8 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
      */
     private static final long serialVersionUID = 1;
     
-    /** The action. */
-    private Action action;
+    /** Parent ActionsEditorDialog. */
+    private ActionsEditorDialog owner;
     
     /** New button panel. */
     private JPanel buttonsPanel;
@@ -82,12 +82,12 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
      *
      * @param action action to be edited
      */
-    public ConditionsTabPanel(final Action action) {
+    public ConditionsTabPanel(final ActionsEditorDialog owner) {
         super();
         
-        this.action = action;
-        if (action != null) {
-            this.conditions = new ArrayList<ActionCondition>(action.getConditions());
+        this.owner = owner;
+        if (owner.getAction() != null) {
+            this.conditions = new ArrayList<ActionCondition>(owner.getAction().getConditions());
         } else {
             this.conditions = new ArrayList<ActionCondition>();
         }
@@ -119,7 +119,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         
         initButtonsPanel();
         
-        if (action == null) {
+        if (owner.getAction() == null) {
             return;
         }
         
@@ -170,7 +170,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         
         for (ActionCondition condition : conditions) {
             JLabel label = new JLabel("The "
-                    + action.getTriggers()[0].getType().getArgNames()[condition.getArg()]
+                    + owner.getAction().getTriggers()[0].getType().getArgNames()[condition.getArg()]
                     + "'s " + condition.getComponent().getName() + " "
                     + condition.getComparison().getName()
                     + " '" + condition.getTarget() + "'");
@@ -266,10 +266,10 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == newComparison) {
-            new ConditionEditorDialog(this, action, null);
+            new ConditionEditorDialog(this, owner.getTrigger(), null);
         } else {
             if ("edit".equals(event.getActionCommand())) {
-                new ConditionEditorDialog(this, action,
+                new ConditionEditorDialog(this, owner.getTrigger(),
                         conditions.get((Arrays.asList(
                         comparisonsPanel.getComponents()).indexOf(event.getSource()) - 2) / 4));
             } else if ("delete".equals(event.getActionCommand())) {

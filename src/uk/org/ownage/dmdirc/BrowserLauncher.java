@@ -24,6 +24,7 @@ package uk.org.ownage.dmdirc;
 
 import java.awt.Desktop;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -52,8 +53,8 @@ public final class BrowserLauncher {
                 openURL(new URL("http://" + url));
             }
             return;
-        } catch (IOException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
+        } catch (MalformedURLException ex) {
+            Logger.error(ErrorLevel.WARNING, "Invalid URL", ex);
         }
     }
     
@@ -71,16 +72,13 @@ public final class BrowserLauncher {
             try {
                 desktop.browse(url.toURI());
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
+                openURLLinux(url.toString());
             } catch (URISyntaxException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
+                Logger.error(ErrorLevel.WARNING, "Invalid URL", ex);
             }
         } else {
-            try {
-                openURLLinux(url.toString());
-            } catch (IOException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to open URL", ex);
-            }
+            openURLLinux(url.toString());
+            
         }
     }
     
@@ -89,13 +87,9 @@ public final class BrowserLauncher {
      * @param url url to open
      * @throws IOException if unable to open browser
      */
-    private static void openURLLinux(final String url) throws IOException {
+    private static void openURLLinux(final String url) {
         String browser;
-        try {
-            browser = getBrowserLinux();
-        } catch (InterruptedException ex) {
-            browser = null;
-        }
+        browser = getBrowserLinux();
         if (browser == null) {
             Logger.error(ErrorLevel.ERROR, "Unable to find browser, "
                     + "please set in preferences.");
@@ -111,8 +105,7 @@ public final class BrowserLauncher {
      * @throws InterruptedException if unable to open browser
      * @return full browser binary path
      */
-    private static String getBrowserLinux() throws IOException,
-            InterruptedException {
+    private static String getBrowserLinux() {
         String browser = null;
         if (Config.hasOption("general", "browser")) {
             browser = Config.getOption("general", "browser");
@@ -121,9 +114,15 @@ public final class BrowserLauncher {
             {"firefox", "konqueror", "epiphany", "opera", "mozilla", };
             for (int count = 0; count < browsers.length
                     && browser == null; count++) {
-                if (Runtime.getRuntime()
-                .exec(new String[] {"which", browsers[count]}).waitFor() == 0) {
-                    browser = browsers[count];
+                try {
+                    if (Runtime.getRuntime()
+                    .exec(new String[] {"which", browsers[count]}).waitFor() == 0) {
+                        browser = browsers[count];
+                    }
+                } catch (IOException ex) {
+                    Logger.error(ErrorLevel.WARNING, "Unable to find a browser", ex);
+                } catch (InterruptedException ex) {
+                    Logger.error(ErrorLevel.WARNING, "Unable to find a browser", ex);
                 }
             }
         }
@@ -136,9 +135,12 @@ public final class BrowserLauncher {
      * @param browser browser to use
      * @throws IOException if unable to open browser
      */
-    private static void runBrowser(final String url, final String browser)
-    throws IOException {
-        Runtime.getRuntime().exec(new String[] {browser, url});
+    private static void runBrowser(final String url, final String browser) {
+        try {
+            Runtime.getRuntime().exec(new String[] {browser, url});
+        } catch (IOException ex) {
+            Logger.error(ErrorLevel.WARNING, "Unable to run the browser", ex);
+        }
     }
     
 }

@@ -126,11 +126,14 @@ public final class ActionsEditorDialog extends StandardDialog implements
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         
-        tabbedPane.addTab("General", new GeneralTabPanel(this, action));
+        tabbedPane.addTab("General", new GeneralTabPanel(this));
         
-        tabbedPane.addTab("Conditions", new ConditionsTabPanel(action));
+        tabbedPane.addTab("Conditions", new ConditionsTabPanel(this));
         
-        tabbedPane.addTab("Response", new ResponseTabPanel(action));
+        tabbedPane.addTab("Response", new ResponseTabPanel(this));
+        
+        tabbedPane.setEnabledAt(1, false);
+        tabbedPane.setEnabledAt(2, false);
     }
     
     /** Initialises the button panel. */
@@ -181,6 +184,16 @@ public final class ActionsEditorDialog extends StandardDialog implements
         ((ConditionsTabPanel) tabbedPane.getComponentAt(1)).clearConditions();
     }
     
+    /**
+     * Sets the state of the further steps.
+     *
+     * @param state details tabs state.
+     */
+    public void setDetailsTabsState(final boolean state) {
+        tabbedPane.setEnabledAt(1, state);
+        tabbedPane.setEnabledAt(2, state);
+    }
+    
     /** Saves this (new|edited) actions. */
     private void saveSettings() {
         if (action == null) {
@@ -201,5 +214,32 @@ public final class ActionsEditorDialog extends StandardDialog implements
         }
         action.save();
         parent.loadGroups();
+    }
+    
+    /**
+     * Returns the action being edited.
+     *
+     * @return Action being edited (or null)
+     */
+    public Action getAction() {
+        return action;
+    }
+    
+    /**
+     * Returns the active primary trigger.
+     *
+     * @return Selected primary trigger.
+     */
+    public ActionType getTrigger() {
+        return ((GeneralTabPanel) tabbedPane.getComponentAt(0)).getTrigger();
+    }
+    
+    /**
+     * Returns the active primary trigger.
+     *
+     * @return Selected primary trigger.
+     */
+    public ActionType[] getTriggers() {
+        return ((GeneralTabPanel) tabbedPane.getComponentAt(0)).getTriggers().toArray(new ActionType[0]);
     }
 }

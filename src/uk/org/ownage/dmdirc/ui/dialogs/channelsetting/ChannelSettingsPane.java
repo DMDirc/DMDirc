@@ -78,6 +78,8 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     private JTextField newSettingField;
     /** new setting combo box. */
     private JComboBox newSettingComboBox;
+    /** Add new setting button. */
+    private JButton newSettingButton;
     /** channel settings. */
     private Properties settings;
     /** number of current settings. */
@@ -207,7 +209,6 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     /** Initialises the add settings panel.  */
     public void initAddPanel() {
         final GridBagConstraints constraints = new GridBagConstraints();
-        final JButton newSettingButton;
         
         final JPanel addPanel;
         
@@ -272,6 +273,15 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
             addAddableOption(displayName);
         } else {
             addCurrentOption(configName, displayName, settingsPanel, type, optionValue);
+        }
+        if (newSettingComboBox.getModel().getSize() == 0) {
+            newSettingComboBox.setEnabled(false);
+            newSettingField.setEnabled(false);
+            newSettingButton.setEnabled(false);
+        } else {
+            newSettingComboBox.setEnabled(true);
+            newSettingField.setEnabled(true);
+            newSettingButton.setEnabled(true);
         }
     }
     

@@ -168,7 +168,7 @@ public class StandardDialog extends JDialog  {
      * Retrieves the OK button for this form.
      * @return The form's OK button
      */
-    protected final JButton getOkButton() {
+    public final JButton getOkButton() {
 	return okButton;
     }
     
@@ -176,7 +176,7 @@ public class StandardDialog extends JDialog  {
      * Retrieves the Cancel button for this form.
      * @return The form's cancel button
      */
-    protected final JButton getCancelButton() {
+    public final JButton getCancelButton() {
 	return cancelButton;
     }
     

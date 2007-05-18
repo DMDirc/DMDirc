@@ -73,8 +73,18 @@ public final class ActionsManagerDialog extends StandardDialog
     
     /** The tapped pane used for displaying groups. */
     private JTabbedPane groups;
+    /** Add action button. */
+    private JButton addAction;
     /** Edit action button. */
     private JButton editAction;
+    /** Delete action button. */
+    private JButton deleteAction;
+    /** No groups label. */
+    private JLabel noGroups;
+    /** Group delete button. */
+    private JButton deleteGroup;
+    /** Group rename button. */
+    private JButton renameGroup;
     
     /** Creates a new instance of ActionsManagerDialog. */
     private ActionsManagerDialog() {
@@ -109,7 +119,7 @@ public final class ActionsManagerDialog extends StandardDialog
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.fill = GridBagConstraints.BOTH;
-        constraints.gridwidth = 6;
+        constraints.gridwidth = 7;
         final JLabel blurb = new JLabel("Actions allow you to make DMDirc "
                 + "respond automatically to events.");
         blurb.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
@@ -123,6 +133,13 @@ public final class ActionsManagerDialog extends StandardDialog
                 SMALL_BORDER, LARGE_BORDER));
         add(groups, constraints);
         
+        noGroups = new JLabel("You have no action groups.");
+        noGroups.setHorizontalAlignment(JLabel.CENTER);
+        noGroups.setPreferredSize(new Dimension(400, 200));
+        noGroups.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, LARGE_BORDER,
+                SMALL_BORDER, LARGE_BORDER));
+        add(noGroups, constraints);
+        
         constraints.gridy++;
         constraints.gridwidth = 1;
         constraints.insets.set(SMALL_BORDER, LARGE_BORDER, SMALL_BORDER, 0);
@@ -135,30 +152,30 @@ public final class ActionsManagerDialog extends StandardDialog
         
         constraints.gridx++;
         constraints.insets.set(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, 0);
-        myButton = new JButton("Delete Group");
-        myButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        myButton.setActionCommand("group.delete");
-        myButton.addActionListener(this);
-        myButton.setMargin(new Insets(0, 0, 0, 0));
-        add(myButton, constraints);
+        deleteGroup = new JButton("Delete Group");
+        deleteGroup.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        deleteGroup.setActionCommand("group.delete");
+        deleteGroup.addActionListener(this);
+        deleteGroup.setMargin(new Insets(0, 0, 0, 0));
+        add(deleteGroup, constraints);
         
         constraints.gridx++;
         constraints.insets.set(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, 0);
-        myButton = new JButton("Rename Group");
-        myButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        myButton.setActionCommand("group.rename");
-        myButton.addActionListener(this);
-        myButton.setMargin(new Insets(0, 0, 0, 0));
-        add(myButton, constraints);
+        renameGroup = new JButton("Rename Group");
+        renameGroup.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        renameGroup.setActionCommand("group.rename");
+        renameGroup.addActionListener(this);
+        renameGroup.setMargin(new Insets(0, 0, 0, 0));
+        add(renameGroup, constraints);
         
         constraints.gridx++;
         constraints.insets.set(SMALL_BORDER, LARGE_BORDER, SMALL_BORDER, 0);
-        myButton = new JButton("New Action");
-        myButton.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
-        myButton.setActionCommand("action.new");
-        myButton.addActionListener(this);
-        myButton.setMargin(new Insets(0, 0, 0, 0));
-        add(myButton, constraints);
+        addAction = new JButton("New Action");
+        addAction.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        addAction.setActionCommand("action.new");
+        addAction.addActionListener(this);
+        addAction.setMargin(new Insets(0, 0, 0, 0));
+        add(addAction, constraints);
         
         constraints.gridx++;
         constraints.insets.set(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, 0);
@@ -169,6 +186,16 @@ public final class ActionsManagerDialog extends StandardDialog
         editAction.setMargin(new Insets(0, 0, 0, 0));
         editAction.setEnabled(false);
         add(editAction, constraints);
+        
+        constraints.gridx++;
+        constraints.insets.set(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, 0);
+        deleteAction = new JButton("Delete Action");
+        deleteAction.setPreferredSize(new Dimension(BUTTON_WIDTH, BUTTON_HEIGHT));
+        deleteAction.setActionCommand("action.delete");
+        deleteAction.addActionListener(this);
+        deleteAction.setMargin(new Insets(0, 0, 0, 0));
+        deleteAction.setEnabled(false);
+        add(deleteAction, constraints);
         
         constraints.gridx++;
         constraints.insets.set(SMALL_BORDER, LARGE_BORDER, SMALL_BORDER,
@@ -188,6 +215,7 @@ public final class ActionsManagerDialog extends StandardDialog
     /** Enable or disable the edit action button. */
     public void setEditState(final boolean state) {
         editAction.setEnabled(state);
+        deleteAction.setEnabled(state);
     }
     
     /**
@@ -207,6 +235,20 @@ public final class ActionsManagerDialog extends StandardDialog
         for (Object group : keys) {
             groups.addTab((String) group,
                     new ActionsGroupPanel(this, actionGroups.get(group)));
+        }
+        
+        if (groups.getTabCount() == 0) {
+            groups.setVisible(false);
+            noGroups.setVisible(true);
+            deleteGroup.setEnabled(false);
+            renameGroup.setEnabled(false);
+            addAction.setEnabled(false);
+        } else {
+            groups.setVisible(true);
+            noGroups.setVisible(false);
+            deleteGroup.setEnabled(true);
+            renameGroup.setEnabled(true);
+            addAction.setEnabled(true);
         }
     }
     
@@ -231,34 +273,42 @@ public final class ActionsManagerDialog extends StandardDialog
                 ActionManager.makeGroup(newGroup);
                 loadGroups();
             }
-        } else if (e.getActionCommand().equals("group.delete")
-        && groups.getSelectedIndex() > -1) {
+        } else if (e.getActionCommand().equals("group.delete")) {
             final String group = groups.getTitleAt(groups.getSelectedIndex());
             final Map<String, List<Action>> actionGroups = ActionManager.getGroups();
             
-            if (actionGroups.get(group).size() > 0) {
-                final int response = JOptionPane.showConfirmDialog(this,
-                        "Are you sure you wish to delete the '" + group
-                        + "' group and all actions within it?",
-                        "Confirm deletion", JOptionPane.YES_NO_OPTION);
-                if (response == JOptionPane.YES_OPTION) {
-                    ActionManager.removeGroup(group);
-                }
-            } else {
+            final int response = JOptionPane.showConfirmDialog(this,
+                    "Are you sure you wish to delete the '" + group
+                    + "' group and all actions within it?",
+                    "Confirm deletion", JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
                 ActionManager.removeGroup(group);
+                loadGroups();
             }
+        } else if (e.getActionCommand().equals("group.rename")) {
+            final String group = groups.getTitleAt(groups.getSelectedIndex());
+            final Map<String, List<Action>> actionGroups = ActionManager.getGroups();
             
-            loadGroups();
+            final String newName = JOptionPane.showInputDialog(this,
+                    "Please enter a new name for the '" + group
+                    + "' group.",
+                    "Group rename", JOptionPane.QUESTION_MESSAGE);
+            if (newName != null && newName.length() > 0) {
+                //rename group
+                loadGroups();
+            }
         } else if (e.getActionCommand().equals("action.edit")) {
             final JTable table = ((ActionsGroupPanel) groups.getSelectedComponent()).getTable();
             final int row = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
-            if (row != -1) {
-                ActionsEditorDialog.showActionsEditorDialog(this,
-                        ((ActionsGroupPanel)
-                        groups.getSelectedComponent()).getAction(row));
-            }
+            ActionsEditorDialog.showActionsEditorDialog(this,
+                    ((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row));
         } else if (e.getActionCommand().equals("action.new")) {
             ActionsEditorDialog.showActionsEditorDialog(this);
+        } else if (e.getActionCommand().equals("action.delete")) {
+            final JTable table = ((ActionsGroupPanel) groups.getSelectedComponent()).getTable();
+            final int row = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
+            ((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row);
+            //delete action
         }
     }
     

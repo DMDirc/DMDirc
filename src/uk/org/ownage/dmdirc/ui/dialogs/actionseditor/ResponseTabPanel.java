@@ -55,7 +55,7 @@ public final class ResponseTabPanel extends JPanel {
     private static final long serialVersionUID = 1;
     
     /** The action. */
-    private Action action;
+    private ActionsEditorDialog owner;
     /** Response field. */
     private JTextArea responses;
     /** Formatters combobox. */
@@ -68,10 +68,10 @@ public final class ResponseTabPanel extends JPanel {
      *
      * @param action action to be edited
      */
-    public ResponseTabPanel(final Action action) {
+    public ResponseTabPanel(final ActionsEditorDialog owner) {
         super();
         
-        this.action = action;
+        this.owner = owner;
         
         initComponents();
         addListeners();
@@ -94,11 +94,11 @@ public final class ResponseTabPanel extends JPanel {
                 new Dimension(100, formatter.getFont().getSize()
                 + LARGE_BORDER));
         
-        if (action == null) {
+        if (owner.getAction() == null) {
             return;
         }
         
-        for (String response : action.getResponse()) {
+        for (String response : owner.getAction().getResponse()) {
             responses.setText(responses.getText() + '\n' + response);
         }
         
@@ -117,12 +117,12 @@ public final class ResponseTabPanel extends JPanel {
             ((DefaultComboBoxModel) formatter.getModel()).addElement(format);
         }
         
-        if (action.getNewFormat() == null) {
+        if (owner.getAction().getNewFormat() == null) {
             formatter.setSelectedIndex(0);
-        } else if ("".equals(action.getNewFormat())) {
+        } else if ("".equals(owner.getAction().getNewFormat())) {
             formatter.setSelectedIndex(1);
         } else {
-            formatter.setSelectedItem(action.getNewFormat());
+            formatter.setSelectedItem(owner.getAction().getNewFormat());
         }
     }
     

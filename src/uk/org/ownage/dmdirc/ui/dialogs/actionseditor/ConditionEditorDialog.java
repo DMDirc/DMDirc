@@ -23,7 +23,6 @@
 package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,21 +33,17 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
-import uk.org.ownage.dmdirc.actions.Action;
 import uk.org.ownage.dmdirc.actions.ActionComparison;
 import uk.org.ownage.dmdirc.actions.ActionComponent;
 import uk.org.ownage.dmdirc.actions.ActionCondition;
 import uk.org.ownage.dmdirc.actions.ActionManager;
+import uk.org.ownage.dmdirc.actions.ActionType;
 
 import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.components.ColourChooser;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -69,8 +64,8 @@ public final class ConditionEditorDialog extends StandardDialog implements
     
     /** Parent dialog, informed of changes on close. */
     private ConditionsTabPanel parent;
-    /** Parent action. */
-    private Action action;
+    /** Parent action type trigger. */
+    ActionType trigger;
     /** conditions to be edited, or null if new. */
     private ActionCondition condition;
     /** Condition argument. */
@@ -103,11 +98,11 @@ public final class ConditionEditorDialog extends StandardDialog implements
      * @param condition condition to be edited (or null)
      */
     public ConditionEditorDialog(final ConditionsTabPanel parent,
-            final Action action, final ActionCondition condition) {
+            final ActionType trigger, final ActionCondition condition) {
         super(MainFrame.getMainFrame(), false);
         
+        this.trigger = trigger;
         this.parent = parent;
-        this.action = action;
         this.condition = condition;
         if (condition == null) {
             this.argument = -1;
@@ -166,7 +161,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
         
         ((DefaultComboBoxModel) arguments.getModel()).addElement("");
         
-        for (String argument : action.getTriggers()[0].getType().getArgNames()) {
+        for (String argument : trigger.getType().getArgNames()) {
             ((DefaultComboBoxModel) arguments.getModel()).addElement(argument);
         }
         

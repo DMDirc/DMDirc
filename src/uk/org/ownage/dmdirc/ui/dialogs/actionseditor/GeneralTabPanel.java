@@ -62,8 +62,6 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     /** Parent ActionsEditorDialog. */
     private ActionsEditorDialog owner;
     
-    /** The action. */
-    private Action action;
     /** Name textfield. */
     private JTextField name;
     /** Primary trigger combobox. */
@@ -79,12 +77,10 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
      *
      * @param action action to be edited
      */
-    public GeneralTabPanel(final ActionsEditorDialog owner,
-            final Action action) {
+    public GeneralTabPanel(final ActionsEditorDialog owner) {
         super();
         
         this.owner = owner;
-        this.action = action;
         
         initComponents();
         addListeners();
@@ -111,13 +107,15 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         
         otherTriggers.setVisibleRowCount(2);
         otherTriggers.setEnabled(false);
+        owner.getOkButton().setEnabled(false);
         
-        if (action == null) {
+        if (owner.getAction() == null) {
             return;
         }
-        name.setText(action.getName());
         
-        trigger.setSelectedItem(action.getTriggers()[0]);
+        name.setText(owner.getAction().getName());
+        
+        trigger.setSelectedItem(owner.getTrigger());
         type = (ActionType) trigger.getSelectedItem();
         otherTriggers.setEnabled(true);
         
@@ -141,7 +139,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     
     /** Selects other triggers that are part of this action. */
     private void selectOtherTriggers() {
-        for (ActionType type : action.getTriggers()) {
+        for (ActionType type : owner.getTriggers()) {
             int index = ((DefaultListModel) otherTriggers.getModel()).indexOf(type);
             if (index != -1) {
                 otherTriggers.getSelectionModel().addSelectionInterval(index, index);
@@ -180,6 +178,18 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     }
     
     /**
+     * Returns the primary trigger for this panel.
+     *
+     * @return Primary trigger
+     */
+    public ActionType getTrigger() {
+        if (trigger.getSelectedIndex() == 0) {
+            return null;
+        }
+        return (ActionType) trigger.getSelectedItem();
+    }
+    
+    /**
      * Returns the triggers for this panel.
      *
      * @return Trigger list
@@ -193,7 +203,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         triggers.add((ActionType) trigger.getSelectedItem());
         
         for (Object type : otherTriggers.getSelectedValues()) {
-                triggers.add((ActionType) type);
+            triggers.add((ActionType) type);
         }
         
         return triggers;
@@ -213,6 +223,13 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     /** Prompts the user for confirmation of type change. */
     private void handleTriggerChange() {
         boolean compatible = false;
+        if (trigger.getSelectedIndex() != 0) {
+            owner.getOkButton().setEnabled(true);
+            owner.setDetailsTabsState(true);
+        } else {
+            owner.getOkButton().setEnabled(false);
+            owner.setDetailsTabsState(false);
+        }
         if (type == null || trigger.getSelectedIndex() == 0) {
             compatible = false;
         } else if (ActionManager.getCompatibleTypes(type).contains(trigger.getSelectedItem())

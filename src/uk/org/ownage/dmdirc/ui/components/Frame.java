@@ -798,26 +798,18 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * @param text text to check
      */
     private void checkClickText(final String text) {
-        //System.out.print("Clicked text: '" + text + "' ");
         if (text.toLowerCase(Locale.getDefault()).startsWith("http://")
         || text.toLowerCase(Locale.getDefault()).startsWith("https://")
         || text.toLowerCase(Locale.getDefault()).startsWith("www.")) {
-            //System.out.print("opening browser.");
             MainFrame.getMainFrame().getStatusBar().setMessage("Opening: " + text);
             BrowserLauncher.openURL(text);
         } else if (parent.getServer().getParser().isValidChannelName(text)) {
-            //System.out.print("is a valid channel ");
             if (parent.getServer().getParser().getChannelInfo(text) == null) {
-                //System.out.print("joining.");
                 parent.getServer().getParser().joinChannel(text);
             } else {
-                //System.out.print("activating.");
                 parent.getServer().getChannel(text).activateFrame();
             }
-        } // else {
-        //System.out.print("ignoring.");
-        //}
-        //System.out.println();
+        }
     }
     
     /**
