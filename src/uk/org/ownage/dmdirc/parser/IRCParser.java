@@ -1223,10 +1223,10 @@ public final class IRCParser implements Runnable {
 	 * Check if a channel name is valid.
 	 *
 	 * @param sChannelName Channel name to test
-	 * @return true if name is valid on the current connection, false otherwise. (Always false before noMOTD/MOTDEnd)
+	 * @return true if name is valid on the current connection, false otherwise. (Always true before 005/noMOTD/MOTDEnd)
 	 */
 	public boolean isValidChannelName(final String sChannelName) {
-		return hChanPrefix.containsKey(sChannelName.charAt(0));
+		return hChanPrefix.size() == 0 || hChanPrefix.containsKey(sChannelName.charAt(0));
 	}
 	
 	/**
