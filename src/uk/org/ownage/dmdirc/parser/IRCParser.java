@@ -373,7 +373,7 @@ public final class IRCParser implements Runnable {
 	 */
 	protected boolean callDebugInfo(final int level, final String data) {
 		final CallbackOnDebugInfo cb = (CallbackOnDebugInfo) myCallbackManager.getCallbackType("OnDebugInfo");
-		if (cb != null) { return cb.call(level, String.format(data)); }
+		if (cb != null) { return cb.call(level, data); }
 		return false;
 	}
 
