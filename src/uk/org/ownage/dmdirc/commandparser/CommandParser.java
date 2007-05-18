@@ -65,7 +65,7 @@ public abstract class CommandParser {
      */
     public final void unregisterCommand(final Command command) {
         commands.remove(command.getSignature().toLowerCase());
-    }    
+    }
     
     /**
      * Parses the specified string as a command.
@@ -88,7 +88,7 @@ public abstract class CommandParser {
             assert args.length > 0;
             
             if (args.length >= 2 && parseChannel
-                    && origin.getServer().getParser().isValidChannelName(args[1])
+                    && (origin == null || origin.getServer().getParser().isValidChannelName(args[1]))
                     && CommandManager.isChannelCommand(command)) {
                 if (origin.getServer().hasChannel(args[1])) {
                     
@@ -165,13 +165,17 @@ public abstract class CommandParser {
      */
     protected void handleInvalidCommand(final CommandWindow origin,
             final String command, final String... args) {
-        
-        final StringBuffer buff = new StringBuffer("unknownCommand");
-        
-        ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, buff, 
-                origin.getContainer(), command, args);
-        
-        origin.addLine(buff, command + "/" + args.length);
+        if (origin == null) {
+            ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, null,
+                    null, command, args);
+        } else {
+            final StringBuffer buff = new StringBuffer("unknownCommand");
+            
+            ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, buff,
+                    origin.getContainer(), command, args);
+            
+            origin.addLine(buff, command + "/" + args.length);
+        }
     }
     
     /**

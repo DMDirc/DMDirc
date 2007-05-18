@@ -298,6 +298,7 @@ public final class CommandManager {
         // Global commands
         new Exit();
         new ExitDefault();
+        new NewServer();
     }
     
     /**

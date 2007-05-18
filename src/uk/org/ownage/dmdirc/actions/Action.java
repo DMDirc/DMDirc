@@ -32,7 +32,9 @@ import java.util.Properties;
 
 import uk.org.ownage.dmdirc.FrameContainer;
 import uk.org.ownage.dmdirc.ServerManager;
+import uk.org.ownage.dmdirc.commandparser.CommandParser;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import uk.org.ownage.dmdirc.commandparser.GlobalCommandParser;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.MainFrame;
@@ -389,20 +391,25 @@ public class Action {
         }
         
         CommandWindow cw;
+        CommandParser cp = null;
         
-        if (arguments[0] instanceof FrameContainer) {
+        if (arguments.length > 0 && arguments[0] instanceof FrameContainer) {
             cw = ((FrameContainer) arguments[0]).getFrame();
         } else if (MainFrame.getMainFrame().getActiveFrame() != null) {
             cw = (CommandWindow) MainFrame.getMainFrame().getActiveFrame();
         } else if (ServerManager.getServerManager().numServers() > 0) {
             cw = ServerManager.getServerManager().getServers().get(0).getFrame();
         } else {
-            Logger.error(ErrorLevel.TRIVIAL, "No windows to execute actions in");
-            return;
+            cw = null;
+            cp = GlobalCommandParser.getGlobalCommandParser();
+        }
+        
+        if (cw != null) {
+            cp = cw.getCommandParser();
         }
         
         for (String command : response) {
-            cw.getCommandParser().parseCommand(cw, ActionManager.substituteVars(command, arguments));
+            cp.parseCommand(cw, ActionManager.substituteVars(command, arguments));
         }
         
         if (newFormat != null && format != null) {

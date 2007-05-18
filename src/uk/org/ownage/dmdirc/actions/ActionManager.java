@@ -393,7 +393,7 @@ public class ActionManager {
         
         if (arguments.length > 0 && arguments[0] instanceof Server) {
             server = (Server) arguments[0];
-        } else if (arguments[0] instanceof Channel) {
+        } else if (arguments.length > 0 && arguments[0] instanceof Channel) {
             channel = (Channel) arguments[0];
             server = channel.getServer();
         }

@@ -44,6 +44,18 @@ public final class GlobalCommandParser extends CommandParser {
         super();
     }
     
+    /**
+     * Retrieves a singleton instance of the global command parser.
+     * @return A GlobalCommandParser
+     */
+    public static synchronized  GlobalCommandParser getGlobalCommandParser() {
+        if (me == null) {
+            me = new GlobalCommandParser();
+        }
+        
+        return me;
+    }
+    
     /** Loads the relevant commands into the parser. */
     protected void loadCommands() {
         CommandManager.loadGlobalCommands(this);
@@ -55,11 +67,11 @@ public final class GlobalCommandParser extends CommandParser {
      * @param command The command to be executed
      * @param args The arguments to the command
      */
-    protected void executeCommand(final CommandWindow origin, 
+    protected void executeCommand(final CommandWindow origin,
             final Command command, final String... args) {
         ((GlobalCommand) command).execute(origin, args);
     }
-        
+    
     /**
      * Called when the input was a line of text that was not a command. This normally
      * means it is sent to the server/channel/user as-is, with no further processing.
