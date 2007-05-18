@@ -55,8 +55,9 @@ public final class QueryCommandParser extends CommandParser {
     
     /** Loads the relevant commands into the parser. */
     protected void loadCommands() {
-        CommandManager.loadQueryCommands(this);
+        CommandManager.loadGlobalCommands(this);
         CommandManager.loadServerCommands(this);
+        CommandManager.loadQueryCommands(this);
     }
     
     /**
@@ -65,7 +66,7 @@ public final class QueryCommandParser extends CommandParser {
      * @param command The command to be executed
      * @param args The arguments to the command
      */
-    protected void executeCommand(final CommandWindow origin, 
+    protected void executeCommand(final CommandWindow origin,
             final Command command, final String... args) {
         if (command instanceof QueryCommand) {
             ((QueryCommand) command).execute(origin, server, query, args);
@@ -73,7 +74,7 @@ public final class QueryCommandParser extends CommandParser {
             ((ServerCommand) command).execute(origin, server, args);
         }
     }
-        
+    
     /**
      * Called when the input was a line of text that was not a command. This normally
      * means it is sent to the server/channel/user as-is, with no further processing.

@@ -20,13 +20,12 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.server;
+package uk.org.ownage.dmdirc.commandparser.commands.global;
 
 import uk.org.ownage.dmdirc.Main;
-import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
+import uk.org.ownage.dmdirc.commandparser.GlobalCommand;
 
 /**
  * The exit command allows the user to quit DMDirc with a custom quit message.
@@ -34,7 +33,7 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommand;
  * supplied) and saves the config file.
  * @author chris
  */
-public final class Exit extends ServerCommand {
+public final class Exit extends GlobalCommand {
     
     /**
      * Creates a new instance of Exit.
@@ -45,14 +44,8 @@ public final class Exit extends ServerCommand {
         CommandManager.registerCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
-     * @param args The user supplied arguments
-     */
-    public void execute(final CommandWindow origin, final Server server,
-            final String... args) {
+    /** {@inheritDoc}  */
+    public void execute(final CommandWindow origin, final String... args) {
         Main.quit(implodeArgs(args));
     }
     

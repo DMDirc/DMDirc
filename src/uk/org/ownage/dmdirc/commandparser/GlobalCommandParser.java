@@ -22,42 +22,31 @@
 
 package uk.org.ownage.dmdirc.commandparser;
 
-import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
- * A command parser that is tailored for use in a channel environment. Handles
- * both channel and server commands.
+ * The command parser used for global commands.
  * @author chris
  */
-public final class ChannelCommandParser extends CommandParser {
+public final class GlobalCommandParser extends CommandParser {
     
     /**
-     * The server instance that this parser is attached to.
+     * The singleton instance of this command parser.
      */
-    private final Server server;
-    /**
-     * The channel instance that this parser is attached to.
-     */
-    private final Channel channel;
+    private static GlobalCommandParser me;
     
     /**
-     * Creates a new instance of ChannelCommandParser.
-     * @param newServer The server instance that this parser is attached to
-     * @param newChannel The channel instance that this parser is attached to
+     * Creates a new instance of the GlobalCommandParser.
      */
-    public ChannelCommandParser(final Server newServer, final Channel newChannel) {
+    private GlobalCommandParser() {
         super();
-        
-        this.server = newServer;
-        this.channel = newChannel;
     }
     
     /** Loads the relevant commands into the parser. */
     protected void loadCommands() {
         CommandManager.loadGlobalCommands(this);
-        CommandManager.loadServerCommands(this);
-        CommandManager.loadChannelCommands(this);
     }
     
     /**
@@ -66,15 +55,11 @@ public final class ChannelCommandParser extends CommandParser {
      * @param command The command to be executed
      * @param args The arguments to the command
      */
-    protected void executeCommand(final CommandWindow origin,
+    protected void executeCommand(final CommandWindow origin, 
             final Command command, final String... args) {
-        if (command instanceof ChannelCommand) {
-            ((ChannelCommand) command).execute(origin, server, channel, args);
-        } else {
-            ((ServerCommand) command).execute(origin, server, args);
-        }
+        ((GlobalCommand) command).execute(origin, args);
     }
-    
+        
     /**
      * Called when the input was a line of text that was not a command. This normally
      * means it is sent to the server/channel/user as-is, with no further processing.
@@ -82,7 +67,11 @@ public final class ChannelCommandParser extends CommandParser {
      * @param line The line input by the user
      */
     protected void handleNonCommand(final CommandWindow origin, final String line) {
-        channel.sendLine(line);
+        if (origin == null) {
+            Logger.error(ErrorLevel.WARNING, "Invalid global command: " + line);
+        } else {
+            origin.addLine("commandError", "Invalid global command: " + line);
+        }
     }
     
 }

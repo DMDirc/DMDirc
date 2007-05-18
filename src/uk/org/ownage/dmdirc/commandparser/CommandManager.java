@@ -29,6 +29,7 @@ import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.ServerManager;
 import uk.org.ownage.dmdirc.commandparser.commands.channel.*;
+import uk.org.ownage.dmdirc.commandparser.commands.global.*;
 import uk.org.ownage.dmdirc.commandparser.commands.query.*;
 import uk.org.ownage.dmdirc.commandparser.commands.server.*;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
@@ -42,6 +43,10 @@ import uk.org.ownage.dmdirc.logger.Logger;
 public final class CommandManager {
     
     /**
+     * The global commands that have been instansiated.
+     */
+    private static List<Command> globalCommands;
+    /**
      * The server commands that have been instansiated.
      */
     private static List<Command> serverCommands;
@@ -53,6 +58,10 @@ public final class CommandManager {
      * The query commands that have been instansiated.
      */
     private static List<Command> queryCommands;
+    /**
+     * The parsers that have requested global commands.
+     */
+    private static List<CommandParser> globalParsers;
     /**
      * The parsers that have requested server commands.
      */
@@ -99,6 +108,9 @@ public final class CommandManager {
         } else if (command instanceof QueryCommand) {
             target = queryParsers;
             queryCommands.add(command);
+        } else if (command instanceof GlobalCommand) {
+            target = globalParsers;
+            globalCommands.add(command);
         } else {
             Logger.error(ErrorLevel.ERROR, "Attempted to register an invalid command: "
                     + command.getClass().getName());
@@ -116,7 +128,7 @@ public final class CommandManager {
             final String commandName = Config.getCommandChar() + command.getName();
             
             for (Server server : ServerManager.getServerManager().getServers()) {
-                if (command instanceof ServerCommand) {
+                if (command instanceof ServerCommand || command instanceof GlobalCommand) {
                     server.getTabCompleter().addEntry(commandName);
                 } else if (command instanceof ChannelCommand) {
                     for (String channelName : server.getChannels()) {
@@ -151,6 +163,9 @@ public final class CommandManager {
         } else if (command instanceof QueryCommand) {
             target = queryParsers;
             queryCommands.remove(command);
+        } else if (command instanceof GlobalCommand) {
+            target = globalParsers;
+            globalCommands.remove(command);
         } else {
             Logger.error(ErrorLevel.ERROR, "Attempted to unregister an invalid command: "
                     + command.getClass().getName());
@@ -168,7 +183,7 @@ public final class CommandManager {
             final String commandName = Config.getCommandChar() + command.getName();
             
             for (Server server : ServerManager.getServerManager().getServers()) {
-                if (command instanceof ServerCommand) {
+                if (command instanceof ServerCommand || command instanceof GlobalCommand) {
                     server.getTabCompleter().removeEntry(commandName);
                 } else if (command instanceof ChannelCommand) {
                     for (String channelName : server.getChannels()) {
@@ -214,10 +229,12 @@ public final class CommandManager {
         channelCommands = new ArrayList<Command>();
         serverCommands = new ArrayList<Command>();
         queryCommands = new ArrayList<Command>();
+        globalCommands = new ArrayList<Command>();
         
         channelParsers = new ArrayList<CommandParser>();
         serverParsers = new ArrayList<CommandParser>();
         queryParsers = new ArrayList<CommandParser>();
+        globalParsers = new ArrayList<CommandParser>();
         
         channelPopupCommands = new ArrayList<Command>();
         
@@ -266,8 +283,6 @@ public final class CommandManager {
         new Nick();
         new Notice();
         new Query();
-        new Exit();
-        new ExitDefault();
         new Raw();
         new Reconnect();
         new ReloadActions();
@@ -279,6 +294,10 @@ public final class CommandManager {
         // Query commands
         new QueryMe();
         new QueryMeEmpty();
+        
+        // Global commands
+        new Exit();
+        new ExitDefault();
     }
     
     /**
@@ -314,6 +333,22 @@ public final class CommandManager {
     }
     
     /**
+     * Loads all global commands into the specified parser.
+     * @param parser The parser to load commands into
+     */
+    public static void loadGlobalCommands(final CommandParser parser) {
+        if (globalCommands == null) {
+            initLists();
+        }
+        
+        for (Command com : globalCommands) {
+            parser.registerCommand(com);
+        }
+        
+        globalParsers.add(parser);
+    }
+    
+    /**
      * Loads all query commands into the specified parser.
      * @param parser The parser to load commands into
      */
@@ -343,6 +378,26 @@ public final class CommandManager {
         for (Command com : serverCommands) {
             if (com.getSignature().equalsIgnoreCase(signature)) {
                 return (ServerCommand) com;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Retrieves the global command identified by the specified signature.
+     * @param signature The signature to look for
+     * @return A global command with a matching signature, or null if none
+     * were found.
+     */
+    public static GlobalCommand getGlobalCommand(final String signature) {
+        if (globalCommands == null) {
+            initLists();
+        }
+        
+        for (Command com : globalCommands) {
+            if (com.getSignature().equalsIgnoreCase(signature)) {
+                return (GlobalCommand) com;
             }
         }
         

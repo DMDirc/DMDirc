@@ -20,12 +20,12 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.server;
+package uk.org.ownage.dmdirc.commandparser.commands.global;
 
-import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
+import uk.org.ownage.dmdirc.commandparser.GlobalCommand;
 
 /**
  * Represents the exit/0 command (i.e., an exit with no arguments). Reads the
@@ -33,7 +33,7 @@ import uk.org.ownage.dmdirc.commandparser.ServerCommand;
  * with it as an argument.
  * @author chris
  */
-public final class ExitDefault extends ServerCommand {
+public final class ExitDefault extends GlobalCommand {
     
     /**
      * Creates a new instance of ExitDefault.
@@ -44,16 +44,17 @@ public final class ExitDefault extends ServerCommand {
         CommandManager.registerCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
-     * @param args The user supplied arguments
-     */
-    public void execute(final CommandWindow origin, final Server server,
-            final String... args) {
-        final String def = origin.getConfigManager().getOption("general", "closemessage");
-        CommandManager.getServerCommand("exit").execute(origin, server, def);
+    /** {@inheritDoc}  */
+    public void execute(final CommandWindow origin, final String... args) {
+        String def;
+        
+        if (origin == null) {
+            def = Config.getOption("general", "closemessage");
+        } else {
+            def = origin.getConfigManager().getOption("general", "closemessage");
+        }
+        
+        CommandManager.getGlobalCommand("exit").execute(origin, def);
     }
     
     

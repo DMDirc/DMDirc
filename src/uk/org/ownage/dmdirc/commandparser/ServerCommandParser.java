@@ -47,6 +47,7 @@ public final class ServerCommandParser extends CommandParser {
     
     /** Loads the relevant commands into the parser. */
     protected void loadCommands() {
+        CommandManager.loadGlobalCommands(this);
         CommandManager.loadServerCommands(this);
     }
     
