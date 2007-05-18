@@ -24,8 +24,8 @@
 
 package uk.org.ownage.dmdirc.parser;
 
-// import uk.org.ownage.dmdirc.parser.callbacks.;
-// import uk.org.ownage.dmdirc.parser.callbacks.interfaces.;
+import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnPasswordRequired;
+import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPasswordRequired;
 
 /**
  * Process a 464 message.
@@ -38,8 +38,9 @@ public class Process464 extends IRCProcessor {
 	 * @param token IRCTokenised line to process
 	 */
 	public void process(String sParam, String[] token) {
-		ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Password Required");
-		callErrorInfo(ei);
+		callPasswordRequired();
+//		ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Password Required");
+//		callErrorInfo(ei);
 	}
 	
 	/**
@@ -52,6 +53,17 @@ public class Process464 extends IRCProcessor {
 		iHandle[0] = "464";
 		return iHandle;
 	} 
+	
+	/**
+	 * Callback to all objects implementing the PasswordRequired Callback.
+	 *
+	 * @see IPasswordRequired
+	 */
+	protected boolean callPasswordRequired() {
+		CallbackOnPasswordRequired cb = (CallbackOnPasswordRequired)getCallbackManager().getCallbackType("OnPasswordRequired");
+		if (cb != null) { return cb.call(); }
+		return false;
+	}
 	
 	/**
 	 * Create a new instance of the IRCProcessor Object

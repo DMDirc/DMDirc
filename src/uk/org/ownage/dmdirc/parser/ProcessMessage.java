@@ -83,6 +83,11 @@ public class ProcessMessage extends IRCProcessor {
 		// We use sMessage to be the users host (first token in the line)
 		if (myParser.getIgnoreList().matches(sMessage) > -1) { return; }
 		
+		// Lines such as:
+		// "nick!user@host PRIVMSG #channel"
+		// are invalid, stop processing.
+		if (token.length < 4) { return; }
+		
 		ChannelClientInfo iChannelClient = null;
 		ChannelInfo iChannel = null;
 		ClientInfo iClient = null;
@@ -93,32 +98,34 @@ public class ProcessMessage extends IRCProcessor {
 		boolean isAction = false;
 		boolean isCTCP = false;
 		
-		if (sParam.equalsIgnoreCase("PRIVMSG")) {
-			// Actions are special CTCPs
-			// Bits is the message been split into 2 parts, the first word and the rest
-			if (bits[0].equalsIgnoreCase(Char1+"ACTION") && Character.valueOf(sMessage.charAt(sMessage.length()-1)).equals(Char1)) {
-				isAction = true;
-				if (bits.length > 1) {
-					sMessage = bits[1];
-					sMessage = sMessage.substring(0, sMessage.length()-1);
-				} else { sMessage = ""; }
-			}
-		}
-		// If the message is not an action, check if it is another type of CTCP
-		if (!isAction) {
-			// CTCPs have Character(1) at the start/end of the line
-			if (Character.valueOf(sMessage.charAt(0)).equals(Char1) && Character.valueOf(sMessage.charAt(sMessage.length()-1)).equals(Char1)) {
-				isCTCP = true;
+		if (sMessage.length() > 1) {
+			if (sParam.equalsIgnoreCase("PRIVMSG")) {
+				// Actions are special CTCPs
 				// Bits is the message been split into 2 parts, the first word and the rest
-				// Some CTCPs have messages and some do not
-				if (bits.length > 1) { sMessage = bits[1]; } else { sMessage = ""; }
-				// Remove the leading char1
-				bits = bits[0].split(Char1.toString(),2);
-				sCTCP = bits[1];
-				// remove the trailing char1
-				if (!sMessage.equals("")) { sMessage = sMessage.split(Char1.toString(),2)[0]; }
-				else { sCTCP = sCTCP.split(Char1.toString(),2)[0]; }
-				callDebugInfo(myParser.DEBUG_INFO, "CTCP: \"%s\" \"%s\"",sCTCP,sMessage);
+				if (bits[0].equalsIgnoreCase(Char1+"ACTION") && Character.valueOf(sMessage.charAt(sMessage.length()-1)).equals(Char1)) {
+					isAction = true;
+					if (bits.length > 1) {
+						sMessage = bits[1];
+						sMessage = sMessage.substring(0, sMessage.length()-1);
+					} else { sMessage = ""; }
+				}
+			}
+			// If the message is not an action, check if it is another type of CTCP
+			if (!isAction) {
+				// CTCPs have Character(1) at the start/end of the line
+				if (Character.valueOf(sMessage.charAt(0)).equals(Char1) && Character.valueOf(sMessage.charAt(sMessage.length()-1)).equals(Char1)) {
+					isCTCP = true;
+					// Bits is the message been split into 2 parts, the first word and the rest
+					// Some CTCPs have messages and some do not
+					if (bits.length > 1) { sMessage = bits[1]; } else { sMessage = ""; }
+					// Remove the leading char1
+					bits = bits[0].split(Char1.toString(),2);
+					sCTCP = bits[1];
+					// remove the trailing char1
+					if (!sMessage.equals("")) { sMessage = sMessage.split(Char1.toString(),2)[0]; }
+					else { sCTCP = sCTCP.split(Char1.toString(),2)[0]; }
+					callDebugInfo(myParser.DEBUG_INFO, "CTCP: \"%s\" \"%s\"",sCTCP,sMessage);
+				}
 			}
 		}
 
