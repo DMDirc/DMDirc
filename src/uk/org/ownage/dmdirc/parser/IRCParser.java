@@ -546,8 +546,7 @@ public final class IRCParser implements Runnable {
 		
 		callDebugInfo(DEBUG_SOCKET, "Socket Connected");
 		
-//This has been removed, seems pointless
-//		if (!server.waitForFirst) { sendConnectionStrings(); }
+		sendConnectionStrings();
 		
 		// Prepare the ProcessingManager
 		myProcessingManager.init();
@@ -562,7 +561,6 @@ public final class IRCParser implements Runnable {
 					reset();
 					break;
 				} else {
-					if (isFirst) { sendConnectionStrings(); }
 					processLine(line);
 				}
 			} catch (IOException e) {
