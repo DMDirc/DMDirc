@@ -40,6 +40,7 @@ public enum CoreActionMetaType implements ActionMetaType {
     UNKNOWN_COMMAND(3, new String[]{"source", "command", "arguments"}, FrameContainer.class, String.class, String[].class),
     
     SERVER_PING(2, new String[]{"server", "ping"}, Server.class, Long.class),
+    SERVER_NUMERIC(3, new String[]{"server", "numeric", "aeguments"}, Server.class, Integer.class, String[].class),
     
     SERVER_EVENT(1, new String[]{"server"}, Server.class),
     CHANNEL_EVENT(1, new String[]{"channel"}, Channel.class),

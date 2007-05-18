@@ -33,6 +33,7 @@ public enum CoreActionType implements ActionType {
     
     UNKNOWN_COMMAND(CoreActionMetaType.UNKNOWN_COMMAND, "Unknown command entered"),
     
+    SERVER_NUMERIC(CoreActionMetaType.SERVER_NUMERIC, "Numeric event received"),
     SERVER_CONNECTED(CoreActionMetaType.SERVER_EVENT, "Server connected"),
     SERVER_BACK(CoreActionMetaType.SERVER_EVENT, "Marked as 'back'"),
     SERVER_AWAY(CoreActionMetaType.SERVER_EVENT_WITH_ARG, "Marked as 'away'"),

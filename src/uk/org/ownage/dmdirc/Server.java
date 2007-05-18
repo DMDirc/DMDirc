@@ -890,6 +890,8 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
         if (numeric == 1) {
             ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
         }
+        
+        ActionManager.processEvent(CoreActionType.SERVER_NUMERIC, null, this, Integer.valueOf(numeric), line);
     }
     
     /**
