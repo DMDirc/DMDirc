@@ -61,8 +61,10 @@ public class ActionCellRenderer extends DefaultListCellRenderer {
             setText(((ActionComponent) value).getName());
         } else if (value instanceof ActionType) {
             setText(((ActionType) value).getName());
+        } else if (value instanceof Class) {
+            setText(((Class) value).getSimpleName());
         } else if (value == null) {
-            setText("null");
+            setText("");
         } else {
             setText(value.toString());
         }

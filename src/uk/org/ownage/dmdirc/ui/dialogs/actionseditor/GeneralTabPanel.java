@@ -224,7 +224,9 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         boolean compatible = false;
         if (trigger.getSelectedIndex() != 0) {
             owner.getOkButton().setEnabled(true);
-            owner.setNewConditionButtonState(true);
+            if (owner.getTrigger().getType().getArgNames().length > 0) {
+                owner.setNewConditionButtonState(true);
+            }
         } else {
             owner.getOkButton().setEnabled(false);
             owner.setNewConditionButtonState(false);

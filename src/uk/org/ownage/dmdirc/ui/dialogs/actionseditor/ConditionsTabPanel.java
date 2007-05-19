@@ -127,7 +127,9 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             return;
         }
         
-        setNewConditionButton(true);
+        if (owner.getTrigger().getType().getArgNames().length > 0) {
+            setNewConditionButton(true);
+        }
     }
     
     /** Adds listeners to the components. */
@@ -227,9 +229,9 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         }
     }
     
-    /** 
+    /**
      * Adds a new condition to the panel.
-     * 
+     *
      * @param newCondition Condition to add
      */
     public void addCondition(final ActionCondition newCondition) {
@@ -255,7 +257,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         
         doConditions();
     }
-     
+    
     /**
      * Sets the state of the new condition button.
      *
