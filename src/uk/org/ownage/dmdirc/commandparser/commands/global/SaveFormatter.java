@@ -20,25 +20,23 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.server;
+package uk.org.ownage.dmdirc.commandparser.commands.global;
 
-import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
-import uk.org.ownage.dmdirc.plugins.PluginManager;
+import uk.org.ownage.dmdirc.commandparser.GlobalCommand;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 
 /**
- * Allows the user to load a plugin.
+ * Allows the user to save the message formatter to a file.
  * @author chris
  */
-public final class LoadPlugin extends ServerCommand {
+public final class SaveFormatter extends GlobalCommand {
     
     /**
-     * Creates a new instance of LoadPlugin.
+     * Creates a new instance of SaveFormatter.
      */
-    public LoadPlugin() {
+    public SaveFormatter() {
         super();
         
         CommandManager.registerCommand(this);
@@ -47,23 +45,20 @@ public final class LoadPlugin extends ServerCommand {
     /**
      * Executes this command.
      * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
-            final String... args) {
-        if (PluginManager.getPluginManager().addPlugin(args[0])) {
-            PluginManager.getPluginManager().getPlugin(args[0]).setActive(true);
-            origin.addLine("commandOutput", "Plugin loaded.");
+    public void execute(final CommandWindow origin, final String... args) {
+        if (Formatter.saveAs(args[0])) {
+            origin.addLine("commandOutput", "Formatter saved.");
         } else {
-            origin.addLine("commandError", "Plugin Loading failed");
+            origin.addLine("commandError", "Formatter save failed.");
         }
     }
     
     
     /** {@inheritDoc}. */
     public String getName() {
-        return "loadplugin";
+        return "saveformatter";
     }
     
     /** {@inheritDoc}. */
@@ -83,7 +78,7 @@ public final class LoadPlugin extends ServerCommand {
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "loadplugin <class> - loads the specified class as a plugin";
+        return "saveformatter <file> - saves the message formatter to a file";
     }
     
 }

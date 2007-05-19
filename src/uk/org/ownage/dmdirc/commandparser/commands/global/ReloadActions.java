@@ -20,26 +20,23 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.server;
+package uk.org.ownage.dmdirc.commandparser.commands.global;
 
-import uk.org.ownage.dmdirc.Server;
+import uk.org.ownage.dmdirc.actions.ActionManager;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
-import uk.org.ownage.dmdirc.plugins.PluginManager;
-import uk.org.ownage.dmdirc.plugins.Plugin;
-import uk.org.ownage.dmdirc.ui.messages.Formatter;
+import uk.org.ownage.dmdirc.commandparser.GlobalCommand;
 
 /**
- * Allows the user to reload a plugin.
+ * Allows the user to reload actions.
  * @author chris
  */
-public final class ReloadPlugin extends ServerCommand {
+public final class ReloadActions extends GlobalCommand {
     
     /**
-     * Creates a new instance of ReloadPlugin.
+     * Creates a new instance of ReloadActions.
      */
-    public ReloadPlugin() {
+    public ReloadActions() {
         super();
         
         CommandManager.registerCommand(this);
@@ -48,30 +45,17 @@ public final class ReloadPlugin extends ServerCommand {
     /**
      * Executes this command.
      * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
-            final String... args) {
-        Plugin plugin = PluginManager.getPluginManager().getPlugin(args[0]);
-        if (plugin != null) {
-            boolean isActive = plugin.isActive();
-            plugin = null;
-            if (PluginManager.getPluginManager().reloadPlugin(args[0])) {
-                origin.addLine("commandOutput", "Plugin Reloaded.");
-                PluginManager.getPluginManager().getPlugin(args[0]).setActive(isActive);
-            } else {
-                origin.addLine("commandError", "Plugin Reloading failed");
-            }
-        } else {
-            origin.addLine("commandError", "Plugin Reloading failed - Plugin not loaded");
-        }
+    public void execute(final CommandWindow origin, final String... args) {
+        ActionManager.loadActions();
+        origin.addLine("commandOutput", "Actions reloaded.");
     }
     
     
     /** {@inheritDoc}. */
     public String getName() {
-        return "reloadplugin";
+        return "reloadactions";
     }
     
     /** {@inheritDoc}. */
@@ -86,12 +70,12 @@ public final class ReloadPlugin extends ServerCommand {
     
     /** {@inheritDoc}. */
     public int getArity() {
-        return 1;
+        return 0;
     }
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "Reloadplugin <class> - Reloads the specified plugin";
+        return "reloadactions - reloads actions from disk";
     }
     
 }

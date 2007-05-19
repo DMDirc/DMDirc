@@ -20,19 +20,19 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.server;
+package uk.org.ownage.dmdirc.commandparser.commands.global;
 
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.ServerManager;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
+import uk.org.ownage.dmdirc.commandparser.GlobalCommand;
 
 /**
  * The AllServers command allows users to issue commands to all servers.
  * @author chris
  */
-public class AllServers extends ServerCommand {
+public class AllServers extends GlobalCommand {
     
     /** Creates a new instance of AllServers. */
     public AllServers() {
@@ -44,11 +44,9 @@ public class AllServers extends ServerCommand {
     /**
      * Executes this command.
      * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
-            final String... args) {
+    public void execute(final CommandWindow origin, final String... args) {
         final String command = implodeArgs(args);
         CommandWindow window;
         

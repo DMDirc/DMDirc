@@ -265,7 +265,6 @@ public final class CommandManager {
         
         // Server commands
         new AllChannels();
-        new AllServers();
         new Away();
         new Back();
         new Clear();
@@ -276,8 +275,6 @@ public final class CommandManager {
         new Help();
         new Ignore();
         new Join();
-        new LoadFormatter();
-        new LoadPlugin();
         new Message();
         new Motd();
         new Nick();
@@ -285,11 +282,6 @@ public final class CommandManager {
         new Query();
         new Raw();
         new Reconnect();
-        new ReloadActions();
-        new ReloadFormatter();
-        new ReloadPlugin();
-        new SaveFormatter();
-        new Set();
         new Whois();
         
         // Query commands
@@ -300,6 +292,14 @@ public final class CommandManager {
         new Exit();
         new ExitDefault();
         new NewServer();
+        new AllServers();
+        new LoadFormatter();
+        new LoadPlugin();
+        new ReloadActions();
+        new ReloadFormatter();
+        new ReloadPlugin();
+        new SaveFormatter();
+        new Set();
     }
     
     /**
@@ -498,7 +498,7 @@ public final class CommandManager {
         }
         
         return getCommandNames(globalCommands);
-    }    
+    }
     
     /**
      * Returns the names (including command char) of all registered channel

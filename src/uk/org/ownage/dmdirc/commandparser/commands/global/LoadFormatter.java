@@ -20,24 +20,23 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.server;
+package uk.org.ownage.dmdirc.commandparser.commands.global;
 
-import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
+import uk.org.ownage.dmdirc.commandparser.GlobalCommand;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 
 /**
- * Allows the user to reload the message formatter.
+ * Allows the user to load a message formatter from a file.
  * @author chris
  */
-public final class ReloadFormatter extends ServerCommand {
+public final class LoadFormatter extends GlobalCommand {
     
     /**
-     * Creates a new instance of ReloadFormatter.
+     * Creates a new instance of LoadFormatter.
      */
-    public ReloadFormatter() {
+    public LoadFormatter() {
         super();
         
         CommandManager.registerCommand(this);
@@ -46,19 +45,20 @@ public final class ReloadFormatter extends ServerCommand {
     /**
      * Executes this command.
      * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
-            final String... args) {
-        Formatter.reload();
-        origin.addLine("commandOutput", "Formatter reloaded.");
+    public void execute(final CommandWindow origin, final String... args) {
+        if (Formatter.loadFile(args[0])) {
+            origin.addLine("commandOutput", "Formatter loaded.");
+        } else {
+            origin.addLine("commandError", "Formatter load failed.");
+        }
     }
     
     
     /** {@inheritDoc}. */
     public String getName() {
-        return "reloadformatter";
+        return "loadformatter";
     }
     
     /** {@inheritDoc}. */
@@ -73,12 +73,12 @@ public final class ReloadFormatter extends ServerCommand {
     
     /** {@inheritDoc}. */
     public int getArity() {
-        return 0;
+        return 1;
     }
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "reloadformatter - reloads the message formatter";
+        return "loadformatter <file> - loads the specified file into the message formatter";
     }
     
 }

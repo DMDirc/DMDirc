@@ -20,19 +20,18 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.server;
+package uk.org.ownage.dmdirc.commandparser.commands.global;
 
 import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
+import uk.org.ownage.dmdirc.commandparser.GlobalCommand;
 
 /**
  * The set command allows the user to inspect and change global config settings.
  * @author chris
  */
-public final class Set extends ServerCommand {
+public final class Set extends GlobalCommand {
     
     /**
      * Creates a new instance of Set.
@@ -46,11 +45,9 @@ public final class Set extends ServerCommand {
     /**
      * Executes this command.
      * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
-            final String... args) {
+    public void execute(final CommandWindow origin, final String... args) {
         switch (args.length) {
             case 0:
                 doDomainList(origin);
