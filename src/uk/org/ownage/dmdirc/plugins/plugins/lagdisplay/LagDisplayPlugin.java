@@ -30,6 +30,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import uk.org.ownage.dmdirc.FrameContainer;
 
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.actions.ActionType;
@@ -119,6 +120,15 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin {
             final JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
             if (((Server) arguments[0]).ownsFrame(active)) {
                 label.setText(formatTime(arguments[1]) + "+");
+            }
+        } else if (type.equals(CoreActionType.CLIENT_FRAME_CHANGED)) {
+            final FrameContainer source = (FrameContainer) arguments[0];
+            if (source.getServer() == null
+                    || source.getServer().getParser() == null
+                    || !source.getServer().getParser().isReady()) {
+                label.setText("Unknown");
+            } else {
+                label.setText(formatTime(source.getServer().getParser().getServerLag()));
             }
         }
     }

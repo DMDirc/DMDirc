@@ -60,6 +60,9 @@ import javax.swing.plaf.FontUIResource;
 import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Main;
 import uk.org.ownage.dmdirc.ServerManager;
+import uk.org.ownage.dmdirc.actions.ActionManager;
+import uk.org.ownage.dmdirc.actions.CoreActionType;
+import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.ui.components.StatusBar;
@@ -272,9 +275,12 @@ public final class MainFrame extends JFrame implements WindowListener,
         } catch (PropertyVetoException ex) {
             Logger.error(ErrorLevel.ERROR, "Unable to set active window", ex);
         }
+        
         if (maximised) {
             setTitle(getTitlePrefix() + " - " + frame.getTitle());
         }
+        
+        ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null, ((CommandWindow) frame).getContainer());
     }
     
     /**
@@ -468,7 +474,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         getContentPane().add(statusBar, BorderLayout.SOUTH);
         
-        mainSplitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 
+        mainSplitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0,
                 SMALL_BORDER));
         
         mainSplitPane.setDividerSize(SMALL_BORDER);
@@ -541,7 +547,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         
         initWindowMenu(windowMenu);
-
+        
         
         helpMenu.setMnemonic('h');
         helpMenu.setText("Help");
@@ -572,8 +578,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         setJMenuBar(menuBar);
     }
     
-    /** 
-     * Initialises the window menu. 
+    /**
+     * Initialises the window menu.
      *
      * @param windowMenu the window menu to initialise
      */

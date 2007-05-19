@@ -31,6 +31,8 @@ public enum CoreActionType implements ActionType {
     CLIENT_OPENED(CoreActionMetaType.CLIENT_EVENT, "Client opened"),
     CLIENT_CLOSED(CoreActionMetaType.CLIENT_EVENT, "Client closed"),
     
+    CLIENT_FRAME_CHANGED(CoreActionMetaType.CLIENT_EVENT_WITH_FRAME, "Frame changed"),
+    
     UNKNOWN_COMMAND(CoreActionMetaType.UNKNOWN_COMMAND, "Unknown command entered"),
     
     SERVER_NUMERIC(CoreActionMetaType.SERVER_NUMERIC, "Numeric event received"),
