@@ -18,11 +18,13 @@ rm -Rf $MYDIR/build
 
 cd $MYDIR/
 $SVN update
+SVNREV=`$SVN info | grep Revision`
+SVNREV=${SVNREV##*: }
+awk '{gsub(/public static final String VERSION = "SVN";/,"public static final String VERSION = \"Nightly - SVN Rev: '$SVNREV'\";");print}' src/uk/org/ownage/dmdirc/Main.java > src/uk/org/ownage/dmdirc/Main.java
 $ANT -buildfile $MYDIR/build.xml -k
 if [ -f $MYDIR/dist/DMDirc.jar ]; then
 	FILENAME=DMDirc`date +_%Y%m%d`.jar
 	cp $MYDIR/dist/DMDirc.jar /home/dmdirc/www/nightly/$FILENAME
-	cp $MYDIR/dist/lib/swing-layout-1.0.jar /home/dmdirc/www/nightly/lib
 	if [ -e $WWWDIR/nightly/DMDirc_latest.jar ]; then
 		rm $WWWDIR/nightly/DMDirc_latest.jar
 	fi
@@ -32,5 +34,6 @@ if [ -f $MYDIR/dist/DMDirc.jar ]; then
 else
 	/bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Failed"
 fi
+$SVN revert src/uk/org/ownage/dmdirc/Main.java
 
 
