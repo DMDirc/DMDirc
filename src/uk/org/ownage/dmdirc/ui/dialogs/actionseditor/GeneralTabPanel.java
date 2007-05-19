@@ -240,7 +240,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
             populateOtherTriggers();
             selectOtherTriggers();
             type = ((ActionType) trigger.getSelectedItem());
-        } else {
+        } else if (owner.getConditionCount() > 0) {
             final int response = JOptionPane.showConfirmDialog(this,
                     "Changing to this trigger will remove your existing "
                     + "conditions. Are you sure?", "Incompatible triggers",

@@ -240,4 +240,13 @@ public final class ActionsEditorDialog extends StandardDialog implements
     public ActionType[] getTriggers() {
         return ((GeneralTabPanel) tabbedPane.getComponentAt(0)).getTriggers().toArray(new ActionType[0]);
     }
+    
+    /**
+     * Returns the number of conditions in the tab panel.
+     *
+     * @return Number of Conditions in the dialog.
+     */
+    public int getConditionCount() {
+        return ((ConditionsTabPanel) tabbedPane.getComponentAt(1)).getConditions().size();
+    }
 }

@@ -224,6 +224,8 @@ public final class ActionsManagerDialog extends StandardDialog
      */
     public void loadGroups() {
         
+        int selectedGroup = groups.getSelectedIndex();
+        
         groups.removeAll();
         
         final Map<String, List<Action>> actionGroups = ActionManager.getGroups();
@@ -250,6 +252,8 @@ public final class ActionsManagerDialog extends StandardDialog
             renameGroup.setEnabled(true);
             addAction.setEnabled(true);
         }
+        
+        groups.setSelectedIndex(( selectedGroup == -1 ? 0 : selectedGroup));
     }
     
     /**
@@ -294,7 +298,7 @@ public final class ActionsManagerDialog extends StandardDialog
                     + "' group.",
                     "Group rename", JOptionPane.QUESTION_MESSAGE);
             if (newName != null && newName.length() > 0) {
-                //rename group
+                ActionManager.renameGroup(group, newName);
                 loadGroups();
             }
         } else if (e.getActionCommand().equals("action.edit")) {
@@ -305,10 +309,15 @@ public final class ActionsManagerDialog extends StandardDialog
         } else if (e.getActionCommand().equals("action.new")) {
             ActionsEditorDialog.showActionsEditorDialog(this);
         } else if (e.getActionCommand().equals("action.delete")) {
-            final JTable table = ((ActionsGroupPanel) groups.getSelectedComponent()).getTable();
-            final int row = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
-            ((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row);
-            //delete action
+            final int response = JOptionPane.showConfirmDialog(this,
+                    "Are you sure you wish to delete this action?",
+                    "Confirm deletion", JOptionPane.YES_NO_OPTION);
+            if (response == JOptionPane.YES_OPTION) {
+                final JTable table = ((ActionsGroupPanel) groups.getSelectedComponent()).getTable();
+                final int row = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
+                ActionManager.deleteAction(((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row));
+                loadGroups();
+            }
         }
     }
     
