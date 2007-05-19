@@ -112,6 +112,9 @@ public final class ActionsManagerDialog extends StandardDialog
     
     /** Initialiases the components for this dialog. */
     private void initComponents() {
+        orderButtons(new JButton(), new JButton());
+        getCancelButton().addActionListener(this);
+        
         setLayout(new GridBagLayout());
         
         final GridBagConstraints constraints = new GridBagConstraints();
@@ -268,7 +271,7 @@ public final class ActionsManagerDialog extends StandardDialog
     
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
-        if (e.getActionCommand().equals("close")) {
+        if (e.getActionCommand().equals("close") || e.getSource() == getCancelButton()) {
             dispose();
         } else if (e.getActionCommand().equals("group.add")) {
             final String newGroup = JOptionPane.showInputDialog(this,
