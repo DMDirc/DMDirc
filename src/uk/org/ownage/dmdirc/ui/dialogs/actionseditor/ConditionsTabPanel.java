@@ -174,7 +174,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         
         for (ActionCondition condition : conditions) {
             JLabel label = new JLabel("The "
-                    + owner.getAction().getTriggers()[0].getType().getArgNames()[condition.getArg()]
+                    + owner.getTrigger().getType().getArgNames()[condition.getArg()]
                     + "'s " + condition.getComponent().getName() + " "
                     + condition.getComparison().getName()
                     + " '" + condition.getTarget() + "'");

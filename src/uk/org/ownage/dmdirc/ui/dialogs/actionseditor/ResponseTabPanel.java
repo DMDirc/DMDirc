@@ -168,14 +168,7 @@ public final class ResponseTabPanel extends JPanel {
      * @return Responses
      */
     public String getResponses() {
-        String format = responses.getText();
-        if ("No response".equals(format)) {
-            format = null;
-        }
-        if ("Current".equals(format)) {
-            format = "";
-        }
-        return format;
+        return responses.getText();
     }
     
     /**
@@ -184,7 +177,14 @@ public final class ResponseTabPanel extends JPanel {
      * @return Action name
      */
     public String getFormatter() {
-        return (String) formatter.getSelectedItem();
+        String format = (String) formatter.getSelectedItem();
+        if ("No response".equals(format)) {
+            format = null;
+        }
+        if ("Current".equals(format)) {
+            format = "";
+        }
+        return format;
     }
     
 }

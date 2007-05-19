@@ -65,7 +65,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
     /** Parent dialog, informed of changes on close. */
     private ConditionsTabPanel parent;
     /** Parent action type trigger. */
-    ActionType trigger;
+    private ActionType trigger;
     /** conditions to be edited, or null if new. */
     private ActionCondition condition;
     /** Condition argument. */
@@ -329,7 +329,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
         }
         if (event.getSource() == getOkButton()) {
             if (condition == null) {
-                parent.addCondition(new ActionCondition(argument, component,
+                parent.addCondition(new ActionCondition(argument - 1, component,
                         comparison, targetText.getText()));
             } else {
                 condition.setArg(argument);
