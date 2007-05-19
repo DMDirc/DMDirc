@@ -27,14 +27,19 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Date;
 
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 
 /**
- *
+ * The BrowserLauncher handles the opening of the user's web browser when
+ * they click a link.
  */
 public final class BrowserLauncher {
+    
+    /** The time a browser was last launched. */
+    private static Date lastLaunch;
     
     /** Prevents creation of a new instance of BrowserLauncher. */
     private BrowserLauncher() {
@@ -64,6 +69,17 @@ public final class BrowserLauncher {
      * @param url url to open in the browser
      */
     public static void openURL(final URL url) {
+        final Date oldLaunch = lastLaunch;
+        lastLaunch = new Date();
+        
+        if (Config.getOptionBool("browser", "uselaunchdelay") && lastLaunch != null) {
+            final Long diff = lastLaunch.getTime() - oldLaunch.getTime();
+            
+            if (diff < Config.getOptionInt("browser", "launchdelay", 500)) {
+                return;
+            }
+        }
+        
         Desktop desktop = null;
         if (Desktop.isDesktopSupported()) {
             desktop = Desktop.getDesktop();
