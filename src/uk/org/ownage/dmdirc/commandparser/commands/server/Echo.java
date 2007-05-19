@@ -22,16 +22,13 @@
 
 package uk.org.ownage.dmdirc.commandparser.commands.server;
 
-import java.util.Collections;
-import java.util.List;
+import javax.swing.JInternalFrame;
 
 import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.Command;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.commandparser.ServerCommand;
-import uk.org.ownage.dmdirc.ui.ChannelFrame;
-import uk.org.ownage.dmdirc.ui.QueryFrame;
+import uk.org.ownage.dmdirc.ui.MainFrame;
 
 /**
  * The echo commands simply echos text to the current window.
@@ -55,10 +52,17 @@ public final class Echo extends ServerCommand {
      * @param args The user supplied arguments
      */
     public void execute(final CommandWindow origin, final Server server,
-            final String... args) {
-        origin.addLine("commandOutput", implodeArgs(args));
+            final String... args) {        
+        if (args.length > 0 && args[0].equalsIgnoreCase("--active")) {
+            final JInternalFrame frame = MainFrame.getMainFrame().getActiveFrame();
+            if (frame instanceof CommandWindow) {
+                ((CommandWindow) frame).addLine("commandOutput", implodeArgs(1, args));
+            }
+        } else {
+            origin.addLine("commandOutput", implodeArgs(args));
+        }
     }
-        
+    
     /** {@inheritDoc}. */
     public String getName() {
         return "echo";
@@ -81,7 +85,7 @@ public final class Echo extends ServerCommand {
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "echo <line> - echos the specified line to the window";
+        return "echo [--active] <line> - echos the specified line to the window";
     }
     
 }
