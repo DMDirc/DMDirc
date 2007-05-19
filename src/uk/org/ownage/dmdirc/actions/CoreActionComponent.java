@@ -25,6 +25,7 @@ package uk.org.ownage.dmdirc.actions;
 import java.awt.Color;
 
 import uk.org.ownage.dmdirc.Channel;
+import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
 
 /**
@@ -33,6 +34,20 @@ import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
  * @author chris
  */
 public enum CoreActionComponent implements ActionComponent {
+    
+    SERVER_NAME {
+        public Object get(final Object argument) { return ((Server) argument).getName(); }
+        public Class appliesTo() { return Server.class; }
+        public Class getType() { return String.class; }
+        public String getName() { return "name"; }
+    },
+    
+    SERVER_NETWORK {
+        public Object get(final Object argument) { return ((Server) argument).getNetwork(); }
+        public Class appliesTo() { return Server.class; }
+        public Class getType() { return String.class; }
+        public String getName() { return "network"; }
+    },
     
     CHANNEL_NAME {
         public Object get(final Object argument) { return ((Channel) argument).getChannelInfo().getName(); }
@@ -60,6 +75,13 @@ public enum CoreActionComponent implements ActionComponent {
         public Class appliesTo() { return ChannelClientInfo.class; }
         public Class getType() { return String.class; }
         public String getName() { return "modes"; }
+    },
+    
+    USER_HOST {
+        public Object get(final Object argument) { return ((ChannelClientInfo) argument).getClient().getHost(); }
+        public Class appliesTo() { return ChannelClientInfo.class; }
+        public Class getType() { return String.class; }
+        public String getName() { return "host"; }
     },
     
     STRING_STRING {

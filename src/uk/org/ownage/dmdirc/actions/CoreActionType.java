@@ -70,6 +70,7 @@ public enum CoreActionType implements ActionType {
     CHANNEL_USERBACK(CoreActionMetaType.CHANNEL_SOURCED_EVENT, "Someone is marked as 'back'"),
     
     CHANNEL_MODECHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed channel modes"),
+    CHANNEL_USERMODECHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_VICTIM, "Someone changed someone else's modes"),
     
     CHANNEL_NICKCHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed nicknames"),
     

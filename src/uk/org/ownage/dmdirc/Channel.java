@@ -751,7 +751,8 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
                     targetHost, cChannel, sMode);
         }
         
-        // TODO: Action hook
+        ActionManager.processEvent(CoreActionType.CHANNEL_USERMODECHANGE, null,
+                this, cSetByClient, cChangedClient, sMode);
     }
     
     /**
