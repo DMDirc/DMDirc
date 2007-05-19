@@ -112,6 +112,7 @@ public final class PluginDialog extends StandardDialog implements
         } else {
             me.setVisible(true);
             me.requestFocus();
+            me.populateList();
         }
     }
     
@@ -218,7 +219,6 @@ public final class PluginDialog extends StandardDialog implements
             toggleButton.setEnabled(true);
         }
         pluginList.repaint();
-        
     }
     
     /** Adds listeners to components. */
