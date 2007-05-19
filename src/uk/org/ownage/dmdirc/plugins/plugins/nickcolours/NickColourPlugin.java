@@ -78,7 +78,6 @@ public class NickColourPlugin extends Plugin implements EventPlugin, Preferences
      * Colours the specified client according to the user's config.
      * @param client The client to be coloured
      */
-    @SuppressWarnings("unchecked")
     private void colourClient(final ChannelClientInfo client) {
         final Map map = client.getMap();
         final ClientInfo myself = client.getClient().getParser().getMyself();
@@ -86,15 +85,29 @@ public class NickColourPlugin extends Plugin implements EventPlugin, Preferences
         
         if (Config.getOptionBool(DOMAIN, "useowncolour") && client.getClient().equals(myself)) {
             final Color color = ColourManager.parseColour(Config.getOption(DOMAIN, "owncolour"));
-            map.put(ChannelClientProperty.TEXT_FOREGROUND, color);
-            map.put(ChannelClientProperty.NICKLIST_FOREGROUND, color);
+            putColour(map, color);
         } else if (Config.hasOption(DOMAIN, nickOption)) {
             final Color color = ColourManager.parseColour(Config.getOption(DOMAIN, nickOption));
-            map.put(ChannelClientProperty.TEXT_FOREGROUND, color);
-            map.put(ChannelClientProperty.NICKLIST_FOREGROUND, color);
+            putColour(map, color);
         }  else if (Config.getOptionBool(DOMAIN, "userandomcolour")) {
-            map.put(ChannelClientProperty.TEXT_FOREGROUND, getColour(client.getNickname()));
-            map.put(ChannelClientProperty.NICKLIST_FOREGROUND, getColour(client.getNickname()));
+            putColour(map, getColour(client.getNickname()));
+        }
+    }
+    
+    /**
+     * Puts the specified colour into the given map. The keys are determined
+     * by config settings.
+     * @param map The map to use
+     * @param colour The colour to be inserted
+     */
+    @SuppressWarnings("unchecked")
+    private void putColour(final Map map, final Color colour) {
+        if (Config.getOptionBool(DOMAIN, "settext")) {
+            map.put(ChannelClientProperty.TEXT_FOREGROUND, colour);
+        }
+        
+        if (Config.getOptionBool(DOMAIN, "setnicklist")) {
+            map.put(ChannelClientProperty.NICKLIST_FOREGROUND, colour);
         }
     }
     
@@ -143,15 +156,22 @@ public class NickColourPlugin extends Plugin implements EventPlugin, Preferences
                 "Show colours in nick list: ", "Colour nicknames in channel user lists?",
                 Config.getOptionBool("ui", "shownickcoloursinnicklist"));
         
+        preferencesPanel.addCheckboxOption("General", "settext",
+                "Set colours in text area: ", "Should the plugin set the text colour of nicks?",
+                Config.getOptionBool(DOMAIN, "settext"));
+        preferencesPanel.addCheckboxOption("General", "setnicklist",
+                "Set colours in nick list: ", "Should the plugin set the nicklist colour of nicks?",
+                Config.getOptionBool(DOMAIN, "setnicklist"));
+        
         preferencesPanel.addCheckboxOption("General", "userandomcolour",
                 "Enable Random Colour: ", "Use a pseudo-random colour for each person?",
-                Config.getOptionBool("plugin-NickColour", "userandomcolour"));
+                Config.getOptionBool(DOMAIN, "userandomcolour"));
         preferencesPanel.addCheckboxOption("General", "useowncolour",
                 "Use colour for own nick: ", "Always use the same colour for own nick?",
-                Config.getOptionBool("plugin-NickColour", "useowncolour"));
+                Config.getOptionBool(DOMAIN, "useowncolour"));
         preferencesPanel.addColourOption("General", "owncolour",
                 "Colour to use for own nick: ", "Colour used for own nick",
-                Config.getOption("plugin-NickColour", "owncolour", "1"), true, true);
+                Config.getOption(DOMAIN, "owncolour", "1"), true, true);
         
         preferencesPanel.display();
     }
@@ -167,6 +187,9 @@ public class NickColourPlugin extends Plugin implements EventPlugin, Preferences
         Config.setOption(DOMAIN, "userandomcolour", properties.getProperty("userandomcolour"));
         Config.setOption(DOMAIN, "useowncolour", properties.getProperty("useowncolour"));
         Config.setOption(DOMAIN, "owncolour", properties.getProperty("owncolour"));
+        
+        Config.setOption(DOMAIN, "settext", properties.getProperty("settext"));
+        Config.setOption(DOMAIN, "setnicklist", properties.getProperty("setnicklist"));
     }
     
     /** {@inheritDoc} */
