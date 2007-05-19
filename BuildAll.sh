@@ -23,7 +23,7 @@ SVNREV=${SVNREV##*: }
 awk '{gsub(/public static final String VERSION = "SVN";/,"public static final String VERSION = \"Nightly - SVN Rev: '$SVNREV'\";");print}' src/uk/org/ownage/dmdirc/Main.java > src/uk/org/ownage/dmdirc/Main.java
 $ANT -buildfile $MYDIR/build.xml -k
 if [ -f $MYDIR/dist/DMDirc.jar ]; then
-	FILENAME=DMDirc`date +_%Y%m%d`.jar
+	FILENAME=DMDirc`date +_%Y%m%d`_${SVNREV}.jar
 	cp $MYDIR/dist/DMDirc.jar /home/dmdirc/www/nightly/$FILENAME
 	if [ -e $WWWDIR/nightly/DMDirc_latest.jar ]; then
 		rm $WWWDIR/nightly/DMDirc_latest.jar
