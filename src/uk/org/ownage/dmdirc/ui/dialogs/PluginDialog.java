@@ -149,8 +149,8 @@ public final class PluginDialog extends StandardDialog implements
         blurbLabel.setBackground(this.getBackground());
         
         infoLabel = new JEditorPane("text/html", "<html><center>You can get "
-                + "more plugins from the <a href=\"http://plugins.dmdirc.com/\">"
-                + "plugins site</a></center></html>");
+                + "more plugins from the <a href=\"http://addons.dmdirc.com/\">"
+                + "Addons site</a></center></html>");
         infoLabel.setEditable(false);
         infoLabel.setHighlighter(null);
         infoLabel.setBackground(this.getBackground());
