@@ -23,33 +23,14 @@
 package uk.org.ownage.dmdirc.ui.textpane;
 
 import java.awt.BorderLayout;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.font.FontRenderContext;
-import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextAttribute;
-import java.awt.font.TextHitInfo;
-import java.awt.font.TextLayout;
-import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -90,6 +71,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         
         scrollBar = new JScrollBar(JScrollBar.VERTICAL);
         this.add(scrollBar, BorderLayout.LINE_END);
+        
+        this.setAutoscrolls(true);
         
         scrollBar.setMaximum(document.getNumLines());
         scrollBar.setBlockIncrement(10);

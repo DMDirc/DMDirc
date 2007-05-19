@@ -22,16 +22,12 @@
 
 package uk.org.ownage.dmdirc.ui.textpane;
 
-import java.awt.Point;
-import java.awt.font.TextLayout;
 import java.text.AttributedString;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- *
+ * Data contained in a TextPane.
  */
 public class IRCDocument {
     
@@ -40,9 +36,9 @@ public class IRCDocument {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
-    /** list of stylised lines of text. */
+    /** List of stylised lines of text. */
     private List<AttributedString> iterators;
     
     /** Creates a new instance of IRCDocument. */
@@ -70,10 +66,6 @@ public class IRCDocument {
         return iterators.get(lineNumber);
     }
     
-    public int getLineNumber(final AttributedString line) {
-        return iterators.indexOf(line);
-    }
-    
     /**
      * Adds the stylised string to the canvas.
      * @param text stylised string to add to the text
@@ -82,5 +74,6 @@ public class IRCDocument {
         synchronized (iterators) {
             iterators.add(text);
         }
-    }    
+    }
 }
+

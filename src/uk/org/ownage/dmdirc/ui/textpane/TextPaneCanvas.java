@@ -8,17 +8,16 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
-import java.awt.font.TextHitInfo;
 import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
+import javax.swing.JFrame;
 
 
 /** Canvas object to draw text. */
@@ -49,6 +48,16 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     /** parent textpane. */
     private TextPane textPane;
     
+    /** Position -> TextLayout */
+    private Map<Rectangle, TextLayout> positions;
+    /** TextLayout -> Line numbers */
+    private Map<TextLayout, String> textLayouts;
+    
+    private int startLine;
+    private int startChar;
+    private int endLine;
+    private int endChar;
+    
     /**
      * Creates a new text pane canvas.
      * @param parent parent text pane for the canvas
@@ -58,6 +67,8 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
         this.ircDocument = ircDocument;
         scrollBarPosition = 0;
         textPane = parent;
+        textLayouts = new HashMap<TextLayout, String>();
+        positions = new HashMap<Rectangle, TextLayout>();
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
     }
@@ -71,6 +82,9 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
         
         final float formatWidth = getWidth();
         final float formatHeight = getHeight();
+        
+        textLayouts.clear();
+        positions.clear();
         
         float drawPosY = formatHeight;
         
@@ -89,10 +103,35 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
             lineMeasurer = new LineBreakMeasurer(iterator, defaultFRC);
             lineMeasurer.setPosition(paragraphStart);
             
+            int wrappedLine = 0;
+            int height = 0;
+            
+            while (lineMeasurer.getPosition() < paragraphEnd) {
+                final TextLayout layout = lineMeasurer.nextLayout(formatWidth);
+                wrappedLine++;
+                height += (layout.getDescent() + layout.getLeading() + layout.getAscent());
+            }
+            
+            lineMeasurer.setPosition(paragraphStart);
+            paragraphStart = iterator.getBeginIndex();
+            paragraphEnd = iterator.getEndIndex();
+            
+            if (wrappedLine > 1) {
+                drawPosY -= height;
+            }
+            
+            int j = 0;
             while (lineMeasurer.getPosition() < paragraphEnd) {
                 
                 final TextLayout layout = lineMeasurer.nextLayout(formatWidth);
-                drawPosY -= layout.getDescent() + layout.getLeading();
+                
+                if (wrappedLine == 1) {
+                    drawPosY -= layout.getDescent() + layout.getLeading() + layout.getAscent();
+                } else {
+                    if (j != 0) {
+                        drawPosY += layout.getDescent() + layout.getLeading() + layout.getAscent();
+                    }
+                }
                 
                 float drawPosX;
                 if (layout.isLeftToRight()) {
@@ -101,11 +140,21 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
                     drawPosX = formatWidth - layout.getAdvance();
                 }
                 
-                drawPosY -= layout.getAscent();
-                
-                if (drawPosY + layout.getAscent() >= 0 || (drawPosY + layout.getDescent() + layout.getLeading()) <= formatHeight) {
+                if (drawPosY + layout.getAscent() >= 0
+                        || (drawPosY + layout.getDescent() + layout.getLeading()) <= formatHeight) {
                     layout.draw(graphics2D, drawPosX, drawPosY + layout.getAscent());
+                    textLayouts.put(layout, "" + i + "." + j);
+                    positions.put(new Rectangle(
+                            (int) drawPosX,
+                            (int) drawPosY,
+                            (int) formatHeight,
+                            (int) (layout.getDescent() + layout.getLeading() + layout.getAscent())
+                            ), layout);
                 }
+                j++;
+            }
+            if (j > 1) {
+                drawPosY -= height;
             }
             if (drawPosY <= 0) {
                 break;
@@ -146,10 +195,28 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     
     /** {@inheritDoc}. */
     public void mousePressed(final MouseEvent e) {
+        int line = -1;
+        
+        Point point = this.getMousePosition();
+        
+        if (point != null) {
+            String whichLine = "";
+            for (Map.Entry<Rectangle, TextLayout> entry : positions.entrySet()) {
+                if (entry.getKey().contains(point)) {
+                    //TODO: parse line and start char
+                    whichLine = textLayouts.get(entry.getValue());
+                    System.out.println(textLayouts.get(entry.getValue()) + " " + entry.getValue().hitTestChar((int) point.getX(), (int) point.getY()).getCharIndex());
+                }
+            }
+            for (Map.Entry<TextLayout, String> entry : textLayouts.entrySet()) {
+                entry.getValue().matches("");
+            }
+        }
     }
     
     /** {@inheritDoc}. */
     public void mouseReleased(final MouseEvent e) {
+        //TODO: parse line and end char
     }
     
     /** {@inheritDoc}. */
@@ -164,10 +231,32 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     
     /** {@inheritDoc}. */
     public void mouseDragged(final MouseEvent e) {
+        //TODO: parse line and end char
     }
     
     /** {@inheritDoc}. */
     public void mouseMoved(final MouseEvent e) {
         //Ignore
+    }
+    
+    /**
+     * temporary method to text the textpane.
+     * @param args command line arguments
+     */
+    public static void main(final String[] args) {
+        final TextPane tpc = new TextPane();
+        final JFrame frame = new JFrame("Test textpane");
+        
+        tpc.setDoubleBuffered(true);
+        tpc.setBackground(Color.WHITE);
+        
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        frame.add(tpc);
+        
+        frame.setSize(new Dimension(400, 400));
+        frame.setVisible(true);
+        
+        tpc.addTestText();
     }
 }
