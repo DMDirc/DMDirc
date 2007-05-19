@@ -62,6 +62,9 @@ public final class ConditionEditorDialog extends StandardDialog implements
      */
     private static final long serialVersionUID = 1;
     
+    /** Previously created instance of ConditionEditorDialog. */
+    private static ConditionEditorDialog me;
+    
     /** Parent dialog, informed of changes on close. */
     private ConditionsTabPanel parent;
     /** Parent action type trigger. */
@@ -97,7 +100,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
      * @param action parent action
      * @param condition condition to be edited (or null)
      */
-    public ConditionEditorDialog(final ConditionsTabPanel parent,
+    private ConditionEditorDialog(final ConditionsTabPanel parent,
             final ActionType trigger, final ActionCondition condition) {
         super(MainFrame.getMainFrame(), false);
         
@@ -127,6 +130,33 @@ public final class ConditionEditorDialog extends StandardDialog implements
         this.setLocationRelativeTo(MainFrame.getMainFrame());
         
         this.setVisible(true);
+    }
+    
+    /**
+     * Creates the dialog if one doesn't exist, and displays it.
+     *
+     * @param parent parent conditions panel.
+     * @param action parent action
+     * @param condition condition to be edited (or null)
+     */
+    public static synchronized void showConditionEditorDialog(
+            final ConditionsTabPanel parent, final ActionType trigger,
+            final ActionCondition condition) {
+        me = new ConditionEditorDialog(parent, trigger, condition);
+        me.populateArguments();
+        me.setVisible(true);
+        me.requestFocus();
+    }
+    
+    /**
+     * Creates the dialog if one doesn't exist, and displays it.
+     *
+     * @param parent parent conditions panel.
+     * @param action parent action
+     * @param condition condition to be edited (or null)
+     */
+    public static synchronized ConditionEditorDialog getConditionEditorDialog() {
+        return me;
     }
     
     /** Initialises the components. */

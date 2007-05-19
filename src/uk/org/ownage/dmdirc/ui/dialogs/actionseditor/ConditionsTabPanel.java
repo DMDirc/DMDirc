@@ -280,10 +280,10 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == newComparison) {
-            new ConditionEditorDialog(this, owner.getTrigger(), null);
+            ConditionEditorDialog.showConditionEditorDialog(this, owner.getTrigger(), null);
         } else {
             if ("edit".equals(event.getActionCommand())) {
-                new ConditionEditorDialog(this, owner.getTrigger(),
+                ConditionEditorDialog.showConditionEditorDialog(this, owner.getTrigger(),
                         conditions.get((Arrays.asList(
                         comparisonsPanel.getComponents()).indexOf(event.getSource()) - 2) / 4));
             } else if ("delete".equals(event.getActionCommand())) {

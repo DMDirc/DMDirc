@@ -171,9 +171,15 @@ public final class ActionsEditorDialog extends StandardDialog implements
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == getOkButton()) {
+            if (ConditionEditorDialog.getConditionEditorDialog() != null) {
+                ConditionEditorDialog.getConditionEditorDialog().dispose();
+            }
             saveSettings();
             this.dispose();
         } else if (event.getSource() == getCancelButton()) {
+            if (ConditionEditorDialog.getConditionEditorDialog() != null) {
+                ConditionEditorDialog.getConditionEditorDialog().dispose();
+            }
             this.dispose();
         }
     }

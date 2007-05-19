@@ -114,6 +114,7 @@ public final class ActionsManagerDialog extends StandardDialog
     private void initComponents() {
         orderButtons(new JButton(), new JButton());
         getCancelButton().addActionListener(this);
+        getOkButton().addActionListener(this);
         
         setLayout(new GridBagLayout());
         
@@ -271,7 +272,8 @@ public final class ActionsManagerDialog extends StandardDialog
     
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
-        if (e.getActionCommand().equals("close") || e.getSource() == getCancelButton()) {
+        if (e.getActionCommand().equals("close") 
+        || e.getSource() == getCancelButton() || e.getSource() == getOkButton()) {
             dispose();
         } else if (e.getActionCommand().equals("group.add")) {
             final String newGroup = JOptionPane.showInputDialog(this,
