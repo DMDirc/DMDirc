@@ -123,6 +123,8 @@ public class Action {
         file = new File(location);
         
         save();
+        
+        ActionManager.registerAction(this);
     }
     
     
