@@ -133,9 +133,6 @@ public final class ActionsEditorDialog extends StandardDialog implements
         tabbedPane.addTab("Conditions", new ConditionsTabPanel(this));
         
         tabbedPane.addTab("Response", new ResponseTabPanel(this));
-        
-        tabbedPane.setEnabledAt(1, false);
-        tabbedPane.setEnabledAt(2, false);
     }
     
     /** Initialises the button panel. */
@@ -191,9 +188,8 @@ public final class ActionsEditorDialog extends StandardDialog implements
      *
      * @param state details tabs state.
      */
-    public void setDetailsTabsState(final boolean state) {
-        tabbedPane.setEnabledAt(1, state);
-        tabbedPane.setEnabledAt(2, state);
+    public void setNewConditionButtonState(final boolean state) {
+        ((ConditionsTabPanel) tabbedPane.getComponentAt(1)).setNewConditionButton(state);
     }
     
     /** Saves this (new|edited) actions. */

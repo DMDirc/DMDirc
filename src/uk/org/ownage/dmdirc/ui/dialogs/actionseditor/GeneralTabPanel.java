@@ -107,7 +107,6 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         
         otherTriggers.setVisibleRowCount(2);
         otherTriggers.setEnabled(false);
-        owner.getOkButton().setEnabled(false);
         
         if (owner.getAction() == null) {
             return;
@@ -225,10 +224,10 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         boolean compatible = false;
         if (trigger.getSelectedIndex() != 0) {
             owner.getOkButton().setEnabled(true);
-            owner.setDetailsTabsState(true);
+            owner.setNewConditionButtonState(true);
         } else {
             owner.getOkButton().setEnabled(false);
-            owner.setDetailsTabsState(false);
+            owner.setNewConditionButtonState(false);
         }
         if (type == null || trigger.getSelectedIndex() == 0) {
             compatible = false;

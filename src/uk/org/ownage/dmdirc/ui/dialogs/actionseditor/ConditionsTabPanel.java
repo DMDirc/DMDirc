@@ -117,13 +117,17 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         infoLabel.setHighlighter(null);
         infoLabel.setBackground(this.getBackground());
         
+        setNewConditionButton(false);
+        
         initButtonsPanel();
+        
+        doConditions();
         
         if (owner.getAction() == null) {
             return;
         }
         
-        doConditions();
+        setNewConditionButton(true);
     }
     
     /** Adds listeners to the components. */
@@ -252,6 +256,14 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         doConditions();
     }
      
+    /**
+     * Sets the state of the new condition button.
+     *
+     * @param state State of the button
+     */
+    public void setNewConditionButton(final boolean state) {
+        newComparison.setEnabled(state);
+    }
     
     
     /**
