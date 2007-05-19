@@ -27,6 +27,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.IllegalFormatConversionException;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 import java.util.Set;
@@ -75,7 +76,11 @@ public final class Formatter {
             Logger.error(ErrorLevel.ERROR, "Format string not found: " + messageType);
             return "<No format string for message type " + messageType + ">";
         } else {
-            return String.format(res, arguments);
+            try {
+                return String.format(res, arguments);
+            } catch (IllegalFormatConversionException ex) {
+                return "<Invalid format string for message type " + messageType + ">";
+            }
         }
     }
     
@@ -189,7 +194,7 @@ public final class Formatter {
         //    7: Target user ident
         //    8: Target user host
         //    9: Channel name
-        //   10: Content        
+        //   10: Content
         defaultProperties.setProperty("channelKickReason", colour + "3* %1$s%2$s has kicked %5$s%6$s from %9$s (%10$s" + stop + ").");
         defaultProperties.setProperty("channelUserMode_default", colour + "3* %1$s%2$s sets mode %10$s on %6$s.");
         
