@@ -177,6 +177,42 @@ public class ActionManager {
     }
     
     /**
+     * Unregisters an action with the manager.
+     * @param action The action to be unregistered
+     */
+    public static void unregisterAction(final Action action) {
+        if (actions == null) {
+            return;
+        }
+        
+        for (Map.Entry<ActionType,List<Action>> map : actions.entrySet()) {
+            if (map.getValue().contains(action)) {
+                map.getValue().remove(action);
+            }
+        }
+        
+        for (Map.Entry<String,List<Action>> map : groups.entrySet()) {
+            if (map.getValue().contains(action)) {
+                map.getValue().remove(action);
+            }
+        }        
+    }
+    
+    /**
+     * Deletes the specified action.
+     * @param action The action to be deleted
+     */
+    public static void deleteAction(final Action action) {
+        if (actions == null) {
+            init();
+        }
+        
+        unregisterAction(action);
+        
+        action.delete();
+    }
+    
+    /**
      * Processes an event of the specified type.
      * @param type The type of the event to process
      * @param format The format of the message that's going to be displayed for
@@ -252,6 +288,26 @@ public class ActionManager {
             }
             
             groups.remove(group);
+        }
+    }
+    
+    /**
+     * Renames the specified group.
+     * @param oldName The old name of the group
+     * @param newName The new name of the group
+     */
+    public static void renameGroup(final String oldName, final String newName) {
+        if (groups.containsKey(oldName)) {
+            makeGroup(newName);
+            
+            for (Action action : groups.get(oldName)) {
+                action.setGroup(newName);
+                groups.get(newName).add(action);
+            }
+            
+            groups.get(oldName).clear();
+            
+            removeGroup(oldName);
         }
     }
     

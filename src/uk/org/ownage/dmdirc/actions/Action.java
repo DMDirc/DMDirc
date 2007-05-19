@@ -120,7 +120,7 @@ public class Action {
         final String fs = System.getProperty("file.separator");
         final String location = ActionManager.getDirectory() + group + fs + name;
         
-        file = new File(location);        
+        file = new File(location);
         
         save();
     }
@@ -328,6 +328,26 @@ public class Action {
     }
     
     /**
+     * Sets the group of this action.
+     * @param newGroup The new group for this action
+     */
+    public void setGroup(final String newGroup) {
+        group = newGroup;
+        
+        final String fs = System.getProperty("file.separator");
+        final String location = ActionManager.getDirectory() + group + fs + name;
+        
+        file.renameTo(new File(location));
+    }
+    
+    /**
+     * Deletes this action.
+     */
+    public void delete() {
+        file.delete();
+    }
+    
+    /**
      * Retrieves a list of this action's conditions.
      * @return A list of this action's conditions
      */
@@ -357,6 +377,9 @@ public class Action {
      */
     public void setTriggers(final ActionType[] triggers) {
         this.triggers = triggers.clone();
+        
+        ActionManager.unregisterAction(this);
+        ActionManager.registerAction(this);
     }
     
     /**
