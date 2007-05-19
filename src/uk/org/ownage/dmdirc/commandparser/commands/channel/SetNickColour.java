@@ -26,6 +26,7 @@ import java.awt.Color;
 import java.util.Map;
 import uk.org.ownage.dmdirc.Channel;
 import uk.org.ownage.dmdirc.ChannelClientProperty;
+import uk.org.ownage.dmdirc.Config;
 import uk.org.ownage.dmdirc.Server;
 import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
@@ -58,19 +59,53 @@ public final class SetNickColour extends ChannelCommand {
     @SuppressWarnings("unchecked")
     public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final String... args) {
-        final ChannelClientInfo target = channel.getChannelInfo().getUser(args[0]);
+        
+        int offset = 0;
+        boolean nicklist = true;
+        boolean text = true;
+        
+        if (args.length > offset && args[offset].equalsIgnoreCase("--nicklist")) {
+            text = false;
+            offset++;
+        } else if (args.length > offset && args[offset].equalsIgnoreCase("--text")) {
+            nicklist = false;
+            offset++;
+        }
+        
+        if (args.length <= offset) {
+            origin.addLine("commandUsage", Config.getCommandChar(),
+                    "setnickcolour", "[--nicklist|--text] <nick> [colour]");
+            return;
+        }
+        
+        final ChannelClientInfo target = channel.getChannelInfo().getUser(args[offset]);
+        offset++;
         
         if (target == null) {
             origin.addLine("commandError", "No such nickname!");
+        } else if (args.length <= offset) {
+            // We're removing the colour
+            if (nicklist) {
+                target.getMap().remove(ChannelClientProperty.NICKLIST_FOREGROUND);
+            }
+            if (text) {
+                target.getMap().remove(ChannelClientProperty.TEXT_FOREGROUND);
+            }
+            ((ChannelFrame) channel.getFrame()).getNickList().repaint();
         } else {
-            final Color newColour = ColourManager.parseColour(args[1], null);
+            // We're setting the colour
+            final Color newColour = ColourManager.parseColour(args[offset], null);
             if (newColour == null) {
                 origin.addLine("commandError", "Invalid colour specified.");
-            } else {
-                target.getMap().put(ChannelClientProperty.NICKLIST_FOREGROUND, newColour);
-                target.getMap().put(ChannelClientProperty.TEXT_FOREGROUND, newColour);
-                ((ChannelFrame) channel.getFrame()).getNickList().repaint();
+                return;
             }
+            if (nicklist) {
+                target.getMap().put(ChannelClientProperty.NICKLIST_FOREGROUND, newColour);
+            }
+            if (text) {
+                target.getMap().put(ChannelClientProperty.TEXT_FOREGROUND, newColour);
+            }
+            ((ChannelFrame) channel.getFrame()).getNickList().repaint();
         }
     }
     
@@ -86,17 +121,17 @@ public final class SetNickColour extends ChannelCommand {
     
     /** {@inheritDoc}. */
     public boolean isPolyadic() {
-        return false;
+        return true;
     }
     
     /** {@inheritDoc}. */
     public int getArity() {
-        return 2;
+        return 0;
     }
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "setnickcolour <nick> <colour> - set the specified person's display colour";
+        return "setnickcolour [--nicklist|--text] <nick> [colour] - set the specified person's display colour";
     }
     
 }
