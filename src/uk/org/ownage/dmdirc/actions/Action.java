@@ -98,6 +98,35 @@ public class Action {
     }
     
     /**
+     * Creates a new instance of Action with the specified properties and saves
+     * it to disk.
+     * @param group The group the action belongs to
+     * @param name The name of the action
+     * @param triggers The triggers to use
+     * @param response The response to use
+     * @param conditions The conditions to use
+     * @param newFormat The new formatter to use
+     */
+    public Action(final String group, final String name,
+            final ActionType[] triggers, final String[] response,
+            final List<ActionCondition> conditions, final String newFormat) {
+        this.group = group;
+        this.name = name;
+        this.triggers = triggers.clone();
+        this.response = response.clone();
+        this.conditions = conditions;
+        this.newFormat = newFormat;
+        
+        final String fs = System.getProperty("file.separator");
+        final String location = ActionManager.getDirectory() + group + fs + name;
+        
+        file = new File(location);        
+        
+        save();
+    }
+    
+    
+    /**
      * Loads the various attributes of this action from the properties instance.
      */
     private void loadAction() {
@@ -190,7 +219,7 @@ public class Action {
         properties.setProperty("response", responseString.substring(1));
         
         if (newFormat != null) {
-            properties.setProperty("formatter", newFormat);
+            properties.setProperty("format", newFormat);
         }
         
         int i = 0;
