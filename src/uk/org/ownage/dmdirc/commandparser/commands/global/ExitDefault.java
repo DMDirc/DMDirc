@@ -44,8 +44,9 @@ public final class ExitDefault extends GlobalCommand {
         CommandManager.registerCommand(this);
     }
     
-    /** {@inheritDoc}  */
-    public void execute(final CommandWindow origin, final String... args) {
+    /** {@inheritDoc} */
+    public void execute(final CommandWindow origin, final boolean isSilent,
+            final String... args) {
         String def;
         
         if (origin == null) {
@@ -54,7 +55,7 @@ public final class ExitDefault extends GlobalCommand {
             def = origin.getConfigManager().getOption("general", "closemessage");
         }
         
-        CommandManager.getGlobalCommand("exit").execute(origin, def);
+        CommandManager.getGlobalCommand("exit").execute(origin, isSilent, def);
     }
     
     

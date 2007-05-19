@@ -44,8 +44,9 @@ public final class Exit extends GlobalCommand {
         CommandManager.registerCommand(this);
     }
     
-    /** {@inheritDoc}  */
-    public void execute(final CommandWindow origin, final String... args) {
+    /** {@inheritDoc} */
+    public void execute(final CommandWindow origin, final boolean isSilent,
+            final String... args) {
         Main.quit(implodeArgs(args));
     }
     

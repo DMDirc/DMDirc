@@ -60,20 +60,15 @@ public final class QueryCommandParser extends CommandParser {
         CommandManager.loadQueryCommands(this);
     }
     
-    /**
-     * Executes the specified command with the given arguments.
-     * @param origin The window in which the command was typed
-     * @param command The command to be executed
-     * @param args The arguments to the command
-     */
+    /** {@inheritDoc} */
     protected void executeCommand(final CommandWindow origin,
-            final Command command, final String... args) {
+            final boolean isSilent, final Command command, final String... args) {
         if (command instanceof QueryCommand) {
             ((QueryCommand) command).execute(origin, server, query, args);
         } else if (command instanceof ServerCommand) {
             ((ServerCommand) command).execute(origin, server, args);
         } else {
-            ((GlobalCommand) command).execute(origin, args);
+            ((GlobalCommand) command).execute(origin, isSilent, args);
         }
     }
     

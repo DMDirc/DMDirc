@@ -116,9 +116,9 @@ public abstract class CommandParser {
             // have error handlers if there are too few arguments (e.g., msg/0 and
             // msg/1 would return errors, so msg only gets called with 2+ args).
             if (commands.containsKey(signature.toLowerCase())) {
-                executeCommand(origin, commands.get(signature.toLowerCase()), comargs);
+                executeCommand(origin, false, commands.get(signature.toLowerCase()), comargs);
             } else if (commands.containsKey(command.toLowerCase())) {
-                executeCommand(origin, commands.get(command.toLowerCase()), comargs);
+                executeCommand(origin, false, commands.get(command.toLowerCase()), comargs);
             } else {
                 handleInvalidCommand(origin, command, comargs);
             }
@@ -149,11 +149,12 @@ public abstract class CommandParser {
     /**
      * Executes the specified command with the given arguments.
      * @param origin The window in which the command was typed
+     * @param isSilent Whether the command is being silenced or not
      * @param command The command to be executed
      * @param args The arguments to the command
      */
     protected abstract void executeCommand(final CommandWindow origin,
-            final Command command, final String... args);
+            final boolean isSilent, final Command command, final String... args);
     
     /**
      * Called when the user attempted to issue a command (i.e., used the command

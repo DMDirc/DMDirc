@@ -45,8 +45,9 @@ public final class NewServer extends GlobalCommand {
         CommandManager.registerCommand(this);
     }
     
-    /** {@inheritDoc}  */
-    public void execute(final CommandWindow origin, final String... args) {
+    /** {@inheritDoc} */
+    public void execute(final CommandWindow origin, final boolean isSilent,
+            final String... args) {
         if (args.length == 0) {
             origin.addLine("commandUsage", Config.getCommandChar(), "newserver",
                     "[--ssl] <host[:port]> [password]");

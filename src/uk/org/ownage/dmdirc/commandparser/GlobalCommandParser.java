@@ -48,7 +48,7 @@ public final class GlobalCommandParser extends CommandParser {
      * Retrieves a singleton instance of the global command parser.
      * @return A GlobalCommandParser
      */
-    public static synchronized  GlobalCommandParser getGlobalCommandParser() {
+    public static synchronized GlobalCommandParser getGlobalCommandParser() {
         if (me == null) {
             me = new GlobalCommandParser();
         }
@@ -61,15 +61,10 @@ public final class GlobalCommandParser extends CommandParser {
         CommandManager.loadGlobalCommands(this);
     }
     
-    /**
-     * Executes the specified command with the given arguments.
-     * @param origin The window in which the command was typed
-     * @param command The command to be executed
-     * @param args The arguments to the command
-     */
+    /** {@inheritDoc} */
     protected void executeCommand(final CommandWindow origin,
-            final Command command, final String... args) {
-        ((GlobalCommand) command).execute(origin, args);
+            final boolean isSilent, final Command command, final String... args) {
+        ((GlobalCommand) command).execute(origin, isSilent, args);
     }
     
     /**

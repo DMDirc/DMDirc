@@ -42,12 +42,9 @@ public final class LoadFormatter extends GlobalCommand {
         CommandManager.registerCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param args The user supplied arguments
-     */
-    public void execute(final CommandWindow origin, final String... args) {
+    /** {@inheritDoc} */
+    public void execute(final CommandWindow origin, final boolean isSilent,
+            final String... args) {
         if (Formatter.loadFile(args[0])) {
             origin.addLine("commandOutput", "Formatter loaded.");
         } else {

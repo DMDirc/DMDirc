@@ -42,12 +42,9 @@ public final class Set extends GlobalCommand {
         CommandManager.registerCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param args The user supplied arguments
-     */
-    public void execute(final CommandWindow origin, final String... args) {
+    /** {@inheritDoc} */
+    public void execute(final CommandWindow origin, final boolean isSilent,
+            final String... args) {
         switch (args.length) {
             case 0:
                 doDomainList(origin);

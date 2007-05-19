@@ -33,7 +33,8 @@ public abstract class GlobalCommand extends Command {
      * Executes this command. Note that for global commands, origin may be
      * null.
      * @param origin The window in which the command was typed
+     * @param isSilent Whetehr this command is silenced or not
      * @param args Arguments passed to this command
      */
-    public abstract void execute(CommandWindow origin, String ... args);
+    public abstract void execute(CommandWindow origin, boolean isSilent, String ... args);
 }

@@ -99,6 +99,20 @@ public abstract class Command implements Comparable<Command> {
         return implodeArgs(0, args);
     } 
     
+    /**
+     * Sends a line, if appropriate, to the specified target.
+     * @param target The command window to send the line to
+     * @param isSilent Whether this command is being silenced or not
+     * @param type The type of message to send
+     * @param args The arguments of the message
+     */
+    protected final void sendLine(final CommandWindow target,
+            final boolean isSilent, final String type, final Object ... args) {
+        if (!isSilent && target != null) {
+            target.addLine(type, args);
+        }
+    }
+    
     /** {@inheritDoc} */
     public int compareTo(final Command o) {
         return getSignature().compareTo(o.getSignature());

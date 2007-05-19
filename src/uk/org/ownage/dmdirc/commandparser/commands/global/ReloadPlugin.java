@@ -43,12 +43,9 @@ public final class ReloadPlugin extends GlobalCommand {
         CommandManager.registerCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param args The user supplied arguments
-     */
-    public void execute(final CommandWindow origin, final String... args) {
+    /** {@inheritDoc} */
+    public void execute(final CommandWindow origin, final boolean isSilent,
+            final String... args) {
         Plugin plugin = PluginManager.getPluginManager().getPlugin(args[0]);
         if (plugin != null) {
             boolean isActive = plugin.isActive();
