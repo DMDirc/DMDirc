@@ -129,6 +129,9 @@ public class ProcessMessage extends IRCProcessor {
 			}
 		}
 
+		// Remove the leading : from the host.
+		if (token[0].charAt(0) == ':' && token[0].length() > 1) { token[0] = token[0].substring(1); }
+
 		iClient = getClientInfo(token[0]);
 		if (myParser.ALWAYS_UPDATECLIENT && iClient != null) {
 			// Facilitate DMDIRC Formatter
@@ -140,7 +143,7 @@ public class ProcessMessage extends IRCProcessor {
 		// OnPrivate* Callbacks are fired if the target was us
 		// OnUnknown* Callbacks are fired if the target was neither of the above
 		// Actions and CTCPs are send as PRIVMSGS
-		// CTCPReplies are sent as Notices		
+		// CTCPReplies are sent as Notices
 		if (isValidChannelName(token[2])) {
 			iChannel = getChannelInfo(token[2]);
 			if (iClient != null && iChannel != null) { iChannelClient = iChannel.getUser(iClient); }

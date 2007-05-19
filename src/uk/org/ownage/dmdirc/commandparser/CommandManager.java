@@ -287,6 +287,7 @@ public final class CommandManager {
         new Reconnect();
         new ReloadActions();
         new ReloadFormatter();
+        new ReloadPlugin();
         new SaveFormatter();
         new Set();
         new Whois();
