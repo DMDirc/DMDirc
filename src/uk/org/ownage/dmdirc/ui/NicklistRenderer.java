@@ -76,12 +76,12 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
         final Map map = ((ChannelClientInfo) value).getMap();
         
         if (config.getOptionBool("ui", "shownickcoloursinnicklist") && map != null) {
-            if (map.containsKey(ChannelClientProperty.COLOUR_FOREGROUND)) {
-                setForeground((Color) map.get(ChannelClientProperty.COLOUR_FOREGROUND));
+            if (map.containsKey(ChannelClientProperty.NICKLIST_FOREGROUND)) {
+                setForeground((Color) map.get(ChannelClientProperty.NICKLIST_FOREGROUND));
             }
             
-            if (map.containsKey(ChannelClientProperty.COLOUR_BACKGROUND)) {
-                setBackground((Color) map.get(ChannelClientProperty.COLOUR_BACKGROUND));
+            if (map.containsKey(ChannelClientProperty.NICKLIST_BACKGROUND)) {
+                setBackground((Color) map.get(ChannelClientProperty.NICKLIST_BACKGROUND));
             }
         }
         

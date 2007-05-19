@@ -67,7 +67,8 @@ public final class SetNickColour extends ChannelCommand {
             if (newColour == null) {
                 origin.addLine("commandError", "Invalid colour specified.");
             } else {
-                target.getMap().put(ChannelClientProperty.COLOUR_FOREGROUND, newColour);
+                target.getMap().put(ChannelClientProperty.NICKLIST_FOREGROUND, newColour);
+                target.getMap().put(ChannelClientProperty.TEXT_FOREGROUND, newColour);
                 ((ChannelFrame) channel.getFrame()).getNickList().repaint();
             }
         }

@@ -86,12 +86,15 @@ public class NickColourPlugin extends Plugin implements EventPlugin, Preferences
         
         if (Config.getOptionBool(DOMAIN, "useowncolour") && client.getClient().equals(myself)) {
             final Color color = ColourManager.parseColour(Config.getOption(DOMAIN, "owncolour"));
-            map.put(ChannelClientProperty.COLOUR_FOREGROUND, color);
+            map.put(ChannelClientProperty.TEXT_FOREGROUND, color);
+            map.put(ChannelClientProperty.NICKLIST_FOREGROUND, color);
         } else if (Config.hasOption(DOMAIN, nickOption)) {
             final Color color = ColourManager.parseColour(Config.getOption(DOMAIN, nickOption));
-            map.put(ChannelClientProperty.COLOUR_FOREGROUND, color);            
+            map.put(ChannelClientProperty.TEXT_FOREGROUND, color);
+            map.put(ChannelClientProperty.NICKLIST_FOREGROUND, color);
         }  else if (Config.getOptionBool(DOMAIN, "userandomcolour")) {
-            map.put(ChannelClientProperty.COLOUR_FOREGROUND, getColour(client.getNickname()));
+            map.put(ChannelClientProperty.TEXT_FOREGROUND, getColour(client.getNickname()));
+            map.put(ChannelClientProperty.NICKLIST_FOREGROUND, getColour(client.getNickname()));
         }
     }
     

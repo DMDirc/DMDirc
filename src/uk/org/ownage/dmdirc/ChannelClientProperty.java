@@ -28,7 +28,9 @@ package uk.org.ownage.dmdirc;
  */
 public enum ChannelClientProperty {
     
-    COLOUR_FOREGROUND,
-    COLOUR_BACKGROUND;
+    NICKLIST_FOREGROUND,
+    NICKLIST_BACKGROUND,
+    TEXT_FOREGROUND,
+    TEXT_BACKGROUND;
     
 }

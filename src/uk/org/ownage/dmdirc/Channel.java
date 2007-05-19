@@ -824,11 +824,11 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
             String prefix = null;
             Color colour;
             
-            if (map.containsKey(ChannelClientProperty.COLOUR_FOREGROUND)) {
-                colour = (Color) map.get(ChannelClientProperty.COLOUR_FOREGROUND);
+            if (map.containsKey(ChannelClientProperty.TEXT_FOREGROUND)) {
+                colour = (Color) map.get(ChannelClientProperty.TEXT_FOREGROUND);
                 prefix = Styliser.CODE_HEXCOLOUR + ColourManager.getHex(colour);
-                if (map.containsKey(ChannelClientProperty.COLOUR_BACKGROUND)) {
-                    colour = (Color) map.get(ChannelClientProperty.COLOUR_BACKGROUND);
+                if (map.containsKey(ChannelClientProperty.TEXT_BACKGROUND)) {
+                    colour = (Color) map.get(ChannelClientProperty.TEXT_BACKGROUND);
                     prefix = "," + ColourManager.getHex(colour);
                 }
             }
