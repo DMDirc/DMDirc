@@ -110,7 +110,7 @@ public final class ResponseTabPanel extends JPanel {
         
         responses.setText(responses.getText().substring(0, responses.getText().length() - 1));
         
-        ((DefaultComboBoxModel) formatter.getModel()).addElement("Normal");
+        ((DefaultComboBoxModel) formatter.getModel()).addElement("No change");
         ((DefaultComboBoxModel) formatter.getModel()).addElement("No response");
         
         for (String format : Formatter.getFormats()) {
@@ -178,12 +178,14 @@ public final class ResponseTabPanel extends JPanel {
      */
     public String getFormatter() {
         String format = (String) formatter.getSelectedItem();
+        System.out.println("FormaT: " + format);
         if ("No response".equals(format)) {
-            format = null;
-        }
-        if ("Current".equals(format)) {
             format = "";
         }
+        if ("No change".equals(format)) {
+            format = null;
+        }
+        System.out.println("Returning: " + format);
         return format;
     }
     
