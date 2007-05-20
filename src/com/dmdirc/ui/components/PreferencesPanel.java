@@ -81,7 +81,7 @@ public final class PreferencesPanel extends StandardDialog implements
      * class structure is changed (or anything else that would prevent
      * serialized objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 6;
+    private static final long serialVersionUID = 7;
     
     /** Acceptable input types for the config dialog. */
     public static enum OptionType {
@@ -93,8 +93,10 @@ public final class PreferencesPanel extends StandardDialog implements
         COMBOBOX,
         /** JSpinner. */
         SPINNER,
-        /** ColourChoose. */
+        /** ColourChooser. */
         COLOUR,
+        /** OptionalColourChooser. */
+        OPTIONALCOLOUR,
         /** JPanel. */
         PANEL,
     };
@@ -113,6 +115,9 @@ public final class PreferencesPanel extends StandardDialog implements
     
     /** All colours in the dialog, used to apply settings. */
     private final Map<String, ColourChooser> colours;
+    
+    /** All optional colours in the dialog, used to apply settings. */
+    private final Map<String, OptionalColourChooser> optionalColours;
     
     /** Categories in the dialog. */
     private final Map<String, JPanel> categories;
@@ -171,6 +176,7 @@ public final class PreferencesPanel extends StandardDialog implements
         comboBoxes = new HashMap<String, JComboBox>();
         spinners = new HashMap<String, JSpinner>();
         colours = new HashMap<String, ColourChooser>();
+        optionalColours = new HashMap<String, OptionalColourChooser>();
         
         panels = new ArrayList<JPanel>();
         
@@ -207,7 +213,7 @@ public final class PreferencesPanel extends StandardDialog implements
         setTitle(windowTitle);
         setResizable(false);
         
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, 
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER,
                 LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
         tabList.setBorder(BorderFactory.createCompoundBorder(BorderFactory
                 .createEtchedBorder(), BorderFactory.createEmptyBorder(
@@ -237,7 +243,7 @@ public final class PreferencesPanel extends StandardDialog implements
         getCancelButton().addActionListener(this);
         
         // tab list
-        layout.putConstraint(SpringLayout.WEST, tabList, LARGE_BORDER, 
+        layout.putConstraint(SpringLayout.WEST, tabList, LARGE_BORDER,
                 SpringLayout.WEST, getContentPane());
         layout.putConstraint(SpringLayout.NORTH, tabList, LARGE_BORDER,
                 SpringLayout.NORTH, getContentPane());
@@ -281,6 +287,9 @@ public final class PreferencesPanel extends StandardDialog implements
      *   4 Integers, default, minimum maximum, step size</li>
      * <li>COLOUR takes a String as the initial value, and
      *   two booleans, one to show irc colours, one to show hex colours</li>
+     * <li>OPTIONALCOLOUR takes a String as the initial value, and
+     *   three booleans, one to set the initial state (enabled or disabled),
+     *   one to show irc colours, one to show hex colours</li>
      * <li>TABLE takes a table model param</li>
      * </ul>
      */
@@ -336,6 +345,11 @@ public final class PreferencesPanel extends StandardDialog implements
                 option = new ColourChooser((String) args[0], (Boolean) args[1],
                         (Boolean) args[2]);
                 colours.put(optionName, (ColourChooser) option);
+                break;
+            case OPTIONALCOLOUR:
+                option = new OptionalColourChooser((String) args[0], (Boolean) args[1],
+                        (Boolean) args[2], (Boolean) args[3]);
+                optionalColours.put(optionName, (OptionalColourChooser) option);
                 break;
             case PANEL:
                 option = (JComponent) args[0];
@@ -422,7 +436,7 @@ public final class PreferencesPanel extends StandardDialog implements
     /**
      * Replaces the option panel in a category with the specified panel, this
      * panel will be be automatically laid out.
-     * 
+     *
      * @param category category to replace the options panel in
      * @param panel panel to replace options panel with
      */
@@ -544,10 +558,31 @@ public final class PreferencesPanel extends StandardDialog implements
      * @param name config name for the option
      * @param displayName displayable name for the option
      * @param helpText Help text to be displayed for the option
+     * @param defaultValue default value
+     * @param initialState initial state
+     * @param showIrcColours show irc colours in the colour picker
+     * @param showHexColours show hex colours in the colour picker
+     */
+    public void addOptionalColourOption(final String category, final String name,
+            final String displayName, final String helpText,
+            final String defaultValue, final boolean initialState,
+            final boolean showIrcColours, final boolean showHexColours) {
+        addComponent(categories.get(category), name, displayName, helpText,
+                OptionType.OPTIONALCOLOUR, defaultValue, initialState, 
+                showIrcColours, showHexColours);
+    }
+    
+    /**
+     * Adds an option to the specified category.
+     *
+     * @param category category option is to be added to
+     * @param name config name for the option
+     * @param displayName displayable name for the option
+     * @param helpText Help text to be displayed for the option
      * @param panel panel to add
      */
-    public void addPanelOption(final String category, final String name, 
-            final String displayName, final String helpText, 
+    public void addPanelOption(final String category, final String name,
+            final String displayName, final String helpText,
             final JPanel panel) {
         addComponent(categories.get(category), name, displayName, helpText,
                 OptionType.PANEL, panel);
@@ -680,7 +715,7 @@ public final class PreferencesPanel extends StandardDialog implements
             setForeground(tree.getForeground());
             setOpaque(true);
             setToolTipText(null);
-            setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
+            setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                     SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
             
             setPreferredSize(new Dimension((int) tabList.getPreferredSize().getWidth() - 20,
