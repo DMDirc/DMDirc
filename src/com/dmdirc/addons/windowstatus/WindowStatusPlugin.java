@@ -43,6 +43,7 @@ import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.ui.ChannelFrame;
@@ -89,6 +90,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 		// Set default options if they don't exist
 		updateOption(config, "channel.shownone", "true");
 		updateOption(config, "channel.noneprefix", "None:");
+		updateOption(config, "client.showname", "false");
 		
 		return true;
 	}
@@ -97,6 +99,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 * Called when this plugin is Activated.
 	 */
 	public void onActivate() {
+		MainFrame.getMainFrame().getStatusBar().addComponent(panel);
 		updateStatus();
 	}
 	
@@ -112,7 +115,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 *
 	 * @return Plugin Version
 	 */
-	public String getVersion() { return "0.3"; }
+	public String getVersion() { return "0.4"; }
 	
 	/**
 	 * Get the plugin Author.
@@ -159,7 +162,6 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 * Update the window status using the current active window.
 	 */
 	public void updateStatus() {
-		MainFrame.getMainFrame().getStatusBar().addComponent(panel);
 		JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
 		if (active instanceof CommandWindow) {
 			FrameContainer activeFrame = ((CommandWindow)active).getContainer();
@@ -181,10 +183,10 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 			
 			textString.append(frame.getName());
 		} else if (current instanceof Channel) {
-			Channel frame = (Channel)current;
-			ChannelInfo chan = frame.getChannelInfo();
-			Hashtable<Integer,String> names = new Hashtable<Integer,String>();
-			Hashtable<Integer,Integer> types = new Hashtable<Integer,Integer>();
+			final Channel frame = (Channel)current;
+			final ChannelInfo chan = frame.getChannelInfo();
+			final Hashtable<Integer,String> names = new Hashtable<Integer,String>();
+			final Hashtable<Integer,Integer> types = new Hashtable<Integer,Integer>();
 			
 			textString.append(chan.getName());
 			textString.append(" - Nicks: "+chan.getUserCount()+" (");
@@ -194,7 +196,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 				
 				if (!names.containsKey(im)) {
 					String mode = client.getImportantModePrefix();
-					
+
 					if (mode.equals("")) {
 						if (Config.getOptionBool(MY_DOMAIN, "channel.shownone")) {
 							if (Config.hasOption(MY_DOMAIN, "channel.noneprefix")) {
@@ -230,9 +232,18 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 			
 			textString.append(")");
 		} else if (current instanceof Query) {
-			Query frame = (Query)current;
+			final Query frame = (Query)current;
 			
 			textString.append(frame.getHost());
+			if (Config.getOptionBool(MY_DOMAIN, "client.showname")) {
+				final ClientInfo client = frame.getServer().getParser().getClientInfo(frame.getHost());
+				if (client != null) {
+					final String realname = client.getRealName();
+					if (!realname.equals("")) {
+						textString.append(" - "+client.getRealName());
+					}
+				}
+			}
 		}
 		label.setText(" "+textString.toString()+" ");
 	}
@@ -250,10 +261,12 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	public void showConfig() {
 		final PreferencesPanel preferencesPanel = new PreferencesPanel(this, "Window Status Plugin - Config");
 		preferencesPanel.addCategory("Channel", "Configuration for Window Status plugin when showing a channel window.");
+		preferencesPanel.addCategory("Client", "Configuration for Window Status plugin when showing a client window.");
 
 		preferencesPanel.addCheckboxOption("Channel", "channel.shownone", "Show 'none' count: ", "Should the count for uses with no state be shown?", Config.getOptionBool(MY_DOMAIN, "channel.shownone"));
 		preferencesPanel.addTextfieldOption("Channel", "channel.noneprefix", "Prefix used before 'none' count: ", "The Prefix to use when showing the 'none' count", Config.getOption(MY_DOMAIN, "channel.noneprefix"));
 		
+		preferencesPanel.addCheckboxOption("Client", "client.showname", "Show Client realname if known: ", "Should the realname for clients be shown if known?", Config.getOptionBool(MY_DOMAIN, "client.showname"));
 		preferencesPanel.display();
 	}
 	
@@ -310,6 +323,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 		// Update Config options
 		updateOption(properties, "channel.shownone", null);
 		updateOption(properties, "channel.noneprefix", "");
+		updateOption(properties, "client.showname", null);
 		// Update Status bar
 		updateStatus();
 	}

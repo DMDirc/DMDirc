@@ -46,6 +46,8 @@ public final class ClientInfo {
 	private int nModes;
 	/** Known Away Reason of client. */
 	private String myAwayReason = "";
+	/** Known RealName of client. */
+	private String sRealName = "";
 	/** Known away state for client. */
 	private boolean bIsAway;
 	/** Is this a fake client created just for a callback? */
@@ -209,6 +211,19 @@ public final class ClientInfo {
 	 * @param newValue new away reason for user.
 	 */
 	protected void setAwayReason(final String newValue) { myAwayReason = newValue; }
+	
+	/**
+	 * Get the RealName for this user.
+	 *
+	 * @return Known RealName for user.
+	 */
+	public String getRealName() { return sRealName; }
+	/**
+	 * Set the RealName for this user.
+	 *
+	 * @param newValue new RealName for user.
+	 */
+	protected void setRealName(final String newValue) { sRealName = newValue; }
 	
 	/**
 	 * Set the user modes (as an integer).

@@ -61,6 +61,13 @@ public class ProcessWho extends IRCProcessor {
 		if (client != null) {
 			// Update ident/host
 			client.setUserBits(token[7]+"!"+token[4]+"@"+token[5], false);
+			// Update real name
+			if (client.getRealName().equals("")) {
+				try {
+					String name = token[9].split(" ", 2)[1];
+					client.setRealName(name);
+				} catch (Exception e) { /* Do Nothing */ }
+			}
 			// Update away state
 			String mode = token[8];
 			boolean isAway = mode.matches(".*G.*");
