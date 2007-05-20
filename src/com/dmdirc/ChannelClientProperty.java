@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc;
+package com.dmdirc;
 
 /**
  * Represents the properties that can be set on a channel client.

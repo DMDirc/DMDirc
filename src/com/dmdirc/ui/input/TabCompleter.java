@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.input;
+package com.dmdirc.ui.input;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import uk.org.ownage.dmdirc.Config;
+import com.dmdirc.Config;
 
 /**
  * The tab completer handles a user's request to tab complete some word.

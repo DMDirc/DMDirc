@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.components;
+package com.dmdirc.ui.components;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -61,14 +61,14 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.ui.MainFrame;
+import com.dmdirc.Config;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.MainFrame;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * Allows the user to modify global client preferences.

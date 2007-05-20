@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.dialogs;
+package com.dmdirc.ui.dialogs;
 
 import java.util.Map;
 import java.util.Properties;
@@ -28,9 +28,9 @@ import java.util.Properties;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
-import uk.org.ownage.dmdirc.ui.components.PreferencesPanel;
+import com.dmdirc.Config;
+import com.dmdirc.ui.components.PreferencesInterface;
+import com.dmdirc.ui.components.PreferencesPanel;
 
 /**
  * Allows the user to modify global client preferences.

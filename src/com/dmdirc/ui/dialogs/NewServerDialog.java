@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.dialogs;
+package com.dmdirc.ui.dialogs;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -43,18 +43,18 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.ServerManager;
-import uk.org.ownage.dmdirc.identities.ConfigSource;
-import uk.org.ownage.dmdirc.identities.IdentityManager;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.components.StandardDialog;
+import com.dmdirc.Config;
+import com.dmdirc.Server;
+import com.dmdirc.ServerManager;
+import com.dmdirc.identities.ConfigSource;
+import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.StandardDialog;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Dialog that allows the user to enter details of a new server to connect to.

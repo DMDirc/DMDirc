@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.plugins.plugins.logging;
+package com.dmdirc.plugins.plugins.logging;
 
 import java.io.File;
 import java.io.FileNotFoundException;

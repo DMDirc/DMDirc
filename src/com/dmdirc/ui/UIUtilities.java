@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package com.dmdirc.ui;
 
 import java.awt.Component;
 import java.awt.Container;

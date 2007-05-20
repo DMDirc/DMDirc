@@ -21,7 +21,7 @@
  *
  * SVN: $Id$
  */
-package uk.org.ownage.dmdirc.plugins;
+package com.dmdirc.plugins;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;

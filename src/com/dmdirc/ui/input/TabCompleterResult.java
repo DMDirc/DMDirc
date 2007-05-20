@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.input;
+package com.dmdirc.ui.input;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import uk.org.ownage.dmdirc.Config;
+import com.dmdirc.Config;
 
 /**
  * Represents the result set from a tab completion operation.

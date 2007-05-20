@@ -23,4 +23,4 @@
 /**
  * Interfaces associated with UI components.
  */
-package uk.org.ownage.dmdirc.ui.interfaces;
+package com.dmdirc.ui.interfaces;

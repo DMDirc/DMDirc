@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.components;
+package com.dmdirc.ui.components;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -33,9 +33,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.ui.messages.ColourManager;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Colour chooser widget.

@@ -20,18 +20,18 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.plugins.plugins.dcop;
+package com.dmdirc.plugins.plugins.dcop;
 
 import java.io.IOException;
 import java.util.List;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
+import com.dmdirc.Channel;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.ChannelCommand;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 /**
  * The now playing command retrieves the currently playing song from a

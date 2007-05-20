@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc;
+package com.dmdirc;
 
 import java.awt.Color;
 import java.beans.PropertyVetoException;
@@ -30,11 +30,11 @@ import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.identities.ConfigManager;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.ui.MainFrame;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.MainFrame;
 
 /**
  * Standard interface for all objects that contain an innerframe. Provides

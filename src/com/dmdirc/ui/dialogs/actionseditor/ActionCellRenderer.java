@@ -20,16 +20,16 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
+package com.dmdirc.ui.dialogs.actionseditor;
 
 import java.awt.Component;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
-import uk.org.ownage.dmdirc.actions.ActionComparison;
-import uk.org.ownage.dmdirc.actions.ActionComponent;
-import uk.org.ownage.dmdirc.actions.ActionType;
+import com.dmdirc.actions.ActionComparison;
+import com.dmdirc.actions.ActionComponent;
+import com.dmdirc.actions.ActionType;
 
 /**
  * Displays actions using getName not toString.

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.dialogs;
+package com.dmdirc.ui.dialogs;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -43,14 +43,14 @@ import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import uk.org.ownage.dmdirc.BrowserLauncher;
-import uk.org.ownage.dmdirc.plugins.Plugin;
-import uk.org.ownage.dmdirc.plugins.PluginManager;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.components.PluginCellRenderer;
-import uk.org.ownage.dmdirc.ui.components.StandardDialog;
+import com.dmdirc.BrowserLauncher;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.PluginCellRenderer;
+import com.dmdirc.ui.components.StandardDialog;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 
 /**
  * Plugin manager dialog. Allows the user to manage their plugins.

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.dialogs;
+package com.dmdirc.ui.dialogs;
 
 import java.awt.Cursor;
 import java.awt.GridBagConstraints;
@@ -37,12 +37,12 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
 
-import uk.org.ownage.dmdirc.BrowserLauncher;
-import uk.org.ownage.dmdirc.Main;
-import uk.org.ownage.dmdirc.ui.MainFrame;
+import com.dmdirc.BrowserLauncher;
+import com.dmdirc.Main;
+import com.dmdirc.ui.MainFrame;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * About dialog.

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc;
+package com.dmdirc;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -35,44 +35,44 @@ import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 
-import uk.org.ownage.dmdirc.actions.ActionManager;
-import uk.org.ownage.dmdirc.actions.CoreActionType;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.identities.ConfigManager;
-import uk.org.ownage.dmdirc.identities.ConfigSource;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.ClientInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.MyInfo;
-import uk.org.ownage.dmdirc.parser.ParserError;
-import uk.org.ownage.dmdirc.parser.ServerInfo;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IAwayState;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IConnectError;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IGotNetwork;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDLine;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDStart;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INickInUse;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INumeric;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPingFailed;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPingSuccess;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ISocketClosed;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.ServerFrame;
-import uk.org.ownage.dmdirc.ui.input.TabCompleter;
-import uk.org.ownage.dmdirc.ui.messages.Formatter;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.identities.ConfigSource;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.MyInfo;
+import com.dmdirc.parser.ParserError;
+import com.dmdirc.parser.ServerInfo;
+import com.dmdirc.parser.callbacks.CallbackNotFound;
+import com.dmdirc.parser.callbacks.interfaces.IAwayState;
+import com.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
+import com.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
+import com.dmdirc.parser.callbacks.interfaces.IConnectError;
+import com.dmdirc.parser.callbacks.interfaces.IErrorInfo;
+import com.dmdirc.parser.callbacks.interfaces.IGotNetwork;
+import com.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
+import com.dmdirc.parser.callbacks.interfaces.IMOTDLine;
+import com.dmdirc.parser.callbacks.interfaces.IMOTDStart;
+import com.dmdirc.parser.callbacks.interfaces.INickInUse;
+import com.dmdirc.parser.callbacks.interfaces.INumeric;
+import com.dmdirc.parser.callbacks.interfaces.IPingFailed;
+import com.dmdirc.parser.callbacks.interfaces.IPingSuccess;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
+import com.dmdirc.parser.callbacks.interfaces.ISocketClosed;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.ServerFrame;
+import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.messages.Formatter;
 
 /**
  * The Server class represents the client's view of a server. It maintains

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.components;
+package com.dmdirc.ui.components;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -37,7 +37,7 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.ui.messages.ColourManager;
 
 /**
  * The ColourPickerPanel allows users to pick either an IRC colour or a hex

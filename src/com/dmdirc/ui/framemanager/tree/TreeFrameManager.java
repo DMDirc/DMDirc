@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.framemanager.tree;
+package com.dmdirc.ui.framemanager.tree;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -55,17 +55,17 @@ import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.FrameContainer;
-import uk.org.ownage.dmdirc.Query;
-import uk.org.ownage.dmdirc.Raw;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
+import com.dmdirc.Channel;
+import com.dmdirc.Config;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Query;
+import com.dmdirc.Raw;
+import com.dmdirc.Server;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.framemanager.FrameManager;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Manages open windows in the application in a tree style view.

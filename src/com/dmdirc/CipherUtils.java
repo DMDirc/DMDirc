@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc;
+package com.dmdirc;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -37,8 +37,8 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import javax.swing.JOptionPane;
 
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 /**
  * Helper class to encrypt and decrypt strings, requests passwords if needed.

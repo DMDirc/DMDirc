@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.interfaces;
+package com.dmdirc.ui.interfaces;
 
 /**
  * Methods required to be implemented by classes wanting to respond to statusbar

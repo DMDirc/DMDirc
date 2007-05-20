@@ -20,18 +20,18 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.framemanager.tree;
+package com.dmdirc.ui.framemanager.tree;
 
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Query;
-import uk.org.ownage.dmdirc.Raw;
-import uk.org.ownage.dmdirc.Server;
+import com.dmdirc.Channel;
+import com.dmdirc.Config;
+import com.dmdirc.Query;
+import com.dmdirc.Raw;
+import com.dmdirc.Server;
 
 /**
  * A simple sorted tree data model based on DefaultTreeModel.

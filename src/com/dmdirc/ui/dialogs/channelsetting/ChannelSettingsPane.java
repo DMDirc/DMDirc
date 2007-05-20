@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.dialogs.channelsetting;
+package com.dmdirc.ui.dialogs.channelsetting;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -46,13 +46,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.identities.Identity;
-import uk.org.ownage.dmdirc.ui.components.ColourChooser;
+import com.dmdirc.Config;
+import com.dmdirc.identities.Identity;
+import com.dmdirc.ui.components.ColourChooser;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * Channel settings panel.

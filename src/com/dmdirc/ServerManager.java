@@ -20,14 +20,14 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc;
+package com.dmdirc;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JInternalFrame;
 
-import uk.org.ownage.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.MainFrame;
 
 /**
  * The ServerManager maintains a list of all servers, and provides methods to

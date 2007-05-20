@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package com.dmdirc.ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,8 +28,8 @@ import java.util.List;
 
 import javax.swing.AbstractListModel;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.Config;
+import com.dmdirc.parser.ChannelClientInfo;
 
 /**
  * Stores and provides means to modify nicklist data for a channel.

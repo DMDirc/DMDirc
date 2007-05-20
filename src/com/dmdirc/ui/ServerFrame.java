@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package com.dmdirc.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -28,16 +28,16 @@ import java.awt.Insets;
 
 import javax.swing.ScrollPaneConstants;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.FrameContainer;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.CommandParser;
-import uk.org.ownage.dmdirc.commandparser.ServerCommandParser;
-import uk.org.ownage.dmdirc.identities.ConfigManager;
-import uk.org.ownage.dmdirc.ui.components.Frame;
-import uk.org.ownage.dmdirc.ui.input.InputHandler;
+import com.dmdirc.Config;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandParser;
+import com.dmdirc.commandparser.ServerCommandParser;
+import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.ui.components.Frame;
+import com.dmdirc.ui.input.InputHandler;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * The ServerFrame is the MDI window that shows server messages to the user.

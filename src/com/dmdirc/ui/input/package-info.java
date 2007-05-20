@@ -23,4 +23,4 @@
 /**
  * Input related UI classes.
  */
-package uk.org.ownage.dmdirc.ui.input;
+package com.dmdirc.ui.input;

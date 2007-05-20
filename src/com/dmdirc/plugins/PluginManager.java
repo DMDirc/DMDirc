@@ -21,7 +21,7 @@
  *
  * SVN: $Id$
  */
-package uk.org.ownage.dmdirc.plugins;
+package com.dmdirc.plugins;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
@@ -31,10 +31,10 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.actions.ActionType;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
+import com.dmdirc.Config;
+import com.dmdirc.actions.ActionType;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.logger.ErrorLevel;
 
 public class PluginManager {
 	/**

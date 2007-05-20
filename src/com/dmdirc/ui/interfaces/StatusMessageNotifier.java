@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.interfaces;
+package com.dmdirc.ui.interfaces;
 
 import java.awt.event.MouseEvent;
 

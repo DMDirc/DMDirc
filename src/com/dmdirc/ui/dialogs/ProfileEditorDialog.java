@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.dialogs;
+package com.dmdirc.ui.dialogs;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -46,15 +46,15 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import uk.org.ownage.dmdirc.identities.ConfigSource;
-import uk.org.ownage.dmdirc.identities.Identity;
-import uk.org.ownage.dmdirc.identities.IdentityManager;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.components.StandardDialog;
+import com.dmdirc.identities.ConfigSource;
+import com.dmdirc.identities.Identity;
+import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.StandardDialog;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * Profile editing dialog.

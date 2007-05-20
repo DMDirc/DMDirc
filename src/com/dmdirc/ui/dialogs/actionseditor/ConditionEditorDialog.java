@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
+package com.dmdirc.ui.dialogs.actionseditor;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -38,16 +38,16 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import uk.org.ownage.dmdirc.actions.ActionComparison;
-import uk.org.ownage.dmdirc.actions.ActionComponent;
-import uk.org.ownage.dmdirc.actions.ActionCondition;
-import uk.org.ownage.dmdirc.actions.ActionManager;
-import uk.org.ownage.dmdirc.actions.ActionType;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.components.StandardDialog;
+import com.dmdirc.actions.ActionComparison;
+import com.dmdirc.actions.ActionComponent;
+import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.ActionType;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.StandardDialog;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * Action conditions editing dialog, used in the actions editor dialog.

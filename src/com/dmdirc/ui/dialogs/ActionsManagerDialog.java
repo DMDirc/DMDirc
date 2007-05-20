@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.dialogs;
+package com.dmdirc.ui.dialogs;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -40,15 +40,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
-import uk.org.ownage.dmdirc.actions.Action;
-import uk.org.ownage.dmdirc.actions.ActionManager;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.components.ActionsGroupPanel;
-import uk.org.ownage.dmdirc.ui.components.StandardDialog;
-import uk.org.ownage.dmdirc.ui.dialogs.actionseditor.ActionsEditorDialog;
+import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.ActionsGroupPanel;
+import com.dmdirc.ui.components.StandardDialog;
+import com.dmdirc.ui.dialogs.actionseditor.ActionsEditorDialog;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Allows the user to manage actions.

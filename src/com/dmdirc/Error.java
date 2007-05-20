@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc;
+package com.dmdirc;
 
 import java.util.Date;
 
 import javax.swing.Icon;
 
-import uk.org.ownage.dmdirc.ui.interfaces.StatusErrorNotifier;
+import com.dmdirc.ui.interfaces.StatusErrorNotifier;
 
 /**
  * Stores a program error and dialog.

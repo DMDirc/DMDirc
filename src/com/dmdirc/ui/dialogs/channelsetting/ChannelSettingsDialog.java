@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.dialogs.channelsetting;
+package com.dmdirc.ui.dialogs.channelsetting;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -51,20 +51,20 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.identities.Identity;
-import uk.org.ownage.dmdirc.identities.IdentityManager;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.ChannelListModeItem;
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.components.ParamModePanel;
-import uk.org.ownage.dmdirc.ui.components.StandardDialog;
+import com.dmdirc.Channel;
+import com.dmdirc.identities.Identity;
+import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.ChannelListModeItem;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.ParamModePanel;
+import com.dmdirc.ui.components.StandardDialog;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Allows the user to modify channel settings (modes, topics, etc).

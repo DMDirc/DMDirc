@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.plugins.plugins.logging;
+package com.dmdirc.plugins.plugins.logging;
 
 import java.awt.Color;
 import java.io.BufferedWriter;
@@ -37,25 +37,25 @@ import java.util.Stack;
 import java.util.Properties;
 import java.util.Hashtable;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Query;
-import uk.org.ownage.dmdirc.actions.ActionType;
-import uk.org.ownage.dmdirc.actions.CoreActionType;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.ClientInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.plugins.Plugin;
-import uk.org.ownage.dmdirc.plugins.EventPlugin;
-import uk.org.ownage.dmdirc.ui.components.Frame;
-import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
-import uk.org.ownage.dmdirc.ui.components.PreferencesPanel;
-import uk.org.ownage.dmdirc.ui.messages.Styliser;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.Channel;
+import com.dmdirc.Config;
+import com.dmdirc.Query;
+import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.EventPlugin;
+import com.dmdirc.ui.components.Frame;
+import com.dmdirc.ui.components.PreferencesInterface;
+import com.dmdirc.ui.components.PreferencesPanel;
+import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.ui.messages.ColourManager;
 
 /**
  * Adds logging facility to client.

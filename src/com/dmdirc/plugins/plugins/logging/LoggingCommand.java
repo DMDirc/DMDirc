@@ -20,18 +20,18 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.plugins.plugins.logging;
+package com.dmdirc.plugins.plugins.logging;
 
 import java.util.Enumeration;
 import java.util.Properties;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
-import uk.org.ownage.dmdirc.plugins.Plugin;
-import uk.org.ownage.dmdirc.plugins.PluginManager;
+import com.dmdirc.Config;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginManager;
 
 /**
  * The dcop command retrieves information from a dcop application.
@@ -56,7 +56,7 @@ public final class LoggingCommand extends ServerCommand {
 	 * @param args The user supplied arguments
 	 */
 	public void execute(final CommandWindow origin, final Server server, final String... args) {
-		final Plugin gotPlugin = PluginManager.getPluginManager().getPlugin("uk.org.ownage.dmdirc.plugins.plugins.logging.LoggingPlugin");
+		final Plugin gotPlugin = PluginManager.getPluginManager().getPlugin("com.dmdirc.plugins.plugins.logging.LoggingPlugin");
 		
 		if (gotPlugin == null || !(gotPlugin instanceof LoggingPlugin)) {
 			origin.addLine("commandError", "Logging Plugin is not loaded.");
@@ -69,7 +69,7 @@ public final class LoggingCommand extends ServerCommand {
 			if (args[0].equalsIgnoreCase("config")) {
 				plugin.showConfig();
 			} else if (args[0].equalsIgnoreCase("reload")) {
-				if (PluginManager.getPluginManager().reloadPlugin("uk.org.ownage.dmdirc.plugins.plugins.logging.LoggingPlugin")) {
+				if (PluginManager.getPluginManager().reloadPlugin("com.dmdirc.plugins.plugins.logging.LoggingPlugin")) {
 					origin.addLine("commandOutput", "Plugin reloaded.");
 				} else {
 					origin.addLine("commandOutput", "Plugin failed to reload.");

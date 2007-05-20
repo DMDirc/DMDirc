@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.dialogs;
+package com.dmdirc.ui.dialogs;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -36,11 +36,11 @@ import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.components.Frame;
-import uk.org.ownage.dmdirc.ui.components.StandardDialog;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.Frame;
+import com.dmdirc.ui.components.StandardDialog;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 
 /**
  * Allows the user to modify global client preferences.

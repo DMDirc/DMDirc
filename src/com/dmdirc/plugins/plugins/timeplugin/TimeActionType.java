@@ -20,10 +20,10 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.plugins.plugins.timeplugin;
+package com.dmdirc.plugins.plugins.timeplugin;
 
-import uk.org.ownage.dmdirc.actions.ActionMetaType;
-import uk.org.ownage.dmdirc.actions.ActionType;
+import com.dmdirc.actions.ActionMetaType;
+import com.dmdirc.actions.ActionType;
 
 /**
  * Lists the actions that the time plugin will raise.

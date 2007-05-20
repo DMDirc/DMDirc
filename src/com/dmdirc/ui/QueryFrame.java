@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package com.dmdirc.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -28,16 +28,16 @@ import java.awt.Insets;
 
 import javax.swing.ScrollPaneConstants;
 
-import uk.org.ownage.dmdirc.FrameContainer;
-import uk.org.ownage.dmdirc.Query;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.CommandParser;
-import uk.org.ownage.dmdirc.commandparser.QueryCommandParser;
-import uk.org.ownage.dmdirc.identities.ConfigManager;
-import uk.org.ownage.dmdirc.ui.components.Frame;
-import uk.org.ownage.dmdirc.ui.input.InputHandler;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Query;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandParser;
+import com.dmdirc.commandparser.QueryCommandParser;
+import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.ui.components.Frame;
+import com.dmdirc.ui.input.InputHandler;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * The QueryFrame is the MDI window that shows query messages to the user.

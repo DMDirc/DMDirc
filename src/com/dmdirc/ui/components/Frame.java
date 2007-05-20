@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.components;
+package com.dmdirc.ui.components;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
@@ -67,21 +67,21 @@ import javax.swing.plaf.synth.SynthLookAndFeel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
-import uk.org.ownage.dmdirc.BrowserLauncher;
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.FrameContainer;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.identities.ConfigManager;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.dialogs.PasteDialog;
-import uk.org.ownage.dmdirc.ui.input.InputHandler;
-import uk.org.ownage.dmdirc.ui.input.TabCompleter;
-import uk.org.ownage.dmdirc.ui.messages.Formatter;
-import uk.org.ownage.dmdirc.ui.messages.Styliser;
+import com.dmdirc.BrowserLauncher;
+import com.dmdirc.Config;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.dialogs.PasteDialog;
+import com.dmdirc.ui.input.InputHandler;
+import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.messages.Formatter;
+import com.dmdirc.ui.messages.Styliser;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Frame component.

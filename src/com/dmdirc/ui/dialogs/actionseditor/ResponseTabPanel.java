@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
+package com.dmdirc.ui.dialogs.actionseditor;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -35,10 +35,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.BadLocationException;
 
-import uk.org.ownage.dmdirc.ui.messages.Formatter;
+import com.dmdirc.ui.messages.Formatter;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Response tab panel, response and formatter editing for the actions editor

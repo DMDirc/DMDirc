@@ -20,17 +20,17 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.plugins.plugins.dcop;
+package com.dmdirc.plugins.plugins.dcop;
 
 import java.io.IOException;
 import java.util.List;
 
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 /**
  * The dcop command retrieves information from a dcop application.

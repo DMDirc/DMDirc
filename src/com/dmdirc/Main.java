@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc;
+package com.dmdirc;
 
-import uk.org.ownage.dmdirc.actions.ActionManager;
-import uk.org.ownage.dmdirc.actions.CoreActionType;
-import uk.org.ownage.dmdirc.identities.IdentityManager;
-import uk.org.ownage.dmdirc.plugins.PluginManager;
-import uk.org.ownage.dmdirc.ui.MainFrame;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.MainFrame;
 
 /**
  * Main class, handles initialisation.

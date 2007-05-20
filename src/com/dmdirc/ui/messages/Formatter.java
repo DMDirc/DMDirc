@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.messages;
+package com.dmdirc.ui.messages;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,9 +32,9 @@ import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 import java.util.Set;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
+import com.dmdirc.Config;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 /**
  * The Formatter provides a standard way to format messages for display.

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.components;
+package com.dmdirc.ui.components;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,10 +33,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import uk.org.ownage.dmdirc.identities.ConfigManager;
+import com.dmdirc.identities.ConfigManager;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * A component to encapsulate one parameter-requiring channel mode, displaying

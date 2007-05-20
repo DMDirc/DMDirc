@@ -23,4 +23,4 @@
 /**
  * Core classes for DMDirc.  Used to interact between the parser and UI.
  */
-package uk.org.ownage.dmdirc;
+package com.dmdirc;

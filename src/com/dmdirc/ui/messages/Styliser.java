@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.messages;
+package com.dmdirc.ui.messages;
 
 import java.util.Locale;
 
@@ -29,8 +29,8 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 /**
  * The styliser applies IRC styles to text. Styles are indicated by various

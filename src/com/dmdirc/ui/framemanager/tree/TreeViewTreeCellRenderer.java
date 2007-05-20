@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.framemanager.tree;
+package com.dmdirc.ui.framemanager.tree;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -33,12 +33,12 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.FrameContainer;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.Config;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.messages.ColourManager;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Displays a node in a tree according to its type.

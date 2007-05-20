@@ -20,11 +20,11 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.plugins.plugins.timeplugin;
+package com.dmdirc.plugins.plugins.timeplugin;
 
 import java.util.Calendar;
 
-import uk.org.ownage.dmdirc.actions.ActionMetaType;
+import com.dmdirc.actions.ActionMetaType;
 
 /**
  * Encapsulates the meta types used by the various time actions.

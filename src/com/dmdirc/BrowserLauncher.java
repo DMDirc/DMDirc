@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc;
+package com.dmdirc;
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -29,8 +29,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
 
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 /**
  * The BrowserLauncher handles the opening of the user's web browser when

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc;
+package com.dmdirc;
 
 import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
@@ -32,38 +32,38 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
-import uk.org.ownage.dmdirc.actions.ActionManager;
-import uk.org.ownage.dmdirc.actions.CoreActionType;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.identities.ConfigManager;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.ClientInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelAction;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelCTCP;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelJoin;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelKick;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelMessage;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelModeChanged;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelNickChanged;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelPart;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelQuit;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelTopic;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
-import uk.org.ownage.dmdirc.ui.ChannelFrame;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.input.TabCompleter;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
-import uk.org.ownage.dmdirc.ui.messages.Formatter;
-import uk.org.ownage.dmdirc.ui.messages.Styliser;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.callbacks.CallbackManager;
+import com.dmdirc.parser.callbacks.CallbackNotFound;
+import com.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
+import com.dmdirc.parser.callbacks.interfaces.IChannelAction;
+import com.dmdirc.parser.callbacks.interfaces.IChannelCTCP;
+import com.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
+import com.dmdirc.parser.callbacks.interfaces.IChannelJoin;
+import com.dmdirc.parser.callbacks.interfaces.IChannelKick;
+import com.dmdirc.parser.callbacks.interfaces.IChannelMessage;
+import com.dmdirc.parser.callbacks.interfaces.IChannelModeChanged;
+import com.dmdirc.parser.callbacks.interfaces.IChannelNickChanged;
+import com.dmdirc.parser.callbacks.interfaces.IChannelPart;
+import com.dmdirc.parser.callbacks.interfaces.IChannelQuit;
+import com.dmdirc.parser.callbacks.interfaces.IChannelTopic;
+import com.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
+import com.dmdirc.ui.ChannelFrame;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.ui.messages.Formatter;
+import com.dmdirc.ui.messages.Styliser;
 
 /**
  * The Channel class represents the client's view of the channel. It handles

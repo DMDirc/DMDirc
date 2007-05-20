@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
+package com.dmdirc.ui.dialogs.actionseditor;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -41,10 +41,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
 
-import uk.org.ownage.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.ActionCondition;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * Conditions tab panel, conditions editing for the actions editor dialog.

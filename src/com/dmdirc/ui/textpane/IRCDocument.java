@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.textpane;
+package com.dmdirc.ui.textpane;
 
 import java.text.AttributedString;
 import java.util.ArrayList;

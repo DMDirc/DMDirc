@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.plugins.plugins.windowstatus;
+package com.dmdirc.plugins.plugins.windowstatus;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -33,24 +33,24 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.FrameContainer;
-import uk.org.ownage.dmdirc.Query;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.actions.ActionType;
-import uk.org.ownage.dmdirc.actions.CoreActionType;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.plugins.Plugin;
-import uk.org.ownage.dmdirc.plugins.EventPlugin;
-import uk.org.ownage.dmdirc.ui.ChannelFrame;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.QueryFrame;
-import uk.org.ownage.dmdirc.ui.ServerFrame;
-import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
-import uk.org.ownage.dmdirc.ui.components.PreferencesPanel;
+import com.dmdirc.Channel;
+import com.dmdirc.Config;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Query;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.EventPlugin;
+import com.dmdirc.ui.ChannelFrame;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.QueryFrame;
+import com.dmdirc.ui.ServerFrame;
+import com.dmdirc.ui.components.PreferencesInterface;
+import com.dmdirc.ui.components.PreferencesPanel;
 
 /**
  * Displays information related to the current window in the status bar.

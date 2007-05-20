@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.components;
+package com.dmdirc.ui.components;
 
 import java.awt.event.ActionListener;
 
 import javax.swing.JDialog;
 
-import uk.org.ownage.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.MainFrame;
 
 /**
  * Colour picker dialog.

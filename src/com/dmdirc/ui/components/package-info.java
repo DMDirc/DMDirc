@@ -23,4 +23,4 @@
 /**
  * Custom UI components.
  */
-package uk.org.ownage.dmdirc.ui.components;
+package com.dmdirc.ui.components;

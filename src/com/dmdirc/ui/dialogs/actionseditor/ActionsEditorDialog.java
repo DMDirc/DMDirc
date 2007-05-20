@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.dialogs.actionseditor;
+package com.dmdirc.ui.dialogs.actionseditor;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -34,13 +34,13 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
-import uk.org.ownage.dmdirc.actions.Action;
-import uk.org.ownage.dmdirc.actions.ActionType;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.components.StandardDialog;
-import uk.org.ownage.dmdirc.ui.dialogs.ActionsManagerDialog;
+import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionType;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.StandardDialog;
+import com.dmdirc.ui.dialogs.ActionsManagerDialog;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Actions editor dialog, used for adding and creating new actions.

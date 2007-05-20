@@ -23,4 +23,4 @@
 /**
  * UI classes.
  */
-package uk.org.ownage.dmdirc.ui;
+package com.dmdirc.ui;

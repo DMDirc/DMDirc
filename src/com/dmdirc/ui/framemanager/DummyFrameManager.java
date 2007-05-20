@@ -20,18 +20,18 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.framemanager;
+package com.dmdirc.ui.framemanager;
 
 import java.awt.Color;
 
 import javax.swing.JComponent;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.FrameContainer;
-import uk.org.ownage.dmdirc.Query;
-import uk.org.ownage.dmdirc.Raw;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.ui.MainFrame;
+import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Query;
+import com.dmdirc.Raw;
+import com.dmdirc.Server;
+import com.dmdirc.ui.MainFrame;
 
 /**
  * A dummy frame manager. Does nothing.

@@ -20,12 +20,12 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.plugins.plugins.systray;
+package com.dmdirc.plugins.plugins.systray;
 
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.ServerCommand;
 
 /**
  * The /popup command allows the user to show a popup message from the system

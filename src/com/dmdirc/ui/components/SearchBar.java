@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.components;
+package com.dmdirc.ui.components;
 
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -39,8 +39,8 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static uk.org.ownage.dmdirc.ui.UIUtilities.layoutGrid;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * Status bar, shows message and info on the gui.

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc;
+package com.dmdirc;
 
 import java.awt.Color;
 import java.io.File;
@@ -36,10 +36,10 @@ import java.util.Properties;
 
 import javax.swing.UIManager;
 
-import uk.org.ownage.dmdirc.identities.IdentityManager;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.messages.ColourManager;
 
 /**
  * Reads/writes the application's config file.

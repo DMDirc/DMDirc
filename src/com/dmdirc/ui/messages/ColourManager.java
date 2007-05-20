@@ -20,12 +20,12 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.messages;
+package com.dmdirc.ui.messages;
 
 import java.awt.Color;
 
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 /**
  * The colour manager manages the colour scheme for the IRC client. It allows

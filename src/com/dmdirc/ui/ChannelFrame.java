@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package com.dmdirc.ui;
 
 import java.awt.Color;
 import java.awt.GridBagConstraints;
@@ -47,23 +47,23 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.FrameContainer;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
-import uk.org.ownage.dmdirc.commandparser.ChannelCommandParser;
-import uk.org.ownage.dmdirc.commandparser.Command;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandParser;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
-import uk.org.ownage.dmdirc.identities.ConfigManager;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.ui.components.Frame;
-import uk.org.ownage.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
-import uk.org.ownage.dmdirc.ui.input.InputHandler;
+import com.dmdirc.Channel;
+import com.dmdirc.Config;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.ChannelCommand;
+import com.dmdirc.commandparser.ChannelCommandParser;
+import com.dmdirc.commandparser.Command;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandParser;
+import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.ui.components.Frame;
+import com.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
+import com.dmdirc.ui.input.InputHandler;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * The channel frame is the GUI component that represents a channel to the user.

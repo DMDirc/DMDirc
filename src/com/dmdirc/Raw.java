@@ -20,18 +20,18 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc;
+package com.dmdirc;
 
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.ServerFrame;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.callbacks.interfaces.IDataIn;
+import com.dmdirc.parser.callbacks.interfaces.IDataOut;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.ServerFrame;
 
 /**
  * Handles the raw window (which shows the user raw data being sent and

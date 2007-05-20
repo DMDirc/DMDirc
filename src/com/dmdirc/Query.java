@@ -20,27 +20,27 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc;
+package com.dmdirc;
 
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-import uk.org.ownage.dmdirc.actions.ActionManager;
-import uk.org.ownage.dmdirc.actions.CoreActionType;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.parser.ClientInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INickChanged;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.QueryFrame;
-import uk.org.ownage.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.callbacks.CallbackNotFound;
+import com.dmdirc.parser.callbacks.interfaces.INickChanged;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.QueryFrame;
+import com.dmdirc.ui.input.TabCompleter;
 
 /**
  * The Query class represents the client's view of a query with another user.

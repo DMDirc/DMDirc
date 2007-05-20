@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package com.dmdirc.ui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -57,25 +57,25 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.FontUIResource;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Main;
-import uk.org.ownage.dmdirc.ServerManager;
-import uk.org.ownage.dmdirc.actions.ActionManager;
-import uk.org.ownage.dmdirc.actions.CoreActionType;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.ui.components.StatusBar;
-import uk.org.ownage.dmdirc.ui.dialogs.AboutDialog;
-import uk.org.ownage.dmdirc.ui.dialogs.ActionsManagerDialog;
-import uk.org.ownage.dmdirc.ui.dialogs.NewServerDialog;
-import uk.org.ownage.dmdirc.ui.dialogs.PluginDialog;
-import uk.org.ownage.dmdirc.ui.dialogs.PreferencesDialog;
-import uk.org.ownage.dmdirc.ui.dialogs.ProfileEditorDialog;
-import uk.org.ownage.dmdirc.ui.framemanager.FrameManager;
-import uk.org.ownage.dmdirc.ui.framemanager.tree.TreeFrameManager;
+import com.dmdirc.Config;
+import com.dmdirc.Main;
+import com.dmdirc.ServerManager;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.components.StatusBar;
+import com.dmdirc.ui.dialogs.AboutDialog;
+import com.dmdirc.ui.dialogs.ActionsManagerDialog;
+import com.dmdirc.ui.dialogs.NewServerDialog;
+import com.dmdirc.ui.dialogs.PluginDialog;
+import com.dmdirc.ui.dialogs.PreferencesDialog;
+import com.dmdirc.ui.dialogs.ProfileEditorDialog;
+import com.dmdirc.ui.framemanager.FrameManager;
+import com.dmdirc.ui.framemanager.tree.TreeFrameManager;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.*;
+import static com.dmdirc.ui.UIUtilities.*;
 
 /**
  * The main application frame.

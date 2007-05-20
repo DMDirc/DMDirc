@@ -20,25 +20,25 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.plugins.plugins.nickcolours;
+package com.dmdirc.plugins.plugins.nickcolours;
 
 import java.awt.Color;
 import java.util.Map;
 import java.util.Properties;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.ChannelClientProperty;
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.actions.ActionType;
-import uk.org.ownage.dmdirc.actions.CoreActionType;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.ClientInfo;
-import uk.org.ownage.dmdirc.plugins.Plugin;
-import uk.org.ownage.dmdirc.plugins.EventPlugin;
-import uk.org.ownage.dmdirc.ui.components.PreferencesInterface;
-import uk.org.ownage.dmdirc.ui.components.PreferencesPanel;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.Channel;
+import com.dmdirc.ChannelClientProperty;
+import com.dmdirc.Config;
+import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.EventPlugin;
+import com.dmdirc.ui.components.PreferencesInterface;
+import com.dmdirc.ui.components.PreferencesPanel;
+import com.dmdirc.ui.messages.ColourManager;
 
 /**
  * Provides various features related to nickname colouring.

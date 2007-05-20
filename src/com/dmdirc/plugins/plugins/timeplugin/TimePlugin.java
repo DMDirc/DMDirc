@@ -20,15 +20,15 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.plugins.plugins.timeplugin;
+package com.dmdirc.plugins.plugins.timeplugin;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
-import uk.org.ownage.dmdirc.actions.ActionManager;
-import uk.org.ownage.dmdirc.plugins.Plugin;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.plugins.Plugin;
 
 /**
  * Provides various time-related features

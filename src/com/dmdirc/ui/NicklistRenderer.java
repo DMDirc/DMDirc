@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package com.dmdirc.ui;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -30,10 +30,10 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
-import uk.org.ownage.dmdirc.ChannelClientProperty;
-import uk.org.ownage.dmdirc.identities.ConfigManager;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.ChannelClientProperty;
+import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.ui.messages.ColourManager;
 
 /**
  * Renders the nicklist.

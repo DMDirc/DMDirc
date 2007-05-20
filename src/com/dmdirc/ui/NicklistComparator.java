@@ -20,12 +20,12 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui;
+package com.dmdirc.ui;
 
 import java.io.Serializable;
 import java.util.Comparator;
 
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelClientInfo;
 
 /**
  * Compares nicklist entries to each other, for sorting purposes.

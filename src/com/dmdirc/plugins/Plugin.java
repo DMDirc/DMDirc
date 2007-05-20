@@ -21,7 +21,7 @@
  *
  * SVN: $Id$
  */
-package uk.org.ownage.dmdirc.plugins;
+package com.dmdirc.plugins;
 
 /**
  * Defines the standard methods that should be implemented by plugins.

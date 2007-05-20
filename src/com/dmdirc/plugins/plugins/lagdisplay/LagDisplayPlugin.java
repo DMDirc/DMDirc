@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.plugins.plugins.lagdisplay;
+package com.dmdirc.plugins.plugins.lagdisplay;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -30,14 +30,14 @@ import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import uk.org.ownage.dmdirc.FrameContainer;
+import com.dmdirc.FrameContainer;
 
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.actions.ActionType;
-import uk.org.ownage.dmdirc.actions.CoreActionType;
-import uk.org.ownage.dmdirc.plugins.Plugin;
-import uk.org.ownage.dmdirc.plugins.EventPlugin;
-import uk.org.ownage.dmdirc.ui.MainFrame;
+import com.dmdirc.Server;
+import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.EventPlugin;
+import com.dmdirc.ui.MainFrame;
 
 /**
  * Displays the current server's lag in the status bar.

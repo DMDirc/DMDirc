@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.plugins.plugins.systray;
+package com.dmdirc.plugins.plugins.systray;
 
 import java.awt.AWTException;
 import java.awt.MenuItem;
@@ -35,9 +35,9 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-import uk.org.ownage.dmdirc.Main;
-import uk.org.ownage.dmdirc.plugins.Plugin;
-import uk.org.ownage.dmdirc.ui.MainFrame;
+import com.dmdirc.Main;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.ui.MainFrame;
 
 /**
  * The Systray plugin shows DMDirc in the user's system tray, and allows

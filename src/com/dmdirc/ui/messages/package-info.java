@@ -23,4 +23,4 @@
 /**
  * Utility classes associated with irc messages.
  */
-package uk.org.ownage.dmdirc.ui.messages;
+package com.dmdirc.ui.messages;

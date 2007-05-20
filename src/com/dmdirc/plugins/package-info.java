@@ -24,4 +24,4 @@
 /**
  * Plugin manager and interfaces.
  */
-package uk.org.ownage.dmdirc.plugins;
+package com.dmdirc.plugins;

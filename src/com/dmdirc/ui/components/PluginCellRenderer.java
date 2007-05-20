@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.ui.components;
+package com.dmdirc.ui.components;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -35,9 +35,9 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.ListCellRenderer;
 
-import uk.org.ownage.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.Plugin;
 
-import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Handles the rendering of the JList used for plugin management.

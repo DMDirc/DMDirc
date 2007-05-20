@@ -23,4 +23,4 @@
 /**
  * Frame manager interface and dummy manager.
  */
-package uk.org.ownage.dmdirc.ui.framemanager;
+package com.dmdirc.ui.framemanager;

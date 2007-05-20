@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.plugins.plugins.dcop;
+package com.dmdirc.plugins.plugins.dcop;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,7 +28,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.org.ownage.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.Plugin;
 
 /**
  * Allows the user to execute dcop commands (and read the results).
