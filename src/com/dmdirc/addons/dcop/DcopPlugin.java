@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.plugins.plugins.dcop;
+package com.dmdirc.addons.dcop;
 
 import java.io.BufferedReader;
 import java.io.IOException;

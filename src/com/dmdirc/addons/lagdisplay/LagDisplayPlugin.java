@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.plugins.plugins.lagdisplay;
+package com.dmdirc.addons.lagdisplay;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

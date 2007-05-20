@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.plugins.plugins.logging;
+package com.dmdirc.addons.logging;
 
 import java.awt.Color;
 import java.io.BufferedWriter;

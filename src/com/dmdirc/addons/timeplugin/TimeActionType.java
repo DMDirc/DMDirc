@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.plugins.plugins.timeplugin;
+package com.dmdirc.addons.timeplugin;
 
 import com.dmdirc.actions.ActionMetaType;
 import com.dmdirc.actions.ActionType;

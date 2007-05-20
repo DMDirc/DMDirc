@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.plugins.plugins.nickcolours;
+package com.dmdirc.addons.nickcolours;
 
 import java.awt.Color;
 import java.util.Map;

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.plugins.plugins.systray;
+package com.dmdirc.addons.systray;
 
 import java.awt.AWTException;
 import java.awt.MenuItem;

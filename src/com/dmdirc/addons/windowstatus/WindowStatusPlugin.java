@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.plugins.plugins.windowstatus;
+package com.dmdirc.addons.windowstatus;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

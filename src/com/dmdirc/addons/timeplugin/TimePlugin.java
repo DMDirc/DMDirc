@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.plugins.plugins.timeplugin;
+package com.dmdirc.addons.timeplugin;
 
 import java.text.DateFormat;
 import java.util.Calendar;

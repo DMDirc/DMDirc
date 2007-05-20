@@ -20,30 +20,28 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.plugins.plugins.dcop;
+package com.dmdirc.addons.dcop;
 
 import java.io.IOException;
 import java.util.List;
 
-import com.dmdirc.Channel;
 import com.dmdirc.Server;
-import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
 /**
- * The now playing command retrieves the currently playing song from a
- * variety of media players.
+ * The dcop command retrieves information from a dcop application.
  * @author chris
  */
-public final class NowPlayingCommand extends ChannelCommand {
+public final class DcopCommand extends ServerCommand {
     
     /**
      * Creates a new instance of DcopCommand.
      */
-    public NowPlayingCommand() {
+    public DcopCommand() {
         super();
         
         CommandManager.registerCommand(this);
@@ -53,27 +51,24 @@ public final class NowPlayingCommand extends ChannelCommand {
      * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
-     * @param channel The channel object this command is associated with
      * @param args The user supplied arguments
-     */    
-    public void execute(final CommandWindow origin, final Server server, 
-            final Channel channel, final String... args) {
+     */
+    public void execute(final CommandWindow origin, final Server server,
+            final String... args) {
         try {
-            
-            final List<String> res = DcopPlugin.getDcopResult("dcop amarok default nowPlaying");
-            
-            channel.sendAction("is listening to " + res.get(0));
-            
+            final List<String> res = DcopPlugin.getDcopResult("dcop " + implodeArgs(args));
+            for (String line : res) {
+                origin.addLine("commandOutput", line);
+            }
         } catch (IOException ex) {
             Logger.error(ErrorLevel.ERROR, "Unable to execute dcop", ex);
-        }        
+        }
     }
-        
     
     
     /** {@inheritDoc}. */
     public String getName() {
-        return "nowplaying";
+        return "dcop";
     }
     
     /** {@inheritDoc}. */
@@ -88,12 +83,12 @@ public final class NowPlayingCommand extends ChannelCommand {
     
     /** {@inheritDoc}. */
     public int getArity() {
-        return 0;
+        return 3;
     }
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "nowplaying - tells the channel the song you're currently playing";
+        return "dcop <app> <object> <function> - retrieves information from a DCOP aplication";
     }
-
+    
 }

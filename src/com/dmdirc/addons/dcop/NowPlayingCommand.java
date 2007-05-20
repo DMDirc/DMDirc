@@ -20,69 +20,80 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.plugins.plugins.systray;
+package com.dmdirc.addons.dcop;
 
+import java.io.IOException;
+import java.util.List;
+
+import com.dmdirc.Channel;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
-import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 /**
- * The /popup command allows the user to show a popup message from the system
- * tray icon.
+ * The now playing command retrieves the currently playing song from a
+ * variety of media players.
  * @author chris
  */
-public final class PopupCommand extends ServerCommand {
-    
-    /** The SystrayPlugin that we belong to. */
-    private SystrayPlugin parent;
+public final class NowPlayingCommand extends ChannelCommand {
     
     /**
-     * Creates a new instance of PopupCommand.
-     * @param newParent The plugin that this command belongs to
+     * Creates a new instance of DcopCommand.
      */
-    public PopupCommand(final SystrayPlugin newParent) {
+    public NowPlayingCommand() {
         super();
-        
-        this.parent = newParent;
         
         CommandManager.registerCommand(this);
     }
-
-    /** {@inheritDoc} */
-    public void execute(final CommandWindow origin, final Server server,
-            final String ... args) {
-        parent.notify("DMDirc", implodeArgs(args));
+    
+    /**
+     * Executes this command.
+     * @param origin The frame in which this command was issued
+     * @param server The server object that this command is associated with
+     * @param channel The channel object this command is associated with
+     * @param args The user supplied arguments
+     */    
+    public void execute(final CommandWindow origin, final Server server, 
+            final Channel channel, final String... args) {
+        try {
+            
+            final List<String> res = DcopPlugin.getDcopResult("dcop amarok default nowPlaying");
+            
+            channel.sendAction("is listening to " + res.get(0));
+            
+        } catch (IOException ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to execute dcop", ex);
+        }        
     }
-
-    /** {@inheritDoc} */
+        
+    
+    
+    /** {@inheritDoc}. */
     public String getName() {
-        return "popup";
+        return "nowplaying";
     }
-
-    /** {@inheritDoc} */
+    
+    /** {@inheritDoc}. */
     public boolean showInHelp() {
         return true;
     }
-
-    /** {@inheritDoc} */
+    
+    /** {@inheritDoc}. */
     public boolean isPolyadic() {
-        return true;
+        return false;
     }
-
-    /** {@inheritDoc} */
+    
+    /** {@inheritDoc}. */
     public int getArity() {
         return 0;
     }
-
-    /** {@inheritDoc} */
+    
+    /** {@inheritDoc}. */
     public String getHelp() {
-        return "popup <message> - shows the message as a system tray popup";
+        return "nowplaying - tells the channel the song you're currently playing";
     }
-    
-    /** Unregisters this command from the CommandManager. */
-    public void unregister() {
-        CommandManager.unregisterCommand(this);
-    }
-    
+
 }

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.plugins.plugins.logging;
+package com.dmdirc.addons.logging;
 
 import java.util.Enumeration;
 import java.util.Properties;
@@ -56,7 +56,7 @@ public final class LoggingCommand extends ServerCommand {
 	 * @param args The user supplied arguments
 	 */
 	public void execute(final CommandWindow origin, final Server server, final String... args) {
-		final Plugin gotPlugin = PluginManager.getPluginManager().getPlugin("com.dmdirc.plugins.plugins.logging.LoggingPlugin");
+		final Plugin gotPlugin = PluginManager.getPluginManager().getPlugin("com.dmdirc.addons.logging.LoggingPlugin");
 		
 		if (gotPlugin == null || !(gotPlugin instanceof LoggingPlugin)) {
 			origin.addLine("commandError", "Logging Plugin is not loaded.");
@@ -69,7 +69,7 @@ public final class LoggingCommand extends ServerCommand {
 			if (args[0].equalsIgnoreCase("config")) {
 				plugin.showConfig();
 			} else if (args[0].equalsIgnoreCase("reload")) {
-				if (PluginManager.getPluginManager().reloadPlugin("com.dmdirc.plugins.plugins.logging.LoggingPlugin")) {
+				if (PluginManager.getPluginManager().reloadPlugin("com.dmdirc.addons.logging.LoggingPlugin")) {
 					origin.addLine("commandOutput", "Plugin reloaded.");
 				} else {
 					origin.addLine("commandOutput", "Plugin failed to reload.");

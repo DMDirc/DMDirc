@@ -20,75 +20,69 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.plugins.plugins.dcop;
-
-import java.io.IOException;
-import java.util.List;
+package com.dmdirc.addons.systray;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.ServerCommand;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 
 /**
- * The dcop command retrieves information from a dcop application.
+ * The /popup command allows the user to show a popup message from the system
+ * tray icon.
  * @author chris
  */
-public final class DcopCommand extends ServerCommand {
+public final class PopupCommand extends ServerCommand {
+    
+    /** The SystrayPlugin that we belong to. */
+    private SystrayPlugin parent;
     
     /**
-     * Creates a new instance of DcopCommand.
+     * Creates a new instance of PopupCommand.
+     * @param newParent The plugin that this command belongs to
      */
-    public DcopCommand() {
+    public PopupCommand(final SystrayPlugin newParent) {
         super();
+        
+        this.parent = newParent;
         
         CommandManager.registerCommand(this);
     }
-    
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
-     * @param args The user supplied arguments
-     */
+
+    /** {@inheritDoc} */
     public void execute(final CommandWindow origin, final Server server,
-            final String... args) {
-        try {
-            final List<String> res = DcopPlugin.getDcopResult("dcop " + implodeArgs(args));
-            for (String line : res) {
-                origin.addLine("commandOutput", line);
-            }
-        } catch (IOException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to execute dcop", ex);
-        }
+            final String ... args) {
+        parent.notify("DMDirc", implodeArgs(args));
     }
-    
-    
-    /** {@inheritDoc}. */
+
+    /** {@inheritDoc} */
     public String getName() {
-        return "dcop";
+        return "popup";
     }
-    
-    /** {@inheritDoc}. */
+
+    /** {@inheritDoc} */
     public boolean showInHelp() {
         return true;
     }
-    
-    /** {@inheritDoc}. */
+
+    /** {@inheritDoc} */
     public boolean isPolyadic() {
-        return false;
+        return true;
     }
-    
-    /** {@inheritDoc}. */
+
+    /** {@inheritDoc} */
     public int getArity() {
-        return 3;
+        return 0;
+    }
+
+    /** {@inheritDoc} */
+    public String getHelp() {
+        return "popup <message> - shows the message as a system tray popup";
     }
     
-    /** {@inheritDoc}. */
-    public String getHelp() {
-        return "dcop <app> <object> <function> - retrieves information from a DCOP aplication";
+    /** Unregisters this command from the CommandManager. */
+    public void unregister() {
+        CommandManager.unregisterCommand(this);
     }
     
 }
