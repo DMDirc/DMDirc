@@ -32,7 +32,6 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
-import javax.swing.event.InternalFrameListener;
 
 import uk.org.ownage.dmdirc.actions.ActionManager;
 import uk.org.ownage.dmdirc.actions.CoreActionType;
@@ -73,9 +72,9 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
  * ChannelFrame, and handles user input to a ChannelFrame.
  * @author chris
  */
-public final class Channel extends FrameContainer implements IChannelMessage, 
-        IChannelGotNames, IChannelTopic, IChannelJoin, IChannelPart, 
-        IChannelKick, IChannelQuit, IChannelAction, IChannelNickChanged, 
+public final class Channel extends FrameContainer implements IChannelMessage,
+        IChannelGotNames, IChannelTopic, IChannelJoin, IChannelPart,
+        IChannelKick, IChannelQuit, IChannelAction, IChannelNickChanged,
         IChannelModeChanged, IChannelUserModeChanged, IChannelCTCP,
         IAwayStateOther {
     
@@ -104,9 +103,6 @@ public final class Channel extends FrameContainer implements IChannelMessage,
     
     /** The config manager for this channel. */
     private final ConfigManager configManager;
-    
-    /** The colour of this channel's notifications. */
-    private Color notification = Color.BLACK;
     
     /** Whether we're in this channel or not. */
     private boolean onChannel;
@@ -365,16 +361,6 @@ public final class Channel extends FrameContainer implements IChannelMessage,
                 server = null;
             }
         });
-    }
-        
-    /**
-     * Determines if the specified frame is owned by this object.
-     *
-     * @param target JInternalFrame to check ownership of
-     * @return boolean whether this object owns the specified frame
-     */
-    public boolean ownsFrame(final JInternalFrame target) {
-        return frame.equals(target);
     }
     
     /**
@@ -831,15 +817,15 @@ public final class Channel extends FrameContainer implements IChannelMessage,
                     prefix = "," + ColourManager.getHex(colour);
                 }
             }
-                        
+            
             if (prefix != null) {
                 res[0] = prefix + res[0] + Styliser.CODE_HEXCOLOUR;
             }
         }
-
+        
         return res;
     }
-        
+    
     /**
      * Returns this channel's name.
      * @return A string representation of this channel (i.e., its name)
@@ -854,7 +840,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
     public void activateFrame() {
         MainFrame.getMainFrame().setActiveFrame(frame);
     }
-        
+    
     /**
      * Formats the specified arguments using the supplied message type, and
      * outputs to the main text area.
@@ -890,14 +876,6 @@ public final class Channel extends FrameContainer implements IChannelMessage,
             MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
             notification = colour;
         }
-    }
-    
-    /**
-     * Clears any outstanding notifications this frame has set.
-     */
-    protected void clearNotification() {
-        MainFrame.getMainFrame().getFrameManager().clearNotification(this);
-        notification = Color.BLACK;
     }
     
     /**

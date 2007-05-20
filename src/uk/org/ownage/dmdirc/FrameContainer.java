@@ -22,7 +22,9 @@
 
 package uk.org.ownage.dmdirc;
 
+import java.awt.Color;
 import java.beans.PropertyVetoException;
+
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
@@ -41,18 +43,13 @@ import uk.org.ownage.dmdirc.ui.MainFrame;
  */
 public abstract class FrameContainer implements InternalFrameListener {
     
+    /** The colour of our frame's notifications. */
+    protected Color notification = Color.BLACK;
+    
     /**
      * Requests that this object's frame be activated.
      */
     public abstract void activateFrame();
-    
-    /**
-     * Determines if this object, or any of its children, owns the specified
-     * frame.
-     * @param target The frame to check
-     * @return true iff the frame is owned by this object, false otherwise
-     */
-    public abstract boolean ownsFrame(JInternalFrame target);
     
     /**
      * Sends a notification to the frame manager that this object has been
@@ -100,7 +97,19 @@ public abstract class FrameContainer implements InternalFrameListener {
     /**
      * Clears any outstanding notifications this frame has set.
      */
-    protected abstract void clearNotification();
+    protected void clearNotification() {
+        MainFrame.getMainFrame().getFrameManager().clearNotification(this);
+        notification = Color.BLACK;
+    }
+    
+    /**
+     * Determines if the specified frame is owned by this object.
+     * @param target JInternalFrame to check ownership of
+     * @return True iff frame is owned by this container, false otherwise
+     */
+    public boolean ownsFrame(final JInternalFrame target) {
+        return getFrame().equals(target);
+    }
     
     /**
      * Invoked when a internal frame has been opened.

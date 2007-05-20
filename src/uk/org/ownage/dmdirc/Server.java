@@ -23,7 +23,6 @@
 package uk.org.ownage.dmdirc;
 
 import java.awt.Color;
-import java.beans.PropertyVetoException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -36,8 +35,6 @@ import java.util.TimerTask;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 
 import uk.org.ownage.dmdirc.actions.ActionManager;
 import uk.org.ownage.dmdirc.actions.CoreActionType;
@@ -608,6 +605,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * @param target internalframe to be checked for ownership
      * @return boolean ownership status
      */
+    @Override
     public boolean ownsFrame(final JInternalFrame target) {
         // Check if it's our server frame
         if (frame != null && frame.equals(target)) { return true; }
@@ -1074,13 +1072,6 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
             final Color colour = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
         }
-    }
-    
-    /**
-     * Clears any outstanding notifications this frame has set.
-     */
-    protected void clearNotification() {
-        MainFrame.getMainFrame().getFrameManager().clearNotification(this);
     }
     
     /**

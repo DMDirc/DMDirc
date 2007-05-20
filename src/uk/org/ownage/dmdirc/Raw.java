@@ -26,7 +26,6 @@ import java.awt.Color;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
-import javax.swing.JInternalFrame;
 
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
@@ -126,16 +125,6 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
     }
     
     /**
-     * Determines if the specified frame is owned by this object.
-     *
-     * @param target JInternalFrame to check ownership of
-     * @return boolean ownership of the frame
-     */
-    public boolean ownsFrame(final JInternalFrame target) {
-        return frame.equals(target);
-    }
-    
-    /**
      * Returns "Raw"...
      * @return A string representation of this raw object
      */
@@ -166,13 +155,6 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
             final Color colour = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
         }
-    }
-    
-    /**
-     * Clears any outstanding notifications this frame has set.
-     */
-    protected void clearNotification() {
-        MainFrame.getMainFrame().getFrameManager().clearNotification(this);
     }
     
     /**

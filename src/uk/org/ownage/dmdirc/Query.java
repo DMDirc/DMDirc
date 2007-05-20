@@ -26,8 +26,6 @@ import java.awt.Color;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
-import javax.swing.JInternalFrame;
-import javax.swing.event.InternalFrameListener;
 
 import uk.org.ownage.dmdirc.actions.ActionManager;
 import uk.org.ownage.dmdirc.actions.CoreActionType;
@@ -53,7 +51,7 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
  * corresponding ServerFrame, and handles user input to a ServerFrame.
  * @author chris
  */
-public final class Query extends FrameContainer implements IPrivateAction, 
+public final class Query extends FrameContainer implements IPrivateAction,
         IPrivateMessage, INickChanged {
     
     /**
@@ -271,19 +269,9 @@ public final class Query extends FrameContainer implements IPrivateAction,
     }
     
     /**
-     * Determines if the specified frame is owned by this object.
-     *
-     * @param target JinternalFrame to check ownership of
-     * @return boolean ownership of frame
-     */
-    public boolean ownsFrame(final JInternalFrame target) {
-        return frame.equals(target);
-    }
-    
-    /**
      * Closes the query and associated frame.
      */
-    public void close() {        
+    public void close() {
         server.getParser().getCallbackManager().delCallback("onPrivateAction", this);
         server.getParser().getCallbackManager().delCallback("onPrivateMessage", this);
         server.getParser().getCallbackManager().delCallback("onNickChanged", this);
@@ -350,13 +338,6 @@ public final class Query extends FrameContainer implements IPrivateAction,
             final Color colour = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
         }
-    }
-    
-    /**
-     * Clears any outstanding notifications this frame has set.
-     */
-    protected void clearNotification() {
-        MainFrame.getMainFrame().getFrameManager().clearNotification(this);
     }
     
     /**
