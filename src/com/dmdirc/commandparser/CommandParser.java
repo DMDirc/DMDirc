@@ -81,8 +81,16 @@ public abstract class CommandParser {
         }
         
         if (line.charAt(0) == Config.getCommandChar().charAt(0)) {
+            int offset = 1;
+            boolean silent = false;
+            
+            if (line.charAt(offset) == Config.getOption("general", "silencechar").charAt(0)) {
+                silent = true;
+                offset++;
+            }
+            
             final String[] args = line.split(" ");
-            final String command = args[0].substring(1);
+            final String command = args[0].substring(offset);
             String[] comargs;
             
             assert args.length > 0;
@@ -98,7 +106,8 @@ public abstract class CommandParser {
                         newLine.append(" ").append(args[i]);
                     }
                     
-                    origin.getServer().getChannel(args[1]).getFrame().getCommandParser().parseCommand(origin, newLine.substring(1), false);
+                    origin.getServer().getChannel(args[1]).getFrame()
+                    .getCommandParser().parseCommand(origin, newLine.substring(1), false);
                     
                     return;
                 } else {
@@ -116,9 +125,9 @@ public abstract class CommandParser {
             // have error handlers if there are too few arguments (e.g., msg/0 and
             // msg/1 would return errors, so msg only gets called with 2+ args).
             if (commands.containsKey(signature.toLowerCase())) {
-                executeCommand(origin, false, commands.get(signature.toLowerCase()), comargs);
+                executeCommand(origin, silent, commands.get(signature.toLowerCase()), comargs);
             } else if (commands.containsKey(command.toLowerCase())) {
-                executeCommand(origin, false, commands.get(command.toLowerCase()), comargs);
+                executeCommand(origin, silent, commands.get(command.toLowerCase()), comargs);
             } else {
                 handleInvalidCommand(origin, command, comargs);
             }

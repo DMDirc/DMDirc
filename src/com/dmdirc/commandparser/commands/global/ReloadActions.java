@@ -46,7 +46,7 @@ public final class ReloadActions extends GlobalCommand {
     public void execute(final CommandWindow origin, final boolean isSilent,
             final String... args) {
         ActionManager.loadActions();
-        origin.addLine("commandOutput", "Actions reloaded.");
+        sendLine(origin, isSilent, "commandOutput", "Actions reloaded.");
     }
     
     

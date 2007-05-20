@@ -46,9 +46,9 @@ public final class LoadFormatter extends GlobalCommand {
     public void execute(final CommandWindow origin, final boolean isSilent,
             final String... args) {
         if (Formatter.loadFile(args[0])) {
-            origin.addLine("commandOutput", "Formatter loaded.");
+            sendLine(origin, isSilent, "commandOutput", "Formatter loaded.");
         } else {
-            origin.addLine("commandError", "Formatter load failed.");
+            sendLine(origin, isSilent, "commandError", "Formatter load failed.");
         }
     }
     

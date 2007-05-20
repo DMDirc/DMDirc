@@ -47,9 +47,9 @@ public final class LoadPlugin extends GlobalCommand {
             final String... args) {
         if (PluginManager.getPluginManager().addPlugin(args[0])) {
             PluginManager.getPluginManager().getPlugin(args[0]).setActive(true);
-            origin.addLine("commandOutput", "Plugin loaded.");
+            sendLine(origin, isSilent, "commandOutput", "Plugin loaded.");
         } else {
-            origin.addLine("commandError", "Plugin Loading failed");
+            sendLine(origin, isSilent, "commandError", "Plugin Loading failed");
         }
     }
     

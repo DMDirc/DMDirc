@@ -47,17 +47,18 @@ public final class ReloadPlugin extends GlobalCommand {
     public void execute(final CommandWindow origin, final boolean isSilent,
             final String... args) {
         Plugin plugin = PluginManager.getPluginManager().getPlugin(args[0]);
-        if (plugin != null) {
-            boolean isActive = plugin.isActive();
+        if (plugin == null) {
+            sendLine(origin, isSilent, "commandError", "Plugin Reloading failed - Plugin not loaded");
+        } else {
+            final boolean isActive = plugin.isActive();
             plugin = null;
             if (PluginManager.getPluginManager().reloadPlugin(args[0])) {
-                origin.addLine("commandOutput", "Plugin Reloaded.");
+                sendLine(origin, isSilent, "commandOutput", "Plugin Reloaded.");
                 PluginManager.getPluginManager().getPlugin(args[0]).setActive(isActive);
             } else {
-                origin.addLine("commandError", "Plugin Reloading failed");
+                sendLine(origin, isSilent, "commandError", "Plugin Reloading failed");
             }
-        } else {
-            origin.addLine("commandError", "Plugin Reloading failed - Plugin not loaded");
+            
         }
     }
     

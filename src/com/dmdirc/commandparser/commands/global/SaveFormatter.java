@@ -46,9 +46,9 @@ public final class SaveFormatter extends GlobalCommand {
     public void execute(final CommandWindow origin, final boolean isSilent,
             final String... args) {
         if (Formatter.saveAs(args[0])) {
-            origin.addLine("commandOutput", "Formatter saved.");
+            sendLine(origin, isSilent, "commandOutput", "Formatter saved.");
         } else {
-            origin.addLine("commandError", "Formatter save failed.");
+            sendLine(origin, isSilent, "commandError", "Formatter save failed.");
         }
     }
     

@@ -105,6 +105,8 @@ public final class Config {
         final Properties defaults = new Properties();
         
         defaults.setProperty("general.commandchar", "/");
+        defaults.setProperty("general.silencechar", ".");
+        
         defaults.setProperty("general.reconnectmessage", "Reconnecting");
         defaults.setProperty("general.closemessage", "DMDirc exiting");
         defaults.setProperty("general.quitmessage", "Using DMDirc");

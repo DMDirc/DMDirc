@@ -47,24 +47,25 @@ public final class Set extends GlobalCommand {
             final String... args) {
         switch (args.length) {
             case 0:
-                doDomainList(origin);
+                doDomainList(origin, isSilent);
                 break;
             case 1:
-                doOptionsList(origin, args[0]);
+                doOptionsList(origin, isSilent, args[0]);
                 break;
             case 2:
-                doShowOption(origin, args[0], args[1]);
+                doShowOption(origin, isSilent, args[0], args[1]);
                 break;
             default:
-                doSetOption(origin, args[0], args[1], implodeArgs(2, args));
+                doSetOption(origin, isSilent, args[0], args[1], implodeArgs(2, args));
         }
     }
     
     /**
      * Shows the user a list of valid domains.
      * @param origin The window the command was issued from
+     * @param isSilent Whether or not the command is being silenced or not
      */
-    private void doDomainList(final CommandWindow origin) {
+    private void doDomainList(final CommandWindow origin, final boolean isSilent) {
         final StringBuffer output = new StringBuffer(67);
         
         output.append("Valid domains (use ");
@@ -76,15 +77,17 @@ public final class Set extends GlobalCommand {
             output.append(", ");
         }
         
-        origin.addLine("commandOutput", output.substring(0, output.length() - 2));
+        sendLine(origin, isSilent, "commandOutput", output.substring(0, output.length() - 2));
     }
     
     /**
      * Shows the user a list of valid options within a domain.
      * @param origin The window the command was issued from
+     * @param isSilent Whether or not the command is being silenced or not
      * @param domain The domain to be inspected
      */
-    private void doOptionsList(final CommandWindow origin, final String domain) {
+    private void doOptionsList(final CommandWindow origin,
+            final boolean isSilent, final String domain) {
         final StringBuffer output = new StringBuffer(24);
         
         output.append("Options in domain '");
@@ -100,40 +103,43 @@ public final class Set extends GlobalCommand {
         }
         
         if (found) {
-            origin.addLine("commandOutput", output.substring(0, output.length() - 2));
+            sendLine(origin, isSilent, "commandOutput", output.substring(0, output.length() - 2));
         } else {
-            origin.addLine("commandError", "There are no options in the domain '" + domain + "'.");
+            sendLine(origin, isSilent, "commandError", "There are no options in the domain '" + domain + "'.");
         }
     }
     
     /**
      * Shows the user the current value of one option.
      * @param origin The window the command was issued from
+     * @param isSilent Whether or not the command is being silenced or not
      * @param domain The domain of the option
      * @param option The name of the option
      */
-    private void doShowOption(final CommandWindow origin, final String domain,
-            final String option) {
+    private void doShowOption(final CommandWindow origin,
+            final boolean isSilent, final String domain, final String option) {
         if (Config.hasOption(domain, option)) {
-            origin.addLine("commandOutput", "The current value of " + domain + "." + option
+            sendLine(origin, isSilent, "commandOutput", "The current value of " + domain + "." + option
                     + " is: " + Config.getOption(domain, option));
         } else {
-            origin.addLine("commandError", "Option not found: " + domain + "." + option);
+            sendLine(origin, isSilent, "commandError", "Option not found: " + domain + "." + option);
         }
     }
     
     /**
      * Sets the value of the specified option.
      * @param origin The window the command was issued from
+     * @param isSilent Whether or not the command is being silenced or not
      * @param domain The domain of the option
      * @param option The name of the option
      * @param newvalue The value the option should be set to
      */
-    private void doSetOption(final CommandWindow origin, final String domain,
-            final String option, final String newvalue) {
+    private void doSetOption(final CommandWindow origin,
+            final boolean isSilent, final String domain, final String option,
+            final String newvalue) {
         Config.setOption(domain, option, newvalue);
         
-        origin.addLine("commandOutput", domain + "." + option + " has been set to: " + newvalue);
+        sendLine(origin, isSilent, "commandOutput", domain + "." + option + " has been set to: " + newvalue);
     }
     
     /** {@inheritDoc}. */
