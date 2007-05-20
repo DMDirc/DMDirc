@@ -195,7 +195,7 @@ public class ActionManager {
             if (map.getValue().contains(action)) {
                 map.getValue().remove(action);
             }
-        }        
+        }
     }
     
     /**
@@ -242,6 +242,10 @@ public class ActionManager {
      */
     private static void triggerActions(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
+        if (actions == null) {
+            return;
+        }
+        
         if (actions.containsKey(type)) {
             for (Action action : actions.get(type)) {
                 action.trigger(format, arguments);
