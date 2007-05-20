@@ -182,7 +182,7 @@ public final class StatusBar extends JPanel implements MouseListener,
             }
         };
         new Timer().schedule(messageTimer,
-                new Date(System.currentTimeMillis() + timeout * 1000L));
+                new Date(System.currentTimeMillis() + 250 + timeout * 1000L));
     }
     
     /**
@@ -226,7 +226,7 @@ public final class StatusBar extends JPanel implements MouseListener,
             }
         };
         new Timer().schedule(errorTimer,
-                new Date(System.currentTimeMillis() + displayLength));
+                new Date(System.currentTimeMillis() + 250  + displayLength));
     }
     
     /**
