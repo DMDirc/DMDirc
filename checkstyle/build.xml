@@ -19,7 +19,7 @@
                      classpath="checkstyle-all-4.3.jar"/>
             <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
                         failOnViolation="false">
-                    <fileset dir="src/uk/org/ownage/dmdirc/plugins/" includes="**/*.java"/>
+                    <fileset dir="src/com/dmdirc/plugins/" includes="**/*.java"/>
                     <formatter type="xml" tofile="reports/report-plugins.xml"/>
             </checkstyle>
             <xslt in="reports/report-plugins.xml" out="reports/report-plugins.html" style="checkstyle/checkstyle.xsl"/>
@@ -30,7 +30,7 @@
                      classpath="checkstyle-all-4.3.jar"/>
             <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
                         failOnViolation="false">
-                    <fileset dir="src/uk/org/ownage/dmdirc/actions/" includes="**/*.java"/>
+                    <fileset dir="src/com/dmdirc/actions/" includes="**/*.java"/>
                     <formatter type="xml" tofile="reports/report-actions.xml"/>
             </checkstyle>
             <xslt in="reports/report-actions.xml" out="reports/report-actions.html" style="checkstyle/checkstyle.xsl"/>
@@ -41,7 +41,7 @@
 		     classpath="checkstyle-all-4.3.jar"/>
 	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 			failOnViolation="false">
-		    <fileset dir="src/uk/org/ownage/dmdirc/ui/" includes="**/*.java"/>
+		    <fileset dir="src/com/dmdirc/ui/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-ui.xml"/>
 	    </checkstyle>
 	    <xslt in="reports/report-ui.xml" out="reports/report-ui.html" style="checkstyle/checkstyle.xsl"/>
@@ -52,7 +52,7 @@
 		     classpath="checkstyle-all-4.3.jar"/>
 	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 			failOnViolation="false">
-		    <fileset dir="src/uk/org/ownage/dmdirc/parser/" includes="**/*.java"/>
+		    <fileset dir="src/com/dmdirc/parser/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-parser.xml"/>
 	    </checkstyle>
 	    <xslt in="reports/report-parser.xml" out="reports/report-parser.html" style="checkstyle/checkstyle.xsl"/>
@@ -63,7 +63,7 @@
 		     classpath="checkstyle-all-4.3.jar"/>
 	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 			failOnViolation="false">
-		    <fileset dir="src/uk/org/ownage/dmdirc/logger/" includes="**/*.java"/>
+		    <fileset dir="src/com/dmdirc/logger/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-logger.xml"/>
 	    </checkstyle>
 	    <xslt in="reports/report-logger.xml" out="reports/report-logger.html" style="checkstyle/checkstyle.xsl"/>
@@ -74,7 +74,7 @@
 		     classpath="checkstyle-all-4.3.jar"/>
 	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 			failOnViolation="false">
-		    <fileset dir="src/uk/org/ownage/dmdirc/identities/" includes="**/*.java"/>
+		    <fileset dir="src/com/dmdirc/identities/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-identities.xml"/>
 	    </checkstyle>
 	    <xslt in="reports/report-identities.xml" out="reports/report-identities.html" style="checkstyle/checkstyle.xsl"/>
@@ -85,7 +85,7 @@
 		     classpath="checkstyle-all-4.3.jar"/>
 	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 			failOnViolation="false">
-		    <fileset dir="src/uk/org/ownage/dmdirc/commandparser/" includes="**/*.java"/>
+		    <fileset dir="src/com/dmdirc/commandparser/" includes="**/*.java"/>
 		    <formatter type="xml" tofile="reports/report-commandparser.xml"/>
 	    </checkstyle>
 	    <xslt in="reports/report-commandparser.xml" out="reports/report-commandparser.html" style="checkstyle/checkstyle.xsl"/>
@@ -96,7 +96,7 @@
 		     classpath="checkstyle-all-4.3.jar"/>
 	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 			failOnViolation="false">
-		    <fileset dir="src/uk/org/ownage/dmdirc/" includes="*.java"/>
+		    <fileset dir="src/com/dmdirc/" includes="*.java"/>
 		    <formatter type="xml" tofile="reports/report-core.xml"/>
 	    </checkstyle>
 	    <xslt in="reports/report-core.xml" out="reports/report-core.html" style="checkstyle/checkstyle.xsl"/>

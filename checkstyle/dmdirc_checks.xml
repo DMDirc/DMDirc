@@ -21,7 +21,7 @@
     <module name="TreeWalker">
 	    
 	<module name="ImportOrder">
-		    <property name="groups" value="java,javax,uk.org.ownage.dmdirc"/>
+		    <property name="groups" value="java,javax,com.dmdirc"/>
 		    <property name="ordered" value="true"/>
 		    <property name="separated" value="true"/>
 	</module>

@@ -20,8 +20,8 @@ cd $MYDIR/
 $SVN update
 SVNREV=`$SVN info | grep Revision`
 SVNREV=${SVNREV##*: }
-awk '{gsub(/public static final String VERSION = "SVN";/,"public static final String VERSION = \"Nightly - SVN Rev: '${SVNREV}'\";");print}' ${MYDIR}/src/uk/org/ownage/dmdirc/Main.java > ${MYDIR}/src/uk/org/ownage/dmdirc/Main.java.tmp
-mv ${MYDIR}/src/uk/org/ownage/dmdirc/Main.java.tmp ${MYDIR}/src/uk/org/ownage/dmdirc/Main.java
+awk '{gsub(/public static final String VERSION = "SVN";/,"public static final String VERSION = \"Nightly - SVN Rev: '${SVNREV}'\";");print}' ${MYDIR}/src/com/dmdirc/Main.java > ${MYDIR}/src/com/dmdirc/Main.java.tmp
+mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
 $ANT -buildfile $MYDIR/build.xml -k
 if [ -f $MYDIR/dist/DMDirc.jar ]; then
 	FILENAME=DMDirc`date +_%Y%m%d`_${SVNREV}.jar
@@ -35,6 +35,6 @@ if [ -f $MYDIR/dist/DMDirc.jar ]; then
 else
 	/bin/sh $MYDIR/oblong.sh "Nightly Build" "Build Failed"
 fi
-$SVN revert ${MYDIR}/src/uk/org/ownage/dmdirc/Main.java
+$SVN revert ${MYDIR}/src/com/dmdirc/Main.java
 
 
