@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Interface Used to give numeric Information.
@@ -36,7 +36,7 @@ public interface INumeric extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param numeric What numeric is this for
 	 * @param token IRC Tokenised line
-	 * @see uk.org.ownage.dmdirc.parser.ProcessingManager#callNumeric
+	 * @see com.dmdirc.parser.ProcessingManager#callNumeric
 	 */
 	void onNumeric(IRCParser tParser, int numeric, String[] token);
 }

@@ -22,10 +22,10 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ClientInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.IRCParser;
 
 /** 
  * Called when user modes are changed.
@@ -41,7 +41,7 @@ public interface IUserModeChanged extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cClient Client that had the mode changed (almost always us)
 	 * @param sSetBy Host that set the mode (us or servername)
-	 * @see uk.org.ownage.dmdirc.parser.ProcessMode#callUserModeChanged
+	 * @see com.dmdirc.parser.ProcessMode#callUserModeChanged
 	 */
 	void onUserModeChanged(IRCParser tParser, ClientInfo cClient, String sSetBy);
 }

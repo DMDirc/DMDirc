@@ -22,11 +22,11 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.IRCParser;
 
 /** 
  * Called when a users channel mode is changed.
@@ -43,7 +43,7 @@ public interface IChannelUserModeChanged extends ICallbackInterface {
 	 * @param cSetByClient Client chaning the modes (null if server)
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @param sMode String representing mode change (ie +o)
-	 * @see uk.org.ownage.dmdirc.parser.ProcessMode#callChannelUserModeChanged
+	 * @see com.dmdirc.parser.ProcessMode#callChannelUserModeChanged
 	 */
 	void onChannelUserModeChanged(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode);
 }

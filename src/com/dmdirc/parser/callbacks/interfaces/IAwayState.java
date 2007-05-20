@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Called when we go away, or come back.
@@ -36,7 +36,7 @@ public interface IAwayState extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param currentState Set to true if we are now away, else false.
 	 * @param reason Best guess at away reason
-	 * @see uk.org.ownage.dmdirc.parser.ProcessAway#callAwayState
+	 * @see com.dmdirc.parser.ProcessAway#callAwayState
 	 */
 	void onAwayState(IRCParser tParser, boolean currentState, String reason);
 }

@@ -22,10 +22,10 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.ParserError;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ParserError;
 
 /**
  * Called to give Error Information.
@@ -36,7 +36,7 @@ public interface IErrorInfo extends ICallbackInterface {
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param errorInfo ParserError object representing the error.
-	 * @see uk.org.ownage.dmdirc.parser.IRCParser#callErrorInfo
+	 * @see com.dmdirc.parser.IRCParser#callErrorInfo
 	 */
 	void onErrorInfo(IRCParser tParser, ParserError errorInfo);
 }

@@ -22,10 +22,10 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelKick;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelKick;
+import com.dmdirc.parser.callbacks.CallbackOnChannelKick;
+import com.dmdirc.parser.callbacks.interfaces.IChannelKick;
 
 /**
  * Process a channel kick.

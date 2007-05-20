@@ -22,7 +22,7 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
 /**
  * "SuperInterface" for all callbacks.

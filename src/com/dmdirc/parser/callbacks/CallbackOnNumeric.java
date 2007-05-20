@@ -22,11 +22,11 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks;
+package com.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.ParserError;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INumeric;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ParserError;
+import com.dmdirc.parser.callbacks.interfaces.INumeric;
 
 /**
  * Callback to all objects implementing the INumeric Interface.

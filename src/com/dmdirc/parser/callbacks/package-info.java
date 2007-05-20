@@ -23,4 +23,4 @@
 /**
  * Parser callbacks.
  */
-package uk.org.ownage.dmdirc.parser.callbacks;
+package com.dmdirc.parser.callbacks;

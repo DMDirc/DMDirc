@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Interface Used to give MOTD Information.
@@ -35,7 +35,7 @@ public interface IMOTDLine extends ICallbackInterface {
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param sData Incomming Line.
-	 * @see uk.org.ownage.dmdirc.parser.ProcessMOTD#callMOTDLine
+	 * @see com.dmdirc.parser.ProcessMOTD#callMOTDLine
 	 */
 	void onMOTDLine(IRCParser tParser, String sData);
 }

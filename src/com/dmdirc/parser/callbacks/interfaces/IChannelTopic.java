@@ -22,10 +22,10 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.IRCParser;
 
 /** 
  * Called when the topic is changed or discovered for the first time.
@@ -39,7 +39,7 @@ public interface IChannelTopic extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cChannel Channel that topic was set on
 	 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
-	 * @see uk.org.ownage.dmdirc.parser.ProcessTopic#callChannelTopic
+	 * @see com.dmdirc.parser.ProcessTopic#callChannelTopic
 	 */
 	void onChannelTopic(IRCParser tParser, ChannelInfo cChannel, boolean bIsJoinTopic);
 }

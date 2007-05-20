@@ -22,14 +22,14 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnMOTDEnd;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnMOTDLine;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnMOTDStart;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDLine;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IMOTDStart;
+import com.dmdirc.parser.callbacks.CallbackOnMOTDEnd;
+import com.dmdirc.parser.callbacks.CallbackOnMOTDLine;
+import com.dmdirc.parser.callbacks.CallbackOnMOTDStart;
+import com.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
+import com.dmdirc.parser.callbacks.interfaces.IMOTDLine;
+import com.dmdirc.parser.callbacks.interfaces.IMOTDStart;
 
 /**
  * Process a MOTD Related Line

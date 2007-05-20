@@ -22,10 +22,10 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.IRCParser;
 
 /** 
  * Called When we join a channel.
@@ -38,7 +38,7 @@ public interface IChannelSelfJoin extends ICallbackInterface {
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cChannel Channel Object
-	 * @see uk.org.ownage.dmdirc.parser.ProcessJoin#callChannelSelfJoin
+	 * @see com.dmdirc.parser.ProcessJoin#callChannelSelfJoin
 	 */
 	void onChannelSelfJoin(IRCParser tParser, ChannelInfo cChannel);
 }

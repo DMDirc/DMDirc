@@ -22,10 +22,10 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
-// import uk.org.ownage.dmdirc.parser.callbacks.;
-// import uk.org.ownage.dmdirc.parser.callbacks.interfaces.;
+// import com.dmdirc.parser.callbacks.;
+// import com.dmdirc.parser.callbacks.interfaces.;
 
 /**
  * Process a List Modes.

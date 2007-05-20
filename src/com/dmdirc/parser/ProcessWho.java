@@ -22,17 +22,17 @@
  * SVN: $Id: ProcessWho.java 1015 2007-05-02 15:21:37Z ShaneMcC $
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
 import java.util.Enumeration;
 
-import uk.org.ownage.dmdirc.parser.ClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnAwayStateOther;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelAwayStateOther;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelAwayStateOther;
+import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.callbacks.CallbackOnAwayStateOther;
+import com.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
+import com.dmdirc.parser.callbacks.CallbackOnChannelAwayStateOther;
+import com.dmdirc.parser.callbacks.interfaces.IChannelAwayStateOther;
 
 /**
  * Process a /who reply

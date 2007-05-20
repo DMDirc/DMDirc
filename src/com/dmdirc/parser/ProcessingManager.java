@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INumeric;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnNumeric;
+package com.dmdirc.parser;
+import com.dmdirc.parser.callbacks.interfaces.INumeric;
+import com.dmdirc.parser.callbacks.CallbackOnNumeric;
 import java.util.Hashtable;
 import java.util.Enumeration;
 

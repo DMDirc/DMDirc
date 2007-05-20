@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Interface Used when the Network=blah 005 token is recieved.
@@ -38,7 +38,7 @@ public interface IGotNetwork extends ICallbackInterface {
 	 * @param networkName The name of the network.
 	 * @param ircdVersion The version of the ircd.
 	 * @param ircdType The Guessed type of the ircd based on the name.
-	 * @see uk.org.ownage.dmdirc.parser.Process004005#callGotNetwork
+	 * @see com.dmdirc.parser.Process004005#callGotNetwork
 	 */
 	void onGotNetwork(IRCParser tParser, String networkName, String ircdVersion, String ircdType);
 }

@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Called after 001.
@@ -34,7 +34,7 @@ public interface IServerReady extends ICallbackInterface {
 	 * Called after 001.
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
-	 * @see uk.org.ownage.dmdirc.parser.Process001#callServerReady
+	 * @see com.dmdirc.parser.Process001#callServerReady
 	 */
 	void onServerReady(IRCParser tParser);
 }

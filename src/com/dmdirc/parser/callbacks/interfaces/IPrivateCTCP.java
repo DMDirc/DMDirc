@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Called when a person sends a CTCP to you directly.
@@ -41,7 +41,7 @@ public interface IPrivateCTCP extends ICallbackInterface {
 	 * @param sType Type of CTCP (VERSION, TIME etc)
 	 * @param sMessage Additional contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see uk.org.ownage.dmdirc.parser.ProcessMessage#callPrivateCTCP
+	 * @see com.dmdirc.parser.ProcessMessage#callPrivateCTCP
 	 */
 	void onPrivateCTCP(IRCParser tParser, String sType, String sMessage, String sHost);
 }

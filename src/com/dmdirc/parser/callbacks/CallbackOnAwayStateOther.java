@@ -22,12 +22,12 @@
  * SVN: $Id: CallbackOnAwayStateOther.java 719 2007-03-28 13:20:56Z ShaneMcC $
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks;
+package com.dmdirc.parser.callbacks;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.ClientInfo;
-import uk.org.ownage.dmdirc.parser.ParserError;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.ParserError;
+import com.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
 
 /**
  * Callback to all objects implementing the IAwayStateOther Interface.

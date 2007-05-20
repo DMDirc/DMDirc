@@ -22,10 +22,10 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Called when a names reply is parsed.
@@ -36,7 +36,7 @@ public interface IChannelGotNames extends ICallbackInterface {
 	 *
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cChannel Channel which the names reply is for
-	 * @see uk.org.ownage.dmdirc.parser.ProcessNames#callChannelGotNames
+	 * @see com.dmdirc.parser.ProcessNames#callChannelGotNames
 	 */
 	void onChannelGotNames(IRCParser tParser, ChannelInfo cChannel);
 }

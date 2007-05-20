@@ -22,10 +22,10 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ClientInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Called when we or another user change nickname.
@@ -39,7 +39,7 @@ public interface INickChanged extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cClient Client changing nickname
 	 * @param sOldNick Nickname before change
-	 * @see uk.org.ownage.dmdirc.parser.ProcessNick#callNickChanged
+	 * @see com.dmdirc.parser.ProcessNick#callNickChanged
 	 */
 	void onNickChanged(IRCParser tParser, ClientInfo cClient, String sOldNick);
 }

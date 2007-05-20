@@ -22,7 +22,7 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
 /**
  * Contains User information.

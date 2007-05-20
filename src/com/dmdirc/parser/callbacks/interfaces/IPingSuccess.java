@@ -22,9 +22,9 @@
  * SVN: $Id: IPingSuccess.java 719 2007-03-28 13:20:56Z ShaneMcC $
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Called when a Ping was a Success.

@@ -24,4 +24,4 @@
  * Parser callback interfaces.  Classes wanting to use callbacks will be 
  * required to implement the appropriate interface from this package.
  */
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;

@@ -22,11 +22,11 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Called when a person sends a notice to a channel.
@@ -44,7 +44,7 @@ public interface IChannelNotice extends ICallbackInterface {
 	 * @param cChannelClient ChannelClient who sent the notice (may be null if server)
 	 * @param sMessage notice contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see uk.org.ownage.dmdirc.parser.ProcessMessage#callChannelNotice
+	 * @see com.dmdirc.parser.ProcessMessage#callChannelNotice
 	 */
 	void onChannelNotice(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost);
 }

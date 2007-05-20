@@ -22,13 +22,13 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks;
+package com.dmdirc.parser.callbacks;
 
 import java.util.ArrayList;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.ParserError;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ParserError;
+import com.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
 
 /**
  * CallbackObject.

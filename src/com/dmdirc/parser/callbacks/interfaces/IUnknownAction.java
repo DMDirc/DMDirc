@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Called when a person sends an action not aimed specifically at you or a channel (ie $*).
@@ -41,7 +41,7 @@ public interface IUnknownAction extends ICallbackInterface {
 	 * @param sMessage Action contents
 	 * @param sTarget Actual target of action
 	 * @param sHost Hostname of sender (or servername)
-	 * @see uk.org.ownage.dmdirc.parser.ProcessMessage#callUnknownAction
+	 * @see com.dmdirc.parser.ProcessMessage#callUnknownAction
 	 */
 	void onUnknownAction(IRCParser tParser, String sMessage, String sTarget, String sHost);
 }

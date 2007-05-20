@@ -22,19 +22,19 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
 import java.util.Calendar;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelSingleModeChanged;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelNonUserModeChanged;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelModeChanged;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelUserModeChanged;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnUserModeChanged;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelSingleModeChanged;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelNonUserModeChanged;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelModeChanged;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUserModeChanged;
+import com.dmdirc.parser.callbacks.CallbackOnChannelSingleModeChanged;
+import com.dmdirc.parser.callbacks.CallbackOnChannelNonUserModeChanged;
+import com.dmdirc.parser.callbacks.CallbackOnChannelModeChanged;
+import com.dmdirc.parser.callbacks.CallbackOnChannelUserModeChanged;
+import com.dmdirc.parser.callbacks.CallbackOnUserModeChanged;
+import com.dmdirc.parser.callbacks.interfaces.IChannelSingleModeChanged;
+import com.dmdirc.parser.callbacks.interfaces.IChannelNonUserModeChanged;
+import com.dmdirc.parser.callbacks.interfaces.IChannelModeChanged;
+import com.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
+import com.dmdirc.parser.callbacks.interfaces.IUserModeChanged;
 
 /**
  * Process a Mode line.

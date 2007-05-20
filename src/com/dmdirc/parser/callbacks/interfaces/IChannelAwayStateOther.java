@@ -22,11 +22,11 @@
  * SVN: $Id: IChannelAwayStateOther.java 719 2007-03-28 13:20:56Z ShaneMcC $
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
 
 /**
  * Called when we go away, or come back.
@@ -39,7 +39,7 @@ public interface IChannelAwayStateOther extends ICallbackInterface {
 	 * @param channel Channel this is for
 	 * @param channelclient Client this is for
 	 * @param state Away State (true if away, false if here)
-	 * @see uk.org.ownage.dmdirc.parser.ProcessAway#callChannelAwayStateOther
+	 * @see com.dmdirc.parser.ProcessAway#callChannelAwayStateOther
 	 */
 	void onChannelAwayStateOther(IRCParser tParser, ChannelInfo channel, ChannelClientInfo channelClient, boolean state);
 }

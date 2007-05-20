@@ -22,12 +22,12 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelQuit;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnQuit;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelQuit;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IQuit;
+import com.dmdirc.parser.callbacks.CallbackOnChannelQuit;
+import com.dmdirc.parser.callbacks.CallbackOnQuit;
+import com.dmdirc.parser.callbacks.interfaces.IChannelQuit;
+import com.dmdirc.parser.callbacks.interfaces.IQuit;
 import java.util.Enumeration;
 
 /**

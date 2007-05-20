@@ -22,11 +22,11 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.IRCParser;
 
 /** 
  * Called when we or another user change nickname (Called once per channel the user is on).
@@ -41,7 +41,7 @@ public interface IChannelNickChanged extends ICallbackInterface {
 	 * @param cChannel One of the channels that the user is on
 	 * @param cChannelClient Client changing nickname
 	 * @param sOldNick Nickname before change
-	 * @see uk.org.ownage.dmdirc.parser.ProcessNick#callChannelNickChanged
+	 * @see com.dmdirc.parser.ProcessNick#callChannelNickChanged
 	 */
 	 void onChannelNickChanged(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick);
 }

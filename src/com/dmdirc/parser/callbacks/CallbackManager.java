@@ -22,13 +22,13 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks;
+package com.dmdirc.parser.callbacks;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
 
 /**
  * IRC Parser Callback Manager.
@@ -182,7 +182,7 @@ public final class CallbackManager {
 	 *
 	 * @param callbackName Name of callback object.
 	 * @param o instance of ICallbackInterface to add.
-	 * @throws uk.org.ownage.dmdirc.parser.callbacks.CallbackNotFound If callback is not found.
+	 * @throws com.dmdirc.parser.callbacks.CallbackNotFound If callback is not found.
 	 */
 	public void addCallback(final String callbackName, final ICallbackInterface o) throws CallbackNotFound {
 		final CallbackObject cb = getCallbackType(callbackName);

@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Interface Used on every incomming line before 001.
@@ -35,7 +35,7 @@ public interface INoticeAuth extends ICallbackInterface {
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param sData Incomming Line.
-	 * @see uk.org.ownage.dmdirc.parser.ProcessNoticeAuth#callNoticeAuth
+	 * @see com.dmdirc.parser.ProcessNoticeAuth#callNoticeAuth
 	 */
 	void onNoticeAuth(IRCParser tParser, String sData);
 }

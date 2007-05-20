@@ -22,10 +22,10 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnNickInUse;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INickInUse;
+import com.dmdirc.parser.callbacks.CallbackOnNickInUse;
+import com.dmdirc.parser.callbacks.interfaces.INickInUse;
 
 /**
  * Process a NickInUse message.

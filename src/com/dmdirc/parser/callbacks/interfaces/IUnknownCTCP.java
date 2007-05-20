@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Called when a person sends a CTCP not aimed at you or a channel (ie $*).
@@ -42,7 +42,7 @@ public interface IUnknownCTCP extends ICallbackInterface {
 	 * @param sMessage Additional contents
 	 * @param sTarget Actual Target of CTCP
 	 * @param sHost Hostname of sender (or servername)
-	 * @see uk.org.ownage.dmdirc.parser.ProcessMessage#callUnknownCTCP
+	 * @see com.dmdirc.parser.ProcessMessage#callUnknownCTCP
 	 */
 	void onUnknownCTCP(IRCParser tParser, String sType, String sMessage, String sTarget, String sHost);
 }

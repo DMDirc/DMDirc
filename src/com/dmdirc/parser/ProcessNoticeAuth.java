@@ -22,10 +22,10 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnNoticeAuth;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.INoticeAuth;
+import com.dmdirc.parser.callbacks.CallbackOnNoticeAuth;
+import com.dmdirc.parser.callbacks.interfaces.INoticeAuth;
 
 /**
  * Process a NoticeAuth message.

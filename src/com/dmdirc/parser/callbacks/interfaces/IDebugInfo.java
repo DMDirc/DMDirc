@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Interface Used to give Debug Information.
@@ -36,7 +36,7 @@ public interface IDebugInfo extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param nLevel Debugging Level (ndInfo, ndSocket etc)
 	 * @param sData Debugging Information
-	 * @see uk.org.ownage.dmdirc.parser.IRCParser#callDebugInfo
+	 * @see com.dmdirc.parser.IRCParser#callDebugInfo
 	 */
 	void onDebugInfo(IRCParser tParser, int nLevel, String sData);
 }

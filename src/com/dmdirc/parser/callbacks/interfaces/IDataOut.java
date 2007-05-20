@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Called on every incomming line BEFORE being sent.
@@ -36,7 +36,7 @@ public interface IDataOut extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param sData Outgoing Data
 	 * @param bFromParser True if parser sent the data, false if sent using .sendLine
-	 * @see uk.org.ownage.dmdirc.parser.IRCParser#callDataOut
+	 * @see com.dmdirc.parser.IRCParser#callDataOut
 	 */
 	void onDataOut(IRCParser tParser, String sData, boolean bFromParser);
 }

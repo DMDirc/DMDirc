@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Called when a person sends a message to you directly (PM). 
@@ -40,7 +40,7 @@ public interface IPrivateMessage extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param sMessage Message contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see uk.org.ownage.dmdirc.parser.ProcessMessage#callPrivateMessage
+	 * @see com.dmdirc.parser.ProcessMessage#callPrivateMessage
 	 */
 	void onPrivateMessage(IRCParser tParser, String sMessage, String sHost);
 }

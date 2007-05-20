@@ -22,38 +22,38 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelAction;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelCTCP;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelCTCPReply;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelMessage;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelNotice;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnPrivateAction;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnPrivateCTCP;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnPrivateCTCPReply;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnPrivateMessage;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnPrivateNotice;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnUnknownAction;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnUnknownCTCP;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnUnknownCTCPReply;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnUnknownMessage;
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnUnknownNotice;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelAction;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelCTCP;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelCTCPReply;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelMessage;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelNotice;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateAction;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownAction;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownCTCP;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownCTCPReply;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownMessage;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IUnknownNotice;
+import com.dmdirc.parser.callbacks.CallbackOnChannelAction;
+import com.dmdirc.parser.callbacks.CallbackOnChannelCTCP;
+import com.dmdirc.parser.callbacks.CallbackOnChannelCTCPReply;
+import com.dmdirc.parser.callbacks.CallbackOnChannelMessage;
+import com.dmdirc.parser.callbacks.CallbackOnChannelNotice;
+import com.dmdirc.parser.callbacks.CallbackOnPrivateAction;
+import com.dmdirc.parser.callbacks.CallbackOnPrivateCTCP;
+import com.dmdirc.parser.callbacks.CallbackOnPrivateCTCPReply;
+import com.dmdirc.parser.callbacks.CallbackOnPrivateMessage;
+import com.dmdirc.parser.callbacks.CallbackOnPrivateNotice;
+import com.dmdirc.parser.callbacks.CallbackOnUnknownAction;
+import com.dmdirc.parser.callbacks.CallbackOnUnknownCTCP;
+import com.dmdirc.parser.callbacks.CallbackOnUnknownCTCPReply;
+import com.dmdirc.parser.callbacks.CallbackOnUnknownMessage;
+import com.dmdirc.parser.callbacks.CallbackOnUnknownNotice;
+import com.dmdirc.parser.callbacks.interfaces.IChannelAction;
+import com.dmdirc.parser.callbacks.interfaces.IChannelCTCP;
+import com.dmdirc.parser.callbacks.interfaces.IChannelCTCPReply;
+import com.dmdirc.parser.callbacks.interfaces.IChannelMessage;
+import com.dmdirc.parser.callbacks.interfaces.IChannelNotice;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
+import com.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
+import com.dmdirc.parser.callbacks.interfaces.IUnknownAction;
+import com.dmdirc.parser.callbacks.interfaces.IUnknownCTCP;
+import com.dmdirc.parser.callbacks.interfaces.IUnknownCTCPReply;
+import com.dmdirc.parser.callbacks.interfaces.IUnknownMessage;
+import com.dmdirc.parser.callbacks.interfaces.IUnknownNotice;
 
 
 /**

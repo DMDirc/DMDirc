@@ -22,7 +22,7 @@
  * SVN: $Id: IRCParser.java 741 2007-04-01 15:02:16Z ShaneMcC $
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
 import java.util.TimerTask;
 

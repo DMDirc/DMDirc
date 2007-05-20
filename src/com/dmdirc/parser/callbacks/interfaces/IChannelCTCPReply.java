@@ -22,11 +22,11 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Called when a person sends a CTCPRReply to a channel.
@@ -45,7 +45,7 @@ public interface IChannelCTCPReply extends ICallbackInterface {
 	 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 	 * @param sMessage Reply Contents
 	 * @param sHost Hostname of sender (or servername)
-	 * @see uk.org.ownage.dmdirc.parser.ProcessMessage#callChannelCTCPReply
+	 * @see com.dmdirc.parser.ProcessMessage#callChannelCTCPReply
 	 */
 	void onChannelCTCPReply(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost);
 }

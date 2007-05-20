@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackManager;
+import com.dmdirc.parser.callbacks.CallbackManager;
 
 /**
  * IRCProcessor.
@@ -56,7 +56,7 @@ public abstract class IRCProcessor {
 	/**
 	 * Callback to all objects implementing the IErrorInfo Interface.
 	 *
-	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IErrorInfo
+	 * @see com.dmdirc.parser.callbacks.interfaces.IErrorInfo
 	 * @param errorInfo ParserError object representing the error.
 	 * @return true if a method was called, false otherwise
 	 */
@@ -67,7 +67,7 @@ public abstract class IRCProcessor {
 	/**
 	 * Callback to all objects implementing the DebugInfo Callback.
 	 *
-	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo
+	 * @see com.dmdirc.parser.callbacks.interfaces.IDebugInfo
 	 * @param level Debugging Level (DEBUG_INFO, ndSocket etc)
 	 * @param data Debugging Information
 	 * @param args Formatting String Options
@@ -80,7 +80,7 @@ public abstract class IRCProcessor {
 	/**
 	 * Callback to all objects implementing the DebugInfo Callback.
 	 *
-	 * @see uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDebugInfo
+	 * @see com.dmdirc.parser.callbacks.interfaces.IDebugInfo
 	 * @param level Debugging Level (DEBUG_INFO, ndSocket etc)
 	 * @param data Debugging Information
 	 * @return true if a method was called, false otherwise

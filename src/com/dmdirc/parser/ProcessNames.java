@@ -22,10 +22,10 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnChannelGotNames;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
+import com.dmdirc.parser.callbacks.CallbackOnChannelGotNames;
+import com.dmdirc.parser.callbacks.interfaces.IChannelGotNames;
 
 /**
  * Process a Names reply.

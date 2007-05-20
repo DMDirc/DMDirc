@@ -22,10 +22,10 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ClientInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.IRCParser;
 /** 
  * Called When we, or another client quits IRC (Called once in total).
  * This is called BEFORE client has been removed from the channel.
@@ -38,7 +38,7 @@ public interface IQuit extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param cClient Client Quitting
 	 * @param sReason Reason for quitting (may be "")
-	 * @see uk.org.ownage.dmdirc.parser.ProcessQuit#callQuit
+	 * @see com.dmdirc.parser.ProcessQuit#callQuit
 	 */
 	void onQuit(IRCParser tParser, ClientInfo cClient, String sReason);
 }

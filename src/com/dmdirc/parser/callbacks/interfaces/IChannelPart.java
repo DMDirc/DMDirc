@@ -22,11 +22,11 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.IRCParser;
 
 /** 
  * Called When we, or another client parts a channel.
@@ -41,7 +41,7 @@ public interface IChannelPart extends ICallbackInterface {
 	 * @param cChannel Channel that the user parted
 	 * @param cChannelClient Client that parted
 	 * @param sReason Reason given for parting (May be "")
-	 * @see uk.org.ownage.dmdirc.parser.ProcessPart#callChannelPart
+	 * @see com.dmdirc.parser.ProcessPart#callChannelPart
 	 */
 	void onChannelPart(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason);
 }

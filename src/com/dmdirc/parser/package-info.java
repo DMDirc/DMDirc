@@ -26,4 +26,4 @@
 /**
  * IRC Parser and associated files.
  */
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;

@@ -22,10 +22,10 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnGotNetwork;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IGotNetwork;
+import com.dmdirc.parser.callbacks.CallbackOnGotNetwork;
+import com.dmdirc.parser.callbacks.interfaces.IGotNetwork;
 
 /**
  * Process ISUPPORT lines.

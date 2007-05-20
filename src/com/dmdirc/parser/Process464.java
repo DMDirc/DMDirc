@@ -22,10 +22,10 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser;
+package com.dmdirc.parser;
 
-import uk.org.ownage.dmdirc.parser.callbacks.CallbackOnPasswordRequired;
-import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPasswordRequired;
+import com.dmdirc.parser.callbacks.CallbackOnPasswordRequired;
+import com.dmdirc.parser.callbacks.interfaces.IPasswordRequired;
 
 /**
  * Process a 464 message.

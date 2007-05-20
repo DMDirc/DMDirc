@@ -22,7 +22,7 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks;
+package com.dmdirc.parser.callbacks;
 
 /**
  * IRC Parser Callback Exception.

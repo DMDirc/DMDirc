@@ -22,11 +22,11 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Called when a person is kicked.
@@ -43,7 +43,7 @@ public interface IChannelKick extends ICallbackInterface {
 	 * @param cKickedByClient ChannelClient that did the kicking (may be null if server)
 	 * @param sReason Reason for kick (may be "")
 	 * @param sKickedByHost Hostname of Kicker (or servername)
-	 * @see uk.org.ownage.dmdirc.parser.ProcessKick#callChannelKick
+	 * @see com.dmdirc.parser.ProcessKick#callChannelKick
 	 */
 	void onChannelKick(IRCParser tParser, ChannelInfo cChannel, ChannelClientInfo cKickedClient, ChannelClientInfo cKickedByClient, String sReason, String sKickedByHost);
 }

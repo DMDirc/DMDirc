@@ -22,10 +22,10 @@
  * SVN: $Id: IAwayStateOther.java 719 2007-03-28 13:20:56Z ShaneMcC $
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.ClientInfo;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ClientInfo;
 
 /**
  * Called when we go away, or come back.
@@ -37,7 +37,7 @@ public interface IAwayStateOther extends ICallbackInterface {
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param client Client this is for
 	 * @param state Away State (true if away, false if here)
-	 * @see uk.org.ownage.dmdirc.parser.ProcessAway#callAwayStateOther
+	 * @see com.dmdirc.parser.ProcessAway#callAwayStateOther
 	 */
 	void onAwayStateOther(IRCParser tParser, ClientInfo client, boolean state);
 }

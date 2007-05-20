@@ -22,9 +22,9 @@
  * SVN: $Id$
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Called when requested nickname is in use.
@@ -35,7 +35,7 @@ public interface INickInUse extends ICallbackInterface {
 	 *
 	 * @param nickname Nickname that was wanted.
 	 * @param tParser Reference to the parser object that made the callback.
-	 * @see uk.org.ownage.dmdirc.parser.ProcessNickInUse#callNickInUse
+	 * @see com.dmdirc.parser.ProcessNickInUse#callNickInUse
 	 */
 	void onNickInUse(IRCParser tParser, String nickname);
 }

@@ -22,9 +22,9 @@
  * SVN: $Id: IPasswordRequired.java 719 2007-03-28 13:20:56Z ShaneMcC $
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.IRCParser;
 
 /**
  * Interface Used when a raw 464 is recieved.
@@ -34,7 +34,7 @@ public interface IPasswordRequired extends ICallbackInterface {
 	 * Called when a raw 464 is recieved.
 	 *
 	 * @param tParser Reference to the parser object that made the callback.
-	 * @see uk.org.ownage.dmdirc.parser.Process004005#callPasswordRequired
+	 * @see com.dmdirc.parser.Process004005#callPasswordRequired
 	 */
 	void onPasswordRequired(IRCParser tParser);
 }

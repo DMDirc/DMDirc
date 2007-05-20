@@ -22,10 +22,10 @@
  * SVN: $Id: IErrorInfo.java 719 2007-03-28 13:20:56Z ShaneMcC $
  */
 
-package uk.org.ownage.dmdirc.parser.callbacks.interfaces;
+package com.dmdirc.parser.callbacks.interfaces;
 
-import uk.org.ownage.dmdirc.parser.IRCParser;
-import uk.org.ownage.dmdirc.parser.ParserError;
+import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.ParserError;
 
 /**
  * Called to give Error Information related to a connection attempt.
@@ -36,7 +36,7 @@ public interface IConnectError extends ICallbackInterface {
 	 * 
 	 * @param tParser Reference to the parser object that made the callback.
 	 * @param errorInfo ParserError object representing the error.
-	 * @see uk.org.ownage.dmdirc.parser.IRCParser#callConnectError
+	 * @see com.dmdirc.parser.IRCParser#callConnectError
 	 */
 	void onConnectError(IRCParser tParser, ParserError errorInfo);
 }
