@@ -172,7 +172,7 @@ public final class ChannelClientInfo {
 	}
 
 	/**
-	 * Get the most important prefix this client has (o, v etc).
+	 * Get the most important prefix this client has (@, + etc).
 	 *
 	 * @return String representing the most important mode.
 	 */

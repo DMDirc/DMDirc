@@ -122,7 +122,13 @@ public abstract class Plugin implements Comparable<Plugin> {
 	 */
 	public abstract String toString();
 
-	/** {@inheritDoc} */
+	/**
+	 * Compares this object with the specified object for order.
+	 * Returns a negative integer, zero, or a positive integer as per String.compareTo();
+	 *
+	 * @param o Object to compare to
+	 * @return a negative integer, zero, or a positive integer.
+	 */
 	public int compareTo(Plugin o) {
 		return toString().compareTo(o.toString());
 	}
