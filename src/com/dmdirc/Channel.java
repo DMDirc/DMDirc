@@ -97,9 +97,6 @@ public final class Channel extends FrameContainer implements IChannelMessage,
     /** The tabcompleter used for this channel. */
     private final TabCompleter tabCompleter;
     
-    /** The icon being used for this channel. */
-    private final ImageIcon imageIcon;
-    
     /** The config manager for this channel. */
     private final ConfigManager configManager;
     

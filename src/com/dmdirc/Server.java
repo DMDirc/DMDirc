@@ -127,8 +127,6 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /** The tabcompleter used for this server. */
     private final TabCompleter tabCompleter = new TabCompleter();
-    /** The icon being used for this server. */
-    private ImageIcon imageIcon;
     /** The last activated internal frame for this server. */
     private FrameContainer activeFrame = this;
     /** The config manager for this server. */

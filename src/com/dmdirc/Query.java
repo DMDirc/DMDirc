@@ -67,11 +67,6 @@ public final class Query extends FrameContainer implements IPrivateAction,
     private String host;
     
     /**
-     * The icon being used for this query.
-     */
-    private final ImageIcon imageIcon;
-    
-    /**
      * The tab completer for this frame.
      */
     private final TabCompleter tabCompleter;
