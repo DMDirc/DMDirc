@@ -45,18 +45,7 @@ public abstract class FrameContainer implements InternalFrameListener {
     
     /** The colour of our frame's notifications. */
     protected Color notification = Color.BLACK;
-    
-    /**
-     * Requests that this object's frame be activated.
-     */
-    public abstract void activateFrame();
-    
-    /**
-     * Sends a notification to the frame manager that this object has been
-     * updated.
-     */
-    public abstract void sendNotification();
-    
+            
     /**
      * Returns the internal frame associated with this object.
      * @return The internal frame associated with this object
@@ -82,17 +71,25 @@ public abstract class FrameContainer implements InternalFrameListener {
     public abstract void close();
     
     /**
-     * Returns the server instance associated with this frame.
-     *
+     * Returns the server instance associated with this container.
      * @return the associated server connection
      */
     public abstract Server getServer();
     
     /**
-     * Returns the config manager for this frame.
+     * Returns the config manager for this container.
      * @return the associated config manager
      */
-    public abstract ConfigManager getConfigManager();
+    public ConfigManager getConfigManager() {
+        return getServer().getConfigManager();
+    }
+    
+    /**
+     * Requests that this object's frame be activated.
+     */
+    public void activateFrame() {
+        MainFrame.getMainFrame().setActiveFrame((JInternalFrame) getFrame());
+    }    
     
     /**
      * Clears any outstanding notifications this frame has set.
@@ -101,6 +98,33 @@ public abstract class FrameContainer implements InternalFrameListener {
         MainFrame.getMainFrame().getFrameManager().clearNotification(this);
         notification = Color.BLACK;
     }
+    
+    /**
+     * Sends a notification to the frame manager if this frame isn't active.
+     */
+    public void sendNotification() {
+        sendNotification(Color.RED);
+    }
+    
+    /**
+     * Sends a notification to the frame manager if this fame isn't active.
+     * @param colour The colour to use for the notification
+     */
+    public void sendNotification(final Color colour) {
+        final JInternalFrame activeFrame = MainFrame.getMainFrame().getActiveFrame();
+        if (activeFrame != null && !activeFrame.equals(getFrame())) {
+            MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
+            notification = colour;
+        }
+    }
+    
+    /**
+     * Retrieves the current notification colour of this channel.
+     * @return This channel's notification colour
+     */
+    public Color getNotification() {
+        return notification;
+    }    
     
     /**
      * Determines if the specified frame is owned by this object.

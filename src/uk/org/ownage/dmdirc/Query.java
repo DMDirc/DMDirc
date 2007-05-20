@@ -22,7 +22,6 @@
 
 package uk.org.ownage.dmdirc;
 
-import java.awt.Color;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
@@ -43,7 +42,6 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.QueryFrame;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
  * The Query class represents the client's view of a query with another user.
@@ -301,9 +299,8 @@ public final class Query extends FrameContainer implements IPrivateAction,
         return host;
     }
     
-    /**
-     * Requests that this object's frame be activated.
-     */
+    /** {@inheritDoc} */
+    @Override
     public void activateFrame() {
         if (!frame.isVisible()) {
             show();
@@ -328,23 +325,5 @@ public final class Query extends FrameContainer implements IPrivateAction,
      */
     public ImageIcon getIcon() {
         return imageIcon;
-    }
-    
-    /**
-     * Sends a notification to the frame manager if this frame isn't active.
-     */
-    public void sendNotification() {
-        if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
-            final Color colour = ColourManager.getColour(4);
-            MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
-        }
-    }
-    
-    /**
-     * Returns this query's config manager.
-     * @return This query's config manager
-     */
-    public ConfigManager getConfigManager() {
-        return server.getConfigManager();
     }
 }

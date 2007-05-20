@@ -30,7 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
-import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 
 import uk.org.ownage.dmdirc.actions.ActionManager;
@@ -174,10 +173,8 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         frame.open();
     }
     
-    /**
-     * Retrieves this channel's config manager.
-     * @return This channel's configManager
-     */
+    /** {@inheritDoc} */
+    @Override
     public ConfigManager getConfigManager() {
         return configManager;
     }
@@ -835,13 +832,6 @@ public final class Channel extends FrameContainer implements IChannelMessage,
     }
     
     /**
-     * Requests that this object's frame be activated.
-     */
-    public void activateFrame() {
-        MainFrame.getMainFrame().setActiveFrame(frame);
-    }
-    
-    /**
      * Formats the specified arguments using the supplied message type, and
      * outputs to the main text area.
      * @param messageType the message type to use
@@ -857,32 +847,5 @@ public final class Channel extends FrameContainer implements IChannelMessage,
      */
     public ImageIcon getIcon() {
         return imageIcon;
-    }
-    
-    /**
-     * Sends a notification to the frame manager if this frame isn't active.
-     */
-    public void sendNotification() {
-        sendNotification(Color.RED);
-    }
-    
-    /**
-     * Sends a notification to the frame manager if this fame isn't active.
-     * @param colour The colour to use for the notification
-     */
-    public void sendNotification(final Color colour) {
-        final JInternalFrame activeFrame = MainFrame.getMainFrame().getActiveFrame();
-        if (activeFrame != null && !activeFrame.equals(frame)) {
-            MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
-            notification = colour;
-        }
-    }
-    
-    /**
-     * Retrieves the current notification colour of this channel.
-     * @return This channel's notification colour
-     */
-    public Color getNotification() {
-        return notification;
     }
 }

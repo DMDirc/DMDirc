@@ -22,7 +22,6 @@
 
 package uk.org.ownage.dmdirc;
 
-import java.awt.Color;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -73,7 +72,6 @@ import uk.org.ownage.dmdirc.parser.callbacks.interfaces.ISocketClosed;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
 import uk.org.ownage.dmdirc.ui.input.TabCompleter;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 import uk.org.ownage.dmdirc.ui.messages.Formatter;
 
 /**
@@ -432,10 +430,8 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         return frame;
     }
     
-    /**
-     * Returns the config manager for this server.
-     * @return This server's config manager
-     */
+    /** {@inheritDoc} */
+    @Override
     public ConfigManager getConfigManager() {
         return configManager;
     }
@@ -1050,28 +1046,11 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     }
     
     /**
-     * Requests that this object's frame be activated.
-     */
-    public void activateFrame() {
-        MainFrame.getMainFrame().setActiveFrame(frame);
-    }
-    
-    /**
      * Returns the server frame's icon.
      * @return The server frame's icon
      */
     public ImageIcon getIcon() {
         return imageIcon;
-    }
-    
-    /**
-     * Sends a notification to the frame manager if this frame isn't active.
-     */
-    public void sendNotification() {
-        if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
-            final Color colour = ColourManager.getColour(4);
-            MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
-        }
     }
     
     /**

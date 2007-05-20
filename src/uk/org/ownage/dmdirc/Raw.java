@@ -22,19 +22,16 @@
 
 package uk.org.ownage.dmdirc;
 
-import java.awt.Color;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.ServerFrame;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
 
 /**
  * Handles the raw window (which shows the user raw data being sent and
@@ -133,28 +130,11 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
     }
     
     /**
-     * Requests that this object's frame be activated.
-     */
-    public void activateFrame() {
-        MainFrame.getMainFrame().setActiveFrame(frame);
-    }
-    
-    /**
      * Retrieves the icon used by the raw frame.
      * @return The raw frame's icon
      */
     public ImageIcon getIcon() {
         return imageIcon;
-    }
-    
-    /**
-     * Sends a notification to the frame manager if this frame isn't active.
-     */
-    public void sendNotification() {
-        if (!MainFrame.getMainFrame().getActiveFrame().equals(frame)) {
-            final Color colour = ColourManager.getColour(4);
-            MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
-        }
     }
     
     /**
@@ -165,13 +145,4 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
     public Server getServer() {
         return server;
     }
-    
-    /**
-     * Returns this raw's config manager.
-     * @return This raw's config manager
-     */
-    public ConfigManager getConfigManager() {
-        return server.getConfigManager();
-    }
-    
 }
