@@ -372,6 +372,14 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     }
     
     /**
+     * Retrieves the profile that's in use for this server.
+     * @return The profile in use by this server
+     */
+    public ConfigSource getProfile() {
+        return profile;
+    }
+    
+    /**
      * Retrieves the name of this server.
      * @return The name of this server
      */
@@ -786,7 +794,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     /** {@inheritDoc} */
     public void onNickInUse(final IRCParser tParser, final String nickName) {
         final String lastNick = tParser.getMyNickname();
-                
+        
         // If our last nick is still valid, ignore the in use message
         if (!lastNick.equalsIgnoreCase(nickName)) {
             return;

@@ -267,6 +267,7 @@ public final class CommandManager {
         new AllChannels();
         new Away();
         new Back();
+        new ChangeServer();
         new Clear();
         new ConfigInfo();
         new Ctcp();
