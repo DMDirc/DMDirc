@@ -357,7 +357,7 @@ public final class StatusBar extends JPanel implements MouseListener,
      * @param component component to add
      */
     public void addComponent(final Component component) {
-        add(component, this.getComponentCount() - 1);
+        add(component, this.getComponentCount() - 2);
         layoutBar();
     }
     
