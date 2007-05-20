@@ -124,11 +124,11 @@ public final class SearchBar extends JPanel implements ActionListener,
         searchBox.setPreferredSize(new Dimension(300, searchBox.getFont().getSize()));
         
         closeButton.setIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
+        .getClassLoader().getResource("com/dmdirc/res/close-inactive.png")));
         closeButton.setRolloverIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+        .getClassLoader().getResource("com/dmdirc/res/close-active.png")));
         closeButton.setPressedIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+        .getClassLoader().getResource("com/dmdirc/res/close-active.png")));
         closeButton.setContentAreaFilled(false);
         closeButton.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         closeButton.setPreferredSize(new Dimension(16, 16));

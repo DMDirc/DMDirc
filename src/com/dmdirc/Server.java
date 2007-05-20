@@ -208,9 +208,9 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         final ClassLoader cldr = this.getClass().getClassLoader();
         URL imageURL;
         if (ssl) {
-            imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/secure-server.png");
+            imageURL = cldr.getResource("com/dmdirc/res/secure-server.png");
         } else {
-            imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/server.png");
+            imageURL = cldr.getResource("com/dmdirc/res/server.png");
         }
         imageIcon = new ImageIcon(imageURL);
         frame.setFrameIcon(imageIcon);

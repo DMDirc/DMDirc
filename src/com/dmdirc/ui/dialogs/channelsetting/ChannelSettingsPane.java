@@ -329,11 +329,11 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
         label.setLabelFor(component);
         
         button.setIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
+        .getClassLoader().getResource("com/dmdirc/res/close-inactive.png")));
         button.setRolloverIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+        .getClassLoader().getResource("com/dmdirc/res/close-active.png")));
         button.setPressedIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+        .getClassLoader().getResource("com/dmdirc/res/close-active.png")));
         button.setContentAreaFilled(false);
         button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         button.setMargin(new Insets(0, 0, 0, 0));

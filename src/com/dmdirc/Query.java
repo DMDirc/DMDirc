@@ -88,7 +88,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
         this.host = newHost;
         
         final ClassLoader cldr = this.getClass().getClassLoader();
-        final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/query.png");
+        final URL imageURL = cldr.getResource("com/dmdirc/res/query.png");
         imageIcon = new ImageIcon(imageURL);
         
         frame = new QueryFrame(this);

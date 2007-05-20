@@ -57,7 +57,7 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
         this.server = newServer;
         
         final ClassLoader cldr = this.getClass().getClassLoader();
-        final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/raw.png");
+        final URL imageURL = cldr.getResource("com/dmdirc/res/raw.png");
         imageIcon = new ImageIcon(imageURL);
         
         frame = new ServerFrame(server);

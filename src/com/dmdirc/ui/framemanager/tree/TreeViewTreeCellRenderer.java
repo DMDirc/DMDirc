@@ -68,7 +68,7 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
     public TreeViewTreeCellRenderer() {
         super();
         defaultIcon = new ImageIcon(this.getClass().getClassLoader()
-        .getResource("uk/org/ownage/dmdirc/res/icon.png"));
+        .getResource("com/dmdirc/res/icon.png"));
     }
     
     /**

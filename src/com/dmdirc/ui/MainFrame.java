@@ -154,7 +154,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         // Load an icon
         final ClassLoader cldr = this.getClass().getClassLoader();
         
-        final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/icon.png");
+        final URL imageURL = cldr.getResource("com/dmdirc/res/icon.png");
         imageIcon = new ImageIcon(imageURL);
         setIconImage(imageIcon.getImage());
         

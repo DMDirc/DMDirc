@@ -84,23 +84,23 @@ public final class Logger {
         switch (level) {
             case FATAL:
                 icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-                .getResource("uk/org/ownage/dmdirc/res/error.png"));
+                .getResource("com/dmdirc/res/error.png"));
                 break;
             case ERROR:
                 icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-                .getResource("uk/org/ownage/dmdirc/res/error.png"));
+                .getResource("com/dmdirc/res/error.png"));
                 break;
             case WARNING:
                 icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-                .getResource("uk/org/ownage/dmdirc/res/warning.png"));
+                .getResource("com/dmdirc/res/warning.png"));
                 break;
             case TRIVIAL:
                 icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-                .getResource("uk/org/ownage/dmdirc/res/info.png"));
+                .getResource("com/dmdirc/res/info.png"));
                 break;
             default:
                 icon = new ImageIcon(ClassLoader.getSystemClassLoader()
-                .getResource("uk/org/ownage/dmdirc/res/error.png"));
+                .getResource("com/dmdirc/res/error.png"));
                 break;
         }
         showError(level, icon, message, trace);

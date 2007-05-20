@@ -136,7 +136,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
         
         normalIcon = new ImageIcon(this.getClass()
-        .getClassLoader().getResource("uk/org/ownage/dmdirc/res/normal.png"));
+        .getClassLoader().getResource("com/dmdirc/res/normal.png"));
         
         clearMessage();
         clearError();

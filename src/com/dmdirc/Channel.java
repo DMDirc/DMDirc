@@ -120,7 +120,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
                 server.getName(), channelInfo.getName());
         
         final ClassLoader cldr = this.getClass().getClassLoader();
-        final URL imageURL = cldr.getResource("uk/org/ownage/dmdirc/res/channel.png");
+        final URL imageURL = cldr.getResource("com/dmdirc/res/channel.png");
         imageIcon = new ImageIcon(imageURL);
         
         tabCompleter = new TabCompleter(server.getTabCompleter());

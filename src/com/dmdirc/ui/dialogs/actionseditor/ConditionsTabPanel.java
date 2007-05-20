@@ -183,11 +183,11 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             final JButton delete = new JButton();
             
             edit.setIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/edit-inactive.png")));
+            .getClassLoader().getResource("com/dmdirc/res/edit-inactive.png")));
             edit.setRolloverIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/edit.png")));
+            .getClassLoader().getResource("com/dmdirc/res/edit.png")));
             edit.setPressedIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/edit.png")));
+            .getClassLoader().getResource("com/dmdirc/res/edit.png")));
             edit.setContentAreaFilled(false);
             edit.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             edit.setMargin(new Insets(0, 0, 0, 0));
@@ -196,11 +196,11 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             edit.addActionListener(this);
             
             delete.setIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-inactive.png")));
+            .getClassLoader().getResource("com/dmdirc/res/close-inactive.png")));
             delete.setRolloverIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            .getClassLoader().getResource("com/dmdirc/res/close-active.png")));
             delete.setPressedIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("uk/org/ownage/dmdirc/res/close-active.png")));
+            .getClassLoader().getResource("com/dmdirc/res/close-active.png")));
             delete.setContentAreaFilled(false);
             delete.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             delete.setMargin(new Insets(0, 0, 0, 0));
