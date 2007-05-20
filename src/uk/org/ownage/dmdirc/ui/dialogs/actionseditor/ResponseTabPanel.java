@@ -178,14 +178,12 @@ public final class ResponseTabPanel extends JPanel {
      */
     public String getFormatter() {
         String format = (String) formatter.getSelectedItem();
-        System.out.println("FormaT: " + format);
         if ("No response".equals(format)) {
             format = "";
         }
         if ("No change".equals(format)) {
             format = null;
         }
-        System.out.println("Returning: " + format);
         return format;
     }
     
