@@ -27,6 +27,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
@@ -211,8 +213,11 @@ public final class PluginDialog extends StandardDialog implements
     
     /** Populates the plugins list with plugins from the plugin manager. */
     private void populateList() {
+        final List<Plugin> list = PluginManager.getPluginManager().getPossiblePlugins();
+        Collections.sort(list);
+        
         ((DefaultListModel) pluginList.getModel()).clear();
-        for (Plugin plugin : PluginManager.getPluginManager().getPossiblePlugins()) {
+        for (Plugin plugin : list) {
             ((DefaultListModel) pluginList.getModel()).addElement(plugin);
         }
         if (((DefaultListModel) pluginList.getModel()).size() > 0) {

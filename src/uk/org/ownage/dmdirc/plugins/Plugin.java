@@ -26,7 +26,7 @@ package uk.org.ownage.dmdirc.plugins;
 /**
  * Defines the standard methods that should be implemented by plugins.
  */
-public abstract class Plugin {
+public abstract class Plugin implements Comparable<Plugin> {
 	/** Is this plugin active? */
 	private boolean isActive = false;
 
@@ -121,4 +121,9 @@ public abstract class Plugin {
 	 * @return Name of plugin
 	 */
 	public abstract String toString();
+
+	/** {@inheritDoc} */
+	public int compareTo(Plugin o) {
+		return toString().compareTo(o.toString());
+	}
 }
