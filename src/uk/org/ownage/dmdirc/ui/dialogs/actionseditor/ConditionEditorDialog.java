@@ -192,7 +192,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
         for (String argument : trigger.getType().getArgNames()) {
             ((DefaultComboBoxModel) arguments.getModel()).addElement(argument);
         }
-        
+
         if (argument == -1) {
             arguments.setSelectedIndex(-1);
             components.setEnabled(false);
@@ -328,21 +328,21 @@ public final class ConditionEditorDialog extends StandardDialog implements
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
-        if (event.getSource() == arguments) {
+        if (event.getSource() == arguments && conditionsPanel.isVisible()) {
             if (arguments.getSelectedItem() != null) {
                 argument = arguments.getSelectedIndex();
             } else {
                 argument = -1;
             }
             populateArguments();
-        } else if (event.getSource() == components) {
+        } else if (event.getSource() == components && conditionsPanel.isVisible()) {
             if (components.getSelectedItem() != null) {
                 component = (ActionComponent) components.getSelectedItem();
             } else {
                 component = null;
             }
             populateComponents();
-        } else if (event.getSource() == comparisons) {
+        } else if (event.getSource() == comparisons && conditionsPanel.isVisible()) {
             if (comparisons.getSelectedItem() != null) {
                 comparison = (ActionComparison) comparisons.getSelectedItem();
             } else {
