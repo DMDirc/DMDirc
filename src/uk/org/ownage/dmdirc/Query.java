@@ -30,7 +30,6 @@ import uk.org.ownage.dmdirc.actions.ActionManager;
 import uk.org.ownage.dmdirc.actions.CoreActionType;
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.identities.ConfigManager;
 import uk.org.ownage.dmdirc.logger.ErrorLevel;
 import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.ClientInfo;
@@ -83,6 +82,8 @@ public final class Query extends FrameContainer implements IPrivateAction,
      * @param newServer The server object that this Query belongs to
      */
     public Query(final Server newServer, final String newHost) {
+        super();
+        
         this.server = newServer;
         this.host = newHost;
         
@@ -307,23 +308,5 @@ public final class Query extends FrameContainer implements IPrivateAction,
         }
         
         MainFrame.getMainFrame().setActiveFrame(frame);
-    }
-    
-    /**
-     * Formats the specified arguments using the supplied message type, and
-     * outputs to the main text area.
-     * @param messageType the message type to use
-     * @param args the arguments to pass
-     */
-    public void addLine(final String messageType, final Object... args) {
-        frame.addLine(messageType, args);
-    }
-    
-    /**
-     * Retrieves the icon used by the query frame.
-     * @return The query frame's icon
-     */
-    public ImageIcon getIcon() {
-        return imageIcon;
     }
 }

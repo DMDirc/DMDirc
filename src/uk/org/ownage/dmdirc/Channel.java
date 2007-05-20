@@ -830,22 +830,4 @@ public final class Channel extends FrameContainer implements IChannelMessage,
     public String toString() {
         return channelInfo.getName();
     }
-    
-    /**
-     * Formats the specified arguments using the supplied message type, and
-     * outputs to the main text area.
-     * @param messageType the message type to use
-     * @param args the arguments to pass
-     */
-    public void addLine(final String messageType, final Object... args) {
-        frame.addLine(messageType, args);
-    }
-    
-    /**
-     * Retrieves the icon used by the channel frame.
-     * @return The channel frame's icon
-     */
-    public ImageIcon getIcon() {
-        return imageIcon;
-    }
 }

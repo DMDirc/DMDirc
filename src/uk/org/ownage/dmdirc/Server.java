@@ -215,7 +215,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         imageIcon = new ImageIcon(imageURL);
         frame.setFrameIcon(imageIcon);
         
-        frame.addLine("serverConnecting", server, port);
+        addLine("serverConnecting", server, port);
         sendNotification();
         
         final MyInfo myInfo = new MyInfo();
@@ -656,7 +656,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
             query.addLine(messageType, args);
             query.sendNotification();
         }
-        frame.addLine(messageType, args);
+        addLine(messageType, args);
         sendNotification();
     }
     
@@ -676,7 +676,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
             }
         }
         if ("server".equals(target)) {
-            frame.addLine(messageType, args);
+            addLine(messageType, args);
             sendNotification();
         } else if ("all".equals(target)) {
             addLineToAll(messageType, args);
@@ -841,7 +841,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * @param sData The message at the start of the MOTD
      */
     public void onMOTDStart(final IRCParser tParser, final String sData) {
-        frame.addLine("motdStart", sData);
+        addLine("motdStart", sData);
         sendNotification();
     }
     
@@ -851,7 +851,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * @param sData The line of the MOTD
      */
     public void onMOTDLine(final IRCParser tParser, final String sData) {
-        frame.addLine("motdLine", sData);
+        addLine("motdLine", sData);
         sendNotification();
     }
     
@@ -861,7 +861,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * @param noMOTD Indicates that there was no MOTD
      */
     public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD) {
-        frame.addLine("motdEnd", "End of server's MOTD.");
+        addLine("motdEnd", "End of server's MOTD.");
         sendNotification();
     }
     
@@ -1043,14 +1043,6 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      */
     public String toString() {
         return this.server;
-    }
-    
-    /**
-     * Returns the server frame's icon.
-     * @return The server frame's icon
-     */
-    public ImageIcon getIcon() {
-        return imageIcon;
     }
     
     /**

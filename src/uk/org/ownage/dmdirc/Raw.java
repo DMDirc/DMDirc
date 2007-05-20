@@ -48,10 +48,6 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
      * A serverframe instance used for displaying the raw data.
      */
     private ServerFrame frame;
-    /**
-     * The icon being used for this raw frame.
-     */
-    private final ImageIcon imageIcon;
     
     /**
      * Creates a new instance of Raw.
@@ -106,7 +102,7 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
      * @param data The data that was received
      */
     public void onDataIn(final IRCParser parser, final String data) {
-        frame.addLine("rawIn", data);
+        addLine("rawIn", data);
     }
     
     /**
@@ -118,7 +114,7 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
      */
     public void onDataOut(final IRCParser parser, final String data,
             final boolean fromParser) {
-        frame.addLine("rawOut", data);
+        addLine("rawOut", data);
     }
     
     /**
@@ -127,14 +123,6 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
      */
     public String toString() {
         return "Raw";
-    }
-    
-    /**
-     * Retrieves the icon used by the raw frame.
-     * @return The raw frame's icon
-     */
-    public ImageIcon getIcon() {
-        return imageIcon;
     }
     
     /**

@@ -45,7 +45,10 @@ public abstract class FrameContainer implements InternalFrameListener {
     
     /** The colour of our frame's notifications. */
     protected Color notification = Color.BLACK;
-            
+    
+    /** The icon being used for this container's frame. */
+    protected ImageIcon imageIcon;
+    
     /**
      * Returns the internal frame associated with this object.
      * @return The internal frame associated with this object
@@ -59,13 +62,6 @@ public abstract class FrameContainer implements InternalFrameListener {
     public abstract String toString();
     
     /**
-     * Returns a reference to the icon that is currently being used by the
-     * frame.
-     * @return The frame's icon
-     */
-    public abstract ImageIcon getIcon();
-    
-    /**
      * Closes this container (and it's associated frame).
      */
     public abstract void close();
@@ -75,6 +71,24 @@ public abstract class FrameContainer implements InternalFrameListener {
      * @return the associated server connection
      */
     public abstract Server getServer();
+    
+    /**
+     * Retrieves the icon used by the query frame.
+     * @return The query frame's icon
+     */
+    public ImageIcon getIcon() {
+        return imageIcon;
+    }
+    
+    /**
+     * Formats the specified arguments using the supplied message type, and
+     * outputs to the main text area.
+     * @param messageType the message type to use
+     * @param args the arguments to pass
+     */
+    public void addLine(final String messageType, final Object... args) {
+        getFrame().addLine(messageType, args);
+    }
     
     /**
      * Returns the config manager for this container.
@@ -89,7 +103,7 @@ public abstract class FrameContainer implements InternalFrameListener {
      */
     public void activateFrame() {
         MainFrame.getMainFrame().setActiveFrame((JInternalFrame) getFrame());
-    }    
+    }
     
     /**
      * Clears any outstanding notifications this frame has set.
@@ -124,7 +138,7 @@ public abstract class FrameContainer implements InternalFrameListener {
      */
     public Color getNotification() {
         return notification;
-    }    
+    }
     
     /**
      * Determines if the specified frame is owned by this object.
