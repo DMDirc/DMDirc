@@ -5,11 +5,11 @@
  * Created on 08 April 2007, 12:55
  */
 
-package uk.org.ownage.dmdirc;
+package com.dmdirc;
 
 import javax.swing.JInternalFrame;
 import junit.framework.*;
-import uk.org.ownage.dmdirc.identities.IdentityManager;
+import com.dmdirc.identities.IdentityManager;
 
 /**
  *

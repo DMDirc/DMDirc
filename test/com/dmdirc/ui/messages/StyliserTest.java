@@ -5,15 +5,15 @@
  * Created on 09 March 2007, 23:20
  */
 
-package uk.org.ownage.dmdirc.ui.messages;
+package com.dmdirc.ui.messages;
 
 import junit.framework.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 /**
  *

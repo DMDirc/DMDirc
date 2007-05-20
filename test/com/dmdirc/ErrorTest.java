@@ -5,7 +5,7 @@
  * Created on 08 April 2007, 13:20
  */
 
-package uk.org.ownage.dmdirc;
+package com.dmdirc;
 
 import java.awt.Component;
 import java.awt.Graphics;
@@ -13,7 +13,7 @@ import javax.swing.ImageIcon;
 import junit.framework.*;
 import java.util.Date;
 import javax.swing.Icon;
-import uk.org.ownage.dmdirc.ui.interfaces.StatusErrorNotifier;
+import com.dmdirc.ui.interfaces.StatusErrorNotifier;
 
 /**
  *

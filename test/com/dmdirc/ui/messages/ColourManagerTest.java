@@ -5,12 +5,12 @@
  * Created on 09 March 2007, 23:09
  */
 
-package uk.org.ownage.dmdirc.ui.messages;
+package com.dmdirc.ui.messages;
 
 import junit.framework.*;
 import java.awt.Color;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 /**
  *

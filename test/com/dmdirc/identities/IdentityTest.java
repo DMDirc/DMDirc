@@ -5,7 +5,7 @@
  * Created on 19 April 2007, 17:33
  */
 
-package uk.org.ownage.dmdirc.identities;
+package com.dmdirc.identities;
 
 import java.util.Properties;
 import junit.framework.*;
