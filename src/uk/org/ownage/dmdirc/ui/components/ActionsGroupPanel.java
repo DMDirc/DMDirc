@@ -162,7 +162,8 @@ public final class ActionsGroupPanel extends JPanel
         return actions.get(index);
     }
     
-    public void valueChanged(ListSelectionEvent e) {
+    /** {@inheritDoc}. */
+    public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             if (table.getSelectedRow() > -1) {
                 parent.setEditState(true);

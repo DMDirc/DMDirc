@@ -100,8 +100,8 @@ public final class BrowserLauncher {
     
     /**
      * Attempts to open the url in a linux browser.
+     *
      * @param url url to open
-     * @throws IOException if unable to open browser
      */
     private static void openURLLinux(final String url) {
         String browser;
@@ -117,8 +117,7 @@ public final class BrowserLauncher {
     /**
      * Attempts to obtain a browser for linux, using specified values if
      * possible.
-     * @throws IOException if unable to open browser finding processes
-     * @throws InterruptedException if unable to open browser
+     *
      * @return full browser binary path
      */
     private static String getBrowserLinux() {

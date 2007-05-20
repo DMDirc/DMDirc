@@ -35,11 +35,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.BadLocationException;
 
-import uk.org.ownage.dmdirc.actions.Action;
+import uk.org.ownage.dmdirc.ui.messages.Formatter;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import uk.org.ownage.dmdirc.ui.messages.Formatter;
 
 /**
  * Response tab panel, response and formatter editing for the actions editor
@@ -66,7 +65,7 @@ public final class ResponseTabPanel extends JPanel {
     /**
      * Creates a new instance of ResponseTabPanel.
      *
-     * @param action action to be edited
+     * @param owner Parent dialog
      */
     public ResponseTabPanel(final ActionsEditorDialog owner) {
         super();
@@ -105,7 +104,7 @@ public final class ResponseTabPanel extends JPanel {
         try {
             responses.setText(responses.getText(1, responses.getText().length()));
         } catch (BadLocationException ex) {
-            //Ignore
+            responses.setText(responses.getText());
         }
         
         responses.setText(responses.getText().substring(0, responses.getText().length() - 1));

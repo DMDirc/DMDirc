@@ -169,7 +169,7 @@ public final class NewServerDialog extends StandardDialog {
      *
      * @return The current NewServerDialog instance
      */
-    public synchronized static NewServerDialog getNewServerDialog() {
+    public static synchronized NewServerDialog getNewServerDialog() {
         if (me == null) {
             me = new NewServerDialog();
         }

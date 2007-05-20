@@ -84,7 +84,11 @@ public final class Formatter {
         }
     }
     
-    
+    /**
+     * Returns a list of the available formatters.
+     *
+     * @return Set of formatters
+     */
     public static Set<String> getFormats() {
         if (properties == null) {
             initialise();

@@ -408,7 +408,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
      * @param index profile number to populate
      */
     private void populateProfile(final int index) {
-        ConfigSource profile = profiles.get(index);
+        final ConfigSource profile = profiles.get(index);
         
         nickname.setText(profile.getOption("profile", "nickname"));
         realname.setText(profile.getOption("profile", "realname"));
@@ -424,7 +424,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
     private void saveProfile(final int index) {
         StringBuffer altNicks;
         
-        ConfigSource profile = profiles.get(index);
+        final ConfigSource profile = profiles.get(index);
         
         profile.setOption("profile", "nickname", nickname.getText());
         profile.setOption("profile", "realname", realname.getText());
@@ -432,7 +432,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
         
         altNicks = new StringBuffer();
         
-        for (int i = 0; i < altNick.getModel().getSize() ; i++) {
+        for (int i = 0; i < altNick.getModel().getSize(); i++) {
             altNicks.append(altNick.getModel().getElementAt(i)).append('\n');
         }
         
@@ -449,11 +449,11 @@ public final class ProfileEditorDialog extends StandardDialog implements
         
         ((DefaultListModel) altNick.getModel()).clear();
         
-        if (profiles.get(index).getOption("profile", "altnicks") != null &&
-                profiles.get(index).getOption("profile", "altnicks").length() != 0) {
+        if (profiles.get(index).getOption("profile", "altnicks") != null
+                && profiles.get(index).getOption("profile", "altnicks").length() != 0) {
             altNicks = profiles.get(index).getOption("profile", "altnicks").split("\\n");
             
-            for (String altNickname: altNicks) {
+            for (String altNickname : altNicks) {
                 ((DefaultListModel) altNick.getModel()).addElement(altNickname);
             }
         }

@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Data contained in a TextPane.
  */
-public class IRCDocument {
+public final class IRCDocument {
     
     /**
      * A version number for this class. It should be changed whenever the class

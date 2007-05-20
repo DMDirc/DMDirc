@@ -37,12 +37,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+
 import uk.org.ownage.dmdirc.actions.ActionComparison;
 import uk.org.ownage.dmdirc.actions.ActionComponent;
 import uk.org.ownage.dmdirc.actions.ActionCondition;
 import uk.org.ownage.dmdirc.actions.ActionManager;
 import uk.org.ownage.dmdirc.actions.ActionType;
-
 import uk.org.ownage.dmdirc.ui.MainFrame;
 import uk.org.ownage.dmdirc.ui.components.StandardDialog;
 
@@ -97,7 +97,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
      * Creates a new instance of ConditionEditorDialog.
      *
      * @param parent parent conditions panel.
-     * @param action parent action
+     * @param trigger Conditions trigger
      * @param condition condition to be edited (or null)
      */
     private ConditionEditorDialog(final ConditionsTabPanel parent,
@@ -136,7 +136,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
      * Creates the dialog if one doesn't exist, and displays it.
      *
      * @param parent parent conditions panel.
-     * @param action parent action
+     * @param trigger Conditions trigger
      * @param condition condition to be edited (or null)
      */
     public static synchronized void showConditionEditorDialog(
@@ -149,11 +149,9 @@ public final class ConditionEditorDialog extends StandardDialog implements
     }
     
     /**
-     * Creates the dialog if one doesn't exist, and displays it.
+     * Creates the dialog if one doesn't exist, and displays it. 
      *
-     * @param parent parent conditions panel.
-     * @param action parent action
-     * @param condition condition to be edited (or null)
+     * @return Currently instatiated ConditionEditorDialog (or null if none)
      */
     public static synchronized ConditionEditorDialog getConditionEditorDialog() {
         return me;
@@ -184,13 +182,14 @@ public final class ConditionEditorDialog extends StandardDialog implements
         populateArguments();
     }
     
+    /** Populates the arguments combo box. */
     private void populateArguments() {
         conditionsPanel.setVisible(false);
         
         ((DefaultComboBoxModel) arguments.getModel()).removeAllElements();
         
-        for (String argument : trigger.getType().getArgNames()) {
-            ((DefaultComboBoxModel) arguments.getModel()).addElement(argument);
+        for (String arg : trigger.getType().getArgNames()) {
+            ((DefaultComboBoxModel) arguments.getModel()).addElement(arg);
         }
 
         if (argument == -1) {
@@ -209,14 +208,15 @@ public final class ConditionEditorDialog extends StandardDialog implements
         populateComponents();
     }
     
+    /** Populates the components combo box. */
     private void populateComponents() {
         ((DefaultComboBoxModel) components.getModel()).removeAllElements();
         
         if (arguments.getSelectedItem() != null) {
-            for (ActionComponent component : ActionManager.getCompatibleComponents(
+            for (ActionComponent comp : ActionManager.getCompatibleComponents(
                     trigger.getType().getArgTypes()[arguments.getSelectedIndex()]
                     )) {
-                ((DefaultComboBoxModel) components.getModel()).addElement(component);
+                ((DefaultComboBoxModel) components.getModel()).addElement(comp);
             }
         }
         
@@ -234,13 +234,14 @@ public final class ConditionEditorDialog extends StandardDialog implements
         populateComparisons();
     }
     
+    /** Populates the comparisons combo box. */
     private void populateComparisons() {
         ((DefaultComboBoxModel) comparisons.getModel()).removeAllElements();
         
         if (arguments.getSelectedItem() != null) {
-            for (ActionComparison comparison : ActionManager.getCompatibleComparisons(
+            for (ActionComparison comp : ActionManager.getCompatibleComparisons(
                     arguments.getSelectedItem().getClass())) {
-                ((DefaultComboBoxModel) comparisons.getModel()).addElement(comparison);
+                ((DefaultComboBoxModel) comparisons.getModel()).addElement(comp);
             }
         }
         
@@ -258,6 +259,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
         populateTarget();
     }
     
+    /** Populates the target textfield. */
     private void populateTarget() {
         targetText.setText(target);
         

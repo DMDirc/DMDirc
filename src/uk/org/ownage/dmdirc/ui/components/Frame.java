@@ -60,7 +60,6 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.Border;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
@@ -205,7 +204,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             awayLabel.setVisible(getServer().isAway());
         }
     }
-        
+    
     /**
      * Adds a line of text to the main text area.
      * @param line text to add
@@ -306,7 +305,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         
         getInputField().setBorder(
                 BorderFactory.createCompoundBorder(
-                getInputField().getBorder(), 
+                getInputField().getBorder(),
                 BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         
         getTextPane().addMouseListener(this);
@@ -344,7 +343,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         awayLabel = new JLabel();
         awayLabel.setText("(away)");
         awayLabel.setVisible(false);
-        awayLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 
+        awayLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0,
                 SMALL_BORDER));
         
         inputPanel = new JPanel(new BorderLayout());
@@ -738,9 +737,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         && (event.getModifiers() & KeyEvent.CTRL_MASK) != 0
                 && event.getKeyCode() == KeyEvent.VK_V) {
             try {
-                clipboardContents = getInputField().getText() + 
-                        (String) Toolkit.getDefaultToolkit().getSystemClipboard()
-                        .getData(DataFlavor.stringFlavor);
+                clipboardContents = getInputField().getText()
+                + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
+                .getData(DataFlavor.stringFlavor);
                 clipboardContentsLines = clipboardContents.split(System.getProperty("line.separator"));
             } catch (HeadlessException ex) {
                 Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
@@ -829,9 +828,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     }
     
     /**
-     * Returns the number of lines the specified string would be sent as.
+     * Re4urns the number of lines the specified string would be sent as.
      * @param line line to be checked
-     * @return number of lines that would be sent
+     * @return number of ,ines that would be sent
      */
     public final int getNumLines(final String line) {
         int lines;

@@ -41,7 +41,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
 
-import uk.org.ownage.dmdirc.actions.Action;
 import uk.org.ownage.dmdirc.actions.ActionCondition;
 
 import static uk.org.ownage.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -80,7 +79,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     /**
      * Creates a new instance of ConditionsTabPanel.
      *
-     * @param action action to be edited
+     * @param owner Parent dialog
      */
     public ConditionsTabPanel(final ActionsEditorDialog owner) {
         super();
@@ -175,13 +174,13 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         comparisonsPanel.removeAll();
         
         for (ActionCondition condition : conditions) {
-            JLabel label = new JLabel("The "
+            final JLabel label = new JLabel("The "
                     + owner.getTrigger().getType().getArgNames()[condition.getArg()]
                     + "'s " + condition.getComponent().getName() + " "
                     + condition.getComparison().getName()
                     + " '" + condition.getTarget() + "'");
-            JButton edit = new JButton();
-            JButton delete = new JButton();
+            final JButton edit = new JButton();
+            final JButton delete = new JButton();
             
             edit.setIcon(new ImageIcon(this.getClass()
             .getClassLoader().getResource("uk/org/ownage/dmdirc/res/edit-inactive.png")));

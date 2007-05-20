@@ -216,7 +216,11 @@ public final class ActionsManagerDialog extends StandardDialog
         pack();
     }
     
-    /** Enable or disable the edit action button. */
+    /** 
+     * Enable or disable the edit and delete action button. 
+     *
+     * @param state new State for the buttons
+     */
     public void setEditState(final boolean state) {
         editAction.setEnabled(state);
         deleteAction.setEnabled(state);
@@ -228,7 +232,7 @@ public final class ActionsManagerDialog extends StandardDialog
      */
     public void loadGroups() {
         
-        int selectedGroup = groups.getSelectedIndex();
+        final int selectedGroup = groups.getSelectedIndex();
         
         groups.removeAll();
         
@@ -257,7 +261,7 @@ public final class ActionsManagerDialog extends StandardDialog
             addAction.setEnabled(true);
         }
         
-        groups.setSelectedIndex(( selectedGroup == -1 ? 0 : selectedGroup));
+        groups.setSelectedIndex(selectedGroup == -1 ? 0 : selectedGroup);
     }
     
     /**

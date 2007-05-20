@@ -26,6 +26,7 @@ import java.awt.Component;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
+
 import uk.org.ownage.dmdirc.actions.ActionComparison;
 import uk.org.ownage.dmdirc.actions.ActionComponent;
 import uk.org.ownage.dmdirc.actions.ActionType;
@@ -33,7 +34,7 @@ import uk.org.ownage.dmdirc.actions.ActionType;
 /**
  * Displays actions using getName not toString.
  */
-public class ActionCellRenderer extends DefaultListCellRenderer {
+public final class ActionCellRenderer extends DefaultListCellRenderer {
     
     /**
      * A version number for this class. It should be changed whenever the class

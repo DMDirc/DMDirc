@@ -1,3 +1,25 @@
+/*
+ * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package uk.org.ownage.dmdirc.ui.textpane;
 
 import java.awt.Canvas;
@@ -17,6 +39,7 @@ import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.JFrame;
 
 
@@ -34,7 +57,7 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     private final FontRenderContext defaultFRC = new FontRenderContext(null, false, false);
     
     /** IRCDocument. */
-    private IRCDocument ircDocument;
+    private IRCDocument document;
     
     /** line break measurer, used for line wrapping. */
     private LineBreakMeasurer lineMeasurer;
@@ -48,23 +71,28 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     /** parent textpane. */
     private TextPane textPane;
     
-    /** Position -> TextLayout */
+    /** Position -> TextLayout. */
     private Map<Rectangle, TextLayout> positions;
-    /** TextLayout -> Line numbers */
+    /** TextLayout -> Line numbers. */
     private Map<TextLayout, String> textLayouts;
     
-    private int startLine;
-    private int startChar;
-    private int endLine;
-    private int endChar;
+    /** Start line of the selection. */
+    private int selStartLine;
+    /** Start character of the selection. */
+    private int selStartChar;
+    /** End line of the selection. */
+    private int selEndLine;
+    /** End character of the selection. */
+    private int selEndChar;
     
     /**
      * Creates a new text pane canvas.
+     *
      * @param parent parent text pane for the canvas
+     * @param document IRCDocument to be displayed
      */
-    public TextPaneCanvas(final TextPane parent,
-            final IRCDocument ircDocument) {
-        this.ircDocument = ircDocument;
+    public TextPaneCanvas(final TextPane parent, final IRCDocument document) {
+        this.document = document;
         scrollBarPosition = 0;
         textPane = parent;
         textLayouts = new HashMap<TextLayout, String>();
@@ -89,15 +117,15 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
         float drawPosY = formatHeight;
         
         int startLine = scrollBarPosition;
-        if (startLine >= ircDocument.getNumLines()) {
-            startLine = ircDocument.getNumLines() - 1;
+        if (startLine >= document.getNumLines()) {
+            startLine = document.getNumLines() - 1;
         }
         if (startLine <= 0) {
             startLine = 0;
         }
         
         for (int i = startLine; i >= 0; i--) {
-            final AttributedCharacterIterator iterator = ircDocument.getLine(i).getIterator();
+            final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
             paragraphStart = iterator.getBeginIndex();
             paragraphEnd = iterator.getEndIndex();
             lineMeasurer = new LineBreakMeasurer(iterator, defaultFRC);
@@ -109,7 +137,7 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
             while (lineMeasurer.getPosition() < paragraphEnd) {
                 final TextLayout layout = lineMeasurer.nextLayout(formatWidth);
                 wrappedLine++;
-                height += (layout.getDescent() + layout.getLeading() + layout.getAscent());
+                height += layout.getDescent() + layout.getLeading() + layout.getAscent();
             }
             
             lineMeasurer.setPosition(paragraphStart);
@@ -197,7 +225,7 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     public void mousePressed(final MouseEvent e) {
         int line = -1;
         
-        Point point = this.getMousePosition();
+        final Point point = this.getMousePosition();
         
         if (point != null) {
             String whichLine = "";
@@ -210,6 +238,7 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
             }
             for (Map.Entry<TextLayout, String> entry : textLayouts.entrySet()) {
                 entry.getValue().matches("");
+                line = -1;
             }
         }
     }
