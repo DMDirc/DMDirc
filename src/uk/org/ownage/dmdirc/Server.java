@@ -85,11 +85,11 @@ import uk.org.ownage.dmdirc.ui.messages.Formatter;
  * to the server.
  * @author chris
  */
-public final class Server implements IChannelSelfJoin, IPrivateMessage,
-        IPrivateAction, IErrorInfo, IPrivateCTCP, IPrivateCTCPReply,
-        InternalFrameListener, ISocketClosed, IPrivateNotice, IMOTDStart,
+public final class Server extends FrameContainer implements IChannelSelfJoin,
+        IPrivateMessage, IPrivateAction, IErrorInfo, IPrivateCTCP,
+        IPrivateCTCPReply, ISocketClosed, IPrivateNotice, IMOTDStart,
         IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed, IPingSuccess,
-        IAwayState, IConnectError, IAwayStateOther, INickInUse, FrameContainer {
+        IAwayState, IConnectError, IAwayStateOther, INickInUse {
     
     /** The callbacks that should be registered for server instances. */
     private final static String[] callbacks = {
@@ -1044,81 +1044,6 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     }
     
     /**
-     * Called when the server frame is opened. Checks config settings to
-     * determine if the window should be maximised.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        final boolean pref = configManager.getOptionBool("ui", "maximisewindows");
-        if (pref || MainFrame.getMainFrame().getMaximised()) {
-            try {
-                frame.setMaximum(true);
-            } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to maximise server", ex);
-            }
-        }
-    }
-    
-    /**
-     * Called when the server frame is being closed. Has the parser quit
-     * the server, close all channels, and free all resources.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
-        close(configManager.getOption("general", "quitmessage"));
-    }
-    
-    /**
-     * Called when the server frame is actually closed. Not implemented.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Called when the server frame is iconified. Not implemented.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Called when the server frame is deiconified. Not implemented.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Called when the server frame is activated. Maximises the frame if it
-     * needs to be.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
-        if (MainFrame.getMainFrame().getMaximised()) {
-            try {
-                frame.setMaximum(true);
-            } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to maximise server", ex);
-            }
-        }
-        MainFrame.getMainFrame().getFrameManager().setSelected(this);
-        setActiveFrame(this);
-        clearNotification();
-    }
-    
-    /**
-     * Called when the server frame is deactivated. Not implemented.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
      * Returns this server's name.
      * @return A string representation of this server (i.e., its name)
      */
@@ -1154,7 +1079,7 @@ public final class Server implements IChannelSelfJoin, IPrivateMessage,
     /**
      * Clears any outstanding notifications this frame has set.
      */
-    private void clearNotification() {
+    protected void clearNotification() {
         MainFrame.getMainFrame().getFrameManager().clearNotification(this);
     }
     

@@ -23,18 +23,13 @@
 package uk.org.ownage.dmdirc;
 
 import java.awt.Color;
-import java.beans.PropertyVetoException;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
 import uk.org.ownage.dmdirc.parser.IRCParser;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataIn;
 import uk.org.ownage.dmdirc.parser.callbacks.interfaces.IDataOut;
@@ -47,8 +42,7 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
  * received to/from the server).
  * @author chris
  */
-public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
-        FrameContainer {
+public final class Raw extends FrameContainer implements IDataIn, IDataOut {
     
     /**
      * The server object that's being monitored.
@@ -142,80 +136,6 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
     }
     
     /**
-     * Called when the raw frame is opened. Checks config settings to
-     * determine if the window should be maximised.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        final boolean pref = server.getConfigManager().getOptionBool("ui", "maximisewindows");
-        if (pref || MainFrame.getMainFrame().getMaximised()) {
-            try {
-                frame.setMaximum(true);
-            } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to maximise raw", ex);
-            }
-        }
-    }
-    
-    /**
-     * Called when the raw frame is being closed. Removes callbacks and releases
-     * resources.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
-        close();
-    }
-    
-    /**
-     * Called when the raw frame is actually closed. Not implemented.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Called when the raw frame is iconified. Not implemented.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Called when the raw frame is deiconified. Not implemented.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Called when the raw frame is activated. Maximises the frame if it
-     * needs to be.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
-        if (MainFrame.getMainFrame().getMaximised()) {
-            try {
-                frame.setMaximum(true);
-            } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to maximise raw", ex);
-            }
-        }
-        server.setActiveFrame(this);
-        MainFrame.getMainFrame().getFrameManager().setSelected(this);
-    }
-    
-    /**
-     * Called when the raw frame is deactivated. Not implemented.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
      * Returns "Raw"...
      * @return A string representation of this raw object
      */
@@ -246,6 +166,13 @@ public final class Raw implements IDataIn, IDataOut, InternalFrameListener,
             final Color colour = ColourManager.getColour(4);
             MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
         }
+    }
+    
+    /**
+     * Clears any outstanding notifications this frame has set.
+     */
+    protected void clearNotification() {
+        MainFrame.getMainFrame().getFrameManager().clearNotification(this);
     }
     
     /**

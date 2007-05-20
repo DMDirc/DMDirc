@@ -23,7 +23,6 @@
 package uk.org.ownage.dmdirc;
 
 import java.awt.Color;
-import java.beans.PropertyVetoException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
-import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 import uk.org.ownage.dmdirc.actions.ActionManager;
@@ -75,11 +73,11 @@ import uk.org.ownage.dmdirc.ui.messages.Styliser;
  * ChannelFrame, and handles user input to a ChannelFrame.
  * @author chris
  */
-public final class Channel implements IChannelMessage, IChannelGotNames,
-        IChannelTopic, IChannelJoin, IChannelPart, IChannelKick, IChannelQuit,
-        IChannelAction, IChannelNickChanged, IChannelModeChanged,
-        IChannelUserModeChanged, IChannelCTCP, IAwayStateOther,
-        InternalFrameListener, FrameContainer {
+public final class Channel extends FrameContainer implements IChannelMessage, 
+        IChannelGotNames, IChannelTopic, IChannelJoin, IChannelPart, 
+        IChannelKick, IChannelQuit, IChannelAction, IChannelNickChanged, 
+        IChannelModeChanged, IChannelUserModeChanged, IChannelCTCP,
+        IAwayStateOther {
     
     /** The callbacks that should be registered for channel instances. */
     private final static String[] callbacks = {
@@ -841,82 +839,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
 
         return res;
     }
-    
-    /**
-     * Called when the channel frame is opened. Checks config settings to
-     * determine if the window should be maximised.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        final boolean pref = configManager.getOptionBool("ui", "maximisewindows");
-        if (pref || MainFrame.getMainFrame().getMaximised()) {
-            try {
-                frame.setMaximum(true);
-            } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to maximise channel", ex);
-            }
-        }
-    }
-    
-    /**
-     * Called when the channel frame is being closed. Has the parser part the
-     * channel, and frees all resources associated with the channel.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
-        close();
-    }
-    
-    /**
-     * Called when the channel frame is actually closed. Not implemented.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Called when the channel frame is iconified. Not implemented.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Called when the channel frame is deiconified. Not implemented.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Called when the channel frame is activated. Maximises the frame if it
-     * needs to be.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
-        if (MainFrame.getMainFrame().getMaximised()) {
-            try {
-                frame.setMaximum(true);
-            } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to maximise channel", ex);
-            }
-        }
-        MainFrame.getMainFrame().getFrameManager().setSelected(this);
-        server.setActiveFrame(this);
-        clearNotification();
-    }
-    
-    /**
-     * Called when the channel frame is deactivated. Not implemented.
-     * @param internalFrameEvent The event that triggered this callback
-     */
-    public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
+        
     /**
      * Returns this channel's name.
      * @return A string representation of this channel (i.e., its name)
@@ -972,7 +895,7 @@ public final class Channel implements IChannelMessage, IChannelGotNames,
     /**
      * Clears any outstanding notifications this frame has set.
      */
-    private void clearNotification() {
+    protected void clearNotification() {
         MainFrame.getMainFrame().getFrameManager().clearNotification(this);
         notification = Color.BLACK;
     }

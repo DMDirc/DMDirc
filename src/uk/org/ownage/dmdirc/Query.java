@@ -23,16 +23,14 @@
 package uk.org.ownage.dmdirc;
 
 import java.awt.Color;
-import java.beans.PropertyVetoException;
 import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
-import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
+
 import uk.org.ownage.dmdirc.actions.ActionManager;
 import uk.org.ownage.dmdirc.actions.CoreActionType;
-
 import uk.org.ownage.dmdirc.commandparser.CommandManager;
 import uk.org.ownage.dmdirc.commandparser.CommandWindow;
 import uk.org.ownage.dmdirc.identities.ConfigManager;
@@ -55,8 +53,8 @@ import uk.org.ownage.dmdirc.ui.messages.ColourManager;
  * corresponding ServerFrame, and handles user input to a ServerFrame.
  * @author chris
  */
-public final class Query implements IPrivateAction, IPrivateMessage,
-        INickChanged, InternalFrameListener, FrameContainer {
+public final class Query extends FrameContainer implements IPrivateAction, 
+        IPrivateMessage, INickChanged {
     
     /**
      * The Server this Query is on.
@@ -300,78 +298,6 @@ public final class Query implements IPrivateAction, IPrivateMessage,
     }
     
     /**
-     * Invoked when a internal frame has been opened.
-     * @param internalFrameEvent frame opened event
-     */
-    public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
-        final boolean pref = server.getConfigManager().getOptionBool("ui", "maximisewindows");
-        if (pref || MainFrame.getMainFrame().getMaximised()) {
-            try {
-                frame.setMaximum(true);
-            } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to maximise query", ex);
-            }
-        }
-    }
-    
-    /**
-     * Invoked when an internal frame is in the process of being closed.
-     * @param internalFrameEvent frame closing event
-     */
-    public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
-        close();
-    }
-    
-    /**
-     * Invoked when an internal frame has been closed.
-     * @param internalFrameEvent frame closed event
-     */
-    public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Invoked when an internal frame is iconified.
-     * @param internalFrameEvent frame iconified event
-     */
-    public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Invoked when an internal frame is de-iconified.
-     * @param internalFrameEvent frame deiconified event
-     */
-    public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Invoked when an internal frame is activated.
-     * @param internalFrameEvent frame activation event
-     */
-    public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
-        if (MainFrame.getMainFrame().getMaximised()) {
-            try {
-                frame.setMaximum(true);
-            } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to maximise query", ex);
-            }
-        }
-        MainFrame.getMainFrame().getFrameManager().setSelected(this);
-        server.setActiveFrame(this);
-        clearNotification();
-    }
-    
-    /**
-     * Invoked when an internal frame is de-activated.
-     * @param internalFrameEvent frame deactivation event
-     */
-    public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
      * Returns this query's name.
      * @return A string representation of this query (i.e., the user's name)
      */
@@ -429,7 +355,7 @@ public final class Query implements IPrivateAction, IPrivateMessage,
     /**
      * Clears any outstanding notifications this frame has set.
      */
-    private void clearNotification() {
+    protected void clearNotification() {
         MainFrame.getMainFrame().getFrameManager().clearNotification(this);
     }
     
