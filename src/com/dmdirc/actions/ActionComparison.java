@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.actions;
+package com.dmdirc.actions;
 
 /**
  * Describes the methods that must be implemented by an action comparison.

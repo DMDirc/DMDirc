@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.logger;
+package com.dmdirc.logger;
 
 /**
  * Specific error levels allowed by Logger.

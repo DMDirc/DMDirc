@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser;
+package com.dmdirc.commandparser;
 
 /**
  * Represents a generic command.

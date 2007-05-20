@@ -20,10 +20,10 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser;
+package com.dmdirc.commandparser;
 
-import uk.org.ownage.dmdirc.Query;
-import uk.org.ownage.dmdirc.Server;
+import com.dmdirc.Query;
+import com.dmdirc.Server;
 
 /**
  * A command parser that is tailored for use in a query environment. Handles

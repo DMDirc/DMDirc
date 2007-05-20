@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.actions;
+package com.dmdirc.actions;
 
 /**
  * An action condition represents one condition within an action.

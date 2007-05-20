@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.identities;
+package com.dmdirc.identities;
 
 /**
  * A Config source is an object that can provide configuration details.

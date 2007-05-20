@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.identities;
+package com.dmdirc.identities;
 
 /**
  * Represents the target of a particular config source.

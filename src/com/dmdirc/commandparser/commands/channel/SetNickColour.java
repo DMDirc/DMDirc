@@ -20,21 +20,21 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.channel;
+package com.dmdirc.commandparser.commands.channel;
 
 import java.awt.Color;
 import java.util.Map;
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.ChannelClientProperty;
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
-import uk.org.ownage.dmdirc.ui.ChannelFrame;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.Channel;
+import com.dmdirc.ChannelClientProperty;
+import com.dmdirc.Config;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.ChannelCommand;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ChannelInfo;
+import com.dmdirc.ui.ChannelFrame;
+import com.dmdirc.ui.messages.ColourManager;
 
 /**
  * Allows the user to set a nickname on the channel to use a custom colour.

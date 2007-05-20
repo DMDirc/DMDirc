@@ -20,11 +20,11 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser;
+package com.dmdirc.commandparser;
 
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
+import com.dmdirc.Server;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 /**
  * The command parser used for global commands.

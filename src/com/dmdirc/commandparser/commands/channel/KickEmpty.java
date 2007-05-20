@@ -20,14 +20,14 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.channel;
+package com.dmdirc.commandparser.commands.channel;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.Channel;
+import com.dmdirc.Config;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.ChannelCommand;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
 
 /**
  * The kick/0 command informs the user of the correct usage of /kick.

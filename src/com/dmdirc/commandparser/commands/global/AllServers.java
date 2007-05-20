@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.global;
+package com.dmdirc.commandparser.commands.global;
 
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.ServerManager;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.Server;
+import com.dmdirc.ServerManager;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.GlobalCommand;
 
 /**
  * The AllServers command allows users to issue commands to all servers.

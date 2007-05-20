@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.actions;
+package com.dmdirc.actions;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,14 +30,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import uk.org.ownage.dmdirc.FrameContainer;
-import uk.org.ownage.dmdirc.ServerManager;
-import uk.org.ownage.dmdirc.commandparser.CommandParser;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.GlobalCommandParser;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.ui.MainFrame;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.ServerManager;
+import com.dmdirc.commandparser.CommandParser;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.GlobalCommandParser;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.MainFrame;
 
 /**
  * Describes a single action.

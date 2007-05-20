@@ -20,10 +20,10 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser;
+package com.dmdirc.commandparser;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Server;
+import com.dmdirc.Channel;
+import com.dmdirc.Server;
 
 /**
  * Represents a command which can be performed only in the context of a channel.

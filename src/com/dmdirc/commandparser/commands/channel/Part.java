@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.channel;
+package com.dmdirc.commandparser.commands.channel;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.Channel;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.ChannelCommand;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
 
 /**
  * The part command parts the current channel with a specified part message.

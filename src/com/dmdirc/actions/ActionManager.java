@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.actions;
+package com.dmdirc.actions;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,13 +29,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
-import uk.org.ownage.dmdirc.plugins.PluginManager;
+import com.dmdirc.Channel;
+import com.dmdirc.Config;
+import com.dmdirc.Server;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.plugins.PluginManager;
 
 /**
  * Manages all actions for the client.

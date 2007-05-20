@@ -20,15 +20,15 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.identities;
+package com.dmdirc.identities;
 
 import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
 
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.messages.ColourManager;
 
 /**
  * The config manager manages the various config sources for each entity.

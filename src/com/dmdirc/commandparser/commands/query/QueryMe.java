@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.query;
+package com.dmdirc.commandparser.commands.query;
 
-import uk.org.ownage.dmdirc.Query;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.QueryCommand;
+import com.dmdirc.Query;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.QueryCommand;
 
 /**
  * Represents the /me command used in a query window.

@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser;
+package com.dmdirc.commandparser;
 
-import uk.org.ownage.dmdirc.Server;
+import com.dmdirc.Server;
 
 /**
  * Represents a generic server command. Server commands are associated with

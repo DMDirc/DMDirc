@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.identities;
+package com.dmdirc.identities;
 
-import uk.org.ownage.dmdirc.Config;
+import com.dmdirc.Config;
 
 /**
  * Implements a non-static wrapper of the global Config class.

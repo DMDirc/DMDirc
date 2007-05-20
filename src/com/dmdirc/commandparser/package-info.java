@@ -24,4 +24,4 @@
  * Command parser, proceses and handles commands for the client.
  */
 
-package uk.org.ownage.dmdirc.commandparser;
+package com.dmdirc.commandparser;

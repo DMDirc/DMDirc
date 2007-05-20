@@ -20,12 +20,12 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.actions;
+package com.dmdirc.actions;
 
 import java.awt.Color;
 import java.util.regex.PatternSyntaxException;
 
-import uk.org.ownage.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.ui.messages.ColourManager;
 
 /**
  * A CoreActionComparison represents a possible comparison between two types of

@@ -20,14 +20,14 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.channel;
+package com.dmdirc.commandparser.commands.channel;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.ChannelCommand;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.parser.ChannelInfo;
+import com.dmdirc.Channel;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.ChannelCommand;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.parser.ChannelInfo;
 
 /**
  * The set topic command allows the user to change the current topic.

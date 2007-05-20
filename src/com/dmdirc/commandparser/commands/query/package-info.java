@@ -23,4 +23,4 @@
 /**
  * Commands related to or associated with a query.
  */
-package uk.org.ownage.dmdirc.commandparser.commands.query;
+package com.dmdirc.commandparser.commands.query;

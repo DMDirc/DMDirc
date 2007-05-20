@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.logger;
+package com.dmdirc.logger;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -31,9 +31,9 @@ import java.util.Locale;
 
 import javax.swing.ImageIcon;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.ui.MainFrame;
-import uk.org.ownage.dmdirc.ui.dialogs.ErrorDialog;
+import com.dmdirc.Config;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.dialogs.ErrorDialog;
 
 /**
  * Logger class for an applications, provides logging, error logging and debug

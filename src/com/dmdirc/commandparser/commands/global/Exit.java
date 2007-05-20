@@ -20,12 +20,12 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.global;
+package com.dmdirc.commandparser.commands.global;
 
-import uk.org.ownage.dmdirc.Main;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.Main;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.GlobalCommand;
 
 /**
  * The exit command allows the user to quit DMDirc with a custom quit message.

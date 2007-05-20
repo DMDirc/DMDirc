@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.actions;
+package com.dmdirc.actions;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.FrameContainer;
-import uk.org.ownage.dmdirc.Query;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Query;
+import com.dmdirc.Server;
+import com.dmdirc.parser.ChannelClientInfo;
 
 /**
  * An enumeration of different types of actions (the type determines the

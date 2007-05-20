@@ -20,15 +20,15 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.server;
+package com.dmdirc.commandparser.commands.server;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
-import uk.org.ownage.dmdirc.identities.Identity;
-import uk.org.ownage.dmdirc.identities.IdentityManager;
+import com.dmdirc.Config;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.identities.Identity;
+import com.dmdirc.identities.IdentityManager;
 
 /**
  * Allows the user to add/view/delete ignores.

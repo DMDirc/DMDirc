@@ -20,15 +20,15 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.server;
+package com.dmdirc.commandparser.commands.server;
 
 import javax.swing.JInternalFrame;
 
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
-import uk.org.ownage.dmdirc.ui.MainFrame;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.ui.MainFrame;
 
 /**
  * The echo commands simply echos text to the current window.

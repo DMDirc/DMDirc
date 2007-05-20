@@ -20,15 +20,15 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.global;
+package com.dmdirc.commandparser.commands.global;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Main;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.GlobalCommand;
-import uk.org.ownage.dmdirc.identities.IdentityManager;
+import com.dmdirc.Config;
+import com.dmdirc.Main;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.identities.IdentityManager;
 
 /**
  * The new server command allows users to open a new server window.

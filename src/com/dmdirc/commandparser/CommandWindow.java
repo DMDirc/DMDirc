@@ -20,11 +20,11 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser;
+package com.dmdirc.commandparser;
 
-import uk.org.ownage.dmdirc.FrameContainer;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.identities.ConfigManager;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
+import com.dmdirc.identities.ConfigManager;
 
 /**
  * A command window is a window that allows the user to input a command (that's

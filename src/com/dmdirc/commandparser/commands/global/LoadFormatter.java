@@ -20,12 +20,12 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.global;
+package com.dmdirc.commandparser.commands.global;
 
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.GlobalCommand;
-import uk.org.ownage.dmdirc.ui.messages.Formatter;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.ui.messages.Formatter;
 
 /**
  * Allows the user to load a message formatter from a file.

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.identities;
+package com.dmdirc.identities;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,9 +33,9 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.Properties;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
+import com.dmdirc.Config;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 /**
  * An identity is a group of settings that are applied to a connection, server,
@@ -60,7 +60,7 @@ public final class Identity implements ConfigSource {
     /**
      * Creates a new instance of Identity.
      * @param file The file to load this identity from.
-     * @throws uk.org.ownage.dmdirc.identities.InvalidIdentityFileException
+     * @throws com.dmdirc.identities.InvalidIdentityFileException
      * Missing required properties
      * @throws IOException Input/output exception
      */
@@ -73,7 +73,7 @@ public final class Identity implements ConfigSource {
     /**
      * Creates a new read-only identity.
      * @param stream The input stream to read the identity from
-     * @throws uk.org.ownage.dmdirc.identities.InvalidIdentityFileException
+     * @throws com.dmdirc.identities.InvalidIdentityFileException
      * Missing required properties
      * @throws IOException Input/output exception
      */

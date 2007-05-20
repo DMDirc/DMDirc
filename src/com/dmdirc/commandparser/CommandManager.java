@@ -20,20 +20,20 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser;
+package com.dmdirc.commandparser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.ServerManager;
-import uk.org.ownage.dmdirc.commandparser.commands.channel.*;
-import uk.org.ownage.dmdirc.commandparser.commands.global.*;
-import uk.org.ownage.dmdirc.commandparser.commands.query.*;
-import uk.org.ownage.dmdirc.commandparser.commands.server.*;
-import uk.org.ownage.dmdirc.logger.ErrorLevel;
-import uk.org.ownage.dmdirc.logger.Logger;
+import com.dmdirc.Config;
+import com.dmdirc.Server;
+import com.dmdirc.ServerManager;
+import com.dmdirc.commandparser.commands.channel.*;
+import com.dmdirc.commandparser.commands.global.*;
+import com.dmdirc.commandparser.commands.query.*;
+import com.dmdirc.commandparser.commands.server.*;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 
 /**
  * The command manager creates and manages a single instance of all commands,

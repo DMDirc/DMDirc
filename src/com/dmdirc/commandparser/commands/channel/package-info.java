@@ -23,4 +23,4 @@
 /**
  * Commands related to or associated with a channel.
  */
-package uk.org.ownage.dmdirc.commandparser.commands.channel;
+package com.dmdirc.commandparser.commands.channel;

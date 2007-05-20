@@ -23,4 +23,4 @@
 /**
  * Commands related to or associated with a server.
  */
-package uk.org.ownage.dmdirc.commandparser.commands.server;
+package com.dmdirc.commandparser.commands.server;

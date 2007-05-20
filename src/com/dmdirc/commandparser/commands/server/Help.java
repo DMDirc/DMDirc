@@ -20,18 +20,18 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser.commands.server;
+package com.dmdirc.commandparser.commands.server;
 
 import java.util.Collections;
 import java.util.List;
 
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.commandparser.Command;
-import uk.org.ownage.dmdirc.commandparser.CommandManager;
-import uk.org.ownage.dmdirc.commandparser.CommandWindow;
-import uk.org.ownage.dmdirc.commandparser.ServerCommand;
-import uk.org.ownage.dmdirc.ui.ChannelFrame;
-import uk.org.ownage.dmdirc.ui.QueryFrame;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.Command;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.ui.ChannelFrame;
+import com.dmdirc.ui.QueryFrame;
 
 /**
  * The help command shows the user a list of available commands, along with

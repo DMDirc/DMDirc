@@ -20,13 +20,13 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.actions;
+package com.dmdirc.actions;
 
 import java.awt.Color;
 
-import uk.org.ownage.dmdirc.Channel;
-import uk.org.ownage.dmdirc.Server;
-import uk.org.ownage.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.Channel;
+import com.dmdirc.Server;
+import com.dmdirc.parser.ChannelClientInfo;
 
 /**
  * A CoreActionComponent represents a component of some object that the user can

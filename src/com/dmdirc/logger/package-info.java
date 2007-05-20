@@ -23,4 +23,4 @@
 /**
  * Logger class and associated enums.
  */
-package uk.org.ownage.dmdirc.logger;
+package com.dmdirc.logger;

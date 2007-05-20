@@ -23,4 +23,4 @@
 /**
  * Identity related classes.
  */
-package uk.org.ownage.dmdirc.identities;
+package com.dmdirc.identities;

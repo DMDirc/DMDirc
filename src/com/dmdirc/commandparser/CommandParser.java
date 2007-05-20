@@ -20,14 +20,14 @@
  * SOFTWARE.
  */
 
-package uk.org.ownage.dmdirc.commandparser;
+package com.dmdirc.commandparser;
 
 import java.util.Hashtable;
 import java.util.Map;
 
-import uk.org.ownage.dmdirc.Config;
-import uk.org.ownage.dmdirc.actions.ActionManager;
-import uk.org.ownage.dmdirc.actions.CoreActionType;
+import com.dmdirc.Config;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
 
 /**
  * Represents a generic command parser. A command parser takes a line of input
