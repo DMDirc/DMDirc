@@ -30,6 +30,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -117,13 +118,17 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
         float drawPosY = formatHeight;
         
         int startLine = scrollBarPosition;
+        
+        // Check the start line is in range
         if (startLine >= document.getNumLines()) {
             startLine = document.getNumLines() - 1;
         }
+        
         if (startLine <= 0) {
             startLine = 0;
         }
         
+        // Iterate through the lines
         for (int i = startLine; i >= 0; i--) {
             final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
             paragraphStart = iterator.getBeginIndex();
@@ -134,12 +139,14 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
             int wrappedLine = 0;
             int height = 0;
             
+            // Work out the number of lines this will take
             while (lineMeasurer.getPosition() < paragraphEnd) {
                 final TextLayout layout = lineMeasurer.nextLayout(formatWidth);
                 wrappedLine++;
                 height += layout.getDescent() + layout.getLeading() + layout.getAscent();
             }
             
+            // Get back to the start
             lineMeasurer.setPosition(paragraphStart);
             paragraphStart = iterator.getBeginIndex();
             paragraphEnd = iterator.getEndIndex();
@@ -149,38 +156,74 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
             }
             
             int j = 0;
+            int chars = 0;
+            // Loop through each wrapped line
             while (lineMeasurer.getPosition() < paragraphEnd) {
                 
                 final TextLayout layout = lineMeasurer.nextLayout(formatWidth);
                 
+                // Calculate the Y offset
                 if (wrappedLine == 1) {
                     drawPosY -= layout.getDescent() + layout.getLeading() + layout.getAscent();
-                } else {
-                    if (j != 0) {
-                        drawPosY += layout.getDescent() + layout.getLeading() + layout.getAscent();
-                    }
+                } else if (j != 0) {
+                    drawPosY += layout.getDescent() + layout.getLeading() + layout.getAscent();
                 }
                 
                 float drawPosX;
+                // Calculate the initial X position
                 if (layout.isLeftToRight()) {
                     drawPosX = 0;
                 } else {
                     drawPosX = formatWidth - layout.getAdvance();
                 }
                 
+                // Check if the target is in range
                 if (drawPosY + layout.getAscent() >= 0
                         || (drawPosY + layout.getDescent() + layout.getLeading()) <= formatHeight) {
+                    
+                    // If the selection includes this line
+                    if (selStartLine <= i && selEndLine >= i) {
+                        int firstChar;
+                        int lastChar;
+                        
+                        // Determine the first char we care about
+                        if (selStartLine < i || selStartChar < chars) {
+                            firstChar = chars;
+                        } else {
+                            firstChar = selStartChar;
+                        }
+                        
+                        // ... And the last
+                        if (selEndLine > i || selEndChar > chars + layout.getCharacterCount()) {
+                            lastChar = chars + layout.getCharacterCount();
+                        } else {
+                            lastChar = selEndChar;
+                        }
+                        
+                        // If the selection includes the chars we're showing
+                        if (lastChar > chars && firstChar < chars + layout.getCharacterCount()) {
+                            final int trans = (int) (layout.getLeading() + layout.getAscent() + drawPosY);
+                            final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
+                            
+                            graphics2D.setColor(Color.LIGHT_GRAY);
+                            graphics2D.translate(0, trans);
+                            graphics2D.fill(shape);
+                            graphics2D.translate(0, -1 * trans);
+                        }
+                    }
+                    
                     graphics2D.setColor(Color.BLACK);
+                    
                     layout.draw(graphics2D, drawPosX, drawPosY + layout.getAscent());
                     textLayouts.put(layout, new LineInfo(i, j));
                     positions.put(new Rectangle(
-                            (int) drawPosX,
-                            (int) drawPosY,
-                            (int) formatHeight,
+                            (int) drawPosX, (int) drawPosY, (int) formatHeight,
                             (int) (layout.getDescent() + layout.getLeading() + layout.getAscent())
                             ), layout);
                 }
+                
                 j++;
+                chars += layout.getCharacterCount();
             }
             if (j > 1) {
                 drawPosY -= height;
