@@ -60,7 +60,7 @@ public final class LoggingCommand extends ServerCommand {
 		final Plugin gotPlugin = PluginManager.getPluginManager().getPlugin("com.dmdirc.addons.logging.LoggingPlugin");
 		
 		if (gotPlugin == null || !(gotPlugin instanceof LoggingPlugin)) {
-			origin.addLine("commandError", "Logging Plugin is not loaded.");
+			sendLine(origin, isSilent, "commandError", "Logging Plugin is not loaded.");
 			return;
 		}
 		
@@ -71,48 +71,48 @@ public final class LoggingCommand extends ServerCommand {
 				plugin.showConfig();
 			} else if (args[0].equalsIgnoreCase("reload")) {
 				if (PluginManager.getPluginManager().reloadPlugin("com.dmdirc.addons.logging.LoggingPlugin")) {
-					origin.addLine("commandOutput", "Plugin reloaded.");
+					sendLine(origin, isSilent, "commandOutput", "Plugin reloaded.");
 				} else {
-					origin.addLine("commandOutput", "Plugin failed to reload.");
+					sendLine(origin, isSilent, "commandOutput", "Plugin failed to reload.");
 				}
 			} else if (args[0].equalsIgnoreCase("help")) {
-				origin.addLine("commandOutput", getName() + " reload                     - Reload the logging plugin.");
-				origin.addLine("commandOutput", getName() + " help                       - Show this help.");
-				origin.addLine("commandOutput", getName() + " config                     - Show the logging plugin configuration.");
-				origin.addLine("commandOutput", getName() + " set <help|option> [value]  - Set a configuration option.");
+				sendLine(origin, isSilent, "commandOutput", getName() + " reload                     - Reload the logging plugin.");
+				sendLine(origin, isSilent, "commandOutput", getName() + " help                       - Show this help.");
+				sendLine(origin, isSilent, "commandOutput", getName() + " config                     - Show the logging plugin configuration.");
+				sendLine(origin, isSilent, "commandOutput", getName() + " set <help|option> [value]  - Set a configuration option.");
 			} else if (args[0].equalsIgnoreCase("set")) {
 				if (args.length < 2 || args[1].equalsIgnoreCase("help")) {
 					final Properties config = Config.getConfig();
-					origin.addLine("commandOutput", "Current Values:");
+					sendLine(origin, isSilent, "commandOutput", "Current Values:");
 					final Enumeration values = config.propertyNames();
 					while (values.hasMoreElements()) {
 						final String property = (String) values.nextElement();
 						
 						if (property.toLowerCase().startsWith(plugin.getDomain().toLowerCase() + ".")) {
-							origin.addLine("commandOutput", "[" + property.substring(property.indexOf(".") + 1) + "] => " + config.getProperty(property));
+							sendLine(origin, isSilent, "commandOutput", "[" + property.substring(property.indexOf(".") + 1) + "] => " + config.getProperty(property));
 						}
 					}
-					origin.addLine("commandOutput", "");
-					origin.addLine("commandOutput", "Use " + getName() + " set <option> [value] to change the value. (if [value] is not given, the current value will be displayed)");
+					sendLine(origin, isSilent, "commandOutput", "");
+					sendLine(origin, isSilent, "commandOutput", "Use " + getName() + " set <option> [value] to change the value. (if [value] is not given, the current value will be displayed)");
 				} else if (args.length > 1) {
 					if (Config.hasOption(plugin.getDomain(), args[1].toLowerCase())) {
 						String newValue = "";
 						if (args.length > 2) { newValue = implodeArgs(2, args); }
 						if (newValue.equals("")) {
-							origin.addLine("commandOutput", "Current value of '" + args[1] + "' is '" + Config.getOption(plugin.getDomain(), args[1].toLowerCase()) + "'");
+							sendLine(origin, isSilent, "commandOutput", "Current value of '" + args[1] + "' is '" + Config.getOption(plugin.getDomain(), args[1].toLowerCase()) + "'");
 						} else {
 							plugin.updateOption(null, args[1], newValue);
-							origin.addLine("commandOutput", "Setting '" + args[1] + "' to '" + newValue + "'");
+							sendLine(origin, isSilent, "commandOutput", "Setting '" + args[1] + "' to '" + newValue + "'");
 						}
 					} else {
-						origin.addLine("commandOutput", "'" + args[1] + "' is not a valid option");
+						sendLine(origin, isSilent, "commandOutput", "'" + args[1] + "' is not a valid option");
 					}
 				}
 			} else {
-				origin.addLine("commandOutput", "Unknown command '" + args[0] + "'. Use " + getName() + " help for a list of commands.");
+				sendLine(origin, isSilent, "commandOutput", "Unknown command '" + args[0] + "'. Use " + getName() + " help for a list of commands.");
 			}
 		} else {
-			origin.addLine("commandOutput", "Use " + getName() + " help for a list of commands.");
+			sendLine(origin, isSilent, "commandOutput", "Use " + getName() + " help for a list of commands.");
 		}
 	}
 
