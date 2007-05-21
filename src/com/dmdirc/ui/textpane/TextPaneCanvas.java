@@ -93,6 +93,7 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
      * @param document IRCDocument to be displayed
      */
     public TextPaneCanvas(final TextPane parent, final IRCDocument document) {
+        super();
         this.document = document;
         scrollBarPosition = 0;
         textPane = parent;
@@ -299,12 +300,12 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     
     /** {@inheritDoc}. */
     public void mousePressed(final MouseEvent e) {
-        highlightEvent(true);
+        highlightEvent(true, e);
     }
     
     /** {@inheritDoc}. */
     public void mouseReleased(final MouseEvent e) {
-        highlightEvent(false);
+        highlightEvent(false, e);
     }
     
     /** {@inheritDoc}. */
@@ -319,7 +320,7 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     
     /** {@inheritDoc}. */
     public void mouseDragged(final MouseEvent e) {
-        highlightEvent(false);
+        highlightEvent(false, e);
     }
     
     /** {@inheritDoc}. */
@@ -331,8 +332,9 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
      * Sets the selection for the given event.
      *
      * @param start true = start
+     * @param e responsible mouse event
      */
-    private void highlightEvent(final boolean start) {
+    private void highlightEvent(final boolean start, final MouseEvent e) {
         final Point point = this.getMousePosition();
         
         if (point != null) {
@@ -363,6 +365,12 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
                 selEndChar = pos;
                 
                 this.repaint();
+            }
+        } else {
+            if ((int) getLocationOnScreen().getY() > e.getY()) {
+                setScrollBarPosition(scrollBarPosition - 1);
+            } else {
+                setScrollBarPosition(scrollBarPosition + 1);
             }
         }
     }
