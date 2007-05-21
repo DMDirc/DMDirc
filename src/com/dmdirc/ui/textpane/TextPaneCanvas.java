@@ -74,7 +74,7 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     /** Position -> TextLayout. */
     private Map<Rectangle, TextLayout> positions;
     /** TextLayout -> Line numbers. */
-    private Map<TextLayout, String> textLayouts;
+    private Map<TextLayout, LineInfo> textLayouts;
     
     /** Start line of the selection. */
     private int selStartLine;
@@ -95,7 +95,7 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
         this.document = document;
         scrollBarPosition = 0;
         textPane = parent;
-        textLayouts = new HashMap<TextLayout, String>();
+        textLayouts = new HashMap<TextLayout, LineInfo>();
         positions = new HashMap<Rectangle, TextLayout>();
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -170,8 +170,9 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
                 
                 if (drawPosY + layout.getAscent() >= 0
                         || (drawPosY + layout.getDescent() + layout.getLeading()) <= formatHeight) {
+                    graphics2D.setColor(Color.BLACK);
                     layout.draw(graphics2D, drawPosX, drawPosY + layout.getAscent());
-                    textLayouts.put(layout, "" + i + "." + j);
+                    textLayouts.put(layout, new LineInfo(i, j));
                     positions.put(new Rectangle(
                             (int) drawPosX,
                             (int) drawPosY,
@@ -223,29 +224,12 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     
     /** {@inheritDoc}. */
     public void mousePressed(final MouseEvent e) {
-        int line = -1;
-        
-        final Point point = this.getMousePosition();
-        
-        if (point != null) {
-            String whichLine = "";
-            for (Map.Entry<Rectangle, TextLayout> entry : positions.entrySet()) {
-                if (entry.getKey().contains(point)) {
-                    //TODO: parse line and start char
-                    whichLine = textLayouts.get(entry.getValue());
-                    System.out.println(textLayouts.get(entry.getValue()) + " " + entry.getValue().hitTestChar((int) point.getX(), (int) point.getY()).getCharIndex());
-                }
-            }
-            for (Map.Entry<TextLayout, String> entry : textLayouts.entrySet()) {
-                entry.getValue().matches("");
-                line = -1;
-            }
-        }
+        highlightEvent(true);
     }
     
     /** {@inheritDoc}. */
     public void mouseReleased(final MouseEvent e) {
-        //TODO: parse line and end char
+        highlightEvent(false);
     }
     
     /** {@inheritDoc}. */
@@ -260,12 +244,49 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     
     /** {@inheritDoc}. */
     public void mouseDragged(final MouseEvent e) {
-        //TODO: parse line and end char
+        highlightEvent(false);
     }
     
     /** {@inheritDoc}. */
     public void mouseMoved(final MouseEvent e) {
         //Ignore
+    }
+    
+    /**
+     * Sets the selection for the given event.
+     *
+     * @param start true = start
+     */
+    private void highlightEvent(final boolean start) {
+        final Point point = this.getMousePosition();
+        
+        if (point != null) {
+            int lineNumber = -1;
+            int linePart = -1;
+            int pos = 0;
+            for (Map.Entry<Rectangle, TextLayout> entry : positions.entrySet()) {
+                if (entry.getKey().contains(point)) {
+                    lineNumber = textLayouts.get(entry.getValue()).getLine();
+                    linePart = textLayouts.get(entry.getValue()).getPart();
+                }
+            }
+            for (Map.Entry<Rectangle, TextLayout> entry : positions.entrySet()) {
+                if (textLayouts.get(entry.getValue()).getLine() == lineNumber) {
+                    if (textLayouts.get(entry.getValue()).getPart() < linePart) {
+                        pos += entry.getValue().getCharacterCount();
+                    } else if (textLayouts.get(entry.getValue()).getPart() == linePart){
+                        pos += entry.getValue().hitTestChar((int) point.getX(), (int) point.getY()).getInsertionIndex();
+                    }
+                }
+            }
+            if (start) {
+                selStartLine = lineNumber;
+                selStartChar = pos;
+            }
+            selEndLine = lineNumber;
+            selEndChar = pos;
+            this.repaint();
+        }
     }
     
     /**
