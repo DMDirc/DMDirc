@@ -30,12 +30,14 @@ import com.dmdirc.Server;
  * @author chris
  */
 public abstract class ServerCommand extends Command {
-        
+    
     /**
      * Executes this command.
      * @param origin The window in which the command was typed
      * @param server The server instance that this command is being executed on
+     * @param isSilent Whetehr this command is silenced or not
      * @param args Arguments passed to this command
      */
-    public abstract void execute(CommandWindow origin, Server server, String ... args);
+    public abstract void execute(CommandWindow origin, Server server,
+            boolean isSilent, String ... args);
 }

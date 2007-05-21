@@ -439,8 +439,10 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * @param reason reason for closing
      */
     public void close(final String reason) {
-        // Unregister parser callbacks
-        parser.getCallbackManager().delAllCallback(this);
+        if (parser != null) {
+            // Unregister parser callbacks
+            parser.getCallbackManager().delAllCallback(this);
+        }
         // Unregister frame callbacks
         frame.removeInternalFrameListener(this);
         // Disconnect from the server

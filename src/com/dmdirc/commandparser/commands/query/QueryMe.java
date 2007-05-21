@@ -49,7 +49,7 @@ public final class QueryMe extends QueryCommand {
      * @param args The user supplied arguments
      */
     public void execute(final CommandWindow origin, final Server server,
-            final Query query, final String... args) {
+            final Query query, final boolean isSilent, final String... args) {
         query.sendAction(implodeArgs(args));
     }
     

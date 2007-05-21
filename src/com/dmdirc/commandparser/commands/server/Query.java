@@ -46,7 +46,7 @@ public final class Query extends ServerCommand {
     
     /** {@inheritDoc} */
     public void execute(final CommandWindow origin, final Server server,
-            final String... args) {
+            final boolean isSilent, final String... args) {
         server.addQuery(args[0]);
         server.getQuery(args[0]).show();
     }

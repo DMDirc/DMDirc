@@ -45,7 +45,7 @@ public final class ChangeServer extends ServerCommand {
     
     /** {@inheritDoc} */
     public void execute(final CommandWindow origin, final Server server,
-            final String... args) {
+            final boolean isSilent, final String... args) {
         if (args.length == 0) {
             origin.addLine("commandUsage", Config.getCommandChar(), "server",
                     "[--ssl] <host[:port]> [password]");

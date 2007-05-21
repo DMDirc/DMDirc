@@ -45,10 +45,11 @@ public class AllChannels extends ServerCommand {
      * Executes this command.
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
+     * @param isSilent Whetehr this command is silenced or not
      * @param args The user supplied arguments
      */
     public void execute(final CommandWindow origin, final Server server,
-            final String... args) {
+            final boolean isSilent, final String... args) {
         final String command = implodeArgs(args);
         CommandWindow window;
         

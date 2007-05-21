@@ -51,7 +51,7 @@ public final class QueryMeEmpty extends QueryCommand {
      * @param args The user supplied arguments
      */
     public void execute(final CommandWindow origin, final Server server,
-            final Query query, final String... args) {
+            final Query query, final boolean isSilent, final String... args) {
         origin.addLine("commandUsage", Config.getCommandChar(), "me", "<action>");
     }
     

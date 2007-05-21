@@ -294,10 +294,10 @@ public final class ChannelFrame extends Frame implements MouseListener,
                 if (command instanceof ChannelCommand) {
                     ((ChannelCommand) commands.get(actionEvent.getActionCommand())).
                             execute(this, this.getServer(),
-                            (Channel) this.getContainer(), ((ChannelClientInfo) nickname).getNickname());
+                            (Channel) this.getContainer(), false, ((ChannelClientInfo) nickname).getNickname());
                 } else if (command instanceof ServerCommand) {
                     ((ServerCommand) commands.get(actionEvent.getActionCommand())).
-                            execute(this, this.getServer(), ((ChannelClientInfo) nickname).getNickname());
+                            execute(this, this.getServer(), false, ((ChannelClientInfo) nickname).getNickname());
                 }
             }
         }

@@ -51,10 +51,11 @@ public final class Notify extends ChannelCommand {
      * @param origin The frame in which this command was issued
      * @param server The server object that this command is associated with
      * @param channel The channel object that this command is associated with
+     * @param isSilent Whetehr this command is silenced or not
      * @param args The user supplied arguments
      */
     public void execute(final CommandWindow origin, final Server server,
-            final Channel channel, final String... args) {
+            final Channel channel, final boolean isSilent, final String... args) {
         final Color colour = ColourManager.parseColour(args[0], null);
         
         if (colour == null) {

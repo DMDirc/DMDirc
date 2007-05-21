@@ -55,7 +55,7 @@ public final class ServerCommandParser extends CommandParser {
     protected void executeCommand(final CommandWindow origin,
             final boolean isSilent, final Command command, final String... args) {
         if (command instanceof ServerCommand) {
-            ((ServerCommand) command).execute(origin, server, args);
+            ((ServerCommand) command).execute(origin, server, isSilent, args);
         } else {
             ((GlobalCommand) command).execute(origin, isSilent, args);
         }

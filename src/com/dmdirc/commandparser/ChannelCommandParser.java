@@ -64,9 +64,9 @@ public final class ChannelCommandParser extends CommandParser {
     protected void executeCommand(final CommandWindow origin,
             final boolean isSilent, final Command command, final String... args) {
         if (command instanceof ChannelCommand) {
-            ((ChannelCommand) command).execute(origin, server, channel, args);
+            ((ChannelCommand) command).execute(origin, server, channel, isSilent, args);
         } else if (command instanceof ServerCommand) {
-            ((ServerCommand) command).execute(origin, server, args);
+            ((ServerCommand) command).execute(origin, server, isSilent, args);
         } else {
             ((GlobalCommand) command).execute(origin, isSilent, args);
         }
