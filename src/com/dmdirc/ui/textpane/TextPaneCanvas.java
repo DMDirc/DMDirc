@@ -128,6 +128,34 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
             startLine = 0;
         }
         
+        // We use these for drawing rather than the actual
+        // sel{Start,End}{Line,Char} vars defined in the highlightEvent
+        // This alllows for highlight in both directions.
+        int useStartLine;
+        int useStartChar;
+        int useEndLine;
+        int useEndChar;
+        
+        if (selStartLine > selEndLine) {
+            // Swap both
+            useStartLine = selEndLine;
+            useStartChar = selEndChar;
+            useEndLine = selStartLine;
+            useEndChar = selStartChar;
+        } else if (selStartLine == selEndLine && selStartChar > selEndChar) {
+            // Just swap the chars
+            useStartLine = selStartLine;
+            useStartChar = selEndChar;
+            useEndLine = selEndLine;
+            useEndChar = selStartChar;
+        } else {
+            // Swap nothing
+            useStartLine = selStartLine;
+            useStartChar = selStartChar;
+            useEndLine = selEndLine;
+            useEndChar = selEndChar;
+        }
+        
         // Iterate through the lines
         for (int i = startLine; i >= 0; i--) {
             final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
@@ -186,22 +214,22 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
                         || (drawPosY + layout.getDescent() + layout.getLeading()) <= formatHeight) {
                     
                     // If the selection includes this line
-                    if (selStartLine <= i && selEndLine >= i) {
+                    if (useStartLine <= i && useEndLine >= i) {
                         int firstChar;
                         int lastChar;
                         
                         // Determine the first char we care about
-                        if (selStartLine < i || selStartChar < chars) {
+                        if (useStartLine < i || useStartChar < chars) {
                             firstChar = chars;
                         } else {
-                            firstChar = selStartChar;
+                            firstChar = useStartChar;
                         }
                         
                         // ... And the last
-                        if (selEndLine > i || selEndChar > chars + layout.getCharacterCount()) {
+                        if (useEndLine > i || useEndChar > chars + layout.getCharacterCount()) {
                             lastChar = chars + layout.getCharacterCount();
                         } else {
-                            lastChar = selEndChar;
+                            lastChar = useEndChar;
                         }
                         
                         // If the selection includes the chars we're showing
