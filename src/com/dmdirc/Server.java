@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.parser.callbacks.interfaces.IServerReady;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -84,7 +85,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         IPrivateMessage, IPrivateAction, IErrorInfo, IPrivateCTCP,
         IPrivateCTCPReply, ISocketClosed, IPrivateNotice, IMOTDStart,
         IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed, IPingSuccess,
-        IAwayState, IConnectError, IAwayStateOther, INickInUse {
+        IAwayState, IConnectError, IAwayStateOther, INickInUse, IServerReady {
     
     /** The callbacks that should be registered for server instances. */
     private final static String[] callbacks = {
@@ -92,7 +93,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         "OnPrivateAction", "OnPrivateCTCP", "OnPrivateNotice", "OnConnectError",
         "OnPrivateCTCPReply", "OnSocketClosed", "OnGotNetwork", "OnNumeric",
         "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed", "OnAwayState",
-        "OnAwayStateOther", "OnNickInUse"
+        "OnAwayStateOther", "OnNickInUse", "OnServerReady"
     };
     
     /** Open channels that currently exist on the server. */
@@ -821,6 +822,17 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         parser.setNickname(newNick);
     }
     
+    /** {@inheritDoc} */
+    public void onServerReady(final IRCParser tParser) {
+        ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
+        
+        if (configManager.hasOption("general", "rejoinchannels")) {
+            for (Channel chan : channels.values()) {
+                chan.join();
+            }
+        }
+    }    
+    
     /**
      * Called when the parser has determined the network and ircd version.
      * @param tParser The associated IRC parser
@@ -888,11 +900,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         if (target != null) {
             handleNotification(target, (Object[]) line);
         }
-        
-        if (numeric == 1) {
-            ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
-        }
-        
+                
         ActionManager.processEvent(CoreActionType.SERVER_NUMERIC, null, this, Integer.valueOf(numeric), line);
     }
     
