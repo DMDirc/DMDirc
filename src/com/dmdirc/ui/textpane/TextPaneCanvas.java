@@ -138,12 +138,16 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
             
             int wrappedLine = 0;
             int height = 0;
+            int firstLineHeight = 0;
             
             // Work out the number of lines this will take
             while (lineMeasurer.getPosition() < paragraphEnd) {
                 final TextLayout layout = lineMeasurer.nextLayout(formatWidth);
-                wrappedLine++;
+                if (wrappedLine == 0) {
+                    firstLineHeight = (int) (layout.getDescent() + layout.getLeading() + layout.getAscent());
+                }
                 height += layout.getDescent() + layout.getLeading() + layout.getAscent();
+                wrappedLine++;
             }
             
             // Get back to the start
@@ -226,7 +230,7 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
                 chars += layout.getCharacterCount();
             }
             if (j > 1) {
-                drawPosY -= height;
+                drawPosY -= height - firstLineHeight;
             }
             if (drawPosY <= 0) {
                 break;
@@ -322,13 +326,16 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
                     }
                 }
             }
-            if (start) {
-                selStartLine = lineNumber;
-                selStartChar = pos;
+            if (lineNumber != -1 && linePart != -1) {
+                if (start) {
+                    selStartLine = lineNumber;
+                    selStartChar = pos;
+                }
+                selEndLine = lineNumber;
+                selEndChar = pos;
+                
+                this.repaint();
             }
-            selEndLine = lineNumber;
-            selEndChar = pos;
-            this.repaint();
         }
     }
     
