@@ -22,6 +22,9 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.Config;
+import com.dmdirc.ui.textpane.IRCTextAttribute;
+import java.awt.Color;
 import java.util.Locale;
 
 import javax.swing.text.BadLocationException;
@@ -45,6 +48,8 @@ public final class Styliser {
     public static final char CODE_COLOUR = 3;
     /** The character used for marking up coloured text (using hex). */
     public static final char CODE_HEXCOLOUR = 4;
+    /** Character used to indicate hyperlinks. */
+    public static final char CODE_HYPERLINK = 5;
     /** The character used for stopping all formatting. */
     public static final char CODE_STOP = 15;
     /** The character used for marking up fixed pitch text. */
@@ -53,6 +58,14 @@ public final class Styliser {
     public static final char CODE_ITALIC = 29;
     /** The character used for marking up underlined text. */
     public static final char CODE_UNDERLINE = 31;
+    
+    /** Characters allowed to be used in an URL. */
+    private static final String CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR 
+            + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC 
+            + CODE_UNDERLINE + "]";
+    
+    /** The regular expression to use for marking up URLs. */
+    private static final String URL_REGEXP = "(?i)([a-z]+://" + CHARS + "+|(?<![a-z:])www\\." + CHARS + "+)";
     
     /** Creates a new instance of Styliser. */
     private Styliser() {
@@ -64,30 +77,32 @@ public final class Styliser {
      * @param add The line to be stylised and added
      */
     public static void addStyledString(final StyledDocument doc,
-	    final String add) {
-	try {
-	    int offset = doc.getLength();
-	    int position = 0;
-	    
-	    final SimpleAttributeSet attribs = new SimpleAttributeSet();
-	    
-	    while (position < add.length()) {
-		final String next = readUntilControl(add.substring(position));
-		
-		doc.insertString(offset, next, attribs);
-		
-		position += next.length();
-		offset += next.length();
-		
-		if (position < add.length()) {
-		    position += readControlChars(add.substring(position),
-			    attribs, position == 0);
-		}
-	    }
-	    
-	} catch (BadLocationException ex) {
-	    Logger.error(ErrorLevel.WARNING, "Unable to insert styled string", ex);
-	}
+            final String add) {
+        try {
+            int offset = doc.getLength();
+            int position = 0;
+            
+            final String target = add.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
+            
+            final SimpleAttributeSet attribs = new SimpleAttributeSet();
+            
+            while (position < target.length()) {
+                final String next = readUntilControl(target.substring(position));
+                
+                doc.insertString(offset, next, attribs);
+                
+                position += next.length();
+                offset += next.length();
+                
+                if (position < target.length()) {
+                    position += readControlChars(target.substring(position),
+                            attribs, position == 0);
+                }
+            }
+            
+        } catch (BadLocationException ex) {
+            Logger.error(ErrorLevel.WARNING, "Unable to insert styled string", ex);
+        }
     }
     
     /**
@@ -96,25 +111,25 @@ public final class Styliser {
      * @return a copy of the input with control codes removed
      */
     public static String stipControlCodes(final String input) {
-	final SimpleAttributeSet attribs = new SimpleAttributeSet();
-	
-	int position = 0;
-	String output = "";
-	
-	while (position < input.length()) {
-	    final String next = readUntilControl(input.substring(position));
-	    
-	    output = output.concat(next);
-	    
-	    position += next.length();
-	    
-	    if (position < input.length()) {
-		position += readControlChars(input.substring(position),
-			attribs, position == 0);
-	    }
-	}
-	
-	return output;
+        final SimpleAttributeSet attribs = new SimpleAttributeSet();
+        
+        int position = 0;
+        String output = "";
+        
+        while (position < input.length()) {
+            final String next = readUntilControl(input.substring(position));
+            
+            output = output.concat(next);
+            
+            position += next.length();
+            
+            if (position < input.length()) {
+                position += readControlChars(input.substring(position),
+                        attribs, position == 0);
+            }
+        }
+        
+        return output;
     }
     
     /**
@@ -125,17 +140,18 @@ public final class Styliser {
      * @return A substring of the input containing no control characters
      */
     static String readUntilControl(final String input) {
-	int pos = input.length();
-	
-	pos = checkChar(pos, input.indexOf(CODE_BOLD));
-	pos = checkChar(pos, input.indexOf(CODE_UNDERLINE));
-	pos = checkChar(pos, input.indexOf(CODE_STOP));
-	pos = checkChar(pos, input.indexOf(CODE_COLOUR));
-	pos = checkChar(pos, input.indexOf(CODE_HEXCOLOUR));
-	pos = checkChar(pos, input.indexOf(CODE_ITALIC));
-	pos = checkChar(pos, input.indexOf(CODE_FIXED));
-	
-	return input.substring(0, pos);
+        int pos = input.length();
+        
+        pos = checkChar(pos, input.indexOf(CODE_BOLD));
+        pos = checkChar(pos, input.indexOf(CODE_UNDERLINE));
+        pos = checkChar(pos, input.indexOf(CODE_STOP));
+        pos = checkChar(pos, input.indexOf(CODE_COLOUR));
+        pos = checkChar(pos, input.indexOf(CODE_HEXCOLOUR));
+        pos = checkChar(pos, input.indexOf(CODE_ITALIC));
+        pos = checkChar(pos, input.indexOf(CODE_FIXED));
+        pos = checkChar(pos, input.indexOf(CODE_HYPERLINK));
+        
+        return input.substring(0, pos);
     }
     
     /**
@@ -146,8 +162,8 @@ public final class Styliser {
      * @return The new position (see implementation)
      */
     private static int checkChar(final int pos, final int i) {
-	if (i < pos && i != -1) { return i; }
-	return pos;
+        if (i < pos && i != -1) { return i; }
+        return pos;
     }
     
     /**
@@ -159,107 +175,113 @@ public final class Styliser {
      * @param isStart Whether this is at the start of the string or not
      */
     private static int readControlChars(final String string,
-	    final SimpleAttributeSet attribs, final boolean isStart) {
-	// Bold
-	if (string.charAt(0) == CODE_BOLD) {
-	    toggleAttribute(attribs, StyleConstants.FontConstants.Bold);
-	    return 1;
-	}
-	
-	// Underline
-	if (string.charAt(0) == CODE_UNDERLINE) {
-	    toggleAttribute(attribs, StyleConstants.FontConstants.Underline);
-	    return 1;
-	}
-	
-	// Italic
-	if (string.charAt(0) == CODE_ITALIC) {
-	    toggleAttribute(attribs, StyleConstants.FontConstants.Italic);
-	    return 1;
-	}
-	
-	// Fixed pitch
-	if (string.charAt(0) == CODE_FIXED) {
-	    if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospaced")) {
-		attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
-	    } else {
-		attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
-		attribs.addAttribute(StyleConstants.FontConstants.FontFamily, "monospaced");
-	    }
-	    return 1;
-	}
-	
-	// Stop formatting
-	if (string.charAt(0) == CODE_STOP) {
-	    resetAttributes(attribs);
-	    return 1;
-	}
-	
-	// Colours
-	if (string.charAt(0) == CODE_COLOUR) {
-	    int count = 1;
-	    // This isn't too nice!
-	    if (string.length() > count && isInt(string.charAt(count))) {
-		int foreground = string.charAt(count) - '0';
-		count++;
-		if (string.length() > count && isInt(string.charAt(count))) {
-		    foreground = foreground * 10 + (string.charAt(count) - '0');
-		    count++;
-		}
-		foreground = foreground % 16;
-		setForeground(attribs, String.valueOf(foreground));
-		if (isStart) {
-		    setDefaultForeground(attribs, String.valueOf(foreground));
-		}
-		
-		// Now background
-		if (string.length() > count && string.charAt(count) == ','
-			&& string.length() > count + 1
-			&& isInt(string.charAt(count + 1))) {
-		    int background = string.charAt(count + 1) - '0';
-		    count += 2; // Comma and first digit
-		    if (string.length() > count && isInt(string.charAt(count))) {
-			background = background * 10 + (string.charAt(count) - '0');
-			count++;
-		    }
-		    background = background % 16;
-		    setBackground(attribs, String.valueOf(background));
-		    if (isStart) {
-			setDefaultBackground(attribs, String.valueOf(background));
-		    }
-		}
-	    } else {
-		resetColour(attribs);
-	    }
-	    return count;
-	}
-	
-	// Hex colours
-	if (string.charAt(0) == CODE_HEXCOLOUR) {
-	    int count = 1;
-	    if (hasHexString(string, 1)) {
-		setForeground(attribs, string.substring(1, 7).toUpperCase());
-		if (isStart) {
-		    setDefaultForeground(attribs, string.substring(1, 7).toUpperCase());
-		}
-		count = count + 6;
-		
-		// Now for background
-		if (string.charAt(count) == ',' && hasHexString(string, count + 1)) {
-		    count++;
-		    setBackground(attribs, string.substring(count, count + 6).toUpperCase());
-		    if (isStart) {
-			setDefaultBackground(attribs, string.substring(count, count + 6).toUpperCase());
-		    }
-		    count += 6;
-		}
-	    } else {
-		resetColour(attribs);
-	    }
-	    return count;
-	}
-	
-	return 0;
+            final SimpleAttributeSet attribs, final boolean isStart) {
+        // Bold
+        if (string.charAt(0) == CODE_BOLD) {
+            toggleAttribute(attribs, StyleConstants.FontConstants.Bold);
+            return 1;
+        }
+        
+        // Underline
+        if (string.charAt(0) == CODE_UNDERLINE) {
+            toggleAttribute(attribs, StyleConstants.FontConstants.Underline);
+            return 1;
+        }
+        
+        // Italic
+        if (string.charAt(0) == CODE_ITALIC) {
+            toggleAttribute(attribs, StyleConstants.FontConstants.Italic);
+            return 1;
+        }
+        
+        // Hyperlinks
+        if (string.charAt(0) == CODE_HYPERLINK) {
+            toggleLink(attribs);
+            return 1;
+        }
+        
+        // Fixed pitch
+        if (string.charAt(0) == CODE_FIXED) {
+            if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospaced")) {
+                attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
+            } else {
+                attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
+                attribs.addAttribute(StyleConstants.FontConstants.FontFamily, "monospaced");
+            }
+            return 1;
+        }
+        
+        // Stop formatting
+        if (string.charAt(0) == CODE_STOP) {
+            resetAttributes(attribs);
+            return 1;
+        }
+        
+        // Colours
+        if (string.charAt(0) == CODE_COLOUR) {
+            int count = 1;
+            // This isn't too nice!
+            if (string.length() > count && isInt(string.charAt(count))) {
+                int foreground = string.charAt(count) - '0';
+                count++;
+                if (string.length() > count && isInt(string.charAt(count))) {
+                    foreground = foreground * 10 + (string.charAt(count) - '0');
+                    count++;
+                }
+                foreground = foreground % 16;
+                setForeground(attribs, String.valueOf(foreground));
+                if (isStart) {
+                    setDefaultForeground(attribs, String.valueOf(foreground));
+                }
+                
+                // Now background
+                if (string.length() > count && string.charAt(count) == ','
+                        && string.length() > count + 1
+                        && isInt(string.charAt(count + 1))) {
+                    int background = string.charAt(count + 1) - '0';
+                    count += 2; // Comma and first digit
+                    if (string.length() > count && isInt(string.charAt(count))) {
+                        background = background * 10 + (string.charAt(count) - '0');
+                        count++;
+                    }
+                    background = background % 16;
+                    setBackground(attribs, String.valueOf(background));
+                    if (isStart) {
+                        setDefaultBackground(attribs, String.valueOf(background));
+                    }
+                }
+            } else {
+                resetColour(attribs);
+            }
+            return count;
+        }
+        
+        // Hex colours
+        if (string.charAt(0) == CODE_HEXCOLOUR) {
+            int count = 1;
+            if (hasHexString(string, 1)) {
+                setForeground(attribs, string.substring(1, 7).toUpperCase());
+                if (isStart) {
+                    setDefaultForeground(attribs, string.substring(1, 7).toUpperCase());
+                }
+                count = count + 6;
+                
+                // Now for background
+                if (string.charAt(count) == ',' && hasHexString(string, count + 1)) {
+                    count++;
+                    setBackground(attribs, string.substring(count, count + 6).toUpperCase());
+                    if (isStart) {
+                        setDefaultBackground(attribs, string.substring(count, count + 6).toUpperCase());
+                    }
+                    count += 6;
+                }
+            } else {
+                resetColour(attribs);
+            }
+            return count;
+        }
+        
+        return 0;
     }
     
     /**
@@ -268,7 +290,7 @@ public final class Styliser {
      * @return True iff the character is in the range [0-9], false otherwise
      */
     private static boolean isInt(final char c) {
-	return c >= '0' && c <= '9';
+        return c >= '0' && c <= '9';
     }
     
     /**
@@ -278,7 +300,7 @@ public final class Styliser {
      * @return True iff the character is in the range [0-F], false otherwise
      */
     private static boolean isHex(final char c) {
-	return isInt(c) || (c >= 'A' && c <= 'Z');
+        return isInt(c) || (c >= 'A' && c <= 'Z');
     }
     
     /**
@@ -289,16 +311,61 @@ public final class Styliser {
      * @return True iff there is a hex string preset at the offset
      */
     private static boolean hasHexString(final String input, final int offset) {
-	// If the string's too short, it can't have a hex string
-	if (input.length() < offset + 6) {
-	    return false;
-	}
-	boolean res = true;
-	for (int i = offset; i < 6 + offset; i++) {
-	    res = res && isHex(input.toUpperCase(Locale.getDefault()).charAt(i));
-	}
-	
-	return res;
+        // If the string's too short, it can't have a hex string
+        if (input.length() < offset + 6) {
+            return false;
+        }
+        boolean res = true;
+        for (int i = offset; i < 6 + offset; i++) {
+            res = res && isHex(input.toUpperCase(Locale.getDefault()).charAt(i));
+        }
+        
+        return res;
+    }
+    
+    /**
+     * Toggles the various hyperlink-related attributes.
+     * @param attribs The attributes to be modified.
+     */
+    private static void toggleLink(final SimpleAttributeSet attribs) {
+        if (Config.getOptionBool("ui", "stylelinks")) {
+            if (attribs.containsAttribute(IRCTextAttribute.HYPERLINK, Boolean.TRUE)) {
+                // Remove the hyperlink style
+                
+                if (attribs.containsAttribute("restoreUnderline", Boolean.TRUE)) {
+                    attribs.removeAttribute("restoreUnderline");
+                } else {
+                    attribs.removeAttribute(StyleConstants.FontConstants.Underline);
+                }
+                
+                attribs.removeAttribute(StyleConstants.FontConstants.Foreground);
+                final Object foreground = attribs.getAttribute("restoreColour");
+                if (foreground != null) {
+                    attribs.addAttribute(StyleConstants.FontConstants.Foreground, foreground);
+                    attribs.removeAttribute("restoreColour");
+                }
+                
+            } else {
+                // Add the hyperlink style
+                
+                if (attribs.containsAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE)) {
+                    attribs.addAttribute("restoreUnderline", Boolean.TRUE);
+                } else {
+                    attribs.addAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE);
+                }
+                
+                final Object foreground = attribs.getAttribute(StyleConstants.FontConstants.Foreground);
+                
+                if (foreground != null) {
+                    attribs.addAttribute("restoreColour", foreground);
+                    attribs.removeAttribute(StyleConstants.FontConstants.Foreground);
+                }
+                
+                attribs.addAttribute(StyleConstants.FontConstants.Foreground, Color.BLUE);
+            }
+        }
+        
+        toggleAttribute(attribs, IRCTextAttribute.HYPERLINK);
     }
     
     /**
@@ -308,12 +375,12 @@ public final class Styliser {
      * @param attrib The attribute to toggle
      */
     private static void toggleAttribute(final SimpleAttributeSet attribs,
-	    final Object attrib) {
-	if (attribs.containsAttribute(attrib, Boolean.TRUE)) {
-	    attribs.removeAttribute(attrib);
-	} else {
-	    attribs.addAttribute(attrib, Boolean.TRUE);
-	}
+            final Object attrib) {
+        if (attribs.containsAttribute(attrib, Boolean.TRUE)) {
+            attribs.removeAttribute(attrib);
+        } else {
+            attribs.addAttribute(attrib, Boolean.TRUE);
+        }
     }
     
     /**
@@ -321,21 +388,21 @@ public final class Styliser {
      * @param attribs The attribute list whose attributes should be reset
      */
     private static void resetAttributes(final SimpleAttributeSet attribs) {
-	if (attribs.containsAttribute(StyleConstants.FontConstants.Bold, Boolean.TRUE)) {
-	    attribs.removeAttribute(StyleConstants.FontConstants.Bold);
-	}
-	if (attribs.containsAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE)) {
-	    attribs.removeAttribute(StyleConstants.FontConstants.Underline);
-	}
-	if (attribs.containsAttribute(StyleConstants.FontConstants.Italic, Boolean.TRUE)) {
-	    attribs.removeAttribute(StyleConstants.FontConstants.Italic);
-	}
-	if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospace")) {
-	    final Object defaultFont = attribs.getAttribute("DefaultFontFamily");
-	    attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
-	    attribs.addAttribute(StyleConstants.FontConstants.FontFamily, defaultFont);
-	}
-	resetColour(attribs);
+        if (attribs.containsAttribute(StyleConstants.FontConstants.Bold, Boolean.TRUE)) {
+            attribs.removeAttribute(StyleConstants.FontConstants.Bold);
+        }
+        if (attribs.containsAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE)) {
+            attribs.removeAttribute(StyleConstants.FontConstants.Underline);
+        }
+        if (attribs.containsAttribute(StyleConstants.FontConstants.Italic, Boolean.TRUE)) {
+            attribs.removeAttribute(StyleConstants.FontConstants.Italic);
+        }
+        if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospace")) {
+            final Object defaultFont = attribs.getAttribute("DefaultFontFamily");
+            attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
+            attribs.addAttribute(StyleConstants.FontConstants.FontFamily, defaultFont);
+        }
+        resetColour(attribs);
     }
     
     /**
@@ -343,20 +410,20 @@ public final class Styliser {
      * @param attribs The attribute set whose colour attributes should be reset
      */
     private static void resetColour(final SimpleAttributeSet attribs) {
-	if (attribs.isDefined(StyleConstants.Foreground)) {
-	    attribs.removeAttribute(StyleConstants.Foreground);
-	}
-	if (attribs.isDefined("DefaultForeground")) {
-	    attribs.addAttribute(StyleConstants.Foreground,
-		    attribs.getAttribute("DefaultForeground"));
-	}
-	if (attribs.isDefined(StyleConstants.Background)) {
-	    attribs.removeAttribute(StyleConstants.Background);
-	}
-	if (attribs.isDefined("DefaultBackground")) {
-	    attribs.addAttribute(StyleConstants.Background,
-		    attribs.getAttribute("DefaultBackground"));
-	}
+        if (attribs.isDefined(StyleConstants.Foreground)) {
+            attribs.removeAttribute(StyleConstants.Foreground);
+        }
+        if (attribs.isDefined("DefaultForeground")) {
+            attribs.addAttribute(StyleConstants.Foreground,
+                    attribs.getAttribute("DefaultForeground"));
+        }
+        if (attribs.isDefined(StyleConstants.Background)) {
+            attribs.removeAttribute(StyleConstants.Background);
+        }
+        if (attribs.isDefined("DefaultBackground")) {
+            attribs.addAttribute(StyleConstants.Background,
+                    attribs.getAttribute("DefaultBackground"));
+        }
     }
     
     /**
@@ -366,11 +433,11 @@ public final class Styliser {
      * @param foreground The colour code/hex of the new foreground colour
      */
     private static void setForeground(final SimpleAttributeSet attribs,
-	    final String foreground) {
-	if (attribs.isDefined(StyleConstants.Foreground)) {
-	    attribs.removeAttribute(StyleConstants.Foreground);
-	}
-	attribs.addAttribute(StyleConstants.Foreground, ColourManager.parseColour(foreground));
+            final String foreground) {
+        if (attribs.isDefined(StyleConstants.Foreground)) {
+            attribs.removeAttribute(StyleConstants.Foreground);
+        }
+        attribs.addAttribute(StyleConstants.Foreground, ColourManager.parseColour(foreground));
     }
     
     /**
@@ -380,11 +447,11 @@ public final class Styliser {
      * @param background The colour code/hex of the new background colour
      */
     private static void setBackground(final SimpleAttributeSet attribs,
-	    final String background) {
-	if (attribs.isDefined(StyleConstants.Background)) {
-	    attribs.removeAttribute(StyleConstants.Background);
-	}
-	attribs.addAttribute(StyleConstants.Background, ColourManager.parseColour(background));
+            final String background) {
+        if (attribs.isDefined(StyleConstants.Background)) {
+            attribs.removeAttribute(StyleConstants.Background);
+        }
+        attribs.addAttribute(StyleConstants.Background, ColourManager.parseColour(background));
     }
     
     /**
@@ -393,8 +460,8 @@ public final class Styliser {
      * @param foreground The default foreground colour
      */
     private static void setDefaultForeground(final SimpleAttributeSet attribs,
-	    final String foreground) {
-	attribs.addAttribute("DefaultForeground", ColourManager.parseColour(foreground));
+            final String foreground) {
+        attribs.addAttribute("DefaultForeground", ColourManager.parseColour(foreground));
     }
     
     /**
@@ -403,8 +470,8 @@ public final class Styliser {
      * @param background The default background colour
      */
     private static void setDefaultBackground(final SimpleAttributeSet attribs,
-	    final String background) {
-	attribs.addAttribute("DefaultBackground", ColourManager.parseColour(background));
+            final String background) {
+        attribs.addAttribute("DefaultBackground", ColourManager.parseColour(background));
     }
     
 }
