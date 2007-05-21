@@ -25,11 +25,14 @@ package com.dmdirc.ui.textpane;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.font.TextAttribute;
+import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 
 import javax.swing.JComponent;
@@ -47,26 +50,27 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Scrollbar for the component. */
-    private JScrollBar scrollBar;
+    final private JScrollBar scrollBar;
     /** Canvas object, used to draw text. */
-    private TextPaneCanvas textPane;
+    final private TextPaneCanvas canvas;
     /** IRCDocument. */
-    private IRCDocument document;
+    final private IRCDocument document;
     
     /**
      * Creates a new instance of TextPane.
      */
     public TextPane() {
+        super();
         
         document = new IRCDocument();
         
         this.setLayout(new BorderLayout());
         
-        textPane = new TextPaneCanvas(this, document);
-        this.add(textPane, BorderLayout.CENTER);
+        canvas = new TextPaneCanvas(this, document);
+        this.add(canvas, BorderLayout.CENTER);
         
         
         scrollBar = new JScrollBar(JScrollBar.VERTICAL);
@@ -108,16 +112,16 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * to render the text from.
      * @param position new position of the scrollbar
      */
-    private void setScrollBarPosition(final int position) {
+    public void setScrollBarPosition(final int position) {
         scrollBar.setValue(position);
-        textPane.setScrollBarPosition(position);
+        canvas.setScrollBarPosition(position);
     }
     
     /** {@inheritDoc}. */
     public void adjustmentValueChanged(final AdjustmentEvent e) {
         if (e.getValue() < document.getNumLines()) {
             scrollBar.setValue(e.getValue());
-            textPane.setScrollBarPosition(e.getValue());
+            canvas.setScrollBarPosition(e.getValue());
         }
     }
     
@@ -130,6 +134,57 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                 setScrollBarPosition(scrollBar.getValue() - e.getScrollAmount());
             }
         }
+    }
+    
+    /**
+     * Returns the selected text.
+     *
+     * @return Selected text
+     */
+    public String getSelectedText() {
+        final StringBuffer selectedText = new StringBuffer();
+        final int[] selectedRange = canvas.getSelectedRange();
+        
+        for(int i = selectedRange[0]; i <= selectedRange[2]; i++) {
+            if (i != selectedRange[0]) {
+                selectedText.append('\n');
+            }
+            final AttributedString as = document.getLine(i);
+            final AttributedCharacterIterator iterator = as.getIterator();
+            if (selectedRange[2] == selectedRange[0]) {
+                //loop through range
+                for (iterator.setIndex(selectedRange[1]);
+                iterator.getIndex() < selectedRange[3]; iterator.next()) {
+                    selectedText.append(iterator.current());
+                }
+            } else if (i == selectedRange[0]) {
+                //loop from start of range to the end
+                for (iterator.setIndex(selectedRange[1]);
+                iterator.getIndex() < iterator.getEndIndex(); iterator.next()) {
+                    selectedText.append(iterator.current());
+                }
+            } else if (i == selectedRange[2]) {
+                //loop from start to end of range
+                for (iterator.setIndex(iterator.getBeginIndex());
+                iterator.getIndex() < selectedRange[3]; iterator.next()) {
+                    selectedText.append(iterator.current());
+                }
+            } else {
+                //loop the whole line
+                for (iterator.setIndex(iterator.getBeginIndex());
+                iterator.getIndex() < iterator.getEndIndex(); iterator.next()) {
+                    selectedText.append(iterator.current());
+                }
+            }
+        }
+        
+        return selectedText.toString().trim();
+    }
+    
+    /** Adds the selected text to the clipboard. */
+    public void copy() {
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+                new StringSelection(getSelectedText()), null);
     }
     
     /** temporary method to add some text to the text pane. */
@@ -185,5 +240,5 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         
         tpc.addTestText();
     }
-
+    
 }

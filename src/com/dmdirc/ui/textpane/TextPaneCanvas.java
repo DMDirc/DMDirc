@@ -52,31 +52,21 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
      * class structure is changed (or anything else that would prevent
      * serialized objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Font render context to be used for the text in this pane. */
     private final FontRenderContext defaultFRC = new FontRenderContext(null, false, false);
-    
     /** IRCDocument. */
-    private IRCDocument document;
+    private final IRCDocument document;
+    /** parent textpane. */
+    private final TextPane textPane;
+    /** Position -> TextLayout. */
+    private final Map<Rectangle, TextLayout> positions;
+    /** TextLayout -> Line numbers. */
+    private final Map<TextLayout, LineInfo> textLayouts;
     
-    /** line break measurer, used for line wrapping. */
-    private LineBreakMeasurer lineMeasurer;
-    
-    /** start character of a paragraph. */
-    private int paragraphStart;
-    /** end character of a paragraph. */
-    private int paragraphEnd;
     /** position of the scrollbar. */
     private int scrollBarPosition;
-    /** parent textpane. */
-    private TextPane textPane;
-    
-    /** Position -> TextLayout. */
-    private Map<Rectangle, TextLayout> positions;
-    /** TextLayout -> Line numbers. */
-    private Map<TextLayout, LineInfo> textLayouts;
-    
     /** Start line of the selection. */
     private int selStartLine;
     /** Start character of the selection. */
@@ -112,6 +102,10 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
         
         final float formatWidth = getWidth();
         final float formatHeight = getHeight();
+        
+        int paragraphStart;
+        int paragraphEnd;
+        LineBreakMeasurer lineMeasurer;
         
         textLayouts.clear();
         positions.clear();
@@ -337,7 +331,13 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     private void highlightEvent(final boolean start, final MouseEvent e) {
         final Point point = this.getMousePosition();
         
-        if (point != null) {
+        if (point == null) {
+            if (getLocationOnScreen().getY() > e.getY()) {
+                textPane.setScrollBarPosition(scrollBarPosition - 1);
+            } else {
+                textPane.setScrollBarPosition(scrollBarPosition + 1);
+            }
+        } else {
             int lineNumber = -1;
             int linePart = -1;
             int pos = 0;
@@ -366,12 +366,30 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
                 
                 this.repaint();
             }
+        }
+    }
+    
+    /**
+     * Returns the selected range info.
+     *  <ul>
+     *    <li>0 = start line</li>
+     *    <li>1 = start char</li>
+     *    <li>2 = end line</li>
+     *    <li>3 = end char</li>
+     *  </ul>
+     *
+     * @return Selected range info
+     */
+    public int[] getSelectedRange() {
+        if (selStartLine > selEndLine) {
+            // Swap both
+            return new int[]{selEndLine, selEndChar, selStartLine, selStartChar, };
+        } else if (selStartLine == selEndLine && selStartChar > selEndChar) {
+            // Just swap the chars
+            return new int[]{selStartLine, selEndChar, selEndLine, selStartChar, };
         } else {
-            if ((int) getLocationOnScreen().getY() > e.getY()) {
-                setScrollBarPosition(scrollBarPosition - 1);
-            } else {
-                setScrollBarPosition(scrollBarPosition + 1);
-            }
+            // Swap nothing
+            return new int[]{selStartLine, selStartChar, selEndLine, selEndChar, };
         }
     }
     
