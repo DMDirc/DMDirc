@@ -36,7 +36,7 @@ public abstract class QueryCommand extends Command {
      * @param origin The window in which the command was typed
      * @param server The server instance that this command is being executed on
      * @param query The query object that the commadparser is associated with
-     * @param isSilent Whetehr this command is silenced or not
+     * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
      */
     public abstract void execute(CommandWindow origin, Server server, Query query,
