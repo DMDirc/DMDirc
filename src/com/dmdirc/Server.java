@@ -22,20 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.parser.callbacks.interfaces.IServerReady;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import javax.swing.ImageIcon;
-import javax.swing.JInternalFrame;
-import javax.swing.SwingUtilities;
-
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
@@ -69,11 +55,25 @@ import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
+import com.dmdirc.parser.callbacks.interfaces.IServerReady;
 import com.dmdirc.parser.callbacks.interfaces.ISocketClosed;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.ServerFrame;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.Formatter;
+
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.swing.ImageIcon;
+import javax.swing.JInternalFrame;
+import javax.swing.SwingUtilities;
 
 /**
  * The Server class represents the client's view of a server. It maintains
@@ -831,7 +831,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
                 chan.join();
             }
         }
-    }    
+    }
     
     /**
      * Called when the parser has determined the network and ircd version.
@@ -900,7 +900,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         if (target != null) {
             handleNotification(target, (Object[]) line);
         }
-                
+        
         ActionManager.processEvent(CoreActionType.SERVER_NUMERIC, null, this, Integer.valueOf(numeric), line);
     }
     
@@ -932,6 +932,11 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * @param tParser The IRC parser for this server
      */
     public void onSocketClosed(final IRCParser tParser) {
+        if (!reconnect) {
+            // This has been triggered via .discconect()
+            return;
+        }
+        
         handleNotification("socketClosed", this.server);
         
         if (configManager.getOptionBool("general", "closechannelsondisconnect")) {
