@@ -53,12 +53,12 @@ public final class Ctcp extends ServerCommand {
     public void execute(final CommandWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         if (args.length < 2) {
-            origin.addLine("CommandUsage", Config.getCommandChar(),
+            sendLine(origin, isSilent, "CommandUsage", Config.getCommandChar(),
                     "ctcp", "<target> <type> [arguments]");
         } else {
             server.getParser().sendLine("PRIVMSG " + args[0] + " :"
                     + ((char)1) + implodeArgs(1, args) + ((char)1));
-            origin.addLine("selfCTCP", args[0], implodeArgs(1, args));
+            sendLine(origin, isSilent, "selfCTCP", args[0], implodeArgs(1, args));
         }
     }
     

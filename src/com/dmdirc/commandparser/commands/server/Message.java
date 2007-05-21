@@ -53,12 +53,12 @@ public final class Message extends ServerCommand {
     public void execute(final CommandWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         if (args.length < 2) {
-            origin.addLine("commandUsage", Config.getCommandChar(), "msg",
+            sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(), "msg",
                     "<target> <message>");
         } else {
             server.getParser().sendLine("PRIVMSG " + args[0] + " :"
                     + implodeArgs(1, args));
-            origin.addLine("selfMessage", args[0], implodeArgs(1, args));
+            sendLine(origin, isSilent, "selfMessage", args[0], implodeArgs(1, args));
         }
     }
     

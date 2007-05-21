@@ -52,7 +52,7 @@ public final class QueryMeEmpty extends QueryCommand {
      */
     public void execute(final CommandWindow origin, final Server server,
             final Query query, final boolean isSilent, final String... args) {
-        origin.addLine("commandUsage", Config.getCommandChar(), "me", "<action>");
+        sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(), "me", "<action>");
     }
     
     /** {@inheritDoc}. */

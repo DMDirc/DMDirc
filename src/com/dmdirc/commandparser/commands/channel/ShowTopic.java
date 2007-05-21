@@ -55,10 +55,10 @@ public final class ShowTopic extends ChannelCommand {
         final ChannelInfo cChannel = channel.getChannelInfo();
         
         if (cChannel.getTopic().length() > 0) {
-            origin.addLine("channelJoinTopic", cChannel.getTopic(),
+            sendLine(origin, isSilent, "channelJoinTopic", cChannel.getTopic(),
                     cChannel.getTopicUser(), 1000 * cChannel.getTopicTime(), cChannel);
         } else {
-            origin.addLine("channelNoTopic", cChannel);
+            sendLine(origin, isSilent, "channelNoTopic", cChannel);
         }
     }
     

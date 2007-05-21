@@ -59,31 +59,32 @@ public final class Help extends ServerCommand {
      */
     public void execute(final CommandWindow origin, final Server server,
             final boolean isSilent, final String... args) {
-        origin.addLine("commandOutput", "-- Server commands ----------------------------------");
-        showCommands(CommandManager.getServerCommands(), origin);
+        sendLine(origin, isSilent, "commandOutput", "-- Server commands ----------------------------------");
+        showCommands(CommandManager.getServerCommands(), origin, isSilent);
         if (origin instanceof ChannelFrame) {
-            origin.addLine("commandOutput", "-- Channel commands ---------------------------------");
-            showCommands(CommandManager.getChannelCommands(), origin);
+            sendLine(origin, isSilent, "commandOutput", "-- Channel commands ---------------------------------");
+            showCommands(CommandManager.getChannelCommands(), origin, isSilent);
         }
         if (origin instanceof QueryFrame) {
-            origin.addLine("commandOutput", "-- Query commands -----------------------------------");
-            showCommands(CommandManager.getQueryCommands(), origin);
+            sendLine(origin, isSilent, "commandOutput", "-- Query commands -----------------------------------");
+            showCommands(CommandManager.getQueryCommands(), origin, isSilent);
             
         }
-        origin.addLine("commandOutput", "-----------------------------------------------------");
+        sendLine(origin, isSilent, "commandOutput", "-----------------------------------------------------");
     }
     
     /**
      * Shows the user the commands from the specified list.
      * @param commands The commands to be displayed
      * @param origin The window to output to
+     * @param isSilent Whether this command is silent or not
      */
     private void showCommands(final List<Command> commands,
-            final CommandWindow origin) {
+            final CommandWindow origin, final boolean isSilent) {
         Collections.sort(commands);
         for (Command com : commands) {
             if (com.showInHelp()) {
-                origin.addLine("commandOutput", com.getHelp());
+                sendLine(origin, isSilent, "commandOutput", com.getHelp());
             }
         }
     }

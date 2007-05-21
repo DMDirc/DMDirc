@@ -63,20 +63,20 @@ public final class Ignore extends ServerCommand {
                 final String list = identity.getOption("network", "ignorelist");
                 
                 if (list.length() > 0) {
-                    origin.addLine("commandOutput", "Ignore list:");
+                    sendLine(origin, isSilent, "commandOutput", "Ignore list:");
                     
                     int i = 0;
                     for (String line : list.split("\n")) {
                         i++;
-                        origin.addLine("commandOutput", i + ". " + list);
+                        sendLine(origin, isSilent, "commandOutput", i + ". " + list);
                     }
                     
                 } else {
-                    origin.addLine("commandError", "No ignore list entries for this network.");
+                    sendLine(origin, isSilent, "commandError", "No ignore list entries for this network.");
                 }
                 
             } else {
-                origin.addLine("commandError", "No ignore list entries for this network.");
+                sendLine(origin, isSilent, "commandError", "No ignore list entries for this network.");
             }
             
         } else if (args[0].toLowerCase().equals("add") && args.length > 1) {
@@ -91,7 +91,7 @@ public final class Ignore extends ServerCommand {
             
             identity.setOption("network", "ignorelist", list);
             
-            origin.addLine("commandOutput", "Added " + host + " to the ignore list.");
+            sendLine(origin, isSilent, "commandOutput", "Added " + host + " to the ignore list.");
             
         } else if (args[0].toLowerCase().equals("remove") && args.length > 1) {
             
@@ -118,13 +118,13 @@ public final class Ignore extends ServerCommand {
             
             if (found) {
                 identity.setOption("network", "ignorelist", newlist.toString());
-                origin.addLine("commandOutput", "Removed " + host + " from the ignore list.");
+                sendLine(origin, isSilent, "commandOutput", "Removed " + host + " from the ignore list.");
             } else {
-                origin.addLine("commandError", "Host '" + host + "' not found.");
+                sendLine(origin, isSilent, "commandError", "Host '" + host + "' not found.");
             }
             
         } else {
-            origin.addLine("commandUsage", Config.getCommandChar(), "ignore",
+            sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(), "ignore",
                     "<add|remove|view> [host]");
         }
         

@@ -60,7 +60,7 @@ public final class Echo extends ServerCommand {
                 ((CommandWindow) frame).addLine("commandOutput", implodeArgs(1, args));
             }
         } else {
-            origin.addLine("commandOutput", implodeArgs(args));
+            sendLine(origin, isSilent, "commandOutput", implodeArgs(args));
         }
     }
     

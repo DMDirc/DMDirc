@@ -53,7 +53,7 @@ public final class MeEmpty extends ChannelCommand {
      */
     public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
-        origin.addLine("commandUsage", Config.getCommandChar(), "me", "<action>");
+        sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(), "me", "<action>");
     }
     
     /** {@inheritDoc}. */

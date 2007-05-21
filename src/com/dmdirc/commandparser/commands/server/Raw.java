@@ -55,7 +55,7 @@ public final class Raw extends ServerCommand {
         final String line = implodeArgs(args);
         
         server.getParser().sendLine(line);
-        origin.addLine("rawCommand", line);
+        sendLine(origin, isSilent, "rawCommand", line);
     }
     
     

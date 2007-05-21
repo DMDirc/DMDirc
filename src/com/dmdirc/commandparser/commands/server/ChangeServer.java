@@ -47,7 +47,7 @@ public final class ChangeServer extends ServerCommand {
     public void execute(final CommandWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         if (args.length == 0) {
-            origin.addLine("commandUsage", Config.getCommandChar(), "server",
+            sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(), "server",
                     "[--ssl] <host[:port]> [password]");
             return;
         }
@@ -66,12 +66,12 @@ public final class ChangeServer extends ServerCommand {
         
         // Check for port
         if (args[offset].indexOf(':') > -1) {
-            String[] parts = args[offset].split(":");
+            final String[] parts = args[offset].split(":");
             host = parts[0];
             try {
                 port = Integer.parseInt(parts[1]);
             } catch (NumberFormatException ex) {
-                origin.addLine("commandError", "Invalid port specified");
+                sendLine(origin, isSilent, "commandError", "Invalid port specified");
                 return;
             }
         } else {

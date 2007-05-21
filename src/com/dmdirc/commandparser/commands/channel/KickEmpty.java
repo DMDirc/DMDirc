@@ -52,7 +52,7 @@ public final class KickEmpty extends ChannelCommand {
      */
     public void execute(final CommandWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
-        origin.addLine("commandUsage", Config.getCommandChar(), "kick", "<user> [reason]");
+        sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(), "kick", "<user> [reason]");
     }
     
     /** {@inheritDoc}. */

@@ -74,7 +74,7 @@ public final class SetNickColour extends ChannelCommand {
         }
         
         if (args.length <= offset) {
-            origin.addLine("commandUsage", Config.getCommandChar(),
+            sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(),
                     "setnickcolour", "[--nicklist|--text] <nick> [colour]");
             return;
         }
@@ -83,7 +83,7 @@ public final class SetNickColour extends ChannelCommand {
         offset++;
         
         if (target == null) {
-            origin.addLine("commandError", "No such nickname!");
+            sendLine(origin, isSilent, "commandError", "No such nickname!");
         } else if (args.length <= offset) {
             // We're removing the colour
             if (nicklist) {
@@ -97,7 +97,7 @@ public final class SetNickColour extends ChannelCommand {
             // We're setting the colour
             final Color newColour = ColourManager.parseColour(args[offset], null);
             if (newColour == null) {
-                origin.addLine("commandError", "Invalid colour specified.");
+                sendLine(origin, isSilent, "commandError", "Invalid colour specified.");
                 return;
             }
             if (nicklist) {
