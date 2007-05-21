@@ -53,6 +53,7 @@ import com.dmdirc.parser.callbacks.CallbackOnErrorInfo;
 import com.dmdirc.parser.callbacks.CallbackOnSocketClosed;
 import com.dmdirc.parser.callbacks.CallbackOnPingFailed;
 import com.dmdirc.parser.callbacks.CallbackOnPingSuccess;
+import com.dmdirc.parser.callbacks.CallbackOnPost005;
 
 /**
  * IRC Parser.
@@ -140,6 +141,8 @@ public final class IRCParser implements Runnable {
 	
 	/** Have we recieved the 001. */
 	protected boolean got001;
+	/** Have we fired post005? */
+	protected boolean post005;
 	/** Has the thread started execution yet, (Prevents run() being called multiple times). */
 	protected boolean hasBegan;
 	/** Is this line the first line we have seen? */
@@ -439,6 +442,17 @@ public final class IRCParser implements Runnable {
 		return false;
 	}
 	
+	/**
+	 * Callback to all objects implementing the Post005 Callback.
+	 *
+	 * @see IPost005
+	 */
+	protected boolean callPost005() {
+		CallbackOnPost005 cb = (CallbackOnPost005)getCallbackManager().getCallbackType("OnPost005");
+		if (cb != null) { return cb.call(); }
+		return false;
+	}
+	
 	//---------------------------------------------------------------------------
 	// End Callbacks
 	//---------------------------------------------------------------------------
@@ -448,6 +462,7 @@ public final class IRCParser implements Runnable {
 		// Reset General State info
 		triedAlt = false;
 		got001 = false;
+		post005 = false;
 		// Clear the hash tables
 		hChannelList.clear();
 		hClientList.clear();
@@ -728,6 +743,13 @@ public final class IRCParser implements Runnable {
 							break;
 					}
 				} else {
+					if (!post005) {
+						try { nParam = Integer.parseInt(token[1]); } catch (Exception e) { nParam = -1; }
+						if (nParam < 0 || nParam > 5) {
+							post005 = true;
+							callPost005();
+						}
+					}
 					// After 001 we potentially care about everything!
 					try { myProcessingManager.process(sParam, token); }
 					catch (Exception e) { /* No Processor found */  }

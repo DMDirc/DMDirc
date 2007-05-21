@@ -93,6 +93,7 @@ public final class CallbackManager {
 		addCallbackType(new CallbackOnPrivateCTCPReply(myParser, this));
 		addCallbackType(new CallbackOnPrivateMessage(myParser, this));
 		addCallbackType(new CallbackOnPrivateNotice(myParser, this));
+		addCallbackType(new CallbackOnPost005(myParser, this));
 		addCallbackType(new CallbackOnQuit(myParser, this));
 		addCallbackType(new CallbackOnServerReady(myParser, this));
 		addCallbackType(new CallbackOnSocketClosed(myParser, this));
