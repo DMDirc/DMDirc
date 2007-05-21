@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.textpane;
 
+import com.dmdirc.BrowserLauncher;
+import com.dmdirc.ui.MainFrame;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -34,11 +36,12 @@ import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.font.FontRenderContext;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
+import java.text.AttributedCharacterIterator.Attribute;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.swing.JFrame;
@@ -54,8 +57,6 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
      */
     private static final long serialVersionUID = 3;
     
-    /** Font render context to be used for the text in this pane. */
-    private final FontRenderContext defaultFRC = new FontRenderContext(null, false, false);
     /** IRCDocument. */
     private final IRCDocument document;
     /** parent textpane. */
@@ -64,6 +65,8 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     private final Map<Rectangle, TextLayout> positions;
     /** TextLayout -> Line numbers. */
     private final Map<TextLayout, LineInfo> textLayouts;
+    /** Line number -> rectangle for lines containing hyperlinks. */
+    private final Map<TextLayout, Rectangle> hyperlinks;
     
     /** position of the scrollbar. */
     private int scrollBarPosition;
@@ -89,6 +92,7 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
         textPane = parent;
         textLayouts = new HashMap<TextLayout, LineInfo>();
         positions = new HashMap<Rectangle, TextLayout>();
+        hyperlinks = new HashMap<TextLayout, Rectangle>();
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
     }
@@ -106,9 +110,11 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
         int paragraphStart;
         int paragraphEnd;
         LineBreakMeasurer lineMeasurer;
+        boolean isHyperlink = false;
         
         textLayouts.clear();
         positions.clear();
+        hyperlinks.clear();
         
         float drawPosY = formatHeight;
         
@@ -156,7 +162,7 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
             final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
             paragraphStart = iterator.getBeginIndex();
             paragraphEnd = iterator.getEndIndex();
-            lineMeasurer = new LineBreakMeasurer(iterator, defaultFRC);
+            lineMeasurer = new LineBreakMeasurer(iterator, ((Graphics2D)g ).getFontRenderContext());
             lineMeasurer.setPosition(paragraphStart);
             
             int wrappedLine = 0;
@@ -180,6 +186,13 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
             
             if (wrappedLine > 1) {
                 drawPosY -= height;
+            }
+            
+            //Check if this line contains a hyperlink
+            for (Attribute attr : iterator.getAllAttributeKeys()) {
+                if (attr instanceof IRCTextAttribute) {
+                    isHyperlink = true;
+                }
             }
             
             int j = 0;
@@ -247,6 +260,11 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
                             (int) drawPosX, (int) drawPosY, (int) formatHeight,
                             (int) (layout.getDescent() + layout.getLeading() + layout.getAscent())
                             ), layout);
+                    if (isHyperlink) {
+                        hyperlinks.put(layout, new Rectangle((int) drawPosX, (int) drawPosY,
+                                (int) formatWidth,
+                                (int) (layout.getDescent() + layout.getLeading() + layout.getAscent())));
+                    }
                 }
                 
                 j++;
@@ -289,7 +307,43 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     
     /** {@inheritDoc}. */
     public void mouseClicked(final MouseEvent e) {
-        //Ignore
+        final StringBuffer clickedText = new StringBuffer();
+        int start = -1;
+        int end = -1;
+        for (Map.Entry<TextLayout, Rectangle> entry : hyperlinks.entrySet()) {
+            if (entry.getValue().contains(this.getMousePosition())) {
+                start = entry.getKey().hitTestChar((int) this.getMousePosition().getX(), (int) this.getMousePosition().getY()).getInsertionIndex();
+                end = start;
+                final AttributedCharacterIterator it = document.getLine(textLayouts.get(entry.getKey()).getLine()).getIterator();
+                for (it.setIndex(it.getBeginIndex());
+                it.getIndex() < it.getEndIndex(); it.next()) {
+                    clickedText.append(it.current());
+                }
+            }
+        }
+        if (start == -1 || end == -1) {
+            return;
+        }
+        // Traverse backwards
+        while (start > 0 && start < clickedText.length() && clickedText.charAt(start) != ' ') {
+            start--;
+        }
+        if (start + 1 < clickedText.length() && clickedText.charAt(start) == ' ') {
+            start++;
+        }
+        
+        // And forwards
+        while (end < clickedText.length() && end > 0 && clickedText.charAt(end) != ' ') {
+            end++;
+        }
+        
+        if (start > end) {
+            return;
+        }
+        if (start < 0 || end > clickedText.length()) {
+            return;
+        }
+        fireTextClicked(clickedText.substring(start, end));
     }
     
     /** {@inheritDoc}. */
@@ -367,6 +421,13 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
                 this.repaint();
             }
         }
+    }
+    
+    /**
+     * Informs listeners when a word has been clicked on.
+     * @param text word clicked on
+     */
+    private void fireTextClicked(final String text) {
     }
     
     /**

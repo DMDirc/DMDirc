@@ -189,7 +189,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     
     /** temporary method to add some text to the text pane. */
     public void addTestText() {
-        for (int i = 0; i <= 20; i++) {
+        for (int i = 0; i <= 0; i++) {
             AttributedString attributedString =
                     new AttributedString("this is a line");
             document.addText(attributedString);
@@ -209,6 +209,13 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                     5, attributedString.getIterator().getEndIndex());
             attributedString.addAttribute(TextAttribute.FOREGROUND, Color.GREEN,
                     5, 10);
+            document.addText(attributedString);
+            attributedString = new AttributedString("this is a url www.google.com isnt it www.moo.com");
+            attributedString.addAttribute(TextAttribute.FOREGROUND, Color.RED, 0, 35);
+            attributedString.addAttribute(TextAttribute.FOREGROUND, Color.BLUE, 14, 28);
+            attributedString.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON, 14, 28);
+            attributedString.addAttribute(IRCTextAttribute.HYPERLINK, true, 14, 28);
+            attributedString.addAttribute(IRCTextAttribute.HYPERLINK, true, 37, 48);
             document.addText(attributedString);
             attributedString = new AttributedString("this is a long, long, long, "
                     + "long, long, long, long, long, long, long, long, long, "

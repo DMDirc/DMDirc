@@ -155,6 +155,9 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addSpinnerOption(tabName, "general.reconnectdelay",
                 "Reconnect delay: ", "How long to wait before attempting to reconnect to a server",
                 Config.getOptionInt("general", "reconnectdelay", 30));
+        preferencesPanel.addCheckboxOption(tabName, "general.rejoinchannels",
+                "Rejoin open channels: ", "Rejoin open channels when reconnecting to a server",
+                Config.getOptionBool("general", "rejoinchannels"));
     }
     
     /**
