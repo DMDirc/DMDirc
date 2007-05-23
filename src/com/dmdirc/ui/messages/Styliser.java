@@ -130,6 +130,7 @@ public final class Styliser {
             
             for (final Enumeration<?> ae = as.getAttributeNames(); ae.hasMoreElements();) {
                 final Object attrib = ae.nextElement();
+                System.out.println(attrib.getClass());
                 if (attrib instanceof IRCTextAttribute) {
                     if (attrib == IRCTextAttribute.HYPERLINK) {
                         //hyperlink
@@ -150,6 +151,9 @@ public final class Styliser {
                     } else if (attrib == FontConstants.Family) {
                         //Family
                         attString.addAttribute(TextAttribute.FAMILY, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                    } else if (attrib == FontConstants.Italic) {
+                        //italics
+                        attString.addAttribute(TextAttribute.POSTURE, TextAttribute.POSTURE_OBLIQUE, element.getStartOffset(), element.getEndOffset());
                     }
                 } else if (attrib instanceof CharacterConstants) {
                     if (attrib == CharacterConstants.Underline) {
