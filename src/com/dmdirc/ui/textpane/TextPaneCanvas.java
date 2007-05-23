@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.textpane;
 
+import com.dmdirc.ui.messages.Styliser;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -328,8 +329,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
             while (end < clickedText.length() && end > 0 && clickedText.charAt(end) != ' ') {
                 end++;
             }
-            
-            if (start > end && start > 0 || end < clickedText.length()) {
+     
+            if (clickedText.substring(start, end).matches(Styliser.URL_REGEXP)) {
                 fireTextClicked(clickedText.substring(start, end));
             }
         }

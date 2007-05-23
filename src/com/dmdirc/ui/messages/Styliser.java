@@ -75,7 +75,7 @@ public final class Styliser {
             + CODE_UNDERLINE + "]";
     
     /** The regular expression to use for marking up URLs. */
-    private static final String URL_REGEXP = "(?i)([a-z]+://" + CHARS + "+|(?<![a-z:])www\\." + CHARS + "+)";
+    public static final String URL_REGEXP = "(?i)([a-z]+://" + CHARS + "+|(?<![a-z:])www\\." + CHARS + "+)";
     
     /** Creates a new instance of Styliser. */
     private Styliser() {
