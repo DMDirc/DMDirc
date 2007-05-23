@@ -22,40 +22,33 @@
 
 package com.dmdirc.ui.textpane;
 
-import com.dmdirc.BrowserLauncher;
-import com.dmdirc.ui.MainFrame;
-import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
-import javax.swing.JFrame;
-
+import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.event.MouseInputListener;
 
 /** Canvas object to draw text. */
-class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListener {
+class TextPaneCanvas extends JPanel implements MouseInputListener {
     
     /**
      * A version number for this class. It should be changed whenever the
      * class structure is changed (or anything else that would prevent
      * serialized objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4;
     
     /** IRCDocument. */
     private final IRCDocument document;
@@ -90,6 +83,8 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
         this.document = document;
         scrollBarPosition = 0;
         textPane = parent;
+        this.setDoubleBuffered(true);
+        this.setOpaque(true);
         textLayouts = new HashMap<TextLayout, LineInfo>();
         positions = new HashMap<Rectangle, TextLayout>();
         hyperlinks = new HashMap<TextLayout, Rectangle>();
@@ -101,11 +96,14 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
      * Paints the text onto the canvas.
      * @param g graphics object to draw onto
      */
-    public void paint(final Graphics g) {
+    public void paintComponent(final Graphics g) {
         final Graphics2D graphics2D = (Graphics2D) g;
         
         final float formatWidth = getWidth();
         final float formatHeight = getHeight();
+        
+        g.setColor(textPane.getBackground());
+        g.fillRect(0, 0, (int) formatWidth, (int) formatHeight);
         
         int paragraphStart;
         int paragraphEnd;
@@ -158,150 +156,141 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
         }
         
         // Iterate through the lines
-        for (int i = startLine; i >= 0; i--) {
-            final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
-            paragraphStart = iterator.getBeginIndex();
-            paragraphEnd = iterator.getEndIndex();
-            lineMeasurer = new LineBreakMeasurer(iterator, ((Graphics2D)g ).getFontRenderContext());
-            lineMeasurer.setPosition(paragraphStart);
-            
-            int wrappedLine = 0;
-            int height = 0;
-            int firstLineHeight = 0;
-            
-            // Work out the number of lines this will take
-            while (lineMeasurer.getPosition() < paragraphEnd) {
-                final TextLayout layout = lineMeasurer.nextLayout(formatWidth);
-                if (wrappedLine == 0) {
-                    firstLineHeight = (int) (layout.getDescent() + layout.getLeading() + layout.getAscent());
-                }
-                height += layout.getDescent() + layout.getLeading() + layout.getAscent();
-                wrappedLine++;
-            }
-            
-            // Get back to the start
-            lineMeasurer.setPosition(paragraphStart);
-            paragraphStart = iterator.getBeginIndex();
-            paragraphEnd = iterator.getEndIndex();
-            
-            if (wrappedLine > 1) {
-                drawPosY -= height;
-            }
-            
-            //Check if this line contains a hyperlink
-            for (Attribute attr : iterator.getAllAttributeKeys()) {
-                if (attr instanceof IRCTextAttribute) {
-                    isHyperlink = true;
-                }
-            }
-            
-            int j = 0;
-            int chars = 0;
-            // Loop through each wrapped line
-            while (lineMeasurer.getPosition() < paragraphEnd) {
+        if (document.getNumLines() > 0) {
+            for (int i = startLine; i >= 0; i--) {
+                final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
+                paragraphStart = iterator.getBeginIndex();
+                paragraphEnd = iterator.getEndIndex();
+                lineMeasurer = new LineBreakMeasurer(iterator, ((Graphics2D)g ).getFontRenderContext());
+                lineMeasurer.setPosition(paragraphStart);
                 
-                final TextLayout layout = lineMeasurer.nextLayout(formatWidth);
+                int wrappedLine = 0;
+                int height = 0;
+                int firstLineHeight = 0;
                 
-                // Calculate the Y offset
-                if (wrappedLine == 1) {
-                    drawPosY -= layout.getDescent() + layout.getLeading() + layout.getAscent();
-                } else if (j != 0) {
-                    drawPosY += layout.getDescent() + layout.getLeading() + layout.getAscent();
+                // Work out the number of lines this will take
+                while (lineMeasurer.getPosition() < paragraphEnd) {
+                    final TextLayout layout = lineMeasurer.nextLayout(formatWidth);
+                    if (wrappedLine == 0) {
+                        firstLineHeight = (int) (layout.getDescent() + layout.getLeading() + layout.getAscent());
+                    }
+                    height += layout.getDescent() + layout.getLeading() + layout.getAscent();
+                    wrappedLine++;
                 }
                 
-                float drawPosX;
-                // Calculate the initial X position
-                if (layout.isLeftToRight()) {
-                    drawPosX = 0;
-                } else {
-                    drawPosX = formatWidth - layout.getAdvance();
+                // Get back to the start
+                lineMeasurer.setPosition(paragraphStart);
+                paragraphStart = iterator.getBeginIndex();
+                paragraphEnd = iterator.getEndIndex();
+                
+                if (wrappedLine > 1) {
+                    drawPosY -= height;
                 }
                 
-                // Check if the target is in range
-                if (drawPosY + layout.getAscent() >= 0
-                        || (drawPosY + layout.getDescent() + layout.getLeading()) <= formatHeight) {
+                //Check if this line contains a hyperlink
+                for (Attribute attr : iterator.getAllAttributeKeys()) {
+                    if (attr instanceof IRCTextAttribute) {
+                        isHyperlink = true;
+                    }
+                }
+                
+                int j = 0;
+                int chars = 0;
+                // Loop through each wrapped line
+                while (lineMeasurer.getPosition() < paragraphEnd) {
                     
-                    // If the selection includes this line
-                    if (useStartLine <= i && useEndLine >= i) {
-                        int firstChar;
-                        int lastChar;
+                    final TextLayout layout = lineMeasurer.nextLayout(formatWidth);
+                    
+                    // Calculate the Y offset
+                    if (wrappedLine == 1) {
+                        drawPosY -= layout.getDescent() + layout.getLeading() + layout.getAscent();
+                    } else if (j != 0) {
+                        drawPosY += layout.getDescent() + layout.getLeading() + layout.getAscent();
+                    }
+                    
+                    float drawPosX;
+                    // Calculate the initial X position
+                    if (layout.isLeftToRight()) {
+                        drawPosX = 0;
+                    } else {
+                        drawPosX = formatWidth - layout.getAdvance();
+                    }
+                    
+                    // Check if the target is in range
+                    if (drawPosY + layout.getAscent() >= 0
+                            || (drawPosY + layout.getDescent() + layout.getLeading()) <= formatHeight) {
                         
-                        // Determine the first char we care about
-                        if (useStartLine < i || useStartChar < chars) {
-                            firstChar = chars;
-                        } else {
-                            firstChar = useStartChar;
-                        }
-                        
-                        // ... And the last
-                        if (useEndLine > i || useEndChar > chars + layout.getCharacterCount()) {
-                            lastChar = chars + layout.getCharacterCount();
-                        } else {
-                            lastChar = useEndChar;
-                        }
-                        
-                        // If the selection includes the chars we're showing
-                        if (lastChar > chars && firstChar < chars + layout.getCharacterCount()) {
-                            final int trans = (int) (layout.getLeading() + layout.getAscent() + drawPosY);
-                            final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
+                        // If the selection includes this line
+                        if (useStartLine <= i && useEndLine >= i) {
+                            int firstChar;
+                            int lastChar;
                             
-                            graphics2D.setColor(Color.LIGHT_GRAY);
-                            graphics2D.translate(0, trans);
-                            graphics2D.fill(shape);
-                            graphics2D.translate(0, -1 * trans);
+                            // Determine the first char we care about
+                            if (useStartLine < i || useStartChar < chars) {
+                                firstChar = chars;
+                            } else {
+                                firstChar = useStartChar;
+                            }
+                            
+                            // ... And the last
+                            if (useEndLine > i || useEndChar > chars + layout.getCharacterCount()) {
+                                lastChar = chars + layout.getCharacterCount();
+                            } else {
+                                lastChar = useEndChar;
+                            }
+                            
+                            // If the selection includes the chars we're showing
+                            if (lastChar > chars && firstChar < chars + layout.getCharacterCount()) {
+                                final int trans = (int) (layout.getLeading() + layout.getAscent() + drawPosY);
+                                final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
+                                
+                                graphics2D.setColor(UIManager.getColor("TextPane.selectionForeground"));
+                                graphics2D.setBackground(UIManager.getColor("TextPane.selectionBackground"));
+                                
+                                graphics2D.translate(0, trans);
+                                graphics2D.fill(shape);
+                                graphics2D.translate(0, -1 * trans);
+                            }
+                        }
+                        
+                        graphics2D.setColor(Color.BLACK);
+                        
+                        layout.draw(graphics2D, drawPosX, drawPosY + layout.getAscent());
+                        textLayouts.put(layout, new LineInfo(i, j));
+                        positions.put(new Rectangle(
+                                (int) drawPosX, (int) drawPosY, (int) formatHeight,
+                                (int) (layout.getDescent() + layout.getLeading() + layout.getAscent())
+                                ), layout);
+                        if (isHyperlink) {
+                            hyperlinks.put(layout, new Rectangle((int) drawPosX, (int) drawPosY,
+                                    (int) formatWidth,
+                                    (int) (layout.getDescent() + layout.getLeading() + layout.getAscent())));
                         }
                     }
                     
-                    graphics2D.setColor(Color.BLACK);
-                    
-                    layout.draw(graphics2D, drawPosX, drawPosY + layout.getAscent());
-                    textLayouts.put(layout, new LineInfo(i, j));
-                    positions.put(new Rectangle(
-                            (int) drawPosX, (int) drawPosY, (int) formatHeight,
-                            (int) (layout.getDescent() + layout.getLeading() + layout.getAscent())
-                            ), layout);
-                    if (isHyperlink) {
-                        hyperlinks.put(layout, new Rectangle((int) drawPosX, (int) drawPosY,
-                                (int) formatWidth,
-                                (int) (layout.getDescent() + layout.getLeading() + layout.getAscent())));
-                    }
+                    j++;
+                    chars += layout.getCharacterCount();
                 }
-                
-                j++;
-                chars += layout.getCharacterCount();
-            }
-            if (j > 1) {
-                drawPosY -= height - firstLineHeight;
-            }
-            if (drawPosY <= 0) {
-                break;
+                if (j > 1) {
+                    drawPosY -= height - firstLineHeight;
+                }
+                if (drawPosY <= 0) {
+                    break;
+                }
             }
         }
-    }
-    
-    /**
-     * Repaints the canvas offscreen.
-     * @param g graphics object to draw onto
-     */
-    public void update(final Graphics g) {
-        final Image offScreen = this.createImage(getWidth(), getHeight());
-        final Graphics graphics = offScreen.getGraphics();
-        
-        graphics.clearRect(0, 0, this.getWidth(), this.getHeight());
-        
-        paint(graphics);
-        
-        g.drawImage(offScreen, 0, 0, this);
     }
     
     /**
      * sets the position of the scroll bar, and repaints if required.
      * @param position scroll bar position
      */
-    public void setScrollBarPosition(final int position) {
+    protected void setScrollBarPosition(final int position) {
         if (scrollBarPosition != position) {
             scrollBarPosition = position;
-            this.repaint();
+            if (textPane.isVisible()) {
+                repaint();
+            }
         }
     }
     
@@ -312,48 +301,54 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
         int end = -1;
         for (Map.Entry<TextLayout, Rectangle> entry : hyperlinks.entrySet()) {
             if (entry.getValue().contains(this.getMousePosition())) {
-                start = entry.getKey().hitTestChar((int) this.getMousePosition().getX(), (int) this.getMousePosition().getY()).getInsertionIndex();
+                start = entry.getKey()
+                .hitTestChar((int) this.getMousePosition().getX(),
+                        (int) this.getMousePosition().getY()).getInsertionIndex();
                 end = start;
-                final AttributedCharacterIterator it = document.getLine(textLayouts.get(entry.getKey()).getLine()).getIterator();
+                final AttributedCharacterIterator it = document
+                        .getLine(textLayouts.get(entry.getKey()).getLine())
+                        .getIterator();
                 for (it.setIndex(it.getBeginIndex());
                 it.getIndex() < it.getEndIndex(); it.next()) {
                     clickedText.append(it.current());
                 }
             }
         }
-        if (start == -1 || end == -1) {
-            return;
+        if (start != -1 || end != -1) {
+            
+            // Traverse backwards
+            while (start > 0 && start < clickedText.length() && clickedText.charAt(start) != ' ') {
+                start--;
+            }
+            if (start + 1 < clickedText.length() && clickedText.charAt(start) == ' ') {
+                start++;
+            }
+            
+            // And forwards
+            while (end < clickedText.length() && end > 0 && clickedText.charAt(end) != ' ') {
+                end++;
+            }
+            
+            if (start > end && start > 0 || end < clickedText.length()) {
+                fireTextClicked(clickedText.substring(start, end));
+            }
         }
-        // Traverse backwards
-        while (start > 0 && start < clickedText.length() && clickedText.charAt(start) != ' ') {
-            start--;
-        }
-        if (start + 1 < clickedText.length() && clickedText.charAt(start) == ' ') {
-            start++;
-        }
-        
-        // And forwards
-        while (end < clickedText.length() && end > 0 && clickedText.charAt(end) != ' ') {
-            end++;
-        }
-        
-        if (start > end) {
-            return;
-        }
-        if (start < 0 || end > clickedText.length()) {
-            return;
-        }
-        fireTextClicked(clickedText.substring(start, end));
+        e.setSource(textPane);
+        textPane.dispatchEvent(e);
     }
     
     /** {@inheritDoc}. */
     public void mousePressed(final MouseEvent e) {
         highlightEvent(true, e);
+        e.setSource(textPane);
+        textPane.dispatchEvent(e);
     }
     
     /** {@inheritDoc}. */
     public void mouseReleased(final MouseEvent e) {
-        highlightEvent(false, e);
+        highlightEvent(true, e);
+        e.setSource(textPane);
+        textPane.dispatchEvent(e);
     }
     
     /** {@inheritDoc}. */
@@ -368,7 +363,9 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
     
     /** {@inheritDoc}. */
     public void mouseDragged(final MouseEvent e) {
-        highlightEvent(false, e);
+        highlightEvent(true, e);
+        e.setSource(textPane);
+        textPane.dispatchEvent(e);
     }
     
     /** {@inheritDoc}. */
@@ -386,7 +383,7 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
         final Point point = this.getMousePosition();
         
         if (point == null) {
-            if (getLocationOnScreen().getY() > e.getY()) {
+            if (getLocationOnScreen().getY() > e.getYOnScreen()) {
                 textPane.setScrollBarPosition(scrollBarPosition - 1);
             } else {
                 textPane.setScrollBarPosition(scrollBarPosition + 1);
@@ -406,7 +403,8 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
                     if (textLayouts.get(entry.getValue()).getPart() < linePart) {
                         pos += entry.getValue().getCharacterCount();
                     } else if (textLayouts.get(entry.getValue()).getPart() == linePart){
-                        pos += entry.getValue().hitTestChar((int) point.getX(), (int) point.getY()).getInsertionIndex();
+                        pos += entry.getValue().hitTestChar((int) point.getX(),
+                                (int) point.getY()).getInsertionIndex();
                     }
                 }
             }
@@ -428,6 +426,7 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
      * @param text word clicked on
      */
     private void fireTextClicked(final String text) {
+        //Fire events to the hyperlink listener
     }
     
     /**
@@ -441,7 +440,7 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
      *
      * @return Selected range info
      */
-    public int[] getSelectedRange() {
+    protected int[] getSelectedRange() {
         if (selStartLine > selEndLine) {
             // Swap both
             return new int[]{selEndLine, selEndChar, selStartLine, selStartChar, };
@@ -452,26 +451,5 @@ class TextPaneCanvas extends Canvas implements MouseListener, MouseMotionListene
             // Swap nothing
             return new int[]{selStartLine, selStartChar, selEndLine, selEndChar, };
         }
-    }
-    
-    /**
-     * temporary method to text the textpane.
-     * @param args command line arguments
-     */
-    public static void main(final String[] args) {
-        final TextPane tpc = new TextPane();
-        final JFrame frame = new JFrame("Test textpane");
-        
-        tpc.setDoubleBuffered(true);
-        tpc.setBackground(Color.WHITE);
-        
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        frame.add(tpc);
-        
-        frame.setSize(new Dimension(400, 400));
-        frame.setVisible(true);
-        
-        tpc.addTestText();
     }
 }

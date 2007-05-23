@@ -23,7 +23,6 @@
 package com.dmdirc.ui.textpane;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -31,12 +30,11 @@ import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
+import javax.swing.BorderFactory;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JScrollBar;
 
 /**
@@ -67,9 +65,14 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         
         document = new IRCDocument();
         
+        this.setMinimumSize(new Dimension(0, 0));
+        
         this.setLayout(new BorderLayout());
         
         canvas = new TextPaneCanvas(this, document);
+        
+        this.setBorder(BorderFactory.createEtchedBorder());
+        
         this.add(canvas, BorderLayout.CENTER);
         
         
@@ -178,7 +181,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             }
         }
         
-        return selectedText.toString().trim();
+        return selectedText.toString();
     }
     
     /** Adds the selected text to the clipboard. */
@@ -187,65 +190,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                 new StringSelection(getSelectedText()), null);
     }
     
-    /** temporary method to add some text to the text pane. */
-    public void addTestText() {
-        for (int i = 0; i <= 0; i++) {
-            AttributedString attributedString =
-                    new AttributedString("this is a line");
-            document.addText(attributedString);
-            attributedString = new AttributedString("this is a line");
-            attributedString.addAttribute(TextAttribute.UNDERLINE,
-                    TextAttribute.UNDERLINE_ON,
-                    0, attributedString.getIterator().getEndIndex());
-            document.addText(attributedString);
-            attributedString = new AttributedString("this is a line");
-            attributedString.addAttribute(TextAttribute.WEIGHT,
-                    TextAttribute.WEIGHT_ULTRABOLD,
-                    0, attributedString.getIterator().getEndIndex());
-            document.addText(attributedString);
-            attributedString = new AttributedString("this is a line");
-            attributedString.addAttribute(TextAttribute.UNDERLINE,
-                    TextAttribute.UNDERLINE_ON,
-                    5, attributedString.getIterator().getEndIndex());
-            attributedString.addAttribute(TextAttribute.FOREGROUND, Color.GREEN,
-                    5, 10);
-            document.addText(attributedString);
-            attributedString = new AttributedString("this is a url www.google.com isnt it www.moo.com");
-            attributedString.addAttribute(TextAttribute.FOREGROUND, Color.RED, 0, 35);
-            attributedString.addAttribute(TextAttribute.FOREGROUND, Color.BLUE, 14, 28);
-            attributedString.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON, 14, 28);
-            attributedString.addAttribute(IRCTextAttribute.HYPERLINK, true, 14, 28);
-            attributedString.addAttribute(IRCTextAttribute.HYPERLINK, true, 37, 48);
-            document.addText(attributedString);
-            attributedString = new AttributedString("this is a long, long, long, "
-                    + "long, long, long, long, long, long, long, long, long, "
-                    + "long, long, long, long, long, long, long, long, long, "
-                    + "long, long, long line");
-            document.addText(attributedString);
-        }
-        scrollBar.setMaximum(document.getNumLines());
-        setScrollBarPosition(document.getNumLines());
-    }
-    
-    /**
-     * temporary method to text the textpane.
-     * @param args command line arguments
-     */
-    public static void main(final String[] args) {
-        final TextPane tpc = new TextPane();
-        final JFrame frame = new JFrame("Test textpane");
-        
-        tpc.setDoubleBuffered(true);
-        tpc.setBackground(Color.WHITE);
-        
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        frame.add(tpc);
-        
-        frame.setSize(new Dimension(400, 400));
-        frame.setVisible(true);
-        
-        tpc.addTestText();
-    }
-    
+    /** Clears the textpane. */
+    public void clear() {
+        document.clear();
+    }    
 }

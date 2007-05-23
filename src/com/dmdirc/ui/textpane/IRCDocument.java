@@ -36,10 +36,10 @@ public final class IRCDocument {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** List of stylised lines of text. */
-    private List<AttributedString> iterators;
+    final private List<AttributedString> iterators;
     
     /** Creates a new instance of IRCDocument. */
     public IRCDocument() {
@@ -70,10 +70,15 @@ public final class IRCDocument {
      * Adds the stylised string to the canvas.
      * @param text stylised string to add to the text
      */
-    public void addText(final AttributedString text) {
+    protected void addText(final AttributedString text) {
         synchronized (iterators) {
             iterators.add(text);
         }
+    }
+    
+    /** Clears all lines from the document. */
+    protected void clear() {
+        iterators.clear();
     }
 }
 

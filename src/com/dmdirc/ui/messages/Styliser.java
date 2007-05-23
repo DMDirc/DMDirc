@@ -23,17 +23,21 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.Config;
-import com.dmdirc.ui.textpane.IRCTextAttribute;
-import java.awt.Color;
-import java.util.Locale;
-
-import javax.swing.text.BadLocationException;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.textpane.IRCTextAttribute;
+import com.dmdirc.ui.textpane.TextPane;
+import java.awt.Color;
+import java.text.AttributedCharacterIterator.Attribute;
+import java.util.Locale;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import java.text.AttributedString;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.StyledDocument;
 
 /**
  * The styliser applies IRC styles to text. Styles are indicated by various
@@ -60,8 +64,8 @@ public final class Styliser {
     public static final char CODE_UNDERLINE = 31;
     
     /** Characters allowed to be used in an URL. */
-    private static final String CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR 
-            + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC 
+    private static final String CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
+            + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC
             + CODE_UNDERLINE + "]";
     
     /** The regular expression to use for marking up URLs. */
@@ -103,6 +107,13 @@ public final class Styliser {
         } catch (BadLocationException ex) {
             Logger.error(ErrorLevel.WARNING, "Unable to insert styled string", ex);
         }
+    }
+    
+    public static void addStyledString(final TextPane doc, final String add) {
+        
+        final String target = add.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
+        
+        doc.addText(new AttributedString(target));
     }
     
     /**

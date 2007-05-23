@@ -23,9 +23,6 @@
 package com.dmdirc.ui;
 
 import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,13 +39,11 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import com.dmdirc.Channel;
-import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
@@ -64,6 +59,9 @@ import com.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.input.InputHandler;
 
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import javax.swing.JPanel;
 
 /**
  * The channel frame is the GUI component that represents a channel to the user.
@@ -220,12 +218,12 @@ public final class ChannelFrame extends Frame implements MouseListener,
         settingsMI.addActionListener(this);
         getPopup().addSeparator();
         getPopup().add(settingsMI);
+        final JPanel panel = new JPanel(new BorderLayout());
         
         nicklistPopup = new JPopupMenu();
         popuplateNicklistPopup();
         
         
-        final GridBagConstraints constraints = new GridBagConstraints();
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         
         final JScrollPane nickScrollPane = new JScrollPane();
@@ -241,42 +239,28 @@ public final class ChannelFrame extends Frame implements MouseListener,
         if (divider != null) {
             divider.setBorder(null);
         }
-        
-        getScrollPane().setVerticalScrollBarPolicy(
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        getTextPane().setEditable(false);
-        getScrollPane().setViewportView(getTextPane());
-        
+
         nicklistModel = new NicklistListModel();
         
         nickList.setModel(nicklistModel);
         nickScrollPane.setViewportView(nickList);
         
-        getContentPane().setLayout(new GridBagLayout());
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(0, 0, 0, 0);
-        getContentPane().add(splitPane, constraints);
+        nickScrollPane.setMinimumSize(new Dimension(150, 10));
+        getTextPane().setPreferredSize(new Dimension(MainFrame.getMainFrame().getWidth(), 10));
         
-        constraints.weighty = 0.0;
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.gridy = 1;
-        getContentPane().add(getSearchBar(), constraints);
+        panel.add(getSearchBar(), BorderLayout.PAGE_START);
+        panel.add(getInputPanel(), BorderLayout.PAGE_END);
         
-        constraints.gridy = 2;
-        constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
-        getContentPane().add(getInputPanel(), constraints);
+        getContentPane().setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
         
-        splitPane.setLeftComponent(getScrollPane());
+        getContentPane().add(splitPane, BorderLayout.CENTER);
+        getContentPane().add(panel, BorderLayout.PAGE_END);
+        
+        splitPane.setLeftComponent(getTextPane());
         splitPane.setRightComponent(nickScrollPane);
         
-        splitPane.setResizeWeight(1.0);
-        if (Config.getOptionBool("ui", "maximisewindows") || MainFrame.getMainFrame().getMaximised()) {
-            splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth() - 325);
-        } else {
-            splitPane.setDividerLocation(MainFrame.getMainFrame().getWidth() / 2 - 150);
-        }
+        splitPane.setDividerLocation((double) 1);
+        splitPane.setResizeWeight(1);
         splitPane.setDividerSize(SMALL_BORDER);
         splitPane.setContinuousLayout(true);
         

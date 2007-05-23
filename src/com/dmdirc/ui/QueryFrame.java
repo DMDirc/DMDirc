@@ -26,8 +26,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 
-import javax.swing.ScrollPaneConstants;
-
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
@@ -116,17 +114,12 @@ public final class QueryFrame extends Frame {
         
         setTitle("Query Frame");
         
-        getScrollPane().setVerticalScrollBarPolicy(
-                ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        getTextPane().setEditable(false);
-        getScrollPane().setViewportView(getTextPane());
-        
         getContentPane().setLayout(new GridBagLayout());
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
         constraints.insets = new Insets(0, 0, 0, 0);
-        getContentPane().add(getScrollPane(), constraints);
+        getContentPane().add(getTextPane(), constraints);
         
         
         constraints.weighty = 0.0;
