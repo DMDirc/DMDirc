@@ -22,16 +22,12 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.Config;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.textpane.IRCTextAttribute;
-import com.dmdirc.ui.textpane.TextPane;
 import java.awt.Color;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.util.Enumeration;
 import java.util.Locale;
+
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -42,6 +38,12 @@ import javax.swing.text.StyleConstants.CharacterConstants;
 import javax.swing.text.StyleConstants.ColorConstants;
 import javax.swing.text.StyleConstants.FontConstants;
 import javax.swing.text.StyledDocument;
+
+import com.dmdirc.Config;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.textpane.IRCTextAttribute;
+import com.dmdirc.ui.textpane.TextPane;
 
 /**
  * The styliser applies IRC styles to text. Styles are indicated by various
@@ -130,7 +132,6 @@ public final class Styliser {
             
             for (final Enumeration<?> ae = as.getAttributeNames(); ae.hasMoreElements();) {
                 final Object attrib = ae.nextElement();
-                System.out.println(attrib.getClass());
                 if (attrib instanceof IRCTextAttribute) {
                     if (attrib == IRCTextAttribute.HYPERLINK) {
                         //hyperlink
