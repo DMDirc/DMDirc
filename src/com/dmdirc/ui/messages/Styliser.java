@@ -129,46 +129,32 @@ public final class Styliser {
             final Element element = line.getElement(i);
             
             final AttributeSet as = element.getAttributes();
+            final Enumeration<?> ae = as.getAttributeNames();
             
-            for (final Enumeration<?> ae = as.getAttributeNames(); ae.hasMoreElements();) {
+            while (ae.hasMoreElements()) {
                 final Object attrib = ae.nextElement();
-                if (attrib instanceof IRCTextAttribute) {
-                    if (attrib == IRCTextAttribute.HYPERLINK) {
-                        //hyperlink
-                        attString.addAttribute(IRCTextAttribute.HYPERLINK, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
-                    }
-                } else if (attrib instanceof ColorConstants) {
-                    if (attrib == ColorConstants.Foreground) {
-                        //Foreground
-                        attString.addAttribute(TextAttribute.FOREGROUND, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
-                    } else if (attrib == ColorConstants.Background) {
-                        //Background
-                        attString.addAttribute(TextAttribute.BACKGROUND, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
-                    }
-                } else if (attrib instanceof FontConstants) {
-                    if (attrib == FontConstants.Bold) {
-                        //Bold
-                        attString.addAttribute(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD, element.getStartOffset(), element.getEndOffset());
-                    } else if (attrib == FontConstants.Family) {
-                        //Family
-                        attString.addAttribute(TextAttribute.FAMILY, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
-                    } else if (attrib == FontConstants.Italic) {
-                        //italics
-                        attString.addAttribute(TextAttribute.POSTURE, TextAttribute.POSTURE_OBLIQUE, element.getStartOffset(), element.getEndOffset());
-                    }
-                } else if (attrib instanceof CharacterConstants) {
-                    if (attrib == CharacterConstants.Underline) {
-                        //Underline
-                        attString.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON, element.getStartOffset(), element.getEndOffset());
-                    }
-                } else if (attrib instanceof String) {
-                    if ("DefaultForeground".equals(attrib)) {
-                        //Default foreground
-                        attString.addAttribute(TextAttribute.FOREGROUND, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
-                    } else if ("DefaultBackground".equals(attrib)) {
-                        //Default background
-                        attString.addAttribute(TextAttribute.BACKGROUND, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
-                    }
+                
+                if (attrib == IRCTextAttribute.HYPERLINK) {
+                    //hyperlink
+                    attString.addAttribute(IRCTextAttribute.HYPERLINK, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == ColorConstants.Foreground) {
+                    //Foreground
+                    attString.addAttribute(TextAttribute.FOREGROUND, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == ColorConstants.Background) {
+                    //Background
+                    attString.addAttribute(TextAttribute.BACKGROUND, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == FontConstants.Bold) {
+                    //Bold
+                    attString.addAttribute(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD, element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == FontConstants.Family) {
+                    //Family
+                    attString.addAttribute(TextAttribute.FAMILY, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == FontConstants.Italic) {
+                    //italics
+                    attString.addAttribute(TextAttribute.POSTURE, TextAttribute.POSTURE_OBLIQUE, element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == CharacterConstants.Underline) {
+                    //Underline
+                    attString.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON, element.getStartOffset(), element.getEndOffset());
                 }
             }
         }
