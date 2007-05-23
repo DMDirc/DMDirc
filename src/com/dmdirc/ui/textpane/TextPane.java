@@ -36,6 +36,7 @@ import javax.swing.BorderFactory;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
+import javax.swing.event.EventListenerList;
 
 /**
  * Styled, scrollable text pane.
@@ -57,11 +58,16 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     /** IRCDocument. */
     final private IRCDocument document;
     
+    /** Listener list. */
+    final private EventListenerList textPaneListeners;
+    
     /**
      * Creates a new instance of TextPane.
      */
     public TextPane() {
         super();
+        
+        textPaneListeners = new EventListenerList();
         
         document = new IRCDocument();
         
@@ -193,5 +199,42 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     /** Clears the textpane. */
     public void clear() {
         document.clear();
-    }    
+        setScrollBarPosition(0);
+    }
+    
+    /**
+     * Adds a TextPaneListener to the listener list.
+     *
+     * @param listener Listener to add
+     */
+    public void addTextPaneListener(final TextPaneListener listener) {
+        synchronized(textPaneListeners) {
+            if (listener == null) {
+                return;
+            }
+            textPaneListeners.add(TextPaneListener.class, listener);
+        }
+    }
+    
+    /**
+     * Removes a TextPaneListener from the listener list.
+     *
+     * @param listener Listener to remove
+     */
+    public void removeTextPaneListener(final TextPaneListener listener) {
+        textPaneListeners.remove(TextPaneListener.class, listener);
+    }
+    
+    /**
+     * Informs listeners when a word has been clicked on.
+     * @param text word clicked on
+     */
+    protected void fireTextClicked(final String text) {
+        final Object[] listeners = textPaneListeners.getListenerList();
+        for (int i = 0; i < listeners.length; i += 2) {
+            if (listeners[i] == TextPaneListener.class) {
+                ((TextPaneListener) listeners[i + 1]).hyperlinkClicked(text);
+            }
+        }
+    }
 }

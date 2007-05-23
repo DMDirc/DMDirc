@@ -430,7 +430,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
      * @param text word clicked on
      */
     private void fireTextClicked(final String text) {
-        //Fire events to the hyperlink listener
+        textPane.fireTextClicked(text);
     }
     
     /**

@@ -28,7 +28,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
@@ -54,18 +53,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.plaf.synth.SynthLookAndFeel;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
 
 import com.dmdirc.BrowserLauncher;
 import com.dmdirc.Config;
@@ -80,16 +74,17 @@ import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.ui.textpane.TextPane;
+import com.dmdirc.ui.textpane.TextPaneListener;
 
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import com.dmdirc.ui.textpane.TextPane;
 
 /**
  * Frame component.
  */
 public abstract class Frame extends JInternalFrame implements CommandWindow,
         PropertyChangeListener, InternalFrameListener,
-        MouseListener, ActionListener, KeyListener {
+        MouseListener, ActionListener, KeyListener, TextPaneListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -271,6 +266,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         
         getTextPane().addMouseListener(this);
         getTextPane().addKeyListener(this);
+        getTextPane().addTextPaneListener(this);
         getInputField().addKeyListener(this);
         getInputField().addMouseListener(this);
         
@@ -683,6 +679,12 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /** {@inheritDoc}. */
     public void keyReleased(final KeyEvent event) {
         //Ignore.
+    }
+    
+    /** {@inheritDoc}. */
+    public void hyperlinkClicked(final String text) {
+        //Currently the textpane doesnt do any checks other than getting the word clicked on.
+        checkClickText(text);
     }
     
     /**
