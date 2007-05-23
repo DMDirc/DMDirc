@@ -339,14 +339,18 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     
     /** {@inheritDoc}. */
     public void mousePressed(final MouseEvent e) {
-        highlightEvent(true, e);
+        if (e.getButton() == e.BUTTON1) {
+            highlightEvent(true, e);
+        }
         e.setSource(textPane);
         textPane.dispatchEvent(e);
     }
     
     /** {@inheritDoc}. */
     public void mouseReleased(final MouseEvent e) {
-        highlightEvent(true, e);
+        if (e.getButton() == e.BUTTON1) {
+            highlightEvent(false, e);
+        }
         e.setSource(textPane);
         textPane.dispatchEvent(e);
     }
@@ -363,7 +367,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     
     /** {@inheritDoc}. */
     public void mouseDragged(final MouseEvent e) {
-        highlightEvent(true, e);
+        highlightEvent(false, e);
         e.setSource(textPane);
         textPane.dispatchEvent(e);
     }
