@@ -28,15 +28,19 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.textpane.IRCTextAttribute;
 import com.dmdirc.ui.textpane.TextPane;
 import java.awt.Color;
-import java.text.AttributedCharacterIterator.Attribute;
-import java.util.Locale;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
+import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Locale;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Element;
+import javax.swing.text.StyleConstants.CharacterConstants;
+import javax.swing.text.StyleConstants.ColorConstants;
+import javax.swing.text.StyleConstants.FontConstants;
 import javax.swing.text.StyledDocument;
 
 /**
@@ -76,14 +80,18 @@ public final class Styliser {
     }
     
     /**
-     * Stylises the specified string and adds it to the passed StyledDocument.
+     * Stylises the specified string and adds it to the passed TextPane.
      * @param doc The document which the output should be added to
      * @param add The line to be stylised and added
      */
-    public static void addStyledString(final StyledDocument doc,
-            final String add) {
+    public static void addStyledString(final TextPane doc, final String add) {
+        final StyledDocument styledDoc = new DefaultStyledDocument();
+        
+        AttributedString attString = null;
+        
+        //Do the old styliser method of adding to a StyledDocument
         try {
-            int offset = doc.getLength();
+            int offset = styledDoc.getLength();
             int position = 0;
             
             final String target = add.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
@@ -93,7 +101,7 @@ public final class Styliser {
             while (position < target.length()) {
                 final String next = readUntilControl(target.substring(position));
                 
-                doc.insertString(offset, next, attribs);
+                styledDoc.insertString(offset, next, attribs);
                 
                 position += next.length();
                 offset += next.length();
@@ -107,13 +115,64 @@ public final class Styliser {
         } catch (BadLocationException ex) {
             Logger.error(ErrorLevel.WARNING, "Unable to insert styled string", ex);
         }
-    }
-    
-    public static void addStyledString(final TextPane doc, final String add) {
         
-        final String target = add.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
+        //Now lets get hacky, loop through the styled document and add all styles to an attributedString
+        final Element line = styledDoc.getParagraphElement(0);
+        try {
+            attString = new AttributedString(line.getDocument().getText(0, line.getDocument().getLength()));
+        } catch (BadLocationException ex) {
+            Logger.error(ErrorLevel.WARNING, "Unable to insert styled string", ex);
+        }
+        for (int i = 0; i < line.getElementCount(); i++) {
+            final Element element = line.getElement(i);
+            
+            final AttributeSet as = element.getAttributes();
+            
+            for (final Enumeration<?> ae = as.getAttributeNames(); ae.hasMoreElements();) {
+                final Object attrib = ae.nextElement();
+                if (attrib instanceof IRCTextAttribute) {
+                    if (attrib == IRCTextAttribute.HYPERLINK) {
+                        //hyperlink
+                        attString.addAttribute(IRCTextAttribute.HYPERLINK, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                    }
+                } else if (attrib instanceof ColorConstants) {
+                    if (attrib == ColorConstants.Foreground) {
+                        //Foreground
+                        attString.addAttribute(TextAttribute.FOREGROUND, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                    } else if (attrib == ColorConstants.Background) {
+                        //Background
+                        attString.addAttribute(TextAttribute.BACKGROUND, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                    }
+                } else if (attrib instanceof FontConstants) {
+                    if (attrib == FontConstants.Bold) {
+                        //Bold
+                        attString.addAttribute(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD, element.getStartOffset(), element.getEndOffset());
+                    } else if (attrib == FontConstants.Family) {
+                        //Family
+                        attString.addAttribute(TextAttribute.FAMILY, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                    }
+                } else if (attrib instanceof CharacterConstants) {
+                    if (attrib == CharacterConstants.Underline) {
+                        //Underline
+                        attString.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON, element.getStartOffset(), element.getEndOffset());
+                    }
+                } else if (attrib instanceof String) {
+                    if ("DefaultForeground".equals(attrib)) {
+                        //Default foreground
+                        attString.addAttribute(TextAttribute.FOREGROUND, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                    } else if ("DefaultBackground".equals(attrib)) {
+                        //Default background
+                        attString.addAttribute(TextAttribute.BACKGROUND, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                    }
+                }
+            }
+        }
         
-        doc.addText(new AttributedString(target));
+        if (stipControlCodes(add).length() == 0) {
+            doc.addText("\n");
+        } else {
+            doc.addText(attString);
+        }
     }
     
     /**
@@ -122,8 +181,6 @@ public final class Styliser {
      * @return a copy of the input with control codes removed
      */
     public static String stipControlCodes(final String input) {
-        final SimpleAttributeSet attribs = new SimpleAttributeSet();
-        
         int position = 0;
         String output = "";
         
@@ -136,7 +193,7 @@ public final class Styliser {
             
             if (position < input.length()) {
                 position += readControlChars(input.substring(position),
-                        attribs, position == 0);
+                        new SimpleAttributeSet(), position == 0);
             }
         }
         
