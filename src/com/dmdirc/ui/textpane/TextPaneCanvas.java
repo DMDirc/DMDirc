@@ -176,7 +176,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                 while (lineMeasurer.getPosition() < paragraphEnd) {
                     final TextLayout layout = lineMeasurer.nextLayout(formatWidth);
                     if (wrappedLine == 0) {
-                        firstLineHeight = (int) (layout.getDescent() + layout.getLeading() + layout.getAscent());
+                        firstLineHeight = (int) (layout.getDescent() + layout.getDescent() + layout.getLeading() + layout.getAscent());
                     }
                     height += firstLineHeight;
                     wrappedLine++;
