@@ -22,7 +22,9 @@
 
 package com.dmdirc.ui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,6 +37,7 @@ import java.util.Map;
 
 import javax.swing.JList;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -59,9 +62,6 @@ import com.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.input.InputHandler;
 
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import javax.swing.JPanel;
 
 /**
  * The channel frame is the GUI component that represents a channel to the user.

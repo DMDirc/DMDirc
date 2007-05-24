@@ -29,7 +29,18 @@ import java.util.EventListener;
  */
 public interface TextPaneListener extends EventListener {
     
-    /** Fired when a hyperlink is clicked. */
-    void hyperlinkClicked(String text);
+    /** 
+     * Fired when a hyperlink is clicked. 
+     *
+     * @param text Hyperlink that was clicked on
+     */
+    void hyperlinkClicked(String url);
+    
+    /**
+     * Fired when a channel is clicked.
+     *
+     * @param channel Name of the channel clicked on
+     */
+    void channelClicked(String channel);
     
 }

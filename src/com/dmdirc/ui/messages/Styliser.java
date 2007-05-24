@@ -29,11 +29,11 @@ import java.util.Enumeration;
 import java.util.Locale;
 
 import javax.swing.text.AttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Element;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleConstants.CharacterConstants;
 import javax.swing.text.StyleConstants.ColorConstants;
 import javax.swing.text.StyleConstants.FontConstants;
@@ -83,11 +83,12 @@ public final class Styliser {
     
     /**
      * Stylises the specified string and adds it to the passed TextPane.
+     *
      * @param doc The document which the output should be added to
-     * @param add The line to be stylised and added
+     * @param string The line to be stylised and added
      */
-    public static void addStyledString(final TextPane doc, final String add) {
-        final AttributedString text = styledDocumentToAttributedString(getStyledString(new String[]{add, }));
+    public static void addStyledString(final TextPane doc, final String string) {
+        final AttributedString text = styledDocumentToAttributedString(getStyledString(new String[]{string, }));
         
         if (text.getIterator().getEndIndex() == 0) {
             doc.addText("\n");
@@ -98,8 +99,9 @@ public final class Styliser {
     
     /**
      * Stylises the specified string and adds it to the passed TextPane.
+     *
      * @param doc The document which the output should be added to
-     * @param attrStrings The strings to be stylised and added to a line
+     * @param strings The strings to be stylised and added to a line
      */
     public static void addStyledString(final TextPane doc, final String[] strings) {        
         final AttributedString text = styledDocumentToAttributedString(getStyledString(strings));
@@ -113,7 +115,10 @@ public final class Styliser {
     
     /**
      * Stylises the specified string.
-     * @param add The line to be stylised
+     *
+     * @param strings The line to be stylised
+     *
+     * @return StyledDocument for the inputted strings
      */
     public static StyledDocument getStyledString(final String[] strings) {
         final StyledDocument styledDoc = new DefaultStyledDocument();
@@ -148,7 +153,13 @@ public final class Styliser {
         return styledDoc;
     }
     
-    /** Converts a StyledDocument into an AttributedString. */
+    /** 
+     * Converts a StyledDocument into an AttributedString. 
+     *
+     * @param doc StyledDocument to convert
+     *
+     * @return AttributedString representing the specified StyledDocument
+     */
     private static AttributedString styledDocumentToAttributedString(final StyledDocument doc) {
         //Now lets get hacky, loop through the styled document and add all styles to an attributedString
         AttributedString attString = null;

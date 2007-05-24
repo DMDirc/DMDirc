@@ -24,7 +24,6 @@ package com.dmdirc.ui.components;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
@@ -204,8 +203,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             public void run() {
                 for (String myLine : line.split("\n")) {
                     if (timestamp) {
-                        String ts = Formatter.formatMessage("timestamp", new Date());
-                        Styliser.addStyledString(getTextPane(), new String[]{ts, myLine, });
+                        Styliser.addStyledString(getTextPane(), new String[]{
+                            Formatter.formatMessage("timestamp", new Date()),
+                            myLine, });
                     } else {
                         Styliser.addStyledString(getTextPane(), myLine);
                     }
@@ -258,7 +258,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      */
     private void initComponents() {
         setInputField(new JTextField());
-        setTextPane(new TextPane());
+        setTextPane(new TextPane(this));
         
         getInputField().setBorder(
                 BorderFactory.createCompoundBorder(
@@ -346,15 +346,15 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 constructor = c.getConstructor(new Class[] {javax.swing.JInternalFrame.class});
                 temp = constructor.newInstance(new Object[] {this});
             } catch (ClassNotFoundException ex) {
-                ex.printStackTrace();
+                Logger.error(ErrorLevel.WARNING, "Unable to readd titlebar", ex);
             } catch (NoSuchMethodException ex) {
-                ex.printStackTrace();
+                Logger.error(ErrorLevel.WARNING, "Unable to readd titlebar", ex);
             } catch (InstantiationException ex) {
-                ex.printStackTrace();
+                Logger.error(ErrorLevel.WARNING, "Unable to readd titlebar", ex);
             } catch (IllegalAccessException ex) {
-                ex.printStackTrace();
+                Logger.error(ErrorLevel.WARNING, "Unable to readd titlebar", ex);
             } catch (InvocationTargetException ex) {
-                ex.printStackTrace();
+                Logger.error(ErrorLevel.WARNING, "Unable to readd titlebar", ex);
             }
         }
         
@@ -684,27 +684,17 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     }
     
     /** {@inheritDoc}. */
-    public void hyperlinkClicked(final String text) {
-        //Currently the textpane doesnt do any checks other than getting the word clicked on.
-        checkClickText(text);
+    public void hyperlinkClicked(final String url) {
+        MainFrame.getMainFrame().getStatusBar().setMessage("Opening: " + url);
+        BrowserLauncher.openURL(url);
     }
     
-    /**
-     * Checks text clicked on by the user, takes appropriate action.
-     * @param text text to check
-     */
-    private void checkClickText(final String text) {
-        if (text.toLowerCase(Locale.getDefault()).startsWith("http://")
-        || text.toLowerCase(Locale.getDefault()).startsWith("https://")
-        || text.toLowerCase(Locale.getDefault()).startsWith("www.")) {
-            MainFrame.getMainFrame().getStatusBar().setMessage("Opening: " + text);
-            BrowserLauncher.openURL(text);
-        } else if (parent.getServer().getParser().isValidChannelName(text)) {
-            if (parent.getServer().getParser().getChannelInfo(text) == null) {
-                parent.getServer().getParser().joinChannel(text);
-            } else {
-                parent.getServer().getChannel(text).activateFrame();
-            }
+    /** {@inheritDoc}. */
+    public void channelClicked(final String channel) {
+        if (parent.getServer().getParser().getChannelInfo(channel) == null) {
+            parent.getServer().getParser().joinChannel(channel);
+        } else {
+            parent.getServer().getChannel(channel).activateFrame();
         }
     }
     

@@ -410,7 +410,7 @@ public class Action {
     
     /**
      * Sets this action's response.
-     * @param The new response to use
+     * @param response The new response to use
      */
     public void setResponse(final String[] response) {
         this.response = response.clone();

@@ -40,29 +40,36 @@ public final class IRCTextAttribute extends Attribute {
      */
     private static final long serialVersionUID = 1;
     
-    // table of all instances in this class, used by readResolve
-    private static final Map<String, IRCTextAttribute> instanceMap
+    /** table of all instances in this class, used by readResolve. */
+    private static final Map<String, IRCTextAttribute> INSTANCE_MAP
             = new HashMap<String, IRCTextAttribute>(1);
     
     /**
      * Constructs an Attribute with the given name.
+     *
+     * @param name name for the attribute
      */
-    protected IRCTextAttribute(String name) {
+    protected IRCTextAttribute(final String name) {
         super(name);
         if (this.getClass() == IRCTextAttribute.class) {
-            instanceMap.put(name, this);
+            INSTANCE_MAP.put(name, this);
         }
     }
     
     /**
      * Resolves instances being deserialized to the predefined constants.
+     *
+     * @return IRCTextAttribute instance
+     *
+     * @throws InvalidObjectException when the class being deserialized is not
+     * an instance of IRCTextAttribute
      */
     protected Object readResolve() throws InvalidObjectException {
         if (this.getClass() != IRCTextAttribute.class) {
             throw new InvalidObjectException("subclass didn't correctly implement readResolve");
         }
         
-        final IRCTextAttribute instance = instanceMap.get(getName());
+        final IRCTextAttribute instance = INSTANCE_MAP.get(getName());
         if (instance == null) {
             throw new InvalidObjectException("unknown attribute name");
         } else {
@@ -70,6 +77,6 @@ public final class IRCTextAttribute extends Attribute {
         }
     }
     
+    /** Hyperlink attribute. */
     public static final IRCTextAttribute HYPERLINK = new IRCTextAttribute("hyperlink");
-    
 }

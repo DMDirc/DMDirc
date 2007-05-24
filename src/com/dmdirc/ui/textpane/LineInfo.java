@@ -25,14 +25,19 @@ package com.dmdirc.ui.textpane;
 /**
  *
  */
-public class LineInfo {
+public final class LineInfo {
     
     /** Line number. */
-    private int line;
+    private final int line;
     /** What part of a line. */
-    private int part;
+    private final int part;
     
-    /** Creates a new instance of LineInfo. */
+    /** 
+     * Creates a new instance of LineInfo. 
+     *
+     * @param line Line number
+     * @param part line wrap number
+     */
     public LineInfo(final int line, final int part) {
         this.line = line;
         this.part = part;

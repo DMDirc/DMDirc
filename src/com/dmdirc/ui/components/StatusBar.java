@@ -344,9 +344,7 @@ public final class StatusBar extends JPanel implements MouseListener,
             popup.removeAll();
             popup.add(noErrors);
             clearError();
-        } else if ("None".equals(e.getActionCommand())) {
-            //Ignore
-        } else {
+        } else if (!"None".equals(e.getActionCommand())) {
             errors.get(Integer.valueOf(e.getActionCommand())).getNotifier().clickReceived();
         }
     }

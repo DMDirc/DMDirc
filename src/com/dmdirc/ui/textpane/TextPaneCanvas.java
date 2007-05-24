@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.textpane;
 
-import com.dmdirc.ui.messages.Styliser;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -36,10 +35,14 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.event.MouseInputListener;
+
+import com.dmdirc.ui.messages.Styliser;
+import java.util.regex.Pattern;
 
 /** Canvas object to draw text. */
 class TextPaneCanvas extends JPanel implements MouseInputListener {
@@ -162,7 +165,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                 final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
                 paragraphStart = iterator.getBeginIndex();
                 paragraphEnd = iterator.getEndIndex();
-                lineMeasurer = new LineBreakMeasurer(iterator, ((Graphics2D)g ).getFontRenderContext());
+                lineMeasurer = new LineBreakMeasurer(iterator, ((Graphics2D) g).getFontRenderContext());
                 lineMeasurer.setPosition(paragraphStart);
                 
                 int wrappedLine = 0;
@@ -297,24 +300,14 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     
     /** {@inheritDoc}. */
     public void mouseClicked(final MouseEvent e) {
-        final StringBuffer clickedText = new StringBuffer();
+        String clickedText = "";
         int start = -1;
         int end = -1;
-        for (Map.Entry<TextLayout, Rectangle> entry : hyperlinks.entrySet()) {
-            if (entry.getValue().contains(this.getMousePosition())) {
-                start = entry.getKey()
-                .hitTestChar((int) this.getMousePosition().getX(),
-                        (int) this.getMousePosition().getY()).getInsertionIndex();
-                end = start;
-                final AttributedCharacterIterator it = document
-                        .getLine(textLayouts.get(entry.getKey()).getLine())
-                        .getIterator();
-                for (it.setIndex(it.getBeginIndex());
-                it.getIndex() < it.getEndIndex(); it.next()) {
-                    clickedText.append(it.current());
-                }
-            }
-        }
+        final int[] info = getClickPosition(this.getMousePosition());
+        clickedText = textPane.getTextFromLine(info[0]);
+        start = info[2];
+        end = info[2];
+        
         if (start != -1 || end != -1) {
             
             // Traverse backwards
@@ -329,10 +322,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
             while (end < clickedText.length() && end > 0 && clickedText.charAt(end) != ' ') {
                 end++;
             }
-     
-            if (clickedText.substring(start, end).matches(Styliser.URL_REGEXP)) {
-                fireTextClicked(clickedText.substring(start, end));
-            }
+            
+            
+            checkClickedText(clickedText.substring(start, end));
         }
         e.setSource(textPane);
         textPane.dispatchEvent(e);
@@ -394,32 +386,14 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                 textPane.setScrollBarPosition(scrollBarPosition + 1);
             }
         } else {
-            int lineNumber = -1;
-            int linePart = -1;
-            int pos = 0;
-            for (Map.Entry<Rectangle, TextLayout> entry : positions.entrySet()) {
-                if (entry.getKey().contains(point)) {
-                    lineNumber = textLayouts.get(entry.getValue()).getLine();
-                    linePart = textLayouts.get(entry.getValue()).getPart();
-                }
-            }
-            for (Map.Entry<Rectangle, TextLayout> entry : positions.entrySet()) {
-                if (textLayouts.get(entry.getValue()).getLine() == lineNumber) {
-                    if (textLayouts.get(entry.getValue()).getPart() < linePart) {
-                        pos += entry.getValue().getCharacterCount();
-                    } else if (textLayouts.get(entry.getValue()).getPart() == linePart){
-                        pos += entry.getValue().hitTestChar((int) point.getX(),
-                                (int) point.getY()).getInsertionIndex();
-                    }
-                }
-            }
-            if (lineNumber != -1 && linePart != -1) {
+            final int[] info = getClickPosition(point);
+            if (info[0] != -1 && info[1] != -1) {
                 if (start) {
-                    selStartLine = lineNumber;
-                    selStartChar = pos;
+                    selStartLine = info[0];
+                    selStartChar = info[2];
                 }
-                selEndLine = lineNumber;
-                selEndChar = pos;
+                selEndLine = info[0];
+                selEndChar = info[2];
                 
                 this.repaint();
             }
@@ -427,11 +401,69 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     }
     
     /**
+     * Checks the clicked text and fires the appropriate events.
+     *
+     * @param clickedText Text clicked
+     */
+    public void checkClickedText(final String clickedText) {
+        final Matcher matcher = Pattern.compile(Styliser.URL_REGEXP).matcher(clickedText);
+        if (matcher.find()) {
+            fireHyperlinkClicked(matcher.group());
+        } else if (textPane.isValidChannel(clickedText)) {
+            fireChannelClicked(clickedText);
+        }
+    }
+    
+    /**
+     *
+     * Returns the line information from a mouse click inside the textpane.
+     *
+     * @param point mouse position
+     *
+     * @return line number, line part, position in whole line
+     */
+    public int[] getClickPosition(final Point point) {
+        int lineNumber = -1;
+        int linePart = -1;
+        int pos = 0;
+        
+        if (point != null) {
+            for (Map.Entry<Rectangle, TextLayout> entry : positions.entrySet()) {
+                if (entry.getKey().contains(point)) {
+                    lineNumber = textLayouts.get(entry.getValue()).getLine();
+                    linePart = textLayouts.get(entry.getValue()).getPart();
+                }
+            }
+            
+            for (Map.Entry<Rectangle, TextLayout> entry : positions.entrySet()) {
+                if (textLayouts.get(entry.getValue()).getLine() == lineNumber) {
+                    if (textLayouts.get(entry.getValue()).getPart() < linePart) {
+                        pos += entry.getValue().getCharacterCount();
+                    } else if (textLayouts.get(entry.getValue()).getPart() == linePart) {
+                        pos += entry.getValue().hitTestChar((int) point.getX(),
+                                (int) point.getY()).getInsertionIndex();
+                    }
+                }
+            }
+        }
+        
+        return new int[]{lineNumber, linePart, pos};
+    }
+    
+    /**
      * Informs listeners when a word has been clicked on.
      * @param text word clicked on
      */
-    private void fireTextClicked(final String text) {
-        textPane.fireTextClicked(text);
+    private void fireHyperlinkClicked(final String text) {
+        textPane.fireChannelClicked(text);
+    }
+    
+    /**
+     * Informs listeners when a word has been clicked on.
+     * @param text word clicked on
+     */
+    private void fireChannelClicked(final String text) {
+        textPane.fireChannelClicked(text);
     }
     
     /**
@@ -457,10 +489,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
             return new int[]{selStartLine, selStartChar, selEndLine, selEndChar, };
         }
     }
-
+    
     /** Clears the selection. */
     protected void clearSelection() {
-        System.out.println("clearing selection");
         selEndLine = selStartLine;
         selEndChar = selStartChar;
     }

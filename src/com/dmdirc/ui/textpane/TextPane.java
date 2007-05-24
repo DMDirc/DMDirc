@@ -22,9 +22,7 @@
 
 package com.dmdirc.ui.textpane;
 
-import com.dmdirc.ui.messages.Styliser;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -34,12 +32,13 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
-import javax.swing.BorderFactory;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JScrollBar;
 import javax.swing.event.EventListenerList;
+
+import com.dmdirc.ui.components.Frame;
 
 /**
  * Styled, scrollable text pane.
@@ -54,21 +53,28 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     private static final long serialVersionUID = 3;
     
+    /** Parent frame container. */
+    private final Frame owner;
+    
     /** Scrollbar for the component. */
-    final private JScrollBar scrollBar;
+    private final JScrollBar scrollBar;
     /** Canvas object, used to draw text. */
-    final private TextPaneCanvas canvas;
+    private final TextPaneCanvas canvas;
     /** IRCDocument. */
-    final private IRCDocument document;
+    private final IRCDocument document;
     
     /** Listener list. */
-    final private EventListenerList textPaneListeners;
+    private final EventListenerList textPaneListeners;
     
     /**
      * Creates a new instance of TextPane.
+     *
+     * @param owner Parent frame
      */
-    public TextPane() {
+    public TextPane(final Frame owner) {
         super();
+        
+        this.owner = owner;
         
         textPaneListeners = new EventListenerList();
         
@@ -112,11 +118,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     public void addText(final AttributedString text) {
         document.addText(text);
-        scrollBar.setMaximum(document.getNumLines());
-        if (!scrollBar.getValueIsAdjusting()
-        && (scrollBar.getValue() == scrollBar.getMaximum() - 1)) {
-            setScrollBarPosition(document.getNumLines());
-        }
+        setScrollBarMax();
     }
     
     /**
@@ -127,6 +129,20 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void setScrollBarPosition(final int position) {
         scrollBar.setValue(position);
         canvas.setScrollBarPosition(position);
+    }
+    
+    public void setScrollBarMax() {
+        final int lines = document.getNumLines();
+        if (lines <= 1) {
+            scrollBar.setEnabled(false);
+        } else {
+            scrollBar.setEnabled(true);
+        }
+        scrollBar.setMaximum(lines);
+        if (!scrollBar.getValueIsAdjusting()
+        && (scrollBar.getValue() == scrollBar.getMaximum() - 1)) {
+            setScrollBarPosition(lines);
+        }
     }
     
     /** {@inheritDoc}. */
@@ -157,40 +173,72 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         final StringBuffer selectedText = new StringBuffer();
         final int[] selectedRange = canvas.getSelectedRange();
         
-        for(int i = selectedRange[0]; i <= selectedRange[2]; i++) {
+        for (int i = selectedRange[0]; i <= selectedRange[2]; i++) {
             if (i != selectedRange[0]) {
                 selectedText.append('\n');
             }
-            final AttributedString as = document.getLine(i);
-            final AttributedCharacterIterator iterator = as.getIterator();
+            final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
             if (selectedRange[2] == selectedRange[0]) {
                 //loop through range
-                for (iterator.setIndex(selectedRange[1]);
-                iterator.getIndex() < selectedRange[3]; iterator.next()) {
-                    selectedText.append(iterator.current());
-                }
+                selectedText.append(getTextFromLine(iterator, selectedRange[1], selectedRange[3]));
             } else if (i == selectedRange[0]) {
                 //loop from start of range to the end
-                for (iterator.setIndex(selectedRange[1]);
-                iterator.getIndex() < iterator.getEndIndex(); iterator.next()) {
-                    selectedText.append(iterator.current());
-                }
+                selectedText.append(getTextFromLine(iterator, selectedRange[1], iterator.getEndIndex()));
             } else if (i == selectedRange[2]) {
                 //loop from start to end of range
-                for (iterator.setIndex(iterator.getBeginIndex());
-                iterator.getIndex() < selectedRange[3]; iterator.next()) {
-                    selectedText.append(iterator.current());
-                }
+                selectedText.append(getTextFromLine(iterator, 0, selectedRange[3]));
             } else {
                 //loop the whole line
-                for (iterator.setIndex(iterator.getBeginIndex());
-                iterator.getIndex() < iterator.getEndIndex(); iterator.next()) {
-                    selectedText.append(iterator.current());
-                }
+                selectedText.append(getTextFromLine(iterator, 0, iterator.getEndIndex()));
             }
         }
         
         return selectedText.toString();
+    }
+    
+    /**
+     * Returns the entire text from the specified line.
+     *
+     * @param line line to retrieve text from
+     *
+     * @return Text from the line
+     */
+    public String getTextFromLine(final int line) {
+        final AttributedCharacterIterator iterator = document.getLine(line).getIterator();
+        return getTextFromLine(iterator, 0, iterator.getEndIndex());
+    }
+    
+    /**
+     * Returns the range of text from the specified iterator.
+     *
+     * @param line line to retrieve text from
+     * @param start Start index in the iterator
+     * @param end End index in the iterator
+     *
+     * @return Text in the range from the line
+     */
+    public String getTextFromLine(final int line, final int start,
+            final int end) {
+        return getTextFromLine(document.getLine(line).getIterator(), start, end);
+    }
+    
+    /**
+     * Returns the range of text from the specified iterator.
+     *
+     * @param iterator iterator to get text from
+     * @param start Start index in the iterator
+     * @param end End index in the iterator
+     *
+     * @return Text in the range from the line
+     */
+    public String getTextFromLine(final AttributedCharacterIterator iterator,
+            final int start, final int end) {
+        final StringBuffer text = new StringBuffer();
+        for (iterator.setIndex(iterator.getBeginIndex());
+        iterator.getIndex() < iterator.getEndIndex(); iterator.next()) {
+            text.append(iterator.current());
+        }
+        return text.toString();
     }
     
     /** Adds the selected text to the clipboard. */
@@ -203,6 +251,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void clear() {
         document.clear();
         setScrollBarPosition(0);
+        setScrollBarMax();
     }
     
     /** Clears the selection. */
@@ -216,7 +265,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * @param listener Listener to add
      */
     public void addTextPaneListener(final TextPaneListener listener) {
-        synchronized(textPaneListeners) {
+        synchronized (textPaneListeners) {
             if (listener == null) {
                 return;
             }
@@ -237,12 +286,36 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * Informs listeners when a word has been clicked on.
      * @param text word clicked on
      */
-    protected void fireTextClicked(final String text) {
+    protected void fireHyperlinkClicked(final String text) {
         final Object[] listeners = textPaneListeners.getListenerList();
         for (int i = 0; i < listeners.length; i += 2) {
             if (listeners[i] == TextPaneListener.class) {
                 ((TextPaneListener) listeners[i + 1]).hyperlinkClicked(text);
             }
         }
+    }
+    
+    /**
+     * Informs listeners when a word has been clicked on.
+     * @param text word clicked on
+     */
+    protected void fireChannelClicked(final String text) {
+        final Object[] listeners = textPaneListeners.getListenerList();
+        for (int i = 0; i < listeners.length; i += 2) {
+            if (listeners[i] == TextPaneListener.class) {
+                ((TextPaneListener) listeners[i + 1]).channelClicked(text);
+            }
+        }
+    }
+    
+    /**
+     * Checks whether a given string is a valid channel.
+     *
+     * @param channel Channel name to verify
+     *
+     * @return true or false
+     */
+    public boolean isValidChannel(final String channel) {
+        return owner.getServer().getParser().isValidChannelName(channel);
     }
 }

@@ -22,16 +22,6 @@
 
 package com.dmdirc.ui.dialogs;
 
-import com.dmdirc.Config;
-import com.dmdirc.Server;
-import com.dmdirc.ServerManager;
-import com.dmdirc.identities.ConfigSource;
-import com.dmdirc.identities.IdentityManager;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.components.StandardDialog;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -52,6 +42,16 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+
+import com.dmdirc.Config;
+import com.dmdirc.Server;
+import com.dmdirc.ServerManager;
+import com.dmdirc.identities.ConfigSource;
+import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.StandardDialog;
 
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;

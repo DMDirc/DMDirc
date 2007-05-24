@@ -22,10 +22,8 @@
 
 package com.dmdirc.ui.textpane;
 
-import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -41,8 +39,8 @@ public final class IRCDocument {
     private static final long serialVersionUID = 3;
     
     /** List of stylised lines of text. */
-    final private List<AttributedString> iterators;
-    
+    private final List<AttributedString> iterators;
+     
     /** Creates a new instance of IRCDocument. */
     protected IRCDocument() {
         iterators = new ArrayList<AttributedString>();
