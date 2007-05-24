@@ -178,7 +178,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                     if (wrappedLine == 0) {
                         firstLineHeight = (int) (layout.getDescent() + layout.getLeading() + layout.getAscent());
                     }
-                    height += layout.getDescent() + layout.getLeading() + layout.getAscent();
+                    height += firstLineHeight;
                     wrappedLine++;
                 }
                 
@@ -207,9 +207,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                     
                     // Calculate the Y offset
                     if (wrappedLine == 1) {
-                        drawPosY -= layout.getDescent() + layout.getLeading() + layout.getAscent();
+                        drawPosY -= firstLineHeight;
                     } else if (j != 0) {
-                        drawPosY += layout.getDescent() + layout.getLeading() + layout.getAscent();
+                        drawPosY += firstLineHeight;
                     }
                     
                     float drawPosX;
@@ -221,8 +221,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                     }
                     
                     // Check if the target is in range
-                    if (drawPosY + layout.getAscent() >= 0
-                            || (drawPosY + layout.getDescent() + layout.getLeading()) <= formatHeight) {
+                    if (drawPosY + layout.getAscent()  + layout.getLeading() >= 0
+                            || (drawPosY + layout.getDescent()) <= formatHeight) {
                         
                         // If the selection includes this line
                         if (useStartLine <= i && useEndLine >= i) {
@@ -248,8 +248,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                                 final int trans = (int) (layout.getLeading() + layout.getAscent() + drawPosY);
                                 final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
                                 
-                                graphics2D.setColor(UIManager.getColor("TextPane.selectionForeground"));
-                                graphics2D.setBackground(UIManager.getColor("TextPane.selectionBackground"));
+                                graphics2D.setColor(UIManager.getColor("TextPane.selectionBackground"));
+                                graphics2D.setBackground(UIManager.getColor("TextPane.selectionForeground"));
                                 
                                 graphics2D.translate(0, trans);
                                 graphics2D.fill(shape);
@@ -262,13 +262,11 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                         layout.draw(graphics2D, drawPosX, drawPosY + layout.getAscent());
                         textLayouts.put(layout, new LineInfo(i, j));
                         positions.put(new Rectangle(
-                                (int) drawPosX, (int) drawPosY, (int) formatHeight,
-                                (int) (layout.getDescent() + layout.getLeading() + layout.getAscent())
-                                ), layout);
+                                (int) drawPosX, (int) drawPosY, 
+                                (int) formatHeight, firstLineHeight), layout);
                         if (isHyperlink) {
-                            hyperlinks.put(layout, new Rectangle((int) drawPosX, (int) drawPosY,
-                                    (int) formatWidth,
-                                    (int) (layout.getDescent() + layout.getLeading() + layout.getAscent())));
+                            hyperlinks.put(layout, new Rectangle((int) drawPosX, 
+                                    (int) drawPosY, (int) formatWidth, firstLineHeight));
                         }
                     }
                     
