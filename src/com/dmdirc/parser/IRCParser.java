@@ -1248,6 +1248,7 @@ public final class IRCParser implements Runnable {
 	 * @return true if name is valid on the current connection, false otherwise. (Always true before 005/noMOTD/MOTDEnd)
 	 */
 	public boolean isValidChannelName(final String sChannelName) {
+		if (sChannelName == null || sChannelName.size() == 0) { return false; }
 		return hChanPrefix.size() == 0 || hChanPrefix.containsKey(sChannelName.charAt(0));
 	}
 	
