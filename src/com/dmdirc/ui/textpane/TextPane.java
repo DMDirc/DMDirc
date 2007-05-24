@@ -22,7 +22,9 @@
 
 package com.dmdirc.ui.textpane;
 
+import com.dmdirc.ui.messages.Styliser;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
@@ -35,6 +37,7 @@ import java.text.AttributedString;
 import javax.swing.BorderFactory;
 
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JScrollBar;
 import javax.swing.event.EventListenerList;
 
@@ -200,6 +203,11 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void clear() {
         document.clear();
         setScrollBarPosition(0);
+    }
+    
+    /** Clears the selection. */
+    public void clearSelection() {
+        canvas.clearSelection();
     }
     
     /**

@@ -22,8 +22,10 @@
 
 package com.dmdirc.ui.textpane;
 
+import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -42,7 +44,7 @@ public final class IRCDocument {
     final private List<AttributedString> iterators;
     
     /** Creates a new instance of IRCDocument. */
-    public IRCDocument() {
+    protected IRCDocument() {
         iterators = new ArrayList<AttributedString>();
     }
     
@@ -51,7 +53,7 @@ public final class IRCDocument {
      *
      * @return Number of lines
      */
-    public int getNumLines() {
+    protected int getNumLines() {
         return iterators.size();
     }
     
@@ -60,10 +62,14 @@ public final class IRCDocument {
      *
      * @param lineNumber Line number to retrieve
      *
-     * @return Line at the specified number
+     * @return Line at the specified number or null
      */
-    public AttributedString getLine(final int lineNumber) {
-        return iterators.get(lineNumber);
+    protected AttributedString getLine(final int lineNumber) {
+        if (iterators.size() > lineNumber) {
+            return iterators.get(lineNumber);
+        } else {
+            return null;
+        }
     }
     
     /**

@@ -457,4 +457,11 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
             return new int[]{selStartLine, selStartChar, selEndLine, selEndChar, };
         }
     }
+
+    /** Clears the selection. */
+    protected void clearSelection() {
+        System.out.println("clearing selection");
+        selEndLine = selStartLine;
+        selEndChar = selStartChar;
+    }
 }

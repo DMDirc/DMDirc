@@ -24,6 +24,7 @@ package com.dmdirc.ui.components;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
+import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.HeadlessException;
@@ -204,7 +205,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 for (String myLine : line.split("\n")) {
                     if (timestamp) {
                         String ts = Formatter.formatMessage("timestamp", new Date());
-                        Styliser.addStyledString(getTextPane(), ts + myLine);
+                        Styliser.addStyledString(getTextPane(), new String[]{ts, myLine, });
                     } else {
                         Styliser.addStyledString(getTextPane(), myLine);
                     }
@@ -529,6 +530,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     public void mouseReleased(final MouseEvent mouseEvent) {
         if (Config.getOptionBool("ui", "quickCopy")) {
             getTextPane().copy();
+            getTextPane().clearSelection();
         }
         processMouseEvent(mouseEvent);
     }

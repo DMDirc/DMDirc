@@ -87,39 +87,72 @@ public final class Styliser {
      * @param add The line to be stylised and added
      */
     public static void addStyledString(final TextPane doc, final String add) {
+        final AttributedString text = styledDocumentToAttributedString(getStyledString(new String[]{add, }));
+        
+        if (text.getIterator().getEndIndex() == 0) {
+            doc.addText("\n");
+        } else {
+            doc.addText(text);
+        }
+    }
+    
+    /**
+     * Stylises the specified string and adds it to the passed TextPane.
+     * @param doc The document which the output should be added to
+     * @param attrStrings The strings to be stylised and added to a line
+     */
+    public static void addStyledString(final TextPane doc, final String[] strings) {        
+        final AttributedString text = styledDocumentToAttributedString(getStyledString(strings));
+        
+        if (text.getIterator().getEndIndex() == 0) {
+            doc.addText(new AttributedString("\n"));
+        } else {
+            doc.addText(text);
+        }
+    }
+    
+    /**
+     * Stylises the specified string.
+     * @param add The line to be stylised
+     */
+    public static StyledDocument getStyledString(final String[] strings) {
         final StyledDocument styledDoc = new DefaultStyledDocument();
         
-        AttributedString attString = null;
-        
-        //Do the old styliser method of adding to a StyledDocument
-        try {
-            int offset = styledDoc.getLength();
-            int position = 0;
-            
-            final String target = add.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
-            
-            final SimpleAttributeSet attribs = new SimpleAttributeSet();
-            
-            while (position < target.length()) {
-                final String next = readUntilControl(target.substring(position));
+        for (String string : strings) {
+            try {
+                int offset = styledDoc.getLength();
+                int position = 0;
                 
-                styledDoc.insertString(offset, next, attribs);
+                final String target = string.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
                 
-                position += next.length();
-                offset += next.length();
+                final SimpleAttributeSet attribs = new SimpleAttributeSet();
                 
-                if (position < target.length()) {
-                    position += readControlChars(target.substring(position),
-                            attribs, position == 0);
+                while (position < target.length()) {
+                    final String next = readUntilControl(target.substring(position));
+                    
+                    styledDoc.insertString(offset, next, attribs);
+                    
+                    position += next.length();
+                    offset += next.length();
+                    
+                    if (position < target.length()) {
+                        position += readControlChars(target.substring(position),
+                                attribs, position == 0);
+                    }
                 }
+                
+            } catch (BadLocationException ex) {
+                Logger.error(ErrorLevel.WARNING, "Unable to insert styled string", ex);
             }
-            
-        } catch (BadLocationException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to insert styled string", ex);
         }
-        
+        return styledDoc;
+    }
+    
+    /** Converts a StyledDocument into an AttributedString. */
+    private static AttributedString styledDocumentToAttributedString(final StyledDocument doc) {
         //Now lets get hacky, loop through the styled document and add all styles to an attributedString
-        final Element line = styledDoc.getParagraphElement(0);
+        AttributedString attString = null;
+        final Element line = doc.getParagraphElement(0);
         try {
             attString = new AttributedString(line.getDocument().getText(0, line.getDocument().getLength()));
         } catch (BadLocationException ex) {
@@ -159,11 +192,7 @@ public final class Styliser {
             }
         }
         
-        if (stipControlCodes(add).length() == 0) {
-            doc.addText("\n");
-        } else {
-            doc.addText(attString);
-        }
+        return attString;
     }
     
     /**
