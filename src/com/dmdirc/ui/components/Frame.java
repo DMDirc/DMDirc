@@ -615,7 +615,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
                 event.setSource(getInputField());
                 getInputField().requestFocus();
-                if (robot != null) {
+                if (robot != null && event.getKeyCode() != KeyEvent.VK_UNDEFINED) {
                     robot.keyPress(event.getKeyCode());
                     if (event.getKeyCode() == KeyEvent.VK_SHIFT) {
                         robot.keyRelease(event.getKeyCode());
