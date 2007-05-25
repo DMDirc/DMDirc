@@ -336,8 +336,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                     selEndLine = info[0];
                     selStartChar = 0;
                     selEndChar = clickedText.length();
+                } else {
+                    checkClickedText(clickedText.substring(start, end));
                 }
-                checkClickedText(clickedText.substring(start, end));
             }
         }
         e.setSource(textPane);
