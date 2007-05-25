@@ -234,8 +234,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public String getTextFromLine(final AttributedCharacterIterator iterator,
             final int start, final int end) {
         final StringBuffer text = new StringBuffer();
-        for (iterator.setIndex(iterator.getBeginIndex());
-        iterator.getIndex() < iterator.getEndIndex(); iterator.next()) {
+        for (iterator.setIndex(start); iterator.getIndex() < end; iterator.next()) {
             text.append(iterator.current());
         }
         return text.toString();

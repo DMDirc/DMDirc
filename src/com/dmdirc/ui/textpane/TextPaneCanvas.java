@@ -42,6 +42,7 @@ import javax.swing.UIManager;
 import javax.swing.event.MouseInputListener;
 
 import com.dmdirc.ui.messages.Styliser;
+import java.awt.geom.Rectangle2D;
 import java.util.regex.Pattern;
 
 /** Canvas object to draw text. */
@@ -161,6 +162,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         
         // Iterate through the lines
         if (document.getNumLines() > 0) {
+            
+            //int firstLineHeight = 0;
+                        
             for (int i = startLine; i >= 0; i--) {
                 final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
                 paragraphStart = iterator.getBeginIndex();
@@ -170,13 +174,14 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                 
                 int wrappedLine = 0;
                 int height = 0;
+                //This needs to be moved to line 166, but that requires me changing the lines height.
                 int firstLineHeight = 0;
                 
                 // Work out the number of lines this will take
                 while (lineMeasurer.getPosition() < paragraphEnd) {
                     final TextLayout layout = lineMeasurer.nextLayout(formatWidth);
-                    if (wrappedLine == 0) {
-                        firstLineHeight = (int) (layout.getDescent() + layout.getDescent() + layout.getLeading() + layout.getAscent());
+                    if (firstLineHeight == 0) {
+                        firstLineHeight = (int) (layout.getDescent() + layout.getLeading() + layout.getAscent());
                     }
                     height += firstLineHeight;
                     wrappedLine++;
@@ -221,8 +226,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                     }
                     
                     // Check if the target is in range
-                    if (drawPosY + layout.getAscent()  + layout.getLeading() >= 0
-                            || (drawPosY + layout.getDescent()) <= formatHeight) {
+                    if (drawPosY >= 0 || drawPosY <= formatHeight) {
                         
                         // If the selection includes this line
                         if (useStartLine <= i && useEndLine >= i) {
@@ -245,7 +249,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                             
                             // If the selection includes the chars we're showing
                             if (lastChar > chars && firstChar < chars + layout.getCharacterCount()) {
-                                final int trans = (int) (layout.getLeading() + layout.getAscent() + drawPosY);
+                                final int trans = (int) (firstLineHeight + drawPosY);
                                 final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
                                 
                                 graphics2D.setColor(UIManager.getColor("TextPane.selectionBackground"));
@@ -258,14 +262,14 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                         }
                         
                         graphics2D.setColor(Color.BLACK);
-                        
+
                         layout.draw(graphics2D, drawPosX, drawPosY + layout.getAscent());
                         textLayouts.put(layout, new LineInfo(i, j));
                         positions.put(new Rectangle(
-                                (int) drawPosX, (int) drawPosY, 
+                                (int) drawPosX, (int) drawPosY,
                                 (int) formatHeight, firstLineHeight), layout);
                         if (isHyperlink) {
-                            hyperlinks.put(layout, new Rectangle((int) drawPosX, 
+                            hyperlinks.put(layout, new Rectangle((int) drawPosX,
                                     (int) drawPosY, (int) formatWidth, firstLineHeight));
                         }
                     }
@@ -405,7 +409,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
      */
     public void checkClickedText(final String clickedText) {
         final Matcher matcher = Pattern.compile(Styliser.URL_REGEXP).matcher(clickedText);
-        if (matcher.find()) {
+        if (matcher.find(0)) {
             fireHyperlinkClicked(matcher.group());
         } else if (textPane.isValidChannel(clickedText)) {
             fireChannelClicked(clickedText);
@@ -453,7 +457,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
      * @param text word clicked on
      */
     private void fireHyperlinkClicked(final String text) {
-        textPane.fireChannelClicked(text);
+        textPane.fireHyperlinkClicked(text);
     }
     
     /**
