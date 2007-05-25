@@ -22,7 +22,8 @@
 
 package com.dmdirc.ui.textpane;
 
-import java.awt.Color;
+import com.dmdirc.ui.messages.Styliser;
+
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -36,14 +37,11 @@ import java.text.AttributedCharacterIterator.Attribute;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.event.MouseInputListener;
-
-import com.dmdirc.ui.messages.Styliser;
-import java.awt.geom.Rectangle2D;
-import java.util.regex.Pattern;
 
 /** Canvas object to draw text. */
 class TextPaneCanvas extends JPanel implements MouseInputListener {
@@ -261,7 +259,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                             }
                         }
                         
-                        graphics2D.setColor(Color.BLACK);
+                        graphics2D.setColor(textPane.getForeground());
                         
                         layout.draw(graphics2D, drawPosX, drawPosY + layout.getAscent());
                         textLayouts.put(layout, new LineInfo(i, j));
