@@ -177,10 +177,12 @@ public final class AboutDialog extends JDialog implements ActionListener,
     
     /** {@inheritDoc}. */
     public void mousePressed(final MouseEvent e) {
+        //Ignore
     }
     
     /** {@inheritDoc}. */
     public void mouseReleased(final MouseEvent e) {
+        //Ignore
     }
     
     /** {@inheritDoc}. */

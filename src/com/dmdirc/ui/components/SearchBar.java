@@ -45,7 +45,7 @@ import static com.dmdirc.ui.UIUtilities.layoutGrid;
 /**
  * Status bar, shows message and info on the gui.
  */
-public final class SearchBar extends JPanel implements ActionListener, 
+public final class SearchBar extends JPanel implements ActionListener,
         KeyListener {
     
     /**
@@ -55,11 +55,11 @@ public final class SearchBar extends JPanel implements ActionListener,
      */
     private static final long serialVersionUID = 3;
     
+    /** Frame parent. */
+    private final Frame parent;
+    
     /** Close button. */
     private JButton closeButton;
-    
-    /** Search button. */
-    private JButton searchButton;
     
     /** Next match button. */
     private JButton nextButton;
@@ -73,8 +73,13 @@ public final class SearchBar extends JPanel implements ActionListener,
     /** Search text field. */
     private JTextField searchBox;
     
-    /** Frame parent. */
-    private final Frame parent;
+    /** Direction used for searching. */
+    private enum Direction {
+        /** Move up through the document. */
+        UP,
+        /** Move down through the document. */
+        DOWN,
+    };
     
     /**
      * Creates a new instance of StatusBar.
@@ -93,22 +98,17 @@ public final class SearchBar extends JPanel implements ActionListener,
     /** Initialises components. */
     private void initComponents() {
         closeButton = new JButton();
-        searchButton = new JButton();
         nextButton = new JButton();
         prevButton = new JButton();
         caseCheck = new JCheckBox();
         searchBox = new JTextField();
         
-        searchButton.setText("Search");
         nextButton.setText("Next");
         prevButton.setText("Prev");
         caseCheck.setText("Case sensitive");
         
         closeButton.setMargin(new Insets(0, 0, 0, 0));
         closeButton.setPreferredSize(new Dimension(50, 0));
-        
-        searchButton.setMargin(new Insets(0, 0, 0, 0));
-        searchButton.setPreferredSize(new Dimension(50, 0));
         
         nextButton.setMargin(new Insets(0, 0, 0, 0));
         nextButton.setPreferredSize(new Dimension(50, 0));
@@ -140,12 +140,11 @@ public final class SearchBar extends JPanel implements ActionListener,
         
         add(closeButton);
         add(searchBox);
-        add(searchButton);
         add(nextButton);
         add(prevButton);
         add(caseCheck);
         
-        layoutGrid(this, 1, 6, SMALL_BORDER, 0, SMALL_BORDER, SMALL_BORDER);
+        layoutGrid(this, 1, 5, SMALL_BORDER, 0, SMALL_BORDER, SMALL_BORDER);
     }
     
     /** Adds listeners to components. */
@@ -153,12 +152,20 @@ public final class SearchBar extends JPanel implements ActionListener,
         closeButton.addActionListener(this);
         this.addKeyListener(this);
         searchBox.addKeyListener(this);
+        nextButton.addActionListener(this);
+        prevButton.addActionListener(this);
     }
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == closeButton) {
             close();
+        } else if (e.getSource() == nextButton) {
+            search(Direction.UP, parent.getTextPane().getLastVisibleLine(),
+                    searchBox.getText(), caseCheck.isSelected());
+        } else if (e.getSource() == prevButton) {
+            search(Direction.DOWN, parent.getTextPane().getLastVisibleLine(),
+                    searchBox.getText(), caseCheck.isSelected());
         }
     }
     
@@ -167,6 +174,7 @@ public final class SearchBar extends JPanel implements ActionListener,
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 setVisible(true);
+                searchBox.requestFocus();
             }
         }
         );
@@ -182,8 +190,23 @@ public final class SearchBar extends JPanel implements ActionListener,
         );
     }
     
+    /**
+     * Searches the textpane for text.
+     *
+     * @param direction the direction to search from
+     * @param line the line to search from
+     * @param text the text to search for
+     * @param caseSensitive whether the search is case sensitive
+     */
+    public void search(final Direction direction, final int line,
+            final String text, final boolean caseSensitive) {
+        //System.out.println("Searching for '" + text + "' " + direction
+          //      + " from line " + line + " case sensitive? " + caseSensitive);
+    }
+    
     /** {@inheritDoc}. */
     public void keyTyped(final KeyEvent event) {
+        //Ignore
     }
     
     /** {@inheritDoc}. */
@@ -195,5 +218,6 @@ public final class SearchBar extends JPanel implements ActionListener,
     
     /** {@inheritDoc}. */
     public void keyReleased(final KeyEvent event) {
+        //Ignore
     }
 }

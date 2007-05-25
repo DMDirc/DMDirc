@@ -156,7 +156,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.setRowHeight(0);
         tree.setShowsRootHandles(false);
         tree.setOpaque(true);
-        tree.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
+        tree.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         tree.setVisible(true);
         
@@ -608,7 +608,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     /**
      * Activates the node above or below the active node in the tree.
      *
-     *@param direction true = up, false = down.
+     * @param direction true = up, false = down.
      */
     private void changeFocus(final boolean direction) {
         DefaultMutableTreeNode thisNode, nextNode;
@@ -630,50 +630,95 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         //are we going up or down?
         if (direction) {
             //up
-            if (thisNode.getUserObject() instanceof Server) {
-                if (thisNode.getParent().getIndex(thisNode) == 0) {
-                    //first server - last child of parent's last child
-                    nextNode = (DefaultMutableTreeNode)
-                    ((DefaultMutableTreeNode) ((DefaultMutableTreeNode)
-                    thisNode.getParent()).getLastChild()).getLastChild();
-                } else {
-                    //other servers - last child of previous sibling
-                    nextNode = (DefaultMutableTreeNode)
-                    (thisNode.getPreviousSibling()).getLastChild();
-                }
-            } else {
-                if (thisNode.getParent().getIndex(thisNode) == 0) {
-                    //first frame - parent
-                    nextNode = (DefaultMutableTreeNode) thisNode.getParent();
-                } else {
-                    //other frame - previous sibling
-                    nextNode = thisNode.getPreviousSibling();
-                }
-            }
+            nextNode = changeFocusUp(thisNode);
         } else {
             //down
-            if (thisNode.getUserObject() instanceof Server) {
-                //all servers - get the first child
-                nextNode = (DefaultMutableTreeNode) thisNode.getFirstChild();
-            } else {
-                if (thisNode.getParent().getIndex(thisNode)
-                == thisNode.getParent().getChildCount() - 1) {
-                    //last frame - get the parents next sibling
-                    nextNode = ((DefaultMutableTreeNode) thisNode.getParent()).getNextSibling();
-                    //parent doesnt have a next sibling, get the first child of the grandparent
-                    if (nextNode == null) {
-                        nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
-                        thisNode.getParent().getParent()).getFirstChild();
-                    }
-                } else {
-                    //other frames - get the next sibling
-                    nextNode = thisNode.getNextSibling();
-                }
-            }
+            nextNode = changeFocusDown(thisNode);
         }
         //activate the nodes frame
         //((FrameContainer) nextNode.getUserObject()).activateFrame();
+        
         tree.setSelectionPath(new TreePath(nextNode));
+    }
+    
+    /** 
+     * Changes the tree focus up
+     *
+     * @param node Start node
+     *
+     * @return next node
+     */
+    private DefaultMutableTreeNode changeFocusUp(final DefaultMutableTreeNode node) {
+        DefaultMutableTreeNode thisNode, nextNode;
+        
+        thisNode = node;
+        
+        if (thisNode.getUserObject() instanceof Server) {
+            if (thisNode.getParent().getIndex(thisNode) == 0) {
+                //first server - last child of parent's last child
+                nextNode = ((DefaultMutableTreeNode) ((DefaultMutableTreeNode)
+                thisNode.getParent()).getLastChild());
+                if (nextNode.getChildCount() > 0) {
+                    nextNode = (DefaultMutableTreeNode) nextNode.getLastChild();
+                }
+            } else {
+                //other servers - last child of previous sibling
+                nextNode = (DefaultMutableTreeNode)
+                (thisNode.getPreviousSibling()).getLastChild();
+            }
+        } else {
+            if (thisNode.getParent().getIndex(thisNode) == 0) {
+                //first frame - parent
+                nextNode = (DefaultMutableTreeNode) thisNode.getParent();
+            } else {
+                //other frame - previous sibling
+                nextNode = thisNode.getPreviousSibling();
+            }
+        }
+        
+        return nextNode;
+    }
+    
+    /** 
+     * Changes the tree focus down
+     *
+     * @param node Start node
+     *
+     * @return next node
+     */
+    private DefaultMutableTreeNode changeFocusDown(final DefaultMutableTreeNode node) {
+        DefaultMutableTreeNode thisNode, nextNode;
+        
+        thisNode = node;
+        
+        if (thisNode.getUserObject() instanceof Server) {
+            if (thisNode.getChildCount() > 0) {
+                //server has frames, use first
+                nextNode = (DefaultMutableTreeNode) thisNode.getFirstChild();
+            } else {
+                //server has no frames, use next server
+                nextNode = ((DefaultMutableTreeNode) thisNode.getParent()).getNextSibling();
+                //no next server, use first
+                if (nextNode == null) {
+                    nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) thisNode.getParent()).getFirstChild();
+                }
+            }
+        } else {
+            if (thisNode.getParent().getIndex(thisNode) == thisNode.getParent().getChildCount() - 1) {
+                //last frame - get the parents next sibling
+                nextNode = ((DefaultMutableTreeNode) thisNode.getParent()).getNextSibling();
+                //parent doesnt have a next sibling, get the first child of the grandparent
+                if (nextNode == null) {
+                    nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
+                    thisNode.getParent().getParent()).getFirstChild();
+                }
+            } else {
+                //other frames - get the next sibling
+                nextNode = thisNode.getNextSibling();
+            }
+        }
+        
+        return nextNode;
     }
     
     /**

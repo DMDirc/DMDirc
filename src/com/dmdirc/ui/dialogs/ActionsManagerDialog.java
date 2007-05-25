@@ -287,9 +287,7 @@ public final class ActionsManagerDialog extends StandardDialog
                 loadGroups();
             }
         } else if (e.getActionCommand().equals("group.delete")) {
-            final String group = groups.getTitleAt(groups.getSelectedIndex());
-            final Map<String, List<Action>> actionGroups = ActionManager.getGroups();
-            
+            final String group = groups.getTitleAt(groups.getSelectedIndex());            
             final int response = JOptionPane.showConfirmDialog(this,
                     "Are you sure you wish to delete the '" + group
                     + "' group and all actions within it?",
@@ -300,7 +298,6 @@ public final class ActionsManagerDialog extends StandardDialog
             }
         } else if (e.getActionCommand().equals("group.rename")) {
             final String group = groups.getTitleAt(groups.getSelectedIndex());
-            final Map<String, List<Action>> actionGroups = ActionManager.getGroups();
             
             final String newName = JOptionPane.showInputDialog(this,
                     "Please enter a new name for the '" + group

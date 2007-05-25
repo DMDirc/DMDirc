@@ -131,6 +131,16 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         canvas.setScrollBarPosition(position);
     }
     
+    /**
+     * Returns the last visible line in the textpane.
+     *
+     * @return Last visible line index
+     */
+    public int getLastVisibleLine() {
+        return scrollBar.getValue();
+    }
+    
+    /** Sets the scrollbar to the maximum position. */
     public void setScrollBarMax() {
         final int lines = document.getNumLines();
         if (lines <= 1) {

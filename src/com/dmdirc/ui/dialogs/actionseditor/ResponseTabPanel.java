@@ -73,7 +73,6 @@ public final class ResponseTabPanel extends JPanel {
         this.owner = owner;
         
         initComponents();
-        addListeners();
         layoutComponents();
     }
     
@@ -123,10 +122,6 @@ public final class ResponseTabPanel extends JPanel {
         } else {
             formatter.setSelectedItem(owner.getAction().getNewFormat());
         }
-    }
-    
-    /** Adds listeners to the components. */
-    private void addListeners() {
     }
     
     /** Lays out components. */

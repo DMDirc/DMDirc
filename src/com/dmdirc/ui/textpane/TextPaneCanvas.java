@@ -43,6 +43,8 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.event.MouseInputListener;
 
+import com.dmdirc.ui.messages.Styliser;
+
 /** Canvas object to draw text. */
 class TextPaneCanvas extends JPanel implements MouseInputListener {
     
