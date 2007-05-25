@@ -229,7 +229,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         serverInfo.setSSL(ssl);
         parser = new IRCParser(myInfo, serverInfo).setCreateFake(true);
         
-        if (raw == null) {
+        if (raw == null && Config.getOptionBool("general", "showrawwindow")) {
             raw = new Raw(this);
             MainFrame.getMainFrame().getFrameManager().addRaw(this, raw);
         }
