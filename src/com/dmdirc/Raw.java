@@ -22,16 +22,19 @@
 
 package com.dmdirc;
 
-import java.net.URL;
-
-import javax.swing.ImageIcon;
-
 import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.callbacks.CallbackNotFound;
 import com.dmdirc.parser.callbacks.interfaces.IDataIn;
 import com.dmdirc.parser.callbacks.interfaces.IDataOut;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.ServerFrame;
+
+import java.net.URL;
+
+import javax.swing.ImageIcon;
 
 /**
  * Handles the raw window (which shows the user raw data being sent and
@@ -66,6 +69,13 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
         MainFrame.getMainFrame().addChild(frame);
         frame.setTabCompleter(server.getTabCompleter());
         frame.setFrameIcon(imageIcon);
+        
+        try {
+            server.getParser().getCallbackManager().addCallback("OnDataIn", this);
+            server.getParser().getCallbackManager().addCallback("OnDataOut", this);
+        } catch (CallbackNotFound ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to register raw callbacks", ex);
+        }
         
         frame.open();
     }

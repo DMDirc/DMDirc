@@ -238,9 +238,6 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
             for(String callback : callbacks) {
                 parser.getCallbackManager().addCallback(callback, this);
             }
-            
-            parser.getCallbackManager().addCallback("OnDataIn", raw);
-            parser.getCallbackManager().addCallback("OnDataOut", raw);
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.FATAL, "Unable to register server event handlers", ex);
         }
