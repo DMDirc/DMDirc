@@ -55,7 +55,7 @@ public final class CallbackOnAwayState extends CallbackObject {
 			try {
 				((IAwayState) callbackInfo.get(i)).onAwayState(myParser, currentState, reason);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onAwayState");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onAwayState", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

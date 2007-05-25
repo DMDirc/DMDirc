@@ -62,7 +62,7 @@ public final class CallbackOnChannelNickChanged extends CallbackObjectSpecific {
 			try {
 				eMethod.onChannelNickChanged(myParser, cChannel, cChannelClient, sOldNick);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelNickChanged");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelNickChanged", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

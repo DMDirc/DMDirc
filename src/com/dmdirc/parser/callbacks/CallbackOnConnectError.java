@@ -54,7 +54,7 @@ public final class CallbackOnConnectError extends CallbackObject {
 			try {
 				((IConnectError) callbackInfo.get(i)).onConnectError(myParser, errorInfo);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onConnectError");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onConnectError", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

@@ -53,7 +53,7 @@ public final class CallbackOnServerReady extends CallbackObject {
 			try {
 				((IServerReady) callbackInfo.get(i)).onServerReady(myParser);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onServerReady");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onServerReady", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

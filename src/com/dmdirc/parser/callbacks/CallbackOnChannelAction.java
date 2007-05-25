@@ -66,7 +66,7 @@ public final class CallbackOnChannelAction extends CallbackObjectSpecific {
 			try {
 				eMethod.onChannelAction(myParser, cChannel, cChannelClient, sMessage, sHost);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelAction");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelAction", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

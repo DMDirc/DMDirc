@@ -59,7 +59,7 @@ public class ProcessNick extends IRCProcessor {
 			iClient.setUserBits(token[token.length-1],true);
 			// Readd the client
 			if (!isSameNick && myParser.getClientInfo(iClient.getNickname()) != null) {
-				myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL, "Nick change would overwrite existing client. ["+token[0]+" -> "+token[token.length-1]+"]"));
+				myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL, "Nick change would overwrite existing client. ["+token[0]+" -> "+token[token.length-1]+"]", myParser.getLastLine()));
 				myParser.disconnect("Fatal Parser Error");
 			} else {
 				if (!isSameNick) {

@@ -291,7 +291,7 @@ public final class ClientInfo {
 	 * @return Boolean to see if client is still visable.
 	 */
 	public boolean checkVisibility() {
-		return myChannelClientInfos.isEmpty();
+		return !myChannelClientInfos.isEmpty();
 	}
 	
 	/**

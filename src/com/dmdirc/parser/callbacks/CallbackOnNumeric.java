@@ -55,7 +55,7 @@ public final class CallbackOnNumeric extends CallbackObject {
 			try {
 				((INumeric) callbackInfo.get(i)).onNumeric(myParser, numeric, token);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onNumeric");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onNumeric", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

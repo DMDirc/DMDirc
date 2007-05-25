@@ -56,7 +56,7 @@ public final class CallbackOnUnknownAction extends CallbackObject {
 			try {
 				((IUnknownAction) callbackInfo.get(i)).onUnknownAction(myParser, sMessage, sTarget, sHost);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onUnknownAction");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onUnknownAction", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

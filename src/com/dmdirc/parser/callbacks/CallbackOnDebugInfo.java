@@ -50,12 +50,13 @@ public final class CallbackOnDebugInfo extends CallbackObject {
 	 * @return true if a callback was called, else false
 	 */
 	public boolean call(final int level, final String data) {
+System.out.printf("[%d] %s\n", level, data);
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
 				((IDebugInfo) callbackInfo.get(i)).onDebugInfo(myParser, level, data);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onDebugInfo");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onDebugInfo", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

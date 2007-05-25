@@ -61,7 +61,7 @@ public final class CallbackOnChannelAwayStateOther extends CallbackObjectSpecifi
 			try {
 				eMethod.onChannelAwayStateOther(myParser, channel, channelClient, state);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelAwayStateOther");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelAwayStateOther", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

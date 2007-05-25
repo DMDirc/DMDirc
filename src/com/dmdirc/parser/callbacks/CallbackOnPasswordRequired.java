@@ -53,7 +53,7 @@ public final class CallbackOnPasswordRequired extends CallbackObject {
 			try {
 				((IPasswordRequired) callbackInfo.get(i)).onPasswordRequired(myParser);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onPasswordRequired");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onPasswordRequired", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

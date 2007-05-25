@@ -101,7 +101,7 @@ public class ProcessMode extends IRCProcessor {
 		
 		iChannel = getChannelInfo(sChannelName);
 		if (iChannel == null) { 
-			callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got modes for channel ("+sChannelName+") that I am not on."));
+			callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got modes for channel ("+sChannelName+") that I am not on.", myParser.getLastLine()));
 			iChannel = new ChannelInfo(myParser, sChannelName);
 			myParser.hChannelList.put(iChannel.getName().toLowerCase(),iChannel);
 		}
@@ -133,10 +133,10 @@ public class ProcessMode extends IRCProcessor {
 					iChannelClientInfo = iChannel.getUser(sModeParam);
 					if (iChannelClientInfo == null) {
 						// Client not known?
-						callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got mode for client not known on channel - Added"));
+						callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got mode for client not known on channel - Added", myParser.getLastLine()));
 						iClient = getClientInfo(sModeParam);
 						if (iClient == null) { 
-							callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got mode for client not known at all - Added"));
+							callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got mode for client not known at all - Added", myParser.getLastLine()));
 							iClient = new ClientInfo(myParser, sModeParam);
 							myParser.hClientList.put(iClient.getNickname().toLowerCase(),iClient);
 						}
@@ -151,7 +151,7 @@ public class ProcessMode extends IRCProcessor {
 					continue;
 				} else {
 					// unknown mode - add as boolean
-					callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got unknown mode "+cMode+" - Added as boolean mode"));
+					callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got unknown mode "+cMode+" - Added as boolean mode", myParser.getLastLine()));
 					myParser.hChanModesBool.put(cMode,myParser.nNextKeyCMBool);
 					nValue = myParser.nNextKeyCMBool;
 					bBooleanMode = true;
@@ -232,7 +232,7 @@ public class ProcessMode extends IRCProcessor {
 				if (myParser.hUserModes.containsKey(cMode)) { nValue = myParser.hUserModes.get(cMode); }
 				else {
 					// Unknown mode
-					callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got unknown user mode "+cMode+" - Added"));
+					callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got unknown user mode "+cMode+" - Added", myParser.getLastLine()));
 					myParser.hUserModes.put(cMode,myParser.nNextKeyUser);
 					nValue = myParser.nNextKeyUser;
 					myParser.nNextKeyUser = myParser.nNextKeyUser*2;

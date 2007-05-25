@@ -185,7 +185,7 @@ public final class IRCParser implements Runnable {
 	protected Hashtable<Character, Byte> hChanModesOther = new Hashtable<Character, Byte>();
 	
 	/** The last line of input recieved from the server */
-	protected String lastLine;
+	protected String lastLine = "";
 	
 	/**
 	* Channel Prefixes (ie # + etc).
@@ -482,6 +482,7 @@ public final class IRCParser implements Runnable {
 		nNextKeyUser = 1;
 		sServerName = "";
 		sNetworkName = "";
+		lastLine = "";
 	}
 
 	
@@ -714,7 +715,7 @@ public final class IRCParser implements Runnable {
 	 *
 	 * @return the last line of input recieved from the server.
 	 */
-	public String getlastLine() {
+	public String getLastLine() {
 		return lastLine;
 	}
 	
@@ -767,7 +768,7 @@ public final class IRCParser implements Runnable {
 				}
 			}
 		} catch (Exception e) {
-			final ParserError ei = new ParserError(ParserError.ERROR_FATAL, "Exception in Parser. {" + line + "}");
+			final ParserError ei = new ParserError(ParserError.ERROR_FATAL, "Exception in Parser.", lastLine);
 			ei.setException(e);
 			callErrorInfo(ei);
 		}

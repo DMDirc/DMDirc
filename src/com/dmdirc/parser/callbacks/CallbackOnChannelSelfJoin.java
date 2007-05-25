@@ -55,7 +55,7 @@ public final class CallbackOnChannelSelfJoin extends CallbackObject {
 			try {
 				((IChannelSelfJoin) callbackInfo.get(i)).onChannelSelfJoin(myParser, cChannel);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelSelfJoin");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onChannelSelfJoin", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

@@ -55,7 +55,7 @@ public final class CallbackOnDataOut extends CallbackObject {
 			try {
 				((IDataOut) callbackInfo.get(i)).onDataOut(myParser, data, fromParser);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onDataOut");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onDataOut", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}

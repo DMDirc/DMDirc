@@ -59,7 +59,7 @@ public final class CallbackOnPrivateCTCP extends CallbackObjectSpecific {
 			try {
 				eMethod.onPrivateCTCP(myParser, sType, sMessage, sHost);
 			} catch (Exception e) {
-				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onPrivateCTCP");
+				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onPrivateCTCP", myParser.getLastLine());
 				ei.setException(e);
 				callErrorInfo(ei);
 			}
