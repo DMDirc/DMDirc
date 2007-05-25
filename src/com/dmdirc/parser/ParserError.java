@@ -46,7 +46,10 @@ public final class ParserError {
 	private String errorData;
 	/** Store the Exception object. */
 	private Exception exceptionInfo;
-
+	
+	/** Last line of server input before this exception was triggered. */
+	private String lastLine = "";
+	
 	/**
 	 * Create a new Error.
 	 *
@@ -56,6 +59,19 @@ public final class ParserError {
 	public ParserError(final int level, final String data) {
 		errorData = data;
 		errorLevel = level;
+	}
+	
+	/**
+	 * Create a new Error.
+	 *
+	 * @param level Set the error level.
+	 * @param data String containing information about the error.
+	 * @param line The last line of data recieved from the server before this exception.
+	 */
+	public ParserError(final int level, final String data, final String line) {
+		errorData = data;
+		errorLevel = level;
+		lastLine = lastLine;
 	}
 	
 	/**
@@ -92,6 +108,15 @@ public final class ParserError {
 	 */
 	public boolean isException() {
 		return (errorLevel & ERROR_EXCEPTION) == ERROR_EXCEPTION;
+	}
+	
+	/**
+	 * Check if this error has a lastLine parameter.
+	 *
+	 * @return Returns true if getLastLine returns anything non null, non empty.
+	 */
+	public boolean hasLastLine() {
+		return (lastLine == null || lastLine.length() == 0);
 	}
 	
 	/**
@@ -133,6 +158,14 @@ public final class ParserError {
 		return errorData;
 	}
 	
+	/**
+	 * Get the last line recieved from the server before this exception.
+	 *
+	 * @return Returns the error data
+	 */
+	public String getLastLine() {
+		return lastLine;
+	}	
 	
 	/**
 	 * Get SVN Version information.

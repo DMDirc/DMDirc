@@ -50,26 +50,39 @@ public class ProcessNick extends IRCProcessor {
 		if (iClient != null) {
 			oldNickname = iClient.getNickname().toLowerCase();
 			// Remove the client from the known clients list
-			myParser.hClientList.remove(oldNickname);
-			// Change the nickame
-			iClient.setUserBits(token[2],true);
-			// Readd the client
-			myParser.hClientList.put(iClient.getNickname().toLowerCase(),iClient);
+			final boolean isSameNick = oldNickname.equalsIgnoreCase(token[token.length-1]);
 			
-			for (Enumeration e = myParser.hChannelList.keys(); e.hasMoreElements();) {
-				iChannel = myParser.hChannelList.get(e.nextElement());
-				// Find the user (using the old nickname)
-				iChannelClient = iChannel.getUser(oldNickname);
-				if (iChannelClient != null) {
-					// Rename them. This uses the old nickname (the key in the hashtable)
-					// and the channelClient object has access to the new nickname (by way
-					// of the ClientInfo object we updated above)
-					iChannel.renameClient(oldNickname, iChannelClient);
-					callChannelNickChanged(iChannel,iChannelClient,ClientInfo.parseHost(token[0]));
-				}
+			if (!isSameNick) {
+				myParser.hClientList.remove(oldNickname);
 			}
-			
-			callNickChanged(iClient, ClientInfo.parseHost(token[0]));
+			// Change the nickame
+			iClient.setUserBits(token[token.length-1],true);
+			// Readd the client
+			if (!isSameNick && myParser.getClientInfo(iClient.getNickname()) != null) {
+				myParser.callErrorInfo(new ParserError(ParserError.ERROR_FATAL, "Nick change would overwrite existing client. ["+token[0]+" -> "+token[token.length-1]+"]"));
+				myParser.disconnect("Fatal Parser Error");
+			} else {
+				if (!isSameNick) {
+					myParser.hClientList.put(iClient.getNickname().toLowerCase(),iClient);
+				}
+				
+				for (Enumeration e = myParser.hChannelList.keys(); e.hasMoreElements();) {
+					iChannel = myParser.hChannelList.get(e.nextElement());
+					// Find the user (using the old nickname)
+					iChannelClient = iChannel.getUser(oldNickname);
+					if (iChannelClient != null) {
+						// Rename them. This uses the old nickname (the key in the hashtable)
+						// and the channelClient object has access to the new nickname (by way
+						// of the ClientInfo object we updated above)
+						if (!isSameNick) {
+							iChannel.renameClient(oldNickname, iChannelClient);
+						}
+						callChannelNickChanged(iChannel,iChannelClient,ClientInfo.parseHost(token[0]));
+					}
+				}
+				
+				callNickChanged(iClient, ClientInfo.parseHost(token[0]));
+			}
 		}
 		
 	}

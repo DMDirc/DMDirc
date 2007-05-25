@@ -184,7 +184,10 @@ public final class IRCParser implements Runnable {
 */
 	protected Hashtable<Character, Byte> hChanModesOther = new Hashtable<Character, Byte>();
 	
-	/*
+	/** The last line of input recieved from the server */
+	protected String lastLine;
+	
+	/**
 	* Channel Prefixes (ie # + etc).
 	* The "value" for these is always true.
 	*/
@@ -566,17 +569,16 @@ public final class IRCParser implements Runnable {
 		// Prepare the ProcessingManager
 		myProcessingManager.init();
 		
-		String line = "";
 		while (true) {
 			try {
-				line = in.readLine(); // Blocking :/
-				if (line == null) {
+				lastLine = in.readLine(); // Blocking :/
+				if (lastLine == null) {
 					currentSocketState = STATE_CLOSED;
 					callSocketClosed();
 					reset();
 					break;
 				} else {
-					processLine(line);
+					processLine(lastLine);
 				}
 			} catch (IOException e) {
 				currentSocketState = STATE_CLOSED;
@@ -705,6 +707,15 @@ public final class IRCParser implements Runnable {
 	 */
 	public String getServerName() {
 		return sServerName;
+	}
+	
+	/**
+	 * Get the last line of input recieved from the server.
+	 *
+	 * @return the last line of input recieved from the server.
+	 */
+	public String getlastLine() {
+		return lastLine;
 	}
 	
 	/**

@@ -170,8 +170,8 @@ public final class ChannelInfo {
 	public ChannelClientInfo getUser(String sWho) {
 		sWho = ClientInfo.parseHost(sWho);
 		sWho = sWho.toLowerCase();
-		if (hChannelUserList.containsKey(sWho)) { 
-			return hChannelUserList.get(sWho); 
+		if (hChannelUserList.containsKey(sWho)) {
+			return hChannelUserList.get(sWho);
 		}
 		return null;
 	}
@@ -184,8 +184,8 @@ public final class ChannelInfo {
 	 */	
 	public ChannelClientInfo getUser(final ClientInfo cWho) {
 		for (ChannelClientInfo client : hChannelUserList.values()) {
-			if (client.getClient() == cWho) { 
-				return client; 
+			if (client.getClient() == cWho) {
+				return client;
 			}
 		}
 		return null;

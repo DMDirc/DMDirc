@@ -183,9 +183,11 @@ public final class CallbackManager {
 	 *
 	 * @param callbackName Name of callback object.
 	 * @param o instance of ICallbackInterface to add.
-	 * @throws com.dmdirc.parser.callbacks.CallbackNotFound If callback is not found.
+	 * @throws CallbackNotFound If callback is not found.
+	 * @throws NullPointerException If 'o' is null
 	 */
 	public void addCallback(final String callbackName, final ICallbackInterface o) throws CallbackNotFound {
+		if (o == null) { throw new NullPointerException("CallbackInterface is null"); }
 		final CallbackObject cb = getCallbackType(callbackName);
 		if (cb != null) { cb.add(o); }
 		else { throw new CallbackNotFound("Callback '"+callbackName+"' could not be found."); }
@@ -199,8 +201,10 @@ public final class CallbackManager {
 	 * @param o instance of ICallbackInterface to add.
 	 * @param target Parameter to specify that a callback should only fire for specific things
 	 * @throws CallbackNotFound If callback is not found.
+	 * @throws NullPointerException If 'o' is null
 	 */
 	public void addCallback(final String callbackName, final ICallbackInterface o, final String target) throws CallbackNotFound {
+		if (o == null) { throw new NullPointerException("CallbackInterface is null"); }
 		CallbackObjectSpecific cb = (CallbackObjectSpecific)getCallbackType(callbackName);
 		if (cb != null) { cb.add(o,target); }
 		else { throw new CallbackNotFound("Callback '"+callbackName+"' could not be found."); }
