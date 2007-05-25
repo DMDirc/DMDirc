@@ -164,7 +164,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         if (document.getNumLines() > 0) {
             
             //int firstLineHeight = 0;
-                        
+            
             for (int i = startLine; i >= 0; i--) {
                 final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
                 paragraphStart = iterator.getBeginIndex();
@@ -262,7 +262,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                         }
                         
                         graphics2D.setColor(Color.BLACK);
-
+                        
                         layout.draw(graphics2D, drawPosX, drawPosY + layout.getAscent());
                         textLayouts.put(layout, new LineInfo(i, j));
                         positions.put(new Rectangle(
@@ -306,27 +306,29 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         int start = -1;
         int end = -1;
         final int[] info = getClickPosition(this.getMousePosition());
-        clickedText = textPane.getTextFromLine(info[0]);
-        start = info[2];
-        end = info[2];
-        
-        if (start != -1 || end != -1) {
+        if (info[0] != -1) {
+            clickedText = textPane.getTextFromLine(info[0]);
+            start = info[2];
+            end = info[2];
             
-            // Traverse backwards
-            while (start > 0 && start < clickedText.length() && clickedText.charAt(start) != ' ') {
-                start--;
+            if (start != -1 || end != -1) {
+                
+                // Traverse backwards
+                while (start > 0 && start < clickedText.length() && clickedText.charAt(start) != ' ') {
+                    start--;
+                }
+                if (start + 1 < clickedText.length() && clickedText.charAt(start) == ' ') {
+                    start++;
+                }
+                
+                // And forwards
+                while (end < clickedText.length() && end > 0 && clickedText.charAt(end) != ' ') {
+                    end++;
+                }
+                
+                
+                checkClickedText(clickedText.substring(start, end));
             }
-            if (start + 1 < clickedText.length() && clickedText.charAt(start) == ' ') {
-                start++;
-            }
-            
-            // And forwards
-            while (end < clickedText.length() && end > 0 && clickedText.charAt(end) != ' ') {
-                end++;
-            }
-            
-            
-            checkClickedText(clickedText.substring(start, end));
         }
         e.setSource(textPane);
         textPane.dispatchEvent(e);
