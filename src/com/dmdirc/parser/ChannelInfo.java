@@ -217,7 +217,7 @@ public final class ChannelInfo {
 		if (cTemp != null) {
 			ClientInfo clTemp = cTemp.getClient();
 			clTemp.delChannelClientInfo(cTemp);
-			if (!clTemp.checkVisibility()) {
+			if (clTemp != myParser.getMyself() && !clTemp.checkVisibility()) {
 				myParser.hClientList.remove(cTemp.getNickname().toLowerCase());
 			}
 			hChannelUserList.remove(cTemp.getNickname().toLowerCase());
