@@ -24,6 +24,9 @@
 
 package com.dmdirc.parser;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,6 +59,8 @@ public final class ClientInfo {
 	private IRCParser myParser;
 	/** A Map to allow applications to attach misc data to this object */
 	private Map myMap;
+	/** List of ChannelClientInfos that point to this */
+	private Hashtable<String, ChannelClientInfo> myChannelClientInfos = new Hashtable<String, ChannelClientInfo>();
 
 	/**
 	 * Create a new client object from a hostmask.
@@ -257,32 +262,59 @@ public final class ClientInfo {
 	}
 	
 	/**
-	 * Check to see if a client is still known on any of the channels we are on.
+	 * Add a ChannelClientInfo as a known reference to this client.
 	 *
-	 * @return Boolean to see if client is still visable.
+	 * @param cci ChannelClientInfo to add as a known reference
 	 */	
-	public boolean checkVisibility() {
-		return checkVisibility(null);
+	public void addChannelClientInfo(final ChannelClientInfo cci) {
+		final String key = cci.getChannel().getName().toLowerCase();
+		if (!myChannelClientInfos.containsKey(key)) {
+			myChannelClientInfos.put(key, cci);
+		}
+	}
+	
+	/**
+	 * Remove a ChannelClientInfo as a known reference to this client.
+	 *
+	 * @param cci ChannelClientInfo to remove as a known reference
+	 */	
+	public void delChannelClientInfo(final ChannelClientInfo cci) {
+		final String key = cci.getChannel().getName().toLowerCase();
+		if (myChannelClientInfos.containsKey(key)) {
+			myChannelClientInfos.remove(key);
+		}
 	}
 	
 	/**
 	 * Check to see if a client is still known on any of the channels we are on.
 	 *
-	 * @param cChannel Channel to ignore when checking.
 	 * @return Boolean to see if client is still visable.
-	 */	
-	public boolean checkVisibility(ChannelInfo cChannel) {
-		boolean bCanSee = false;
-		ChannelClientInfo iChannelClient;
-		
-		for (ChannelInfo iChannel : myParser.hChannelList.values()) {
-			if (iChannel == cChannel) { continue; }
-			iChannelClient = iChannel.getUser(this);
-			if (iChannelClient != null) { bCanSee = true; break; }
-		}
-
-		return bCanSee;
+	 */
+	public boolean checkVisibility() {
+		return myChannelClientInfos.isEmpty();
 	}
+	
+	/**
+	 * Check how many channels this client is known on.
+	 *
+	 * @return int with the count of known channels
+	 */	
+	public int channelCount() {
+		return myChannelClientInfos.size();
+	}
+	
+	/**
+	 * Get a list of channelClients that point to this object.
+	 *
+	 * @return int with the count of known channels
+	 */	
+	public List<ChannelClientInfo> getChannelClients() {
+		ArrayList<ChannelClientInfo> result = new ArrayList<ChannelClientInfo>();
+		for (ChannelClientInfo cci : myChannelClientInfos.values()) {
+			result.add(cci);
+		}
+		return result;
+	}	
 	
 	/**
 	 * Get the parser object that owns this client

@@ -59,6 +59,7 @@ public final class ChannelClientInfo {
 		myParser = tParser;
 		cClient = client;
 		myChannel = channel;
+		cClient.addChannelClientInfo(this);
 	}
 	
 	/**

@@ -153,7 +153,8 @@ public final class ChannelInfo {
 		ClientInfo cTemp = null;
 		for (ChannelClientInfo client : hChannelUserList.values()) {
 			cTemp = client.getClient();
-			if (!cTemp.checkVisibility(this)) {
+			cTemp.delChannelClientInfo(client);
+			if (!cTemp.checkVisibility()) {
 				myParser.hClientList.remove(cTemp.getNickname().toLowerCase());
 			}
 		}
@@ -195,7 +196,7 @@ public final class ChannelInfo {
 	 *
 	 * @param cClient Client object to be added to channel
 	 * @return ChannelClientInfo object added, or an existing object if already known on channel
-	 */		
+	 */
 	protected ChannelClientInfo addClient(final ClientInfo cClient) {
 		ChannelClientInfo cTemp = getUser(cClient);
 		if (cTemp == null) { 
@@ -214,6 +215,11 @@ public final class ChannelInfo {
 		ChannelClientInfo cTemp = null;
 		cTemp = getUser(cClient);
 		if (cTemp != null) {
+			ClientInfo clTemp = cTemp.getClient();
+			clTemp.delChannelClientInfo(cTemp);
+			if (!clTemp.checkVisibility()) {
+				myParser.hClientList.remove(cTemp.getNickname().toLowerCase());
+			}
 			hChannelUserList.remove(cTemp.getNickname().toLowerCase());
 		}
 	}	
