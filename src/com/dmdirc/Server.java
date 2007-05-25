@@ -22,6 +22,19 @@
 
 package com.dmdirc;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.swing.ImageIcon;
+import javax.swing.JInternalFrame;
+import javax.swing.SwingUtilities;
+
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
@@ -61,19 +74,6 @@ import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.ServerFrame;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.Formatter;
-
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import javax.swing.ImageIcon;
-import javax.swing.JInternalFrame;
-import javax.swing.SwingUtilities;
 
 /**
  * The Server class represents the client's view of a server. It maintains
@@ -243,6 +243,10 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
             parser.getCallbackManager().addCallback("OnDataOut", raw);
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.FATAL, "Unable to register server event handlers", ex);
+        }
+        
+        for (Query query : queries.values()) {
+            query.reregister();
         }
         
         away = false;

@@ -22,10 +22,6 @@
 
 package com.dmdirc;
 
-import java.net.URL;
-
-import javax.swing.ImageIcon;
-
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
@@ -41,6 +37,10 @@ import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.QueryFrame;
 import com.dmdirc.ui.input.TabCompleter;
+
+import java.net.URL;
+
+import javax.swing.ImageIcon;
 
 /**
  * The Query class represents the client's view of a query with another user.
@@ -102,13 +102,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
         tabCompleter.addEntries(CommandManager.getQueryCommandNames());
         frame.setTabCompleter(tabCompleter);
         
-        try {
-            server.getParser().getCallbackManager().addCallback("onPrivateAction", this, ClientInfo.parseHost(host));
-            server.getParser().getCallbackManager().addCallback("onPrivateMessage", this, ClientInfo.parseHost(host));
-            server.getParser().getCallbackManager().addCallback("onNickChanged", this);
-        } catch (CallbackNotFound ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to get query events", ex);
-        }
+        reregister();
         
         updateTitle();
     }
@@ -231,11 +225,19 @@ public final class Query extends FrameContainer implements IPrivateAction,
     }
     
     /**
-     * Handles nick change events from the parser.
-     * @param parser Parser receiving the event
-     * @param client remote client changing nick
-     * @param oldNick clients old nickname
+     * Reregisters query callbacks. Called when reconnecting to the server.
      */
+    public void reregister() {
+        try {
+            server.getParser().getCallbackManager().addCallback("onPrivateAction", this, ClientInfo.parseHost(host));
+            server.getParser().getCallbackManager().addCallback("onPrivateMessage", this, ClientInfo.parseHost(host));
+            server.getParser().getCallbackManager().addCallback("onNickChanged", this);
+        } catch (CallbackNotFound ex) {
+            Logger.error(ErrorLevel.ERROR, "Unable to get query events", ex);
+        }
+    }
+    
+    /** {@inheritDoc} */
     public void onNickChanged(final IRCParser parser, final ClientInfo client,
             final String oldNick) {
         if (oldNick.equals(ClientInfo.parseHost(host))) {
