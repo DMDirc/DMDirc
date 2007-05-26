@@ -527,7 +527,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Not needed for this class. {@inheritDoc}
      */
     public void mouseReleased(final MouseEvent mouseEvent) {
-        if (Config.getOptionBool("ui", "quickCopy")) {
+        if (Config.getOptionBool("ui", "quickCopy") && mouseEvent.getSource() == getTextPane()) {
             getTextPane().copy();
             getTextPane().clearSelection();
         }
@@ -603,11 +603,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         if (event.getKeyCode() == KeyEvent.VK_F3
                 || (event.getKeyCode() == KeyEvent.VK_F
                 && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0)) {
-            if (getSearchBar().isVisible()) {
-                getSearchBar().close();
-            } else {
-                getSearchBar().open();
-            }
+            doSearchBar();
         }
         if (event.getSource() == getTextPane()) {
             if ((Config.getOptionBool("ui", "quickCopy")
@@ -623,18 +619,16 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             } else if (event.getKeyCode() == KeyEvent.VK_C) {
                 getTextPane().copy();
             }
-        } else if (event.getSource() == getInputField()
-        && (event.getModifiers() & KeyEvent.CTRL_MASK) != 0
-                && event.getKeyCode() == KeyEvent.VK_V && doPaste()) {
-            event.consume();
+        } else if ((event.getModifiers() & KeyEvent.CTRL_MASK) != 0
+                && event.getKeyCode() == KeyEvent.VK_V) {
+            doPaste(event);
         }
     }
     
     /**
      * Checks and pastes text.
      */
-    private boolean doPaste() {
-        boolean returnValue = false;
+    private void doPaste(final KeyEvent event) {
         String clipboardContents = null;
         String[] clipboardContentsLines = new String[]{"", };
         
@@ -651,7 +645,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
         }
         if (clipboardContents != null && clipboardContents.indexOf('\n') >= 0) {
-            returnValue = true;
+            event.consume();
             final int pasteTrigger = Config.getOptionInt("ui", "pasteProtectionLimit", 1);
             if (getNumLines(clipboardContents) > pasteTrigger) {
                 showPasteDialog(clipboardContents, clipboardContentsLines);
@@ -661,16 +655,15 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 }
             }
         }
-        return returnValue;
     }
     
-    /** 
-     * Shows the paste dialog. 
+    /**
+     * Shows the paste dialog.
      *
      * @param clipboardContents contents of the clipboard
      * @param clipboardContentsLines clipboard contents split per line
      */
-    private void showPasteDialog(final String clipboardContents, 
+    private void showPasteDialog(final String clipboardContents,
             final String[] clipboardContentsLines) {
         final String[] options = {"Send", "Edit", "Cancel", };
         final int n = JOptionPane.showOptionDialog(this,
@@ -696,6 +689,15 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 break;
             default:
                 break;
+        }
+    }
+    
+    /** Opens, closes of focuses the search bar as appropriate. */
+    private void doSearchBar() {
+        if (getSearchBar().isVisible()) {
+            getSearchBar().close();
+        } else {
+            getSearchBar().open();
         }
     }
     
