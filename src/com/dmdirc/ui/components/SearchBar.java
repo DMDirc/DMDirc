@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.components;
 
-import com.dmdirc.ui.messages.ColourManager;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -40,6 +39,7 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.textpane.TextPane;
 
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -106,8 +106,8 @@ public final class SearchBar extends JPanel implements ActionListener,
         caseCheck = new JCheckBox();
         searchBox = new JTextField();
         
-        nextButton.setText("Next");
-        prevButton.setText("Prev");
+        nextButton.setText("Later");
+        prevButton.setText("Earlier");
         caseCheck.setText("Case sensitive");
         
         closeButton.setMargin(new Insets(0, 0, 0, 0));
@@ -281,12 +281,20 @@ public final class SearchBar extends JPanel implements ActionListener,
     
     /** {@inheritDoc}. */
     public void keyPressed(final KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.VK_F3) {
+        if (event.getKeyCode() == KeyEvent.VK_F3
+                || (event.getKeyCode() == KeyEvent.VK_F
+                && (event.getModifiers() & KeyEvent.CTRL_MASK) ==  1)) {
             close();
         }
         
         if (event.getSource() == searchBox) {
             searchBox.setBackground(ColourManager.getColour("FFFFFF"));
+            if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                close();
+            } else if (event.getKeyCode() == KeyEvent.VK_ENTER) {
+                search(Direction.UP, parent.getTextPane().getLastVisibleLine(),
+                        searchBox.getText(), caseCheck.isSelected());
+            }
         }
     }
     

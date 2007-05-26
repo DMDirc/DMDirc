@@ -59,7 +59,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1;
     
     /** Parent ActionsEditorDialog. */
-    private ActionsEditorDialog owner;
+    private final ActionsEditorDialog owner;
     
     /** Name textfield. */
     private JTextField name;
@@ -128,10 +128,10 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         if (trigger.getSelectedIndex() == 0) {
             otherTriggers.setEnabled(false);
         } else {
-            for (ActionType thisType 
+            for (ActionType thisType
                     : ActionManager.getCompatibleTypes((ActionType) trigger.getSelectedItem())) {
-                ((DefaultListModel) otherTriggers.getModel()).addElement(thisType);
-            }
+                        ((DefaultListModel) otherTriggers.getModel()).addElement(thisType);
+                    }
         }
         otherTriggers.repaint();
     }
@@ -221,22 +221,9 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     
     /** Prompts the user for confirmation of type change. */
     private void handleTriggerChange() {
-        boolean compatible = false;
-        if (trigger.getSelectedIndex() != 0) {
-            owner.getOkButton().setEnabled(true);
-            if (owner.getTrigger().getType().getArgNames().length > 0) {
-                owner.setNewConditionButtonState(true);
-            }
-        } else {
-            owner.getOkButton().setEnabled(false);
-            owner.setNewConditionButtonState(false);
-        }
-        if (type == null || trigger.getSelectedIndex() == 0) {
-            compatible = false;
-        } else if (ActionManager.getCompatibleTypes(type).contains(trigger.getSelectedItem())
-        || trigger.getSelectedItem() == type) {
-            compatible = true;
-        }
+        final boolean compatible = checkTriggerCompatibility();
+        
+        handleInvalidTrigger();        
         
         if (compatible) {
             populateOtherTriggers();
@@ -256,4 +243,36 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         }
     }
     
+    /**
+     * Checks for an invalid selection in the trigger.
+     */
+    private void handleInvalidTrigger() {
+        if (trigger.getSelectedIndex() == 0) {
+            owner.getOkButton().setEnabled(false);
+            owner.setNewConditionButtonState(false);
+        } else {
+            owner.getOkButton().setEnabled(true);
+            if (owner.getTrigger().getType().getArgNames().length > 0) {
+                owner.setNewConditionButtonState(true);
+            }
+        }
+    }
+    
+    /**
+     * Checks trigger compatibility.
+     *
+     * @return Whether triggers are compatible
+     */
+    private boolean checkTriggerCompatibility() {
+        boolean compatible = false;
+        
+        if (type == null || trigger.getSelectedIndex() == 0) {
+            compatible = false;
+        } else if (ActionManager.getCompatibleTypes(type).contains(trigger.getSelectedItem())
+        || trigger.getSelectedItem() == type) {
+            compatible = true;
+        }
+        
+        return compatible;
+    }
 }

@@ -66,11 +66,11 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private static ConditionEditorDialog me;
     
     /** Parent dialog, informed of changes on close. */
-    private ConditionsTabPanel parent;
+    private final ConditionsTabPanel parent;
     /** Parent action type trigger. */
-    private ActionType trigger;
+    private final ActionType trigger;
     /** conditions to be edited, or null if new. */
-    private ActionCondition condition;
+    private final ActionCondition condition;
     /** Condition argument. */
     private int argument;
     /** Condition component. */

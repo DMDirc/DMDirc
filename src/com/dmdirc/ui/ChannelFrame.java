@@ -101,7 +101,7 @@ public final class ChannelFrame extends Frame implements MouseListener,
     private JPopupMenu nicklistPopup;
     
     /** Command map. */
-    private Map<String, Command> commands;
+    private final Map<String, Command> commands;
     
     /**
      * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
@@ -239,7 +239,7 @@ public final class ChannelFrame extends Frame implements MouseListener,
         if (divider != null) {
             divider.setBorder(null);
         }
-
+        
         nicklistModel = new NicklistListModel();
         
         nickList.setModel(nicklistModel);
@@ -351,26 +351,15 @@ public final class ChannelFrame extends Frame implements MouseListener,
     
     /**
      * Processes every mouse button event to check for a popup trigger.
+     *
      * @param e mouse event
      */
     public void processMouseEvent(final MouseEvent e) {
         if (e.getSource() == nickList && nickList.getMousePosition() != null) {
             boolean showMenu = false;
-            for (int i = 0; i < nickList.getModel().getSize(); i++) {
-                if (nickList.getCellBounds(i, i).contains(nickList.getMousePosition())
-                && nickList.isSelectedIndex(i)) {
-                    showMenu = true;
-                    break;
-                }
-            }
+            showMenu = checkShowNicklistMenu();
             if (!showMenu) {
-                for (int i = 0; i < nickList.getModel().getSize(); i++) {
-                    if (nickList.getCellBounds(i, i).contains(nickList.getMousePosition())) {
-                        nickList.setSelectedIndex(i);
-                        showMenu = true;
-                        break;
-                    }
-                }
+                showMenu = selectNickUnderCursor();
             }
             if (showMenu) {
                 if (e.isPopupTrigger()) {
@@ -383,5 +372,40 @@ public final class ChannelFrame extends Frame implements MouseListener,
             }
         }
         super.processMouseEvent(e);
-    }            
+    }
+    
+    /**
+     *
+     * Checks whether to show the nicklist menu.
+     *
+     * @return whether to show the nicklist menu
+     */
+    private boolean checkShowNicklistMenu() {
+        boolean showMenu = false;
+        for (int i = 0; i < nickList.getModel().getSize(); i++) {
+            if (nickList.getCellBounds(i, i).contains(nickList.getMousePosition())
+            && nickList.isSelectedIndex(i)) {
+                showMenu = true;
+                break;
+            }
+        }
+        return showMenu;
+    }
+    
+    /**
+     * Selects the nick underneath the mouse.
+     *
+     * @return true if an item was selected
+     */
+    private boolean selectNickUnderCursor() {
+        boolean suceeded = false;
+        for (int i = 0; i < nickList.getModel().getSize(); i++) {
+            if (nickList.getCellBounds(i, i).contains(nickList.getMousePosition())) {
+                nickList.setSelectedIndex(i);
+                suceeded = true;
+                break;
+            }
+        }
+        return suceeded;
+    }
 }

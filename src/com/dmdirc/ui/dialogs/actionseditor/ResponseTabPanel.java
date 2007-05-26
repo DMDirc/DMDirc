@@ -53,8 +53,8 @@ public final class ResponseTabPanel extends JPanel {
      */
     private static final long serialVersionUID = 1;
     
-    /** The action. */
-    private ActionsEditorDialog owner;
+    /** The parent dialog. */
+    private final ActionsEditorDialog owner;
     /** Response field. */
     private JTextArea responses;
     /** Formatters combobox. */

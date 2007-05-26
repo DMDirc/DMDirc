@@ -59,7 +59,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
     private static ActionsEditorDialog me;
     
     /** Parent dialog, informed of changes on close. */
-    private ActionsManagerDialog parent;
+    private final ActionsManagerDialog parent;
     /** Action being edited or null. */
     private Action action;
     /** Tabbed pane. */

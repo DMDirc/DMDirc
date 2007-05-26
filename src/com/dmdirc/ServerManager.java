@@ -60,11 +60,9 @@ public final class ServerManager {
      * Returns the singleton instance of ServerManager.
      * @return Instance of ServerManager
      */
-    public static ServerManager getServerManager() {
-        synchronized (me) {
-            if (me == null) {
-                me = new ServerManager();
-            }
+    public static synchronized ServerManager getServerManager() {
+        if (me == null) {
+            me = new ServerManager();
         }
         return me;
     }

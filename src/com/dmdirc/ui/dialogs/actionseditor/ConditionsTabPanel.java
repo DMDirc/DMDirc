@@ -59,7 +59,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1;
     
     /** Parent ActionsEditorDialog. */
-    private ActionsEditorDialog owner;
+    private final ActionsEditorDialog owner;
     
     /** New button panel. */
     private JPanel buttonsPanel;
@@ -74,7 +74,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     private JButton newComparison;
     
     /** List of conditions. */
-    private List<ActionCondition> conditions;
+    private final List<ActionCondition> conditions;
     
     /**
      * Creates a new instance of ConditionsTabPanel.
