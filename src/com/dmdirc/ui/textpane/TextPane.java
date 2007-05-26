@@ -140,6 +140,15 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         return scrollBar.getValue();
     }
     
+    /**
+     * Returns the line count in the textpane.
+     *
+     * @return Line count
+     */
+    public int getNumLines() {
+        return document.getNumLines();
+    }
+    
     /** Sets the scrollbar to the maximum position. */
     public void setScrollBarMax() {
         final int lines = document.getNumLines();
@@ -204,6 +213,34 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         }
         
         return selectedText.toString();
+    }
+    
+    /**
+     * Returns the selected range.
+     *
+     * @return selected range
+     *  <ul>
+     *    <li>0 = start line</li>
+     *    <li>1 = start char</li>
+     *    <li>2 = end line</li>
+     *    <li>3 = end char</li>
+     *  </ul>
+     */
+    public int[] getSelectedRange() {
+        return canvas.getSelectedRange();
+    }
+    
+    /**
+     * Selects the specified region of text.
+     *
+     * @param startLine Start line
+     * @param startChar Start char
+     * @param endLine End line
+     * @param endChar End char
+     */
+    public void setSelectedTexT(final int startLine, final int startChar,
+            final int endLine, final int endChar) {
+        canvas.setSelectedRange(startLine, startChar, endLine, endChar);
     }
     
     /**

@@ -39,6 +39,8 @@ import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import com.dmdirc.ui.textpane.TextPane;
+
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.UIUtilities.layoutGrid;
 
@@ -161,10 +163,10 @@ public final class SearchBar extends JPanel implements ActionListener,
         if (e.getSource() == closeButton) {
             close();
         } else if (e.getSource() == nextButton) {
-            search(Direction.UP, parent.getTextPane().getLastVisibleLine(),
+            search(Direction.DOWN, parent.getTextPane().getLastVisibleLine(),
                     searchBox.getText(), caseCheck.isSelected());
         } else if (e.getSource() == prevButton) {
-            search(Direction.DOWN, parent.getTextPane().getLastVisibleLine(),
+            search(Direction.UP, parent.getTextPane().getLastVisibleLine(),
                     searchBox.getText(), caseCheck.isSelected());
         }
     }
@@ -200,8 +202,55 @@ public final class SearchBar extends JPanel implements ActionListener,
      */
     public void search(final Direction direction, final int line,
             final String text, final boolean caseSensitive) {
-        //System.out.println("Searching for '" + text + "' " + direction
-          //      + " from line " + line + " case sensitive? " + caseSensitive);
+        if (direction == Direction.UP) {
+            searchUp(line, text);
+        } else {
+            searchDown(line, text);
+        }
+    }
+    
+    /**
+     * Searches up in the buffer for the text.
+     * 
+     * @param line Line to start from
+     * @param text Text to search for
+     */
+    private void searchUp(final int line, final String text) {
+        final TextPane textPane = parent.getTextPane();
+        final int thisLine;
+        if (line > textPane.getNumLines() - 1) {
+            thisLine = textPane.getNumLines() - 1;
+        } else {
+            thisLine = line;
+        }
+        for (int i = thisLine; i >= 0; i--) {
+            final String lineText = textPane.getTextFromLine(i);
+            final int position = lineText.indexOf(text);
+            if (position != -1 && textPane.getSelectedRange()[0] != i) {
+                textPane.setScrollBarPosition(i);
+                textPane.setSelectedTexT(i, position, i, position + text.length());
+                break;
+            }
+        }
+    }
+    
+    /**
+     * Searches down in the buffer for the text.
+     * 
+     * @param line Line to start from
+     * @param text Text to search for
+     */
+    private void searchDown(final int line, final String text) {
+        final TextPane textPane = parent.getTextPane();
+        for (int i = line; i < textPane.getNumLines() - 1; i++) {
+            final String lineText = textPane.getTextFromLine(i);
+            final int position = lineText.indexOf(text);
+            if (position != -1 && textPane.getSelectedRange()[0] != i) {
+                textPane.setScrollBarPosition(i);
+                textPane.setSelectedTexT(i, position, i, position + text.length());
+                break;
+            }
+        }
     }
     
     /** {@inheritDoc}. */

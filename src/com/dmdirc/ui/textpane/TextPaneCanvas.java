@@ -22,8 +22,6 @@
 
 package com.dmdirc.ui.textpane;
 
-import com.dmdirc.ui.messages.Styliser;
-
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -255,9 +253,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                                 graphics2D.setColor(UIManager.getColor("TextPane.selectionBackground"));
                                 graphics2D.setBackground(UIManager.getColor("TextPane.selectionForeground"));
                                 
-                                graphics2D.translate(0, trans);
+                                graphics2D.translate(-3, trans);
                                 graphics2D.fill(shape);
-                                graphics2D.translate(0, -1 * trans);
+                                graphics2D.translate(-3, -1 * trans);
                             }
                         }
                         
@@ -509,5 +507,21 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     protected void clearSelection() {
         selEndLine = selStartLine;
         selEndChar = selStartChar;
+    }
+    
+    /**
+     * Selects the specified region of text.
+     *
+     * @param startLine Start line
+     * @param startChar Start char
+     * @param endLine End line
+     * @param endChar End char
+     */
+    public void setSelectedRange(final int startLine, final int startChar,
+            final int endLine, final int endChar) {
+        selStartLine = startLine;
+        selStartChar = startChar;
+        selEndLine = endLine;
+        selEndChar = endChar;
     }
 }
