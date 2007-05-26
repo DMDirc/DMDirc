@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.components;
 
+import com.dmdirc.ui.messages.ColourManager;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -202,22 +203,34 @@ public final class SearchBar extends JPanel implements ActionListener,
      */
     public void search(final Direction direction, final int line,
             final String text, final boolean caseSensitive) {
+        boolean foundText;
+        
         if (direction == Direction.UP) {
-            searchUp(line, text);
+            foundText = searchUp(line, text);
         } else {
-            searchDown(line, text);
+            foundText = searchDown(line, text);
+        }
+        
+        if (foundText) {
+            searchBox.setBackground(ColourManager.getColour("FFFFFF"));
+        } else {
+            searchBox.setBackground(ColourManager.getColour("FF0000"));
         }
     }
     
     /**
      * Searches up in the buffer for the text.
-     * 
+     *
      * @param line Line to start from
      * @param text Text to search for
+     *
+     * @return Whether the specified text was found
      */
-    private void searchUp(final int line, final String text) {
+    private boolean searchUp(final int line, final String text) {
         final TextPane textPane = parent.getTextPane();
         final int thisLine;
+        boolean foundText = false;
+        
         if (line > textPane.getNumLines() - 1) {
             thisLine = textPane.getNumLines() - 1;
         } else {
@@ -229,28 +242,36 @@ public final class SearchBar extends JPanel implements ActionListener,
             if (position != -1 && textPane.getSelectedRange()[0] != i) {
                 textPane.setScrollBarPosition(i);
                 textPane.setSelectedTexT(i, position, i, position + text.length());
+                foundText = true;
                 break;
             }
         }
+        return foundText;
     }
     
     /**
      * Searches down in the buffer for the text.
-     * 
+     *
      * @param line Line to start from
      * @param text Text to search for
+     *
+     * @return Whether the specified text was found
      */
-    private void searchDown(final int line, final String text) {
+    private boolean searchDown(final int line, final String text) {
         final TextPane textPane = parent.getTextPane();
+        boolean foundText = false;
+        
         for (int i = line; i < textPane.getNumLines() - 1; i++) {
             final String lineText = textPane.getTextFromLine(i);
             final int position = lineText.indexOf(text);
             if (position != -1 && textPane.getSelectedRange()[0] != i) {
                 textPane.setScrollBarPosition(i);
                 textPane.setSelectedTexT(i, position, i, position + text.length());
+                foundText = true;
                 break;
             }
         }
+        return foundText;
     }
     
     /** {@inheritDoc}. */
@@ -262,6 +283,10 @@ public final class SearchBar extends JPanel implements ActionListener,
     public void keyPressed(final KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.VK_F3) {
             close();
+        }
+        
+        if (event.getSource() == searchBox) {
+            searchBox.setBackground(ColourManager.getColour("FFFFFF"));
         }
     }
     
