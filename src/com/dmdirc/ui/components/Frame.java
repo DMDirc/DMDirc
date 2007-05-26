@@ -600,9 +600,11 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     
     /** {@inheritDoc}. */
     public void keyPressed(final KeyEvent event) {
+        System.out.println(event.getModifiers() & KeyEvent.CTRL_MASK);
         if (event.getKeyCode() == KeyEvent.VK_F3
                 || (event.getKeyCode() == KeyEvent.VK_F
-                && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0)) {
+                && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
+                && (event.getModifiers() & KeyEvent.SHIFT_MASK) ==  0)) {
             doSearchBar();
         }
         if (event.getSource() == getTextPane()) {
