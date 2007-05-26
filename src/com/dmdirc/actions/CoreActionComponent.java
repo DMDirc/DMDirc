@@ -27,6 +27,7 @@ import java.awt.Color;
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.parser.ChannelClientInfo;
+import java.util.GregorianCalendar;
 
 /**
  * A CoreActionComponent represents a component of some object that the user can
@@ -103,6 +104,13 @@ public enum CoreActionComponent implements ActionComponent {
         public Class appliesTo() { return String[].class; }
         public Class getType() { return Integer.class; }
         public String getName() { return "size"; }
+    },
+    
+    CALENDAR_FULLSTRING {
+        public Object get(final Object argument) { return ((GregorianCalendar) argument).getTime().toString(); }
+        public Class appliesTo() { return GregorianCalendar.class; }
+        public Class getType() { return String.class; }
+        public String getName() { return "full date"; }        
     };
     
     /** {@inheritDoc} */

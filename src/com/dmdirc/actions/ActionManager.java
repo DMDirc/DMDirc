@@ -485,6 +485,15 @@ public class ActionManager {
             res = res.replaceAll("\\$" + key, Config.getOption("actions", key));
         }
         
+        int j = 0;
+        for (Object argument : arguments) {
+            for (ActionComponent comp : getCompatibleComponents(argument.getClass())) {
+                final String value = comp.get(argument).toString();
+                res = res.replaceAll("\\$\\{" + j + "." + comp.toString() + "\\}", value);
+            }
+            j++;
+        }
+        
         if (arguments.length > 2 && arguments[2] instanceof String[]) {
             int i = 1;
             for (String arg : (String[]) arguments[2]) {
