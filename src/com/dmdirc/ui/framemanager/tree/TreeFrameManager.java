@@ -642,7 +642,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     }
     
     /** 
-     * Changes the tree focus up
+     * Changes the tree focus up.
      *
      * @param node Start node
      *
@@ -656,8 +656,8 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         if (thisNode.getUserObject() instanceof Server) {
             if (thisNode.getParent().getIndex(thisNode) == 0) {
                 //first server - last child of parent's last child
-                nextNode = ((DefaultMutableTreeNode) ((DefaultMutableTreeNode)
-                thisNode.getParent()).getLastChild());
+                nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) 
+                thisNode.getParent()).getLastChild();
                 if (nextNode.getChildCount() > 0) {
                     nextNode = (DefaultMutableTreeNode) nextNode.getLastChild();
                 }
@@ -680,7 +680,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     }
     
     /** 
-     * Changes the tree focus down
+     * Changes the tree focus down.
      *
      * @param node Start node
      *
@@ -700,7 +700,8 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
                 nextNode = ((DefaultMutableTreeNode) thisNode.getParent()).getNextSibling();
                 //no next server, use first
                 if (nextNode == null) {
-                    nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) thisNode.getParent()).getFirstChild();
+                    nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) 
+                    thisNode.getParent()).getFirstChild();
                 }
             }
         } else {

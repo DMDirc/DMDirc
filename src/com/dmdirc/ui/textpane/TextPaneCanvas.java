@@ -253,7 +253,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                                 graphics2D.setColor(UIManager.getColor("TextPane.selectionBackground"));
                                 graphics2D.setBackground(UIManager.getColor("TextPane.selectionForeground"));
                                 
-                                graphics2D.translate(-3, trans);
+                                graphics2D.translate(3, trans);
                                 graphics2D.fill(shape);
                                 graphics2D.translate(-3, -1 * trans);
                             }
