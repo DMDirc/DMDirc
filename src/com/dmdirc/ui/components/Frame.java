@@ -600,9 +600,9 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     
     /** {@inheritDoc}. */
     public void keyPressed(final KeyEvent event) {
-        String clipboardContents = null;
-        String[] clipboardContentsLines = new String[]{"", };
-        if (event.getKeyCode() == KeyEvent.VK_F3) {
+        if (event.getKeyCode() == KeyEvent.VK_F3
+                || (event.getKeyCode() == KeyEvent.VK_F
+                && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0)) {
             if (getSearchBar().isVisible()) {
                 getSearchBar().close();
             } else {
@@ -625,55 +625,77 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             }
         } else if (event.getSource() == getInputField()
         && (event.getModifiers() & KeyEvent.CTRL_MASK) != 0
-                && event.getKeyCode() == KeyEvent.VK_V) {
-            try {
-                clipboardContents = getInputField().getText()
-                + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
-                .getData(DataFlavor.stringFlavor);
-                clipboardContentsLines = clipboardContents.split(System.getProperty("line.separator"));
-            } catch (HeadlessException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
-            } catch (IOException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
-            } catch (UnsupportedFlavorException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
-            }
-            if (clipboardContents != null && clipboardContents.indexOf('\n') >= 0) {
-                event.consume();
-                final int pasteTrigger = Config.getOptionInt("ui", "pasteProtectionLimit", 1);
-                if (getNumLines(clipboardContents) > pasteTrigger) {
-                    final String[] options = {"Send", "Edit", "Cancel", };
-                    final int n = JOptionPane.showOptionDialog(this,
-                            "<html>Paste would be sent as "
-                            + getNumLines(clipboardContents) + " lines.<br>"
-                            + "Do you want to continue?</html>",
-                            "Multi-line Paste",
-                            JOptionPane.YES_NO_CANCEL_OPTION,
-                            JOptionPane.QUESTION_MESSAGE,
-                            null,
-                            options,
-                            options[0]);
-                    switch (n) {
-                        case 0:
-                            for (String clipboardLine : clipboardContentsLines) {
-                                this.sendLine(clipboardLine);
-                            }
-                            break;
-                        case 1:
-                            new PasteDialog(this, clipboardContents).setVisible(true);
-                            break;
-                        case 2:
-                            break;
-                        default:
-                            break;
-                    }
-                    
-                } else {
-                    for (String clipboardLine : clipboardContentsLines) {
-                        this.sendLine(clipboardLine);
-                    }
+                && event.getKeyCode() == KeyEvent.VK_V && doPaste()) {
+            event.consume();
+        }
+    }
+    
+    /**
+     * Checks and pastes text.
+     */
+    private boolean doPaste() {
+        boolean returnValue = false;
+        String clipboardContents = null;
+        String[] clipboardContentsLines = new String[]{"", };
+        
+        try {
+            clipboardContents = getInputField().getText()
+            + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
+            .getData(DataFlavor.stringFlavor);
+            clipboardContentsLines = clipboardContents.split(System.getProperty("line.separator"));
+        } catch (HeadlessException ex) {
+            Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+        } catch (IOException ex) {
+            Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+        } catch (UnsupportedFlavorException ex) {
+            Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+        }
+        if (clipboardContents != null && clipboardContents.indexOf('\n') >= 0) {
+            returnValue = true;
+            final int pasteTrigger = Config.getOptionInt("ui", "pasteProtectionLimit", 1);
+            if (getNumLines(clipboardContents) > pasteTrigger) {
+                showPasteDialog(clipboardContents, clipboardContentsLines);
+            } else {
+                for (String clipboardLine : clipboardContentsLines) {
+                    this.sendLine(clipboardLine);
                 }
             }
+        }
+        return returnValue;
+    }
+    
+    /** 
+     * Shows the paste dialog. 
+     *
+     * @param clipboardContents contents of the clipboard
+     * @param clipboardContentsLines clipboard contents split per line
+     */
+    private void showPasteDialog(final String clipboardContents, 
+            final String[] clipboardContentsLines) {
+        final String[] options = {"Send", "Edit", "Cancel", };
+        final int n = JOptionPane.showOptionDialog(this,
+                "<html>Paste would be sent as "
+                + getNumLines(clipboardContents) + " lines.<br>"
+                + "Do you want to continue?</html>",
+                "Multi-line Paste",
+                JOptionPane.YES_NO_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]);
+        switch (n) {
+            case 0:
+                for (String clipboardLine : clipboardContentsLines) {
+                    this.sendLine(clipboardLine);
+                }
+                break;
+            case 1:
+                new PasteDialog(this, clipboardContents).setVisible(true);
+                break;
+            case 2:
+                break;
+            default:
+                break;
         }
     }
     

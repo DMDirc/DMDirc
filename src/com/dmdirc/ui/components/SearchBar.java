@@ -283,7 +283,7 @@ public final class SearchBar extends JPanel implements ActionListener,
     public void keyPressed(final KeyEvent event) {
         if (event.getKeyCode() == KeyEvent.VK_F3
                 || (event.getKeyCode() == KeyEvent.VK_F
-                && (event.getModifiers() & KeyEvent.CTRL_MASK) ==  1)) {
+                && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0)) {
             close();
         }
         
