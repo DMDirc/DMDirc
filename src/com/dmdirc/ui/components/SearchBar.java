@@ -33,12 +33,14 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.textpane.TextPane;
 
@@ -56,7 +58,7 @@ public final class SearchBar extends JPanel implements ActionListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4;
     
     /** Frame parent. */
     private final Frame parent;
@@ -230,13 +232,14 @@ public final class SearchBar extends JPanel implements ActionListener,
         final TextPane textPane = parent.getTextPane();
         final int thisLine;
         boolean foundText = false;
+        int i;
         
         if (line > textPane.getNumLines() - 1) {
             thisLine = textPane.getNumLines() - 1;
         } else {
             thisLine = line;
         }
-        for (int i = thisLine; i >= 0; i--) {
+        for (i = thisLine; i >= 0; i--) {
             final String lineText = textPane.getTextFromLine(i);
             final int position = lineText.indexOf(text);
             if (position != -1 && textPane.getSelectedRange()[0] != i) {
@@ -246,6 +249,19 @@ public final class SearchBar extends JPanel implements ActionListener,
                 break;
             }
         }
+        
+        if (i >= 0) {
+            return foundText;
+        }
+        
+        //want to continue?
+        if (JOptionPane.showConfirmDialog(MainFrame.getMainFrame(),
+                "Do you want to continue searching from the end?",
+                "Beginning reached", JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+            foundText = searchUp(textPane.getNumLines() - 1, text);
+        }
+        
         return foundText;
     }
     
@@ -260,8 +276,9 @@ public final class SearchBar extends JPanel implements ActionListener,
     private boolean searchDown(final int line, final String text) {
         final TextPane textPane = parent.getTextPane();
         boolean foundText = false;
+        int i;
         
-        for (int i = line; i < textPane.getNumLines() - 1; i++) {
+        for (i = line; i < textPane.getNumLines() - 1; i++) {
             final String lineText = textPane.getTextFromLine(i);
             final int position = lineText.indexOf(text);
             if (position != -1 && textPane.getSelectedRange()[0] != i) {
@@ -271,6 +288,19 @@ public final class SearchBar extends JPanel implements ActionListener,
                 break;
             }
         }
+        
+        if (i < textPane.getNumLines() - 1) {
+            return foundText;
+        }
+        
+        //want to continue?
+        if (JOptionPane.showConfirmDialog(MainFrame.getMainFrame(),
+                "Do you want to continue searching from the beginning?",
+                "End reached", JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+            foundText = searchDown(0, text);
+        }
+        
         return foundText;
     }
     
