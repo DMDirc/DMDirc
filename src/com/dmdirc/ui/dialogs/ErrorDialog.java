@@ -22,6 +22,10 @@
 
 package com.dmdirc.ui.dialogs;
 
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.interfaces.StatusErrorNotifier;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -31,7 +35,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -53,10 +56,6 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
-
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.interfaces.StatusErrorNotifier;
 
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;

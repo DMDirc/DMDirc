@@ -22,11 +22,11 @@
 
 package com.dmdirc.actions;
 
-import java.awt.Color;
-
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.parser.ChannelClientInfo;
+
+import java.awt.Color;
 import java.util.GregorianCalendar;
 
 /**
@@ -110,7 +110,7 @@ public enum CoreActionComponent implements ActionComponent {
         public Object get(final Object argument) { return ((GregorianCalendar) argument).getTime().toString(); }
         public Class appliesTo() { return GregorianCalendar.class; }
         public Class getType() { return String.class; }
-        public String getName() { return "full date"; }        
+        public String getName() { return "full date"; }
     };
     
     /** {@inheritDoc} */

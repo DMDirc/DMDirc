@@ -22,6 +22,9 @@
 
 package com.dmdirc;
 
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -36,9 +39,6 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import javax.swing.JOptionPane;
-
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 
 /**
  * Helper class to encrypt and decrypt strings, requests passwords if needed.

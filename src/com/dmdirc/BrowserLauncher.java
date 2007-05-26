@@ -22,15 +22,15 @@
 
 package com.dmdirc;
 
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
-
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 
 /**
  * The BrowserLauncher handles the opening of the user's web browser when

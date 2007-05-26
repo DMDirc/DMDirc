@@ -22,16 +22,6 @@
 
 package com.dmdirc;
 
-import java.awt.Color;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.swing.ImageIcon;
-import javax.swing.SwingUtilities;
-
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
@@ -64,6 +54,16 @@ import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.Styliser;
+
+import java.awt.Color;
+import java.lang.reflect.InvocationTargetException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 
 /**
  * The Channel class represents the client's view of the channel. It handles
@@ -110,6 +110,8 @@ public final class Channel extends FrameContainer implements IChannelMessage,
      * this channel
      */
     public Channel(final Server newServer, final ChannelInfo newChannelInfo) {
+        super();
+        
         channelInfo = newChannelInfo;
         server = newServer;
         

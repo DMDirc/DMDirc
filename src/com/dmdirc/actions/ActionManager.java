@@ -22,13 +22,6 @@
 
 package com.dmdirc.actions;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.dmdirc.Channel;
 import com.dmdirc.Config;
 import com.dmdirc.Server;
@@ -36,6 +29,13 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.plugins.PluginManager;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Manages all actions for the client.

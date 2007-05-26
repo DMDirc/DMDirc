@@ -22,11 +22,11 @@
 
 package com.dmdirc;
 
+import com.dmdirc.ui.interfaces.StatusErrorNotifier;
+
 import java.util.Date;
 
 import javax.swing.Icon;
-
-import com.dmdirc.ui.interfaces.StatusErrorNotifier;
 
 /**
  * Stores a program error and dialog.
@@ -42,8 +42,8 @@ public final class Error {
     /** Time. */
     private final Date date;
     
-    /** 
-     * Creates a new instance of Error. 
+    /**
+     * Creates a new instance of Error.
      * @param newIcon error icon
      * @param newNotifier error notifier
      */

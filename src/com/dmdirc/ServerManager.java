@@ -22,12 +22,12 @@
 
 package com.dmdirc;
 
+import com.dmdirc.ui.MainFrame;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JInternalFrame;
-
-import com.dmdirc.ui.MainFrame;
 
 /**
  * The ServerManager maintains a list of all servers, and provides methods to
@@ -60,11 +60,13 @@ public final class ServerManager {
      * Returns the singleton instance of ServerManager.
      * @return Instance of ServerManager
      */
-    public static synchronized ServerManager getServerManager() {
-	if (me == null) {
-	    me = new ServerManager();
-	}
-	return me;
+    public static ServerManager getServerManager() {
+        synchronized (me) {
+            if (me == null) {
+                me = new ServerManager();
+            }
+        }
+        return me;
     }
     
     /**
@@ -72,8 +74,8 @@ public final class ServerManager {
      * @param server The server to be registered
      */
     public void registerServer(final Server server) {
-	servers.add(server);
-	MainFrame.getMainFrame().getFrameManager().addServer(server);
+        servers.add(server);
+        MainFrame.getMainFrame().getFrameManager().addServer(server);
     }
     
     /**
@@ -82,10 +84,10 @@ public final class ServerManager {
      * @param server The server to be unregistered
      */
     public void unregisterServer(final Server server) {
-	if (!closing) {
-	    servers.remove(server);
-	}
-	MainFrame.getMainFrame().getFrameManager().delServer(server);
+        if (!closing) {
+            servers.remove(server);
+        }
+        MainFrame.getMainFrame().getFrameManager().delServer(server);
     }
     
     /**
@@ -101,9 +103,9 @@ public final class ServerManager {
      * @param message The quit message to send to the IRC servers
      */
     public void disconnectAll(final String message) {
-	for (Server server : servers) {
-	    server.disconnect(message);
-	}
+        for (Server server : servers) {
+            server.disconnect(message);
+        }
     }
     
     /**
@@ -111,12 +113,12 @@ public final class ServerManager {
      * @param message The quit message to send to the IRC servers
      */
     public void closeAll(final String message) {
-	closing = true;
-	for (Server server : servers) {
-	    server.close(message);
-	}
-	closing = false;
-	servers.clear();
+        closing = true;
+        for (Server server : servers) {
+            server.close(message);
+        }
+        closing = false;
+        servers.clear();
     }
     
     /**
@@ -124,7 +126,7 @@ public final class ServerManager {
      * @return number of registered servers
      */
     public int numServers() {
-	return servers.size();
+        return servers.size();
     }
     
     /**
@@ -133,12 +135,12 @@ public final class ServerManager {
      * @return The server associated with the internal frame
      */
     public Server getServerFromFrame(final JInternalFrame active) {
-	for (Server server : servers) {
-	    if (server.ownsFrame(active)) {
-		return server;
-	    }
-	}
-	return null;
+        for (Server server : servers) {
+            if (server.ownsFrame(active)) {
+                return server;
+            }
+        }
+        return null;
     }
     
 }

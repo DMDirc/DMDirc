@@ -22,9 +22,9 @@
 
 package com.dmdirc.addons.timeplugin;
 
-import java.util.Calendar;
-
 import com.dmdirc.actions.ActionMetaType;
+
+import java.util.Calendar;
 
 /**
  * Encapsulates the meta types used by the various time actions.
@@ -33,9 +33,9 @@ import com.dmdirc.actions.ActionMetaType;
 public enum TimeActionMetaType implements ActionMetaType {
     
     TIME_TIME {
-      public int getArity() { return 1; }
-      public Class[] getArgTypes() { return new Class[]{Calendar.class}; }
-      public String[] getArgNames() { return new String[]{"Date"}; }
+        public int getArity() { return 1; }
+        public Class[] getArgTypes() { return new Class[]{Calendar.class}; }
+        public String[] getArgNames() { return new String[]{"Date"}; }
     };
     
     /** {@inheritDoc} */

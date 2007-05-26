@@ -22,6 +22,11 @@
 
 package com.dmdirc;
 
+import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.messages.ColourManager;
+
 import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,11 +40,6 @@ import java.util.List;
 import java.util.Properties;
 
 import javax.swing.UIManager;
-
-import com.dmdirc.identities.IdentityManager;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.messages.ColourManager;
 
 /**
  * Reads/writes the application's config file.
