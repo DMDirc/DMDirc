@@ -216,8 +216,8 @@ public final class ActionsManagerDialog extends StandardDialog
         pack();
     }
     
-    /** 
-     * Enable or disable the edit and delete action button. 
+    /**
+     * Enable or disable the edit and delete action button.
      *
      * @param state new State for the buttons
      */
@@ -261,7 +261,9 @@ public final class ActionsManagerDialog extends StandardDialog
             addAction.setEnabled(true);
         }
         
-        groups.setSelectedIndex(selectedGroup == -1 ? 0 : selectedGroup);
+        if (groups.getTabCount() > 0) {
+            groups.setSelectedIndex(selectedGroup == -1 ? 0 : selectedGroup);
+        }
     }
     
     /**
@@ -276,7 +278,7 @@ public final class ActionsManagerDialog extends StandardDialog
     
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
-        if (e.getActionCommand().equals("close") 
+        if (e.getActionCommand().equals("close")
         || e.getSource() == getCancelButton() || e.getSource() == getOkButton()) {
             dispose();
         } else if (e.getActionCommand().equals("group.add")) {
@@ -287,7 +289,7 @@ public final class ActionsManagerDialog extends StandardDialog
                 loadGroups();
             }
         } else if (e.getActionCommand().equals("group.delete")) {
-            final String group = groups.getTitleAt(groups.getSelectedIndex());            
+            final String group = groups.getTitleAt(groups.getSelectedIndex());
             final int response = JOptionPane.showConfirmDialog(this,
                     "Are you sure you wish to delete the '" + group
                     + "' group and all actions within it?",
