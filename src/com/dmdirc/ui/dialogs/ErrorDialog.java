@@ -30,8 +30,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -294,9 +297,12 @@ public final class ErrorDialog extends JDialog implements ActionListener,
      * Sends an error report.
      */
     private void sendData() {
+        System.err.println("Sending error report...");
+        
         URL url;
         URLConnection urlConn;
         DataOutputStream printout;
+        BufferedReader printin;
         try {
             url = new URL("http://www.dmdirc.com/error.php");
             urlConn = url.openConnection();
@@ -311,16 +317,29 @@ public final class ErrorDialog extends JDialog implements ActionListener,
             printout.writeBytes(content);
             printout.flush();
             printout.close();
+            printin = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+            
+            String line = null;
+            do {
+                if (line != null) {
+                    System.err.println(line);
+                }
+                
+                line = printin.readLine();
+            } while (line != null);
         } catch (MalformedURLException ex) {
             System.err.println("Malformed URL, unable to send error report.");
         } catch (UnsupportedEncodingException ex) {
             System.err.println("Unsupported exception,  unable to send error report.");
         } catch (IOException ex) {
             System.err.println("IO Error, unable to send error report.");
+            ex.printStackTrace();
         }
+        
         if (level == ErrorLevel.FATAL) {
             System.exit(-1);
         }
+        
         sendDataCheckbox.setSelected(true);
         sendDataCheckbox.setEnabled(false);
         sendDataCheckbox.setText("Error has been reported to the developers.");
