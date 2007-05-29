@@ -72,7 +72,7 @@ public final class Config {
      * @return config file
      */
     private static String getConfigFile() {
-        return getConfigDir() + "dmdirc.xml";
+        return getConfigDir() + "dmdirc.config";
     }
     
     /**
@@ -392,11 +392,23 @@ public final class Config {
         
         properties = getDefaults();
         
+        final File oldFile = new File(getConfigDir() + "dmdirc.xml");
+        
         final File file = new File(getConfigFile());
         
         if (file.exists()) {
             try {
-                properties.loadFromXML(new FileInputStream(file));
+                properties.load(new FileInputStream(file));
+            } catch (InvalidPropertiesFormatException ex) {
+                Logger.error(ErrorLevel.TRIVIAL, "Invalid properties file", ex);
+            } catch (FileNotFoundException ex) {
+                Logger.error(ErrorLevel.TRIVIAL, "No config file, using defaults");
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.WARNING, "Unable to load config file", ex);
+            }
+        } else if (oldFile.exists()) {
+            try {
+                properties.loadFromXML(new FileInputStream(oldFile));
             } catch (InvalidPropertiesFormatException ex) {
                 Logger.error(ErrorLevel.TRIVIAL, "Invalid properties file", ex);
             } catch (FileNotFoundException ex) {
@@ -439,7 +451,7 @@ public final class Config {
         }
         
         try {
-            output.storeToXML(new FileOutputStream(
+            output.store(new FileOutputStream(
                     new File(getConfigFile())), null);
         } catch (FileNotFoundException ex) {
             Logger.error(ErrorLevel.TRIVIAL, "Unable to save config file", ex);
