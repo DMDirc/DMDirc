@@ -76,7 +76,7 @@ public final class Main {
         
         ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);
         
-        new Thread(new UpdateChecker()).start();
+        UpdateChecker.init();
     }
     
     /**

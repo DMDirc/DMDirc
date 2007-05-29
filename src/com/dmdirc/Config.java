@@ -185,6 +185,9 @@ public final class Config {
         defaults.setProperty("server.friendlymodes", "true");
         defaults.setProperty("server.pingtimeout", "60000");
         
+        defaults.setProperty("updater.frequency", "86400");
+        defaults.setProperty("updater.lastcheck", "0");
+        
         // Some defaults for use in actions
         defaults.setProperty("actions.textcolour", "12");
         defaults.setProperty("actions.eventcolour", "3");

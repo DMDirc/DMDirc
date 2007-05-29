@@ -22,6 +22,7 @@
 
 package com.dmdirc.updater;
 
+import com.dmdirc.Config;
 import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -35,6 +36,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -47,11 +51,12 @@ import javax.swing.JLabel;
  */
 public final class UpdateChecker implements Runnable {
     
+    /** The label used to indicate that there's an update available. */
     private JLabel label;
     
     /** {@inheritDoc} */
     public void run() {
-        MainFrame.getMainFrame().getStatusBar().setMessage("Checking for updates");
+        MainFrame.getMainFrame().getStatusBar().setMessage("Checking for updates...");
         
         URL url;
         URLConnection urlConn;
@@ -80,6 +85,9 @@ public final class UpdateChecker implements Runnable {
                 
                 line = printin.readLine();
             } while (line != null);
+            
+            Config.setOption("updater", "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
+            UpdateChecker.init();
         } catch (MalformedURLException ex) {
             Logger.error(ErrorLevel.WARNING, "Unable to check for updates", ex);
         } catch (UnsupportedEncodingException ex) {
@@ -89,8 +97,12 @@ public final class UpdateChecker implements Runnable {
         }
     }
     
+    /**
+     * Checks the specified line to determine the message from the update server.
+     * @param line The line to be checked
+     */
     private void checkLine(final String line) {
-        if (line.equals("uptodate")) {
+        if (line.startsWith("uptodate")) {
             MainFrame.getMainFrame().getStatusBar().setMessage("No updates available");
         } else if (line.startsWith("outofdate")) {
             doUpdateAvailable();
@@ -99,6 +111,9 @@ public final class UpdateChecker implements Runnable {
         }
     }
     
+    /**
+     * Informs the user that there's an update available.
+     */
     private void doUpdateAvailable() {
         if (label == null) {
             final ClassLoader classLoader = getClass().getClassLoader();
@@ -109,6 +124,27 @@ public final class UpdateChecker implements Runnable {
             label.setIcon(icon);
             MainFrame.getMainFrame().getStatusBar().addComponent(label);
         }
+    }
+    
+    /**
+     * Initialises the update checker. Sets a timer to check based on the
+     * frequency specified in the config.
+     */
+    public static void init() {
+        final int last = Config.getOptionInt("updater", "lastcheck", 0);
+        final int freq = Config.getOptionInt("updater", "frequency", 86400);
+        final int timestamp = (int) (new Date().getTime() / 1000);
+        int time = 0;
+        
+        if (last + freq > timestamp) {
+            time = last + freq - timestamp;
+        }
+        
+        new Timer().schedule(new TimerTask() {
+            public void run() {
+                new Thread(new UpdateChecker()).start();
+            }           
+        }, time);
     }
     
 }
