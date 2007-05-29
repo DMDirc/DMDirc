@@ -103,7 +103,7 @@ public final class Styliser {
      * @param doc The document which the output should be added to
      * @param strings The strings to be stylised and added to a line
      */
-    public static void addStyledString(final TextPane doc, final String[] strings) {        
+    public static void addStyledString(final TextPane doc, final String[] strings) {
         final AttributedString text = styledDocumentToAttributedString(getStyledString(strings));
         
         if (text.getIterator().getEndIndex() == 0) {
@@ -153,8 +153,8 @@ public final class Styliser {
         return styledDoc;
     }
     
-    /** 
-     * Converts a StyledDocument into an AttributedString. 
+    /**
+     * Converts a StyledDocument into an AttributedString.
      *
      * @param doc StyledDocument to convert
      *
@@ -296,6 +296,12 @@ public final class Styliser {
         // Hyperlinks
         if (string.charAt(0) == CODE_HYPERLINK) {
             toggleLink(attribs);
+            
+            if (attribs.getAttribute(IRCTextAttribute.HYPERLINK) == null) {
+                attribs.addAttribute(IRCTextAttribute.HYPERLINK, readUntilControl(string.substring(1)));
+            } else {
+                attribs.removeAttribute(IRCTextAttribute.HYPERLINK);
+            }
             return 1;
         }
         
@@ -428,23 +434,7 @@ public final class Styliser {
      */
     private static void toggleLink(final SimpleAttributeSet attribs) {
         if (Config.getOptionBool("ui", "stylelinks")) {
-            if (attribs.containsAttribute(IRCTextAttribute.HYPERLINK, Boolean.TRUE)) {
-                // Remove the hyperlink style
-                
-                if (attribs.containsAttribute("restoreUnderline", Boolean.TRUE)) {
-                    attribs.removeAttribute("restoreUnderline");
-                } else {
-                    attribs.removeAttribute(StyleConstants.FontConstants.Underline);
-                }
-                
-                attribs.removeAttribute(StyleConstants.FontConstants.Foreground);
-                final Object foreground = attribs.getAttribute("restoreColour");
-                if (foreground != null) {
-                    attribs.addAttribute(StyleConstants.FontConstants.Foreground, foreground);
-                    attribs.removeAttribute("restoreColour");
-                }
-                
-            } else {
+            if (attribs.getAttribute(IRCTextAttribute.HYPERLINK) == null) {
                 // Add the hyperlink style
                 
                 if (attribs.containsAttribute(StyleConstants.FontConstants.Underline, Boolean.TRUE)) {
@@ -461,10 +451,24 @@ public final class Styliser {
                 }
                 
                 attribs.addAttribute(StyleConstants.FontConstants.Foreground, Color.BLUE);
+                
+            } else {
+                // Remove the hyperlink style
+                
+                if (attribs.containsAttribute("restoreUnderline", Boolean.TRUE)) {
+                    attribs.removeAttribute("restoreUnderline");
+                } else {
+                    attribs.removeAttribute(StyleConstants.FontConstants.Underline);
+                }
+                
+                attribs.removeAttribute(StyleConstants.FontConstants.Foreground);
+                final Object foreground = attribs.getAttribute("restoreColour");
+                if (foreground != null) {
+                    attribs.addAttribute(StyleConstants.FontConstants.Foreground, foreground);
+                    attribs.removeAttribute("restoreColour");
+                }
             }
         }
-        
-        toggleAttribute(attribs, IRCTextAttribute.HYPERLINK);
     }
     
     /**
