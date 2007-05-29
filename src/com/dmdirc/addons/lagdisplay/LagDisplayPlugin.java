@@ -24,14 +24,14 @@ package com.dmdirc.addons.lagdisplay;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import javax.swing.BorderFactory;
 
+import javax.swing.BorderFactory;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-import com.dmdirc.FrameContainer;
 
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;

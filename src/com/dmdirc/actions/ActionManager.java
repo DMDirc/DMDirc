@@ -22,12 +22,9 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.Channel;
 import com.dmdirc.Config;
-import com.dmdirc.Server;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.plugins.PluginManager;
 
 import java.io.File;
@@ -450,7 +447,7 @@ public class ActionManager {
      */
     public static String substituteVars(final String target, final Object ... arguments) {
         String res = target;
-                
+        
         for (String key : Config.getOptions("actions")) {
             res = res.replaceAll("\\$" + key, Config.getOption("actions", key));
         }
@@ -458,8 +455,10 @@ public class ActionManager {
         int j = 0;
         for (Object argument : arguments) {
             for (ActionComponent comp : getCompatibleComponents(argument.getClass())) {
-                final String value = comp.get(argument).toString();
-                res = res.replaceAll("\\$\\{" + j + "." + comp.toString() + "\\}", value);
+                if (comp.get(argument) != null) {
+                    final String value = comp.get(argument).toString();
+                    res = res.replaceAll("\\$\\{" + j + "." + comp.toString() + "\\}", value);
+                }
             }
             j++;
         }

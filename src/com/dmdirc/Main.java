@@ -27,6 +27,8 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.identities.IdentityManager;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.MainFrame;
+import com.dmdirc.updater.UpdateChannel;
+import com.dmdirc.updater.UpdateChecker;
 
 /**
  * Main class, handles initialisation.
@@ -35,9 +37,19 @@ import com.dmdirc.ui.MainFrame;
 public final class Main {
     
     /**
-     * Stores the current program version.
+     * Stores the current textual program version.
      */
     public static final String VERSION = "SVN";
+    
+    /**
+     * Stores the release date of this version.
+     */
+    public static final int RELEASE_DATE = 0;
+    
+    /**
+     * Stores the update channel that this version came from, if any.
+     */
+    public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE; 
     
     /**
      * Prevents creation of main.
@@ -63,6 +75,8 @@ public final class Main {
         MainFrame.getMainFrame();
         
         ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);
+        
+        new Thread(new UpdateChecker()).start();
     }
     
     /**

@@ -115,7 +115,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         clearErrors.addActionListener(this);
         clearErrors.setActionCommand("Clear");
         
-        setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER, SMALL_BORDER, 
+        setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER));
         
         messageLabel = new JLabel("Ready");
@@ -136,7 +136,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
         
         normalIcon = new ImageIcon(this.getClass()
-        .getClassLoader().getResource("com/dmdirc/res/normal.png"));
+                .getClassLoader().getResource("com/dmdirc/res/normal.png"));
         
         clearMessage();
         clearError();
@@ -173,7 +173,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         messageNotifier = newNotifier;
         
         if (messageTimer != null && (System.currentTimeMillis()
-        - messageTimer.scheduledExecutionTime()) <= 0) {
+                - messageTimer.scheduledExecutionTime()) <= 0) {
             messageTimer.cancel();
         }
         messageTimer = new TimerTask() {
@@ -214,7 +214,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         iconLabel.setIcon(newIcon);
         errorNotifier = newNotifier;
         if (errorTimer != null && (System.currentTimeMillis()
-        - errorTimer.scheduledExecutionTime()) <= 0) {
+                - errorTimer.scheduledExecutionTime()) <= 0) {
             errorTimer.cancel();
         }
         
@@ -386,15 +386,13 @@ public final class StatusBar extends JPanel implements MouseListener,
         constraints = layout.getConstraints(getComponent(0));
         constraints.setHeight(Spring.constant(20));
         
-        if (numComponents > 1) {
-            for (int i = 1; i < numComponents; i++) {
-                layout.putConstraint(SpringLayout.EAST, getComponent(i),
-                        Spring.constant(-SMALL_BORDER), SpringLayout.WEST,
-                        getComponent(i + 1));
-                constraints = layout.getConstraints(getComponent(i));
-                constraints.setHeight(Spring.constant(20));
-                constraints.setWidth(constraints.getWidth());
-            }
+        for (int i = 1; i < numComponents; i++) {
+            layout.putConstraint(SpringLayout.EAST, getComponent(i),
+                    Spring.constant(-SMALL_BORDER), SpringLayout.WEST,
+                    getComponent(i + 1));
+            constraints = layout.getConstraints(getComponent(i));
+            constraints.setHeight(Spring.constant(20));
+            constraints.setWidth(constraints.getWidth());
         }
         
         layout.putConstraint(SpringLayout.EAST, getComponent(numComponents),

@@ -63,7 +63,7 @@ import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 /**
  * The fatal error dialog is used to inform the user that a fatal error has
  * occured.
- * @author  chris
+ * @author chris
  */
 public final class ErrorDialog extends JDialog implements ActionListener,
         StatusErrorNotifier, WindowListener {
@@ -152,7 +152,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
         
         if (level == ErrorLevel.FATAL) {
             infoLabel.setText("DMDirc has encountered " + level.toSentenceString()
-            + ", it is unable to recover from this error and will terminate.");
+                    + ", it is unable to recover from this error and will terminate.");
         } else {
             infoLabel.setText("DMDirc has encountered " + level.toSentenceString() + ".");
         }
