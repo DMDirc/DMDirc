@@ -144,7 +144,7 @@ public final class UpdateChecker implements Runnable {
             public void run() {
                 new Thread(new UpdateChecker()).start();
             }           
-        }, time);
+        }, time * 1000);
     }
     
 }
