@@ -388,6 +388,7 @@ public class ActionManager {
     
     /**
      * Returns a list of all the action types registered by this manager.
+     * @return A list of registered action types
      */
     public static List<ActionType> getTypes() {
         return actionTypes;
@@ -395,6 +396,7 @@ public class ActionManager {
     
     /**
      * Returns a list of all the action types registered by this manager.
+     * @return A list of registered action comparisons
      */
     public static List<ActionComparison> getComparisons() {
         return actionComparisons;
@@ -444,6 +446,7 @@ public class ActionManager {
      * Substitutes variables into the string based on the arguments.
      * @param target The string to be altered
      * @param arguments The arguments for the action
+     * @return The target string with all variables substituted
      */
     public static String substituteVars(final String target, final Object ... arguments) {
         String res = target;
