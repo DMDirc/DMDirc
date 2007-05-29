@@ -308,6 +308,15 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     }
     
     /**
+     * Trims the document to the specified number of lines.
+     *
+     * @param numLines Number of lines to trim the document to
+     */
+    public void trim(final int numLines) {
+        document.trim(numLines);
+    }
+    
+    /**
      * Adds a TextPaneListener to the listener list.
      *
      * @param listener Listener to add

@@ -90,7 +90,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 3;
     
     /** Input field panel. */
     private JPanel inputPanel;
@@ -208,6 +208,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                     } else {
                         Styliser.addStyledString(getTextPane(), myLine);
                     }
+                    textPane.trim(Config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE));
                 }
             }
         });

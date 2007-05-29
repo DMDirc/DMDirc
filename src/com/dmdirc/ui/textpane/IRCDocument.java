@@ -40,7 +40,7 @@ public final class IRCDocument {
     
     /** List of stylised lines of text. */
     private final List<AttributedString> iterators;
-     
+    
     /** Creates a new instance of IRCDocument. */
     protected IRCDocument() {
         iterators = new ArrayList<AttributedString>();
@@ -77,6 +77,19 @@ public final class IRCDocument {
     protected void addText(final AttributedString text) {
         synchronized (iterators) {
             iterators.add(text);
+        }
+    }
+    
+    /**
+     * Trims the document to the specified number of lines.
+     *
+     * @param numLines Number of lines to trim the document to
+     */
+    public void trim(final int numLines) {
+        synchronized(iterators) {
+            while(iterators.size() > numLines) {
+                iterators.remove(0);
+            }
         }
     }
     

@@ -42,7 +42,7 @@ public final class PreferencesDialog implements PreferencesInterface {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 6;
+    private static final long serialVersionUID = 7;
     
     /** A previously created instance of PreferencesDialog. */
     private static PreferencesDialog me;
@@ -369,6 +369,9 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addCheckboxOption(tabName, "ui.showversion",
                 "Show version: ", "Show DMDirc version in the titlebar",
                 Config.getOptionBool("ui", "showversion"));
+        preferencesPanel.addSpinnerOption(tabName, "ui.frameBufferSize", 
+                "Frame buffer size: ", "Sets the maximum number of lines in the frame buffer.",
+                Config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE));
     }
     
     /** {@inheritDoc}. */
