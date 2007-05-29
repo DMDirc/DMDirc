@@ -50,6 +50,20 @@ public enum CoreActionComponent implements ActionComponent {
         public String getName() { return "network"; }
     },
     
+    SERVER_MYAWAYREASON {
+        public Object get(final Object argument) { return ((Server) argument).getAwayMessage(); }
+        public Class appliesTo() { return Server.class; }
+        public Class getType() { return String.class; }
+        public String getName() { return "away reason"; }
+    },  
+    
+    SERVER_MYNICKNAME {
+        public Object get(final Object argument) { return ((Server) argument).getParser().getMyself().getNickname(); }
+        public Class appliesTo() { return Server.class; }
+        public Class getType() { return String.class; }
+        public String getName() { return "nickname"; }
+    },    
+    
     CHANNEL_NAME {
         public Object get(final Object argument) { return ((Channel) argument).getChannelInfo().getName(); }
         public Class appliesTo() { return Channel.class; }

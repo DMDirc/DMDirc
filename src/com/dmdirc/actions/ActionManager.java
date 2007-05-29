@@ -450,40 +450,7 @@ public class ActionManager {
      */
     public static String substituteVars(final String target, final Object ... arguments) {
         String res = target;
-        Server server = null;
-        Channel channel = null;
-        ChannelClientInfo source = null;
-        
-        if (arguments.length > 0 && arguments[0] instanceof Server) {
-            server = (Server) arguments[0];
-        } else if (arguments.length > 0 && arguments[0] instanceof Channel) {
-            channel = (Channel) arguments[0];
-            server = channel.getServer();
-        }
-        
-        if (arguments.length > 1 && arguments[1] instanceof ChannelClientInfo) {
-            source = (ChannelClientInfo) arguments[1];
-        }
-        
-        if (server != null) {
-            res = res.replaceAll("\\$nick", server.getParser().getMyself().getNickname());
-            if (server.isAway()) {
-                res = res.replaceAll("\\$awaymsg", server.getAwayMessage());
-            }
-        }
-        
-        if (channel != null) {
-            res = res.replaceAll("\\$chan", channel.getChannelInfo().getName());
-        }
-        
-        if (source != null) {
-            res = res.replaceAll("\\$source", source.getNickname());
-        }
-        
-        if (arguments.length > 2 && arguments[2] instanceof String) {
-            res = res.replaceAll("\\$message", (String) arguments[2]);
-        }
-        
+                
         for (String key : Config.getOptions("actions")) {
             res = res.replaceAll("\\$" + key, Config.getOption("actions", key));
         }
