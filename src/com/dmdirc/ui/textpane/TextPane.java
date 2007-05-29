@@ -159,7 +159,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         }
         scrollBar.setMaximum(lines);
         if (!scrollBar.getValueIsAdjusting()
-        && (scrollBar.getValue() == scrollBar.getMaximum() - 1)) {
+                && (scrollBar.getValue() == scrollBar.getMaximum() - 1)) {
             setScrollBarPosition(lines);
         }
     }
@@ -267,6 +267,23 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public String getTextFromLine(final int line, final int start,
             final int end) {
         return getTextFromLine(document.getLine(line).getIterator(), start, end);
+    }
+    
+    /**
+     * Returns the range of text from the specified iterator.
+     *
+     * @param iterator iterator to get text from
+     *
+     * @return Text in the range from the line
+     */
+    public String getTextFromLine(final AttributedCharacterIterator iterator) {
+        int end = iterator.getEndIndex();
+        int start = iterator.getBeginIndex();
+        final StringBuffer text = new StringBuffer();
+        for (iterator.setIndex(start); iterator.getIndex() < end; iterator.next()) {
+            text.append(iterator.current());
+        }
+        return text.toString();
     }
     
     /**

@@ -304,6 +304,14 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         int start = -1;
         int end = -1;
         final int[] info = getClickPosition(this.getMousePosition());
+        AttributedCharacterIterator iterator = document.getLine(info[0]).getIterator();
+        iterator.setIndex(info[2]);
+        Object linkattr = iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+        if (linkattr != null && linkattr instanceof String) {
+            fireHyperlinkClicked((String) linkattr);
+            return;
+        }
+        
         if (info[0] != -1) {
             clickedText = textPane.getTextFromLine(info[0]);
             start = info[2];
@@ -324,18 +332,20 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                     end++;
                 }
                 
-                if (e.getClickCount() == 2) {
-                    selStartLine = info[0];
-                    selEndLine = info[0];
-                    selStartChar = start;
-                    selEndChar = end;
-                } else if (e.getClickCount() == 3) {
-                    selStartLine = info[0];
-                    selEndLine = info[0];
-                    selStartChar = 0;
-                    selEndChar = clickedText.length();
-                } else {
-                    checkClickedText(clickedText.substring(start, end));
+                if (start != -1 && end != -1) {
+                    if (e.getClickCount() == 2) {
+                        selStartLine = info[0];
+                        selEndLine = info[0];
+                        selStartChar = start;
+                        selEndChar = end;
+                    } else if (e.getClickCount() == 3) {
+                        selStartLine = info[0];
+                        selEndLine = info[0];
+                        selStartChar = 0;
+                        selEndChar = clickedText.length();
+                    } else {
+                        checkClickedText(clickedText.substring(start, end));
+                    }
                 }
             }
         }
@@ -419,10 +429,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
      * @param clickedText Text clicked
      */
     public void checkClickedText(final String clickedText) {
-        final Matcher matcher = Pattern.compile(Styliser.URL_REGEXP).matcher(clickedText);
-        if (matcher.find(0)) {
-            fireHyperlinkClicked(matcher.group());
-        } else if (textPane.isValidChannel(clickedText)) {
+        if (textPane.isValidChannel(clickedText)) {
             fireChannelClicked(clickedText);
         }
     }
