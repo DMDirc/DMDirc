@@ -20,8 +20,19 @@ cd $MYDIR/
 $SVN update
 SVNREV=`$SVN info | grep Revision`
 SVNREV=${SVNREV##*: }
-awk '{gsub(/public static final String VERSION = "SVN";/,"public static final String VERSION = \"Nightly - SVN Rev: '${SVNREV}'\";");print}' ${MYDIR}/src/com/dmdirc/Main.java > ${MYDIR}/src/com/dmdirc/Main.java.tmp
+
+# Substitute the version string
+awk '{gsub(/String VERSION = "SVN"/,"String VERSION = \"Nightly - SVN Rev: '${SVNREV}'\"");print}' ${MYDIR}/src/com/dmdirc/Main.java > ${MYDIR}/src/com/dmdirc/Main.java.tmp
 mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
+
+# Substitute the update channel
+awk '{gsub(/UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE/,"UpdateChannel UPDATE_CHANNEL = UpdateChannel.NIGHTLY");print}' ${MYDIR}/src/com/dmdirc/Main.java > ${MYDIR}/src/com/dmdirc/Main.java.tmp
+mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
+
+# Substitue the release date
+awk '{gsub(/int RELEASE_DATE = 0/,"int RELEASE_DATE = '`date +%Y%m%d`'");print}' ${MYDIR}/src/com/dmdirc/Main.java > ${MYDIR}/src/com/dmdirc/Main.java.tmp
+mv ${MYDIR}/src/com/dmdirc/Main.java.tmp ${MYDIR}/src/com/dmdirc/Main.java
+
 $ANT -buildfile $MYDIR/build.xml -k
 if [ -f $MYDIR/dist/DMDirc.jar ]; then
 	FILENAME=DMDirc`date +_%Y%m%d`_${SVNREV}.jar
