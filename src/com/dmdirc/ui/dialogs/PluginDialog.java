@@ -93,7 +93,7 @@ public final class PluginDialog extends StandardDialog implements
     private JEditorPane infoLabel;
     
     /** Creates a new instance of PluginDialog. */
-    private  PluginDialog() {
+    private PluginDialog() {
         super(MainFrame.getMainFrame(), false);
         setResizable(false);
         initComponents();

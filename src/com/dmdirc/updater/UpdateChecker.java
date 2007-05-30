@@ -27,6 +27,7 @@ import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.dialogs.UpdaterDialog;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -36,6 +37,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -139,6 +141,8 @@ public final class UpdateChecker implements Runnable {
         if (last + freq > timestamp) {
             time = last + freq - timestamp;
         }
+        
+        //new UpdaterDialog(new ArrayList<Update>());
         
         new Timer().schedule(new TimerTask() {
             public void run() {
