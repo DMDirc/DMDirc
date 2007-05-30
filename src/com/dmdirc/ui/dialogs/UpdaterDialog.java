@@ -52,6 +52,8 @@ public class UpdaterDialog extends StandardDialog implements ActionListener {
     
     private List<Update> updates;
     
+    private JLabel header;
+    
     /**
      * Creates a new instance of the updater dialog.
      * @param updates A list of updates that are available.
@@ -77,23 +79,24 @@ public class UpdaterDialog extends StandardDialog implements ActionListener {
         
         setLayout(new BorderLayout());
         
-        JLabel header = new JLabel("<html><big>Update Available</big><br><br>"
+        header = new JLabel("<html><big>Update Available</big><br><br>"
                 + "An update is available for one or more "
                 + "components of DMDirc:</html>");
         header.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, 
                 LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
         add(header, BorderLayout.NORTH);
         
-        final String[][] tableData = new String[updates.size()][3];
+        final String[][] tableData = new String[updates.size()][4];
         
         for (int i = 0; i < updates.size(); i++) {
             tableData[i][0] = updates.get(i).getComponent();
             tableData[i][1] = updates.get(i).getLocalVersion();
             tableData[i][2] = updates.get(i).getRemoteVersion();
+            tableData[i][3] = "Pending";
         }
         
         final JTable table = new JTable(tableData,
-                new String[]{"Component", "Local version", "Remote version"}) {
+                new String[]{"Component", "Local version", "Remote version", "Status"}) {
             private static final long serialVersionUID = 1;
             
             public boolean isCellEditable(final int x, final int y) {
@@ -132,7 +135,10 @@ public class UpdaterDialog extends StandardDialog implements ActionListener {
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource().equals(getOkButton())) {
-            // Do the update
+            getOkButton().setEnabled(false);
+            
+            header.setText("<html><big>Updating...</big><br><br>"
+                + "DMDirc is updating the following components:</html>");
         } else if (e.getSource().equals(getCancelButton())) {
             dispose();
         }

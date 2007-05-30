@@ -28,6 +28,8 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.dialogs.UpdaterDialog;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -52,7 +54,7 @@ import javax.swing.JLabel;
  * are any updates available.
  * @author chris
  */
-public final class UpdateChecker implements Runnable {
+public final class UpdateChecker implements Runnable, MouseListener {
     
     /** The label used to indicate that there's an update available. */
     private JLabel label;
@@ -130,6 +132,7 @@ public final class UpdateChecker implements Runnable {
             final ClassLoader classLoader = getClass().getClassLoader();
             final ImageIcon icon = new ImageIcon(classLoader.getResource("com/dmdirc/res/update.png"));
             
+            label.addMouseListener(this);
             label = new JLabel();
             label.setBorder(BorderFactory.createEtchedBorder());
             label.setIcon(icon);
@@ -151,15 +154,42 @@ public final class UpdateChecker implements Runnable {
             time = last + freq - timestamp;
         }
         
+        /*
         final List<Update> temp = new ArrayList<Update>();
         temp.add(new Update("outofdate teststuff 20073005 20060101 http://www.example.com/"));
         new UpdaterDialog(temp);
+        */
         
         new Timer().schedule(new TimerTask() {
             public void run() {
                 new Thread(new UpdateChecker()).start();
             }           
         }, time * 1000);
+    }
+
+    /** {@inheritDoc} */
+    public void mouseClicked(final MouseEvent e) {
+        new UpdaterDialog(updates);
+    }
+
+    /** {@inheritDoc} */
+    public void mousePressed(final MouseEvent e) {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    public void mouseReleased(final MouseEvent e) {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    public void mouseEntered(final MouseEvent e) {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    public void mouseExited(final MouseEvent e) {
+        // Do nothing
     }
     
 }
