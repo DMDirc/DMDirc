@@ -25,11 +25,13 @@ package com.dmdirc.ui.dialogs;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
 import com.dmdirc.updater.Update;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -77,17 +79,17 @@ public class UpdaterDialog extends StandardDialog implements ActionListener {
         
         JLabel header = new JLabel("<html><big>Update Available</big><br><br>"
                 + "An update is available for one or more "
-                + "components of DMDirc.</html>");
+                + "components of DMDirc:</html>");
         header.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, 
-                LARGE_BORDER, LARGE_BORDER, LARGE_BORDER));
+                LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
         add(header, BorderLayout.NORTH);
         
         final String[][] tableData = new String[updates.size()][3];
         
         for (int i = 0; i < updates.size(); i++) {
-            tableData[i][0] = "comp";
-            tableData[i][1] = "local";
-            tableData[i][2] = "remote";
+            tableData[i][0] = updates.get(i).getComponent();
+            tableData[i][1] = updates.get(i).getLocalVersion();
+            tableData[i][2] = updates.get(i).getRemoteVersion();
         }
         
         final JTable table = new JTable(tableData,

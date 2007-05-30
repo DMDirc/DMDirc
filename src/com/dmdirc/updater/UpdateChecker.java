@@ -39,6 +39,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,9 +57,14 @@ public final class UpdateChecker implements Runnable {
     /** The label used to indicate that there's an update available. */
     private JLabel label;
     
+    /** The list of updates that are available. */
+    private final List<Update> updates = new ArrayList<Update>();
+    
     /** {@inheritDoc} */
     public void run() {
         MainFrame.getMainFrame().getStatusBar().setMessage("Checking for updates...");
+        
+        updates.clear();
         
         URL url;
         URLConnection urlConn;
@@ -107,7 +113,7 @@ public final class UpdateChecker implements Runnable {
         if (line.startsWith("uptodate")) {
             MainFrame.getMainFrame().getStatusBar().setMessage("No updates available");
         } else if (line.startsWith("outofdate")) {
-            doUpdateAvailable();
+            doUpdateAvailable(line);
         } else {
             Logger.error(ErrorLevel.WARNING, "Unknown response from update server: " + line);
         }
@@ -115,8 +121,11 @@ public final class UpdateChecker implements Runnable {
     
     /**
      * Informs the user that there's an update available.
+     * @param line The line that was received from the update server
      */
-    private void doUpdateAvailable() {
+    private void doUpdateAvailable(final String line) {
+        updates.add(new Update(line));
+        
         if (label == null) {
             final ClassLoader classLoader = getClass().getClassLoader();
             final ImageIcon icon = new ImageIcon(classLoader.getResource("com/dmdirc/res/update.png"));
@@ -142,7 +151,9 @@ public final class UpdateChecker implements Runnable {
             time = last + freq - timestamp;
         }
         
-        //new UpdaterDialog(new ArrayList<Update>());
+        final List<Update> temp = new ArrayList<Update>();
+        temp.add(new Update("outofdate teststuff 20073005 20060101 http://www.example.com/"));
+        new UpdaterDialog(temp);
         
         new Timer().schedule(new TimerTask() {
             public void run() {

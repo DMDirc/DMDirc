@@ -22,6 +22,66 @@
 
 package com.dmdirc.updater;
 
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+
+/**
+ * Represents a single available update for some component.
+ * @author chris
+ */
 public final class Update {
     
+    private String component;
+    private String localVersion;
+    private String remoteVersion;
+    private String url;
+   
+    /**
+     * Creates a new instance of Update, with details from the specified line.
+     * @param updateInfo An update information line from the update server
+     */
+    public Update(final String updateInfo) {
+        final String[] parts = updateInfo.split(" ");
+        
+        if (parts.length == 5) {
+            component = parts[1];
+            remoteVersion = parts[2];
+            localVersion = parts[3];
+            url = parts[4];
+        } else {
+            Logger.error(ErrorLevel.WARNING, "Invalid update line received from server: " + updateInfo);
+        }
+    }
+    
+    /**
+     * Retrieves the component that this update is for.
+     * @return The component of this update
+     */
+    public String getComponent() {
+        return component;
+    }
+    
+    /**
+     * Returns the local version of the component that's updateable
+     * @return The local (outdated) version number
+     */
+    public String getLocalVersion() {
+        return localVersion;
+    }    
+
+    /**
+     * Returns the remote version of the component that's available.
+     * @return The remote version number
+     */
+    public String getRemoteVersion() {
+        return remoteVersion;
+    }
+
+    /**
+     * Returns the URL where the new update may be downloaded.
+     * @return The URL of the update
+     */
+    public String getUrl() {
+        return url;
+    }    
 }
