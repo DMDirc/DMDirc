@@ -105,14 +105,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     }
     
     /**
-     * Adds text to the textpane.
-     * @param text text to add
-     */
-    public void addText(final String text) {
-        addText(new AttributedString(text));
-    }
-    
-    /**
      * Adds styled text to the textpane.
      * @param text styled text to add
      */
@@ -159,7 +151,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         }
         scrollBar.setMaximum(lines);
         if (!scrollBar.getValueIsAdjusting()
-                && (scrollBar.getValue() == scrollBar.getMaximum() - 1)) {
+        && (scrollBar.getValue() == scrollBar.getMaximum() - 1)) {
             setScrollBarPosition(lines);
         }
     }

@@ -208,9 +208,9 @@ public final class SearchBar extends JPanel implements ActionListener,
         boolean foundText;
         
         if (direction == Direction.UP) {
-            foundText = searchUp(line, text);
+            foundText = searchUp(line, caseSensitive ? text.toLowerCase() : text);
         } else {
-            foundText = searchDown(line, text);
+            foundText = searchDown(line, caseSensitive ? text.toLowerCase() : text);
         }
         
         if (foundText) {

@@ -91,7 +91,7 @@ public final class Styliser {
         final AttributedString text = styledDocumentToAttributedString(getStyledString(new String[]{string, }));
         
         if (text.getIterator().getEndIndex() == 0) {
-            doc.addText("\n");
+            doc.addText(new AttributedString("\n"));
         } else {
             doc.addText(text);
         }
@@ -124,6 +124,14 @@ public final class Styliser {
         final StyledDocument styledDoc = new DefaultStyledDocument();
         
         for (String string : strings) {
+            char[] chars = string.toCharArray();
+            
+            for (int i = 0; i < chars.length; i++) {
+                if (chars[i] == 65533) {
+                    chars[i] = '?';
+                }
+            }
+            string = new String(chars);
             try {
                 int offset = styledDoc.getLength();
                 int position = 0;
