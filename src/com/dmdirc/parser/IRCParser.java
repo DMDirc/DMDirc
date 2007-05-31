@@ -1260,10 +1260,18 @@ public final class IRCParser implements Runnable {
 	 *
 	 * @param sChannelName Channel name to test
 	 * @return true if name is valid on the current connection, false otherwise.
-	 *         (Always true before channel prefixes are known (005/noMOTD/MOTDEnd))
+	 *         - Always true before channel prefixes are known (005/noMOTD/MOTDEnd)
+	 *           unless sChannelName is null, empty or equal to the current nickname.
 	 */
 	public boolean isValidChannelName(final String sChannelName) {
+		// Check sChannelName is not empty or null
 		if (sChannelName == null || sChannelName.length() == 0) { return false; }
+		// Check its not ourself (PM recieved before 005)
+		if (getMyNickname().equalsIgnoreCase(sChannelName)) { return false; }
+		// Otherwise return true if:
+		// 005 has not been recieved yet
+		// Channel equals "0"
+		// first character of the channel name is a valid channel prefix.
 		return hChanPrefix.size() == 0 || hChanPrefix.containsKey(sChannelName.charAt(0)) || sChannelName.equals("0");
 	}
 	
