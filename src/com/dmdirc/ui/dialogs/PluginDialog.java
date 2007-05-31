@@ -28,7 +28,6 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.PluginCellRenderer;
 import com.dmdirc.ui.components.StandardDialog;
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -50,6 +49,9 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 
 /**
  * Plugin manager dialog. Allows the user to manage their plugins.
@@ -142,16 +144,19 @@ public final class PluginDialog extends StandardDialog implements
         toggleButton.setEnabled(false);
         
         blurbLabel = new JTextArea("Plugins allow you to extend the functionality of DMDirc."
-                + " Plugins enabled here will be enabled next time you start the client.");
+                + " Plugins enabled here will also be enabled next time you start the client.");
         blurbLabel.setEditable(false);
         blurbLabel.setWrapStyleWord(true);
         blurbLabel.setLineWrap(true);
         blurbLabel.setHighlighter(null);
         blurbLabel.setBackground(this.getBackground());
         
-        infoLabel = new JEditorPane("text/html", "<html><center>You can get "
+        infoLabel = new JEditorPane("text/html", "<html><center style='font-family: "
+                + blurbLabel.getFont().getFamily() + "; font-size:"
+                + blurbLabel.getFont().getSize() + "pt;'>You can get "
                 + "more plugins from the <a href=\"http://addons.dmdirc.com/\">"
                 + "Addons site</a></center></html>");
+        infoLabel.setFont(blurbLabel.getFont());
         infoLabel.setEditable(false);
         infoLabel.setHighlighter(null);
         infoLabel.setBackground(this.getBackground());
@@ -170,7 +175,7 @@ public final class PluginDialog extends StandardDialog implements
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
+        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER,
                 LARGE_BORDER);
         getContentPane().add(blurbLabel, constraints);
         
@@ -178,7 +183,7 @@ public final class PluginDialog extends StandardDialog implements
         constraints.weightx = 1.0;
         constraints.gridy = 1;
         constraints.gridheight = 4;
-        constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
+        constraints.insets.set(SMALL_BORDER, LARGE_BORDER, SMALL_BORDER,
                 LARGE_BORDER);
         getContentPane().add(scrollPane, constraints);
         

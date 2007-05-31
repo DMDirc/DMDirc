@@ -23,7 +23,6 @@
 package com.dmdirc.ui.components;
 
 import com.dmdirc.plugins.Plugin;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -37,6 +36,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.ListCellRenderer;
+
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Handles the rendering of the JList used for plugin management.
@@ -79,17 +80,13 @@ public final class PluginCellRenderer implements ListCellRenderer {
         final JLabel name = new JLabel(plugin.toString());
         name.setFont(name.getFont().deriveFont(Font.BOLD));
         name.setForeground(foreground);
-        name.setPreferredSize(new Dimension(3 * list.getWidth() / 8, 15));
         
         final JLabel version = new JLabel("v" + plugin.getVersion());
         version.setForeground(foreground);
         version.setHorizontalAlignment(JLabel.CENTER);
-        version.setPreferredSize(new Dimension(list.getWidth() / 8, 15));
         
         final JLabel author = new JLabel(plugin.getAuthor());
         author.setForeground(foreground);
-        author.setHorizontalAlignment(JLabel.RIGHT);
-        author.setPreferredSize(new Dimension(list.getWidth() / 2, 15));
         
         final JLabel desc = new JLabel(plugin.getDescription());
         desc.setForeground(foreground);
@@ -99,6 +96,11 @@ public final class PluginCellRenderer implements ListCellRenderer {
         res.add(name, BorderLayout.WEST);
         res.add(author, BorderLayout.EAST);
         res.add(desc, BorderLayout.SOUTH);
+
+        final int width = list.getWidth() - 2 * SMALL_BORDER;
+        name.setPreferredSize(new Dimension(5 * width / 16, 15));
+        version.setPreferredSize(new Dimension(width / 8, 15));
+        author.setPreferredSize(new Dimension(9 * width / 16, 15));
         
         final JPanel wrapper = new JPanel();
         wrapper.setLayout(new BorderLayout());
