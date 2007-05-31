@@ -418,10 +418,13 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         final Point point = this.getMousePosition();
         
         if (point == null) {
-            if (getLocationOnScreen().getY() > e.getYOnScreen()) {
-                textPane.setScrollBarPosition(scrollBarPosition - 1);
-            } else {
-                textPane.setScrollBarPosition(scrollBarPosition + 1);
+            if (e.getXOnScreen() > getLocationOnScreen().getX()
+            && e.getXOnScreen() < (getLocationOnScreen().getX() + getWidth())) {
+                if (getLocationOnScreen().getY() > e.getYOnScreen()) {
+                    textPane.setScrollBarPosition(scrollBarPosition - 1);
+                } else {
+                    textPane.setScrollBarPosition(scrollBarPosition + 1);
+                }
             }
         } else {
             final int[] info = getClickPosition(point);
