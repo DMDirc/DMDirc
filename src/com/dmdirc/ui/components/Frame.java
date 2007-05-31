@@ -601,6 +601,19 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     
     /** {@inheritDoc}. */
     public void keyPressed(final KeyEvent event) {
+        if ((event.getModifiers() & KeyEvent.CTRL_MASK) ==  0) {
+            if (event.getKeyCode() == KeyEvent.VK_PAGE_UP) {
+                getTextPane().pageUp();
+            } else if (event.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
+                getTextPane().pageDown();
+            }
+        } else {
+            if (event.getKeyCode() == KeyEvent.VK_HOME) {
+                getTextPane().setScrollBarPosition(0);
+            } else if (event.getKeyCode() == KeyEvent.VK_END) {
+                getTextPane().setScrollBarPosition(textPane.getNumLines());
+            }
+        }
         if (event.getKeyCode() == KeyEvent.VK_F3
                 || (event.getKeyCode() == KeyEvent.VK_F
                 && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0

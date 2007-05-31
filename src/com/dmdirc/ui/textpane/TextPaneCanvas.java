@@ -34,14 +34,10 @@ import java.text.AttributedCharacterIterator;
 import java.text.AttributedCharacterIterator.Attribute;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.event.MouseInputListener;
-
-import com.dmdirc.ui.messages.Styliser;
 
 /** Canvas object to draw text. */
 class TextPaneCanvas extends JPanel implements MouseInputListener {
@@ -74,6 +70,11 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     private int selEndLine;
     /** End character of the selection. */
     private int selEndChar;
+    
+    /** First visible line. */
+    private int firstVisibleLine = 0;
+    /** Last visible line. */
+    private int lastVisibleLine = 0;
     
     /**
      * Creates a new text pane canvas.
@@ -129,6 +130,10 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         if (startLine <= 0) {
             startLine = 0;
         }
+        
+        //sets the last visible line
+        lastVisibleLine = startLine;
+        firstVisibleLine = startLine;
         
         // We use these for drawing rather than the actual
         // sel{Start,End}{Line,Char} vars defined in the highlightEvent
@@ -262,6 +267,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                         graphics2D.setColor(textPane.getForeground());
                         
                         layout.draw(graphics2D, drawPosX, drawPosY + firstLineHeight/2);
+                        firstVisibleLine = i;
                         textLayouts.put(layout, new LineInfo(i, j));
                         positions.put(new Rectangle(
                                 (int) drawPosX, (int) drawPosY,
@@ -531,5 +537,23 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         selStartChar = startChar;
         selEndLine = endLine;
         selEndChar = endChar;
+    }
+
+    /** 
+     * Returns the first visible line. 
+     *
+     * @return the line number of the first visible line
+     */
+    public int getFirstVisibleLine() {
+        return firstVisibleLine;
+    }
+
+    /** 
+     * Returns the last visible line. 
+     *
+     * @return the line number of the last visible line
+     */
+    public int getLastVisibleLine() {
+        return lastVisibleLine;
     }
 }

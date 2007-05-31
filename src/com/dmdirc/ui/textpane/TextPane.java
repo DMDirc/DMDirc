@@ -158,10 +158,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     
     /** {@inheritDoc}. */
     public void adjustmentValueChanged(final AdjustmentEvent e) {
-        if (e.getValue() < document.getNumLines()) {
-            scrollBar.setValue(e.getValue());
-            canvas.setScrollBarPosition(e.getValue());
-        }
+        setScrollBarPosition(e.getValue());
     }
     
     /** {@inheritDoc}. */
@@ -386,5 +383,19 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             return owner.getServer().getParser().isValidChannelName(channel);
         }
         return false;
+    }
+    
+    /** Scrolls one page up in the textpane. */
+    public void pageDown() {
+        //setScrollBarPosition(scrollBar.getValue() + canvas.getLastVisibleLine() - canvas.getFirstVisibleLine() + 1);
+        //use this method for now, its consistent with the block unit for the scrollbar
+        setScrollBarPosition(scrollBar.getValue() + 10);
+    }
+    
+    /** Scrolls one page down in the textpane. */
+    public void pageUp() {
+        //setScrollBarPosition(canvas.getFirstVisibleLine());
+        //use this method for now, its consistent with the block unit for the scrollbar
+        setScrollBarPosition(scrollBar.getValue() - 10);
     }
 }
