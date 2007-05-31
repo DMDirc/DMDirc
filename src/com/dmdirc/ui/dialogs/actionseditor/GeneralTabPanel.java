@@ -124,7 +124,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     
     /** Populates the other triggers list with compatible types. */
     private void populateOtherTriggers() {
-        otherTriggers.removeAll();
+        ((DefaultListModel) otherTriggers.getModel()).clear();
         if (trigger.getSelectedIndex() == 0) {
             otherTriggers.setEnabled(false);
         } else {
@@ -138,12 +138,14 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     
     /** Selects other triggers that are part of this action. */
     private void selectOtherTriggers() {
-        for (ActionType thisType : owner.getAction().getTriggers()) {
-            final int index = ((DefaultListModel) otherTriggers.getModel()).indexOf(thisType);
-            if (index != -1) {
-                otherTriggers.getSelectionModel().addSelectionInterval(index, index);
+        if (owner.getAction() != null && owner.getAction().getTriggers() != null) {
+            for (ActionType thisType : owner.getAction().getTriggers()) {
+                final int index = ((DefaultListModel) otherTriggers.getModel()).indexOf(thisType);
+                if (index != -1) {
+                    otherTriggers.getSelectionModel().addSelectionInterval(index, index);
+                }
+                
             }
-            
         }
     }
     
@@ -223,11 +225,9 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     private void handleTriggerChange() {
         final boolean compatible = checkTriggerCompatibility();
         
-        handleInvalidTrigger();        
+        handleInvalidTrigger();
         
         if (compatible) {
-            populateOtherTriggers();
-            selectOtherTriggers();
             type = (ActionType) trigger.getSelectedItem();
         } else if (owner.getConditionCount() > 0) {
             final int response = JOptionPane.showConfirmDialog(this,
@@ -241,6 +241,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
                 trigger.setSelectedItem(type);
             }
         }
+        populateOtherTriggers();
     }
     
     /**
