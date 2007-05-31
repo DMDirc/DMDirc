@@ -22,6 +22,22 @@
 
 package com.dmdirc.ui;
 
+import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
+import com.dmdirc.commandparser.ChannelCommand;
+import com.dmdirc.commandparser.ChannelCommandParser;
+import com.dmdirc.commandparser.Command;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.CommandParser;
+import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.ui.components.Frame;
+import com.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
+import com.dmdirc.ui.input.InputHandler;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -45,23 +61,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
-
-import com.dmdirc.Channel;
-import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
-import com.dmdirc.commandparser.ChannelCommand;
-import com.dmdirc.commandparser.ChannelCommandParser;
-import com.dmdirc.commandparser.Command;
-import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandParser;
-import com.dmdirc.commandparser.ServerCommand;
-import com.dmdirc.identities.ConfigManager;
-import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.ui.components.Frame;
-import com.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
-import com.dmdirc.ui.input.InputHandler;
-
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * The channel frame is the GUI component that represents a channel to the user.

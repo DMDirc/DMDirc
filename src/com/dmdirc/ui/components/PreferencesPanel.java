@@ -22,6 +22,14 @@
 
 package com.dmdirc.ui.components;
 
+import com.dmdirc.Config;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.MainFrame;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.layoutGrid;
+
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -60,15 +68,6 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-
-import com.dmdirc.Config;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.MainFrame;
-
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * Allows the user to modify global client preferences.

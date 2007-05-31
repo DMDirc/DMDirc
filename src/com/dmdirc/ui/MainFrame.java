@@ -22,6 +22,25 @@
 
 package com.dmdirc.ui;
 
+import com.dmdirc.Config;
+import com.dmdirc.Main;
+import com.dmdirc.ServerManager;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.components.StatusBar;
+import com.dmdirc.ui.dialogs.AboutDialog;
+import com.dmdirc.ui.dialogs.ActionsManagerDialog;
+import com.dmdirc.ui.dialogs.NewServerDialog;
+import com.dmdirc.ui.dialogs.PluginDialog;
+import com.dmdirc.ui.dialogs.PreferencesDialog;
+import com.dmdirc.ui.dialogs.ProfileEditorDialog;
+import com.dmdirc.ui.framemanager.FrameManager;
+import com.dmdirc.ui.framemanager.tree.TreeFrameManager;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -56,26 +75,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.FontUIResource;
-
-import com.dmdirc.Config;
-import com.dmdirc.Main;
-import com.dmdirc.ServerManager;
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.commandparser.CommandWindow;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.components.StatusBar;
-import com.dmdirc.ui.dialogs.AboutDialog;
-import com.dmdirc.ui.dialogs.ActionsManagerDialog;
-import com.dmdirc.ui.dialogs.NewServerDialog;
-import com.dmdirc.ui.dialogs.PluginDialog;
-import com.dmdirc.ui.dialogs.PreferencesDialog;
-import com.dmdirc.ui.dialogs.ProfileEditorDialog;
-import com.dmdirc.ui.framemanager.FrameManager;
-import com.dmdirc.ui.framemanager.tree.TreeFrameManager;
-
-import static com.dmdirc.ui.UIUtilities.*;
 
 /**
  * The main application frame.

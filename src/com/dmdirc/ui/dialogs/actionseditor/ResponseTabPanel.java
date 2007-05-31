@@ -22,6 +22,10 @@
 
 package com.dmdirc.ui.dialogs.actionseditor;
 
+import com.dmdirc.ui.messages.Formatter;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -34,11 +38,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.text.BadLocationException;
-
-import com.dmdirc.ui.messages.Formatter;
-
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Response tab panel, response and formatter editing for the actions editor

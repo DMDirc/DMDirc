@@ -22,14 +22,14 @@
 
 package com.dmdirc.ui.dialogs.actionseditor;
 
+import com.dmdirc.actions.ActionComparison;
+import com.dmdirc.actions.ActionComponent;
+import com.dmdirc.actions.ActionType;
+
 import java.awt.Component;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
-
-import com.dmdirc.actions.ActionComparison;
-import com.dmdirc.actions.ActionComponent;
-import com.dmdirc.actions.ActionType;
 
 /**
  * Displays actions using getName not toString.

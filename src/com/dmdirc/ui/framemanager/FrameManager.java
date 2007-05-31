@@ -22,15 +22,15 @@
 
 package com.dmdirc.ui.framemanager;
 
-import java.awt.Color;
-
-import javax.swing.JComponent;
-
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Raw;
 import com.dmdirc.Server;
+
+import java.awt.Color;
+
+import javax.swing.JComponent;
 
 /**
  * A frame manager is a widget that allows the user to navigate between the

@@ -22,6 +22,12 @@
 
 package com.dmdirc.ui.framemanager.tree;
 
+import com.dmdirc.Config;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.messages.ColourManager;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -32,13 +38,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
-
-import com.dmdirc.Config;
-import com.dmdirc.FrameContainer;
-import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.messages.ColourManager;
-
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Displays a node in a tree according to its type.

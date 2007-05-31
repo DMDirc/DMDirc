@@ -22,6 +22,11 @@
 
 package com.dmdirc.ui.components;
 
+import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionType;
+import com.dmdirc.ui.dialogs.ActionsManagerDialog;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 import java.awt.BorderLayout;
 import java.util.List;
 
@@ -32,12 +37,6 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import com.dmdirc.actions.Action;
-import com.dmdirc.actions.ActionType;
-import com.dmdirc.ui.dialogs.ActionsManagerDialog;
-
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * The actions group panel is the control displayed within the tabbed control

@@ -22,6 +22,11 @@
 
 package com.dmdirc.ui;
 
+import com.dmdirc.ChannelClientProperty;
+import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.ui.messages.ColourManager;
+
 import java.awt.Color;
 import java.awt.Component;
 import java.util.Map;
@@ -29,11 +34,6 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
-
-import com.dmdirc.ChannelClientProperty;
-import com.dmdirc.identities.ConfigManager;
-import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.ui.messages.ColourManager;
 
 /**
  * Renders the nicklist.

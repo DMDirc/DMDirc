@@ -22,6 +22,14 @@
 
 package com.dmdirc.ui.dialogs;
 
+import com.dmdirc.BrowserLauncher;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.PluginCellRenderer;
+import com.dmdirc.ui.components.StandardDialog;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -42,15 +50,6 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import com.dmdirc.BrowserLauncher;
-import com.dmdirc.plugins.Plugin;
-import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.components.PluginCellRenderer;
-import com.dmdirc.ui.components.StandardDialog;
-
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 
 /**
  * Plugin manager dialog. Allows the user to manage their plugins.

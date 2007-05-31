@@ -22,6 +22,15 @@
 
 package com.dmdirc.ui.dialogs;
 
+import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.ActionsGroupPanel;
+import com.dmdirc.ui.components.StandardDialog;
+import com.dmdirc.ui.dialogs.actionseditor.ActionsEditorDialog;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -39,16 +48,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-
-import com.dmdirc.actions.Action;
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.components.ActionsGroupPanel;
-import com.dmdirc.ui.components.StandardDialog;
-import com.dmdirc.ui.dialogs.actionseditor.ActionsEditorDialog;
-
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Allows the user to manage actions.

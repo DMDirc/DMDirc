@@ -25,6 +25,8 @@ package com.dmdirc.ui.dialogs;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
 import com.dmdirc.updater.Update;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -40,25 +42,31 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.WindowConstants;
 
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
-
 /**
  * The updater dialog informs the user of the new update that is available,
  * and walks them through the process of downloading the update.
  * @author chris
  */
-public class UpdaterDialog extends StandardDialog implements ActionListener {
+public final class UpdaterDialog extends StandardDialog implements ActionListener {
     
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
+    
+    /** List of updates. */
     private List<Update> updates;
     
+    /** Update info header. */
     private JLabel header;
     
     /**
      * Creates a new instance of the updater dialog.
      * @param updates A list of updates that are available.
      */
-    public UpdaterDialog(List<Update> updates) {
+    public UpdaterDialog(final List<Update> updates) {
         super(MainFrame.getMainFrame(), false);
         
         this.updates = updates;

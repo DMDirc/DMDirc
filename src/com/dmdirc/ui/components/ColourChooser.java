@@ -22,6 +22,9 @@
 
 package com.dmdirc.ui.components;
 
+import com.dmdirc.ui.messages.ColourManager;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -32,10 +35,6 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-
-import com.dmdirc.ui.messages.ColourManager;
-
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Colour chooser widget.

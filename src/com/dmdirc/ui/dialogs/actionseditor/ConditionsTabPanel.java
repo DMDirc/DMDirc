@@ -22,6 +22,10 @@
 
 package com.dmdirc.ui.dialogs.actionseditor;
 
+import com.dmdirc.actions.ActionCondition;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.layoutGrid;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -40,11 +44,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
-
-import com.dmdirc.actions.ActionCondition;
-
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * Conditions tab panel, conditions editing for the actions editor dialog.

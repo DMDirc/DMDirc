@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.components;
 
+import com.dmdirc.ui.messages.ColourManager;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -36,8 +38,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JPanel;
-
-import com.dmdirc.ui.messages.ColourManager;
 
 /**
  * The ColourPickerPanel allows users to pick either an IRC colour or a hex

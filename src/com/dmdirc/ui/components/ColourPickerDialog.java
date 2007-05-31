@@ -22,11 +22,11 @@
 
 package com.dmdirc.ui.components;
 
+import com.dmdirc.ui.MainFrame;
+
 import java.awt.event.ActionListener;
 
 import javax.swing.JDialog;
-
-import com.dmdirc.ui.MainFrame;
 
 /**
  * Colour picker dialog.

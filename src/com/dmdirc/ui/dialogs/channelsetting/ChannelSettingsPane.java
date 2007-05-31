@@ -22,6 +22,13 @@
 
 package com.dmdirc.ui.dialogs.channelsetting;
 
+import com.dmdirc.Config;
+import com.dmdirc.identities.Identity;
+import com.dmdirc.ui.components.ColourChooser;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.layoutGrid;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -45,14 +52,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-
-import com.dmdirc.Config;
-import com.dmdirc.identities.Identity;
-import com.dmdirc.ui.components.ColourChooser;
-
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * Channel settings panel.

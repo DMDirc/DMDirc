@@ -22,10 +22,6 @@
 
 package com.dmdirc.ui;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
@@ -34,8 +30,11 @@ import com.dmdirc.commandparser.QueryCommandParser;
 import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.ui.components.Frame;
 import com.dmdirc.ui.input.InputHandler;
-
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 /**
  * The QueryFrame is the MDI window that shows query messages to the user.

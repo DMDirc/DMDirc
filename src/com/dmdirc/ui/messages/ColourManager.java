@@ -22,10 +22,10 @@
 
 package com.dmdirc.ui.messages;
 
-import java.awt.Color;
-
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+
+import java.awt.Color;
 
 /**
  * The colour manager manages the colour scheme for the IRC client. It allows

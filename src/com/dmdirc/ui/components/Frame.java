@@ -22,6 +22,23 @@
 
 package com.dmdirc.ui.components;
 
+import com.dmdirc.BrowserLauncher;
+import com.dmdirc.Config;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.dialogs.PasteDialog;
+import com.dmdirc.ui.input.InputHandler;
+import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.messages.Formatter;
+import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.ui.textpane.TextPane;
+import com.dmdirc.ui.textpane.TextPaneListener;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -59,24 +76,6 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.plaf.synth.SynthLookAndFeel;
-
-import com.dmdirc.BrowserLauncher;
-import com.dmdirc.Config;
-import com.dmdirc.FrameContainer;
-import com.dmdirc.commandparser.CommandWindow;
-import com.dmdirc.identities.ConfigManager;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.dialogs.PasteDialog;
-import com.dmdirc.ui.input.InputHandler;
-import com.dmdirc.ui.input.TabCompleter;
-import com.dmdirc.ui.messages.Formatter;
-import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.ui.textpane.TextPane;
-import com.dmdirc.ui.textpane.TextPaneListener;
-
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Frame component.
@@ -557,7 +556,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         if (e.isPopupTrigger() && e.getSource() == getTextPane()) {
             final Point point = getTextPane().getMousePosition();
             if (point != null) {
-                int[] selection = textPane.getSelectedRange();
+                final int[] selection = textPane.getSelectedRange();
                 if (selection[0] == selection[2] && selection[1] == selection[3]) {
                     copyMI.setEnabled(false);
                 } else {
@@ -644,6 +643,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     
     /**
      * Checks and pastes text.
+     * 
+     * @param event the event that triggered the paste
      */
     private void doPaste(final KeyEvent event) {
         String clipboardContents = null;

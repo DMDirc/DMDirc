@@ -22,15 +22,15 @@
 
 package com.dmdirc.ui.dialogs;
 
+import com.dmdirc.Config;
+import com.dmdirc.ui.components.PreferencesInterface;
+import com.dmdirc.ui.components.PreferencesPanel;
+
 import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
-
-import com.dmdirc.Config;
-import com.dmdirc.ui.components.PreferencesInterface;
-import com.dmdirc.ui.components.PreferencesPanel;
 
 /**
  * Allows the user to modify global client preferences.

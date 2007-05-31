@@ -22,6 +22,15 @@
 
 package com.dmdirc.ui.dialogs;
 
+import com.dmdirc.identities.ConfigSource;
+import com.dmdirc.identities.Identity;
+import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.StandardDialog;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.layoutGrid;
+
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -45,16 +54,6 @@ import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import com.dmdirc.identities.ConfigSource;
-import com.dmdirc.identities.Identity;
-import com.dmdirc.identities.IdentityManager;
-import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.components.StandardDialog;
-
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * Profile editing dialog.

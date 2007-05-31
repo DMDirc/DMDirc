@@ -75,9 +75,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     private int selEndChar;
     
     /** First visible line. */
-    private int firstVisibleLine = 0;
+    private int firstVisibleLine;
     /** Last visible line. */
-    private int lastVisibleLine = 0;
+    private int lastVisibleLine;
     
     /**
      * Creates a new text pane canvas.
@@ -255,7 +255,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                             
                             // If the selection includes the chars we're showing
                             if (lastChar > chars && firstChar < chars + layout.getCharacterCount()) {
-                                final int trans = (int) (firstLineHeight/2 + drawPosY);
+                                final int trans = (int) (firstLineHeight / 2 + drawPosY);
                                 final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
                                 
                                 graphics2D.setColor(UIManager.getColor("TextPane.selectionBackground"));
@@ -269,7 +269,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                         
                         graphics2D.setColor(textPane.getForeground());
                         
-                        layout.draw(graphics2D, drawPosX, drawPosY + firstLineHeight/2);
+                        layout.draw(graphics2D, drawPosX, drawPosY + firstLineHeight / 2);
                         firstVisibleLine = i;
                         textLayouts.put(layout, new LineInfo(i, j));
                         positions.put(new Rectangle(
@@ -315,9 +315,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         final int[] info = getClickPosition(this.getMousePosition());
         
         if (info[0] != -1) {
-            AttributedCharacterIterator iterator = document.getLine(info[0]).getIterator();
+            final AttributedCharacterIterator iterator = document.getLine(info[0]).getIterator();
             iterator.setIndex(info[2]);
-            Object linkattr = iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+            final Object linkattr = iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
             if (linkattr != null && linkattr instanceof String) {
                 fireHyperlinkClicked((String) linkattr);
                 return;

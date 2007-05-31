@@ -22,6 +22,11 @@
 
 package com.dmdirc.ui.dialogs.actionseditor;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.ActionType;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.layoutGrid;
+
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,12 +44,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
-
-import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.ActionType;
-
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * General tab panel, name and trigger editing for the actions editor dialog.

@@ -22,6 +22,12 @@
 
 package com.dmdirc.ui.components;
 
+import com.dmdirc.Config;
+import com.dmdirc.Error;
+import com.dmdirc.ui.interfaces.StatusErrorNotifier;
+import com.dmdirc.ui.interfaces.StatusMessageNotifier;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
@@ -44,13 +50,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
-
-import com.dmdirc.Config;
-import com.dmdirc.Error;
-import com.dmdirc.ui.interfaces.StatusErrorNotifier;
-import com.dmdirc.ui.interfaces.StatusMessageNotifier;
-
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Status bar, shows message and info on the gui.

@@ -22,6 +22,12 @@
 
 package com.dmdirc.ui.components;
 
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.ui.textpane.TextPane;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.UIUtilities.layoutGrid;
+
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -39,13 +45,6 @@ import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-
-import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.messages.ColourManager;
-import com.dmdirc.ui.textpane.TextPane;
-
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import static com.dmdirc.ui.UIUtilities.layoutGrid;
 
 /**
  * Status bar, shows message and info on the gui.

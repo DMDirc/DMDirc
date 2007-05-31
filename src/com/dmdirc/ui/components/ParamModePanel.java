@@ -22,6 +22,10 @@
 
 package com.dmdirc.ui.components;
 
+import com.dmdirc.identities.ConfigManager;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -32,11 +36,6 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-
-import com.dmdirc.identities.ConfigManager;
-
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * A component to encapsulate one parameter-requiring channel mode, displaying

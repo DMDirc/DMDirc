@@ -22,11 +22,11 @@
 
 package com.dmdirc.ui.input;
 
+import com.dmdirc.Config;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import com.dmdirc.Config;
 
 /**
  * The tab completer handles a user's request to tab complete some word.

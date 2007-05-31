@@ -22,16 +22,16 @@
 
 package com.dmdirc.ui.framemanager;
 
-import java.awt.Color;
-
-import javax.swing.JComponent;
-
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Raw;
 import com.dmdirc.Server;
 import com.dmdirc.ui.MainFrame;
+
+import java.awt.Color;
+
+import javax.swing.JComponent;
 
 /**
  * A dummy frame manager. Does nothing.

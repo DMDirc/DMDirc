@@ -22,6 +22,12 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.Config;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.textpane.IRCTextAttribute;
+import com.dmdirc.ui.textpane.TextPane;
+
 import java.awt.Color;
 import java.awt.font.TextAttribute;
 import java.text.AttributedString;
@@ -38,12 +44,6 @@ import javax.swing.text.StyleConstants.CharacterConstants;
 import javax.swing.text.StyleConstants.ColorConstants;
 import javax.swing.text.StyleConstants.FontConstants;
 import javax.swing.text.StyledDocument;
-
-import com.dmdirc.Config;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.textpane.IRCTextAttribute;
-import com.dmdirc.ui.textpane.TextPane;
 
 /**
  * The styliser applies IRC styles to text. Styles are indicated by various
@@ -75,7 +75,7 @@ public final class Styliser {
             + CODE_UNDERLINE + "]";
     
     /** The regular expression to use for marking up URLs. */
-    public static final String URL_REGEXP = "(?i)([a-z]+://" + CHARS + "+|(?<![a-z:])www\\." + CHARS + "+)";
+    private static final String URL_REGEXP = "(?i)([a-z]+://" + CHARS + "+|(?<![a-z:])www\\." + CHARS + "+)";
     
     /** Creates a new instance of Styliser. */
     private Styliser() {
@@ -123,15 +123,16 @@ public final class Styliser {
     public static StyledDocument getStyledString(final String[] strings) {
         final StyledDocument styledDoc = new DefaultStyledDocument();
         
-        for (String string : strings) {
-            char[] chars = string.toCharArray();
+        for (int i = 0; i < strings.length; i++) {
+            final char[] chars = strings[i].toCharArray();
             
-            for (int i = 0; i < chars.length; i++) {
-                if (chars[i] == 65533) {
-                    chars[i] = '?';
+            for (int j = 0; j < chars.length; j++) {
+                if (chars[j] == 65533) {
+                    chars[j] = '?';
                 }
             }
-            string = new String(chars);
+            strings[i] = new String(chars);
+            final String string = strings[i];
             try {
                 int offset = styledDoc.getLength();
                 int position = 0;

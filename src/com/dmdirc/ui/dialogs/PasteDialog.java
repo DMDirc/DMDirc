@@ -22,6 +22,11 @@
 
 package com.dmdirc.ui.dialogs;
 
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.Frame;
+import com.dmdirc.ui.components.StandardDialog;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
@@ -35,12 +40,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
-
-import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.components.Frame;
-import com.dmdirc.ui.components.StandardDialog;
-
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 
 /**
  * Allows the user to modify global client preferences.

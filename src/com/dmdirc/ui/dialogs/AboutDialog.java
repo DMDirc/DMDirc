@@ -22,6 +22,12 @@
 
 package com.dmdirc.ui.dialogs;
 
+import com.dmdirc.BrowserLauncher;
+import com.dmdirc.Main;
+import com.dmdirc.ui.MainFrame;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -36,13 +42,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.WindowConstants;
-
-import com.dmdirc.BrowserLauncher;
-import com.dmdirc.Main;
-import com.dmdirc.ui.MainFrame;
-
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * About dialog.

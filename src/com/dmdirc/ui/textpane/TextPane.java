@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.textpane;
 
+import com.dmdirc.ui.components.Frame;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -37,8 +39,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.event.EventListenerList;
-
-import com.dmdirc.ui.components.Frame;
 
 /**
  * Styled, scrollable text pane.
@@ -266,8 +266,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * @return Text in the range from the line
      */
     public String getTextFromLine(final AttributedCharacterIterator iterator) {
-        int end = iterator.getEndIndex();
-        int start = iterator.getBeginIndex();
+        final int end = iterator.getEndIndex();
+        final int start = iterator.getBeginIndex();
         final StringBuffer text = new StringBuffer();
         for (iterator.setIndex(start); iterator.getIndex() < end; iterator.next()) {
             text.append(iterator.current());

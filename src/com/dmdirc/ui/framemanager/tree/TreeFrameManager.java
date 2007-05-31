@@ -22,6 +22,17 @@
 
 package com.dmdirc.ui.framemanager.tree;
 
+import com.dmdirc.Channel;
+import com.dmdirc.Config;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Query;
+import com.dmdirc.Raw;
+import com.dmdirc.Server;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.framemanager.FrameManager;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -54,18 +65,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
-
-import com.dmdirc.Channel;
-import com.dmdirc.Config;
-import com.dmdirc.FrameContainer;
-import com.dmdirc.Query;
-import com.dmdirc.Raw;
-import com.dmdirc.Server;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.framemanager.FrameManager;
-
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Manages open windows in the application in a tree style view.

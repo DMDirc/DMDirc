@@ -22,16 +22,15 @@
 
 package com.dmdirc.ui.framemanager.tree;
 
-
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeNode;
-
 import com.dmdirc.Channel;
 import com.dmdirc.Config;
 import com.dmdirc.Query;
 import com.dmdirc.Raw;
 import com.dmdirc.Server;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 
 /**
  * A simple sorted tree data model based on DefaultTreeModel.

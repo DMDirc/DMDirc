@@ -25,6 +25,8 @@ package com.dmdirc.ui.dialogs;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.interfaces.StatusErrorNotifier;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -56,9 +58,6 @@ import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
-
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * The fatal error dialog is used to inform the user that a fatal error has

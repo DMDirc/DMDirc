@@ -22,6 +22,10 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.Config;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,10 +35,6 @@ import java.util.IllegalFormatConversionException;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 import java.util.Set;
-
-import com.dmdirc.Config;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 
 /**
  * The Formatter provides a standard way to format messages for display.

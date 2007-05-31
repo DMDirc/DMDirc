@@ -22,11 +22,10 @@
 
 package com.dmdirc.ui;
 
-import java.io.Serializable;
-import java.util.Comparator;
-
 import com.dmdirc.parser.ChannelClientInfo;
 
+import java.io.Serializable;
+import java.util.Comparator;
 /**
  * Compares nicklist entries to each other, for sorting purposes.
  */

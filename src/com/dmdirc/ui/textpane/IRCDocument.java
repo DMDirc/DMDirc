@@ -86,8 +86,8 @@ public final class IRCDocument {
      * @param numLines Number of lines to trim the document to
      */
     public void trim(final int numLines) {
-        synchronized(iterators) {
-            while(iterators.size() > numLines) {
+        synchronized (iterators) {
+            while (iterators.size() > numLines) {
                 iterators.remove(0);
             }
         }
