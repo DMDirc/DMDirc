@@ -105,7 +105,8 @@ public final class IRCParser implements Runnable {
 	/** Length of time to wait between ping stuff. */
 	private long pingTimerLength = 10000;
 	/** Is a ping needed? */
-	private Boolean pingNeeded = false; // This is Boolean not boolean for a reason.
+	private Boolean pingNeeded = false; // This is Boolean not boolean because
+	                                    // synchronized does not work on primatives.
 	/** Time last ping was sent at. */
 	private long pingTime;
 	/** Current Server Lag. */
@@ -483,6 +484,7 @@ public final class IRCParser implements Runnable {
 		sServerName = "";
 		sNetworkName = "";
 		lastLine = "";
+		reset();
 	}
 
 	
@@ -1116,7 +1118,10 @@ public final class IRCParser implements Runnable {
 		// a "PRIVMSG" this will find the length of ":nick!user@host PRIVMSG #channel :"
 		// and subtract it from the MAX_LINELENGTH. This should be sufficient in most cases.
 		// Lint = the 2 ":" at the start and end and the 3 separating " "s
-		return getMaxLength(sType.length() + sTarget.length());
+		int length = 0;
+		if (sType != null) { length = length + sType.length(); }
+		if (sTarget != null) { length = length + sTarget.length(); }
+		return getMaxLength(length);
 	}
 	
 	/**
@@ -1127,7 +1132,12 @@ public final class IRCParser implements Runnable {
 	 */
 	public int getMaxLength(final int nLength) {
 		final int lineLint = 5;
-		return MAX_LINELENGTH - getMyself().toString().length() - nLength - lineLint;
+		if (cMyself != null) {
+			return MAX_LINELENGTH - cMyself.toString().length() - nLength - lineLint;
+		} else {
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "getMaxLength() called, but I don't know who I am?", lastLine));
+			return MAX_LINELENGTH - nLength - lineLint;
+		}
 	}
 	
 	/**
@@ -1233,10 +1243,16 @@ public final class IRCParser implements Runnable {
 	 * Remove all clients/channels/channelclients/callbacks.
 	 */
 	protected synchronized void reset() {
-		// Remove all known channels
-		for (ChannelInfo channel : hChannelList.values()) {
-			channel.emptyChannel();
-		}
+		// Remove reference to self
+		cMyself = null;
+// This keeps causing ConcurrentModificationException's, and has been removed
+// as it shouldn't really be needed anyway. The channel, channelclient and
+// client objects will be inaccessible and should thus be removed.
+//
+//		// Remove all known channels
+//		for (ChannelInfo channel : hChannelList.values()) {
+//			channel.emptyChannel();
+//		}
 		hChannelList.clear();
 		// Remove all known clients
 		hClientList.clear();
