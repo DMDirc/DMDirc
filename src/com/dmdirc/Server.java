@@ -190,6 +190,10 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      */
     public void connect(final String server, final int port, final String password,
             final boolean ssl, final ConfigSource profile) {
+        if (closing) {
+            Logger.error(ErrorLevel.WARNING, "Attempted to connect to a server while frame is closing.");
+            return;
+        }
         
         reconnect = true;
         
@@ -442,6 +446,8 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * @param reason reason for closing
      */
     public void close(final String reason) {
+        closing = true;
+        
         if (parser != null) {
             // Unregister parser callbacks
             parser.getCallbackManager().delAllCallback(this);
@@ -506,12 +512,13 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * closes all open channel windows associated with this server.
      */
     private void closeChannels() {
+        boolean wasClosing = closing;
         closing = true;
         for (Channel channel : channels.values()) {
             channel.closeWindow();
         }
         channels.clear();
-        closing = false;
+        closing = wasClosing;
     }
     
     /**
@@ -527,12 +534,13 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * closes all open query windows associated with this server.
      */
     private void closeQueries() {
-        closing = true;
+        boolean wasClosing = closing;
+        closing = true;        
         for (Query query : queries.values()) {
             query.close();
         }
         queries.clear();
-        closing = false;
+        closing = wasClosing;        
     }
     
     /**
