@@ -314,7 +314,7 @@ public final class SearchBar extends JPanel implements ActionListener,
         if (event.getKeyCode() == KeyEvent.VK_F3
                 || (event.getKeyCode() == KeyEvent.VK_F
                 && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0)) {
-            close();
+            getFocus();
         }
         
         if (event.getSource() == searchBox) {
@@ -331,5 +331,15 @@ public final class SearchBar extends JPanel implements ActionListener,
     /** {@inheritDoc}. */
     public void keyReleased(final KeyEvent event) {
         //Ignore
+    }
+    
+    /** Focuses the search box in the search bar. */
+    public void getFocus() {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                searchBox.requestFocus();
+            }
+        }
+        );
     }
 }

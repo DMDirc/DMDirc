@@ -710,7 +710,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /** Opens, closes of focuses the search bar as appropriate. */
     private void doSearchBar() {
         if (getSearchBar().isVisible()) {
-            getSearchBar().close();
+            getSearchBar().getFocus();
         } else {
             getSearchBar().open();
         }
