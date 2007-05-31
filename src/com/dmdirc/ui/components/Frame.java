@@ -557,6 +557,12 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         if (e.isPopupTrigger() && e.getSource() == getTextPane()) {
             final Point point = getTextPane().getMousePosition();
             if (point != null) {
+                int[] selection = textPane.getSelectedRange();
+                if (selection[0] == selection[2] && selection[1] == selection[3]) {
+                    copyMI.setEnabled(false);
+                } else {
+                    copyMI.setEnabled(true);
+                }
                 getPopup().show(this, (int) point.getX(), (int) point.getY());
             }
         } else if (e.isPopupTrigger() && e.getSource() == getInputField()) {
@@ -564,10 +570,6 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             if (point != null) {
                 inputFieldPopup.show(this, (int) point.getX(), (int) point.getY());
             }
-        } else if (e.getSource() == getTextPane()) {
-            getTextPane().requestFocus();
-        } else if (e.getSource() == getInputField()) {
-            getInputField().requestFocus();
         } else {
             super.processMouseEvent(e);
         }

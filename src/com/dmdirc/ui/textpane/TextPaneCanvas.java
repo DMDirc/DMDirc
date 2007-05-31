@@ -60,6 +60,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     /** Line number -> rectangle for lines containing hyperlinks. */
     private final Map<TextLayout, Rectangle> hyperlinks;
     
+    /** Selection event types. */
+    private enum MouseEventType { CLICK, DRAG, RELEASE, };
+    
     /** position of the scrollbar. */
     private int scrollBarPosition;
     /** Start line of the selection. */
@@ -351,7 +354,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                         selStartChar = 0;
                         selEndChar = clickedText.length();
                     } else {
-                        checkClickedText(clickedText.substring(start, end));
+                        if (start != -1 && end != -1) {
+                            checkClickedText(clickedText.substring(start, end));
+                        }
                     }
                 }
             }
@@ -363,7 +368,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     /** {@inheritDoc}. */
     public void mousePressed(final MouseEvent e) {
         if (e.getButton() == e.BUTTON1) {
-            highlightEvent(true, e);
+            highlightEvent(MouseEventType.CLICK, e);
         }
         e.setSource(textPane);
         textPane.dispatchEvent(e);
@@ -372,8 +377,18 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     /** {@inheritDoc}. */
     public void mouseReleased(final MouseEvent e) {
         if (e.getButton() == e.BUTTON1) {
-            highlightEvent(false, e);
+            highlightEvent(MouseEventType.RELEASE, e);
         }
+        e.setSource(textPane);
+        textPane.dispatchEvent(e);
+    }
+    
+    /** {@inheritDoc}. */
+    public void mouseDragged(final MouseEvent e) {
+        if (e.getModifiersEx() == e.BUTTON1_DOWN_MASK) {
+            highlightEvent(MouseEventType.DRAG, e);
+        }
+        
         e.setSource(textPane);
         textPane.dispatchEvent(e);
     }
@@ -389,13 +404,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     }
     
     /** {@inheritDoc}. */
-    public void mouseDragged(final MouseEvent e) {
-        highlightEvent(false, e);
-        e.setSource(textPane);
-        textPane.dispatchEvent(e);
-    }
-    
-    /** {@inheritDoc}. */
     public void mouseMoved(final MouseEvent e) {
         //Ignore
     }
@@ -403,10 +411,10 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     /**
      * Sets the selection for the given event.
      *
-     * @param start true = start
+     * @param type mouse event type
      * @param e responsible mouse event
      */
-    private void highlightEvent(final boolean start, final MouseEvent e) {
+    private void highlightEvent(final MouseEventType type, final MouseEvent e) {
         final Point point = this.getMousePosition();
         
         if (point == null) {
@@ -418,7 +426,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         } else {
             final int[] info = getClickPosition(point);
             if (info[0] != -1 && info[1] != -1) {
-                if (start) {
+                if (type == MouseEventType.CLICK) {
                     selStartLine = info[0];
                     selStartChar = info[2];
                 }
@@ -538,18 +546,18 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         selEndLine = endLine;
         selEndChar = endChar;
     }
-
-    /** 
-     * Returns the first visible line. 
+    
+    /**
+     * Returns the first visible line.
      *
      * @return the line number of the first visible line
      */
     public int getFirstVisibleLine() {
         return firstVisibleLine;
     }
-
-    /** 
-     * Returns the last visible line. 
+    
+    /**
+     * Returns the last visible line.
      *
      * @return the line number of the last visible line
      */
