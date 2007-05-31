@@ -484,7 +484,12 @@ public final class IRCParser implements Runnable {
 		sServerName = "";
 		sNetworkName = "";
 		lastLine = "";
-		reset();
+		cMyself = null;
+		if (pingTimer != null) {
+			pingTimer.cancel();
+			pingTimer = null;
+		}
+		currentSocketState = STATE_CLOSED;
 	}
 
 	
@@ -1243,26 +1248,7 @@ public final class IRCParser implements Runnable {
 	 * Remove all clients/channels/channelclients/callbacks.
 	 */
 	protected synchronized void reset() {
-		// Remove reference to self
-		cMyself = null;
-// This keeps causing ConcurrentModificationException's, and has been removed
-// as it shouldn't really be needed anyway. The channel, channelclient and
-// client objects will be inaccessible and should thus be removed.
-//
-//		// Remove all known channels
-//		for (ChannelInfo channel : hChannelList.values()) {
-//			channel.emptyChannel();
-//		}
-		hChannelList.clear();
-		// Remove all known clients
-		hClientList.clear();
-		// Remove the pingTimer
-		if (pingTimer != null) {
-			pingTimer.cancel();
-			pingTimer = null;
-		}
-		// Make sure the socket state is closed
-		currentSocketState = STATE_CLOSED;
+		resetState();
 		// Empty the processing manager
 		myProcessingManager.empty();
 		// Remove all callbacks
