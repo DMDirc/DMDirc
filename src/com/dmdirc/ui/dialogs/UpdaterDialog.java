@@ -125,7 +125,7 @@ public class UpdaterDialog extends StandardDialog implements ActionListener {
         buttonContainer.add(rButton, BorderLayout.EAST);
                 
         orderButtons(lButton, rButton);
-        getOkButton().setText("Update");
+        //getOkButton().setText("Update");
         
         add(buttonContainer, BorderLayout.SOUTH);
         
@@ -134,13 +134,13 @@ public class UpdaterDialog extends StandardDialog implements ActionListener {
 
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
-        if (e.getSource().equals(getOkButton())) {
+        /*if (e.getSource().equals(getOkButton())) {
             getOkButton().setEnabled(false);
             
             header.setText("<html><big>Updating...</big><br><br>"
                 + "DMDirc is updating the following components:</html>");
-        } else if (e.getSource().equals(getCancelButton())) {
+        } else if (e.getSource().equals(getCancelButton())) {*/
             dispose();
-        }
+        //}
     }
 }
