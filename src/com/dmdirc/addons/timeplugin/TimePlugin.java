@@ -22,12 +22,12 @@
 
 package com.dmdirc.addons.timeplugin;
 
-import java.text.DateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.plugins.Plugin;
 
 /**
@@ -41,6 +41,9 @@ public final class TimePlugin  extends Plugin {
     
     /** The timer to use for scheduling. */
     private Timer timer;
+    
+    /** The TimerCommand we've registered. */
+    private TimerCommand command;
     
     /** Creates a new instance of TimePlugin. */
     public TimePlugin() {
@@ -68,6 +71,8 @@ public final class TimePlugin  extends Plugin {
                 runTimer();
             }
         }, 1000 * offset, 1000 * 60);
+        
+        command = new TimerCommand();
     }
     
     /** Handles a timer event that occurs every minute. */
@@ -79,7 +84,7 @@ public final class TimePlugin  extends Plugin {
         if (cal.get(Calendar.MINUTE) == 0) {
             ActionManager.processEvent(TimeActionType.TIME_HOUR, null, cal);
             
-            if (cal.get(Calendar.HOUR) == 0) {
+            if (cal.get(Calendar.HOUR_OF_DAY) == 0) {
                 ActionManager.processEvent(TimeActionType.TIME_DAY, null, cal);
             }
         }
@@ -90,6 +95,8 @@ public final class TimePlugin  extends Plugin {
     public void onDeactivate() {
         timer.cancel();
         timer = null;
+        
+        CommandManager.unregisterCommand(command);
     }
     
     /** {@inheritDoc} */
@@ -104,7 +111,7 @@ public final class TimePlugin  extends Plugin {
     
     /** {@inheritDoc} */
     public String getDescription() {
-        return "Provides time-related actions";
+        return "Provides time-related actions and commands";
     }
     
     /** {@inheritDoc} */
