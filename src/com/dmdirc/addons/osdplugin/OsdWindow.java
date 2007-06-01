@@ -70,7 +70,6 @@ public final class OsdWindow extends JFrame implements MouseListener,
                 Config.getOptionInt("plugin-OSD", "fontsize", 20) + LARGE_BORDER));
         setResizable(false);
         setUndecorated(true);
-        pack();
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         
