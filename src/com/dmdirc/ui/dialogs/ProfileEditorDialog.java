@@ -68,6 +68,9 @@ public final class ProfileEditorDialog extends StandardDialog implements
      */
     private static final long serialVersionUID = 2;
     
+    /** Previously created instance of ProfileEditorDialog. */
+    private static ProfileEditorDialog me;
+    
     /** Component panel. */
     private JPanel panel;
     
@@ -115,7 +118,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
     private List<ConfigSource> profiles;
     
     /** Creates a new instance of ProfileEditorDialog. */
-    public ProfileEditorDialog() {
+    private ProfileEditorDialog() {
         super(MainFrame.getMainFrame(), false);
         
         profiles = IdentityManager.getProfiles();
@@ -128,6 +131,16 @@ public final class ProfileEditorDialog extends StandardDialog implements
         
         this.setLocationRelativeTo(MainFrame.getMainFrame());
         this.setVisible(true);
+    }
+    
+    /** Creates the dialog if one doesn't exist, and displays it. */
+    public static synchronized void showActionsManagerDialog() {
+        if (me == null) {
+            me = new ProfileEditorDialog();
+        } else {
+            me.setVisible(true);
+            me.requestFocus();
+        }
     }
     
     /** Initialises the components of the dialog. */

@@ -222,7 +222,7 @@ public final class NewServerDialog extends StandardDialog {
         });
         editProfileButton.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
-                new ProfileEditorDialog();
+                ProfileEditorDialog.showActionsManagerDialog();
             }
         });
     }
