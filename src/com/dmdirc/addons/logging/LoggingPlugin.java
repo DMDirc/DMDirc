@@ -248,6 +248,10 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 		}
 	}
 	
+	/** {@inheritDoc}. */
+	public void configCancelled() {
+	}
+	
 	/**
 	 * Get the plugin version.
 	 *
@@ -787,5 +791,6 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	 * @return SVN Version String
 	 */
 	public static String getSvnInfo() { return "$Id: IRCParser.java 969 2007-04-30 18:38:20Z ShaneMcC $"; }	
+
 }
 

@@ -369,7 +369,7 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addCheckboxOption(tabName, "ui.showversion",
                 "Show version: ", "Show DMDirc version in the titlebar",
                 Config.getOptionBool("ui", "showversion"));
-        preferencesPanel.addSpinnerOption(tabName, "ui.frameBufferSize", 
+        preferencesPanel.addSpinnerOption(tabName, "ui.frameBufferSize",
                 "Frame buffer size: ", "Sets the maximum number of lines in the frame buffer.",
                 Config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE));
     }
@@ -385,5 +385,10 @@ public final class PreferencesDialog implements PreferencesInterface {
             }
         }
         preferencesPanel = null;
+    }
+    
+    
+    /** {@inheritDoc} */
+    public void configCancelled() {
     }
 }

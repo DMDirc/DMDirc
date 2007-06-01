@@ -600,6 +600,7 @@ public final class PreferencesPanel extends StandardDialog implements
             dispose();
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             dispose();
+            owner.configCancelled();
         }
     }
     

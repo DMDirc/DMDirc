@@ -581,11 +581,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         setJMenuBar(menuBar);
     }
     
-    /**
-     * Initialises the window menu.
-     *
-     * @param windowMenu the window menu to initialise
-     */
+    /** Initialises the window menu. */
     private void initWindowMenu() {
         if (windowsMenu == null) {
             windowsMenu = new JMenu();
@@ -656,7 +652,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             PluginDialog.showPluginDialog();
         } else if (e.getActionCommand().equals("Actions")) {
             ActionsManagerDialog.showActionsManagerDialog();
-        }/* else if (e.getActionCommand().equals("Minimise")) {
+        } /* else if (e.getActionCommand().equals("Minimise")) {
           
         } else if (e.getActionCommand().equals("Close")) {      
                 

@@ -193,6 +193,10 @@ public class NickColourPlugin extends Plugin implements EventPlugin, Preferences
     }
     
     /** {@inheritDoc} */
+    public void configCancelled() {
+    }
+    
+    /** {@inheritDoc} */
     public String getVersion() {
         return "0.0";
     }

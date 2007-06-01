@@ -22,31 +22,49 @@
 
 package com.dmdirc.addons.osdplugin;
 
+import com.dmdirc.Config;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.ui.components.PreferencesInterface;
+import com.dmdirc.ui.components.PreferencesPanel;
+import java.awt.BorderLayout;
+import java.util.Properties;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 /**
  * Allows the user to display on-screen-display messages.
  * @author chris
  */
-public final class OsdPlugin extends Plugin {
+public final class OsdPlugin extends Plugin implements PreferencesInterface {
     
+    /** What domain do we store all settings in the global config under. */
+    private static final String MY_DOMAIN = "plugin-OSD";
+    
+    /** Config OSD Window. */
+    private OsdWindow osdWindow;
+    
+    /** OSD Command. */
     private OsdCommand command;
+    
+    /** Font size spinner. */
+    private JSpinner spinner;
     
     /**
      * Creates a new instance of OsdPlugin.
      */
     public OsdPlugin() {
-        
+        super();
     }
-        
+    
     /** {@inheritDoc}. */
     public boolean onLoad() {
         command = new OsdCommand();
         
         return true;
     }
-
+    
     /** {@inheritDoc}. */
     public void onUnload() {
         CommandManager.unregisterCommand(command);
@@ -69,7 +87,65 @@ public final class OsdPlugin extends Plugin {
     
     /** {@inheritDoc}. */
     public boolean isConfigurable() {
-        return false;
+        return true;
+    }
+    
+    /** {@inheritDoc}. */
+    public void showConfig() {
+        final PreferencesPanel preferencesPanel = new PreferencesPanel(this, "OSD Plugin - Config");
+        final JPanel panel = new JPanel();
+        spinner = new JSpinner(new SpinnerNumberModel());
+        
+        spinner.setValue(Config.getOptionInt(MY_DOMAIN, "fontSize", 20));
+        
+        panel.setLayout(new BorderLayout());
+        panel.add(spinner);
+        
+        preferencesPanel.addCategory("General", "General configuration for OSD plugin.");
+        
+        preferencesPanel.addPanelOption("General", "fontsize", "Font size: ",
+                "Changes the font size of the OSD", panel);
+        preferencesPanel.addColourOption("General", "bgcolour",
+                "Background Colour: ", "Background colour for the OSD",
+                Config.getOption(MY_DOMAIN, "bgcolour", "2222aa"), true, true);
+        preferencesPanel.addColourOption("General", "fgcolour",
+                "Foreground Colour: ", "Foreground colour for the OSD",
+                Config.getOption(MY_DOMAIN, "fgcolour", "ffffff"), true, true);
+        preferencesPanel.addSpinnerOption("General", "timeout", "Timeout: ",
+                "Length of times in seconds before the OSD window times out",
+                Config.getOptionInt(MY_DOMAIN, "timeout", 15));
+        
+        osdWindow = new OsdWindow("Please drag this OSD to position", true);
+        
+        preferencesPanel.display();
+    }
+    
+    /** {@inheritDoc}. */
+    public void configClosed(final Properties properties) {
+        if (spinner != null) {
+            Config.setOption(MY_DOMAIN, "fontSize", String.valueOf(spinner.getValue()));
+        }
+        if (properties.getProperty("fgcolour") != null) {
+            Config.setOption(MY_DOMAIN, "fgcolour", properties.getProperty("fgcolour"));
+        }
+        if (properties.getProperty("bgcolour") != null) {
+            Config.setOption(MY_DOMAIN, "bgcolour", properties.getProperty("bgcolour"));
+        }
+        if (properties.getProperty("timeout") != null) {
+            Config.setOption(MY_DOMAIN, "timeout", properties.getProperty("timeout"));
+        }
+        if (osdWindow != null && osdWindow.isVisible()) {
+            Config.setOption(MY_DOMAIN, "locationX",
+                    String.valueOf((int) osdWindow.getLocationOnScreen().getX()));
+            Config.setOption(MY_DOMAIN, "locationY",
+                    String.valueOf((int) osdWindow.getLocationOnScreen().getY()));
+            osdWindow.dispose();
+        }
+    }
+    
+    /** {@inheritDoc}. */
+    public void configCancelled() {
+        osdWindow.dispose();
     }
     
     /** {@inheritDoc}. */

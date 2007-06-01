@@ -44,7 +44,7 @@ public final class OsdCommand extends GlobalCommand {
     /** {@inheritDoc} */
     public void execute(final CommandWindow origin, final boolean isSilent,
             final String... args) {
-        new OsdWindow(implodeArgs(args));
+        new OsdWindow(implodeArgs(args), false);
     }
     
     /** {@inheritDoc}. */

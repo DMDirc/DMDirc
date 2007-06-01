@@ -34,4 +34,9 @@ public interface PreferencesInterface {
      * @param properties user preferences
      */
     void configClosed(Properties properties);
+    
+    /** 
+     * Called when the preferences dialog is cancelled.
+     */
+    void configCancelled();
 }

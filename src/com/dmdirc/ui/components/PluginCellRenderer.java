@@ -23,6 +23,7 @@
 package com.dmdirc.ui.components;
 
 import com.dmdirc.plugins.Plugin;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,8 +37,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.ListCellRenderer;
-
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 /**
  * Handles the rendering of the JList used for plugin management.

@@ -270,6 +270,10 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 		preferencesPanel.display();
 	}
 	
+	/** {@inheritDoc} */
+	public void configCancelled() {
+	}
+	
 	/**
 	 * Get the name of the domain we store all settings in the global config under.
 	 *
