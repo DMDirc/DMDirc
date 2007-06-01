@@ -125,6 +125,9 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** Plugin menu item. */
     private JMenu pluginsMenu;
     
+    /** Windows menu item. */
+    private JMenu windowsMenu;
+    
     /** Main panel. */
     private JPanel jPanel1;
     
@@ -248,6 +251,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         // Increase the offsets
         xOffset += FRAME_OPENING_OFFSET;
         yOffset += FRAME_OPENING_OFFSET;
+        
+        initWindowMenu();
     }
     
     /**
@@ -505,7 +510,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         miAddServer = new JMenuItem();
         miPreferences = new JMenuItem();
         final JMenu settingsMenu = new JMenu();
-        final JMenu windowMenu = new JMenu();
         final JMenu helpMenu = new JMenu();
         toggleStateMenuItem = new JMenuItem();
         
@@ -545,7 +549,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         fileMenu.add(menuItem);
         
         
-        initWindowMenu(windowMenu);
+        initWindowMenu();
         
         
         helpMenu.setMnemonic('h');
@@ -571,7 +575,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         menuBar.add(fileMenu);
         menuBar.add(settingsMenu);
-        menuBar.add(windowMenu);
+        menuBar.add(windowsMenu);
         menuBar.add(helpMenu);
         
         setJMenuBar(menuBar);
@@ -582,13 +586,60 @@ public final class MainFrame extends JFrame implements WindowListener,
      *
      * @param windowMenu the window menu to initialise
      */
-    private void initWindowMenu(final JMenu windowMenu) {
-        windowMenu.setMnemonic('w');
-        windowMenu.setText("Window");
+    private void initWindowMenu() {
+        if (windowsMenu == null) {
+            windowsMenu = new JMenu();
+        } else {
+            windowsMenu.removeAll();
+        }
+        
+        JMenuItem menuItem;
+        
+        windowsMenu.setMnemonic('w');
+        windowsMenu.setText("Window");
         
         toggleStateMenuItem.setMnemonic('m');
         toggleStateMenuItem.setText("Maximise");
-        windowMenu.add(toggleStateMenuItem);
+        windowsMenu.add(toggleStateMenuItem);
+        
+        /*
+        menuItem = new JMenuItem();
+        menuItem.setMnemonic('n');
+        menuItem.setText("Minimise");
+        menuItem.setActionCommand("Minimise");
+        menuItem.addActionListener(this);
+        windowsMenu.add(menuItem);
+        
+        menuItem = new JMenuItem();
+        menuItem.setMnemonic('c');
+        menuItem.setText("Close");
+        menuItem.setActionCommand("Close");
+        menuItem.addActionListener(this);
+        windowsMenu.add(menuItem);
+        
+        menuItem = new JMenuItem();
+        menuItem.setMnemonic('a');
+        menuItem.setText("Close all");
+        menuItem.setActionCommand("CloseAll");
+        menuItem.addActionListener(this);
+        windowsMenu.add(menuItem);
+        
+        windowsMenu.addSeparator();
+        
+        int i = 0;
+        for (JInternalFrame frame : desktopPane.getAllFrames()) {
+            if (i > 34) {
+                break;
+            }
+            menuItem = new JMenuItem();
+            if (frame.getTitle().length() > 30) {
+                menuItem.setText(frame.getTitle().substring(0, 30));
+            } else {
+                menuItem.setText(frame.getTitle());
+            }
+            windowsMenu.add(menuItem);
+            i++;
+        }*/
     }
     
     /**
@@ -605,7 +656,13 @@ public final class MainFrame extends JFrame implements WindowListener,
             PluginDialog.showPluginDialog();
         } else if (e.getActionCommand().equals("Actions")) {
             ActionsManagerDialog.showActionsManagerDialog();
-        }
+        }/* else if (e.getActionCommand().equals("Minimise")) {
+          
+        } else if (e.getActionCommand().equals("Close")) {      
+                
+        } else if (e.getActionCommand().equals("CloseAll")) {
+          
+        }*/
     }
     
     /** Initialises UI Settings. */
