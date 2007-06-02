@@ -39,6 +39,9 @@ public enum CoreActionType implements ActionType {
     SERVER_CONNECTED(CoreActionMetaType.SERVER_EVENT, "Server connected"),
     SERVER_BACK(CoreActionMetaType.SERVER_EVENT, "Marked as 'back'"),
     SERVER_AWAY(CoreActionMetaType.SERVER_EVENT_WITH_ARG, "Marked as 'away'"),
+    SERVER_AUTHNOTICE(CoreActionMetaType.SERVER_EVENT_WITH_ARG, "Received auth notice"),
+    
+    SERVER_USERMODES(CoreActionMetaType.SERVER_SOURCED_EVENT_WITH_ARG, "User modes changed"),
     
     SERVER_GOTPING(CoreActionMetaType.SERVER_PING, "Received server ping reply"),
     SERVER_NOPING(CoreActionMetaType.SERVER_PING, "Missed server ping reply"),

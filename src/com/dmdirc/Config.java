@@ -135,6 +135,7 @@ public final class Config {
         // "active", "all", or "server".
         // TODO: Some kind of validation in the config class itself, rather
         //       than elsewhere?
+        defaults.setProperty("notifications.authNotice", "server");
         defaults.setProperty("notifications.connectError", "server");
         defaults.setProperty("notifications.connectRetry", "server");
         defaults.setProperty("notifications.socketClosed", "all");

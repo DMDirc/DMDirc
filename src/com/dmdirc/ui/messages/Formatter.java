@@ -234,6 +234,7 @@ public final class Formatter {
         defaultProperties.setProperty("querySelfMessage", "<%1$s> %4$s");
         defaultProperties.setProperty("querySelfAction", colour + "6* %1$s %4$s");
         defaultProperties.setProperty("queryNickChanged", colour + "3* %1$s is now know as %4$s.");
+        defaultProperties.setProperty("userModeChanged", colour + "3 %1$s sets user mode: %4$s.");
         
         // Type: Outgoing message
         //    1: Target
@@ -251,6 +252,7 @@ public final class Formatter {
         
         // Type: Miscellaneous
         //    1: Miscellaneous data
+        defaultProperties.setProperty("authNotice", colour + "5-AUTH- %1$s");
         defaultProperties.setProperty("channelNoTopic", colour + "3* There is no topic set for %1$s.");
         defaultProperties.setProperty("rawCommand", colour + "10>>> %1$s");
         defaultProperties.setProperty("unknownCommand", colour + "14Unknown command %1$s.");

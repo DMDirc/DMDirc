@@ -47,6 +47,7 @@ import com.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
 import com.dmdirc.parser.callbacks.interfaces.IMOTDLine;
 import com.dmdirc.parser.callbacks.interfaces.IMOTDStart;
 import com.dmdirc.parser.callbacks.interfaces.INickInUse;
+import com.dmdirc.parser.callbacks.interfaces.INoticeAuth;
 import com.dmdirc.parser.callbacks.interfaces.INumeric;
 import com.dmdirc.parser.callbacks.interfaces.IPingFailed;
 import com.dmdirc.parser.callbacks.interfaces.IPingSuccess;
@@ -57,6 +58,7 @@ import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
 import com.dmdirc.parser.callbacks.interfaces.ISocketClosed;
+import com.dmdirc.parser.callbacks.interfaces.IUserModeChanged;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.ServerFrame;
 import com.dmdirc.ui.input.TabCompleter;
@@ -85,7 +87,8 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         IPrivateMessage, IPrivateAction, IErrorInfo, IPrivateCTCP,
         IPrivateCTCPReply, ISocketClosed, IPrivateNotice, IMOTDStart,
         IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed, IPingSuccess,
-        IAwayState, IConnectError, IAwayStateOther, INickInUse, IPost005 {
+        IAwayState, IConnectError, IAwayStateOther, INickInUse, IPost005,
+        INoticeAuth, IUserModeChanged {
     
     /** The callbacks that should be registered for server instances. */
     private final static String[] callbacks = {
@@ -93,7 +96,8 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         "OnPrivateAction", "OnPrivateCTCP", "OnPrivateNotice", "OnConnectError",
         "OnPrivateCTCPReply", "OnSocketClosed", "OnGotNetwork", "OnNumeric",
         "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed", "OnAwayState",
-        "OnAwayStateOther", "OnNickInUse", "OnPost005"
+        "OnAwayStateOther", "OnNickInUse", "OnPost005", "OnNoticeAuth",
+        "OnUserModeChanged"
     };
     
     /** Open channels that currently exist on the server. */
@@ -427,10 +431,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         return tabCompleter;
     }
     
-    /**
-     * Returns the internal frame belonging to this object.
-     * @return This object's internal frame
-     */
+    /** {@inheritDoc} */
     public CommandWindow getFrame() {
         return frame;
     }
@@ -478,10 +479,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         parser = null;
     }
     
-    /**
-     * Closes this server connection and associated reason, with the default
-     * quit message.
-     */
+    /** {@inheritDoc} */
     public void close() {
         close(configManager.getOption("general", "quitmessage"));
     }
@@ -601,17 +599,14 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      */
     public void delQuery(final String host) {
         tabCompleter.removeEntry(ClientInfo.parseHost(host));
-        MainFrame.getMainFrame().getFrameManager().delQuery(this, queries.get(ClientInfo.parseHost(host).toLowerCase()));
+        MainFrame.getMainFrame().getFrameManager().delQuery(this,
+                queries.get(ClientInfo.parseHost(host).toLowerCase()));
         if (!closing) {
             queries.remove(ClientInfo.parseHost(host).toLowerCase());
         }
     }
     
-    /**
-     * Determines if the specified frame is owned by this server.
-     * @param target internalframe to be checked for ownership
-     * @return boolean ownership status
-     */
+    /** {@inheritDoc} */
     @Override
     public boolean ownsFrame(final JInternalFrame target) {
         // Check if it's our server frame
@@ -696,12 +691,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         }
     }
     
-    /**
-     * Event when client joins a channel, creates new channel object and opens
-     * a channel window.
-     * @param tParser parser instance triggering event
-     * @param cChannel Channel being joined
-     */
+    /** {@inheritDoc} */
     public void onChannelSelfJoin(final IRCParser tParser, final ChannelInfo cChannel) {
         if (hasChannel(cChannel.getName())) {
             getChannel(cChannel.getName()).setChannelInfo(cChannel);
@@ -711,40 +701,23 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         }
     }
     
-    /**
-     * Private message event, creates a new query object and opens a new query
-     * window if one doesnt exist.
-     * @param tParser parser instance triggering event
-     * @param message private message being received
-     * @param host host of the remote client
-     */
-    public void onPrivateMessage(final IRCParser tParser, final String message,
-            final String host) {
-        if (!queries.containsKey(ClientInfo.parseHost(host).toLowerCase())) {
-            addQuery(host);
+    /** {@inheritDoc} */
+    public void onPrivateMessage(final IRCParser tParser, final String sMessage,
+            final String sHost) {
+        if (!queries.containsKey(ClientInfo.parseHost(sHost).toLowerCase())) {
+            addQuery(sHost);
         }
     }
     
-    /**
-     * Private action event, creates a new query object and opens a new query
-     * window if one doesnt exist.
-     * @param action action text being received
-     * @param tParser parser instance triggering event
-     * @param host host of remote client
-     */
-    public void onPrivateAction(final IRCParser tParser, final String action, final String host) {
-        if (!queries.containsKey(ClientInfo.parseHost(host).toLowerCase())) {
-            addQuery(host);
+    /** {@inheritDoc} */
+    public void onPrivateAction(final IRCParser tParser, final String sMessage,
+            final String sHost) {
+        if (!queries.containsKey(ClientInfo.parseHost(sHost).toLowerCase())) {
+            addQuery(sHost);
         }
     }
     
-    /**
-     * Called when we receive a CTCP request.
-     * @param tParser The associated IRC parser
-     * @param sType The type of the CTCP
-     * @param sMessage The contents of the CTCP
-     * @param sHost The source host
-     */
+    /** {@inheritDoc} */
     public void onPrivateCTCP(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
@@ -771,25 +744,14 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         }
     }
     
-    /**
-     * Called when we receive a CTCP reply.
-     * @param tParser The associated IRC parser
-     * @param sType The type of the CTCPR
-     * @param sMessage The contents of the CTCPR
-     * @param sHost The source host
-     */
+    /** {@inheritDoc} */
     public void onPrivateCTCPReply(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
         handleNotification("privateCTCPreply", parts[0], parts[1], parts[2], sType, sMessage);
     }
     
-    /**
-     * Called when we receive a notice.
-     * @param tParser The associated IRC parser
-     * @param sMessage The notice content
-     * @param sHost The source of the message
-     */
+    /** {@inheritDoc} */
     public void onPrivateNotice(final IRCParser tParser, final String sMessage,
             final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
@@ -797,11 +759,11 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     }
     
     /** {@inheritDoc} */
-    public void onNickInUse(final IRCParser tParser, final String nickName) {
+    public void onNickInUse(final IRCParser tParser, final String nickname) {
         final String lastNick = tParser.getMyNickname();
         
         // If our last nick is still valid, ignore the in use message
-        if (!lastNick.equalsIgnoreCase(nickName)) {
+        if (!lastNick.equalsIgnoreCase(nickname)) {
             return;
         }
         
@@ -832,13 +794,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         parser.setNickname(newNick);
     }
     
-    /**
-     * Called when the parser has determined the network and ircd version.
-     * @param tParser The associated IRC parser
-     * @param networkName The name of the network
-     * @param ircdVersion The version of the IRCd
-     * @param ircdType The type of the IRCd
-     */
+    /** {@inheritDoc} */
     public void onGotNetwork(final IRCParser tParser, final String networkName,
             final String ircdVersion, final String ircdType) {
         configManager = new ConfigManager(ircdType, networkName, this.server);
@@ -846,44 +802,27 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         updateIgnoreList();
     }
     
-    /**
-     * Called when the server's MOTD is starting to be sent.
-     * @param tParser The associated IRC parser
-     * @param sData The message at the start of the MOTD
-     */
+    /** {@inheritDoc} */
     public void onMOTDStart(final IRCParser tParser, final String sData) {
         addLine("motdStart", sData);
         sendNotification();
     }
     
-    /**
-     * Called when a line of the server's MOTD has been received.
-     * @param tParser The associated IRC parser
-     * @param sData The line of the MOTD
-     */
+    /** {@inheritDoc} */
     public void onMOTDLine(final IRCParser tParser, final String sData) {
         addLine("motdLine", sData);
         sendNotification();
     }
     
-    /**
-     * Called when the server's MOTD is over.
-     * @param tParser The associated IRC parser
-     * @param noMOTD Indicates that there was no MOTD
-     */
+    /** {@inheritDoc} */
     public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD) {
         addLine("motdEnd", "End of server's MOTD.");
         sendNotification();
     }
     
-    /**
-     * Called when we receive a numeric response from the server.
-     * @param tParser The associated IRC parser
-     * @param numeric The numeric of the message
-     * @param line The tokenised line
-     */
+    /** {@inheritDoc} */
     public void onNumeric(final IRCParser tParser, final int numeric,
-            final String[] line) {
+            final String[] token) {
         final String withIrcd = "numeric_" + tParser.getIRCD(true) + "_" + numeric;
         final String sansIrcd = "numeric_" + numeric;
         String target = null;
@@ -897,18 +836,38 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         }
         
         if (target != null) {
-            handleNotification(target, (Object[]) line);
+            handleNotification(target, (Object[]) token);
         }
         
-        ActionManager.processEvent(CoreActionType.SERVER_NUMERIC, null, this, Integer.valueOf(numeric), line);
+        ActionManager.processEvent(CoreActionType.SERVER_NUMERIC, null, this,
+                Integer.valueOf(numeric), token);
     }
     
-    /**
-     * Called when our away state changes.
-     * @param tParser The IRC parser for this server
-     * @param currentState The current (new?) away state
-     * @param reason The textual reason for being away, if any
-     */
+    /** {@inheritDoc} */
+    public void onNoticeAuth(IRCParser tParser, String sData) {
+        handleNotification("authNotice", sData);
+        
+        ActionManager.processEvent(CoreActionType.SERVER_AUTHNOTICE, null, this,
+                sData);
+    }
+    
+    /** {@inheritDoc} */
+    public void onUserModeChanged(IRCParser tParser, ClientInfo cClient, String sSetBy) {
+        // Knowing what modes have changed may help marginally.
+        
+        /*if (!cClient.equals(parser.getMyself())) {
+            return;
+        }
+        
+        final String[] setter = ClientInfo.parseHostFull(sSetBy);
+        
+        final StringBuffer format = new StringBuffer("userModeChanged");
+        
+        ActionManager.processEvent(CoreActionType.SERVER_USERMODES, format,
+                this, , );*/
+    }
+    
+    /** {@inheritDoc} */
     public void onAwayState(final IRCParser tParser, final boolean currentState,
             final String reason) {
         if (currentState) {
@@ -926,10 +885,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         frame.setAway(away);
     }
     
-    /**
-     * Called when the IRC socket is closed for any reason.
-     * @param tParser The IRC parser for this server
-     */
+    /** {@inheritDoc} */
     public void onSocketClosed(final IRCParser tParser) {
         if (!reconnect) {
             // This has been triggered via .discconect()
@@ -951,11 +907,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         }
     }
     
-    /**
-     * Called when the parser encounters an error trying to connect.
-     * @param tParser The Parser for this server
-     * @param errorInfo Information about the error.
-     */
+    /** {@inheritDoc} */
     public void onConnectError(final IRCParser tParser, final ParserError errorInfo) {
         String description = "";
         
@@ -991,11 +943,8 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         }
     }
     
-    /**
-     * Called when the parser misses a ping reply from the server.
-     * @param parser The IRC parser for this server
-     */
-    public void onPingFailed(final IRCParser parser) {
+    /** {@inheritDoc} */
+    public void onPingFailed(final IRCParser tParser) {
         MainFrame.getMainFrame().getStatusBar().setMessage("No ping reply from "
                 + this.server + " for over "
                 + Math.floor(parser.getPingTime(false) / 1000.0) + " seconds.", null, 10);
@@ -1034,11 +983,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         }
     }
     
-    /**
-     * Parses the parser error and notifies the Logger.
-     * @param tParser parser instance triggering event
-     * @param errorInfo Parser error object
-     */
+    /** {@inheritDoc} */
     public void onErrorInfo(final IRCParser tParser, final ParserError errorInfo) {
         ErrorLevel errorLevel;
         if (errorInfo.isFatal()) {

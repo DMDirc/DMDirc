@@ -27,6 +27,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.parser.ClientInfo;
 
 /**
  * An enumeration of different types of actions (the type determines the
@@ -48,6 +49,8 @@ public enum CoreActionMetaType implements ActionMetaType {
     QUERY_EVENT(1, new String[]{"query"}, Query.class),
     
     SERVER_EVENT_WITH_ARG(2, new String[]{"server", "message"}, Server.class, String.class),
+    SERVER_SOURCED_EVENT_WITH_ARG(2, new String[]{"server", "user", "message"}, Server.class, ClientInfo.class, String.class),
+    
     QUERY_EVENT_WITH_ARG(2, new String[]{"query", "message"}, Query.class, String.class),
     
     CHANNEL_SOURCED_EVENT(2, new String[]{"channel", "user"}, Channel.class, ChannelClientInfo.class),
