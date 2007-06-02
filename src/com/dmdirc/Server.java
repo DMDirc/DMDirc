@@ -50,12 +50,12 @@ import com.dmdirc.parser.callbacks.interfaces.INickInUse;
 import com.dmdirc.parser.callbacks.interfaces.INumeric;
 import com.dmdirc.parser.callbacks.interfaces.IPingFailed;
 import com.dmdirc.parser.callbacks.interfaces.IPingSuccess;
+import com.dmdirc.parser.callbacks.interfaces.IPost005;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
-import com.dmdirc.parser.callbacks.interfaces.IServerReady;
 import com.dmdirc.parser.callbacks.interfaces.ISocketClosed;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.ServerFrame;
@@ -85,7 +85,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         IPrivateMessage, IPrivateAction, IErrorInfo, IPrivateCTCP,
         IPrivateCTCPReply, ISocketClosed, IPrivateNotice, IMOTDStart,
         IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed, IPingSuccess,
-        IAwayState, IConnectError, IAwayStateOther, INickInUse, IServerReady {
+        IAwayState, IConnectError, IAwayStateOther, INickInUse, IPost005 {
     
     /** The callbacks that should be registered for server instances. */
     private final static String[] callbacks = {
@@ -93,7 +93,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         "OnPrivateAction", "OnPrivateCTCP", "OnPrivateNotice", "OnConnectError",
         "OnPrivateCTCPReply", "OnSocketClosed", "OnGotNetwork", "OnNumeric",
         "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed", "OnAwayState",
-        "OnAwayStateOther", "OnNickInUse", "OnServerReady"
+        "OnAwayStateOther", "OnNickInUse", "OnPost005"
     };
     
     /** Open channels that currently exist on the server. */
@@ -535,12 +535,12 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      */
     private void closeQueries() {
         boolean wasClosing = closing;
-        closing = true;        
+        closing = true;
         for (Query query : queries.values()) {
             query.close();
         }
         queries.clear();
-        closing = wasClosing;        
+        closing = wasClosing;
     }
     
     /**
@@ -832,17 +832,6 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         parser.setNickname(newNick);
     }
     
-    /** {@inheritDoc} */
-    public void onServerReady(final IRCParser tParser) {
-        ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
-        
-        if (configManager.hasOption("general", "rejoinchannels")) {
-            for (Channel chan : channels.values()) {
-                chan.join();
-            }
-        }
-    }
-    
     /**
      * Called when the parser has determined the network and ircd version.
      * @param tParser The associated IRC parser
@@ -1031,6 +1020,17 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
             final ClientInfo client, final boolean state) {
         for (Channel chan : channels.values()) {
             chan.onAwayStateOther(tParser, client, state);
+        }
+    }
+    
+    /** {@inheritDoc} */
+    public void onPost005(final IRCParser tParser) {
+        ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
+        
+        if (configManager.hasOption("general", "rejoinchannels")) {
+            for (Channel chan : channels.values()) {
+                chan.join();
+            }
         }
     }
     
