@@ -22,11 +22,11 @@
 
 package com.dmdirc;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.jar.JarInputStream;
+import java.util.zip.ZipEntry;
 
 /**
  * Provides an easy way to access files inside a jar.
@@ -95,8 +95,8 @@ public class JarResources {
      * @return byte[] for the resource, or an empty byte[] if not found
      */
     public byte[] getResourceBytes(final String resource) {
-        final JarEntry jarEntry = (JarEntry) jarFile.getEntry(resource);
-        JarInputStream inputStream;
+        final ZipEntry jarEntry = jarFile.getEntry(resource);
+        BufferedInputStream inputStream;
         
         
         if (jarEntry == null) {
@@ -110,7 +110,7 @@ public class JarResources {
         final byte[] bytes = new byte[(int) jarEntry.getSize()];
         
         try {
-            inputStream = new JarInputStream(jarFile.getInputStream(jarEntry));
+            inputStream = new BufferedInputStream(jarFile.getInputStream(jarEntry));
         } catch (IOException ex) {
             return new byte[0];
         }
