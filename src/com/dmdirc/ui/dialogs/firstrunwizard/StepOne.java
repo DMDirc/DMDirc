@@ -23,9 +23,8 @@
 package com.dmdirc.ui.dialogs.firstrunwizard;
 
 import com.dmdirc.ui.dialogs.wizard.Step;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.UIUtilities.layoutGrid;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -38,7 +37,7 @@ import javax.swing.JTextArea;
 /**
  * Queries the user for which core actions they wish to extract.
  */
-public class StepOne extends Step {
+public final class StepOne extends Step {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -48,18 +47,19 @@ public class StepOne extends Step {
     private static final long serialVersionUID = 1;
     
     /** Plugins checkbox. */
-    private JCheckBox plugins;
+    private final JCheckBox plugins;
     /** Actions checkbox. */
-    private JCheckBox actions;
+    private final JCheckBox actions;
     
     /**
      * Creates a new instance of StepOne.
      */
     public StepOne() {
+        super();
         final GridBagConstraints constraints = new GridBagConstraints();
         setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                0, SMALL_BORDER));
+        setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
+                SMALL_BORDER, LARGE_BORDER));
         
         plugins = new JCheckBox("Install core plugins?");
         actions = new JCheckBox("Install core actions?");

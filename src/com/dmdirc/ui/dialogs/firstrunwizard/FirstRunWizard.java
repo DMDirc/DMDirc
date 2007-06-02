@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.dialogs.firstrunwizard;
 
-import com.dmdirc.ui.dialogs.ProfileEditorDialog;
 import com.dmdirc.ui.dialogs.wizard.Step;
 import com.dmdirc.ui.dialogs.wizard.Wizard;
 import com.dmdirc.ui.dialogs.wizard.WizardDialog;
@@ -35,12 +34,12 @@ import java.util.List;
 /**
  * First run wizard, used to initially setup the client for the user.
  */
-public class FirstRunWizard implements Wizard {
+public final class FirstRunWizard implements Wizard {
     
     /** Wizard dialog. */
     private static WizardDialog wizardDialog;
     
-    /** Creates a new instance of FirstRunWizard. */
+    /** Instatiate the wizard. */
     public FirstRunWizard() {
     }
     
@@ -62,6 +61,8 @@ public class FirstRunWizard implements Wizard {
         if (((StepTwo) wizardDialog.getStep(1)).getProfileManagerState()) {
             //Launch profile manager
         }
+        
+        //set variable
     }
     
     /** 
@@ -69,15 +70,15 @@ public class FirstRunWizard implements Wizard {
      *
      * @param args cli args
      */
-     public static void main(String[] args) {
-        List<Step> steps = new ArrayList<Step>();
+     public static void main(final String[] args) {
+        final List<Step> steps = new ArrayList<Step>();
         
         steps.add(new StepOne());
         steps.add(new StepTwo());
         
         wizardDialog = new WizardDialog("Setup wizard", steps, new FirstRunWizard());
 
-        wizardDialog.setPreferredSize(new Dimension(400, 400));
+        wizardDialog.setPreferredSize(new Dimension(400, 350));
         
         wizardDialog.display();
     }
