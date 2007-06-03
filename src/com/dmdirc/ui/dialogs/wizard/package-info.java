@@ -20,12 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.dialogs.wizard;
-
-import javax.swing.JPanel;
-
 /**
- * Wizard step.
+ * Wizard thingy.
  */
-public abstract class Step extends JPanel {
-}
+package com.dmdirc.ui.dialogs.wizard;

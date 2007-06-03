@@ -43,9 +43,9 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 
 /**
- * Basic wizard container
+ * Basic wizard container.
  */
-public class WizardDialog extends JDialog implements ActionListener {
+public final class WizardDialog extends JDialog implements ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -54,12 +54,17 @@ public class WizardDialog extends JDialog implements ActionListener {
      */
     private static final long serialVersionUID = 1;
     
+    /** Step panel list. */
+    private final List<Step> steps;
+    /** Wizard title. */
+    private final String title;
+    /** Wizard. */
+    private final Wizard wizard;
+    
     /** Button panel. */
     private JPanel buttonsPanel;
     /** Title panel. */
     private JPanel titlePanel;
-    /** Step panel list. */
-    private List<Step> steps;
     /** Current step. */
     private int currentStep;
     /** Prevous step button. */
@@ -68,20 +73,18 @@ public class WizardDialog extends JDialog implements ActionListener {
     private JButton next;
     /** Progress label. */
     private JLabel progressLabel;
-    /** Wizard title. */
-    private String title;
-    /** Wizard. */
-    private Wizard wizard;
     
-    /** 
-     * Creates a new instance of WizardFrame. 
+    /**
+     * Creates a new instance of WizardFrame.
      *
      * @param title Title for the wizard
      * @param steps Steps for the wizard
      * @param wizard Wizard to inform of changes
      */
-    public WizardDialog(final String title, final List<Step> steps, 
+    public WizardDialog(final String title, final List<Step> steps,
             final Wizard wizard) {
+        super();
+        
         this.title = title;
         this.steps = new ArrayList<Step>(steps);
         this.wizard = wizard;
@@ -91,11 +94,12 @@ public class WizardDialog extends JDialog implements ActionListener {
     
     /** Initialises the components. */
     private void initComponents() {
+        final JLabel titleLabel = new JLabel(title);
+        
         titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
         titlePanel.setBackground(Color.WHITE);
         
-        JLabel titleLabel = new JLabel(title);
         titleLabel.setFont(titleLabel.getFont().deriveFont(
                 (float) (titleLabel.getFont().getSize() * 1.5)));
         titleLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
@@ -110,24 +114,27 @@ public class WizardDialog extends JDialog implements ActionListener {
     /** Lays out the components. */
     private void layoutComponents() {
         this.setLayout(new BorderLayout());
+        
+        
         this.add(titlePanel, BorderLayout.PAGE_START);
         this.add(buttonsPanel, BorderLayout.PAGE_END);
     }
     
     /** Initialises the button panel. */
     private void initButtonsPanel() {
+        final JPanel buttonPanel = new JPanel();
         buttonsPanel = new JPanel();
-        JPanel buttonPanel = new JPanel();
+        progressLabel = new JLabel();
+        
         prev = new JButton("<< Previous");
         next = new JButton("Next >>");
-        progressLabel = new JLabel();
         
         prev.setPreferredSize(new Dimension(110, 30));
         next.setPreferredSize(new Dimension(110, 30));
         
-        prev.setMargin(new Insets(prev.getMargin().top, 0, 
+        prev.setMargin(new Insets(prev.getMargin().top, 0,
                 prev.getMargin().bottom, 0));
-        next.setMargin(new Insets(next.getMargin().top, 0, 
+        next.setMargin(new Insets(next.getMargin().top, 0,
                 next.getMargin().bottom, 0));
         
         prev.addActionListener(this);
@@ -152,7 +159,7 @@ public class WizardDialog extends JDialog implements ActionListener {
     
     /** Displays the wizard. */
     public void display() {
-        if (steps.size() > 0) {
+        if (!steps.isEmpty()) {
             
             add(steps.get(0), BorderLayout.CENTER);
             currentStep = 0;
@@ -167,13 +174,13 @@ public class WizardDialog extends JDialog implements ActionListener {
             setTitle(title);
             setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             pack();
-            //setResizable(false);
+            setResizable(false);
             setVisible(true);
         }
     }
     
     /** {@inheritDoc} */
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == next) {
             nextStep();
         } else if (e.getSource() == prev) {
@@ -183,10 +190,10 @@ public class WizardDialog extends JDialog implements ActionListener {
     
     /**
      * Adds a step to the wizard.
-     * 
+     *
      * @param step Step to add
      */
-    public void addStep(Step step) {
+    public void addStep(final Step step) {
         steps.add(step);
     }
     
@@ -225,6 +232,8 @@ public class WizardDialog extends JDialog implements ActionListener {
     
     /**
      * Returns the step at the specified index.
+     *
+     * @param stepNumber step number
      *
      * @return Specified step.
      */
