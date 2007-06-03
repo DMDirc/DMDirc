@@ -40,7 +40,7 @@ import java.util.zip.ZipEntry;
 /**
  * Provides an easy way to access files inside a jar.
  */
-public class JarResources {
+public final class JarResources {
     
     /** Zipfile instance. */
     private final JarFile jarFile;
@@ -53,7 +53,7 @@ public class JarResources {
      *
      * @param fileName Filename of the jar to load
      *
-     * @throw IOException Throw when the jar fails to load
+     * @throws IOException Throw when the jar fails to load
      */
     public JarResources(final String fileName) throws IOException {
         this.jarFile = new JarFile(fileName);
@@ -83,7 +83,7 @@ public class JarResources {
      *
      * @return Number of files in the jar
      */
-    public int getSize() {
+    public int getNumResources() {
         return entries.size();
     }
     
@@ -110,7 +110,8 @@ public class JarResources {
         final byte[] bytes = new byte[(int) jarEntry.getSize()];
         
         try {
-            inputStream = new BufferedInputStream(jarFile.getInputStream(jarEntry));
+            inputStream =
+                    new BufferedInputStream(jarFile.getInputStream(jarEntry));
         } catch (IOException ex) {
             return new byte[0];
         }
@@ -147,13 +148,15 @@ public class JarResources {
     }
     
     /**
-     * Gets a Map of byte[]s of the resources starting with the specified prefix.
+     * Gets a Map of byte[]s of the resources starting with the specified
+     * prefix.
      *
-     * @param resource Prefix of the resources to return
+     * @param resourcesPrefix Prefix of the resources to return
      *
      * @return Map of byte[]s of resources found
      */
-    public Map<String, byte[]> getResourcesStartingWithAsBytes(final String resourcesPrefix) {
+    public Map<String, byte[]> getResourcesStartingWithAsBytes(
+            final String resourcesPrefix) {
         final Map<String, byte[]> resources = new HashMap<String, byte[]>();
         
         for (String entry : entries) {
@@ -166,14 +169,17 @@ public class JarResources {
     }
     
     /**
-     * Gets a Map of InputStreams of the resources starting with the specified prefix.
+     * Gets a Map of InputStreams of the resources starting with the specified
+     * prefix.
      *
-     * @param resource Prefix of the resources to return
+     * @param resourcesPrefix Prefix of the resources to return
      *
      * @return Map of InputStreams of resources found
      */
-    public Map<String, InputStream> getResourcesStartingWithAsInputStreams(final String resourcesPrefix) {
-        final Map<String, InputStream> resources = new HashMap<String, InputStream>();
+    public Map<String, InputStream> getResourcesStartingWithAsInputStreams(
+            final String resourcesPrefix) {
+        final Map<String, InputStream> resources =
+                new HashMap<String, InputStream>();
         
         for (String entry : entries) {
             if (entry.startsWith(resourcesPrefix)) {
@@ -185,36 +191,77 @@ public class JarResources {
     }
     
     /**
-     * Main entry point - for testing.
+     * Writes a resource to a file.
      *
-     * @param args CLI args
+     * @param resource Resource to write
+     * @param file File to write to
      *
-     * @throws IOException When the jar isnt found
+     * @throws IOException if the write operation fails
      */
-    public static void main(final String[] args) throws IOException {
-        final JarResources jar = new JarResources("/home/greboid/dmdirc/dist/DMDirc.jar");
-        System.out.println(jar.getName() + ": " + jar.getSize());
-        final Map<String, byte[]> resourcesBytes = jar.getResourcesStartingWithAsBytes("com/dmdirc/");
-        System.out.println(resourcesBytes);
-        final File file = new File("/home/greboid/Desktop/dmdirc/");
-        file.mkdirs();
-        for (Entry<String, byte[]> entry : resourcesBytes.entrySet()) {
-            
-            final File newDir = new File(file + "/" + entry.getKey().substring(0, entry.getKey().lastIndexOf("/")) + "/");
-            
+    public void resourceToFile(final byte[] resource, final File file)
+    throws IOException {
+        final FileOutputStream out = new FileOutputStream(file, false);
+        
+        out.write(resource);
+        
+        out.flush();
+        out.close();
+    }
+    
+    /**
+     * Extracts the specified resource to the specified directory.
+     *
+     * @param resourceName The name of the resource to extract
+     * @param directory The name of the directory to extract to
+     *
+     * @throws IOException if the write operation fails
+     *
+     * @return success of failure of the operation
+     */
+    public boolean extractResource(final String resourceName,
+            final String directory) throws IOException {
+        final byte[] resource = getResourceBytes(resourceName);
+        
+        if (resource.length == 0) {
+            return false;
+        }
+        
+        final File newDir = new File(directory,
+                resourceName.substring(0, resourceName.lastIndexOf('/')) + "/");
+        
+        if (!newDir.exists()) {
             newDir.mkdirs();
-            
-            final File newFile = new File(newDir + "/" + entry.getKey().substring(entry.getKey().lastIndexOf("/") + 1, entry.getKey().length()));
-            
-            if (!newFile.isDirectory()) {
-                final FileOutputStream out = new FileOutputStream(newFile, false);
-                final byte[] buf = entry.getValue();
-                
-                out.write(buf);
-                
-                out.flush();
-                out.close();
-            }
+        }
+        
+        if (!newDir.exists()) {
+            return false;
+        }
+        
+        final File newFile = new File(newDir,
+                resourceName.substring(resourceName.lastIndexOf('/') + 1,
+                resourceName.length()));
+        
+        if (!newFile.isDirectory()) {
+            resourceToFile(resource, newFile);
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Extracts the specified resources to the specified directory.
+     *
+     * @param resourcesPrefix The prefix of the resources to extract
+     * @param directory The name of the directory to extract to
+     *
+     * @throws IOException if the write operation fails
+     */
+    public void extractResources(final String resourcesPrefix,
+            final String directory) throws IOException {
+        final Map<String, byte[]> resourcesBytes =
+                getResourcesStartingWithAsBytes(resourcesPrefix);
+        for (Entry<String, byte[]> entry : resourcesBytes.entrySet()) {
+            extractResource(entry.getKey(), directory);
         }
     }
 }
