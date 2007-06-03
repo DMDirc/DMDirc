@@ -75,8 +75,12 @@ public class PluginClassLoader extends ClassLoader {
 			throw new ClassNotFoundException(e.getMessage());
 		}
 		
-		loadedClass = defineClass(name, data, 0, data.length);
-		
+                try {
+                        loadedClass = defineClass(name, data, 0, data.length);
+                } catch (NoClassDefFoundError e) {
+                    throw new ClassNotFoundException(e.getMessage(), e);
+		}
+                
 		if (loadedClass == null) {
 			throw new ClassNotFoundException("Could not load " + name);
 		} else {

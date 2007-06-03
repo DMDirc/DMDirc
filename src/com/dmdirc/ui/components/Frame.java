@@ -311,8 +311,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Removes and reinserts the border of an internal frame on maximising.
      * {@inheritDoc}
      */
-    public final void propertyChange(final PropertyChangeEvent propertyChangeEvent) {
-        if (propertyChangeEvent.getNewValue().equals(Boolean.TRUE)) {
+    public final void propertyChange(final PropertyChangeEvent event) {
+        if (event.getNewValue().equals(Boolean.TRUE)) {
             hideTitlebar();
             MainFrame.getMainFrame().setMaximised(true);
         } else {
@@ -367,49 +367,49 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
+    public void internalFrameOpened(final InternalFrameEvent event) {
         //Ignore.
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
+    public void internalFrameClosing(final InternalFrameEvent event) {
         //Ignore.
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
+    public void internalFrameClosed(final InternalFrameEvent event) {
         //Ignore.
     }
     
     /**
      * Makes the internal frame invisible. {@inheritDoc}
      */
-    public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
-        internalFrameEvent.getInternalFrame().setVisible(false);
+    public void internalFrameIconified(final InternalFrameEvent event) {
+        event.getInternalFrame().setVisible(false);
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
+    public void internalFrameDeiconified(final InternalFrameEvent event) {
         //Ignore.
     }
     
     /**
      * Activates the input field on frame focus. {@inheritDoc}
      */
-    public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
+    public void internalFrameActivated(final InternalFrameEvent event) {
         getInputField().requestFocus();
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
-    public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
+    public void internalFrameDeactivated(final InternalFrameEvent event) {
         //Ignore.
     }
     
@@ -565,9 +565,12 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 getPopup().show(this, (int) point.getX(), (int) point.getY());
             }
         } else if (e.isPopupTrigger() && e.getSource() == getInputField()) {
-            final Point point = inputFieldPopup.getMousePosition();
+            final Point point = getInputField().getMousePosition();
+            
             if (point != null) {
-                inputFieldPopup.show(this, (int) point.getX(), (int) point.getY());
+                inputFieldPopup.show(this, (int) point.getX(),
+                        (int) point.getY() + getTextPane().getHeight() 
+                        + SMALL_BORDER);
             }
         } else {
             super.processMouseEvent(e);
@@ -643,18 +646,18 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     
     /**
      * Checks and pastes text.
-     * 
+     *
      * @param event the event that triggered the paste
      */
     private void doPaste(final KeyEvent event) {
-        String clipboardContents = null;
-        String[] clipboardContentsLines = new String[]{"", };
+        String clipboard = null;
+        String[] clipboardLines = new String[]{"", };
         
         try {
-            clipboardContents = getInputField().getText()
+            clipboard = getInputField().getText()
             + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
             .getData(DataFlavor.stringFlavor);
-            clipboardContentsLines = clipboardContents.split(System.getProperty("line.separator"));
+            clipboardLines = clipboard.split(System.getProperty("line.separator"));
         } catch (HeadlessException ex) {
             Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
         } catch (IOException ex) {
@@ -662,13 +665,13 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         } catch (UnsupportedFlavorException ex) {
             Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
         }
-        if (clipboardContents != null && clipboardContents.indexOf('\n') >= 0) {
+        if (clipboard != null && clipboard.indexOf('\n') >= 0) {
             event.consume();
             final int pasteTrigger = Config.getOptionInt("ui", "pasteProtectionLimit", 1);
-            if (getNumLines(clipboardContents) > pasteTrigger) {
-                showPasteDialog(clipboardContents, clipboardContentsLines);
+            if (getNumLines(clipboard) > pasteTrigger) {
+                showPasteDialog(clipboard, clipboardLines);
             } else {
-                for (String clipboardLine : clipboardContentsLines) {
+                for (String clipboardLine : clipboardLines) {
                     this.sendLine(clipboardLine);
                 }
             }
@@ -678,15 +681,15 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     /**
      * Shows the paste dialog.
      *
-     * @param clipboardContents contents of the clipboard
-     * @param clipboardContentsLines clipboard contents split per line
+     * @param clipboard contents of the clipboard
+     * @param clipboardLines clipboard contents split per line
      */
-    private void showPasteDialog(final String clipboardContents,
-            final String[] clipboardContentsLines) {
+    private void showPasteDialog(final String clipboard,
+            final String[] clipboardLines) {
         final String[] options = {"Send", "Edit", "Cancel", };
         final int n = JOptionPane.showOptionDialog(this,
                 "<html>Paste would be sent as "
-                + getNumLines(clipboardContents) + " lines.<br>"
+                + getNumLines(clipboard) + " lines.<br>"
                 + "Do you want to continue?</html>",
                 "Multi-line Paste",
                 JOptionPane.YES_NO_CANCEL_OPTION,
@@ -696,12 +699,12 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 options[0]);
         switch (n) {
             case 0:
-                for (String clipboardLine : clipboardContentsLines) {
+                for (String clipboardLine : clipboardLines) {
                     this.sendLine(clipboardLine);
                 }
                 break;
             case 1:
-                new PasteDialog(this, clipboardContents).setVisible(true);
+                new PasteDialog(this, clipboard).setVisible(true);
                 break;
             case 2:
                 break;

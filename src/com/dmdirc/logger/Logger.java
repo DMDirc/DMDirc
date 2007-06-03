@@ -83,23 +83,23 @@ public final class Logger {
         
         switch (level) {
             case FATAL:
-                icon = new ImageIcon(ClassLoader.getSystemClassLoader()
+                icon = new ImageIcon(Thread.currentThread().getContextClassLoader()
                 .getResource("com/dmdirc/res/error.png"));
                 break;
             case ERROR:
-                icon = new ImageIcon(ClassLoader.getSystemClassLoader()
+                icon = new ImageIcon(Thread.currentThread().getContextClassLoader()
                 .getResource("com/dmdirc/res/error.png"));
                 break;
             case WARNING:
-                icon = new ImageIcon(ClassLoader.getSystemClassLoader()
+                icon = new ImageIcon(Thread.currentThread().getContextClassLoader()
                 .getResource("com/dmdirc/res/warning.png"));
                 break;
             case TRIVIAL:
-                icon = new ImageIcon(ClassLoader.getSystemClassLoader()
+                icon = new ImageIcon(Thread.currentThread().getContextClassLoader()
                 .getResource("com/dmdirc/res/info.png"));
                 break;
             default:
-                icon = new ImageIcon(ClassLoader.getSystemClassLoader()
+                icon = new ImageIcon(Thread.currentThread().getContextClassLoader()
                 .getResource("com/dmdirc/res/error.png"));
                 break;
         }
