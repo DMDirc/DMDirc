@@ -852,7 +852,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     }
     
     /** {@inheritDoc} */
-    public void onUserModeChanged(IRCParser tParser, ClientInfo cClient, String sSetBy) {
+    public void onUserModeChanged(IRCParser tParser, ClientInfo cClient, String sSetBy, String sModes) {
         // Knowing what modes have changed may help marginally.
         
         /*if (!cClient.equals(parser.getMyself())) {

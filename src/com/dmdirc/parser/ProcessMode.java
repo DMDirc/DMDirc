@@ -245,8 +245,8 @@ public class ProcessMode extends IRCProcessor {
 		}
 		
 		iClient.setUserMode(nCurrent);
-		callUserModeChanged(iClient, token[0]);
-	}	
+		callUserModeChanged(iClient, token[0], sModestr[0]);
+	}
 	
 	/**
 	 * Callback to all objects implementing the ChannelModeChanged Callback.
@@ -285,10 +285,11 @@ public class ProcessMode extends IRCProcessor {
 	 * @see IUserModeChanged
 	 * @param cClient Client that had the mode changed (almost always us)
 	 * @param sSetby Host that set the mode (us or servername)
+	 * @param sModes The modes set.
 	 */
-	protected boolean callUserModeChanged(ClientInfo cClient, String sSetby) {
+	protected boolean callUserModeChanged(ClientInfo cClient, String sSetby, String sModes) {
 		CallbackOnUserModeChanged cb = (CallbackOnUserModeChanged)getCallbackManager().getCallbackType("OnUserModeChanged");
-		if (cb != null) { return cb.call(cClient, sSetby); }
+		if (cb != null) { return cb.call(cClient, sSetby, sModes); }
 		return false;
 	}	
 	

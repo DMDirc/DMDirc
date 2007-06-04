@@ -647,13 +647,25 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Get the ClientInfo object for a person.
 	 *
-	 * @param sWho Who can be any valid identifier for a client as long as it contains a nickname (?:)nick(?!ident)(?@host)
+	 * @param sHost Who can be any valid identifier for a client as long as it contains a nickname (?:)nick(?!ident)(?@host)
 	 * @return ClientInfo Object for the client, or null
 	 */
-	public ClientInfo getClientInfo(String sWho) {
-		sWho = ClientInfo.parseHost(sWho);
-		sWho = sWho.toLowerCase();
-		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); } else { return null; }
+	public ClientInfo getClientInfo(final String sHost) {
+		final String sWho = ClientInfo.parseHost(sHost).toLowerCase();
+		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
+		else { return null; }
+	}
+	
+	/**
+	 * Get the ClientInfo object for a person, or create a fake client info object.
+	 *
+	 * @param sHost Who can be any valid identifier for a client as long as it contains a nickname (?:)nick(?!ident)(?@host)
+	 * @return ClientInfo Object for the client.
+	 */
+	public ClientInfo getClientInfoOrFake(final String sHost) {
+		final String sWho = ClientInfo.parseHost(sHost).toLowerCase();
+		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
+		else { return (new ClientInfo(this, sHost)).setFake(true); }
 	}
 	
 	/**

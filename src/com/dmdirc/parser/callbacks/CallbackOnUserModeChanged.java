@@ -48,13 +48,14 @@ public final class CallbackOnUserModeChanged extends CallbackObject {
 	 * @see IUserModeChanged
 	 * @param cClient Client that had the mode changed (almost always us)
 	 * @param sSetby Host that set the mode (us or servername)
+	 * @param sModes The modes set.
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ClientInfo cClient, final String sSetby) {
+	public boolean call(final ClientInfo cClient, final String sSetby, final String sModes) {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
-				((IUserModeChanged) callbackInfo.get(i)).onUserModeChanged(myParser, cClient, sSetby);
+				((IUserModeChanged) callbackInfo.get(i)).onUserModeChanged(myParser, cClient, sSetby, sModes);
 			} catch (Exception e) {
 				final ParserError ei = new ParserError(ParserError.ERROR_ERROR, "Exception in onUserModeChanged", myParser.getLastLine());
 				ei.setException(e);
