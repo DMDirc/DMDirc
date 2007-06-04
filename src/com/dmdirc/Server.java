@@ -853,18 +853,20 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /** {@inheritDoc} */
     public void onUserModeChanged(IRCParser tParser, ClientInfo cClient, String sSetBy, String sModes) {
-        // Knowing what modes have changed may help marginally.
-        
-        /*if (!cClient.equals(parser.getMyself())) {
+        if (!cClient.equals(parser.getMyself())) {
             return;
         }
         
-        final String[] setter = ClientInfo.parseHostFull(sSetBy);
+        final ClientInfo setter = parser.getClientInfoOrFake(sSetBy);
+        final String[] setterParts = ClientInfo.parseHostFull(sSetBy);
         
         final StringBuffer format = new StringBuffer("userModeChanged");
         
         ActionManager.processEvent(CoreActionType.SERVER_USERMODES, format,
-                this, , );*/
+                this, setter, sModes);
+        
+        frame.addLine(format, setterParts[0], setterParts[1], setterParts[2],
+                sModes);
     }
     
     /** {@inheritDoc} */
