@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.dialogs.wizard;
 
+import com.dmdirc.ui.MainFrame;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
@@ -80,10 +81,11 @@ public final class WizardDialog extends JDialog implements ActionListener {
      * @param title Title for the wizard
      * @param steps Steps for the wizard
      * @param wizard Wizard to inform of changes
+     * @param modal Whether the wizard should be modal
      */
     public WizardDialog(final String title, final List<Step> steps,
-            final Wizard wizard) {
-        super();
+            final Wizard wizard, final boolean modal) {
+        super(MainFrame.getMainFrame(), modal);
         
         this.title = title;
         this.steps = new ArrayList<Step>(steps);
@@ -210,8 +212,8 @@ public final class WizardDialog extends JDialog implements ActionListener {
             updateProgressLabel();
             wizard.stepChanged(currentStep - 1, currentStep);
         } else if ("Finish".equals(next.getText())) {
-            wizard.wizardFinished();
             this.dispose();
+            wizard.wizardFinished();
         }
         steps.get(currentStep).setVisible(true);
     }

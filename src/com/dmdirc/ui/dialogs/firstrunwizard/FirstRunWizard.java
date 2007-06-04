@@ -22,11 +22,18 @@
 
 package com.dmdirc.ui.dialogs.firstrunwizard;
 
+import com.dmdirc.Config;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.resourcemanager.ResourceManager;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.dialogs.ProfileEditorDialog;
 import com.dmdirc.ui.dialogs.wizard.Step;
 import com.dmdirc.ui.dialogs.wizard.Wizard;
 import com.dmdirc.ui.dialogs.wizard.WizardDialog;
 
 import java.awt.Dimension;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,40 +54,53 @@ public final class FirstRunWizard implements Wizard {
     public void stepChanged(final int oldStep, final int newStep) {
         //Ignore
     }
-
+    
     /** {@inheritDoc} */
     public void wizardFinished() {
+        final ResourceManager resourceManager =
+                ResourceManager.getResourceManager();
         if (((StepOne) wizardDialog.getStep(0)).getPluginsState()) {
             //Copy plugins
+            try {
+                resourceManager.extractResources("com/dmdirc/addons",
+                        Config.getConfigDir() + "plugins");
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.TRIVIAL,
+                        "Failed to extract plugins", ex);
+            }
         }
         
         if (((StepOne) wizardDialog.getStep(0)).getActionsState()) {
             //Copy actions
+            try {
+                resourceManager.extractResources("com/dmdirc/actions/defaults",
+                        Config.getConfigDir() + "actions");
+            } catch (IOException ex) {
+                Logger.error(ErrorLevel.TRIVIAL,
+                        "Failed to extract plugins", ex);
+            }
         }
         
         if (((StepTwo) wizardDialog.getStep(1)).getProfileManagerState()) {
-            //Launch profile manager
+            ProfileEditorDialog.showActionsManagerDialog();
         }
-        
-        //set variable
     }
     
-    /** 
-     * Temp test method.
-     *
-     * @param args cli args
-     */
-     public static void main(final String[] args) {
+    /** Displays the First run wizard. */
+    public static void display() {
         final List<Step> steps = new ArrayList<Step>();
         
         steps.add(new StepOne());
         steps.add(new StepTwo());
         
-        wizardDialog = new WizardDialog("Setup wizard", steps, new FirstRunWizard());
-
+        wizardDialog = new WizardDialog("Setup wizard", steps,
+                new FirstRunWizard(), true);
+        
         wizardDialog.setPreferredSize(new Dimension(400, 350));
         
         wizardDialog.display();
+        
+        wizardDialog.setLocationRelativeTo(MainFrame.getMainFrame());
     }
     
 }

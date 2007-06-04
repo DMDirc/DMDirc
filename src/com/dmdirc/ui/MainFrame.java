@@ -33,6 +33,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.components.StatusBar;
 import com.dmdirc.ui.dialogs.AboutDialog;
 import com.dmdirc.ui.dialogs.ActionsManagerDialog;
+import com.dmdirc.ui.dialogs.firstrunwizard.FirstRunWizard;
 import com.dmdirc.ui.dialogs.NewServerDialog;
 import com.dmdirc.ui.dialogs.PluginDialog;
 import com.dmdirc.ui.dialogs.PreferencesDialog;
@@ -216,6 +217,11 @@ public final class MainFrame extends JFrame implements WindowListener,
     public static synchronized MainFrame getMainFrame() {
         if (me == null) {
             me = new MainFrame();
+            if (!Config.hasOption("general", "firstRun")
+            || Config.getOptionBool("general", "firstRun")){
+                Config.setOption("general", "firstRun", "false");
+                new FirstRunWizard().display();
+            }
         }
         return me;
     }
@@ -605,23 +611,23 @@ public final class MainFrame extends JFrame implements WindowListener,
         menuItem.setActionCommand("Minimise");
         menuItem.addActionListener(this);
         windowsMenu.add(menuItem);
-        
+         
         menuItem = new JMenuItem();
         menuItem.setMnemonic('c');
         menuItem.setText("Close");
         menuItem.setActionCommand("Close");
         menuItem.addActionListener(this);
         windowsMenu.add(menuItem);
-        
+         
         menuItem = new JMenuItem();
         menuItem.setMnemonic('a');
         menuItem.setText("Close all");
         menuItem.setActionCommand("CloseAll");
         menuItem.addActionListener(this);
         windowsMenu.add(menuItem);
-        
+         
         windowsMenu.addSeparator();
-        
+         
         int i = 0;
         for (JInternalFrame frame : desktopPane.getAllFrames()) {
             if (i > 34) {
@@ -653,11 +659,11 @@ public final class MainFrame extends JFrame implements WindowListener,
         } else if (e.getActionCommand().equals("Actions")) {
             ActionsManagerDialog.showActionsManagerDialog();
         } /* else if (e.getActionCommand().equals("Minimise")) {
-          
-        } else if (e.getActionCommand().equals("Close")) {      
-                
+           
+        } else if (e.getActionCommand().equals("Close")) {
+           
         } else if (e.getActionCommand().equals("CloseAll")) {
-          
+           
         }*/
     }
     

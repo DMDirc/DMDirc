@@ -42,16 +42,6 @@ import com.dmdirc.ui.dialogs.ErrorDialog;
 public final class Logger {
     
     /**
-     * Logging Printwriter.
-     */
-    private static PrintWriter logWriter;
-    
-    /**
-     * Debug Printwriter.
-     */
-    private static PrintWriter debugWriter;
-    
-    /**
      * Error Printwriter.
      */
     private static PrintWriter errorWriter;
@@ -75,7 +65,7 @@ public final class Logger {
      * @param trace error trace.
      */
     private static void handleError(final ErrorLevel level, final String message, final String[] trace) {
-        if (logWriter == null || debugWriter == null || errorWriter == null) {
+        if (errorWriter == null) {
             createWriters();
         }
         
@@ -179,16 +169,6 @@ public final class Logger {
      */
     private static synchronized void createWriters() {
         try {
-            if (logWriter == null) {
-                logWriter = new PrintWriter(
-                        new FileWriter(Config.getConfigDir()
-                        + "log.log", true), true);
-            }
-            if (debugWriter == null) {
-                debugWriter = new PrintWriter(
-                        new FileWriter(Config.getConfigDir()
-                        + "debug.log", true), true);
-            }
             if (errorWriter == null) {
                 errorWriter = new PrintWriter(
                         new FileWriter(Config.getConfigDir()
