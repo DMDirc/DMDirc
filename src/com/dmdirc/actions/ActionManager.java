@@ -23,6 +23,8 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.Config;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
@@ -461,6 +463,17 @@ public class ActionManager {
                 }
             }
             j++;
+        }
+        
+        if (arguments.length > 0 && arguments[0] instanceof FrameContainer) {
+            final Server server = ((FrameContainer) arguments[0]).getServer();
+            
+            for (ActionComponent comp : getCompatibleComponents(Server.class)) {
+                if (comp.get(server) != null) {
+                    final String value = comp.get(server).toString();
+                    res = res.replaceAll("\\$\\{" + comp.toString() + "\\}", value);
+                }
+            }
         }
         
         if (arguments.length > 2 && arguments[2] instanceof String[]) {

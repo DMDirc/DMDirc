@@ -1,0 +1,14 @@
+trigger=CHANNEL_JOIN
+conditions=2
+
+condition0-arg=0
+condition0-component=CHANNEL_COLOUR
+condition0-comparison=COLOUR_NEQUALS
+condition0-target=$highlightcolour
+
+condition1-arg=0
+condition1-component=CHANNEL_COLOUR
+condition1-comparison=COLOUR_NEQUALS
+condition1-target=$textcolour
+
+response=/notify $eventcolour
