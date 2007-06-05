@@ -477,10 +477,16 @@ public class ActionManager {
         }
         
         if (arguments.length > 2 && arguments[2] instanceof String[]) {
-            int i = 1;
-            for (String arg : (String[]) arguments[2]) {
-                res = res.replaceAll("\\$" + i, arg);
-                i++;
+            final String[] args = (String[]) arguments[2];
+            final StringBuffer compound = new StringBuffer();
+            for (int i = args.length - 1; i >= 0; i--) {
+                if (compound.length() > 0) {
+                    compound.insert(0, ' ');
+                }
+                compound.insert(0, args[i]);
+                
+                res = res.replaceAll("\\$" + (i + 1) + "-", compound.toString());
+                res = res.replaceAll("\\$" + (i + 1), args[i]);
             }
         }
         
