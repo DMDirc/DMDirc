@@ -26,17 +26,19 @@ import com.dmdirc.Config;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.resourcemanager.ResourceManager;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.dialogs.ProfileEditorDialog;
 import com.dmdirc.ui.dialogs.wizard.Step;
 import com.dmdirc.ui.dialogs.wizard.Wizard;
 import com.dmdirc.ui.dialogs.wizard.WizardDialog;
 
 import java.awt.Dimension;
+import java.io.File;
 import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * First run wizard, used to initially setup the client for the user.
@@ -72,12 +74,31 @@ public final class FirstRunWizard implements Wizard {
         
         if (((StepOne) wizardDialog.getStep(0)).getActionsState()) {
             //Copy actions
-            try {
-                resourceManager.extractResources("com/dmdirc/actions/defaults",
-                        Config.getConfigDir() + "actions");
-            } catch (IOException ex) {
-                Logger.error(ErrorLevel.TRIVIAL,
-                        "Failed to extract plugins", ex);
+            final Map<String, byte[]> resources =
+                    resourceManager.getResourcesStartingWithAsBytes(
+                    "com/dmdirc/actions/defaults");
+            for (Entry<String, byte[]> resource : resources.entrySet()) {
+                try {
+                    final String resourceName = Config.getConfigDir() + "actions"
+                            + resource.getKey().substring(27, resource.getKey().length());
+                    final File newDir = new File(
+                            resourceName.substring(0, resourceName.lastIndexOf('/')) + "/");
+                    
+                    if (!newDir.exists()) {
+                        newDir.mkdirs();
+                    }
+                    
+                    final File newFile = new File(newDir,
+                            resourceName.substring(resourceName.lastIndexOf('/') + 1,
+                            resourceName.length()));
+                    
+                    if (!newFile.isDirectory()) {
+                        resourceManager.resourceToFile(resource.getValue(), newFile);
+                    }
+                } catch (IOException ex) {
+                    Logger.error(ErrorLevel.TRIVIAL,
+                            "Failed to extract plugins", ex);
+                }
             }
         }
         
@@ -99,8 +120,9 @@ public final class FirstRunWizard implements Wizard {
         wizardDialog.setPreferredSize(new Dimension(400, 350));
         
         wizardDialog.display();
-        
-        wizardDialog.setLocationRelativeTo(MainFrame.getMainFrame());
     }
     
+    public static void main(String[] args) {
+        new FirstRunWizard().display();
+    }
 }

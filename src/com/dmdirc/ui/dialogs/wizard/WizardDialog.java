@@ -176,6 +176,7 @@ public final class WizardDialog extends JDialog implements ActionListener {
             setTitle(title);
             setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             pack();
+            setLocationRelativeTo(MainFrame.getMainFrame());
             setResizable(false);
             setVisible(true);
         }
