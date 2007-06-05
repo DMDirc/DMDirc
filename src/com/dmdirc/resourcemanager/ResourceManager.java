@@ -22,6 +22,9 @@
 
 package com.dmdirc.resourcemanager;
 
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -52,7 +55,7 @@ public abstract class ResourceManager {
      *
      * @return ResourceManager implementation
      */
-    public static synchronized final ResourceManager getResourceManager() {
+    public static final synchronized ResourceManager getResourceManager() {
         if (me == null) {
             final String protocol = Thread.currentThread().getContextClassLoader().
                     getResource("com/dmdirc/ui/MainFrame.class").getProtocol();
@@ -64,7 +67,8 @@ public abstract class ResourceManager {
                     me = new JarResourceManager("DMDirc.jar");
                 }
             } catch (IOException ex) {
-                //Ignore
+                Logger.error(ErrorLevel.ERROR, "Unable to determine how DMDirc" 
+                        + " has been executed", ex);
             }
         }
         return me;
@@ -168,7 +172,7 @@ public abstract class ResourceManager {
      *
      * @return byte[] for the resource, or an empty byte[] if not found
      */
-    abstract public byte[] getResourceBytes(final String resource);
+    public abstract byte[] getResourceBytes(final String resource);
     
     /**
      * Gets an InputStream for the specified resource.
@@ -177,7 +181,7 @@ public abstract class ResourceManager {
      *
      * @return InputStream for the resource, or null if not found
      */
-    abstract public InputStream getResourceInputStream(final String resource);
+    public abstract InputStream getResourceInputStream(final String resource);
     
     /**
      * Gets a Map of byte[]s of the resources starting with the specified
@@ -187,7 +191,7 @@ public abstract class ResourceManager {
      *
      * @return Map of byte[]s of resources found
      */
-    abstract public Map<String, byte[]> getResourcesStartingWithAsBytes(
+    public abstract Map<String, byte[]> getResourcesStartingWithAsBytes(
             final String resourcesPrefix);
     
     /**
@@ -198,6 +202,6 @@ public abstract class ResourceManager {
      *
      * @return Map of InputStreams of resources found
      */
-    abstract public Map<String, InputStream> getResourcesStartingWithAsInputStreams(
+    public abstract Map<String, InputStream> getResourcesStartingWithAsInputStreams(
             final String resourcesPrefix);
 }

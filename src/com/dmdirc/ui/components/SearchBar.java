@@ -34,6 +34,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -207,9 +208,11 @@ public final class SearchBar extends JPanel implements ActionListener,
         boolean foundText;
         
         if (direction == Direction.UP) {
-            foundText = searchUp(line, caseSensitive ? text.toLowerCase() : text);
+            foundText = searchUp(line, caseSensitive ? text : 
+                text.toLowerCase(Locale.getDefault()));
         } else {
-            foundText = searchDown(line, caseSensitive ? text.toLowerCase() : text);
+            foundText = searchDown(line, caseSensitive ? text : 
+                text.toLowerCase(Locale.getDefault()));
         }
         
         if (foundText) {

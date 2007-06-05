@@ -36,10 +36,10 @@ import java.util.Map;
 /**
  * Provides an easy way to access files inside a project.
  */
-public class FileResourceManager extends ResourceManager {
+public final class FileResourceManager extends ResourceManager {
     
     /** Base path for the project. */
-    final private String basePath;
+    private final String basePath;
     
     /**
      * Creates a new instance of FileResourceManager.
@@ -152,7 +152,7 @@ public class FileResourceManager extends ResourceManager {
      *
      * @return Recursive directory listing
      */
-    private static final List<File> getFileListing(final File startingDirectory ) {
+    private static List<File> getFileListing(final File startingDirectory) {
         final List<File> result = new ArrayList<File>();
         
         final List<File> files = Arrays.asList(startingDirectory.listFiles());

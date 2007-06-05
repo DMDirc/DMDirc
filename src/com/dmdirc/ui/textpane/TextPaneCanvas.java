@@ -318,7 +318,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
             final AttributedCharacterIterator iterator = document.getLine(info[0]).getIterator();
             iterator.setIndex(info[2]);
             final Object linkattr = iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
-            if (linkattr != null && linkattr instanceof String) {
+            if (linkattr instanceof String) {
                 fireHyperlinkClicked((String) linkattr);
                 return;
             }

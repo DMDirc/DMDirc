@@ -390,5 +390,6 @@ public final class PreferencesDialog implements PreferencesInterface {
     
     /** {@inheritDoc} */
     public void configCancelled() {
+        //Ignore
     }
 }

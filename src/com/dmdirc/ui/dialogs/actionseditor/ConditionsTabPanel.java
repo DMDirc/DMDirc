@@ -84,10 +84,10 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         super();
         
         this.owner = owner;
-        if (owner.getAction() != null) {
-            this.conditions = new ArrayList<ActionCondition>(owner.getAction().getConditions());
-        } else {
+        if (owner.getAction() == null) {
             this.conditions = new ArrayList<ActionCondition>();
+        } else {
+            this.conditions = new ArrayList<ActionCondition>(owner.getAction().getConditions());
         }
         
         initComponents();

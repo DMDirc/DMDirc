@@ -330,24 +330,24 @@ public final class ConditionEditorDialog extends StandardDialog implements
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == arguments && conditionsPanel.isVisible()) {
-            if (arguments.getSelectedItem() != null) {
-                argument = arguments.getSelectedIndex();
-            } else {
+            if (arguments.getSelectedItem() == null) {
                 argument = -1;
+            } else {
+                argument = arguments.getSelectedIndex();
             }
             populateArguments();
         } else if (event.getSource() == components && conditionsPanel.isVisible()) {
-            if (components.getSelectedItem() != null) {
-                component = (ActionComponent) components.getSelectedItem();
-            } else {
+            if (components.getSelectedItem() == null) {
                 component = null;
+            } else {
+                component = (ActionComponent) components.getSelectedItem();
             }
             populateComponents();
         } else if (event.getSource() == comparisons && conditionsPanel.isVisible()) {
-            if (comparisons.getSelectedItem() != null) {
-                comparison = (ActionComparison) comparisons.getSelectedItem();
-            } else {
+            if (comparisons.getSelectedItem() == null) {
                 comparison = null;
+            } else {
+                comparison = (ActionComparison) comparisons.getSelectedItem();
             }
             populateComparisons();
         }
