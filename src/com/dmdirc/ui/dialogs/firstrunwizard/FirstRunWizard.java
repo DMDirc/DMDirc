@@ -121,8 +121,4 @@ public final class FirstRunWizard implements Wizard {
         
         wizardDialog.display();
     }
-    
-    public static void main(String[] args) {
-        new FirstRunWizard().display();
-    }
-}
+ }
