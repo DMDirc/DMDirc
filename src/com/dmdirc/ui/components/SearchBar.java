@@ -145,8 +145,8 @@ public final class SearchBar extends JPanel implements ActionListener,
         
         add(closeButton);
         add(searchBox);
-        add(nextButton);
         add(prevButton);
+        add(nextButton);
         add(caseCheck);
         
         layoutGrid(this, 1, 5, SMALL_BORDER, 0, SMALL_BORDER, SMALL_BORDER);
