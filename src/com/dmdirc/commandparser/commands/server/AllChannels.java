@@ -32,7 +32,7 @@ import com.dmdirc.commandparser.ServerCommand;
  * on a server.
  * @author chris
  */
-public class AllChannels extends ServerCommand {
+public final class AllChannels extends ServerCommand {
     
     /** Creates a new instance of AllChannels. */
     public AllChannels() {

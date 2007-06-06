@@ -43,13 +43,7 @@ public final class QueryMeEmpty extends QueryCommand {
         CommandManager.registerCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
-     * @param query The query object that this command is associated with
-     * @param args The user supplied arguments
-     */
+    /** {@inheritDoc}. */
     public void execute(final CommandWindow origin, final Server server,
             final Query query, final boolean isSilent, final String... args) {
         sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(), "me", "<action>");

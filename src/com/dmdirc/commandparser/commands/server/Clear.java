@@ -31,7 +31,7 @@ import com.dmdirc.commandparser.ServerCommand;
  * The clear command clears the main text area of the current window.
  * @author chris
  */
-public class Clear extends ServerCommand {
+public final class Clear extends ServerCommand {
     
     /**
      * Creates a new instance of Clear.
@@ -49,7 +49,7 @@ public class Clear extends ServerCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
-    public final void execute(final CommandWindow origin, final Server server,
+    public void execute(final CommandWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         origin.clear();
     }

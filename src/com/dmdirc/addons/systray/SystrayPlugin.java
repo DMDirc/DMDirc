@@ -22,6 +22,10 @@
 
 package com.dmdirc.addons.systray;
 
+import com.dmdirc.Main;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.ui.MainFrame;
+    
 import java.awt.AWTException;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
@@ -35,10 +39,6 @@ import java.net.URL;
 
 import javax.swing.ImageIcon;
 
-import com.dmdirc.Main;
-import com.dmdirc.plugins.Plugin;
-import com.dmdirc.ui.MainFrame;
-
 /**
  * The Systray plugin shows DMDirc in the user's system tray, and allows
  * notifications to be disabled.
@@ -47,7 +47,7 @@ import com.dmdirc.ui.MainFrame;
 public final class SystrayPlugin  extends Plugin implements ActionListener, MouseListener {
     
     /** The command we registered. */
-    PopupCommand command;
+    private PopupCommand command;
     
     /** The tray icon we're currently using. */
     private TrayIcon icon;

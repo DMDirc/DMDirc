@@ -22,8 +22,6 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
-import java.awt.Color;
-
 import com.dmdirc.Channel;
 import com.dmdirc.Config;
 import com.dmdirc.Server;
@@ -31,6 +29,8 @@ import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.ui.messages.ColourManager;
+
+import java.awt.Color;
 
 /**
  * The notify command allows the user to set the notification colour for a

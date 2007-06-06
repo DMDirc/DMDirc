@@ -22,6 +22,14 @@
 
 package com.dmdirc.addons.lagdisplay;
 
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
+import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.plugins.EventPlugin;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.ui.MainFrame;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
@@ -30,14 +38,6 @@ import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
-
-import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
-import com.dmdirc.actions.ActionType;
-import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.plugins.Plugin;
-import com.dmdirc.plugins.EventPlugin;
-import com.dmdirc.ui.MainFrame;
 
 /**
  * Displays the current server's lag in the status bar.
@@ -136,6 +136,7 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin {
     /**
      * Formats the specified time so it's a nice size to display in the label.
      * @param object An uncast Long representing the time to be formatted
+     * @return Formatted time string
      */
     private String formatTime(final Object object) {
         final Long time = (Long) object;

@@ -22,12 +22,12 @@
 
 package com.dmdirc.addons.osdplugin;
 
-import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.GlobalCommand;
 
 /**
- * The osd command shows an on screen message
+ * The osd command shows an on screen message.
  * @author chris
  */
 public final class OsdCommand extends GlobalCommand {

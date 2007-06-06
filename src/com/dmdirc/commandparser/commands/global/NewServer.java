@@ -23,7 +23,6 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Config;
-import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
@@ -68,7 +67,7 @@ public final class NewServer extends GlobalCommand {
         
         // Check for port
         if (args[offset].indexOf(':') > -1) {
-            String[] parts = args[offset].split(":");
+            final String[] parts = args[offset].split(":");
             host = parts[0];
             try {
                 port = Integer.parseInt(parts[1]);

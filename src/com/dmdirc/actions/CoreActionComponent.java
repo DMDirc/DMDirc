@@ -36,94 +36,159 @@ import java.util.GregorianCalendar;
  */
 public enum CoreActionComponent implements ActionComponent {
     
+    /** Returns the name of the server. */
     SERVER_NAME {
+        /** {@inheritDoc} */
         public Object get(final Object argument) { return ((Server) argument).getName(); }
+        /** {@inheritDoc} */
         public Class appliesTo() { return Server.class; }
+        /** {@inheritDoc} */
         public Class getType() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "name"; }
     },
     
+    /** Returns the network of the server. */
     SERVER_NETWORK {
+        /** {@inheritDoc} */
         public Object get(final Object argument) { return ((Server) argument).getNetwork(); }
+        /** {@inheritDoc} */
         public Class appliesTo() { return Server.class; }
+        /** {@inheritDoc} */
         public Class getType() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "network"; }
     },
     
+    /** Returns the away reason for the server. */
     SERVER_MYAWAYREASON {
+        /** {@inheritDoc} */
         public Object get(final Object argument) { return ((Server) argument).getAwayMessage(); }
+        /** {@inheritDoc} */
         public Class appliesTo() { return Server.class; }
+        /** {@inheritDoc} */
         public Class getType() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "away reason"; }
     },  
     
+    /** Returns the nickname for the server. */
     SERVER_MYNICKNAME {
+        /** {@inheritDoc} */
         public Object get(final Object argument) { return ((Server) argument).getParser().getMyself().getNickname(); }
+        /** {@inheritDoc} */
         public Class appliesTo() { return Server.class; }
+        /** {@inheritDoc} */
         public Class getType() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "nickname"; }
     },    
     
+    /** Returns the name of the channel. */
     CHANNEL_NAME {
+        /** {@inheritDoc} */
         public Object get(final Object argument) { return ((Channel) argument).getChannelInfo().getName(); }
+        /** {@inheritDoc} */
         public Class appliesTo() { return Channel.class; }
+        /** {@inheritDoc} */
         public Class getType() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "name"; }
     },
     
+    /** Returns the notification colour of the channel. */
     CHANNEL_COLOUR {
+        /** {@inheritDoc} */
         public Object get(final Object argument) { return ((Channel) argument).getNotification(); }
+        /** {@inheritDoc} */
         public Class appliesTo() { return Channel.class; }
+        /** {@inheritDoc} */
         public Class getType() { return Color.class; }
+        /** {@inheritDoc} */
         public String getName() { return "notification colour"; }
     },
     
+    /** Returns the name of a client. */
     USER_NAME {
+        /** {@inheritDoc} */
         public Object get(final Object argument) { return ((ChannelClientInfo) argument).getNickname(); }
+        /** {@inheritDoc} */
         public Class appliesTo() { return ChannelClientInfo.class; }
+        /** {@inheritDoc} */
         public Class getType() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "nickname"; }
     },
     
+    /** Returns the modes of a client. */
     USER_MODES {
+        /** {@inheritDoc} */
         public Object get(final Object argument) { return ((ChannelClientInfo) argument).getChanModeStr(false); }
+        /** {@inheritDoc} */
         public Class appliesTo() { return ChannelClientInfo.class; }
+        /** {@inheritDoc} */
         public Class getType() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "modes"; }
     },
     
+    /** Returns the host of a client. */
     USER_HOST {
+        /** {@inheritDoc} */
         public Object get(final Object argument) { return ((ChannelClientInfo) argument).getClient().getHost(); }
+        /** {@inheritDoc} */
         public Class appliesTo() { return ChannelClientInfo.class; }
+        /** {@inheritDoc} */
         public Class getType() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "host"; }
     },
     
+    /** Returns the content of a string. */
     STRING_STRING {
+        /** {@inheritDoc} */
         public Object get(final Object argument) { return argument; }
+        /** {@inheritDoc} */
         public Class appliesTo() { return String.class; }
+        /** {@inheritDoc} */
         public Class getType() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "content"; }
     },
     
+    /** Returns the length of a string. */
     STRING_LENGTH {
+        /** {@inheritDoc} */
         public Object get(final Object argument) { return ((String) argument).length(); }
+        /** {@inheritDoc} */
         public Class appliesTo() { return String.class; }
+        /** {@inheritDoc} */
         public Class getType() { return Integer.class; }
+        /** {@inheritDoc} */
         public String getName() { return "length"; }
     },
     
+    /** Returns the size of a string array. */
     STRINGARRAY_LENGTH {
+        /** {@inheritDoc} */
         public Object get(final Object argument) { return Integer.valueOf(((String[]) argument).length); }
+        /** {@inheritDoc} */
         public Class appliesTo() { return String[].class; }
+        /** {@inheritDoc} */
         public Class getType() { return Integer.class; }
+        /** {@inheritDoc} */
         public String getName() { return "size"; }
     },
     
+    /** Returns the readable representation of a date. */
     CALENDAR_FULLSTRING {
+        /** {@inheritDoc} */
         public Object get(final Object argument) { return ((GregorianCalendar) argument).getTime().toString(); }
+        /** {@inheritDoc} */
         public Class appliesTo() { return GregorianCalendar.class; }
+        /** {@inheritDoc} */
         public Class getType() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "full date"; }
     };
     

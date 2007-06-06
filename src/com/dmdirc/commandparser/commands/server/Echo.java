@@ -22,13 +22,13 @@
 
 package com.dmdirc.commandparser.commands.server;
 
-import javax.swing.JInternalFrame;
-
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.ui.MainFrame;
+
+import javax.swing.JInternalFrame;
 
 /**
  * The echo commands simply echos text to the current window.

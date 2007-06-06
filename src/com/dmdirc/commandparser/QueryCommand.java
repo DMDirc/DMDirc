@@ -40,5 +40,5 @@ public abstract class QueryCommand extends Command {
      * @param args Arguments passed to this command
      */
     public abstract void execute(CommandWindow origin, Server server, Query query,
-            boolean isSilent,String... args);
+            boolean isSilent, String... args);
 }

@@ -25,8 +25,8 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommand;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginManager;
 
 /**
  * Allows the user to reload a plugin.

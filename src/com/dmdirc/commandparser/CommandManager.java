@@ -22,9 +22,6 @@
 
 package com.dmdirc.commandparser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
@@ -34,6 +31,9 @@ import com.dmdirc.commandparser.commands.query.*;
 import com.dmdirc.commandparser.commands.server.*;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The command manager creates and manages a single instance of all commands,

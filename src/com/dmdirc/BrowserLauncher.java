@@ -48,6 +48,7 @@ public final class BrowserLauncher {
     /**
      * Opens a URL in the default browser where possible, else any availble
      * browser it finds.
+     *
      * @param url url to open in the browser
      */
     public static void openURL(final String url) {
@@ -66,6 +67,7 @@ public final class BrowserLauncher {
     /**
      * Opens a URL in the default browser where possible, else any availble
      * browser it finds.
+     *
      * @param url url to open in the browser
      */
     public static void openURL(final URL url) {
@@ -146,9 +148,9 @@ public final class BrowserLauncher {
     
     /**
      * Attempts to open the url in the specified browser.
+     *
      * @param url url to open
      * @param browser browser to use
-     * @throws IOException if unable to open browser
      */
     private static void runBrowser(final String url, final String browser) {
         try {

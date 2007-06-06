@@ -22,9 +22,6 @@
 
 package com.dmdirc.commandparser.commands.server;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.Command;
 import com.dmdirc.commandparser.CommandManager;
@@ -32,6 +29,9 @@ import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.ui.ChannelFrame;
 import com.dmdirc.ui.QueryFrame;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The help command shows the user a list of available commands, along with

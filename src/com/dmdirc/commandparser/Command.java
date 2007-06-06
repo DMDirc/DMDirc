@@ -61,7 +61,7 @@ public abstract class Command implements Comparable<Command> {
     public abstract boolean isPolyadic();
     
     /**
-     * Returns the arity of this command
+     * Returns the arity of this command.
      * @return This command's arity
      */
     public abstract int getArity();
@@ -114,7 +114,7 @@ public abstract class Command implements Comparable<Command> {
     }
     
     /** {@inheritDoc} */
-    public int compareTo(final Command o) {
+    public final int compareTo(final Command o) {
         return getSignature().compareTo(o.getSignature());
     }
 }

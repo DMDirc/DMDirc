@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.Server;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 

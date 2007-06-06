@@ -22,9 +22,6 @@
 
 package com.dmdirc.addons.logging;
 
-import java.util.Enumeration;
-import java.util.Properties;
-
 import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
@@ -32,6 +29,9 @@ import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
+
+import java.util.Enumeration;
+import java.util.Properties;
 
 /**
  * The dcop command retrieves information from a dcop application.

@@ -22,13 +22,13 @@
 
 package com.dmdirc.identities;
 
-import java.awt.Color;
-import java.util.Collections;
-import java.util.List;
-
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.messages.ColourManager;
+
+import java.awt.Color;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The config manager manages the various config sources for each entity.

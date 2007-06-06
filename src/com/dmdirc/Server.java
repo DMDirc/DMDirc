@@ -79,8 +79,9 @@ import javax.swing.SwingUtilities;
 
 /**
  * The Server class represents the client's view of a server. It maintains
- * a list of all channels, queries, etc, and handles parser callbacks pertaining
+ * a list of all channels, queries, etc, and handles parser CALLBACKS pertaining
  * to the server.
+ * 
  * @author chris
  */
 public final class Server extends FrameContainer implements IChannelSelfJoin,
@@ -90,14 +91,16 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         IAwayState, IConnectError, IAwayStateOther, INickInUse, IPost005,
         INoticeAuth, IUserModeChanged {
     
-    /** The callbacks that should be registered for server instances. */
-    private final static String[] callbacks = {
+    /**
+     * The CALLBACKS that should be registered for server instances.
+     */
+    private static final String[] CALLBACKS = {
         "OnChannelSelfJoin", "OnErrorInfo", "OnPrivateMessage", "OnPingSuccess",
         "OnPrivateAction", "OnPrivateCTCP", "OnPrivateNotice", "OnConnectError",
         "OnPrivateCTCPReply", "OnSocketClosed", "OnGotNetwork", "OnNumeric",
         "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed", "OnAwayState",
         "OnAwayStateOther", "OnNickInUse", "OnPost005", "OnNoticeAuth",
-        "OnUserModeChanged"
+        "OnUserModeChanged", 
     };
     
     /** Open channels that currently exist on the server. */
@@ -244,7 +247,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         }
         
         try {
-            for(String callback : callbacks) {
+            for (String callback : CALLBACKS) {
                 parser.getCallbackManager().addCallback(callback, this);
             }
         } catch (CallbackNotFound ex) {
@@ -269,7 +272,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     }
     
     /**
-     * Reconnects to the IRC server with a specified reason
+     * Reconnects to the IRC server with a specified reason.
      * @param reason The quit reason to send
      */
     public void reconnect(final String reason) {
@@ -450,10 +453,10 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         closing = true;
         
         if (parser != null) {
-            // Unregister parser callbacks
+            // Unregister parser CALLBACKS
             parser.getCallbackManager().delAllCallback(this);
         }
-        // Unregister frame callbacks
+        // Unregister frame CALLBACKS
         frame.removeInternalFrameListener(this);
         // Disconnect from the server
         disconnect(reason);
@@ -510,7 +513,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * closes all open channel windows associated with this server.
      */
     private void closeChannels() {
-        boolean wasClosing = closing;
+        final boolean wasClosing = closing;
         closing = true;
         for (Channel channel : channels.values()) {
             channel.closeWindow();
@@ -532,7 +535,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * closes all open query windows associated with this server.
      */
     private void closeQueries() {
-        boolean wasClosing = closing;
+        final boolean wasClosing = closing;
         closing = true;
         for (Query query : queries.values()) {
             query.close();
@@ -788,7 +791,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         }
         
         if (newNick == null) {
-            newNick = lastNick + (int) (Math.random()*10);
+            newNick = lastNick + (int) (Math.random() * 10);
         }
         
         parser.setNickname(newNick);
@@ -844,7 +847,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     }
     
     /** {@inheritDoc} */
-    public void onNoticeAuth(IRCParser tParser, String sData) {
+    public void onNoticeAuth(final IRCParser tParser, final String sData) {
         handleNotification("authNotice", sData);
         
         ActionManager.processEvent(CoreActionType.SERVER_AUTHNOTICE, null, this,
@@ -852,7 +855,8 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     }
     
     /** {@inheritDoc} */
-    public void onUserModeChanged(IRCParser tParser, ClientInfo cClient, String sSetBy, String sModes) {
+    public void onUserModeChanged(final IRCParser tParser, final ClientInfo cClient, 
+            final String sSetBy, final String sModes) {
         if (!cClient.equals(parser.getMyself())) {
             return;
         }

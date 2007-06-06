@@ -20,19 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.updater;
-
 /**
- * Represents one update channel (e.g., stable, nightly, etc).
- * @author chris
+ * DMDirc actions, a user friendly scripting alternative.
  */
-public enum UpdateChannel {
-
-    /** Stable update channel. */
-    STABLE, 
-    /** Nightly update chanel. */
-    NIGHTLY, 
-    /** No update checks. */
-    NONE;
-
-}
+package com.dmdirc.actions;

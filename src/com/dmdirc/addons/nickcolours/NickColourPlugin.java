@@ -22,10 +22,6 @@
 
 package com.dmdirc.addons.nickcolours;
 
-import java.awt.Color;
-import java.util.Map;
-import java.util.Properties;
-
 import com.dmdirc.Channel;
 import com.dmdirc.ChannelClientProperty;
 import com.dmdirc.Config;
@@ -34,17 +30,21 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
-import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.EventPlugin;
+import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.components.PreferencesInterface;
 import com.dmdirc.ui.components.PreferencesPanel;
 import com.dmdirc.ui.messages.ColourManager;
+
+import java.awt.Color;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Provides various features related to nickname colouring.
  * @author chris
  */
-public class NickColourPlugin extends Plugin implements EventPlugin, PreferencesInterface {
+public final class NickColourPlugin extends Plugin implements EventPlugin, PreferencesInterface {
     
     /** The config domain to use for this plugin. */
     private static final String DOMAIN = "plugin-NickColour";
@@ -52,7 +52,7 @@ public class NickColourPlugin extends Plugin implements EventPlugin, Preferences
     /** "Random" colours to use to colour nicknames. */
     private String[] randColours = new String[] {
         "E90E7F", "8E55E9", "B30E0E", "18B33C",
-        "58ADB3", "9E54B3", "B39875", "3176B3"
+        "58ADB3", "9E54B3", "B39875", "3176B3", 
     };
     
     /** Creates a new instance of NickColourPlugin. */
@@ -114,6 +114,7 @@ public class NickColourPlugin extends Plugin implements EventPlugin, Preferences
     /**
      * Retrieves a pseudo-random colour for the specified nickname.
      * @param nick The nickname of the client whose colour we're determining
+     * @return Colour of the specified nickname
      */
     private Color getColour(final String nick) {
         int count = 0;

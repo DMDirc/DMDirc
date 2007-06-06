@@ -22,15 +22,15 @@
 
 package com.dmdirc.addons.dcop;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * The dcop command retrieves information from a dcop application.

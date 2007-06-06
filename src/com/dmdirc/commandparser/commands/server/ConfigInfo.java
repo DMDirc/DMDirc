@@ -32,7 +32,7 @@ import com.dmdirc.identities.ConfigSource;
  * Displays information about the origin's config manager.
  * @author chris
  */
-public class ConfigInfo extends ServerCommand {
+public final class ConfigInfo extends ServerCommand {
     
     /**
      * Creates a new instance of ConfigInfo.
@@ -50,7 +50,7 @@ public class ConfigInfo extends ServerCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
-    public final void execute(final CommandWindow origin, final Server server,
+    public void execute(final CommandWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         for (ConfigSource source : origin.getConfigManager().getSources()) {
             sendLine(origin, isSilent, "commandOutput", source.getTarget() + " - " + source);

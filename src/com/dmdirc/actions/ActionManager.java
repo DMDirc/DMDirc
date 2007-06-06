@@ -40,7 +40,7 @@ import java.util.Map;
  * Manages all actions for the client.
  * @author chris
  */
-public class ActionManager {
+public final class ActionManager {
     
     /** A list of registered action types. */
     private static List<ActionType> actionTypes;
@@ -184,13 +184,13 @@ public class ActionManager {
             return;
         }
         
-        for (Map.Entry<ActionType,List<Action>> map : actions.entrySet()) {
+        for (Map.Entry<ActionType, List<Action>> map : actions.entrySet()) {
             if (map.getValue().contains(action)) {
                 map.getValue().remove(action);
             }
         }
         
-        for (Map.Entry<String,List<Action>> map : groups.entrySet()) {
+        for (Map.Entry<String, List<Action>> map : groups.entrySet()) {
             if (map.getValue().contains(action)) {
                 map.getValue().remove(action);
             }
@@ -262,7 +262,7 @@ public class ActionManager {
     }
     
     /**
-     * Creates a new group with the specified name
+     * Creates a new group with the specified name.
      * @param group The group to be created
      */
     public static void makeGroup(final String group) {
@@ -353,7 +353,7 @@ public class ActionManager {
     
     /**
      * Returns a list of action components that are compatible with the
-     * specified class
+     * specified class.
      * @param target The class to be tested
      * @return A list of compatible action components
      */
@@ -370,7 +370,7 @@ public class ActionManager {
     
     /**
      * Returns a list of action comparisons that are compatible with the
-     * specified class
+     * specified class.
      * @param target The class to be tested
      * @return A list of compatible action comparisons
      */

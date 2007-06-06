@@ -28,9 +28,9 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.dialogs.UpdaterDialog;
+
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -61,6 +61,11 @@ public final class UpdateChecker implements Runnable, MouseListener {
     
     /** The list of updates that are available. */
     private final List<Update> updates = new ArrayList<Update>();
+    
+    /** Instantiates an Updatechecker. */
+    public UpdateChecker() {
+        //Ignore
+    }
     
     /** {@inheritDoc} */
     public void run() {

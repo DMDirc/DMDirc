@@ -27,8 +27,10 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.components.PreferencesInterface;
 import com.dmdirc.ui.components.PreferencesPanel;
+
 import java.awt.BorderLayout;
 import java.util.Properties;
+
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;

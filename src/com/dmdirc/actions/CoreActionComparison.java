@@ -22,10 +22,10 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.ui.messages.ColourManager;
+
 import java.awt.Color;
 import java.util.regex.PatternSyntaxException;
-
-import com.dmdirc.ui.messages.ColourManager;
 
 /**
  * A CoreActionComparison represents a possible comparison between two types of
@@ -34,7 +34,9 @@ import com.dmdirc.ui.messages.ColourManager;
  */
 public enum CoreActionComparison implements ActionComparison {
     
+    /** Compares a string to another using a regular expression. */
     STRING_REGEX {
+        /** {@inheritDoc} */
         public boolean test(final Object arg1, final Object arg2) {
             try {
                 return ((String) arg1).matches((String) arg2);
@@ -42,59 +44,87 @@ public enum CoreActionComparison implements ActionComparison {
                 return false;
             }
         }
+        /** {@inheritDoc} */
         public Class appliesTo() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "matches regex"; }
     },
     
+    /** Compares if two strings content are the same, case insensitive. */
     STRING_EQUALS {
+        /** {@inheritDoc} */
         public boolean test(final Object arg1, final Object arg2) {
             return ((String) arg1).equalsIgnoreCase((String) arg2);
         }
+        /** {@inheritDoc} */
         public Class appliesTo() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "equals"; }
     },
     
+    /** Compares if two strings content aren't the same, case insensitive. */
     STRING_NEQUALS {
+        /** {@inheritDoc} */
         public boolean test(final Object arg1, final Object arg2) {
             return !STRING_EQUALS.test(arg1, arg2);
         }
+        /** {@inheritDoc} */
         public Class appliesTo() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "does not equal"; }
     },
     
+    /** Checks if the string starts with another strings. */
     STRING_STARTSWITH {
+        /** {@inheritDoc} */
         public boolean test(final Object arg1, final Object arg2) {
             return ((String) arg1).startsWith((String) arg2);
         }
+        /** {@inheritDoc} */
         public Class appliesTo() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "starts with"; }
     },
     
+    /** Checks if the string containts another string. */
     STRING_CONTAINS {
+        /** {@inheritDoc} */
         public boolean test(final Object arg1, final Object arg2) {
             return ((String) arg1).indexOf((String) arg2) != -1;
         }
+        /** {@inheritDoc} */
         public Class appliesTo() { return String.class; }
+        /** {@inheritDoc} */
         public String getName() { return "contains"; }
     },
     
+    /** Checks if the colour is the same as another colour. */
     COLOUR_EQUALS {
+        /** {@inheritDoc} */
         public boolean test(final Object arg1, final Object arg2) {
             return ((Color) arg1).equals(ColourManager.parseColour((String) arg2));
         }
+        /** {@inheritDoc} */
         public Class appliesTo() { return Color.class; }
+        /** {@inheritDoc} */
         public String getName() { return "equals"; }
     },
     
+    /** Checks if the colour is not the same as another colour. */
     COLOUR_NEQUALS {
+        /** {@inheritDoc} */
         public boolean test(final Object arg1, final Object arg2) {
             return !COLOUR_EQUALS.test(arg1, arg2);
         }
+        /** {@inheritDoc} */
         public Class appliesTo() { return Color.class; }
+        /** {@inheritDoc} */
         public String getName() { return "does not equal"; }
     },
     
+    /** Checks if the int is equals to another int. */
     INT_EQUALS {
+        /** {@inheritDoc} */
         public boolean test(final Object arg1, final Object arg2) {
             try {
                 return 0 == ((Integer) arg1).compareTo(Integer.parseInt((String) arg2));
@@ -102,11 +132,15 @@ public enum CoreActionComparison implements ActionComparison {
                 return false;
             }
         }
+        /** {@inheritDoc} */
         public Class appliesTo() { return Integer.class; }
+        /** {@inheritDoc} */
         public String getName() { return "equals"; }
     },
     
+    /** Checks if the int is larger than another int. */
     INT_GREATER {
+        /** {@inheritDoc} */
         public boolean test(final Object arg1, final Object arg2) {
             try {
                 return 0 < ((Integer) arg1).compareTo(Integer.parseInt((String) arg2));
@@ -114,11 +148,15 @@ public enum CoreActionComparison implements ActionComparison {
                 return false;
             }
         }
+        /** {@inheritDoc} */
         public Class appliesTo() { return Integer.class; }
+        /** {@inheritDoc} */
         public String getName() { return "is greater than"; }
     },
     
+    /** Checks if the int is smaller than another int. */
     INT_LESS {
+        /** {@inheritDoc} */
         public boolean test(final Object arg1, final Object arg2) {
             try {
                 return 0 > ((Integer) arg1).compareTo(Integer.parseInt((String) arg2));
@@ -126,7 +164,9 @@ public enum CoreActionComparison implements ActionComparison {
                 return false;
             }
         }
+        /** {@inheritDoc} */
         public Class appliesTo() { return Integer.class; }
+        /** {@inheritDoc} */
         public String getName() { return "is less than"; }
     };
     
@@ -138,5 +178,5 @@ public enum CoreActionComparison implements ActionComparison {
     
     /** {@inheritDoc} */
     public abstract String getName();
-       
+    
 }

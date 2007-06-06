@@ -22,9 +22,6 @@
 
 package com.dmdirc.addons.dcop;
 
-import java.io.IOException;
-import java.util.List;
-
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
@@ -32,6 +29,9 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+
+import java.io.IOException;
+import java.util.List;
 
 /**
  * The now playing command retrieves the currently playing song from a

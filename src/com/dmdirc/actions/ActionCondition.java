@@ -93,7 +93,7 @@ public class ActionCondition {
     }
     
     /**
-     * Returns the target of the comparison for this condition
+     * Returns the target of the comparison for this condition.
      *
      * @return Target for comparison
      */
@@ -129,7 +129,7 @@ public class ActionCondition {
     }
     
     /**
-     * Sets the target of the comparison for this condition
+     * Sets the target of the comparison for this condition.
      * @param target Target for comparison
      */
     public void setTarget(final String target) {

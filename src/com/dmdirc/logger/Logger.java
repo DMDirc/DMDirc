@@ -22,6 +22,10 @@
 
 package com.dmdirc.logger;
 
+import com.dmdirc.Config;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.dialogs.ErrorDialog;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -30,10 +34,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.swing.ImageIcon;
-
-import com.dmdirc.Config;
-import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.dialogs.ErrorDialog;
 
 /**
  * Logger class for an applications, provides logging, error logging and debug

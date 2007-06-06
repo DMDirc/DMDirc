@@ -22,14 +22,6 @@
 
 package com.dmdirc.actions;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
 import com.dmdirc.FrameContainer;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.CommandParser;
@@ -38,6 +30,14 @@ import com.dmdirc.commandparser.GlobalCommandParser;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.MainFrame;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Describes a single action.
@@ -358,7 +358,7 @@ public class Action {
     }
     
     /**
-     * Sets this action's conditions
+     * Sets this action's conditions.
      * @param conditions A list of conditions to use
      */
     public void setConditions(final List<ActionCondition> conditions) {
@@ -385,7 +385,7 @@ public class Action {
     }
     
     /**
-     * Retrieves this action's new format setting
+     * Retrieves this action's new format setting.
      * @return The format that this action will use, or null if no change
      */
     public String getNewFormat() {
@@ -393,7 +393,7 @@ public class Action {
     }
     
     /**
-     * Sets this action's new format setting
+     * Sets this action's new format setting.
      * @param newFormat The new 'new format' setting
      */
     public void setNewFormat(final String newFormat) {

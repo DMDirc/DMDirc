@@ -31,10 +31,14 @@ import com.dmdirc.actions.ActionType;
  */
 public enum TimeActionType implements ActionType {
     
+    /** Minute type. */
     TIME_MINUTE("Every minute"),
+    /** Hour type. */
     TIME_HOUR("Every hour"),
+    /** Day type. */
     TIME_DAY("Every day");
     
+    /** Action type name. */
     private final String name;
     
     /**

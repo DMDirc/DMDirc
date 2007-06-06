@@ -57,7 +57,7 @@ public final class Ctcp extends ServerCommand {
                     "ctcp", "<target> <type> [arguments]");
         } else {
             server.getParser().sendLine("PRIVMSG " + args[0] + " :"
-                    + ((char)1) + implodeArgs(1, args) + ((char)1));
+                    + ((char) 1) + implodeArgs(1, args) + ((char) 1));
             sendLine(origin, isSilent, "selfCTCP", args[0], implodeArgs(1, args));
         }
     }

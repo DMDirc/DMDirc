@@ -67,8 +67,9 @@ import javax.swing.SwingUtilities;
 
 /**
  * The Channel class represents the client's view of the channel. It handles
- * callbacks for channel events from the parser, maintains the corresponding
+ * CALLBACKS for channel events from the parser, maintains the corresponding
  * ChannelFrame, and handles user input to a ChannelFrame.
+ * 
  * @author chris
  */
 public final class Channel extends FrameContainer implements IChannelMessage,
@@ -77,12 +78,14 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         IChannelModeChanged, IChannelUserModeChanged, IChannelCTCP,
         IAwayStateOther {
     
-    /** The callbacks that should be registered for channel instances. */
-    private final static String[] callbacks = {
+    /**
+     * The CALLBACKS that should be registered for channel instances.
+     */
+    private static final String[] CALLBACKS = {
         "OnChannelMessage", "OnChannelGotNames", "OnChannelTopic",
         "OnChannelJoin", "OnChannelPart", "OnChannelKick", "OnChannelQuit",
         "OnChannelAction", "OnChannelNickChanged", "OnChannelModeChanged",
-        "OnChannelUserModeChanged", "OnChannelCTCP"
+        "OnChannelUserModeChanged", "OnChannelCTCP", 
     };
     
     /** The parser's pChannel class. */
@@ -150,14 +153,14 @@ public final class Channel extends FrameContainer implements IChannelMessage,
     }
     
     /**
-     * Registers callbacks with the parser for this channel.
+     * Registers CALLBACKS with the parser for this channel.
      */
     private void registerCallbacks() {
         try {
             final CallbackManager callbackManager = server.getParser().getCallbackManager();
             final String channel = channelInfo.getName();
             
-            for (String callback : callbacks) {
+            for (String callback : CALLBACKS) {
                 callbackManager.addCallback(callback, this, channel);
             }
         } catch (CallbackNotFound ex) {
@@ -341,7 +344,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
     public void closeWindow() {
         final CallbackManager callbackManager = server.getParser().getCallbackManager();
         
-        for (String callback : callbacks) {
+        for (String callback : CALLBACKS) {
             callbackManager.delCallback(callback, this);
         }
         

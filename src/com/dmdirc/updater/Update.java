@@ -31,9 +31,13 @@ import com.dmdirc.logger.Logger;
  */
 public final class Update {
     
+    /** Update component. */
     private String component;
+    /** Local version. */
     private String localVersion;
+    /** Remove version. */
     private String remoteVersion;
+    /** Update url. */
     private String url;
    
     /**
@@ -62,7 +66,7 @@ public final class Update {
     }
     
     /**
-     * Returns the local version of the component that's updateable
+     * Returns the local version of the component that's updateable.
      * @return The local (outdated) version number
      */
     public String getLocalVersion() {

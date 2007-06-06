@@ -20,19 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.updater;
-
 /**
- * Represents one update channel (e.g., stable, nightly, etc).
- * @author chris
+ * Adds information about the current window to the status bar.
  */
-public enum UpdateChannel {
-
-    /** Stable update channel. */
-    STABLE, 
-    /** Nightly update chanel. */
-    NIGHTLY, 
-    /** No update checks. */
-    NONE;
-
-}
+package com.dmdirc.addons.windowstatus;

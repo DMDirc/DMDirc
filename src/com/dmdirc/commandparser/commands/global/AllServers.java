@@ -32,7 +32,7 @@ import com.dmdirc.commandparser.GlobalCommand;
  * The AllServers command allows users to issue commands to all servers.
  * @author chris
  */
-public class AllServers extends GlobalCommand {
+public final class AllServers extends GlobalCommand {
     
     /** Creates a new instance of AllServers. */
     public AllServers() {

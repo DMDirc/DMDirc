@@ -32,9 +32,13 @@ import java.util.Calendar;
  */
 public enum TimeActionMetaType implements ActionMetaType {
     
+    /** Time type. */
     TIME_TIME {
+        /** {@inheritDoc} */
         public int getArity() { return 1; }
+        /** {@inheritDoc} */
         public Class[] getArgTypes() { return new Class[]{Calendar.class}; }
+        /** {@inheritDoc} */
         public String[] getArgNames() { return new String[]{"Date"}; }
     };
     

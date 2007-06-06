@@ -22,16 +22,16 @@
 
 package com.dmdirc.addons.timeplugin;
 
-import java.util.Calendar;
-import java.util.Timer;
-import java.util.TimerTask;
-
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.plugins.Plugin;
 
+import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
- * Provides various time-related features
+ * Provides various time-related features.
  * @author chris
  */
 public final class TimePlugin  extends Plugin {

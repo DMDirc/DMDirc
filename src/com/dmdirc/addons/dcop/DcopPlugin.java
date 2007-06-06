@@ -22,13 +22,13 @@
 
 package com.dmdirc.addons.dcop;
 
+import com.dmdirc.plugins.Plugin;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.dmdirc.plugins.Plugin;
 
 /**
  * Allows the user to execute dcop commands (and read the results).

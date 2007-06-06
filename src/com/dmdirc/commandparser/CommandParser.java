@@ -22,12 +22,12 @@
 
 package com.dmdirc.commandparser;
 
-import java.util.Hashtable;
-import java.util.Map;
-
 import com.dmdirc.Config;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+
+import java.util.Hashtable;
+import java.util.Map;
 
 /**
  * Represents a generic command parser. A command parser takes a line of input

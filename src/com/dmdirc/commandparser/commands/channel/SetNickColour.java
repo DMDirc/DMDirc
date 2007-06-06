@@ -22,8 +22,6 @@
 
 package com.dmdirc.commandparser.commands.channel;
 
-import java.awt.Color;
-import java.util.Map;
 import com.dmdirc.Channel;
 import com.dmdirc.ChannelClientProperty;
 import com.dmdirc.Config;
@@ -32,9 +30,10 @@ import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.ui.ChannelFrame;
 import com.dmdirc.ui.messages.ColourManager;
+
+import java.awt.Color;
 
 /**
  * Allows the user to set a nickname on the channel to use a custom colour.

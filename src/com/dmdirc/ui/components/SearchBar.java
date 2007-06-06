@@ -208,11 +208,9 @@ public final class SearchBar extends JPanel implements ActionListener,
         boolean foundText;
         
         if (direction == Direction.UP) {
-            foundText = searchUp(line, caseSensitive ? text : 
-                text.toLowerCase(Locale.getDefault()));
+            foundText = searchUp(line, text, caseSensitive);
         } else {
-            foundText = searchDown(line, caseSensitive ? text : 
-                text.toLowerCase(Locale.getDefault()));
+            foundText = searchDown(line, text, caseSensitive);
         }
         
         if (foundText) {
@@ -227,10 +225,12 @@ public final class SearchBar extends JPanel implements ActionListener,
      *
      * @param line Line to start from
      * @param text Text to search for
+     * @param caseSensitive Whether to match case.
      *
      * @return Whether the specified text was found
      */
-    private boolean searchUp(final int line, final String text) {
+    private boolean searchUp(final int line, final String text, 
+            final boolean caseSensitive) {
         final TextPane textPane = parent.getTextPane();
         final int thisLine;
         boolean foundText = false;
@@ -242,8 +242,15 @@ public final class SearchBar extends JPanel implements ActionListener,
             thisLine = line;
         }
         for (i = thisLine; i >= 0; i--) {
-            final String lineText = textPane.getTextFromLine(i);
-            final int position = lineText.indexOf(text);
+            final String lineText;
+            final int position;
+            if (caseSensitive) {
+                lineText = textPane.getTextFromLine(i);
+                position = lineText.indexOf(text);
+            } else {
+                lineText = textPane.getTextFromLine(i).toLowerCase(Locale.getDefault());
+                position = lineText.indexOf(text.toLowerCase(Locale.getDefault()));
+            }
             if (position != -1 && textPane.getSelectedRange()[0] != i) {
                 textPane.setScrollBarPosition(i);
                 textPane.setSelectedTexT(i, position, i, position + text.length());
@@ -261,7 +268,7 @@ public final class SearchBar extends JPanel implements ActionListener,
                 "Do you want to continue searching from the end?",
                 "Beginning reached", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-            foundText = searchUp(textPane.getNumLines() - 1, text);
+            foundText = searchUp(textPane.getNumLines() - 1, text, caseSensitive);
         }
         
         return foundText;
@@ -272,17 +279,26 @@ public final class SearchBar extends JPanel implements ActionListener,
      *
      * @param line Line to start from
      * @param text Text to search for
+     * @param caseSensitive Whether to match case.
      *
      * @return Whether the specified text was found
      */
-    private boolean searchDown(final int line, final String text) {
+    private boolean searchDown(final int line, final String text, 
+            final boolean caseSensitive) {
         final TextPane textPane = parent.getTextPane();
         boolean foundText = false;
         int i;
         
         for (i = line; i < textPane.getNumLines() - 1; i++) {
-            final String lineText = textPane.getTextFromLine(i);
-            final int position = lineText.indexOf(text);
+            final String lineText;
+            final int position;
+            if (caseSensitive) {
+                lineText = textPane.getTextFromLine(i);
+                position = lineText.indexOf(text);
+            } else {
+                lineText = textPane.getTextFromLine(i).toLowerCase(Locale.getDefault());
+                position = lineText.indexOf(text.toLowerCase(Locale.getDefault()));
+            }
             if (position != -1 && textPane.getSelectedRange()[0] != i) {
                 textPane.setScrollBarPosition(i);
                 textPane.setSelectedTexT(i, position, i, position + text.length());
@@ -300,7 +316,7 @@ public final class SearchBar extends JPanel implements ActionListener,
                 "Do you want to continue searching from the beginning?",
                 "End reached", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-            foundText = searchDown(0, text);
+            foundText = searchDown(0, text, caseSensitive);
         }
         
         return foundText;
