@@ -26,8 +26,6 @@ import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ClientInfo;
 
@@ -92,10 +90,6 @@ public enum CoreActionMetaType implements ActionMetaType {
         this.arity = arity;
         this.argNames = argNames;
         this.argTypes = argTypes;
-        
-        if (arity != argNames.length || arity != argTypes.length) {
-            Logger.error(ErrorLevel.FATAL, "Invalid core action meta type definition: " + this.toString());
-        }
     }
     
     /** {@inheritDoc} */

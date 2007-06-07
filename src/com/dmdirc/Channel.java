@@ -67,7 +67,7 @@ import javax.swing.SwingUtilities;
 
 /**
  * The Channel class represents the client's view of the channel. It handles
- * CALLBACKS for channel events from the parser, maintains the corresponding
+ * callbacks for channel events from the parser, maintains the corresponding
  * ChannelFrame, and handles user input to a ChannelFrame.
  * 
  * @author chris
@@ -79,7 +79,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         IAwayStateOther {
     
     /**
-     * The CALLBACKS that should be registered for channel instances.
+     * The callbacks that should be registered for channel instances.
      */
     private static final String[] CALLBACKS = {
         "OnChannelMessage", "OnChannelGotNames", "OnChannelTopic",
@@ -153,7 +153,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
     }
     
     /**
-     * Registers CALLBACKS with the parser for this channel.
+     * Registers callbacks with the parser for this channel.
      */
     private void registerCallbacks() {
         try {

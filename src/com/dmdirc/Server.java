@@ -79,7 +79,7 @@ import javax.swing.SwingUtilities;
 
 /**
  * The Server class represents the client's view of a server. It maintains
- * a list of all channels, queries, etc, and handles parser CALLBACKS pertaining
+ * a list of all channels, queries, etc, and handles parser callbacks pertaining
  * to the server.
  * 
  * @author chris
@@ -92,7 +92,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         INoticeAuth, IUserModeChanged {
     
     /**
-     * The CALLBACKS that should be registered for server instances.
+     * The callbacks that should be registered for server instances.
      */
     private static final String[] CALLBACKS = {
         "OnChannelSelfJoin", "OnErrorInfo", "OnPrivateMessage", "OnPingSuccess",
@@ -453,10 +453,10 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         closing = true;
         
         if (parser != null) {
-            // Unregister parser CALLBACKS
+            // Unregister parser callbacks
             parser.getCallbackManager().delAllCallback(this);
         }
-        // Unregister frame CALLBACKS
+        // Unregister frame callbacks
         frame.removeInternalFrameListener(this);
         // Disconnect from the server
         disconnect(reason);
