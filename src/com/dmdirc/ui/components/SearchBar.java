@@ -205,12 +205,14 @@ public final class SearchBar extends JPanel implements ActionListener,
      */
     public void search(final Direction direction, final int line,
             final String text, final boolean caseSensitive) {
-        boolean foundText;
+        boolean foundText = false;
         
-        if (direction == Direction.UP) {
-            foundText = searchUp(line, text, caseSensitive);
-        } else {
-            foundText = searchDown(line, text, caseSensitive);
+        if (checkOccurs(searchBox.getText(), caseCheck.isSelected())) {
+            if (direction == Direction.UP) {
+                foundText = searchUp(line, text, caseSensitive);
+            } else {
+                foundText = searchDown(line, text, caseSensitive);
+            }
         }
         
         if (foundText) {
@@ -229,7 +231,7 @@ public final class SearchBar extends JPanel implements ActionListener,
      *
      * @return Whether the specified text was found
      */
-    private boolean searchUp(final int line, final String text, 
+    private boolean searchUp(final int line, final String text,
             final boolean caseSensitive) {
         final TextPane textPane = parent.getTextPane();
         final int thisLine;
@@ -283,7 +285,7 @@ public final class SearchBar extends JPanel implements ActionListener,
      *
      * @return Whether the specified text was found
      */
-    private boolean searchDown(final int line, final String text, 
+    private boolean searchDown(final int line, final String text,
             final boolean caseSensitive) {
         final TextPane textPane = parent.getTextPane();
         boolean foundText = false;
@@ -319,6 +321,39 @@ public final class SearchBar extends JPanel implements ActionListener,
             foundText = searchDown(0, text, caseSensitive);
         }
         
+        return foundText;
+    }
+    
+    /**
+     * Checks to see if the specified text exist in the document.
+     *
+     * @param text Text to check for
+     * @param caseSensitive Case sensitive check
+     *
+     * @return Whether the text exists
+     */
+    public boolean checkOccurs(final String text, final boolean caseSensitive) {
+        final TextPane textPane = parent.getTextPane();
+        boolean foundText = false;
+        int i;
+        
+        for (i = textPane.getNumLines() - 1; i >= 0; i--) {
+            final String lineText;
+            final int position;
+            if (caseSensitive) {
+                lineText = textPane.getTextFromLine(i);
+                position = lineText.indexOf(text);
+            } else {
+                lineText = textPane.getTextFromLine(i).toLowerCase(Locale.getDefault());
+                position = lineText.indexOf(text.toLowerCase(Locale.getDefault()));
+            }
+            if (position != -1 && textPane.getSelectedRange()[0] != i) {
+                textPane.setScrollBarPosition(i);
+                textPane.setSelectedTexT(i, position, i, position + text.length());
+                foundText = true;
+                break;
+            }
+        }
         return foundText;
     }
     
