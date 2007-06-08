@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="DMDirc" default="default" basedir=".">
     <description>Builds, tests, and runs the project DMDirc.</description>
-    <import file="nbproject/build-impl.xml"/>
+    <import file="nbproject/build-impl.xml"/>    
     <target name="checkstyle" depends="
+	    cpd, 
+            pmd,
 	    checkstyle-all, 
             checkstyle-actions,
 	    checkstyle-core,
@@ -16,7 +18,7 @@
 
     <target name="checkstyle-plugins">
             <taskdef resource="checkstyletask.properties"
-                     classpath="checkstyle-all-4.3.jar"/>
+                     classpath="checkstyle.jar"/>
             <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
                         failOnViolation="false">
                     <fileset dir="src/com/dmdirc/plugins/" includes="**/*.java"/>
@@ -27,7 +29,7 @@
 
     <target name="checkstyle-actions">
             <taskdef resource="checkstyletask.properties"
-                     classpath="checkstyle-all-4.3.jar"/>
+		     classpath="checkstyle.jar"/>
             <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
                         failOnViolation="false">
                     <fileset dir="src/com/dmdirc/actions/" includes="**/*.java"/>
@@ -38,7 +40,7 @@
     
     <target name="checkstyle-ui">
 	    <taskdef resource="checkstyletask.properties"
-		     classpath="checkstyle-all-4.3.jar"/>
+		     classpath="checkstyle.jar"/>
 	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 			failOnViolation="false">
 		    <fileset dir="src/com/dmdirc/ui/" includes="**/*.java"/>
@@ -49,7 +51,7 @@
     
     <target name="checkstyle-parser">
 	    <taskdef resource="checkstyletask.properties"
-		     classpath="checkstyle-all-4.3.jar"/>
+		     classpath="checkstyle.jar"/>
 	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 			failOnViolation="false">
 		    <fileset dir="src/com/dmdirc/parser/" includes="**/*.java"/>
@@ -60,7 +62,7 @@
     
     <target name="checkstyle-logger">
 	    <taskdef resource="checkstyletask.properties"
-		     classpath="checkstyle-all-4.3.jar"/>
+		     classpath="checkstyle.jar"/>
 	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 			failOnViolation="false">
 		    <fileset dir="src/com/dmdirc/logger/" includes="**/*.java"/>
@@ -71,7 +73,7 @@
     
     <target name="checkstyle-identities">
 	    <taskdef resource="checkstyletask.properties"
-		     classpath="checkstyle-all-4.3.jar"/>
+		     classpath="checkstyle.jar"/>
 	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 			failOnViolation="false">
 		    <fileset dir="src/com/dmdirc/identities/" includes="**/*.java"/>
@@ -82,7 +84,7 @@
     
     <target name="checkstyle-commandparser">
 	    <taskdef resource="checkstyletask.properties"
-		     classpath="checkstyle-all-4.3.jar"/>
+		     classpath="checkstyle.jar"/>
 	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 			failOnViolation="false">
 		    <fileset dir="src/com/dmdirc/commandparser/" includes="**/*.java"/>
@@ -93,7 +95,7 @@
     
     <target name="checkstyle-core">
 	    <taskdef resource="checkstyletask.properties"
-		     classpath="checkstyle-all-4.3.jar"/>
+		     classpath="checkstyle.jar"/>
 	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 			failOnViolation="false">
 		    <fileset dir="src/com/dmdirc/" includes="*.java"/>
@@ -104,7 +106,7 @@
     
     <target name="checkstyle-all">
 	    <taskdef resource="checkstyletask.properties"
-		     classpath="checkstyle-all-4.3.jar"/>
+		     classpath="checkstyle.jar"/>
 	    <checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 			failOnViolation="false">
 		    <fileset dir="src/" includes="**/*.java"/>
@@ -119,6 +121,28 @@
   	</delete>
     </target>
     <target name="move-index">
-        <copy file="checkstyle/index.html" tofile="reports/index.html"/>
+	    <copy file="checkstyle/index.html" tofile="reports/index.html"/>
+	    <copy file="checkstyle/sorttable.js" tofile="reports/sorttable.js"/>
+    </target>
+
+    <target name="pmd">
+	    <taskdef name="pmd" classpath="pmd-3.9.jar" 
+                 classname="net.sourceforge.pmd.ant.PMDTask" />
+        <pmd shortFilenames="true">
+	<ruleset>checkstyle/pmd_checks.xml</ruleset>
+            <formatter type="xml" toFile="reports/report-pmd.xml" linkPrefix="http://pmd.sourceforge.net/xref/"/>
+            <fileset dir="src/" includes="**/*.java" />
+        </pmd>
+        <xslt in="reports/report-pmd.xml" style="checkstyle/pmd.xslt" out="reports/report-pmd.html" />
+    </target>
+
+    <target name="cpd">
+        <taskdef name="cpd" classpath="pmd-3.9.jar" classname="net.sourceforge.pmd.cpd.CPDTask" />
+	<cpd format="xml" minimumTokenCount="100" outputFile="reports/report-cpd.xml">
+		<fileset dir="src/">
+			<include name="**/*.java"/>
+		</fileset>
+        </cpd>
+	<xslt in="reports/report-cpd.xml" style="checkstyle/cpd.xslt" out="reports/report-cpd.html" />
     </target>
 </project>
