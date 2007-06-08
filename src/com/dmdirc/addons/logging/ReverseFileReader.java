@@ -28,6 +28,7 @@ import java.io.RandomAccessFile;
 import java.io.IOException;
 import java.io.EOFException;
 import java.util.Stack;
+import java.util.ArrayList;
 
 /**
  * Reads a file in reverse.
@@ -121,13 +122,14 @@ public class ReverseFileReader {
 	public String getNextLine() throws EOFException, IOException {
 		if (file == null) { throw new IOException("File has been closed."); }
 		// Used to store result to output.
-		StringBuilder line = new StringBuilder();
+//		StringBuilder line = new StringBuilder();
+		ArrayList<Byte> line = new ArrayList<Byte>(seekLength);
 		// Used to store position in file pre-read
 		long fp = 0;
 		// Used to store position in file when this is called
 		long startfp = 0;
 		// Used to store read bytes
-		byte[] bytes;// = new byte[seekLength];
+		byte[] bytes;
 		// Distance seeked
 		int seekDistance = 0;
 		
@@ -174,7 +176,7 @@ public class ReverseFileReader {
 					break;
 				} else if (bytes[i] != r) {
 					// Add to the result, the loop will continue going.
-					line.append((char)bytes[i]);
+					line.add(0, bytes[i]);
 				}
 			}
 
@@ -203,9 +205,10 @@ public class ReverseFileReader {
 			
 		}
 		
-		// Return the data obtained. (we reverse the string buffer because we
-		// add to it in reverse, so this fixes it to go in the correct order)
-		return line.reverse().toString();
+		// Return the data obtained.
+		byte[] result = new byte[line.size()];
+		for (int i = 0; i < line.size(); ++i) { result[i] = line.get(i); }
+		return new String(result);
 	}
 
 	/**
