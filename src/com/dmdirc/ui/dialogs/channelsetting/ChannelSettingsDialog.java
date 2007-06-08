@@ -318,8 +318,9 @@ public final class ChannelSettingsDialog extends StandardDialog
                 constraints.gridx = 0;
             }
             
+            modeCheckBoxes.put(mode, checkBox);
             if (channel.getConfigManager().getOptionBool("server", "enablemode" + modeChar)) {
-                modeCheckBoxes.put(mode, checkBox);
+                checkBox.setEnabled(true);
             } else if (!channel.getServer().getParser().isUserSettable(modeChar)) {
                 checkBox.setEnabled(false);
             }
