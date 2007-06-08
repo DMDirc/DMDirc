@@ -508,7 +508,6 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 				// nothing with the output.
 				file.getLines(1);
 				Stack<String> lines = file.getLines(numLines);
-				lines.pop();
 				while (!lines.empty()) {
 					frame.addLine(getColouredString(colour,lines.pop()), showTimestamp);
 				}

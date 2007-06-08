@@ -127,7 +127,7 @@ public class ReverseFileReader {
 		// Used to store position in file when this is called
 		long startfp = 0;
 		// Used to store read bytes
-		byte[] bytes = new byte[seekLength];
+		byte[] bytes;// = new byte[seekLength];
 		// Distance seeked
 		int seekDistance = 0;
 		
@@ -139,7 +139,10 @@ public class ReverseFileReader {
 		}
 		
 		// Keep looping untill we get a full line, or the end of the file
-		while (true) {
+		boolean keepLooping = true;
+		boolean gotNewLine;
+		while (keepLooping) {
+			gotNewLine = false;
 			// Get Current Position
 			fp = file.getFilePointer();
 			
@@ -156,7 +159,8 @@ public class ReverseFileReader {
 			// Seek!
 			file.seek(fp);
 			
-			// Read into the bytes array (This will read seekLength bytes)
+			bytes = new byte[seekDistance];
+			// Read into the bytes array
 			file.read(bytes);
 			
 			// And loop looking for data
@@ -166,35 +170,37 @@ public class ReverseFileReader {
 				if (bytes[i] == n) {
 					// Seek to the location of this character and exit this loop.
 					file.seek(fp+i);
+					gotNewLine = true;
 					break;
 				} else if (bytes[i] != r) {
 					// Add to the result, the loop will continue going.
 					line.append((char)bytes[i]);
 				}
 			}
+
 			// We have now processed the data we read (Either added it all to the
-			// buffer, or found a newline character.
+			// buffer, or found a newline character.)
+
+
+			if (fp == 0 && !gotNewLine) {
+				// This part of the loop started from the start of the file, but didn't
+				// find a new line anywhere. no more loops are posssiblke, so Treat
+				// this as "got new line"
+				gotNewLine = true;
+				file.seek(0);
+			}
 			
-			// "fp" is where we started reading from, "file.getFilePointer()"
-			// is where we are at now. If they are not the same then we found
-			// a new line somewhere, else we read all "seekDistance" bytes and
-			// need to read another amount of bytes.
-			if (fp != (file.getFilePointer()-seekDistance)) {
+			// Do we need to continue?
+			if (gotNewLine) {
 				// We have found a new line somewhere, thus we don't need
 				// to read any more bytes, so exit the while loop!
-				break;
+				keepLooping = false;
 			} else {
 				// We have not found a new line anywhere,
 				// Seek to the pre-read position, and repeat.
 				file.seek(fp);
 			}
-		}
-		
-		// If the current position is past the position we started at, then
-		// set the file position back to 0, this will cause the next attempt
-		// tp read a line to throw an EOFException.
-		if (startfp < file.getFilePointer()) {
-			file.seek(0);
+			
 		}
 		
 		// Return the data obtained. (we reverse the string buffer because we

@@ -66,12 +66,14 @@ public final class LoggingCommand extends ServerCommand {
 		
 		final LoggingPlugin plugin = (LoggingPlugin) gotPlugin;
 		
-		if (args.length > 0) {		
+		if (args.length > 0) {
 			if (args[0].equalsIgnoreCase("config")) {
 				plugin.showConfig();
 			} else if (args[0].equalsIgnoreCase("reload")) {
+				boolean wasActive = plugin.isActive();
 				if (PluginManager.getPluginManager().reloadPlugin("com.dmdirc.addons.logging.LoggingPlugin")) {
 					sendLine(origin, isSilent, "commandOutput", "Plugin reloaded.");
+					PluginManager.getPluginManager().getPlugin("com.dmdirc.addons.logging.LoggingPlugin").setActive(wasActive);
 				} else {
 					sendLine(origin, isSilent, "commandOutput", "Plugin failed to reload.");
 				}
