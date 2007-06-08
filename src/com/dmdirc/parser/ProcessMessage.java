@@ -39,21 +39,6 @@ import com.dmdirc.parser.callbacks.CallbackOnUnknownCTCP;
 import com.dmdirc.parser.callbacks.CallbackOnUnknownCTCPReply;
 import com.dmdirc.parser.callbacks.CallbackOnUnknownMessage;
 import com.dmdirc.parser.callbacks.CallbackOnUnknownNotice;
-import com.dmdirc.parser.callbacks.interfaces.IChannelAction;
-import com.dmdirc.parser.callbacks.interfaces.IChannelCTCP;
-import com.dmdirc.parser.callbacks.interfaces.IChannelCTCPReply;
-import com.dmdirc.parser.callbacks.interfaces.IChannelMessage;
-import com.dmdirc.parser.callbacks.interfaces.IChannelNotice;
-import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
-import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
-import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
-import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
-import com.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
-import com.dmdirc.parser.callbacks.interfaces.IUnknownAction;
-import com.dmdirc.parser.callbacks.interfaces.IUnknownCTCP;
-import com.dmdirc.parser.callbacks.interfaces.IUnknownCTCPReply;
-import com.dmdirc.parser.callbacks.interfaces.IUnknownMessage;
-import com.dmdirc.parser.callbacks.interfaces.IUnknownNotice;
 
 
 /**
@@ -76,7 +61,7 @@ public class ProcessMessage extends IRCProcessor {
 	 * @param sParam Type of line to process ("NOTICE", "PRIVMSG")
 	 * @param token IRCTokenised line to process
 	 */
-	public void process(String sParam, String[] token) {
+	public void process(final String sParam, String[] token) {
 		// Ignore people!
 		String sMessage = "";
 		if (token[0].charAt(0) == ':') { sMessage = token[0].substring(1); } else { sMessage = token[0]; }
@@ -93,7 +78,7 @@ public class ProcessMessage extends IRCProcessor {
 		ClientInfo iClient = null;
 		sMessage = token[token.length-1];
 		String bits[] = sMessage.split(" ", 2);
-		Character Char1 = Character.valueOf((char)1);
+		final Character Char1 = Character.valueOf((char)1);
 		String sCTCP = "";
 		boolean isAction = false;
 		boolean isCTCP = false;
@@ -207,14 +192,14 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the ChannelAction Callback.
 	 *
-	 * @see IChannelAction
+	 * @see com.dmdirc.parser.callbacks.interfaces.IChannelAction
 	 * @param cChannel Channel where the action was sent to
 	 * @param cChannelClient ChannelClient who sent the action (may be null if server)
 	 * @param sMessage action contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callChannelAction(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
-		CallbackOnChannelAction cb = (CallbackOnChannelAction)getCallbackManager().getCallbackType("OnChannelAction");
+	protected boolean callChannelAction(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
+		final CallbackOnChannelAction cb = (CallbackOnChannelAction)getCallbackManager().getCallbackType("OnChannelAction");
 		if (cb != null) { return cb.call(cChannel, cChannelClient, sMessage, sHost); }
 		return false;
 	}
@@ -222,15 +207,15 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the ChannelCTCP Callback.
 	 *
-	 * @see IChannelCTCP
+	 * @see com.dmdirc.parser.callbacks.interfaces.IChannelCTCP
 	 * @param cChannel Channel where CTCP was sent
 	 * @param cChannelClient ChannelClient who sent the message (may be null if server)
 	 * @param sType Type of CTCP (VERSION, TIME etc)
 	 * @param sMessage Additional contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callChannelCTCP(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost) {
-		CallbackOnChannelCTCP cb = (CallbackOnChannelCTCP)getCallbackManager().getCallbackType("OnChannelCTCP");
+	protected boolean callChannelCTCP(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sType, final String sMessage, final String sHost) {
+		final CallbackOnChannelCTCP cb = (CallbackOnChannelCTCP)getCallbackManager().getCallbackType("OnChannelCTCP");
 		if (cb != null) { return cb.call(cChannel, cChannelClient, sType, sMessage, sHost); }
 		return false;
 	}
@@ -238,15 +223,15 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the ChannelCTCPReply Callback.
 	 *
-	 * @see IChannelCTCPReply
+	 * @see com.dmdirc.parser.callbacks.interfaces.IChannelCTCPReply
 	 * @param cChannel Channel where CTCPReply was sent
 	 * @param cChannelClient ChannelClient who sent the message (may be null if server)
 	 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 	 * @param sMessage Reply Contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callChannelCTCPReply(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sType, String sMessage, String sHost) {
-		CallbackOnChannelCTCPReply cb = (CallbackOnChannelCTCPReply)getCallbackManager().getCallbackType("OnChannelCTCPReply");
+	protected boolean callChannelCTCPReply(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sType, final String sMessage, final String sHost) {
+		final CallbackOnChannelCTCPReply cb = (CallbackOnChannelCTCPReply)getCallbackManager().getCallbackType("OnChannelCTCPReply");
 		if (cb != null) { return cb.call(cChannel, cChannelClient, sType, sMessage, sHost); }
 		return false;
 	}
@@ -254,14 +239,14 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the ChannelMessage Callback.
 	 *
-	 * @see IChannelMessage
+	 * @see com.dmdirc.parser.callbacks.interfaces.IChannelMessage
 	 * @param cChannel Channel where the message was sent to
 	 * @param cChannelClient ChannelClient who sent the message (may be null if server)
 	 * @param sMessage Message contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callChannelMessage(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
-		CallbackOnChannelMessage cb = (CallbackOnChannelMessage)getCallbackManager().getCallbackType("OnChannelMessage");
+	protected boolean callChannelMessage(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
+		final CallbackOnChannelMessage cb = (CallbackOnChannelMessage)getCallbackManager().getCallbackType("OnChannelMessage");
 		if (cb != null) { return cb.call(cChannel, cChannelClient, sMessage, sHost); }
 		return false;
 	}
@@ -269,14 +254,14 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the ChannelNotice Callback.
 	 *
-	 * @see IChannelNotice
+	 * @see com.dmdirc.parser.callbacks.interfaces.IChannelNotice
 	 * @param cChannel Channel where the notice was sent to
 	 * @param cChannelClient ChannelClient who sent the notice (may be null if server)
 	 * @param sMessage notice contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callChannelNotice(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sMessage, String sHost) {
-		CallbackOnChannelNotice cb = (CallbackOnChannelNotice)getCallbackManager().getCallbackType("OnChannelNotice");
+	protected boolean callChannelNotice(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
+		final CallbackOnChannelNotice cb = (CallbackOnChannelNotice)getCallbackManager().getCallbackType("OnChannelNotice");
 		if (cb != null) { return cb.call(cChannel, cChannelClient, sMessage, sHost); }
 		return false;
 	}
@@ -284,12 +269,12 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the PrivateAction Callback.
 	 *
-	 * @see IPrivateAction
+	 * @see com.dmdirc.parser.callbacks.interfaces.IPrivateAction
 	 * @param sMessage action contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callPrivateAction(String sMessage, String sHost) {
-		CallbackOnPrivateAction cb = (CallbackOnPrivateAction)getCallbackManager().getCallbackType("OnPrivateAction");
+	protected boolean callPrivateAction(final String sMessage, final String sHost) {
+		final CallbackOnPrivateAction cb = (CallbackOnPrivateAction)getCallbackManager().getCallbackType("OnPrivateAction");
 		if (cb != null) { return cb.call(sMessage, sHost); }
 		return false;
 	}
@@ -297,13 +282,13 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the PrivateCTCP Callback.
 	 *
-	 * @see IPrivateCTCP
+	 * @see com.dmdirc.parser.callbacks.interfaces.IPrivateCTCP
 	 * @param sType Type of CTCP (VERSION, TIME etc)
 	 * @param sMessage Additional contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callPrivateCTCP(String sType, String sMessage, String sHost) {
-		CallbackOnPrivateCTCP cb = (CallbackOnPrivateCTCP)getCallbackManager().getCallbackType("OnPrivateCTCP");
+	protected boolean callPrivateCTCP(final String sType, final String sMessage, final String sHost) {
+		final CallbackOnPrivateCTCP cb = (CallbackOnPrivateCTCP)getCallbackManager().getCallbackType("OnPrivateCTCP");
 		if (cb != null) { return cb.call(sType, sMessage, sHost); }
 		return false;
 	}
@@ -311,13 +296,13 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the PrivateCTCPReply Callback.
 	 *
-	 * @see IPrivateCTCPReply
+	 * @see com.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply
 	 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 	 * @param sMessage Reply Contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callPrivateCTCPReply(String sType, String sMessage, String sHost) {
-		CallbackOnPrivateCTCPReply cb = (CallbackOnPrivateCTCPReply)getCallbackManager().getCallbackType("OnPrivateCTCPReply");
+	protected boolean callPrivateCTCPReply(final String sType, final String sMessage, final String sHost) {
+		final CallbackOnPrivateCTCPReply cb = (CallbackOnPrivateCTCPReply)getCallbackManager().getCallbackType("OnPrivateCTCPReply");
 		if (cb != null) { return cb.call(sType, sMessage, sHost); }
 		return false;
 	}
@@ -325,12 +310,12 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the PrivateMessage Callback.
 	 *
-	 * @see IPrivateMessage
+	 * @see com.dmdirc.parser.callbacks.interfaces.IPrivateMessage
 	 * @param sMessage Message contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callPrivateMessage(String sMessage, String sHost) {
-		CallbackOnPrivateMessage cb = (CallbackOnPrivateMessage)getCallbackManager().getCallbackType("OnPrivateMessage");
+	protected boolean callPrivateMessage(final String sMessage, final String sHost) {
+		final CallbackOnPrivateMessage cb = (CallbackOnPrivateMessage)getCallbackManager().getCallbackType("OnPrivateMessage");
 		if (cb != null) { return cb.call(sMessage, sHost); }
 		return false;
 	}
@@ -338,12 +323,12 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the PrivateNotice Callback.
 	 *
-	 * @see IPrivateNotice
+	 * @see com.dmdirc.parser.callbacks.interfaces.IPrivateNotice
 	 * @param sMessage Notice contents
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callPrivateNotice(String sMessage, String sHost) {
-		CallbackOnPrivateNotice cb = (CallbackOnPrivateNotice)getCallbackManager().getCallbackType("OnPrivateNotice");
+	protected boolean callPrivateNotice(final String sMessage, final String sHost) {
+		final CallbackOnPrivateNotice cb = (CallbackOnPrivateNotice)getCallbackManager().getCallbackType("OnPrivateNotice");
 		if (cb != null) { return cb.call(sMessage, sHost); }
 		return false;
 	}
@@ -351,13 +336,13 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the UnknownAction Callback.
 	 *
-	 * @see IUnknownAction
+	 * @see com.dmdirc.parser.callbacks.interfaces.IUnknownAction
 	 * @param sMessage Action contents
 	 * @param sTarget Actual target of action
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callUnknownAction(String sMessage, String sTarget, String sHost) {
-		CallbackOnUnknownAction cb = (CallbackOnUnknownAction)getCallbackManager().getCallbackType("OnUnknownAction");
+	protected boolean callUnknownAction(final String sMessage, final String sTarget, final String sHost) {
+		final CallbackOnUnknownAction cb = (CallbackOnUnknownAction)getCallbackManager().getCallbackType("OnUnknownAction");
 		if (cb != null) { return cb.call(sMessage, sTarget, sHost); }
 		return false;
 	}
@@ -365,14 +350,14 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the UnknownCTCP Callback.
 	 *
-	 * @see IUnknownCTCP
+	 * @see com.dmdirc.parser.callbacks.interfaces.IUnknownCTCP
 	 * @param sType Type of CTCP (VERSION, TIME etc)
 	 * @param sMessage Additional contents
 	 * @param sTarget Actual Target of CTCP
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callUnknownCTCP(String sType, String sMessage, String sTarget, String sHost) {
-		CallbackOnUnknownCTCP cb = (CallbackOnUnknownCTCP)getCallbackManager().getCallbackType("OnUnknownCTCP");
+	protected boolean callUnknownCTCP(final String sType, final String sMessage, final String sTarget, final String sHost) {
+		final CallbackOnUnknownCTCP cb = (CallbackOnUnknownCTCP)getCallbackManager().getCallbackType("OnUnknownCTCP");
 		if (cb != null) { return cb.call(sType, sMessage, sTarget, sHost); }
 		return false;
 	}
@@ -380,14 +365,14 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the UnknownCTCPReply Callback.
 	 *
-	 * @see IUnknownCTCPReply
+	 * @see com.dmdirc.parser.callbacks.interfaces.IUnknownCTCPReply
 	 * @param sType Type of CTCPRReply (VERSION, TIME etc)
 	 * @param sMessage Reply Contents
 	 * @param sTarget Actual Target of CTCPReply
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callUnknownCTCPReply(String sType, String sMessage, String sTarget, String sHost) {
-		CallbackOnUnknownCTCPReply cb = (CallbackOnUnknownCTCPReply)getCallbackManager().getCallbackType("OnUnknownCTCPReply");
+	protected boolean callUnknownCTCPReply(final String sType, final String sMessage, final String sTarget, final String sHost) {
+		final CallbackOnUnknownCTCPReply cb = (CallbackOnUnknownCTCPReply)getCallbackManager().getCallbackType("OnUnknownCTCPReply");
 		if (cb != null) { return cb.call(sType, sMessage, sTarget, sHost); }
 		return false;
 	}
@@ -395,13 +380,13 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the UnknownMessage Callback.
 	 *
-	 * @see IUnknownMessage
+	 * @see com.dmdirc.parser.callbacks.interfaces.IUnknownMessage
 	 * @param sMessage Message contents
 	 * @param sTarget Actual target of message
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callUnknownMessage(String sMessage, String sTarget, String sHost) {
-		CallbackOnUnknownMessage cb = (CallbackOnUnknownMessage)getCallbackManager().getCallbackType("OnUnknownMessage");
+	protected boolean callUnknownMessage(final String sMessage, final String sTarget, final String sHost) {
+		final CallbackOnUnknownMessage cb = (CallbackOnUnknownMessage)getCallbackManager().getCallbackType("OnUnknownMessage");
 		if (cb != null) { return cb.call(sMessage, sTarget, sHost); }
 		return false;
 	}
@@ -409,13 +394,13 @@ public class ProcessMessage extends IRCProcessor {
 	/**
 	 * Callback to all objects implementing the UnknownNotice Callback.
 	 *
-	 * @see IUnknownNotice
+	 * @see com.dmdirc.parser.callbacks.interfaces.IUnknownNotice
 	 * @param sMessage Notice contents
 	 * @param sTarget Actual target of notice
 	 * @param sHost Hostname of sender (or servername)
 	 */
-	protected boolean callUnknownNotice(String sMessage, String sTarget, String sHost) {
-		CallbackOnUnknownNotice cb = (CallbackOnUnknownNotice)getCallbackManager().getCallbackType("OnUnknownNotice");
+	protected boolean callUnknownNotice(final String sMessage, final String sTarget, final String sHost) {
+		final CallbackOnUnknownNotice cb = (CallbackOnUnknownNotice)getCallbackManager().getCallbackType("OnUnknownNotice");
 		if (cb != null) { return cb.call(sMessage, sTarget, sHost); }
 		return false;
 	}

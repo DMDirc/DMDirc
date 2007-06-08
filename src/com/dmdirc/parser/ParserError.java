@@ -71,7 +71,7 @@ public final class ParserError {
 	public ParserError(final int level, final String data, final String line) {
 		errorData = data;
 		errorLevel = level;
-		lastLine = lastLine;
+		lastLine = line;
 	}
 	
 	/**
