@@ -255,7 +255,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                             
                             // If the selection includes the chars we're showing
                             if (lastChar > chars && firstChar < chars + layout.getCharacterCount()) {
-                                final int trans = (int) (firstLineHeight / 2 + drawPosY);
+                                final int trans = (int) (firstLineHeight / 2f + drawPosY);
                                 final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
                                 
                                 graphics2D.setColor(UIManager.getColor("TextPane.selectionBackground"));
@@ -269,11 +269,10 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                         
                         graphics2D.setColor(textPane.getForeground());
                         
-                        layout.draw(graphics2D, drawPosX, drawPosY + firstLineHeight / 2);
+                        layout.draw(graphics2D, drawPosX, drawPosY + firstLineHeight / 2f);
                         firstVisibleLine = i;
                         textLayouts.put(layout, new LineInfo(i, j));
-                        positions.put(new Rectangle(
-                                (int) 0, (int) drawPosY,
+                        positions.put(new Rectangle(0, (int) drawPosY,
                                 (int) formatWidth, firstLineHeight), layout);
                         if (isHyperlink) {
                             hyperlinks.put(layout, new Rectangle((int) drawPosX,
