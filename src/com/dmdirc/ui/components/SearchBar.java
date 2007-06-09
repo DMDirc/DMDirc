@@ -391,6 +391,8 @@ public final class SearchBar extends JPanel implements ActionListener,
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 searchBox.requestFocus();
+                searchBox.setSelectionStart(0);
+                searchBox.setSelectionEnd(searchBox.getText().length());
             }
         }
         );

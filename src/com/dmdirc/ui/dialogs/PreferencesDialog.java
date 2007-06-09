@@ -120,7 +120,7 @@ public final class PreferencesDialog implements PreferencesInterface {
                 Config.getOptionBool("ui", "awayindicator"));
         preferencesPanel.addSpinnerOption(tabName, "ui.pasteProtectionLimit",
                 "Paste protection trigger: ", "Confirm pasting of text that contains more than this many lines",
-                Config.getOptionInt("ui", "pasteProtectionLimit", 1));
+                Config.getOptionInt("ui", "pasteProtectionLimit", 1), 0, Integer.MAX_VALUE, 1);
     }
     
     /**
