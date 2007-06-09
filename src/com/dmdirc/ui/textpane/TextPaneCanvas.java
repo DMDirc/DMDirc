@@ -273,8 +273,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                         firstVisibleLine = i;
                         textLayouts.put(layout, new LineInfo(i, j));
                         positions.put(new Rectangle(
-                                (int) drawPosX, (int) drawPosY,
-                                (int) formatHeight, firstLineHeight), layout);
+                                (int) 0, (int) drawPosY,
+                                (int) formatWidth, firstLineHeight), layout);
                         if (isHyperlink) {
                             hyperlinks.put(layout, new Rectangle((int) drawPosX,
                                     (int) drawPosY, (int) formatWidth, firstLineHeight));
