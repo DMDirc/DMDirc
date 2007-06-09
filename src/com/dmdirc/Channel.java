@@ -677,7 +677,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         if (sHost.length() == 0) {
             final StringBuffer buff = new StringBuffer();
             
-            if (sModes.length() == 0) {
+            if (sModes.length() <= 1) {
                 buff.append("channelNoModes");
             } else {
                 buff.append("channelModeDiscovered");
