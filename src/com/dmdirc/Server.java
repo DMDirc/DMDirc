@@ -293,6 +293,10 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * Updates the ignore list for this server.
      */
     public void updateIgnoreList() {
+        if (parser == null || parser.getIgnoreList() == null) {
+            return;
+        }
+        
         parser.getIgnoreList().clear();
         
         if (configManager.hasOption("network", "ignorelist")) {
