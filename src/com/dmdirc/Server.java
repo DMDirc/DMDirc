@@ -246,6 +246,10 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
             MainFrame.getMainFrame().getFrameManager().addRaw(this, raw);
         }
         
+        if (raw != null) {
+            raw.registerCallbacks();
+        }
+        
         try {
             for (String callback : CALLBACKS) {
                 parser.getCallbackManager().addCallback(callback, this);

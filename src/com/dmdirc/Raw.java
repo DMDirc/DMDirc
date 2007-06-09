@@ -70,14 +70,19 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
         frame.setTabCompleter(server.getTabCompleter());
         frame.setFrameIcon(imageIcon);
         
+        frame.open();
+    }
+    
+    /**
+     * Registers the data callbacks for this raw window.
+     */
+    public void registerCallbacks() {
         try {
             server.getParser().getCallbackManager().addCallback("OnDataIn", this);
             server.getParser().getCallbackManager().addCallback("OnDataOut", this);
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.ERROR, "Unable to register raw callbacks", ex);
         }
-        
-        frame.open();
     }
     
     /**
