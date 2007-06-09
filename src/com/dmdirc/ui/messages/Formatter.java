@@ -212,6 +212,7 @@ public final class Formatter {
         // Type: Channel mode discovery
         //     1: Channel modes
         //     2: Channel name
+        defaultProperties.setProperty("channelNoModes", colour + "3* There are no channel modes for %2$s.");
         defaultProperties.setProperty("channelModeDiscovered", colour + "3* Channel modes for %2$s are: %1$s.");
         
         // Type: Private CTCP

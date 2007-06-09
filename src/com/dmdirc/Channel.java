@@ -69,7 +69,7 @@ import javax.swing.SwingUtilities;
  * The Channel class represents the client's view of the channel. It handles
  * callbacks for channel events from the parser, maintains the corresponding
  * ChannelFrame, and handles user input to a ChannelFrame.
- * 
+ *
  * @author chris
  */
 public final class Channel extends FrameContainer implements IChannelMessage,
@@ -85,7 +85,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         "OnChannelMessage", "OnChannelGotNames", "OnChannelTopic",
         "OnChannelJoin", "OnChannelPart", "OnChannelKick", "OnChannelQuit",
         "OnChannelAction", "OnChannelNickChanged", "OnChannelModeChanged",
-        "OnChannelUserModeChanged", "OnChannelCTCP", 
+        "OnChannelUserModeChanged", "OnChannelCTCP",
     };
     
     /** The parser's pChannel class. */
@@ -290,7 +290,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
      */
     private void updateTitle() {
         final String title = Styliser.stipControlCodes(channelInfo.getName()
-        + " - " + channelInfo.getTopic());
+                + " - " + channelInfo.getTopic());
         
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -675,7 +675,13 @@ public final class Channel extends FrameContainer implements IChannelMessage,
     public void onChannelModeChanged(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
         if (sHost.length() == 0) {
-            final StringBuffer buff = new StringBuffer("channelModeDiscovered");
+            final StringBuffer buff = new StringBuffer();
+            
+            if (sModes.length() == 0) {
+                buff.append("channelNoModes");
+            } else {
+                buff.append("channelModeDiscovered");
+            }
             
             ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, buff, this, cChannelClient, sModes);
             
