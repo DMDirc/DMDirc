@@ -81,7 +81,7 @@ import javax.swing.SwingUtilities;
  * The Server class represents the client's view of a server. It maintains
  * a list of all channels, queries, etc, and handles parser callbacks pertaining
  * to the server.
- * 
+ *
  * @author chris
  */
 public final class Server extends FrameContainer implements IChannelSelfJoin,
@@ -100,7 +100,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         "OnPrivateCTCPReply", "OnSocketClosed", "OnGotNetwork", "OnNumeric",
         "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed", "OnAwayState",
         "OnAwayStateOther", "OnNickInUse", "OnPost005", "OnNoticeAuth",
-        "OnUserModeChanged", 
+        "OnUserModeChanged",
     };
     
     /** Open channels that currently exist on the server. */
@@ -863,7 +863,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     }
     
     /** {@inheritDoc} */
-    public void onUserModeChanged(final IRCParser tParser, final ClientInfo cClient, 
+    public void onUserModeChanged(final IRCParser tParser, final ClientInfo cClient,
             final String sSetBy, final String sModes) {
         if (!cClient.equals(parser.getMyself())) {
             return;
@@ -917,7 +917,15 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         }
         
         if (reconnect && Config.getOptionBool("general", "reconnectondisconnect")) {
-            reconnect();
+            final int delay = Config.getOptionInt("general", "reconnectdelay", 5);
+            
+            handleNotification("connectRetry", server, delay);
+            
+            new Timer().schedule(new TimerTask() {
+                public void run() {
+                    reconnect();
+                }
+            }, delay * 1000);
         }
     }
     
