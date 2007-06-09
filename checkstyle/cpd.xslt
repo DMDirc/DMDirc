@@ -73,7 +73,7 @@
         				<button class="ExpandButton" ><xsl:attribute name="onclick">blur(); toggleCodeSection(this, 'frag_<xsl:value-of select="position()"/>')</xsl:attribute>+</button>
         			</td>
         			<td>
-        				<textarea cols="100" rows="30" wrap="off" class='CodeFragment' style='display:none;'>
+        				<textarea readonly="readonly" cols="100" rows="30" wrap="off" class='CodeFragment' style='display:none;' >
         					<xsl:attribute name="id">frag_<xsl:value-of select="position()"/></xsl:attribute>
         					<xsl:value-of select="codefragment"/>
         				</textarea>

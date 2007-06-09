@@ -2,7 +2,8 @@
 <project name="DMDirc" default="default" basedir=".">
     <description>Builds, tests, and runs the project DMDirc.</description>
     <import file="nbproject/build-impl.xml"/>    
-    <target name="checkstyle" depends="
+    <target name="checkstyle" depends=" 
+            findbugs, 
 	    cpd, 
             pmd,
 	    checkstyle-all, 
@@ -138,11 +139,23 @@
 
     <target name="cpd">
         <taskdef name="cpd" classpath="pmd-3.9.jar" classname="net.sourceforge.pmd.cpd.CPDTask" />
-	<cpd format="xml" minimumTokenCount="100" outputFile="reports/report-cpd.xml">
+	<cpd format="xml" minimumTokenCount="50" outputFile="reports/report-cpd.xml">
 		<fileset dir="src/">
 			<include name="**/*.java"/>
 		</fileset>
         </cpd>
 	<xslt in="reports/report-cpd.xml" style="checkstyle/cpd.xslt" out="reports/report-cpd.html" />
+    </target>
+
+    <target name="findbugs">
+        <taskdef name="findbugs" classpath="findbugs-ant.jar"
+                classname="edu.umd.cs.findbugs.anttask.FindBugsTask" />
+        <findbugs home="checkstyle/findbugs/" effort="max"
+                output="xml:withMessages"
+                outputFile="reports/report-fb.xml" >
+            <sourcePath path="src/" />
+            <class location="dist/DMDirc.jar" />
+        </findbugs>
+        <xslt in="reports/report-fb.xml" style="checkstyle/findbugs.xslt" out="reports/report-fb.html" />
     </target>
 </project>
