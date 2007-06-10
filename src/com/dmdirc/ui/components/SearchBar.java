@@ -348,8 +348,6 @@ public final class SearchBar extends JPanel implements ActionListener,
                 position = lineText.indexOf(text.toLowerCase(Locale.getDefault()));
             }
             if (position != -1 && textPane.getSelectedRange()[0] != i) {
-                textPane.setScrollBarPosition(i);
-                textPane.setSelectedTexT(i, position, i, position + text.length());
                 foundText = true;
                 break;
             }
