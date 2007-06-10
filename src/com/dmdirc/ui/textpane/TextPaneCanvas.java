@@ -547,6 +547,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         selStartChar = startChar;
         selEndLine = endLine;
         selEndChar = endChar;
+        repaint();
     }
     
     /**
