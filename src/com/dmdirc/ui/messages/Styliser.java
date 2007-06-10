@@ -72,7 +72,7 @@ public final class Styliser {
     /** Characters allowed to be used in an URL. */
     private static final String CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
             + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC
-            + CODE_UNDERLINE + "]";
+            + CODE_UNDERLINE + "\"]";
     
     /** The regular expression to use for marking up URLs. */
     private static final String URL_REGEXP = "(?i)([a-z]+://" + CHARS + "+|(?<![a-z:])www\\." + CHARS + "+)";
