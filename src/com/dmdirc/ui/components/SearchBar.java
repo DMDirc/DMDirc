@@ -79,7 +79,7 @@ public final class SearchBar extends JPanel implements ActionListener,
     private JTextField searchBox;
     
     /** Direction used for searching. */
-    private enum Direction {
+    public enum Direction {
         /** Move up through the document. */
         UP,
         /** Move down through the document. */
@@ -186,6 +186,7 @@ public final class SearchBar extends JPanel implements ActionListener,
             public void run() {
                 setVisible(true);
                 searchBox.requestFocus();
+                searchBox.setBackground(ColourManager.getColour("FFFFFF"));
             }
         }
         );
@@ -203,6 +204,16 @@ public final class SearchBar extends JPanel implements ActionListener,
     
     /**
      * Searches the textpane for text.
+     */
+    public void search() {
+        if (line == -1) {
+            line = parent.getTextPane().getLastVisibleLine();
+        }
+        search(Direction.UP, searchBox.getText(), caseCheck.isSelected());
+    }
+    
+    /**
+     * Searches the textpane for text.
      *
      * @param direction the direction to search from
      * @param text the text to search for
@@ -212,7 +223,7 @@ public final class SearchBar extends JPanel implements ActionListener,
             final boolean caseSensitive) {
         boolean foundText = false;
         
-        if (checkOccurs(searchBox.getText(), caseCheck.isSelected())) {
+        if (!"".equals(text) && checkOccurs(searchBox.getText(), caseCheck.isSelected())) {
             if (direction == Direction.UP) {
                 foundText = searchUp(text, caseSensitive);
             } else {
@@ -248,7 +259,6 @@ public final class SearchBar extends JPanel implements ActionListener,
         
         //loop through lines
         while (line >= 0) {
-            System.out.println("searching: " + line);
             final String lineText;
             int position;
             
@@ -404,9 +414,12 @@ public final class SearchBar extends JPanel implements ActionListener,
     
     /** {@inheritDoc}. */
     public void keyPressed(final KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.VK_F3
-                || (event.getKeyCode() == KeyEvent.VK_F
-                && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0)) {
+        if (event.getKeyCode() == KeyEvent.VK_F3) {
+            search();
+        }
+        
+        if (event.getKeyCode() == KeyEvent.VK_F
+                && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0) {
             getFocus();
         }
         

@@ -569,7 +569,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             
             if (point != null) {
                 inputFieldPopup.show(this, (int) point.getX(),
-                        (int) point.getY() + getTextPane().getHeight() 
+                        (int) point.getY() + getTextPane().getHeight()
                         + SMALL_BORDER);
             }
         } else {
@@ -618,10 +618,15 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 getTextPane().setScrollBarPosition(textPane.getNumLines());
             }
         }
-        if (event.getKeyCode() == KeyEvent.VK_F3
-                || (event.getKeyCode() == KeyEvent.VK_F
+        if (event.getKeyCode() == KeyEvent.VK_F3) {
+            if (!getSearchBar().isVisible()) {
+                getSearchBar().open();
+            }
+            getSearchBar().search();
+        }
+        if (event.getKeyCode() == KeyEvent.VK_F
                 && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
-                && (event.getModifiers() & KeyEvent.SHIFT_MASK) ==  0)) {
+                && (event.getModifiers() & KeyEvent.SHIFT_MASK) ==  0) {
             doSearchBar();
         }
         if (event.getSource() == getTextPane()) {

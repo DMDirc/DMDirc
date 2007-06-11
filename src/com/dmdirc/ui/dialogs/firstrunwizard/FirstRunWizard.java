@@ -61,6 +61,9 @@ public final class FirstRunWizard implements Wizard {
     public void wizardFinished() {
         final ResourceManager resourceManager =
                 ResourceManager.getResourceManager();
+        if (resourceManager == null) {
+            return;
+        }
         if (((StepOne) wizardDialog.getStep(0)).getPluginsState()) {
             //Copy plugins
             try {

@@ -57,6 +57,8 @@ public abstract class ResourceManager {
      */
     public static final synchronized ResourceManager getResourceManager() {
         if (me == null) {
+            final String path = Thread.currentThread().getContextClassLoader().
+                    getResource("com/dmdirc/ui/MainFrame.class").getPath();
             final String protocol = Thread.currentThread().getContextClassLoader().
                     getResource("com/dmdirc/ui/MainFrame.class").getProtocol();
             
@@ -64,7 +66,7 @@ public abstract class ResourceManager {
                 if ("file".equals(protocol)) {
                     me = new FileResourceManager();
                 } else if ("jar".equals(protocol)) {
-                    me = new JarResourceManager("DMDirc.jar");
+                    me = new JarResourceManager(path.substring(5, path.length() - 31));
                 }
             } catch (IOException ex) {
                 Logger.error(ErrorLevel.ERROR, "Unable to determine how DMDirc" 
