@@ -68,7 +68,7 @@ public final class Ignore extends ServerCommand {
                     int i = 0;
                     for (String line : list.split("\n")) {
                         i++;
-                        sendLine(origin, isSilent, "commandOutput", i + ". " + list);
+                        sendLine(origin, isSilent, "commandOutput", i + ". " + line);
                     }
                     
                 } else {
@@ -95,7 +95,7 @@ public final class Ignore extends ServerCommand {
             
         } else if (args[0].toLowerCase().equals("remove") && args.length > 1) {
             
-            final String host = implodeArgs(1, args);
+            final String host = implodeArgs(1, args).toLowerCase();
             
             final StringBuffer newlist = new StringBuffer();
             boolean found = false;
