@@ -260,6 +260,7 @@ public final class IRCParser implements Runnable {
 	public IRCParser(final MyInfo myDetails, final ServerInfo serverDetails) {
 		if (myDetails != null) { this.me = myDetails; }
 		if (serverDetails != null) { this.server = serverDetails; }
+		updateCharArrays((byte)3);
 	}
 	
 	/**
@@ -490,6 +491,8 @@ public final class IRCParser implements Runnable {
 			pingTimer = null;
 		}
 		currentSocketState = STATE_CLOSED;
+		// Char Mapping
+		updateCharArrays((byte)3);
 	}
 
 	
@@ -793,6 +796,64 @@ public final class IRCParser implements Runnable {
 		}
 	}
 	
+	/** Characters to use when converting tolowercase. */
+	private static char[] lowercase;
+	/** Characters to use when converting touppercase. */
+	private static char[] uppercase;
+	
+	/**
+	 * Update the character arrays
+	 *
+	 * @param limit Number of post-alphabetical characters to convert
+	 *              0 = ascii encoding
+	 *              3 = rfc1459 encoding
+	 *              4 = strict-rfc1459 encoding
+	 */
+	protected void updateCharArrays(final byte limit) {
+		// If limit is out side the boundries, use rfc1459
+		if (limit > 4 || limit < 0 ) { updateCharArrays((byte)3); return; }
+		
+		lowercase = new char[255];
+		uppercase = new char[255];
+		// Normal Chars
+		for (char i = 0; i < 255; ++i) {
+			lowercase[i] = i;
+			uppercase[i] = i;
+		}
+		
+		// Replace the uppercase chars with lowercase
+		for (char i = 65; i <= (90 + limit); ++i) {
+			lowercase[i] = (char)(i + 32);
+			uppercase[i + 32] = i;
+		}
+	}
+	
+	/**
+	 * Get the lowercase version of a String for this Server
+	 *
+	 * @param sInputString String to lowercase
+	 */
+	public String toLowerCase(final String input) {
+		final char[] result = input.toCharArray();
+		for (int i = 0; i < input.length(); ++i) {
+			result[i] = lowercase[result[i]];
+		}
+		return new String(result);
+	}
+	
+	/**
+	 * Get the uppercase version of a String for this Server
+	 *
+	 * @param sInputString String to uppercase
+	 */
+	public String toUpperCase(final String input) {
+		final char[] result = input.toCharArray();
+		for (int i = 0; i < input.length(); ++i) {
+			result[i] = uppercase[result[i]];
+		}
+		return new String(result);
+	}
+	
 	/**
 	 * Get the known boolean chanmodes in 005 order.
 	 * Modes are returned in the order that the ircd specifies the modes in 005
@@ -1090,6 +1151,16 @@ public final class IRCParser implements Runnable {
 		sendString("JOIN " + sChannelName);
 	}
 	
+	/**
+	 * Join a Channel with a key.
+	 *
+	 * @param sChannelName Name of channel to join
+	 * @param sKey Key to use to try and join the channel
+	 */
+	public void joinChannel(final String sChannelName, final String sKey) {
+		if (!isValidChannelName(sChannelName)) { return; }
+		sendString("JOIN " + sChannelName + " " + sKey);
+	}	
 	
 	/**
 	 * Leave a Channel.

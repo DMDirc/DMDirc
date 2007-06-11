@@ -57,6 +57,16 @@ public class Process004005 extends IRCProcessor {
 				if (sKey.equals("NETWORK")) {
 					myParser.sNetworkName = sValue;
 					callGotNetwork();
+				} else if (sKey.equals("CASEMAPPING")) {
+					byte limit = (byte)3;
+					if (sValue.equalsIgnoreCase("strict-rfc1459")) {
+						limit = (byte)4;
+					} else if (sValue.equalsIgnoreCase("ascii")) {
+						limit = (byte)0;
+					} else if (!sValue.equalsIgnoreCase("rfc1459")) {
+						myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Unknown casemapping: '"+sValue+"' - assuming rfc1459", myParser.getLastLine()));
+					}
+					myParser.updateCharArrays(limit);
 				} else if (sKey.equals("CHANTYPES")) {
 					myParser.parseChanPrefix();
 				} else if (sKey.equals("PREFIX")) {
