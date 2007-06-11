@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -57,8 +58,15 @@ public abstract class ResourceManager {
      */
     public static final synchronized ResourceManager getResourceManager() {
         if (me == null) {
-            final String path = Thread.currentThread().getContextClassLoader().
+            String path = Thread.currentThread().getContextClassLoader().
                     getResource("com/dmdirc/ui/MainFrame.class").getPath();
+            
+            try {
+                path = java.net.URLDecoder.decode(path, "UTF-16");
+            } catch (UnsupportedEncodingException ex) {
+                Logger.error(ErrorLevel.ERROR, "Unable to decode path", ex);
+            }
+            
             final String protocol = Thread.currentThread().getContextClassLoader().
                     getResource("com/dmdirc/ui/MainFrame.class").getProtocol();
             
@@ -69,7 +77,7 @@ public abstract class ResourceManager {
                     me = new JarResourceManager(path.substring(5, path.length() - 31));
                 }
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.ERROR, "Unable to determine how DMDirc" 
+                Logger.error(ErrorLevel.ERROR, "Unable to determine how DMDirc"
                         + " has been executed", ex);
             }
         }
@@ -101,7 +109,7 @@ public abstract class ResourceManager {
      * @throws IOException if the write operation fails
      */
     public final void resourceToFile(final byte[] resource, final File file)
-    throws IOException {
+            throws IOException {
         final FileOutputStream out = new FileOutputStream(file, false);
         
         out.write(resource);
