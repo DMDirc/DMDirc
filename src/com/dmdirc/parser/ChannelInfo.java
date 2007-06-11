@@ -155,7 +155,7 @@ public final class ChannelInfo {
 			cTemp = client.getClient();
 			cTemp.delChannelClientInfo(client);
 			if (!cTemp.checkVisibility()) {
-				myParser.hClientList.remove(cTemp.getNickname().toLowerCase());
+				myParser.hClientList.remove(myParser.toLowerCase(cTemp.getNickname()));
 			}
 		}
 		hChannelUserList.clear();
@@ -169,7 +169,7 @@ public final class ChannelInfo {
 	 */
 	public ChannelClientInfo getUser(String sWho) {
 		sWho = ClientInfo.parseHost(sWho);
-		sWho = sWho.toLowerCase();
+		sWho = myParser.toLowerCase(sWho);
 		if (hChannelUserList.containsKey(sWho)) {
 			return hChannelUserList.get(sWho);
 		}
@@ -201,7 +201,7 @@ public final class ChannelInfo {
 		ChannelClientInfo cTemp = getUser(cClient);
 		if (cTemp == null) { 
 			cTemp = new ChannelClientInfo(myParser, cClient, this);
-			hChannelUserList.put(cTemp.getNickname().toLowerCase(), cTemp);
+			hChannelUserList.put(myParser.toLowerCase(cTemp.getNickname()), cTemp);
 		}
 		return cTemp;
 	}
@@ -218,9 +218,9 @@ public final class ChannelInfo {
 			ClientInfo clTemp = cTemp.getClient();
 			clTemp.delChannelClientInfo(cTemp);
 			if (clTemp != myParser.getMyself() && !clTemp.checkVisibility()) {
-				myParser.hClientList.remove(cTemp.getNickname().toLowerCase());
+				myParser.hClientList.remove(myParser.toLowerCase(cTemp.getNickname()));
 			}
-			hChannelUserList.remove(cTemp.getNickname().toLowerCase());
+			hChannelUserList.remove(myParser.toLowerCase(cTemp.getNickname()));
 		}
 	}	
 	
@@ -239,7 +239,7 @@ public final class ChannelInfo {
 				hChannelUserList.remove(oldNickname);
 				// Add with the new key. (getNickname will return the new name not the
 				// old one)
-				hChannelUserList.put(cTemp.getNickname().toLowerCase(), cTemp);
+				hChannelUserList.put(myParser.toLowerCase(cTemp.getNickname()), cTemp);
 			}
 		}
 	}
@@ -366,7 +366,7 @@ public final class ChannelInfo {
 		}
 		final ArrayList<ChannelListModeItem> lModes = hListModes.get(cMode);
 		for (int i = 0; i < lModes.size(); i++) {
-			if (lModes.get(i).getItem().equalsIgnoreCase(newItem.getItem())) { 
+			if (myParser.equalsIgnoreCase(lModes.get(i).getItem(), newItem.getItem())) { 
 				if (bAdd) { return; }
 				else { 
 					lModes.remove(i);

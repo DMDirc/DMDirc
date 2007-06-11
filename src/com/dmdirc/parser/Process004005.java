@@ -66,7 +66,26 @@ public class Process004005 extends IRCProcessor {
 					} else if (!sValue.equalsIgnoreCase("rfc1459")) {
 						myParser.callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Unknown casemapping: '"+sValue+"' - assuming rfc1459", myParser.getLastLine()));
 					}
+					boolean limitChanged = (myParser.getLastLimit() != limit);
 					myParser.updateCharArrays(limit);
+					if (limitChanged) {
+						if (myParser.hClientList.size() == 1) {
+							// This means that the casemapping is not rfc1459
+							// We have only added ourselves so far (from 001)
+							// We can fix the hashtable easily.
+							myParser.hClientList.clear();
+							myParser.hClientList.put(myParser.toLowerCase(myParser.cMyself.getNickname()),myParser.cMyself);
+						} else if (myParser.hClientList.size() > 1) {
+							// If this happens then something buggered up.
+							// joining channels before 005, when the encoding is not rfc1459
+							myParser.callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "Casemapping has changed since we have seen other users!", myParser.getLastLine()));
+						}
+						if (myParser.hChannelList.size() > 0) {
+							// If this happens then something buggered up.
+							// joining channels before 005, when the encoding is not rfc1459
+							myParser.callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "Casemapping has changed since we joined channels!", myParser.getLastLine()));
+						}
+					}
 				} else if (sKey.equals("CHANTYPES")) {
 					myParser.parseChanPrefix();
 				} else if (sKey.equals("PREFIX")) {

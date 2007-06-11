@@ -65,7 +65,7 @@ public class ProcessQuit extends IRCProcessor {
 				callChannelQuit(iChannel,iChannelClient,sReason);
 				if (iClient == myParser.cMyself) {
 					iChannel.emptyChannel();
-					myParser.hChannelList.remove(iChannel.getName().toLowerCase());
+					myParser.hChannelList.remove(myParser.toLowerCase(iChannel.getName()));
 				} else {
 					iChannel.delClient(iClient);
 				}
@@ -76,7 +76,7 @@ public class ProcessQuit extends IRCProcessor {
 		if (iClient == myParser.cMyself) {
 			myParser.hClientList.clear();
 		} else {
-			myParser.hClientList.remove(iClient.getNickname().toLowerCase());
+			myParser.hClientList.remove(myParser.toLowerCase(iClient.getNickname()));
 		}
 	}	
 	

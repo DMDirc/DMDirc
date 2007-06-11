@@ -57,7 +57,7 @@ public class ProcessNames extends IRCProcessor {
 			if (iChannel == null) { 
 				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got names for channel ("+token[4]+") that I am not on.", myParser.getLastLine()));
 				iChannel = new ChannelInfo(myParser, token[4]);
-				myParser.hChannelList.put(iChannel.getName().toLowerCase(),iChannel);
+				myParser.hChannelList.put(myParser.toLowerCase(iChannel.getName()),iChannel);
 			}
 			
 			// If we are not expecting names, clear the current known names - this is fresh stuff!
@@ -90,7 +90,7 @@ public class ProcessNames extends IRCProcessor {
 				callDebugInfo(myParser.DEBUG_INFO, "Name: %s Modes: \"%s\" [%d]",sName,sModes.toString(),nPrefix);
 				
 				iClient = getClientInfo(sName);
-				if (iClient == null) { iClient = new ClientInfo(myParser, sName); myParser.hClientList.put(iClient.getNickname().toLowerCase(),iClient); }
+				if (iClient == null) { iClient = new ClientInfo(myParser, sName); myParser.hClientList.put(myParser.toLowerCase(iClient.getNickname()),iClient); }
 				iChannelClient = iChannel.addClient(iClient);
 				iChannelClient.setChanMode(nPrefix);
 

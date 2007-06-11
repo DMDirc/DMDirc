@@ -71,7 +71,7 @@ public class ProcessPart extends IRCProcessor {
 			iChannel.delClient(iClient);
 			if (iClient == myParser.cMyself) {
 				iChannel.emptyChannel();
-				myParser.hChannelList.remove(iChannel.getName().toLowerCase());
+				myParser.hChannelList.remove(myParser.toLowerCase(iChannel.getName()));
 			}
 		}
 	}

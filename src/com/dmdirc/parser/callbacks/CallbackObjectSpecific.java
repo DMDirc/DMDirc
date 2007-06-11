@@ -60,7 +60,7 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	 */
 	protected boolean isValidChan(final ICallbackInterface eMethod, final ChannelInfo cChannel) {
 		if (specificData.containsKey(eMethod)) { 
-			if (!cChannel.getName().equalsIgnoreCase(specificData.get(eMethod))) { return false; }
+			if (!myParser.equalsIgnoreCase(cChannel.getName(), specificData.get(eMethod))) { return false; }
 		}
 		return true;
 	}
@@ -75,7 +75,7 @@ public abstract class CallbackObjectSpecific extends CallbackObject {
 	protected boolean isValidUser(final ICallbackInterface eMethod, final String sHost) {
 		final String nickname = ClientInfo.parseHost(sHost);
 		if (specificData.containsKey(eMethod)) {
-			if (!nickname.equalsIgnoreCase(specificData.get(eMethod))) { return false; }
+			if (!myParser.equalsIgnoreCase(nickname, specificData.get(eMethod))) { return false; }
 		}
 		return true;
 	}

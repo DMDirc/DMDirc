@@ -48,9 +48,9 @@ public class ProcessNick extends IRCProcessor {
 		
 		iClient = getClientInfo(token[0]);
 		if (iClient != null) {
-			oldNickname = iClient.getNickname().toLowerCase();
+			oldNickname = myParser.toLowerCase(iClient.getNickname());
 			// Remove the client from the known clients list
-			final boolean isSameNick = oldNickname.equalsIgnoreCase(token[token.length-1]);
+			final boolean isSameNick = myParser.equalsIgnoreCase(oldNickname, token[token.length-1]);
 			
 			if (!isSameNick) {
 				myParser.hClientList.remove(oldNickname);
@@ -63,7 +63,7 @@ public class ProcessNick extends IRCProcessor {
 				myParser.disconnect("Fatal Parser Error");
 			} else {
 				if (!isSameNick) {
-					myParser.hClientList.put(iClient.getNickname().toLowerCase(),iClient);
+					myParser.hClientList.put(myParser.toLowerCase(iClient.getNickname()),iClient);
 				}
 				
 				for (Enumeration e = myParser.hChannelList.keys(); e.hasMoreElements();) {

@@ -69,12 +69,12 @@ public class ProcessKick extends IRCProcessor {
 			iChannel.delClient(iClient);
 			if (iClient == myParser.cMyself) {
 				iChannel.emptyChannel();
-				myParser.hChannelList.remove(iChannel.getName().toLowerCase());
+				myParser.hChannelList.remove(myParser.toLowerCase(iChannel.getName()));
 			} else { 
 				// Check if client is still on any channel we are on
 				if (!iClient.checkVisibility()) {
 					// if not, remove them from memory incase they quit without us seeing
-					myParser.hClientList.remove(iClient.getNickname().toLowerCase());
+					myParser.hClientList.remove(myParser.toLowerCase(iClient.getNickname()));
 				}
 			}
 		}

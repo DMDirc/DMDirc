@@ -54,7 +54,7 @@ public class Process001 extends IRCProcessor {
 		myParser.cMyself = getClientInfo(sNick);
 		if (myParser.cMyself == null) {
 			myParser.cMyself = new ClientInfo(myParser, sNick);
-			myParser.hClientList.put(myParser.cMyself.getNickname().toLowerCase(),myParser.cMyself);
+			myParser.hClientList.put(myParser.toLowerCase(myParser.cMyself.getNickname()),myParser.cMyself);
 		}
 		
 		callServerReady();

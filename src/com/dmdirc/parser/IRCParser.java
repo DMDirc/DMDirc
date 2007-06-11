@@ -797,9 +797,18 @@ public final class IRCParser implements Runnable {
 	}
 	
 	/** Characters to use when converting tolowercase. */
-	private static char[] lowercase;
+	private char[] lowercase;
 	/** Characters to use when converting touppercase. */
-	private static char[] uppercase;
+	private char[] uppercase;
+	/** Previous char array limit */
+	private byte lastLimit = (byte)3;
+	
+	/**
+	 * Get last used chararray limit.
+	 *
+	 * @return last used chararray limit
+	 */
+	protected void getLastLimit(final byte limit) { return lastLimit; }
 	
 	/**
 	 * Update the character arrays
@@ -812,7 +821,7 @@ public final class IRCParser implements Runnable {
 	protected void updateCharArrays(final byte limit) {
 		// If limit is out side the boundries, use rfc1459
 		if (limit > 4 || limit < 0 ) { updateCharArrays((byte)3); return; }
-		
+		lastLimit = limit;
 		lowercase = new char[255];
 		uppercase = new char[255];
 		// Normal Chars
@@ -852,6 +861,25 @@ public final class IRCParser implements Runnable {
 			result[i] = uppercase[result[i]];
 		}
 		return new String(result);
+	}
+	
+	/**
+	 * Check if 2 strings are qqual to ignore ignoring case.
+	 *
+	 * @param sInputString String to uppercase
+	 */
+	public boolean equalsIgnoreCase(final String first, final String second) {
+		boolean result = (first.length() == second.length());
+		if (result) {
+			final char[] firstChar = first.toCharArray();
+			final char[] secondChar = second.toCharArray();
+			for (int i = 0; i < first.length(); ++i) {
+				result = (lowercase[firstChar[i]] == lowercase[secondChar[i]]);
+				if (!result) { break; }
+			}
+		}
+		
+		return result;
 	}
 	
 	/**
@@ -1350,7 +1378,7 @@ public final class IRCParser implements Runnable {
 		// Check sChannelName is not empty or null
 		if (sChannelName == null || sChannelName.length() == 0) { return false; }
 		// Check its not ourself (PM recieved before 005)
-		if (getMyNickname().equalsIgnoreCase(sChannelName)) { return false; }
+		if (equalsIgnoreCase(getMyNickname(), sChannelName)) { return false; }
 		// Otherwise return true if:
 		// 005 has not been recieved yet
 		// Channel equals "0"

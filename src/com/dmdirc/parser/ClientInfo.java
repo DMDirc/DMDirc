@@ -267,7 +267,7 @@ public final class ClientInfo {
 	 * @param cci ChannelClientInfo to add as a known reference
 	 */	
 	public void addChannelClientInfo(final ChannelClientInfo cci) {
-		final String key = cci.getChannel().getName().toLowerCase();
+		final String key = myParser.toLowerCase(cci.getChannel().getName());
 		if (!myChannelClientInfos.containsKey(key)) {
 			myChannelClientInfos.put(key, cci);
 		}
@@ -279,7 +279,7 @@ public final class ClientInfo {
 	 * @param cci ChannelClientInfo to remove as a known reference
 	 */	
 	public void delChannelClientInfo(final ChannelClientInfo cci) {
-		final String key = cci.getChannel().getName().toLowerCase();
+		final String key = myParser.toLowerCase(cci.getChannel().getName());
 		if (myChannelClientInfos.containsKey(key)) {
 			myChannelClientInfos.remove(key);
 		}
