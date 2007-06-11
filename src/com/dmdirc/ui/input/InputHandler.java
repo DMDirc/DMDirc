@@ -349,7 +349,10 @@ public final class InputHandler implements KeyListener, ActionListener {
             // Multiple results
             final String sub = res.getBestSubstring();
             if (sub.equalsIgnoreCase(word)) {
-                // TODO: Beep, display possible answers, etc
+                // TODO: Other possible actions (mIRC-style etc)
+                if (Config.getOption("tabcompletion", "style", "bash").equals("bash")) {
+                    parentWindow.addLine("tabCompletion", res.toString());
+                }
             } else {
                 target.setText(text.substring(0, start) + sub + text.substring(end));
                 target.setCaretPosition(start + sub.length());

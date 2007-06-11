@@ -114,4 +114,20 @@ public final class TabCompleterResult {
 	return results;
     }
     
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        final StringBuffer buff = new StringBuffer();
+        
+        for (String entry : results) {
+            if (buff.length() > 0) {
+                buff.append(", ");
+            }
+            
+            buff.append(entry);
+        }
+        
+        return buff.toString();
+    }    
+    
 }

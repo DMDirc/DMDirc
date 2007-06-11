@@ -267,6 +267,7 @@ public final class Formatter {
         defaultProperties.setProperty("commandOutput", "%1$s");
         defaultProperties.setProperty("commandError", colour + "7%1$s");
         defaultProperties.setProperty("actionTooLong", "Warning: action too long to be sent");
+        defaultProperties.setProperty("tabCompletion", colour + "14Multiple possibilities: %1$s");
         
         // Type: Command usage
         //    1: Command char
