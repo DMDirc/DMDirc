@@ -243,7 +243,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         
         if (raw == null && Config.getOptionBool("general", "showrawwindow")) {
             raw = new Raw(this);
-            MainFrame.getMainFrame().getFrameManager().addRaw(this, raw);
+            MainFrame.getMainFrame().getFrameManager().addCustom(this, raw);
         }
         
         if (raw != null) {
@@ -557,7 +557,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * closed).
      */
     public void delRaw() {
-        MainFrame.getMainFrame().getFrameManager().delRaw(this, raw);
+        MainFrame.getMainFrame().getFrameManager().delCustom(this, raw);
         raw = null;
     }
     

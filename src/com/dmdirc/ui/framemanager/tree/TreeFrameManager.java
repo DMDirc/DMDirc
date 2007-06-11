@@ -167,28 +167,18 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.addMouseWheelListener(this);
         tree.addKeyListener(this);
     }
-    /**
-     * Indicates whether this frame manager can be positioned vertically
-     * (i.e., at the side of the screen).
-     * @return True iff the frame manager can be positioned vertically.
-     */
+   
+    /** {@inheritDoc} */
     public boolean canPositionVertically() {
         return true;
     }
     
-    /**
-     * Indicates whether this frame manager can be positioned horizontally
-     * (i.e., at the top or bottom of the screen).
-     * @return True iff the frame manager can be positioned horizontally.
-     */
+    /** {@inheritDoc} */
     public boolean canPositionHorizontally() {
         return false;
     }
     
-    /**
-     * Indicates that there is a new active frame.
-     * @param source The object that now has focus.
-     */
+    /** {@inheritDoc} */
     public void setSelected(final FrameContainer source) {
         selected = source;
         if (nodes.containsKey(source)) {
@@ -223,12 +213,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         return nodes.get(selected);
     }
     
-    /**
-     * Shows an event notification to the user by colouring the corresponding
-     * element to the source a specific colour.
-     * @param source The object requesting notification.
-     * @param colour The colour that should be used to indicate the notification.
-     */
+    /** {@inheritDoc} */
     public void showNotification(final FrameContainer source, final Color colour) {
         if (nodeColours != null) {
             nodeColours.put(source, colour);
@@ -261,10 +246,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         return rolloverNode;
     }
     
-    /**
-     * Clears a notification from a frame and its node.
-     * @param source Frame to remove notification from.
-     */
+    /** {@inheritDoc} */
     public void clearNotification(final FrameContainer source) {
         if (nodeColours != null && nodeColours.containsKey(source)) {
             nodeColours.remove(source);
@@ -283,10 +265,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         return null;
     }
     
-    /**
-     * Sets the parent component in the main UI.
-     * @param parent parent component.
-     */
+    /** {@inheritDoc} */
     public void setParent(final JComponent parent) {
         final JScrollPane scrollPane = new JScrollPane(tree);
         scrollPane.setAutoscrolls(false);
@@ -300,10 +279,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
                 Config.getOptionColor("ui", "foregroundcolour", Color.BLACK)));
     }
     
-    /**
-     * adds a server to the tree.
-     * @param server associated server.
-     */
+    /** {@inheritDoc} */
     public void addServer(final Server server) {
         final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(server, node);
@@ -315,19 +291,12 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
-    /**
-     * removes a server from the tree.
-     * @param server associated server.
-     */
+    /** {@inheritDoc} */
     public void delServer(final Server server) {
         model.removeNodeFromParent(nodes.get(server));
     }
     
-    /**
-     * adds a channel to the tree.
-     * @param server associated server.
-     * @param channel associated framecontainer.
-     */
+    /** {@inheritDoc} */
     public void addChannel(final Server server, final Channel channel) {
         final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(channel, node);
@@ -336,20 +305,12 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
-    /**
-     * deletes a channel from the tree.
-     * @param server associated server.
-     * @param channel associated framecontainer.
-     */
+    /** {@inheritDoc} */
     public void delChannel(final Server server, final Channel channel) {
         model.removeNodeFromParent(nodes.get(channel));
     }
     
-    /**
-     * adds a query to the tree.
-     * @param server associated server.
-     * @param query associated framecontainer.
-     */
+    /** {@inheritDoc} */
     public void addQuery(final Server server, final Query query) {
         final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(query, node);
@@ -358,35 +319,23 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
-    /**
-     * deletes a query from the tree.
-     * @param server associated server.
-     * @param query associated framecontainer.
-     */
+    /** {@inheritDoc} */
     public void delQuery(final Server server, final Query query) {
         model.removeNodeFromParent(nodes.get(query));
     }
     
-    /**
-     * adds a raw to the tree.
-     * @param server associated server.
-     * @param raw associated framecontainer.
-     */
-    public void addRaw(final Server server, final Raw raw) {
+    /** {@inheritDoc} */
+    public void addCustom(final Server server, final FrameContainer window) {
         final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-        nodes.put(raw, node);
-        node.setUserObject(raw);
+        nodes.put(window, node);
+        node.setUserObject(window);
         model.insertNodeInto(node, nodes.get(server));
         tree.scrollPathToVisible(new TreePath(node.getPath()));
     }
     
-    /**
-     * deletes a raw from the tree.
-     * @param server associated server.
-     * @param raw associated framecontainer.
-     */
-    public void delRaw(final Server server, final Raw raw) {
-        model.removeNodeFromParent(nodes.get(raw));
+    /** {@inheritDoc} */
+    public void delCustom(final Server server, final FrameContainer window) {
+        model.removeNodeFromParent(nodes.get(window));
     }
     
     /**

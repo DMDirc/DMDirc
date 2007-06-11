@@ -25,7 +25,6 @@ package com.dmdirc.ui.framemanager;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
-import com.dmdirc.Raw;
 import com.dmdirc.Server;
 
 import java.awt.Color;
@@ -121,17 +120,17 @@ public interface FrameManager {
     void delQuery(Server server, Query query);
     
     /**
-     * Adds a new raw instance to this frame manager.
-     * @param server The server to which the raw frame belongs
-     * @param raw The raw instance to be added
+     * Adds a new custom window to this frame manager.
+     * @param server The server to which the window belongs, or null
+     * @param window The custom window to be added
      */
-    void addRaw(Server server, Raw raw);
+    void addCustom(Server server, FrameContainer window);
     
     /**
-     * Removes a raw instance from this frame manager.
-     * @param server The server to which the raw frame belongs
-     * @param raw The raw instance to be removed
+     * Removes a custom window from this frame manager.
+     * @param server The server to which the window belongs, or null
+     * @param window The custom window to be removed
      */
-    void delRaw(Server server, Raw raw);
+    void delCustom(Server server, FrameContainer window);
     
 }

@@ -25,7 +25,6 @@ package com.dmdirc.ui.framemanager;
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
-import com.dmdirc.Raw;
 import com.dmdirc.Server;
 import com.dmdirc.ui.MainFrame;
 
@@ -41,140 +40,87 @@ public final class DummyFrameManager implements FrameManager {
     
     /** Creates a new instance of DummyFrameManager. */
     public DummyFrameManager() {
-	//Do nothing.
+        //Do nothing.
     }
     
-    /**
-     * Sets the parent component of this frame manager. The frame manager
-     * should render itself within the parent.
-     * @param parent The parent control
-     */
+    /** {@inheritDoc} */
     public void setParent(final JComponent parent) {
         parent.setBackground(Color.RED);
     }
     
-    /**
-     * Adds a new server instance to this frame manager.
-     * @param server The server to be added
-     */
+    /** {@inheritDoc} */
     public void addServer(final Server server) {
         MainFrame.getMainFrame().getStatusBar()
-	.setMessage("DummyFrameManager: addServer: " + server);
+                .setMessage("DummyFrameManager: addServer: " + server);
     }
     
-    /**
-     * Removes a server instance from this frame manager.
-     * @param server The server to be removed
-     */
+    /** {@inheritDoc} */
     public void delServer(final Server server) {
         MainFrame.getMainFrame().getStatusBar()
-	.setMessage("DummyFrameManager: delServer: " + server);
+                .setMessage("DummyFrameManager: delServer: " + server);
     }
     
-    /**
-     * Adds a new channel instance to this frame manager.
-     * @param server The server to which the channel belongs
-     * @param channel The channel to be added
-     */
+    /** {@inheritDoc} */
     public void addChannel(final Server server, final Channel channel) {
         MainFrame.getMainFrame().getStatusBar()
-	.setMessage("DummyFrameManager: addChannel: " + channel + "@" + server);
+                .setMessage("DummyFrameManager: addChannel: " + channel + "@" + server);
     }
     
-    /**
-     * Removes a channel instance from this frame manager.
-     * @param server The server to which the channel belongs
-     * @param channel The channel to be removed
-     */
+    /** {@inheritDoc} */
     public void delChannel(final Server server, final Channel channel) {
         MainFrame.getMainFrame().getStatusBar()
-	.setMessage("DummyFrameManager: delChannel: " + channel + "@" + server);
+                .setMessage("DummyFrameManager: delChannel: " + channel + "@" + server);
     }
     
-    /**
-     * Adds a new query instance to this frame manager.
-     * @param server The server to which the query belongs
-     * @param query The query to be added
-     */
+    /** {@inheritDoc} */
     public void addQuery(final Server server, final Query query) {
         MainFrame.getMainFrame().getStatusBar()
-	.setMessage("DummyFrameManager: addQuery: " + query + "@" + server);
+                .setMessage("DummyFrameManager: addQuery: " + query + "@" + server);
     }
     
-    /**
-     * Removes a query instance from this frame manager.
-     * @param server The server to which the query belongs
-     * @param query The query to be removed
-     */
+    /** {@inheritDoc} */
     public void delQuery(final Server server, final Query query) {
         MainFrame.getMainFrame().getStatusBar()
-	.setMessage("DummyFrameManager: delQuery: " + query + "@" + server);
+                .setMessage("DummyFrameManager: delQuery: " + query + "@" + server);
     }
     
-    /**
-     * Adds a new raw instance to this frame manager.
-     * @param server The server to which the raw frame belongs
-     * @param raw The raw instance to be added
-     */
-    public void addRaw(final Server server, final Raw raw) {
+    /** {@inheritDoc} */
+    public void addCustom(final Server server, final FrameContainer window) {
         MainFrame.getMainFrame().getStatusBar()
-	.setMessage("DummyFrameManager: addRaw: " + raw + "@" + server);
+                .setMessage("DummyFrameManager: addCustom: " + window + "@" + server);
     }
     
-    /**
-     * Removes a raw instance from this frame manager.
-     * @param server The server to which the raw frame belongs
-     * @param raw The raw instance to be removed
-     */
-    public void delRaw(final Server server, final Raw raw) {
+    /** {@inheritDoc} */
+    public void delCustom(final Server server, final FrameContainer window) {
         MainFrame.getMainFrame().getStatusBar()
-	.setMessage("DummyFrameManager: delRaw: " + raw + "@" + server);
+                .setMessage("DummyFrameManager: delCustom: " + window + "@" + server);
     }
     
-    /**
-     * Indicates whether this frame manager can be positioned vertically
-     * (i.e., at the side of the screen).
-     * @return True iff the frame manager can be positioned vertically
-     */
+    /** {@inheritDoc} */
     public boolean canPositionVertically() {
         return true;
     }
     
-    /**
-     * Indicates whether this frame manager can be positioned horizontally
-     * (i.e., at the top or bottom of the screen).
-     * @return True iff the frame manager can be positioned horizontally
-     */
+    /** {@inheritDoc} */
     public boolean canPositionHorizontally() {
         return true;
     }
     
-    /**
-     * Shows an event notification to the user by colouring the corresponding
-     * element to the source a specific colour.
-     * @param source The object requesting notification
-     * @param colour The colour that should be used to indicate the notification
-     */
+    /** {@inheritDoc} */
     public void showNotification(final FrameContainer source, final Color colour) {
         MainFrame.getMainFrame().getStatusBar()
-	.setMessage("DummyFrameManager: Notifcation for " + source);
+                .setMessage("DummyFrameManager: Notifcation for " + source);
     }
     
-    /**
-     * Removes the notification status of the specified object.
-     * @param source The object whose notification should be cleared
-     */
+    /** {@inheritDoc} */
     public void clearNotification(final FrameContainer source) {
         MainFrame.getMainFrame().getStatusBar()
-	.setMessage("DummyFrameManager: Clear notification for " + source);
+                .setMessage("DummyFrameManager: Clear notification for " + source);
     }
     
-    /**
-     * Indicates that there is a new active frame.
-     * @param source The object that now has focus
-     */
+    /** {@inheritDoc} */
     public void setSelected(final FrameContainer source) {
         MainFrame.getMainFrame().getStatusBar()
-	.setMessage("DummyFrameManager: Now focused: " + source);
+                .setMessage("DummyFrameManager: Now focused: " + source);
     }
 }
