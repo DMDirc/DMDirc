@@ -808,7 +808,7 @@ public final class IRCParser implements Runnable {
 	 *
 	 * @return last used chararray limit
 	 */
-	protected void getLastLimit(final byte limit) { return lastLimit; }
+	protected int getLastLimit() { return lastLimit; }
 	
 	/**
 	 * Update the character arrays

@@ -121,8 +121,6 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
                     if (Config.getOptionBool("ui", "treeviewActiveBold")) {
                         setFont(getFont().deriveFont(Font.BOLD));
                     }
-                } else {
-                    setFont(getFont().deriveFont(Font.BOLD));
                 }
                 setBackground(Config.getOptionColor("ui", "treeviewActiveBackground", tree.getBackground()));
                 setForeground(Config.getOptionColor("ui", "treeviewActiveForeground", tree.getForeground()));

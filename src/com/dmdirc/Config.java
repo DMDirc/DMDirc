@@ -168,6 +168,7 @@ public final class Config {
         // TODO: These should probably be renamed to treeview.* or so?
         defaults.setProperty("ui.treeviewRolloverEnabled", "true");
         defaults.setProperty("ui.treeviewRolloverColour", "f0f0f0");
+        defaults.setProperty("ui.treeviewActiveBold", "true");
         defaults.setProperty("treeview.sortwindows", "true");
         defaults.setProperty("treeview.sortservers", "true");
         
