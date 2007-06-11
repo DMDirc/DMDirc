@@ -368,21 +368,21 @@ public final class CommandManager {
     }
     
     /**
-     * Retrieves the command identified by the specified signature, regardless
-     * of type.
+     * Retrieves the command identified by the specified name, regardless of
+     * type.
      * 
-     * @param signature The signature to look for
+     * @param name The name to look for
      * @return A command with a matching signature, or null if none were found
      */
-    public static Command getCommand(final String signature) {
-        if (getGlobalCommand(signature) != null) {
-            return (Command) getGlobalCommand(signature);
-        } else if (getServerCommand(signature) != null) {
-            return (Command) getServerCommand(signature);
-        } else if (getChannelCommand(signature) != null) {
-            return (Command) getChannelCommand(signature);
+    public static Command getCommand(final String name) {
+        if (getGlobalCommandByName(name) != null) {
+            return (Command) getGlobalCommandByName(name);
+        } else if (getServerCommandByName(name) != null) {
+            return (Command) getServerCommandByName(name);
+        } else if (getChannelCommandByName(name) != null) {
+            return (Command) getChannelCommandByName(name);
         } else {
-            return (Command) getChannelCommand(signature);
+            return (Command) getChannelCommandByName(name);
         }
     }
     
@@ -407,6 +407,19 @@ public final class CommandManager {
     }
     
     /**
+     * Retrieves the server command identified by the specified name.
+     * @param name The name to look for
+     * @return A server command with a matching name, or null if none were found
+     */
+    public static ServerCommand getServerCommandByName(final String name) {
+        if (serverCommands == null) {
+            initLists();
+        }
+        
+        return (ServerCommand) getCommandByName(name, serverCommands);
+    }    
+    
+    /**
      * Retrieves the global command identified by the specified signature.
      * @param signature The signature to look for
      * @return A global command with a matching signature, or null if none
@@ -424,6 +437,19 @@ public final class CommandManager {
         }
         
         return null;
+    }
+    
+    /**
+     * Retrieves the global command identified by the specified name.
+     * @param name The name to look for
+     * @return A global command with a matching name, or null if none were found
+     */
+    public static GlobalCommand getGlobalCommandByName(final String name) {
+        if (globalCommands == null) {
+            initLists();
+        }
+        
+        return (GlobalCommand) getCommandByName(name, globalCommands);
     }
     
     /**
@@ -445,6 +471,36 @@ public final class CommandManager {
         
         return null;
     }
+    
+    /**
+     * Retrieves the channel command identified by the specified name.
+     * @param name The name to look for
+     * @return A channel command with a matching name, or null if none were found
+     */
+    public static ChannelCommand getChannelCommandByName(final String name) {
+        if (channelCommands == null) {
+            initLists();
+        }
+        
+        return (ChannelCommand) getCommandByName(name, channelCommands);
+    }    
+    
+    /**
+     * Retrieves the command identified by the specified name.
+     * @param name The name to look for
+     * @param list The list to look in
+     * @return A command with a matching name, or null if none were found
+     */
+    private static Command getCommandByName(final String name,
+            final List<Command> list) {        
+        for (Command com : list) {
+            if (com.getName().equalsIgnoreCase(name)) {
+                return com;
+            }
+        }
+        
+        return null;
+    }    
     
     /**
      * Returns a list containing the server commands that have been initialised

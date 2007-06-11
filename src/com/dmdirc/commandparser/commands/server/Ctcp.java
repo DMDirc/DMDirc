@@ -26,13 +26,16 @@ import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.IntelligentCommand;
 import com.dmdirc.commandparser.ServerCommand;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Allows the user to send CTCP messages.
  * @author chris
  */
-public final class Ctcp extends ServerCommand {
+public final class Ctcp extends ServerCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of Ctcp.
@@ -86,6 +89,24 @@ public final class Ctcp extends ServerCommand {
     /** {@inheritDoc}. */
     public String getHelp() {
         return "ctcp <target> <type> [arguments] - sends a CTCP message";
+    }
+    
+    /** {@inheritDoc} */
+    public List<String> getSuggestions(int arg, List<String> previousArgs) {
+        final List<String> res = new ArrayList<String>();
+        
+        if (arg == 1) {
+            res.add("VERSION");
+            res.add("ACTION");
+            res.add("USERINFO");
+            res.add("CLIENTINFO");
+            res.add("PING");
+            res.add("FINGER");
+            res.add("SOURCE");
+            res.add("TIME");
+        }
+        
+        return res;
     }
     
 }

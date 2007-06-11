@@ -25,13 +25,17 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.commandparser.IntelligentCommand;
 import com.dmdirc.plugins.PluginManager;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Allows the user to load a plugin.
  * @author chris
  */
-public final class LoadPlugin extends GlobalCommand {
+public final class LoadPlugin extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of LoadPlugin.
@@ -54,29 +58,40 @@ public final class LoadPlugin extends GlobalCommand {
     }
     
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public String getName() {
         return "loadplugin";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public boolean isPolyadic() {
         return false;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public int getArity() {
         return 1;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public String getHelp() {
         return "loadplugin <class> - loads the specified class as a plugin";
+    }
+
+    /** {@inheritDoc} */
+    public List<String> getSuggestions(int arg, List<String> previousArgs) {
+        final List<String> res = new ArrayList<String>();
+        
+        if (arg == 0) {
+            res.addAll(Arrays.asList(PluginManager.getPluginManager().getNames()));
+        }
+        
+        return res;
     }
     
 }
