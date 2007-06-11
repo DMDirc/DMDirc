@@ -23,6 +23,7 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.Config;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
@@ -30,6 +31,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.components.Frame;
 import com.dmdirc.ui.components.StatusBar;
 import com.dmdirc.ui.dialogs.AboutDialog;
 import com.dmdirc.ui.dialogs.ActionsManagerDialog;
@@ -58,6 +60,8 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -144,11 +148,16 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** status bar. */
     private StatusBar statusBar;
     
+    /** Menu item -> frame cache. */
+    final private Map<JMenuItem, FrameContainer> windowList;
+    
     /**
      * Creates new form MainFrame.
      */
     private MainFrame() {
         super();
+        
+        windowList = new HashMap<JMenuItem, FrameContainer>();
         
         initComponents();
         
@@ -604,44 +613,41 @@ public final class MainFrame extends JFrame implements WindowListener,
         toggleStateMenuItem.setText("Maximise");
         windowsMenu.add(toggleStateMenuItem);
         
-        /*
         menuItem = new JMenuItem();
         menuItem.setMnemonic('n');
         menuItem.setText("Minimise");
         menuItem.setActionCommand("Minimise");
         menuItem.addActionListener(this);
         windowsMenu.add(menuItem);
-         
+        
         menuItem = new JMenuItem();
         menuItem.setMnemonic('c');
         menuItem.setText("Close");
         menuItem.setActionCommand("Close");
         menuItem.addActionListener(this);
         windowsMenu.add(menuItem);
-         
+        
         menuItem = new JMenuItem();
         menuItem.setMnemonic('a');
         menuItem.setText("Close all");
         menuItem.setActionCommand("CloseAll");
         menuItem.addActionListener(this);
         windowsMenu.add(menuItem);
-         
+        
         windowsMenu.addSeparator();
-         
+        
         int i = 0;
         for (JInternalFrame frame : desktopPane.getAllFrames()) {
             if (i > 34) {
                 break;
             }
             menuItem = new JMenuItem();
-            if (frame.getTitle().length() > 30) {
-                menuItem.setText(frame.getTitle().substring(0, 30));
-            } else {
-                menuItem.setText(frame.getTitle());
-            }
+            menuItem.setText(((Frame) frame).getName());
+            menuItem.addActionListener(this);
+            windowList.put(menuItem, ((Frame) frame).getFrameParent());
             windowsMenu.add(menuItem);
             i++;
-        }*/
+        }
     }
     
     /**
@@ -658,18 +664,27 @@ public final class MainFrame extends JFrame implements WindowListener,
             PluginDialog.showPluginDialog();
         } else if (e.getActionCommand().equals("Actions")) {
             ActionsManagerDialog.showActionsManagerDialog();
-        } /* else if (e.getActionCommand().equals("Minimise")) {
-           
+        } else if (e.getActionCommand().equals("Minimise")) {
+            ((Frame) MainFrame.getMainFrame().getActiveFrame()).minimise();
         } else if (e.getActionCommand().equals("Close")) {
-           
+            ((Frame) MainFrame.getMainFrame().getActiveFrame()).close();
         } else if (e.getActionCommand().equals("CloseAll")) {
-           
-        }*/
+            ServerManager.getServerManager().closeAll();
+        } else if (e.getSource() instanceof JMenuItem) {
+            activateFrameFromMenu(windowList.get((JMenuItem) e.getSource()));
+        }
+    }
+    
+    /** Activates the frame selected in the window menu. */
+    private void activateFrameFromMenu(final FrameContainer frame) {
+        if (frame != null) {
+            frame.activateFrame();
+        }
     }
     
     /** Initialises UI Settings. */
     public static void initUISettings() {
-        final StringBuilder classNameBuilder = new StringBuilder();
+        final String lnfName = getLookAndFeel(Config.getOption("ui", "lookandfeel"));
         if (Config.hasOption("ui", "antialias")) {
             final String aaSetting = Config.getOption("ui", "antialias");
             System.setProperty("awt.useSystemAAFontSettings", aaSetting);
@@ -712,27 +727,39 @@ public final class MainFrame extends JFrame implements WindowListener,
             UIManager.put("Tree.drawVerticalLines", true);
             UIManager.put("Tree.background", Color.WHITE);
             
-            if (Config.hasOption("ui", "lookandfeel")) {
-                for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
-                    if (laf.getName().equals(Config.getOption("ui", "lookandfeel"))) {
-                        classNameBuilder.setLength(0);
-                        classNameBuilder.append(laf.getClassName());
-                        break;
-                    }
-                }
-                
-                if (classNameBuilder.length() != 0) {
-                    UIManager.setLookAndFeel(classNameBuilder.toString());
-                }
+            if (Config.hasOption("ui", "lookandfeel") && lnfName.length() != 0) {
+                UIManager.setLookAndFeel(lnfName);
             }
         } catch (InstantiationException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to set look and feel: " + classNameBuilder.toString(), ex);
+            Logger.error(ErrorLevel.ERROR, "Unable to set look and feel: " + lnfName, ex);
         } catch (ClassNotFoundException ex) {
-            Logger.error(ErrorLevel.ERROR, "Look and feel not available: " + classNameBuilder.toString(), ex);
+            Logger.error(ErrorLevel.ERROR, "Look and feel not available: " + lnfName, ex);
         } catch (UnsupportedLookAndFeelException ex) {
-            Logger.error(ErrorLevel.ERROR, "Look and feel not available: " + classNameBuilder.toString(), ex);
+            Logger.error(ErrorLevel.ERROR, "Look and feel not available: " + lnfName, ex);
         } catch (IllegalAccessException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to set look and feel: " + classNameBuilder.toString(), ex);
+            Logger.error(ErrorLevel.ERROR, "Unable to set look and feel: " + lnfName, ex);
         }
+    }
+    
+    /**
+     * Returns the class name of the look and feel from its display name.
+     *
+     * @param displayName Look and feel display name
+     *
+     * @return Look and feel class name or a zero length string
+     */
+    private static String getLookAndFeel(final String displayName) {
+        final StringBuilder classNameBuilder = new StringBuilder();
+        
+        if (displayName != null && !"".equals(displayName)) {
+            for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
+                if (laf.getName().equals(displayName)) {
+                    classNameBuilder.setLength(0);
+                    classNameBuilder.append(laf.getClassName());
+                    break;
+                }
+            }
+        }
+        return classNameBuilder.toString();
     }
 }

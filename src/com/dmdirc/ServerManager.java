@@ -107,6 +107,18 @@ public final class ServerManager {
     }
     
     /**
+     * Closes all servers with a default quit message.
+     */
+    public void closeAll() {
+        closing = true;
+        for (Server server : servers) {
+            server.close(server.getConfigManager().getOption("general", "quitmessage"));
+        }
+        closing = false;
+        servers.clear();
+    }
+    
+    /**
      * Closes all servers with the specified quit message.
      * @param message The quit message to send to the IRC servers
      */

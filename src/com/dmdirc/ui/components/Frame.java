@@ -57,6 +57,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -525,6 +526,15 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         return textPane;
     }
     
+    /** 
+     * Returns the name for this frame. 
+     * 
+     * @return Name of this frame
+     */
+    public final String getName() {
+        return parent.toString();
+    }
+    
     /**
      * Sets the frames input field.
      *
@@ -834,6 +844,24 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
             lines += (int) Math.ceil(splitLine.length() / getMaxLineLength());
         }
         return lines;
+    }
+    
+    /** Closes this frame. */
+    public void close() {
+        try {
+            setClosed(true);
+        } catch (PropertyVetoException ex) {
+            Logger.error(ErrorLevel.WARNING, "Unable to close frame", ex);
+        }
+    }
+    
+    /** Minimises the frame. */
+    public void minimise() {
+        try {
+            setIcon(true);
+        } catch (PropertyVetoException ex) {
+            Logger.error(ErrorLevel.WARNING, "Unable to close frame", ex);
+        }
     }
     
     /**
