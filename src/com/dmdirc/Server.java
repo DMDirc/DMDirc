@@ -312,7 +312,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * @return True iff the channel is known, false otherwise
      */
     public boolean hasChannel(final String channel) {
-        return channels.containsKey(channel.toLowerCase(Locale.getDefault()));
+        return channels.containsKey(parser.toLowerCase(channel));
     }
     
     /**
@@ -321,7 +321,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * @return The appropriate channel object
      */
     public Channel getChannel(final String channel) {
-        return channels.get(channel.toLowerCase(Locale.getDefault()));
+        return channels.get(parser.toLowerCase(channel));
     }
     
     /**
@@ -344,7 +344,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * @return True iff the query is known, false otherwise
      */
     public boolean hasQuery(final String query) {
-        return queries.containsKey(query.toLowerCase(Locale.getDefault()));
+        return queries.containsKey(parser.toLowerCase(query));
     }
     
     /**
@@ -353,7 +353,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * @return The appropriate query object
      */
     public Query getQuery(final String query) {
-        return queries.get(query.toLowerCase(Locale.getDefault()));
+        return queries.get(parser.toLowerCase(query));
     }
     
     /**
@@ -568,9 +568,9 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     public void delChannel(final String chan) {
         tabCompleter.removeEntry(chan);
         MainFrame.getMainFrame().getFrameManager().delChannel(
-                this, channels.get(chan.toLowerCase(Locale.getDefault())));
+                this, channels.get(parser.toLowerCase(chan)));
         if (!closing) {
-            channels.remove(chan.toLowerCase(Locale.getDefault()));
+            channels.remove(parser.toLowerCase(chan));
         }
     }
     
@@ -582,7 +582,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         final Channel newChan = new Channel(this, chan);
         
         tabCompleter.addEntry(chan.getName());
-        channels.put(chan.getName().toLowerCase(), newChan);
+        channels.put(parser.toLowerCase(chan.getName()), newChan);
         MainFrame.getMainFrame().getFrameManager().addChannel(this, newChan);
         
         SwingUtilities.invokeLater(new Runnable() {
@@ -600,7 +600,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         final Query newQuery = new Query(this, host);
         
         tabCompleter.addEntry(ClientInfo.parseHost(host));
-        queries.put(ClientInfo.parseHost(host).toLowerCase(), newQuery);
+        queries.put(parser.toLowerCase(ClientInfo.parseHost(host)), newQuery);
         MainFrame.getMainFrame().getFrameManager().addQuery(this, newQuery);
     }
     
@@ -611,9 +611,9 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     public void delQuery(final String host) {
         tabCompleter.removeEntry(ClientInfo.parseHost(host));
         MainFrame.getMainFrame().getFrameManager().delQuery(this,
-                queries.get(ClientInfo.parseHost(host).toLowerCase()));
+                queries.get(parser.toLowerCase(ClientInfo.parseHost(host))));
         if (!closing) {
-            queries.remove(ClientInfo.parseHost(host).toLowerCase());
+            queries.remove(parser.toLowerCase(ClientInfo.parseHost(host)));
         }
     }
     
@@ -715,7 +715,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     /** {@inheritDoc} */
     public void onPrivateMessage(final IRCParser tParser, final String sMessage,
             final String sHost) {
-        if (!queries.containsKey(ClientInfo.parseHost(sHost).toLowerCase())) {
+        if (!queries.containsKey(parser.toLowerCase(ClientInfo.parseHost(sHost)))) {
             addQuery(sHost);
         }
     }
@@ -723,7 +723,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     /** {@inheritDoc} */
     public void onPrivateAction(final IRCParser tParser, final String sMessage,
             final String sHost) {
-        if (!queries.containsKey(ClientInfo.parseHost(sHost).toLowerCase())) {
+        if (!queries.containsKey(parser.toLowerCase(ClientInfo.parseHost(sHost)))) {
             addQuery(sHost);
         }
     }
@@ -774,7 +774,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         final String lastNick = tParser.getMyNickname();
         
         // If our last nick is still valid, ignore the in use message
-        if (!lastNick.equalsIgnoreCase(nickname)) {
+        if (!parser.equalsIgnoreCase(lastNick, nickname)) {
             return;
         }
         
@@ -784,10 +784,10 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
             final String[] alts = profile.getOption("profile", "altnicks").split("\n");
             int offset = -1;
             
-            if (!lastNick.equalsIgnoreCase(profile.getOption("profile", "nickname"))) {
+            if (!parser.equalsIgnoreCase(lastNick, profile.getOption("profile", "nickname"))) {
                 for (String alt : alts) {
                     offset++;
-                    if (alt.equalsIgnoreCase(lastNick)) {
+                    if (parser.equalsIgnoreCase(alt, lastNick)) {
                         break;
                     }
                 }

@@ -95,7 +95,7 @@ public final class Ignore extends ServerCommand {
             
         } else if (args[0].toLowerCase().equals("remove") && args.length > 1) {
             
-            final String host = implodeArgs(1, args).toLowerCase();
+            final String host = server.getParser().toLowerCase(implodeArgs(1, args));
             
             final StringBuffer newlist = new StringBuffer();
             boolean found = false;
@@ -105,7 +105,7 @@ public final class Ignore extends ServerCommand {
                 
                 
                 for (String entry : list.split("\n")) {
-                    if (entry.toLowerCase().equals(host)) {
+                    if (server.getParser().toLowerCase(entry).equals(host)) {
                         found = true;
                     } else {
                         if (newlist.length() > 0) {
@@ -131,7 +131,6 @@ public final class Ignore extends ServerCommand {
         server.updateIgnoreList();
         
     }
-    
     
     /** {@inheritDoc}. */
     public String getName() {
