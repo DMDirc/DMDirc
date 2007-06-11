@@ -62,7 +62,7 @@ public abstract class ResourceManager {
                     getResource("com/dmdirc/ui/MainFrame.class").getPath();
             
             try {
-                path = java.net.URLDecoder.decode(path, "UTF-16");
+                path = java.net.URLDecoder.decode(path, "UTF-8");
             } catch (UnsupportedEncodingException ex) {
                 Logger.error(ErrorLevel.ERROR, "Unable to decode path", ex);
             }
