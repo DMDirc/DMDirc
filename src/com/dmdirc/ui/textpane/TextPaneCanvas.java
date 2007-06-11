@@ -185,7 +185,13 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                 
                 // Work out the number of lines this will take
                 while (lineMeasurer.getPosition() < paragraphEnd) {
-                    final TextLayout layout = lineMeasurer.nextLayout(formatWidth - 6);
+                    final TextLayout layout;
+                    if (formatWidth - 6 < 0) {
+                        layout = lineMeasurer.nextLayout(0); 
+                    } else { 
+                        layout = lineMeasurer.nextLayout(formatWidth - 6); 
+                    }
+                    
                     if (firstLineHeight == 0) {
                         firstLineHeight = (int) layout.getBounds().getHeight() + 3;
                     }
@@ -214,7 +220,12 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                 // Loop through each wrapped line
                 while (lineMeasurer.getPosition() < paragraphEnd) {
                     
-                    final TextLayout layout = lineMeasurer.nextLayout(formatWidth - 6);
+                    final TextLayout layout;
+                    if (formatWidth - 6 < 0) {
+                        layout = lineMeasurer.nextLayout(0); 
+                    } else { 
+                        layout = lineMeasurer.nextLayout(formatWidth - 6); 
+                    }
                     
                     // Calculate the Y offset
                     if (wrappedLine == 1) {

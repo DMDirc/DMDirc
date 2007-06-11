@@ -134,7 +134,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     private JMenu windowsMenu;
     
     /** Main panel. */
-    private JPanel jPanel1;
+    private JPanel frameManagerPanel;
     
     /** Add server menu item. */
     private JMenuItem miAddServer;
@@ -171,7 +171,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         setIconImage(imageIcon.getImage());
         
         frameManager = new TreeFrameManager();
-        frameManager.setParent(jPanel1);
+        frameManager.setParent(frameManagerPanel);
         
         // Get the Location of the mouse pointer
         final PointerInfo myPointerInfo = MouseInfo.getPointerInfo();
@@ -475,7 +475,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     private void initComponents() {
         JSplitPane mainSplitPane;
         
-        jPanel1 = new JPanel();
+        frameManagerPanel = new JPanel();
         desktopPane = new JDesktopPane();
         desktopPane.setBackground(new Color(238, 238, 238));
         mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -499,16 +499,19 @@ public final class MainFrame extends JFrame implements WindowListener,
         mainSplitPane.setDividerSize(SMALL_BORDER);
         mainSplitPane.setOneTouchExpandable(false);
         
-        mainSplitPane.setLeftComponent(jPanel1);
+        mainSplitPane.setLeftComponent(frameManagerPanel);
         mainSplitPane.setRightComponent(desktopPane);
         
-        mainSplitPane.setDividerLocation(155);
+        frameManagerPanel.setMinimumSize(new Dimension(150, Integer.MAX_VALUE));
+        desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+        desktopPane.setMinimumSize(new Dimension(300, Integer.MAX_VALUE));
+
         mainSplitPane.setResizeWeight(0);
         mainSplitPane.setContinuousLayout(true);
         
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setTitle("DMDirc");
-        jPanel1.setBorder(
+        frameManagerPanel.setBorder(
                 BorderFactory.createEmptyBorder(0, SMALL_BORDER, 0, 0));
         desktopPane.setBorder(
                 BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));

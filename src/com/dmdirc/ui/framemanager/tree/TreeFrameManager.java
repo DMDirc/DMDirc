@@ -26,7 +26,6 @@ import com.dmdirc.Channel;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
-import com.dmdirc.Raw;
 import com.dmdirc.Server;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -119,6 +118,9 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * The object that is currently selected.
      */
     private FrameContainer selected;
+    
+    /** Parent JComponent. */
+    private JComponent parent;
     
     /**
      *node under right click operation.
@@ -277,6 +279,8 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
                 Config.getOptionColor("ui", "backgroundcolour", Color.WHITE)));
         tree.setForeground(Config.getOptionColor("treeview", "foregroundcolour",
                 Config.getOptionColor("ui", "foregroundcolour", Color.BLACK)));
+        
+        this.parent = parent;
     }
     
     /** {@inheritDoc} */
@@ -336,6 +340,15 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     /** {@inheritDoc} */
     public void delCustom(final Server server, final FrameContainer window) {
         model.removeNodeFromParent(nodes.get(window));
+    }
+    
+    /** 
+     * Returns the maximum size a node can be without causing scrolling.
+     *
+     * @return Maximum node width
+     */
+    public int getNodeWidth() {
+        return parent.getWidth() - 25;
     }
     
     /**
