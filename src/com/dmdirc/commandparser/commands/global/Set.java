@@ -26,12 +26,15 @@ import com.dmdirc.Config;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.commandparser.IntelligentCommand;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The set command allows the user to inspect and change global config settings.
  * @author chris
  */
-public final class Set extends GlobalCommand {
+public final class Set extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of Set.
@@ -46,17 +49,17 @@ public final class Set extends GlobalCommand {
     public void execute(final CommandWindow origin, final boolean isSilent,
             final String... args) {
         switch (args.length) {
-            case 0:
-                doDomainList(origin, isSilent);
-                break;
-            case 1:
-                doOptionsList(origin, isSilent, args[0]);
-                break;
-            case 2:
-                doShowOption(origin, isSilent, args[0], args[1]);
-                break;
-            default:
-                doSetOption(origin, isSilent, args[0], args[1], implodeArgs(2, args));
+        case 0:
+            doDomainList(origin, isSilent);
+            break;
+        case 1:
+            doOptionsList(origin, isSilent, args[0]);
+            break;
+        case 2:
+            doShowOption(origin, isSilent, args[0], args[1]);
+            break;
+        default:
+            doSetOption(origin, isSilent, args[0], args[1], implodeArgs(2, args));
         }
     }
     
@@ -142,29 +145,42 @@ public final class Set extends GlobalCommand {
         sendLine(origin, isSilent, "commandOutput", domain + "." + option + " has been set to: " + newvalue);
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public String getName() {
         return "set";
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public boolean showInHelp() {
         return true;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public boolean isPolyadic() {
         return true;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public int getArity() {
         return 0;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public String getHelp() {
         return "set [domain [option [newvalue]]] - inspect or change configuration settings";
+    }
+    
+    /** {@inheritDoc} */
+    public List<String> getSuggestions(int arg, List<String> previousArgs) {
+        final List<String> res = new ArrayList<String>();
+        
+        if (arg == 0) {
+            res.addAll(Config.getDomains());
+        } else if (arg == 1 && previousArgs.size() >= 1) {
+            res.addAll(Config.getOptions(previousArgs.get(0)));
+        }
+        
+        return res;
     }
     
 }

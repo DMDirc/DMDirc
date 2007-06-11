@@ -60,13 +60,24 @@ public final class TabCompleter {
     
     /**
      * Attempts to complete the partial string.
+     * 
      * @param partial The string to tab complete
+     * @param additionals A list of additional strings to use
      * @return A TabCompleterResult containing any matches found
      */
-    public TabCompleterResult complete(final String partial) {
+    public TabCompleterResult complete(final String partial,
+            final List<String> additionals) {
 	final TabCompleterResult result = new TabCompleterResult();
+        
+        final List<String> targets = new ArrayList<String>();
+        
+        if (additionals != null) { 
+            targets.addAll(additionals);
+        }
+        
+        targets.addAll(entries);
 	
-	for (String entry : entries) {
+	for (String entry : targets) {
 	    if (Config.getOptionBool("tabcompletion", "casesensitive")) {
 		if (entry.startsWith(partial)) {
 		    result.addResult(entry);
@@ -80,7 +91,7 @@ public final class TabCompleter {
 	}
 	
 	if (parent != null) {
-	    result.merge(parent.complete(partial));
+	    result.merge(parent.complete(partial, null));
 	}
 	return result;
     }

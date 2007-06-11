@@ -23,8 +23,11 @@
 package com.dmdirc.ui.input;
 
 import com.dmdirc.Config;
+import com.dmdirc.commandparser.Command;
+import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.commandparser.IntelligentCommand;
 import com.dmdirc.ui.components.ColourPickerDialog;
 import com.dmdirc.ui.messages.Styliser;
 
@@ -32,6 +35,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JTextField;
 
@@ -177,46 +182,46 @@ public final class InputHandler implements KeyListener, ActionListener {
      */
     private void handleControlKey(final KeyEvent keyEvent) {
         switch (keyEvent.getKeyCode()) {
-            case KeyEvent.VK_B:
-                addControlCode(Styliser.CODE_BOLD, POSITION_END);
-                break;
-                
-            case KeyEvent.VK_U:
-                addControlCode(Styliser.CODE_UNDERLINE, POSITION_END);
-                break;
-                
-            case KeyEvent.VK_O:
-                addControlCode(Styliser.CODE_STOP, POSITION_END);
-                break;
-                
-            case KeyEvent.VK_I:
-                addControlCode(Styliser.CODE_ITALIC, POSITION_END);
-                break;
-                
-            case KeyEvent.VK_F:
-                if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) != 0) {
-                    addControlCode(Styliser.CODE_FIXED, POSITION_END);
-                }
-                break;
-                
-            case KeyEvent.VK_K:
-                if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) == 0) {
-                    addControlCode(Styliser.CODE_COLOUR, POSITION_START);
-                    showColourPicker(true, false);
-                } else {
-                    addControlCode(Styliser.CODE_HEXCOLOUR, POSITION_START);
-                    showColourPicker(false, true);
-                }
-                break;
-                
-            case KeyEvent.VK_ENTER:
-                commandParser.parseCommandCtrl(parentWindow, target.getText());
-                addToBuffer(target.getText());
-                break;
-                
-            default:
-                /* Do nothing. */
-                break;
+        case KeyEvent.VK_B:
+            addControlCode(Styliser.CODE_BOLD, POSITION_END);
+            break;
+            
+        case KeyEvent.VK_U:
+            addControlCode(Styliser.CODE_UNDERLINE, POSITION_END);
+            break;
+            
+        case KeyEvent.VK_O:
+            addControlCode(Styliser.CODE_STOP, POSITION_END);
+            break;
+            
+        case KeyEvent.VK_I:
+            addControlCode(Styliser.CODE_ITALIC, POSITION_END);
+            break;
+            
+        case KeyEvent.VK_F:
+            if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) != 0) {
+                addControlCode(Styliser.CODE_FIXED, POSITION_END);
+            }
+            break;
+            
+        case KeyEvent.VK_K:
+            if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) == 0) {
+                addControlCode(Styliser.CODE_COLOUR, POSITION_START);
+                showColourPicker(true, false);
+            } else {
+                addControlCode(Styliser.CODE_HEXCOLOUR, POSITION_START);
+                showColourPicker(false, true);
+            }
+            break;
+            
+        case KeyEvent.VK_ENTER:
+            commandParser.parseCommandCtrl(parentWindow, target.getText());
+            addToBuffer(target.getText());
+            break;
+            
+        default:
+            /* Do nothing. */
+            break;
         }
     }
     
@@ -277,17 +282,68 @@ public final class InputHandler implements KeyListener, ActionListener {
             return;
         }
         
+        if (start > 0 && text.charAt(0) == Config.getCommandChar().charAt(0)) {
+            doCommandTabCompletion(text, start, end);
+        } else {
+            doNormalTabCompletion(text, start, end, null);
+        }
+    }
+    
+    /**
+     * Handles potentially intelligent tab completion.
+     *
+     * @param text The text that is being completed
+     * @param start The start index of the word we're completing
+     * @param end The end index of the word we're completing
+     */
+    private void doCommandTabCompletion(final String text, final int start,
+            final int end) {
+        final String signature = text.substring(1, text.indexOf(' '));
+        final Command command = CommandManager.getCommand(signature);
+        
+        if (command instanceof IntelligentCommand) {
+            int args = 0;
+            int lastArg = signature.length() + 2;
+            final List<String> previousArgs = new ArrayList<String>();
+            
+            final String word = text.substring(start, end);
+            
+            for (int i = lastArg; i < start; i++) {
+                if (text.charAt(i) == ' ') {
+                    args++;
+                    previousArgs.add(text.substring(lastArg, i));
+                    lastArg = i + 1;
+                }
+            }
+            
+            final List<String> results = ((IntelligentCommand) command).getSuggestions(args, previousArgs);
+            
+            doNormalTabCompletion(text, start, end, results);
+        } else {
+            doNormalTabCompletion(text, start, end, null);
+        }
+    }
+    
+    /**
+     * Handles normal (non-intelligent-command) tab completion.
+     *
+     * @param text The text that is being completed
+     * @param start The start index of the word we're completing
+     * @param end The end index of the word we're completing
+     * @param additional A list of additional strings to use
+     */
+    private void doNormalTabCompletion(final String text, final int start,
+            final int end, final List<String> additional) {
         final String word = text.substring(start, end);
         
-        final TabCompleterResult res = tabCompleter.complete(word);
+        final TabCompleterResult res = tabCompleter.complete(word, additional);
         
         if (res.getResultCount() == 0) {
             // TODO: Beep, or something
         } else if (res.getResultCount() == 1) {
             // One result, just replace it
             final String result = res.getResults().get(0);
-            text = text.substring(0, start) + result + text.substring(end);
-            target.setText(text);
+            target.setText(text.substring(0, start) + result + text.substring(end));
             target.setCaretPosition(start + result.length());
         } else {
             // Multiple results
@@ -295,8 +351,7 @@ public final class InputHandler implements KeyListener, ActionListener {
             if (sub.equalsIgnoreCase(word)) {
                 // TODO: Beep, display possible answers, etc
             } else {
-                text = text.substring(0, start) + sub + text.substring(end);
-                target.setText(text);
+                target.setText(text.substring(0, start) + sub + text.substring(end));
                 target.setCaretPosition(start + sub.length());
             }
         }

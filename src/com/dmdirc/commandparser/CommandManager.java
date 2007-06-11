@@ -368,6 +368,25 @@ public final class CommandManager {
     }
     
     /**
+     * Retrieves the command identified by the specified signature, regardless
+     * of type.
+     * 
+     * @param signature The signature to look for
+     * @return A command with a matching signature, or null if none were found
+     */
+    public static Command getCommand(final String signature) {
+        if (getGlobalCommand(signature) != null) {
+            return (Command) getGlobalCommand(signature);
+        } else if (getServerCommand(signature) != null) {
+            return (Command) getServerCommand(signature);
+        } else if (getChannelCommand(signature) != null) {
+            return (Command) getChannelCommand(signature);
+        } else {
+            return (Command) getChannelCommand(signature);
+        }
+    }
+    
+    /**
      * Retrieves the server command identified by the specified signature.
      * @param signature The signature to look for
      * @return A server command with a matching signature, or null if none
