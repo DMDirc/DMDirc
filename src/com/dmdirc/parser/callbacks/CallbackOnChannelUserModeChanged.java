@@ -50,14 +50,17 @@ public final class CallbackOnChannelUserModeChanged extends CallbackObjectSpecif
 	 * @see IChannelUserModeChanged
 	 * @param cChannel Channel where modes were changed
 	 * @param cChangedClient Client being changed
-	 * @param cSetByClient Client chaning the modes (null if server)
+	 * @param mySetByClient Client chaning the modes (null if server)
 	 * @param sMode String representing mode change (ie +o)
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, final String sHost, final String sMode) {
-		if (cSetByClient == null && myParser.getCreateFake()) {
+	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo cChangedClient, final ChannelClientInfo mySetByClient, final String sHost, final String sMode) {
+		ChannelClientInfo cSetByClient;
+		if (mySetByClient == null && myParser.getCreateFake()) {
 			cSetByClient = new ChannelClientInfo(cChannel.getParser(), (new ClientInfo(cChannel.getParser(), sHost)).setFake(true) ,cChannel);
+		} else {
+			cSetByClient = mySetByClient;
 		}
 		boolean bResult = false;
 		IChannelUserModeChanged eMethod = null;

@@ -49,14 +49,17 @@ public final class CallbackOnChannelSingleModeChanged extends CallbackObjectSpec
 	 *
 	 * @see IChannelSingleModeChanged
 	 * @param cChannel Channel where modes were changed
-	 * @param cChannelClient Client chaning the modes (null if server)
+	 * @param myChannelClient Client chaning the modes (null if server)
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @param sModes String parsed (ie "+m" or "+k moo"
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
-		if (cChannelClient == null && myParser.getCreateFake()) {
+	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo myChannelClient, final String sHost, final String sModes) {
+		ChannelClientInfo cChannelClient;
+		if (myChannelClient == null && myParser.getCreateFake()) {
 			cChannelClient = new ChannelClientInfo(cChannel.getParser(), (new ClientInfo(cChannel.getParser(), sHost)).setFake(true) ,cChannel);
+		} else {
+			cChannelClient = myChannelClient;
 		}
 		boolean bResult = false;
 		IChannelSingleModeChanged eMethod = null;

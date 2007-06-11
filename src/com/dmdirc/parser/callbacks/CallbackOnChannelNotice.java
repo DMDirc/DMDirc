@@ -49,14 +49,17 @@ public final class CallbackOnChannelNotice extends CallbackObjectSpecific {
 	 *
 	 * @see IChannelNotice
 	 * @param cChannel Channel where the notice was sent to
-	 * @param cChannelClient ChannelClient who sent the notice (may be null if server)
+	 * @param myChannelClient ChannelClient who sent the notice (may be null if server)
 	 * @param sMessage notice contents
 	 * @param sHost Hostname of sender (or servername)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
-		if (cChannelClient == null && myParser.getCreateFake()) {
+	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo myChannelClient, final String sMessage, final String sHost) {
+		ChannelClientInfo cChannelClient;
+		if (myChannelClient == null && myParser.getCreateFake()) {
 			cChannelClient = new ChannelClientInfo(cChannel.getParser(), (new ClientInfo(cChannel.getParser(), sHost)).setFake(true) ,cChannel);
+		} else {
+			cChannelClient = myChannelClient;
 		}
 		boolean bResult = false;
 		IChannelNotice eMethod = null;

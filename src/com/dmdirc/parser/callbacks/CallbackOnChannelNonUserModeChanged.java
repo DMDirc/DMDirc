@@ -49,14 +49,17 @@ public final class CallbackOnChannelNonUserModeChanged extends CallbackObjectSpe
 	 *
 	 * @see IChannelNonUserModeChanged
 	 * @param cChannel Channel where modes were changed
-	 * @param cChannelClient Client changing the modes (null if server)
+	 * @param myChannelClient Client changing the modes (null if server)
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @param sModes Exact String parsed (not including user modes)
 	 * @return true if a callback was called, else false
 	 */
-	public boolean call(final ChannelInfo cChannel, ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
-		if (cChannelClient == null && myParser.getCreateFake()) {
+	public boolean call(final ChannelInfo cChannel, final ChannelClientInfo myChannelClient, final String sHost, final String sModes) {
+		ChannelClientInfo cChannelClient;
+		if (myChannelClient == null && myParser.getCreateFake()) {
 			cChannelClient = new ChannelClientInfo(cChannel.getParser(), (new ClientInfo(cChannel.getParser(), sHost)).setFake(true) ,cChannel);
+		} else {
+			cChannelClient = myChannelClient;
 		}
 		boolean bResult = false;
 		IChannelNonUserModeChanged eMethod = null;
