@@ -59,7 +59,7 @@ public final class ActionManager {
     
     /** Creates a new instance of ActionManager. */
     private ActionManager() {
-        
+        // Shouldn't be instansiated
     }
     
     /** Initialises the action manager. */
@@ -134,11 +134,24 @@ public final class ActionManager {
         } else {
             for (File file : dir.listFiles()) {
                 if (file.isDirectory()) {
-                    groups.put(file.getName(), new ArrayList<Action>());
+                    if (!isWrappedGroup(file.getName())) {
+                        groups.put(file.getName(), new ArrayList<Action>());
+                    }
+                    
                     loadActions(file);
                 }
             }
         }
+    }
+    
+    /**
+     * Determines whether the specified group name is one used by an action
+     * wrapper.
+     * @param name The group name to test
+     * @return True if the group is part of a wrapper, false otherwise
+     */
+    private static boolean isWrappedGroup(final String name) {
+        return name.equals("aliases") || name.equals("performs");
     }
     
     /**
@@ -168,11 +181,15 @@ public final class ActionManager {
             actions.get(trigger).add(action);
         }
         
-        if (!groups.containsKey(action.getGroup())) {
-            groups.put(action.getGroup(), new ArrayList<Action>());
+        if (isWrappedGroup(action.getGroup())) {
+            // TODO: Register with a wrapper
+        } else {
+            if (!groups.containsKey(action.getGroup())) {
+                groups.put(action.getGroup(), new ArrayList<Action>());
+            }
+            
+            groups.get(action.getGroup()).add(action);
         }
-        
-        groups.get(action.getGroup()).add(action);
     }
     
     /**
