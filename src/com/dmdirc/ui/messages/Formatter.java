@@ -133,6 +133,7 @@ public final class Formatter {
         defaultProperties.setProperty("channelMessage", "<%1$s%2$s> %5$s");
         defaultProperties.setProperty("channelHighlight", colour + "4<%1$s%2$s> %5$s");
         defaultProperties.setProperty("channelAction", colour + "6* %1$s%2$s %5$s");
+        defaultProperties.setProperty("channelHighlightAction", colour + "6* %1$s%2$s %5$s");
         defaultProperties.setProperty("channelSelfMessage", "<%1$s%2$s> %5$s");
         defaultProperties.setProperty("channelSelfAction", colour + "6* %1$s%2$s %5$s");
         defaultProperties.setProperty("channelSelfExternalMessage", "<%1$s%2$s> %5$s");

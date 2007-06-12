@@ -1,4 +1,4 @@
-trigger=CHANNEL_MESSAGE
+trigger=CHANNEL_ACTION
 conditions=1
 
 condition0-arg=2
@@ -7,4 +7,4 @@ condition0-comparison=STRING_CONTAINS
 condition0-target=${SERVER_MYNICKNAME}
 
 response=/notify $highlightcolour
-format=channelHighlight
+format=channelHighlightAction
