@@ -42,7 +42,6 @@ import com.dmdirc.Config;
 import com.dmdirc.Query;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelClientInfo;
@@ -55,7 +54,6 @@ import com.dmdirc.ui.components.Frame;
 import com.dmdirc.ui.components.PreferencesInterface;
 import com.dmdirc.ui.components.PreferencesPanel;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.ui.messages.ColourManager;
 
 /**
  * Adds logging facility to client.

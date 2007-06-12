@@ -93,14 +93,14 @@ public abstract class CommandParser {
             final String[] args = line.split(" ");
             final String command = args[0].substring(offset);
             String[] comargs;
-            
-            final Server server = origin.getContainer().getServer();
-            
+                        
             assert args.length > 0;
             
-            if (args.length >= 2 && parseChannel
-                    && (origin == null || server.getParser().isValidChannelName(args[1]))
+            if (args.length >= 2 && parseChannel && origin != null
+                    && origin.getContainer().getServer().getParser().isValidChannelName(args[1])
                     && CommandManager.isChannelCommand(command)) {
+                final Server server = origin.getContainer().getServer();
+                
                 if (server.hasChannel(args[1])) {
                     
                     final StringBuilder newLine = new StringBuilder();
