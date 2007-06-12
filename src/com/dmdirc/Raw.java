@@ -43,17 +43,15 @@ import javax.swing.ImageIcon;
  */
 public final class Raw extends FrameContainer implements IDataIn, IDataOut {
     
-    /**
-     * The server object that's being monitored.
-     */
+    /** The server object that's being monitored. */
     private Server server;
-    /**
-     * A serverframe instance used for displaying the raw data.
-     */
+    
+    /** A serverframe instance used for displaying the raw data.*/
     private ServerFrame frame;
     
     /**
      * Creates a new instance of Raw.
+     * 
      * @param newServer the server to monitor
      */
     public Raw(final Server newServer) {
@@ -102,34 +100,20 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
         server = null;
     }
     
-    /**
-     * Returns the internal frame belonging to this object.
-     * @return This object's internal frame
-     */
+    /** {@inheritDoc} */
     public CommandWindow getFrame() {
         return frame;
     }
     
-    /**
-     * Called when the parser receives a line of data. The data is simply
-     * logged to the raw window.
-     * @param parser A reference to the IRC parser
-     * @param data The data that was received
-     */
-    public void onDataIn(final IRCParser parser, final String data) {
-        addLine("rawIn", data);
+    /** {@inheritDoc} */
+    public void onDataIn(final IRCParser tParser, final String sData) {
+        addLine("rawIn", sData);
     }
     
-    /**
-     * Called when the parser receives a line of data. The data is simply
-     * logged to the raw window.
-     * @param parser A reference to the IRC parser
-     * @param data The data that was received
-     * @param fromParser true if sent from parser, false otherwise
-     */
-    public void onDataOut(final IRCParser parser, final String data,
-            final boolean fromParser) {
-        addLine("rawOut", data);
+    /** {@inheritDoc} */
+    public void onDataOut(final IRCParser tParser, final String sData,
+            final boolean bFromParser) {
+        addLine("rawOut", sData);
     }
     
     /**

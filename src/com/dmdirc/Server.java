@@ -68,7 +68,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -91,9 +90,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         IAwayState, IConnectError, IAwayStateOther, INickInUse, IPost005,
         INoticeAuth, IUserModeChanged {
     
-    /**
-     * The callbacks that should be registered for server instances.
-     */
+    /** The callbacks that should be registered for server instances. */
     private static final String[] CALLBACKS = {
         "OnChannelSelfJoin", "OnErrorInfo", "OnPrivateMessage", "OnPingSuccess",
         "OnPrivateAction", "OnPrivateCTCP", "OnPrivateNotice", "OnConnectError",
@@ -149,6 +146,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Creates a new instance of Server.
+     * 
      * @param server The hostname/ip of the server to connect to
      * @param port The port to connect to
      * @param password The server password
@@ -189,6 +187,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Connects to a new server with the specified details.
+     * 
      * @param server The hostname/ip of the server to connect to
      * @param port The port to connect to
      * @param password The server password
@@ -277,6 +276,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Reconnects to the IRC server with a specified reason.
+     * 
      * @param reason The quit reason to send
      */
     public void reconnect(final String reason) {
@@ -284,7 +284,9 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         connect(server, port, password, ssl, profile);
     }
     
-    /** Reconnects to the IRC server. */
+    /**
+     * Reconnects to the IRC server.
+     */
     public void reconnect() {
         reconnect(Config.getOption("general", "reconnectmessage"));
     }
@@ -308,6 +310,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Determines whether the server knows of the specified channel.
+     * 
      * @param channel The channel to be checked
      * @return True iff the channel is known, false otherwise
      */
@@ -317,6 +320,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Retrieves the specified channel belonging to this server.
+     * 
      * @param channel The channel to be retrieved
      * @return The appropriate channel object
      */
@@ -326,6 +330,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Retrieves a list of channel names belonging to this server.
+     * 
      * @return list of channel names belonging to this server
      */
     public List<String> getChannels() {
@@ -340,6 +345,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Determines whether the server knows of the specified query.
+     * 
      * @param query The query to be checked
      * @return True iff the query is known, false otherwise
      */
@@ -349,6 +355,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Retrieves the specified query belonging to this server.
+     * 
      * @param query The query to be retrieved
      * @return The appropriate query object
      */
@@ -358,6 +365,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Retrieves a list of queries belonging to this server.
+     * 
      * @return list of queries belonging to this server
      */
     public List<String> getQueries() {
@@ -372,6 +380,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Retrieves the raw window associated with this server.
+     * 
      * @return The raw window associated with this server.
      */
     public Raw getRaw() {
@@ -380,6 +389,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Retrieves the parser used for this connection.
+     * 
      * @return IRCParser this connection's parser
      */
     public IRCParser getParser() {
@@ -388,6 +398,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Retrieves the profile that's in use for this server.
+     * 
      * @return The profile in use by this server
      */
     public ConfigSource getProfile() {
@@ -396,6 +407,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Retrieves the name of this server.
+     * 
      * @return The name of this server
      */
     public String getName() {
@@ -404,6 +416,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Retrieves the name of this server's network.
+     * 
      * @return The name of this server's network
      */
     public String getNetwork() {
@@ -412,6 +425,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Retrieves the name of this server's IRCd.
+     * 
      * @return The name of this server's IRCd
      */
     public String getIrcd() {
@@ -420,6 +434,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Returns the current away status.
+     * 
      * @return True if the client is marked as away, false otherwise
      */
     public boolean isAway() {
@@ -428,6 +443,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Gets the current away message.
+     * 
      * @return Null if the client isn't away, or a textual away message if it is
      */
     public String getAwayMessage() {
@@ -436,6 +452,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Returns the tab completer for this connection.
+     * 
      * @return The tab completer for this server
      */
     public TabCompleter getTabCompleter() {
@@ -454,7 +471,8 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     }
     
     /**
-     * closes this server connection and associated windows.
+     * Closes this server connection and associated windows.
+     * 
      * @param reason reason for closing
      */
     public void close(final String reason) {
@@ -497,6 +515,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Disconnects from the server.
+     * 
      * @param reason disconnect reason
      */
     public void disconnect(final String reason) {
@@ -518,7 +537,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     }
     
     /**
-     * closes all open channel windows associated with this server.
+     * Closes all open channel windows associated with this server.
      */
     private void closeChannels() {
         final boolean wasClosing = closing;
@@ -540,7 +559,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     }
     
     /**
-     * closes all open query windows associated with this server.
+     * Closes all open query windows associated with this server.
      */
     private void closeQueries() {
         final boolean wasClosing = closing;
@@ -563,6 +582,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Removes a specific channel and window from this server.
+     * 
      * @param chan channel to remove
      */
     public void delChannel(final String chan) {
@@ -576,6 +596,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Adds a specific channel and window to this server.
+     * 
      * @param chan channel to add
      */
     private void addChannel(final ChannelInfo chan) {
@@ -594,6 +615,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Adds a query query to this server.
+     * 
      * @param host host of the remote client being queried
      */
     public void addQuery(final String host) {
@@ -606,6 +628,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Deletes a query from this server.
+     * 
      * @param host host of the remote client being queried
      */
     public void delQuery(final String host) {
@@ -637,6 +660,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Sets the specified frame as the most-recently activated.
+     * 
      * @param source The frame that was activated
      */
     public void setActiveFrame(final FrameContainer source) {
@@ -647,6 +671,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * Passes the arguments to the most recently activated frame for this
      * server. If the frame isn't know, or isn't visible, use this frame
      * instead.
+     * 
      * @param messageType The type of message to send
      * @param args The arguments for the message
      */
@@ -661,6 +686,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Passes the arguments to all frames for this server.
+     * 
      * @param messageType The type of message to send
      * @param args The arguments of the message
      */
@@ -681,6 +707,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * Handles general server notifications (i.e., ones note tied to a
      * specific window). The user can select where the notifications should
      * go in their config.
+     * 
      * @param messageType The type of message that is being sent
      * @param args The arguments for the message
      */
@@ -740,6 +767,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Replies to an incoming CTCP message.
+     * 
      * @param source The source of the message
      * @param type The CTCP type
      * @param args The CTCP arguments
@@ -1029,6 +1057,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     
     /**
      * Returns this server's name.
+     * 
      * @return A string representation of this server (i.e., its name)
      */
     public String toString() {

@@ -396,24 +396,12 @@ public final class Config {
     private static void initialise() {
         
         properties = getDefaults();
-        
-        final File oldFile = new File(getConfigDir() + "dmdirc.xml");
-        
+                
         final File file = new File(getConfigFile());
         
         if (file.exists()) {
             try {
                 properties.load(new FileInputStream(file));
-            } catch (InvalidPropertiesFormatException ex) {
-                Logger.error(ErrorLevel.TRIVIAL, "Invalid properties file", ex);
-            } catch (FileNotFoundException ex) {
-                Logger.error(ErrorLevel.TRIVIAL, "No config file, using defaults");
-            } catch (IOException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to load config file", ex);
-            }
-        } else if (oldFile.exists()) {
-            try {
-                properties.loadFromXML(new FileInputStream(oldFile));
             } catch (InvalidPropertiesFormatException ex) {
                 Logger.error(ErrorLevel.TRIVIAL, "Invalid properties file", ex);
             } catch (FileNotFoundException ex) {

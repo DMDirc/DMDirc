@@ -30,6 +30,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.parser.IRCParser;
+import com.dmdirc.parser.callbacks.CallbackManager;
 import com.dmdirc.parser.callbacks.CallbackNotFound;
 import com.dmdirc.parser.callbacks.interfaces.INickChanged;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
@@ -51,28 +52,21 @@ import javax.swing.ImageIcon;
 public final class Query extends FrameContainer implements IPrivateAction,
         IPrivateMessage, INickChanged {
     
-    /**
-     * The Server this Query is on.
-     */
+    /** The Server this Query is on. */
     private Server server;
     
-    /**
-     * The ServerFrame used for this Query.
-     */
+    /** The QueryFrame used for this Query. */
     private QueryFrame frame;
     
-    /**
-     * The full host of the client associated with this Query.
-     */
+    /** The full host of the client associated with this Query. */
     private String host;
     
-    /**
-     * The tab completer for this frame.
-     */
+    /** The tab completer for the query frame. */
     private final TabCompleter tabCompleter;
     
     /**
      * Creates a new instance of Query.
+     * 
      * @param newHost host of the remove client
      * @param newServer The server object that this Query belongs to
      */
@@ -116,6 +110,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Returns the internal frame belonging to this object.
+     * 
      * @return This object's internal frame
      */
     public CommandWindow getFrame() {
@@ -124,6 +119,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Returns the tab completer for this query.
+     * 
      * @return This query's tab completer
      */
     public TabCompleter getTabCompleter() {
@@ -132,6 +128,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Sends a private message to the remote user.
+     * 
      * @param line message text to send
      */
     public void sendLine(final String line) {
@@ -154,6 +151,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Sends a private action to the remote user.
+     * 
      * @param action action text to send
      */
     public void sendAction(final String action) {
@@ -175,6 +173,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Handles a private message event from the parser.
+     * 
      * @param parser Parser receiving the event
      * @param message message received
      * @param remoteHost remote user host
@@ -194,6 +193,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Handles a private action event from the parser.
+     * 
      * @param parser Parser receiving the event
      * @param message message received
      * @param remoteHost remote host
@@ -228,29 +228,37 @@ public final class Query extends FrameContainer implements IPrivateAction,
      * Reregisters query callbacks. Called when reconnecting to the server.
      */
     public void reregister() {
+        final CallbackManager callbackManager = server.getParser().getCallbackManager();
+        
         try {
-            server.getParser().getCallbackManager().addCallback("onPrivateAction", this, ClientInfo.parseHost(host));
-            server.getParser().getCallbackManager().addCallback("onPrivateMessage", this, ClientInfo.parseHost(host));
-            server.getParser().getCallbackManager().addCallback("onNickChanged", this);
+            callbackManager.addCallback("onPrivateAction", this, ClientInfo.parseHost(host));
+            callbackManager.addCallback("onPrivateMessage", this, ClientInfo.parseHost(host));
+            callbackManager.addCallback("onNickChanged", this);
         } catch (CallbackNotFound ex) {
             Logger.error(ErrorLevel.ERROR, "Unable to get query events", ex);
         }
     }
     
     /** {@inheritDoc} */
-    public void onNickChanged(final IRCParser parser, final ClientInfo client,
-            final String oldNick) {
-        if (oldNick.equals(ClientInfo.parseHost(host))) {
-            server.getParser().getCallbackManager().delCallback("onPrivateAction", this);
-            server.getParser().getCallbackManager().delCallback("onPrivateMessage", this);
+    public void onNickChanged(final IRCParser tParser, final ClientInfo cClient,
+            final String sOldNick) {
+        if (sOldNick.equals(ClientInfo.parseHost(host))) {
+            final CallbackManager callbackManager = server.getParser().getCallbackManager();
+            
+            callbackManager.delCallback("onPrivateAction", this);
+            callbackManager.delCallback("onPrivateMessage", this);
+            
             try {
-                server.getParser().getCallbackManager().addCallback("onPrivateAction", this, client.getNickname());
-                server.getParser().getCallbackManager().addCallback("onPrivateMessage", this, client.getNickname());
+                callbackManager.addCallback("onPrivateAction", this, cClient.getNickname());
+                callbackManager.addCallback("onPrivateMessage", this, cClient.getNickname());
             } catch (CallbackNotFound ex) {
-                Logger.error(ErrorLevel.FATAL, "Unable to get query events", ex);
+                Logger.error(ErrorLevel.ERROR, "Unable to get query events", ex);
             }
-            frame.addLine("queryNickChanged", oldNick, client.getIdent(), client.getHost(), client.getNickname());
-            host = client.getNickname() + "!" + client.getIdent() + "@" + client.getHost();
+            
+            // TODO: Action hook!
+            frame.addLine("queryNickChanged", sOldNick, cClient.getIdent(), 
+                    cClient.getHost(), cClient.getNickname());
+            host = cClient.getNickname() + "!" + cClient.getIdent() + "@" + cClient.getHost();
             sendNotification();
             updateTitle();
         }
@@ -258,6 +266,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Returns the Server assocaited with this query.
+     * 
      * @return asscoaited Server
      */
     public Server getServer() {
@@ -283,6 +292,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Returns this query's name.
+     * 
      * @return A string representation of this query (i.e., the user's name)
      */
     public String toString() {
@@ -291,6 +301,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Returns the host that this query is with.
+     * 
      * @return The full host that this query is with
      */
     public String getHost() {

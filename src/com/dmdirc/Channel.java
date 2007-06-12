@@ -365,7 +365,9 @@ public final class Channel extends FrameContainer implements IChannelMessage,
     /**
      * Ensures that a channel client's map is set up correctly.
      * @param target The ChannelClientInfo to check
+     * @deprecated No longer needed, parser instansiates
      */
+    @Deprecated
     private void mapClient(final ChannelClientInfo target) {
         if (target.getMap() == null) {
             target.setMap(new HashMap<ChannelClientProperty, Object>());
@@ -382,17 +384,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         }
     }
     
-    /**
-     * Called whenever a message is sent to this channel. NB that the ChannelClient
-     * passed may be null if the message was not sent by a client on the channel
-     * (i.e., it was sent by a server, or a client outside of the channel). In these
-     * cases the full host is used instead.
-     * @param tParser A reference to the IRC Parser for this server
-     * @param cChannel A reference to the ChannelInfo object for this channel
-     * @param cChannelClient A reference to the ChannelClient object that sent the message
-     * @param sMessage The message that was sent
-     * @param sHost The full host of the sender.
-     */
+    /** {@inheritDoc} */
     public void onChannelMessage(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
         
@@ -411,14 +403,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         frame.addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
     }
     
-    /**
-     * Called when an action is sent to the channel.
-     * @param tParser A reference to the IRC Parser for this server
-     * @param cChannel A reference to the ChannelInfo object for this channel
-     * @param cChannelClient A reference to the client that sent the action
-     * @param sMessage The text of the action
-     * @param sHost The host of the performer (lest it wasn't an actual client)
-     */
+    /** {@inheritDoc} */
     public void onChannelAction(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sMessage, final String sHost) {
         final String[] parts = getDetails(cChannelClient);
@@ -435,12 +420,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         frame.addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
     }
     
-    /**
-     * Called when the parser receives a NAMES reply from the server. This means that
-     * the nicklist in the ChannelFrame needs to be updated.
-     * @param tParser A reference to the IRC Parser for this server
-     * @param cChannel A reference to the ChannelInfo object for this channel
-     */
+    /** {@inheritDoc} */
     public void onChannelGotNames(final IRCParser tParser, final ChannelInfo cChannel) {
         
         frame.updateNames(channelInfo.getChannelClients());
@@ -458,14 +438,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         ActionManager.processEvent(CoreActionType.CHANNEL_GOTNAMES, null, this);
     }
     
-    /**
-     * Called when the channel topic is changed. Changes the title of the channel
-     * frame, and also of the main frame if the channel is maximised and active.
-     * @param tParser A reference to the IRC Parser for this server
-     * @param cChannel A reference to the ChannelInfo object for this channel
-     * @param bIsJoinTopic Whether this is the topic received when we joined the
-     * channel or not
-     */
+    /** {@inheritDoc} */
     public void onChannelTopic(final IRCParser tParser, final ChannelInfo cChannel,
             final boolean bIsJoinTopic) {
         if (bIsJoinTopic) {
@@ -490,13 +463,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         updateTitle();
     }
     
-    /**
-     * Called when a new client joins the channel. Adds the client to the listbox
-     * in the channel frame.
-     * @param tParser A reference to the IRC Parser for this server
-     * @param cChannel A reference to the ChannelInfo object for this channel
-     * @param cChannelClient The client that has just joined
-     */
+    /** {@inheritDoc} */
     public void onChannelJoin(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient) {
         final ClientInfo client = cChannelClient.getClient();
@@ -514,14 +481,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         tabCompleter.addEntry(cChannelClient.getNickname());
     }
     
-    /**
-     * Called when a client parts the channel. Removes the client from the listbox
-     * in the channel frame.
-     * @param tParser A reference to the IRC Parser for this server
-     * @param cChannel A reference to the ChannelInfo object for this channel
-     * @param cChannelClient The client that just parted
-     * @param sReason The reason specified when the client parted
-     */
+    /** {@inheritDoc} */
     public void onChannelPart(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
         final ClientInfo client = cChannelClient.getClient();
@@ -558,16 +518,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         tabCompleter.removeEntry(cChannelClient.getNickname());
     }
     
-    /**
-     * Called when a client is kicked from the channel. The victim is removed
-     * from the channelframe's listbox.
-     * @param tParser A reference to the IRC Parser for this server
-     * @param cChannel A reference to the ChannelInfo object for this channel
-     * @param cKickedClient A reference to the client that was kicked
-     * @param cKickedByClient A reference to the client that did the kicking
-     * @param sReason The reason specified in the kick message
-     * @param sKickedByHost The host of the kicker (in case it wasn't an actual client)
-     */
+    /** {@inheritDoc} */
     public void onChannelKick(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cKickedClient, final ChannelClientInfo cKickedByClient,
             final String sReason, final String sKickedByHost) {
@@ -603,14 +554,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         }
     }
     
-    /**
-     * Called when a client that was present on this channel has disconnected
-     * from the IRC server (or been netsplit).
-     * @param tParser A reference to the IRC Parser for this server
-     * @param cChannel A reference to the ChannelInfo object for this channel
-     * @param cChannelClient A reference to the client that has quit
-     * @param sReason The reason specified in the client's quit message
-     */
+    /** {@inheritDoc} */
     public void onChannelQuit(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sReason) {
         final ClientInfo client = cChannelClient.getClient();
@@ -636,13 +580,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         tabCompleter.removeEntry(cChannelClient.getNickname());
     }
     
-    /**
-     * Called when someone on the channel changes their nickname.
-     * @param tParser A reference to the IRC parser for this server
-     * @param cChannel A reference to the CHannelInfo object for this channel
-     * @param cChannelClient The client that changed nickname
-     * @param sOldNick The old nickname of the client
-     */
+    /** {@inheritDoc} */
     public void onChannelNickChanged(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sOldNick) {
         final String modes = cChannelClient.getImportantModePrefix();
@@ -664,14 +602,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         frame.updateNames();
     }
     
-    /**
-     * Called when modes are changed on the channel.
-     * @param tParser A reference to the IRC parser for this server
-     * @param cChannel A reference to the ChannelInfo object for this channel
-     * @param cChannelClient The client that set the modes
-     * @param sHost the host of the client that set the modes
-     * @param sModes the modes that were set
-     */
+    /** {@inheritDoc} */
     public void onChannelModeChanged(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
         if (sHost.length() == 0) {
@@ -707,16 +638,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         frame.updateNames();
     }
     
-    /**
-     * Called when a mode has been changed on a user. Used for custom mode
-     * formats.
-     * @param tParser A reference to the IRC parser for this server
-     * @param cChannel A reference to the ChannelInfo object for this channel
-     * @param cChangedClient The client whose mode was changed
-     * @param cSetByClient The client who made the change
-     * @param sHost The hostname of the setter
-     * @param sMode The mode that has been changed
-     */
+    /** {@inheritDoc} */
     public void onChannelUserModeChanged(final IRCParser tParser,
             final ChannelInfo cChannel, final ChannelClientInfo cChangedClient,
             final ChannelClientInfo cSetByClient, final String sHost,
@@ -744,15 +666,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
                 this, cSetByClient, cChangedClient, sMode);
     }
     
-    /**
-     * Handles a channel CTCP.
-     * @param tParser The IRC parser for this server
-     * @param cChannel This channel's ChannelInfo object
-     * @param cChannelClient The source of the CTCP
-     * @param sType The CTCP type
-     * @param sMessage The CTCP contents (if any)
-     * @param sHost The full host of the source
-     */
+    /** {@inheritDoc} */
     public void onChannelCTCP(final IRCParser tParser,
             final ChannelInfo cChannel, final ChannelClientInfo cChannelClient,
             final String sType, final String sMessage, final String sHost) {

@@ -32,13 +32,12 @@ import javax.swing.JInternalFrame;
 /**
  * The ServerManager maintains a list of all servers, and provides methods to
  * search or iterate over them.
+ * 
  * @author chris
  */
 public final class ServerManager {
     
-    /**
-     * Singleton instance of ServerManager.
-     */
+    /** Singleton instance of ServerManager. */
     private static ServerManager me;
     
     /**
@@ -47,17 +46,18 @@ public final class ServerManager {
      */
     private boolean closing;
     
-    /**
-     * All servers that currently exist.
-     */
+    /** All servers that currently exist. */
     private final List<Server> servers = new ArrayList<Server>();
     
-    /** Creates a new instance of ServerManager. */
+    /**
+     * Creates a new instance of ServerManager.
+     */
     private ServerManager() {
     }
     
     /**
      * Returns the singleton instance of ServerManager.
+     * 
      * @return Instance of ServerManager
      */
     public static synchronized ServerManager getServerManager() {
@@ -69,6 +69,7 @@ public final class ServerManager {
     
     /**
      * Registers a new server with the manager.
+     * 
      * @param server The server to be registered
      */
     public void registerServer(final Server server) {
@@ -79,6 +80,7 @@ public final class ServerManager {
     /**
      * Unregisters a server from the manager. The request is ignored if the
      * ServerManager is in the process of closing all servers.
+     * 
      * @param server The server to be unregistered
      */
     public void unregisterServer(final Server server) {
@@ -90,6 +92,7 @@ public final class ServerManager {
     
     /**
      * Returns a list of all servers.
+     * 
      * @return A list of all servers
      */
     public List<Server> getServers() {
@@ -98,6 +101,7 @@ public final class ServerManager {
     
     /**
      * Makes all servers disconnected with the specified quit message.
+     * 
      * @param message The quit message to send to the IRC servers
      */
     public void disconnectAll(final String message) {
@@ -120,6 +124,7 @@ public final class ServerManager {
     
     /**
      * Closes all servers with the specified quit message.
+     * 
      * @param message The quit message to send to the IRC servers
      */
     public void closeAll(final String message) {
@@ -133,6 +138,7 @@ public final class ServerManager {
     
     /**
      * Returns the number of servers that are registered with the manager.
+     * 
      * @return number of registered servers
      */
     public int numServers() {
@@ -141,6 +147,7 @@ public final class ServerManager {
     
     /**
      * Returns the server instance that owns the specified internal frame.
+     * 
      * @param active The internal frame to check
      * @return The server associated with the internal frame
      */
