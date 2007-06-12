@@ -289,6 +289,7 @@ public final class CommandManager {
         new QueryMeEmpty();
         
         // Global commands
+        new Active();
         new AllServers();
         new Exit();
         new ExitDefault();
