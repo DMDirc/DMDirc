@@ -23,15 +23,12 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.Channel;
-import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.ChannelCommandParser;
 import com.dmdirc.commandparser.Command;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.ServerCommand;
-import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.components.Frame;
 import com.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
@@ -73,7 +70,7 @@ public final class ChannelFrame extends Frame implements MouseListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 8;
+    private static final long serialVersionUID = 9;
     
     /** max length a line can be. */
     private final int maxLineLength;
@@ -178,27 +175,6 @@ public final class ChannelFrame extends Frame implements MouseListener,
                 nicklistModel.remove(name);
             }
         });
-    }
-    
-    /**
-     * Retrieves the config manager for this command window.
-     * @return This window's config manager
-     */
-    public ConfigManager getConfigManager() {
-        return parent.getConfigManager();
-    }
-    
-    /**
-     * Retrieves the server associated with this command window.
-     * @return This window's associated server instance
-     */
-    public Server getServer() {
-        return parent.getServer();
-    }
-    
-    /** {@inheritDoc} */
-    public FrameContainer getContainer() {
-        return parent;
     }
     
     /**

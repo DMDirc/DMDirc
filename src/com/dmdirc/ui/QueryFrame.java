@@ -22,12 +22,9 @@
 
 package com.dmdirc.ui;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.QueryCommandParser;
-import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.ui.components.Frame;
 import com.dmdirc.ui.input.InputHandler;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -46,7 +43,7 @@ public final class QueryFrame extends Frame {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 7;
+    private static final long serialVersionUID = 8;
     
     /** max length a line can be. */
     private final int maxLineLength;
@@ -77,34 +74,13 @@ public final class QueryFrame extends Frame {
     }
     
     /**
-     * Retrieves the config manager for this command window.
-     * @return This window's config manager
-     */
-    public ConfigManager getConfigManager() {
-        return parent.getServer().getConfigManager();
-    }
-    
-    /**
      * Retrieves the command Parser for this command window.
      * @return This window's command Parser
      */
     public CommandParser getCommandParser() {
         return commandParser;
     }
-    
-    /**
-     * Retrieves the server associated with this command window.
-     * @return This window's associated server instance
-     */
-    public Server getServer() {
-        return parent.getServer();
-    }
-    
-    /** {@inheritDoc} */
-    public FrameContainer getContainer() {
-        return parent;
-    }
-    
+        
     /**
      * Initialises components in this frame.
      */
