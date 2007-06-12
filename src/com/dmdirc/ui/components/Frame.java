@@ -25,6 +25,7 @@ package com.dmdirc.ui.components;
 import com.dmdirc.BrowserLauncher;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
@@ -73,7 +74,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
@@ -87,7 +87,7 @@ import javax.swing.undo.CannotUndoException;
 import javax.swing.undo.UndoManager;
 
 /**
- * Frame component.
+ * Implements a generic (internal) frame.
  */
 public abstract class Frame extends JInternalFrame implements CommandWindow,
         PropertyChangeListener, InternalFrameListener,
@@ -98,7 +98,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4;
     
     /** Input field panel. */
     private JPanel inputPanel;
@@ -202,61 +202,53 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     
     /**
      * Adds a line of text to the main text area.
+     * 
      * @param line text to add
      * @param timestamp Whether to timestamp the line or not
      */
     public final void addLine(final String line, final boolean timestamp) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                for (String myLine : line.split("\n")) {
-                    if (timestamp) {
-                        Styliser.addStyledString(getTextPane(), new String[]{
-                            Formatter.formatMessage("timestamp", new Date()),
-                            myLine, });
-                    } else {
-                        Styliser.addStyledString(getTextPane(), myLine);
-                    }
-                    textPane.trim(Config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE));
-                }
+        //SwingUtilities.invokeLater(new Runnable() {
+        //            public void run() {
+        for (String myLine : line.split("\n")) {
+            if (timestamp) {
+                Styliser.addStyledString(getTextPane(), new String[]{
+                    Formatter.formatMessage("timestamp", new Date()),
+                    myLine, });
+            } else {
+                Styliser.addStyledString(getTextPane(), myLine);
             }
-        });
+            textPane.trim(Config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE));
+        }
+        //          }
+        //    });
     }
     
-    /**
-     * Formats the arguments using the Formatter, then adds the result to the
-     * main text area.
-     * @param messageType The type of this message
-     * @param args The arguments for the message
-     */
+    /** {@inheritDoc} */
     public final void addLine(final String messageType, final Object... args) {
         if (messageType.length() > 0) {
             addLine(Formatter.formatMessage(messageType, args), true);
         }
     }
     
-    /**
-     * Formats the arguments using the Formatter, then adds the result to the
-     * main text area.
-     * @param messageType The type of this message
-     * @param args The arguments for the message
-     */
+    /** {@inheritDoc} */
     public final void addLine(final StringBuffer messageType, final Object... args) {
         if (messageType != null) {
             addLine(messageType.toString(), args);
         }
     }
     
-    /**
-     * Clears the main text area of the frame.
-     */
+    /** {@inheritDoc} */
     public final void clear() {
         getTextPane().clear();
     }
     
     /**
      * Sets the tab completer for this frame's input handler.
+     * 
      * @param tabCompleter The tab completer to use
+     * @deprecated Seems rather pointless to proxy this
      */
+    @Deprecated
     public final void setTabCompleter(final TabCompleter tabCompleter) {
         getInputHandler().setTabCompleter(tabCompleter);
     }
@@ -388,7 +380,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         ((BasicInternalFrameUI) getUI()).setNorthPane(null);
     }
     
-    /** Shows tht titlebar for this frame. */
+    /** Shows the titlebar for this frame. */
     private void showTitlebar() {
         final Class< ? > c;
         Object temp = null;
@@ -476,9 +468,26 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Returns the parent Frame container for this frame.
      *
      * @return FrameContainer parent
+     * @deprecated Use getContainer() instead
      */
+    @Deprecated
     public final FrameContainer getFrameParent() {
         return parent;
+    }
+    
+    /** {@inheritDoc} */
+    public FrameContainer getContainer() {
+        return parent;
+    }
+    
+    /** {@inheritDoc} */
+    public Server getServer() {
+        return getContainer().getServer();
+    }
+    
+    /** {@inheritDoc} */
+    public ConfigManager getConfigManager() {
+        return getContainer().getConfigManager();
     }
     
     /**
@@ -500,7 +509,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     }
     
     /**
-     * returns the input field for this frame.
+     * Returns the input field for this frame.
      *
      * @return JTextField input field for the frame.
      */
@@ -512,7 +521,10 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Returns the input panel for this frame.
      *
      * @return JPanel input panel
+     * @deprecated Used? If it's only used by descendents can't we make the
+     * field protected instead?
      */
+    @Deprecated
     public final JPanel getInputPanel() {
         return inputPanel;
     }
@@ -526,11 +538,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         return textPane;
     }
     
-    /** 
-     * Returns the name for this frame. 
-     * 
-     * @return Name of this frame
-     */
+    /** {@inheritDoc} */
+    @Override
     public final String getName() {
         return parent.toString();
     }
@@ -564,6 +573,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     
     /**
      * Sets the away indicator on or off.
+     * 
      * @param awayState away state
      */
     public void setAwayIndicator(final boolean awayState) {
@@ -618,8 +628,10 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     
     /**
      * Processes every mouse button event to check for a popup trigger.
+     * 
      * @param e mouse event
      */
+    @Override
     public void processMouseEvent(final MouseEvent e) {
         if (e.isPopupTrigger() && e.getSource() == getTextPane()) {
             final Point point = getTextPane().getMousePosition();
@@ -645,7 +657,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         }
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent actionEvent) {
         if (actionEvent.getSource() == copyMI) {
             getTextPane().copy();
@@ -660,18 +672,19 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     
     /**
      * returns the popup menu for this frame.
+     * 
      * @return JPopupMenu for this frame
      */
     public final JPopupMenu getPopup() {
         return popup;
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public void keyTyped(final KeyEvent event) {
         //Ignore.
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public void keyPressed(final KeyEvent event) {
         if ((event.getModifiers() & KeyEvent.CTRL_MASK) ==  0) {
             if (event.getKeyCode() == KeyEvent.VK_PAGE_UP) {
@@ -699,7 +712,7 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         }
         if (event.getSource() == getTextPane()) {
             if ((Config.getOptionBool("ui", "quickCopy")
-            || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
+                    || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
                 event.setSource(getInputField());
                 getInputField().requestFocus();
                 if (robot != null && event.getKeyCode() != KeyEvent.VK_UNDEFINED) {
@@ -728,8 +741,8 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         
         try {
             clipboard = getInputField().getText()
-            + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
-            .getData(DataFlavor.stringFlavor);
+                    + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
+                    .getData(DataFlavor.stringFlavor);
             clipboardLines = clipboard.split(System.getProperty("line.separator"));
         } catch (HeadlessException ex) {
             Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
@@ -771,22 +784,22 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
                 options,
                 options[0]);
         switch (n) {
-            case 0:
-                for (String clipboardLine : clipboardLines) {
-                    this.sendLine(clipboardLine);
-                }
-                break;
-            case 1:
-                new PasteDialog(this, clipboard).setVisible(true);
-                break;
-            case 2:
-                break;
-            default:
-                break;
+        case 0:
+            for (String clipboardLine : clipboardLines) {
+                this.sendLine(clipboardLine);
+            }
+            break;
+        case 1:
+            new PasteDialog(this, clipboard).setVisible(true);
+            break;
+        case 2:
+            break;
+        default:
+            break;
         }
     }
     
-    /** Opens, closes of focuses the search bar as appropriate. */
+    /** Opens, closes or focuses the search bar as appropriate. */
     private void doSearchBar() {
         if (getSearchBar().isVisible()) {
             getSearchBar().getFocus();
@@ -795,18 +808,18 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         }
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public void keyReleased(final KeyEvent event) {
         //Ignore.
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public void hyperlinkClicked(final String url) {
         MainFrame.getMainFrame().getStatusBar().setMessage("Opening: " + url);
         BrowserLauncher.openURL(url);
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
     public void channelClicked(final String channel) {
         if (parent.getServer().getParser().getChannelInfo(channel) == null) {
             parent.getServer().getParser().joinChannel(channel);
@@ -819,7 +832,10 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
      * Send the line to the frame container.
      *
      * @param line the line to send
+     * @deprecated If this is actually needed by something, it'd make more
+     * sense for it to be implemented as a method of FrameContainer
      */
+    @Deprecated
     public abstract void sendLine(final String line);
     
     /**
@@ -832,10 +848,16 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
     }
     
     /**
-     * Re4urns the number of lines the specified string would be sent as.
+     * Returns the number of lines the specified string would be sent as.
+     * 
      * @param line line to be checked
-     * @return number of ,ines that would be sent
+     * @return number of lines that would be sent
+     * @deprecated This isn't a property of the frame, it's a property of the
+     * object associated with the frame (the container). We also need to take
+     * into account that some owners may not allow pasting or may not have
+     * a maximum line length
      */
+    @Deprecated
     public final int getNumLines(final String line) {
         int lines;
         final String[] splitLines = line.split("\n");
@@ -860,13 +882,18 @@ public abstract class Frame extends JInternalFrame implements CommandWindow,
         try {
             setIcon(true);
         } catch (PropertyVetoException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to close frame", ex);
+            Logger.error(ErrorLevel.WARNING, "Unable to minimise frame", ex);
         }
     }
     
     /**
      * Returns the maximum length a line can be in this frame.
      * @return max line length
+     * @deprecated This isn't a property of the frame, it's a property of the
+     * object associated with the frame (the container). We also need to take
+     * into account that some owners may not allow pasting or may not have
+     * a maximum line length
      */
+    @Deprecated
     public abstract int getMaxLineLength();
 }
