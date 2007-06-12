@@ -61,13 +61,7 @@ public final class Benchmark extends ChannelCommand {
             "some more test data",
         };
         
-        for (int i = 0; i < 100; i++) {
-            for (int j = 0; j < strings.length; j++) {
-                channel.onChannelMessage(server.getParser(),
-                        channel.getChannelInfo(), null, strings[j],
-                        "benchmarker!dmdirc@dmdirc.com");
-            }
-            
+        for (int i = 0; i < 200; i++) {            
             for (int j = 0; j < strings.length; j++) {
                 channel.onChannelMessage(server.getParser(),
                         channel.getChannelInfo(),
