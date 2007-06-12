@@ -256,7 +256,6 @@ public final class CommandManager {
         new Me();
         new MeEmpty();
         new Mode();
-        new Notify();
         new Part();
         new PartDefault();
         new SetNickColour();
@@ -290,10 +289,11 @@ public final class CommandManager {
         new QueryMeEmpty();
         
         // Global commands
+        new AllServers();
         new Exit();
         new ExitDefault();
         new NewServer();
-        new AllServers();
+        new Notify();        
         new LoadFormatter();
         new LoadPlugin();
         new ReloadActions();

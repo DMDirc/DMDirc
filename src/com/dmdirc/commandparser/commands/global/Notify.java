@@ -20,12 +20,10 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.commands.channel;
+package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.Channel;
 import com.dmdirc.Config;
-import com.dmdirc.Server;
-import com.dmdirc.commandparser.ChannelCommand;
+import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.ui.messages.ColourManager;
@@ -34,12 +32,15 @@ import java.awt.Color;
 
 /**
  * The notify command allows the user to set the notification colour for a
- * channel.
+ * window.
+ * 
  * @author chris
  */
-public final class Notify extends ChannelCommand {
+public final class Notify extends GlobalCommand {
     
-    /** Creates a new instance of Notify. */
+    /**
+     * Creates a new instance of Notify.
+     */
     public Notify() {
         super();
         
@@ -48,21 +49,22 @@ public final class Notify extends ChannelCommand {
     
     /**
      * Executes this command.
+     * 
      * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
-     * @param channel The channel object that this command is associated with
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
-            final Channel channel, final boolean isSilent, final String... args) {
+    public void execute(final CommandWindow origin, final boolean isSilent,
+            final String... args) {
         final Color colour = ColourManager.parseColour(args[0], null);
         
         if (colour == null) {
             sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(), "notify",
                     "<colour> - colour must be an IRC colour code (0-15) or a hex string (e.g. FFFF00).");
-        } else {
-            channel.sendNotification(colour);
+        } else if (origin != null) {            
+            // There's not much point echoing an error if the origin isn't
+            // valid, as errors go to the origin!
+            origin.getContainer().sendNotification(colour);
         }
     }
     
@@ -88,7 +90,7 @@ public final class Notify extends ChannelCommand {
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "notify <colour> - sets the notification colour for this channel";
+        return "notify <colour> - sets the notification colour for this window";
     }
     
 }
