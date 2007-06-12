@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser;
 
 import com.dmdirc.Config;
+import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 
@@ -93,12 +94,14 @@ public abstract class CommandParser {
             final String command = args[0].substring(offset);
             String[] comargs;
             
+            final Server server = origin.getContainer().getServer();
+            
             assert args.length > 0;
             
             if (args.length >= 2 && parseChannel
-                    && (origin == null || origin.getServer().getParser().isValidChannelName(args[1]))
+                    && (origin == null || server.getParser().isValidChannelName(args[1]))
                     && CommandManager.isChannelCommand(command)) {
-                if (origin.getServer().hasChannel(args[1])) {
+                if (server.hasChannel(args[1])) {
                     
                     final StringBuilder newLine = new StringBuilder();
                     for (int i = 0; i < args.length; i++) {
@@ -106,8 +109,8 @@ public abstract class CommandParser {
                         newLine.append(" ").append(args[i]);
                     }
                     
-                    origin.getServer().getChannel(args[1]).getFrame()
-                    .getCommandParser().parseCommand(origin, newLine.substring(1), false);
+                    server.getChannel(args[1]).getFrame().getCommandParser()
+                            .parseCommand(origin, newLine.substring(1), false);
                     
                     return;
                 } else {

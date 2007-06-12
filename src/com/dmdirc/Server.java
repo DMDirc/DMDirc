@@ -676,7 +676,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
      * @param args The arguments for the message
      */
     public void addLineToActive(final String messageType, final Object... args) {
-        if (activeFrame == null || !activeFrame.getFrame().isVisible()) {
+        if (activeFrame == null || !((JInternalFrame) activeFrame.getFrame()).isVisible()) {
             activeFrame = this;
         }
         
