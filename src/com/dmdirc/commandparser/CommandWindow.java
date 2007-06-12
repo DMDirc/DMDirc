@@ -70,7 +70,9 @@ public interface CommandWindow {
     /**
      * Retrieves the server associated with this command window.
      * @return This window's associated server instance
+     * @deprecated No point proxying this - use getContainer().getServer()
      */
+    @Deprecated
     Server getServer();
     
     /**
@@ -83,7 +85,9 @@ public interface CommandWindow {
      * Determines if the current frame is visible.
      *
      * @return boolean visibility
+     * @deprecated Visibility is of no concern to command windows
      */
+    @Deprecated
     boolean isVisible();
     
 }
