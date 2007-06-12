@@ -62,11 +62,15 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
      */
     private final ImageIcon defaultIcon;
     
+    /** Parent frame manager. */
+    private TreeFrameManager manager;
+    
     /**
      * Creates a new instance of TreeViewTreeCellRenderer.
      */
-    public TreeViewTreeCellRenderer() {
+    public TreeViewTreeCellRenderer(TreeFrameManager manager) {
         super();
+        this.manager = manager;
         defaultIcon = new ImageIcon(this.getClass().getClassLoader()
         .getResource("com/dmdirc/res/icon.png"));
     }
@@ -91,53 +95,44 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         
         final DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
         
-        TreeFrameManager manager = null;
-        
         setBackground(tree.getBackground());
         setOpaque(true);
         setToolTipText(null);
         setBorder(BorderFactory.createEmptyBorder(1, 0, 2, 0));
         setForeground(tree.getForeground());
         
-        if (MainFrame.hasMainFrame()) {
-            manager = (TreeFrameManager) MainFrame.getMainFrame().getFrameManager();
+        final int indent = (UIManager.getInt("Tree.leftChildIndent")
+        + UIManager.getInt("Tree.rightChildIndent")) * (node.getLevel() - 1);
+        setPreferredSize(new Dimension(manager.getNodeWidth() - indent,
+                getFont().getSize() + SMALL_BORDER));
+        if (manager.getRollover() == value) {
+            final Color fallback = ColourManager.getColour("b8d6e6");
+            setBackground(Config.getOptionColor("ui", "treeviewRolloverColour",
+                    fallback));
         }
         
-        if (manager != null) {
-            final int indent = (UIManager.getInt("Tree.leftChildIndent")
-            + UIManager.getInt("Tree.rightChildIndent")) * (node.getLevel() - 1);
-            setPreferredSize(new Dimension(manager.getNodeWidth() - indent,
-                    getFont().getSize() + SMALL_BORDER));
-            if (manager.getRollover() == value) {
-                final Color fallback = ColourManager.getColour("b8d6e6");
-                setBackground(Config.getOptionColor("ui", "treeviewRolloverColour",
-                        fallback));
+        final Object nodeObject = node.getUserObject();
+        
+        if (nodeObject.equals(manager.getSelected())) {
+            if (Config.hasOption("ui", "treeviewActiveBold")
+            && Config.getOptionBool("ui", "treeviewActiveBold")) {
+                setFont(getFont().deriveFont(Font.BOLD));
             }
-            
-            final Object nodeObject = node.getUserObject();
-            
-            if (nodeObject.equals(manager.getSelected())) {
-                if (Config.hasOption("ui", "treeviewActiveBold")) {
-                    if (Config.getOptionBool("ui", "treeviewActiveBold")) {
-                        setFont(getFont().deriveFont(Font.BOLD));
-                    }
-                }
-                setBackground(Config.getOptionColor("ui", "treeviewActiveBackground", tree.getBackground()));
-                setForeground(Config.getOptionColor("ui", "treeviewActiveForeground", tree.getForeground()));
-            } else {
-                setFont(getFont().deriveFont(Font.PLAIN));
+            setBackground(Config.getOptionColor("ui", "treeviewActiveBackground", tree.getBackground()));
+            setForeground(Config.getOptionColor("ui", "treeviewActiveForeground", tree.getForeground()));
+        } else {
+            setFont(getFont().deriveFont(Font.PLAIN));
+        }
+        
+        if (nodeObject instanceof FrameContainer) {
+            final Color colour =
+                    manager.getNodeColour((FrameContainer) nodeObject);
+            if (colour != null) {
+                setForeground(colour);
             }
-            
-            if (nodeObject instanceof FrameContainer) {
-                final Color colour =
-                        manager.getNodeColour((FrameContainer) nodeObject);
-                if (colour != null) {
-                    setForeground(colour);
-                }
-                setIcon(((FrameContainer) nodeObject).getIcon());
-            } else {
-                setIcon(defaultIcon);
-            }
+            setIcon(((FrameContainer) nodeObject).getIcon());
+        } else {
+            setIcon(defaultIcon);
         }
         return this;
     }

@@ -41,7 +41,8 @@ import com.dmdirc.ui.dialogs.PreferencesDialog;
 import com.dmdirc.ui.dialogs.ProfileEditorDialog;
 import com.dmdirc.ui.dialogs.firstrunwizard.FirstRunWizard;
 import com.dmdirc.ui.framemanager.FrameManager;
-import com.dmdirc.ui.framemanager.tree.TreeFrameManager;
+import com.dmdirc.ui.framemanager.MainFrameManager;
+import com.dmdirc.ui.framemanager.windowmenu.WindowMenuFrameManager;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
@@ -51,6 +52,7 @@ import java.awt.Font;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.Insets;
+import java.awt.MenuBar;
 import java.awt.MouseInfo;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;
@@ -119,10 +121,16 @@ public final class MainFrame extends JFrame implements WindowListener,
      * The main application icon.
      */
     private final ImageIcon imageIcon;
+    
     /**
      * The frame manager that's being used.
      */
-    private final FrameManager frameManager;
+    private final MainFrameManager mainFrameManager;
+    
+    /**
+     * The window menu frame manager that's being used.
+     */
+    private final WindowMenuFrameManager windowListFrameManager;
     
     /** Dekstop pane. */
     private JDesktopPane desktopPane;
@@ -148,16 +156,13 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** status bar. */
     private StatusBar statusBar;
     
-    /** Menu item -> frame cache. */
-    final private Map<JMenuItem, FrameContainer> windowList;
-    
     /**
      * Creates new form MainFrame.
      */
     private MainFrame() {
         super();
         
-        windowList = new HashMap<JMenuItem, FrameContainer>();
+        windowListFrameManager = new WindowMenuFrameManager();
         
         initComponents();
         
@@ -170,8 +175,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         imageIcon = new ImageIcon(imageURL);
         setIconImage(imageIcon.getImage());
         
-        frameManager = new TreeFrameManager();
-        frameManager.setParent(frameManagerPanel);
+        mainFrameManager = new MainFrameManager();
+        mainFrameManager.setParent(frameManagerPanel);
         
         // Get the Location of the mouse pointer
         final PointerInfo myPointerInfo = MouseInfo.getPointerInfo();
@@ -266,8 +271,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         // Increase the offsets
         xOffset += FRAME_OPENING_OFFSET;
         yOffset += FRAME_OPENING_OFFSET;
-        
-        initWindowMenu();
     }
     
     /**
@@ -307,7 +310,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      * @return The current frame manager
      */
     public FrameManager getFrameManager() {
-        return frameManager;
+        return mainFrameManager;
     }
     
     /**
@@ -505,7 +508,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         frameManagerPanel.setMinimumSize(new Dimension(150, Integer.MAX_VALUE));
         desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
         desktopPane.setMinimumSize(new Dimension(300, Integer.MAX_VALUE));
-
+        
         mainSplitPane.setResizeWeight(0);
         mainSplitPane.setContinuousLayout(true);
         
@@ -567,7 +570,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         fileMenu.add(menuItem);
         
         
-        initWindowMenu();
+        populateWindowMenu(new HashMap<FrameContainer, JMenuItem>());
         
         
         helpMenu.setMnemonic('h');
@@ -599,8 +602,12 @@ public final class MainFrame extends JFrame implements WindowListener,
         setJMenuBar(menuBar);
     }
     
-    /** Initialises the window menu. */
-    private void initWindowMenu() {
+    /** 
+     * Initialises the window menu.
+     *
+     * @param windows Map of windows
+     */
+    public void populateWindowMenu(final Map<FrameContainer, JMenuItem> windows) {
         if (windowsMenu == null) {
             windowsMenu = new JMenu();
         } else {
@@ -640,15 +647,11 @@ public final class MainFrame extends JFrame implements WindowListener,
         windowsMenu.addSeparator();
         
         int i = 0;
-        for (JInternalFrame frame : desktopPane.getAllFrames()) {
+        for (JMenuItem mi : windows.values()) {
             if (i > 34) {
                 break;
             }
-            menuItem = new JMenuItem();
-            menuItem.setText(((Frame) frame).getName());
-            menuItem.addActionListener(this);
-            windowList.put(menuItem, ((Frame) frame).getFrameParent());
-            windowsMenu.add(menuItem);
+            windowsMenu.add(mi);
             i++;
         }
     }
@@ -673,15 +676,6 @@ public final class MainFrame extends JFrame implements WindowListener,
             ((Frame) MainFrame.getMainFrame().getActiveFrame()).close();
         } else if (e.getActionCommand().equals("CloseAll")) {
             ServerManager.getServerManager().closeAll();
-        } else if (e.getSource() instanceof JMenuItem) {
-            activateFrameFromMenu(windowList.get((JMenuItem) e.getSource()));
-        }
-    }
-    
-    /** Activates the frame selected in the window menu. */
-    private void activateFrameFromMenu(final FrameContainer frame) {
-        if (frame != null) {
-            frame.activateFrame();
         }
     }
     

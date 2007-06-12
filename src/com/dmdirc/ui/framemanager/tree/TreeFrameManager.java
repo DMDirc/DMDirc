@@ -131,7 +131,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
      * creates a new instance of the TreeFrameManager.
      */
     public TreeFrameManager() {
-        final TreeViewTreeCellRenderer renderer = new TreeViewTreeCellRenderer();
+        final TreeViewTreeCellRenderer renderer = new TreeViewTreeCellRenderer(this);
         
         nodes = new Hashtable<FrameContainer, DefaultMutableTreeNode>();
         nodeColours = new Hashtable<FrameContainer, Color>();
@@ -169,7 +169,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.addMouseWheelListener(this);
         tree.addKeyListener(this);
     }
-   
+    
     /** {@inheritDoc} */
     public boolean canPositionVertically() {
         return true;
@@ -342,13 +342,17 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         model.removeNodeFromParent(nodes.get(window));
     }
     
-    /** 
+    /**
      * Returns the maximum size a node can be without causing scrolling.
      *
      * @return Maximum node width
      */
     public int getNodeWidth() {
-        return parent.getWidth() - 25;
+        if (parent == null) {
+            return 0;
+        } else {
+            return parent.getWidth() - 25;
+        }
     }
     
     /**
@@ -602,7 +606,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.setSelectionPath(new TreePath(nextNode));
     }
     
-    /** 
+    /**
      * Changes the tree focus up.
      *
      * @param node Start node
@@ -617,7 +621,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         if (thisNode.getUserObject() instanceof Server) {
             if (thisNode.getParent().getIndex(thisNode) == 0) {
                 //first server - last child of parent's last child
-                nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) 
+                nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
                 thisNode.getParent()).getLastChild();
                 if (nextNode.getChildCount() > 0) {
                     nextNode = (DefaultMutableTreeNode) nextNode.getLastChild();
@@ -640,7 +644,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         return nextNode;
     }
     
-    /** 
+    /**
      * Changes the tree focus down.
      *
      * @param node Start node
@@ -661,7 +665,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
                 nextNode = ((DefaultMutableTreeNode) thisNode.getParent()).getNextSibling();
                 //no next server, use first
                 if (nextNode == null) {
-                    nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode) 
+                    nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
                     thisNode.getParent()).getFirstChild();
                 }
             }
