@@ -100,7 +100,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
         
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(CommandManager.getQueryCommandNames());
-        frame.setTabCompleter(tabCompleter);
+        frame.getInputHandler().setTabCompleter(tabCompleter);
         
         reregister();
         

@@ -167,7 +167,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         
         frame = new ServerFrame(this);
         frame.setTitle(server + ":" + port);
-        frame.setTabCompleter(tabCompleter);
+        frame.getInputHandler().setTabCompleter(tabCompleter);
         frame.addInternalFrameListener(this);
         MainFrame.getMainFrame().addChild(frame);
         

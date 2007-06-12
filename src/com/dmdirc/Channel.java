@@ -135,7 +135,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
                     MainFrame.getMainFrame().addChild(frame);
                     frame.addInternalFrameListener(Channel.this);
                     frame.setFrameIcon(imageIcon);
-                    frame.setTabCompleter(tabCompleter);
+                    frame.getInputHandler().setTabCompleter(tabCompleter);
                 }
             });
         } catch (InvocationTargetException ex) {
