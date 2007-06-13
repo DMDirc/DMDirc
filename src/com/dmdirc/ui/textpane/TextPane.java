@@ -26,6 +26,7 @@ import com.dmdirc.ui.components.Frame;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.AdjustmentEvent;
@@ -141,6 +142,15 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         return document.getNumLines();
     }
     
+    /**
+     * Returns the specified line in the textpane.
+     *
+     * @return AttributedString at the specified line
+     */
+    public AttributedString getLine(final int line) {
+        return document.getLine(line);
+    }
+    
     /** Sets the scrollbar to the maximum position. */
     public void setScrollBarMax() {
         final int lines = document.getNumLines();
@@ -170,6 +180,18 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                 setScrollBarPosition(scrollBar.getValue() - e.getScrollAmount());
             }
         }
+    }
+    
+    /**
+     *
+     * Returns the line information from a mouse click inside the textpane.
+     *
+     * @param point mouse position
+     *
+     * @return line number, line part, position in whole line
+     */
+    public int[] getClickPosition(final Point point) {
+        return canvas.getClickPosition(point);
     }
     
     /**

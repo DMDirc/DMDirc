@@ -187,9 +187,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                 while (lineMeasurer.getPosition() < paragraphEnd) {
                     final TextLayout layout;
                     if (formatWidth - 6 < 0) {
-                        layout = lineMeasurer.nextLayout(0); 
-                    } else { 
-                        layout = lineMeasurer.nextLayout(formatWidth - 6); 
+                        layout = lineMeasurer.nextLayout(0);
+                    } else {
+                        layout = lineMeasurer.nextLayout(formatWidth - 6);
                     }
                     
                     if (firstLineHeight == 0) {
@@ -222,9 +222,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                     
                     final TextLayout layout;
                     if (formatWidth - 6 < 0) {
-                        layout = lineMeasurer.nextLayout(0); 
-                    } else { 
-                        layout = lineMeasurer.nextLayout(formatWidth - 6); 
+                        layout = lineMeasurer.nextLayout(0);
+                    } else {
+                        layout = lineMeasurer.nextLayout(formatWidth - 6);
                     }
                     
                     // Calculate the Y offset

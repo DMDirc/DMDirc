@@ -36,6 +36,7 @@ import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.Styliser;
+import com.dmdirc.ui.textpane.IRCTextAttribute;
 import com.dmdirc.ui.textpane.TextPane;
 import com.dmdirc.ui.textpane.TextPaneListener;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -49,6 +50,7 @@ import java.awt.Point;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -62,6 +64,7 @@ import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.text.AttributedCharacterIterator;
 import java.util.Date;
 
 import javax.swing.AbstractAction;
@@ -74,6 +77,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
@@ -132,6 +136,12 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     
     /** popup menu item. */
     private JMenuItem inputCutMI;
+    
+    /** hyperlink menu item. */
+    private JMenuItem hyperlinkCopyMI;
+    
+    /** hyperlink menu item. */
+    private JMenuItem hyperlinkOpenMI;
     
     /** search bar. */
     private SearchBar searchBar;
@@ -202,25 +212,25 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     
     /**
      * Adds a line of text to the main text area.
-     * 
+     *
      * @param line text to add
      * @param timestamp Whether to timestamp the line or not
      */
     public final void addLine(final String line, final boolean timestamp) {
-        //SwingUtilities.invokeLater(new Runnable() {
-        //            public void run() {
-        for (String myLine : line.split("\n")) {
-            if (timestamp) {
-                Styliser.addStyledString(getTextPane(), new String[]{
-                    Formatter.formatMessage("timestamp", new Date()),
-                    myLine, });
-            } else {
-                Styliser.addStyledString(getTextPane(), myLine);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                for (String myLine : line.split("\n")) {
+                    if (timestamp) {
+                        Styliser.addStyledString(getTextPane(), new String[]{
+                            Formatter.formatMessage("timestamp", new Date()),
+                            myLine, });
+                    } else {
+                        Styliser.addStyledString(getTextPane(), myLine);
+                    }
+                    textPane.trim(Config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE));
+                }
             }
-            textPane.trim(Config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE));
-        }
-        //          }
-        //    });
+        });
     }
     
     /** {@inheritDoc} */
@@ -244,7 +254,7 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     
     /**
      * Sets the tab completer for this frame's input handler.
-     * 
+     *
      * @param tabCompleter The tab completer to use
      * @deprecated Seems rather pointless to proxy this
      */
@@ -277,6 +287,14 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
         copyMI = new JMenuItem("Copy");
         copyMI.addActionListener(this);
         
+        hyperlinkCopyMI = new JMenuItem("Copy URL");
+        hyperlinkCopyMI.addActionListener(this);
+        hyperlinkCopyMI.setVisible(false);
+        
+        hyperlinkOpenMI = new JMenuItem("Open URL");
+        hyperlinkOpenMI.addActionListener(this);
+        hyperlinkOpenMI.setVisible(false);
+        
         inputPasteMI = new JMenuItem("Paste");
         inputPasteMI.addActionListener(this);
         inputCopyMI = new JMenuItem("Copy");
@@ -284,6 +302,8 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
         inputCutMI = new JMenuItem("Cut");
         inputCutMI.addActionListener(this);
         
+        popup.add(hyperlinkOpenMI);
+        popup.add(hyperlinkCopyMI);
         popup.add(copyMI);
         popup.setOpaque(true);
         popup.setLightWeightPopupEnabled(true);
@@ -573,7 +593,7 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     
     /**
      * Sets the away indicator on or off.
-     * 
+     *
      * @param awayState away state
      */
     public void setAwayIndicator(final boolean awayState) {
@@ -628,7 +648,7 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     
     /**
      * Processes every mouse button event to check for a popup trigger.
-     * 
+     *
      * @param e mouse event
      */
     @Override
@@ -636,8 +656,23 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
         if (e.isPopupTrigger() && e.getSource() == getTextPane()) {
             final Point point = getTextPane().getMousePosition();
             if (point != null) {
+                hyperlinkOpenMI.setActionCommand("");
+                hyperlinkOpenMI.setVisible(false);
+                hyperlinkCopyMI.setVisible(false);
+                final int[] info = textPane.getClickPosition(point);
+                if (info[0] != -1) {
+                    final AttributedCharacterIterator iterator = textPane.getLine(info[0]).getIterator();
+                    iterator.setIndex(info[2]);
+                    final Object linkattr = iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+                    if (linkattr instanceof String) {
+                        hyperlinkCopyMI.setVisible(true);
+                        hyperlinkOpenMI.setVisible(true);
+                        hyperlinkOpenMI.setActionCommand((String) linkattr);
+                    }
+                }
+                
                 final int[] selection = textPane.getSelectedRange();
-                if (selection[0] == selection[2] && selection[1] == selection[3]) {
+                if ((selection[0] == selection[2] && selection[1] == selection[3]) || !hyperlinkOpenMI.isVisible()) {
                     copyMI.setEnabled(false);
                 } else {
                     copyMI.setEnabled(true);
@@ -661,6 +696,11 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     public void actionPerformed(final ActionEvent actionEvent) {
         if (actionEvent.getSource() == copyMI) {
             getTextPane().copy();
+        } else if (actionEvent.getSource() == hyperlinkCopyMI) {
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
+                    new StringSelection(hyperlinkOpenMI.getActionCommand()), null);
+        } else if (actionEvent.getSource() == hyperlinkOpenMI) {
+            BrowserLauncher.openURL(hyperlinkOpenMI.getActionCommand());
         } else if (actionEvent.getSource() == inputCopyMI) {
             getInputField().copy();
         } else if (actionEvent.getSource() == inputPasteMI) {
@@ -672,7 +712,7 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     
     /**
      * returns the popup menu for this frame.
-     * 
+     *
      * @return JPopupMenu for this frame
      */
     public final JPopupMenu getPopup() {
@@ -712,7 +752,7 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
         }
         if (event.getSource() == getTextPane()) {
             if ((Config.getOptionBool("ui", "quickCopy")
-                    || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
+            || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
                 event.setSource(getInputField());
                 getInputField().requestFocus();
                 if (robot != null && event.getKeyCode() != KeyEvent.VK_UNDEFINED) {
@@ -741,8 +781,8 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
         
         try {
             clipboard = getInputField().getText()
-                    + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
-                    .getData(DataFlavor.stringFlavor);
+            + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
+            .getData(DataFlavor.stringFlavor);
             clipboardLines = clipboard.split(System.getProperty("line.separator"));
         } catch (HeadlessException ex) {
             Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
@@ -784,18 +824,18 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
                 options,
                 options[0]);
         switch (n) {
-        case 0:
-            for (String clipboardLine : clipboardLines) {
-                this.sendLine(clipboardLine);
-            }
-            break;
-        case 1:
-            new PasteDialog(this, clipboard).setVisible(true);
-            break;
-        case 2:
-            break;
-        default:
-            break;
+            case 0:
+                for (String clipboardLine : clipboardLines) {
+                    this.sendLine(clipboardLine);
+                }
+                break;
+            case 1:
+                new PasteDialog(this, clipboard).setVisible(true);
+                break;
+            case 2:
+                break;
+            default:
+                break;
         }
     }
     
@@ -849,7 +889,7 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     
     /**
      * Returns the number of lines the specified string would be sent as.
-     * 
+     *
      * @param line line to be checked
      * @return number of lines that would be sent
      * @deprecated This isn't a property of the frame, it's a property of the
