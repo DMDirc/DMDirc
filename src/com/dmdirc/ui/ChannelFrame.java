@@ -111,7 +111,7 @@ public final class ChannelFrame extends Frame implements MouseListener,
         
         commands = new HashMap<String, Command>();
         
-        maxLineLength = getServer().getParser().getMaxLength("PRIVMSG", getContainer().toString());
+        maxLineLength = getContainer().getServer().getParser().getMaxLength("PRIVMSG", getContainer().toString());
         
         initComponents();
         
@@ -252,11 +252,13 @@ public final class ChannelFrame extends Frame implements MouseListener,
             for (Object nickname : nickList.getSelectedValues()) {
                 if (command instanceof ChannelCommand) {
                     ((ChannelCommand) commands.get(actionEvent.getActionCommand())).
-                            execute(this, this.getServer(),
-                            (Channel) this.getContainer(), false, ((ChannelClientInfo) nickname).getNickname());
+                            execute(this, getContainer().getServer(),
+                            (Channel) this.getContainer(), false,
+                            ((ChannelClientInfo) nickname).getNickname());
                 } else if (command instanceof ServerCommand) {
                     ((ServerCommand) commands.get(actionEvent.getActionCommand())).
-                            execute(this, this.getServer(), false, ((ChannelClientInfo) nickname).getNickname());
+                            execute(this, getContainer().getServer(), false,
+                            ((ChannelClientInfo) nickname).getNickname());
                 }
             }
         }

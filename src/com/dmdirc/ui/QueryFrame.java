@@ -63,7 +63,7 @@ public final class QueryFrame extends Frame {
         
         parent = owner;
         
-        maxLineLength = this.getServer().getParser().getMaxLength("PRIVMSG", this.getContainer().toString());
+        maxLineLength = getContainer().getServer().getParser().getMaxLength("PRIVMSG", getContainer().toString());
         
         initComponents();
         

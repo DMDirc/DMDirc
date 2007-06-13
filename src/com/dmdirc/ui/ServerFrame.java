@@ -64,7 +64,7 @@ public final class ServerFrame extends Frame {
         
         parent = owner;
         
-        maxLineLength = this.getServer().getParser().MAX_LINELENGTH;
+        maxLineLength = getContainer().getServer().getParser().MAX_LINELENGTH;
         
         initComponents();
         
@@ -90,16 +90,16 @@ public final class ServerFrame extends Frame {
         && Config.getOptionBool("ui", "awayindicator")) {
             setAwayIndicator(newAwayState);
             
-            if (getServer().getRaw() != null) {
-                ((Frame) getServer().getRaw().getFrame()).setAwayIndicator(newAwayState);
+            if (getContainer().getServer().getRaw() != null) {
+                ((Frame) getContainer().getServer().getRaw().getFrame()).setAwayIndicator(newAwayState);
             }
             
-            for (String channel : getServer().getChannels()) {
-                ((Frame) getServer().getChannel(channel).getFrame()).setAwayIndicator(newAwayState);
+            for (String channel : getContainer().getServer().getChannels()) {
+                ((Frame) getContainer().getServer().getChannel(channel).getFrame()).setAwayIndicator(newAwayState);
             }
             
-            for (String query : getServer().getQueries()) {
-                ((Frame) getServer().getQuery(query).getFrame()).setAwayIndicator(newAwayState);
+            for (String query : getContainer().getServer().getQueries()) {
+                ((Frame) getContainer().getServer().getQuery(query).getFrame()).setAwayIndicator(newAwayState);
             }
         }
     }
