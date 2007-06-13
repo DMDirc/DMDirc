@@ -24,8 +24,8 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * The exit command allows the user to quit DMDirc with a custom quit message.
@@ -45,7 +45,7 @@ public final class Exit extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
-    public void execute(final CommandWindow origin, final boolean isSilent,
+    public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         Main.quit(implodeArgs(args));
     }

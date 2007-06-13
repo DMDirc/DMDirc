@@ -24,8 +24,8 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * Allows the user to open a query dialog with another user.
@@ -44,7 +44,7 @@ public final class Query extends ServerCommand {
     }
     
     /** {@inheritDoc} */
-    public void execute(final CommandWindow origin, final Server server,
+    public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         server.addQuery(args[0]);
         server.getQuery(args[0]).show();

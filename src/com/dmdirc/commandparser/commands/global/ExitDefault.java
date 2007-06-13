@@ -24,8 +24,8 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Config;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * Represents the exit/0 command (i.e., an exit with no arguments). Reads the
@@ -45,7 +45,7 @@ public final class ExitDefault extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
-    public void execute(final CommandWindow origin, final boolean isSilent,
+    public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         String def;
         

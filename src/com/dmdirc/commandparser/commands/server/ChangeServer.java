@@ -25,8 +25,8 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * The /server command allows the user to connect to a new server.
@@ -44,7 +44,7 @@ public final class ChangeServer extends ServerCommand {
     }
     
     /** {@inheritDoc} */
-    public void execute(final CommandWindow origin, final Server server,
+    public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         if (args.length == 0) {
             sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(), "server",

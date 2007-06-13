@@ -26,7 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * The PartDefault command (part/0) is used when the user does not specify a
@@ -51,7 +51,7 @@ public final class PartDefault extends ChannelCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
+    public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
         final ChannelCommand com = CommandManager.getChannelCommand("part");
         com.execute(origin, server, channel, isSilent, origin.getConfigManager().getOption("general", "partmessage"));

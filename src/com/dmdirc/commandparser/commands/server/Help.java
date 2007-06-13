@@ -25,9 +25,9 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.Command;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.ui.ChannelFrame;
+import com.dmdirc.ui.InputWindow;
 import com.dmdirc.ui.QueryFrame;
 
 import java.util.Collections;
@@ -57,7 +57,7 @@ public final class Help extends ServerCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
+    public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         sendLine(origin, isSilent, "commandOutput", "-- Server commands ----------------------------------");
         showCommands(CommandManager.getServerCommands(), origin, isSilent);
@@ -80,7 +80,7 @@ public final class Help extends ServerCommand {
      * @param isSilent Whether this command is silent or not
      */
     private void showCommands(final List<Command> commands,
-            final CommandWindow origin, final boolean isSilent) {
+            final InputWindow origin, final boolean isSilent) {
         Collections.sort(commands);
         for (Command com : commands) {
             if (com.showInHelp()) {

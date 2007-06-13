@@ -25,8 +25,8 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * The AllServers command allows users to issue commands to all servers.
@@ -42,10 +42,10 @@ public final class AllServers extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
-    public void execute(final CommandWindow origin, final boolean isSilent,
+    public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         final String command = implodeArgs(args);
-        CommandWindow window;
+        InputWindow window;
         
         for (Server target : ServerManager.getServerManager().getServers()) {
             window = target.getFrame();

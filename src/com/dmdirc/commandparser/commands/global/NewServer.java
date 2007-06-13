@@ -25,9 +25,9 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * The new server command allows users to open a new server window.
@@ -45,7 +45,7 @@ public final class NewServer extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
-    public void execute(final CommandWindow origin, final boolean isSilent,
+    public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         if (args.length == 0) {
             origin.addLine("commandUsage", Config.getCommandChar(), "newserver",

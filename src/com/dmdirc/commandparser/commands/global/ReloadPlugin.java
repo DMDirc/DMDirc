@@ -23,10 +23,10 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * Allows the user to reload a plugin.
@@ -44,7 +44,7 @@ public final class ReloadPlugin extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
-    public void execute(final CommandWindow origin, final boolean isSilent,
+    public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         Plugin plugin = PluginManager.getPluginManager().getPlugin(args[0]);
         if (plugin == null) {

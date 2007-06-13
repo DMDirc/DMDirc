@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser;
 
 import com.dmdirc.Server;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * A command parser used in the context of a server.
@@ -52,7 +53,7 @@ public final class ServerCommandParser extends CommandParser {
     }
     
     /** {@inheritDoc} */
-    protected void executeCommand(final CommandWindow origin,
+    protected void executeCommand(final InputWindow origin,
             final boolean isSilent, final Command command, final String... args) {
         if (command instanceof ServerCommand) {
             ((ServerCommand) command).execute(origin, server, isSilent, args);
@@ -67,7 +68,7 @@ public final class ServerCommandParser extends CommandParser {
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
-    protected void handleNonCommand(final CommandWindow origin, final String line) {
+    protected void handleNonCommand(final InputWindow origin, final String line) {
         server.getParser().sendLine(line);
     }
     

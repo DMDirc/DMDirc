@@ -25,9 +25,9 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.IntelligentCommand;
 import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.ui.InputWindow;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +53,7 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
+    public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         if (args.length < 2) {
             sendLine(origin, isSilent, "CommandUsage", Config.getCommandChar(),

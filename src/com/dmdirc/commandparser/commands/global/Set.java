@@ -24,9 +24,10 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Config;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.commandparser.IntelligentCommand;
+import com.dmdirc.ui.InputWindow;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc} */
-    public void execute(final CommandWindow origin, final boolean isSilent,
+    public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         switch (args.length) {
         case 0:
@@ -68,7 +69,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      * @param origin The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
      */
-    private void doDomainList(final CommandWindow origin, final boolean isSilent) {
+    private void doDomainList(final InputWindow origin, final boolean isSilent) {
         final StringBuffer output = new StringBuffer(67);
         
         output.append("Valid domains (use ");
@@ -89,7 +90,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      * @param isSilent Whether or not the command is being silenced or not
      * @param domain The domain to be inspected
      */
-    private void doOptionsList(final CommandWindow origin,
+    private void doOptionsList(final InputWindow origin,
             final boolean isSilent, final String domain) {
         final StringBuffer output = new StringBuffer(24);
         
@@ -119,7 +120,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      * @param domain The domain of the option
      * @param option The name of the option
      */
-    private void doShowOption(final CommandWindow origin,
+    private void doShowOption(final InputWindow origin,
             final boolean isSilent, final String domain, final String option) {
         if (Config.hasOption(domain, option)) {
             sendLine(origin, isSilent, "commandOutput", "The current value of " + domain + "." + option
@@ -137,7 +138,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      * @param option The name of the option
      * @param newvalue The value the option should be set to
      */
-    private void doSetOption(final CommandWindow origin,
+    private void doSetOption(final InputWindow origin,
             final boolean isSilent, final String domain, final String option,
             final String newvalue) {
         Config.setOption(domain, option, newvalue);

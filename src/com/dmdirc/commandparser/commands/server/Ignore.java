@@ -25,10 +25,10 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.identities.Identity;
 import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * Allows the user to add/view/delete ignores.
@@ -52,7 +52,7 @@ public final class Ignore extends ServerCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
+    public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         
         final Identity identity = IdentityManager.getNetworkConfig(server.getNetwork());

@@ -24,9 +24,9 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.identities.ConfigSource;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * Displays information about the origin's config manager.
@@ -50,7 +50,7 @@ public final class ConfigInfo extends ServerCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
+    public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         for (ConfigSource source : origin.getConfigManager().getSources()) {
             sendLine(origin, isSilent, "commandOutput", source.getTarget() + " - " + source);

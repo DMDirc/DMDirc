@@ -26,6 +26,7 @@ import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.ui.InputWindow;
 
 import java.util.Hashtable;
 import java.util.Map;
@@ -75,7 +76,7 @@ public abstract class CommandParser {
      * @param parseChannel Whether or not to try and parse the first argument
      * as a channel name
      */
-    public final void parseCommand(final CommandWindow origin,
+    public final void parseCommand(final InputWindow origin,
             final String line, final boolean parseChannel) {
         if (line.length() == 0) {
             return;
@@ -93,7 +94,7 @@ public abstract class CommandParser {
             final String[] args = line.split(" ");
             final String command = args[0].substring(offset);
             String[] comargs;
-                        
+            
             assert args.length > 0;
             
             if (args.length >= 2 && parseChannel && origin != null
@@ -144,7 +145,7 @@ public abstract class CommandParser {
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      */
-    public final void parseCommand(final CommandWindow origin,
+    public final void parseCommand(final InputWindow origin,
             final String line) {
         parseCommand(origin, line, true);
     }
@@ -154,7 +155,7 @@ public abstract class CommandParser {
      * @param origin The window in which the command was typed
      * @param line The line to be parsed
      */
-    public final void parseCommandCtrl(final CommandWindow origin, final String line) {
+    public final void parseCommandCtrl(final InputWindow origin, final String line) {
         handleNonCommand(origin, line);
     }
     
@@ -165,7 +166,7 @@ public abstract class CommandParser {
      * @param command The command to be executed
      * @param args The arguments to the command
      */
-    protected abstract void executeCommand(final CommandWindow origin,
+    protected abstract void executeCommand(final InputWindow origin,
             final boolean isSilent, final Command command, final String... args);
     
     /**
@@ -176,7 +177,7 @@ public abstract class CommandParser {
      * @param command The command the user tried to execute
      * @param args The arguments passed to the command
      */
-    protected void handleInvalidCommand(final CommandWindow origin,
+    protected void handleInvalidCommand(final InputWindow origin,
             final String command, final String... args) {
         if (origin == null) {
             ActionManager.processEvent(CoreActionType.UNKNOWN_COMMAND, null,
@@ -197,6 +198,6 @@ public abstract class CommandParser {
      * @param origin The window in which the command was typed
      * @param line The line input by the user
      */
-    protected abstract void handleNonCommand(final CommandWindow origin,
+    protected abstract void handleNonCommand(final InputWindow origin,
             final String line);
 }

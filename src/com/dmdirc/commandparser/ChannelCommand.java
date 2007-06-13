@@ -24,6 +24,7 @@ package com.dmdirc.commandparser;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * Represents a command which can be performed only in the context of a channel.
@@ -39,6 +40,6 @@ public abstract class ChannelCommand extends Command {
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
      */
-    public abstract void execute(CommandWindow origin, Server server, Channel channel,
+    public abstract void execute(InputWindow origin, Server server, Channel channel,
             boolean isSilent, String... args);
 }

@@ -25,8 +25,8 @@ package com.dmdirc.commandparser.commands.query;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.QueryCommand;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * Represents the /me command used in a query window.
@@ -42,7 +42,7 @@ public final class QueryMe extends QueryCommand {
     }
     
     /** {@inheritDoc}. */
-    public void execute(final CommandWindow origin, final Server server,
+    public void execute(final InputWindow origin, final Server server,
             final Query query, final boolean isSilent, final String... args) {
         query.sendAction(implodeArgs(args));
     }

@@ -22,6 +22,8 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.ui.InputWindow;
+
 /**
  * Represents a generic command.
  * @author chris
@@ -106,7 +108,7 @@ public abstract class Command implements Comparable<Command> {
      * @param type The type of message to send
      * @param args The arguments of the message
      */
-    protected final void sendLine(final CommandWindow target,
+    protected final void sendLine(final InputWindow target,
             final boolean isSilent, final String type, final Object ... args) {
         if (!isSilent && target != null) {
             target.addLine(type, args);

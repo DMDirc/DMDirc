@@ -23,8 +23,8 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.ui.InputWindow;
 import com.dmdirc.ui.messages.Formatter;
 
 /**
@@ -43,7 +43,7 @@ public final class LoadFormatter extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
-    public void execute(final CommandWindow origin, final boolean isSilent,
+    public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         if (Formatter.loadFile(args[0])) {
             sendLine(origin, isSilent, "commandOutput", "Formatter loaded.");

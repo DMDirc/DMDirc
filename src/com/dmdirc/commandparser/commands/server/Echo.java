@@ -24,8 +24,8 @@ package com.dmdirc.commandparser.commands.server;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.ui.InputWindow;
 import com.dmdirc.ui.MainFrame;
 
 import javax.swing.JInternalFrame;
@@ -52,12 +52,12 @@ public final class Echo extends ServerCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
+    public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {        
         if (args.length > 0 && args[0].equalsIgnoreCase("--active")) {
             final JInternalFrame frame = MainFrame.getMainFrame().getActiveFrame();
-            if (frame instanceof CommandWindow) {
-                ((CommandWindow) frame).addLine("commandOutput", implodeArgs(1, args));
+            if (frame instanceof InputWindow) {
+                ((InputWindow) frame).addLine("commandOutput", implodeArgs(1, args));
             }
         } else {
             sendLine(origin, isSilent, "commandOutput", implodeArgs(args));

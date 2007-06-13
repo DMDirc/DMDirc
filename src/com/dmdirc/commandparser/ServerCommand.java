@@ -23,6 +23,7 @@
 package com.dmdirc.commandparser;
 
 import com.dmdirc.Server;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * Represents a generic server command. Server commands are associated with
@@ -38,6 +39,6 @@ public abstract class ServerCommand extends Command {
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
      */
-    public abstract void execute(CommandWindow origin, Server server,
+    public abstract void execute(InputWindow origin, Server server,
             boolean isSilent, String ... args);
 }

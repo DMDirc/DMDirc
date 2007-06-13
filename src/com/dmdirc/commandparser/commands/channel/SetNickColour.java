@@ -28,9 +28,9 @@ import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.ChannelFrame;
+import com.dmdirc.ui.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
@@ -57,7 +57,7 @@ public final class SetNickColour extends ChannelCommand {
      * @param args The user supplied arguments
      */
     @SuppressWarnings("unchecked")
-    public void execute(final CommandWindow origin, final Server server,
+    public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
         
         int offset = 0;

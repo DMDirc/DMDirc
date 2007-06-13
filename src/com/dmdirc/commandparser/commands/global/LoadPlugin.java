@@ -23,10 +23,11 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.commandparser.IntelligentCommand;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.InputWindow;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +48,7 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
     }
     
     /** {@inheritDoc} */
-    public void execute(final CommandWindow origin, final boolean isSilent,
+    public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         if (PluginManager.getPluginManager().addPlugin(args[0])) {
             PluginManager.getPluginManager().getPlugin(args[0]).setActive(true);

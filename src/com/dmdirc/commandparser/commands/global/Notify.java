@@ -25,7 +25,7 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.Config;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.ui.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
@@ -54,7 +54,7 @@ public final class Notify extends GlobalCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final boolean isSilent,
+    public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         final Color colour = ColourManager.parseColour(args[0], null);
         

@@ -22,6 +22,8 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.ui.InputWindow;
+
 /**
  * Represents a generic global command. Global commands are associated with
  * no servers.
@@ -36,5 +38,5 @@ public abstract class GlobalCommand extends Command {
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
      */
-    public abstract void execute(CommandWindow origin, boolean isSilent, String ... args);
+    public abstract void execute(InputWindow origin, boolean isSilent, String ... args);
 }

@@ -26,7 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * The me command sends a CTCP action to the current channel.
@@ -49,7 +49,7 @@ public final class Me extends ChannelCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
+    public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
         channel.sendAction(implodeArgs(args));
     }

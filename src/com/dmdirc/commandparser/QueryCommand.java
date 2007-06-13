@@ -24,6 +24,7 @@ package com.dmdirc.commandparser;
 
 import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * Represents a command which can be performed only in the context of a query.
@@ -39,6 +40,6 @@ public abstract class QueryCommand extends Command {
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
      */
-    public abstract void execute(CommandWindow origin, Server server, Query query,
+    public abstract void execute(InputWindow origin, Server server, Query query,
             boolean isSilent, String... args);
 }
