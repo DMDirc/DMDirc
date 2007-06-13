@@ -762,9 +762,11 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
                         robot.keyRelease(event.getKeyCode());
                     }
                 }
-            } else if (event.getKeyCode() == KeyEvent.VK_C) {
-                getTextPane().copy();
             }
+        } else if (!Config.getOptionBool("ui", "quickCopy")
+        && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
+                && event.getKeyCode() == KeyEvent.VK_C) {
+            getTextPane().copy();
         } else if ((event.getModifiers() & KeyEvent.CTRL_MASK) != 0
                 && event.getKeyCode() == KeyEvent.VK_V) {
             doPaste(event);

@@ -297,7 +297,9 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /** {@inheritDoc} */
     public void delServer(final Server server) {
-        model.removeNodeFromParent(nodes.get(server));
+        if (nodes.get(server) != null) {
+            model.removeNodeFromParent(nodes.get(server));
+        }
     }
     
     /** {@inheritDoc} */
@@ -311,7 +313,9 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /** {@inheritDoc} */
     public void delChannel(final Server server, final Channel channel) {
-        model.removeNodeFromParent(nodes.get(channel));
+        if (nodes.get(channel) != null) {
+            model.removeNodeFromParent(nodes.get(channel));
+        }
     }
     
     /** {@inheritDoc} */
@@ -325,7 +329,9 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /** {@inheritDoc} */
     public void delQuery(final Server server, final Query query) {
-        model.removeNodeFromParent(nodes.get(query));
+        if (nodes.get(query) != null) {
+            model.removeNodeFromParent(nodes.get(query));
+        }
     }
     
     /** {@inheritDoc} */
@@ -339,7 +345,9 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     
     /** {@inheritDoc} */
     public void delCustom(final Server server, final FrameContainer window) {
-        model.removeNodeFromParent(nodes.get(window));
+        if (nodes.get(window) != null) {
+            model.removeNodeFromParent(nodes.get(window));
+        }
     }
     
     /**
