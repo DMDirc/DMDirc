@@ -24,8 +24,8 @@ package com.dmdirc.addons.systray;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * The /popup command allows the user to show a popup message from the system
@@ -50,7 +50,7 @@ public final class PopupCommand extends ServerCommand {
     }
 
     /** {@inheritDoc} */
-    public void execute(final CommandWindow origin, final Server server,
+    public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String ... args) {
         parent.notify("DMDirc", implodeArgs(args));
     }

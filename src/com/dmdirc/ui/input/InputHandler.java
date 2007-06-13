@@ -26,8 +26,8 @@ import com.dmdirc.Config;
 import com.dmdirc.commandparser.Command;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandParser;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.IntelligentCommand;
+import com.dmdirc.ui.InputWindow;
 import com.dmdirc.ui.components.ColourPickerDialog;
 import com.dmdirc.ui.messages.Styliser;
 
@@ -99,7 +99,7 @@ public final class InputHandler implements KeyListener, ActionListener {
     /**
      * The frame that we belong to.
      */
-    private final CommandWindow parentWindow;
+    private final InputWindow parentWindow;
     
     /** Colour picker dialog. */
     private ColourPickerDialog colourPicker;
@@ -113,7 +113,7 @@ public final class InputHandler implements KeyListener, ActionListener {
      */
     public InputHandler(final JTextField thisTarget,
             final CommandParser thisCommandParser,
-            final CommandWindow thisParentWindow) {
+            final InputWindow thisParentWindow) {
         
         bufferSize = thisParentWindow.getConfigManager().getOptionInt("ui", "inputbuffersize", 50);
         

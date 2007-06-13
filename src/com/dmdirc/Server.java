@@ -25,7 +25,6 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.identities.ConfigSource;
 import com.dmdirc.logger.ErrorLevel;
@@ -59,6 +58,7 @@ import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
 import com.dmdirc.parser.callbacks.interfaces.ISocketClosed;
 import com.dmdirc.parser.callbacks.interfaces.IUserModeChanged;
+import com.dmdirc.ui.InputWindow;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.ServerFrame;
 import com.dmdirc.ui.input.TabCompleter;
@@ -460,7 +460,7 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     }
     
     /** {@inheritDoc} */
-    public CommandWindow getFrame() {
+    public InputWindow getFrame() {
         return frame;
     }
     

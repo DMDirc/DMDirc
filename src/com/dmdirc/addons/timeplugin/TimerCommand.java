@@ -24,8 +24,8 @@ package com.dmdirc.addons.timeplugin;
 
 import com.dmdirc.Config;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * The timer command allows users to schedule commands to occur after a certain
@@ -42,7 +42,7 @@ public final class TimerCommand extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
-    public void execute(final CommandWindow origin, final boolean isSilent, 
+    public void execute(final InputWindow origin, final boolean isSilent, 
             final String... args) {
         if (args.length < 3) {
             doUsage(origin, isSilent);
@@ -69,7 +69,7 @@ public final class TimerCommand extends GlobalCommand {
      * @param origin The window that the command was entered in
      * @param isSilent Whether this command is being silenced or not
      */
-    private void doUsage(final CommandWindow origin, final boolean isSilent) {
+    private void doUsage(final InputWindow origin, final boolean isSilent) {
         sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(),
                 "timer", "<repetitions> <interval> <command>");
     }

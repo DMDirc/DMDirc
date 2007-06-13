@@ -23,7 +23,6 @@
 package com.dmdirc.addons.windowstatus;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.util.Hashtable;
 import java.util.Properties;
 
@@ -38,7 +37,6 @@ import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.parser.ChannelClientInfo;
@@ -46,10 +44,8 @@ import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.EventPlugin;
-import com.dmdirc.ui.ChannelFrame;
+import com.dmdirc.ui.InputWindow;
 import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.QueryFrame;
-import com.dmdirc.ui.ServerFrame;
 import com.dmdirc.ui.components.PreferencesInterface;
 import com.dmdirc.ui.components.PreferencesPanel;
 
@@ -163,8 +159,8 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 */
 	public void updateStatus() {
 		JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
-		if (active instanceof CommandWindow) {
-			FrameContainer activeFrame = ((CommandWindow)active).getContainer();
+		if (active instanceof InputWindow) {
+			FrameContainer activeFrame = ((InputWindow)active).getContainer();
 			updateStatus(activeFrame);
 		}
 	}

@@ -25,10 +25,10 @@ package com.dmdirc.addons.logging;
 import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.InputWindow;
 
 import java.util.Enumeration;
 import java.util.Properties;
@@ -56,7 +56,7 @@ public final class LoggingCommand extends ServerCommand {
          * @param isSilent Whether this command is silenced or not
 	 * @param args The user supplied arguments
 	 */
-	public void execute(final CommandWindow origin, final Server server, final boolean isSilent, final String... args) {
+	public void execute(final InputWindow origin, final Server server, final boolean isSilent, final String... args) {
 		final Plugin gotPlugin = PluginManager.getPluginManager().getPlugin("com.dmdirc.addons.logging.LoggingPlugin");
 		
 		if (gotPlugin == null || !(gotPlugin instanceof LoggingPlugin)) {

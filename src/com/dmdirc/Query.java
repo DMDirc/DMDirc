@@ -25,7 +25,6 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ClientInfo;
@@ -35,6 +34,7 @@ import com.dmdirc.parser.callbacks.CallbackNotFound;
 import com.dmdirc.parser.callbacks.interfaces.INickChanged;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
+import com.dmdirc.ui.InputWindow;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.QueryFrame;
 import com.dmdirc.ui.input.TabCompleter;
@@ -113,7 +113,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
      * 
      * @return This object's internal frame
      */
-    public CommandWindow getFrame() {
+    public InputWindow getFrame() {
         return frame;
     }
     

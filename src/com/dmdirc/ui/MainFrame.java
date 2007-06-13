@@ -28,7 +28,6 @@ import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.components.Frame;
@@ -302,7 +301,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             setTitle(getTitlePrefix() + " - " + frame.getTitle());
         }
         
-        ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null, ((CommandWindow) frame).getContainer());
+        ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null, ((InputWindow) frame).getContainer());
     }
     
     /**

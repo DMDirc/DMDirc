@@ -25,7 +25,6 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -49,6 +48,7 @@ import com.dmdirc.parser.callbacks.interfaces.IChannelQuit;
 import com.dmdirc.parser.callbacks.interfaces.IChannelTopic;
 import com.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
 import com.dmdirc.ui.ChannelFrame;
+import com.dmdirc.ui.InputWindow;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.ColourManager;
@@ -262,7 +262,7 @@ public final class Channel extends FrameContainer implements IChannelMessage,
      * Returns the internal frame belonging to this object.
      * @return This object's internal frame
      */
-    public CommandWindow getFrame() {
+    public InputWindow getFrame() {
         return frame;
     }
     

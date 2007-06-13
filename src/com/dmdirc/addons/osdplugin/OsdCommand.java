@@ -23,8 +23,8 @@
 package com.dmdirc.addons.osdplugin;
 
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.ui.InputWindow;
 
 /**
  * The osd command shows an on screen message.
@@ -42,7 +42,7 @@ public final class OsdCommand extends GlobalCommand {
     }
     
     /** {@inheritDoc} */
-    public void execute(final CommandWindow origin, final boolean isSilent,
+    public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         new OsdWindow(implodeArgs(args), false);
     }

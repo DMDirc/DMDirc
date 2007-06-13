@@ -22,13 +22,13 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.callbacks.CallbackNotFound;
 import com.dmdirc.parser.callbacks.interfaces.IDataIn;
 import com.dmdirc.parser.callbacks.interfaces.IDataOut;
+import com.dmdirc.ui.InputWindow;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.ServerFrame;
 
@@ -101,7 +101,7 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
     }
     
     /** {@inheritDoc} */
-    public CommandWindow getFrame() {
+    public InputWindow getFrame() {
         return frame;
     }
     

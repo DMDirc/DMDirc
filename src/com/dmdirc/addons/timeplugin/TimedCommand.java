@@ -23,8 +23,8 @@
 package com.dmdirc.addons.timeplugin;
 
 import com.dmdirc.commandparser.CommandParser;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommandParser;
+import com.dmdirc.ui.InputWindow;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -41,7 +41,7 @@ public final class TimedCommand extends TimerTask {
     private final String command;
     
     /** The window to use for executing commands. */
-    private final CommandWindow origin;
+    private final InputWindow origin;
     
     /** The timer we're using for scheduling this command. */
     private final Timer timer;
@@ -54,7 +54,7 @@ public final class TimedCommand extends TimerTask {
      * @param origin The command window to use for the execution
      */
     public TimedCommand(final int repetitions, final int delay,
-            final String command, final CommandWindow origin) {
+            final String command, final InputWindow origin) {
         this.repetitions = repetitions;
         this.command = command;
         this.origin = origin;

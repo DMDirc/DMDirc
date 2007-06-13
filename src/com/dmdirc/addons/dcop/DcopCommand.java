@@ -24,10 +24,10 @@ package com.dmdirc.addons.dcop;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.InputWindow;
 
 import java.io.IOException;
 import java.util.List;
@@ -54,7 +54,7 @@ public final class DcopCommand extends ServerCommand {
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
-    public void execute(final CommandWindow origin, final Server server,
+    public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         try {
             final List<String> res = DcopPlugin.getDcopResult("dcop " + implodeArgs(args));

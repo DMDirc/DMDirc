@@ -22,10 +22,10 @@
 
 package com.dmdirc;
 
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.InputWindow;
 import com.dmdirc.ui.MainFrame;
 
 import java.awt.Color;
@@ -53,7 +53,7 @@ public abstract class FrameContainer implements InternalFrameListener {
      * Returns the internal frame associated with this object.
      * @return The internal frame associated with this object
      */
-    public abstract CommandWindow getFrame();
+    public abstract InputWindow getFrame();
     
     /**
      * Returns a string identifier for this object/its frame.

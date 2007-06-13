@@ -25,10 +25,10 @@ package com.dmdirc.actions;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.CommandParser;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.commandparser.GlobalCommandParser;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.InputWindow;
 import com.dmdirc.ui.MainFrame;
 
 import java.io.File;
@@ -444,13 +444,13 @@ public class Action {
             }
         }
         
-        CommandWindow cw;
+        InputWindow cw;
         CommandParser cp = null;
         
         if (arguments.length > 0 && arguments[0] instanceof FrameContainer) {
             cw = ((FrameContainer) arguments[0]).getFrame();
         } else if (MainFrame.getMainFrame().getActiveFrame() != null) {
-            cw = (CommandWindow) MainFrame.getMainFrame().getActiveFrame();
+            cw = (InputWindow) MainFrame.getMainFrame().getActiveFrame();
         } else if (ServerManager.getServerManager().numServers() > 0) {
             cw = ServerManager.getServerManager().getServers().get(0).getFrame();
         } else {

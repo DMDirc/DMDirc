@@ -26,10 +26,10 @@ import com.dmdirc.BrowserLauncher;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
-import com.dmdirc.commandparser.CommandWindow;
 import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.InputWindow;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.dialogs.PasteDialog;
 import com.dmdirc.ui.input.InputHandler;
@@ -89,7 +89,7 @@ import javax.swing.undo.UndoManager;
 /**
  * Implements a generic (internal) frame.
  */
-public abstract class Frame extends JInternalFrame implements CommandWindow,
+public abstract class Frame extends JInternalFrame implements InputWindow,
         PropertyChangeListener, InternalFrameListener,
         MouseListener, ActionListener, KeyListener, TextPaneListener {
     
