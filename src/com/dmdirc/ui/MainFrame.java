@@ -52,7 +52,6 @@ import java.awt.Font;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.Insets;
-import java.awt.MenuBar;
 import java.awt.MouseInfo;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;

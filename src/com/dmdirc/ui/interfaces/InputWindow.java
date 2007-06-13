@@ -22,73 +22,19 @@
 
 package com.dmdirc.ui.interfaces;
 
-import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandParser;
-import com.dmdirc.identities.ConfigManager;
 
 /**
- * A command window is a window that allows the user to input a command (that's
- * passed to a command parser). This interface includes methods that are required
- * to allow the commands to interact with the user via the window.
+ * The Input Window interface specifies additional methods that windows should
+ * implement if they have an input field.
  * @author chris
  */
-public interface InputWindow {
-    
-    /**
-     * Formats the arguments using the Formatter, then adds the result to the
-     * main text area.
-     * @param messageType The type of this message
-     * @param args The arguments for the message
-     */
-    void addLine(String messageType, Object... args);
-    
-    /**
-     * Formats the arguments using the Formatter, then adds the result to the
-     * main text area.
-     * @param messageType The type of this message
-     * @param args The arguments for the message
-     */
-    void addLine(StringBuffer messageType, Object... args);
-    
-    /**
-     * Clears the main text area of the command window.
-     */
-    void clear();
-    
-    /**
-     * Retrieves the config manager for this command window.
-     * @return This window's config manager
-     */
-    ConfigManager getConfigManager();
+public interface InputWindow extends Window {
     
     /**
      * Retrieves the command Parser for this command window.
      * @return This window's command Parser
      */
     CommandParser getCommandParser();
-    
-    /**
-     * Retrieves the server associated with this command window.
-     * @return This window's associated server instance
-     * @deprecated No point proxying this - use getContainer().getServer()
-     */
-    @Deprecated
-    Server getServer();
-    
-    /**
-     * Retrieves the container that owns this command window.
-     * @return The container that owns this command window.
-     */
-    FrameContainer getContainer();
-    
-    /**
-     * Determines if the current frame is visible.
-     *
-     * @return boolean visibility
-     * @deprecated Visibility is of no concern to command windows
-     */
-    @Deprecated
-    boolean isVisible();
     
 }
