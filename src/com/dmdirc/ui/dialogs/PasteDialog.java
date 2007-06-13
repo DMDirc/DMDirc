@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.dialogs;
 
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.Frame;
 import com.dmdirc.ui.components.StandardDialog;
@@ -153,7 +154,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
             if (textField.getText().length() > 0) {
                 final String[] lines = textField.getText().split(System.getProperty("line.separator"));
                 for (String line : lines) {
-                    parent.sendLine(line);
+                    ((WritableFrameContainer) parent.getContainer()).sendLine(line);
                 }
             }
             this.dispose();

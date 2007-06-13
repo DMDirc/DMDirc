@@ -501,6 +501,7 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public Server getServer() {
         return getContainer().getServer();
     }

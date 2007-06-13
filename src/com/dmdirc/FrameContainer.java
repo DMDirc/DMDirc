@@ -37,8 +37,9 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
 /**
- * Standard interface for all objects that contain an innerframe. Provides
- * methods for interfacing with the frame via the owner.
+ * The frame container implements basic methods that should be present in
+ * all objects that handle a frame.
+ * 
  * @author chris
  */
 public abstract class FrameContainer implements InternalFrameListener {

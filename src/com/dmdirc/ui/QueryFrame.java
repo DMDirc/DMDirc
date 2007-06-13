@@ -63,12 +63,12 @@ public final class QueryFrame extends Frame {
         
         parent = owner;
         
-        maxLineLength = this.getServer().getParser().getMaxLength("PRIVMSG", this.getFrameParent().toString());
+        maxLineLength = this.getServer().getParser().getMaxLength("PRIVMSG", this.getContainer().toString());
         
         initComponents();
         
-        commandParser = new QueryCommandParser(((Query) getFrameParent()).
-                getServer(), (Query) getFrameParent());
+        commandParser = new QueryCommandParser(((Query) getContainer()).
+                getServer(), (Query) getContainer());
         
         setInputHandler(new InputHandler(getInputField(), commandParser, this));
     }
@@ -109,13 +109,15 @@ public final class QueryFrame extends Frame {
         pack();
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Deprecated
     public void sendLine(final String line) {
         this.parent.sendLine(line);
         this.getInputHandler().addToBuffer(line);
     }
     
-    /** {@inheritDoc}. */
+    /** {@inheritDoc} */
+    @Deprecated
     public int getMaxLineLength() {
         return maxLineLength;
     }

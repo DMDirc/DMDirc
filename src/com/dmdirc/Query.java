@@ -49,8 +49,8 @@ import javax.swing.ImageIcon;
  * corresponding ServerFrame, and handles user input to a ServerFrame.
  * @author chris
  */
-public final class Query extends FrameContainer implements IPrivateAction,
-        IPrivateMessage, INickChanged {
+public final class Query extends WritableFrameContainer implements
+        IPrivateAction, IPrivateMessage, INickChanged {
     
     /** The Server this Query is on. */
     private Server server;
@@ -66,7 +66,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Creates a new instance of Query.
-     * 
+     *
      * @param newHost host of the remove client
      * @param newServer The server object that this Query belongs to
      */
@@ -110,7 +110,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Returns the internal frame belonging to this object.
-     * 
+     *
      * @return This object's internal frame
      */
     public InputWindow getFrame() {
@@ -119,23 +119,18 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Returns the tab completer for this query.
-     * 
+     *
      * @return This query's tab completer
      */
     public TabCompleter getTabCompleter() {
         return tabCompleter;
     }
     
-    /**
-     * Sends a private message to the remote user.
-     * 
-     * @param line message text to send
-     */
+    /** {@inheritDoc} */
     public void sendLine(final String line) {
         final ClientInfo client = server.getParser().getMyself();
-        final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", host);
         
-        if (maxLineLength >= line.length()) {
+        if (line.length() <= getMaxLineLength()) {
             server.getParser().sendMessage(ClientInfo.parseHost(host), line);
             
             final StringBuffer buff = new StringBuffer("querySelfMessage");
@@ -144,14 +139,19 @@ public final class Query extends FrameContainer implements IPrivateAction,
             
             frame.addLine(buff, client.getNickname(), client.getIdent(), client.getHost(), line);
         } else {
-            sendLine(line.substring(0, maxLineLength));
-            sendLine(line.substring(maxLineLength));
+            sendLine(line.substring(0, getMaxLineLength()));
+            sendLine(line.substring(getMaxLineLength()));
         }
+    }
+    
+    /** {@inheritDoc} */
+    public int getMaxLineLength() {
+        return server.getParser().getMaxLength("PRIVMSG", host);
     }
     
     /**
      * Sends a private action to the remote user.
-     * 
+     *
      * @param action action text to send
      */
     public void sendAction(final String action) {
@@ -173,7 +173,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Handles a private message event from the parser.
-     * 
+     *
      * @param parser Parser receiving the event
      * @param message message received
      * @param remoteHost remote user host
@@ -191,7 +191,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Handles a private action event from the parser.
-     * 
+     *
      * @param parser Parser receiving the event
      * @param message message received
      * @param remoteHost remote host
@@ -252,7 +252,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
             }
             
             // TODO: Action hook!
-            frame.addLine("queryNickChanged", sOldNick, cClient.getIdent(), 
+            frame.addLine("queryNickChanged", sOldNick, cClient.getIdent(),
                     cClient.getHost(), cClient.getNickname());
             host = cClient.getNickname() + "!" + cClient.getIdent() + "@" + cClient.getHost();
             updateTitle();
@@ -261,7 +261,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Returns the Server assocaited with this query.
-     * 
+     *
      * @return asscoaited Server
      */
     public Server getServer() {
@@ -287,7 +287,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Returns this query's name.
-     * 
+     *
      * @return A string representation of this query (i.e., the user's name)
      */
     public String toString() {
@@ -296,7 +296,7 @@ public final class Query extends FrameContainer implements IPrivateAction,
     
     /**
      * Returns the host that this query is with.
-     * 
+     *
      * @return The full host that this query is with
      */
     public String getHost() {

@@ -68,7 +68,7 @@ public final class ServerFrame extends Frame {
         
         initComponents();
         
-        commandParser = new ServerCommandParser((Server) getFrameParent());
+        commandParser = new ServerCommandParser((Server) getContainer());
         
         setInputHandler(new InputHandler(getInputField(), commandParser, this));
     }
@@ -132,12 +132,14 @@ public final class ServerFrame extends Frame {
     }
     
     /** {@inheritDoc}. */
+    @Deprecated
     public void sendLine(final String line) {
         this.parent.getParser().sendLine(line);
         this.getInputHandler().addToBuffer(line);
     }
     
     /** {@inheritDoc}. */
+    @Deprecated
     public int getMaxLineLength() {
         return maxLineLength;
     }

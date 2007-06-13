@@ -51,7 +51,7 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
     
     /**
      * Creates a new instance of Raw.
-     * 
+     *
      * @param newServer the server to monitor
      */
     public Raw(final Server newServer) {
@@ -107,13 +107,13 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
     
     /** {@inheritDoc} */
     public void onDataIn(final IRCParser tParser, final String sData) {
-        addLine("rawIn", sData);
+        frame.addLine("rawIn", sData);
     }
     
     /** {@inheritDoc} */
     public void onDataOut(final IRCParser tParser, final String sData,
             final boolean bFromParser) {
-        addLine("rawOut", sData);
+        frame.addLine("rawOut", sData);
     }
     
     /**

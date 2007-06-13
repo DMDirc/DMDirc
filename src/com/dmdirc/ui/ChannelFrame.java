@@ -111,7 +111,7 @@ public final class ChannelFrame extends Frame implements MouseListener,
         
         commands = new HashMap<String, Command>();
         
-        maxLineLength = this.getServer().getParser().getMaxLength("PRIVMSG", this.getFrameParent().toString());
+        maxLineLength = getServer().getParser().getMaxLength("PRIVMSG", getContainer().toString());
         
         initComponents();
         
@@ -120,8 +120,8 @@ public final class ChannelFrame extends Frame implements MouseListener,
         nickList.setForeground(owner.getConfigManager().getOptionColour("ui", "nicklistforegroundcolour",
                 owner.getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
         
-        commandParser = new ChannelCommandParser(((Channel) getFrameParent()).
-                getServer(), (Channel) getFrameParent());
+        commandParser = new ChannelCommandParser(((Channel) getContainer()).
+                getServer(), (Channel) getContainer());
         
         setInputHandler(new InputHandler(getInputField(), commandParser, this));
     }
@@ -261,7 +261,7 @@ public final class ChannelFrame extends Frame implements MouseListener,
             }
         }
         if (actionEvent.getSource() == settingsMI) {
-            new ChannelSettingsDialog((Channel) getFrameParent()).setVisible(true);
+            new ChannelSettingsDialog((Channel) getContainer()).setVisible(true);
         }
     }
     
@@ -290,12 +290,14 @@ public final class ChannelFrame extends Frame implements MouseListener,
     }
     
     /** {@inheritDoc}. */
+    @Deprecated
     public void sendLine(final String line) {
         this.parent.sendLine(line);
         this.getInputHandler().addToBuffer(line);
     }
     
     /** {@inheritDoc}. */
+    @Deprecated
     public int getMaxLineLength() {
         return maxLineLength;
     }

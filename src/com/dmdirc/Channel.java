@@ -72,11 +72,11 @@ import javax.swing.SwingUtilities;
  *
  * @author chris
  */
-public final class Channel extends FrameContainer implements IChannelMessage,
-        IChannelGotNames, IChannelTopic, IChannelJoin, IChannelPart,
-        IChannelKick, IChannelQuit, IChannelAction, IChannelNickChanged,
-        IChannelModeChanged, IChannelUserModeChanged, IChannelCTCP,
-        IAwayStateOther {
+public final class Channel extends WritableFrameContainer implements
+        IChannelMessage, IChannelGotNames, IChannelTopic, IChannelJoin,
+        IChannelPart, IChannelKick, IChannelQuit, IChannelAction,
+        IChannelNickChanged, IChannelModeChanged, IChannelUserModeChanged,
+        IChannelCTCP, IAwayStateOther {
     
     /**
      * The callbacks that should be registered for channel instances.
@@ -181,18 +181,13 @@ public final class Channel extends FrameContainer implements IChannelMessage,
         return configManager;
     }
     
-    /**
-     * Sends the specified line as a message to the channel that this object
-     * represents.
-     * @param line The message to send
-     */
+    /** {@inheritDoc} */
     public void sendLine(final String line) {
         final ClientInfo me = server.getParser().getMyself();
         final String modes = getModes(channelInfo.getUser(me));
         final String[] details = getDetails(channelInfo.getUser(me));
-        final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName());
         
-        if (maxLineLength >= line.length()) {
+        if (line.length() <= getMaxLineLength()) {
             final StringBuffer buff = new StringBuffer("channelSelfMessage");
             
             ActionManager.processEvent(CoreActionType.CHANNEL_SELF_MESSAGE, buff,
@@ -202,9 +197,14 @@ public final class Channel extends FrameContainer implements IChannelMessage,
                     line, channelInfo);
             channelInfo.sendMessage(line);
         } else {
-            sendLine(line.substring(0, maxLineLength));
-            sendLine(line.substring(maxLineLength));
+            sendLine(line.substring(0, getMaxLineLength()));
+            sendLine(line.substring(getMaxLineLength()));
         }
+    }
+    
+    /** {@inheritDoc} */
+    public int getMaxLineLength() {
+        return server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName());
     }
     
     /**
