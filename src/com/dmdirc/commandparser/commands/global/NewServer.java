@@ -27,7 +27,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.identities.IdentityManager;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The new server command allows users to open a new server window.

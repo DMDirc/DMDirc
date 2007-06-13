@@ -26,7 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The me command sends a CTCP action to the current channel.

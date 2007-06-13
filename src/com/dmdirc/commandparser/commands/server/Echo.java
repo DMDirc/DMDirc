@@ -25,7 +25,7 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
 
 import javax.swing.JInternalFrame;

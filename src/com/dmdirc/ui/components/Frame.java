@@ -29,7 +29,7 @@ import com.dmdirc.Server;
 import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.dialogs.PasteDialog;
 import com.dmdirc.ui.input.InputHandler;

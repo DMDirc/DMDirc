@@ -23,7 +23,7 @@
 package com.dmdirc.commandparser;
 
 import com.dmdirc.Server;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * A command parser used in the context of a server.

@@ -28,7 +28,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.Enumeration;
 import java.util.Properties;

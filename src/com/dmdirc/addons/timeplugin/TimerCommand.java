@@ -25,7 +25,7 @@ package com.dmdirc.addons.timeplugin;
 import com.dmdirc.Config;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The timer command allows users to schedule commands to occur after a certain

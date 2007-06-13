@@ -25,7 +25,7 @@ package com.dmdirc;
 import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
 
 import java.awt.Color;
@@ -83,9 +83,12 @@ public abstract class FrameContainer implements InternalFrameListener {
     /**
      * Formats the specified arguments using the supplied message type, and
      * outputs to the main text area.
+     * 
      * @param messageType the message type to use
      * @param args the arguments to pass
+     * @deprecated Not sure why we're proxying this
      */
+    @Deprecated
     public void addLine(final String messageType, final Object... args) {
         getFrame().addLine(messageType, args);
     }

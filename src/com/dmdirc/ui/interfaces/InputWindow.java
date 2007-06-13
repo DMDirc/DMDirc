@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui;
+package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;

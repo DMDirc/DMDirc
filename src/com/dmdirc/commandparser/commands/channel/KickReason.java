@@ -27,7 +27,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The kick command kicks a specified user from the channel.

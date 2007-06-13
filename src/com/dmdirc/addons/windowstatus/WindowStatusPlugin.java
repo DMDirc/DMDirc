@@ -44,7 +44,7 @@ import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.EventPlugin;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.PreferencesInterface;
 import com.dmdirc.ui.components.PreferencesPanel;

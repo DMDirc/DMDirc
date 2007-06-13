@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui;
 
+import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;

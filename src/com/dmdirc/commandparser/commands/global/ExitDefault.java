@@ -25,7 +25,7 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.Config;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Represents the exit/0 command (i.e., an exit with no arguments). Reads the

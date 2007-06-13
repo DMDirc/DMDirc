@@ -27,7 +27,7 @@ import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The me/0 command simply tells the user that the correct usage of /me requires

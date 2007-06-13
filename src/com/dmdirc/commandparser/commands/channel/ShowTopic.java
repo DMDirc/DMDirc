@@ -27,7 +27,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.parser.ChannelInfo;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The show topic command shows the user the current topic.

@@ -25,7 +25,7 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Allows the user to reload actions.

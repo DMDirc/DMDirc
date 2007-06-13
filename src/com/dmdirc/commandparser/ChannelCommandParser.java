@@ -24,7 +24,7 @@ package com.dmdirc.commandparser;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * A command parser that is tailored for use in a channel environment. Handles

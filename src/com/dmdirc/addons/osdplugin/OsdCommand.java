@@ -24,7 +24,7 @@ package com.dmdirc.addons.osdplugin;
 
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The osd command shows an on screen message.

@@ -22,7 +22,7 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Represents a generic global command. Global commands are associated with

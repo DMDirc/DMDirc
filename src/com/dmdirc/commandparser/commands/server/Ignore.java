@@ -28,7 +28,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.identities.Identity;
 import com.dmdirc.identities.IdentityManager;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Allows the user to add/view/delete ignores.

@@ -26,7 +26,7 @@ import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.Hashtable;
 import java.util.Map;

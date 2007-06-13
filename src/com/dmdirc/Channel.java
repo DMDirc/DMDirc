@@ -48,7 +48,7 @@ import com.dmdirc.parser.callbacks.interfaces.IChannelQuit;
 import com.dmdirc.parser.callbacks.interfaces.IChannelTopic;
 import com.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
 import com.dmdirc.ui.ChannelFrame;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.ColourManager;

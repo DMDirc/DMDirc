@@ -30,7 +30,7 @@ import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.ChannelFrame;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;

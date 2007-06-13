@@ -27,7 +27,7 @@ import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.QueryCommand;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Represents the /me command used in a query window, with no parameters.

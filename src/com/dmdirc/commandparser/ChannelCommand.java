@@ -24,7 +24,7 @@ package com.dmdirc.commandparser;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Represents a command which can be performed only in the context of a channel.

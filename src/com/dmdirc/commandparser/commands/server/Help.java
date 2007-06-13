@@ -27,7 +27,7 @@ import com.dmdirc.commandparser.Command;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.ui.ChannelFrame;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.QueryFrame;
 
 import java.util.Collections;

@@ -26,7 +26,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.commandparser.IntelligentCommand;
 import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.ArrayList;
 import java.util.Arrays;

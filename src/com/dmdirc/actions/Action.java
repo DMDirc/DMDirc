@@ -28,7 +28,7 @@ import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.GlobalCommandParser;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
 
 import java.io.File;

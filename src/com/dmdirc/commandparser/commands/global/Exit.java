@@ -25,7 +25,7 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
-import com.dmdirc.ui.InputWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The exit command allows the user to quit DMDirc with a custom quit message.
