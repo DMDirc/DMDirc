@@ -187,8 +187,6 @@ public final class Query extends FrameContainer implements IPrivateAction,
         ActionManager.processEvent(CoreActionType.QUERY_MESSAGE, buff, this, message);
         
         frame.addLine(buff, parts[0], parts[1], parts[2], message);
-        
-        sendNotification();
     }
     
     /**
@@ -207,8 +205,6 @@ public final class Query extends FrameContainer implements IPrivateAction,
         ActionManager.processEvent(CoreActionType.QUERY_ACTION, buff, this, message);
         
         frame.addLine(buff, parts[0], parts[1], parts[2], message);
-        
-        sendNotification();
     }
     
     /**
@@ -259,7 +255,6 @@ public final class Query extends FrameContainer implements IPrivateAction,
             frame.addLine("queryNickChanged", sOldNick, cClient.getIdent(), 
                     cClient.getHost(), cClient.getNickname());
             host = cClient.getNickname() + "!" + cClient.getIdent() + "@" + cClient.getHost();
-            sendNotification();
             updateTitle();
         }
     }

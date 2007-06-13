@@ -114,16 +114,6 @@ public abstract class FrameContainer implements InternalFrameListener {
     }
     
     /**
-     * Sends a notification to the frame manager if this frame isn't active.
-     * 
-     * @deprecated Colours shouldn't be hardcoded, use sendNotification(colour)
-     */
-    @Deprecated
-    public void sendNotification() {
-        sendNotification(Color.RED);
-    }
-    
-    /**
      * Sends a notification to the frame manager if this fame isn't active.
      * @param colour The colour to use for the notification
      */

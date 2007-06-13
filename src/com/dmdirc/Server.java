@@ -226,7 +226,6 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         frame.setFrameIcon(imageIcon);
         
         addLine("serverConnecting", server, port);
-        sendNotification();
         
         final MyInfo myInfo = new MyInfo();
         myInfo.setNickname(profile.getOption("profile", "nickname"));
@@ -681,7 +680,6 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         }
         
         activeFrame.getFrame().addLine(messageType, args);
-        activeFrame.sendNotification();
     }
     
     /**
@@ -693,14 +691,11 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     public void addLineToAll(final String messageType, final Object... args) {
         for (Channel channel : channels.values()) {
             channel.addLine(messageType, args);
-            channel.sendNotification();
         }
         for (Query query : queries.values()) {
             query.addLine(messageType, args);
-            query.sendNotification();
         }
         addLine(messageType, args);
-        sendNotification();
     }
     
     /**
@@ -721,7 +716,6 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
         }
         if ("server".equals(target)) {
             addLine(messageType, args);
-            sendNotification();
         } else if ("all".equals(target)) {
             addLineToAll(messageType, args);
         } else if ("active".equals(target)) {
@@ -844,19 +838,16 @@ public final class Server extends FrameContainer implements IChannelSelfJoin,
     /** {@inheritDoc} */
     public void onMOTDStart(final IRCParser tParser, final String sData) {
         addLine("motdStart", sData);
-        sendNotification();
     }
     
     /** {@inheritDoc} */
     public void onMOTDLine(final IRCParser tParser, final String sData) {
         addLine("motdLine", sData);
-        sendNotification();
     }
     
     /** {@inheritDoc} */
     public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD) {
         addLine("motdEnd", "End of server's MOTD.");
-        sendNotification();
     }
     
     /** {@inheritDoc} */
