@@ -34,8 +34,10 @@ import com.dmdirc.ui.framemanager.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ import javax.swing.BorderFactory;
 
 import javax.swing.JComponent;
 import javax.swing.JToggleButton;
+import javax.swing.SwingConstants;
 
 /**
  * The button bar manager is a grid of buttons that presents a manager similar
@@ -77,6 +80,9 @@ public final class ButtonBar implements FrameManager, ActionListener {
     /** The number of buttons to render per {cell,row}. */
     private int maxButtons = Integer.MAX_VALUE;
     
+    /** The width of buttons. */
+    private int buttonWidth;
+    
     /** Creates a new instance of DummyFrameManager. */
     public ButtonBar() {
         windows = new HashMap<Server, List<FrameContainer>>();
@@ -92,6 +98,8 @@ public final class ButtonBar implements FrameManager, ActionListener {
         parent.setBorder(BorderFactory.createEmptyBorder(
                 UIUtilities.SMALL_BORDER, UIUtilities.SMALL_BORDER,
                 UIUtilities.SMALL_BORDER, UIUtilities.SMALL_BORDER));
+        
+        buttonWidth = position.isHorizontal() ? 150 : (parent.getWidth() - UIUtilities.SMALL_BORDER * 2) / cells;
     }
     
     /**
@@ -103,6 +111,8 @@ public final class ButtonBar implements FrameManager, ActionListener {
         final GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
         constraints.gridy = 0;
+        constraints.insets.set(UIUtilities.SMALL_BORDER,
+                UIUtilities.SMALL_BORDER, 0, 0);
         
         for (Map.Entry<Server, List<FrameContainer>> entry : windows.entrySet()) {
             parent.add(buttons.get(entry.getKey()), constraints);
@@ -127,6 +137,24 @@ public final class ButtonBar implements FrameManager, ActionListener {
      */
     public void increment(final GridBagConstraints constraints) {
         constraints.gridy++;
+    }
+    
+    /**
+     * Adds a button to the button array with the details from the specified
+     * container.
+     *
+     * @param source The Container to get title/icon info from
+     */
+    private void addButton(final FrameContainer source) {
+        final JToggleButton button = new JToggleButton(source.toString(), source.getIcon());
+        
+        button.addActionListener(this);
+        button.setPreferredSize(new Dimension(buttonWidth, 25));
+        button.setMinimumSize(new Dimension(buttonWidth, 25));
+        button.setHorizontalAlignment(SwingConstants.LEFT);
+        button.setMargin(new Insets(0, 0, 0, 0));
+        
+        buttons.put(source, button);
     }
     
     /** {@inheritDoc} */
@@ -167,8 +195,7 @@ public final class ButtonBar implements FrameManager, ActionListener {
     /** {@inheritDoc} */
     public void addServer(final Server server) {
         windows.put(server, new ArrayList<FrameContainer>());
-        buttons.put(server, new JToggleButton(server.toString(), server.getIcon()));
-        buttons.get(server).addActionListener(this);
+        addButton(server);
         
         relayout();
     }
@@ -203,8 +230,7 @@ public final class ButtonBar implements FrameManager, ActionListener {
     /** {@inheritDoc} */
     public void addCustom(final Server server, final FrameContainer window) {
         windows.get(server).add(window);
-        buttons.put(window, new JToggleButton(window.toString(), window.getIcon()));
-        buttons.get(window).addActionListener(this);
+        addButton(window);
         
         relayout();
     }
