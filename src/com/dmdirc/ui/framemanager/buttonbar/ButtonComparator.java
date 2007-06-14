@@ -20,42 +20,46 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.framemanager;
+package com.dmdirc.ui.framemanager.buttonbar;
 
-import java.util.Locale;
+import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Query;
+import com.dmdirc.Raw;
+import com.dmdirc.Server;
+import java.util.Comparator;
 
 /**
- * Frame manager position enum.
+ * Implements a basic comparator for frame containers, so that they're sorted
+ * as follows: Server, Raw, Channel, Query.
+ *
+ * @author chris
  */
-public enum FramemanagerPosition {
-    /** Top of the window. */
-    TOP,
-    /** Left side of the window. */
-    LEFT,
-    /** Bottom of the window. */
-    BOTTOM,
-    /** Right side of the window. */
-    RIGHT,
-    /** Unknown position. */
-    UNKNOWN;
-    
-    public static FramemanagerPosition getPosition(final String name) {
-        if (name == null) {
-            return UNKNOWN;
-        }
-        try {
-            return valueOf(name.toUpperCase(Locale.getDefault()));
-        } catch (IllegalArgumentException ex) {
-            return valueOf("UNKNOWN");
-        }
-    }
+public class ButtonComparator implements Comparator<FrameContainer> {
     
     /**
-     * Determines if this position is one of the two horizontal positions.
-     * 
-     * @return True if this is a horizontal position, false otherwise
+     * Returns an integer corresponding to the expected order of an object.
+     *
+     * @param object The object to be tested
+     * @return Position of the object
      */
-    public boolean isHorizontal() {
-        return this == TOP || this == BOTTOM;
+    private int getPosition(final FrameContainer object) {
+        if (object instanceof Server) {
+            return 1;
+        } else if (object instanceof Raw) {
+            return 2;
+        } else if (object instanceof Channel) {
+            return 3;
+        } else if (object instanceof Query) {
+            return 4;
+        } else {
+            return 5;
+        }
     }
+    
+    /** {@inheritDoc} */
+    public int compare(FrameContainer o1, FrameContainer o2) {
+        return getPosition(o1) - getPosition(o2);
+    }
+    
 }

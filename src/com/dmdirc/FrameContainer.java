@@ -101,8 +101,8 @@ public abstract class FrameContainer implements InternalFrameListener {
      * Clears any outstanding notifications this frame has set.
      */
     protected void clearNotification() {
-        MainFrame.getMainFrame().getFrameManager().clearNotification(this);
         notification = Color.BLACK;
+        MainFrame.getMainFrame().getFrameManager().clearNotification(this);
     }
     
     /**
@@ -112,8 +112,8 @@ public abstract class FrameContainer implements InternalFrameListener {
     public void sendNotification(final Color colour) {
         final Window activeFrame = MainFrame.getMainFrame().getActiveFrame();
         if (activeFrame != null && !activeFrame.equals(getFrame())) {
-            MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
             notification = colour;
+            MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
         }
     }
     

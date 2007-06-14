@@ -289,7 +289,7 @@ public final class Server extends WritableFrameContainer implements
     public void reconnect() {
         reconnect(Config.getOption("general", "reconnectmessage"));
     }
-
+    
     /** {@inheritDoc} */
     public void sendLine(String line) {
         if (parser != null && !closing) {
@@ -298,11 +298,11 @@ public final class Server extends WritableFrameContainer implements
             frame.getInputHandler().addToBuffer(line);
         }
     }
-
+    
     /** {@inheritDoc} */
     public int getMaxLineLength() {
         return parser.MAX_LINELENGTH;
-    }    
+    }
     
     /**
      * Updates the ignore list for this server.
@@ -495,8 +495,12 @@ public final class Server extends WritableFrameContainer implements
             // Unregister parser callbacks
             parser.getCallbackManager().delAllCallback(this);
         }
-        // Unregister frame callbacks
-        frame.removeInternalFrameListener(this);
+        
+        if (frame != null) {
+            // Unregister frame callbacks
+            frame.removeInternalFrameListener(this);
+        }
+        
         // Disconnect from the server
         disconnect(reason);
         // Close all channel windows
@@ -509,14 +513,18 @@ public final class Server extends WritableFrameContainer implements
         }
         // Unregister ourselves with the server manager
         ServerManager.getServerManager().unregisterServer(this);
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                // Close our own window
-                frame.setVisible(false);
-                MainFrame.getMainFrame().delChild(frame);
-                frame = null;
-            }
-        });
+        
+        if (frame != null) {
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    // Close our own window
+                    frame.setVisible(false);
+                    MainFrame.getMainFrame().delChild(frame);
+                    frame = null;
+                }
+            });
+        }
+        
         // Ditch the parser
         parser = null;
     }

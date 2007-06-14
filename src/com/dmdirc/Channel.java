@@ -59,7 +59,6 @@ import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;

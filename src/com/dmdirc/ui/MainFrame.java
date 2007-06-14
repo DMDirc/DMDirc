@@ -38,7 +38,6 @@ import com.dmdirc.ui.dialogs.NewServerDialog;
 import com.dmdirc.ui.dialogs.PluginDialog;
 import com.dmdirc.ui.dialogs.PreferencesDialog;
 import com.dmdirc.ui.dialogs.ProfileEditorDialog;
-import com.dmdirc.ui.dialogs.firstrunwizard.FirstRunWizard;
 import com.dmdirc.ui.framemanager.FrameManager;
 import com.dmdirc.ui.framemanager.MainFrameManager;
 import com.dmdirc.ui.framemanager.windowmenu.WindowMenuFrameManager;
@@ -231,11 +230,6 @@ public final class MainFrame extends JFrame implements WindowListener,
     public static synchronized MainFrame getMainFrame() {
         if (me == null) {
             me = new MainFrame();
-            if (!Config.hasOption("general", "firstRun")
-            || Config.getOptionBool("general", "firstRun")) {
-                Config.setOption("general", "firstRun", "false");
-                new FirstRunWizard().display();
-            }
         }
         return me;
     }

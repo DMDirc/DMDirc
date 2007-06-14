@@ -23,9 +23,11 @@
 package com.dmdirc.ui.framemanager;
 
 import com.dmdirc.Channel;
+import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.ui.framemanager.buttonbar.ButtonBar;
 import com.dmdirc.ui.framemanager.tree.TreeFrameManager;
 import com.dmdirc.ui.framemanager.windowmenu.WindowMenuFrameManager;
 
@@ -46,7 +48,14 @@ public class MainFrameManager implements FrameManager {
     
     /** Creates a new instance of MainFrameManager. */
     public MainFrameManager() {
-        frameManager = new TreeFrameManager();
+        final String manager = Config.getOption("ui", "framemanager", "treeview");
+        
+        if (manager.equalsIgnoreCase("buttonbar")) {
+            frameManager = new ButtonBar();
+        } else {
+            frameManager = new TreeFrameManager();
+        }
+        
         windowMenuFrameManager = new WindowMenuFrameManager();
     }
     

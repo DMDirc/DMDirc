@@ -27,6 +27,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.identities.IdentityManager;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.dialogs.firstrunwizard.FirstRunWizard;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
 
@@ -49,7 +50,7 @@ public final class Main {
     /**
      * Stores the update channel that this version came from, if any.
      */
-    public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE; 
+    public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE;
     
     /**
      * Prevents creation of main.
@@ -73,6 +74,11 @@ public final class Main {
         ActionManager.loadActions();
         
         MainFrame.getMainFrame();
+        
+        if (!Config.hasOption("general", "firstRun") || Config.getOptionBool("general", "firstRun")) {
+            Config.setOption("general", "firstRun", "false");
+            new FirstRunWizard().display();
+        }
         
         ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);
         
