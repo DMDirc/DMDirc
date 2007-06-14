@@ -66,9 +66,9 @@ public abstract class WritableFrameContainer extends FrameContainer {
         final String[] splitLines = line.split("\n");
         lines = splitLines.length;
         for (String splitLine : splitLines) {
-            lines += (int) Math.ceil(splitLine.length() / getMaxLineLength());
+            lines += (int) Math.ceil(splitLine.length() / (double) getMaxLineLength());
         }
         return lines;
-    }    
+    }
     
 }
