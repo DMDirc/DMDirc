@@ -90,8 +90,8 @@ public class ServerManagerTest {
         
         final ServerManager sm = ServerManager.getServerManager();
         
-        assertEquals(serverA, sm.getServerFromFrame((JInternalFrame) serverA.getFrame()));
-        assertEquals(serverB, sm.getServerFromFrame((JInternalFrame) serverB.getFrame()));
+        assertEquals(serverA, sm.getServerFromFrame(serverA.getFrame()));
+        assertEquals(serverB, sm.getServerFromFrame(serverB.getFrame()));
         
         serverA.close();
         serverB.close();
