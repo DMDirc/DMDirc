@@ -27,8 +27,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
-
-import javax.swing.JInternalFrame;
+import com.dmdirc.ui.interfaces.Window;
 
 /**
  * The echo commands simply echos text to the current window.
@@ -55,7 +54,7 @@ public final class Echo extends ServerCommand {
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {        
         if (args.length > 0 && args[0].equalsIgnoreCase("--active")) {
-            final JInternalFrame frame = MainFrame.getMainFrame().getActiveFrame();
+            final Window frame = MainFrame.getMainFrame().getActiveFrame();
             if (frame instanceof InputWindow) {
                 ((InputWindow) frame).addLine("commandOutput", implodeArgs(1, args));
             }

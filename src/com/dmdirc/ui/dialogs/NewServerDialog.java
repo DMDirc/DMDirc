@@ -31,6 +31,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
+import com.dmdirc.ui.interfaces.Window;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
@@ -48,7 +49,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -206,7 +206,7 @@ public final class NewServerDialog extends StandardDialog {
                         || MainFrame.getMainFrame().getActiveFrame() == null) {
                     new Server(host, port, pass, sslCheck.isSelected(), profile);
                 } else {
-                    final JInternalFrame active =
+                    final Window active =
                             MainFrame.getMainFrame().getActiveFrame();
                     final Server server = ServerManager.getServerManager().
                             getServerFromFrame(active);

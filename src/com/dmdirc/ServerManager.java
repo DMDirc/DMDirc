@@ -23,11 +23,10 @@
 package com.dmdirc;
 
 import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.interfaces.Window;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.JInternalFrame;
 
 /**
  * The ServerManager maintains a list of all servers, and provides methods to
@@ -151,7 +150,7 @@ public final class ServerManager {
      * @param active The internal frame to check
      * @return The server associated with the internal frame
      */
-    public Server getServerFromFrame(final JInternalFrame active) {
+    public Server getServerFromFrame(final Window active) {
         for (Server server : servers) {
             if (server.ownsFrame(active)) {
                 return server;

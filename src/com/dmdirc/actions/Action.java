@@ -22,14 +22,15 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.ServerManager;
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.GlobalCommandParser;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.interfaces.Window;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -444,12 +445,13 @@ public class Action {
             }
         }
         
+        final Window active = MainFrame.getMainFrame().getActiveFrame();
         InputWindow cw;
         CommandParser cp = null;
         
-        if (arguments.length > 0 && arguments[0] instanceof FrameContainer) {
-            cw = ((FrameContainer) arguments[0]).getFrame();
-        } else if (MainFrame.getMainFrame().getActiveFrame() != null) {
+        if (arguments.length > 0 && arguments[0] instanceof WritableFrameContainer) {
+            cw = ((WritableFrameContainer) arguments[0]).getFrame();
+        } else if (active != null && active instanceof InputWindow) {
             cw = (InputWindow) MainFrame.getMainFrame().getActiveFrame();
         } else if (ServerManager.getServerManager().numServers() > 0) {
             cw = ServerManager.getServerManager().getServers().get(0).getFrame();

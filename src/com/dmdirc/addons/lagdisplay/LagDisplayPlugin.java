@@ -29,12 +29,12 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -112,12 +112,12 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin {
     /** {@inheritDoc} */
     public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
         if (type.equals(CoreActionType.SERVER_GOTPING)) {
-            final JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
+            final Window active = MainFrame.getMainFrame().getActiveFrame();
             if (((Server) arguments[0]).ownsFrame(active)) {
                 label.setText(formatTime(arguments[1]));
             }
         } else if (type.equals(CoreActionType.SERVER_NOPING)) {
-            final JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
+            final Window active = MainFrame.getMainFrame().getActiveFrame();
             if (((Server) arguments[0]).ownsFrame(active)) {
                 label.setText(formatTime(arguments[1]) + "+");
             }

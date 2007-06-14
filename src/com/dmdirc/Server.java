@@ -62,6 +62,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.ServerFrame;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 
 import java.net.URL;
@@ -73,7 +74,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
-import javax.swing.JInternalFrame;
 import javax.swing.SwingUtilities;
 
 /**
@@ -655,7 +655,7 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     @Override
-    public boolean ownsFrame(final JInternalFrame target) {
+    public boolean ownsFrame(final Window target) {
         // Check if it's our server frame
         if (frame != null && frame.equals(target)) { return true; }
         // Check if it's the raw frame
@@ -689,7 +689,7 @@ public final class Server extends WritableFrameContainer implements
      * @param args The arguments for the message
      */
     public void addLineToActive(final String messageType, final Object... args) {
-        if (activeFrame == null || !((JInternalFrame) activeFrame.getFrame()).isVisible()) {
+        if (activeFrame == null || !activeFrame.getFrame().isVisible()) {
             activeFrame = this;
         }
         

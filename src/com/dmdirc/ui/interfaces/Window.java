@@ -24,6 +24,7 @@ package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.identities.ConfigManager;
+import java.beans.PropertyVetoException;
 
 /**
  * The Window interface specifies common methods that should be implemented
@@ -74,4 +75,26 @@ public interface Window {
      * @return boolean visibility
      */
     boolean isVisible();
+    
+    /**
+     * Retrives the current title of this window.
+     * 
+     * @return This window's title
+     */
+    String getTitle();
+    
+    /**
+     * Determines if this frame is currently maximised.
+     * 
+     * @return true if the frame is maximised, false otherwise
+     */
+    boolean isMaximum();
+    
+    /**
+     * Sets the maximised state of this window.
+     * 
+     * @param b true if the frame should be maximised, false otherwise
+     * @throws PropertyVetoException if the change is vetoed
+     */
+    void setMaximum(boolean b) throws PropertyVetoException;
 }

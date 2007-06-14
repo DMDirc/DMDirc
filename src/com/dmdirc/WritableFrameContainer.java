@@ -22,6 +22,8 @@
 
 package com.dmdirc;
 
+import com.dmdirc.ui.interfaces.InputWindow;
+
 /**
  * The writable frame container adds additional methods to the frame container
  * class that allow the sending of lines back to whatever the container's
@@ -37,6 +39,13 @@ public abstract class WritableFrameContainer extends FrameContainer {
      * @param line The line to be sent
      */
     public abstract void sendLine(String line);
+    
+    /**
+     * Returns the internal frame associated with this object.
+     * 
+     * @return The internal frame associated with this object
+     */
+    public abstract InputWindow getFrame();    
     
     /**
      * Returns the maximum length that a line passed to sendLine() should be,

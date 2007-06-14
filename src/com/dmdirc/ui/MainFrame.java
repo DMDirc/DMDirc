@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui;
 
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
@@ -43,6 +42,7 @@ import com.dmdirc.ui.dialogs.firstrunwizard.FirstRunWizard;
 import com.dmdirc.ui.framemanager.FrameManager;
 import com.dmdirc.ui.framemanager.MainFrameManager;
 import com.dmdirc.ui.framemanager.windowmenu.WindowMenuFrameManager;
+import com.dmdirc.ui.interfaces.Window;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
@@ -231,7 +231,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         if (me == null) {
             me = new MainFrame();
             if (!Config.hasOption("general", "firstRun")
-            || Config.getOptionBool("general", "firstRun")) {
+                    || Config.getOptionBool("general", "firstRun")) {
                 Config.setOption("general", "firstRun", "false");
                 new FirstRunWizard().display();
             }
@@ -287,12 +287,12 @@ public final class MainFrame extends JFrame implements WindowListener,
      * Sets the active internal frame to the one specified.
      * @param frame The frame to be activated
      */
-    public void setActiveFrame(final JInternalFrame frame) {
+    public void setActiveFrame(final Window frame) {
         try {
-            frame.setVisible(true);
-            frame.setIcon(false);
-            frame.moveToFront();
-            frame.setSelected(true);
+            ((JInternalFrame) frame).setVisible(true);
+            ((JInternalFrame) frame).setIcon(false);
+            ((JInternalFrame) frame).moveToFront();
+            ((JInternalFrame) frame).setSelected(true);
         } catch (PropertyVetoException ex) {
             Logger.error(ErrorLevel.ERROR, "Unable to set active window", ex);
         }
@@ -301,7 +301,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             setTitle(getTitlePrefix() + " - " + frame.getTitle());
         }
         
-        ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null, ((InputWindow) frame).getContainer());
+        ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null, frame.getContainer());
     }
     
     /**
@@ -321,11 +321,15 @@ public final class MainFrame extends JFrame implements WindowListener,
     }
     
     /**
-     * Returns the JInternalFrame that is currently active.
-     * @return The active JInternalFrame
+     * Returns the window that is currently active.
+     * @return The active window
      */
-    public JInternalFrame getActiveFrame() {
-        return desktopPane.getSelectedFrame();
+    public Window getActiveFrame() {
+        if (desktopPane.getSelectedFrame() instanceof Window) {
+            return (Window) desktopPane.getSelectedFrame();
+        } else {
+            return null;
+        }
     }
     
     /**
@@ -601,7 +605,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         setJMenuBar(menuBar);
     }
     
-    /** 
+    /**
      * Initialises the window menu.
      *
      * @param windows Map of windows

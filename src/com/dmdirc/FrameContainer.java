@@ -27,12 +27,12 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.Color;
 import java.beans.PropertyVetoException;
 
 import javax.swing.ImageIcon;
-import javax.swing.JInternalFrame;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 
@@ -52,9 +52,10 @@ public abstract class FrameContainer implements InternalFrameListener {
     
     /**
      * Returns the internal frame associated with this object.
+     * 
      * @return The internal frame associated with this object
      */
-    public abstract InputWindow getFrame();
+    public abstract Window getFrame();
     
     /**
      * Returns a string identifier for this object/its frame.
@@ -93,7 +94,7 @@ public abstract class FrameContainer implements InternalFrameListener {
      * Requests that this object's frame be activated.
      */
     public void activateFrame() {
-        MainFrame.getMainFrame().setActiveFrame((JInternalFrame) getFrame());
+        MainFrame.getMainFrame().setActiveFrame(getFrame());
     }
     
     /**
@@ -109,7 +110,7 @@ public abstract class FrameContainer implements InternalFrameListener {
      * @param colour The colour to use for the notification
      */
     public void sendNotification(final Color colour) {
-        final JInternalFrame activeFrame = MainFrame.getMainFrame().getActiveFrame();
+        final Window activeFrame = MainFrame.getMainFrame().getActiveFrame();
         if (activeFrame != null && !activeFrame.equals(getFrame())) {
             MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
             notification = colour;
@@ -126,10 +127,10 @@ public abstract class FrameContainer implements InternalFrameListener {
     
     /**
      * Determines if the specified frame is owned by this object.
-     * @param target JInternalFrame to check ownership of
+     * @param target Window to check ownership of
      * @return True iff frame is owned by this container, false otherwise
      */
-    public boolean ownsFrame(final JInternalFrame target) {
+    public boolean ownsFrame(final Window target) {
         return getFrame().equals(target);
     }
     
@@ -141,7 +142,7 @@ public abstract class FrameContainer implements InternalFrameListener {
         final boolean pref = getServer().getConfigManager().getOptionBool("ui", "maximisewindows");
         if (pref || MainFrame.getMainFrame().getMaximised()) {
             try {
-                ((JInternalFrame) getFrame()).setMaximum(true);
+                getFrame().setMaximum(true);
             } catch (PropertyVetoException ex) {
                 Logger.error(ErrorLevel.WARNING, "Unable to maximise window", ex);
             }
@@ -187,7 +188,7 @@ public abstract class FrameContainer implements InternalFrameListener {
     public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
         if (MainFrame.getMainFrame().getMaximised()) {
             try {
-                ((JInternalFrame) getFrame()).setMaximum(true);
+                getFrame().setMaximum(true);
             } catch (PropertyVetoException ex) {
                 Logger.error(ErrorLevel.WARNING, "Unable to maximise window", ex);
             }

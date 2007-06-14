@@ -27,7 +27,6 @@ import java.util.Hashtable;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
-import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -48,6 +47,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.PreferencesInterface;
 import com.dmdirc.ui.components.PreferencesPanel;
+import com.dmdirc.ui.interfaces.Window;
 
 /**
  * Displays information related to the current window in the status bar.
@@ -158,11 +158,10 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 * Update the window status using the current active window.
 	 */
 	public void updateStatus() {
-		JInternalFrame active = MainFrame.getMainFrame().getActiveFrame();
-		if (active instanceof InputWindow) {
-			FrameContainer activeFrame = ((InputWindow)active).getContainer();
-			updateStatus(activeFrame);
-		}
+		Window active = MainFrame.getMainFrame().getActiveFrame();
+
+		FrameContainer activeFrame = ((InputWindow) active).getContainer();
+		updateStatus(activeFrame);
 	}
 	
 	/**
