@@ -368,7 +368,7 @@ public abstract class InputFrame extends Frame implements
     public void keyPressed(final KeyEvent event) {
         if (event.getSource() == getTextPane()) {
             if ((Config.getOptionBool("ui", "quickCopy")
-                    || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
+            || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
                 event.setSource(getInputField());
                 getInputField().requestFocus();
                 if (robot != null && event.getKeyCode() != KeyEvent.VK_UNDEFINED) {
@@ -394,7 +394,9 @@ public abstract class InputFrame extends Frame implements
      * Checks for url's, channels and nicknames. {@inheritDoc}
      */
     public void mouseClicked(final MouseEvent mouseEvent) {
-        processMouseEvent(mouseEvent);
+        if (mouseEvent.getSource() == getTextPane()) {
+            processMouseEvent(mouseEvent);
+        }
         super.mouseClicked(mouseEvent);
     }
     
@@ -471,8 +473,8 @@ public abstract class InputFrame extends Frame implements
         
         try {
             clipboard = getInputField().getText()
-                    + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
-                    .getData(DataFlavor.stringFlavor);
+            + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
+            .getData(DataFlavor.stringFlavor);
             clipboardLines = clipboard.split(System.getProperty("line.separator"));
         } catch (HeadlessException ex) {
             Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
@@ -514,19 +516,19 @@ public abstract class InputFrame extends Frame implements
                 options,
                 options[0]);
         switch (n) {
-        case 0:
-            for (String clipboardLine : clipboardLines) {
-                parent.sendLine(clipboardLine);
-            }
-            break;
-        case 1:
-            new PasteDialog(this, clipboard).setVisible(true);
-            break;
-        case 2:
-            break;
-        default:
-            break;
+            case 0:
+                for (String clipboardLine : clipboardLines) {
+                    parent.sendLine(clipboardLine);
+                }
+                break;
+            case 1:
+                new PasteDialog(this, clipboard).setVisible(true);
+                break;
+            case 2:
+                break;
+            default:
+                break;
         }
     }
-
+    
 }

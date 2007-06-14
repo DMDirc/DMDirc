@@ -25,7 +25,6 @@ package com.dmdirc.ui.components;
 import com.dmdirc.BrowserLauncher;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -426,7 +425,7 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
                 }
                 
                 final int[] selection = textPane.getSelectedRange();
-                if ((selection[0] == selection[2] && selection[1] == selection[3]) || !hyperlinkOpenMI.isVisible()) {
+                if ((selection[0] == selection[2] && selection[1] == selection[3])) {
                     copyMI.setEnabled(false);
                 } else {
                     copyMI.setEnabled(true);
