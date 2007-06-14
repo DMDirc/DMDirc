@@ -24,7 +24,7 @@ package com.dmdirc.ui.components;
 
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.Config;
-import com.dmdirc.FrameContainer;
+import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -77,8 +77,10 @@ public abstract class InputFrame extends Frame implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
+    /** The container that owns this frame. */
+    private final WritableFrameContainer parent;
     
     /** The InputHandler for our input field. */
     private InputHandler inputHandler;
@@ -110,10 +112,12 @@ public abstract class InputFrame extends Frame implements
     /**
      * Creates a new instance of InputFrame.
      *
-     * @param owner FrameContainer owning this frame.
+     * @param owner WritableFrameContainer owning this frame.
      */
-    public InputFrame(final FrameContainer owner) {
+    public InputFrame(final WritableFrameContainer owner) {
         super(owner);
+        
+        parent = owner;
         
         try {
             robot = new Robot();
@@ -184,7 +188,9 @@ public abstract class InputFrame extends Frame implements
         initInputField();
     }
     
-    
+    /**
+     * Initialises the input field.
+     */
     private void initInputField() {
         final UndoManager undo = new UndoManager();
         final Document doc = getInputField().getDocument();
@@ -231,6 +237,16 @@ public abstract class InputFrame extends Frame implements
         
         // Bind the redo action to ctl-Y
         getInputField().getInputMap().put(KeyStroke.getKeyStroke("control Y"), "Redo");
+    }
+    
+    /**
+     * Returns the container associated with this frame.
+     *
+     * @return This frame's container.
+     */
+    @Override
+    public WritableFrameContainer getContainer() {
+        return parent;
     }
     
     /**
@@ -352,7 +368,7 @@ public abstract class InputFrame extends Frame implements
     public void keyPressed(final KeyEvent event) {
         if (event.getSource() == getTextPane()) {
             if ((Config.getOptionBool("ui", "quickCopy")
-            || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
+                    || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
                 event.setSource(getInputField());
                 getInputField().requestFocus();
                 if (robot != null && event.getKeyCode() != KeyEvent.VK_UNDEFINED) {
@@ -455,8 +471,8 @@ public abstract class InputFrame extends Frame implements
         
         try {
             clipboard = getInputField().getText()
-            + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
-            .getData(DataFlavor.stringFlavor);
+                    + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
+                    .getData(DataFlavor.stringFlavor);
             clipboardLines = clipboard.split(System.getProperty("line.separator"));
         } catch (HeadlessException ex) {
             Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
@@ -468,11 +484,11 @@ public abstract class InputFrame extends Frame implements
         if (clipboard != null && clipboard.indexOf('\n') >= 0) {
             event.consume();
             final int pasteTrigger = Config.getOptionInt("ui", "pasteProtectionLimit", 1);
-            if (getNumLines(clipboard) > pasteTrigger) {
+            if (parent.getNumLines(clipboard) > pasteTrigger) {
                 showPasteDialog(clipboard, clipboardLines);
             } else {
                 for (String clipboardLine : clipboardLines) {
-                    this.sendLine(clipboardLine);
+                    parent.sendLine(clipboardLine);
                 }
             }
         }
@@ -489,7 +505,7 @@ public abstract class InputFrame extends Frame implements
         final String[] options = {"Send", "Edit", "Cancel", };
         final int n = JOptionPane.showOptionDialog(this,
                 "<html>Paste would be sent as "
-                + getNumLines(clipboard) + " lines.<br>"
+                + parent.getNumLines(clipboard) + " lines.<br>"
                 + "Do you want to continue?</html>",
                 "Multi-line Paste",
                 JOptionPane.YES_NO_CANCEL_OPTION,
@@ -498,18 +514,19 @@ public abstract class InputFrame extends Frame implements
                 options,
                 options[0]);
         switch (n) {
-            case 0:
-                for (String clipboardLine : clipboardLines) {
-                    this.sendLine(clipboardLine);
-                }
-                break;
-            case 1:
-                new PasteDialog(this, clipboard).setVisible(true);
-                break;
-            case 2:
-                break;
-            default:
-                break;
+        case 0:
+            for (String clipboardLine : clipboardLines) {
+                parent.sendLine(clipboardLine);
+            }
+            break;
+        case 1:
+            new PasteDialog(this, clipboard).setVisible(true);
+            break;
+        case 2:
+            break;
+        default:
+            break;
         }
     }
+
 }

@@ -46,9 +46,6 @@ public final class ServerFrame extends InputFrame {
      */
     private static final long serialVersionUID = 8;
     
-    /** max length a line can be. */
-    private final int maxLineLength;
-    
     /** This channel's command parser. */
     private final ServerCommandParser commandParser;
     
@@ -63,8 +60,6 @@ public final class ServerFrame extends InputFrame {
         super(owner);
         
         parent = owner;
-        
-        maxLineLength = getContainer().getServer().getParser().MAX_LINELENGTH;
         
         initComponents();
         
@@ -87,7 +82,7 @@ public final class ServerFrame extends InputFrame {
      */
     public void setAway(final boolean newAwayState) {
         if (Config.hasOption("ui", "awayindicator")
-        && Config.getOptionBool("ui", "awayindicator")) {
+                && Config.getOptionBool("ui", "awayindicator")) {
             setAwayIndicator(newAwayState);
             
             if (getContainer().getServer().getRaw() != null) {
@@ -131,16 +126,4 @@ public final class ServerFrame extends InputFrame {
         pack();
     }
     
-    /** {@inheritDoc}. */
-    @Deprecated
-    public void sendLine(final String line) {
-        this.parent.getParser().sendLine(line);
-        this.getInputHandler().addToBuffer(line);
-    }
-    
-    /** {@inheritDoc}. */
-    @Deprecated
-    public int getMaxLineLength() {
-        return maxLineLength;
-    }
 }

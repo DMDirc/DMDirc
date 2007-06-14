@@ -23,7 +23,6 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.identities.ConfigManager;
 
 /**
@@ -61,15 +60,6 @@ public interface Window {
      * @return This window's config manager
      */
     ConfigManager getConfigManager();
-    
-    /**
-     * Retrieves the server associated with this command window.
-     *
-     * @return This window's associated server instance
-     * @deprecated No point proxying this - use getContainer().getServer()
-     */
-    @Deprecated
-    Server getServer();
     
     /**
      * Retrieves the container that owns this command window.

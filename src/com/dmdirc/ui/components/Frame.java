@@ -325,26 +325,9 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
         //Ignore.
     }
     
-    /**
-     * Returns the parent Frame container for this frame.
-     *
-     * @return FrameContainer parent
-     * @deprecated Use getContainer() instead
-     */
-    @Deprecated
-    public final FrameContainer getFrameParent() {
-        return parent;
-    }
-    
     /** {@inheritDoc} */
     public FrameContainer getContainer() {
         return parent;
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public Server getServer() {
-        return getContainer().getServer();
     }
     
     /** {@inheritDoc} */
@@ -507,7 +490,7 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
             doSearchBar();
         }
         if (!Config.getOptionBool("ui", "quickCopy")
-        && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
+                && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
                 && event.getKeyCode() == KeyEvent.VK_C) {
             getTextPane().copy();
         }
@@ -550,48 +533,6 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     public final SearchBar getSearchBar() {
         return searchBar;
     }
-    
-    /**
-     * Returns the number of lines the specified string would be sent as.
-     *
-     * @param line line to be checked
-     * @return number of lines that would be sent
-     * @deprecated This isn't a property of the frame, it's a property of the
-     * object associated with the frame (the container). We also need to take
-     * into account that some owners may not allow pasting or may not have
-     * a maximum line length
-     */
-    @Deprecated
-    public final int getNumLines(final String line) {
-        int lines;
-        final String[] splitLines = line.split("\n");
-        lines = splitLines.length;
-        for (String splitLine : splitLines) {
-            lines += (int) Math.ceil(splitLine.length() / getMaxLineLength());
-        }
-        return lines;
-    }
-    
-    /**
-     * Returns the maximum length a line can be in this frame.
-     * @return max line length
-     * @deprecated This isn't a property of the frame, it's a property of the
-     * object associated with the frame (the container). We also need to take
-     * into account that some owners may not allow pasting or may not have
-     * a maximum line length
-     */
-    @Deprecated
-    public abstract int getMaxLineLength();
-    
-    /**
-     * Send the line to the frame container.
-     *
-     * @param line the line to send
-     * @deprecated If this is actually needed by something, it'd make more
-     * sense for it to be implemented as a method of FrameContainer
-     */
-    @Deprecated
-    public abstract void sendLine(final String line);
     
     /** Closes this frame. */
     public void close() {

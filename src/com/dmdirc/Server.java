@@ -294,6 +294,8 @@ public final class Server extends WritableFrameContainer implements
     public void sendLine(String line) {
         if (parser != null && !closing) {
             parser.sendLine(line);
+            
+            frame.getInputHandler().addToBuffer(line);
         }
     }
 

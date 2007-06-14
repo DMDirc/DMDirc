@@ -291,19 +291,6 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
         return splitPane;
     }
     
-    /** {@inheritDoc}. */
-    @Deprecated
-    public void sendLine(final String line) {
-        this.parent.sendLine(line);
-        this.getInputHandler().addToBuffer(line);
-    }
-    
-    /** {@inheritDoc}. */
-    @Deprecated
-    public int getMaxLineLength() {
-        return maxLineLength;
-    }
-    
     /**
      * Checks for url's, channels and nicknames. {@inheritDoc}
      */
@@ -363,7 +350,7 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
         boolean showMenu = false;
         for (int i = 0; i < nickList.getModel().getSize(); i++) {
             if (nickList.getCellBounds(i, i).contains(nickList.getMousePosition())
-            && nickList.isSelectedIndex(i)) {
+                    && nickList.isSelectedIndex(i)) {
                 showMenu = true;
                 break;
             }

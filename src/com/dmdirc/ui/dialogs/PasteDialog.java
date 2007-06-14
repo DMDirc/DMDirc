@@ -22,9 +22,8 @@
 
 package com.dmdirc.ui.dialogs;
 
-import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.components.Frame;
+import com.dmdirc.ui.components.InputFrame;
 import com.dmdirc.ui.components.StandardDialog;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 
@@ -52,20 +51,20 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Text area. */
     private JTextArea textField;
     
     /** parent frame. */
-    private final Frame parent;
+    private final InputFrame parent;
     
     /**
      * Creates a new instance of PreferencesDialog.
      * @param newParent The frame that owns this dialog
      * @param text text to show in the paste dialog
      */
-    public PasteDialog(final Frame newParent, final String text) {
+    public PasteDialog(final InputFrame newParent, final String text) {
         super(MainFrame.getMainFrame(), false);
         
         this.parent = newParent;
@@ -93,7 +92,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
         setResizable(true);
         
         infoLabel.setText("<html>Lines longer than " 
-                + parent.getMaxLineLength() 
+                + parent.getContainer().getMaxLineLength() 
                 + " characters will be automatically split.<br>"
                 + " This may cause more lines to be sent than you expect.</html>");
         
@@ -154,7 +153,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
             if (textField.getText().length() > 0) {
                 final String[] lines = textField.getText().split(System.getProperty("line.separator"));
                 for (String line : lines) {
-                    ((WritableFrameContainer) parent.getContainer()).sendLine(line);
+                    parent.getContainer().sendLine(line);
                 }
             }
             this.dispose();

@@ -82,19 +82,6 @@ public abstract class FrameContainer implements InternalFrameListener {
     }
     
     /**
-     * Formats the specified arguments using the supplied message type, and
-     * outputs to the main text area.
-     * 
-     * @param messageType the message type to use
-     * @param args the arguments to pass
-     * @deprecated Not sure why we're proxying this
-     */
-    @Deprecated
-    public void addLine(final String messageType, final Object... args) {
-        getFrame().addLine(messageType, args);
-    }
-    
-    /**
      * Returns the config manager for this container.
      * @return the associated config manager
      */

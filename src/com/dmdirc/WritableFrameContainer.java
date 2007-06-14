@@ -46,4 +46,20 @@ public abstract class WritableFrameContainer extends FrameContainer {
      */
     public abstract int getMaxLineLength();
     
+    /**
+     * Returns the number of lines that the specified string would be sent as.
+     * 
+     * @param line The string to be split and sent
+     * @return The number of lines required to send the specified string
+     */
+    public final int getNumLines(final String line) {
+        int lines;
+        final String[] splitLines = line.split("\n");
+        lines = splitLines.length;
+        for (String splitLine : splitLines) {
+            lines += (int) Math.ceil(splitLine.length() / getMaxLineLength());
+        }
+        return lines;
+    }    
+    
 }

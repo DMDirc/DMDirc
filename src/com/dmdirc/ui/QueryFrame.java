@@ -80,7 +80,7 @@ public final class QueryFrame extends InputFrame {
     public CommandParser getCommandParser() {
         return commandParser;
     }
-        
+    
     /**
      * Initialises components in this frame.
      */
@@ -108,17 +108,5 @@ public final class QueryFrame extends InputFrame {
         
         pack();
     }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void sendLine(final String line) {
-        this.parent.sendLine(line);
-        this.getInputHandler().addToBuffer(line);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public int getMaxLineLength() {
-        return maxLineLength;
-    }
+
 }

@@ -195,6 +195,9 @@ public final class Channel extends WritableFrameContainer implements
             
             frame.addLine(buff, modes, details[0], details[1], details[2],
                     line, channelInfo);
+            
+            frame.getInputHandler().addToBuffer(line);
+            
             channelInfo.sendMessage(line);
         } else {
             sendLine(line.substring(0, getMaxLineLength()));
@@ -226,6 +229,8 @@ public final class Channel extends WritableFrameContainer implements
             
             frame.addLine(buff, modes, me.getNickname(), me.getIdent(),
                     me.getHost(), action, channelInfo);
+            
+            frame.getInputHandler().addToBuffer("/me " + action);
             
             channelInfo.sendAction(action);
         }
@@ -363,18 +368,6 @@ public final class Channel extends WritableFrameContainer implements
     }
     
     /**
-     * Ensures that a channel client's map is set up correctly.
-     * @param target The ChannelClientInfo to check
-     * @deprecated No longer needed, parser instansiates
-     */
-    @Deprecated
-    private void mapClient(final ChannelClientInfo target) {
-        if (target.getMap() == null) {
-            target.setMap(new HashMap<ChannelClientProperty, Object>());
-        }
-    }
-    
-    /**
      * Called every {general.whotime} seconds to check if the channel needs
      * to send a who request.
      */
@@ -428,7 +421,6 @@ public final class Channel extends WritableFrameContainer implements
         final ArrayList<String> names = new ArrayList<String>();
         
         for (ChannelClientInfo channelClient : cChannel.getChannelClients()) {
-            mapClient(channelClient);
             names.add(channelClient.getNickname());
         }
         
@@ -469,8 +461,6 @@ public final class Channel extends WritableFrameContainer implements
         final ClientInfo client = cChannelClient.getClient();
         
         final StringBuffer buff = new StringBuffer("channelJoin");
-        
-        mapClient(cChannelClient);
         
         ActionManager.processEvent(CoreActionType.CHANNEL_JOIN, buff, this, cChannelClient);
         
