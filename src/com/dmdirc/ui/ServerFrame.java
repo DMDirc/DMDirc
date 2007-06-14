@@ -22,13 +22,13 @@
 
 package com.dmdirc.ui;
 
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.ServerCommandParser;
-import com.dmdirc.ui.components.Frame;
 import com.dmdirc.ui.input.InputHandler;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.components.InputFrame;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -37,7 +37,7 @@ import java.awt.Insets;
 /**
  * The ServerFrame is the MDI window that shows server messages to the user.
  */
-public final class ServerFrame extends Frame {
+public final class ServerFrame extends InputFrame {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -91,15 +91,15 @@ public final class ServerFrame extends Frame {
             setAwayIndicator(newAwayState);
             
             if (getContainer().getServer().getRaw() != null) {
-                ((Frame) getContainer().getServer().getRaw().getFrame()).setAwayIndicator(newAwayState);
+                ((InputFrame) getContainer().getServer().getRaw().getFrame()).setAwayIndicator(newAwayState);
             }
             
             for (String channel : getContainer().getServer().getChannels()) {
-                ((Frame) getContainer().getServer().getChannel(channel).getFrame()).setAwayIndicator(newAwayState);
+                ((InputFrame) getContainer().getServer().getChannel(channel).getFrame()).setAwayIndicator(newAwayState);
             }
             
             for (String query : getContainer().getServer().getQueries()) {
-                ((Frame) getContainer().getServer().getQuery(query).getFrame()).setAwayIndicator(newAwayState);
+                ((InputFrame) getContainer().getServer().getQuery(query).getFrame()).setAwayIndicator(newAwayState);
             }
         }
     }
@@ -126,7 +126,7 @@ public final class ServerFrame extends Frame {
         
         constraints.gridy = 2;
         constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
-        getContentPane().add(getInputPanel(), constraints);
+        getContentPane().add(inputPanel, constraints);
         
         pack();
     }

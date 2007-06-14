@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui;
 
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.Channel;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.ChannelCommandParser;
@@ -30,10 +31,9 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.ui.components.Frame;
 import com.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.input.InputHandler;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.components.InputFrame;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -62,7 +62,7 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
 /**
  * The channel frame is the GUI component that represents a channel to the user.
  */
-public final class ChannelFrame extends Frame implements MouseListener,
+public final class ChannelFrame extends InputFrame implements MouseListener,
         ActionListener {
     
     /**
@@ -224,7 +224,7 @@ public final class ChannelFrame extends Frame implements MouseListener,
         getTextPane().setPreferredSize(new Dimension(MainFrame.getMainFrame().getWidth(), 10));
         
         panel.add(getSearchBar(), BorderLayout.PAGE_START);
-        panel.add(getInputPanel(), BorderLayout.PAGE_END);
+        panel.add(inputPanel, BorderLayout.PAGE_END);
         
         getContentPane().setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
         

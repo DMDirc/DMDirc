@@ -22,12 +22,12 @@
 
 package com.dmdirc.ui;
 
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.Query;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.QueryCommandParser;
-import com.dmdirc.ui.components.Frame;
 import com.dmdirc.ui.input.InputHandler;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.components.InputFrame;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -36,7 +36,7 @@ import java.awt.Insets;
 /**
  * The QueryFrame is the MDI window that shows query messages to the user.
  */
-public final class QueryFrame extends Frame {
+public final class QueryFrame extends InputFrame {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -104,7 +104,7 @@ public final class QueryFrame extends Frame {
         
         constraints.gridy = 2;
         constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
-        getContentPane().add(getInputPanel(), constraints);
+        getContentPane().add(inputPanel, constraints);
         
         pack();
     }

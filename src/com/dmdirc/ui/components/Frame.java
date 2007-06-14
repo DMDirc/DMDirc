@@ -31,27 +31,17 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.dialogs.PasteDialog;
-import com.dmdirc.ui.input.InputHandler;
-import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.textpane.IRCTextAttribute;
 import com.dmdirc.ui.textpane.TextPane;
 import com.dmdirc.ui.textpane.TextPaneListener;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
-import java.awt.AWTException;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.HeadlessException;
 import java.awt.Point;
-import java.awt.Robot;
 import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -61,34 +51,21 @@ import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.AttributedCharacterIterator;
 import java.util.Date;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.event.UndoableEditListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
 import javax.swing.plaf.synth.SynthLookAndFeel;
-import javax.swing.text.Document;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.UndoManager;
 
 /**
  * Implements a generic (internal) frame.
@@ -102,19 +79,10 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4;
-    
-    /** Input field panel. */
-    private JPanel inputPanel;
-    
-    /** Frame input field. */
-    private JTextField inputField;
+    private static final long serialVersionUID = 5;
     
     /** Frame output pane. */
     private TextPane textPane;
-    
-    /** The InputHandler for our input field. */
-    private InputHandler inputHandler;
     
     /** The channel object that owns this frame. */
     private final FrameContainer parent;
@@ -122,20 +90,8 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     /** Popupmenu for this frame. */
     private JPopupMenu popup;
     
-    /** Popupmenu for this frame. */
-    private JPopupMenu inputFieldPopup;
-    
     /** popup menu item. */
     private JMenuItem copyMI;
-    
-    /** popup menu item. */
-    private JMenuItem inputPasteMI;
-    
-    /** popup menu item. */
-    private JMenuItem inputCopyMI;
-    
-    /** popup menu item. */
-    private JMenuItem inputCutMI;
     
     /** hyperlink menu item. */
     private JMenuItem hyperlinkCopyMI;
@@ -146,12 +102,6 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     /** search bar. */
     private SearchBar searchBar;
     
-    /** Robot for the frame. */
-    private Robot robot;
-    
-    /** Away label. */
-    private JLabel awayLabel;
-    
     /**
      * Creates a new instance of Frame.
      *
@@ -160,12 +110,6 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     public Frame(final FrameContainer owner) {
         super();
         parent = owner;
-        
-        try {
-            robot = new Robot();
-        } catch (AWTException ex) {
-            Logger.error(ErrorLevel.TRIVIAL, "Error creating robot", ex);
-        }
         
         setFrameIcon(MainFrame.getMainFrame().getIcon());
         
@@ -185,13 +129,6 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
         getTextPane().setBackground(config.getOptionColour("ui", "backgroundcolour", Color.WHITE));
         getTextPane().setForeground(config.getOptionColour("ui", "foregroundcolour", Color.BLACK));
         
-        getInputField().setBackground(config.getOptionColour("ui", "inputbackgroundcolour",
-                config.getOptionColour("ui", "backgroundcolour", Color.WHITE)));
-        getInputField().setForeground(config.getOptionColour("ui", "inputforegroundcolour",
-                config.getOptionColour("ui", "foregroundcolour", Color.BLACK)));
-        getInputField().setCaretColor(config.getOptionColour("ui", "inputforegroundcolour",
-                config.getOptionColour("ui", "foregroundcolour", Color.BLACK)));
-        
         final Boolean pref = Config.getOptionBool("ui", "maximisewindows");
         if (pref || MainFrame.getMainFrame().getMaximised()) {
             hideTitlebar();
@@ -203,11 +140,8 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
      * so that we can register an actionlistener for the open event before
      * the frame is opened.
      */
-    public final void open() {
+    public void open() {
         setVisible(true);
-        if (Config.getOptionBool("ui", "awayindicator")) {
-            awayLabel.setVisible(getServer().isAway());
-        }
     }
     
     /**
@@ -253,36 +187,16 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     }
     
     /**
-     * Sets the tab completer for this frame's input handler.
-     *
-     * @param tabCompleter The tab completer to use
-     * @deprecated Seems rather pointless to proxy this
-     */
-    @Deprecated
-    public final void setTabCompleter(final TabCompleter tabCompleter) {
-        getInputHandler().setTabCompleter(tabCompleter);
-    }
-    
-    /**
      * Initialises the components for this frame.
      */
     private void initComponents() {
-        setInputField(new JTextField());
         setTextPane(new TextPane(this));
-        
-        getInputField().setBorder(
-                BorderFactory.createCompoundBorder(
-                getInputField().getBorder(),
-                BorderFactory.createEmptyBorder(2, 2, 2, 2)));
         
         getTextPane().addMouseListener(this);
         getTextPane().addKeyListener(this);
         getTextPane().addTextPaneListener(this);
-        getInputField().addKeyListener(this);
-        getInputField().addMouseListener(this);
         
         popup = new JPopupMenu();
-        inputFieldPopup = new JPopupMenu();
         
         copyMI = new JMenuItem("Copy");
         copyMI.addActionListener(this);
@@ -295,87 +209,14 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
         hyperlinkOpenMI.addActionListener(this);
         hyperlinkOpenMI.setVisible(false);
         
-        inputPasteMI = new JMenuItem("Paste");
-        inputPasteMI.addActionListener(this);
-        inputCopyMI = new JMenuItem("Copy");
-        inputCopyMI.addActionListener(this);
-        inputCutMI = new JMenuItem("Cut");
-        inputCutMI.addActionListener(this);
-        
         popup.add(hyperlinkOpenMI);
         popup.add(hyperlinkCopyMI);
         popup.add(copyMI);
         popup.setOpaque(true);
         popup.setLightWeightPopupEnabled(true);
         
-        inputFieldPopup.add(inputCutMI);
-        inputFieldPopup.add(inputCopyMI);
-        inputFieldPopup.add(inputPasteMI);
-        inputFieldPopup.setOpaque(true);
-        inputFieldPopup.setLightWeightPopupEnabled(true);
-        
         searchBar = new SearchBar(this);
         searchBar.setVisible(false);
-        
-        awayLabel = new JLabel();
-        awayLabel.setText("(away)");
-        awayLabel.setVisible(false);
-        awayLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0,
-                SMALL_BORDER));
-        
-        inputPanel = new JPanel(new BorderLayout());
-        inputPanel.add(awayLabel, BorderLayout.LINE_START);
-        inputPanel.add(inputField, BorderLayout.CENTER);
-        
-        initInputField();
-    }
-    
-    private void initInputField() {
-        final UndoManager undo = new UndoManager();
-        final Document doc = getInputField().getDocument();
-        
-        // Listen for undo and redo events
-        doc.addUndoableEditListener(new UndoableEditListener() {
-            public void undoableEditHappened(UndoableEditEvent evt) {
-                undo.addEdit(evt.getEdit());
-            }
-        });
-        
-        // Create an undo action and add it to the text component
-        getInputField().getActionMap().put("Undo",
-                new AbstractAction("Undo") {
-            private static final long serialVersionUID = 1;
-            public void actionPerformed(ActionEvent evt) {
-                try {
-                    if (undo.canUndo()) {
-                        undo.undo();
-                    }
-                } catch (CannotUndoException ex) {
-                    Logger.error(ErrorLevel.TRIVIAL, "Unable to undo", ex);
-                }
-            }
-        });
-        
-        // Bind the undo action to ctl-Z
-        getInputField().getInputMap().put(KeyStroke.getKeyStroke("control Z"), "Undo");
-        
-        // Create a redo action and add it to the text component
-        getInputField().getActionMap().put("Redo",
-                new AbstractAction("Redo") {
-            private static final long serialVersionUID = 1;
-            public void actionPerformed(ActionEvent evt) {
-                try {
-                    if (undo.canRedo()) {
-                        undo.redo();
-                    }
-                } catch (CannotRedoException ex) {
-                    Logger.error(ErrorLevel.TRIVIAL, "Unable to redo", ex);
-                }
-            }
-        });
-        
-        // Bind the redo action to ctl-Y
-        getInputField().getInputMap().put(KeyStroke.getKeyStroke("control Y"), "Redo");
     }
     
     /**
@@ -474,7 +315,7 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
      * Activates the input field on frame focus. {@inheritDoc}
      */
     public void internalFrameActivated(final InternalFrameEvent event) {
-        getInputField().requestFocus();
+        //Ignore.
     }
     
     /**
@@ -512,45 +353,6 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     }
     
     /**
-     * Returns the input handler associated with this frame.
-     *
-     * @return Input handlers for this frame
-     */
-    public final InputHandler getInputHandler() {
-        return inputHandler;
-    }
-    
-    /**
-     * Sets the input handler for this frame.
-     *
-     * @param newInputHandler input handler to set for this frame
-     */
-    public final void setInputHandler(final InputHandler newInputHandler) {
-        this.inputHandler = newInputHandler;
-    }
-    
-    /**
-     * Returns the input field for this frame.
-     *
-     * @return JTextField input field for the frame.
-     */
-    public final JTextField getInputField() {
-        return inputField;
-    }
-    
-    /**
-     * Returns the input panel for this frame.
-     *
-     * @return JPanel input panel
-     * @deprecated Used? If it's only used by descendents can't we make the
-     * field protected instead?
-     */
-    @Deprecated
-    public final JPanel getInputPanel() {
-        return inputPanel;
-    }
-    
-    /**
      * Returns the text pane for this frame.
      *
      * @return Text pane for this frame
@@ -566,44 +368,12 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     }
     
     /**
-     * Sets the frames input field.
-     *
-     * @param newInputField new input field to use
-     */
-    protected final void setInputField(final JTextField newInputField) {
-        this.inputField = newInputField;
-    }
-    
-    /**
      * Sets the frames text pane.
      *
      * @param newTextPane new text pane to use
      */
     protected final void setTextPane(final TextPane newTextPane) {
         this.textPane = newTextPane;
-    }
-    
-    /**
-     * Returns the away label for this server connection.
-     *
-     * @return JLabel away label
-     */
-    public JLabel getAwayLabel() {
-        return awayLabel;
-    }
-    
-    /**
-     * Sets the away indicator on or off.
-     *
-     * @param awayState away state
-     */
-    public void setAwayIndicator(final boolean awayState) {
-        if (awayState) {
-            getInputPanel().add(awayLabel, BorderLayout.LINE_START);
-            awayLabel.setVisible(true);
-        } else {
-            awayLabel.setVisible(false);
-        }
     }
     
     /**
@@ -680,17 +450,8 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
                 }
                 getPopup().show(this, (int) point.getX(), (int) point.getY());
             }
-        } else if (e.isPopupTrigger() && e.getSource() == getInputField()) {
-            final Point point = getInputField().getMousePosition();
-            
-            if (point != null) {
-                inputFieldPopup.show(this, (int) point.getX(),
-                        (int) point.getY() + getTextPane().getHeight()
-                        + SMALL_BORDER);
-            }
-        } else {
-            super.processMouseEvent(e);
         }
+        super.processMouseEvent(e);
     }
     
     /** {@inheritDoc} */
@@ -702,12 +463,6 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
                     new StringSelection(hyperlinkOpenMI.getActionCommand()), null);
         } else if (actionEvent.getSource() == hyperlinkOpenMI) {
             BrowserLauncher.openURL(hyperlinkOpenMI.getActionCommand());
-        } else if (actionEvent.getSource() == inputCopyMI) {
-            getInputField().copy();
-        } else if (actionEvent.getSource() == inputPasteMI) {
-            getInputField().paste();
-        } else if (actionEvent.getSource() == inputCutMI) {
-            getInputField().cut();
         }
     }
     
@@ -751,94 +506,10 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
                 && (event.getModifiers() & KeyEvent.SHIFT_MASK) ==  0) {
             doSearchBar();
         }
-        if (event.getSource() == getTextPane()) {
-            if ((Config.getOptionBool("ui", "quickCopy")
-            || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
-                event.setSource(getInputField());
-                getInputField().requestFocus();
-                if (robot != null && event.getKeyCode() != KeyEvent.VK_UNDEFINED) {
-                    robot.keyPress(event.getKeyCode());
-                    if (event.getKeyCode() == KeyEvent.VK_SHIFT) {
-                        robot.keyRelease(event.getKeyCode());
-                    }
-                }
-            }
-        } else if (!Config.getOptionBool("ui", "quickCopy")
+        if (!Config.getOptionBool("ui", "quickCopy")
         && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
                 && event.getKeyCode() == KeyEvent.VK_C) {
             getTextPane().copy();
-        } else if ((event.getModifiers() & KeyEvent.CTRL_MASK) != 0
-                && event.getKeyCode() == KeyEvent.VK_V) {
-            doPaste(event);
-        }
-    }
-    
-    /**
-     * Checks and pastes text.
-     *
-     * @param event the event that triggered the paste
-     */
-    private void doPaste(final KeyEvent event) {
-        String clipboard = null;
-        String[] clipboardLines = new String[]{"", };
-        
-        try {
-            clipboard = getInputField().getText()
-            + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
-            .getData(DataFlavor.stringFlavor);
-            clipboardLines = clipboard.split(System.getProperty("line.separator"));
-        } catch (HeadlessException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
-        } catch (IOException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
-        } catch (UnsupportedFlavorException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
-        }
-        if (clipboard != null && clipboard.indexOf('\n') >= 0) {
-            event.consume();
-            final int pasteTrigger = Config.getOptionInt("ui", "pasteProtectionLimit", 1);
-            if (getNumLines(clipboard) > pasteTrigger) {
-                showPasteDialog(clipboard, clipboardLines);
-            } else {
-                for (String clipboardLine : clipboardLines) {
-                    this.sendLine(clipboardLine);
-                }
-            }
-        }
-    }
-    
-    /**
-     * Shows the paste dialog.
-     *
-     * @param clipboard contents of the clipboard
-     * @param clipboardLines clipboard contents split per line
-     */
-    private void showPasteDialog(final String clipboard,
-            final String[] clipboardLines) {
-        final String[] options = {"Send", "Edit", "Cancel", };
-        final int n = JOptionPane.showOptionDialog(this,
-                "<html>Paste would be sent as "
-                + getNumLines(clipboard) + " lines.<br>"
-                + "Do you want to continue?</html>",
-                "Multi-line Paste",
-                JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]);
-        switch (n) {
-            case 0:
-                for (String clipboardLine : clipboardLines) {
-                    this.sendLine(clipboardLine);
-                }
-                break;
-            case 1:
-                new PasteDialog(this, clipboard).setVisible(true);
-                break;
-            case 2:
-                break;
-            default:
-                break;
         }
     }
     
@@ -872,16 +543,6 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
     }
     
     /**
-     * Send the line to the frame container.
-     *
-     * @param line the line to send
-     * @deprecated If this is actually needed by something, it'd make more
-     * sense for it to be implemented as a method of FrameContainer
-     */
-    @Deprecated
-    public abstract void sendLine(final String line);
-    
-    /**
      * Gets the search bar.
      *
      * @return the frames search bar
@@ -911,6 +572,27 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
         return lines;
     }
     
+    /**
+     * Returns the maximum length a line can be in this frame.
+     * @return max line length
+     * @deprecated This isn't a property of the frame, it's a property of the
+     * object associated with the frame (the container). We also need to take
+     * into account that some owners may not allow pasting or may not have
+     * a maximum line length
+     */
+    @Deprecated
+    public abstract int getMaxLineLength();
+    
+    /**
+     * Send the line to the frame container.
+     *
+     * @param line the line to send
+     * @deprecated If this is actually needed by something, it'd make more
+     * sense for it to be implemented as a method of FrameContainer
+     */
+    @Deprecated
+    public abstract void sendLine(final String line);
+    
     /** Closes this frame. */
     public void close() {
         try {
@@ -928,15 +610,4 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
             Logger.error(ErrorLevel.WARNING, "Unable to minimise frame", ex);
         }
     }
-    
-    /**
-     * Returns the maximum length a line can be in this frame.
-     * @return max line length
-     * @deprecated This isn't a property of the frame, it's a property of the
-     * object associated with the frame (the container). We also need to take
-     * into account that some owners may not allow pasting or may not have
-     * a maximum line length
-     */
-    @Deprecated
-    public abstract int getMaxLineLength();
 }
