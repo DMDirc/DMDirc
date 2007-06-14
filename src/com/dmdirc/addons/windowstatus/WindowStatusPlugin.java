@@ -160,8 +160,10 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	public void updateStatus() {
 		Window active = MainFrame.getMainFrame().getActiveFrame();
 
-		FrameContainer activeFrame = ((InputWindow) active).getContainer();
-		updateStatus(activeFrame);
+		if (active != null) {
+			FrameContainer activeFrame = ((InputWindow) active).getContainer();
+			updateStatus(activeFrame);
+                }
 	}
 	
 	/**
