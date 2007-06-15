@@ -36,6 +36,15 @@ public enum CoreActionType implements ActionType {
     /** Frame changed. */
     CLIENT_FRAME_CHANGED(CoreActionMetaType.CLIENT_EVENT_WITH_FRAME, "Frame changed"),
     
+    /** Plugin loaded. */
+    PLUGIN_LOADED(CoreActionMetaType.PLUGIN_EVENT, "Plugin loaded"),
+    /** Plugin unloaded. */
+    PLUGIN_UNLOADED(CoreActionMetaType.PLUGIN_EVENT, "Plugin unloaded"),
+    /** Plugin activated. */
+    PLUGIN_ACTIVATED(CoreActionMetaType.PLUGIN_EVENT, "Plugin activated"),
+    /** Plugin deactivated. */
+    PLUGIN_DEACTIVATED(CoreActionMetaType.PLUGIN_EVENT, "Plugin deactivated"),
+    
     /** Unknown command. */
     UNKNOWN_COMMAND(CoreActionMetaType.UNKNOWN_COMMAND, "Unknown command entered"),
     

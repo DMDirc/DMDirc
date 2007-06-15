@@ -28,6 +28,7 @@ import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.plugins.Plugin;
 
 /**
  * An enumeration of different types of actions (the type determines the
@@ -40,6 +41,9 @@ public enum CoreActionMetaType implements ActionMetaType {
     CLIENT_EVENT(0, new String[]{}),
     /** Client event type, with a frame argument. */
     CLIENT_EVENT_WITH_FRAME(1, new String[]{"frame"}, FrameContainer.class),
+    
+    /** Plugin event type. */
+    PLUGIN_EVENT(1, new String[]{"plugin"}, Plugin.class),
 
     /** Unknown command event type. */
     UNKNOWN_COMMAND(3, new String[]{"source", "command", "arguments"}, FrameContainer.class, String.class, String[].class),
