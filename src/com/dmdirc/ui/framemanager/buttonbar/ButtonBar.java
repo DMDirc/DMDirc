@@ -33,6 +33,7 @@ import com.dmdirc.ui.framemanager.FrameManager;
 import com.dmdirc.ui.framemanager.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.Window;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -40,6 +41,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -48,6 +51,7 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
@@ -57,7 +61,8 @@ import javax.swing.SwingConstants;
  *
  * @author chris
  */
-public final class ButtonBar implements FrameManager, ActionListener {
+public final class ButtonBar implements FrameManager, ActionListener,
+        ComponentListener {
     
     /** A map of servers to their respective windows. */
     private final Map<Server, List<FrameContainer>> windows;
@@ -71,10 +76,13 @@ public final class ButtonBar implements FrameManager, ActionListener {
     /** The parent for the manager. */
     private JComponent parent;
     
+    /** The panel used for our buttons. */
+    private JPanel panel;
+    
     /** The currently selected window. */
     private FrameContainer selected;
     
-    /** The number of columns or rows to use. */
+    /** The number of buttons per row or column. */
     private int cells = 1;
     
     /** The number of buttons to render per {cell,row}. */
@@ -88,25 +96,34 @@ public final class ButtonBar implements FrameManager, ActionListener {
         windows = new HashMap<Server, List<FrameContainer>>();
         buttons = new HashMap<FrameContainer, JToggleButton>();
         position = FramemanagerPosition.getPosition(Config.getOption("ui", "framemanagerPosition"));
+        
+        panel = new JPanel(new GridBagLayout());
     }
     
     /** {@inheritDoc} */
     public void setParent(final JComponent parent) {
         this.parent = parent;
         
-        parent.setLayout(new GridBagLayout());
+        parent.setLayout(new BorderLayout());
         parent.setBorder(BorderFactory.createEmptyBorder(
                 UIUtilities.SMALL_BORDER, UIUtilities.SMALL_BORDER,
                 UIUtilities.SMALL_BORDER, UIUtilities.SMALL_BORDER));
+        parent.add(panel, BorderLayout.NORTH);
         
-        buttonWidth = position.isHorizontal() ? 150 : (parent.getWidth() - UIUtilities.SMALL_BORDER * 2) / cells;
+        buttonWidth = position.isHorizontal() ? 150 : (parent.getWidth() - UIUtilities.SMALL_BORDER * 3) / cells;
+        
+        if (position.isHorizontal()) {
+            maxButtons = parent.getWidth() / (buttonWidth + UIUtilities.SMALL_BORDER * 2);
+        }
+        
+        parent.addComponentListener(this);
     }
     
     /**
      * Removes all buttons from the bar and readds them.
      */
     private void relayout() {
-        parent.removeAll();
+        panel.removeAll();
         
         final GridBagConstraints constraints = new GridBagConstraints();
         constraints.gridx = 0;
@@ -115,18 +132,21 @@ public final class ButtonBar implements FrameManager, ActionListener {
                 UIUtilities.SMALL_BORDER, 0, 0);
         
         for (Map.Entry<Server, List<FrameContainer>> entry : windows.entrySet()) {
-            parent.add(buttons.get(entry.getKey()), constraints);
+            buttons.get(entry.getKey()).setPreferredSize(new Dimension(buttonWidth, 25));
+            buttons.get(entry.getKey()).setMinimumSize(new Dimension(buttonWidth, 25));
+            panel.add(buttons.get(entry.getKey()), constraints);
             increment(constraints);
             
             Collections.sort(entry.getValue(), new ButtonComparator());
             
             for (FrameContainer child : entry.getValue()) {
-                parent.add(buttons.get(child), constraints);
+                buttons.get(child).setPreferredSize(new Dimension(buttonWidth, 25));
+                buttons.get(child).setMinimumSize(new Dimension(buttonWidth, 25));
+                panel.add(buttons.get(child), constraints);
                 increment(constraints);
             }
         }
-        
-        parent.validate();
+        panel.validate();
     }
     
     /**
@@ -136,7 +156,19 @@ public final class ButtonBar implements FrameManager, ActionListener {
      * @param constraints The constraints to modify
      */
     public void increment(final GridBagConstraints constraints) {
-        constraints.gridy++;
+        if (position.isHorizontal()) {
+            constraints.gridx++;
+            if (constraints.gridx > maxButtons) {
+                constraints.gridy++;
+                constraints.gridx = 0;
+            }
+        } else {
+            constraints.gridy++;
+            if (constraints.gridy > maxButtons) {
+                constraints.gridx++;
+                constraints.gridy = 0;
+            }
+        }
     }
     
     /**
@@ -149,8 +181,6 @@ public final class ButtonBar implements FrameManager, ActionListener {
         final JToggleButton button = new JToggleButton(source.toString(), source.getIcon());
         
         button.addActionListener(this);
-        button.setPreferredSize(new Dimension(buttonWidth, 25));
-        button.setMinimumSize(new Dimension(buttonWidth, 25));
         button.setHorizontalAlignment(SwingConstants.LEFT);
         button.setMargin(new Insets(0, 0, 0, 0));
         
@@ -164,7 +194,7 @@ public final class ButtonBar implements FrameManager, ActionListener {
     
     /** {@inheritDoc} */
     public boolean canPositionHorizontally() {
-        return false;
+        return true;
     }
     
     /** {@inheritDoc} */
@@ -259,6 +289,48 @@ public final class ButtonBar implements FrameManager, ActionListener {
                 entry.getKey().activateFrame();
             }
         }
+    }
+    
+    /**
+     * Called when the parent component is resized.
+     *
+     * @param e A ComponentEvent corresponding to this event.
+     */
+    public void componentResized(ComponentEvent e) {
+        buttonWidth = position.isHorizontal() ? 150 : (parent.getWidth() - UIUtilities.SMALL_BORDER * 3) / cells;
+        
+        if (position.isHorizontal()) {
+            maxButtons = parent.getWidth() / (buttonWidth + UIUtilities.SMALL_BORDER * 2);
+        }
+        
+        relayout();
+    }
+    
+    /**
+     * Called when the parent component is moved.
+     *
+     * @param e A ComponentEvent corresponding to this event.
+     */
+    public void componentMoved(ComponentEvent e) {
+        // Do nothing
+    }
+    
+    /**
+     * Called when the parent component is made visible.
+     *
+     * @param e A ComponentEvent corresponding to this event.
+     */
+    public void componentShown(ComponentEvent e) {
+        // Do nothing
+    }
+    
+    /**
+     * Called when the parent component is made invisible.
+     *
+     * @param e A ComponentEvent corresponding to this event.
+     */
+    public void componentHidden(ComponentEvent e) {
+        // Do nothing
     }
     
 }
