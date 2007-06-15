@@ -23,6 +23,7 @@
 package com.dmdirc.addons.osdplugin;
 
 import com.dmdirc.Config;
+import com.dmdirc.ui.MainFrame;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 
 import java.awt.BorderLayout;
@@ -33,8 +34,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -46,7 +46,7 @@ import javax.swing.border.LineBorder;
  * about events to the user.
  * @author chris
  */
-public final class OsdWindow extends JFrame implements MouseListener,
+public final class OsdWindow extends JDialog implements MouseListener,
         MouseMotionListener {
     
     /**
@@ -63,7 +63,7 @@ public final class OsdWindow extends JFrame implements MouseListener,
      * allow itself to be moved)
      */
     public OsdWindow(final String text, final boolean config) {
-        super();
+        super(MainFrame.getMainFrame(), false);
         
         setFocusableWindowState(false);
         setAlwaysOnTop(true);
