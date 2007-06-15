@@ -65,6 +65,7 @@ public final class OsdWindow extends JFrame implements MouseListener,
     public OsdWindow(final String text, final boolean config) {
         super();
         
+        setFocusableWindowState(false);
         setAlwaysOnTop(true);
         setSize(new Dimension(500, 
                 Config.getOptionInt("plugin-OSD", "fontsize", 20) + LARGE_BORDER));

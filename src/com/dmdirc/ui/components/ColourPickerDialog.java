@@ -63,6 +63,7 @@ public final class ColourPickerDialog extends StandardDialog {
         this.add(colourChooser);
         this.pack();
         this.setResizable(false);
+        this.setFocusableWindowState(false);
     }
     
     /** 

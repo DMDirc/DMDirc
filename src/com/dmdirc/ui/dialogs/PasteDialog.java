@@ -34,12 +34,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import javax.swing.AbstractAction;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 
@@ -47,7 +50,7 @@ import javax.swing.border.EtchedBorder;
  * Allows the user to modify global client preferences.
  */
 public final class PasteDialog extends StandardDialog implements ActionListener,
-    KeyListener {
+        KeyListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -83,6 +86,10 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         
         initComponents(text);
         initListeners();
+        
+        setFocusable(true);
+        getOkButton().requestFocus();
+        
         setLocationRelativeTo(MainFrame.getMainFrame());
     }
     
@@ -167,7 +174,41 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
         editButton.addActionListener(this);
-        textField.addKeyListener(this);
+        
+        getRootPane().getActionMap().put("rightArrowAction",
+                new AbstractAction("rightArrowAction") {
+            private static final long serialVersionUID = 1;
+            public void actionPerformed(ActionEvent evt) {
+                if (getFocusOwner() == getLeftButton()) {
+                    editButton.requestFocus();
+                } else if (getFocusOwner() == getRightButton()) {
+                    getLeftButton().requestFocus();
+                } else if (getFocusOwner() == editButton) {
+                    getRightButton().requestFocus();
+                }
+            }
+        }
+        );
+        
+        getRootPane().getActionMap().put("leftArrowAction",
+                new AbstractAction("leftArrowAction") {
+            private static final long serialVersionUID = 1;
+            public void actionPerformed(ActionEvent evt) {
+                if (getFocusOwner() == getLeftButton()) {
+                    getRightButton().requestFocus();
+                } else if (getFocusOwner() == getRightButton()) {
+                    editButton.requestFocus();
+                } else if (getFocusOwner() == editButton) {
+                    getLeftButton().requestFocus();
+                }
+            }
+        }
+        );
+        
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "rightArrowAction");
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        .put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "leftArrowAction");
     }
     
     /**
@@ -197,19 +238,19 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
             this.dispose();
         }
     }
-
+    
     /** {@inheritDoc} */
     public void keyTyped(final KeyEvent e) {
         infoLabel.setText("This will be sent as "
-                    + parent.getContainer().getNumLines(textField.getText())
-                    + " lines.");
+                + parent.getContainer().getNumLines(textField.getText())
+                + " lines.");
     }
-
+    
     /** {@inheritDoc} */
     public void keyPressed(final KeyEvent e) {
         //Ignore.
     }
-
+    
     /** {@inheritDoc} */
     public void keyReleased(final KeyEvent e) {
         //Ignore.
