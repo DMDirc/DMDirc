@@ -487,47 +487,12 @@ public abstract class InputFrame extends Frame implements
             event.consume();
             final int pasteTrigger = Config.getOptionInt("ui", "pasteProtectionLimit", 1);
             if (parent.getNumLines(clipboard) > pasteTrigger) {
-                showPasteDialog(clipboard, clipboardLines);
+                new PasteDialog(this, clipboard).setVisible(true);
             } else {
                 for (String clipboardLine : clipboardLines) {
                     parent.sendLine(clipboardLine);
                 }
             }
-        }
-    }
-    
-    /**
-     * Shows the paste dialog.
-     *
-     * @param clipboard contents of the clipboard
-     * @param clipboardLines clipboard contents split per line
-     */
-    private void showPasteDialog(final String clipboard,
-            final String[] clipboardLines) {
-        final String[] options = {"Send", "Edit", "Cancel", };
-        final int n = JOptionPane.showOptionDialog(this,
-                "<html>Paste would be sent as "
-                + parent.getNumLines(clipboard) + " lines.<br>"
-                + "Do you want to continue?</html>",
-                "Multi-line Paste",
-                JOptionPane.YES_NO_CANCEL_OPTION,
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                options,
-                options[0]);
-        switch (n) {
-            case 0:
-                for (String clipboardLine : clipboardLines) {
-                    parent.sendLine(clipboardLine);
-                }
-                break;
-            case 1:
-                new PasteDialog(this, clipboard).setVisible(true);
-                break;
-            case 2:
-                break;
-            default:
-                break;
         }
     }
     

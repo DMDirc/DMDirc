@@ -26,16 +26,18 @@ import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.InputFrame;
 import com.dmdirc.ui.components.StandardDialog;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import java.awt.Dimension;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
@@ -44,20 +46,30 @@ import javax.swing.border.EtchedBorder;
 /**
  * Allows the user to modify global client preferences.
  */
-public final class PasteDialog extends StandardDialog implements ActionListener {
+public final class PasteDialog extends StandardDialog implements ActionListener,
+    KeyListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
+    
+    /** Number of lines Label. */
+    private JTextArea infoLabel;
+    
+    /** Text area scrollpane. */
+    private JScrollPane scrollPane;
     
     /** Text area. */
     private JTextArea textField;
     
-    /** parent frame. */
+    /** Parent frame. */
     private final InputFrame parent;
+    
+    /** Edit button. */
+    private JButton editButton;
     
     /**
      * Creates a new instance of PreferencesDialog.
@@ -80,33 +92,43 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
      */
     private void initComponents(final String text) {
         final GridBagConstraints constraints = new GridBagConstraints();
-        final JScrollPane scrollPane = new JScrollPane();
-        final JLabel infoLabel = new JLabel();
+        scrollPane = new JScrollPane();
         textField = new JTextArea(text);
+        editButton = new JButton("Edit");
+        infoLabel = new JTextArea();
+        
+        editButton.setPreferredSize(new Dimension(100, 25));
+        editButton.setMinimumSize(new Dimension(100, 25));
         
         orderButtons(new JButton(), new JButton());
+        getOkButton().setText("Send");
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new GridBagLayout());
         setTitle("Multi-line paste");
-        setResizable(true);
+        setResizable(false);
         
-        infoLabel.setText("<html>Lines longer than " 
-                + parent.getContainer().getMaxLineLength() 
-                + " characters will be automatically split.<br>"
-                + " This may cause more lines to be sent than you expect.</html>");
+        infoLabel.setText("This will be sent as "
+                + parent.getContainer().getNumLines(textField.getText())
+                + " lines. Are you sure you want to continue?");
+        infoLabel.setEditable(false);
+        infoLabel.setWrapStyleWord(true);
+        infoLabel.setLineWrap(true);
+        infoLabel.setHighlighter(null);
+        infoLabel.setBackground(this.getBackground());
         
         textField.setBorder(
                 BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
         textField.setColumns(50);
         textField.setRows(10);
         scrollPane.setViewportView(textField);
+        scrollPane.setVisible(false);
         
         constraints.insets.set(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER);
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
-        constraints.gridwidth = 3;
+        constraints.gridwidth = 4;
         constraints.gridx = 0;
         constraints.gridy = 0;
         getContentPane().add(infoLabel, constraints);
@@ -130,6 +152,9 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
         getContentPane().add(getLeftButton(), constraints);
         
         constraints.gridx = 2;
+        getContentPane().add(editButton, constraints);
+        
+        constraints.gridx = 3;
         getContentPane().add(getRightButton(), constraints);
         
         pack();
@@ -141,6 +166,8 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
     private void initListeners() {
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
+        editButton.addActionListener(this);
+        textField.addKeyListener(this);
     }
     
     /**
@@ -157,8 +184,34 @@ public final class PasteDialog extends StandardDialog implements ActionListener 
                 }
             }
             this.dispose();
+        } else if (editButton.equals(actionEvent.getSource())) {
+            editButton.setEnabled(false);
+            setResizable(true);
+            scrollPane.setVisible(true);
+            infoLabel.setText("This will be sent as "
+                    + parent.getContainer().getNumLines(textField.getText())
+                    + " lines.");
+            pack();
+            setLocationRelativeTo(MainFrame.getMainFrame());
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             this.dispose();
         }
+    }
+
+    /** {@inheritDoc} */
+    public void keyTyped(final KeyEvent e) {
+        infoLabel.setText("This will be sent as "
+                    + parent.getContainer().getNumLines(textField.getText())
+                    + " lines.");
+    }
+
+    /** {@inheritDoc} */
+    public void keyPressed(final KeyEvent e) {
+        //Ignore.
+    }
+
+    /** {@inheritDoc} */
+    public void keyReleased(final KeyEvent e) {
+        //Ignore.
     }
 }
