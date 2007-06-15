@@ -89,6 +89,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         
         setFocusable(true);
         getOkButton().requestFocus();
+        getOkButton().setSelected(true);
         
         setLocationRelativeTo(MainFrame.getMainFrame());
     }
@@ -181,10 +182,13 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
             public void actionPerformed(ActionEvent evt) {
                 if (getFocusOwner() == getLeftButton()) {
                     editButton.requestFocus();
+                    editButton.setSelected(true);
                 } else if (getFocusOwner() == getRightButton()) {
                     getLeftButton().requestFocus();
+                    getLeftButton().setSelected(true);
                 } else if (getFocusOwner() == editButton) {
                     getRightButton().requestFocus();
+                    getRightButton().setSelected(true);
                 }
             }
         }
@@ -196,10 +200,13 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
             public void actionPerformed(ActionEvent evt) {
                 if (getFocusOwner() == getLeftButton()) {
                     getRightButton().requestFocus();
+                    getRightButton().setSelected(true);
                 } else if (getFocusOwner() == getRightButton()) {
                     editButton.requestFocus();
+                    editButton.setSelected(true);
                 } else if (getFocusOwner() == editButton) {
                     getLeftButton().requestFocus();
+                    getLeftButton().setSelected(true);
                 }
             }
         }
