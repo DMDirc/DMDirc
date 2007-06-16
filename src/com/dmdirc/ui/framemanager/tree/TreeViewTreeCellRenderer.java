@@ -53,17 +53,12 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
     private static final long serialVersionUID = 1;
     
     /**
-     * The preferred width of each cell.
-     */
-    private static final int WIDTH = 110;
-    
-    /**
      * The default icon to use for unknown frames.
      */
     private final ImageIcon defaultIcon;
     
     /** Parent frame manager. */
-    private TreeFrameManager manager;
+    private final TreeFrameManager manager;
     
     /**
      * Creates a new instance of TreeViewTreeCellRenderer.
@@ -101,10 +96,11 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         setBorder(BorderFactory.createEmptyBorder(1, 0, 2, 0));
         setForeground(tree.getForeground());
         
-        final int indent = (UIManager.getInt("Tree.leftChildIndent")
+        /*final int indent = (UIManager.getInt("Tree.leftChildIndent")
         + UIManager.getInt("Tree.rightChildIndent")) * (node.getLevel() - 1);
         setPreferredSize(new Dimension(manager.getNodeWidth() - indent,
-                getFont().getSize() + SMALL_BORDER));
+                getFont().getSize() + SMALL_BORDER));*/
+        setPreferredSize(new Dimension(100000, getFont().getSize() + SMALL_BORDER));
         if (manager.getRollover() == value) {
             final Color fallback = ColourManager.getColour("b8d6e6");
             setBackground(Config.getOptionColor("ui", "treeviewRolloverColour",

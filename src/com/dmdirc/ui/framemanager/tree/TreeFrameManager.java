@@ -34,6 +34,7 @@ import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -183,15 +184,6 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     /** {@inheritDoc} */
     public void setSelected(final FrameContainer source) {
         selected = source;
-        if (nodes.containsKey(source)) {
-            final TreePath path = new TreePath(nodes.get(source).getPath());
-            
-            tree.scrollPathToVisible(path);
-            
-            if (!path.equals(tree.getSelectionPath())) {
-                tree.setSelectionPath(path);
-            }
-        }
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 tree.repaint();
@@ -270,7 +262,8 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     /** {@inheritDoc} */
     public void setParent(final JComponent parent) {
         final JScrollPane scrollPane = new JScrollPane(tree);
-        scrollPane.setAutoscrolls(false);
+        scrollPane.setAutoscrolls(true);
+        //scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         
         parent.setLayout(new BorderLayout());
         parent.add(scrollPane);
@@ -292,7 +285,9 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         if (root.getChildCount() == 1) {
             selected = server;
         }
-        tree.scrollPathToVisible(new TreePath(node.getPath()));
+        tree.expandPath(new TreePath(node.getPath()).getParentPath());
+        final Rectangle view = tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
+        tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
     }
     
     /** {@inheritDoc} */
@@ -308,7 +303,9 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         nodes.put(channel, node);
         node.setUserObject(channel);
         model.insertNodeInto(node, nodes.get(server));
-        tree.scrollPathToVisible(new TreePath(node.getPath()));
+        tree.expandPath(new TreePath(node.getPath()).getParentPath());
+        final Rectangle view = tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
+        tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
     }
     
     /** {@inheritDoc} */
@@ -324,7 +321,9 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         nodes.put(query, node);
         node.setUserObject(query);
         model.insertNodeInto(node, nodes.get(server));
-        tree.scrollPathToVisible(new TreePath(node.getPath()));
+        tree.expandPath(new TreePath(node.getPath()).getParentPath());
+        final Rectangle view = tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
+        tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
     }
     
     /** {@inheritDoc} */
@@ -340,7 +339,9 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         nodes.put(window, node);
         node.setUserObject(window);
         model.insertNodeInto(node, nodes.get(server));
-        tree.scrollPathToVisible(new TreePath(node.getPath()));
+        tree.expandPath(new TreePath(node.getPath()).getParentPath());
+        final Rectangle view = tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
+        tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
     }
     
     /** {@inheritDoc} */
