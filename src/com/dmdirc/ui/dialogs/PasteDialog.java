@@ -175,6 +175,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
         editButton.addActionListener(this);
+        textField.addKeyListener(this);
         
         getRootPane().getActionMap().put("rightArrowAction",
                 new AbstractAction("rightArrowAction") {
