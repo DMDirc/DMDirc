@@ -33,6 +33,13 @@ import java.util.ArrayList;
  */
 public class AdditionalTabTargets extends ArrayList<String> {
     
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
+    
     /** Whether to include normal targets. */
     private boolean includeNormal = true;
 

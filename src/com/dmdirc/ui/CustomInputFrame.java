@@ -35,6 +35,13 @@ import com.dmdirc.ui.input.InputHandler;
  */
 public class CustomInputFrame extends InputFrame {
     
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
+    
     /** The command parser to use. */
     private final CommandParser commandParser;
     
