@@ -30,6 +30,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.dialogs.PasteDialog;
 import com.dmdirc.ui.input.InputHandler;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
@@ -68,7 +69,7 @@ import javax.swing.undo.UndoManager;
 /**
  * Frame with an input field.
  */
-public abstract class InputFrame extends Frame implements
+public abstract class InputFrame extends Frame implements InputWindow,
         InternalFrameListener, MouseListener, ActionListener, KeyListener {
     
     /**

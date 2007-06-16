@@ -28,22 +28,22 @@ import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.callbacks.CallbackNotFound;
 import com.dmdirc.parser.callbacks.interfaces.IDataIn;
 import com.dmdirc.parser.callbacks.interfaces.IDataOut;
+import com.dmdirc.ui.CustomInputFrame;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.ServerFrame;
 
 /**
  * Handles the raw window (which shows the user raw data being sent and
  * received to/from the server).
  * @author chris
  */
-public final class Raw extends FrameContainer implements IDataIn, IDataOut {
+public final class Raw extends WritableFrameContainer implements IDataIn, IDataOut {
     
     /** The server object that's being monitored. */
     private Server server;
     
     /** A serverframe instance used for displaying the raw data.*/
-    private ServerFrame frame;
+    private CustomInputFrame frame;
     
     /**
      * Creates a new instance of Raw.
@@ -55,7 +55,7 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
         
         imageIcon = IconManager.getIcon("raw");
         
-        frame = new ServerFrame(server);
+        frame = new CustomInputFrame(this, newServer.getFrame().getCommandParser());
         frame.setTitle("(Raw log)");
         MainFrame.getMainFrame().addChild(frame);
         frame.getInputHandler().setTabCompleter(server.getTabCompleter());
@@ -124,5 +124,15 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
      */
     public Server getServer() {
         return server;
+    }
+
+    /** {@inheritDoc} */
+    public void sendLine(String line) {
+        server.sendLine(line);
+    }
+
+    /** {@inheritDoc} */
+    public int getMaxLineLength() {
+        return server.getMaxLineLength();
     }
 }

@@ -28,8 +28,8 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.textpane.IRCTextAttribute;
@@ -69,7 +69,7 @@ import javax.swing.plaf.synth.SynthLookAndFeel;
 /**
  * Implements a generic (internal) frame.
  */
-public abstract class Frame extends JInternalFrame implements InputWindow,
+public abstract class Frame extends JInternalFrame implements Window,
         PropertyChangeListener, InternalFrameListener,
         MouseListener, ActionListener, KeyListener, TextPaneListener {
     
