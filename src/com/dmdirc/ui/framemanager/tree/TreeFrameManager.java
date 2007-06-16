@@ -263,7 +263,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
     public void setParent(final JComponent parent) {
         final JScrollPane scrollPane = new JScrollPane(tree);
         scrollPane.setAutoscrolls(true);
-        //scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         
         parent.setLayout(new BorderLayout());
         parent.add(scrollPane);
