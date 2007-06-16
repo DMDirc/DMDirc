@@ -47,7 +47,6 @@ import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsConfiguration;
@@ -63,6 +62,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.AbstractAction;
@@ -716,8 +716,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         windowsMenu.setMnemonic('w');
         windowsMenu.setText("Window");
         
-        toggleStateMenuItem.setMnemonic('m');
-        toggleStateMenuItem.setText("Maximise");
         windowsMenu.add(toggleStateMenuItem);
         
         menuItem = new JMenuItem();
@@ -744,7 +742,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         windowsMenu.addSeparator();
         
         int i = 0;
-        for (JMenuItem mi : windows.values()) {
+        final Collection<JMenuItem> windowsValues = windows.values();
+        for (JMenuItem mi : windowsValues) {
             if (i > 34) {
                 break;
             }
