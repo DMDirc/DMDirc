@@ -455,7 +455,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
         if (actionEvent.getSource() == inputCopyMI) {
             getInputField().copy();
         } else if (actionEvent.getSource() == inputPasteMI) {
-            getInputField().paste();
+            doPaste(null);
         } else if (actionEvent.getSource() == inputCutMI) {
             getInputField().cut();
         }
@@ -485,7 +485,9 @@ public abstract class InputFrame extends Frame implements InputWindow,
             Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
         }
         if (clipboard != null && clipboard.indexOf('\n') >= 0) {
-            event.consume();
+            if (event != null) {
+                event.consume();
+            }
             final int pasteTrigger = Config.getOptionInt("ui", "pasteProtectionLimit", 1);
             if (parent.getNumLines(clipboard) > pasteTrigger) {
                 new PasteDialog(this, clipboard).setVisible(true);
