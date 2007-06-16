@@ -32,10 +32,8 @@ import com.dmdirc.addons.nowplaying.MediaSource;
 public class KaffeineSource implements MediaSource {
     
     /** {@inheritDoc} */
-    public boolean isRunning() {
-        final String result = DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying").get(0);
-        
-        return result.indexOf("failed") == -1;
+    public boolean isRunning() {        
+        return DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying").size() > 0;
     }
     
     /** {@inheritDoc} */

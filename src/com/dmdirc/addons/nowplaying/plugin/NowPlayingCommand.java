@@ -27,7 +27,9 @@ import com.dmdirc.Server;
 import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.IntelligentCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.ArrayList;
 
 import java.util.List;
 
@@ -36,7 +38,7 @@ import java.util.List;
  * variety of media players.
  * @author chris
  */
-public final class NowPlayingCommand extends ChannelCommand {
+public final class NowPlayingCommand extends ChannelCommand implements IntelligentCommand {
     
     /** The plugin that's using this command. */
     final NowPlayingPlugin parent;
@@ -137,6 +139,24 @@ public final class NowPlayingCommand extends ChannelCommand {
     /** {@inheritDoc}. */
     public String getHelp() {
         return "nowplaying [--sources|--source <source>] - tells the channel the song you're currently playing";
+    }
+    
+    /** {@inheritDoc} */
+    public List<String> getSuggestions(int arg, List<String> previousArgs) {
+        final List<String> res = new ArrayList<String>();
+        
+        if (arg == 0) {
+            res.add("--sources");
+            res.add("--source");
+        } else if (arg == 1 && previousArgs.get(0).equalsIgnoreCase("--source")) {
+            for (MediaSource source : parent.getSources()) {
+                if (source.isRunning()) {
+                    res.add(source.getName());
+                }
+            }
+        }
+        
+        return res;
     }
     
 }
