@@ -94,6 +94,9 @@ public final class Main {
         
         ServerManager.getServerManager().disconnectAll(reason);
         
+        Config.setOption("ui", "frameManagerSize", 
+                String.valueOf(MainFrame.getMainFrame().getFrameManagerSize()));
+        
         Config.save();
         
         System.exit(0);
