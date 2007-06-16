@@ -46,7 +46,7 @@ public final class TabCompleter {
     
     /** Creates a new instance of TabCompleter. */
     public TabCompleter() {
-	//Do nothing.
+        //Do nothing.
     }
     
     /**
@@ -55,45 +55,47 @@ public final class TabCompleter {
      * local ones fail
      */
     public TabCompleter(final TabCompleter newParent) {
-	this.parent = newParent;
+        this.parent = newParent;
     }
     
     /**
      * Attempts to complete the partial string.
-     * 
+     *
      * @param partial The string to tab complete
      * @param additionals A list of additional strings to use
      * @return A TabCompleterResult containing any matches found
      */
     public TabCompleterResult complete(final String partial,
-            final List<String> additionals) {
-	final TabCompleterResult result = new TabCompleterResult();
+            final AdditionalTabTargets additionals) {
+        final TabCompleterResult result = new TabCompleterResult();
         
         final List<String> targets = new ArrayList<String>();
-        
-        if (additionals != null) { 
+                
+        if (additionals != null) {
             targets.addAll(additionals);
         }
         
-        targets.addAll(entries);
-	
-	for (String entry : targets) {
-	    if (Config.getOptionBool("tabcompletion", "casesensitive")) {
-		if (entry.startsWith(partial)) {
-		    result.addResult(entry);
-		}
-	    } else {
-		if (entry.toLowerCase(Locale.getDefault())
-		.startsWith(partial.toLowerCase(Locale.getDefault()))) {
-		    result.addResult(entry);
-		}
-	    }
-	}
-	
-	if (parent != null) {
-	    result.merge(parent.complete(partial, null));
-	}
-	return result;
+        if (additionals == null || additionals.shouldIncludeNormal()) {
+            targets.addAll(entries);
+        }
+        
+        for (String entry : targets) {
+            if (Config.getOptionBool("tabcompletion", "casesensitive")) {
+                if (entry.startsWith(partial)) {
+                    result.addResult(entry);
+                }
+            } else {
+                if (entry.toLowerCase(Locale.getDefault())
+                        .startsWith(partial.toLowerCase(Locale.getDefault()))) {
+                    result.addResult(entry);
+                }
+            }
+        }
+        
+        if (parent != null && (additionals == null || additionals.shouldIncludeNormal())) {
+            result.merge(parent.complete(partial, null));
+        }
+        return result;
     }
     
     /**
@@ -101,7 +103,7 @@ public final class TabCompleter {
      * @param entry The new entry to be added
      */
     public void addEntry(final String entry) {
-	entries.add(entry);
+        entries.add(entry);
     }
     
     /**
@@ -109,13 +111,13 @@ public final class TabCompleter {
      * @param newEntries Entries to be added
      */
     public void addEntries(final List<String> newEntries) {
-	if (newEntries == null) {
-	    return;
-	}
-	
-	for (String entry : newEntries) {
-	    addEntry(entry);
-	}
+        if (newEntries == null) {
+            return;
+        }
+        
+        for (String entry : newEntries) {
+            addEntry(entry);
+        }
     }
     
     /**
@@ -123,7 +125,7 @@ public final class TabCompleter {
      * @param entry The entry to be removed
      */
     public void removeEntry(final String entry) {
-	entries.remove(entry);
+        entries.remove(entry);
     }
     
     /**
@@ -131,7 +133,7 @@ public final class TabCompleter {
      * @param newEntries the new entries to use
      */
     public void replaceEntries(final List<String> newEntries) {
-	entries = newEntries;
+        entries = newEntries;
     }
     
 }

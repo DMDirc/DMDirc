@@ -26,9 +26,9 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.commandparser.IntelligentCommand;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -85,10 +85,11 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
     }
 
     /** {@inheritDoc} */
-    public List<String> getSuggestions(int arg, List<String> previousArgs) {
-        final List<String> res = new ArrayList<String>();
+    public AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {
+            res.setIncludeNormal(false);
             res.addAll(Arrays.asList(PluginManager.getPluginManager().getNames()));
         }
         

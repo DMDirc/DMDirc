@@ -28,8 +28,8 @@ import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.IntelligentCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
-import java.util.ArrayList;
 
 import java.util.List;
 
@@ -142,8 +142,10 @@ public final class NowPlayingCommand extends ChannelCommand implements Intellige
     }
     
     /** {@inheritDoc} */
-    public List<String> getSuggestions(int arg, List<String> previousArgs) {
-        final List<String> res = new ArrayList<String>();
+    public AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets();
+        
+        res.setIncludeNormal(false);
         
         if (arg == 0) {
             res.add("--sources");

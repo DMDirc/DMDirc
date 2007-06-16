@@ -321,7 +321,7 @@ public final class InputHandler implements KeyListener, ActionListener {
                 }
             }
             
-            final List<String> results = ((IntelligentCommand) command).getSuggestions(args, previousArgs);
+            final AdditionalTabTargets results = ((IntelligentCommand) command).getSuggestions(args, previousArgs);
             
             doNormalTabCompletion(text, start, end, results);
         } else {
@@ -338,7 +338,7 @@ public final class InputHandler implements KeyListener, ActionListener {
      * @param additional A list of additional strings to use
      */
     private void doNormalTabCompletion(final String text, final int start,
-            final int end, final List<String> additional) {
+            final int end, final AdditionalTabTargets additional) {
         final String word = text.substring(start, end);
         
         if (start == lastPosition && word.equals(lastWord)) {

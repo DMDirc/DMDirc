@@ -26,9 +26,9 @@ import com.dmdirc.Config;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.commandparser.IntelligentCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -172,13 +172,15 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc} */
-    public List<String> getSuggestions(int arg, List<String> previousArgs) {
-        final List<String> res = new ArrayList<String>();
+    public AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {
             res.addAll(Config.getDomains());
+            res.setIncludeNormal(false);
         } else if (arg == 1 && previousArgs.size() >= 1) {
             res.addAll(Config.getOptions(previousArgs.get(0)));
+            res.setIncludeNormal(false);
         }
         
         return res;

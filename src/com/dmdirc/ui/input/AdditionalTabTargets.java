@@ -20,25 +20,40 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser;
+package com.dmdirc.ui.input;
 
-import com.dmdirc.ui.input.AdditionalTabTargets;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
- * Intelligent commands implement a method that provides a list of possible
- * options for them, for use (for example) by table completers.
+ * The AdditionalTabTargets class is a basic wrapper around an arraylist that
+ * adds an additional property to determine whether or not to include normal
+ * tab-completable targets (such as nicknames and channels).
+ * 
  * @author chris
  */
-public interface IntelligentCommand {
+public class AdditionalTabTargets extends ArrayList<String> {
+    
+    /** Whether to include normal targets. */
+    private boolean includeNormal = true;
 
     /**
-     * Returns a list of suggestions for the specified argument, given the list
-     * of previous arguments.
-     * @param arg The argument that is being completed
-     * @param previousArgs The contents of the previous arguments, if any
-     * @return A list of suggestions for the argument
+     * Determines if this set of tab targets precludes the inclusion of
+     * standard targets.
+     * 
+     * @return True if normal targets are included, false otherwise
      */
-    AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs);
-    
+    public boolean shouldIncludeNormal() {
+        return includeNormal;
+    }
+
+    /**
+     * Sets whether or not these results preclude the inclusion of the standard
+     * tab-completable targets.
+     * 
+     * @param includeNormal Whether normal targets should be included or not
+     */
+    public void setIncludeNormal(final boolean includeNormal) {
+        this.includeNormal = includeNormal;
+    }    
+
 }

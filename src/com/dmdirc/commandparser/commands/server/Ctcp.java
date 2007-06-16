@@ -27,8 +27,9 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.IntelligentCommand;
 import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
-import java.util.ArrayList;
+
 import java.util.List;
 
 /**
@@ -92,8 +93,8 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc} */
-    public List<String> getSuggestions(int arg, List<String> previousArgs) {
-        final List<String> res = new ArrayList<String>();
+    public AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 1) {
             res.add("VERSION");
@@ -104,6 +105,7 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
             res.add("FINGER");
             res.add("SOURCE");
             res.add("TIME");
+            res.setIncludeNormal(false);
         }
         
         return res;
