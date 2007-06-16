@@ -22,6 +22,8 @@
 
 package com.dmdirc.addons.dcop;
 
+import com.dmdirc.addons.nowplaying.MediaSource;
+import com.dmdirc.addons.nowplaying.MediaSourceManager;
 import com.dmdirc.plugins.Plugin;
 
 import java.io.BufferedReader;
@@ -32,31 +34,46 @@ import java.util.List;
 
 /**
  * Allows the user to execute dcop commands (and read the results).
+ * 
  * @author chris
  */
-public final class DcopPlugin extends Plugin {
+public final class DcopPlugin extends Plugin implements MediaSourceManager {
     
     /** Creates a new instance of DcopPlugin. */
     public DcopPlugin() {
-        
+        super();
     }
     
     /**
      * Retrieves the result from executing the specified command.
+     *
      * @param command The command to be executed
      * @return The output of the specified command
-     * @throws IOException on dcop failure
      */
-    public static List<String> getDcopResult(final String command) throws IOException {
+    public static List<String> getDcopResult(final String command) {
         final ArrayList<String> result = new ArrayList<String>();
+
+        InputStreamReader reader;
+        BufferedReader input;
+        Process process;
         
-        final Process process = Runtime.getRuntime().exec(command);
-        final BufferedReader input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        
-        String line = "";
-        
-        while ((line = input.readLine()) != null) {
-            result.add(line);
+        try {
+            process = Runtime.getRuntime().exec(command);
+            
+            reader = new InputStreamReader(process.getInputStream());
+            input = new BufferedReader(reader);
+            
+            String line = "";
+            
+            while ((line = input.readLine()) != null) {
+                result.add(line);
+            }
+            
+            reader.close();
+            input.close();
+            process.destroy();
+        } catch (IOException ex) {
+            // Do nothing
         }
         
         return result;
@@ -93,5 +110,14 @@ public final class DcopPlugin extends Plugin {
     /** {@inheritDoc}. */
     public String toString() {
         return "DCOP Plugin";
+    }
+
+    /** {@inheritDoc} */
+    public List<MediaSource> getSources() {
+        final ArrayList<MediaSource> res = new ArrayList<MediaSource>();
+        
+        res.add(new AmarokSource());
+        
+        return res;
     }
 }

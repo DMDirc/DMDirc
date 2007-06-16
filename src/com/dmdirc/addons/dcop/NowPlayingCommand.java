@@ -56,20 +56,15 @@ public final class NowPlayingCommand extends ChannelCommand {
      * @param channel The channel object this command is associated with
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
-     */    
-    public void execute(final InputWindow origin, final Server server, 
+     */
+    public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
-        try {
-            
-            final List<String> res = DcopPlugin.getDcopResult("dcop amarok default nowPlaying");
-            
-            channel.sendAction("is listening to " + res.get(0));
-            
-        } catch (IOException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to execute dcop", ex);
-        }        
-    }
+        final List<String> res = DcopPlugin.getDcopResult("dcop amarok default nowPlaying");
         
+        channel.sendAction("is listening to " + res.get(0));
+        
+    }
+    
     
     
     /** {@inheritDoc}. */
@@ -96,5 +91,5 @@ public final class NowPlayingCommand extends ChannelCommand {
     public String getHelp() {
         return "nowplaying - tells the channel the song you're currently playing";
     }
-
+    
 }

@@ -56,13 +56,9 @@ public final class DcopCommand extends ServerCommand {
      */
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
-        try {
-            final List<String> res = DcopPlugin.getDcopResult("dcop " + implodeArgs(args));
-            for (String line : res) {
-                sendLine(origin, isSilent, "commandOutput", line);
-            }
-        } catch (IOException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to execute dcop", ex);
+        final List<String> res = DcopPlugin.getDcopResult("dcop " + implodeArgs(args));
+        for (String line : res) {
+            sendLine(origin, isSilent, "commandOutput", line);
         }
     }
     

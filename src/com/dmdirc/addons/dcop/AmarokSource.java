@@ -20,43 +20,39 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.nowplaying;
+package com.dmdirc.addons.dcop;
+
+import com.dmdirc.addons.nowplaying.MediaSource;
 
 /**
- * The media source describes one source of "now playing" information
- * (i.e., one method of getting information from one media player).
+ * Uses DCOP to retrieve now playing info from Amarok.
  * 
  * @author chris
  */
-public interface MediaSource {
-    
-    /**
-     * Determine if the application for this source is running or not.
-     * 
-     * @return True if this source is running, false otherwise
-     */
-    boolean isRunning();
-    
-    /**
-     * Determine if this source is currently playing or not.
-     * 
-     * @return True if this source is playing, false otherwise
-     */
-    boolean isPlaying();
-    
-    /**
-     * Retrieves a nicely formatted string containing the relevant information
-     * about the source media (such as artist and title).
-     * 
-     * @return The currently playing media
-     */
-    String getInformation();
-    
-    /**
-     * Retrieves the name of the application that this source is for.
-     * 
-     * @return This source's application name
-     */
-    String getName();
+public class AmarokSource implements MediaSource {
 
+    /** {@inheritDoc} */
+    public boolean isRunning() {
+        final String result = DcopPlugin.getDcopResult("dcop amarok player isPlaying").get(0);
+        
+        return result.indexOf("failed") != -1;
+    }
+
+    /** {@inheritDoc} */
+    public boolean isPlaying() {
+        final String result = DcopPlugin.getDcopResult("dcop amarok player isPlaying").get(0);
+        
+        return Boolean.parseBoolean(result);
+    }
+
+    /** {@inheritDoc} */
+    public String getInformation() {       
+        return DcopPlugin.getDcopResult("dcop amarok player nowPlaying").get(0);
+    }
+
+    /** {@inheritDoc} */
+    public String getName() {
+        return "Amarok";
+    }
+    
 }
