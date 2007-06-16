@@ -553,7 +553,7 @@ public final class IRCParser implements Runnable {
 			sendString("PASS " + server.getPassword());
 		}
 		setNickname(me.getNickname());
-		sendString("USER " + me.getUsername().toLowerCase() + " * * :" + me.getRealname());
+		sendString("USER " + toLowerCase(me.getUsername()) + " * * :" + me.getRealname());
 		isFirst = false;
 	}
 	
@@ -654,7 +654,7 @@ public final class IRCParser implements Runnable {
 	 * @return ClientInfo Object for the client, or null
 	 */
 	public ClientInfo getClientInfo(final String sHost) {
-		final String sWho = ClientInfo.parseHost(sHost).toLowerCase();
+		final String sWho = toLowerCase(ClientInfo.parseHost(sHost));
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
 		else { return null; }
 	}
@@ -665,8 +665,8 @@ public final class IRCParser implements Runnable {
 	 * @param sHost Who can be any valid identifier for a client as long as it contains a nickname (?:)nick(?!ident)(?@host)
 	 * @return ClientInfo Object for the client.
 	 */
-	public ClientInfo getClientInfoOrFake(final String sHost) {
-		final String sWho = ClientInfo.parseHost(sHost).toLowerCase();
+	public ClientInfo getClientInforFake(final String sHost) {
+		final String sWho = toLowerCase(ClientInfo.parseHost(sHost));
 		if (hClientList.containsKey(sWho)) { return hClientList.get(sWho); }
 		else { return (new ClientInfo(this, sHost)).setFake(true); }
 	}
@@ -678,7 +678,7 @@ public final class IRCParser implements Runnable {
 	 * @return ChannelInfo Object for the channel, or null
 	 */
 	public ChannelInfo getChannelInfo(String sWhat) {
-		sWhat = sWhat.toLowerCase();
+		sWhat = toLowerCase(sWhat);
 		if (hChannelList.containsKey(sWhat)) { return hChannelList.get(sWhat); } else { return null; }
 	}
 	
