@@ -30,6 +30,8 @@ import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 
+import java.awt.event.KeyEvent;
+
 /**
  * An enumeration of different types of actions (the type determines the
  * parameters an action expects).
@@ -41,10 +43,12 @@ public enum CoreActionMetaType implements ActionMetaType {
     CLIENT_EVENT(0, new String[]{}),
     /** Client event type, with a frame argument. */
     CLIENT_EVENT_WITH_FRAME(1, new String[]{"frame"}, FrameContainer.class),
+    /** Client event type, with a key argument. */
+    CLIENT_EVENT_WITH_KEY(1, new String[]{"key event"}, KeyEvent.class),
     
     /** Plugin event type. */
     PLUGIN_EVENT(1, new String[]{"plugin"}, Plugin.class),
-
+    
     /** Unknown command event type. */
     UNKNOWN_COMMAND(3, new String[]{"source", "command", "arguments"}, FrameContainer.class, String.class, String[].class),
     
@@ -52,7 +56,7 @@ public enum CoreActionMetaType implements ActionMetaType {
     SERVER_PING(2, new String[]{"server", "ping"}, Server.class, Long.class),
     /** Server numeric event type. */
     SERVER_NUMERIC(3, new String[]{"server", "numeric", "arguments"}, Server.class, Integer.class, String[].class),
-
+    
     /** Server event type. */
     SERVER_EVENT(1, new String[]{"server"}, Server.class),
     /** Channel event type. */
@@ -64,15 +68,15 @@ public enum CoreActionMetaType implements ActionMetaType {
     SERVER_EVENT_WITH_ARG(2, new String[]{"server", "message"}, Server.class, String.class),
     /** Server event, with source and argument. */
     SERVER_SOURCED_EVENT_WITH_ARG(3, new String[]{"server", "user", "message"}, Server.class, ClientInfo.class, String.class),
-
+    
     /** Query event with argument. */
     QUERY_EVENT_WITH_ARG(2, new String[]{"query", "message"}, Query.class, String.class),
-
+    
     /** Channel event with source. */
     CHANNEL_SOURCED_EVENT(2, new String[]{"channel", "user"}, Channel.class, ChannelClientInfo.class),
     /** Chanel event with source and argument. */
     CHANNEL_SOURCED_EVENT_WITH_ARG(3, new String[]{"channel", "user", "message"}, Channel.class, ChannelClientInfo.class, String.class),
-    /** Channel event with source and victim. */    
+    /** Channel event with source and victim. */
     CHANNEL_SOURCED_EVENT_WITH_VICTIM(4, new String[]{"channel", "user", "victim", "message"}, Channel.class, ChannelClientInfo.class, ChannelClientInfo.class, String.class);
     
     /** The arity of this type. */

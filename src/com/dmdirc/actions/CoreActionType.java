@@ -32,6 +32,8 @@ public enum CoreActionType implements ActionType {
     CLIENT_OPENED(CoreActionMetaType.CLIENT_EVENT, "Client opened"),
     /** Client closed. */
     CLIENT_CLOSED(CoreActionMetaType.CLIENT_EVENT, "Client closed"),
+    /** Function key pressed. */
+    CLIENT_FKEY_PRESSED(CoreActionMetaType.CLIENT_EVENT_WITH_KEY, "Function key pressed"),
     
     /** Frame changed. */
     CLIENT_FRAME_CHANGED(CoreActionMetaType.CLIENT_EVENT_WITH_FRAME, "Frame changed"),
@@ -93,12 +95,12 @@ public enum CoreActionType implements ActionType {
     CHANNEL_SELF_MESSAGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel message sent"),
     /** Channel action sent. */
     CHANNEL_SELF_ACTION(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel action sent"),
-
+    
     /** Channel message received. */
     CHANNEL_MESSAGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel message received"),
     /** Channel actions received. */
     CHANNEL_ACTION(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel action received"),
-
+    
     /** Someone joined a channel. */
     CHANNEL_JOIN(CoreActionMetaType.CHANNEL_SOURCED_EVENT, "Someone joined a channel"),
     /** Someone left a channel. */
@@ -117,10 +119,10 @@ public enum CoreActionType implements ActionType {
     CHANNEL_MODECHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed channel modes"),
     /** Someone changed someone else's user modes. */
     CHANNEL_USERMODECHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_VICTIM, "Someone changed someone else's modes"),
-
+    
     /** Someone changed nickname. */
     CHANNEL_NICKCHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed nicknames"),
-
+    
     /** Someone changed a topic. */
     CHANNEL_TOPICCHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed channel topic");
     
