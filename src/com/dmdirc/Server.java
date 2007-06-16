@@ -774,6 +774,9 @@ public final class Server extends WritableFrameContainer implements
             final String sMessage, final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
         
+        ActionManager.processEvent(CoreActionType.SERVER_CTCP, null, this,
+                parser.getClientInfoOrFake(sHost), sType, sMessage);
+        
         handleNotification("privateCTCP", parts[0], parts[1], parts[2], sType, sMessage);
         
         sendCTCPReply(parts[0], sType, sMessage);
@@ -801,6 +804,10 @@ public final class Server extends WritableFrameContainer implements
     public void onPrivateCTCPReply(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
+        
+        ActionManager.processEvent(CoreActionType.SERVER_CTCPR, null, this,
+                parser.getClientInfoOrFake(sHost), sType, sMessage);
+        
         handleNotification("privateCTCPreply", parts[0], parts[1], parts[2], sType, sMessage);
     }
     
@@ -808,6 +815,10 @@ public final class Server extends WritableFrameContainer implements
     public void onPrivateNotice(final IRCParser tParser, final String sMessage,
             final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
+        
+        ActionManager.processEvent(CoreActionType.SERVER_NOTICE, null, this,
+                parser.getClientInfoOrFake(sHost), sMessage);
+        
         handleNotification("privateNotice", parts[0], parts[1], parts[2], sMessage);
     }
     
@@ -857,17 +868,29 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public void onMOTDStart(final IRCParser tParser, final String sData) {
-        window.addLine("motdStart", sData);
+        final StringBuffer buffer = new StringBuffer("motdStart");
+        
+        ActionManager.processEvent(CoreActionType.SERVER_MOTDSTART, buffer, this, sData);
+        
+        window.addLine(buffer, sData);
     }
     
     /** {@inheritDoc} */
     public void onMOTDLine(final IRCParser tParser, final String sData) {
-        window.addLine("motdLine", sData);
+        final StringBuffer buffer = new StringBuffer("motdLine");
+        
+        ActionManager.processEvent(CoreActionType.SERVER_MOTDLINE, buffer, this, sData);
+        
+        window.addLine(buffer, sData);
     }
     
     /** {@inheritDoc} */
     public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD) {
-        window.addLine("motdEnd", "End of server's MOTD.");
+        final StringBuffer buffer = new StringBuffer("motdEnd");
+        
+        ActionManager.processEvent(CoreActionType.SERVER_MOTDEND, buffer, this);
+        
+        window.addLine(buffer, "End of server's MOTD.");
     }
     
     /** {@inheritDoc} */

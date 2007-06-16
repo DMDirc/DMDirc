@@ -64,6 +64,21 @@ public enum CoreActionType implements ActionType {
     /** User modes changed. */
     SERVER_USERMODES(CoreActionMetaType.SERVER_SOURCED_EVENT_WITH_ARG, "User modes changed"),
     
+    /** Private CTCP received. */
+    SERVER_CTCP(CoreActionMetaType.SERVER_CTCP_EVENT, "CTCP received"),
+    /** Private CTCPR received. */
+    SERVER_CTCPR(CoreActionMetaType.SERVER_CTCP_EVENT, "CTCP reply received"),
+    
+    /** Private notice received. */
+    SERVER_NOTICE(CoreActionMetaType.SERVER_SOURCED_EVENT_WITH_ARG, "Notice received"),
+    
+    /** MOTD starting. */
+    SERVER_MOTDSTART(CoreActionMetaType.SERVER_EVENT_WITH_ARG, "Start of MOTD received"),
+    /** MOTD ended. */
+    SERVER_MOTDEND(CoreActionMetaType.SERVER_EVENT, "End of MOTD received"),    
+    /** MOTD line. */
+    SERVER_MOTDLINE(CoreActionMetaType.SERVER_EVENT_WITH_ARG, "MOTD line received"),    
+    
     /** Ping reply received. */
     SERVER_GOTPING(CoreActionMetaType.SERVER_PING, "Received server ping reply"),
     /** Missed server ping reply. */
