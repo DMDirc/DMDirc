@@ -24,22 +24,28 @@ package com.dmdirc.addons.nowplaying;
 
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class NowPlayingPlugin extends Plugin implements EventPlugin {
-
+    
     /** The sources that we know of. */
     private List<MediaSource> sources;
-
+    
+    /** The now playing command we're registering. */
+    private NowPlayingCommand command;
+    
     /** {@inheritDoc} */
     public boolean onLoad() {
         return true;
     }
-
+    
     /** {@inheritDoc} */
     @Override
     protected void onActivate() {
@@ -50,34 +56,38 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin {
                 addPlugin(target);
             }
         }
+        
+        command = new NowPlayingCommand(this);
     }
-
+    
     /** {@inheritDoc} */
     @Override
     protected void onDeactivate() {
         sources = null;
+        
+        CommandManager.unregisterCommand(command);
     }
-
+    
     /** {@inheritDoc} */
     public String getVersion() {
         return "0.1";
     }
-
+    
     /** {@inheritDoc} */
     public String getAuthor() {
         return "Chris <chris@dmdirc.com>";
     }
-
+    
     /** {@inheritDoc} */
     public String getDescription() {
         return "Adds a nowplaying command";
     }
-
+    
     /** {@inheritDoc} */
     public String toString() {
         return "Now playing command";
     }
-
+    
     /** {@inheritDoc} */
     public void processEvent(ActionType type, StringBuffer format, Object... arguments) {
         if (type == CoreActionType.PLUGIN_ACTIVATED) {
@@ -90,25 +100,32 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin {
     /**
      * Checks to see if a plugin implements one of the Media Source interfaces
      * and if it does, adds the source(s) to our list.
-     * 
+     *
      * @param target The plugin to be tested
      */
     private void addPlugin(final Plugin target) {
+        System.out.print(target.toString());
         if (target instanceof MediaSource) {
             sources.add((MediaSource) target);
+            System.out.print(" <-- MediaSource");
         }
         
         if (target instanceof MediaSourceManager) {
             sources.addAll(((MediaSourceManager) target).getSources());
+            System.out.print(" <-- MediaSourceManager");
         }
+        
+        System.out.println();
+        
+        System.out.println(Arrays.toString(target.getClass().getInterfaces()));
     }
-
+    
     /**
      * Checks to see if a plugin implements one of the Media Source interfaces
      * and if it does, removes the source(s) from our list.
-     * 
+     *
      * @param target The plugin to be tested
-     */    
+     */
     private void removePlugin(final Plugin target) {
         if (target instanceof MediaSource) {
             sources.remove((MediaSource) target);
@@ -116,12 +133,12 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin {
         
         if (target instanceof MediaSourceManager) {
             sources.removeAll(((MediaSourceManager) target).getSources());
-        }        
+        }
     }
     
     /**
      * Determines if there are any valid sources (paused or not).
-     * 
+     *
      * @return True if there are running sources, false otherwise
      */
     public boolean hasRunningSource() {
@@ -140,7 +157,7 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin {
      * and not paused, or, if no such source exists, the earliest in the list
      * that is running and paused. If neither condition is satisified returns
      * null.
-     * 
+     *
      * @return The best source to use for media info
      */
     public MediaSource getBestSource() {
@@ -157,6 +174,31 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin {
         }
         
         return paused;
+    }
+    
+    /**
+     * Retrieves a source based on its name.
+     *
+     * @param name The name to search for
+     * @return The source with the specified name or null if none were found.
+     */
+    public MediaSource getSource(final String name) {
+        for (MediaSource source : sources) {
+            if (source.getName().equalsIgnoreCase(name)) {
+                return source;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Retrieves all the sources registered with this plugin.
+     *
+     * @return All known media sources
+     */
+    public List<MediaSource> getSources() {
+        return sources;
     }
     
 }

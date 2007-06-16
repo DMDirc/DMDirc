@@ -25,11 +25,8 @@ package com.dmdirc.addons.dcop;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.io.IOException;
 import java.util.List;
 
 /**

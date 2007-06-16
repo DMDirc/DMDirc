@@ -82,14 +82,13 @@ public final class DcopPlugin extends Plugin implements MediaSourceManager {
     /** {@inheritDoc}. */
     public boolean onLoad() {
         new DcopCommand();
-        new NowPlayingCommand();
         
         return true;
     }
     
     /** {@inheritDoc}. */
     public String getVersion() {
-        return "0.1";
+        return "0.2";
     }
     
     /** {@inheritDoc}. */
