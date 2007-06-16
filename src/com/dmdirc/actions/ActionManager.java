@@ -25,6 +25,8 @@ package com.dmdirc.actions;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.actions.wrappers.ActionWrapper;
+import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
@@ -38,6 +40,7 @@ import java.util.Map;
 
 /**
  * Manages all actions for the client.
+ *
  * @author chris
  */
 public final class ActionManager {
@@ -50,6 +53,9 @@ public final class ActionManager {
     
     /** A list of registered action comparisons. */
     private static List<ActionComparison> actionComparisons;
+    
+    /** A list of all action wrappers that have registered with us. */
+    private static List<ActionWrapper> actionWrappers;
     
     /** A map linking types and a list of actions that're registered for them. */
     private static HashMap<ActionType, List<Action>> actions;
@@ -67,14 +73,27 @@ public final class ActionManager {
         actionTypes = new ArrayList<ActionType>();
         actionComparisons = new ArrayList<ActionComparison>();
         actionComponents = new ArrayList<ActionComponent>();
+        actionWrappers = new ArrayList<ActionWrapper>();
         
         registerActionTypes(CoreActionType.values());
         registerActionComparisons(CoreActionComparison.values());
         registerActionComponents(CoreActionComponent.values());
+        
+        AliasWrapper.getAliasWrapper();
+    }
+    
+    /**
+     * Registers the specified action wrapper with the manager.
+     * 
+     * @param wrapper The wrapper to be registered
+     */
+    public static void registerWrapper(final ActionWrapper wrapper) {
+        actionWrappers.add(wrapper);
     }
     
     /**
      * Registers a set of actiontypes with the manager.
+     *
      * @param types An array of ActionTypes to be registered
      */
     public static void registerActionTypes(final ActionType[] types) {
@@ -85,6 +104,7 @@ public final class ActionManager {
     
     /**
      * Registers a set of action components with the manager.
+     *
      * @param comps An array of ActionComponents to be registered
      */
     public static void registerActionComponents(final ActionComponent[] comps) {
@@ -95,6 +115,7 @@ public final class ActionManager {
     
     /**
      * Registers a set of action comparisons with the manager.
+     *
      * @param comps An array of ActionComparisons to be registered
      */
     public static void registerActionComparisons(final ActionComparison[] comps) {
@@ -105,6 +126,7 @@ public final class ActionManager {
     
     /**
      * Returns a map of groups to action lists.
+     *
      * @return a map of groups to action lists
      */
     public static Map<String, List<Action>> getGroups() {
@@ -145,17 +167,35 @@ public final class ActionManager {
     }
     
     /**
+     * Retrieves the action wrapper with the specified group name.
+     *
+     * @param name The group name to find
+     * @return An ActionWrapper with the specified group name, or null
+     */
+    private static ActionWrapper getWrapper(final String name) {
+        for (ActionWrapper wrapper : actionWrappers) {
+            if (wrapper.getGroupName().equalsIgnoreCase(name)) {
+                return wrapper;
+            }
+        }
+        
+        return null;
+    }    
+    
+    /**
      * Determines whether the specified group name is one used by an action
      * wrapper.
+     *
      * @param name The group name to test
      * @return True if the group is part of a wrapper, false otherwise
      */
-    private static boolean isWrappedGroup(final String name) {
-        return name.equals("aliases") || name.equals("performs");
+    private static boolean isWrappedGroup(final String name) {        
+        return getWrapper(name) != null;
     }
     
     /**
      * Loads action files from a specified group directory.
+     *
      * @param dir The directory to scan.
      */
     private static void loadActions(final File dir) {
@@ -166,6 +206,7 @@ public final class ActionManager {
     
     /**
      * Registers an action with the manager.
+     * 
      * @param action The action to be registered
      */
     public static void registerAction(final Action action) {
@@ -180,9 +221,9 @@ public final class ActionManager {
             
             actions.get(trigger).add(action);
         }
-        
+               
         if (isWrappedGroup(action.getGroup())) {
-            // TODO: Register with a wrapper
+            getWrapper(action.getGroup()).registerAction(action);
         } else {
             if (!groups.containsKey(action.getGroup())) {
                 groups.put(action.getGroup(), new ArrayList<Action>());
@@ -194,6 +235,7 @@ public final class ActionManager {
     
     /**
      * Unregisters an action with the manager.
+     * 
      * @param action The action to be unregistered
      */
     public static void unregisterAction(final Action action) {
@@ -216,6 +258,7 @@ public final class ActionManager {
     
     /**
      * Deletes the specified action.
+     * 
      * @param action The action to be deleted
      */
     public static void deleteAction(final Action action) {
@@ -230,6 +273,7 @@ public final class ActionManager {
     
     /**
      * Processes an event of the specified type.
+     * 
      * @param type The type of the event to process
      * @param format The format of the message that's going to be displayed for
      * the event. Actions may change this format.
@@ -251,6 +295,7 @@ public final class ActionManager {
     
     /**
      * Triggers actions that respond to the specified type.
+     * 
      * @param type The type of the event to process
      * @param format The format of the message that's going to be displayed for
      * the event. Actions may change this format.*
@@ -271,6 +316,7 @@ public final class ActionManager {
     
     /**
      * Returns the directory that should be used to store actions.
+     * 
      * @return The directory that should be used to store actions
      */
     public static String getDirectory() {
@@ -280,6 +326,7 @@ public final class ActionManager {
     
     /**
      * Creates a new group with the specified name.
+     * 
      * @param group The group to be created
      */
     public static void makeGroup(final String group) {
@@ -290,6 +337,7 @@ public final class ActionManager {
     
     /**
      * Removes the group with the specified name.
+     * 
      * @param group The group to be removed
      */
     public static void removeGroup(final String group) {
@@ -313,6 +361,7 @@ public final class ActionManager {
     
     /**
      * Renames the specified group.
+     * 
      * @param oldName The old name of the group
      * @param newName The new name of the group
      */
@@ -334,6 +383,7 @@ public final class ActionManager {
     /**
      * Returns the action comparison specified by the given string, or null if it
      * doesn't match a valid registered action comparison.
+     * 
      * @param type The name of the action comparison to try and find
      * @return The actioncomparison with the specified name, or null on failure
      */
@@ -354,6 +404,7 @@ public final class ActionManager {
     /**
      * Returns a list of action types that are compatible with the one
      * specified.
+     * 
      * @param type The type to be checked against
      * @return A list of compatible action types
      */
@@ -371,6 +422,7 @@ public final class ActionManager {
     /**
      * Returns a list of action components that are compatible with the
      * specified class.
+     * 
      * @param target The class to be tested
      * @return A list of compatible action components
      */
@@ -388,6 +440,7 @@ public final class ActionManager {
     /**
      * Returns a list of action comparisons that are compatible with the
      * specified class.
+     * 
      * @param target The class to be tested
      * @return A list of compatible action comparisons
      */
@@ -404,6 +457,7 @@ public final class ActionManager {
     
     /**
      * Returns a list of all the action types registered by this manager.
+     * 
      * @return A list of registered action types
      */
     public static List<ActionType> getTypes() {
@@ -412,6 +466,7 @@ public final class ActionManager {
     
     /**
      * Returns a list of all the action types registered by this manager.
+     * 
      * @return A list of registered action comparisons
      */
     public static List<ActionComparison> getComparisons() {
@@ -421,6 +476,7 @@ public final class ActionManager {
     /**
      * Returns the action component specified by the given string, or null if it
      * doesn't match a valid registered action component.
+     * 
      * @param type The name of the action component to try and find
      * @return The actioncomponent with the specified name, or null on failure
      */
@@ -441,6 +497,7 @@ public final class ActionManager {
     /**
      * Returns the action type specified by the given string, or null if it
      * doesn't match a valid registered action type.
+     * 
      * @param type The name of the action type to try and find
      * @return The actiontype with the specified name, or null on failure
      */
@@ -460,6 +517,7 @@ public final class ActionManager {
     
     /**
      * Substitutes variables into the string based on the arguments.
+     * 
      * @param target The string to be altered
      * @param arguments The arguments for the action
      * @return The target string with all variables substituted

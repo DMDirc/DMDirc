@@ -27,20 +27,30 @@ import com.dmdirc.actions.Action;
 /**
  * An action wrapper deals with a specific group of actions in order to provide
  * an even more user-friendly experience.
+ * 
  * @author chris
  */
 public interface ActionWrapper {
 
     /**
      * Registers the specified action with this manager.
+     * 
      * @param action The action to be registered
      */
     void registerAction(Action action);
     
     /**
      * Unregisters the specified action with this manager.
+     * 
      * @param action The action to be unregistered
      */
     void unregisterAction(Action action);
+    
+    /**
+     * Retrieve the group name that this wrapper is using.
+     * 
+     * @return This wrapper's group name
+     */
+    String getGroupName();
     
 }

@@ -23,9 +23,11 @@
 package com.dmdirc.actions.wrappers;
 
 import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionManager;
 
 /**
  * Encapsulates alias actions.
+ * 
  * @author chris
  */
 public class AliasWrapper implements ActionWrapper {
@@ -42,26 +44,31 @@ public class AliasWrapper implements ActionWrapper {
     
     /**
      * Retrieves a singleton instance of this alias wrapper.
+     * 
      * @return A singleton instance of AliasWrapper
      */
-    public static AliasWrapper getAliasWrapper() {
-        synchronized (me) {
-            if (me == null) {
-                me = new AliasWrapper();
-            }
-            
-            return me;
+    public static synchronized AliasWrapper getAliasWrapper() {
+        if (me == null) {
+            me = new AliasWrapper();
+            ActionManager.registerWrapper(me);
         }
+        
+        return me;
     }
-
+    
     /** {@inheritDoc} */
     public void registerAction(Action action) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println("Registered action: " + action.getName());
     }
-
+    
     /** {@inheritDoc} */
     public void unregisterAction(Action action) {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    /** {@inheritDoc} */
+    public String getGroupName() {
+        return "aliases";
     }
     
 }
