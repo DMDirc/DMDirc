@@ -27,6 +27,7 @@ import com.dmdirc.Server;
 import com.dmdirc.parser.ChannelClientInfo;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.util.GregorianCalendar;
 
 /**
@@ -70,7 +71,7 @@ public enum CoreActionComponent implements ActionComponent {
         public Class getType() { return String.class; }
         /** {@inheritDoc} */
         public String getName() { return "away reason"; }
-    },  
+    },
     
     /** Returns the nickname for the server. */
     SERVER_MYNICKNAME {
@@ -82,7 +83,7 @@ public enum CoreActionComponent implements ActionComponent {
         public Class getType() { return String.class; }
         /** {@inheritDoc} */
         public String getName() { return "nickname"; }
-    },    
+    },
     
     /** Returns the name of the channel. */
     CHANNEL_NAME {
@@ -190,6 +191,60 @@ public enum CoreActionComponent implements ActionComponent {
         public Class getType() { return String.class; }
         /** {@inheritDoc} */
         public String getName() { return "full date"; }
+    },
+    
+    /** Returns the name of the key that was pressed. */
+    KEYEVENT_KEYNAME {
+        /** {@inheritDoc} */
+        public Object get(final Object argument) { return KeyEvent.getKeyText(((KeyEvent) argument).getKeyCode()); }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return KeyEvent.class; }
+        /** {@inheritDoc} */
+        public Class getType() { return String.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "key name"; }
+    },
+    
+    /** Returns the state of the control key for a key press event. */
+    KEYEVENT_CTRLSTATE {
+        /** {@inheritDoc} */
+        public Object get(final Object argument) {
+            return Boolean.valueOf((((KeyEvent) argument).getModifiers() & KeyEvent.CTRL_DOWN_MASK) != 0);
+        }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return KeyEvent.class; }
+        /** {@inheritDoc} */
+        public Class getType() { return String.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "control key state"; }
+    },
+    
+    /** Returns the state of the shift key for a key press event. */
+    KEYEVENT_SHIFTSTATE {
+        /** {@inheritDoc} */
+        public Object get(final Object argument) {
+            return Boolean.valueOf((((KeyEvent) argument).getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != 0);
+        }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return KeyEvent.class; }
+        /** {@inheritDoc} */
+        public Class getType() { return String.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "shift key state"; }
+    },
+    
+    /** Returns the state of the shift key for a key press event. */
+    KEYEVENT_ALTSTATE {
+        /** {@inheritDoc} */
+        public Object get(final Object argument) {
+            return Boolean.valueOf((((KeyEvent) argument).getModifiers() & KeyEvent.ALT_DOWN_MASK) != 0);
+        }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return KeyEvent.class; }
+        /** {@inheritDoc} */
+        public Class getType() { return String.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "alt key state"; }
     };
     
     /** {@inheritDoc} */

@@ -98,6 +98,18 @@ public enum CoreActionComparison implements ActionComparison {
         public String getName() { return "contains"; }
     },
     
+    /** Checks if two boolean values are equal. */
+    BOOL_IS {
+        /** {@inheritDoc} */
+        public boolean test(final Object arg1, final Object arg2) {
+            return ((Boolean) arg1).equals(Boolean.valueOf((String) arg2));
+        }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return Boolean.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "is"; }
+    },
+    
     /** Checks if the colour is the same as another colour. */
     COLOUR_EQUALS {
         /** {@inheritDoc} */
