@@ -707,9 +707,12 @@ public final class MainFrame extends JFrame implements WindowListener,
     public void populateWindowMenu(final Map<FrameContainer, JMenuItem> windows) {
         if (windowsMenu == null) {
             windowsMenu = new JMenu();
-        } else {
-            windowsMenu.removeAll();
         }
+        if (windowsMenu.isShowing()) {
+            windowsMenu.setSelected(false);
+            windowsMenu.setPopupMenuVisible(false);
+        }
+        windowsMenu.removeAll(); 
         
         JMenuItem menuItem;
         
@@ -745,6 +748,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         final Collection<JMenuItem> windowsValues = windows.values();
         for (JMenuItem mi : windowsValues) {
             if (i > 34) {
+                windowsMenu.add(new JMenuItem("..."));
                 break;
             }
             windowsMenu.add(mi);
