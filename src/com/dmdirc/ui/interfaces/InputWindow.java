@@ -47,4 +47,12 @@ public interface InputWindow extends Window {
      */
     InputHandler getInputHandler();
     
+    /**
+     * Toggles the away-status indicator for this input window, if the UI
+     * supports it.
+     * 
+     * @param isAway Whether the away indicator should be displayed or not
+     */
+    void setAwayIndicator(boolean isAway);
+    
 }

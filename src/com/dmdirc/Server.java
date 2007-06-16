@@ -170,7 +170,6 @@ public final class Server extends WritableFrameContainer implements
         
         window.getInputHandler().setTabCompleter(tabCompleter);
         
-        ((ServerFrame) window).addInternalFrameListener(this);
         MainFrame.getMainFrame().addChild(window);
         
         window.open();
@@ -267,7 +266,7 @@ public final class Server extends WritableFrameContainer implements
         
         away = false;
         awayMessage = null;
-        ((ServerFrame) window).setAway(false);
+        window.setAwayIndicator(false);
         
         try {
             new Thread(parser).start();
@@ -497,11 +496,6 @@ public final class Server extends WritableFrameContainer implements
         if (parser != null) {
             // Unregister parser callbacks
             parser.getCallbackManager().delAllCallback(this);
-        }
-        
-        if (window != null) {
-            // Unregister frame callbacks
-            ((ServerFrame) window).removeInternalFrameListener(this);
         }
         
         // Disconnect from the server
@@ -941,7 +935,7 @@ public final class Server extends WritableFrameContainer implements
             ActionManager.processEvent(CoreActionType.SERVER_BACK, null, this);
         }
         
-        ((ServerFrame) window).setAway(away);
+        window.setAwayIndicator(away);
     }
     
     /** {@inheritDoc} */

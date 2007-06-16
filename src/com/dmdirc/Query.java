@@ -85,7 +85,6 @@ public final class Query extends WritableFrameContainer implements
         ActionManager.processEvent(CoreActionType.QUERY_OPENED, null, this);
         
         MainFrame.getMainFrame().addChild(frame);
-        frame.addInternalFrameListener(this);
         frame.setFrameIcon(imageIcon);
         
         if (!Config.getOptionBool("general", "hidequeries")) {

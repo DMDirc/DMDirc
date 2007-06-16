@@ -63,7 +63,6 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
         
         frame = new ServerFrame(server);
         frame.setTitle("(Raw log)");
-        frame.addInternalFrameListener(this);
         MainFrame.getMainFrame().addChild(frame);
         frame.getInputHandler().setTabCompleter(server.getTabCompleter());
         frame.setFrameIcon(imageIcon);

@@ -52,7 +52,6 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
@@ -107,7 +106,7 @@ public abstract class InputFrame extends Frame implements
     private Robot robot;
     
     /** Away label. */
-    private JLabel awayLabel;
+    protected JLabel awayLabel;
     
     /**
      * Creates a new instance of InputFrame.
@@ -313,35 +312,35 @@ public abstract class InputFrame extends Frame implements
      * Not needed for this class. {@inheritDoc}
      */
     public void internalFrameOpened(final InternalFrameEvent event) {
-        //Ignore.
+        super.internalFrameOpened(event);
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void internalFrameClosing(final InternalFrameEvent event) {
-        //Ignore.
+        super.internalFrameClosing(event);
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void internalFrameClosed(final InternalFrameEvent event) {
-        //Ignore.
+        super.internalFrameClosed(event);
     }
     
     /**
      * Makes the internal frame invisible. {@inheritDoc}
      */
     public void internalFrameIconified(final InternalFrameEvent event) {
-        //Ignore.
+        super.internalFrameIconified(event);
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void internalFrameDeiconified(final InternalFrameEvent event) {
-        //Ignore.
+        super.internalFrameDeiconified(event);
     }
     
     /**
@@ -349,6 +348,7 @@ public abstract class InputFrame extends Frame implements
      */
     public void internalFrameActivated(final InternalFrameEvent event) {
         getInputField().requestFocus();
+        
         super.internalFrameActivated(event);
     }
     
@@ -356,7 +356,7 @@ public abstract class InputFrame extends Frame implements
      * Not needed for this class. {@inheritDoc}
      */
     public void internalFrameDeactivated(final InternalFrameEvent event) {
-        //Ignore.
+        super.internalFrameDeactivated(event);
     }
     
     /** {@inheritDoc} */

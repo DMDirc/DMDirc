@@ -25,7 +25,6 @@ package com.dmdirc;
 import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.interfaces.Window;
 
@@ -33,16 +32,14 @@ import java.awt.Color;
 import java.beans.PropertyVetoException;
 
 import javax.swing.ImageIcon;
-import javax.swing.event.InternalFrameEvent;
-import javax.swing.event.InternalFrameListener;
 
 /**
  * The frame container implements basic methods that should be present in
  * all objects that handle a frame.
- * 
+ *
  * @author chris
  */
-public abstract class FrameContainer implements InternalFrameListener {
+public abstract class FrameContainer {
     
     /** The colour of our frame's notifications. */
     protected Color notification = Color.BLACK;
@@ -52,13 +49,14 @@ public abstract class FrameContainer implements InternalFrameListener {
     
     /**
      * Returns the internal frame associated with this object.
-     * 
+     *
      * @return The internal frame associated with this object
      */
     public abstract Window getFrame();
     
     /**
      * Returns a string identifier for this object/its frame.
+     *
      * @return String identifier
      */
     public abstract String toString();
@@ -70,12 +68,14 @@ public abstract class FrameContainer implements InternalFrameListener {
     
     /**
      * Returns the server instance associated with this container.
+     *
      * @return the associated server connection
      */
     public abstract Server getServer();
     
     /**
      * Retrieves the icon used by the query frame.
+     *
      * @return The query frame's icon
      */
     public ImageIcon getIcon() {
@@ -84,6 +84,7 @@ public abstract class FrameContainer implements InternalFrameListener {
     
     /**
      * Returns the config manager for this container.
+     *
      * @return the associated config manager
      */
     public ConfigManager getConfigManager() {
@@ -107,6 +108,7 @@ public abstract class FrameContainer implements InternalFrameListener {
     
     /**
      * Sends a notification to the frame manager if this fame isn't active.
+     *
      * @param colour The colour to use for the notification
      */
     public void sendNotification(final Color colour) {
@@ -119,6 +121,7 @@ public abstract class FrameContainer implements InternalFrameListener {
     
     /**
      * Retrieves the current notification colour of this channel.
+     *
      * @return This channel's notification colour
      */
     public Color getNotification() {
@@ -127,6 +130,7 @@ public abstract class FrameContainer implements InternalFrameListener {
     
     /**
      * Determines if the specified frame is owned by this object.
+     *
      * @param target Window to check ownership of
      * @return True iff frame is owned by this container, false otherwise
      */
@@ -135,10 +139,9 @@ public abstract class FrameContainer implements InternalFrameListener {
     }
     
     /**
-     * Invoked when a internal frame has been opened.
-     * @param internalFrameEvent frame opened event
+     * Invoked when our window has been opened.
      */
-    public void internalFrameOpened(final InternalFrameEvent internalFrameEvent) {
+    public void windowOpened() {
         final boolean pref = getServer().getConfigManager().getOptionBool("ui", "maximisewindows");
         if (pref || MainFrame.getMainFrame().getMaximised()) {
             try {
@@ -150,42 +153,23 @@ public abstract class FrameContainer implements InternalFrameListener {
     }
     
     /**
-     * Invoked when an internal frame is in the process of being closed.
-     * @param internalFrameEvent frame closing event
+     * Invoked when our window is closing.
      */
-    public void internalFrameClosing(final InternalFrameEvent internalFrameEvent) {
+    public void windowClosing() {
         close();
     }
     
     /**
-     * Invoked when an internal frame has been closed.
-     * @param internalFrameEvent frame closed event
+     * Invoked when our window has been closed.
      */
-    public void internalFrameClosed(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
+    public void windowClosed() {
+        // Ignore.
     }
     
     /**
-     * Invoked when an internal frame is iconified.
-     * @param internalFrameEvent frame iconified event
+     * Invoked when our window is activated.
      */
-    public void internalFrameIconified(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Invoked when an internal frame is de-iconified.
-     * @param internalFrameEvent frame deiconified event
-     */
-    public void internalFrameDeiconified(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
-    }
-    
-    /**
-     * Invoked when an internal frame is activated.
-     * @param internalFrameEvent frame activation event
-     */
-    public void internalFrameActivated(final InternalFrameEvent internalFrameEvent) {
+    public void windowActivated() {
         if (MainFrame.getMainFrame().getMaximised()) {
             try {
                 getFrame().setMaximum(true);
@@ -199,11 +183,10 @@ public abstract class FrameContainer implements InternalFrameListener {
     }
     
     /**
-     * Invoked when an internal frame is de-activated.
-     * @param internalFrameEvent frame deactivation event
+     * Invoked when our window is deactivated.
      */
-    public void internalFrameDeactivated(final InternalFrameEvent internalFrameEvent) {
-        //Ignore.
+    public void windowDeactivated() {
+        // Do nothing.
     }
     
 }

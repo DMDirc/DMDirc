@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.ServerCommandParser;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.components.InputFrame;
 import com.dmdirc.ui.interfaces.ServerWindow;
+import java.awt.BorderLayout;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -79,23 +80,34 @@ public final class ServerFrame extends InputFrame implements ServerWindow {
     
     /**
      * Sets the away status for this and all associated frames.
+     *
      * @param newAwayState away state
      */
-    public void setAway(final boolean newAwayState) {
-        if (Config.hasOption("ui", "awayindicator")
-                && Config.getOptionBool("ui", "awayindicator")) {
-            setAwayIndicator(newAwayState);
-            
-            if (getContainer().getServer().getRaw() != null) {
-                ((InputFrame) getContainer().getServer().getRaw().getFrame()).setAwayIndicator(newAwayState);
+    @Override
+    public void setAwayIndicator(final boolean newAwayState) {
+        if (Config.getOptionBool("ui", "awayindicator")) {
+            if (newAwayState) {
+                inputPanel.add(awayLabel, BorderLayout.LINE_START);
+                awayLabel.setVisible(true);
+            } else {
+                awayLabel.setVisible(false);
             }
             
-            for (String channel : getContainer().getServer().getChannels()) {
-                ((InputFrame) getContainer().getServer().getChannel(channel).getFrame()).setAwayIndicator(newAwayState);
-            }
-            
-            for (String query : getContainer().getServer().getQueries()) {
-                ((InputFrame) getContainer().getServer().getQuery(query).getFrame()).setAwayIndicator(newAwayState);
+            // Hack++. To be removed when raw window is no longer a server frame
+            if (!getContainer().getServer().getRaw().getFrame().equals(this)) {
+                
+                if (getContainer().getServer().getRaw() != null) {
+                    getContainer().getServer().getRaw().getFrame().setAwayIndicator(newAwayState);
+                }
+                
+                for (String channel : getContainer().getServer().getChannels()) {
+                    getContainer().getServer().getChannel(channel).getFrame().setAwayIndicator(newAwayState);
+                }
+                
+                for (String query : getContainer().getServer().getQueries()) {
+                    getContainer().getServer().getQuery(query).getFrame().setAwayIndicator(newAwayState);
+                }
+                
             }
         }
     }

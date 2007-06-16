@@ -279,21 +279,21 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
      * Not needed for this class. {@inheritDoc}
      */
     public void internalFrameOpened(final InternalFrameEvent event) {
-        //Ignore.
+        parent.windowOpened();
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void internalFrameClosing(final InternalFrameEvent event) {
-        //Ignore.
+        parent.windowClosing();
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void internalFrameClosed(final InternalFrameEvent event) {
-        //Ignore.
+        parent.windowClosed();
     }
     
     /**
@@ -314,14 +314,14 @@ public abstract class Frame extends JInternalFrame implements InputWindow,
      * Activates the input field on frame focus. {@inheritDoc}
      */
     public void internalFrameActivated(final InternalFrameEvent event) {
-        //Ignore.
+        parent.windowActivated();
     }
     
     /**
      * Not needed for this class. {@inheritDoc}
      */
     public void internalFrameDeactivated(final InternalFrameEvent event) {
-        //Ignore.
+        parent.windowDeactivated();
     }
     
     /** {@inheritDoc} */

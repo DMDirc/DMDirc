@@ -132,7 +132,6 @@ public final class Channel extends WritableFrameContainer implements
                 public void run() {
                     frame = new ChannelFrame(Channel.this);
                     MainFrame.getMainFrame().addChild(frame);
-                    frame.addInternalFrameListener(Channel.this);
                     frame.setFrameIcon(imageIcon);
                     frame.getInputHandler().setTabCompleter(tabCompleter);
                 }
