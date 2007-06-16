@@ -58,7 +58,12 @@ public class PluginManager {
 	private PluginManager() {
 		final String fs = System.getProperty("file.separator");
 		myDir = Config.getConfigDir() + "plugins" + fs;
-
+	}
+        
+	/**
+	 * Autoloads plugins.
+	 */
+	private void doAutoLoad() {
 		if (Config.hasOption("plugins", "autoload")) {
 			final String[] autoLoadList = Config.getOption("plugins", "autoload").split("\n");
 			for (String plugin : autoLoadList) {
@@ -77,6 +82,7 @@ public class PluginManager {
 	public final static synchronized PluginManager getPluginManager() {
 		if (me == null) {
 			me = new PluginManager();
+			me.doAutoLoad();
 		}
 		return me;
 	}
