@@ -31,7 +31,7 @@ import com.dmdirc.ui.interfaces.Window;
 import java.awt.Color;
 import java.beans.PropertyVetoException;
 
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 
 /**
  * The frame container implements basic methods that should be present in
@@ -45,7 +45,7 @@ public abstract class FrameContainer {
     protected Color notification = Color.BLACK;
     
     /** The icon being used for this container's frame. */
-    protected ImageIcon imageIcon;
+    protected Icon imageIcon;
     
     /**
      * Returns the internal frame associated with this object.
@@ -74,11 +74,11 @@ public abstract class FrameContainer {
     public abstract Server getServer();
     
     /**
-     * Retrieves the icon used by the query frame.
+     * Retrieves the icon used by this container's window.
      *
-     * @return The query frame's icon
+     * @return This container's icon
      */
-    public ImageIcon getIcon() {
+    public Icon getIcon() {
         return imageIcon;
     }
     

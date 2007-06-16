@@ -32,10 +32,6 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.ServerFrame;
 
-import java.net.URL;
-
-import javax.swing.ImageIcon;
-
 /**
  * Handles the raw window (which shows the user raw data being sent and
  * received to/from the server).
@@ -57,9 +53,7 @@ public final class Raw extends FrameContainer implements IDataIn, IDataOut {
     public Raw(final Server newServer) {
         this.server = newServer;
         
-        final ClassLoader cldr = this.getClass().getClassLoader();
-        final URL imageURL = cldr.getResource("com/dmdirc/res/raw.png");
-        imageIcon = new ImageIcon(imageURL);
+        imageIcon = IconManager.getIcon("raw");
         
         frame = new ServerFrame(server);
         frame.setTitle("(Raw log)");

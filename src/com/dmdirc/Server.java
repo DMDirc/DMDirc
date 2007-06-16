@@ -66,7 +66,6 @@ import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -74,7 +73,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
 /**
@@ -218,14 +216,7 @@ public final class Server extends WritableFrameContainer implements
         
         configManager = new ConfigManager("", "", server);
         
-        final ClassLoader cldr = this.getClass().getClassLoader();
-        URL imageURL;
-        if (ssl) {
-            imageURL = cldr.getResource("com/dmdirc/res/secure-server.png");
-        } else {
-            imageURL = cldr.getResource("com/dmdirc/res/server.png");
-        }
-        imageIcon = new ImageIcon(imageURL);
+        imageIcon = IconManager.getIcon(ssl ? "secure-server" : "server");
         
         window.setFrameIcon(imageIcon);
         

@@ -57,11 +57,9 @@ import com.dmdirc.ui.messages.Styliser;
 
 import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
 
-import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 
 /**
@@ -120,9 +118,7 @@ public final class Channel extends WritableFrameContainer implements
         configManager = new ConfigManager(server.getIrcd(), server.getNetwork(),
                 server.getName(), channelInfo.getName());
         
-        final ClassLoader cldr = this.getClass().getClassLoader();
-        final URL imageURL = cldr.getResource("com/dmdirc/res/channel.png");
-        imageIcon = new ImageIcon(imageURL);
+        imageIcon = IconManager.getIcon("channel");
         
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(CommandManager.getChannelCommandNames());

@@ -39,10 +39,6 @@ import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.QueryFrame;
 import com.dmdirc.ui.input.TabCompleter;
 
-import java.net.URL;
-
-import javax.swing.ImageIcon;
-
 /**
  * The Query class represents the client's view of a query with another user.
  * It handles callbacks for query events from the parser, maintains the
@@ -76,9 +72,7 @@ public final class Query extends WritableFrameContainer implements
         this.server = newServer;
         this.host = newHost;
         
-        final ClassLoader cldr = this.getClass().getClassLoader();
-        final URL imageURL = cldr.getResource("com/dmdirc/res/query.png");
-        imageIcon = new ImageIcon(imageURL);
+        imageIcon = IconManager.getIcon("query");
         
         frame = new QueryFrame(this);
         
