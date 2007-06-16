@@ -23,6 +23,9 @@
  */
 package com.dmdirc.plugins;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
+
 /**
  * Defines the standard methods that should be implemented by plugins.
  */
@@ -57,8 +60,10 @@ public abstract class Plugin implements Comparable<Plugin> {
 		if (isActive != newState) {
 			isActive = newState;
 			if (isActive) {
+				ActionManager.processEvent(CoreActionType.PLUGIN_ACTIVATED, null, this);
 				onActivate();
 			} else {
+				ActionManager.processEvent(CoreActionType.PLUGIN_DEACTIVATED, null, this);
 				onDeactivate();
 			}
 		}

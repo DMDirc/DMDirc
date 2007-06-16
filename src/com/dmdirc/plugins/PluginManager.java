@@ -32,7 +32,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.dmdirc.Config;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.logger.ErrorLevel;
 
@@ -59,7 +61,7 @@ public class PluginManager {
 		final String fs = System.getProperty("file.separator");
 		myDir = Config.getConfigDir() + "plugins" + fs;
 	}
-        
+	
 	/**
 	 * Autoloads plugins.
 	 */
@@ -100,6 +102,7 @@ public class PluginManager {
 			if (plugin == null) { return false; }
 			if (plugin.onLoad()) {
 				knownPlugins.put(className.toLowerCase(), plugin);
+				ActionManager.processEvent(CoreActionType.PLUGIN_LOADED, null, plugin);
 				return true;
 			}
 		} catch (Exception e) {
@@ -119,6 +122,7 @@ public class PluginManager {
 		Plugin plugin = getPlugin(className);
 		try {
 			plugin.setActive(false);
+			ActionManager.processEvent(CoreActionType.PLUGIN_UNLOADED, null, plugin);
 			plugin.onUnload();
 		} catch (Exception e) {
 			Logger.error(ErrorLevel.ERROR, "[delPlugin] Error in onUnload() for '"+className+"'", e);
