@@ -20,17 +20,19 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.nowplaying;
+package com.dmdirc.addons.nowplaying.plugin;
 
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.addons.nowplaying.MediaSource;
+import com.dmdirc.addons.nowplaying.MediaSourceManager;
+import com.dmdirc.addons.nowplaying.plugin.NowPlayingCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class NowPlayingPlugin extends Plugin implements EventPlugin {
@@ -104,20 +106,13 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin {
      * @param target The plugin to be tested
      */
     private void addPlugin(final Plugin target) {
-        System.out.print(target.toString());
         if (target instanceof MediaSource) {
             sources.add((MediaSource) target);
-            System.out.print(" <-- MediaSource");
         }
         
         if (target instanceof MediaSourceManager) {
             sources.addAll(((MediaSourceManager) target).getSources());
-            System.out.print(" <-- MediaSourceManager");
         }
-        
-        System.out.println();
-        
-        System.out.println(Arrays.toString(target.getClass().getInterfaces()));
     }
     
     /**

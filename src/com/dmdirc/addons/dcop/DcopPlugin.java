@@ -116,6 +116,8 @@ public final class DcopPlugin extends Plugin implements MediaSourceManager {
         final ArrayList<MediaSource> res = new ArrayList<MediaSource>();
         
         res.add(new AmarokSource());
+        res.add(new KaffeineSource());
+        res.add(new NoatunSource());
         
         return res;
     }

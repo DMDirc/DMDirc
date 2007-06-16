@@ -20,11 +20,11 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.nowplaying;
+package com.dmdirc.addons.nowplaying.plugin;
 
-import com.dmdirc.addons.dcop.*;
 import com.dmdirc.Channel;
 import com.dmdirc.Server;
+import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -68,7 +68,7 @@ public final class NowPlayingCommand extends ChannelCommand {
                     sendLine(origin, isSilent, "commandError", "Source not found.");
                 } else {
                     if (source.isRunning()) {
-                        channel.sendAction("is listening to " + source.getInformation());
+                        channel.sendAction("is playing " + source.getInformation());
                     } else {
                         sendLine(origin, isSilent, "commandError", "Source is not running.");
                     }
@@ -78,7 +78,7 @@ public final class NowPlayingCommand extends ChannelCommand {
             }
         } else {
             if (parent.hasRunningSource()) {
-                channel.sendAction("is listening to " + parent.getBestSource().getInformation());
+                channel.sendAction("is playing " + parent.getBestSource().getInformation());
             } else {
                 sendLine(origin, isSilent, "commandError", "No running media sources available.");
             }
@@ -95,6 +95,8 @@ public final class NowPlayingCommand extends ChannelCommand {
         final List<MediaSource> sources = parent.getSources();
         
         if (sources.size() == 0) {
+            sendLine(origin, isSilent, "commandError", "No media sources available.");
+        } else {
             String status;
             
             for (MediaSource source : sources) {
@@ -109,8 +111,6 @@ public final class NowPlayingCommand extends ChannelCommand {
                 }
                 sendLine(origin, isSilent, "commandOutput", source.getName() + ": " + status);
             }
-        } else {
-            sendLine(origin, isSilent, "commandError", "No media sources available.");
         }
     }
     

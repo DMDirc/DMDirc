@@ -25,34 +25,34 @@ package com.dmdirc.addons.dcop;
 import com.dmdirc.addons.nowplaying.MediaSource;
 
 /**
- * Uses DCOP to retrieve now playing info from Amarok.
- * 
+ * Uses DCOP to retrieve now playing info from Noatun.
+ *
  * @author chris
  */
-public class AmarokSource implements MediaSource {
-
+public class NoatunSource implements MediaSource {
+    
     /** {@inheritDoc} */
     public boolean isRunning() {
-        final String result = DcopPlugin.getDcopResult("dcop amarok player isPlaying").get(0);
+        final String result = DcopPlugin.getDcopResult("dcop noatun Noatun state").get(0);
         
         return result.indexOf("failed") == -1;
     }
-
+    
     /** {@inheritDoc} */
     public boolean isPlaying() {
-        final String result = DcopPlugin.getDcopResult("dcop amarok player isPlaying").get(0);
+        final String result = DcopPlugin.getDcopResult("dcop noatun Noatun state").get(0);
         
-        return Boolean.parseBoolean(result);
+        return "2".equals(result.trim());
     }
-
+    
     /** {@inheritDoc} */
-    public String getInformation() {       
-        return DcopPlugin.getDcopResult("dcop amarok player nowPlaying").get(0);
+    public String getInformation() {
+        return DcopPlugin.getDcopResult("dcop noatun Noatun title").get(0);
     }
-
+    
     /** {@inheritDoc} */
     public String getName() {
-        return "Amarok";
+        return "Noatun";
     }
     
 }
