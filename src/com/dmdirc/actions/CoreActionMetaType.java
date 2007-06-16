@@ -30,7 +30,7 @@ import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 
-import java.awt.event.KeyEvent;
+import javax.swing.KeyStroke;
 
 /**
  * An enumeration of different types of actions (the type determines the
@@ -44,7 +44,7 @@ public enum CoreActionMetaType implements ActionMetaType {
     /** Client event type, with a frame argument. */
     CLIENT_EVENT_WITH_FRAME(1, new String[]{"frame"}, FrameContainer.class),
     /** Client event type, with a key argument. */
-    CLIENT_EVENT_WITH_KEY(1, new String[]{"key event"}, KeyEvent.class),
+    CLIENT_EVENT_WITH_KEY(1, new String[]{"key event"}, KeyStroke.class),
     
     /** Plugin event type. */
     PLUGIN_EVENT(1, new String[]{"plugin"}, Plugin.class),

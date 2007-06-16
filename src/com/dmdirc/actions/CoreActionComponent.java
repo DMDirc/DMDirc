@@ -29,6 +29,7 @@ import com.dmdirc.parser.ChannelClientInfo;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.GregorianCalendar;
+import javax.swing.KeyStroke;
 
 /**
  * A CoreActionComponent represents a component of some object that the user can
@@ -196,9 +197,9 @@ public enum CoreActionComponent implements ActionComponent {
     /** Returns the name of the key that was pressed. */
     KEYEVENT_KEYNAME {
         /** {@inheritDoc} */
-        public Object get(final Object argument) { return KeyEvent.getKeyText(((KeyEvent) argument).getKeyCode()); }
+        public Object get(final Object argument) { return KeyEvent.getKeyText(((KeyStroke) argument).getKeyCode()); }
         /** {@inheritDoc} */
-        public Class appliesTo() { return KeyEvent.class; }
+        public Class appliesTo() { return KeyStroke.class; }
         /** {@inheritDoc} */
         public Class getType() { return String.class; }
         /** {@inheritDoc} */
@@ -209,10 +210,10 @@ public enum CoreActionComponent implements ActionComponent {
     KEYEVENT_CTRLSTATE {
         /** {@inheritDoc} */
         public Object get(final Object argument) {
-            return Boolean.valueOf((((KeyEvent) argument).getModifiers() & KeyEvent.CTRL_DOWN_MASK) != 0);
+            return Boolean.valueOf((((KeyStroke) argument).getModifiers() & KeyEvent.CTRL_DOWN_MASK) != 0);
         }
         /** {@inheritDoc} */
-        public Class appliesTo() { return KeyEvent.class; }
+        public Class appliesTo() { return KeyStroke.class; }
         /** {@inheritDoc} */
         public Class getType() { return String.class; }
         /** {@inheritDoc} */
@@ -223,10 +224,10 @@ public enum CoreActionComponent implements ActionComponent {
     KEYEVENT_SHIFTSTATE {
         /** {@inheritDoc} */
         public Object get(final Object argument) {
-            return Boolean.valueOf((((KeyEvent) argument).getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != 0);
+            return Boolean.valueOf((((KeyStroke) argument).getModifiers() & KeyEvent.SHIFT_DOWN_MASK) != 0);
         }
         /** {@inheritDoc} */
-        public Class appliesTo() { return KeyEvent.class; }
+        public Class appliesTo() { return KeyStroke.class; }
         /** {@inheritDoc} */
         public Class getType() { return String.class; }
         /** {@inheritDoc} */
@@ -237,10 +238,10 @@ public enum CoreActionComponent implements ActionComponent {
     KEYEVENT_ALTSTATE {
         /** {@inheritDoc} */
         public Object get(final Object argument) {
-            return Boolean.valueOf((((KeyEvent) argument).getModifiers() & KeyEvent.ALT_DOWN_MASK) != 0);
+            return Boolean.valueOf((((KeyStroke) argument).getModifiers() & KeyEvent.ALT_DOWN_MASK) != 0);
         }
         /** {@inheritDoc} */
-        public Class appliesTo() { return KeyEvent.class; }
+        public Class appliesTo() { return KeyStroke.class; }
         /** {@inheritDoc} */
         public Class getType() { return String.class; }
         /** {@inheritDoc} */
