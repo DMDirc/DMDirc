@@ -45,6 +45,7 @@ import javax.swing.JTextField;
  * to use shortcut keys for control characters (ctrl+b, etc), to tab complete
  * nicknames/channel names/etc, and to scroll through their previously issued
  * commands.
+ *
  * @author chris
  */
 public final class InputHandler implements KeyListener, ActionListener {
@@ -66,39 +67,42 @@ public final class InputHandler implements KeyListener, ActionListener {
      * to).
      */
     private int bufferPosition;
-    /**
-     * The maximum size of the buffer.
-     */
-    private final int bufferSize;
+    
     /**
      * The maximum position we've got to in the buffer. This will be the
      * position that is inserted to next. Note that it will wrap around once
      * we hit the maximum size.
      */
     private int bufferMaximum;
-    /**
-     * The lowest entry we've used in the buffer.
-     */
+    
+    /** The maximum size of the buffer. */
+    private final int bufferSize;
+    
+    /** The lowest entry we've used in the buffer. */
     private int bufferMinimum;
-    /**
-     * The buffer itself.
-     */
+    
+    /** The last position the user tab-completed at. */
+    private int lastPosition = -1;
+    
+    /** The number of times the user has tab-completed the same position. */
+    private int tabCount = 0;
+    
+    /** The last word that was tab completed. */
+    private String lastWord = "";
+    
+    /** The buffer itself. */
     private String[] buffer;
-    /**
-     * The textfield that we're handling input for.
-     */
+    
+    /** The textfield that we're handling input for. */
     private final JTextField target;
-    /**
-     * The TabCompleter to use for tab completion.
-     */
+    
+    /** The TabCompleter to use for tab completion. */
     private TabCompleter tabCompleter;
-    /**
-     * The CommandParser to use for our input.
-     */
+    
+    /** The CommandParser to use for our input. */
     private final CommandParser commandParser;
-    /**
-     * The frame that we belong to.
-     */
+    
+    /** The frame that we belong to. */
     private final InputWindow parentWindow;
     
     /** Colour picker dialog. */
@@ -260,6 +264,7 @@ public final class InputHandler implements KeyListener, ActionListener {
         String text = target.getText();
         
         if (text.length() == 0) {
+            doNormalTabCompletion(text, 0, 0, null);
             return;
         }
         
@@ -279,7 +284,7 @@ public final class InputHandler implements KeyListener, ActionListener {
         }
         
         if (start > end) {
-            return;
+            end = start;
         }
         
         if (start > 0 && text.charAt(0) == Config.getCommandChar().charAt(0)) {
@@ -336,6 +341,14 @@ public final class InputHandler implements KeyListener, ActionListener {
             final int end, final List<String> additional) {
         final String word = text.substring(start, end);
         
+        if (start == lastPosition && word.equals(lastWord)) {
+            tabCount++;
+        } else {
+            lastPosition = start;
+            lastWord = word;
+            tabCount = 1;
+        }
+        
         final TabCompleterResult res = tabCompleter.complete(word, additional);
         
         if (res.getResultCount() == 0) {
@@ -348,9 +361,12 @@ public final class InputHandler implements KeyListener, ActionListener {
         } else {
             // Multiple results
             final String sub = res.getBestSubstring();
-            if (sub.equalsIgnoreCase(word)) {
+            if (sub.equalsIgnoreCase(word)) {                
+                final String style = Config.getOption("tabcompletion", "style", "bash");
+                
                 // TODO: Other possible actions (mIRC-style etc)
-                if (Config.getOption("tabcompletion", "style", "bash").equals("bash")) {
+                
+                if (style.equalsIgnoreCase("bash") && tabCount >= 2) {
                     parentWindow.addLine("tabCompletion", res.toString());
                 }
             } else {
