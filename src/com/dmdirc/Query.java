@@ -138,8 +138,6 @@ public final class Query extends WritableFrameContainer implements
             ActionManager.processEvent(CoreActionType.QUERY_SELF_MESSAGE, buff, this, line);
             
             frame.addLine(buff, client.getNickname(), client.getIdent(), client.getHost(), line);
-            
-            frame.getInputHandler().addToBuffer(line);
         } else {
             sendLine(line.substring(0, getMaxLineLength()));
             sendLine(line.substring(getMaxLineLength()));

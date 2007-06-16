@@ -195,8 +195,6 @@ public final class Channel extends WritableFrameContainer implements
             frame.addLine(buff, modes, details[0], details[1], details[2],
                     line, channelInfo);
             
-            frame.getInputHandler().addToBuffer(line);
-            
             channelInfo.sendMessage(line);
         } else {
             sendLine(line.substring(0, getMaxLineLength()));
@@ -228,8 +226,6 @@ public final class Channel extends WritableFrameContainer implements
             
             frame.addLine(buff, modes, me.getNickname(), me.getIdent(),
                     me.getHost(), action, channelInfo);
-            
-            frame.getInputHandler().addToBuffer("/me " + action);
             
             channelInfo.sendAction(action);
         }
