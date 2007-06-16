@@ -28,44 +28,42 @@ import com.dmdirc.ui.interfaces.InputWindow;
  * The writable frame container adds additional methods to the frame container
  * class that allow the sending of lines back to whatever the container's
  * data source is (e.g. an IRC channel or server).
- * 
+ *
  * @author chris
  */
 public abstract class WritableFrameContainer extends FrameContainer {
     
     /**
      * Sends a line of text to this container's source.
-     * 
+     *
      * @param line The line to be sent
      */
     public abstract void sendLine(String line);
     
     /**
      * Returns the internal frame associated with this object.
-     * 
+     *
      * @return The internal frame associated with this object
      */
-    public abstract InputWindow getFrame();    
+    public abstract InputWindow getFrame();
     
     /**
      * Returns the maximum length that a line passed to sendLine() should be,
      * in order to prevent it being truncated or causing protocol violations.
-     * 
+     *
      * @return The maximum line length for this container
      */
     public abstract int getMaxLineLength();
     
     /**
      * Returns the number of lines that the specified string would be sent as.
-     * 
+     *
      * @param line The string to be split and sent
      * @return The number of lines required to send the specified string
      */
     public final int getNumLines(final String line) {
-        int lines;
         final String[] splitLines = line.split("\n");
-        lines = splitLines.length;
-        lines = 0;
+        int lines = 0;
         for (String splitLine : splitLines) {
             lines += (int) Math.ceil(splitLine.length() / (double) getMaxLineLength());
         }

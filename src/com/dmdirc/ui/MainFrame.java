@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui;
 
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
@@ -39,14 +40,14 @@ import com.dmdirc.ui.dialogs.PluginDialog;
 import com.dmdirc.ui.dialogs.PreferencesDialog;
 import com.dmdirc.ui.dialogs.ProfileEditorDialog;
 import com.dmdirc.ui.framemanager.FrameManager;
+import com.dmdirc.ui.framemanager.FramemanagerPosition;
 import com.dmdirc.ui.framemanager.MainFrameManager;
 import com.dmdirc.ui.framemanager.windowmenu.WindowMenuFrameManager;
 import com.dmdirc.ui.interfaces.Window;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import com.dmdirc.ui.framemanager.FramemanagerPosition;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsConfiguration;
@@ -57,15 +58,18 @@ import java.awt.PointerInfo;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.AbstractAction;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -75,6 +79,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -93,7 +98,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 6;
+    private static final long serialVersionUID = 7;
     
     /**
      * The number of pixels each new internal frame is offset by.
@@ -165,6 +170,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         mainFrameManager = new MainFrameManager();
         
         initComponents();
+        initKeyHooks();
         
         setTitle(getTitlePrefix());
         
@@ -244,7 +250,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /**
      * Adds the specified window as a child of the main frame.
-     * 
+     *
      * @param window the window to be added
      */
     public void addChild(final Window window) {
@@ -272,7 +278,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /**
      * Removes the specified window from our desktop pane.
-     * 
+     *
      * @param window The window to be removed
      */
     public void delChild(final Window window) {
@@ -478,15 +484,14 @@ public final class MainFrame extends JFrame implements WindowListener,
      * Initialises the components for this frame.
      */
     private void initComponents() {
-        JSplitPane mainSplitPane;
+        final JSplitPane mainSplitPane = new JSplitPane();
         
         frameManagerPanel = new JPanel();
         desktopPane = new JDesktopPane();
         desktopPane.setBackground(new Color(238, 238, 238));
-        mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         statusBar = new StatusBar();
         
-        mainSplitPane.setBorder(null);
+        initSplitPane(mainSplitPane);
         
         initMenuBar();
         
@@ -497,6 +502,19 @@ public final class MainFrame extends JFrame implements WindowListener,
         getContentPane().add(mainSplitPane, BorderLayout.CENTER);
         
         getContentPane().add(statusBar, BorderLayout.SOUTH);
+        
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setTitle("DMDirc");
+        frameManagerPanel.setBorder(
+                BorderFactory.createEmptyBorder(0, SMALL_BORDER, 0, 0));
+        desktopPane.setBorder(
+                BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        
+        pack();
+    }
+    
+    private void initSplitPane(final JSplitPane mainSplitPane) {
+        mainSplitPane.setBorder(null);
         
         mainSplitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0,
                 SMALL_BORDER));
@@ -564,15 +582,41 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
         
         mainSplitPane.setContinuousLayout(true);
+    }
+    
+    private void initKeyHooks() {
+        KeyStroke[] keyStrokes = new KeyStroke[12];
         
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setTitle("DMDirc");
-        frameManagerPanel.setBorder(
-                BorderFactory.createEmptyBorder(0, SMALL_BORDER, 0, 0));
-        desktopPane.setBorder(
-                BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        keyStrokes[0] = KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0);
+        keyStrokes[1] = KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0);
+        keyStrokes[2] = KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0);
+        keyStrokes[3] = KeyStroke.getKeyStroke(KeyEvent.VK_F4, 0);
+        keyStrokes[4] = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
+        keyStrokes[5] = KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0);
+        keyStrokes[6] = KeyStroke.getKeyStroke(KeyEvent.VK_F7, 0);
+        keyStrokes[7] = KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0);
+        keyStrokes[8] = KeyStroke.getKeyStroke(KeyEvent.VK_F9, 0);
+        keyStrokes[9] = KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0);
+        keyStrokes[10] = KeyStroke.getKeyStroke(KeyEvent.VK_F11, 0);
+        keyStrokes[11] = KeyStroke.getKeyStroke(KeyEvent.VK_F12, 0);
         
-        pack();
+        for (final KeyStroke keyStroke : keyStrokes) {
+            getRootPane().getActionMap().put(
+                    KeyEvent.getKeyText(keyStroke.getKeyCode()) + "Action",
+                    new AbstractAction(
+                    KeyEvent.getKeyText(keyStroke.getKeyCode()) + "Action") {
+                private static final long serialVersionUID = 5;
+                public void actionPerformed(ActionEvent evt) {
+                    ActionManager.processEvent(CoreActionType.CLIENT_FKEY_PRESSED,
+                            null, KeyStroke.getKeyStroke(keyStroke.getKeyCode(),
+                            evt.getModifiers()));
+                }
+            }
+            );
+            getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+                    KeyStroke.getKeyStroke(keyStroke.getKeyCode(), 0),
+                    KeyEvent.getKeyText(keyStroke.getKeyCode()) + "Action");
+        }
     }
     
     /** Initialises the menu bar. */
