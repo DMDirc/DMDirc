@@ -62,6 +62,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.ServerFrame;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 
@@ -109,8 +110,8 @@ public final class Server extends WritableFrameContainer implements
     private IRCParser parser;
     /** The raw frame used for this server instance. */
     private Raw raw;
-    /** The ServerFrame corresponding to this server. */
-    private ServerFrame frame;
+    /** The ServerWindow corresponding to this server. */
+    private ServerWindow window;
     
     /** The name of the server we're connecting to. */
     private String server;
@@ -163,13 +164,16 @@ public final class Server extends WritableFrameContainer implements
         
         configManager = new ConfigManager("", "", server);
         
-        frame = new ServerFrame(this);
-        frame.setTitle(server + ":" + port);
-        frame.getInputHandler().setTabCompleter(tabCompleter);
-        frame.addInternalFrameListener(this);
-        MainFrame.getMainFrame().addChild(frame);
+        window = new ServerFrame(this);
         
-        frame.open();
+        window.setTitle(server + ":" + port);
+        
+        window.getInputHandler().setTabCompleter(tabCompleter);
+        
+        ((ServerFrame) window).addInternalFrameListener(this);
+        MainFrame.getMainFrame().addChild(window);
+        
+        window.open();
         
         tabCompleter.addEntries(CommandManager.getServerCommandNames());
         tabCompleter.addEntries(CommandManager.getGlobalCommandNames());
@@ -223,9 +227,10 @@ public final class Server extends WritableFrameContainer implements
             imageURL = cldr.getResource("com/dmdirc/res/server.png");
         }
         imageIcon = new ImageIcon(imageURL);
-        frame.setFrameIcon(imageIcon);
         
-        frame.addLine("serverConnecting", server, port);
+        window.setFrameIcon(imageIcon);
+        
+        window.addLine("serverConnecting", server, port);
         
         final MyInfo myInfo = new MyInfo();
         myInfo.setNickname(profile.getOption("profile", "nickname"));
@@ -262,7 +267,7 @@ public final class Server extends WritableFrameContainer implements
         
         away = false;
         awayMessage = null;
-        frame.setAway(false);
+        ((ServerFrame) window).setAway(false);
         
         try {
             new Thread(parser).start();
@@ -472,7 +477,7 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public InputWindow getFrame() {
-        return frame;
+        return window;
     }
     
     /** {@inheritDoc} */
@@ -494,9 +499,9 @@ public final class Server extends WritableFrameContainer implements
             parser.getCallbackManager().delAllCallback(this);
         }
         
-        if (frame != null) {
+        if (window != null) {
             // Unregister frame callbacks
-            frame.removeInternalFrameListener(this);
+            ((ServerFrame) window).removeInternalFrameListener(this);
         }
         
         // Disconnect from the server
@@ -512,13 +517,12 @@ public final class Server extends WritableFrameContainer implements
         // Unregister ourselves with the server manager
         ServerManager.getServerManager().unregisterServer(this);
         
-        if (frame != null) {
+        if (window != null) {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    // Close our own window
-                    frame.setVisible(false);
-                    MainFrame.getMainFrame().delChild(frame);
-                    frame = null;
+                    window.setVisible(false);
+                    MainFrame.getMainFrame().delChild(window);
+                    window = null;
                 }
             });
         }
@@ -663,7 +667,7 @@ public final class Server extends WritableFrameContainer implements
     @Override
     public boolean ownsFrame(final Window target) {
         // Check if it's our server frame
-        if (frame != null && frame.equals(target)) { return true; }
+        if (window != null && window.equals(target)) { return true; }
         // Check if it's the raw frame
         if (raw != null && raw.ownsFrame(target)) { return true; }
         // Check if it's a channel frame
@@ -717,7 +721,7 @@ public final class Server extends WritableFrameContainer implements
             query.getFrame().addLine(messageType, args);
         }
         
-        frame.addLine(messageType, args);
+        window.addLine(messageType, args);
     }
     
     /**
@@ -859,17 +863,17 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public void onMOTDStart(final IRCParser tParser, final String sData) {
-        frame.addLine("motdStart", sData);
+        window.addLine("motdStart", sData);
     }
     
     /** {@inheritDoc} */
     public void onMOTDLine(final IRCParser tParser, final String sData) {
-        frame.addLine("motdLine", sData);
+        window.addLine("motdLine", sData);
     }
     
     /** {@inheritDoc} */
     public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD) {
-        frame.addLine("motdEnd", "End of server's MOTD.");
+        window.addLine("motdEnd", "End of server's MOTD.");
     }
     
     /** {@inheritDoc} */
@@ -918,7 +922,7 @@ public final class Server extends WritableFrameContainer implements
         ActionManager.processEvent(CoreActionType.SERVER_USERMODES, format,
                 this, setter, sModes);
         
-        frame.addLine(format, setterParts[0], setterParts[1], setterParts[2],
+        window.addLine(format, setterParts[0], setterParts[1], setterParts[2],
                 sModes);
     }
     
@@ -937,7 +941,7 @@ public final class Server extends WritableFrameContainer implements
             ActionManager.processEvent(CoreActionType.SERVER_BACK, null, this);
         }
         
-        frame.setAway(away);
+        ((ServerFrame) window).setAway(away);
     }
     
     /** {@inheritDoc} */

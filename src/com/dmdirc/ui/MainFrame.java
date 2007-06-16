@@ -93,7 +93,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 5;
+    private static final long serialVersionUID = 6;
     
     /**
      * The number of pixels each new internal frame is offset by.
@@ -243,10 +243,13 @@ public final class MainFrame extends JFrame implements WindowListener,
     }
     
     /**
-     * Adds the specified InternalFrame as a child of the main frame.
-     * @param frame the frame to be added
+     * Adds the specified window as a child of the main frame.
+     * 
+     * @param window the window to be added
      */
-    public void addChild(final JInternalFrame frame) {
+    public void addChild(final Window window) {
+        final JInternalFrame frame = (JInternalFrame) window;
+        
         // Add the frame
         desktopPane.add(frame);
         
@@ -268,11 +271,12 @@ public final class MainFrame extends JFrame implements WindowListener,
     }
     
     /**
-     * Removes the specified InternalFrame from our desktop pane.
-     * @param frame The frame to be removed
+     * Removes the specified window from our desktop pane.
+     * 
+     * @param window The window to be removed
      */
-    public void delChild(final JInternalFrame frame) {
-        desktopPane.remove(frame);
+    public void delChild(final Window window) {
+        desktopPane.remove((JInternalFrame) window);
         if (desktopPane.getAllFrames().length == 0) {
             setTitle(getTitlePrefix());
         }

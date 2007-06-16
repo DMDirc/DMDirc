@@ -24,7 +24,9 @@ package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.identities.ConfigManager;
+
 import java.beans.PropertyVetoException;
+import javax.swing.Icon;
 
 /**
  * The Window interface specifies common methods that should be implemented
@@ -70,11 +72,18 @@ public interface Window {
     FrameContainer getContainer();
     
     /**
-     * Determines if the current frame is visible.
+     * Determines if the current window is visible.
      *
      * @return boolean visibility
      */
     boolean isVisible();
+    
+    /**
+     * Sets the visibility of this window.
+     * 
+     * @param isVisible Whether the window should be visible or not
+     */
+    void setVisible(boolean isVisible);
     
     /**
      * Retrives the current title of this window.
@@ -97,4 +106,24 @@ public interface Window {
      * @throws PropertyVetoException if the change is vetoed
      */
     void setMaximum(boolean b) throws PropertyVetoException;
+    
+    /**
+     * Sets the title of this window.
+     * 
+     * @param title The new title to be used.
+     */
+    void setTitle(String title);
+    
+    /**
+     * Opens this window.
+     */
+    void open();
+    
+    /**
+     * Sets the icon used by this window, if the GUI supports icons.
+     * 
+     * @param icon The icon to be used
+     */
+    void setFrameIcon(Icon icon);
+    
 }

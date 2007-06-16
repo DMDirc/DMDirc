@@ -22,29 +22,11 @@
 
 package com.dmdirc.ui.interfaces;
 
-import com.dmdirc.commandparser.CommandParser;
-import com.dmdirc.ui.input.InputHandler;
-
 /**
- * The Input Window interface specifies additional methods that windows should
- * implement if they have an input field.
+ * Lists the standard methods that should be implemented by any server window.
  * 
  * @author chris
  */
-public interface InputWindow extends Window {
-    
-    /**
-     * Retrieves the command Parser for this input window.
-     * 
-     * @return This window's command parser
-     */
-    CommandParser getCommandParser();
-    
-    /**
-     * Retrieves the input handler for this input window.
-     * 
-     * @return This window's input handler
-     */
-    InputHandler getInputHandler();
+public interface ServerWindow extends InputWindow {
     
 }

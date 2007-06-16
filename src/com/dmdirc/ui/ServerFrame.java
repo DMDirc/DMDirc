@@ -29,6 +29,7 @@ import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.ServerCommandParser;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.components.InputFrame;
+import com.dmdirc.ui.interfaces.ServerWindow;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -37,7 +38,7 @@ import java.awt.Insets;
 /**
  * The ServerFrame is the MDI window that shows server messages to the user.
  */
-public final class ServerFrame extends InputFrame {
+public final class ServerFrame extends InputFrame implements ServerWindow {
     
     /**
      * A version number for this class. It should be changed whenever the class
