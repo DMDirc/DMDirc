@@ -36,10 +36,9 @@ import java.awt.event.MouseWheelListener;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
-import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.event.EventListenerList;
 
 /**
@@ -88,8 +87,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         
         canvas = new TextPaneCanvas(this, document);
         
-        this.setBorder(BorderFactory.createEtchedBorder());
-        this.setBorder(new JTextField().getBorder());
+        this.setBorder(UIManager.getBorder("TextField.border"));
         
         this.add(canvas, BorderLayout.CENTER);
         

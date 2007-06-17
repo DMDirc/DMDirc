@@ -63,6 +63,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 /**
@@ -451,7 +452,7 @@ public final class ChannelSettingsDialog extends StandardDialog
             
             listModel = new DefaultListModel();
             list = new JList(listModel);
-            list.setBorder(BorderFactory.createEtchedBorder());
+            list.setBorder(UIManager.getBorder("TextField.border"));
             
             listItems = channelInfo.getListModeParam(mode);
             
