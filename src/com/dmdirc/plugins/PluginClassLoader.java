@@ -58,12 +58,17 @@ public class PluginClassLoader extends ClassLoader {
 		Class< ? > loadedClass = null;
 
 		// Check to make sure we only load things in our own package!
-		if (myPackage.length() == 0) {
-			int i = name.lastIndexOf('.');
-			if (i != -1) { myPackage = name.substring(0, i); }
-			else { return getParent().loadClass(name); }
+		try {
+			if (myPackage.length() == 0) {
+				int i = name.lastIndexOf('.');
+				if (i != -1) { myPackage = name.substring(0, i); }
+				else { return getParent().loadClass(name); }
+			}
+			if (!name.startsWith(myPackage)) { return getParent().loadClass(name); }
+		} catch (NoClassDefFoundError e) {
+			System.out.println("Error loading '"+name+"' (wanted by '"+myDir+"') -> "+e.getMessage());
+			throw new ClassNotFoundException("Error loading '"+name+"' (wanted by '"+myDir+"') -> "+e.getMessage(), e);
 		}
-		if (!name.startsWith(myPackage)) { return getParent().loadClass(name); }
 		
 		// We are ment to be loading this one!
 		final String fileName = myDir + File.separator + name.replace(myDir+".", "").replace('.', File.separatorChar) + ".class";
@@ -75,12 +80,12 @@ public class PluginClassLoader extends ClassLoader {
 			throw new ClassNotFoundException(e.getMessage());
 		}
 		
-                try {
-                        loadedClass = defineClass(name, data, 0, data.length);
-                } catch (NoClassDefFoundError e) {
-                    throw new ClassNotFoundException(e.getMessage(), e);
+		try {
+			loadedClass = defineClass(name, data, 0, data.length);
+		} catch (NoClassDefFoundError e) {
+			throw new ClassNotFoundException(e.getMessage(), e);
 		}
-                
+		
 		if (loadedClass == null) {
 			throw new ClassNotFoundException("Could not load " + name);
 		} else {
