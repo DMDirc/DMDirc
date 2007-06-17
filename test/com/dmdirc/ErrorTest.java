@@ -7,8 +7,6 @@
 
 package com.dmdirc;
 
-import java.awt.Component;
-import java.awt.Graphics;
 import javax.swing.ImageIcon;
 import junit.framework.*;
 import java.util.Date;

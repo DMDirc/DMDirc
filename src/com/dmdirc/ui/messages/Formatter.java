@@ -35,6 +35,8 @@ import java.util.IllegalFormatConversionException;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 import java.util.Set;
+import java.util.UnknownFormatConversionException;
+import java.util.logging.Level;
 
 /**
  * The Formatter provides a standard way to format messages for display.
@@ -79,6 +81,8 @@ public final class Formatter {
             try {
                 return String.format(res, arguments);
             } catch (IllegalFormatConversionException ex) {
+                return "<Invalid format string for message type " + messageType + ">";
+            } catch (UnknownFormatConversionException ex) {
                 return "<Invalid format string for message type " + messageType + ">";
             }
         }
@@ -355,15 +359,23 @@ public final class Formatter {
         }
         
         final File myFile = new File(Config.getConfigDir() + target);
+        FileOutputStream file = null;
         
         try {
-            properties.store(new FileOutputStream(myFile), null);
-        } catch (FileNotFoundException ex) {
-            Logger.error(ErrorLevel.TRIVIAL, "Error saving formatter", ex);
-            return false;
+            file = new FileOutputStream(myFile);
+            properties.store(file, null);
+            defaultProperties.store(file, null);
         } catch (IOException ex) {
             Logger.error(ErrorLevel.WARNING, "Error saving formatter", ex);
             return false;
+        } finally {
+            if (file != null) {
+                try {
+                    file.close();
+                } catch (IOException ex) {
+                    // Bleh?
+                }
+            }
         }
         
         return true;
@@ -373,6 +385,8 @@ public final class Formatter {
      * Reloads the formatter.
      */
     public static void reload() {
+        loadDefaults();
+        
         initialise();
     }
 }
