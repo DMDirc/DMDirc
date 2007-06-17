@@ -469,7 +469,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      */
     public void windowClosing(final WindowEvent windowEvent) {
         ServerManager.getServerManager().closeAll(Config.getOption("general", "closemessage"));
-        Config.save();
+        quit();
     }
     
     /** {@inheritDoc}. */
@@ -520,7 +520,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         getContentPane().add(statusBar, BorderLayout.SOUTH);
         
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+        
         setTitle("DMDirc");
         frameManagerPanel.setBorder(
                 BorderFactory.createEmptyBorder(0, SMALL_BORDER, 0, 0));
@@ -600,7 +601,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 mainSplitPane.setResizeWeight(1.0);
                 mainSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
                 frameManagerPanel.setPreferredSize(new Dimension(
-                        Config.getOptionInt("ui", "frameManagerSize", 50), 
+                        Config.getOptionInt("ui", "frameManagerSize", 50),
                         Integer.MAX_VALUE));
                 frameManagerPanel.setMinimumSize(new Dimension(50, Integer.MAX_VALUE));
                 desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
@@ -786,6 +787,12 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
     
+    public void quit() {
+        Config.setOption("ui", "frameManagerSize",
+                String.valueOf(MainFrame.getMainFrame().getFrameManagerSize()));
+        Main.quit();
+    }
+    
     /**
      * {@inheritDoc}.
      */
@@ -795,7 +802,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         } else if (e.getActionCommand().equals("Profile")) {
             ProfileEditorDialog.showActionsManagerDialog();
         } else if (e.getActionCommand().equals("Exit")) {
-            Main.quit();
+            quit();
         } else if (e.getActionCommand().equals("ManagePlugins")) {
             PluginDialog.showPluginDialog();
         } else if (e.getActionCommand().equals("Actions")) {
