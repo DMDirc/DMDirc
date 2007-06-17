@@ -807,12 +807,13 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /** Initialises UI Settings. */
     public static void initUISettings() {
-        final String lnfName = getLookAndFeel(Config.getOption("ui", "lookandfeel"));
+        // For this to work it *HAS* to be before anything else UI related.
         if (Config.hasOption("ui", "antialias")) {
             final String aaSetting = Config.getOption("ui", "antialias");
             System.setProperty("awt.useSystemAAFontSettings", aaSetting);
             System.setProperty("swing.aatext", aaSetting);
         }
+        final String lnfName = getLookAndFeel(Config.getOption("ui", "lookandfeel"));
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             
