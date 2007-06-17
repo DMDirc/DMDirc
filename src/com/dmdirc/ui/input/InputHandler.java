@@ -174,7 +174,8 @@ public final class InputHandler implements KeyListener, ActionListener {
         }
         
         // Tab completion
-        if (keyEvent.getKeyCode() == KeyEvent.VK_TAB && tabCompleter != null) {
+        if (keyEvent.getKeyCode() == KeyEvent.VK_TAB  && tabCompleter != null
+                && (keyEvent.getModifiers() & KeyEvent.CTRL_MASK) != KeyEvent.CTRL_MASK) {
             doTabCompletion();
         }
     }
