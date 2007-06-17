@@ -66,8 +66,7 @@ public class PluginClassLoader extends ClassLoader {
 			}
 			if (!name.startsWith(myPackage)) { return getParent().loadClass(name); }
 		} catch (NoClassDefFoundError e) {
-			System.out.println("Error loading '"+name+"' (wanted by '"+myPackage+"' in '"+myDir+"') -> "+e.getMessage());
-			throw new ClassNotFoundException(e.getMessage(), e);
+			throw new ClassNotFoundException("Error loading '"+name+"' (wanted by '"+myPackage+"' in '"+myDir+"') -> "+e.getMessage(), e);
 		}
 		
 		// We are ment to be loading this one!
