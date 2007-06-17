@@ -195,8 +195,8 @@ public class PluginManager {
 				String target = dir.getPath();
 				// Remove the plugin dir & .class suffix
 				target = target.substring(myDir.length(), target.length() - 6);
-				// Change / to .
-				target = target.replace('/', '.');
+				// Change / (or \) to .
+				target = target.replace(File.separatorChar, '.');
 				
 				addPlugin(target);
 			}
