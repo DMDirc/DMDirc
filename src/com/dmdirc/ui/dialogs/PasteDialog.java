@@ -26,16 +26,16 @@ import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.InputFrame;
 import com.dmdirc.ui.components.StandardDialog;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import java.awt.Dimension;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import javax.swing.AbstractAction;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -180,7 +180,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         getRootPane().getActionMap().put("rightArrowAction",
                 new AbstractAction("rightArrowAction") {
             private static final long serialVersionUID = 1;
-            public void actionPerformed(ActionEvent evt) {
+            public void actionPerformed(final ActionEvent evt) {
                 if (getFocusOwner() == getLeftButton()) {
                     editButton.requestFocus();
                     editButton.setSelected(true);
@@ -198,7 +198,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         getRootPane().getActionMap().put("leftArrowAction",
                 new AbstractAction("leftArrowAction") {
             private static final long serialVersionUID = 1;
-            public void actionPerformed(ActionEvent evt) {
+            public void actionPerformed(final ActionEvent evt) {
                 if (getFocusOwner() == getLeftButton()) {
                     getRightButton().requestFocus();
                     getRightButton().setSelected(true);

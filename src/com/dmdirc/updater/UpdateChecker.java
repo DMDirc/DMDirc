@@ -100,7 +100,7 @@ public final class UpdateChecker implements Runnable, MouseListener {
                 
                 line = printin.readLine();
             } while (line != null);
-            
+            printin.close();
             Config.setOption("updater", "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
             UpdateChecker.init();
         } catch (MalformedURLException ex) {

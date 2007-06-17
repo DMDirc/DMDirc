@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui;
 
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.Channel;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.ChannelCommandParser;
@@ -31,9 +30,10 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.parser.ChannelClientInfo;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.components.InputFrame;
 import com.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.input.InputHandler;
-import com.dmdirc.ui.components.InputFrame;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -349,7 +349,8 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
     private boolean checkShowNicklistMenu() {
         boolean showMenu = false;
         for (int i = 0; i < nickList.getModel().getSize(); i++) {
-            if (nickList.getCellBounds(i, i).contains(nickList.getMousePosition())
+            if (nickList.getCellBounds(i, i) != null
+                    && nickList.getCellBounds(i, i).contains(nickList.getMousePosition())
                     && nickList.isSelectedIndex(i)) {
                 showMenu = true;
                 break;

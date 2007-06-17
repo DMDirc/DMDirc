@@ -325,6 +325,7 @@ public final class ErrorDialog extends JDialog implements ActionListener,
                 
                 line = printin.readLine();
             } while (line != null);
+            printin.close();
         } catch (MalformedURLException ex) {
             System.err.println("Malformed URL, unable to send error report.");
         } catch (UnsupportedEncodingException ex) {

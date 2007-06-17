@@ -22,13 +22,13 @@
 
 package com.dmdirc.ui;
 
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.ServerCommandParser;
-import com.dmdirc.ui.input.InputHandler;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.components.InputFrame;
+import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import java.awt.BorderLayout;
 
@@ -93,21 +93,16 @@ public final class ServerFrame extends InputFrame implements ServerWindow {
                 awayLabel.setVisible(false);
             }
             
-            // Hack++. To be removed when raw window is no longer a server frame
-            if (!getContainer().getServer().getRaw().getFrame().equals(this)) {
-                
-                if (getContainer().getServer().getRaw() != null) {
-                    getContainer().getServer().getRaw().getFrame().setAwayIndicator(newAwayState);
-                }
-                
-                for (String channel : getContainer().getServer().getChannels()) {
-                    getContainer().getServer().getChannel(channel).getFrame().setAwayIndicator(newAwayState);
-                }
-                
-                for (String query : getContainer().getServer().getQueries()) {
-                    getContainer().getServer().getQuery(query).getFrame().setAwayIndicator(newAwayState);
-                }
-                
+            if (getContainer().getServer().getRaw() != null) {
+                getContainer().getServer().getRaw().getFrame().setAwayIndicator(newAwayState);
+            }
+            
+            for (String channel : getContainer().getServer().getChannels()) {
+                getContainer().getServer().getChannel(channel).getFrame().setAwayIndicator(newAwayState);
+            }
+            
+            for (String query : getContainer().getServer().getQueries()) {
+                getContainer().getServer().getQuery(query).getFrame().setAwayIndicator(newAwayState);
             }
         }
     }

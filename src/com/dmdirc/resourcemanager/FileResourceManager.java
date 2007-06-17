@@ -22,6 +22,8 @@
 
 package com.dmdirc.resourcemanager;
 
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -81,6 +83,12 @@ public final class FileResourceManager extends ResourceManager {
             inputStream.read(bytes);
         } catch (IOException ex) {
             return new byte[0];
+        }
+        
+        try {
+            inputStream.close();
+        } catch (IOException ex) {
+            Logger.error(ErrorLevel.TRIVIAL, "Unable to close stream", ex);
         }
         
         return bytes;

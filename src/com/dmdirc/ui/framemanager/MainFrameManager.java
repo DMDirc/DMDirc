@@ -38,13 +38,13 @@ import javax.swing.JComponent;
 /**
  * Instantiates and manages the active frame managers.
  */
-public class MainFrameManager implements FrameManager {
+public final class MainFrameManager implements FrameManager {
     
     /** Active frame manager. */
-    final private FrameManager frameManager;
+    private final FrameManager frameManager;
     
     /** Window menu frame manager. */
-    final private WindowMenuFrameManager windowMenuFrameManager;
+    private final WindowMenuFrameManager windowMenuFrameManager;
     
     /** Creates a new instance of MainFrameManager. */
     public MainFrameManager() {
@@ -140,6 +140,11 @@ public class MainFrameManager implements FrameManager {
         windowMenuFrameManager.delCustom(server, window);
     }
     
+    /**
+     * Returns the active frame manager.
+     *
+     * @return Active frame manage
+     */
     public FrameManager getActiveFrameManager() {
         return frameManager;
     }

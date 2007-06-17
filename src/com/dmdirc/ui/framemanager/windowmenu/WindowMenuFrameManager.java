@@ -41,12 +41,12 @@ import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 
 /**
- * Manages the window menu window list
+ * Manages the window menu window list.
  */
-public class WindowMenuFrameManager implements FrameManager, ActionListener {
+public final class WindowMenuFrameManager implements FrameManager, ActionListener {
     
     /** Menu item list. */
-    final private Map<FrameContainer, JMenuItem> menuItemMap;
+    private final Map<FrameContainer, JMenuItem> menuItemMap;
     
     /** Creates a new instance of WindowMenuFrameManager. */
     public WindowMenuFrameManager() {
@@ -132,7 +132,11 @@ public class WindowMenuFrameManager implements FrameManager, ActionListener {
         removeFramecontainer(window);
     }
     
-    /** Adds a frame container to the list. */
+    /** 
+     * Adds a frame container to the list. 
+     *
+     * @param window Window to add to the list
+     */
     private void addFrameContainer(final FrameContainer window) {
         final JMenuItem mi = new JMenuItem(window.toString());
         mi.addActionListener(this);
@@ -140,7 +144,11 @@ public class WindowMenuFrameManager implements FrameManager, ActionListener {
         MainFrame.getMainFrame().populateWindowMenu(menuItemMap);
     }
     
-    /** Removes a frame container from the list. */
+    /** 
+     * Removes a frame container from the list. 
+     *
+     * @param window Window to remove from list
+     */
     private void removeFramecontainer(final FrameContainer window) {
         menuItemMap.remove(window);
         MainFrame.getMainFrame().populateWindowMenu(menuItemMap);

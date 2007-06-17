@@ -22,6 +22,8 @@
 
 package com.dmdirc.resourcemanager;
 
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,6 +91,12 @@ public final class JarResourceManager extends ResourceManager {
             inputStream.read(bytes);
         } catch (IOException ex) {
             return new byte[0];
+        }
+        
+        try {
+            inputStream.close();
+        } catch (IOException ex) {
+            Logger.error(ErrorLevel.TRIVIAL, "Unable to close stream", ex);
         }
         
         return bytes;

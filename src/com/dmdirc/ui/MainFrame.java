@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui;
 
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
@@ -31,6 +30,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.components.Frame;
 import com.dmdirc.ui.components.StatusBar;
 import com.dmdirc.ui.dialogs.AboutDialog;
@@ -65,8 +65,8 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import javax.swing.AbstractAction;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
@@ -321,7 +321,9 @@ public final class MainFrame extends JFrame implements WindowListener,
     }
     
     /**
+     * Returns the size of the frame manager
      *
+     * @return Frame manager size.
      */
     public int getFrameManagerSize() {
         if (position == FramemanagerPosition.LEFT
@@ -528,6 +530,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         pack();
     }
     
+    /** Initialises the split pane. */
     private void initSplitPane(final JSplitPane mainSplitPane) {
         mainSplitPane.setBorder(null);
         
@@ -610,8 +613,9 @@ public final class MainFrame extends JFrame implements WindowListener,
         mainSplitPane.setContinuousLayout(true);
     }
     
+    /** Initialises the key hooks. */
     private void initKeyHooks() {
-        KeyStroke[] keyStrokes = new KeyStroke[12];
+        final KeyStroke[] keyStrokes = new KeyStroke[12];
         
         keyStrokes[0] = KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0);
         keyStrokes[1] = KeyStroke.getKeyStroke(KeyEvent.VK_F2, 0);
@@ -632,7 +636,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                     new AbstractAction(
                     KeyEvent.getKeyText(keyStroke.getKeyCode()) + "Action") {
                 private static final long serialVersionUID = 5;
-                public void actionPerformed(ActionEvent evt) {
+                public void actionPerformed(final ActionEvent evt) {
                     ActionManager.processEvent(CoreActionType.CLIENT_FKEY_PRESSED,
                             null, KeyStroke.getKeyStroke(keyStroke.getKeyCode(),
                             evt.getModifiers()));

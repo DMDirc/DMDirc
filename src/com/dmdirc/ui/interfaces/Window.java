@@ -26,6 +26,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.identities.ConfigManager;
 
 import java.beans.PropertyVetoException;
+
 import javax.swing.Icon;
 
 /**

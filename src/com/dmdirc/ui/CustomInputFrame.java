@@ -61,7 +61,7 @@ public class CustomInputFrame extends InputFrame {
     }
 
     /** {@inheritDoc} */
-    public CommandParser getCommandParser() {
+    public final CommandParser getCommandParser() {
         return commandParser;
     }
     

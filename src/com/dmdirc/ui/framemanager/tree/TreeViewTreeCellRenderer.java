@@ -24,7 +24,6 @@ package com.dmdirc.ui.framemanager.tree;
 
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.messages.ColourManager;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
@@ -36,7 +35,6 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JTree;
-import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
@@ -62,8 +60,10 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
     
     /**
      * Creates a new instance of TreeViewTreeCellRenderer.
+     *
+     * @param manager Parent TreeFrameManager
      */
-    public TreeViewTreeCellRenderer(TreeFrameManager manager) {
+    public TreeViewTreeCellRenderer(final TreeFrameManager manager) {
         super();
         this.manager = manager;
         defaultIcon = new ImageIcon(this.getClass().getClassLoader()

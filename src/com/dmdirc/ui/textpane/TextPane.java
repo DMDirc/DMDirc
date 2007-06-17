@@ -145,6 +145,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     /**
      * Returns the specified line in the textpane.
      *
+     * @param line Line to return
+     *
      * @return AttributedString at the specified line
      */
     public AttributedString getLine(final int line) {
