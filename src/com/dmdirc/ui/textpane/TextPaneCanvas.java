@@ -169,7 +169,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         // Iterate through the lines
         if (document.getNumLines() > 0) {
             
-            //int firstLineHeight = 0;
+            int lineHeight = getFont().getSize() + 2;
             
             for (int i = startLine; i >= 0; i--) {
                 final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
@@ -180,8 +180,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                 
                 int wrappedLine = 0;
                 int height = 0;
-                //This needs to be moved to line 166, but that requires me changing the lines height.
-                int firstLineHeight = 0;
                 
                 // Work out the number of lines this will take
                 while (lineMeasurer.getPosition() < paragraphEnd) {
@@ -192,10 +190,10 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                         layout = lineMeasurer.nextLayout(formatWidth - 6);
                     }
                     
-                    if (firstLineHeight == 0) {
-                        firstLineHeight = (int) layout.getBounds().getHeight() + 3;
+                    if (lineHeight == 0) {
+                        lineHeight = (int) layout.getBounds().getHeight() + 3;
                     }
-                    height += firstLineHeight;
+                    height += lineHeight;
                     wrappedLine++;
                 }
                 
@@ -229,9 +227,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                     
                     // Calculate the Y offset
                     if (wrappedLine == 1) {
-                        drawPosY -= firstLineHeight;
+                        drawPosY -= lineHeight;
                     } else if (j != 0) {
-                        drawPosY += firstLineHeight;
+                        drawPosY += lineHeight;
                     }
                     
                     float drawPosX;
@@ -266,7 +264,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                             
                             // If the selection includes the chars we're showing
                             if (lastChar > chars && firstChar < chars + layout.getCharacterCount()) {
-                                final int trans = (int) (firstLineHeight / 2f + drawPosY);
+                                final int trans = (int) (lineHeight / 2f + drawPosY);
                                 final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
                                 
                                 graphics2D.setColor(UIManager.getColor("TextPane.selectionBackground"));
@@ -280,14 +278,14 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                         
                         graphics2D.setColor(textPane.getForeground());
                         
-                        layout.draw(graphics2D, drawPosX, drawPosY + firstLineHeight / 2f);
+                        layout.draw(graphics2D, drawPosX, drawPosY + lineHeight / 2f);
                         firstVisibleLine = i;
                         textLayouts.put(layout, new LineInfo(i, j));
                         positions.put(new Rectangle(0, (int) drawPosY,
-                                (int) formatWidth, firstLineHeight), layout);
+                                (int) formatWidth, lineHeight), layout);
                         if (isHyperlink) {
                             hyperlinks.put(layout, new Rectangle((int) drawPosX,
-                                    (int) drawPosY, (int) formatWidth, firstLineHeight));
+                                    (int) drawPosY, (int) formatWidth, lineHeight));
                         }
                     }
                     
@@ -295,7 +293,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                     chars += layout.getCharacterCount();
                 }
                 if (j > 1) {
-                    drawPosY -= height - firstLineHeight;
+                    drawPosY -= height - lineHeight;
                 }
                 if (drawPosY <= 0) {
                     break;
