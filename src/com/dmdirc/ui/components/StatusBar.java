@@ -135,7 +135,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
         
         normalIcon = new ImageIcon(this.getClass()
-                .getClassLoader().getResource("com/dmdirc/res/normal.png"));
+        .getClassLoader().getResource("com/dmdirc/res/normal.png"));
         
         clearMessage();
         clearError();
@@ -172,7 +172,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         messageNotifier = newNotifier;
         
         if (messageTimer != null && (System.currentTimeMillis()
-                - messageTimer.scheduledExecutionTime()) <= 0) {
+        - messageTimer.scheduledExecutionTime()) <= 0) {
             messageTimer.cancel();
         }
         messageTimer = new TimerTask() {
@@ -213,7 +213,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         iconLabel.setIcon(newIcon);
         errorNotifier = newNotifier;
         if (errorTimer != null && (System.currentTimeMillis()
-                - errorTimer.scheduledExecutionTime()) <= 0) {
+        - errorTimer.scheduledExecutionTime()) <= 0) {
             errorTimer.cancel();
         }
         
@@ -287,10 +287,12 @@ public final class StatusBar extends JPanel implements MouseListener,
      * @param mouseEvent mouse event
      */
     public void mouseClicked(final MouseEvent mouseEvent) {
-        if (mouseEvent.getSource() == messageLabel && messageNotifier != null) {
-            messageNotifier.clickReceived(mouseEvent);
-        } else if (mouseEvent.getSource() == iconLabel && errorNotifier != null) {
-            errorNotifier.clickReceived();
+        if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
+            if (mouseEvent.getSource() == messageLabel && messageNotifier != null) {
+                messageNotifier.clickReceived();
+            } else if (mouseEvent.getSource() == iconLabel && errorNotifier != null) {
+                errorNotifier.clickReceived();
+            }
         }
         processMouseEvent(mouseEvent);
     }
