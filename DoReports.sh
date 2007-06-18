@@ -16,7 +16,7 @@ $SVN update
 if [ "$1" = "--all" ]; then
 	$ANT -k -buildfile $MYDIR/doreports.xml allreports
 elif [ "$1" = "--findbugs" ]; then
-	$ANT -k -buildfile $MYDIR/doreports.xml findbugs
+	$ANT -k -buildfile $MYDIR/style_build.xml findbugs
 else
 	$ANT -k -buildfile $MYDIR/doreports.xml mostreports
 fi
