@@ -13,5 +13,11 @@ SVN="/usr/bin/svn"
 /bin/sh $MYDIR/oblong.sh "Reports" "Style Report Generation Started";
 cd $MYDIR
 $SVN update
-$ANT -k -buildfile $MYDIR/doreports.xml reports
+if [ "$1" = "--all" ]; then
+	$ANT -k -buildfile $MYDIR/doreports.xml allreports
+elif [ "$1" = "--findbugs" ]; then
+	$ANT -k -buildfile $MYDIR/doreports.xml findbugs
+else
+	$ANT -k -buildfile $MYDIR/doreports.xml mostreports
+fi
 /bin/sh $MYDIR/oblong.sh "Reports" "Report Generation Complete"
