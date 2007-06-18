@@ -217,22 +217,21 @@ public class PluginManager {
 	public void updateAutoLoad(final Plugin plugin) {
 		if (Config.hasOption("plugins", "autoload")) {
 			final String[] autoLoadList = Config.getOption("plugins", "autoload").split("\n");
-			final StringBuffer newAutoLoadList = new StringBuffer("\n");
-			int i = 0;
+			final StringBuffer newAutoLoadList = new StringBuffer();
 			boolean found = false;
 			for (String pluginName : autoLoadList) {
 				pluginName = pluginName.trim();
 				if (pluginName.equals(plugin.getClass().getName())) {
 					found = true;
 					if (plugin.isActive()) {
-						newAutoLoadList.append("\t"+pluginName+"\n");
+						newAutoLoadList.append(pluginName+"\n");
 					}
 				} else if (pluginName.length() > 0) {
-					newAutoLoadList.append("\t"+pluginName+"\n");
+					newAutoLoadList.append(pluginName+"\n");
 				}
 			}
 			if (!found && plugin.isActive()) {
-				newAutoLoadList.append("\t"+plugin.getClass().getName()+"\n");
+				newAutoLoadList.append(plugin.getClass().getName()+"\n");
 			}
 			Config.setOption("plugins", "autoload", newAutoLoadList.toString());
 		} else if (plugin.isActive()) {
