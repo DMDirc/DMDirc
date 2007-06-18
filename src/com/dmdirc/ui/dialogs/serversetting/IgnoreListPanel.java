@@ -168,6 +168,8 @@ public class IgnoreListPanel extends JPanel implements ActionListener,
         }
 
         Config.setOption("network", "ignorelist", ignoreList.toString());
+        
+        server.updateIgnoreList();
     }
     
     /** {@inheritDoc} */
