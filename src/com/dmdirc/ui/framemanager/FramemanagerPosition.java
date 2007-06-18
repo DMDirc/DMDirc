@@ -39,6 +39,13 @@ public enum FramemanagerPosition {
     /** Unknown position. */
     UNKNOWN;
     
+    /**
+     * Returns the frame position for s specified string.
+     *
+     * @param name Name of the string
+     *
+     * @return FramemanagerPosition for the string
+     */
     public static FramemanagerPosition getPosition(final String name) {
         if (name == null) {
             return UNKNOWN;

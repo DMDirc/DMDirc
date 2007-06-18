@@ -36,7 +36,6 @@ import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UnknownFormatConversionException;
-import java.util.logging.Level;
 
 /**
  * The Formatter provides a standard way to format messages for display.

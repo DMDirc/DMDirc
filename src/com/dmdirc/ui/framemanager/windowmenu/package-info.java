@@ -20,13 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.interfaces;
-
 /**
- * Lists the standard methods that should be implemented by any server window.
- * 
- * @author chris
+ * Window menu list frame manager.
  */
-public interface ServerWindow extends InputWindow {
-    
-}
+package com.dmdirc.ui.framemanager.windowmenu;

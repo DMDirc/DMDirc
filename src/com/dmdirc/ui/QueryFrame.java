@@ -25,9 +25,9 @@ package com.dmdirc.ui;
 import com.dmdirc.Query;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.QueryCommandParser;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.components.InputFrame;
 import com.dmdirc.ui.input.InputHandler;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

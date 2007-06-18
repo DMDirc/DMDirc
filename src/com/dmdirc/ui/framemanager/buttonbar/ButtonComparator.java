@@ -27,6 +27,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Raw;
 import com.dmdirc.Server;
+
 import java.util.Comparator;
 
 /**
@@ -35,7 +36,7 @@ import java.util.Comparator;
  *
  * @author chris
  */
-public class ButtonComparator implements Comparator<FrameContainer> {
+public final class ButtonComparator implements Comparator<FrameContainer> {
     
     /**
      * Returns an integer corresponding to the expected order of an object.
@@ -58,7 +59,7 @@ public class ButtonComparator implements Comparator<FrameContainer> {
     }
     
     /** {@inheritDoc} */
-    public int compare(FrameContainer o1, FrameContainer o2) {
+    public int compare(final FrameContainer o1, final FrameContainer o2) {
         return getPosition(o1) - getPosition(o2);
     }
     

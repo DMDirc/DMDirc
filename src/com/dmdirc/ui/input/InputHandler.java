@@ -27,8 +27,8 @@ import com.dmdirc.commandparser.Command;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.IntelligentCommand;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.components.ColourPickerDialog;
+import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
 
 import java.awt.event.ActionEvent;
@@ -262,7 +262,7 @@ public final class InputHandler implements KeyListener, ActionListener {
      * Handles tab completion of a string. Called when the user presses tab.
      */
     private void doTabCompletion() {
-        String text = target.getText();
+        final String text = target.getText();
         
         if (text.length() == 0) {
             doNormalTabCompletion(text, 0, 0, null);

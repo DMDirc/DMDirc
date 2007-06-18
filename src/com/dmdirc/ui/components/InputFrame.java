@@ -22,12 +22,12 @@
 
 package com.dmdirc.ui.components;
 
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.Config;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.dialogs.PasteDialog;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -85,9 +85,6 @@ public abstract class InputFrame extends Frame implements InputWindow,
     /** The InputHandler for our input field. */
     private InputHandler inputHandler;
     
-    /** Input field panel. */
-    protected JPanel inputPanel;
-    
     /** Frame input field. */
     private JTextField inputField;
     
@@ -105,6 +102,9 @@ public abstract class InputFrame extends Frame implements InputWindow,
     
     /** Robot for the frame. */
     private Robot robot;
+    
+    /** Input field panel. */
+    protected JPanel inputPanel;
     
     /** Away label. */
     protected JLabel awayLabel;
@@ -197,7 +197,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
         
         // Listen for undo and redo events
         doc.addUndoableEditListener(new UndoableEditListener() {
-            public void undoableEditHappened(UndoableEditEvent evt) {
+            public void undoableEditHappened(final UndoableEditEvent evt) {
                 undo.addEdit(evt.getEdit());
             }
         });
@@ -206,7 +206,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
         getInputField().getActionMap().put("Undo",
                 new AbstractAction("Undo") {
             private static final long serialVersionUID = 1;
-            public void actionPerformed(ActionEvent evt) {
+            public void actionPerformed(final ActionEvent evt) {
                 try {
                     if (undo.canUndo()) {
                         undo.undo();
@@ -224,7 +224,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
         getInputField().getActionMap().put("Redo",
                 new AbstractAction("Redo") {
             private static final long serialVersionUID = 1;
-            public void actionPerformed(ActionEvent evt) {
+            public void actionPerformed(final ActionEvent evt) {
                 try {
                     if (undo.canRedo()) {
                         undo.redo();

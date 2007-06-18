@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * 
  * @author chris
  */
-public class AdditionalTabTargets extends ArrayList<String> {
+public final class AdditionalTabTargets extends ArrayList<String> {
     
     /**
      * A version number for this class. It should be changed whenever the class

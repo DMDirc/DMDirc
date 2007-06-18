@@ -30,7 +30,6 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.components.Frame;
 import com.dmdirc.ui.components.StatusBar;
 import com.dmdirc.ui.dialogs.AboutDialog;
@@ -44,6 +43,7 @@ import com.dmdirc.ui.framemanager.FramemanagerPosition;
 import com.dmdirc.ui.framemanager.MainFrameManager;
 import com.dmdirc.ui.framemanager.windowmenu.WindowMenuFrameManager;
 import com.dmdirc.ui.interfaces.Window;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -321,7 +321,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     }
     
     /**
-     * Returns the size of the frame manager
+     * Returns the size of the frame manager.
      *
      * @return Frame manager size.
      */
@@ -531,7 +531,11 @@ public final class MainFrame extends JFrame implements WindowListener,
         pack();
     }
     
-    /** Initialises the split pane. */
+    /** 
+     * Initialises the split pane. 
+     *
+     * @param mainSplitPane JSplitPane to initialise
+     */
     private void initSplitPane(final JSplitPane mainSplitPane) {
         mainSplitPane.setBorder(null);
         
@@ -787,6 +791,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
     
+    /** Quits the client. */
     public void quit() {
         Config.setOption("ui", "frameManagerSize",
                 String.valueOf(MainFrame.getMainFrame().getFrameManagerSize()));

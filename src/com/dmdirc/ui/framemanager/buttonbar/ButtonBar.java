@@ -48,8 +48,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.BorderFactory;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -296,7 +296,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
      *
      * @param e A ComponentEvent corresponding to this event.
      */
-    public void componentResized(ComponentEvent e) {
+    public void componentResized(final ComponentEvent e) {
         buttonWidth = position.isHorizontal() ? 150 : (parent.getWidth() - UIUtilities.SMALL_BORDER * 3) / cells;
         
         if (position.isHorizontal()) {
@@ -311,7 +311,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
      *
      * @param e A ComponentEvent corresponding to this event.
      */
-    public void componentMoved(ComponentEvent e) {
+    public void componentMoved(final ComponentEvent e) {
         // Do nothing
     }
     
@@ -320,7 +320,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
      *
      * @param e A ComponentEvent corresponding to this event.
      */
-    public void componentShown(ComponentEvent e) {
+    public void componentShown(final ComponentEvent e) {
         // Do nothing
     }
     
@@ -329,7 +329,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
      *
      * @param e A ComponentEvent corresponding to this event.
      */
-    public void componentHidden(ComponentEvent e) {
+    public void componentHidden(final ComponentEvent e) {
         // Do nothing
     }
     
