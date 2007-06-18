@@ -37,6 +37,8 @@ public enum CoreActionType implements ActionType {
     
     /** Frame changed. */
     CLIENT_FRAME_CHANGED(CoreActionMetaType.CLIENT_EVENT_WITH_FRAME, "Frame changed"),
+    /** User input. */
+    CLIENT_USER_INPUT(CoreActionMetaType.CLIENT_EVENT_WITH_BUFFER, "User input"),
     
     /** Plugin loaded. */
     PLUGIN_LOADED(CoreActionMetaType.PLUGIN_EVENT, "Plugin loaded"),

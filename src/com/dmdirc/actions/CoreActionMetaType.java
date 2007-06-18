@@ -45,6 +45,8 @@ public enum CoreActionMetaType implements ActionMetaType {
     CLIENT_EVENT_WITH_FRAME(1, new String[]{"frame"}, FrameContainer.class),
     /** Client event type, with a key argument. */
     CLIENT_EVENT_WITH_KEY(1, new String[]{"key event"}, KeyStroke.class),
+    /** Client event with an origin and editable buffer. */
+    CLIENT_EVENT_WITH_BUFFER(2, new String[]{"origin", "buffer"}, FrameContainer.class, StringBuffer.class),    
     
     /** Plugin event type. */
     PLUGIN_EVENT(1, new String[]{"plugin"}, Plugin.class),

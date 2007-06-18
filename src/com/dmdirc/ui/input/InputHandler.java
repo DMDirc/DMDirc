@@ -23,6 +23,9 @@
 package com.dmdirc.ui.input;
 
 import com.dmdirc.Config;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionMetaType;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.Command;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandParser;
@@ -187,46 +190,46 @@ public final class InputHandler implements KeyListener, ActionListener {
      */
     private void handleControlKey(final KeyEvent keyEvent) {
         switch (keyEvent.getKeyCode()) {
-        case KeyEvent.VK_B:
-            addControlCode(Styliser.CODE_BOLD, POSITION_END);
-            break;
-            
-        case KeyEvent.VK_U:
-            addControlCode(Styliser.CODE_UNDERLINE, POSITION_END);
-            break;
-            
-        case KeyEvent.VK_O:
-            addControlCode(Styliser.CODE_STOP, POSITION_END);
-            break;
-            
-        case KeyEvent.VK_I:
-            addControlCode(Styliser.CODE_ITALIC, POSITION_END);
-            break;
-            
-        case KeyEvent.VK_F:
-            if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) != 0) {
-                addControlCode(Styliser.CODE_FIXED, POSITION_END);
-            }
-            break;
-            
-        case KeyEvent.VK_K:
-            if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) == 0) {
-                addControlCode(Styliser.CODE_COLOUR, POSITION_START);
-                showColourPicker(true, false);
-            } else {
-                addControlCode(Styliser.CODE_HEXCOLOUR, POSITION_START);
-                showColourPicker(false, true);
-            }
-            break;
-            
-        case KeyEvent.VK_ENTER:
-            commandParser.parseCommandCtrl(parentWindow, target.getText());
-            addToBuffer(target.getText());
-            break;
-            
-        default:
-            /* Do nothing. */
-            break;
+            case KeyEvent.VK_B:
+                addControlCode(Styliser.CODE_BOLD, POSITION_END);
+                break;
+                
+            case KeyEvent.VK_U:
+                addControlCode(Styliser.CODE_UNDERLINE, POSITION_END);
+                break;
+                
+            case KeyEvent.VK_O:
+                addControlCode(Styliser.CODE_STOP, POSITION_END);
+                break;
+                
+            case KeyEvent.VK_I:
+                addControlCode(Styliser.CODE_ITALIC, POSITION_END);
+                break;
+                
+            case KeyEvent.VK_F:
+                if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) != 0) {
+                    addControlCode(Styliser.CODE_FIXED, POSITION_END);
+                }
+                break;
+                
+            case KeyEvent.VK_K:
+                if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) == 0) {
+                    addControlCode(Styliser.CODE_COLOUR, POSITION_START);
+                    showColourPicker(true, false);
+                } else {
+                    addControlCode(Styliser.CODE_HEXCOLOUR, POSITION_START);
+                    showColourPicker(false, true);
+                }
+                break;
+                
+            case KeyEvent.VK_ENTER:
+                commandParser.parseCommandCtrl(parentWindow, target.getText());
+                addToBuffer(target.getText());
+                break;
+                
+            default:
+                /* Do nothing. */
+                break;
         }
     }
     
@@ -362,7 +365,7 @@ public final class InputHandler implements KeyListener, ActionListener {
         } else {
             // Multiple results
             final String sub = res.getBestSubstring();
-            if (sub.equalsIgnoreCase(word)) {                
+            if (sub.equalsIgnoreCase(word)) {
                 final String style = Config.getOption("tabcompletion", "style", "bash");
                 
                 // TODO: Other possible actions (mIRC-style etc)
@@ -394,9 +397,14 @@ public final class InputHandler implements KeyListener, ActionListener {
         final String line = actionEvent.getActionCommand();
         
         if (line.length() > 0) {
-            addToBuffer(line);
+            final StringBuffer buffer = new StringBuffer(line);
             
-            commandParser.parseCommand(parentWindow, line);
+            ActionManager.processEvent(CoreActionType.CLIENT_USER_INPUT, null,
+                    parentWindow.getContainer(), buffer);
+            
+            addToBuffer(buffer.toString());
+            
+            commandParser.parseCommand(parentWindow, buffer.toString());
         }
     }
     
