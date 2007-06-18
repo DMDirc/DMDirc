@@ -37,8 +37,8 @@ import java.awt.Color;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -51,28 +51,22 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeExpansionListener;
-import javax.swing.event.TreeModelEvent;
-import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
  * Manages open windows in the application in a tree style view.
  */
-public final class TreeFrameManager implements FrameManager, TreeModelListener,
-        TreeSelectionListener, TreeExpansionListener, TreeWillExpandListener,
-        MouseListener, ActionListener, MouseMotionListener, MouseWheelListener,
-        KeyListener {
+public final class TreeFrameManager implements FrameManager, 
+        TreeSelectionListener, MouseListener, ActionListener, 
+        MouseMotionListener, MouseWheelListener, AdjustmentListener {
     
     /**
      * display tree.
@@ -168,7 +162,6 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         tree.addMouseListener(this);
         tree.addMouseMotionListener(this);
         tree.addMouseWheelListener(this);
-        tree.addKeyListener(this);
     }
     
     /** {@inheritDoc} */
@@ -264,6 +257,7 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         final JScrollPane scrollPane = new JScrollPane(tree);
         scrollPane.setAutoscrolls(true);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.getHorizontalScrollBar().addAdjustmentListener(this);
         
         parent.setLayout(new BorderLayout());
         parent.add(scrollPane);
@@ -382,74 +376,10 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         }
     }
     
-    /**
-     * Called after the tree has been expanded.
-     * @param event expansion event.
-     */
-    public void treeExpanded(final TreeExpansionEvent event) {
-        //Do nothing
-    }
-    
-    /**
-     * Called after the tree has been collapsed.
-     * @param event expansion event.
-     */
-    public void treeCollapsed(final TreeExpansionEvent event) {
-        //Do nothing
-    }
-    
-    /**
-     * Called when the tree is about to expand.
-     * @param event expansion event.
-     * @throws javax.swing.tree.ExpandVetoException thrown to prevent.
-     * node expanding
-     */
-    public void treeWillExpand(final TreeExpansionEvent event) throws
-            ExpandVetoException {
-        //Do nothing
-    }
-    
-    /**
-     * Called when the tree is about to collapse.
-     * @param event expansion event.
-     * @throws javax.swing.tree.ExpandVetoException throw to prevent.
-     * node collapsing
-     */
-    public void treeWillCollapse(final TreeExpansionEvent event) throws
-            ExpandVetoException {
-        //Do nothing
-    }
-    
-    /**
-     * called after a node, or set of nodes, changes.
-     * @param event change event.
-     */
-    public void treeNodesChanged(final TreeModelEvent event) {
-        //Do nothing
-    }
-    
-    /**
-     * called after a node has been inserted into the tree.
-     * @param event change event.
-     */
-    public void treeNodesInserted(final TreeModelEvent event) {
-        //Do nothing
-    }
-    
-    /**
-     * Called when a node is removed from the tree.
-     * @param event change event.
-     */
-    public void treeNodesRemoved(final TreeModelEvent event) {
-        //Do nothing
-    }
-    
-    /**
-     * Called when a tree changes structure.
-     * @param event change event.
-     */
-    public void treeStructureChanged(final TreeModelEvent event) {
-        //Do nothing
+    /** {@inheritDoc} */
+    public void adjustmentValueChanged(final AdjustmentEvent e) {
+        //HACK Disregard all scrolling events
+        ((JScrollBar) e.getSource()).setValue(0);
     }
     
     /**
@@ -694,29 +624,5 @@ public final class TreeFrameManager implements FrameManager, TreeModelListener,
         }
         
         return nextNode;
-    }
-    
-    /**
-     * Invoked when a key has been typed.
-     * @param event key event.
-     */
-    public void keyTyped(final KeyEvent event) {
-        //Do nothing
-    }
-    
-    /**
-     * Invoked when a key has been pressed.
-     * @param event key event.
-     */
-    public void keyPressed(final KeyEvent event) {
-        //Do nothing
-    }
-    
-    /**
-     * Invoked when a key has been released.
-     * @param event key event.
-     */
-    public void keyReleased(final KeyEvent event) {
-        //Do nothing
     }
 }
