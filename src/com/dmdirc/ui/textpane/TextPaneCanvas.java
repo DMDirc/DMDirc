@@ -50,7 +50,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     private static final long serialVersionUID = 4;
     
     /** IRCDocument. */
-    private final IRCDocument document;
+    private final transient IRCDocument document;
     /** parent textpane. */
     private final TextPane textPane;
     /** Position -> TextLayout. */

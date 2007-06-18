@@ -71,10 +71,10 @@ public final class StatusBar extends JPanel implements MouseListener,
     private final JLabel iconLabel;
     
     /** current status bar message notifier. */
-    private StatusMessageNotifier messageNotifier;
+    private transient StatusMessageNotifier messageNotifier;
     
     /** current status bar error notifier. */
-    private StatusErrorNotifier errorNotifier;
+    private transient StatusErrorNotifier errorNotifier;
     
     /** non error state image icon. */
     private final ImageIcon normalIcon;
@@ -83,10 +83,10 @@ public final class StatusBar extends JPanel implements MouseListener,
     private final List<Error> errors;
     
     /** Timer to clear the error. */
-    private TimerTask errorTimer;
+    private transient TimerTask errorTimer;
     
     /** Timer to clear the message. */
-    private TimerTask messageTimer;
+    private transient TimerTask messageTimer;
     
     /** Popupmenu for this frame. */
     private final JPopupMenu popup;

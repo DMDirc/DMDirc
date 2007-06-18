@@ -60,7 +60,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
     /** Parent dialog, informed of changes on close. */
     private final ActionsManagerDialog parent;
     /** Action being edited or null. */
-    private Action action;
+    private transient Action action;
     /** Tabbed pane. */
     private JTabbedPane tabbedPane;
     /** Buttons panel. */

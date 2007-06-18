@@ -43,7 +43,7 @@ public class CustomInputFrame extends InputFrame {
     private static final long serialVersionUID = 1;
     
     /** The command parser to use. */
-    private final CommandParser commandParser;
+    private final transient CommandParser commandParser;
     
     /**
      * Creates a new instance of CustomInputFrame.

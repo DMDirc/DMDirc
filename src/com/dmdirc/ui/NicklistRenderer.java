@@ -48,7 +48,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
     private static final long serialVersionUID = 2;
     
     /** The config manager to be used for this nick list. */
-    private final ConfigManager config;
+    private final transient ConfigManager config;
     
     /**
      * Creates a new instance of NicklistRenderer.

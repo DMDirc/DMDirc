@@ -50,10 +50,10 @@ public final class ServerFrame extends InputFrame implements ServerWindow {
     private static final long serialVersionUID = 8;
     
     /** This channel's command parser. */
-    private final ServerCommandParser commandParser;
+    private final transient ServerCommandParser commandParser;
     
     /** This frame's parent. */
-    private final Server parent;
+    private final transient Server parent;
     
     /**
      * Creates a new ServerFrame.

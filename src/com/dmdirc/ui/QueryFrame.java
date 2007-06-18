@@ -49,10 +49,10 @@ public final class QueryFrame extends InputFrame {
     private final int maxLineLength;
     
     /** This channel's command parser. */
-    private final QueryCommandParser commandParser;
+    private final transient QueryCommandParser commandParser;
     
     /** This frame's parent. */
-    private final Query parent;
+    private final transient Query parent;
     
     /**
      * Creates a new QueryFrame.

@@ -28,6 +28,8 @@ import com.dmdirc.Query;
 import com.dmdirc.Raw;
 import com.dmdirc.Server;
 
+import java.io.Serializable;
+
 import java.util.Comparator;
 
 /**
@@ -36,7 +38,15 @@ import java.util.Comparator;
  *
  * @author chris
  */
-public final class ButtonComparator implements Comparator<FrameContainer> {
+public final class ButtonComparator implements Comparator<FrameContainer>,
+        Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /**
      * Returns an integer corresponding to the expected order of an object.

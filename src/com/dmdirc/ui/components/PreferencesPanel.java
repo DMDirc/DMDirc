@@ -134,7 +134,7 @@ public final class PreferencesPanel extends StandardDialog implements
     private JPanel mainPanel;
     
     /** Preferences owner. */
-    private PreferencesInterface owner;
+    private transient PreferencesInterface owner;
     
     /** title of window. */
     private String windowTitle;

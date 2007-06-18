@@ -129,12 +129,12 @@ public final class MainFrame extends JFrame implements WindowListener,
     /**
      * The frame manager that's being used.
      */
-    private final MainFrameManager mainFrameManager;
+    private final transient MainFrameManager mainFrameManager;
     
     /**
      * The window menu frame manager that's being used.
      */
-    private final WindowMenuFrameManager windowListFrameManager;
+    private final transient WindowMenuFrameManager windowListFrameManager;
     
     /** Dekstop pane. */
     private JDesktopPane desktopPane;

@@ -69,7 +69,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
     /** Parent action type trigger. */
     private final ActionType trigger;
     /** conditions to be edited, or null if new. */
-    private final ActionCondition condition;
+    private final transient ActionCondition condition;
     /** Condition argument. */
     private int argument;
     /** Condition component. */

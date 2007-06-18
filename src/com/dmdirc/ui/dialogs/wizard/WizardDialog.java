@@ -60,7 +60,7 @@ public final class WizardDialog extends JDialog implements ActionListener {
     /** Wizard title. */
     private final String title;
     /** Wizard. */
-    private final Wizard wizard;
+    private final transient Wizard wizard;
     
     /** Button panel. */
     private JPanel buttonsPanel;

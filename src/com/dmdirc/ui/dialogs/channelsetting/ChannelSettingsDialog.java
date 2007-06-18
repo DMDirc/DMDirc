@@ -83,7 +83,7 @@ public final class ChannelSettingsDialog extends StandardDialog
     /**
      * The channel object that this dialog belongs to.
      */
-    private final Channel channel;
+    private final transient Channel channel;
     
     /**
      * The checkboxes used for boolean modes.
@@ -139,7 +139,7 @@ public final class ChannelSettingsDialog extends StandardDialog
     private ChannelSettingsPane channelSettingsPane;
     
     /** Channel identity file. */
-    private final Identity identity;
+    private final transient Identity identity;
     
     /** Tabbed pane. */
     private JTabbedPane tabbedPane;

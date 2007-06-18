@@ -27,10 +27,10 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.dialogs.PasteDialog;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.InputWindow;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
@@ -79,6 +79,12 @@ public abstract class InputFrame extends Frame implements InputWindow,
      */
     private static final long serialVersionUID = 2;
     
+    /** Input field panel. */
+    protected JPanel inputPanel;
+    
+    /** Away label. */
+    protected JLabel awayLabel;
+    
     /** The container that owns this frame. */
     private final WritableFrameContainer parent;
     
@@ -102,12 +108,6 @@ public abstract class InputFrame extends Frame implements InputWindow,
     
     /** Robot for the frame. */
     private Robot robot;
-    
-    /** Input field panel. */
-    protected JPanel inputPanel;
-    
-    /** Away label. */
-    protected JLabel awayLabel;
     
     /**
      * Creates a new instance of InputFrame.

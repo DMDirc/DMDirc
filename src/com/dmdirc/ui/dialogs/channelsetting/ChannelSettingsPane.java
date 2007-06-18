@@ -86,7 +86,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
     /** hashmap, config option -> name. */
     private Map<String, String> optionMap;
     /** Channel identity file. */
-    private final Identity identity;
+    private final transient Identity identity;
     /** Valid option types. */
     private enum OPTION_TYPE { TEXTFIELD, CHECKBOX, COLOUR, }
     /** text fields. */
