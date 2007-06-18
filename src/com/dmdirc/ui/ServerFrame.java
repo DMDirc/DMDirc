@@ -30,17 +30,22 @@ import com.dmdirc.ui.components.InputFrame;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.dialogs.serversetting.ServerSettingsDialog;
 
 import java.awt.BorderLayout;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JMenuItem;
 
 /**
  * The ServerFrame is the MDI window that shows server messages to the user.
  */
-public final class ServerFrame extends InputFrame implements ServerWindow {
+public final class ServerFrame extends InputFrame implements ServerWindow,
+        ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -54,6 +59,9 @@ public final class ServerFrame extends InputFrame implements ServerWindow {
     
     /** This frame's parent. */
     private final transient Server parent;
+    
+    /** popup menu item. */
+    private JMenuItem settingsMI;
     
     /**
      * Creates a new ServerFrame.
@@ -112,6 +120,11 @@ public final class ServerFrame extends InputFrame implements ServerWindow {
      * Initialises components in this frame.
      */
     private void initComponents() {
+        settingsMI = new JMenuItem("Settings");
+        settingsMI.addActionListener(this);
+        getPopup().addSeparator();
+        getPopup().add(settingsMI);
+        
         final GridBagConstraints constraints = new GridBagConstraints();
         
         setTitle("Server Frame");
@@ -133,6 +146,14 @@ public final class ServerFrame extends InputFrame implements ServerWindow {
         getContentPane().add(inputPanel, constraints);
         
         pack();
+    }
+    
+    /** {@inheritDoc}. */
+    public void actionPerformed(final ActionEvent actionEvent) {
+        super.actionPerformed(actionEvent);
+        if (actionEvent.getSource() == settingsMI) {
+            new ServerSettingsDialog(getContainer().getServer()).setVisible(true);
+        }
     }
     
 }
