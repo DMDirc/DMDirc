@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.dialogs.serversetting;
 
+import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.identities.ConfigManager;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -32,6 +33,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -156,7 +158,16 @@ public class IgnoreListPanel extends JPanel implements ActionListener,
     
     /** Saves the ignore list. */
     public void saveList() {
-        //Save list
+        final StringBuffer ignoreList = new StringBuffer();
+        
+        for (int i = 0; i < listModel.size(); i++) {
+            if (i != 0) {
+                ignoreList.append('\n');
+            }
+            ignoreList.append((String) listModel.getElementAt(i));
+        }
+
+        Config.setOption("network", "ignorelist", ignoreList.toString());
     }
     
     /** {@inheritDoc} */

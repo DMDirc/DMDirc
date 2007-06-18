@@ -22,23 +22,24 @@
 
 package com.dmdirc.ui;
 
+
 import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.ServerCommandParser;
 import com.dmdirc.ui.components.InputFrame;
+import com.dmdirc.ui.dialogs.serversetting.ServerSettingsDialog;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import com.dmdirc.ui.dialogs.serversetting.ServerSettingsDialog;
 
 import java.awt.BorderLayout;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import javax.swing.JMenuItem;
 
 /**
