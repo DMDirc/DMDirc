@@ -65,8 +65,8 @@ import javax.swing.tree.TreeSelectionModel;
 /**
  * Manages open windows in the application in a tree style view.
  */
-public final class TreeFrameManager implements FrameManager, 
-        TreeSelectionListener, MouseListener, ActionListener, 
+public final class TreeFrameManager implements FrameManager,
+        TreeSelectionListener, MouseListener, ActionListener,
         MouseMotionListener, MouseWheelListener, AdjustmentListener {
     
     /**
@@ -145,7 +145,10 @@ public final class TreeFrameManager implements FrameManager,
         
         tree.putClientProperty("JTree.lineStyle", "Angled");
         tree.setUI(new javax.swing.plaf.metal.MetalTreeUI());
-        tree.getInputMap().remove(KeyStroke.getKeyStroke("F2"));
+        tree.getInputMap().setParent(null);
+        tree.getInputMap(JComponent.WHEN_FOCUSED).clear();
+        tree.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).clear();
+        tree.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).clear();
         
         tree.getSelectionModel().
                 setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
