@@ -32,7 +32,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.components.Frame;
 import com.dmdirc.ui.components.StatusBar;
-import com.dmdirc.ui.dialogs.AboutDialog;
+import com.dmdirc.ui.dialogs.about.AboutDialog;
 import com.dmdirc.ui.dialogs.ActionsManagerDialog;
 import com.dmdirc.ui.dialogs.NewServerDialog;
 import com.dmdirc.ui.dialogs.PluginDialog;

@@ -20,47 +20,38 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.dialogs;
+package com.dmdirc.ui.dialogs.about;
 
-import com.dmdirc.BrowserLauncher;
-import com.dmdirc.Main;
 import com.dmdirc.ui.MainFrame;
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
-import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
+import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
 /**
  * About dialog.
  */
-public final class AboutDialog extends JDialog implements ActionListener,
-        MouseListener {
+public final class AboutDialog extends JDialog implements ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Previously created instance of AboutDialog. */
     private static AboutDialog me;
-    
-    /** link label. */
-    private JLabel linkLabel;
     
     /** Creates a new instance of AboutDialog. */
     private AboutDialog() {
@@ -83,33 +74,21 @@ public final class AboutDialog extends JDialog implements ActionListener,
     /** Initialises the main UI components. */
     private void initComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
-        linkLabel = new JLabel();
-        final JLabel about = new JLabel();
-        final JLabel authors = new JLabel();
-        final JButton okButton = new JButton();
+        final JButton okButton = new JButton("OK");
+        final JTabbedPane tabbedPane = new JTabbedPane();
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new GridBagLayout());
         setTitle("About DMDirc");
         setResizable(false);
         
-        linkLabel.setText("<html>"
-                + "<a href=\"http://www.dmdirc.com\">http://www.dmdirc.com</a>"
-                + "</html>");
-        linkLabel.addMouseListener(this);
+        tabbedPane.add("About", new AboutPanel());
+        tabbedPane.add("Credits", new CreditsPanel());
+        tabbedPane.add("License", new LicensePanel());
         
-        authors.setText("<html>"
-                + "Chris 'MD87' Smith<br>"
-                + "Greg 'Greboid' Holmes<br>"
-                + "Shane 'Dataforce' Mc Cormack."
-                + "</html>");
-        
-        about.setText("<html>DMDirc - Cross platform IRC client.<br>" 
-                + " Version: " + Main.VERSION + "</html>");
-        
-        okButton.setText("OK");
         okButton.addActionListener(this);
-        okButton.setActionCommand("OK");
+        okButton.setPreferredSize(new Dimension(100, 25));
+        okButton.setMinimumSize(new Dimension(100, 25));
         
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -117,31 +96,9 @@ public final class AboutDialog extends JDialog implements ActionListener,
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER,
-                SMALL_BORDER, LARGE_BORDER);
-        getContentPane().add(about, constraints);
-        
-        constraints.anchor = GridBagConstraints.CENTER;
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        constraints.gridwidth = 3;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(0, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER);
-        getContentPane().add(linkLabel, constraints);
-        
-        constraints.anchor = GridBagConstraints.LINE_START;
-        constraints.gridx = 0;
-        constraints.gridy = 2;
-        constraints.gridwidth = 3;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(0, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER);
-        getContentPane().add(authors, constraints);
+        constraints.insets = new Insets(SMALL_BORDER, SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER);
+        getContentPane().add(tabbedPane, constraints);
         
         constraints.weighty = 0.0;
         constraints.gridx = 0;
@@ -151,9 +108,12 @@ public final class AboutDialog extends JDialog implements ActionListener,
                 0, 0);
         getContentPane().add(Box.createHorizontalGlue(), constraints);
         
+        constraints.weightx = 0.0;
+        constraints.weighty = 0.0;
+        constraints.fill = GridBagConstraints.NONE;
         constraints.gridx = 2;
-        constraints.insets = new Insets(0, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER);
+        constraints.insets = new Insets(0, SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER);
         getContentPane().add(okButton, constraints);
         
         pack();
@@ -161,37 +121,8 @@ public final class AboutDialog extends JDialog implements ActionListener,
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
-        if (e.getActionCommand().equals("OK")) {
-            setVisible(false);
-            dispose();
-        }
-    }
-    
-    /** {@inheritDoc}. */
-    public void mouseClicked(final MouseEvent e) {
-        if (e.getSource() == linkLabel) {
-            BrowserLauncher.openURL("http://www.dmdirc.com");
-        }
-    }
-    
-    /** {@inheritDoc}. */
-    public void mousePressed(final MouseEvent e) {
-        //Ignore
-    }
-    
-    /** {@inheritDoc}. */
-    public void mouseReleased(final MouseEvent e) {
-        //Ignore
-    }
-    
-    /** {@inheritDoc}. */
-    public void mouseEntered(final MouseEvent e) {
-        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-    }
-    
-    /** {@inheritDoc}. */
-    public void mouseExited(final MouseEvent e) {
-        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        setVisible(false);
+        dispose();
     }
     
 }
