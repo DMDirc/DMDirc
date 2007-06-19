@@ -84,7 +84,6 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
-import javax.swing.border.EtchedBorder;
 import javax.swing.plaf.FontUIResource;
 
 /**
@@ -869,6 +868,14 @@ public final class MainFrame extends JFrame implements WindowListener,
             UIManager.put("InternalFrame.titleFont", font);
             UIManager.put("EditorPane.font", font);
             UIManager.put("TextArea.font", font);
+            
+            UIManager.put("CheckBoxMenuItem.acceleratorFont", 
+                    font.deriveFont((float) font.getSize() - 2));
+            UIManager.put("Menu.acceleratorFont", 
+                    font.deriveFont((float) font.getSize() - 2));
+            UIManager.put("MenuItem.acceleratorFont", 
+                    font.deriveFont((float) font.getSize() - 2));
+            
             UIManager.put("swing.boldMetal", false);
             UIManager.put("InternalFrame.useTaskBar", false);
             UIManager.put("SplitPaneDivider.border", BorderFactory.createEmptyBorder());
