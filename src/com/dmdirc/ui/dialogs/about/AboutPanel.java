@@ -65,7 +65,7 @@ public class AboutPanel extends JPanel implements HyperlinkListener {
                 + UIManager.getFont("TextField.font").getFamily() + "; font-size:"
                 + UIManager.getFont("TextField.font").getSize() + "pt;'>"
                 + "<h1>DMDirc</h1>"
-                + "<p>Easy to use, cross platform IRC client.</p>"
+                + "<p>Easy to use, cross-platform IRC client.</p>"
                 + "<p>Version: " + Main.VERSION + "</p>"
                 + "<p><a href=\"http://www.dmdirc.com\">www.dmdirc.com</a></p>"
                 + "</center></html>");

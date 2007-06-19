@@ -25,11 +25,13 @@ package com.dmdirc.ui.dialogs.about;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
+import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 /**
  * License panel.
@@ -41,7 +43,10 @@ public class LicensePanel extends JPanel {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
+    
+    /** License scroll pane. */
+    private JScrollPane scrollPane;
     
     /** Creates a new instance of LicensePanel. */
     public LicensePanel() {
@@ -52,7 +57,6 @@ public class LicensePanel extends JPanel {
     
     /** Initialises the components. */
     private void initComponents() {
-        final JScrollPane scrollPane;
         final JTextArea license;
         
         license = new JTextArea();
@@ -78,20 +82,27 @@ public class LicensePanel extends JPanel {
         license.setEditable(false);
         license.setWrapStyleWord(true);
         license.setLineWrap(true);
-        license.setHighlighter(null);
-        license.setBackground(this.getBackground());
-        license.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, 0, SMALL_BORDER));
+        license.setMargin(new Insets(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER,
+                SMALL_BORDER));
         
         license.setColumns(40);
         license.setRows(10);
         
         scrollPane = new JScrollPane(license);
-        scrollPane.setBorder(null);
+        scrollPane.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER),
+                scrollPane.getBorder()
+                ));
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                scrollPane.getVerticalScrollBar().setValue(0);
+            }
+        }
+        );
         
         setLayout(new BorderLayout());
         
         add(scrollPane, BorderLayout.CENTER);
-    }
-    
+    }   
 }

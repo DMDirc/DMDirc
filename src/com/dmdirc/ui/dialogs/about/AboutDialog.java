@@ -24,8 +24,8 @@ package com.dmdirc.ui.dialogs.about;
 
 import com.dmdirc.ui.MainFrame;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.components.StandardDialog;
 
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -34,21 +34,21 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 
 /**
  * About dialog.
  */
-public final class AboutDialog extends JDialog implements ActionListener {
+public final class AboutDialog extends StandardDialog implements
+        ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4;
     
     /** Previously created instance of AboutDialog. */
     private static AboutDialog me;
@@ -74,7 +74,6 @@ public final class AboutDialog extends JDialog implements ActionListener {
     /** Initialises the main UI components. */
     private void initComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
-        final JButton okButton = new JButton("OK");
         final JTabbedPane tabbedPane = new JTabbedPane();
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -82,13 +81,14 @@ public final class AboutDialog extends JDialog implements ActionListener {
         setTitle("About DMDirc");
         setResizable(false);
         
+        orderButtons(new JButton(), new JButton());
+        
+        getOkButton().addActionListener(this);
+        getCancelButton().addActionListener(this);
+        
         tabbedPane.add("About", new AboutPanel());
         tabbedPane.add("Credits", new CreditsPanel());
         tabbedPane.add("License", new LicensePanel());
-        
-        okButton.addActionListener(this);
-        okButton.setPreferredSize(new Dimension(100, 25));
-        okButton.setMinimumSize(new Dimension(100, 25));
         
         constraints.gridx = 0;
         constraints.gridy = 0;
@@ -114,15 +114,18 @@ public final class AboutDialog extends JDialog implements ActionListener {
         constraints.gridx = 2;
         constraints.insets = new Insets(0, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER);
-        getContentPane().add(okButton, constraints);
+        getContentPane().add(getOkButton(), constraints);
         
         pack();
     }
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
-        setVisible(false);
-        dispose();
+        if (e.getSource() == getOkButton()) {
+            dispose();
+        } else if (e.getSource() == getCancelButton()) {
+            dispose();
+        }
     }
     
 }
