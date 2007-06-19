@@ -514,7 +514,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         setPreferredSize(new Dimension(800, 600));
         
-        getContentPane().setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
+        getContentPane().setLayout(new BorderLayout(0, 0));
         
         getContentPane().add(mainSplitPane, BorderLayout.CENTER);
         
@@ -523,10 +523,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         
         setTitle("DMDirc");
-        frameManagerPanel.setBorder(
-                BorderFactory.createEmptyBorder(0, SMALL_BORDER, 0, 0));
-        desktopPane.setBorder(
-                BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
+        frameManagerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        desktopPane.setBorder(UIManager.getBorder("TextField.border"));
         
         pack();
     }
@@ -539,8 +537,8 @@ public final class MainFrame extends JFrame implements WindowListener,
     private void initSplitPane(final JSplitPane mainSplitPane) {
         mainSplitPane.setBorder(null);
         
-        mainSplitPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0,
-                SMALL_BORDER));
+        mainSplitPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         
         mainSplitPane.setDividerSize(SMALL_BORDER);
         mainSplitPane.setOneTouchExpandable(false);
@@ -851,6 +849,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             UIManager.put("Tree.font", font);
             UIManager.put("InternalFrame.titleFont", font);
             UIManager.put("EditorPane.font", font);
+            UIManager.put("TextArea.font", font);
             UIManager.put("swing.boldMetal", false);
             UIManager.put("InternalFrame.useTaskBar", false);
             UIManager.put("SplitPaneDivider.border", BorderFactory.createEmptyBorder());
