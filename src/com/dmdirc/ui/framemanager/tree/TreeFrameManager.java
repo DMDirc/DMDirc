@@ -54,6 +54,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -144,6 +145,7 @@ public final class TreeFrameManager implements FrameManager,
         
         tree.putClientProperty("JTree.lineStyle", "Angled");
         tree.setUI(new javax.swing.plaf.metal.MetalTreeUI());
+        tree.getInputMap().remove(KeyStroke.getKeyStroke("F2"));
         
         tree.getSelectionModel().
                 setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
