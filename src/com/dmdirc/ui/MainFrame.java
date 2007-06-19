@@ -529,8 +529,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         pack();
     }
     
-    /** 
-     * Initialises the split pane. 
+    /**
+     * Initialises the split pane.
      *
      * @param mainSplitPane JSplitPane to initialise
      */
@@ -833,6 +833,25 @@ public final class MainFrame extends JFrame implements WindowListener,
             
             final FontUIResource font = new FontUIResource("Dialog", Font.PLAIN , 12);
             
+            UIManager.put("TableHeader.font", font);
+            UIManager.put("ToggleButton.font", font);
+            UIManager.put("ScrollPane.font", font);
+            UIManager.put("Spinner.font", font);
+            UIManager.put("RadioButtonMenuItem.font", font);
+            UIManager.put("Slider.font", font);
+            UIManager.put("OptionPane.font", font);
+            UIManager.put("ToolBar.font", font);
+            UIManager.put("CheckBoxMenuItem.font", font);
+            UIManager.put("Table.font", font);
+            UIManager.put("MenuBar.font", font);
+            UIManager.put("PopupMenu.font", font);
+            UIManager.put("DesktopIcon.font", font);
+            UIManager.put("TextPane.font", font);
+            UIManager.put("ProgressBar.font", font);
+            UIManager.put("FormattedTextField.font", font);
+            UIManager.put("ColorChooser.font", font);
+            UIManager.put("Viewport.font", font);
+            UIManager.put("ToolTip.font", font);
             UIManager.put("Label.font", font);
             UIManager.put("TextField.font", font);
             UIManager.put("PasswordField.font", font);
