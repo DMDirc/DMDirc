@@ -111,6 +111,15 @@ public final class ColourChooser extends JPanel implements ActionListener {
     }
     
     /**
+     * Sets the selected colour for this component.
+     * @param newValue New colour
+     */
+    public void setColour(final String newValue) {
+        value = newValue;
+        updateColour(value);
+    }
+    
+    /**
      * Updates the colour panel.
      * @param newColour The new colour to use.
      */

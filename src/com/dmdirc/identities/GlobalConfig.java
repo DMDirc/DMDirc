@@ -70,6 +70,15 @@ public final class GlobalConfig implements ConfigSource {
     }
     
     /**
+     * Unsets a specified option.
+     * @param domain domain of the option
+     * @param option name of the option
+     */
+    public void unsetOption(final String domain, final String option) {
+        Config.unsetOption(domain, option);
+    }
+    
+    /**
      * Retrieves the target of this config source.
      * @return This source's target
      */

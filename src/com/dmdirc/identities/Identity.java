@@ -162,11 +162,11 @@ public final class Identity implements ConfigSource {
     }
     
     /**
-     * Deletes the specified option from this identity.
-     * @param domain The domain of the option
-     * @param option The name of the option
+     * Unsets a specified option.
+     * @param domain domain of the option
+     * @param option name of the option
      */
-    public void removeOption(final String domain, final String option) {
+    public void unsetOption(final String domain, final String option) {
         properties.remove(domain + "." + option);
         needSave = true;
     }

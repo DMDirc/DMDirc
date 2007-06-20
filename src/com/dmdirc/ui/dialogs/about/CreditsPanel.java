@@ -38,7 +38,7 @@ import javax.swing.event.HyperlinkListener;
 /**
  * Authors Panel.
  */
-public class CreditsPanel extends JPanel implements HyperlinkListener {
+public final class CreditsPanel extends JPanel implements HyperlinkListener {
     
     /**
      * A version number for this class. It should be changed whenever the class

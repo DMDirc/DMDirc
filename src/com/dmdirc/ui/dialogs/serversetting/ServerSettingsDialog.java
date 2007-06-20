@@ -26,6 +26,7 @@ import com.dmdirc.Server;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.components.expandingsettings.SettingsPanel;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -39,7 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 /**
- * Allows the user to modify channel settings (modes, topics, etc).
+ * Allows the user to modify server settings and the ignore list.
  */
 public final class ServerSettingsDialog extends StandardDialog
         implements ActionListener {
@@ -59,11 +60,13 @@ public final class ServerSettingsDialog extends StandardDialog
     
     /** Ignore list panel. */
     private IgnoreListPanel ignoreList;
+    /** Settingspanel. */
+    private SettingsPanel settingsPanel;
     
     /**
      * Creates a new instance of ServerSettingsDialog.
      * 
-     * @param newChannel The channel object that we're editing settings for
+     * @param server The server object that we're editing settings for
      */
     public ServerSettingsDialog(final Server server) {
         super(MainFrame.getMainFrame(), false);

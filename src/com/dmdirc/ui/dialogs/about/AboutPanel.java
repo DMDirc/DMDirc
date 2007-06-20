@@ -39,7 +39,7 @@ import javax.swing.event.HyperlinkListener;
 /**
  * About DMDirc panel.
  */
-public class AboutPanel extends JPanel implements HyperlinkListener {
+public final class AboutPanel extends JPanel implements HyperlinkListener {
     
     /**
      * A version number for this class. It should be changed whenever the class

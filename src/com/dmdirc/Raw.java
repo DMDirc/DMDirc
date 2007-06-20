@@ -51,6 +51,8 @@ public final class Raw extends WritableFrameContainer implements IDataIn, IDataO
      * @param newServer the server to monitor
      */
     public Raw(final Server newServer) {
+        super();
+        
         this.server = newServer;
         
         imageIcon = IconManager.getIcon("raw");
@@ -125,12 +127,12 @@ public final class Raw extends WritableFrameContainer implements IDataIn, IDataO
     public Server getServer() {
         return server;
     }
-
+    
     /** {@inheritDoc} */
-    public void sendLine(String line) {
+    public void sendLine(final String line) {
         server.sendLine(line);
     }
-
+    
     /** {@inheritDoc} */
     public int getMaxLineLength() {
         return server.getMaxLineLength();

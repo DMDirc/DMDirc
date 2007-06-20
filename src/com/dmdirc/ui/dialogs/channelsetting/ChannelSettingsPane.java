@@ -376,7 +376,7 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
                     newSettingField.getText());
         } else {
             final String[] optionValues = event.getActionCommand().split("\\.");
-            identity.removeOption(optionValues[0], optionValues[1]);
+            identity.unsetOption(optionValues[0], optionValues[1]);
             initCurrentSettingsPanel();
         }
     }

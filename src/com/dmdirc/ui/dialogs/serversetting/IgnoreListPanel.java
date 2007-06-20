@@ -33,7 +33,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Enumeration;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -48,7 +47,7 @@ import javax.swing.event.ListSelectionListener;
 /**
  * Ignore list panel.
  */
-public class IgnoreListPanel extends JPanel implements ActionListener,
+public final class IgnoreListPanel extends JPanel implements ActionListener,
         ListSelectionListener {
     
     /**
@@ -117,7 +116,7 @@ public class IgnoreListPanel extends JPanel implements ActionListener,
                 SMALL_BORDER);
         add(scrollPane, constraints);
         
-        constraints.weightx = 0.5   ;
+        constraints.weightx = 0.5;
         constraints.weighty = 0.0;
         constraints.gridy = 1;
         constraints.gridx = 0;

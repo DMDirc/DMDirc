@@ -23,8 +23,8 @@
 package com.dmdirc.ui.dialogs.about;
 
 import com.dmdirc.ui.MainFrame;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.components.StandardDialog;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -48,7 +48,7 @@ public final class AboutDialog extends StandardDialog implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4;
+    private static final long serialVersionUID = 5;
     
     /** Previously created instance of AboutDialog. */
     private static AboutDialog me;
@@ -121,11 +121,7 @@ public final class AboutDialog extends StandardDialog implements
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
-        if (e.getSource() == getOkButton()) {
-            dispose();
-        } else if (e.getSource() == getCancelButton()) {
-            dispose();
-        }
+        dispose();
     }
     
 }

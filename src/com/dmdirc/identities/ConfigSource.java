@@ -54,6 +54,13 @@ public interface ConfigSource extends Comparable<ConfigSource> {
     void setOption(String domain, String option, String value);
     
     /**
+     * Unsets a specified option.
+     * @param domain domain of the option
+     * @param option name of the option
+     */
+    void unsetOption(final String domain, final String option);
+    
+    /**
      * Retrieves the target of this config source.
      * @return This source's target
      */

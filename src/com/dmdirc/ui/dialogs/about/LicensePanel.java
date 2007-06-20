@@ -36,7 +36,7 @@ import javax.swing.SwingUtilities;
 /**
  * License panel.
  */
-public class LicensePanel extends JPanel {
+public final class LicensePanel extends JPanel {
     
     /**
      * A version number for this class. It should be changed whenever the class
