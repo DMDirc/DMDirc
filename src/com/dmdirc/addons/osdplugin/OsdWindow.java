@@ -68,7 +68,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
         setFocusableWindowState(false);
         setAlwaysOnTop(true);
         setSize(new Dimension(500, 
-                Config.getOptionInt("plugin-OSD", "fontsize", 20) + LARGE_BORDER));
+                Config.getOptionInt("plugin-OSD", "fontSize", 20) + LARGE_BORDER));
         setResizable(false);
         setUndecorated(true);
         
@@ -89,7 +89,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
         label.setForeground(Config.getOptionColor("plugin-OSD",
                 "fgcolour", Color.decode("#ffffff")));
         label.setFont(label.getFont().deriveFont((float) Config.getOptionInt("plugin-OSD",
-                "fontsize", 20)));
+                "fontSize", 20)));
         label.setHorizontalAlignment(SwingConstants.CENTER);
         add(label);
         
