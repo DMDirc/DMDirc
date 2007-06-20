@@ -35,6 +35,8 @@ import com.dmdirc.ui.components.ParamModePanel;
 import com.dmdirc.ui.components.StandardDialog;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.components.expandingsettings.SettingsPanel;
+import com.dmdirc.ui.components.expandingsettings.SettingsPanel.OptionType;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -136,7 +138,7 @@ public final class ChannelSettingsDialog extends StandardDialog
     private JTextArea topicText;
     
     /** Client settings panel. */
-    private ChannelSettingsPane channelSettingsPane;
+    private SettingsPanel channelSettingsPane;
     
     /** Channel identity file. */
     private final transient Identity identity;
@@ -252,14 +254,10 @@ public final class ChannelSettingsDialog extends StandardDialog
     
     /** Initialises the channel Settings (identities) tab. */
     private void initSettingsTab() {
-        final JPanel settingsPanel = new JPanel(new BorderLayout());
         
-        tabbedPane.addTab("Client Settings", settingsPanel);
+        initSettingsPanel();
         
-        settingsPanel.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER));
-        
-        initSettingsPanel(settingsPanel);
+        tabbedPane.addTab("Client Settings", channelSettingsPane);
     }
     
     /**
@@ -494,8 +492,27 @@ public final class ChannelSettingsDialog extends StandardDialog
      * Initialises the channel settings.
      * @param parent The panel to add the channel settings panel to
      */
-    private void initSettingsPanel(final JPanel parent) {
-        channelSettingsPane = new ChannelSettingsPane(parent, identity);
+    private void initSettingsPanel() {
+        channelSettingsPane = new SettingsPanel(identity, "These settings are " 
+                + "specific to this channel on this network, any settings " 
+                + "specified here will overwrite global settings");
+        
+        channelSettingsPane.addOption("channel.splitusermodes", 
+                "Split user modes", OptionType.CHECKBOX);
+        channelSettingsPane.addOption("general.cyclemessage", 
+                "Cycle message", OptionType.TEXTFIELD);
+        channelSettingsPane.addOption("general.kickmessage", 
+                "Kick message", OptionType.TEXTFIELD);
+        channelSettingsPane.addOption("general.partmessage", 
+                "Part message", OptionType.TEXTFIELD);
+        channelSettingsPane.addOption("ui.backgroundcolour", 
+                "Background colour", OptionType.COLOUR);
+        channelSettingsPane.addOption("ui.foregroundcolour", 
+                "Foreground colour", OptionType.COLOUR);
+        channelSettingsPane.addOption("ui.frameBufferSize", 
+                "Frame buffer size", OptionType.TEXTFIELD);
+        channelSettingsPane.addOption("ui.inputbuffersize", 
+                "Input buffer size", OptionType.TEXTFIELD);
     }
     
     /** Initialises listeners for this dialog. */
@@ -515,7 +532,7 @@ public final class ChannelSettingsDialog extends StandardDialog
         if (getOkButton().equals(actionEvent.getSource())) {
             setChangedBooleanModes();
             setChangedTopic();
-            channelSettingsPane.saveSettings();
+            channelSettingsPane.save();
             identity.setOption("dialogstate", "channelsettingsdialog",
                     String.valueOf(tabbedPane.getSelectedIndex()));
             setVisible(false);

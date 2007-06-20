@@ -104,6 +104,9 @@ public final class SettingsPanel extends JPanel {
         currentOptionsPanel = new CurrentOptionsPanel(this);
         scrollPane = new JScrollPane(currentOptionsPanel);
         
+        setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
+        
         scrollPane.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createTitledBorder(
                 UIManager.getBorder("TextField.border"), "Current settings"),

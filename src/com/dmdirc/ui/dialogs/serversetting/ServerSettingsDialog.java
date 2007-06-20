@@ -23,12 +23,14 @@
 package com.dmdirc.ui.dialogs.serversetting;
 
 import com.dmdirc.Server;
+import com.dmdirc.identities.IdentityManager;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.components.expandingsettings.SettingsPanel;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -65,7 +67,7 @@ public final class ServerSettingsDialog extends StandardDialog
     
     /**
      * Creates a new instance of ServerSettingsDialog.
-     * 
+     *
      * @param server The server object that we're editing settings for
      */
     public ServerSettingsDialog(final Server server) {
@@ -74,6 +76,8 @@ public final class ServerSettingsDialog extends StandardDialog
         this.server = server;
         
         setTitle("Server settings");
+        setPreferredSize(new Dimension(400, 400));
+        setResizable(false);
         
         initComponents();
         initListeners();
@@ -87,13 +91,19 @@ public final class ServerSettingsDialog extends StandardDialog
         initButtonsPanel();
         
         final JTabbedPane tabbedPane = new JTabbedPane();
-        ignoreList = new IgnoreListPanel(server);
         
-        tabbedPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
+        tabbedPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, 0, SMALL_BORDER));
         
+        ignoreList = new IgnoreListPanel(server);
+
+        settingsPanel = new SettingsPanel(IdentityManager.getNetworkConfig(
+                server.getNetwork()), "These settings are specific to this " 
+                + "network, any settings specified here will overwrite global " 
+                + "settings");
+        
         tabbedPane.add("Ignore list", ignoreList);
-        tabbedPane.add("settings", new JPanel());
+        tabbedPane.add("settings", settingsPanel);
         
         this.setLayout(new BorderLayout());
         
@@ -101,7 +111,7 @@ public final class ServerSettingsDialog extends StandardDialog
         this.add(buttonsPanel, BorderLayout.PAGE_END);
     }
     
-        /** Initialises the button panel. */
+    /** Initialises the button panel. */
     private void initButtonsPanel() {
         buttonsPanel = new JPanel();
         
@@ -114,7 +124,7 @@ public final class ServerSettingsDialog extends StandardDialog
         buttonsPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
         buttonsPanel.add(getRightButton());
     }
-   
+    
     /** Initialises listeners for this dialog. */
     private void initListeners() {
         getOkButton().addActionListener(this);
@@ -123,9 +133,10 @@ public final class ServerSettingsDialog extends StandardDialog
     
     /** Saves the settings from this dialog. */
     public void saveSettings() {
+        settingsPanel.save();
         ignoreList.saveList();
     }
-
+    
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == getOkButton()) {

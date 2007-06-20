@@ -96,9 +96,9 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
         addInputCheckbox = new JCheckBox();
         addInputNone = new JLabel("");
         
-        addOptionComboBox.setPreferredSize(new Dimension(150, 
+        addOptionComboBox.setPreferredSize(new Dimension(150,
                 addOptionButton.getFont().getSize()));
-        addOptionButton.setPreferredSize(new Dimension(150,
+        addOptionButton.setPreferredSize(new Dimension(100,
                 addOptionButton.getFont().getSize()));
         
         addInputColourChooser.setPreferredSize(new Dimension(150, 0));
@@ -106,7 +106,10 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
         addInputCheckbox.setPreferredSize(new Dimension(150, 0));
         addInputNone.setPreferredSize(new Dimension(150, 0));
         
-        addInputCurrent = addInputText;
+        addInputCurrent = addInputNone;
+        
+        addOptionComboBox.setEnabled(false);
+        addOptionButton.setEnabled(false);
     }
     
     /** Initialises listeners. */
@@ -152,6 +155,10 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
     protected void delOption(final String optionName) {
         ((DefaultComboBoxModel) addOptionComboBox.getModel()).removeElement(
                 optionName);
+        if (addOptionComboBox.getModel().getSize() == 0) {
+            addOptionComboBox.setEnabled(false);
+            addOptionButton.setEnabled(false);
+        }
     }
     
     /**
@@ -173,7 +180,7 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
                     addInputCurrent = addInputCheckbox;
                     break;
                 case COLOUR:
-                    addInputColourChooser.setColour("");    
+                    addInputColourChooser.setColour("");
                     addInputCurrent = addInputColourChooser;
                     break;
                 default:
