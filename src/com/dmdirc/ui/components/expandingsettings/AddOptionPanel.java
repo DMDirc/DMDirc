@@ -38,7 +38,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 
 /**
@@ -69,6 +71,8 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
     /** Add option checkbox. */
     private JCheckBox addInputCheckbox;
     /** Add option checkbox. */
+    private JSpinner addInputSpinner;
+    /** Add option checkbox. */
     private JLabel addInputNone;
     
     /**
@@ -91,9 +95,12 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
         addOptionComboBox = new JComboBox(new DefaultComboBoxModel());
         addOptionButton = new JButton("Add");
         
+        addOptionComboBox.setRenderer(new AddOptionCellRenderer(parent));
+        
         addInputColourChooser = new ColourChooser();
         addInputText = new JTextField();
         addInputCheckbox = new JCheckBox();
+        addInputSpinner = new JSpinner(new SpinnerNumberModel());
         addInputNone = new JLabel("");
         
         addOptionComboBox.setPreferredSize(new Dimension(150,
@@ -104,6 +111,7 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
         addInputColourChooser.setPreferredSize(new Dimension(150, 0));
         addInputText.setPreferredSize(new Dimension(150, 0));
         addInputCheckbox.setPreferredSize(new Dimension(150, 0));
+        addInputSpinner.setPreferredSize(new Dimension(150, 0));
         addInputNone.setPreferredSize(new Dimension(150, 0));
         
         addInputCurrent = addInputNone;
@@ -183,6 +191,10 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
                     addInputColourChooser.setColour("");
                     addInputCurrent = addInputColourChooser;
                     break;
+                case SPINNER:
+                    addInputSpinner.setValue(0);
+                    addInputCurrent = addInputSpinner;
+                    break;
                 default:
                     addInputCurrent = addInputNone;
                     break;
@@ -223,6 +235,12 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
                             (String) addOptionComboBox.getSelectedItem(),
                             type,
                             addInputColourChooser.getColour());
+                    break;
+                case SPINNER:
+                    parent.addCurrentOption(
+                            (String) addOptionComboBox.getSelectedItem(),
+                            type,
+                            addInputSpinner.getValue().toString());
                     break;
                 default:
                     break;

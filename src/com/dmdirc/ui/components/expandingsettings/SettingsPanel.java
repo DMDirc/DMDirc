@@ -53,7 +53,7 @@ public final class SettingsPanel extends JPanel {
     private final ConfigSource config;
     
     /** Valid option types. */
-    public enum OptionType { TEXTFIELD, CHECKBOX, COLOUR, }
+    public enum OptionType { TEXTFIELD, CHECKBOX, COLOUR, SPINNER, }
     /** config option -> name. */
     private Map<String, String> names;
     /** config option -> type. */

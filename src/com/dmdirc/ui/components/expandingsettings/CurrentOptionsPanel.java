@@ -42,7 +42,9 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 
 /**
@@ -66,6 +68,8 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
     private Map<String, JCheckBox> checkBoxes;
     /** config option -> colours. */
     private Map<String, ColourChooser> colours;
+    /** config option -> spinners. */
+    private Map<String, JSpinner> spinners;
     
     /**
      * Creates a new instance of CurrentOptionsPanel.
@@ -85,6 +89,7 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
         textFields = new HashMap<String, JTextField>();
         checkBoxes = new HashMap<String, JCheckBox>();
         colours = new HashMap<String, ColourChooser>();
+        spinners = new HashMap<String, JSpinner>();
     }
     
     /**
@@ -106,6 +111,10 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
                 break;
             case COLOUR:
                 colours.put(optionName, new ColourChooser(value, true, true));
+                break;
+            case SPINNER:
+                spinners.put(optionName, new JSpinner(new SpinnerNumberModel()));
+                spinners.get(optionName).setValue(Integer.parseInt(value));
                 break;
             default:
                 throw new IllegalArgumentException("Illegal Type: " + type);
@@ -131,6 +140,9 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
                 break;
             case COLOUR:
                 colours.remove(optionName);
+                break;
+            case SPINNER:
+                spinners.remove(optionName);
                 break;
             default:
                 throw new IllegalArgumentException("Illegal Type: " + type);
@@ -163,6 +175,11 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
             case COLOUR:
                 if (colours.containsKey(optionName)) {
                     returnValue = colours.get(optionName).getColour();
+                }
+                break;
+            case SPINNER:
+                if (spinners.containsKey(optionName)) {
+                    returnValue = spinners.get(optionName).getValue().toString();
                 }
                 break;
             default:
@@ -231,6 +248,12 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
         }
         
         for (Entry<String, ColourChooser> entry : colours.entrySet()) {
+            addCurrentOption(entry.getKey(),
+                    parent.getOptionName(entry.getKey()),
+                    this, entry.getValue());
+        }
+        
+        for (Entry<String, JSpinner> entry : spinners.entrySet()) {
             addCurrentOption(entry.getKey(),
                     parent.getOptionName(entry.getKey()),
                     this, entry.getValue());

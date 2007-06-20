@@ -510,9 +510,9 @@ public final class ChannelSettingsDialog extends StandardDialog
         channelSettingsPane.addOption("ui.foregroundcolour", 
                 "Foreground colour", OptionType.COLOUR);
         channelSettingsPane.addOption("ui.frameBufferSize", 
-                "Frame buffer size", OptionType.TEXTFIELD);
+                "Frame buffer size", OptionType.SPINNER);
         channelSettingsPane.addOption("ui.inputbuffersize", 
-                "Input buffer size", OptionType.TEXTFIELD);
+                "Input buffer size", OptionType.SPINNER);
     }
     
     /** Initialises listeners for this dialog. */
