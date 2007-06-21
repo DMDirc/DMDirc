@@ -392,7 +392,7 @@ public final class ChannelSettingsDialog extends StandardDialog
         
         constraints.gridy = 3;
         
-        if (topicLengthLabel.getText().length() == 0) {
+        if (topicLengthMax == 0) {
             topicLengthLabel.setText(topicText.getText().length() + " characters");
         } else {
             topicLengthLabel.setText(topicLengthMax - topicText.getText().length()
