@@ -57,6 +57,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     /** TextLayout -> Line numbers. */
     private final Map<TextLayout, LineInfo> textLayouts;
     
+    /** Line height. */
+    private final int lineHeight;
+    
     /** Selection event types. */
     private enum MouseEventType { CLICK, DRAG, RELEASE, };
     
@@ -86,6 +89,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         super();
         this.document = document;
         scrollBarPosition = 0;
+        lineHeight = getFont().getSize() + 2;
         textPane = parent;
         this.setDoubleBuffered(true);
         this.setOpaque(true);
@@ -97,15 +101,27 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     
     /**
      * Paints the text onto the canvas.
+     *
      * @param g graphics object to draw onto
      */
     public void paintComponent(final Graphics graphics) {
+        
+        //check theres something to draw
+        if (document.getNumLines() == 0) {
+            return;
+        }
+        
         final Graphics2D g = (Graphics2D) graphics;
         
         final float formatWidth = getWidth() - 6;
         final float formatHeight = getHeight();
-        final int lineHeight = getFont().getSize() + 2;
+        float drawPosY = formatHeight;
+        int startLine = scrollBarPosition;
         
+        int useStartLine;
+        int useStartChar;
+        int useEndLine;
+        int useEndChar;
         int paragraphStart;
         int paragraphEnd;
         LineBreakMeasurer lineMeasurer;
@@ -115,15 +131,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         
         textLayouts.clear();
         positions.clear();
-        
-        //check theres something to draw
-        if (document.getNumLines() == 0) {
-            return;
-        }
-        
-        float drawPosY = formatHeight;
-        
-        int startLine = scrollBarPosition;
         
         // Check the start line is in range
         if (startLine >= document.getNumLines()) {
@@ -137,14 +144,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         //sets the last visible line
         lastVisibleLine = startLine;
         firstVisibleLine = startLine;
-        
-        // We use these for drawing rather than the actual
-        // sel{Start,End}{Line,Char} vars defined in the highlightEvent
-        // This alllows for highlight in both directions.
-        int useStartLine;
-        int useStartChar;
-        int useEndLine;
-        int useEndChar;
         
         if (selStartLine > selEndLine) {
             // Swap both
@@ -168,34 +167,18 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         
         // Iterate through the lines
         for (int i = startLine; i >= 0; i--) {
+            float drawPosX;
             final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
             paragraphStart = iterator.getBeginIndex();
             paragraphEnd = iterator.getEndIndex();
             lineMeasurer = new LineBreakMeasurer(iterator, g.getFontRenderContext());
             lineMeasurer.setPosition(paragraphStart);
             
-            int wrappedLine = 0;
-            int height = 0;
-            
-            // Work out the number of lines this will take
-            while (lineMeasurer.getPosition() < paragraphEnd) {
-                if (formatWidth < 0) {
-                    lineMeasurer.nextLayout(0);
-                } else {
-                    lineMeasurer.nextLayout(formatWidth);
-                }
-                
-                height += lineHeight;
-                wrappedLine++;
-            }
-            
-            // Get back to the start
-            lineMeasurer.setPosition(paragraphStart);
-            paragraphStart = iterator.getBeginIndex();
-            paragraphEnd = iterator.getEndIndex();
+            final int wrappedLine = getNumWrappedLines(lineMeasurer,
+                    paragraphStart, paragraphEnd, formatWidth);
             
             if (wrappedLine > 1) {
-                drawPosY -= height;
+                drawPosY -= lineHeight * wrappedLine;
             }
             
             int j = 0;
@@ -217,7 +200,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                     drawPosY += lineHeight;
                 }
                 
-                float drawPosX;
                 // Calculate the initial X position
                 if (layout.isLeftToRight()) {
                     drawPosX = 3;
@@ -228,38 +210,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                 // Check if the target is in range
                 if (drawPosY >= 0 || drawPosY <= formatHeight) {
                     
-                    // If the selection includes this line
-                    if (useStartLine <= i && useEndLine >= i) {
-                        int firstChar;
-                        int lastChar;
-                        
-                        // Determine the first char we care about
-                        if (useStartLine < i || useStartChar < chars) {
-                            firstChar = chars;
-                        } else {
-                            firstChar = useStartChar;
-                        }
-                        
-                        // ... And the last
-                        if (useEndLine > i || useEndChar > chars + layout.getCharacterCount()) {
-                            lastChar = chars + layout.getCharacterCount();
-                        } else {
-                            lastChar = useEndChar;
-                        }
-                        
-                        // If the selection includes the chars we're showing
-                        if (lastChar > chars && firstChar < chars + layout.getCharacterCount()) {
-                            final int trans = (int) (lineHeight / 2f + drawPosY);
-                            final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
-                            
-                            g.setColor(UIManager.getColor("TextPane.selectionBackground"));
-                            g.setBackground(UIManager.getColor("TextPane.selectionForeground"));
-                            
-                            g.translate(3, trans);
-                            g.fill(shape);
-                            g.translate(-3, -1 * trans);
-                        }
-                    }
+                    doHighlight(i, useStartLine, useEndLine, useStartChar, useEndChar, chars, layout, g, drawPosY);
                     
                     g.setColor(textPane.getForeground());
                     
@@ -274,10 +225,91 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                 chars += layout.getCharacterCount();
             }
             if (j > 1) {
-                drawPosY -= height - lineHeight;
+                drawPosY -= lineHeight * (wrappedLine - 1);
             }
             if (drawPosY <= 0) {
                 break;
+            }
+        }
+    }
+    
+    /**
+     * Returns the number of timesa line will wrap
+     *
+     * @param lineMeasurer LineBreakMeasurer to work out wrapping for
+     * @param paragraphStart Start index of the paragraph
+     * @param paragraphEnd End index of the paragraph
+     * @param formatWidth Width to wrap at
+     *
+     * @return Number of times the line wraps
+     */
+    private int getNumWrappedLines(final LineBreakMeasurer lineMeasurer,
+            final int paragraphStart, final int paragraphEnd,
+            final float formatWidth) {
+        int wrappedLine = 0;
+        
+        while (lineMeasurer.getPosition() < paragraphEnd) {
+            if (formatWidth < 0) {
+                lineMeasurer.nextLayout(0);
+            } else {
+                lineMeasurer.nextLayout(formatWidth);
+            }
+            
+            wrappedLine++;
+        }
+        
+        lineMeasurer.setPosition(paragraphStart);
+        
+        return wrappedLine;
+    }
+    
+    /**
+     * Draws the hightlight on the textpane
+     *
+     * @param line Line number
+     * @param startLine Selection start line
+     * @param endLine Selection end line
+     * @param startChar Selection start char
+     * @param endChar Selection end char
+     * @param chars Number of characters so far in the line
+     * @param layout Current line textlayout
+     * @param g Graphics surface to draw highlight on
+     * @param drawPosY current y location of the line
+     */
+    private void doHighlight(final int line, final int startLine, 
+            final int endLine, final int startChar, final int endChar,
+            final int chars, final TextLayout layout, final Graphics2D g,
+            final float drawPosY) {
+        //Does this line need highlighting?
+        if (startLine <= line && endLine >= line) {
+            int firstChar;
+            int lastChar;
+            
+            // Determine the first char we care about
+            if (startLine < line || startChar < chars) {
+                firstChar = chars;
+            } else {
+                firstChar = startChar;
+            }
+            
+            // ... And the last
+            if (endLine > line || endChar > chars + layout.getCharacterCount()) {
+                lastChar = chars + layout.getCharacterCount();
+            } else {
+                lastChar = endChar;
+            }
+            
+            // If the selection includes the chars we're showing
+            if (lastChar > chars && firstChar < chars + layout.getCharacterCount()) {
+                final int trans = (int) (lineHeight / 2f + drawPosY);
+                final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
+                
+                g.setColor(UIManager.getColor("TextPane.selectionBackground"));
+                g.setBackground(UIManager.getColor("TextPane.selectionForeground"));
+                
+                g.translate(3, trans);
+                g.fill(shape);
+                g.translate(-3, -1 * trans);
             }
         }
     }
