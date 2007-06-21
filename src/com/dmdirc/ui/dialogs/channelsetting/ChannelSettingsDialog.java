@@ -393,8 +393,7 @@ public final class ChannelSettingsDialog extends StandardDialog
         constraints.gridy = 3;
         
         if (topicLengthLabel.getText().length() == 0) {
-            topicLengthLabel.setText(topicLengthMax + " of " + topicLengthMax
-                    + " available");
+            topicLengthLabel.setText(topicText.getText().length() + " characters");
         } else {
             topicLengthLabel.setText(topicLengthMax - topicText.getText().length()
             + " of " + topicLengthMax + " available");
@@ -672,7 +671,9 @@ public final class ChannelSettingsDialog extends StandardDialog
                 && keyEvent.getKeyCode() != KeyEvent.VK_DELETE)) {
             keyEvent.consume();
         }
-        if (topicLengthMax > 0) {
+        if (topicLengthMax == 0) {
+            topicLengthLabel.setText(topicText.getText().length() + " characters");
+        } else {
             topicLengthLabel.setText(topicLengthMax - topicText.getText().length()
             + " of " + topicLengthMax + " available");
         }
