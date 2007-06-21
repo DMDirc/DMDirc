@@ -344,7 +344,7 @@ public final class ChannelSettingsDialog extends StandardDialog
             
             final ParamModePanel panel = new ParamModePanel(mode, state, value,
                     channel.getConfigManager());
-            panel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
+            panel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                     0, 0, 0));
             modesPanel.add(panel, constraints);
             
@@ -391,8 +391,14 @@ public final class ChannelSettingsDialog extends StandardDialog
         topicsPanel.add(scrollPane, constraints);
         
         constraints.gridy = 3;
-        topicLengthLabel.setText(topicLengthMax - topicText.getText().length()
-        + " of " + topicLengthMax + " available");
+        
+        if (topicLengthLabel.getText().length() == 0) {
+            topicLengthLabel.setText(topicLengthMax + " of " + topicLengthMax
+                    + " available");
+        } else {
+            topicLengthLabel.setText(topicLengthMax - topicText.getText().length()
+            + " of " + topicLengthMax + " available");
+        }
         topicsPanel.add(topicLengthLabel, constraints);
         
         constraints.fill = GridBagConstraints.BOTH;
@@ -464,7 +470,13 @@ public final class ChannelSettingsDialog extends StandardDialog
             listModesPanels.add(panel);
         }
         
-        listModesPanel.add(listModesPanels.get(0), BorderLayout.CENTER);
+        if (listModesPanels.isEmpty()) {
+            listModesMenu.addItem("No list modes");
+            listModesMenu.setEnabled(false);
+        } else {
+            listModesPanel.add(listModesPanels.get(0), BorderLayout.CENTER);
+        }
+        
         listModesPanel.setPreferredSize(parent.getPreferredSize());
         
         constraints.weightx = 1.0;
@@ -493,25 +505,25 @@ public final class ChannelSettingsDialog extends StandardDialog
      * @param parent The panel to add the channel settings panel to
      */
     private void initSettingsPanel() {
-        channelSettingsPane = new SettingsPanel(identity, "These settings are " 
-                + "specific to this channel on this network, any settings " 
+        channelSettingsPane = new SettingsPanel(identity, "These settings are "
+                + "specific to this channel on this network, any settings "
                 + "specified here will overwrite global settings");
         
-        channelSettingsPane.addOption("channel.splitusermodes", 
+        channelSettingsPane.addOption("channel.splitusermodes",
                 "Split user modes", OptionType.CHECKBOX);
-        channelSettingsPane.addOption("general.cyclemessage", 
+        channelSettingsPane.addOption("general.cyclemessage",
                 "Cycle message", OptionType.TEXTFIELD);
-        channelSettingsPane.addOption("general.kickmessage", 
+        channelSettingsPane.addOption("general.kickmessage",
                 "Kick message", OptionType.TEXTFIELD);
-        channelSettingsPane.addOption("general.partmessage", 
+        channelSettingsPane.addOption("general.partmessage",
                 "Part message", OptionType.TEXTFIELD);
-        channelSettingsPane.addOption("ui.backgroundcolour", 
+        channelSettingsPane.addOption("ui.backgroundcolour",
                 "Background colour", OptionType.COLOUR);
-        channelSettingsPane.addOption("ui.foregroundcolour", 
+        channelSettingsPane.addOption("ui.foregroundcolour",
                 "Foreground colour", OptionType.COLOUR);
-        channelSettingsPane.addOption("ui.frameBufferSize", 
+        channelSettingsPane.addOption("ui.frameBufferSize",
                 "Frame buffer size", OptionType.SPINNER);
-        channelSettingsPane.addOption("ui.inputbuffersize", 
+        channelSettingsPane.addOption("ui.inputbuffersize",
                 "Input buffer size", OptionType.SPINNER);
     }
     
@@ -563,7 +575,7 @@ public final class ChannelSettingsDialog extends StandardDialog
                 "Please enter the hostmask for the new " + modeText);
         if (modeMask != null && (!modeMask.equals("")
         || modeMask.length() > 0)) {
-            channel.getChannelInfo().alterMode(true, 
+            channel.getChannelInfo().alterMode(true,
                     listModesArray[selectedIndex], modeMask);
             channel.getChannelInfo().sendModes();
         }
@@ -655,12 +667,15 @@ public final class ChannelSettingsDialog extends StandardDialog
      */
     public void keyTyped(final KeyEvent keyEvent) {
         if (topicText.getText().length() >= topicLengthMax
+                && topicLengthMax != 0
                 && (keyEvent.getKeyCode() != KeyEvent.VK_BACK_SPACE
                 && keyEvent.getKeyCode() != KeyEvent.VK_DELETE)) {
             keyEvent.consume();
         }
-        topicLengthLabel.setText(topicLengthMax - topicText.getText().length()
-        + " of " + topicLengthMax + " available");
+        if (topicLengthMax > 0) {
+            topicLengthLabel.setText(topicLengthMax - topicText.getText().length()
+            + " of " + topicLengthMax + " available");
+        }
     }
     
     /**
