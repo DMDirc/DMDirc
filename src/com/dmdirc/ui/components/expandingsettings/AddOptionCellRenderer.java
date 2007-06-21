@@ -54,7 +54,6 @@ public class AddOptionCellRenderer extends JLabel
         this.parent = parent;
         
         setOpaque(true);
-        setHorizontalAlignment(CENTER);
         setVerticalAlignment(CENTER);
     }
     

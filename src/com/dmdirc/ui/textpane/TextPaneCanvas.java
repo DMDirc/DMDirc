@@ -31,7 +31,6 @@ import java.awt.event.MouseEvent;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
-import java.text.AttributedCharacterIterator.Attribute;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +46,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
      * class structure is changed (or anything else that would prevent
      * serialized objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4;
+    private static final long serialVersionUID = 5;
     
     /** IRCDocument. */
     private final transient IRCDocument document;
@@ -57,8 +56,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     private final Map<Rectangle, TextLayout> positions;
     /** TextLayout -> Line numbers. */
     private final Map<TextLayout, LineInfo> textLayouts;
-    /** Line number -> rectangle for lines containing hyperlinks. */
-    private final Map<TextLayout, Rectangle> hyperlinks;
     
     /** Selection event types. */
     private enum MouseEventType { CLICK, DRAG, RELEASE, };
@@ -94,7 +91,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         this.setOpaque(true);
         textLayouts = new HashMap<TextLayout, LineInfo>();
         positions = new HashMap<Rectangle, TextLayout>();
-        hyperlinks = new HashMap<TextLayout, Rectangle>();
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
     }
@@ -115,11 +111,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         int paragraphStart;
         int paragraphEnd;
         LineBreakMeasurer lineMeasurer;
-        boolean isHyperlink = false;
         
         textLayouts.clear();
         positions.clear();
-        hyperlinks.clear();
         
         float drawPosY = formatHeight;
         
@@ -206,13 +200,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                     drawPosY -= height;
                 }
                 
-                //Check if this line contains a hyperlink
-                for (Attribute attr : iterator.getAllAttributeKeys()) {
-                    if (attr instanceof IRCTextAttribute) {
-                        isHyperlink = true;
-                    }
-                }
-                
                 int j = 0;
                 int chars = 0;
                 // Loop through each wrapped line
@@ -283,10 +270,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                         textLayouts.put(layout, new LineInfo(i, j));
                         positions.put(new Rectangle(0, (int) drawPosY,
                                 (int) formatWidth, lineHeight), layout);
-                        if (isHyperlink) {
-                            hyperlinks.put(layout, new Rectangle((int) drawPosX,
-                                    (int) drawPosY, (int) formatWidth, lineHeight));
-                        }
                     }
                     
                     j++;
@@ -318,8 +301,8 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     /** {@inheritDoc}. */
     public void mouseClicked(final MouseEvent e) {
         String clickedText = "";
-        int start = -1;
-        int end = -1;
+        final int start;
+        final int end;
         final int[] info = getClickPosition(this.getMousePosition());
         
         if (info[0] != -1) {
@@ -332,45 +315,97 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
             }
             
             clickedText = textPane.getTextFromLine(info[0]);
-            start = info[2];
-            end = info[2];
             
-            if (start != -1 || end != -1) {
-                
-                // Traverse backwards
-                while (start > 0 && start < clickedText.length() && clickedText.charAt(start) != ' ') {
-                    start--;
-                }
-                if (start + 1 < clickedText.length() && clickedText.charAt(start) == ' ') {
-                    start++;
-                }
-                
-                // And forwards
-                while (end < clickedText.length() && end > 0 && clickedText.charAt(end) != ' ') {
-                    end++;
-                }
-                
-                if (start != -1 && end != -1) {
-                    if (e.getClickCount() == 2) {
-                        selStartLine = info[0];
-                        selEndLine = info[0];
-                        selStartChar = start;
-                        selEndChar = end;
-                    } else if (e.getClickCount() == 3) {
-                        selStartLine = info[0];
-                        selEndLine = info[0];
-                        selStartChar = 0;
-                        selEndChar = clickedText.length();
-                    } else {
-                        if (start >= 0 && end <= clickedText.length()) {
-                            checkClickedText(clickedText.substring(start, end));
-                        }
-                    }
-                }
+            if (info[2] == -1) {
+                start = -1;
+                end = -1;
+            } else {
+                final int[] extent = getSurroundingWordIndexes(clickedText, info[2]);
+                start = extent[0];
+                end = extent[1];
             }
+            
+            if (e.getClickCount() == 2) {
+                selStartLine = info[0];
+                selEndLine = info[0];
+                selStartChar = start;
+                selEndChar = end;
+            } else if (e.getClickCount() == 3) {
+                selStartLine = info[0];
+                selEndLine = info[0];
+                selStartChar = 0;
+                selEndChar = clickedText.length();
+            } else if (start != -1 && end != -1) {
+                checkClickedText(clickedText.substring(start, end));
+            }
+            
         }
         e.setSource(textPane);
         textPane.dispatchEvent(e);
+    }
+    
+    /** 
+     * Returns the indexes for the word surrounding the index in the specified 
+     * string.
+     *
+     * @param text Text to get word from
+     * @param index Index to get surrounding word
+     *
+     * @return Indexes of the word surrounding the index (start, end)
+     */
+    private int[] getSurroundingWordIndexes(final String text, final int index) {        
+        final int start = getSurroundingWordStart(text, index);
+        final int end = getSurroundingWordEnd(text, index);
+        
+        if (start < 0 || end > text.length() || start > end) {
+            return new int[]{0, 0};
+        }
+        
+        return new int[]{start, end};
+        
+    }
+    
+    /** 
+     * Returns the start index for the word surrounding the index in the 
+     * specified string.
+     *
+     * @param text Text to get word from
+     * @param index Index to get surrounding word
+     *
+     * @return Start index of the word surrounding the index
+     */
+    private int getSurroundingWordStart(final String text, final int index) {
+        int start = index;
+        
+        // Traverse backwards
+        while (start > 0 && start < text.length() && text.charAt(start) != ' ') {
+            start--;
+        }
+        if (start + 1 < text.length() && text.charAt(start) == ' ') {
+            start++;
+        }
+        
+        return start;
+    }
+    
+    /** 
+     * Returns the end index for the word surrounding the index in the 
+     * specified string.
+     *
+     * @param text Text to get word from
+     * @param index Index to get surrounding word
+     *
+     * @return End index of the word surrounding the index
+     */
+    private int getSurroundingWordEnd(final String text, final int index) {
+        int end = index;
+        
+        // And forwards
+        while (end < text.length() && end > 0 && text.charAt(end) != ' ') {
+            end++;
+        }
+        
+        return end;
     }
     
     /** {@inheritDoc}. */

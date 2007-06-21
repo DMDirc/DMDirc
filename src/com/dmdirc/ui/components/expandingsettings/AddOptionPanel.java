@@ -122,6 +122,8 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
     
     /** Initialises listeners. */
     private void initListeners() {
+        //Only fire events on selection not on highlight
+        addOptionComboBox.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
         addOptionComboBox.addActionListener(this);
         addOptionButton.addActionListener(this);
     }
@@ -202,6 +204,8 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
         }
         
         layoutComponents();
+        
+        addOptionComboBox.requestFocus();
     }
     
     /** {@inheritDoc} */

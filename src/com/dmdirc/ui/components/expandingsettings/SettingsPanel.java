@@ -114,8 +114,7 @@ public final class SettingsPanel extends JPanel {
                 SMALL_BORDER, SMALL_BORDER)));
         
         addOptionPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(
-                UIManager.getBorder("TextField.border"), "Add new setting"),
+                BorderFactory.createTitledBorder("Add new setting"),
                 BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER)));
     }
