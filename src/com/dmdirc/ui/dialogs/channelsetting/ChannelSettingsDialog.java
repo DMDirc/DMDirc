@@ -48,6 +48,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -80,7 +81,9 @@ public final class ChannelSettingsDialog extends StandardDialog
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 5;
+    private static final long serialVersionUID = 6;
+    
+    private static Map<Channel, ChannelSettingsDialog> dialogs;
     
     /**
      * The channel object that this dialog belongs to.
@@ -150,7 +153,7 @@ public final class ChannelSettingsDialog extends StandardDialog
      * Creates a new instance of ChannelSettingsDialog.
      * @param newChannel The channel object that we're editing settings for
      */
-    public ChannelSettingsDialog(final Channel newChannel) {
+    private ChannelSettingsDialog(final Channel newChannel) {
         super(MainFrame.getMainFrame(), false);
         
         channel = newChannel;
@@ -166,11 +169,25 @@ public final class ChannelSettingsDialog extends StandardDialog
                 topicLengthMax = 250;
                 Logger.error(ErrorLevel.TRIVIAL, "IRCD doesnt supply topic length");
             }
-        }
+        }        
         
         initComponents();
         initListeners();
+        
+        pack();
         setLocationRelativeTo(MainFrame.getMainFrame());
+    }
+    
+    public static synchronized ChannelSettingsDialog getChannelSettingDialog(
+            final Channel channel) {
+        if (dialogs == null) {
+            dialogs = new HashMap<Channel, ChannelSettingsDialog>();
+        }
+        if (!dialogs.containsKey(channel)) {
+            dialogs.put(channel, new ChannelSettingsDialog(channel));
+        }
+        dialogs.get(channel).update();
+        return dialogs.get(channel);
     }
     
     /** Initialises the main UI components. */
@@ -223,8 +240,21 @@ public final class ChannelSettingsDialog extends StandardDialog
         
         tabbedPane.setSelectedIndex(channel.getConfigManager().
                 getOptionInt("dialogstate", "channelsettingsdialog", 0));
+    }
+    
+    /** Updates the dialogs content. */
+    private void update() {
         
-        pack();
+        tabbedPane = new JTabbedPane();
+        
+        initIrcTab();
+        
+        initListModesTab();
+        
+        initSettingsTab();
+        
+        tabbedPane.setSelectedIndex(channel.getConfigManager().
+                getOptionInt("dialogstate", "channelsettingsdialog", 0));
     }
     
     /** Initialises the IRC Settings tab. */

@@ -52,7 +52,7 @@ public final class ChannelSettings extends ChannelCommand {
      */
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
-        new ChannelSettingsDialog(channel).setVisible(true);
+        ChannelSettingsDialog.getChannelSettingDialog(channel).setVisible(true);
     }
     
     /** {@inheritDoc}. */
