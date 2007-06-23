@@ -368,9 +368,7 @@ public final class TreeFrameManager implements FrameManager,
      */
     public void valueChanged(final TreeSelectionEvent event) {
         final DefaultMutableTreeNode node =
-                (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-        
-        if (node == null) { return; }
+                (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
         
         final Object nodeInfo = node.getUserObject();
         if (nodeInfo instanceof FrameContainer) {
