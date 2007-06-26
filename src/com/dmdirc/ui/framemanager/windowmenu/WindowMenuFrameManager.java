@@ -27,15 +27,16 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.FrameContainerComparator;
 import com.dmdirc.ui.framemanager.FrameManager;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -50,7 +51,8 @@ public final class WindowMenuFrameManager implements FrameManager, ActionListene
     
     /** Creates a new instance of WindowMenuFrameManager. */
     public WindowMenuFrameManager() {
-        menuItemMap = new HashMap<FrameContainer, JMenuItem>();
+        menuItemMap = new TreeMap<FrameContainer, JMenuItem>(new FrameContainerComparator());
+        new TreeMap();
     }
     
     /** {@inheritDoc} */
@@ -132,20 +134,20 @@ public final class WindowMenuFrameManager implements FrameManager, ActionListene
         removeFramecontainer(window);
     }
     
-    /** 
-     * Adds a frame container to the list. 
+    /**
+     * Adds a frame container to the list.
      *
      * @param window Window to add to the list
      */
     private void addFrameContainer(final FrameContainer window) {
-        final JMenuItem mi = new JMenuItem(window.toString());
+        final JMenuItem mi = new JMenuItem(window.toString(), window.getIcon());
         mi.addActionListener(this);
         menuItemMap.put(window, mi);
         MainFrame.getMainFrame().populateWindowMenu(menuItemMap);
     }
     
-    /** 
-     * Removes a frame container from the list. 
+    /**
+     * Removes a frame container from the list.
      *
      * @param window Window to remove from list
      */

@@ -23,46 +23,36 @@
 package com.dmdirc.ui.components;
 
 import com.dmdirc.Config;
-import com.dmdirc.Error;
 import com.dmdirc.ui.interfaces.StatusErrorNotifier;
 import com.dmdirc.ui.interfaces.StatusMessageNotifier;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
 
 /**
  * Status bar, shows message and info on the gui.
  */
-public final class StatusBar extends JPanel implements MouseListener,
-        ActionListener {
+public final class StatusBar extends JPanel implements MouseListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** message label. */
     private final JLabel messageLabel;
@@ -78,41 +68,17 @@ public final class StatusBar extends JPanel implements MouseListener,
     
     /** non error state image icon. */
     private final ImageIcon normalIcon;
-    
-    /** Error history storage. */
-    private final List<Error> errors;
-    
+
     /** Timer to clear the error. */
     private transient TimerTask errorTimer;
     
     /** Timer to clear the message. */
     private transient TimerTask messageTimer;
     
-    /** Popupmenu for this frame. */
-    private final JPopupMenu popup;
-    
-    /** Clear error menu menu item. */
-    private final JMenuItem clearErrors;
-    
-    /** No errors menu menu item. */
-    private final JMenuItem noErrors;
-    
     /** Creates a new instance of StatusBar. */
     public StatusBar() {
         super();
         final SpringLayout layout = new SpringLayout();
-        errors = new ArrayList<Error>();
-        
-        popup = new JPopupMenu();
-        
-        noErrors = new JMenuItem("No errors");
-        noErrors.addActionListener(this);
-        noErrors.setActionCommand("None");
-        popup.add(noErrors);
-        
-        clearErrors = new JMenuItem("Clear errors");
-        clearErrors.addActionListener(this);
-        clearErrors.setActionCommand("Clear");
         
         setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER));
@@ -209,7 +175,7 @@ public final class StatusBar extends JPanel implements MouseListener,
      */
     public synchronized void setError(final ImageIcon newIcon,
             final StatusErrorNotifier newNotifier) {
-        addToHistory(newIcon, newNotifier);
+        //Add to list
         iconLabel.setIcon(newIcon);
         errorNotifier = newNotifier;
         if (errorTimer != null && (System.currentTimeMillis()
@@ -250,103 +216,28 @@ public final class StatusBar extends JPanel implements MouseListener,
      * @param mouseEvent mouse event
      */
     public void mousePressed(final MouseEvent mouseEvent) {
-        processMouseEvent(mouseEvent);
+        //Ignore.
     }
     
-    /**
-     * Invoked when a mouse button has been released on a component.
-     *
-     * @param mouseEvent mouse event
-     */
+    /** {@inheritDoc} */
     public void mouseReleased(final MouseEvent mouseEvent) {
-        processMouseEvent(mouseEvent);
+        //Ignore.
     }
     
-    /**
-     * Invoked when the mouse enters a component.
-     *
-     * @param mouseEvent mouse event
-     */
+    /** {@inheritDoc} */
     public void mouseEntered(final MouseEvent mouseEvent) {
         //Ignore.
     }
     
-    /**
-     * Invoked when the mouse exits a component.
-     *
-     * @param mouseEvent mouse event
-     */
+    /** {@inheritDoc} */
     public void mouseExited(final MouseEvent mouseEvent) {
         //Ignore.
     }
     
-    /**
-     * Invoked when the mouse button has been clicked (pressed and released)
-     * on a component.
-     *
-     * @param mouseEvent mouse event
-     */
+    /** {@inheritDoc} */
     public void mouseClicked(final MouseEvent mouseEvent) {
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
-            if (mouseEvent.getSource() == messageLabel && messageNotifier != null) {
-                messageNotifier.clickReceived();
-            } else if (mouseEvent.getSource() == iconLabel && errorNotifier != null) {
-                errorNotifier.clickReceived();
-            }
-        }
-        processMouseEvent(mouseEvent);
-    }
-    
-    /**
-     * Processes every mouse button event to check for a popup trigger.
-     * @param e mouse event
-     */
-    public void processMouseEvent(final MouseEvent e) {
-        if (e.isPopupTrigger() && e.getSource() == iconLabel) {
-            final Point point = this.getMousePosition();
-            popup.show(this, (int) point.getX(), (int) point.getY());
-        } else {
-            super.processMouseEvent(e);
-        }
-    }
-    
-    /**
-     * Adds the error to the history.
-     * @param icon error icon
-     * @param notifier error notifier
-     */
-    private void addToHistory(final Icon icon, final StatusErrorNotifier notifier) {
-        if (icon != null && notifier != null) {
-            JMenuItem mi;
-            final Error error = new Error(icon, notifier);
-            final int errorHistory = Config.getOptionInt("statusBar", "errorHistory", 10);
-            errors.add(error);
-            popup.removeAll();
-            while (errors.size() >= errorHistory) {
-                errors.remove(0);
-            }
-            for (Error thisError : errors) {
-                mi = new JMenuItem(thisError.getDate().toString(), thisError.getIcon());
-                mi.addActionListener(this);
-                mi.setActionCommand(String.valueOf(errors.indexOf(thisError)));
-                popup.add(mi);
-            }
-            popup.addSeparator();
-            popup.add(clearErrors);
-        }
-    }
-    
-    /**
-     * Shows the error from the history. {@inheritDoc}
-     */
-    public void actionPerformed(final ActionEvent e) {
-        if ("Clear".equals(e.getActionCommand())) {
-            errors.clear();
-            popup.removeAll();
-            popup.add(noErrors);
-            clearError();
-        } else if (!"None".equals(e.getActionCommand())) {
-            errors.get(Integer.valueOf(e.getActionCommand())).getNotifier().clickReceived();
+            //Show error list dialog
         }
     }
     

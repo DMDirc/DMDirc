@@ -20,24 +20,44 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.logger;
+package com.dmdirc.ui.dialogs.error;
+
+import com.dmdirc.logger.ProgramError;
+import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.StandardDialog;
+import com.dmdirc.ui.interfaces.ErrorManager;
 
 /**
- * Specific error levels allowed by Logger.
+ * Error list dialog.
  */
-public enum ErrorLevel {
-    /** Fatal error. */
-    FATAL,
-    /** High priority error. */
-    HIGH,
-    /** Medium priority error. */
-    MEDIUM,
-    /** Low priority error. */
-    LOW,
-    @Deprecated
-    ERROR,
-    @Deprecated
-    WARNING,
-    @Deprecated
-    TRIVIAL;
+public class ErrorListDialog extends StandardDialog implements ErrorManager {
+    
+    /** Previously instantiated instance of ErrorListDialog. */
+    private static ErrorListDialog me;
+    
+    /** Creates a new instance of ErrorListDialog. */
+    private ErrorListDialog() {
+        super(MainFrame.getMainFrame(), false);
+    }
+    
+    /**
+     * Returns the instance of ErrorListDialog.
+     *
+     * @return Instance of ErrorListDialog
+     */
+    public static synchronized ErrorListDialog getErrorListDialog() {
+        if (me == null) {
+            me = new ErrorListDialog();
+        }
+        return me;
+    }
+
+    /** {@inheritDoc} */
+    public void errorAdded(final ProgramError error) {
+    }
+
+    /** {@inheritDoc} */
+    public void errorStatusChanged(final ProgramError error) {
+    }
+    
 }

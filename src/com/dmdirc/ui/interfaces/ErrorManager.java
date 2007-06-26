@@ -20,61 +20,27 @@
  * SOFTWARE.
  */
 
-package com.dmdirc;
+package com.dmdirc.ui.interfaces;
 
-import com.dmdirc.ui.interfaces.StatusErrorNotifier;
-
-import java.util.Date;
-
-import javax.swing.Icon;
+import com.dmdirc.logger.*;
 
 /**
- * Stores a program error and dialog.
+ * Error manager interface.
  */
-public final class Error {
-    
-    /** Error icon. */
-    private final Icon icon;
-    
-    /** Error Message. */
-    private final StatusErrorNotifier notifier;
-    
-    /** Time. */
-    private final Date date;
+public interface ErrorManager {
     
     /**
-     * Creates a new instance of Error.
-     * @param newIcon error icon
-     * @param newNotifier error notifier
+     * Called when an error occurs in the program.
+     *
+     * @param error ProgramError that occurred
      */
-    public Error(final Icon newIcon, final StatusErrorNotifier newNotifier) {
-        this.icon = newIcon;
-        this.notifier = newNotifier;
-        date = new Date(System.currentTimeMillis());
-    }
+    void errorAdded(final ProgramError error);
     
     /**
-     * Returns this errors icon.
-     * @return error icon
+     * Called when the status of an error changes
+     *
+     * @param error ProgramError that changed
      */
-    public Icon getIcon() {
-        return this.icon;
-    }
-    
-    /**
-     * Returns this errors notifier.
-     * @return error notifier
-     */
-    public StatusErrorNotifier getNotifier() {
-        return this.notifier;
-    }
-    
-    /**
-     * Returns this errors time.
-     * @return error time
-     */
-    public Date getDate() {
-        return (Date) date.clone();
-    }
+    void errorStatusChanged(final ProgramError error);
     
 }

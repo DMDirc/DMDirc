@@ -44,6 +44,8 @@ import com.dmdirc.ui.framemanager.MainFrameManager;
 import com.dmdirc.ui.framemanager.windowmenu.WindowMenuFrameManager;
 import com.dmdirc.ui.interfaces.Window;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.dialogs.error.ErrorListDialog;
+import com.dmdirc.ui.interfaces.ErrorManager;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -161,6 +163,9 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /** Frame manager position. */
     private FramemanagerPosition position;
+    
+    /** Error Manager. */
+    private static ErrorManager errorManager;
     
     /**
      * Creates new form MainFrame.
@@ -351,6 +356,18 @@ public final class MainFrame extends JFrame implements WindowListener,
         } else {
             return null;
         }
+    }
+    
+    /**
+     * Static method that returns the Error manager.
+     *
+     * @return ErrorManager for the app
+     */
+    public static synchronized ErrorManager getErrorManager() {
+        if (errorManager == null) {
+            errorManager = ErrorListDialog.getErrorListDialog();
+        }
+        return errorManager;
     }
     
     /**
@@ -869,11 +886,11 @@ public final class MainFrame extends JFrame implements WindowListener,
             UIManager.put("EditorPane.font", font);
             UIManager.put("TextArea.font", font);
             
-            UIManager.put("CheckBoxMenuItem.acceleratorFont", 
+            UIManager.put("CheckBoxMenuItem.acceleratorFont",
                     font.deriveFont((float) font.getSize() - 2));
-            UIManager.put("Menu.acceleratorFont", 
+            UIManager.put("Menu.acceleratorFont",
                     font.deriveFont((float) font.getSize() - 2));
-            UIManager.put("MenuItem.acceleratorFont", 
+            UIManager.put("MenuItem.acceleratorFont",
                     font.deriveFont((float) font.getSize() - 2));
             
             UIManager.put("swing.boldMetal", false);

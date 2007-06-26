@@ -22,22 +22,22 @@
 
 package com.dmdirc.logger;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 /**
- * Specific error levels allowed by Logger.
+ * Fake buffered output stream, writes files to /dev/null.
  */
-public enum ErrorLevel {
-    /** Fatal error. */
-    FATAL,
-    /** High priority error. */
-    HIGH,
-    /** Medium priority error. */
-    MEDIUM,
-    /** Low priority error. */
-    LOW,
-    @Deprecated
-    ERROR,
-    @Deprecated
-    WARNING,
-    @Deprecated
-    TRIVIAL;
+public class NullOutputStream extends OutputStream {
+    
+    /** Instantiates a new null output stream. */
+    public NullOutputStream() {
+        super();
+    }
+    
+    /** {@inheritDoc} */
+    public void write(final int b) throws IOException {
+        //Ignore data.
+    }
+    
 }

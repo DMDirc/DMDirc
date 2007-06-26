@@ -84,7 +84,7 @@ public final class Config {
         final String osName = System.getProperty("os.name");
         String configDir = null;
         if (osName.startsWith("Mac OS")) {
-            configDir = System.getProperty("user.home") + "/Library/Preferences/DMDirc/";
+            configDir = System.getProperty("user.home") + fs + "Library" + fs + "Preferences" + fs + "DMDirc" + fs;
         } else if (osName.startsWith("Windows")) {
             if (System.getenv("APPDATA") == null) {
                 configDir = System.getProperty("user.home") + fs + "DMDirc" + fs;
@@ -103,6 +103,8 @@ public final class Config {
      */
     private static Properties getDefaults() {
         final Properties defaults = new Properties();
+        
+        defaults.setProperty("general.submitErrors", "true");
         
         defaults.setProperty("general.commandchar", "/");
         defaults.setProperty("general.silencechar", ".");

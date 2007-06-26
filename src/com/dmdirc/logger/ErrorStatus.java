@@ -23,21 +23,28 @@
 package com.dmdirc.logger;
 
 /**
- * Specific error levels allowed by Logger.
+ * Error report status.
  */
-public enum ErrorLevel {
-    /** Fatal error. */
-    FATAL,
-    /** High priority error. */
-    HIGH,
-    /** Medium priority error. */
-    MEDIUM,
-    /** Low priority error. */
-    LOW,
-    @Deprecated
-    ERROR,
-    @Deprecated
-    WARNING,
-    @Deprecated
-    TRIVIAL;
+public enum ErrorStatus {
+    /** Not applicable. */
+    NOT_APPLICABLE("Not applicable"),
+    /** Finished state. */
+    FINISHED("Finished"),
+    /** Sending state. */
+    SENDING("Sending..."),
+    /** Waiting state. */
+    WAITING("Waiting");
+    
+    /** toString value of the item. */
+    private String value;
+    
+    ErrorStatus(final String value) {
+        this.value = value;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return value;
+    }
 }

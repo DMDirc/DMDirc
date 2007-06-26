@@ -72,7 +72,7 @@ public class StandardDialog extends JDialog  {
     private void setOkButton(final JButton button) {
 	okButton = button;
 	button.setText("OK");
-	button.setDefaultCapable(true);
+	button.setDefaultCapable(false);
     }
     
     /**
