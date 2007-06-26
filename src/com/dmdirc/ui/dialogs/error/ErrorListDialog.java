@@ -90,6 +90,8 @@ public class ErrorListDialog extends StandardDialog implements
     private ErrorListDialog() {
         super(MainFrame.getMainFrame(), false);
         
+        setTitle("DMDirc: Error list");
+        
         errorManager = ErrorManager.getErrorManager();
         
         initComponents();
