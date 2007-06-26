@@ -52,6 +52,7 @@ import javax.swing.JLabel;
 /**
  * The update checker contacts the DMDirc website to check to see if there
  * are any updates available.
+ *
  * @author chris
  */
 public final class UpdateChecker implements Runnable, MouseListener {
@@ -62,7 +63,9 @@ public final class UpdateChecker implements Runnable, MouseListener {
     /** The list of updates that are available. */
     private final List<Update> updates = new ArrayList<Update>();
     
-    /** Instantiates an Updatechecker. */
+    /**
+     * Instantiates an Updatechecker.
+     */
     public UpdateChecker() {
         //Ignore
     }
@@ -104,16 +107,17 @@ public final class UpdateChecker implements Runnable, MouseListener {
             Config.setOption("updater", "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
             UpdateChecker.init();
         } catch (MalformedURLException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to check for updates", ex);
+            Logger.appError(ErrorLevel.LOW, "Error when checking for updates", ex);
         } catch (UnsupportedEncodingException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to check for updates", ex);
+            Logger.userError(ErrorLevel.LOW, "Encoding error when checking for updates: " + ex.getMessage());
         } catch (IOException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to check for updates", ex);
+            Logger.userError(ErrorLevel.LOW, "I/O error when checking for updates: " + ex.getMessage());
         }
     }
     
     /**
      * Checks the specified line to determine the message from the update server.
+     *
      * @param line The line to be checked
      */
     private void checkLine(final String line) {
@@ -122,12 +126,14 @@ public final class UpdateChecker implements Runnable, MouseListener {
         } else if (line.startsWith("outofdate")) {
             doUpdateAvailable(line);
         } else {
-            Logger.error(ErrorLevel.WARNING, "Unknown response from update server: " + line);
+            Logger.userError(ErrorLevel.LOW, "Unknown update line received from server: "
+                    + line);
         }
     }
     
     /**
      * Informs the user that there's an update available.
+     *
      * @param line The line that was received from the update server
      */
     private void doUpdateAvailable(final String line) {
@@ -163,35 +169,35 @@ public final class UpdateChecker implements Runnable, MouseListener {
         final List<Update> temp = new ArrayList<Update>();
         temp.add(new Update("outofdate teststuff 20073005 20060101 http://www.example.com/"));
         new UpdaterDialog(temp);
-        */
+         */
         
         new Timer().schedule(new TimerTask() {
             public void run() {
                 new Thread(new UpdateChecker()).start();
-            }           
+            }
         }, time * 1000);
     }
-
+    
     /** {@inheritDoc} */
     public void mouseClicked(final MouseEvent e) {
         new UpdaterDialog(updates);
     }
-
+    
     /** {@inheritDoc} */
     public void mousePressed(final MouseEvent e) {
         // Do nothing
     }
-
+    
     /** {@inheritDoc} */
     public void mouseReleased(final MouseEvent e) {
         // Do nothing
     }
-
+    
     /** {@inheritDoc} */
     public void mouseEntered(final MouseEvent e) {
         // Do nothing
     }
-
+    
     /** {@inheritDoc} */
     public void mouseExited(final MouseEvent e) {
         // Do nothing
