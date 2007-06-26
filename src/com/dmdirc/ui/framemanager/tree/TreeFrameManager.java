@@ -371,6 +371,14 @@ public final class TreeFrameManager implements FrameManager,
      * @param event mouse event.
      */
     public void mouseClicked(final MouseEvent event) {
+        processMouseEvent(event);
+    }
+    
+    /**
+     * Invoked when a mouse button has been pressed on a component.
+     * @param event mouse event.
+     */
+    public void mousePressed(final MouseEvent event) {
         if (event.getButton() == MouseEvent.BUTTON1) {
             final TreePath selectedPath = tree.getPathForLocation(event.getX(), event.getY());
             if (selectedPath != null) {
@@ -385,14 +393,6 @@ public final class TreeFrameManager implements FrameManager,
                 }
             }
         }
-        processMouseEvent(event);
-    }
-    
-    /**
-     * Invoked when a mouse button has been pressed on a component.
-     * @param event mouse event.
-     */
-    public void mousePressed(final MouseEvent event) {
         processMouseEvent(event);
     }
     
