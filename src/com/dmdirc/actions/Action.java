@@ -42,6 +42,7 @@ import java.util.Properties;
 
 /**
  * Describes a single action.
+ *
  * @author chris
  */
 public class Action {
@@ -73,6 +74,7 @@ public class Action {
     /**
      * Creates a new instance of Action. The group and name specified must
      * be the group and name of a valid action already saved to disk.
+     *
      * @param group The group the action belongs to
      * @param name The name of the action
      */
@@ -94,13 +96,15 @@ public class Action {
             
             inputStream.close();
         } catch (IOException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to load action: " + group + "/" + name, ex);
+            Logger.userError(ErrorLevel.HIGH, "I/O error when loading action: "
+                    + group + "/" + name + ": " + ex.getMessage());
         }
     }
     
     /**
      * Creates a new instance of Action with the specified properties and saves
      * it to disk.
+     *
      * @param group The group the action belongs to
      * @param name The name of the action
      * @param triggers The triggers to use
@@ -201,7 +205,9 @@ public class Action {
         }
     }
     
-    /** Called to save the action. */
+    /**
+     * Called to save the action.
+     */
     public void save() {
         final Properties properties = new Properties();
         final StringBuffer triggerString = new StringBuffer();
@@ -239,12 +245,14 @@ public class Action {
             properties.store(outputStream, "Created by GUI actions editor");
             outputStream.close();
         } catch (IOException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to save action: " + group + "/" + name, ex);
+            Logger.userError(ErrorLevel.HIGH, "I/O error when saving action: "
+                    + group + "/" + name + ": " + ex.getMessage());
         }
     }
     
     /**
      * Reads the specified condition.
+     *
      * @param condition Condition number to read
      * @return True if the condition was read successfully.
      */
@@ -315,14 +323,17 @@ public class Action {
     
     /**
      * Raises a trivial error, informing the user of the problem.
+     *
      * @param message The message to be raised
      */
     private void error(final String message) {
-        Logger.error(ErrorLevel.TRIVIAL, "Unable to parse action " + group + "/" + name + ": " + message);
+        Logger.userError(ErrorLevel.LOW, "Error when parsing action: "
+                + group + "/" + name + ": " + message);
     }
     
     /**
      * Renames this action to the specified new name.
+     *
      * @param newName The new name for this action
      */
     public void rename(final String newName) {
@@ -332,6 +343,7 @@ public class Action {
     
     /**
      * Sets the group of this action.
+     *
      * @param newGroup The new group for this action
      */
     public void setGroup(final String newGroup) {
@@ -352,6 +364,7 @@ public class Action {
     
     /**
      * Retrieves a list of this action's conditions.
+     *
      * @return A list of this action's conditions
      */
     public List<ActionCondition> getConditions() {
@@ -360,6 +373,7 @@ public class Action {
     
     /**
      * Sets this action's conditions.
+     *
      * @param conditions A list of conditions to use
      */
     public void setConditions(final List<ActionCondition> conditions) {
@@ -368,6 +382,7 @@ public class Action {
     
     /**
      * Retrieves this action's triggers.
+     *
      * @return The triggers used by this action
      */
     public ActionType[] getTriggers() {
@@ -376,6 +391,7 @@ public class Action {
     
     /**
      * Sets this action's triggers.
+     *
      * @param triggers The new triggers to use
      */
     public void setTriggers(final ActionType[] triggers) {
@@ -387,6 +403,7 @@ public class Action {
     
     /**
      * Retrieves this action's new format setting.
+     *
      * @return The format that this action will use, or null if no change
      */
     public String getNewFormat() {
@@ -395,6 +412,7 @@ public class Action {
     
     /**
      * Sets this action's new format setting.
+     *
      * @param newFormat The new 'new format' setting
      */
     public void setNewFormat(final String newFormat) {
@@ -403,6 +421,7 @@ public class Action {
     
     /**
      * Retrieves this action's response.
+     *
      * @return The commands that will be executed if this action is triggered
      */
     public String[] getResponse() {
@@ -411,6 +430,7 @@ public class Action {
     
     /**
      * Sets this action's response.
+     *
      * @param response The new response to use
      */
     public void setResponse(final String[] response) {
@@ -419,6 +439,7 @@ public class Action {
     
     /**
      * Retrieves this action's group name.
+     *
      * @return This action's group name
      */
     public String getGroup() {
@@ -427,6 +448,7 @@ public class Action {
     
     /**
      * Retrieves this action's name.
+     *
      * @return This action's name
      */
     public String getName() {
@@ -435,6 +457,7 @@ public class Action {
     
     /**
      * Triggers this action.
+     *
      * @param format The format of the message that's going to be displayed.
      * @param arguments The arguments from the action that caused this trigger.
      */

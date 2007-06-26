@@ -68,7 +68,9 @@ public final class ActionManager {
         // Shouldn't be instansiated
     }
     
-    /** Initialises the action manager. */
+    /**
+     * Initialises the action manager.
+     */
     public static void init() {
         actionTypes = new ArrayList<ActionType>();
         actionComparisons = new ArrayList<ActionComparison>();
@@ -84,7 +86,7 @@ public final class ActionManager {
     
     /**
      * Registers the specified action wrapper with the manager.
-     * 
+     *
      * @param wrapper The wrapper to be registered
      */
     public static void registerWrapper(final ActionWrapper wrapper) {
@@ -147,12 +149,12 @@ public final class ActionManager {
                 dir.mkdirs();
                 dir.createNewFile();
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.ERROR, "Unable to create actions dir", ex);
+                Logger.userError(ErrorLevel.HIGH, "I/O error when creating actions directory: " + ex.getMessage());
             }
         }
         
         if (dir == null || dir.listFiles() == null) {
-            Logger.error(ErrorLevel.WARNING, "Unable to load user action files");
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to load user action files");
         } else {
             for (File file : dir.listFiles()) {
                 if (file.isDirectory()) {
@@ -180,7 +182,7 @@ public final class ActionManager {
         }
         
         return null;
-    }    
+    }
     
     /**
      * Determines whether the specified group name is one used by an action
@@ -189,7 +191,7 @@ public final class ActionManager {
      * @param name The group name to test
      * @return True if the group is part of a wrapper, false otherwise
      */
-    private static boolean isWrappedGroup(final String name) {        
+    private static boolean isWrappedGroup(final String name) {
         return getWrapper(name) != null;
     }
     
@@ -206,7 +208,7 @@ public final class ActionManager {
     
     /**
      * Registers an action with the manager.
-     * 
+     *
      * @param action The action to be registered
      */
     public static void registerAction(final Action action) {
@@ -221,7 +223,7 @@ public final class ActionManager {
             
             actions.get(trigger).add(action);
         }
-               
+        
         if (isWrappedGroup(action.getGroup())) {
             getWrapper(action.getGroup()).registerAction(action);
         } else {
@@ -235,7 +237,7 @@ public final class ActionManager {
     
     /**
      * Unregisters an action with the manager.
-     * 
+     *
      * @param action The action to be unregistered
      */
     public static void unregisterAction(final Action action) {
@@ -258,7 +260,7 @@ public final class ActionManager {
     
     /**
      * Deletes the specified action.
-     * 
+     *
      * @param action The action to be deleted
      */
     public static void deleteAction(final Action action) {
@@ -273,7 +275,7 @@ public final class ActionManager {
     
     /**
      * Processes an event of the specified type.
-     * 
+     *
      * @param type The type of the event to process
      * @param format The format of the message that's going to be displayed for
      * the event. Actions may change this format.
@@ -289,13 +291,14 @@ public final class ActionManager {
             PluginManager.getPluginManager().processEvent(type, format, arguments);
             triggerActions(type, format, arguments);
         } else {
-            Logger.error(ErrorLevel.ERROR, "Invalid number of arguments for action " + type);
+            Logger.appError(ErrorLevel.MEDIUM, "Invalid number of arguments for action",
+                    new IllegalArgumentException());
         }
     }
     
     /**
      * Triggers actions that respond to the specified type.
-     * 
+     *
      * @param type The type of the event to process
      * @param format The format of the message that's going to be displayed for
      * the event. Actions may change this format.*
@@ -316,7 +319,7 @@ public final class ActionManager {
     
     /**
      * Returns the directory that should be used to store actions.
-     * 
+     *
      * @return The directory that should be used to store actions
      */
     public static String getDirectory() {
@@ -326,7 +329,7 @@ public final class ActionManager {
     
     /**
      * Creates a new group with the specified name.
-     * 
+     *
      * @param group The group to be created
      */
     public static void makeGroup(final String group) {
@@ -337,7 +340,7 @@ public final class ActionManager {
     
     /**
      * Removes the group with the specified name.
-     * 
+     *
      * @param group The group to be removed
      */
     public static void removeGroup(final String group) {
@@ -345,13 +348,15 @@ public final class ActionManager {
             final File dir = new File(getDirectory() + group);
             for (File file : dir.listFiles()) {
                 if (!file.delete()) {
-                    Logger.error(ErrorLevel.ERROR, "Unable to remove file: " + file.getAbsoluteFile());
+                    Logger.userError(ErrorLevel.MEDIUM, "Unable to remove file: "
+                            + file.getAbsolutePath());
                     return;
                 }
             }
             
             if (!dir.delete()) {
-                Logger.error(ErrorLevel.ERROR, "Unable to remove dir: " + dir.getAbsoluteFile());
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to remove directory: "
+                        + dir.getAbsolutePath());
                 return;
             }
             
@@ -361,7 +366,7 @@ public final class ActionManager {
     
     /**
      * Renames the specified group.
-     * 
+     *
      * @param oldName The old name of the group
      * @param newName The new name of the group
      */
@@ -383,7 +388,7 @@ public final class ActionManager {
     /**
      * Returns the action comparison specified by the given string, or null if it
      * doesn't match a valid registered action comparison.
-     * 
+     *
      * @param type The name of the action comparison to try and find
      * @return The actioncomparison with the specified name, or null on failure
      */
@@ -404,7 +409,7 @@ public final class ActionManager {
     /**
      * Returns a list of action types that are compatible with the one
      * specified.
-     * 
+     *
      * @param type The type to be checked against
      * @return A list of compatible action types
      */
@@ -422,7 +427,7 @@ public final class ActionManager {
     /**
      * Returns a list of action components that are compatible with the
      * specified class.
-     * 
+     *
      * @param target The class to be tested
      * @return A list of compatible action components
      */
@@ -440,7 +445,7 @@ public final class ActionManager {
     /**
      * Returns a list of action comparisons that are compatible with the
      * specified class.
-     * 
+     *
      * @param target The class to be tested
      * @return A list of compatible action comparisons
      */
@@ -457,7 +462,7 @@ public final class ActionManager {
     
     /**
      * Returns a list of all the action types registered by this manager.
-     * 
+     *
      * @return A list of registered action types
      */
     public static List<ActionType> getTypes() {
@@ -466,7 +471,7 @@ public final class ActionManager {
     
     /**
      * Returns a list of all the action types registered by this manager.
-     * 
+     *
      * @return A list of registered action comparisons
      */
     public static List<ActionComparison> getComparisons() {
@@ -476,7 +481,7 @@ public final class ActionManager {
     /**
      * Returns the action component specified by the given string, or null if it
      * doesn't match a valid registered action component.
-     * 
+     *
      * @param type The name of the action component to try and find
      * @return The actioncomponent with the specified name, or null on failure
      */
@@ -497,7 +502,7 @@ public final class ActionManager {
     /**
      * Returns the action type specified by the given string, or null if it
      * doesn't match a valid registered action type.
-     * 
+     *
      * @param type The name of the action type to try and find
      * @return The actiontype with the specified name, or null on failure
      */
@@ -517,7 +522,7 @@ public final class ActionManager {
     
     /**
      * Substitutes variables into the string based on the arguments.
-     * 
+     *
      * @param target The string to be altered
      * @param arguments The arguments for the action
      * @return The target string with all variables substituted
