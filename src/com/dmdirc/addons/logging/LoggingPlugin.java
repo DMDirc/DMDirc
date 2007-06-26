@@ -496,6 +496,9 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 		final int numLines = Config.getOptionInt(MY_DOMAIN, "backbuffer.lines", 0);
 		final String colour = Config.getOption(MY_DOMAIN, "backbuffer.colour");
 		final boolean showTimestamp = Config.getOptionBool(MY_DOMAIN, "backbuffer.timestamp");
+		if (frame == null) {
+			Logger.error(ErrorLevel.ERROR, "Given a null frame", e);
+		}
 		
 		File testFile = new File(filename);
 		if (testFile.exists()) {
