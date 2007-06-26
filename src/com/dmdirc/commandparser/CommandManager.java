@@ -275,6 +275,7 @@ public final class CommandManager {
         new Help();
         new Ignore();
         new Join();
+        new JoinKey();
         new Message();
         new Motd();
         new Nick();
