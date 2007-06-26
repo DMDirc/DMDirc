@@ -23,6 +23,7 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.Channel;
+import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.parser.ChannelClientInfo;
 
@@ -246,6 +247,30 @@ public enum CoreActionComponent implements ActionComponent {
         public Class getType() { return String.class; }
         /** {@inheritDoc} */
         public String getName() { return "alt key state"; }
+    },
+    
+    /** Returns the host of the query. */
+    QUERY_HOST {
+        /** {@inheritDoc} */
+        public Object get(final Object argument) { return ((Query) argument).getHost(); }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return Query.class; }
+        /** {@inheritDoc} */
+        public Class getType() { return String.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "host"; }
+    },
+    
+    /** Returns the notification colour of the query. */
+    QUERY_COLOUR {
+        /** {@inheritDoc} */
+        public Object get(final Object argument) { return ((Query) argument).getNotification(); }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return Query.class; }
+        /** {@inheritDoc} */
+        public Class getType() { return Color.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "notification colour"; }
     };
     
     /** {@inheritDoc} */
