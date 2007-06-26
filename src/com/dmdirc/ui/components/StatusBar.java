@@ -26,6 +26,7 @@ import com.dmdirc.Config;
 import com.dmdirc.ui.interfaces.StatusErrorNotifier;
 import com.dmdirc.ui.interfaces.StatusMessageNotifier;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.dialogs.error.ErrorListDialog;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -237,7 +238,7 @@ public final class StatusBar extends JPanel implements MouseListener {
     /** {@inheritDoc} */
     public void mouseClicked(final MouseEvent mouseEvent) {
         if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
-            //Show error list dialog
+            ErrorListDialog.getErrorListDialog().setVisible(true);
         }
     }
     

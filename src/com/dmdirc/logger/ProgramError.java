@@ -113,9 +113,15 @@ public final class ProgramError {
      */
     public void setStatus(final ErrorStatus newStatus) {
         status = newStatus;
-        if (MainFrame.hasMainFrame()) {
-            MainFrame.getErrorManager().errorStatusChanged(this);
-        }
+    }
+
+    /**
+     * Returns the ID of this error.
+     *
+     * @return Error ID
+     */
+    public int getID() {
+        return ErrorManager.getErrorManager().getErrorID(this);
     }
     
 }

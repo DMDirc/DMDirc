@@ -23,27 +23,14 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.Config;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.dialogs.error.FatalErrorDialog;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Logger class for the application.
@@ -111,7 +98,7 @@ public final class Logger {
         }
         
         if (sendable && Config.getOptionBool("general", "submitErrors")) {
-            sendError(error);
+            ErrorManager.getErrorManager().sendError(error);
         }
         
         if (level == ErrorLevel.FATAL) {
@@ -122,78 +109,7 @@ public final class Logger {
             return;
         }
         
-        MainFrame.getErrorManager().errorAdded(error);
-    }
-    
-    /**
-     * Sends an error to the developers.
-     *
-     * @param ProgramError error to be sent
-     */
-    @SuppressWarnings("PMD.SystemPrintln")
-    public static void sendError(final ProgramError error) {
-        new Timer().schedule(new TimerTask() {
-            public void run() {
-                URL url;
-                URLConnection urlConn;
-                DataOutputStream printout;
-                BufferedReader printin;
-                String response = "";
-                int tries = 0;
-                
-                error.setStatus(ErrorStatus.SENDING);
-                
-                System.err.println("Sending error report...");
-                
-                while (!"Error report submitted. Thank you.".equalsIgnoreCase(response)
-                || tries >= 5) {
-                    try {
-                        url = new URL("http://www.dmdirc.com/error.php");
-                        urlConn = url.openConnection();
-                        urlConn.setDoInput(true);
-                        urlConn.setDoOutput(true);
-                        urlConn.setUseCaches(false);
-                        urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                        printout = new DataOutputStream(urlConn.getOutputStream());
-                        final String content =
-                                "message=" + URLEncoder.encode(error.getMessage(), "UTF-8")
-                                + "&trace=" + URLEncoder.encode(Arrays.toString(
-                                error.getTrace()), "UTF-8");
-                        printout.writeBytes(content);
-                        printout.flush();
-                        printout.close();
-                        printin = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-                        
-                        String line = null;
-                        do {
-                            if (line != null) {
-                                response = line;
-                                System.err.println(line);
-                            }
-                            
-                            line = printin.readLine();
-                        } while (line != null);
-                        printin.close();
-                    } catch (MalformedURLException ex) {
-                        System.err.println("Malformed URL, unable to send error report.");
-                    } catch (UnsupportedEncodingException ex) {
-                        System.err.println("Unsupported exception,  unable to send error report.");
-                    } catch (IOException ex) {
-                        System.err.println("IO Error, unable to send error report.");
-                    }
-                    
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException ex) {
-                        //Ignore
-                    }
-                    
-                    tries++;
-                }
-                
-                error.setStatus(ErrorStatus.FINISHED);
-            }
-        }, 0);
+        ErrorManager.getErrorManager().addError(error);
     }
     
     /**

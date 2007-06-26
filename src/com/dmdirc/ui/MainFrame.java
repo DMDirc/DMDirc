@@ -45,7 +45,7 @@ import com.dmdirc.ui.framemanager.windowmenu.WindowMenuFrameManager;
 import com.dmdirc.ui.interfaces.Window;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.dialogs.error.ErrorListDialog;
-import com.dmdirc.ui.interfaces.ErrorManager;
+import com.dmdirc.logger.ErrorManager;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -163,9 +163,6 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /** Frame manager position. */
     private FramemanagerPosition position;
-    
-    /** Error Manager. */
-    private static ErrorManager errorManager;
     
     /**
      * Creates new form MainFrame.
@@ -300,20 +297,22 @@ public final class MainFrame extends JFrame implements WindowListener,
      * @param frame The frame to be activated
      */
     public void setActiveFrame(final Window frame) {
-        try {
-            ((JInternalFrame) frame).setVisible(true);
-            ((JInternalFrame) frame).setIcon(false);
-            ((JInternalFrame) frame).moveToFront();
-            ((JInternalFrame) frame).setSelected(true);
-        } catch (PropertyVetoException ex) {
-            Logger.userError(ErrorLevel.LOW, "Unable to set active window");
+        if (frame != null) {
+            try {
+                ((JInternalFrame) frame).setVisible(true);
+                ((JInternalFrame) frame).setIcon(false);
+                ((JInternalFrame) frame).moveToFront();
+                ((JInternalFrame) frame).setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.userError(ErrorLevel.LOW, "Unable to set active window");
+            }
+            
+            if (maximised) {
+                setTitle(getTitlePrefix() + " - " + frame.getTitle());
+            }
+            
+            ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null, frame.getContainer());
         }
-        
-        if (maximised) {
-            setTitle(getTitlePrefix() + " - " + frame.getTitle());
-        }
-        
-        ActionManager.processEvent(CoreActionType.CLIENT_FRAME_CHANGED, null, frame.getContainer());
     }
     
     /**
@@ -356,18 +355,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         } else {
             return null;
         }
-    }
-    
-    /**
-     * Static method that returns the Error manager.
-     *
-     * @return ErrorManager for the app
-     */
-    public static synchronized ErrorManager getErrorManager() {
-        if (errorManager == null) {
-            errorManager = ErrorListDialog.getErrorListDialog();
-        }
-        return errorManager;
     }
     
     /**

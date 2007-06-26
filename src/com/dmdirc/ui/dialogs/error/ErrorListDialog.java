@@ -22,15 +22,39 @@
 
 package com.dmdirc.ui.dialogs.error;
 
+import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.ProgramError;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
-import com.dmdirc.ui.interfaces.ErrorManager;
+import com.dmdirc.logger.ErrorManager;
+import com.dmdirc.logger.ErrorStatus;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * Error list dialog.
  */
-public class ErrorListDialog extends StandardDialog implements ErrorManager {
+public class ErrorListDialog extends StandardDialog implements
+        ActionListener, ListSelectionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -42,9 +66,41 @@ public class ErrorListDialog extends StandardDialog implements ErrorManager {
     /** Previously instantiated instance of ErrorListDialog. */
     private static ErrorListDialog me;
     
+    /** Error table headers. */
+    private static final String[] HEADERS = new String[]{"ID", "Time",
+    "Severity", "Report status", "Message"};
+    
+    /** Error table. */
+    private JTable table;
+    
+    /** Error list. */
+    private List<ProgramError> errors;
+    
+    /** Error detail panel. */
+    private ErrorDetailPanel errorDetails;
+    
+    /** Buttons pane. */
+    private JPanel buttonsPanel;
+    
+    /** Send button. */
+    private JButton sendButton;
+    
+    /** Delete button. */
+    private JButton deleteButton;
+    
     /** Creates a new instance of ErrorListDialog. */
     private ErrorListDialog() {
         super(MainFrame.getMainFrame(), false);
+        
+        errors = new ArrayList<ProgramError>();
+        
+        initComponents();
+        layoutComponents();
+        initListeners();
+        
+        pack();
+        
+        setLocationRelativeTo(getParent());
     }
     
     /**
@@ -58,13 +114,154 @@ public class ErrorListDialog extends StandardDialog implements ErrorManager {
         }
         return me;
     }
-
-    /** {@inheritDoc} */
-    public void errorAdded(final ProgramError error) {
+    
+    /** Initialises the components. */
+    private void initComponents() {
+        initButtonsPanel();
+        
+        table = new JTable(new DefaultTableModel(getTableData(), HEADERS) {
+            private static final long serialVersionUID = 1;
+            
+            public boolean isCellEditable(final int x, final int y) {
+                return false;
+            }
+        });
+        
+        table.setAutoCreateRowSorter(true);
+        table.setAutoCreateColumnsFromModel(true);
+        table.setColumnSelectionAllowed(false);
+        table.setCellSelectionEnabled(false);
+        table.setDragEnabled(false);
+        table.setFillsViewportHeight(false);
+        table.setRowSelectionAllowed(true);
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+        table.setPreferredScrollableViewportSize(new Dimension(600, 150));
+        
+        errorDetails = new ErrorDetailPanel();
     }
-
-    /** {@inheritDoc} */
-    public void errorStatusChanged(final ProgramError error) {
+    
+    /** Initialises the button panel. */
+    private void initButtonsPanel() {
+        buttonsPanel = new JPanel();
+        
+        orderButtons(new JButton(), new JButton());
+        
+        getCancelButton().setText("Close");
+        sendButton = new JButton("Send");
+        deleteButton = new JButton("Delete");
+        
+        sendButton.setEnabled(false);
+        deleteButton.setEnabled(false);
+        
+        sendButton.setPreferredSize(new Dimension(100, 25));
+        deleteButton.setPreferredSize(new Dimension(100, 25));
+        sendButton.setMinimumSize(new Dimension(100, 25));
+        deleteButton.setMinimumSize(new Dimension(100, 25));
+        
+        buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER));
+        
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
+        buttonsPanel.add(Box.createHorizontalGlue());
+        buttonsPanel.add(deleteButton);
+        buttonsPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
+        buttonsPanel.add(sendButton);
+        buttonsPanel.add(Box.createHorizontalStrut(LARGE_BORDER));
+        buttonsPanel.add(getCancelButton());
+    }
+    
+    /** Initialises the listeners. */
+    private void initListeners() {
+        table.getSelectionModel().addListSelectionListener(this);
+        sendButton.addActionListener(this);
+        deleteButton.addActionListener(this);
+        getOkButton().addActionListener(this);
+        getCancelButton().addActionListener(this);
+    }
+    
+    /** Lays out the components. */
+    private void layoutComponents() {
+        getContentPane().setLayout(new BoxLayout(getContentPane(),
+                BoxLayout.PAGE_AXIS));
+        
+        final JScrollPane scrollPane = new JScrollPane(table);
+        
+        scrollPane.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
+                0, SMALL_BORDER),
+                scrollPane.getBorder()));
+        errorDetails.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
+                SMALL_BORDER, 0, 0));
+        
+        getContentPane().add(scrollPane);
+        getContentPane().add(errorDetails);
+        getContentPane().add(buttonsPanel);
+    }
+    
+    /**
+     * Retrieves the error data from the ErrorManager
+     *
+     * @return Error data
+     */
+    private Object[][] getTableData() {
+        final ErrorManager errorManager = ErrorManager.getErrorManager();
+        errors.clear();
+        errors = errorManager.getErrorList();
+        
+        final Object[][] data = new Object[errors.size()][5];
+        
+        for (int i = 0; i < errors.size(); i++) {
+            final ProgramError error = errors.get(i);
+            data[i][0] = i;
+            data[i][1] = error.getDate();
+            data[i][2] = error.getLevel();
+            data[i][3] = error.getStatus();
+            data[i][4] = error.getMessage();
+        }
+        
+        return data;
+    }
+    
+    /** {@inheritDoc}. */
+    public void valueChanged(final ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            if (table.getSelectedRow() > -1) {
+                final ProgramError error = errors.get(
+                        table.getRowSorter().convertRowIndexToModel(
+                        table.getSelectedRow()));
+                errorDetails.setError(error);
+                deleteButton.setEnabled(true);
+                if (error.getStatus() == ErrorStatus.NOT_APPLICABLE ||
+                        error.getStatus() == ErrorStatus.FINISHED) {
+                    sendButton.setEnabled(false);
+                } else {
+                    sendButton.setEnabled(true);
+                }
+            } else {
+                errorDetails.setError(null);
+                deleteButton.setEnabled(false);
+                sendButton.setEnabled(false);
+            }
+        }
+    }
+    
+    /** {@inheritDoc}. */
+    public void actionPerformed(final ActionEvent e) {
+        if (e.getSource() == getCancelButton()) {
+            dispose();
+        } else if (e.getSource() == deleteButton) {
+            ErrorManager.getErrorManager().deleteError(errors.get(
+                    table.getRowSorter().convertRowIndexToModel(
+                    table.getSelectedRow())));
+            ((DefaultTableModel) table.getModel()).setDataVector(getTableData(),
+                    HEADERS);
+        } else if (e.getSource() == sendButton) {
+            ErrorManager.getErrorManager().sendError(errors.get(
+                    table.getRowSorter().convertRowIndexToModel(
+                    table.getSelectedRow())));
+            //add some kind of listener to get the table updated
+        }
     }
     
 }

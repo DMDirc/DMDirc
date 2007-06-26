@@ -27,17 +27,30 @@ package com.dmdirc.logger;
  */
 public enum ErrorLevel {
     /** Fatal error. */
-    FATAL,
+    FATAL("Fatal"),
     /** High priority error. */
-    HIGH,
+    HIGH("High"),
     /** Medium priority error. */
-    MEDIUM,
+    MEDIUM("Medium"),
     /** Low priority error. */
-    LOW,
+    LOW("Low"),
     @Deprecated
-    ERROR,
+    ERROR("Error"),
     @Deprecated
-    WARNING,
+    WARNING("Warning"),
     @Deprecated
-    TRIVIAL;
+    TRIVIAL("Trvial");
+    
+    /** toString value of the item. */
+    private String value;
+    
+    ErrorLevel(final String value) {
+        this.value = value;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return value;
+    }
 }
