@@ -55,8 +55,6 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -65,8 +63,8 @@ import javax.swing.tree.TreeSelectionModel;
  * Manages open windows in the application in a tree style view.
  */
 public final class TreeFrameManager implements FrameManager,
-        TreeSelectionListener, MouseListener, ActionListener,
-        MouseMotionListener, MouseWheelListener, AdjustmentListener {
+        MouseListener, ActionListener, MouseMotionListener, MouseWheelListener,
+        AdjustmentListener {
     
     /**
      * display tree.
@@ -162,7 +160,6 @@ public final class TreeFrameManager implements FrameManager,
         
         closeMenuItem.addActionListener(this);
         
-        tree.addTreeSelectionListener(this);
         tree.addMouseListener(this);
         tree.addMouseMotionListener(this);
         tree.addMouseWheelListener(this);
@@ -362,23 +359,6 @@ public final class TreeFrameManager implements FrameManager,
         }
     }
     
-    /**
-     * valled whenever the value of the selection changes.
-     * @param event selection event.
-     */
-    public void valueChanged(final TreeSelectionEvent event) {
-        final DefaultMutableTreeNode node =
-                (DefaultMutableTreeNode) event.getPath().getLastPathComponent();
-        
-        final Object nodeInfo = node.getUserObject();
-        if (nodeInfo instanceof FrameContainer) {
-            ((FrameContainer) nodeInfo).activateFrame();
-        } else {
-            Logger.appError(ErrorLevel.MEDIUM, "Unknown node type.", 
-                    new IllegalArgumentException("Node: " + nodeInfo.getClass()));
-        }
-    }
-    
     /** {@inheritDoc} */
     public void adjustmentValueChanged(final AdjustmentEvent e) {
         //HACK Disregard all scrolling events
@@ -391,6 +371,20 @@ public final class TreeFrameManager implements FrameManager,
      * @param event mouse event.
      */
     public void mouseClicked(final MouseEvent event) {
+        if (event.getButton() == MouseEvent.BUTTON1) {
+            final TreePath selectedPath = tree.getPathForLocation(event.getX(), event.getY());
+            if (selectedPath != null) {
+                final DefaultMutableTreeNode node =
+                        (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+                final Object nodeInfo = node.getUserObject();
+                if (nodeInfo instanceof FrameContainer) {
+                    ((FrameContainer) nodeInfo).activateFrame();
+                } else {
+                    Logger.appError(ErrorLevel.MEDIUM, "Unknown node type.",
+                            new IllegalArgumentException("Node: " + nodeInfo.getClass()));
+                }
+            }
+        }
         processMouseEvent(event);
     }
     
