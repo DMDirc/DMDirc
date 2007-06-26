@@ -135,6 +135,7 @@ public class ErrorListDialog extends StandardDialog implements
         table.setFillsViewportHeight(false);
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.getRowSorter().toggleSortOrder(0);
         
         table.setPreferredScrollableViewportSize(new Dimension(600, 150));
         
