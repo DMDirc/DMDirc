@@ -106,7 +106,7 @@ public class PluginManager {
 				return true;
 			}
 		} catch (Exception e) {
-			Logger.error(ErrorLevel.ERROR, "[addPlugin] Error loading "+className, e);
+			Logger.userError(ErrorLevel.MEDIUM, "Error loading "+className);
 		}
 		return false;
 	}
@@ -125,7 +125,7 @@ public class PluginManager {
 			ActionManager.processEvent(CoreActionType.PLUGIN_UNLOADED, null, plugin);
 			plugin.onUnload();
 		} catch (Exception e) {
-			Logger.error(ErrorLevel.ERROR, "[delPlugin] Error in onUnload() for '"+className+"'", e);
+			Logger.userError(ErrorLevel.MEDIUM, "Error in onUnload() for '"+className+"'");
 		}
 		knownPlugins.remove(className.toLowerCase());
 		plugin = null;
@@ -277,19 +277,19 @@ public class PluginManager {
 				result = null;
 			}
 		} catch (ClassNotFoundException cnfe) {
-			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Class not found ('"+className+"')", cnfe);
+			Logger.userError(ErrorLevel.LOW, "Class not found ('"+className+"')");
 			result = null;
 		} catch (NoSuchMethodException nsme) {
-			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Constructor missing ('"+className+"')", nsme);
+			Logger.userError(ErrorLevel.LOW, "Constructor missing ('"+className+"')");
 			result = null;
 		} catch (IllegalAccessException iae) {
-			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to access constructor ('"+className+"')", iae);
+			Logger.userError(ErrorLevel.LOW, "Unable to access constructor ('"+className+"')");
 			result = null;
 		} catch (InvocationTargetException ite) {
-			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to invoke target ('"+className+"')", ite);
+			Logger.userError(ErrorLevel.LOW, "Unable to invoke target ('"+className+"')");
 			result = null;
 		} catch (InstantiationException ie) {
-			Logger.error(ErrorLevel.ERROR, "[LoadPlugin] Unable to instantiate plugin ('"+className+"')", ie);
+			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+className+"')");
 			result = null;
 		}
 		

@@ -60,7 +60,7 @@ public final class BrowserLauncher {
             }
             return;
         } catch (MalformedURLException ex) {
-            Logger.error(ErrorLevel.WARNING, "Invalid URL", ex);
+            Logger.userError(ErrorLevel.LOW, "Invalid URL: " + ex.getMessage());
         }
     }
     
@@ -92,7 +92,7 @@ public final class BrowserLauncher {
             } catch (IOException ex) {
                 openURLLinux(url.toString());
             } catch (URISyntaxException ex) {
-                Logger.error(ErrorLevel.WARNING, "Invalid URL", ex);
+                Logger.userError(ErrorLevel.LOW, "Invalid URL: " + ex.getMessage());
             }
         } else {
             openURLLinux(url.toString());
@@ -109,7 +109,7 @@ public final class BrowserLauncher {
         String browser;
         browser = getBrowserLinux();
         if (browser == null) {
-            Logger.error(ErrorLevel.ERROR, "Unable to find browser, "
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to find browser, "
                     + "please set in preferences.");
         } else {
             runBrowser(url, browser);
@@ -137,9 +137,9 @@ public final class BrowserLauncher {
                         browser = browsers[count];
                     }
                 } catch (IOException ex) {
-                    Logger.error(ErrorLevel.WARNING, "Unable to find a browser", ex);
+                    Logger.userError(ErrorLevel.MEDIUM, "Unable to find a browser.");
                 } catch (InterruptedException ex) {
-                    Logger.error(ErrorLevel.WARNING, "Unable to find a browser", ex);
+                    Logger.userError(ErrorLevel.MEDIUM, "Unable to find a browser.");
                 }
             }
         }
@@ -156,7 +156,7 @@ public final class BrowserLauncher {
         try {
             Runtime.getRuntime().exec(new String[] {browser, url});
         } catch (IOException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to run the browser", ex);
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to run the browser");
         }
     }
     

@@ -294,7 +294,7 @@ public final class Config {
         try {
             res = Integer.parseInt(getOption(domain, option));
         } catch (NumberFormatException ex) {
-            Logger.error(ErrorLevel.WARNING, "Invalid number format for " + domain + "." + option, ex);
+            Logger.userError(ErrorLevel.MEDIUM, "Invalid number format for " + domain + "." + option);
             res = fallback;
         }
         
@@ -405,11 +405,11 @@ public final class Config {
             try {
                 properties.load(new FileInputStream(file));
             } catch (InvalidPropertiesFormatException ex) {
-                Logger.error(ErrorLevel.TRIVIAL, "Invalid properties file", ex);
+                Logger.userError(ErrorLevel.LOW, "Invalid properties file");
             } catch (FileNotFoundException ex) {
-                Logger.error(ErrorLevel.TRIVIAL, "No config file, using defaults");
+                Logger.userError(ErrorLevel.LOW, "No config file, using defaults");
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to load config file", ex);
+                Logger.userError(ErrorLevel.LOW, "Unable to load config file");
             }
         } else {
             try {
@@ -417,7 +417,7 @@ public final class Config {
                 file.createNewFile();
                 Config.save();
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to load config file", ex);
+                Logger.userError(ErrorLevel.LOW, "Unable to load config file");
             }
         }
     }
@@ -449,9 +449,9 @@ public final class Config {
             output.store(new FileOutputStream(
                     new File(getConfigFile())), null);
         } catch (FileNotFoundException ex) {
-            Logger.error(ErrorLevel.TRIVIAL, "Unable to save config file", ex);
+            Logger.userError(ErrorLevel.LOW, "Unable to save config file");
         } catch (IOException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to save config file", ex);
+            Logger.userError(ErrorLevel.LOW, "Unable to save config file");
         }
     }
     

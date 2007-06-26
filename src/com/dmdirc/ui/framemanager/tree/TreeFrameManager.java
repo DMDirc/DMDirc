@@ -374,7 +374,8 @@ public final class TreeFrameManager implements FrameManager,
         if (nodeInfo instanceof FrameContainer) {
             ((FrameContainer) nodeInfo).activateFrame();
         } else {
-            Logger.error(ErrorLevel.WARNING, "Unknown node type.");
+            Logger.appError(ErrorLevel.MEDIUM, "Unknown node type.", 
+                    new IllegalArgumentException("Node: " + nodeInfo.getClass()));
         }
     }
     

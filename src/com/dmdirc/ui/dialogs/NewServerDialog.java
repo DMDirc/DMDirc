@@ -27,8 +27,6 @@ import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.identities.ConfigSource;
 import com.dmdirc.identities.IdentityManager;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
 import com.dmdirc.ui.interfaces.Window;
@@ -65,7 +63,7 @@ public final class NewServerDialog extends StandardDialog {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 7;
+    private static final long serialVersionUID = 8;
     
     /**
      * A previously created instance of NewServerDialog.
@@ -211,8 +209,7 @@ public final class NewServerDialog extends StandardDialog {
                     final Server server = ServerManager.getServerManager().
                             getServerFromFrame(active);
                     if (server == null) {
-                        Logger.error(ErrorLevel.ERROR, "Cannot determine "
-                                + "active server window");
+                        new Server(host, port, pass, sslCheck.isSelected(), profile);
                     } else {
                         server.connect(host, port, pass, sslCheck.isSelected(),
                                 profile);

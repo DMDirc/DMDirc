@@ -329,8 +329,7 @@ public final class PreferencesPanel extends StandardDialog implements
                         ((JSpinner) option).setValue(args[0]);
                     } catch (NumberFormatException ex) {
                         ((JSpinner) option).setEnabled(false);
-                        Logger.error(ErrorLevel.TRIVIAL, "Default value incorrect",
-                                ex);
+                        Logger.userError(ErrorLevel.LOW, "Default value incorrect");
                     }
                 } else {
                     option = new JSpinner(

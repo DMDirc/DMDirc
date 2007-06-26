@@ -74,7 +74,7 @@ public final class Formatter {
         final String res = properties.getProperty(messageType);
         
         if (res == null) {
-            Logger.error(ErrorLevel.ERROR, "Format string not found: " + messageType);
+            Logger.userError(ErrorLevel.HIGH, "Format string not found: " + messageType);
             return "<No format string for message type " + messageType + ">";
         } else {
             try {
@@ -332,12 +332,12 @@ public final class Formatter {
             try {
                 properties.load(new FileInputStream(myFile));
             } catch (InvalidPropertiesFormatException ex) {
-                Logger.error(ErrorLevel.TRIVIAL, "Unable to load formatter", ex);
+                Logger.userError(ErrorLevel.LOW, "Unable to load formatter");
                 return false;
             } catch (FileNotFoundException ex) {
                 return false;
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.WARNING, "unable to load formatter", ex);
+                Logger.userError(ErrorLevel.LOW, "unable to load formatter");
                 return false;
             }
             
@@ -365,7 +365,7 @@ public final class Formatter {
             properties.store(file, null);
             defaultProperties.store(file, null);
         } catch (IOException ex) {
-            Logger.error(ErrorLevel.WARNING, "Error saving formatter", ex);
+            Logger.userError(ErrorLevel.MEDIUM, "Error saving formatter");
             return false;
         } finally {
             if (file != null) {

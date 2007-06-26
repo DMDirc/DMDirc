@@ -96,7 +96,7 @@ public final class JarResourceManager extends ResourceManager {
         try {
             inputStream.close();
         } catch (IOException ex) {
-            Logger.error(ErrorLevel.TRIVIAL, "Unable to close stream", ex);
+            Logger.userError(ErrorLevel.LOW, "Unable to close stream");
         }
         
         return bytes;

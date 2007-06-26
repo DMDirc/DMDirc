@@ -64,17 +64,37 @@ public final class FirstRunWizard implements Wizard {
         if (resourceManager == null) {
             return;
         }
+        extractPlugins(resourceManager);
+        extractActions(resourceManager);
+        
+        if (((StepTwo) wizardDialog.getStep(1)).getProfileManagerState()) {
+            ProfileEditorDialog.showActionsManagerDialog();
+        }
+    }
+    
+    /**
+     * Extracts the core plugins.
+     *
+     * @param resourceManager ResourceManager to use
+     */
+    private void extractPlugins(final ResourceManager resourceManager) {
         if (((StepOne) wizardDialog.getStep(0)).getPluginsState()) {
             //Copy plugins
             try {
                 resourceManager.extractResources("com/dmdirc/addons",
                         Config.getConfigDir() + "plugins");
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.TRIVIAL,
-                        "Failed to extract plugins", ex);
+                Logger.userError(ErrorLevel.LOW, "Failed to extract plugins");
             }
         }
-        
+    }
+    
+    /**
+     * Extracts the core actions.
+     *
+     * @param resourceManager ResourceManager to use
+     */
+    private void extractActions(final ResourceManager resourceManager) {
         if (((StepOne) wizardDialog.getStep(0)).getActionsState()) {
             //Copy actions
             final Map<String, byte[]> resources =
@@ -99,14 +119,9 @@ public final class FirstRunWizard implements Wizard {
                         resourceManager.resourceToFile(resource.getValue(), newFile);
                     }
                 } catch (IOException ex) {
-                    Logger.error(ErrorLevel.TRIVIAL,
-                            "Failed to extract plugins", ex);
+                    Logger.userError(ErrorLevel.LOW, "Failed to extract actions");
                 }
             }
-        }
-        
-        if (((StepTwo) wizardDialog.getStep(1)).getProfileManagerState()) {
-            ProfileEditorDialog.showActionsManagerDialog();
         }
     }
     

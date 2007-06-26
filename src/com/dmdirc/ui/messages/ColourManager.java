@@ -66,7 +66,7 @@ public final class ColourManager {
         }
         
         if (res == null) {
-            Logger.error(ErrorLevel.WARNING, "Invalid colour format: " + spec);
+            Logger.userError(ErrorLevel.MEDIUM, "Invalid colour format: " + spec);
             res = fallback;
         }
         
@@ -94,7 +94,7 @@ public final class ColourManager {
         try {
             return Color.decode("#" + hex);
         } catch (NumberFormatException ex) {
-            Logger.error(ErrorLevel.WARNING, "Invalid colour #" + hex, ex);
+            Logger.userError(ErrorLevel.MEDIUM, "Invalid colour #" + hex);
             return Color.WHITE;
         }
     }
@@ -141,7 +141,7 @@ public final class ColourManager {
             case 15:
                 return Color.LIGHT_GRAY;
             default:
-                Logger.error(ErrorLevel.WARNING, "Invalid colour: " + number);
+                Logger.userError(ErrorLevel.MEDIUM, "Invalid colour: " + number);
                 return Color.WHITE;
         }
     }

@@ -64,7 +64,7 @@ public abstract class ResourceManager {
             try {
                 path = java.net.URLDecoder.decode(path, "UTF-8");
             } catch (UnsupportedEncodingException ex) {
-                Logger.error(ErrorLevel.ERROR, "Unable to decode path", ex);
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to decode path");
             }
             
             final String protocol = Thread.currentThread().getContextClassLoader().
@@ -77,7 +77,7 @@ public abstract class ResourceManager {
                     me = new JarResourceManager(path.substring(5, path.length() - 31));
                 }
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.ERROR, "Unable to determine how DMDirc"
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to determine how DMDirc"
                         + " has been executed", ex);
             }
         }

@@ -167,7 +167,7 @@ public final class ChannelSettingsDialog extends StandardDialog
                 topicLengthMax = Integer.parseInt(iSupport.get("TOPICLEN"));
             } catch (NumberFormatException ex) {
                 topicLengthMax = 250;
-                Logger.error(ErrorLevel.TRIVIAL, "IRCD doesnt supply topic length");
+                Logger.userError(ErrorLevel.LOW, "IRCD doesnt supply topic length");
             }
         }        
         

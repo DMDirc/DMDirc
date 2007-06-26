@@ -100,11 +100,11 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 				dir.mkdirs();
 				dir.createNewFile();
 			} catch (IOException ex) {
-				Logger.error(ErrorLevel.ERROR, "Unable to create logging dir", ex);
+				Logger.userError(ErrorLevel.LOW, "Unable to create logging dir");
 			}
 		} else {
 			if (!dir.isDirectory()) {
-				Logger.error(ErrorLevel.ERROR, "Unable to create logging dir (file exists instead)");
+				Logger.userError(ErrorLevel.LOW, "Unable to create logging dir (file exists instead)");
 			}
 		}
 		
@@ -124,7 +124,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 				try {
 					file.close();
 				} catch (IOException e) {
-					Logger.error(ErrorLevel.ERROR, "Unable to close file (File: "+filename+")", e);
+					Logger.userError(ErrorLevel.LOW, "Unable to close file (File: "+filename+")");
 				}
 			}
 			openFiles.clear();
@@ -235,11 +235,11 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 				dir.createNewFile();
 				updateOption(properties, "general.directory", null);
 			} catch (IOException ex) {
-				Logger.error(ErrorLevel.ERROR, "Unable to create new logging dir, not changing", ex);
+				Logger.userError(ErrorLevel.LOW, "Unable to create new logging dir, not changing");
 			}
 		} else {
 			if (!dir.isDirectory()) {
-				Logger.error(ErrorLevel.ERROR, "Unable to create new logging dir (file exists instead), not changing");
+				Logger.userError(ErrorLevel.LOW, "Unable to create new logging dir (file exists instead), not changing");
 			} else {		
 				updateOption(properties, "general.directory", null);
 			}
@@ -316,7 +316,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 						try {
 							file.close();
 						} catch (IOException e) {
-							Logger.error(ErrorLevel.ERROR, "Unable to close file (Filename: "+line+")", e);
+							Logger.userError(ErrorLevel.LOW, "Unable to close file (Filename: "+line+")");
 						}
 						openFiles.remove(line);
 					}
@@ -332,7 +332,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 						try {
 							file.close();
 						} catch (IOException e) {
-							Logger.error(ErrorLevel.ERROR, "Unable to close file (Filename: "+line+")", e);
+							Logger.userError(ErrorLevel.LOW, "Unable to close file (Filename: "+line+")");
 						}
 						openFiles.remove(line);
 					}
@@ -497,7 +497,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 		final String colour = Config.getOption(MY_DOMAIN, "backbuffer.colour");
 		final boolean showTimestamp = Config.getOptionBool(MY_DOMAIN, "backbuffer.timestamp");
 		if (frame == null) {
-			Logger.error(ErrorLevel.ERROR, "Given a null frame", e);
+			Logger.userError(ErrorLevel.LOW, "Given a null frame");
 		}
 		
 		File testFile = new File(filename);
@@ -515,7 +515,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 				file.close();
 				frame.addLine(getColouredString(colour,"--- End of backbuffer\n"), showTimestamp);
 			} catch (Exception e) {
-				Logger.error(ErrorLevel.ERROR, "Unable to show backbuffer (Filename: "+filename+")", e);
+				Logger.userError(ErrorLevel.LOW, "Unable to show backbuffer (Filename: "+filename+"): " + e.getMessage());
 			}
 		}
 	}
@@ -743,13 +743,13 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 					dir.mkdirs();
 					dir.createNewFile();
 				} catch (IOException ex) {
-					Logger.error(ErrorLevel.ERROR, "Unable to create networkfolders dir", ex);
+					Logger.userError(ErrorLevel.LOW, "Unable to create networkfolders dir");
 					// Prepend network name instead.
 					result = input + sanitise(networkName.toLowerCase()) + " -- ";
 				}
 			} else {
 				if (!dir.isDirectory()) {
-					Logger.error(ErrorLevel.ERROR, "Unable to create networkfolders dir (file exists instead)");
+					Logger.userError(ErrorLevel.LOW, "Unable to create networkfolders dir (file exists instead)");
 					// Prepend network name instead.
 					result = input + sanitise(networkName.toLowerCase()) + " -- ";
 				}

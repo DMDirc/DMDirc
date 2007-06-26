@@ -156,7 +156,8 @@ public final class Styliser {
                 }
                 
             } catch (BadLocationException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to insert styled string", ex);
+                Logger.userError(ErrorLevel.MEDIUM, 
+                        "Unable to insert styled string: " + ex.getMessage());
             }
         }
         return styledDoc;
@@ -176,7 +177,8 @@ public final class Styliser {
         try {
             attString = new AttributedString(line.getDocument().getText(0, line.getDocument().getLength()));
         } catch (BadLocationException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to insert styled string", ex);
+            Logger.userError(ErrorLevel.MEDIUM, 
+                        "Unable to insert styled string: " + ex.getMessage());
         }
         for (int i = 0; i < line.getElementCount(); i++) {
             final Element element = line.getElement(i);

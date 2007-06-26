@@ -122,7 +122,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
         try {
             robot = new Robot();
         } catch (AWTException ex) {
-            Logger.error(ErrorLevel.TRIVIAL, "Error creating robot", ex);
+            Logger.userError(ErrorLevel.LOW, "Error creating robot");
         }
         
         initComponents();
@@ -212,7 +212,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
                         undo.undo();
                     }
                 } catch (CannotUndoException ex) {
-                    Logger.error(ErrorLevel.TRIVIAL, "Unable to undo", ex);
+                    Logger.userError(ErrorLevel.LOW, "Unable to undo");
                 }
             }
         });
@@ -230,7 +230,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
                         undo.redo();
                     }
                 } catch (CannotRedoException ex) {
-                    Logger.error(ErrorLevel.TRIVIAL, "Unable to redo", ex);
+                    Logger.userError(ErrorLevel.LOW, "Unable to redo");
                 }
             }
         });
@@ -478,11 +478,11 @@ public abstract class InputFrame extends Frame implements InputWindow,
             .getData(DataFlavor.stringFlavor);
             clipboardLines = clipboard.split(System.getProperty("line.separator"));
         } catch (HeadlessException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+            Logger.userError(ErrorLevel.LOW, "Unable to get clipboard contents");
         } catch (IOException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+            Logger.userError(ErrorLevel.LOW, "Unable to get clipboard contents: " + ex.getMessage());
         } catch (UnsupportedFlavorException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to get clipboard contents", ex);
+            Logger.appError(ErrorLevel.LOW, "Unable to get clipboard contents", ex);
         }
         if (clipboard != null && clipboard.indexOf('\n') >= 0) {
             if (event != null) {

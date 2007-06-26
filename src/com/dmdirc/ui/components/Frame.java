@@ -256,15 +256,15 @@ public abstract class Frame extends JInternalFrame implements Window,
                 constructor = c.getConstructor(new Class[] {javax.swing.JInternalFrame.class});
                 temp = constructor.newInstance(new Object[] {this});
             } catch (ClassNotFoundException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to readd titlebar", ex);
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar", ex);
             } catch (NoSuchMethodException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to readd titlebar", ex);
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar", ex);
             } catch (InstantiationException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to readd titlebar", ex);
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar", ex);
             } catch (IllegalAccessException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to readd titlebar", ex);
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar", ex);
             } catch (InvocationTargetException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to readd titlebar", ex);
+                Logger.appError(ErrorLevel.MEDIUM, "Unable to readd titlebar", ex);
             }
         }
         
@@ -538,7 +538,7 @@ public abstract class Frame extends JInternalFrame implements Window,
         try {
             setClosed(true);
         } catch (PropertyVetoException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to close frame", ex);
+            Logger.userError(ErrorLevel.LOW, "Unable to close frame");
         }
     }
     
@@ -547,7 +547,7 @@ public abstract class Frame extends JInternalFrame implements Window,
         try {
             setIcon(true);
         } catch (PropertyVetoException ex) {
-            Logger.error(ErrorLevel.WARNING, "Unable to minimise frame", ex);
+            Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
         }
     }
 }

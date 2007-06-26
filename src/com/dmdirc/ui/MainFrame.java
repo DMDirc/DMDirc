@@ -226,7 +226,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 try {
                     getActiveFrame().setMaximum(!getActiveFrame().isMaximum());
                 } catch (PropertyVetoException ex) {
-                    Logger.error(ErrorLevel.WARNING, "Unable to maximise window", ex);
+                    Logger.userError(ErrorLevel.LOW, "Unable to maximise window");
                 }
             }
         });
@@ -306,7 +306,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             ((JInternalFrame) frame).moveToFront();
             ((JInternalFrame) frame).setSelected(true);
         } catch (PropertyVetoException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to set active window", ex);
+            Logger.userError(ErrorLevel.LOW, "Unable to set active window");
         }
         
         if (maximised) {
@@ -412,7 +412,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 try {
                     frame.setMaximum(false);
                 } catch (PropertyVetoException ex) {
-                    Logger.error(ErrorLevel.ERROR, "Unable to maximise window", ex);
+                    Logger.userError(ErrorLevel.LOW, "Unable to maximise window");
                 }
             }
         }
@@ -913,13 +913,13 @@ public final class MainFrame extends JFrame implements WindowListener,
                 UIManager.setLookAndFeel(lnfName);
             }
         } catch (InstantiationException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to set look and feel: " + lnfName, ex);
+            Logger.userError(ErrorLevel.LOW, "Unable to set look and feel: " + lnfName);
         } catch (ClassNotFoundException ex) {
-            Logger.error(ErrorLevel.ERROR, "Look and feel not available: " + lnfName, ex);
+            Logger.userError(ErrorLevel.LOW, "Look and feel not available: " + lnfName);
         } catch (UnsupportedLookAndFeelException ex) {
-            Logger.error(ErrorLevel.ERROR, "Look and feel not available: " + lnfName, ex);
+            Logger.userError(ErrorLevel.LOW, "Look and feel not available: " + lnfName);
         } catch (IllegalAccessException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to set look and feel: " + lnfName, ex);
+            Logger.userError(ErrorLevel.LOW, "Unable to set look and feel: " + lnfName);
         }
     }
     
