@@ -36,6 +36,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.swing.event.EventListenerList;
 
 /**
  * Error manager.
@@ -47,7 +48,7 @@ public final class ErrorManager {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Previously instantiated instance of ErrorManager. */
     private static ErrorManager me;
@@ -55,9 +56,13 @@ public final class ErrorManager {
     /** Error list. */
     private final List<ProgramError> errors;
     
+    /** Listener list. */
+    private final EventListenerList errorListeners;
+    
     /** Creates a new instance of ErrorListDialog. */
     private ErrorManager() {
         errors = new LinkedList<ProgramError>();
+        errorListeners = new EventListenerList();
     }
     
     /**
@@ -79,6 +84,7 @@ public final class ErrorManager {
      */
     public void addError(final ProgramError error) {
         errors.add(error);
+        fireErrorAdded(error);
     }
     
     
@@ -89,6 +95,7 @@ public final class ErrorManager {
      */
     public void deleteError(final ProgramError error) {
         errors.remove(error);
+        fireErrorDeleted(error);
     }
     
     /**
@@ -99,7 +106,7 @@ public final class ErrorManager {
     public List<ProgramError> getErrorList() {
         return errors;
     }
-
+    
     /**
      * Returns the ID of an error.
      *
@@ -111,7 +118,18 @@ public final class ErrorManager {
         return errors.indexOf(error);
     }
     
-        /**
+    /**
+     * Returns the ID of an error.
+     *
+     * @param id Error ID to get
+     *
+     * @return ProgramError with specified ID
+     */
+    public ProgramError getError(final int id) {
+        return errors.get(id);
+    }
+    
+    /**
      * Sends an error to the developers.
      *
      * @param ProgramError error to be sent
@@ -120,66 +138,141 @@ public final class ErrorManager {
     public static void sendError(final ProgramError error) {
         new Timer().schedule(new TimerTask() {
             public void run() {
-                URL url;
-                URLConnection urlConn;
-                DataOutputStream printout;
-                BufferedReader printin;
-                String response = "";
-                int tries = 0;
-                
-                error.setStatus(ErrorStatus.SENDING);
-                
-                System.err.println("Sending error report...");
-                
-                while (!"Error report submitted. Thank you.".equalsIgnoreCase(response)
-                || tries >= 5) {
-                    try {
-                        url = new URL("http://www.dmdirc.com/error.php");
-                        urlConn = url.openConnection();
-                        urlConn.setDoInput(true);
-                        urlConn.setDoOutput(true);
-                        urlConn.setUseCaches(false);
-                        urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                        printout = new DataOutputStream(urlConn.getOutputStream());
-                        final String content =
-                                "message=" + URLEncoder.encode(error.getMessage(), "UTF-8")
-                                + "&trace=" + URLEncoder.encode(Arrays.toString(
-                                error.getTrace()), "UTF-8");
-                        printout.writeBytes(content);
-                        printout.flush();
-                        printout.close();
-                        printin = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-                        
-                        String line = null;
-                        do {
-                            if (line != null) {
-                                response = line;
-                                System.err.println(line);
-                            }
-                            
-                            line = printin.readLine();
-                        } while (line != null);
-                        printin.close();
-                    } catch (MalformedURLException ex) {
-                        System.err.println("Malformed URL, unable to send error report.");
-                    } catch (UnsupportedEncodingException ex) {
-                        System.err.println("Unsupported exception,  unable to send error report.");
-                    } catch (IOException ex) {
-                        System.err.println("IO Error, unable to send error report.");
-                    }
-                    
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException ex) {
-                        //Ignore
-                    }
-                    
-                    tries++;
-                }
-                
-                error.setStatus(ErrorStatus.FINISHED);
+                sendErrorInternal(error);
             }
         }, 0);
+    }
+    
+    /**
+     * Sends an error to the developers.
+     *
+     * @param ProgramError error to be sent
+     */
+    @SuppressWarnings("PMD.SystemPrintln")
+    private static void sendErrorInternal(final ProgramError error) {
+        URL url;
+        URLConnection urlConn;
+        DataOutputStream printout;
+        BufferedReader printin;
+        String response = "";
+        int tries = 0;
+        
+        error.setStatus(ErrorStatus.SENDING);
+        
+        System.err.println("Sending error report...");
+        
+        while (!"Error report submitted. Thank you.".equalsIgnoreCase(response)
+        || tries >= 5) {
+            try {
+                url = new URL("http://www.dmdirc.com/error.php");
+                urlConn = url.openConnection();
+                urlConn.setDoInput(true);
+                urlConn.setDoOutput(true);
+                urlConn.setUseCaches(false);
+                urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                printout = new DataOutputStream(urlConn.getOutputStream());
+                final String content =
+                        "message=" + URLEncoder.encode(error.getMessage(), "UTF-8")
+                        + "&trace=" + URLEncoder.encode(Arrays.toString(
+                        error.getTrace()), "UTF-8");
+                printout.writeBytes(content);
+                printout.flush();
+                printout.close();
+                printin = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+                
+                String line = null;
+                do {
+                    if (line != null) {
+                        response = line;
+                        System.err.println(line);
+                    }
+                    
+                    line = printin.readLine();
+                } while (line != null);
+                printin.close();
+            } catch (MalformedURLException ex) {
+                System.err.println("Malformed URL, unable to send error report.");
+            } catch (UnsupportedEncodingException ex) {
+                System.err.println("Unsupported exception,  unable to send error report.");
+            } catch (IOException ex) {
+                System.err.println("IO Error, unable to send error report.");
+            }
+            
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException ex) {
+                //Ignore
+            }
+            
+            tries++;
+        }
+        
+        error.setStatus(ErrorStatus.FINISHED);
+    }
+    
+    /**
+     * Adds an ErrorListener to the listener list.
+     *
+     * @param listener Listener to add
+     */
+    public void addErrorListener(final ErrorListener listener) {
+        synchronized (errorListeners) {
+            if (listener == null) {
+                return;
+            }
+            errorListeners.add(ErrorListener.class, listener);
+        }
+    }
+    
+    /**
+     * Removes an ErrorListener from the listener list.
+     *
+     * @param listener Listener to remove
+     */
+    public void removeErrorListener(final ErrorListener listener) {
+        errorListeners.remove(ErrorListener.class, listener);
+    }
+    
+    /**
+     * Fired when the program encounters an error.
+     *
+     * @param error Error that occurred
+     */
+    protected void fireErrorAdded(final ProgramError error) {
+        final Object[] listeners = errorListeners.getListenerList();
+        for (int i = 0; i < listeners.length; i += 2) {
+            if (listeners[i] == ErrorListener.class) {
+                ((ErrorListener) listeners[i + 1]).errorAdded(error);
+            }
+        }
+    }
+    
+    /**
+     * Fired when an error is deleted
+     *
+     * @param error Error that has been deleted
+     */
+    protected void fireErrorDeleted(final ProgramError error) {
+        final Object[] listeners = errorListeners.getListenerList();
+        for (int i = 0; i < listeners.length; i += 2) {
+            if (listeners[i] == ErrorListener.class) {
+                ((ErrorListener) listeners[i + 1]).errorDeleted(error);
+            }
+        }
+    }
+    
+    /**
+     * Fired when an error's status is changed.
+     *
+     * @param error Error that has been altered
+     */
+    protected void fireErrorStatusChanged(final ProgramError error) {
+        final Object[] listeners = errorListeners.getListenerList();
+        for (int i = 0; i < listeners.length; i += 2) {
+            if (listeners[i] == ErrorListener.class) {
+                ((ErrorListener) listeners[i + 1]).errorStatusChanged(error);
+            }
+        }
     }
     
 }

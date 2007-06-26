@@ -23,6 +23,10 @@
 package com.dmdirc.ui.components;
 
 import com.dmdirc.Config;
+import com.dmdirc.IconManager;
+import com.dmdirc.logger.ErrorListener;
+import com.dmdirc.logger.ErrorManager;
+import com.dmdirc.logger.ProgramError;
 import com.dmdirc.ui.interfaces.StatusErrorNotifier;
 import com.dmdirc.ui.interfaces.StatusMessageNotifier;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -37,6 +41,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -46,14 +51,15 @@ import javax.swing.SpringLayout;
 /**
  * Status bar, shows message and info on the gui.
  */
-public final class StatusBar extends JPanel implements MouseListener {
+public final class StatusBar extends JPanel implements MouseListener,
+        ErrorListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** message label. */
     private final JLabel messageLabel;
@@ -69,7 +75,7 @@ public final class StatusBar extends JPanel implements MouseListener {
     
     /** non error state image icon. */
     private final ImageIcon normalIcon;
-
+    
     /** Timer to clear the error. */
     private transient TimerTask errorTimer;
     
@@ -92,6 +98,7 @@ public final class StatusBar extends JPanel implements MouseListener {
         
         messageLabel.addMouseListener(this);
         iconLabel.addMouseListener(this);
+        ErrorManager.getErrorManager().addErrorListener(this);
         
         this.setLayout(layout);
         
@@ -174,7 +181,7 @@ public final class StatusBar extends JPanel implements MouseListener {
      * @param newNotifier status error notifier to be notified for events on
      * this error
      */
-    public synchronized void setError(final ImageIcon newIcon,
+    public synchronized void setError(final Icon newIcon,
             final StatusErrorNotifier newNotifier) {
         //Add to list
         iconLabel.setIcon(newIcon);
@@ -200,7 +207,7 @@ public final class StatusBar extends JPanel implements MouseListener {
      *
      * @param newIcon Icon to display
      */
-    public void setError(final ImageIcon newIcon) {
+    public void setError(final Icon newIcon) {
         setError(newIcon, null);
     }
     
@@ -211,11 +218,37 @@ public final class StatusBar extends JPanel implements MouseListener {
         setError(normalIcon);
     }
     
-    /**
-     * Invoked when a mouse button has been pressed on a component.
-     *
-     * @param mouseEvent mouse event
-     */
+    /** {@inheritDoc} */
+    public void errorAdded(final ProgramError error) {
+        final Icon icon;
+        switch (error.getLevel()) {
+            case HIGH:
+                icon = IconManager.getIcon("error");
+                break;
+            case MEDIUM:
+                icon = IconManager.getIcon("warning");
+                break;
+            case LOW:
+                icon = IconManager.getIcon("info");
+                break;
+            default:
+                icon = IconManager.getIcon("info");
+                break;
+        }
+        setError(icon);
+    }
+    
+    /** {@inheritDoc} */
+    public void errorDeleted(final ProgramError error) {
+        //Ignore
+    }
+    
+    /** {@inheritDoc} */
+    public void errorStatusChanged(final ProgramError error) {
+        //Ignore
+    }
+    
+    /** {@inheritDoc} */
     public void mousePressed(final MouseEvent mouseEvent) {
         //Ignore.
     }

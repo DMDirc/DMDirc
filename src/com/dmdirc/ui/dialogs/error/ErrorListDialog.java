@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.dialogs.error;
 
-import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ProgramError;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
@@ -34,8 +34,6 @@ import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -54,14 +52,14 @@ import javax.swing.table.DefaultTableModel;
  * Error list dialog.
  */
 public class ErrorListDialog extends StandardDialog implements
-        ActionListener, ListSelectionListener {
+        ActionListener, ErrorListener, ListSelectionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Previously instantiated instance of ErrorListDialog. */
     private static ErrorListDialog me;
@@ -70,11 +68,11 @@ public class ErrorListDialog extends StandardDialog implements
     private static final String[] HEADERS = new String[]{"ID", "Time",
     "Severity", "Report status", "Message"};
     
+    /** Error manager. */
+    private final ErrorManager errorManager;
+    
     /** Error table. */
     private JTable table;
-    
-    /** Error list. */
-    private List<ProgramError> errors;
     
     /** Error detail panel. */
     private ErrorDetailPanel errorDetails;
@@ -92,7 +90,7 @@ public class ErrorListDialog extends StandardDialog implements
     private ErrorListDialog() {
         super(MainFrame.getMainFrame(), false);
         
-        errors = new ArrayList<ProgramError>();
+        errorManager = ErrorManager.getErrorManager();
         
         initComponents();
         layoutComponents();
@@ -174,6 +172,7 @@ public class ErrorListDialog extends StandardDialog implements
     
     /** Initialises the listeners. */
     private void initListeners() {
+        ErrorManager.getErrorManager().addErrorListener(this);
         table.getSelectionModel().addListSelectionListener(this);
         sendButton.addActionListener(this);
         deleteButton.addActionListener(this);
@@ -207,8 +206,7 @@ public class ErrorListDialog extends StandardDialog implements
      */
     private Object[][] getTableData() {
         final ErrorManager errorManager = ErrorManager.getErrorManager();
-        errors.clear();
-        errors = errorManager.getErrorList();
+        final List<ProgramError> errors = errorManager.getErrorList();
         
         final Object[][] data = new Object[errors.size()][5];
         
@@ -228,7 +226,7 @@ public class ErrorListDialog extends StandardDialog implements
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             if (table.getSelectedRow() > -1) {
-                final ProgramError error = errors.get(
+                final ProgramError error = errorManager.getError(
                         table.getRowSorter().convertRowIndexToModel(
                         table.getSelectedRow()));
                 errorDetails.setError(error);
@@ -252,17 +250,33 @@ public class ErrorListDialog extends StandardDialog implements
         if (e.getSource() == getCancelButton()) {
             dispose();
         } else if (e.getSource() == deleteButton) {
-            ErrorManager.getErrorManager().deleteError(errors.get(
+            ErrorManager.getErrorManager().deleteError(errorManager.getError((
                     table.getRowSorter().convertRowIndexToModel(
-                    table.getSelectedRow())));
-            ((DefaultTableModel) table.getModel()).setDataVector(getTableData(),
-                    HEADERS);
+                    table.getSelectedRow()))));
         } else if (e.getSource() == sendButton) {
-            ErrorManager.getErrorManager().sendError(errors.get(
+            ErrorManager.getErrorManager().sendError(errorManager.getError(
                     table.getRowSorter().convertRowIndexToModel(
                     table.getSelectedRow())));
             //add some kind of listener to get the table updated
         }
+    }
+
+    /** {@inheritDoc} */
+    public void errorAdded(final ProgramError error) {
+        ((DefaultTableModel) table.getModel()).setDataVector(getTableData(),
+                    HEADERS);
+    }
+
+    /** {@inheritDoc} */
+    public void errorDeleted(final ProgramError error) {
+        ((DefaultTableModel) table.getModel()).setDataVector(getTableData(),
+                    HEADERS);
+    }
+
+    /** {@inheritDoc} */
+    public void errorStatusChanged(final ProgramError error) {
+        ((DefaultTableModel) table.getModel()).setDataVector(getTableData(),
+                    HEADERS);
     }
     
 }

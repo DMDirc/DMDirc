@@ -22,14 +22,21 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.ui.MainFrame;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 
 /**
  * Stores a program error.
  */
-public final class ProgramError {
+public final class ProgramError implements Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /** Error icon. */
     private final ErrorLevel level;
@@ -113,6 +120,7 @@ public final class ProgramError {
      */
     public void setStatus(final ErrorStatus newStatus) {
         status = newStatus;
+        ErrorManager.getErrorManager().fireErrorStatusChanged(this);
     }
 
     /**
@@ -122,6 +130,13 @@ public final class ProgramError {
      */
     public int getID() {
         return ErrorManager.getErrorManager().getErrorID(this);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+        return "Level: " + getLevel() + " Status: " + getStatus() 
+        + " Message: '" + getMessage() + "'";
     }
     
 }
