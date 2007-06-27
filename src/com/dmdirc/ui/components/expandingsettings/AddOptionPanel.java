@@ -190,7 +190,7 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
                     addInputCurrent = addInputCheckbox;
                     break;
                 case COLOUR:
-                    addInputColourChooser.setColour("");
+                    addInputColourChooser.clearColour();
                     addInputCurrent = addInputColourChooser;
                     break;
                 case SPINNER:
