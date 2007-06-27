@@ -55,13 +55,13 @@ public final class Raw extends WritableFrameContainer implements IDataIn, IDataO
         
         this.server = newServer;
         
-        imageIcon = IconManager.getIcon("raw");
+        icon = IconManager.getIcon("raw");
         
         frame = new CustomInputFrame(this, newServer.getFrame().getCommandParser());
         frame.setTitle("(Raw log)");
         MainFrame.getMainFrame().addChild(frame);
         frame.getInputHandler().setTabCompleter(server.getTabCompleter());
-        frame.setFrameIcon(imageIcon);
+        frame.setFrameIcon(icon);
         
         frame.open();
     }
@@ -74,7 +74,7 @@ public final class Raw extends WritableFrameContainer implements IDataIn, IDataO
             server.getParser().getCallbackManager().addCallback("OnDataIn", this);
             server.getParser().getCallbackManager().addCallback("OnDataOut", this);
         } catch (CallbackNotFound ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to register raw callbacks", ex);
+            Logger.appError(ErrorLevel.HIGH, "Unable to register raw callbacks", ex);
         }
     }
     

@@ -23,6 +23,7 @@
 package com.dmdirc.ui.dialogs.channelsetting;
 
 import com.dmdirc.Config;
+import com.dmdirc.IconManager;
 import com.dmdirc.identities.Identity;
 import com.dmdirc.ui.components.ColourChooser;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
@@ -43,7 +44,6 @@ import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -327,12 +327,9 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
                 label.getFont().getSize()));
         label.setLabelFor(component);
         
-        button.setIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("com/dmdirc/res/close-inactive.png")));
-        button.setRolloverIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("com/dmdirc/res/close-active.png")));
-        button.setPressedIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("com/dmdirc/res/close-active.png")));
+        button.setIcon(IconManager.getIcon("close-inactive"));
+        button.setRolloverIcon(IconManager.getIcon("close-active"));
+        button.setPressedIcon(IconManager.getIcon("close-active"));
         button.setContentAreaFilled(false);
         button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         button.setMargin(new Insets(0, 0, 0, 0));

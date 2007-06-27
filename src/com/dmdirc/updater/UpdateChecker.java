@@ -23,6 +23,7 @@
 package com.dmdirc.updater;
 
 import com.dmdirc.Config;
+import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -46,7 +47,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
 /**
@@ -139,14 +139,11 @@ public final class UpdateChecker implements Runnable, MouseListener {
     private void doUpdateAvailable(final String line) {
         updates.add(new Update(line));
         
-        if (label == null) {
-            final ClassLoader classLoader = getClass().getClassLoader();
-            final ImageIcon icon = new ImageIcon(classLoader.getResource("com/dmdirc/res/update.png"));
-            
+        if (label == null) {            
             label.addMouseListener(this);
             label = new JLabel();
             label.setBorder(BorderFactory.createEtchedBorder());
-            label.setIcon(icon);
+            label.setIcon(IconManager.getIcon("update"));
             MainFrame.getMainFrame().getStatusBar().addComponent(label);
         }
     }

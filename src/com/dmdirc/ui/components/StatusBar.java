@@ -42,7 +42,6 @@ import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Spring;
@@ -74,7 +73,7 @@ public final class StatusBar extends JPanel implements MouseListener,
     private transient StatusErrorNotifier errorNotifier;
     
     /** non error state image icon. */
-    private final ImageIcon normalIcon;
+    private final Icon normalIcon;
     
     /** Timer to clear the error. */
     private transient TimerTask errorTimer;
@@ -108,8 +107,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         setPreferredSize(new Dimension(Short.MAX_VALUE, 25));
         setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
         
-        normalIcon = new ImageIcon(this.getClass()
-        .getClassLoader().getResource("com/dmdirc/res/normal.png"));
+        normalIcon = IconManager.getIcon("normal");
         
         clearMessage();
         clearError();

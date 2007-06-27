@@ -45,17 +45,6 @@ public final class Logger {
         //Ignore
     }
     
-    @Deprecated
-    public static void error(final ErrorLevel level, final String string,
-            final Throwable exception) {
-        appError(level, string, exception);
-    }
-    
-    @Deprecated
-    public static void error(final ErrorLevel level, final String string) {
-        appError(level, string, new Exception("No exception passed"));
-    }
-    
     /**
      * Called when a user correctable error occurs.
      *

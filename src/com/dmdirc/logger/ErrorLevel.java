@@ -33,13 +33,7 @@ public enum ErrorLevel {
     /** Medium priority error. */
     MEDIUM("Medium"),
     /** Low priority error. */
-    LOW("Low"),
-    @Deprecated
-    ERROR("Error"),
-    @Deprecated
-    WARNING("Warning"),
-    @Deprecated
-    TRIVIAL("Trvial");
+    LOW("Low");
     
     /** toString value of the item. */
     private String value;

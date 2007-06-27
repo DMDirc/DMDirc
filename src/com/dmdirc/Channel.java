@@ -118,7 +118,7 @@ public final class Channel extends WritableFrameContainer implements
         configManager = new ConfigManager(server.getIrcd(), server.getNetwork(),
                 server.getName(), channelInfo.getName());
         
-        imageIcon = IconManager.getIcon("channel");
+        icon = IconManager.getIcon("channel");
         
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(CommandManager.getChannelCommandNames());
@@ -128,14 +128,14 @@ public final class Channel extends WritableFrameContainer implements
                 public void run() {
                     frame = new ChannelFrame(Channel.this);
                     MainFrame.getMainFrame().addChild(frame);
-                    frame.setFrameIcon(imageIcon);
+                    frame.setFrameIcon(icon);
                     frame.getInputHandler().setTabCompleter(tabCompleter);
                 }
             });
         } catch (InvocationTargetException ex) {
-            Logger.error(ErrorLevel.FATAL, "Unable to load channel", ex.getCause());
+            Logger.appError(ErrorLevel.FATAL, "Unable to load channel", ex.getCause());
         } catch (InterruptedException ex) {
-            Logger.error(ErrorLevel.FATAL, "Unable to load channel", ex);
+            Logger.appError(ErrorLevel.FATAL, "Unable to load channel", ex);
         }
         
         registerCallbacks();
@@ -158,7 +158,7 @@ public final class Channel extends WritableFrameContainer implements
                 callbackManager.addCallback(callback, this, channel);
             }
         } catch (CallbackNotFound ex) {
-            Logger.error(ErrorLevel.FATAL, "Unable to load channel", ex);
+            Logger.appError(ErrorLevel.FATAL, "Unable to load channel", ex);
         }
     }
     

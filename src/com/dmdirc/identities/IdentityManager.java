@@ -83,14 +83,14 @@ public final class IdentityManager {
             try {
                 final InputStream res = cldr.getResourceAsStream(base + url);
                 if (res == null) {
-                    Logger.error(ErrorLevel.WARNING, "Unable to load default identity: " + url);
+                    Logger.userError(ErrorLevel.MEDIUM, "Unable to load default identity: " + url);
                 } else {
                     addIdentity(new Identity(res));
                 }
             } catch (InvalidIdentityFileException ex) {
-                Logger.error(ErrorLevel.WARNING, "Invalid identity file", ex);
+                Logger.userError(ErrorLevel.MEDIUM, "Invalid identity file");
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.ERROR, "Unable to load identity file", ex);
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to load identity file");
             }
         }
     }
@@ -106,20 +106,20 @@ public final class IdentityManager {
                 dir.mkdirs();
                 dir.createNewFile();
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.ERROR, "Unable to create identity dir", ex);
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to create identity dir");
             }
         }
         
         if (dir == null || dir.listFiles() == null) {
-            Logger.error(ErrorLevel.WARNING, "Unable to load user identity files");
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to load user identity files");
         } else {
             for (File file : dir.listFiles()) {
                 try {
                     addIdentity(new Identity(file));
                 } catch (InvalidIdentityFileException ex) {
-                    Logger.error(ErrorLevel.WARNING, "Invalid identity file", ex);
+                    Logger.userError(ErrorLevel.MEDIUM, "Invalid identity file");
                 } catch (IOException ex) {
-                    Logger.error(ErrorLevel.ERROR, "Unable to load identity file", ex);
+                    Logger.userError(ErrorLevel.MEDIUM, "Unable to load identity file");
                 }
             }
         }

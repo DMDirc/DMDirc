@@ -143,7 +143,7 @@ public final class ConfigManager {
         try {
             res = Integer.parseInt(getOption(domain, option));
         } catch (NumberFormatException ex) {
-            Logger.error(ErrorLevel.WARNING, "Invalid number format for " + domain + "." + option, ex);
+            Logger.userError(ErrorLevel.MEDIUM, "Invalid number format for " + domain + "." + option);
             res = fallback;
         }
         

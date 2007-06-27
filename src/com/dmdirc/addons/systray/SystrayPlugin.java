@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.systray;
 
+import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.MainFrame;
@@ -35,9 +36,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.net.URL;
-
-import javax.swing.ImageIcon;
 
 /**
  * The Systray plugin shows DMDirc in the user's system tray, and allows
@@ -106,10 +104,7 @@ public final class SystrayPlugin  extends Plugin implements ActionListener, Mous
     
     /** {@inheritDoc} */
     public void onActivate() {
-        
-        final ClassLoader cldr = this.getClass().getClassLoader();
-        final URL imageURL = cldr.getResource("com/dmdirc/res/logo.png");
-        icon = new TrayIcon(new ImageIcon(imageURL).getImage(), "DMDirc", menu);
+        icon = new TrayIcon(IconManager.getImage("logo"), "DMDirc", menu);
         icon.setImageAutoSize(true);
         icon.addMouseListener(this);
         
@@ -167,18 +162,22 @@ public final class SystrayPlugin  extends Plugin implements ActionListener, Mous
     
     /** {@inheritDoc} */
     public void mousePressed(final MouseEvent e) {
+        //Ignore
     }
     
     /** {@inheritDoc} */
     public void mouseReleased(final MouseEvent e) {
+        //Ignore
     }
     
     /** {@inheritDoc} */
     public void mouseEntered(final MouseEvent e) {
+        //Ignore
     }
     
     /** {@inheritDoc} */
     public void mouseExited(final MouseEvent e) {
+        //Ignore
     }
     
 }

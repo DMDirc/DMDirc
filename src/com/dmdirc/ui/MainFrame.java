@@ -24,6 +24,7 @@ package com.dmdirc.ui;
 
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
@@ -44,8 +45,6 @@ import com.dmdirc.ui.framemanager.MainFrameManager;
 import com.dmdirc.ui.framemanager.windowmenu.WindowMenuFrameManager;
 import com.dmdirc.ui.interfaces.Window;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import com.dmdirc.ui.dialogs.error.ErrorListDialog;
-import com.dmdirc.logger.ErrorManager;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -53,6 +52,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.MouseInfo;
 import java.awt.PointerInfo;
@@ -63,7 +63,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -177,12 +176,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         initKeyHooks();
         
         setTitle(getTitlePrefix());
-        
-        // Load an icon
-        final ClassLoader cldr = this.getClass().getClassLoader();
-        
-        final URL imageURL = cldr.getResource("com/dmdirc/res/icon.png");
-        imageIcon = new ImageIcon(imageURL);
+                
+        imageIcon = new ImageIcon(IconManager.getImage("icon"));
         setIconImage(imageIcon.getImage());
         
         mainFrameManager.setParent(frameManagerPanel);

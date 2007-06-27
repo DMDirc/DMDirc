@@ -24,6 +24,7 @@ package com.dmdirc.ui.framemanager.tree;
 
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.IconManager;
 import com.dmdirc.ui.messages.ColourManager;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
@@ -33,7 +34,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -53,7 +54,7 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
     /**
      * The default icon to use for unknown frames.
      */
-    private final ImageIcon defaultIcon;
+    private final Icon defaultIcon;
     
     /** Parent frame manager. */
     private final transient TreeFrameManager manager;
@@ -66,8 +67,7 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
     public TreeViewTreeCellRenderer(final TreeFrameManager manager) {
         super();
         this.manager = manager;
-        defaultIcon = new ImageIcon(this.getClass().getClassLoader()
-        .getResource("com/dmdirc/res/icon.png"));
+        defaultIcon = IconManager.getIcon("icon");
     }
     
     /**

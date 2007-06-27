@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.components;
 
+import com.dmdirc.IconManager;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.textpane.TextPane;
@@ -37,7 +38,6 @@ import java.awt.event.KeyListener;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -133,12 +133,11 @@ public final class SearchBar extends JPanel implements ActionListener,
         
         searchBox.setPreferredSize(new Dimension(300, searchBox.getFont().getSize() - SMALL_BORDER));
         
-        closeButton.setIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("com/dmdirc/res/close-inactive.png")));
-        closeButton.setRolloverIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("com/dmdirc/res/close-active.png")));
-        closeButton.setPressedIcon(new ImageIcon(this.getClass()
-        .getClassLoader().getResource("com/dmdirc/res/close-active.png")));
+        
+        
+        closeButton.setIcon(IconManager.getIcon("close-inactive"));
+        closeButton.setRolloverIcon(IconManager.getIcon("close-active"));
+        closeButton.setPressedIcon(IconManager.getIcon("close-active"));
         closeButton.setContentAreaFilled(false);
         closeButton.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         closeButton.setPreferredSize(new Dimension(16, 16));

@@ -198,7 +198,7 @@ public final class Server extends WritableFrameContainer implements
     public void connect(final String server, final int port, final String password,
             final boolean ssl, final ConfigSource profile) {
         if (closing) {
-            Logger.error(ErrorLevel.WARNING, "Attempted to connect to a server while frame is closing.");
+            Logger.userError(ErrorLevel.MEDIUM, "Attempted to connect to a server while frame is closing.");
             return;
         }
         
@@ -216,9 +216,9 @@ public final class Server extends WritableFrameContainer implements
         
         configManager = new ConfigManager("", "", server);
         
-        imageIcon = IconManager.getIcon(ssl ? "secure-server" : "server");
+        icon = IconManager.getIcon(ssl ? "secure-server" : "server");
         
-        window.setFrameIcon(imageIcon);
+        window.setFrameIcon(icon);
         
         window.addLine("serverConnecting", server, port);
         
@@ -248,7 +248,7 @@ public final class Server extends WritableFrameContainer implements
                 parser.getCallbackManager().addCallback(callback, this);
             }
         } catch (CallbackNotFound ex) {
-            Logger.error(ErrorLevel.FATAL, "Unable to register server event handlers", ex);
+            Logger.appError(ErrorLevel.FATAL, "Unable to register server event handlers", ex);
         }
         
         for (Query query : queries.values()) {
@@ -262,7 +262,7 @@ public final class Server extends WritableFrameContainer implements
         try {
             new Thread(parser).start();
         } catch (IllegalThreadStateException ex) {
-            Logger.error(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
+            Logger.appError(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
         }
         
         updateIgnoreList();
@@ -998,7 +998,7 @@ public final class Server extends WritableFrameContainer implements
             } else if (ex instanceof java.net.SocketException) {
                 description = ex.getMessage();
             } else {
-                Logger.error(ErrorLevel.TRIVIAL, "Unknown socket error", ex);
+                Logger.appError(ErrorLevel.LOW, "Unknown socket error", ex);
                 description = "Unknown error: " + ex.getMessage();
             }
         }
@@ -1064,19 +1064,20 @@ public final class Server extends WritableFrameContainer implements
         if (errorInfo.isFatal()) {
             errorLevel = ErrorLevel.FATAL;
         } else if (errorInfo.isError()) {
-            errorLevel = ErrorLevel.ERROR;
+            errorLevel = ErrorLevel.HIGH;
         } else if (errorInfo.isWarning()) {
-            errorLevel = ErrorLevel.WARNING;
+            errorLevel = ErrorLevel.MEDIUM;
         } else {
-            Logger.error(ErrorLevel.WARNING,
-                    "Unknown error level for parser error: " + errorInfo.getData());
+            Logger.appError(ErrorLevel.LOW,
+                    "Unknown error level for parser error: " + errorInfo.getData(),
+                    new IllegalArgumentException("Illegal error level: " + errorInfo.getLevel()));
             return;
         }
         
         if (errorInfo.isException()) {
-            Logger.error(errorLevel, errorInfo.getData(), errorInfo.getException());
+            Logger.appError(errorLevel, errorInfo.getData(), errorInfo.getException());
         } else {
-            Logger.error(errorLevel, errorInfo.getData());
+            Logger.userError(errorLevel, errorInfo.getData());
         }
     }
     

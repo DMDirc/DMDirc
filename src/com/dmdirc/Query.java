@@ -72,14 +72,14 @@ public final class Query extends WritableFrameContainer implements
         this.server = newServer;
         this.host = newHost;
         
-        imageIcon = IconManager.getIcon("query");
+        icon = IconManager.getIcon("query");
         
         frame = new QueryFrame(this);
         
         ActionManager.processEvent(CoreActionType.QUERY_OPENED, null, this);
         
         MainFrame.getMainFrame().addChild(frame);
-        frame.setFrameIcon(imageIcon);
+        frame.setFrameIcon(icon);
         
         if (!Config.getOptionBool("general", "hidequeries")) {
             frame.open();
@@ -224,7 +224,7 @@ public final class Query extends WritableFrameContainer implements
             callbackManager.addCallback("onPrivateMessage", this, ClientInfo.parseHost(host));
             callbackManager.addCallback("onNickChanged", this);
         } catch (CallbackNotFound ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to get query events", ex);
+            Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
         }
     }
     
@@ -241,7 +241,7 @@ public final class Query extends WritableFrameContainer implements
                 callbackManager.addCallback("onPrivateAction", this, cClient.getNickname());
                 callbackManager.addCallback("onPrivateMessage", this, cClient.getNickname());
             } catch (CallbackNotFound ex) {
-                Logger.error(ErrorLevel.ERROR, "Unable to get query events", ex);
+                Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
             }
             
             // TODO: Action hook!

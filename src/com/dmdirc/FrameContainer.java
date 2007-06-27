@@ -45,7 +45,7 @@ public abstract class FrameContainer {
     protected Color notification = Color.BLACK;
     
     /** The icon being used for this container's frame. */
-    protected Icon imageIcon;
+    protected Icon icon;
     
     /**
      * Returns the internal frame associated with this object.
@@ -79,7 +79,7 @@ public abstract class FrameContainer {
      * @return This container's icon
      */
     public Icon getIcon() {
-        return imageIcon;
+        return icon;
     }
     
     /**
@@ -147,7 +147,7 @@ public abstract class FrameContainer {
             try {
                 getFrame().setMaximum(true);
             } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to maximise window", ex);
+                Logger.userError(ErrorLevel.LOW, "Unable to maximise window");
             }
         }
     }
@@ -174,7 +174,7 @@ public abstract class FrameContainer {
             try {
                 getFrame().setMaximum(true);
             } catch (PropertyVetoException ex) {
-                Logger.error(ErrorLevel.WARNING, "Unable to maximise window", ex);
+                Logger.userError(ErrorLevel.LOW, "Unable to maximise window");
             }
         }
         MainFrame.getMainFrame().getFrameManager().setSelected(this);

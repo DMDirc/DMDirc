@@ -75,7 +75,7 @@ public final class GlobalCommandParser extends CommandParser {
      */
     protected void handleNonCommand(final InputWindow origin, final String line) {
         if (origin == null) {
-            Logger.error(ErrorLevel.WARNING, "Invalid global command: " + line);
+            Logger.userError(ErrorLevel.MEDIUM, "Invalid global command: " + line);
         } else {
             origin.addLine("commandError", "Invalid global command: " + line);
         }

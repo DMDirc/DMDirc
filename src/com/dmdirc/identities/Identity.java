@@ -183,9 +183,9 @@ public final class Identity implements ConfigSource {
                 
                 needSave = false;
             } catch (FileNotFoundException ex) {
-                Logger.error(ErrorLevel.ERROR, "Unable to save identity file", ex);
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to save identity file");
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.ERROR, "Unable to save identity file", ex);
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to save identity file");
             }
         }
     }
@@ -248,7 +248,7 @@ public final class Identity implements ConfigSource {
                 properties.store(writer, "");
                 writer.close();
             } catch (IOException ex) {
-                Logger.error(ErrorLevel.ERROR, "Unable to write new identity file", ex);
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to write new identity file");
                 return null;
             }
         }
@@ -259,13 +259,13 @@ public final class Identity implements ConfigSource {
             
             return identity;
         } catch (MalformedURLException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to open new identity file", ex);
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to open new identity file");
             return null;
         } catch (InvalidIdentityFileException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to open new identity file", ex);
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to open new identity file");
             return null;
         } catch (IOException ex) {
-            Logger.error(ErrorLevel.ERROR, "Unable to open new identity file", ex);
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to open new identity file");
             return null;
         }
     }

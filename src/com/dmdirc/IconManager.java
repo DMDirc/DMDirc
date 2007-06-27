@@ -22,6 +22,8 @@
 
 package com.dmdirc;
 
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.net.URL;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -53,6 +55,19 @@ public final class IconManager {
         final ClassLoader cldr = IconManager.class.getClassLoader();
         final URL imageURL = cldr.getResource(getIconPath(type));
         return new ImageIcon(imageURL);
+    }
+    
+    /**
+     * Retrieves the image with the specified type. Returns null if the icon
+     * wasn't found.
+     *
+     * @param type The name of the icon type to retrieve
+     * @return The image that should be used for the specified type
+     */
+    public static Image getImage(final String type) {
+        final ClassLoader cldr = IconManager.class.getClassLoader();
+        final URL imageURL = cldr.getResource(getIconPath(type));
+        return Toolkit.getDefaultToolkit().getDefaultToolkit().createImage(imageURL);
     }
     
     /**

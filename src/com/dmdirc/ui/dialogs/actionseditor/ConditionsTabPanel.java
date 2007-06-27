@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.dialogs.actionseditor;
 
+import com.dmdirc.IconManager;
 import com.dmdirc.actions.ActionCondition;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.UIUtilities.layoutGrid;
@@ -38,7 +39,6 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -181,12 +181,9 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             final JButton edit = new JButton();
             final JButton delete = new JButton();
             
-            edit.setIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("com/dmdirc/res/edit-inactive.png")));
-            edit.setRolloverIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("com/dmdirc/res/edit.png")));
-            edit.setPressedIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("com/dmdirc/res/edit.png")));
+            edit.setIcon(IconManager.getIcon("edit-inactive"));
+            edit.setRolloverIcon(IconManager.getIcon("edit"));
+            edit.setPressedIcon(IconManager.getIcon("edit"));
             edit.setContentAreaFilled(false);
             edit.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             edit.setMargin(new Insets(0, 0, 0, 0));
@@ -194,12 +191,9 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             edit.setActionCommand("edit");
             edit.addActionListener(this);
             
-            delete.setIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("com/dmdirc/res/close-inactive.png")));
-            delete.setRolloverIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("com/dmdirc/res/close-active.png")));
-            delete.setPressedIcon(new ImageIcon(this.getClass()
-            .getClassLoader().getResource("com/dmdirc/res/close-active.png")));
+            delete.setIcon(IconManager.getIcon("close-inactive"));
+            delete.setRolloverIcon(IconManager.getIcon("close-active"));
+            delete.setPressedIcon(IconManager.getIcon("close-active"));
             delete.setContentAreaFilled(false);
             delete.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             delete.setMargin(new Insets(0, 0, 0, 0));

@@ -112,7 +112,7 @@ public final class CommandManager {
             target = globalParsers;
             globalCommands.add(command);
         } else {
-            Logger.error(ErrorLevel.ERROR, "Attempted to register an invalid command: "
+            Logger.userError(ErrorLevel.HIGH, "Attempted to register an invalid command: "
                     + command.getClass().getName());
         }
         
@@ -167,7 +167,7 @@ public final class CommandManager {
             target = globalParsers;
             globalCommands.remove(command);
         } else {
-            Logger.error(ErrorLevel.ERROR, "Attempted to unregister an invalid command: "
+            Logger.userError(ErrorLevel.HIGH, "Attempted to unregister an invalid command: "
                     + command.getClass().getName());
         }
         
