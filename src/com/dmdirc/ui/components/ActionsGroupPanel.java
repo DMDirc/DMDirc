@@ -127,6 +127,9 @@ public final class ActionsGroupPanel extends JPanel
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setAutoCreateRowSorter(true);
+        
+        table.getTableHeader().setReorderingAllowed(false);
+        
         table.getSelectionModel().addListSelectionListener(this);
         
         final JScrollPane pane = new JScrollPane(table);
