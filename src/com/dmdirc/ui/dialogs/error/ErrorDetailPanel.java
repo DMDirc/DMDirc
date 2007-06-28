@@ -36,7 +36,7 @@ import javax.swing.SpringLayout;
 /**
  * Shows information about an error.
  */
-public class ErrorDetailPanel extends JPanel {
+public final class ErrorDetailPanel extends JPanel {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -85,6 +85,11 @@ public class ErrorDetailPanel extends JPanel {
         layoutComponents();
     }
     
+    /** 
+     * Sets the error used for this panel. 
+     *
+     * @param newError New ProgramError
+     */
     public void setError(final ProgramError newError) {
         error = newError;
         updateDetails();

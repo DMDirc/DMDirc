@@ -56,10 +56,10 @@ public final class ServerFrame extends InputFrame implements ServerWindow,
     private static final long serialVersionUID = 8;
     
     /** This channel's command parser. */
-    private final transient ServerCommandParser commandParser;
+    private final ServerCommandParser commandParser;
     
     /** This frame's parent. */
-    private final transient Server parent;
+    private final Server parent;
     
     /** popup menu item. */
     private JMenuItem settingsMI;

@@ -33,13 +33,13 @@ import com.dmdirc.logger.Logger;
 public final class Update {
     
     /** Update component. */
-    private String component;
+    private final String component;
     /** Local version. */
-    private String localVersion;
+    private final String localVersion;
     /** Remove version. */
-    private String remoteVersion;
+    private final String remoteVersion;
     /** Update url. */
-    private String url;
+    private final String url;
     
     /**
      * Creates a new instance of Update, with details from the specified line.
@@ -55,6 +55,10 @@ public final class Update {
             localVersion = parts[3];
             url = parts[4];
         } else {
+            component = null;
+            remoteVersion = null;
+            localVersion = null;
+            url = null;
             Logger.userError(ErrorLevel.LOW, "Unknown update line received from server: "
                     + updateInfo);
         }

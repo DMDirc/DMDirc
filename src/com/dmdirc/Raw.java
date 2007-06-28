@@ -32,12 +32,22 @@ import com.dmdirc.ui.CustomInputFrame;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
 
+import java.io.Serializable;
+
 /**
  * Handles the raw window (which shows the user raw data being sent and
  * received to/from the server).
  * @author chris
  */
-public final class Raw extends WritableFrameContainer implements IDataIn, IDataOut {
+public final class Raw extends WritableFrameContainer implements IDataIn, 
+        IDataOut, Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /** The server object that's being monitored. */
     private Server server;

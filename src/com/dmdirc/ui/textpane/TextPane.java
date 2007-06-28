@@ -62,7 +62,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     /** Canvas object, used to draw text. */
     private final TextPaneCanvas canvas;
     /** IRCDocument. */
-    private final transient IRCDocument document;
+    private final IRCDocument document;
     
     /** Listener list. */
     private final EventListenerList textPaneListeners;

@@ -20,18 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.dialogs.wizard;
-
-import javax.swing.JPanel;
-
 /**
- * Wizard step.
+ * Error dialogs.
  */
-public abstract class Step extends JPanel {
-    
-    /** Instantiates a new step. */
-    public Step() {
-        super();
-        //Do nothing
-    }
-}
+package com.dmdirc.ui.dialogs.error;

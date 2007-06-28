@@ -48,6 +48,12 @@ public final class ButtonComparator implements Comparator<FrameContainer>,
      */
     private static final long serialVersionUID = 1;
     
+    /** Initialises the ButtonComparator. */
+    public ButtonComparator() {
+        super();
+        //Do nothing
+    }
+    
     /**
      * Returns an integer corresponding to the expected order of an object.
      *

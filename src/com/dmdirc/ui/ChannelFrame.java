@@ -76,7 +76,7 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
     private NicklistListModel nicklistModel;
     
     /** This channel's command parser. */
-    private final transient ChannelCommandParser commandParser;
+    private final ChannelCommandParser commandParser;
     
     /** Nick list. */
     private JList nickList;
@@ -88,7 +88,7 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
     private JMenuItem settingsMI;
     
     /** The channel object that owns this frame. */
-    private final transient Channel parent;
+    private final Channel parent;
     
     /** nicklist popup menu. */
     private JPopupMenu nicklistPopup;

@@ -52,7 +52,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.MouseInfo;
 import java.awt.PointerInfo;
@@ -129,12 +128,12 @@ public final class MainFrame extends JFrame implements WindowListener,
     /**
      * The frame manager that's being used.
      */
-    private final transient MainFrameManager mainFrameManager;
+    private final MainFrameManager mainFrameManager;
     
     /**
      * The window menu frame manager that's being used.
      */
-    private final transient WindowMenuFrameManager windowListFrameManager;
+    private final WindowMenuFrameManager windowListFrameManager;
     
     /** Dekstop pane. */
     private JDesktopPane desktopPane;

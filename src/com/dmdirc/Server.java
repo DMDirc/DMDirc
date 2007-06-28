@@ -66,6 +66,7 @@ import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -87,7 +88,14 @@ public final class Server extends WritableFrameContainer implements
         IPrivateCTCP, IPrivateCTCPReply, ISocketClosed, IPrivateNotice,
         IMOTDStart, IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed,
         IPingSuccess, IAwayState, IConnectError, IAwayStateOther, INickInUse,
-        IPost005, INoticeAuth, IUserModeChanged {
+        IPost005, INoticeAuth, IUserModeChanged, Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /** The callbacks that should be registered for server instances. */
     private static final String[] CALLBACKS = {
@@ -105,7 +113,7 @@ public final class Server extends WritableFrameContainer implements
     private final Map<String, Query> queries = new Hashtable<String, Query>();
     
     /** The IRC Parser instance handling this server. */
-    private IRCParser parser;
+    private transient IRCParser parser;
     /** The raw frame used for this server instance. */
     private Raw raw;
     /** The ServerWindow corresponding to this server. */
@@ -120,7 +128,7 @@ public final class Server extends WritableFrameContainer implements
     /** Whether we're using SSL or not. */
     private boolean ssl;
     /** The profile we're using. */
-    private ConfigSource profile;
+    private transient ConfigSource profile;
     
     /**
      * Used to indicate that this server is in the process of closing all of its
@@ -286,7 +294,7 @@ public final class Server extends WritableFrameContainer implements
     }
     
     /** {@inheritDoc} */
-    public void sendLine(String line) {
+    public void sendLine(final String line) {
         if (parser != null && !closing) {
             parser.sendLine(line);
         }

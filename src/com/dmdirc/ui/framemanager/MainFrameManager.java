@@ -32,16 +32,26 @@ import com.dmdirc.ui.framemanager.tree.TreeFrameManager;
 import com.dmdirc.ui.framemanager.windowmenu.WindowMenuFrameManager;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 
 import javax.swing.JComponent;
 
 /**
  * Instantiates and manages the active frame managers.
  */
-public final class MainFrameManager implements FrameManager {
+public final class MainFrameManager implements FrameManager, Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /** Active frame manager. */
-    private final FrameManager frameManager;
+    private transient FrameManager frameManager;
     
     /** Window menu frame manager. */
     private final WindowMenuFrameManager windowMenuFrameManager;
@@ -57,6 +67,23 @@ public final class MainFrameManager implements FrameManager {
         }
         
         windowMenuFrameManager = new WindowMenuFrameManager();
+    }
+    
+    /** 
+     * Reads the object from the stream. 
+     *
+     * @param stream Stream to read the object from
+     */
+    private void readObject(final ObjectInputStream stream)
+    throws IOException, ClassNotFoundException {
+        stream.defaultReadObject();
+        final String manager = Config.getOption("ui", "framemanager", "treeview");
+        
+        if (manager.equalsIgnoreCase("buttonbar")) {
+            frameManager = new ButtonBar();
+        } else {
+            frameManager = new TreeFrameManager();
+        }
     }
     
     /** {@inheritDoc} */

@@ -34,6 +34,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -44,7 +45,15 @@ import javax.swing.JMenuItem;
 /**
  * Manages the window menu window list.
  */
-public final class WindowMenuFrameManager implements FrameManager, ActionListener {
+public final class WindowMenuFrameManager implements FrameManager, 
+        ActionListener, Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /** Menu item list. */
     private final Map<FrameContainer, JMenuItem> menuItemMap;

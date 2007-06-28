@@ -56,6 +56,7 @@ import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.Styliser;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -73,7 +74,14 @@ public final class Channel extends WritableFrameContainer implements
         IChannelMessage, IChannelGotNames, IChannelTopic, IChannelJoin,
         IChannelPart, IChannelKick, IChannelQuit, IChannelAction,
         IChannelNickChanged, IChannelModeChanged, IChannelUserModeChanged,
-        IChannelCTCP, IAwayStateOther {
+        IChannelCTCP, IAwayStateOther, Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /**
      * The callbacks that should be registered for channel instances.
@@ -86,7 +94,7 @@ public final class Channel extends WritableFrameContainer implements
     };
     
     /** The parser's pChannel class. */
-    private ChannelInfo channelInfo;
+    private transient ChannelInfo channelInfo;
     
     /** The server this channel is on. */
     private Server server;

@@ -48,7 +48,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     private static final long serialVersionUID = 5;
     
     /** IRCDocument. */
-    private final transient IRCDocument document;
+    private final IRCDocument document;
     /** parent textpane. */
     private final TextPane textPane;
     /** Position -> TextLayout. */
@@ -101,7 +101,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     /**
      * Paints the text onto the canvas.
      *
-     * @param g graphics object to draw onto
+     * @param graphics graphics object to draw onto
      */
     public void paintComponent(final Graphics graphics) {        
         final Graphics2D g = (Graphics2D) graphics;
@@ -232,7 +232,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     }
     
     /**
-     * Returns the number of timesa line will wrap
+     * Returns the number of timesa line will wrap.
      *
      * @param lineMeasurer LineBreakMeasurer to work out wrapping for
      * @param paragraphStart Start index of the paragraph
@@ -262,7 +262,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     }
     
     /**
-     * Redraws the text that has been highlighted
+     * Redraws the text that has been highlighted.
      *
      * @param line Line number
      * @param startLine Selection start line

@@ -31,6 +31,7 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,8 @@ import javax.swing.JSeparator;
 /**
  * Basic wizard container.
  */
-public final class WizardDialog extends JDialog implements ActionListener {
+public final class WizardDialog extends JDialog implements ActionListener,
+        Serializable {
     
     /**
      * A version number for this class. It should be changed whenever the class

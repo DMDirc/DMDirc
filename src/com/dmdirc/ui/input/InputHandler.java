@@ -24,7 +24,6 @@ package com.dmdirc.ui.input;
 
 import com.dmdirc.Config;
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.CoreActionMetaType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.Command;
 import com.dmdirc.commandparser.CommandManager;
@@ -315,7 +314,7 @@ public final class InputHandler implements KeyListener, ActionListener {
             int lastArg = signature.length() + 2;
             final List<String> previousArgs = new ArrayList<String>();
             
-            final String word = text.substring(start, end);
+            //final String word = text.substring(start, end);
             
             for (int i = lastArg; i < start; i++) {
                 if (text.charAt(i) == ' ') {
@@ -397,14 +396,14 @@ public final class InputHandler implements KeyListener, ActionListener {
         final String line = actionEvent.getActionCommand();
         
         if (line.length() > 0) {
-            final StringBuffer buffer = new StringBuffer(line);
+            final StringBuffer thisBuffer = new StringBuffer(line);
             
             ActionManager.processEvent(CoreActionType.CLIENT_USER_INPUT, null,
-                    parentWindow.getContainer(), buffer);
+                    parentWindow.getContainer(), thisBuffer);
             
-            addToBuffer(buffer.toString());
+            addToBuffer(thisBuffer.toString());
             
-            commandParser.parseCommand(parentWindow, buffer.toString());
+            commandParser.parseCommand(parentWindow, thisBuffer.toString());
         }
     }
     

@@ -55,12 +55,14 @@ public final class TimedCommand extends TimerTask {
      */
     public TimedCommand(final int repetitions, final int delay,
             final String command, final InputWindow origin) {
+        super();
+        
         this.repetitions = repetitions;
         this.command = command;
         this.origin = origin;
         
         timer = new Timer();
-        timer.scheduleAtFixedRate(this, delay * 1000, delay * 1000);
+        timer.scheduleAtFixedRate(this, delay * 1000l, delay * 1000l);
     }
 
     /** {@inheritDoc} */

@@ -27,6 +27,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,7 +35,14 @@ import java.util.List;
  * The config manager manages the various config sources for each entity.
  * @author chris
  */
-public final class ConfigManager {
+public final class ConfigManager implements Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /** A list of sources for this config manager. */
     private List<ConfigSource> sources;

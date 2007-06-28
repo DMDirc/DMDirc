@@ -56,8 +56,10 @@ public final class ProgramError implements Serializable {
     /**
      * Creates a new instance of ProgramError.
      *
-     * @param newIcon error icon
-     * @param newNotifier error notifier
+     * @param level Error level
+     * @param message Error message
+     * @param trace Error trace
+     * @param date Error time and date
      */
     public ProgramError(final ErrorLevel level, final String message,
             final String[] trace, final Date date) {
@@ -116,7 +118,7 @@ public final class ProgramError implements Serializable {
     /**
      * Sets the status of this error.
      *
-     * @param status new ErrorStatus for the error
+     * @param newStatus new ErrorStatus for the error
      */
     public void setStatus(final ErrorStatus newStatus) {
         status = newStatus;

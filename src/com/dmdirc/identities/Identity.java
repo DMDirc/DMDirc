@@ -34,6 +34,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.Properties;
 
@@ -41,10 +42,19 @@ import java.util.Properties;
  * An identity is a group of settings that are applied to a connection, server,
  * network or channel. Identities may be automatically applied in certain
  * cases, or the user may manually apply them.
+ * <p>
+ * Note: this class has a natural ordering that is inconsistent with equals.
  * @author chris
  */
-public final class Identity implements ConfigSource {
-        
+public final class Identity implements ConfigSource, Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
+    
     /** The target for this identity. */
     private final ConfigTarget myTarget = new ConfigTarget();
     
@@ -86,7 +96,7 @@ public final class Identity implements ConfigSource {
         if (!properties.containsKey("identity.name")) {
             throw new InvalidIdentityFileException("No name specified");
         }
-               
+        
         if (hasOption("identity", "ircd")) {
             myTarget.setIrcd(getOption("identity", "ircd"));
         } else if (hasOption("identity", "network")) {
@@ -215,6 +225,23 @@ public final class Identity implements ConfigSource {
      */
     public String toString() {
         return getName();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        return getName().hashCode() + getTarget().hashCode();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object target) {
+        if (target instanceof Identity 
+                && getName().equals(((Identity) target).getName())
+                && getTarget() == ((Identity) target).getTarget()) {
+            return true;
+        }
+        return false;
     }
     
     /**

@@ -24,6 +24,7 @@ package com.dmdirc.ui;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.ui.components.Frame;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;

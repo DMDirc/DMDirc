@@ -24,6 +24,7 @@ package com.dmdirc.ui.input;
 
 import com.dmdirc.Config;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -32,7 +33,14 @@ import java.util.Locale;
  * The tab completer handles a user's request to tab complete some word.
  * @author chris
  */
-public final class TabCompleter {
+public final class TabCompleter implements Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /**
      * The parent TabCompleter. Results from parents are merged with results

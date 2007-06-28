@@ -49,7 +49,7 @@ public final class JarResourceManager extends ResourceManager {
     
     /**
      * Instantiates JarResourceManager.
-     * 
+     *
      * @param fileName Filename of the jar to load
      * @throws IOException Throw when the jar fails to load
      */
@@ -88,7 +88,10 @@ public final class JarResourceManager extends ResourceManager {
         }
         
         try {
-            inputStream.read(bytes);
+            if (inputStream.read(bytes) != bytes.length) {
+                inputStream.close();
+                return new byte[0];
+            }
         } catch (IOException ex) {
             return new byte[0];
         }

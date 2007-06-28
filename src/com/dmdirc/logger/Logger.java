@@ -62,7 +62,7 @@ public final class Logger {
      *
      * @param level Severity of the error
      * @param message Brief error description
-     * @param error Cause of error
+     * @param exception Cause of error
      */
     public static void appError(final ErrorLevel level,
             final String message, final Throwable exception) {
@@ -152,6 +152,7 @@ public final class Logger {
         for (String traceLine : trace) {
             out.println('\t' + traceLine);
         }
+        out.close();
     }
     
     /**

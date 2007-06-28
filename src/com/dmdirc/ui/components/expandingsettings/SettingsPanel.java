@@ -50,7 +50,7 @@ public final class SettingsPanel extends JPanel {
     private static final long serialVersionUID = 1;
     
     /** Config manager. */
-    private final ConfigSource config;
+    private final transient ConfigSource config;
     
     /** Valid option types. */
     public enum OptionType { TEXTFIELD, CHECKBOX, COLOUR, SPINNER, }

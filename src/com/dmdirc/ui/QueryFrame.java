@@ -46,10 +46,10 @@ public final class QueryFrame extends InputFrame {
     private static final long serialVersionUID = 8;
 
     /** This channel's command parser. */
-    private final transient QueryCommandParser commandParser;
+    private final QueryCommandParser commandParser;
     
     /** This frame's parent. */
-    private final transient Query parent;
+    private final Query parent;
     
     /**
      * Creates a new QueryFrame.

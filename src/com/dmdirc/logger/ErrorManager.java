@@ -26,6 +26,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,7 +42,7 @@ import javax.swing.event.EventListenerList;
 /**
  * Error manager.
  */
-public final class ErrorManager {
+public final class ErrorManager implements Serializable {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -141,7 +142,7 @@ public final class ErrorManager {
     /**
      * Sends an error to the developers.
      *
-     * @param ProgramError error to be sent
+     * @param error error to be sent
      */
     @SuppressWarnings("PMD.SystemPrintln")
     public static void sendError(final ProgramError error) {

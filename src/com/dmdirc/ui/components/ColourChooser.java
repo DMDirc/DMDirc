@@ -119,6 +119,7 @@ public final class ColourChooser extends JPanel implements ActionListener {
         updateColour(value);
     }
     
+    /** Sets the colour back to white. */
     public void clearColour() {
         value = "";
         previewPanel.setBackground(ColourManager.getColour("ffffff"));

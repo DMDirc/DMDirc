@@ -43,6 +43,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,7 +63,14 @@ import javax.swing.SwingConstants;
  * @author chris
  */
 public final class ButtonBar implements FrameManager, ActionListener,
-        ComponentListener {
+        ComponentListener, Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /** A map of servers to their respective windows. */
     private final Map<Server, List<FrameContainer>> windows;

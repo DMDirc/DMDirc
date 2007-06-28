@@ -58,7 +58,7 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
     private static final long serialVersionUID = 1;
     
     /** Parent server. */
-    private final transient Server server;
+    private final Server server;
     
     /** Add button. */
     private JButton addButton;

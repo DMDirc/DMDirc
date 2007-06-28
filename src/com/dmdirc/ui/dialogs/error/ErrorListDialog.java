@@ -23,11 +23,11 @@
 package com.dmdirc.ui.dialogs.error;
 
 import com.dmdirc.logger.ErrorListener;
+import com.dmdirc.logger.ErrorManager;
+import com.dmdirc.logger.ErrorStatus;
 import com.dmdirc.logger.ProgramError;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
-import com.dmdirc.logger.ErrorManager;
-import com.dmdirc.logger.ErrorStatus;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
@@ -35,12 +35,12 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -51,7 +51,7 @@ import javax.swing.table.DefaultTableModel;
 /**
  * Error list dialog.
  */
-public class ErrorListDialog extends StandardDialog implements
+public final class ErrorListDialog extends StandardDialog implements
         ActionListener, ErrorListener, ListSelectionListener {
     
     /**
@@ -66,7 +66,7 @@ public class ErrorListDialog extends StandardDialog implements
     
     /** Error table headers. */
     private static final String[] HEADERS = new String[]{"ID", "Time",
-    "Severity", "Report status", "Message"};
+    "Severity", "Report status", "Message", };
     
     /** Error manager. */
     private final ErrorManager errorManager;
@@ -220,12 +220,11 @@ public class ErrorListDialog extends StandardDialog implements
     }
     
     /**
-     * Retrieves the error data from the ErrorManager
+     * Retrieves the error data from the ErrorManager.
      *
      * @return Error data
      */
     private Object[][] getTableData() {
-        final ErrorManager errorManager = ErrorManager.getErrorManager();
         final List<ProgramError> errors = errorManager.getErrorList();
         
         final Object[][] data = new Object[errors.size()][5];
@@ -251,8 +250,8 @@ public class ErrorListDialog extends StandardDialog implements
                         table.getSelectedRow()));
                 errorDetails.setError(error);
                 deleteButton.setEnabled(true);
-                if (error.getStatus() == ErrorStatus.NOT_APPLICABLE ||
-                        error.getStatus() == ErrorStatus.FINISHED) {
+                if (error.getStatus() == ErrorStatus.NOT_APPLICABLE
+                        || error.getStatus() == ErrorStatus.FINISHED) {
                     sendButton.setEnabled(false);
                 } else {
                     sendButton.setEnabled(true);
@@ -270,9 +269,9 @@ public class ErrorListDialog extends StandardDialog implements
         if (e.getSource() == getCancelButton()) {
             dispose();
         } else if (e.getSource() == deleteButton) {
-            ErrorManager.getErrorManager().deleteError(errorManager.getError((
+            ErrorManager.getErrorManager().deleteError(errorManager.getError(
                     table.getRowSorter().convertRowIndexToModel(
-                    table.getSelectedRow()))));
+                    table.getSelectedRow())));
         } else if (e.getSource() == sendButton) {
             ErrorManager.getErrorManager().sendError(errorManager.getError(
                     table.getRowSorter().convertRowIndexToModel(

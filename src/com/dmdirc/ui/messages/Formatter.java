@@ -330,7 +330,9 @@ public final class Formatter {
         final File myFile = new File(Config.getConfigDir() + file);
         if (myFile.exists()) {
             try {
-                properties.load(new FileInputStream(myFile));
+                final FileInputStream in = new FileInputStream(myFile);
+                properties.load(in);
+                in.close();
             } catch (InvalidPropertiesFormatException ex) {
                 Logger.userError(ErrorLevel.LOW, "Unable to load formatter");
                 return false;

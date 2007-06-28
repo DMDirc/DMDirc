@@ -57,7 +57,7 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
     private final Icon defaultIcon;
     
     /** Parent frame manager. */
-    private final transient TreeFrameManager manager;
+    private final TreeFrameManager manager;
     
     /**
      * Creates a new instance of TreeViewTreeCellRenderer.

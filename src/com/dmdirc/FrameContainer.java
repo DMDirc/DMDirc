@@ -47,6 +47,11 @@ public abstract class FrameContainer {
     /** The icon being used for this container's frame. */
     protected Icon icon;
     
+    /** Instantiate new frame container. */
+    public FrameContainer() {
+        //Do nothing
+    }
+    
     /**
      * Returns the internal frame associated with this object.
      *

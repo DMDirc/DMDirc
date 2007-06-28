@@ -39,6 +39,8 @@ import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.QueryFrame;
 import com.dmdirc.ui.input.TabCompleter;
 
+import java.io.Serializable;
+
 /**
  * The Query class represents the client's view of a query with another user.
  * It handles callbacks for query events from the parser, maintains the
@@ -46,7 +48,14 @@ import com.dmdirc.ui.input.TabCompleter;
  * @author chris
  */
 public final class Query extends WritableFrameContainer implements
-        IPrivateAction, IPrivateMessage, INickChanged {
+        IPrivateAction, IPrivateMessage, INickChanged, Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /** The Server this Query is on. */
     private Server server;

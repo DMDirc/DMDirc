@@ -28,6 +28,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.ui.interfaces.InputWindow;
 
+import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -37,7 +38,14 @@ import java.util.Map;
  * on the character at the start of the string), and handles it appropriately.
  * @author chris
  */
-public abstract class CommandParser {
+public abstract class CommandParser implements Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /**
      * Commands that are associated with this parser.

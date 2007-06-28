@@ -27,12 +27,22 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Raw;
 import com.dmdirc.Server;
+
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
  * Compares FrameContainers by name.
  */
-public class FrameContainerComparator implements Comparator<FrameContainer> {
+public final class FrameContainerComparator implements Comparator<FrameContainer>,
+        Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /**
      * Creates a new instance of FrameContainerComparator.
@@ -68,7 +78,7 @@ public class FrameContainerComparator implements Comparator<FrameContainer> {
     }
     
     /**
-     * Compares frame container types and checks order preferences
+     * Compares frame container types and checks order preferences.
      *
      * @param item1 The new container to be tested
      * @param item2 The existing container to test against
@@ -82,7 +92,7 @@ public class FrameContainerComparator implements Comparator<FrameContainer> {
     }
     
     /**
-     * Compares frame container types and checks order preferences
+     * Compares frame container types and checks order preferences.
      *
      * @param item1 The new container to be tested
      * @param item2 The existing container to test against

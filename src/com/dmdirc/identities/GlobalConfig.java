@@ -26,6 +26,8 @@ import com.dmdirc.Config;
 
 /**
  * Implements a non-static wrapper of the global Config class.
+ * <p>
+ * Note: this class has a natural ordering that is inconsistent with equals.
  * @author chris
  */
 public final class GlobalConfig implements ConfigSource {
@@ -37,34 +39,34 @@ public final class GlobalConfig implements ConfigSource {
     public GlobalConfig() {
         myTarget.setGlobal();
     }
-
+    
     /**
      * Determines whether this config source has a setting for the specified
-     * option in the specified domain. 
+     * option in the specified domain.
      * @param domain The domain of the option
      * @param option The name of the option
      * @return True iff this source has the option, false otherwise
-     */    
+     */
     public boolean hasOption(final String domain, final String option) {
         return Config.hasOption(domain, option);
     }
-
+    
     /**
      * Retrieves the specified option from this config source.
      * @param domain The domain of the option
      * @param option The name of the option
      * @return The value of the specified option
-     */    
+     */
     public String getOption(final String domain, final String option) {
         return Config.getOption(domain, option);
     }
-
+    
     /**
      * Sets the specified option in this source to the specified value.
      * @param domain The domain of the option
      * @param option The name of the option
      * @param value The new value for the option
-     */    
+     */
     public void setOption(final String domain, final String option, final String value) {
         Config.setOption(domain, option, value);
     }
@@ -85,7 +87,23 @@ public final class GlobalConfig implements ConfigSource {
     public ConfigTarget getTarget() {
         return myTarget;
     }
-
+    
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        return getTarget().hashCode();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object target) {
+        if (target instanceof GlobalConfig 
+                && getTarget() == ((GlobalConfig) target).getTarget()) {
+            return true;
+        }
+        return false;
+    }
+    
     /**
      * Compares this config source to another.
      * @param target The object to compare to.

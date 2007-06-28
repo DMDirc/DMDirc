@@ -22,11 +22,22 @@
 
 package com.dmdirc.identities;
 
+import java.io.Serializable;
+
 /**
  * Represents the target of a particular config source.
+ * <p>
+ * Note: this class has a natural ordering that is inconsistent with equals.
  * @author chris
  */
-public final class ConfigTarget implements Comparable {
+public final class ConfigTarget implements Comparable, Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /** Indicates that the target is a global config source. */
     public static final int TYPE_GLOBAL = 1;
@@ -125,6 +136,23 @@ public final class ConfigTarget implements Comparable {
      */
     public String getData() {
         return data;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        return type + data.hashCode();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object target) {
+        if (target instanceof ConfigTarget 
+                && type == ((ConfigTarget) target).getType()
+                && data.equals(((ConfigTarget) target).getData())) {
+            return true;
+        }
+        return false;
     }
     
     /**

@@ -55,7 +55,7 @@ public final class ServerSettingsDialog extends StandardDialog
     private static final long serialVersionUID = 1;
     
     /** Parent server. */
-    private final transient Server server;
+    private final Server server;
     
     /** Buttons panel. */
     private JPanel buttonsPanel;

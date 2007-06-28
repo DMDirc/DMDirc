@@ -48,6 +48,7 @@ import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.PreferencesInterface;
 import com.dmdirc.ui.components.PreferencesPanel;
 import com.dmdirc.ui.interfaces.Window;
+import java.util.Map.Entry;
 
 /**
  * Displays information related to the current window in the status bar.
@@ -211,7 +212,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 				Integer count = types.get(im);
 				
 				if (count == null) {
-					count = new Integer(1);
+					count = Integer.valueOf(1);
 				} else {
 					count = count+1;
 				}
@@ -220,11 +221,10 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 			
 			boolean isFirst = true;
 			
-			for (Integer modeval : types.keySet()) {
-				int count = types.get(modeval);
+			for (Entry<Integer, Integer> entry : types.entrySet()) {
 				if (isFirst) { isFirst = false; }
 				else { textString.append(" "); }
-				textString.append(names.get(modeval)+count);
+				textString.append(names.get(entry.getKey())+entry.getValue());
 			}
 			
 			textString.append(")");

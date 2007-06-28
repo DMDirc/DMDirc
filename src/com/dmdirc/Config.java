@@ -398,12 +398,14 @@ public final class Config {
     private static void initialise() {
         
         properties = getDefaults();
-                
+        
         final File file = new File(getConfigFile());
         
         if (file.exists()) {
             try {
-                properties.load(new FileInputStream(file));
+                final FileInputStream in = new FileInputStream(file);
+                properties.load(in);
+                in.close();
             } catch (InvalidPropertiesFormatException ex) {
                 Logger.userError(ErrorLevel.LOW, "Invalid properties file");
             } catch (FileNotFoundException ex) {
@@ -446,8 +448,9 @@ public final class Config {
         }
         
         try {
-            output.store(new FileOutputStream(
-                    new File(getConfigFile())), null);
+            final FileOutputStream out = new FileOutputStream(new File(getConfigFile()));
+            output.store(out, null);
+            out.close();
         } catch (FileNotFoundException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to save config file");
         } catch (IOException ex) {

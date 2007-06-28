@@ -44,6 +44,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.Serializable;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -64,48 +65,55 @@ import javax.swing.tree.TreeSelectionModel;
  */
 public final class TreeFrameManager implements FrameManager,
         MouseListener, ActionListener, MouseMotionListener, MouseWheelListener,
-        AdjustmentListener {
+        AdjustmentListener, Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /**
      * display tree.
      */
-    private final transient JTree tree;
+    private final JTree tree;
     
     /**
      * root node.
      */
-    private final transient DefaultMutableTreeNode root;
+    private final DefaultMutableTreeNode root;
     
     /**
      * data model.
      */
-    private final transient TreeViewModel model;
+    private final TreeViewModel model;
     
     /**
      * node storage, used for adding and deleting nodes correctly.
      */
-    private final transient Map<FrameContainer, DefaultMutableTreeNode> nodes;
+    private final Map<FrameContainer, DefaultMutableTreeNode> nodes;
     
     /**
      * stores colour associated with a node, cheap hack till i rewrite the model.
      */
-    private final transient Map<FrameContainer, Color> nodeColours;
+    private final Map<FrameContainer, Color> nodeColours;
     
     /**
      * stores background colour associated with a node,
      * cheap hack till i rewrite the model.
      */
-    private transient DefaultMutableTreeNode rolloverNode;
+    private DefaultMutableTreeNode rolloverNode;
     
     /**
      * popup menu for menu items on nodes.
      */
-    private final transient JPopupMenu popup;
+    private final JPopupMenu popup;
     
     /**
      * close menu item used in popup menus.
      */
-    private final transient JMenuItem closeMenuItem;
+    private final JMenuItem closeMenuItem;
     
     /**
      * The object that is currently selected.
@@ -118,7 +126,7 @@ public final class TreeFrameManager implements FrameManager,
     /**
      *node under right click operation.
      */
-    private transient DefaultMutableTreeNode popupNode;
+    private DefaultMutableTreeNode popupNode;
     
     /**
      * creates a new instance of the TreeFrameManager.

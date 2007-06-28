@@ -23,6 +23,7 @@
 package com.dmdirc.ui.components.expandingsettings;
 
 import java.awt.Component;
+
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
@@ -30,7 +31,7 @@ import javax.swing.ListCellRenderer;
 /**
  * Add option combo box cell renderer.
  */
-public class AddOptionCellRenderer extends JLabel
+public final class AddOptionCellRenderer extends JLabel
         implements ListCellRenderer {
     
     /**

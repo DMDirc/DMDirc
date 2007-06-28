@@ -42,6 +42,12 @@ public final class AdditionalTabTargets extends ArrayList<String> {
     
     /** Whether to include normal targets. */
     private boolean includeNormal = true;
+    
+    /** Initialises the AdditionalTabTargets. */
+    public AdditionalTabTargets() {
+        super();
+        //Do nothing
+    }
 
     /**
      * Determines if this set of tab targets precludes the inclusion of

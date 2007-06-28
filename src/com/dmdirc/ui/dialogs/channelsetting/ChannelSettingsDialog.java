@@ -33,10 +33,10 @@ import com.dmdirc.parser.IRCParser;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.ParamModePanel;
 import com.dmdirc.ui.components.StandardDialog;
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.components.expandingsettings.SettingsPanel;
 import com.dmdirc.ui.components.expandingsettings.SettingsPanel.OptionType;
+import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
@@ -83,12 +83,13 @@ public final class ChannelSettingsDialog extends StandardDialog
      */
     private static final long serialVersionUID = 6;
     
+    /** Channel settings dialogs, semi singleton use. */
     private static Map<Channel, ChannelSettingsDialog> dialogs;
     
     /**
      * The channel object that this dialog belongs to.
      */
-    private final transient Channel channel;
+    private final Channel channel;
     
     /**
      * The checkboxes used for boolean modes.
@@ -144,7 +145,7 @@ public final class ChannelSettingsDialog extends StandardDialog
     private SettingsPanel channelSettingsPane;
     
     /** Channel identity file. */
-    private final transient Identity identity;
+    private final Identity identity;
     
     /** Tabbed pane. */
     private JTabbedPane tabbedPane;
@@ -178,6 +179,13 @@ public final class ChannelSettingsDialog extends StandardDialog
         setLocationRelativeTo(MainFrame.getMainFrame());
     }
     
+    /** 
+     * Returns an instance of the CSD for the specified channel.
+     *
+     * @param channel Channel to get a CSD for
+     *
+     * @return CSD instance for the specified channel
+     */
     public static synchronized ChannelSettingsDialog getChannelSettingDialog(
             final Channel channel) {
         if (dialogs == null) {
@@ -531,7 +539,6 @@ public final class ChannelSettingsDialog extends StandardDialog
     
     /**
      * Initialises the channel settings.
-     * @param parent The panel to add the channel settings panel to
      */
     private void initSettingsPanel() {
         channelSettingsPane = new SettingsPanel(identity, "These settings are "

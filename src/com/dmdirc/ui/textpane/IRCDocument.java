@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.textpane;
 
+import java.io.Serializable;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.List;
 /**
  * Data contained in a TextPane.
  */
-public final class IRCDocument {
+public final class IRCDocument implements Serializable {
     
     /**
      * A version number for this class. It should be changed whenever the class
