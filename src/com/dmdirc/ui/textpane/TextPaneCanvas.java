@@ -211,13 +211,10 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                 // Check if the target is in range
                 if (drawPosY >= 0 || drawPosY <= formatHeight) {
                     
-                    doHighlight(i, useStartLine, useEndLine, useStartChar,
-                            useEndChar, chars, layout, g, drawPosY);
-                    
                     g.setColor(textPane.getForeground());
                     
                     layout.draw(g, drawPosX, drawPosY + lineHeight / 2f);
-                    doOverHighlight(i, useStartLine, useEndLine, useStartChar,
+                    doHighlight(i, useStartLine, useEndLine, useStartChar,
                             useEndChar, chars, layout, g, drawPosY, drawPosX);
                     firstVisibleLine = i;
                     textLayouts.put(layout, new LineInfo(i, j));
@@ -268,57 +265,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     }
     
     /**
-     * Draws the hightlight on the textpane
-     *
-     * @param line Line number
-     * @param startLine Selection start line
-     * @param endLine Selection end line
-     * @param startChar Selection start char
-     * @param endChar Selection end char
-     * @param chars Number of characters so far in the line
-     * @param layout Current line textlayout
-     * @param g Graphics surface to draw highlight on
-     * @param drawPosY current y location of the line
-     */
-    private void doHighlight(final int line, final int startLine,
-            final int endLine, final int startChar, final int endChar,
-            final int chars, final TextLayout layout, final Graphics2D g,
-            final float drawPosY) {
-        //Does this line need highlighting?
-        if (startLine <= line && endLine >= line) {
-            int firstChar;
-            int lastChar;
-            
-            // Determine the first char we care about
-            if (startLine < line || startChar < chars) {
-                firstChar = chars;
-            } else {
-                firstChar = startChar;
-            }
-            
-            // ... And the last
-            if (endLine > line || endChar > chars + layout.getCharacterCount()) {
-                lastChar = chars + layout.getCharacterCount();
-            } else {
-                lastChar = endChar;
-            }
-            
-            // If the selection includes the chars we're showing
-            if (lastChar > chars && firstChar < chars + layout.getCharacterCount()) {
-                final int trans = (int) (lineHeight / 2f + drawPosY);
-                final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
-                
-                g.setColor(UIManager.getColor("TextPane.selectionBackground"));
-                g.setBackground(UIManager.getColor("TextPane.selectionForeground"));
-                
-                g.translate(3, trans);
-                g.fill(shape);
-                g.translate(-3, -1 * trans);
-            }
-        }
-    }
-    
-    /**
      * Redraws the text that has been highlighted
      *
      * @param line Line number
@@ -332,7 +278,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
      * @param drawPosY current y location of the line
      * @param drawPosX current x location of the line
      */
-    private void doOverHighlight(final int line, final int startLine,
+    private void doHighlight(final int line, final int startLine,
             final int endLine, final int startChar, final int endChar,
             final int chars, final TextLayout layout, final Graphics2D g,
             final float drawPosY, final float drawPosX) {
