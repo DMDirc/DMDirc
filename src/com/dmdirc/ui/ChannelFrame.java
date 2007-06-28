@@ -72,9 +72,6 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
      */
     private static final long serialVersionUID = 9;
     
-    /** max length a line can be. */
-    private final int maxLineLength;
-    
     /** The nick list model used for this channel's nickname list. */
     private NicklistListModel nicklistModel;
     
@@ -110,8 +107,6 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
         parent = owner;
         
         commands = new HashMap<String, Command>();
-        
-        maxLineLength = getContainer().getServer().getParser().getMaxLength("PRIVMSG", getContainer().toString());
         
         initComponents();
         

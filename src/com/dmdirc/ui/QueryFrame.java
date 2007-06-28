@@ -44,10 +44,7 @@ public final class QueryFrame extends InputFrame {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 8;
-    
-    /** max length a line can be. */
-    private final int maxLineLength;
-    
+
     /** This channel's command parser. */
     private final transient QueryCommandParser commandParser;
     
@@ -62,8 +59,6 @@ public final class QueryFrame extends InputFrame {
         super(owner);
         
         parent = owner;
-        
-        maxLineLength = getContainer().getServer().getParser().getMaxLength("PRIVMSG", getContainer().toString());
         
         initComponents();
         

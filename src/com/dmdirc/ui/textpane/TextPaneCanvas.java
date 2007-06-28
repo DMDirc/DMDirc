@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.textpane;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -36,7 +35,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JPanel;
-import javax.swing.UIManager;
 import javax.swing.event.MouseInputListener;
 
 /** Canvas object to draw text. */
@@ -105,13 +103,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
      *
      * @param g graphics object to draw onto
      */
-    public void paintComponent(final Graphics graphics) {
-        
-        //check theres something to draw
-        if (document.getNumLines() == 0) {
-            return;
-        }
-        
+    public void paintComponent(final Graphics graphics) {        
         final Graphics2D g = (Graphics2D) graphics;
         
         final float formatWidth = getWidth() - 6;
@@ -132,6 +124,11 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         
         textLayouts.clear();
         positions.clear();
+        
+        //check theres something to draw
+        if (document.getNumLines() == 0) {
+            return;
+        }
         
         // Check the start line is in range
         if (startLine >= document.getNumLines()) {

@@ -26,6 +26,11 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.ui.components.InputFrame;
 import com.dmdirc.ui.input.InputHandler;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 /**
  * A custom frame that includes an input field (for use with writable
@@ -40,7 +45,7 @@ public class CustomInputFrame extends InputFrame {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** The command parser to use. */
     private final transient CommandParser commandParser;
@@ -58,11 +63,41 @@ public class CustomInputFrame extends InputFrame {
         this.commandParser = commandParser;
         
         setInputHandler(new InputHandler(getInputField(), commandParser, this));
+        
+        initComponents();
     }
 
     /** {@inheritDoc} */
     public final CommandParser getCommandParser() {
         return commandParser;
+    }
+    
+    /**
+     * Initialises components in this frame.
+     */
+    private void initComponents() {
+        final GridBagConstraints constraints = new GridBagConstraints();
+        
+        setTitle("Custom Input Frame");
+        
+        getContentPane().setLayout(new GridBagLayout());
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(0, 0, 0, 0);
+        getContentPane().add(getTextPane(), constraints);
+        
+        
+        constraints.weighty = 0.0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.gridy = 1;
+        getContentPane().add(getSearchBar(), constraints);
+        
+        constraints.gridy = 2;
+        constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
+        getContentPane().add(inputPanel, constraints);
+        
+        pack();
     }
     
 }

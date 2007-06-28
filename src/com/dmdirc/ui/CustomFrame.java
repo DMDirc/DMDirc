@@ -24,6 +24,9 @@ package com.dmdirc.ui;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.ui.components.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 /**
  * A very basic custom frame.
@@ -37,7 +40,7 @@ public class CustomFrame extends Frame {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /**
      * Creates a new instance of CustomFrame.
@@ -46,6 +49,32 @@ public class CustomFrame extends Frame {
      */
     public CustomFrame(final FrameContainer owner) {
         super(owner);
+        
+        initComponents();
+    }
+    
+    /**
+     * Initialises components in this frame.
+     */
+    private void initComponents() {
+        final GridBagConstraints constraints = new GridBagConstraints();
+        
+        setTitle("Custom Frame");
+        
+        getContentPane().setLayout(new GridBagLayout());
+        constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.insets = new Insets(0, 0, 0, 0);
+        getContentPane().add(getTextPane(), constraints);
+        
+        
+        constraints.weighty = 0.0;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
+        constraints.gridy = 1;
+        getContentPane().add(getSearchBar(), constraints);
+        
+        pack();
     }
     
 }
