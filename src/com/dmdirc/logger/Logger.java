@@ -120,9 +120,11 @@ public final class Logger {
             trace = new String[0];
         } else {
             traceElements = exception.getStackTrace();
-            trace = new String[traceElements.length];
+            trace = new String[traceElements.length + 1];
             
-            for (int i = 0; i < traceElements.length; i++) {
+            trace[0] = exception.getClass().toString();
+            
+            for (int i = 1; i < traceElements.length; i++) {
                 trace[i] = traceElements[i].toString();
             }
         }
