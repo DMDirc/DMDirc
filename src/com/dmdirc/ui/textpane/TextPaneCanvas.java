@@ -29,6 +29,7 @@ import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.event.MouseEvent;
 import java.awt.font.LineBreakMeasurer;
+import java.awt.font.TextHitInfo;
 import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
 import java.util.HashMap;
@@ -563,8 +564,13 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                     if (textLayouts.get(entry.getValue()).getPart() < linePart) {
                         pos += entry.getValue().getCharacterCount();
                     } else if (textLayouts.get(entry.getValue()).getPart() == linePart) {
-                        pos += entry.getValue().hitTestChar((int) point.getX(),
-                                (int) point.getY()).getCharIndex();
+                        final TextHitInfo hit = entry.getValue().hitTestChar(
+                                (int) point.getX(), (int) point.getY());
+                        if (hit.isLeadingEdge() || hit.getCharIndex() == 0) {
+                            pos += hit.getCharIndex();
+                        } else {
+                            pos += hit.getCharIndex() + 1;
+                        }
                     }
                 }
             }

@@ -201,10 +201,9 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             delete.setActionCommand("delete");
             delete.addActionListener(this);
             
-            comparisonsPanel.add(label);
-            comparisonsPanel.add(Box.createHorizontalGlue());
             comparisonsPanel.add(edit);
             comparisonsPanel.add(delete);
+            comparisonsPanel.add(label);
         }
     }
     
@@ -216,7 +215,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             comparisonsPanel.add(noConditions);
         } else {
             layoutGrid(comparisonsPanel,
-                    comparisonsPanel.getComponentCount() / 4, 4, SMALL_BORDER,
+                    comparisonsPanel.getComponentCount() / 3, 3, SMALL_BORDER,
                     SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
         }
     }
