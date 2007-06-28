@@ -24,6 +24,9 @@ package com.dmdirc;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -49,12 +52,11 @@ public final class IconManager {
      * wasn't found.
      *
      * @param type The name of the icon type to retrieve
+     *
      * @return The icon that should be used for the specified type
      */
     public static Icon getIcon(final String type) {
-        final ClassLoader cldr = IconManager.class.getClassLoader();
-        final URL imageURL = cldr.getResource(getIconPath(type));
-        return new ImageIcon(imageURL);
+        return new ImageIcon(getScaledImage(new ImageIcon(getIconURL(type)).getImage(), 16, 16));
     }
     
     /**
@@ -62,22 +64,64 @@ public final class IconManager {
      * wasn't found.
      *
      * @param type The name of the icon type to retrieve
+     *
      * @return The image that should be used for the specified type
      */
     public static Image getImage(final String type) {
-        final ClassLoader cldr = IconManager.class.getClassLoader();
-        final URL imageURL = cldr.getResource(getIconPath(type));
-        return Toolkit.getDefaultToolkit().getDefaultToolkit().createImage(imageURL);
+        return Toolkit.getDefaultToolkit().getDefaultToolkit().createImage(getIconURL(type));
     }
     
     /**
-     * Retrieves the path of a specified icon type.
-     * 
-     * @param type The name of the icon type to retrieve
-     * @return The path that should be used to retrieve the specified icon
+     * Returns a scaled image.
+     *
+     * @param image Image to scale
+     * @param width Width of resulting image
+     * @param height Height of resulting image
+     *
+     * @return Scaled Image
      */
-    private static String getIconPath(final String type) {
-        return Config.getOption("icon", type, "com/dmdirc/res/" + type + ".png");
+    private static Image getScaledImage(final Image image,
+            final int width, final int height) {
+        return image.getScaledInstance(width , height, Image.SCALE_SMOOTH);
+    }
+    
+    /**
+     * Retrieves the URL of a specified icon type.
+     *
+     * @param type The name of the icon type to retrieve
+     *
+     * @return The URL that should be used to retrieve the specified icon
+     */
+    private static URL getIconURL(final String type) {
+        final ClassLoader cldr = Thread.currentThread().getContextClassLoader();
+        final URL defaultURL = cldr.getResource("com/dmdirc/res/" + type + ".png");
+        
+        //Get the path for the url
+        final String path = Config.getOption("icon", type, "com/dmdirc/res/" + type + ".png");
+        
+        //Get the url for the speficied path
+        URL imageURL = cldr.getResource(path);
+        
+        try {
+            //if the path didnt exist see if its a file
+            if (imageURL == null) {
+                final File file = new File(path);
+                if (file.exists()) {
+                    imageURL = file.toURI().toURL();
+                } else {
+                    imageURL = defaultURL;
+                }
+            }
+            
+            //check if the url has content
+            if (imageURL.getContent() == null)  {
+                imageURL = defaultURL;
+            }
+        } catch (IOException ex) {
+            imageURL = defaultURL;
+        }
+        
+        return imageURL;
     }
     
 }

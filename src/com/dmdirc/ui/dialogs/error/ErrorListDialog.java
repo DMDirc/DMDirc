@@ -175,6 +175,9 @@ public class ErrorListDialog extends StandardDialog implements
         buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER));
         
+        buttonsPanel.setPreferredSize(new Dimension(600, 35));
+        buttonsPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
+        
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
         buttonsPanel.add(Box.createHorizontalGlue());
         buttonsPanel.add(deleteAllButton);
