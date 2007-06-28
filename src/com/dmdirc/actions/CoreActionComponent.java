@@ -261,6 +261,18 @@ public enum CoreActionComponent implements ActionComponent {
         public String getName() { return "host"; }
     },
     
+    /** Returns the host of the query. */
+    QUERY_NICK {
+        /** {@inheritDoc} */
+        public Object get(final Object argument) { return ((Query) argument).toString(); }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return Query.class; }
+        /** {@inheritDoc} */
+        public Class getType() { return String.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "nick"; }
+    },
+    
     /** Returns the notification colour of the query. */
     QUERY_COLOUR {
         /** {@inheritDoc} */
