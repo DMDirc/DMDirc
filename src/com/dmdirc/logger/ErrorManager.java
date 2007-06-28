@@ -104,7 +104,16 @@ public final class ErrorManager {
      * @return Error list
      */
     public List<ProgramError> getErrorList() {
-        return errors;
+        return new LinkedList<ProgramError>(errors);
+    }
+    
+    /**
+     * Returns the number of errors.
+     *
+     * @return Number of ProgramErrors
+     */
+    public int getErrorCount() {
+        return errors.size();
     }
     
     /**

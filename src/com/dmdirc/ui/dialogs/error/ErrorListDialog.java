@@ -86,6 +86,9 @@ public class ErrorListDialog extends StandardDialog implements
     /** Delete button. */
     private JButton deleteButton;
     
+    /** Delete all button. */
+    private JButton deleteAllButton;
+    
     /** Creates a new instance of ErrorListDialog. */
     private ErrorListDialog() {
         super(MainFrame.getMainFrame(), false);
@@ -153,19 +156,28 @@ public class ErrorListDialog extends StandardDialog implements
         getCancelButton().setText("Close");
         sendButton = new JButton("Send");
         deleteButton = new JButton("Delete");
+        deleteAllButton = new JButton("DeleteAll");
         
         sendButton.setEnabled(false);
         deleteButton.setEnabled(false);
+        if (ErrorManager.getErrorManager().getErrorCount() > 0) {
+            deleteAllButton.setEnabled(true);
+        } else {
+            deleteAllButton.setEnabled(false);
+        }
         
         sendButton.setPreferredSize(new Dimension(100, 25));
         deleteButton.setPreferredSize(new Dimension(100, 25));
         sendButton.setMinimumSize(new Dimension(100, 25));
         deleteButton.setMinimumSize(new Dimension(100, 25));
+        deleteAllButton.setMinimumSize(new Dimension(100, 25));
         
         buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER));
         
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
+        buttonsPanel.add(Box.createHorizontalGlue());
+        buttonsPanel.add(deleteAllButton);
         buttonsPanel.add(Box.createHorizontalGlue());
         buttonsPanel.add(deleteButton);
         buttonsPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
@@ -180,6 +192,7 @@ public class ErrorListDialog extends StandardDialog implements
         table.getSelectionModel().addListSelectionListener(this);
         sendButton.addActionListener(this);
         deleteButton.addActionListener(this);
+        deleteAllButton.addActionListener(this);
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
     }
@@ -261,26 +274,35 @@ public class ErrorListDialog extends StandardDialog implements
             ErrorManager.getErrorManager().sendError(errorManager.getError(
                     table.getRowSorter().convertRowIndexToModel(
                     table.getSelectedRow())));
-            //add some kind of listener to get the table updated
+        } else if (e.getSource() == deleteAllButton) {
+            final List<ProgramError> errors =
+                    ErrorManager.getErrorManager().getErrorList();
+            for (ProgramError error : errors) {
+                ErrorManager.getErrorManager().deleteError(error);
+            }
         }
     }
-
+    
     /** {@inheritDoc} */
     public void errorAdded(final ProgramError error) {
         ((DefaultTableModel) table.getModel()).setDataVector(getTableData(),
-                    HEADERS);
+                HEADERS);
+        deleteAllButton.setEnabled(true);
     }
-
+    
     /** {@inheritDoc} */
     public void errorDeleted(final ProgramError error) {
         ((DefaultTableModel) table.getModel()).setDataVector(getTableData(),
-                    HEADERS);
+                HEADERS);
+        if (ErrorManager.getErrorManager().getErrorCount() > 0) {
+            deleteAllButton.setEnabled(true);
+        }
     }
-
+    
     /** {@inheritDoc} */
     public void errorStatusChanged(final ProgramError error) {
         ((DefaultTableModel) table.getModel()).setDataVector(getTableData(),
-                    HEADERS);
+                HEADERS);
     }
     
 }
