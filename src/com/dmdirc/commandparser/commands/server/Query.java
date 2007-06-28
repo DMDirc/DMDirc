@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.server;
 
+import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
@@ -46,8 +47,21 @@ public final class Query extends ServerCommand {
     /** {@inheritDoc} */
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
-        server.addQuery(args[0]);
-        server.getQuery(args[0]).show();
+        if (args.length == 0) {
+            sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(),
+                    "query", "<target> <message>");
+        }
+        if (args.length >= 1) {
+            if (server.getQuery(args[0]) == null) {
+                server.addQuery(args[0]);
+                server.getQuery(args[0]).show();
+            } else {
+                server.getQuery(args[0]).activateFrame();
+            }
+        }
+        if (args.length > 1) {
+            server.getQuery(args[0]).sendLine(implodeArgs(1, args));
+        }
     }
     
     
@@ -63,17 +77,17 @@ public final class Query extends ServerCommand {
     
     /** {@inheritDoc}. */
     public boolean isPolyadic() {
-        return false;
+        return true;
     }
     
     /** {@inheritDoc}. */
     public int getArity() {
-        return 1;
+        return 0;
     }
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "query <user> - opens a query with the specified user";
+        return "query <user> [message] - opens a query with the specified user";
     }
     
 }
