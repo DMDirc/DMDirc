@@ -96,7 +96,7 @@ public final class NowPlayingCommand extends ChannelCommand implements Intellige
     private void doSourceList(final InputWindow origin, final boolean isSilent) {
         final List<MediaSource> sources = parent.getSources();
         
-        if (sources.size() == 0) {
+        if (sources.isEmpty()) {
             sendLine(origin, isSilent, "commandError", "No media sources available.");
         } else {
             String status;

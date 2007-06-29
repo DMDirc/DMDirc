@@ -26,30 +26,28 @@ import com.dmdirc.addons.nowplaying.MediaSource;
 
 /**
  * Uses DCOP to retrieve now playing info from Amarok.
- * 
+ *
  * @author chris
  */
 public class AmarokSource implements MediaSource {
-
+    
     /** {@inheritDoc} */
     public boolean isRunning() {
-        final String result = DcopPlugin.getDcopResult("dcop amarok player isPlaying").get(0);
-        
-        return result.indexOf("failed") == -1;
+        return DcopPlugin.getDcopResult("dcop amarok player isPlaying").size() > 0;
     }
-
+    
     /** {@inheritDoc} */
     public boolean isPlaying() {
         final String result = DcopPlugin.getDcopResult("dcop amarok player isPlaying").get(0);
         
         return Boolean.parseBoolean(result);
     }
-
+    
     /** {@inheritDoc} */
-    public String getInformation() {       
+    public String getInformation() {
         return DcopPlugin.getDcopResult("dcop amarok player nowPlaying").get(0);
     }
-
+    
     /** {@inheritDoc} */
     public String getName() {
         return "Amarok";
