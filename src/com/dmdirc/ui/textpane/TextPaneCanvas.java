@@ -27,6 +27,8 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.font.LineBreakMeasurer;
 import java.awt.font.TextHitInfo;
@@ -39,14 +41,15 @@ import javax.swing.JPanel;
 import javax.swing.event.MouseInputListener;
 
 /** Canvas object to draw text. */
-class TextPaneCanvas extends JPanel implements MouseInputListener {
+class TextPaneCanvas extends JPanel implements MouseInputListener,
+        ComponentListener {
     
     /**
      * A version number for this class. It should be changed whenever the
      * class structure is changed (or anything else that would prevent
      * serialized objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 5;
+    private static final long serialVersionUID = 6;
     
     /** IRCDocument. */
     private final IRCDocument document;
@@ -61,7 +64,14 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     private final int lineHeight;
     
     /** Selection event types. */
-    private enum MouseEventType { CLICK, DRAG, RELEASE, };
+    private enum MouseEventType {
+        /** Mouse clicked.*/
+        CLICK,
+        /** Mouse dragged.*/
+        DRAG,
+        /** Mouse released.*/
+        RELEASE,
+    };
     
     /** position of the scrollbar. */
     private int scrollBarPosition;
@@ -79,6 +89,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     /** Last visible line. */
     private int lastVisibleLine;
     
+    /** Line wrapping cache. */
+    private Map<Integer, Integer> lineWrap;
+    
     /**
      * Creates a new text pane canvas.
      *
@@ -91,12 +104,14 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         scrollBarPosition = 0;
         lineHeight = getFont().getSize() + 2;
         textPane = parent;
-        this.setDoubleBuffered(true);
-        this.setOpaque(true);
+        setDoubleBuffered(true);
+        setOpaque(true);
         textLayouts = new HashMap<TextLayout, LineInfo>();
         positions = new HashMap<Rectangle, TextLayout>();
-        this.addMouseListener(this);
-        this.addMouseMotionListener(this);
+        lineWrap = new HashMap<Integer, Integer>();
+        addMouseListener(this);
+        addMouseMotionListener(this);
+        addComponentListener(this);
     }
     
     /**
@@ -104,7 +119,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
      *
      * @param graphics graphics object to draw onto
      */
-    public void paintComponent(final Graphics graphics) {        
+    public void paintComponent(final Graphics graphics) {
         final Graphics2D g = (Graphics2D) graphics;
         
         final float formatWidth = getWidth() - 6;
@@ -173,8 +188,18 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
             lineMeasurer = new LineBreakMeasurer(iterator, g.getFontRenderContext());
             lineMeasurer.setPosition(paragraphStart);
             
-            final int wrappedLine = getNumWrappedLines(lineMeasurer,
-                    paragraphStart, paragraphEnd, formatWidth);
+            final int wrappedLine;
+            
+            //do we have the line wrapping in the cache?
+            if (lineWrap.containsKey(i)) {
+                //use it
+                wrappedLine = lineWrap.get(i);
+            } else {
+                //get it and populate the cache
+                wrappedLine = getNumWrappedLines(lineMeasurer,
+                        paragraphStart, paragraphEnd, formatWidth);
+                lineWrap.put(i, wrappedLine);
+            }
             
             if (wrappedLine > 1) {
                 drawPosY -= lineHeight * wrappedLine;
@@ -304,7 +329,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                 final int trans = (int) (lineHeight / 2f + drawPosY);
                 final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
                 final String text = textPane.getTextFromLine(line).substring(firstChar, lastChar);
-
+                
                 g.setColor(textPane.getForeground());
                 
                 g.translate(3, trans);
@@ -312,7 +337,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
                 g.translate(-3, -1 * trans);
                 
                 g.setColor(textPane.getBackground());
-
+                
                 if (firstChar == 0) {
                     g.translate(0, trans);
                 } else {
@@ -505,7 +530,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         
         if (point == null) {
             if (e.getXOnScreen() > getLocationOnScreen().getX()
-            && e.getXOnScreen() < (getLocationOnScreen().getX() + getWidth())) {
+                    && e.getXOnScreen() < (getLocationOnScreen().getX() + getWidth())) {
                 if (getLocationOnScreen().getY() > e.getYOnScreen()) {
                     textPane.setScrollBarPosition(scrollBarPosition - 1);
                 } else {
@@ -623,6 +648,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
     protected void clearSelection() {
         selEndLine = selStartLine;
         selEndChar = selStartChar;
+        if (isVisible()) {
+            repaint();
+        }
     }
     
     /**
@@ -639,7 +667,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
         selStartChar = startChar;
         selEndLine = endLine;
         selEndChar = endChar;
-        repaint();
+        if (isVisible()) {
+            repaint();
+        }
     }
     
     /**
@@ -658,5 +688,29 @@ class TextPaneCanvas extends JPanel implements MouseInputListener {
      */
     public int getLastVisibleLine() {
         return lastVisibleLine;
+    }
+    
+    /** {@inheritDoc}. */
+    public void componentResized(final ComponentEvent e) {
+        //line wrap cache now invalid, clear and repaint
+        lineWrap.clear();
+        if (isVisible()) {
+            repaint();
+        }
+    }
+    
+    /** {@inheritDoc}. */
+    public void componentMoved(final ComponentEvent e) {
+        //Ignore
+    }
+    
+    /** {@inheritDoc}. */
+    public void componentShown(final ComponentEvent e) {
+        //Ignore
+    }
+    
+    /** {@inheritDoc}. */
+    public void componentHidden(final ComponentEvent e) {
+        //Ignore
     }
 }
