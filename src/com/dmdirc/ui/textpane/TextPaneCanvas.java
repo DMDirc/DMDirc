@@ -90,7 +90,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     private int lastVisibleLine;
     
     /** Line wrapping cache. */
-    private Map<Integer, Integer> lineWrap;
+    private final Map<Integer, Integer> lineWrap;
     
     /**
      * Creates a new text pane canvas.

@@ -33,6 +33,7 @@ import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.util.Enumeration;
 import java.util.Locale;
+import javax.swing.UIManager;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -93,6 +94,7 @@ public final class Styliser {
         if (text.getIterator().getEndIndex() == 0) {
             doc.addText(new AttributedString("\n"));
         } else {
+            text.addAttribute(TextAttribute.FONT, UIManager.getFont("TextPane.font"));
             doc.addText(text);
         }
     }
@@ -109,6 +111,7 @@ public final class Styliser {
         if (text.getIterator().getEndIndex() == 0) {
             doc.addText(new AttributedString("\n"));
         } else {
+            text.addAttribute(TextAttribute.FONT, UIManager.getFont("TextPane.font"));
             doc.addText(text);
         }
     }
@@ -156,7 +159,7 @@ public final class Styliser {
                 }
                 
             } catch (BadLocationException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, 
+                Logger.userError(ErrorLevel.MEDIUM,
                         "Unable to insert styled string: " + ex.getMessage());
             }
         }
@@ -177,8 +180,8 @@ public final class Styliser {
         try {
             attString = new AttributedString(line.getDocument().getText(0, line.getDocument().getLength()));
         } catch (BadLocationException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, 
-                        "Unable to insert styled string: " + ex.getMessage());
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "Unable to insert styled string: " + ex.getMessage());
         }
         for (int i = 0; i < line.getElementCount(); i++) {
             final Element element = line.getElement(i);
@@ -320,6 +323,7 @@ public final class Styliser {
         if (string.charAt(0) == CODE_FIXED) {
             if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospaced")) {
                 attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
+                attribs.addAttribute(StyleConstants.FontConstants.FontFamily, UIManager.getFont("TextPane.font"));
             } else {
                 attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
                 attribs.addAttribute(StyleConstants.FontConstants.FontFamily, "monospaced");
@@ -512,7 +516,7 @@ public final class Styliser {
             attribs.removeAttribute(StyleConstants.FontConstants.Italic);
         }
         if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospace")) {
-            final Object defaultFont = attribs.getAttribute("DefaultFontFamily");
+            final Object defaultFont = UIManager.getFont("TextPane.font");
             attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
             attribs.addAttribute(StyleConstants.FontConstants.FontFamily, defaultFont);
         }
