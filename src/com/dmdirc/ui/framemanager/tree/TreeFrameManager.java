@@ -545,9 +545,7 @@ public final class TreeFrameManager implements FrameManager,
             nextNode = changeFocusDown(thisNode);
         }
         //activate the nodes frame
-        //((FrameContainer) nextNode.getUserObject()).activateFrame();
-        
-        tree.setSelectionPath(new TreePath(nextNode));
+        ((FrameContainer) nextNode.getUserObject()).activateFrame();
     }
     
     /**
