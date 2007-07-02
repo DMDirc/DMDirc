@@ -294,6 +294,7 @@ public final class CommandManager {
         new AllServers();
         new Exit();
         new ExitDefault();
+        new Ifplugin();
         new NewServer();
         new Notify();        
         new LoadFormatter();
