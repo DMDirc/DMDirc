@@ -79,6 +79,9 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	 * @return false if the plugin can not be loaded
 	 */
 	public boolean onLoad() {
+            /* This no longer works. The correct way to use defaults is to
+             * load an identity of type Global Default.
+             
 		final Properties config = Config.getConfig();
 		
 		// Set default options if they don't exist
@@ -93,7 +96,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 		updateOption(config, "backbuffer.lines", "10");
 		updateOption(config, "backbuffer.colour", "14");
 		updateOption(config, "backbuffer.timestamp", "false");
-		
+		*/
 		final File dir = new File(Config.getOption(MY_DOMAIN, "general.directory"));
 		if (!dir.exists()) {
 			try {
@@ -180,7 +183,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	 *                     if this is null, value will not be changed.
 	 */
 	protected void updateOption(final Properties properties, final String name, final String defaultValue) {
-		String value = null;
+/*		String value = null;
 		
 		// Get the value from the properties file if one is given
 		// if one isn't given we will just use the defaultValue and set that
@@ -205,7 +208,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 				// We do, use that instead.
 				Config.setOption(MY_DOMAIN, name, defaultValue);
 			}
-		}
+		}*/
 	}
 	
 	/**

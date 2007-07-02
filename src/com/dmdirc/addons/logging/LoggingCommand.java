@@ -84,7 +84,8 @@ public final class LoggingCommand extends ServerCommand {
 				sendLine(origin, isSilent, "commandOutput", getName() + " set <help|option> [value]  - Set a configuration option.");
 			} else if (args[0].equalsIgnoreCase("set")) {
 				if (args.length < 2 || args[1].equalsIgnoreCase("help")) {
-					final Properties config = Config.getConfig();
+                                    // This is stupid and no longer works.
+/*					final Properties config = Config.getConfig();
 					sendLine(origin, isSilent, "commandOutput", "Current Values:");
 					final Enumeration values = config.propertyNames();
 					while (values.hasMoreElements()) {
@@ -94,7 +95,7 @@ public final class LoggingCommand extends ServerCommand {
 							sendLine(origin, isSilent, "commandOutput", "[" + property.substring(property.indexOf(".") + 1) + "] => " + config.getProperty(property));
 						}
 					}
-					sendLine(origin, isSilent, "commandOutput", "");
+					sendLine(origin, isSilent, "commandOutput", "");*/
 					sendLine(origin, isSilent, "commandOutput", "Use " + getName() + " set <option> [value] to change the value. (if [value] is not given, the current value will be displayed)");
 				} else if (args.length > 1) {
 					if (Config.hasOption(plugin.getDomain(), args[1].toLowerCase())) {

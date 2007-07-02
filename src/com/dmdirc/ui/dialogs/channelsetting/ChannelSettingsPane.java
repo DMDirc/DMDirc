@@ -398,6 +398,5 @@ public final class ChannelSettingsPane extends JPanel implements ActionListener 
             identity.setOption(optionValues[0], optionValues[1],
                     colour.getColour());
         }
-        Config.save();
     }
 }

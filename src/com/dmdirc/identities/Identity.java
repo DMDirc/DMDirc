@@ -36,6 +36,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -44,6 +46,7 @@ import java.util.Properties;
  * cases, or the user may manually apply them.
  * <p>
  * Note: this class has a natural ordering that is inconsistent with equals.
+ * 
  * @author chris
  */
 public final class Identity implements ConfigSource, Serializable {
@@ -69,31 +72,35 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Creates a new instance of Identity.
-     * @param file The file to load this identity from.
-     * @throws com.dmdirc.identities.InvalidIdentityFileException
-     * Missing required properties
+     * 
+     * @param file The file to load this identity from
+     * @param forceDefault Whether to force this identity to be loaded as default
+     * identity or not
+     * @throws InvalidIdentityFileException Missing required properties
      * @throws IOException Input/output exception
      */
-    public Identity(final File file) throws IOException,
+    public Identity(final File file, final boolean forceDefault) throws IOException,
             InvalidIdentityFileException {
-        this(new FileInputStream(file));
+        this(new FileInputStream(file), forceDefault);
         this.file = file;
     }
     
     /**
      * Creates a new read-only identity.
+     * 
      * @param stream The input stream to read the identity from
-     * @throws com.dmdirc.identities.InvalidIdentityFileException
-     * Missing required properties
+     * @param forceDefault Whether to force this identity to be loaded as default
+     * identity or not
+     * @throws InvalidIdentityFileException Missing required properties
      * @throws IOException Input/output exception
      */
-    public Identity(final InputStream stream) throws IOException,
+    public Identity(final InputStream stream, final boolean forceDefault) throws IOException,
             InvalidIdentityFileException {
         properties = new Properties();
         
         properties.load(stream);
         
-        if (!properties.containsKey("identity.name")) {
+        if (!properties.containsKey("identity.name") && !forceDefault) {
             throw new InvalidIdentityFileException("No name specified");
         }
         
@@ -105,6 +112,10 @@ public final class Identity implements ConfigSource, Serializable {
             myTarget.setServer(getOption("identity", "server"));
         } else if (hasOption("identity", "channel")) {
             myTarget.setChannel(getOption("identity", "channel"));
+        } else if (hasOption("identity", "globaldefault")) {
+            myTarget.setGlobalDefault();
+        } else if (forceDefault && !isProfile()) {
+            myTarget.setGlobal();
         } else if (!isProfile()) {
             throw new InvalidIdentityFileException("No target and no profile");
         }
@@ -114,6 +125,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Returns the properties object belonging to this identity.
+     * 
      * @return This identity's property object
      */
     public Properties getProperties() {
@@ -122,6 +134,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Returns the name of this identity.
+     * 
      * @return The name of this identity
      */
     public String getName() {
@@ -132,6 +145,7 @@ public final class Identity implements ConfigSource, Serializable {
      * Determines whether this identity can be used as a profile when
      * connecting to a server. Profiles are identities that can supply
      * nick, ident, real name, etc.
+     * 
      * @return True iff this identity can be used as a profile
      */
     public boolean isProfile() {
@@ -141,6 +155,7 @@ public final class Identity implements ConfigSource, Serializable {
     /**
      * Determines whether this identity has a setting for the specified
      * option in the specified domain.
+     * 
      * @param domain The domain of the option
      * @param option The name of the option
      * @return True iff this source has the option, false otherwise
@@ -151,6 +166,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Retrieves the specified option from this identity.
+     * 
      * @param domain The domain of the option
      * @param option The name of the option
      * @return The value of the specified option
@@ -161,6 +177,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Sets the specified option in this identity to the specified value.
+     * 
      * @param domain The domain of the option
      * @param option The name of the option
      * @param value The new value for the option
@@ -173,6 +190,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Unsets a specified option.
+     * 
      * @param domain domain of the option
      * @param option name of the option
      */
@@ -180,6 +198,17 @@ public final class Identity implements ConfigSource, Serializable {
         properties.remove(domain + "." + option);
         needSave = true;
     }
+    
+    /** {@inheritDoc} */
+    public List<String> getOptions() {
+        final List<String> res = new ArrayList<String>();
+        
+        for (Object key : properties.keySet()) {
+            res.add((String) key);
+        }
+        
+        return res;
+    }    
     
     /**
      * Saves this identity to disk if it has been updated.
@@ -213,6 +242,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Retrieves this identity's target.
+     * 
      * @return The target of this identity
      */
     public ConfigTarget getTarget() {
@@ -221,6 +251,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Returns a string representation of this object (its name).
+     * 
      * @return A string representation of this object
      */
     public String toString() {
@@ -247,6 +278,7 @@ public final class Identity implements ConfigSource, Serializable {
     /**
      * Compares this identity to another config source to determine which
      * is more specific.
+     * 
      * @param target The ConfigSource to compare to
      * @return -1 if this config source is less specific, 0 if they're equal,
      * +1 if this config is more specific.
@@ -257,6 +289,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Creates a new identity containing the specified properties.
+     * 
      * @param properties The properties to be included in the identity
      * @return A new identity containing the specified properties
      */
@@ -281,7 +314,7 @@ public final class Identity implements ConfigSource, Serializable {
         }
         
         try {
-            final Identity identity = new Identity(file);
+            final Identity identity = new Identity(file, false);
             IdentityManager.addIdentity(identity);
             
             return identity;
@@ -299,6 +332,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Generates an empty identity for the specified target.
+     * 
      * @param target The target for the new identity
      * @return An empty identity for the specified target
      */
@@ -313,6 +347,7 @@ public final class Identity implements ConfigSource, Serializable {
     /**
      * Generates an empty profile witht he specified name. Note the name is used
      * as a file name, so should be sanitised.
+     * 
      * @param name The name of the profile to create
      * @return A new profile with the specified name
      */

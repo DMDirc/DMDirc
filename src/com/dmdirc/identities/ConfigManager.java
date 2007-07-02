@@ -28,6 +28,7 @@ import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -89,6 +90,7 @@ public final class ConfigManager implements Serializable {
     
     /**
      * Retrieves the specified option.
+     *
      * @param domain The domain of the option
      * @param option The name of the option
      * @return The value of the option
@@ -104,7 +106,27 @@ public final class ConfigManager implements Serializable {
     }
     
     /**
+     * Retrieves the specified option.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @param fallback Value to use if the option isn't set
+     * @return The value of the option
+     */
+    public String getOption(final String domain, final String option,
+            final String fallback) {
+        for (ConfigSource source : sources) {
+            if (source.hasOption(domain, option)) {
+                return source.getOption(domain, option);
+            }
+        }
+        
+        return fallback;
+    }
+    
+    /**
      * Retrieves a colour representation of the specified option.
+     *
      * @param domain The domain of the option
      * @param option The name of the option
      * @param fallback The colour that should be used in case of error
@@ -121,6 +143,7 @@ public final class ConfigManager implements Serializable {
     
     /**
      * Retrieves a boolean representation of the specified option.
+     *
      * @param domain The domain of the option
      * @param option The name of the option
      * @return The boolean representation of the option
@@ -135,6 +158,7 @@ public final class ConfigManager implements Serializable {
     
     /**
      * Retrieves an integral representation of the specified option.
+     *
      * @param domain The domain of the option
      * @param option The name of the option
      * @param fallback The value to use if the config isn't valud
@@ -159,7 +183,43 @@ public final class ConfigManager implements Serializable {
     }
     
     /**
+     * Returns the name of all known options
+     *
+     * @return A list of options
+     */
+    public List<String> getOptions() {
+        final ArrayList<String> res = new ArrayList<String>();
+        
+        for (ConfigSource source : sources) {
+            for (String key : source.getOptions()) {
+                res.add(key);
+            }
+        }
+        
+        return res;
+    }
+    
+    /**
+     * Returns the name of all the options in the specified domain.
+     *
+     * @param domain The domain to search
+     * @return A list of options in the specified domain
+     */
+    public List<String> getOptions(final String domain) {
+        final ArrayList<String> res = new ArrayList<String>();
+        
+        for (String key : getOptions()) {
+            if (key.startsWith(domain + ".")) {
+                res.add(key.substring(domain.length() + 1));
+            }
+        }
+        
+        return res;
+    }
+    
+    /**
      * Returns the scope of the specified option.
+     *
      * @param domain The domain of the option
      * @param option The name of the option
      * @return The scope of the option
@@ -199,21 +259,21 @@ public final class ConfigManager implements Serializable {
         String comp = "";
         
         switch (identity.getTarget().getType()) {
-            case ConfigTarget.TYPE_IRCD:
-                comp = ircd;
-                break;
-            case ConfigTarget.TYPE_NETWORK:
-                comp = network;
-                break;
-            case ConfigTarget.TYPE_SERVER:
-                comp = server;
-                break;
-            case ConfigTarget.TYPE_CHANNEL:
-                comp = channel;
-                break;
-            default:
-                comp = "<Unknown>";
-                break;
+        case ConfigTarget.TYPE_IRCD:
+            comp = ircd;
+            break;
+        case ConfigTarget.TYPE_NETWORK:
+            comp = network;
+            break;
+        case ConfigTarget.TYPE_SERVER:
+            comp = server;
+            break;
+        case ConfigTarget.TYPE_CHANNEL:
+            comp = channel;
+            break;
+        default:
+            comp = "<Unknown>";
+            break;
         }
         
         if (comp != null && comp.equalsIgnoreCase(identity.getTarget().getData())) {

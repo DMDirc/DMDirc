@@ -22,8 +22,11 @@
 
 package com.dmdirc.identities;
 
+import java.util.List;
+
 /**
  * A Config source is an object that can provide configuration details.
+ * 
  * @author chris
  */
 public interface ConfigSource extends Comparable<ConfigSource> {
@@ -31,6 +34,7 @@ public interface ConfigSource extends Comparable<ConfigSource> {
     /**
      * Determines whether this config source has a setting for the specified
      * option in the specified domain.
+     * 
      * @param domain The domain of the option
      * @param option The name of the option
      * @return True iff this source has the option, false otherwise
@@ -39,6 +43,7 @@ public interface ConfigSource extends Comparable<ConfigSource> {
     
     /**
      * Retrieves the specified option from this config source.
+     * 
      * @param domain The domain of the option
      * @param option The name of the option
      * @return The value of the specified option
@@ -47,6 +52,7 @@ public interface ConfigSource extends Comparable<ConfigSource> {
     
     /**
      * Sets the specified option in this source to the specified value.
+     * 
      * @param domain The domain of the option
      * @param option The name of the option
      * @param value The new value for the option
@@ -55,6 +61,7 @@ public interface ConfigSource extends Comparable<ConfigSource> {
     
     /**
      * Unsets a specified option.
+     * 
      * @param domain domain of the option
      * @param option name of the option
      */
@@ -62,8 +69,16 @@ public interface ConfigSource extends Comparable<ConfigSource> {
     
     /**
      * Retrieves the target of this config source.
+     * 
      * @return This source's target
      */
     ConfigTarget getTarget();
+    
+    /**
+     * Retrieves a list of options known by this config source.
+     * 
+     * @return A list of known options
+     */
+    List<String> getOptions();
     
 }

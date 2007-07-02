@@ -43,14 +43,11 @@ public final class IdentityManager {
     /** The identities that have been loaded into this manager. */
     private static List<Identity> identities;
     
-    /**
-     * The GlobalConfig instance to use for new ConfigManagers.
-     * We only need one instance of GlobalConfig, so keep it cached here.
-     */
-    private static GlobalConfig globalConfig;
-    
     /** The config managers that have registered with this manager. */
     private static List<ConfigManager> managers;
+    
+    /** The identity file used for the global config. */
+    private static Identity config;
     
     /** Creates a new instance of IdentityManager. */
     private IdentityManager() {
@@ -63,8 +60,7 @@ public final class IdentityManager {
         
         loadDefaults();
         loadUser();
-        
-        globalConfig = new GlobalConfig();
+        loadConfig();
         
         if (getProfiles().size() == 0) {
             Identity.buildProfile("Default Profile");
@@ -77,7 +73,8 @@ public final class IdentityManager {
         
         final String base = "com/dmdirc/identities/defaults/";
         
-        final String[] urls = {"asuka", "snircd", "bahamut", "hyperion", "generic"};
+        final String[] urls = {"asuka", "snircd", "bahamut", "hyperion",
+        "generic", "defaults"};
         
         for (String url : urls) {
             try {
@@ -85,7 +82,7 @@ public final class IdentityManager {
                 if (res == null) {
                     Logger.userError(ErrorLevel.MEDIUM, "Unable to load default identity: " + url);
                 } else {
-                    addIdentity(new Identity(res));
+                    addIdentity(new Identity(res, false));
                 }
             } catch (InvalidIdentityFileException ex) {
                 Logger.userError(ErrorLevel.MEDIUM, "Invalid identity file");
@@ -115,7 +112,7 @@ public final class IdentityManager {
         } else {
             for (File file : dir.listFiles()) {
                 try {
-                    addIdentity(new Identity(file));
+                    addIdentity(new Identity(file, false));
                 } catch (InvalidIdentityFileException ex) {
                     Logger.userError(ErrorLevel.MEDIUM, "Invalid identity file");
                 } catch (IOException ex) {
@@ -123,6 +120,28 @@ public final class IdentityManager {
                 }
             }
         }
+    }
+    
+    /** Loads the config identity. */
+    private static void loadConfig() {
+        try {
+            config = new Identity(new File(Config.getConfigFile()), true);
+            addIdentity(config);
+        } catch (InvalidIdentityFileException ex) {
+            // This shouldn't happen as we're forcing it to global
+            Logger.appError(ErrorLevel.HIGH, "Unable to load global config", ex);
+        } catch (IOException ex) {
+            Logger.userError(ErrorLevel.MEDIUM, "I/O error when loading file: " + ex.getMessage());
+        }
+    }
+    
+    /**
+     * Retrieves the identity used for the global config.
+     * 
+     * @return The global config identity
+     */
+    public static Identity getConfigIdentity() {
+        return config;
     }
     
     /**
@@ -210,29 +229,27 @@ public final class IdentityManager {
         
         for (ConfigSource identity : identities) {
             switch (identity.getTarget().getType()) {
-                case ConfigTarget.TYPE_IRCD:
-                    comp = ircd;
-                    break;
-                case ConfigTarget.TYPE_NETWORK:
-                    comp = network;
-                    break;
-                case ConfigTarget.TYPE_SERVER:
-                    comp = server;
-                    break;
-                case ConfigTarget.TYPE_CHANNEL:
-                    comp = channel;
-                    break;
-                default:
-                    comp = "<Unknown>";
-                    break;
+            case ConfigTarget.TYPE_IRCD:
+                comp = ircd;
+                break;
+            case ConfigTarget.TYPE_NETWORK:
+                comp = network;
+                break;
+            case ConfigTarget.TYPE_SERVER:
+                comp = server;
+                break;
+            case ConfigTarget.TYPE_CHANNEL:
+                comp = channel;
+                break;
+            default:
+                comp = "";
+                break;
             }
             
-            if (comp.equalsIgnoreCase(identity.getTarget().getData())) {
+            if (comp.equalsIgnoreCase(identity.getTarget().getData()) || comp.isEmpty()) {
                 sources.add(identity);
             }
         }
-        
-        sources.add(globalConfig);
         
         Collections.sort(sources);
         

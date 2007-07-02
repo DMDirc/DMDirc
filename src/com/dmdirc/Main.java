@@ -63,9 +63,11 @@ public final class Main {
      * @param args the command line arguments
      */
     public static void main(final String[] args) {
-        MainFrame.initUISettings();
-        
         IdentityManager.load();
+        
+        Config.init();
+        
+        MainFrame.initUISettings();
         
         ActionManager.init();
         
@@ -94,7 +96,7 @@ public final class Main {
         
         ServerManager.getServerManager().disconnectAll(reason);
         
-        Config.save();
+        IdentityManager.save();
         
         System.exit(0);
     }

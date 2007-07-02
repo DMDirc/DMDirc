@@ -232,7 +232,6 @@ public final class CipherUtils {
                 if (passwordHash == null) {
                     passwordHash = hash(password);
                     Config.setOption("encryption", "passwordHash", passwordHash);
-                    Config.save();
                 }
                 if (!hash(password).equals(passwordHash)) {
                     prompt = "<html>Password mis-match<br>Please re-enter "

@@ -237,8 +237,6 @@ public class PluginManager {
 		} else if (plugin.isActive()) {
 			Config.setOption("plugins", "autoload", plugin.getClass().getName());
 		}
-		
-		Config.save();
 	}
 	
 	/**

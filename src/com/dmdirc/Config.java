@@ -22,24 +22,12 @@
 
 package com.dmdirc;
 
+import com.dmdirc.identities.ConfigManager;
 import com.dmdirc.identities.IdentityManager;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.InvalidPropertiesFormatException;
 import java.util.List;
-import java.util.Properties;
-
-import javax.swing.UIManager;
 
 /**
  * Reads/writes the application's config file.
@@ -47,31 +35,23 @@ import javax.swing.UIManager;
  */
 public final class Config {
     
-    /**
-     * The application's current configuration.
-     */
-    private static Properties properties;
+    /** The config manager used for the global config. */
+    private static ConfigManager manager;
     
     /** Disallow creation of a new instance of Config. */
     private Config() {
     }
     
-    /**
-     * Returns the singleton instance of Config properties.
-     * @return Instance of Config properties
-     */
-    public static Properties getConfig() {
-        if (properties == null) {
-            initialise();
-        }
-        return properties;
+    /** Initialises the config manager. */
+    public static void init() {
+        manager = new ConfigManager("", "", "");
     }
     
     /**
      * Returns the full path to the application's config file.
      * @return config file
      */
-    private static String getConfigFile() {
+    public static String getConfigFile() {
         return getConfigDir() + "dmdirc.config";
     }
     
@@ -98,120 +78,13 @@ public final class Config {
     }
     
     /**
-     * Returns the default settings for DMDirc.
-     * @return default settings
-     */
-    private static Properties getDefaults() {
-        final Properties defaults = new Properties();
-        
-        defaults.setProperty("general.submitErrors", "true");
-        
-        defaults.setProperty("general.commandchar", "/");
-        defaults.setProperty("general.silencechar", ".");
-        
-        defaults.setProperty("general.reconnectmessage", "Reconnecting");
-        defaults.setProperty("general.closemessage", "DMDirc exiting");
-        defaults.setProperty("general.quitmessage", "Using DMDirc");
-        defaults.setProperty("general.partmessage", "Using DMDirc");
-        defaults.setProperty("general.cyclemessage", "Cycling");
-        defaults.setProperty("general.kickmessage", "Bye!");
-        
-        defaults.setProperty("general.hidequeries", "false");
-        
-        defaults.setProperty("general.closechannelsonquit", "false");
-        defaults.setProperty("general.closequeriesonquit", "false");
-        
-        defaults.setProperty("general.closechannelsondisconnect", "false");
-        defaults.setProperty("general.closequeriesondisconnect", "false");
-        
-        defaults.setProperty("general.reconnectonconnectfailure", "true");
-        defaults.setProperty("general.reconnectondisconnect", "true");
-        defaults.setProperty("general.reconnectdelay", "5");
-        
-        // These are temporary until we get server list support
-        defaults.setProperty("general.server", "blueyonder.uk.quakenet.org");
-        defaults.setProperty("general.port", "7000");
-        defaults.setProperty("general.password", "");
-        
-        // These control where notifications will go. Expected values are
-        // "active", "all", or "server".
-        // TODO: Some kind of validation in the config class itself, rather
-        //       than elsewhere?
-        defaults.setProperty("notifications.authNotice", "server");
-        defaults.setProperty("notifications.connectError", "server");
-        defaults.setProperty("notifications.connectRetry", "server");
-        defaults.setProperty("notifications.socketClosed", "all");
-        defaults.setProperty("notifications.stonedServer", "all");
-        defaults.setProperty("notifications.privateNotice", "all");
-        defaults.setProperty("notifications.privateCTCP", "server");
-        defaults.setProperty("notifications.privateCTCPreply", "server");
-        
-        // Send whois info to active window by default
-        defaults.setProperty("notifications.numeric_301", "active");
-        defaults.setProperty("notifications.numeric_311", "active");
-        defaults.setProperty("notifications.numeric_312", "active");
-        defaults.setProperty("notifications.numeric_313", "active");
-        defaults.setProperty("notifications.numeric_318", "active");
-        defaults.setProperty("notifications.numeric_319", "active");
-        defaults.setProperty("notifications.numeric_330", "active");
-        defaults.setProperty("notifications.numeric_343", "active");
-        
-        defaults.setProperty("ui.backgroundcolour", "0");
-        defaults.setProperty("ui.foregroundcolour", "1");
-        defaults.setProperty("ui.maximisewindows", "false");
-        defaults.setProperty("ui.sortByMode", "true");
-        defaults.setProperty("ui.sortByCase", "false");
-        defaults.setProperty("ui.inputbuffersize", "50");
-        defaults.setProperty("ui.showversion", "true");
-        defaults.setProperty("ui.lookandfeel", UIManager.getCrossPlatformLookAndFeelClassName());
-        defaults.setProperty("ui.quickCopy", "false");
-        defaults.setProperty("ui.pasteProtectionLimit", "1");
-        
-        // TODO: These should probably be renamed to treeview.* or so?
-        defaults.setProperty("ui.treeviewRolloverEnabled", "true");
-        defaults.setProperty("ui.treeviewRolloverColour", "f0f0f0");
-        defaults.setProperty("ui.treeviewActiveBold", "true");
-        defaults.setProperty("treeview.sortwindows", "true");
-        defaults.setProperty("treeview.sortservers", "true");
-        
-        defaults.setProperty("channel.splitusermodes", "false");
-        defaults.setProperty("channel.sendwho", "false");
-        defaults.setProperty("channel.showmodeprefix", "true");
-        defaults.setProperty("general.whotime", "60000");
-        
-        defaults.setProperty("tabcompletion.casesensitive", "false");
-        
-        defaults.setProperty("logging.dateFormat", "EEE, d MMM yyyy HH:mm:ss Z");
-        defaults.setProperty("logging.programLogging", "true");
-        defaults.setProperty("logging.debugLogging", "true");
-        defaults.setProperty("logging.debugLoggingSysOut", "true");
-        
-        defaults.setProperty("server.friendlymodes", "true");
-        defaults.setProperty("server.pingtimeout", "60000");
-        
-        defaults.setProperty("updater.frequency", "86400");
-        defaults.setProperty("updater.lastcheck", "0");
-        
-        // Some defaults for use in actions
-        defaults.setProperty("actions.textcolour", "12");
-        defaults.setProperty("actions.eventcolour", "3");
-        defaults.setProperty("actions.highlightcolour", "4");
-        
-        return defaults;
-    }
-    
-    /**
      * Determines if the specified option exists.
      * @return true iff the option exists, false otherwise
      * @param domain the domain of the option
      * @param option the name of the option
      */
     public static boolean hasOption(final String domain, final String option) {
-        if (properties == null) {
-            initialise();
-        }
-        
-        return properties.getProperty(domain + "." + option) != null;
+        return manager.hasOption(domain, option);
     }
     
     /**
@@ -229,11 +102,7 @@ public final class Config {
      * @param option the name of the option
      */
     public static String getOption(final String domain, final String option) {
-        if (properties == null) {
-            initialise();
-        }
-        
-        return properties.getProperty(domain + "." + option);
+        return manager.getOption(domain, option, "");
     }
     
     /**
@@ -244,15 +113,7 @@ public final class Config {
      * @param fallback the balue to be returned if the option is not found
      */
     public static String getOption(final String domain, final String option, final String fallback) {
-        if (properties == null) {
-            initialise();
-        }
-        
-        if (hasOption(domain, option)) {
-            return getOption(domain, option);
-        } else {
-            return fallback;
-        }
+        return manager.getOption(domain, option, fallback);
     }
     
     /**
@@ -262,15 +123,7 @@ public final class Config {
      * @param option the name of the option
      */
     public static boolean getOptionBool(final String domain, final String option) {
-        if (properties == null) {
-            initialise();
-        }
-        
-        if (hasOption(domain, option)) {
-            return Boolean.parseBoolean(getOption(domain, option));
-        } else {
-            return false;
-        }
+        return manager.getOptionBool(domain, option);
     }
     
     /**
@@ -281,24 +134,7 @@ public final class Config {
      * @param fallback The value to use if the option can't be parsed
      */
     public static int getOptionInt(final String domain, final String option, final int fallback) {
-        if (properties == null) {
-            initialise();
-        }
-        
-        if (!hasOption(domain, option)) {
-            return fallback;
-        }
-        
-        int res;
-        
-        try {
-            res = Integer.parseInt(getOption(domain, option));
-        } catch (NumberFormatException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Invalid number format for " + domain + "." + option);
-            res = fallback;
-        }
-        
-        return res;
+        return manager.getOptionInt(domain, option, fallback);
     }
     
     /**
@@ -309,15 +145,7 @@ public final class Config {
      * @param fallback The value to use if the colour can't be parsed
      */
     public static Color getOptionColor(final String domain, final String option, final Color fallback) {
-        if (properties == null) {
-            initialise();
-        }
-        
-        if (!hasOption(domain, option)) {
-            return fallback;
-        }
-        
-        return ColourManager.parseColour(getOption(domain, option), fallback);
+        return manager.getOptionColour(domain, option, fallback);
     }
     
     /**
@@ -326,19 +154,7 @@ public final class Config {
      * @return A list of options in the specified domain
      */
     public static List<String> getOptions(final String domain) {
-        if (properties == null) {
-            initialise();
-        }
-        
-        final ArrayList<String> res = new ArrayList<String>();
-        
-        for (Object key : properties.keySet()) {
-            if (((String) key).startsWith(domain + ".")) {
-                res.add(((String) key).substring(domain.length() + 1));
-            }
-        }
-        
-        return res;
+        return manager.getOptions(domain);
     }
     
     /**
@@ -346,15 +162,11 @@ public final class Config {
      * @return A list of domains in this config
      */
     public static List<String> getDomains() {
-        if (properties == null) {
-            initialise();
-        }
-        
         final ArrayList<String> res = new ArrayList<String>();
         String domain;
         
-        for (Object key : properties.keySet()) {
-            domain = ((String) key).substring(0, ((String) key).indexOf('.'));
+        for (String key : manager.getOptions()) {
+            domain = key.substring(0, key.indexOf('.'));
             if (!res.contains(domain)) {
                 res.add(domain);
             }
@@ -371,11 +183,7 @@ public final class Config {
      */
     public static void setOption(final String domain, final String option,
             final String value) {
-        if (properties == null) {
-            initialise();
-        }
-        
-        properties.setProperty(domain + "." + option, value);
+        IdentityManager.getConfigIdentity().setOption(domain, option, value);
     }
     
     /**
@@ -384,78 +192,7 @@ public final class Config {
      * @param option name of the option
      */
     public static void unsetOption(final String domain, final String option) {
-        if (properties == null) {
-            initialise();
-        }
-        
-        properties.remove(domain + "." + option);
-    }
-    
-    /**
-     * Loads the config file from disc, if it exists else initialises defaults
-     * and creates file.
-     */
-    private static void initialise() {
-        
-        properties = getDefaults();
-        
-        final File file = new File(getConfigFile());
-        
-        if (file.exists()) {
-            try {
-                final FileInputStream in = new FileInputStream(file);
-                properties.load(in);
-                in.close();
-            } catch (InvalidPropertiesFormatException ex) {
-                Logger.userError(ErrorLevel.LOW, "Invalid properties file");
-            } catch (FileNotFoundException ex) {
-                Logger.userError(ErrorLevel.LOW, "No config file, using defaults");
-            } catch (IOException ex) {
-                Logger.userError(ErrorLevel.LOW, "Unable to load config file");
-            }
-        } else {
-            try {
-                (new File(getConfigDir())).mkdirs();
-                file.createNewFile();
-                Config.save();
-            } catch (IOException ex) {
-                Logger.userError(ErrorLevel.LOW, "Unable to load config file");
-            }
-        }
-    }
-    
-    
-    /**
-     * Saves the config file to disc.
-     */
-    public static void save() {
-        IdentityManager.save();
-        
-        if (properties == null) {
-            return;
-        }
-        
-        final Properties defaults = getDefaults();
-        final Properties output = new Properties();
-        
-        final Enumeration<Object> keys = properties.keys();
-        
-        while (keys.hasMoreElements()) {
-            final String key = (String) keys.nextElement();
-            if (!defaults.containsKey(key) || !defaults.getProperty(key).equals(properties.getProperty(key))) {
-                output.setProperty(key, properties.getProperty(key));
-            }
-        }
-        
-        try {
-            final FileOutputStream out = new FileOutputStream(new File(getConfigFile()));
-            output.store(out, null);
-            out.close();
-        } catch (FileNotFoundException ex) {
-            Logger.userError(ErrorLevel.LOW, "Unable to save config file");
-        } catch (IOException ex) {
-            Logger.userError(ErrorLevel.LOW, "Unable to save config file");
-        }
+        IdentityManager.getConfigIdentity().unsetOption(domain, option);
     }
     
 }

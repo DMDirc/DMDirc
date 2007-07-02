@@ -39,6 +39,8 @@ public final class ConfigTarget implements Comparable, Serializable {
      */
     private static final long serialVersionUID = 1;
     
+    /** Indicates that the target is the global default config. */
+    public static final int TYPE_GLOBALDEFAULT = 0;
     /** Indicates that the target is a global config source. */
     public static final int TYPE_GLOBAL = 1;
     /** Indicates that the target targets an ircd. */
@@ -51,7 +53,7 @@ public final class ConfigTarget implements Comparable, Serializable {
     public static final int TYPE_CHANNEL = 5;
     
     /** The type of this target. */
-    private int type;
+    private int type = 1;
     /** The data of this target. */
     private String data;
     
@@ -63,6 +65,11 @@ public final class ConfigTarget implements Comparable, Serializable {
     /** Sets this target to be a global config source. */
     public void setGlobal() {
         type = TYPE_GLOBAL;
+    }
+    
+    /** Sets this target to be a global default source. */
+    public void setGlobalDefault() {
+        type = TYPE_GLOBALDEFAULT;
     }
     
     /**
@@ -115,18 +122,20 @@ public final class ConfigTarget implements Comparable, Serializable {
      */
     public String getTypeName() {
         switch(type) {
-            case TYPE_GLOBAL:
-                return "global";
-            case TYPE_IRCD:
-                return "ircd";
-            case TYPE_NETWORK:
-                return "network";
-            case TYPE_SERVER:
-                return "server";
-            case TYPE_CHANNEL:
-                return "channel";
-            default:
-                return "Unknown";
+        case TYPE_GLOBALDEFAULT:
+            return "globaldefault";
+        case TYPE_GLOBAL:
+            return "global";
+        case TYPE_IRCD:
+            return "ircd";
+        case TYPE_NETWORK:
+            return "network";
+        case TYPE_SERVER:
+            return "server";
+        case TYPE_CHANNEL:
+            return "channel";
+        default:
+            return "Unknown";
         }
     }
     
@@ -147,7 +156,7 @@ public final class ConfigTarget implements Comparable, Serializable {
     /** {@inheritDoc} */
     @Override
     public boolean equals(final Object target) {
-        if (target instanceof ConfigTarget 
+        if (target instanceof ConfigTarget
                 && type == ((ConfigTarget) target).getType()
                 && data.equals(((ConfigTarget) target).getData())) {
             return true;
@@ -171,18 +180,20 @@ public final class ConfigTarget implements Comparable, Serializable {
      */
     public String toString() {
         switch (type) {
-            case TYPE_GLOBAL:
-                return "Global config";
-            case TYPE_IRCD:
-                return "Ircd specific: " + data;
-            case TYPE_NETWORK:
-                return "Network specific: " + data;
-            case TYPE_SERVER:
-                return "Server specific: " + data;
-            case TYPE_CHANNEL:
-                return "Channel specific: " + data;
-            default:
-                return "Unknown";
+        case TYPE_GLOBALDEFAULT:
+            return "Global defaults";
+        case TYPE_GLOBAL:
+            return "Global config";
+        case TYPE_IRCD:
+            return "Ircd specific: " + data;
+        case TYPE_NETWORK:
+            return "Network specific: " + data;
+        case TYPE_SERVER:
+            return "Server specific: " + data;
+        case TYPE_CHANNEL:
+            return "Channel specific: " + data;
+        default:
+            return "Unknown";
         }
     }
     

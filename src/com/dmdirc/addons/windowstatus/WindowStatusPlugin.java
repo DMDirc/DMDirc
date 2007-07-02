@@ -82,13 +82,13 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 * @return false if the plugin can not be loaded
 	 */
 	public boolean onLoad() {
-		final Properties config = Config.getConfig();
+/*		final Properties config = Config.getConfig();
 		
 		// Set default options if they don't exist
 		updateOption(config, "channel.shownone", "true");
 		updateOption(config, "channel.noneprefix", "None:");
 		updateOption(config, "client.showname", "false");
-		
+*/		
 		return true;
 	}
 	
@@ -287,7 +287,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 *                     if this is null, value will not be changed.
 	 */
 	protected void updateOption(final Properties properties, final String name, final String defaultValue) {
-		String value = null;
+/*		String value = null;
 		
 		// Get the value from the properties file if one is given
 		// if one isn't given we will just use the defaultValue and set that
@@ -312,7 +312,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 				// We do, use that instead.
 				Config.setOption(MY_DOMAIN, name, defaultValue);
 			}
-		}
+		}*/
 	}
 	
 	/**
