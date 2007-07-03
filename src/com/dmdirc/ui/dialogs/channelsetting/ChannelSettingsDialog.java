@@ -170,7 +170,7 @@ public final class ChannelSettingsDialog extends StandardDialog
                 topicLengthMax = 250;
                 Logger.userError(ErrorLevel.LOW, "IRCD doesnt supply topic length");
             }
-        }        
+        }
         
         initComponents();
         initListeners();
@@ -179,7 +179,7 @@ public final class ChannelSettingsDialog extends StandardDialog
         setLocationRelativeTo(MainFrame.getMainFrame());
     }
     
-    /** 
+    /**
      * Returns an instance of the CSD for the specified channel.
      *
      * @param channel Channel to get a CSD for
@@ -191,10 +191,13 @@ public final class ChannelSettingsDialog extends StandardDialog
         if (dialogs == null) {
             dialogs = new HashMap<Channel, ChannelSettingsDialog>();
         }
-        if (!dialogs.containsKey(channel)) {
+        
+        if (dialogs.containsKey(channel)) {
+            dialogs.get(channel).update();
+        } else {
             dialogs.put(channel, new ChannelSettingsDialog(channel));
         }
-        dialogs.get(channel).update();
+        
         return dialogs.get(channel);
     }
     
@@ -309,7 +312,7 @@ public final class ChannelSettingsDialog extends StandardDialog
         final String booleanModes = parser.getBoolChanModes();
         final String ourBooleanModes = channel.getChannelInfo().getModeStr();
         final String paramModes = parser.getSetOnlyChanModes()
-        + parser.getSetUnsetChanModes();
+                + parser.getSetUnsetChanModes();
         
         constraints.fill = GridBagConstraints.BOTH;
         constraints.anchor = GridBagConstraints.NORTH;
@@ -340,7 +343,7 @@ public final class ChannelSettingsDialog extends StandardDialog
             String text = "Mode " + mode;
             
             if (channel.getConfigManager().getOptionBool("server", "friendlymodes")
-            && channel.getConfigManager().hasOption("server", "mode" + mode)) {
+                    && channel.getConfigManager().hasOption("server", "mode" + mode)) {
                 text = channel.getConfigManager().getOption("server", "mode" + mode);
             }
             
@@ -376,7 +379,7 @@ public final class ChannelSettingsDialog extends StandardDialog
         for (int i = 0; i < paramModes.length(); i++) {
             final String mode = paramModes.substring(i, i + 1);
             final String value = channel.getChannelInfo()
-            .getModeParam(mode.charAt(0));
+                    .getModeParam(mode.charAt(0));
             final boolean state = ourBooleanModes.split(" ")[0]
                     .contains(mode.subSequence(0, 1));
             
@@ -434,7 +437,7 @@ public final class ChannelSettingsDialog extends StandardDialog
             topicLengthLabel.setText(topicText.getText().length() + " characters");
         } else {
             topicLengthLabel.setText(topicLengthMax - topicText.getText().length()
-            + " of " + topicLengthMax + " available");
+                    + " of " + topicLengthMax + " available");
         }
         topicsPanel.add(topicLengthLabel, constraints);
         
@@ -462,7 +465,7 @@ public final class ChannelSettingsDialog extends StandardDialog
         //TODO use a cardlayout
         final GridBagConstraints constraints = new GridBagConstraints();
         listModesArray = channel.getServer().getParser()
-        .getListChanModes().toCharArray();
+                .getListChanModes().toCharArray();
         final ChannelInfo channelInfo = channel.getChannelInfo();
         final ArrayList<String> listModesList = new ArrayList<String>();
         
@@ -476,7 +479,7 @@ public final class ChannelSettingsDialog extends StandardDialog
         for (char mode : listModesArray) {
             String modeText = mode + " list";
             if (channel.getConfigManager().getOptionBool("server", "friendlymodes")
-            && channel.getConfigManager().hasOption("server", "mode" + mode)) {
+                    && channel.getConfigManager().hasOption("server", "mode" + mode)) {
                 modeText = channel.getConfigManager().getOption("server", "mode" + mode) + " list";
             }
             listModesList.add(modeText);
@@ -610,7 +613,7 @@ public final class ChannelSettingsDialog extends StandardDialog
         modeMask =  JOptionPane.showInputDialog(listModesPanel,
                 "Please enter the hostmask for the new " + modeText);
         if (modeMask != null && (!modeMask.equals("")
-        || modeMask.length() > 0)) {
+                || modeMask.length() > 0)) {
             channel.getChannelInfo().alterMode(true,
                     listModesArray[selectedIndex], modeMask);
             channel.getChannelInfo().sendModes();
@@ -651,7 +654,7 @@ public final class ChannelSettingsDialog extends StandardDialog
         final String booleanModes = parser.getBoolChanModes();
         final String ourBooleanModes = channel.getChannelInfo().getModeStr();
         final String paramModes = parser.getSetOnlyChanModes()
-        + parser.getSetUnsetChanModes();
+                + parser.getSetUnsetChanModes();
         
         for (int i = 0; i < booleanModes.length(); i++) {
             final String mode = booleanModes.substring(i, i + 1);
@@ -671,13 +674,13 @@ public final class ChannelSettingsDialog extends StandardDialog
         for (int i = 0; i < paramModes.length(); i++) {
             final String mode = paramModes.substring(i, i + 1);
             final String value = channel.getChannelInfo()
-            .getModeParam(mode.charAt(0));
+                    .getModeParam(mode.charAt(0));
             final boolean state = ourBooleanModes.split(" ")[0]
                     .contains(mode.subSequence(0, 1));
             final ParamModePanel paramModePanel = modeInputs.get(mode);
             
             if (state != paramModePanel.getState()
-            || !value.equals(paramModePanel.getValue())) {
+                    || !value.equals(paramModePanel.getValue())) {
                 changed = true;
                 if (paramModePanel.getValue().contains(" ")) {
                     channel.getChannelInfo().alterMode(
@@ -712,7 +715,7 @@ public final class ChannelSettingsDialog extends StandardDialog
             topicLengthLabel.setText(topicText.getText().length() + " characters");
         } else {
             topicLengthLabel.setText(topicLengthMax - topicText.getText().length()
-            + " of " + topicLengthMax + " available");
+                    + " of " + topicLengthMax + " available");
         }
     }
     
