@@ -473,10 +473,12 @@ public abstract class InputFrame extends Frame implements InputWindow,
         String[] clipboardLines = new String[]{"", };
         
         try {
+            //get the contents of the input field and combine it with the clipboard
             clipboard = getInputField().getText()
             + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
             .getData(DataFlavor.stringFlavor);
-            clipboardLines = clipboard.split(System.getProperty("line.separator"));
+            //split the text
+            clipboardLines = getSplitLine(clipboard);
         } catch (HeadlessException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to get clipboard contents");
         } catch (IOException ex) {
@@ -484,19 +486,41 @@ public abstract class InputFrame extends Frame implements InputWindow,
         } catch (UnsupportedFlavorException ex) {
             Logger.appError(ErrorLevel.LOW, "Unable to get clipboard contents", ex);
         }
-        if (clipboard != null && clipboard.indexOf('\n') >= 0) {
+        
+        //check theres something to paste
+        if (clipboard != null && clipboardLines.length > 1) {
+            //if this was fired by an event, consume the event
             if (event != null) {
                 event.consume();
             }
+            //check the limit
             final int pasteTrigger = Config.getOptionInt("ui", "pasteProtectionLimit", 1);
+            //check whether the number of lines is over the limit
             if (parent.getNumLines(clipboard) > pasteTrigger) {
+                //show the multi line paste dialog
                 new PasteDialog(this, clipboard).setVisible(true);
             } else {
+                //send the lines
                 for (String clipboardLine : clipboardLines) {
                     parent.sendLine(clipboardLine);
                 }
             }
         }
+    }
+    
+    /**
+     * Splits the line on all line endings.
+     *
+     * @param line Line that will be split
+     *
+     * @return Split line array
+     */
+    private String[] getSplitLine(final String line) {
+        String newLine;
+        newLine = line.replace("\r\n", "\n");
+        newLine = newLine.replace('\r', '\n');
+        
+        return newLine.split("\n");
     }
     
 }
