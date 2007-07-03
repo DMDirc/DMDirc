@@ -7,8 +7,7 @@
 
 package com.dmdirc;
 
-import com.dmdirc.identities.IdentityManager;
-import javax.swing.JInternalFrame;
+import com.dmdirc.config.IdentityManager;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

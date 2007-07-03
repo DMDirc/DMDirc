@@ -5,8 +5,10 @@
  * Created on 19 April 2007, 17:33
  */
 
-package com.dmdirc.identities;
+package com.dmdirc.config;
 
+import com.dmdirc.config.ConfigTarget;
+import com.dmdirc.config.Identity;
 import java.util.Properties;
 import junit.framework.*;
 
@@ -40,7 +42,7 @@ public class IdentityTest extends TestCase {
         
         assertEquals(props.getProperty("domain.option"), "value");
         
-        myIdent.removeOption("domain", "option");
+        myIdent.unsetOption("domain", "option");
     }
 
     public void testGetName() {
@@ -57,8 +59,8 @@ public class IdentityTest extends TestCase {
         
         assertTrue(myIdent.isProfile());
         
-        myIdent.removeOption("profile", "nickname");
-        myIdent.removeOption("profile", "realname");
+        myIdent.unsetOption("profile", "nickname");
+        myIdent.unsetOption("profile", "realname");
     }
 
     public void testHasOption() {
@@ -68,7 +70,7 @@ public class IdentityTest extends TestCase {
         
         assertTrue(myIdent.hasOption("has", "option"));
         
-        myIdent.removeOption("has", "option");
+        myIdent.unsetOption("has", "option");
     }
 
     public void testGetOption() {
@@ -77,7 +79,7 @@ public class IdentityTest extends TestCase {
         
         assertEquals(props.getProperty("domain.option"), myIdent.getOption("domain", "option"));
         
-        myIdent.removeOption("domain", "option");
+        myIdent.unsetOption("domain", "option");
     }
 
     public void testSetOption() {
@@ -87,7 +89,7 @@ public class IdentityTest extends TestCase {
         
         assertEquals(count + 1, myIdent.getProperties().size());
         
-        myIdent.removeOption("foo", "bar");
+        myIdent.unsetOption("foo", "bar");
     }
 
     public void testRemoveOption() {
@@ -95,7 +97,7 @@ public class IdentityTest extends TestCase {
         final int count = props.size();
         
         myIdent.setOption("foo", "bar", "baz");
-        myIdent.removeOption("foo", "bar");
+        myIdent.unsetOption("foo", "bar");
         
         assertEquals(count, props.size());
     }
@@ -110,7 +112,7 @@ public class IdentityTest extends TestCase {
         
         assertEquals("baz!", myIdent.getOption("foo", "bar"));
         
-        myIdent.removeOption("foo", "bar");
+        myIdent.unsetOption("foo", "bar");
         myIdent.save();
     }
 
