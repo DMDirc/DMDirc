@@ -94,7 +94,7 @@ public abstract class CommandParser implements Serializable {
             int offset = 1;
             boolean silent = false;
             
-            if (line.charAt(offset) == Config.getOption("general", "silencechar").charAt(0)) {
+            if (line.charAt(offset) == Config.getOption("general", "silencechar", "/").charAt(0)) {
                 silent = true;
                 offset++;
             }

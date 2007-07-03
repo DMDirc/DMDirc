@@ -71,7 +71,7 @@ public final class IdentityManager {
     private static void loadDefaults() {
         final ClassLoader cldr = IdentityManager.class.getClassLoader();
         
-        final String base = "com/dmdirc/identities/defaults/";
+        final String base = "com/dmdirc/config/defaults/";
         
         final String[] urls = {"asuka", "snircd", "bahamut", "hyperion",
         "generic", "defaults"};
