@@ -7,6 +7,7 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.Config;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -24,6 +25,7 @@ public class GlobalCommandParserTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        Config.init();
     }
 
     @AfterClass

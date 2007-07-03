@@ -27,6 +27,7 @@ public class FormatterTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        Config.init();
     }
 
     @AfterClass

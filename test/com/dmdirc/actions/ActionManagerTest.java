@@ -7,6 +7,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.Config;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -25,6 +26,7 @@ public class ActionManagerTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         ActionManager.init();
+        Config.init();
     }
 
     @AfterClass
