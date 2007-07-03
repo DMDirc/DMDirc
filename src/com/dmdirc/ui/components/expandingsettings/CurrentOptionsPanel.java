@@ -168,8 +168,9 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
                 }
                 break;
             case CHECKBOX:
-                if (checkBoxes.containsKey(optionName)) {
-                    returnValue = String.valueOf(checkBoxes.get(optionName).isSelected());
+                if (checkBoxes.containsKey(optionName)
+                && checkBoxes.get(optionName).isSelected()) {
+                    returnValue = "true";
                 }
                 break;
             case COLOUR:

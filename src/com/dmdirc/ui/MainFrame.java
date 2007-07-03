@@ -765,13 +765,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         menuItem.addActionListener(this);
         windowsMenu.add(menuItem);
         
-        menuItem = new JMenuItem();
-        menuItem.setMnemonic('a');
-        menuItem.setText("Close all");
-        menuItem.setActionCommand("CloseAll");
-        menuItem.addActionListener(this);
-        windowsMenu.add(menuItem);
-        
         windowsMenu.addSeparator();
         
         int i = 0;
@@ -811,8 +804,6 @@ public final class MainFrame extends JFrame implements WindowListener,
             ((Frame) MainFrame.getMainFrame().getActiveFrame()).minimise();
         } else if (e.getActionCommand().equals("Close")) {
             ((Frame) MainFrame.getMainFrame().getActiveFrame()).close();
-        } else if (e.getActionCommand().equals("CloseAll")) {
-            ServerManager.getServerManager().closeAll();
         }
     }
     
