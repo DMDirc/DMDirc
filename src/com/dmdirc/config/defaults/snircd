@@ -1,0 +1,29 @@
+# Default mode settings for Snircd
+# b,k,l,imnpstrDducCN
+
+identity.name = Snircd mode aliases
+identity.ircd = snircd
+
+server.modeb = Ban
+
+server.modek = Channel key
+
+server.model = User limit
+
+server.modei = Invite only
+server.modem = Moderated
+server.moden = No external messages
+server.modep = Private
+server.modes = Secret
+server.modet = Only ops can set topic
+server.moder = Registered users only
+server.modeD = Auditorium mode
+server.moded = Auditorium mode
+server.modec = No formatting
+server.enablemodec = true
+server.modeC = No channel CTCPs
+server.enablemodeC = true
+server.modeN = No channel notices
+server.enablemodeN = true
+server.modeu = No quit mesages
+server.enablemodeu = true
