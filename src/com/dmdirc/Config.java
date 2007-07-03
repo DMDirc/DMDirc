@@ -22,8 +22,8 @@
 
 package com.dmdirc;
 
-import com.dmdirc.identities.ConfigManager;
-import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 
 import java.awt.Color;
 import java.util.ArrayList;

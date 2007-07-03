@@ -23,7 +23,7 @@
 package com.dmdirc.ui.dialogs.serversetting;
 
 import com.dmdirc.Server;
-import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
 import com.dmdirc.ui.components.expandingsettings.SettingsPanel;

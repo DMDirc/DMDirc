@@ -23,8 +23,8 @@
 package com.dmdirc.ui.dialogs.channelsetting;
 
 import com.dmdirc.Channel;
-import com.dmdirc.identities.Identity;
-import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.config.Identity;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelInfo;

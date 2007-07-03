@@ -23,7 +23,7 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.config.ConfigManager;
 
 import java.beans.PropertyVetoException;
 

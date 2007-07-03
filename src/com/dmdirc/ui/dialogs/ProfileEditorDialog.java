@@ -22,9 +22,9 @@
 
 package com.dmdirc.ui.dialogs;
 
-import com.dmdirc.identities.ConfigSource;
-import com.dmdirc.identities.Identity;
-import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.config.ConfigSource;
+import com.dmdirc.config.Identity;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;

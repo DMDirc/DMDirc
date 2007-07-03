@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.components;
 
-import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.config.ConfigManager;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 

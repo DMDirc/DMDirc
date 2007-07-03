@@ -24,7 +24,7 @@ package com.dmdirc.ui.dialogs.channelsetting;
 
 import com.dmdirc.Config;
 import com.dmdirc.IconManager;
-import com.dmdirc.identities.Identity;
+import com.dmdirc.config.Identity;
 import com.dmdirc.ui.components.ColourChooser;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;

@@ -24,7 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.identities.IdentityManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.dialogs.firstrunwizard.FirstRunWizard;

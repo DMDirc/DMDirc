@@ -24,7 +24,7 @@ package com.dmdirc.ui.dialogs.serversetting;
 
 import com.dmdirc.Config;
 import com.dmdirc.Server;
-import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.config.ConfigManager;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.Dimension;

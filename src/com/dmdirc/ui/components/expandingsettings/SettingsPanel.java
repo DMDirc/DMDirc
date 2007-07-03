@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.components.expandingsettings;
 
-import com.dmdirc.identities.ConfigSource;
+import com.dmdirc.config.ConfigSource;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;

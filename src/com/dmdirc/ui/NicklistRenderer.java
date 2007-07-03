@@ -23,7 +23,7 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.ChannelClientProperty;
-import com.dmdirc.identities.ConfigManager;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.messages.ColourManager;
 
