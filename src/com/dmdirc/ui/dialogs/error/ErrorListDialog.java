@@ -46,6 +46,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -138,11 +139,18 @@ public final class ErrorListDialog extends StandardDialog implements
         table.setFillsViewportHeight(false);
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         table.getRowSorter().toggleSortOrder(0);
         
         table.getTableHeader().setReorderingAllowed(false);
         
         table.setPreferredScrollableViewportSize(new Dimension(600, 150));
+        
+        table.getColumnModel().getColumn(0).setPreferredWidth(40);
+        table.getColumnModel().getColumn(1).setPreferredWidth(100);
+        table.getColumnModel().getColumn(2).setPreferredWidth(80);
+        table.getColumnModel().getColumn(3).setPreferredWidth(100);
+        table.getColumnModel().getColumn(4).setPreferredWidth(280);
         
         errorDetails = new ErrorDetailPanel();
     }
@@ -285,17 +293,21 @@ public final class ErrorListDialog extends StandardDialog implements
         }
     }
     
-    /** {@inheritDoc} */
-    public void errorAdded(final ProgramError error) {
+    /** Updates and resizes the table. */
+    private void updateTable() {
         ((DefaultTableModel) table.getModel()).setDataVector(getTableData(),
                 HEADERS);
+    }
+    
+    /** {@inheritDoc} */
+    public void errorAdded(final ProgramError error) {
+        updateTable();
         deleteAllButton.setEnabled(true);
     }
     
     /** {@inheritDoc} */
     public void errorDeleted(final ProgramError error) {
-        ((DefaultTableModel) table.getModel()).setDataVector(getTableData(),
-                HEADERS);
+        updateTable();
         if (ErrorManager.getErrorManager().getErrorCount() > 0) {
             deleteAllButton.setEnabled(true);
         }
@@ -303,8 +315,7 @@ public final class ErrorListDialog extends StandardDialog implements
     
     /** {@inheritDoc} */
     public void errorStatusChanged(final ProgramError error) {
-        ((DefaultTableModel) table.getModel()).setDataVector(getTableData(),
-                HEADERS);
+        updateTable();
     }
     
 }
