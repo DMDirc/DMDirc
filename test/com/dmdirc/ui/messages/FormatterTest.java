@@ -8,6 +8,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.Config;
+import com.dmdirc.config.IdentityManager;
 import java.io.File;
 import java.util.Set;
 import org.junit.AfterClass;
@@ -27,6 +28,7 @@ public class FormatterTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        IdentityManager.load();
         Config.init();
     }
 

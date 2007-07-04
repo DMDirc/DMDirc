@@ -21,6 +21,7 @@ import static org.junit.Assert.*;
 public class ServerManagerTest {
     
     public ServerManagerTest() {
+        IdentityManager.load();
         Config.init();
     }
     

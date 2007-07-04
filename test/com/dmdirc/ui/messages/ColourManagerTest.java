@@ -7,10 +7,9 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.config.IdentityManager;
 import junit.framework.*;
 import java.awt.Color;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 
 /**
  *
@@ -20,6 +19,7 @@ public class ColourManagerTest extends TestCase {
     
     public ColourManagerTest(String testName) {
         super(testName);
+        IdentityManager.load();
     }
     
     public void testGetColourInt() {
