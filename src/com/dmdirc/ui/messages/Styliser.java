@@ -94,7 +94,6 @@ public final class Styliser {
         if (text.getIterator().getEndIndex() == 0) {
             doc.addText(new AttributedString("\n"));
         } else {
-            text.addAttribute(TextAttribute.FONT, UIManager.getFont("TextPane.font"));
             doc.addText(text);
         }
     }
@@ -111,7 +110,6 @@ public final class Styliser {
         if (text.getIterator().getEndIndex() == 0) {
             doc.addText(new AttributedString("\n"));
         } else {
-            text.addAttribute(TextAttribute.FONT, UIManager.getFont("TextPane.font"));
             doc.addText(text);
         }
     }
@@ -143,7 +141,8 @@ public final class Styliser {
                 final String target = string.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
                 
                 final SimpleAttributeSet attribs = new SimpleAttributeSet();
-                
+                attribs.addAttribute("DefaultForeground", UIManager.getFont("TextPane.font"));
+                        
                 while (position < target.length()) {
                     final String next = readUntilControl(target.substring(position));
                     
@@ -323,7 +322,6 @@ public final class Styliser {
         if (string.charAt(0) == CODE_FIXED) {
             if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospaced")) {
                 attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
-                attribs.addAttribute(StyleConstants.FontConstants.FontFamily, UIManager.getFont("TextPane.font"));
             } else {
                 attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
                 attribs.addAttribute(StyleConstants.FontConstants.FontFamily, "monospaced");
@@ -516,7 +514,7 @@ public final class Styliser {
             attribs.removeAttribute(StyleConstants.FontConstants.Italic);
         }
         if (attribs.containsAttribute(StyleConstants.FontConstants.FontFamily, "monospace")) {
-            final Object defaultFont = UIManager.getFont("TextPane.font");
+            final Object defaultFont = attribs.getAttribute("DefaultFontFamily");
             attribs.removeAttribute(StyleConstants.FontConstants.FontFamily);
             attribs.addAttribute(StyleConstants.FontConstants.FontFamily, defaultFont);
         }
