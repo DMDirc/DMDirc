@@ -268,7 +268,8 @@ public final class StatusBar extends JPanel implements MouseListener,
     
     /** {@inheritDoc} */
     public void mouseClicked(final MouseEvent mouseEvent) {
-        if (mouseEvent.getButton() == MouseEvent.BUTTON1) {
+        if (mouseEvent.getButton() == MouseEvent.BUTTON1 
+                && mouseEvent.getSource() == iconLabel) {
             ErrorListDialog.getErrorListDialog().setVisible(true);
         }
     }
