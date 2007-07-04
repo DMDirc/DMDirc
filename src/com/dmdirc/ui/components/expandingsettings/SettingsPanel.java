@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.components.expandingsettings;
 
-import com.dmdirc.config.ConfigSource;
+import com.dmdirc.config.Identity;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
@@ -50,7 +50,7 @@ public final class SettingsPanel extends JPanel {
     private static final long serialVersionUID = 1;
     
     /** Config manager. */
-    private final transient ConfigSource config;
+    private final transient Identity config;
     
     /** Valid option types. */
     public enum OptionType { TEXTFIELD, CHECKBOX, COLOUR, SPINNER, }
@@ -75,7 +75,7 @@ public final class SettingsPanel extends JPanel {
      * @param config Config to use
      * @param infoText Info blurb.
      */
-    public SettingsPanel(final ConfigSource config, final String infoText) {
+    public SettingsPanel(final Identity config, final String infoText) {
         super();
         
         this.config = config;

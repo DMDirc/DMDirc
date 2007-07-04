@@ -25,7 +25,7 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
-import com.dmdirc.config.ConfigSource;
+import com.dmdirc.config.Identity;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -52,7 +52,7 @@ public final class ConfigInfo extends ServerCommand {
      */
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
-        for (ConfigSource source : origin.getConfigManager().getSources()) {
+        for (Identity source : origin.getConfigManager().getSources()) {
             sendLine(origin, isSilent, "commandOutput", source.getTarget() + " - " + source);
         }
     }

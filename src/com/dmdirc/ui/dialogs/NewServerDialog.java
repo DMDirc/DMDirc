@@ -25,7 +25,7 @@ package com.dmdirc.ui.dialogs;
 import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
-import com.dmdirc.config.ConfigSource;
+import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
@@ -195,8 +195,8 @@ public final class NewServerDialog extends StandardDialog {
                 
                 NewServerDialog.this.setVisible(false);
                 
-                final ConfigSource profile =
-                        (ConfigSource) identityField.getSelectedItem();
+                final Identity profile =
+                        (Identity) identityField.getSelectedItem();
                 
                 // Open in a new window?
                 if (newServerWindowCheck.isSelected()
@@ -302,10 +302,10 @@ public final class NewServerDialog extends StandardDialog {
     
     /** Populates the profiles list. */
     public void populateProfiles() {
-        final ConfigSource[] profiles =
-                IdentityManager.getProfiles().toArray(new ConfigSource[0]);
+        final Identity[] profiles =
+                IdentityManager.getProfiles().toArray(new Identity[0]);
         ((DefaultComboBoxModel) identityField.getModel()).removeAllElements();
-        for (ConfigSource profile : profiles) {
+        for (Identity profile : profiles) {
             ((DefaultComboBoxModel)
             identityField.getModel()).addElement(profile);
         }

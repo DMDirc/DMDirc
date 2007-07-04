@@ -30,13 +30,15 @@ import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The config manager manages the various config sources for each entity.
  * @author chris
  */
-public final class ConfigManager implements Serializable {
+public final class ConfigManager implements Serializable, ConfigChangeListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -46,7 +48,11 @@ public final class ConfigManager implements Serializable {
     private static final long serialVersionUID = 1;
     
     /** A list of sources for this config manager. */
-    private List<ConfigSource> sources;
+    private List<Identity> sources;
+    
+    /** The listeners registered for this manager. */
+    private final Map<String, List<ConfigChangeListener>> listeners
+            = new HashMap<String, List<ConfigChangeListener>>();
     
     /** The ircd this manager is for. */
     private final String ircd;
@@ -80,6 +86,10 @@ public final class ConfigManager implements Serializable {
         final String chanName = channel + "@" + network;
         sources = IdentityManager.getSources(ircd, network, server, chanName);
         
+        for (Identity identity : sources) {
+            identity.addListener(this);
+        }
+        
         this.ircd = ircd;
         this.network = network;
         this.server = server;
@@ -96,7 +106,7 @@ public final class ConfigManager implements Serializable {
      * @return The value of the option
      */
     public String getOption(final String domain, final String option) {
-        for (ConfigSource source : sources) {
+        for (Identity source : sources) {
             if (source.hasOption(domain, option)) {
                 return source.getOption(domain, option);
             }
@@ -115,7 +125,7 @@ public final class ConfigManager implements Serializable {
      */
     public String getOption(final String domain, final String option,
             final String fallback) {
-        for (ConfigSource source : sources) {
+        for (Identity source : sources) {
             if (source.hasOption(domain, option)) {
                 return source.getOption(domain, option);
             }
@@ -190,7 +200,7 @@ public final class ConfigManager implements Serializable {
     public List<String> getOptions() {
         final ArrayList<String> res = new ArrayList<String>();
         
-        for (ConfigSource source : sources) {
+        for (Identity source : sources) {
             for (String key : source.getOptions()) {
                 res.add(key);
             }
@@ -225,7 +235,7 @@ public final class ConfigManager implements Serializable {
      * @return The scope of the option
      */
     public ConfigTarget getOptionScope(final String domain, final String option) {
-        for (ConfigSource source : sources) {
+        for (Identity source : sources) {
             if (source.hasOption(domain, option)) {
                 return source.getTarget();
             }
@@ -241,7 +251,7 @@ public final class ConfigManager implements Serializable {
      * @return True iff the option exists, false otherwise.
      */
     public boolean hasOption(final String domain, final String option) {
-        for (ConfigSource source : sources) {
+        for (Identity source : sources) {
             if (source.hasOption(domain, option)) {
                 return true;
             }
@@ -278,6 +288,7 @@ public final class ConfigManager implements Serializable {
         
         if (comp != null && comp.equalsIgnoreCase(identity.getTarget().getData())) {
             sources.add(identity);
+            identity.addListener(this);
             Collections.sort(sources);
         }
     }
@@ -286,7 +297,75 @@ public final class ConfigManager implements Serializable {
      * Retrieves a list of sources for this config manager.
      * @return This config manager's sources.
      */
-    public List<ConfigSource> getSources() {
+    public List<Identity> getSources() {
         return sources;
+    }
+    
+    /**
+     * Adds a change listener for the specified domain.
+     * 
+     * @param domain The domain to be monitored
+     * @param listener The listener to register
+     */
+    public void addChangeListener(final String domain,
+            final ConfigChangeListener listener) {
+        addListener(domain, listener);
+    }
+
+    /**
+     * Adds a change listener for the specified domain and key.
+     * 
+     * @param domain The domain of the option
+     * @param key The option to be monitored
+     * @param listener The listener to register
+     */    
+    public void addChangeListener(final String domain, final String key,
+            final ConfigChangeListener listener) {
+        addListener(domain + "." + key, listener);
+    }
+    
+    /**
+     * Removes the specified listener for all domains and options.
+     * 
+     * @param listener The listener to be removed
+     */
+    public void removeListener(final ConfigChangeListener listener) {
+       for (List<ConfigChangeListener> list : listeners.values()) {
+           list.remove(listener);
+       }
+    }
+    
+    /**
+     * Adds the specified listener to the internal map/list.
+     * 
+     * @param key The key to use (domain or domain.key)
+     * @param listener The listener to register
+     */
+    private void addListener(final String key,
+            final ConfigChangeListener listener) {
+        if (!listeners.containsKey(key)) {
+            listeners.put(key, new ArrayList<ConfigChangeListener>());
+        }
+        
+        listeners.get(key).add(listener);
+    }
+    
+    /** {@inheritDoc} */
+    public void configChanged(final String domain, final String key,
+            final String oldValue, final String newValue) {
+        final List<ConfigChangeListener> targets
+                = new ArrayList<ConfigChangeListener>();
+        
+        if (listeners.containsKey(domain)) {
+            targets.addAll(listeners.get(domain));
+        }
+        
+        if (listeners.containsKey(domain + "." + key)) {
+            targets.addAll(listeners.get(domain + "." + key));            
+        }
+        
+        for (ConfigChangeListener listener : targets) {
+            listener.configChanged(domain, key, oldValue, newValue);
+        }
     }
 }

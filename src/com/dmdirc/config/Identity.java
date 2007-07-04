@@ -46,10 +46,10 @@ import java.util.Properties;
  * cases, or the user may manually apply them.
  * <p>
  * Note: this class has a natural ordering that is inconsistent with equals.
- * 
+ *
  * @author chris
  */
-public final class Identity implements ConfigSource, Serializable {
+public final class Identity implements Serializable, Comparable<Identity> {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -64,6 +64,9 @@ public final class Identity implements ConfigSource, Serializable {
     /** The configuration details for this identity. */
     private final Properties properties;
     
+    /** The config change listeners for this source. */
+    private final List<ConfigChangeListener> listeners;
+    
     /** The file that this identity is read from. */
     private File file;
     
@@ -72,7 +75,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Creates a new instance of Identity.
-     * 
+     *
      * @param file The file to load this identity from
      * @param forceDefault Whether to force this identity to be loaded as default
      * identity or not
@@ -87,7 +90,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Creates a new read-only identity.
-     * 
+     *
      * @param stream The input stream to read the identity from
      * @param forceDefault Whether to force this identity to be loaded as default
      * identity or not
@@ -120,12 +123,14 @@ public final class Identity implements ConfigSource, Serializable {
             throw new InvalidIdentityFileException("No target and no profile");
         }
         
+        listeners = new ArrayList<ConfigChangeListener>();
+        
         stream.close();
     }
     
     /**
      * Returns the properties object belonging to this identity.
-     * 
+     *
      * @return This identity's property object
      */
     public Properties getProperties() {
@@ -134,7 +139,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Returns the name of this identity.
-     * 
+     *
      * @return The name of this identity
      */
     public String getName() {
@@ -145,7 +150,7 @@ public final class Identity implements ConfigSource, Serializable {
      * Determines whether this identity can be used as a profile when
      * connecting to a server. Profiles are identities that can supply
      * nick, ident, real name, etc.
-     * 
+     *
      * @return True iff this identity can be used as a profile
      */
     public boolean isProfile() {
@@ -155,7 +160,7 @@ public final class Identity implements ConfigSource, Serializable {
     /**
      * Determines whether this identity has a setting for the specified
      * option in the specified domain.
-     * 
+     *
      * @param domain The domain of the option
      * @param option The name of the option
      * @return True iff this source has the option, false otherwise
@@ -166,7 +171,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Retrieves the specified option from this identity.
-     * 
+     *
      * @param domain The domain of the option
      * @param option The name of the option
      * @return The value of the specified option
@@ -177,24 +182,32 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Sets the specified option in this identity to the specified value.
-     * 
+     *
      * @param domain The domain of the option
      * @param option The name of the option
      * @param value The new value for the option
      */
     public void setOption(final String domain, final String option,
             final String value) {
+        for (ConfigChangeListener listener : listeners) {
+            listener.configChanged(domain, option, getOption(domain, option), value);
+        }
+        
         properties.setProperty(domain + "." + option, value);
         needSave = true;
     }
     
     /**
      * Unsets a specified option.
-     * 
+     *
      * @param domain domain of the option
      * @param option name of the option
      */
     public void unsetOption(final String domain, final String option) {
+        for (ConfigChangeListener listener : listeners) {
+            listener.configChanged(domain, option, getOption(domain, option), null);
+        }
+        
         properties.remove(domain + "." + option);
         needSave = true;
     }
@@ -208,7 +221,7 @@ public final class Identity implements ConfigSource, Serializable {
         }
         
         return res;
-    }    
+    }
     
     /**
      * Saves this identity to disk if it has been updated.
@@ -242,7 +255,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Retrieves this identity's target.
-     * 
+     *
      * @return The target of this identity
      */
     public ConfigTarget getTarget() {
@@ -250,8 +263,26 @@ public final class Identity implements ConfigSource, Serializable {
     }
     
     /**
+     * Adds a new config change listener for this identity.
+     *
+     * @param listener The listener to be added
+     */
+    public void addListener(final ConfigChangeListener listener) {
+        listeners.add(listener);
+    }
+    
+    /**
+     * Removes the specific config change listener from this identity.
+     *
+     * @param listener The listener to be removed
+     */
+    public void removeListener(final ConfigChangeListener listener) {
+        listeners.remove(listener);
+    }
+    
+    /**
      * Returns a string representation of this object (its name).
-     * 
+     *
      * @return A string representation of this object
      */
     public String toString() {
@@ -267,7 +298,7 @@ public final class Identity implements ConfigSource, Serializable {
     /** {@inheritDoc} */
     @Override
     public boolean equals(final Object target) {
-        if (target instanceof Identity 
+        if (target instanceof Identity
                 && getName().equals(((Identity) target).getName())
                 && getTarget() == ((Identity) target).getTarget()) {
             return true;
@@ -278,18 +309,18 @@ public final class Identity implements ConfigSource, Serializable {
     /**
      * Compares this identity to another config source to determine which
      * is more specific.
-     * 
-     * @param target The ConfigSource to compare to
+     *
+     * @param target The Identity to compare to
      * @return -1 if this config source is less specific, 0 if they're equal,
      * +1 if this config is more specific.
      */
-    public int compareTo(final ConfigSource target) {
+    public int compareTo(final Identity target) {
         return target.getTarget().compareTo(myTarget);
     }
     
     /**
      * Creates a new identity containing the specified properties.
-     * 
+     *
      * @param properties The properties to be included in the identity
      * @return A new identity containing the specified properties
      */
@@ -332,7 +363,7 @@ public final class Identity implements ConfigSource, Serializable {
     
     /**
      * Generates an empty identity for the specified target.
-     * 
+     *
      * @param target The target for the new identity
      * @return An empty identity for the specified target
      */
@@ -347,7 +378,7 @@ public final class Identity implements ConfigSource, Serializable {
     /**
      * Generates an empty profile witht he specified name. Note the name is used
      * as a file name, so should be sanitised.
-     * 
+     *
      * @param name The name of the profile to create
      * @return A new profile with the specified name
      */

@@ -26,7 +26,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigManager;
-import com.dmdirc.config.ConfigSource;
+import com.dmdirc.config.Identity;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelInfo;
@@ -128,7 +128,7 @@ public final class Server extends WritableFrameContainer implements
     /** Whether we're using SSL or not. */
     private boolean ssl;
     /** The profile we're using. */
-    private transient ConfigSource profile;
+    private transient Identity profile;
     
     /**
      * Used to indicate that this server is in the process of closing all of its
@@ -161,7 +161,7 @@ public final class Server extends WritableFrameContainer implements
      * @param profile The profile to use
      */
     public Server(final String server, final int port, final String password,
-            final boolean ssl, final ConfigSource profile) {
+            final boolean ssl, final Identity profile) {
         super();
         
         this.server = server;
@@ -204,7 +204,7 @@ public final class Server extends WritableFrameContainer implements
      * @param profile The profile to use
      */
     public void connect(final String server, final int port, final String password,
-            final boolean ssl, final ConfigSource profile) {
+            final boolean ssl, final Identity profile) {
         if (closing) {
             Logger.userError(ErrorLevel.MEDIUM, "Attempted to connect to a server while frame is closing.");
             return;
@@ -415,7 +415,7 @@ public final class Server extends WritableFrameContainer implements
      *
      * @return The profile in use by this server
      */
-    public ConfigSource getProfile() {
+    public Identity getProfile() {
         return profile;
     }
     

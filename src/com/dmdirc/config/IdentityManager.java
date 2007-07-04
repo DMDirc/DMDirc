@@ -195,8 +195,8 @@ public final class IdentityManager {
      * Retrieves a list of identities that serve as profiles.
      * @return A list of profiles
      */
-    public static List<ConfigSource> getProfiles() {
-        final List<ConfigSource> profiles = new ArrayList<ConfigSource>();
+    public static List<Identity> getProfiles() {
+        final List<Identity> profiles = new ArrayList<Identity>();
         
         if (identities == null) {
             load();
@@ -220,14 +220,14 @@ public final class IdentityManager {
      * @param channel The channel name (in the form channel@network)
      * @return A list of all matching config sources
      */
-    public static List<ConfigSource> getSources(final String ircd,
+    public static List<Identity> getSources(final String ircd,
             final String network, final String server, final String channel) {
         
-        final List<ConfigSource> sources = new ArrayList<ConfigSource>();
+        final List<Identity> sources = new ArrayList<Identity>();
         
         String comp = "";
         
-        for (ConfigSource identity : identities) {
+        for (Identity identity : identities) {
             switch (identity.getTarget().getType()) {
             case ConfigTarget.TYPE_IRCD:
                 comp = ircd;
@@ -264,7 +264,7 @@ public final class IdentityManager {
      * @param server The server's name
      * @return A list of all matching config sources
      */
-    public static List<ConfigSource> getSources(final String ircd,
+    public static List<Identity> getSources(final String ircd,
             final String network, final String server) {
         return getSources(ircd, network, server, "<Unknown>");
     }
@@ -280,10 +280,10 @@ public final class IdentityManager {
             final String channel) {
         final String myTarget = (channel + "@" + network).toLowerCase();
         
-        for (ConfigSource identity : identities) {
+        for (Identity identity : identities) {
             if (identity.getTarget().getType() == ConfigTarget.TYPE_CHANNEL
                     && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
-                return (Identity) identity;
+                return identity;
             }
         }
         
@@ -303,10 +303,10 @@ public final class IdentityManager {
     public static Identity getNetworkConfig(final String network) {
         final String myTarget = network.toLowerCase();
         
-        for (ConfigSource identity : identities) {
+        for (Identity identity : identities) {
             if (identity.getTarget().getType() == ConfigTarget.TYPE_NETWORK
                     && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
-                return (Identity) identity;
+                return identity;
             }
         }
         

@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.dialogs;
 
-import com.dmdirc.config.ConfigSource;
+import com.dmdirc.config.Identity;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.MainFrame;
@@ -115,7 +115,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
     private JPanel altNickButtonsPanel;
     
     /** profiles. */
-    private List<ConfigSource> profiles;
+    private List<Identity> profiles;
     
     /** Creates a new instance of ProfileEditorDialog. */
     private ProfileEditorDialog() {
@@ -340,7 +340,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
                     "Delete confirmaton", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
                 final Identity oldIdentity =
-                        (Identity) profiles.get(profileList.getSelectedIndex());
+                        profiles.get(profileList.getSelectedIndex());
                 oldIdentity.delete();
                 profiles = IdentityManager.getProfiles();
                 populateList();
@@ -409,7 +409,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
     /** Populates the identity list with identities from the identity manager. */
     private void populateList() {
         ((DefaultListModel) profileList.getModel()).clear();
-        for (ConfigSource profile : profiles) {
+        for (Identity profile : profiles) {
             ((DefaultListModel) profileList.getModel()).addElement(profile);
         }
     }
@@ -420,7 +420,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
      * @param index profile number to populate
      */
     private void populateProfile(final int index) {
-        final ConfigSource profile = profiles.get(index);
+        final Identity profile = profiles.get(index);
         
         nickname.setText(profile.getOption("profile", "nickname"));
         realname.setText(profile.getOption("profile", "realname"));
@@ -436,7 +436,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
     private void saveProfile(final int index) {
         StringBuffer altNicks;
         
-        final ConfigSource profile = profiles.get(index);
+        final Identity profile = profiles.get(index);
         
         profile.setOption("profile", "nickname", nickname.getText());
         profile.setOption("profile", "realname", realname.getText());
