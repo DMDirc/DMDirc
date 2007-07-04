@@ -42,6 +42,7 @@ import javax.swing.JComboBox;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 
 /**
@@ -66,7 +67,7 @@ public class ChannelListModesPane extends JPanel implements ActionListener {
     private List<JPanel> listModesPanels;
 
     /** JPanel used to show listmodespanels in. */
-    private JPanel listModesPanel;
+    private JScrollPane listModesPanel;
 
     /** Add list mode button. */
     private JButton addListModeButton;
@@ -85,7 +86,11 @@ public class ChannelListModesPane extends JPanel implements ActionListener {
     public ChannelListModesPane(final Channel channel) {
         this.channel = channel;
 
-        listModesPanel = new JPanel(new BorderLayout());
+        listModesPanel = new JScrollPane();
+        listModesPanel.setBorder(BorderFactory.createCompoundBorder(
+                    BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
+                    SMALL_BORDER, 0),
+                    listModesPanel.getBorder()));
         listModesPanels = new ArrayList<JPanel>();
         listModesArray =
                 channel.getServer().getParser().getListChanModes().toCharArray();
@@ -144,15 +149,11 @@ public class ChannelListModesPane extends JPanel implements ActionListener {
 
             final JPanel panel =
                     new JPanel(new BorderLayout());
-            panel.setBorder(BorderFactory.createCompoundBorder(
-                    BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
-                    SMALL_BORDER, 0),
-                    UIManager.getBorder("TextField.border")));
             panel.add(new JList(new DefaultListModel()),
                     BorderLayout.CENTER);
             listModesPanels.add(panel);
         }
-        listModesPanel = listModesPanels.get(0);
+        listModesPanel.setViewportView(listModesPanels.get(0));
         listModesPanel.setVisible(true);
     }
 
