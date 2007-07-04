@@ -63,6 +63,8 @@ public final class Main {
      * @param args the command line arguments
      */
     public static void main(final String[] args) {
+        final CommandLineParser clp = new CommandLineParser(args);
+        
         IdentityManager.load();
         
         Config.init();
