@@ -189,12 +189,14 @@ public final class Identity implements Serializable, Comparable<Identity> {
      */
     public void setOption(final String domain, final String option,
             final String value) {
-        for (ConfigChangeListener listener : listeners) {
-            listener.configChanged(domain, option, getOption(domain, option), value);
-        }
+        final String oldValue = getOption(domain, option);
         
         properties.setProperty(domain + "." + option, value);
         needSave = true;
+        
+        for (ConfigChangeListener listener : listeners) {
+            listener.configChanged(domain, option, oldValue, value);
+        }
     }
     
     /**
@@ -204,12 +206,14 @@ public final class Identity implements Serializable, Comparable<Identity> {
      * @param option name of the option
      */
     public void unsetOption(final String domain, final String option) {
-        for (ConfigChangeListener listener : listeners) {
-            listener.configChanged(domain, option, getOption(domain, option), null);
-        }
+        final String value = getOption(domain, option);
         
         properties.remove(domain + "." + option);
         needSave = true;
+        
+        for (ConfigChangeListener listener : listeners) {
+            listener.configChanged(domain, option, value, null);
+        }
     }
     
     /** {@inheritDoc} */

@@ -25,6 +25,7 @@ package com.dmdirc.ui.components;
 import com.dmdirc.BrowserLauncher;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -71,7 +72,8 @@ import javax.swing.plaf.synth.SynthLookAndFeel;
  */
 public abstract class Frame extends JInternalFrame implements Window,
         PropertyChangeListener, InternalFrameListener,
-        MouseListener, ActionListener, KeyListener, TextPaneListener {
+        MouseListener, ActionListener, KeyListener, TextPaneListener,
+        ConfigChangeListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -127,6 +129,9 @@ public abstract class Frame extends JInternalFrame implements Window,
         
         getTextPane().setBackground(config.getOptionColour("ui", "backgroundcolour", Color.WHITE));
         getTextPane().setForeground(config.getOptionColour("ui", "foregroundcolour", Color.BLACK));
+        
+        config.addChangeListener("ui", "foregroundcolour", this);
+        config.addChangeListener("ui", "backgroundcolour", this);
         
         final Boolean pref = Config.getOptionBool("ui", "maximisewindows");
         if (pref || MainFrame.getMainFrame().getMaximised()) {
@@ -548,6 +553,18 @@ public abstract class Frame extends JInternalFrame implements Window,
             setIcon(true);
         } catch (PropertyVetoException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
+        }
+    }
+    
+    /** {@inheritDoc} */
+    public void configChanged(final String domain, final String key,
+            final String oldValue, final String newValue) {
+        if ("ui".equals(domain)) {
+            if ("foregroundcolour".equals(key)) {
+                getTextPane().setForeground(getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK));
+            } else if ("backgroundcolour".equals(key)) {
+                getTextPane().setBackground(getConfigManager().getOptionColour("ui", "backgroundcolour", Color.WHITE));
+            }
         }
     }
 }

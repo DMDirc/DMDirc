@@ -135,6 +135,9 @@ public abstract class InputFrame extends Frame implements InputWindow,
                 config.getOptionColour("ui", "foregroundcolour", Color.BLACK)));
         getInputField().setCaretColor(config.getOptionColour("ui", "inputforegroundcolour",
                 config.getOptionColour("ui", "foregroundcolour", Color.BLACK)));
+        
+        config.addChangeListener("ui", "inputforegroundcolour", this);
+        config.addChangeListener("ui", "inputbackgroundcolour", this);
     }
     
     /** {@inheritDoc} */
@@ -369,7 +372,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
     public void keyPressed(final KeyEvent event) {
         if (event.getSource() == getTextPane()) {
             if ((Config.getOptionBool("ui", "quickCopy")
-            || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
+                    || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
                 event.setSource(getInputField());
                 getInputField().requestFocus();
                 if (robot != null && event.getKeyCode() != KeyEvent.VK_UNDEFINED) {
@@ -475,8 +478,8 @@ public abstract class InputFrame extends Frame implements InputWindow,
         try {
             //get the contents of the input field and combine it with the clipboard
             clipboard = getInputField().getText()
-            + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
-            .getData(DataFlavor.stringFlavor);
+                    + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
+                    .getData(DataFlavor.stringFlavor);
             //split the text
             clipboardLines = getSplitLine(clipboard);
         } catch (HeadlessException ex) {
@@ -521,6 +524,25 @@ public abstract class InputFrame extends Frame implements InputWindow,
         newLine = newLine.replace('\r', '\n');
         
         return newLine.split("\n");
+    }
+    
+    /** {@override} */
+    @Override
+    public void configChanged(String domain, String key, String oldValue, String newValue) {
+        super.configChanged(domain, key, oldValue, newValue);
+        
+        if ("ui".equals(domain)) {
+            if ("inputbackgroundcolour".equals(key) || "backgroundcolour".equals(key)) {
+                getInputField().setBackground(getConfigManager().getOptionColour("ui", "inputbackgroundcolour",
+                        getConfigManager().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
+            } else if ("inputforegroundcolour".equals(key) || "foregroundcolour".equals(key)) {
+                getInputField().setForeground(getConfigManager().getOptionColour("ui", "inputforegroundcolour",
+                        getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
+                getInputField().setCaretColor(getConfigManager().getOptionColour("ui", "inputforegroundcolour",
+                        getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
+                
+            }
+        }
     }
     
 }
