@@ -163,6 +163,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         getContentPane().add(getLeftButton(), constraints);
 
         constraints.gridx = 2;
+        constraints.insets.set(0, 0, SMALL_BORDER, SMALL_BORDER);
         getContentPane().add(getRightButton(), constraints);
 
         initIrcTab();
