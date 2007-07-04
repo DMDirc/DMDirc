@@ -25,160 +25,81 @@ package com.dmdirc.ui.dialogs.channelsetting;
 import com.dmdirc.Channel;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.ChannelInfo;
-import com.dmdirc.parser.ChannelListModeItem;
-import com.dmdirc.parser.IRCParser;
 import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.components.ParamModePanel;
 import com.dmdirc.ui.components.StandardDialog;
 import com.dmdirc.ui.components.expandingsettings.SettingsPanel;
 import com.dmdirc.ui.components.expandingsettings.SettingsPanel.OptionType;
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 
 /**
  * Allows the user to modify channel settings (modes, topics, etc).
- * @author chris
  */
-public final class ChannelSettingsDialog extends StandardDialog
-        implements ActionListener, KeyListener {
-    
+public final class ChannelSettingsDialog extends StandardDialog implements ActionListener {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 6;
-    
+    private static final long serialVersionUID = 7;
+
     /** Channel settings dialogs, semi singleton use. */
     private static Map<Channel, ChannelSettingsDialog> dialogs;
-    
-    /**
-     * The channel object that this dialog belongs to.
-     */
+
+    /** The channel object that this dialog belongs to. */
     private final Channel channel;
-    
-    /**
-     * The checkboxes used for boolean modes.
-     */
-    private Map<String, JCheckBox> modeCheckBoxes;
-    
-    /**
-     * The ParamModePanels used for parameter-requiring modes.
-     */
-    private Map<String, ParamModePanel> modeInputs;
-    
-    /**
-     * Combox box used to switch between list modes.
-     */
-    private JComboBox listModesMenu;
-    
-    /**
-     * Arraylist of jpanels containing the listmodes.
-     */
-    private List<JPanel> listModesPanels;
-    
-    /**
-     * JPanel used to show listmodespanels in.
-     */
-    private JPanel listModesPanel;
-    
-    /**
-     * add and remove list mode buttons.
-     */
-    private JButton addListModeButton, removeListModeButton;
-    
-    /**
-     * list modes available on this server.
-     */
-    private char[] listModesArray;
-    
-    /**
-     * the maximum length allowed for a topic.
-     */
-    private int topicLengthMax;
-    
-    /**
-     * label showing the number of characters left in a topic.
-     */
-    private JLabel topicLengthLabel;
-    
-    /**
-     * Topic text entry text area.
-     */
-    private JTextArea topicText;
-    
-    /** Client settings panel. */
-    private SettingsPanel channelSettingsPane;
-    
-    /** Channel identity file. */
-    private final Identity identity;
-    
+
     /** Tabbed pane. */
     private JTabbedPane tabbedPane;
-    
+
+    /** Client settings panel. */
+    private SettingsPanel channelSettingsPane;
+
+    /** List modes panel. */
+    private ChannelModesPane channelModesPane;
+
+    /** List modes panel. */
+    private TopicModesPane topicModesPane;
+
+    /** List modes panel. */
+    private ChannelListModesPane channelListModesPane;
+
+    /** Channel identity file. */
+    private final Identity identity;
+
     /**
      * Creates a new instance of ChannelSettingsDialog.
+     *
      * @param newChannel The channel object that we're editing settings for
      */
     private ChannelSettingsDialog(final Channel newChannel) {
         super(MainFrame.getMainFrame(), false);
-        
+
         channel = newChannel;
-        identity = IdentityManager.getChannelConfig(channel.getServer().getNetwork(),
-                channel.getChannelInfo().getName());
-        
-        final Map<String, String> iSupport =
-                channel.getServer().getParser().get005();
-        if (iSupport.containsKey("TOPICLEN")) {
-            try {
-                topicLengthMax = Integer.parseInt(iSupport.get("TOPICLEN"));
-            } catch (NumberFormatException ex) {
-                topicLengthMax = 250;
-                Logger.userError(ErrorLevel.LOW, "IRCD doesnt supply topic length");
-            }
-        }
-        
+        identity =
+                IdentityManager.getChannelConfig(channel.getServer().
+                getNetwork(), channel.getChannelInfo().getName());
+
         initComponents();
         initListeners();
-        
+
         pack();
         setLocationRelativeTo(MainFrame.getMainFrame());
     }
-    
+
     /**
      * Returns an instance of the CSD for the specified channel.
      *
@@ -186,556 +107,177 @@ public final class ChannelSettingsDialog extends StandardDialog
      *
      * @return CSD instance for the specified channel
      */
-    public static synchronized ChannelSettingsDialog getChannelSettingDialog(
-            final Channel channel) {
+    public static synchronized ChannelSettingsDialog getChannelSettingDialog(final Channel channel) {
         if (dialogs == null) {
-            dialogs = new HashMap<Channel, ChannelSettingsDialog>();
+            dialogs =
+                    new HashMap<Channel, ChannelSettingsDialog>();
         }
-        
+
         if (dialogs.containsKey(channel)) {
             dialogs.get(channel).update();
         } else {
             dialogs.put(channel, new ChannelSettingsDialog(channel));
         }
-        
+
         return dialogs.get(channel);
     }
-    
+
     /** Initialises the main UI components. */
     private void initComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
         tabbedPane = new JTabbedPane();
-        
+
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new GridBagLayout());
         setTitle("Channel settings for " + channel);
         setResizable(false);
-        
+
         final JButton button1 = new JButton();
         final JButton button2 = new JButton();
-        
+
         orderButtons(button1, button2);
-        
+
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.gridwidth = 3;
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER);
+        constraints.insets =
+                new Insets(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER,
+                SMALL_BORDER);
         getContentPane().add(tabbedPane, constraints);
-        
+
         constraints.weighty = 0.0;
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.gridwidth = 1;
         getContentPane().add(Box.createHorizontalGlue(), constraints);
-        
+
         constraints.weightx = 0.0;
-        constraints.insets.set(0, LARGE_BORDER, LARGE_BORDER, LARGE_BORDER);
+        constraints.insets.set(0, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
         constraints.gridx = 1;
         constraints.gridy = 1;
         constraints.anchor = GridBagConstraints.EAST;
         constraints.fill = GridBagConstraints.NONE;
         getContentPane().add(getLeftButton(), constraints);
-        
+
         constraints.gridx = 2;
         getContentPane().add(getRightButton(), constraints);
-        
+
         initIrcTab();
-        
+
         initListModesTab();
-        
+
         initSettingsTab();
-        
+
         tabbedPane.setSelectedIndex(channel.getConfigManager().
                 getOptionInt("dialogstate", "channelsettingsdialog", 0));
     }
-    
+
     /** Updates the dialogs content. */
     private void update() {
-        
-        tabbedPane = new JTabbedPane();
-        
-        initIrcTab();
-        
-        initListModesTab();
-        
-        initSettingsTab();
-        
+        channelListModesPane.update();
+        channelModesPane.update();
+        channelSettingsPane.update();
+        topicModesPane.update();
+
         tabbedPane.setSelectedIndex(channel.getConfigManager().
                 getOptionInt("dialogstate", "channelsettingsdialog", 0));
     }
-    
+
     /** Initialises the IRC Settings tab. */
     private void initIrcTab() {
-        final JPanel settingsPanel = new JPanel(new GridBagLayout());
-        
-        tabbedPane.addTab("IRC Settings", settingsPanel);
-        
-        settingsPanel.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER));
-        
-        initModesPanel(settingsPanel);
-        initTopicsPanel(settingsPanel);
-    }
-    
-    /** Initialises the IRC Settings tab. */
-    private void initListModesTab() {
-        final JPanel listModesMainPanel = new JPanel(new GridBagLayout());
-        
-        tabbedPane.addTab("List Modes", listModesMainPanel);
-        
-        listModesMainPanel.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER, LARGE_BORDER));
-        
-        initListModesPanel(listModesMainPanel);
-    }
-    
-    /** Initialises the channel Settings (identities) tab. */
-    private void initSettingsTab() {
-        
-        initSettingsPanel();
-        
-        tabbedPane.addTab("Client Settings", channelSettingsPane);
-    }
-    
-    /**
-     * Initialises the modes panel.
-     * @param parent The panel to add the modes panel to
-     */
-    private void initModesPanel(final JPanel parent) {
         final GridBagConstraints constraints = new GridBagConstraints();
-        final JPanel modesPanel = new JPanel(new GridBagLayout());
-        final IRCParser parser = channel.getServer().getParser();
-        final String booleanModes = parser.getBoolChanModes();
-        final String ourBooleanModes = channel.getChannelInfo().getModeStr();
-        final String paramModes = parser.getSetOnlyChanModes()
-                + parser.getSetUnsetChanModes();
-        
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.anchor = GridBagConstraints.NORTH;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        
-        modesPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(
-                BorderFactory.createEtchedBorder(), "Channel Modes"),
-                BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER)));
-        parent.add(modesPanel, constraints);
-        
-        modeCheckBoxes = new Hashtable<String, JCheckBox>();
-        
+        final JPanel settingsPanel = new JPanel(new GridBagLayout());
+
+        tabbedPane.addTab("IRC Settings", settingsPanel);
+
+        settingsPanel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
+
+        channelModesPane = new ChannelModesPane(channel);
+        topicModesPane = new TopicModesPane(channel, this);
+
         constraints.gridx = 0;
         constraints.gridy = 0;
-        constraints.anchor = GridBagConstraints.WEST;
+        constraints.fill = GridBagConstraints.BOTH;
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
-        
-        // Lay out all the boolean mode checkboxes
-        for (int i = 0; i < booleanModes.length(); i++) {
-            final String mode = booleanModes.substring(i, i + 1);
-            final char modeChar = mode.toCharArray()[0];
-            final boolean state = ourBooleanModes.split(" ")[0]
-                    .contains(mode.subSequence(0, 1));
-            String text = "Mode " + mode;
-            
-            if (channel.getConfigManager().getOptionBool("server", "friendlymodes")
-                    && channel.getConfigManager().hasOption("server", "mode" + mode)) {
-                text = channel.getConfigManager().getOption("server", "mode" + mode);
-            }
-            
-            final JCheckBox checkBox = new JCheckBox(text, state);
-            checkBox.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                    0, 0, LARGE_BORDER));
-            modesPanel.add(checkBox, constraints);
-            
-            constraints.gridx++;
-            if (constraints.gridx == 2) {
-                constraints.gridy++;
-                constraints.gridx = 0;
-            }
-            
-            modeCheckBoxes.put(mode, checkBox);
-            if (channel.getConfigManager().getOptionBool("server", "enablemode" + modeChar)) {
-                checkBox.setEnabled(true);
-            } else if (!channel.getServer().getParser().isUserSettable(modeChar)) {
-                checkBox.setEnabled(false);
-            }
-        }
-        
-        // Lay out all the parameter-requiring modes
-        modeInputs = new Hashtable<String, ParamModePanel>();
-        
-        constraints.gridwidth = 2;
-        
-        if (constraints.gridx != 0) {
-            constraints.gridy++;
-            constraints.gridx = 0;
-        }
-        
-        for (int i = 0; i < paramModes.length(); i++) {
-            final String mode = paramModes.substring(i, i + 1);
-            final String value = channel.getChannelInfo()
-                    .getModeParam(mode.charAt(0));
-            final boolean state = ourBooleanModes.split(" ")[0]
-                    .contains(mode.subSequence(0, 1));
-            
-            final ParamModePanel panel = new ParamModePanel(mode, state, value,
-                    channel.getConfigManager());
-            panel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                    0, 0, 0));
-            modesPanel.add(panel, constraints);
-            
-            modeInputs.put(mode, panel);
-            
-            constraints.gridy++;
-        }
-        
-    }
-    
-    /**
-     * Initialises the topic panel.
-     * @param parent The panel to add the topics panel to
-     */
-    private void initTopicsPanel(final JPanel parent) {
-        final GridBagConstraints constraints = new GridBagConstraints();
-        final JPanel topicsPanel = new JPanel(new GridBagLayout());
-        final JLabel topicWho = new JLabel();
-        final String topic = channel.getChannelInfo().getTopic();
-        final JScrollPane scrollPane;
-        topicLengthLabel = new JLabel();
-        topicText = new JTextArea(100, 4);
-        
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.anchor = GridBagConstraints.NORTH;
+        settingsPanel.add(channelModesPane, constraints);
         constraints.gridy = 1;
-        constraints.weightx = 1.0;
-        
-        topicsPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(
-                BorderFactory.createEtchedBorder(), "Channel Topic"),
-                BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, LARGE_BORDER,
-                LARGE_BORDER)));
-        parent.add(topicsPanel, constraints);
-        
-        constraints.gridy = 2;
-        topicText.setText(channel.getChannelInfo().getTopic());
-        topicText.setLineWrap(true);
-        topicText.addKeyListener(this);
-        topicText.setWrapStyleWord(true);
-        topicText.setRows(5);
-        topicText.setColumns(30);
-        scrollPane = new JScrollPane(topicText);
-        topicsPanel.add(scrollPane, constraints);
-        
-        constraints.gridy = 3;
-        
-        if (topicLengthMax == 0) {
-            topicLengthLabel.setText(topicText.getText().length() + " characters");
-        } else {
-            topicLengthLabel.setText(topicLengthMax - topicText.getText().length()
-                    + " of " + topicLengthMax + " available");
-        }
-        topicsPanel.add(topicLengthLabel, constraints);
-        
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.anchor = GridBagConstraints.LINE_START;
-        constraints.gridy = 4;
-        topicWho.setSize(30, 0);
-        topicWho.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0, 0, 0));
-        if ("".equals(topic)) {
-            topicWho.setText("No topic set.");
-        } else {
-            topicWho.setText("<html>Set by "
-                    + channel.getChannelInfo().getTopicUser() + "<br> on "
-                    + new Date(1000 * channel.getChannelInfo().getTopicTime())
-                    + "</html>");
-        }
-        topicsPanel.add(topicWho, constraints);
+        settingsPanel.add(topicModesPane, constraints);
     }
-    
-    /**
-     * Initialises the list modes panel.
-     * @param parent The panel to add the list modes panel to
-     */
-    private void initListModesPanel(final JPanel parent) {
-        //TODO use a cardlayout
-        final GridBagConstraints constraints = new GridBagConstraints();
-        listModesArray = channel.getServer().getParser()
-                .getListChanModes().toCharArray();
-        final ChannelInfo channelInfo = channel.getChannelInfo();
-        final ArrayList<String> listModesList = new ArrayList<String>();
-        
-        
-        JList list;
-        DefaultListModel listModel;
-        JPanel panel;
-        ArrayList<ChannelListModeItem> listItems;
-        
-        
-        for (char mode : listModesArray) {
-            String modeText = mode + " list";
-            if (channel.getConfigManager().getOptionBool("server", "friendlymodes")
-                    && channel.getConfigManager().hasOption("server", "mode" + mode)) {
-                modeText = channel.getConfigManager().getOption("server", "mode" + mode) + " list";
-            }
-            listModesList.add(modeText);
-        }
-        
-        addListModeButton = new JButton("Add");
-        removeListModeButton = new JButton("Remove");
-        listModesPanels = new ArrayList<JPanel>();
-        listModesPanel = new JPanel(new BorderLayout());
-        listModesMenu = new JComboBox(listModesList.toArray());
-        
-        for (char mode : listModesArray) {
-            panel = new JPanel(new BorderLayout());
-            
-            listModel = new DefaultListModel();
-            list = new JList(listModel);
-            list.setBorder(UIManager.getBorder("TextField.border"));
-            
-            listItems = channelInfo.getListModeParam(mode);
-            
-            for (ChannelListModeItem listItem : listItems) {
-                listModel.addElement(listItem);
-            }
-            
-            panel.add(list, BorderLayout.CENTER);
-            panel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0, SMALL_BORDER, 0));
-            
-            listModesPanels.add(panel);
-        }
-        
-        if (listModesPanels.isEmpty()) {
-            listModesMenu.addItem("No list modes");
-            listModesMenu.setEnabled(false);
-        } else {
-            listModesPanel.add(listModesPanels.get(0), BorderLayout.CENTER);
-        }
-        
-        listModesPanel.setPreferredSize(parent.getPreferredSize());
-        
-        constraints.weightx = 1.0;
-        constraints.weighty = 0.0;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.gridx = 1;
-        constraints.gridy = 1;
-        constraints.gridwidth = 2;
-        parent.add(listModesMenu, constraints);
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        constraints.gridy = 2;
-        parent.add(listModesPanel, constraints);
-        constraints.weightx = 0.5;
-        constraints.weighty = 0;
-        constraints.gridx = 1;
-        constraints.gridy = 3;
-        constraints.gridwidth = 1;
-        parent.add(addListModeButton, constraints);
-        constraints.gridx = 2;
-        parent.add(removeListModeButton, constraints);
+
+    /** Initialises the IRC Settings tab. */
+    private void initListModesTab() {
+        channelListModesPane = new ChannelListModesPane(channel);
+        tabbedPane.addTab("List Modes", channelListModesPane);
     }
-    
-    /**
-     * Initialises the channel settings.
-     */
+
+    /** Initialises the channel Settings (identities) tab. */
+    private void initSettingsTab() {
+
+        initSettingsPanel();
+
+        tabbedPane.addTab("Client Settings", channelSettingsPane);
+    }
+
+    /** Initialises the channel settings. */
     private void initSettingsPanel() {
-        channelSettingsPane = new SettingsPanel(identity, "These settings are "
-                + "specific to this channel on this network, any settings "
-                + "specified here will overwrite global settings");
-        
+        channelSettingsPane =
+                new SettingsPanel(identity,
+                "These settings are " +
+                "specific to this channel on this network, any settings " +
+                "specified here will overwrite global settings");
+
         channelSettingsPane.addOption("channel.splitusermodes",
                 "Split user modes", OptionType.CHECKBOX);
-        channelSettingsPane.addOption("general.cyclemessage",
-                "Cycle message", OptionType.TEXTFIELD);
-        channelSettingsPane.addOption("general.kickmessage",
-                "Kick message", OptionType.TEXTFIELD);
-        channelSettingsPane.addOption("general.partmessage",
-                "Part message", OptionType.TEXTFIELD);
-        channelSettingsPane.addOption("ui.backgroundcolour",
-                "Background colour", OptionType.COLOUR);
-        channelSettingsPane.addOption("ui.foregroundcolour",
-                "Foreground colour", OptionType.COLOUR);
-        channelSettingsPane.addOption("ui.frameBufferSize",
-                "Frame buffer size", OptionType.SPINNER);
-        channelSettingsPane.addOption("ui.inputbuffersize",
-                "Input buffer size", OptionType.SPINNER);
+        channelSettingsPane.addOption("general.cyclemessage", "Cycle message",
+                OptionType.TEXTFIELD);
+        channelSettingsPane.addOption("general.kickmessage", "Kick message",
+                OptionType.TEXTFIELD);
+        channelSettingsPane.addOption("general.partmessage", "Part message",
+                OptionType.TEXTFIELD);
+        channelSettingsPane.addOption("ui.backgroundcolour", "Background colour",
+                OptionType.COLOUR);
+        channelSettingsPane.addOption("ui.foregroundcolour", "Foreground colour",
+                OptionType.COLOUR);
+        channelSettingsPane.addOption("ui.frameBufferSize", "Frame buffer size",
+                OptionType.SPINNER);
+        channelSettingsPane.addOption("ui.inputbuffersize", "Input buffer size",
+                OptionType.SPINNER);
     }
-    
+
     /** Initialises listeners for this dialog. */
     private void initListeners() {
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
-        addListModeButton.addActionListener(this);
-        removeListModeButton.addActionListener(this);
-        listModesMenu.addActionListener(this);
     }
-    
+
     /**
      * Called whenever the user clicks on one of the two buttons.
+     *
      * @param actionEvent Event generated by this action
      */
+    @Override
     public void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
-            setChangedBooleanModes();
-            setChangedTopic();
-            channelSettingsPane.save();
-            identity.setOption("dialogstate", "channelsettingsdialog",
-                    String.valueOf(tabbedPane.getSelectedIndex()));
-            setVisible(false);
+            save();
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             setVisible(false);
-        } else if (listModesMenu.equals(actionEvent.getSource())) {
-            listModesPanel.removeAll();
-            listModesPanel.add(listModesPanels.get(listModesMenu
-                    .getSelectedIndex()), BorderLayout.CENTER);
-        } else if (addListModeButton.equals(actionEvent.getSource())) {
-            addListMode();
-        } else if (removeListModeButton.equals(actionEvent.getSource())) {
-            removeListMode();
         }
     }
-    
-    /** Adds a list mode. */
-    private void addListMode() {
-        final int selectedIndex = listModesMenu.getSelectedIndex();
-        String modeText = "" + listModesArray[selectedIndex];
-        String modeMask;
-        if (channel.getConfigManager().hasOption("server", "mode"
-                + listModesArray[selectedIndex])) {
-            modeText = channel.getConfigManager().getOption("server", "mode"
-                    + listModesArray[selectedIndex]);
-        }
-        modeMask =  JOptionPane.showInputDialog(listModesPanel,
-                "Please enter the hostmask for the new " + modeText);
-        if (modeMask != null && (!modeMask.equals("")
-                || modeMask.length() > 0)) {
-            channel.getChannelInfo().alterMode(true,
-                    listModesArray[selectedIndex], modeMask);
-            channel.getChannelInfo().sendModes();
-        }
+
+    /** Saves the settings. */
+    protected void save() {
+        channelModesPane.setChangedBooleanModes();
+        topicModesPane.setChangedTopic();
+        channelSettingsPane.save();
+
+        identity.setOption("dialogstate", "channelsettingsdialog",
+                String.valueOf(tabbedPane.getSelectedIndex()));
+
+        setVisible(false);
     }
-    
-    /** Removes a list mode. */
-    private void removeListMode() {
-        final int selectedIndex = listModesMenu.getSelectedIndex();
-        final JList list = (JList) listModesPanels.get(selectedIndex).getComponent(0);
-        for (Object mode : list.getSelectedValues()) {
-            ((DefaultListModel) list.getModel()).removeElement(mode);
-            channel.getChannelInfo().alterMode(false,
-                    listModesArray[selectedIndex], mode.toString());
-        }
-        channel.getChannelInfo().sendModes();
-    }
-    
-    
-    /**
-     * processes the topic and changes it if necessary.
-     */
-    private void setChangedTopic() {
-        if (!channel.getChannelInfo().getTopic().equals(topicText.getText())) {
-            channel.getServer().getParser().sendLine("TOPIC "
-                    + channel.getChannelInfo().getName() + "" + " :"
-                    + topicText.getText());
-        }
-    }
-    
-    /**
-     * Processes the channel settings dialog and constructs a mode string for
-     * changed modes, then sends this to the server.
-     */
-    private void setChangedBooleanModes() {
-        boolean changed = false;
-        final IRCParser parser = channel.getServer().getParser();
-        final String booleanModes = parser.getBoolChanModes();
-        final String ourBooleanModes = channel.getChannelInfo().getModeStr();
-        final String paramModes = parser.getSetOnlyChanModes()
-                + parser.getSetUnsetChanModes();
-        
-        for (int i = 0; i < booleanModes.length(); i++) {
-            final String mode = booleanModes.substring(i, i + 1);
-            final boolean state = ourBooleanModes.split(" ")[0]
-                    .contains(mode.subSequence(0, 1));
-            
-            if (modeCheckBoxes.get(mode) != null
-                    && state != modeCheckBoxes.get(mode).isSelected()) {
-                changed = true;
-                channel.getChannelInfo().alterMode(
-                        modeCheckBoxes.get(mode).isSelected(),
-                        mode.toCharArray()[0],
-                        "");
-            }
-        }
-        
-        for (int i = 0; i < paramModes.length(); i++) {
-            final String mode = paramModes.substring(i, i + 1);
-            final String value = channel.getChannelInfo()
-                    .getModeParam(mode.charAt(0));
-            final boolean state = ourBooleanModes.split(" ")[0]
-                    .contains(mode.subSequence(0, 1));
-            final ParamModePanel paramModePanel = modeInputs.get(mode);
-            
-            if (state != paramModePanel.getState()
-                    || !value.equals(paramModePanel.getValue())) {
-                changed = true;
-                if (paramModePanel.getValue().contains(" ")) {
-                    channel.getChannelInfo().alterMode(
-                            paramModePanel.getState(), mode.toCharArray()[0],
-                            paramModePanel.getValue().substring(0,
-                            paramModePanel.getValue().indexOf(" ")));
-                } else {
-                    channel.getChannelInfo().alterMode(
-                            paramModePanel.getState(), mode.toCharArray()[0],
-                            paramModePanel.getValue());
-                }
-            }
-        }
-        if (changed) {
-            channel.getChannelInfo().sendModes();
-        }
-    }
-    
-    /**
-     * Handles key typed events in the dialog.
-     *
-     * @param keyEvent Key typed KeyEvent
-     */
-    public void keyTyped(final KeyEvent keyEvent) {
-        if (topicText.getText().length() >= topicLengthMax
-                && topicLengthMax != 0
-                && (keyEvent.getKeyCode() != KeyEvent.VK_BACK_SPACE
-                && keyEvent.getKeyCode() != KeyEvent.VK_DELETE)) {
-            keyEvent.consume();
-        }
-        if (topicLengthMax == 0) {
-            topicLengthLabel.setText(topicText.getText().length() + " characters");
-        } else {
-            topicLengthLabel.setText(topicLengthMax - topicText.getText().length()
-                    + " of " + topicLengthMax + " available");
-        }
-    }
-    
-    /**
-     * Handles key pressed events in the dialog.
-     *
-     * @param keyEvent Key typed KeyEvent
-     */
-    public void keyPressed(final KeyEvent keyEvent) {
-        if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER && keyEvent.getSource() == topicText) {
-            keyEvent.consume();
-            setChangedBooleanModes();
-            setChangedTopic();
-            setVisible(false);
-        }
-    }
-    
-    /** {@inheritDoc}. */
-    public void keyReleased(final KeyEvent keyEvent) {
-        //ignore, unused.
-    }
-    
 }
