@@ -57,7 +57,7 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Parent settings panel. */
     private final SettingsPanel parent;
@@ -90,6 +90,14 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
         checkBoxes = new HashMap<String, JCheckBox>();
         colours = new HashMap<String, ColourChooser>();
         spinners = new HashMap<String, JSpinner>();
+    }
+    
+    protected void clearOptions() {
+        textFields.clear();
+        checkBoxes.clear();
+        colours.clear();
+        spinners.clear();
+        populateCurrentSettings();
     }
     
     /**
@@ -226,7 +234,7 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
     
     
     /** Populates the current settings. */
-    private void populateCurrentSettings() {
+    protected void populateCurrentSettings() {
         setVisible(false);
         
         setLayout(new SpringLayout());

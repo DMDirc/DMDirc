@@ -24,13 +24,11 @@ package com.dmdirc.ui.components.expandingsettings;
 
 import com.dmdirc.config.Identity;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -41,34 +39,37 @@ import javax.swing.UIManager;
  * Settings panel.
  */
 public final class SettingsPanel extends JPanel {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
-    
+    private static final long serialVersionUID = 2;
+
     /** Config manager. */
     private final transient Identity config;
-    
-    /** Valid option types. */
-    public enum OptionType { TEXTFIELD, CHECKBOX, COLOUR, SPINNER, }
+
+/** Valid option types. */
+    public enum OptionType {
+
+        TEXTFIELD, CHECKBOX, COLOUR, SPINNER
+    }
     /** config option -> name. */
     private Map<String, String> names;
     /** config option -> type. */
     private Map<String, OptionType> types;
-    
+
     /** Info label. */
     private JTextArea infoLabel;
-    
+
     /** Current options panel. */
     private CurrentOptionsPanel currentOptionsPanel;
     /** Add option panel. */
     private AddOptionPanel addOptionPanel;
     /** Current options scroll pane. */
     private JScrollPane scrollPane;
-    
+
     /**
      * Creates a new instance of SettingsPanel.
      *
@@ -79,11 +80,11 @@ public final class SettingsPanel extends JPanel {
         super();
         
         this.config = config;
-        
+
         initComponents(infoText);
         layoutComponents();
     }
-    
+
     /**
      * Initialises the components.
      *
@@ -92,57 +93,57 @@ public final class SettingsPanel extends JPanel {
     private void initComponents(final String infoText) {
         names = new LinkedHashMap<String, String>();
         types = new LinkedHashMap<String, OptionType>();
-        
+
         infoLabel = new JTextArea();
         infoLabel.setText(infoText);
         infoLabel.setEditable(false);
         infoLabel.setWrapStyleWord(true);
         infoLabel.setLineWrap(true);
         infoLabel.setBackground(getBackground());
-        
-        addOptionPanel = new AddOptionPanel(this);
-        currentOptionsPanel = new CurrentOptionsPanel(this);
+
+        addOptionPanel =
+                new AddOptionPanel(this);
+        currentOptionsPanel =
+                new CurrentOptionsPanel(this);
         scrollPane = new JScrollPane(currentOptionsPanel);
-        
-        setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-        
-        scrollPane.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(
-                UIManager.getBorder("TextField.border"), "Current settings"),
+
+        setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER));
+
+        scrollPane.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(UIManager.getBorder("TextField.border"),
+                "Current settings"),
                 BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER)));
-        
-        addOptionPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder("Add new setting"),
+
+        addOptionPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder("Add new setting"),
                 BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER)));
     }
-    
+
     /** Lays out the components. */
     private void layoutComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
-        
+
         setLayout(new GridBagLayout());
-        
+
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.weightx = 1.0;
         constraints.weighty = 0.0;
-        constraints.fill = constraints.HORIZONTAL;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
         add(infoLabel, constraints);
-        
+
         constraints.gridy = 1;
         constraints.weighty = 1.0;
-        constraints.fill = constraints.BOTH;
+        constraints.fill = GridBagConstraints.BOTH;
         add(scrollPane, constraints);
-        
+
         constraints.gridy = 2;
         constraints.weighty = 0.0;
-        constraints.fill = constraints.HORIZONTAL;
+        constraints.fill = GridBagConstraints.HORIZONTAL;
         add(addOptionPanel, constraints);
     }
-    
+
     /**
      * Adds an option to the settings panel.
      *
@@ -150,26 +151,45 @@ public final class SettingsPanel extends JPanel {
      * @param displayName Display name
      * @param type Option type
      */
-    public void addOption(final String optionName, final String displayName,
+    public void addOption(final String optionName,
+            final String displayName,
             final OptionType type) {
         final String[] splitOption = optionName.split("\\.");
-        
+
         names.put(optionName, displayName);
         types.put(optionName, type);
-        
+
         if (config.hasOption(splitOption[0], splitOption[1])) {
-            addCurrentOption(optionName, type, 
+            addCurrentOption(optionName, type,
                     config.getOption(splitOption[0], splitOption[1]));
         } else {
             addAddableOption(optionName);
         }
     }
-    
+
+    /** Updates the options. */
+    public void update() {
+        addOptionPanel.clearOptions();
+        currentOptionsPanel.clearOptions();
+        
+        for (Entry<String, OptionType> entry : types.entrySet()) {
+            final String[] splitOption = entry.getKey().split("\\.");
+
+            if (config.hasOption(splitOption[0], splitOption[1])) {
+                addCurrentOption(entry.getKey(), entry.getValue(),
+                        config.getOption(splitOption[0], splitOption[1]));
+            } else {
+                addAddableOption(entry.getKey());
+            }
+        }
+    }
+
     /** Saves the options to the config. */
     public void save() {
         for (Entry<String, OptionType> entry : types.entrySet()) {
-            final String value = currentOptionsPanel.getOption(
-                    entry.getKey(), entry.getValue());
+            final String value =
+                    currentOptionsPanel.getOption(entry.getKey(),
+                    entry.getValue());
             final String[] splitOption = entry.getKey().split("\\.");
             if ("".equals(value)) {
                 config.unsetOption(splitOption[0], splitOption[1]);
@@ -178,7 +198,7 @@ public final class SettingsPanel extends JPanel {
             }
         }
     }
-    
+
     /**
      * Adds a current option.
      *
@@ -186,11 +206,11 @@ public final class SettingsPanel extends JPanel {
      * @param type Option type
      * @param value Option value
      */
-    protected void addCurrentOption(final String optionName, final OptionType type,
-            final String value) {
+    protected void addCurrentOption(final String optionName,
+            final OptionType type, final String value) {
         currentOptionsPanel.addOption(optionName, type, value);
     }
-    
+
     /**
      * Deletes a current option.
      *
@@ -201,7 +221,7 @@ public final class SettingsPanel extends JPanel {
             final OptionType type) {
         currentOptionsPanel.delOption(optionName, type);
     }
-    
+
     /**
      * Adds an addable option.
      *
@@ -210,7 +230,7 @@ public final class SettingsPanel extends JPanel {
     protected void addAddableOption(final String optionName) {
         addOptionPanel.addOption(optionName);
     }
-    
+
     /**
      * Returns the display name for a config option.
      *
@@ -221,7 +241,7 @@ public final class SettingsPanel extends JPanel {
     protected String getOptionName(final String optionName) {
         return names.get(optionName);
     }
-    
+
     /**
      * Returns the option type for a config option.
      *
@@ -232,5 +252,4 @@ public final class SettingsPanel extends JPanel {
     protected OptionType getOptionType(final String optionName) {
         return types.get(optionName);
     }
-    
 }

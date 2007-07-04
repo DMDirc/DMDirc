@@ -53,7 +53,7 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Parent settings panel. */
     private final SettingsPanel parent;
@@ -169,6 +169,13 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
             addOptionComboBox.setEnabled(false);
             addOptionButton.setEnabled(false);
         }
+    }
+    
+    /** Clears the options. */
+    protected void clearOptions() {
+        addOptionComboBox.removeAllItems();
+        addInputCurrent = addInputNone;
+        layoutComponents();
     }
     
     /**

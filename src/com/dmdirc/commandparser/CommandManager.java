@@ -33,6 +33,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -331,8 +332,10 @@ public final class CommandManager {
             initLists();
         }
         
-        for (Command com : serverCommands) {
-            parser.registerCommand(com);
+        final Iterator<Command> it = serverCommands.iterator();
+        
+        while (it.hasNext()) {
+            parser.registerCommand(it.next());
         }
         
         serverParsers.add(parser);
@@ -619,9 +622,10 @@ public final class CommandManager {
         }
         
         final List<String> res = new ArrayList<String>();
+        final Iterator<Command> it = source.iterator();
         
-        for (Command command : source) {
-            res.add(Config.getCommandChar() + command.getName());
+        while (it.hasNext()) {
+            res.add(Config.getCommandChar() + it.next().getName());
         }
         
         return res;
