@@ -526,9 +526,10 @@ public abstract class InputFrame extends Frame implements InputWindow,
         return newLine.split("\n");
     }
     
-    /** {@override} */
+    /** {@inheritDoc} */
     @Override
-    public void configChanged(String domain, String key, String oldValue, String newValue) {
+    public void configChanged(final String domain, final String key, 
+            final String oldValue, final String newValue) {
         super.configChanged(domain, key, oldValue, newValue);
         
         if ("ui".equals(domain)) {

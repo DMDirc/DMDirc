@@ -23,7 +23,6 @@
 package com.dmdirc.ui.dialogs;
 
 import com.dmdirc.config.Identity;
-import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;

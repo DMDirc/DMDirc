@@ -22,9 +22,9 @@
 
 package com.dmdirc.ui.dialogs.channelsetting;
 
-import com.dmdirc.logger.Logger;
 import com.dmdirc.Channel;
 import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
@@ -43,7 +43,7 @@ import javax.swing.JTextArea;
 /**
  * Topic panel.
  */
-public class TopicModesPane extends JPanel implements KeyListener {
+public final class TopicModesPane extends JPanel implements KeyListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -53,10 +53,10 @@ public class TopicModesPane extends JPanel implements KeyListener {
     private static final long serialVersionUID = 1;
 
     /** Parent channel. */
-    private Channel channel;
+    private final Channel channel;
 
     /** Parent dialog. */
-    private ChannelSettingsDialog parent;
+    private final ChannelSettingsDialog parent;
 
     /**
      * the maximum length allowed for a topic.
@@ -81,6 +81,7 @@ public class TopicModesPane extends JPanel implements KeyListener {
      */
     public TopicModesPane(final Channel channel,
             final ChannelSettingsDialog parent) {
+        super();
 
         this.channel = channel;
         this.parent = parent;
@@ -147,12 +148,12 @@ public class TopicModesPane extends JPanel implements KeyListener {
         if (topicLengthMax == 0) {
             topicLengthLabel.setText(topicText.getText().length() + " characters");
         } else {
-            topicLengthLabel.setText(topicLengthMax -
-                    topicText.getText().length() + " of " + topicLengthMax +
-                    " available");
+            topicLengthLabel.setText(topicLengthMax 
+                    - topicText.getText().length() + " of " + topicLengthMax 
+                    + " available");
         }
         
-        constraints.gridy =2;
+        constraints.gridy = 2;
         add(topicLengthLabel, constraints);
         
         topicWho.setSize(30, 0);
@@ -160,10 +161,10 @@ public class TopicModesPane extends JPanel implements KeyListener {
         if ("".equals(topic)) {
             topicWho.setText("No topic set.");
         } else {
-            topicWho.setText("<html>Set by " +
-                    channel.getChannelInfo().getTopicUser() + "<br> on " +
-                    new Date(1000 * channel.getChannelInfo().getTopicTime()) +
-                    "</html>");
+            topicWho.setText("<html>Set by " 
+                    + channel.getChannelInfo().getTopicUser() + "<br> on " 
+                    + new Date(1000 * channel.getChannelInfo().getTopicTime()) 
+                    + "</html>");
         }
         
         constraints.fill = GridBagConstraints.BOTH;
@@ -176,40 +177,37 @@ public class TopicModesPane extends JPanel implements KeyListener {
     protected void setChangedTopic() {
         if (!channel.getChannelInfo().getTopic().equals(topicText.getText())) {
             channel.getServer().getParser().
-                    sendLine("TOPIC " + channel.getChannelInfo().getName() + "" +
-                    " :" + topicText.getText());
+                    sendLine("TOPIC " + channel.getChannelInfo().getName() + "" 
+                    + " :" + topicText.getText());
         }
     }
 
     /** {@inheritDoc}. */
-    @Override
     public void keyTyped(final KeyEvent keyEvent) {
-        if (topicText.getText().length() >= topicLengthMax && topicLengthMax != 0 &&
-                (keyEvent.getKeyCode() != KeyEvent.VK_BACK_SPACE &&
-                keyEvent.getKeyCode() != KeyEvent.VK_DELETE)) {
+        if (topicText.getText().length() >= topicLengthMax && topicLengthMax != 0 
+                && (keyEvent.getKeyCode() != KeyEvent.VK_BACK_SPACE 
+                && keyEvent.getKeyCode() != KeyEvent.VK_DELETE)) {
             keyEvent.consume();
         }
         if (topicLengthMax == 0) {
             topicLengthLabel.setText(topicText.getText().length() + " characters");
         } else {
-            topicLengthLabel.setText((topicLengthMax -
-                    topicText.getText().length()) + " of " + topicLengthMax +
-                    " available");
+            topicLengthLabel.setText((topicLengthMax 
+                    - topicText.getText().length()) + " of " + topicLengthMax 
+                    + " available");
         }
     }
 
     /** {@inheritDoc}. */
-    @Override
     public void keyPressed(final KeyEvent keyEvent) {
-        if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER &&
-                keyEvent.getSource() == topicText) {
+        if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER 
+                && keyEvent.getSource() == topicText) {
             keyEvent.consume();
             parent.save();
         }
     }
 
     /** {@inheritDoc}. */
-    @Override
     public void keyReleased(final KeyEvent keyEvent) {
         //ignore, unused.
     }

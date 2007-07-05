@@ -24,11 +24,13 @@ package com.dmdirc.ui.components.expandingsettings;
 
 import com.dmdirc.config.Identity;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -52,8 +54,14 @@ public final class SettingsPanel extends JPanel {
 
 /** Valid option types. */
     public enum OptionType {
-
-        TEXTFIELD, CHECKBOX, COLOUR, SPINNER
+        /** Text field. */
+        TEXTFIELD, 
+        /** Check box. */
+        CHECKBOX, 
+        /** Colour chooser. */
+        COLOUR, 
+        /** Number spinner. */
+        SPINNER
     }
     /** config option -> name. */
     private Map<String, String> names;

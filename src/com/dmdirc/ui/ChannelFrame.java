@@ -374,9 +374,10 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
         return suceeded;
     }
     
-    /** {@override} */
+    /** {@inheritDoc} */
     @Override
-    public void configChanged(String domain, String key, String oldValue, String newValue) {
+    public void configChanged(final String domain, final String key, 
+            final String oldValue, final String newValue) {
         super.configChanged(domain, key, oldValue, newValue);
         
         if ("ui".equals(domain)) {

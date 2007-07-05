@@ -31,15 +31,15 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Hashtable;
 import java.util.Map;
-import javax.swing.BorderFactory;
 
+import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 
 /**
  * Non list mode panel.
  */
-public class ChannelModesPane extends JPanel {
+public final class ChannelModesPane extends JPanel {
     
     /**
      * A version number for this class. It should be changed whenever the class

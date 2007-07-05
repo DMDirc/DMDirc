@@ -33,8 +33,8 @@ import java.awt.font.TextAttribute;
 import java.text.AttributedString;
 import java.util.Enumeration;
 import java.util.Locale;
-import javax.swing.UIManager;
 
+import javax.swing.UIManager;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;

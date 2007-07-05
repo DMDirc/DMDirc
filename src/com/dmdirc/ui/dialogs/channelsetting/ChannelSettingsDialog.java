@@ -30,6 +30,7 @@ import com.dmdirc.ui.components.StandardDialog;
 import com.dmdirc.ui.components.expandingsettings.SettingsPanel;
 import com.dmdirc.ui.components.expandingsettings.SettingsPanel.OptionType;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -37,6 +38,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -228,9 +230,8 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
     private void initSettingsPanel() {
         channelSettingsPane =
                 new SettingsPanel(identity,
-                "These settings are " +
-                "specific to this channel on this network, any settings " +
-                "specified here will overwrite global settings");
+                "These settings are specific to this channel on this network, " 
+                + "any settings specified here will overwrite global settings");
 
         channelSettingsPane.addOption("channel.splitusermodes",
                 "Split user modes", OptionType.CHECKBOX);

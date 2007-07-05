@@ -92,6 +92,7 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
         spinners = new HashMap<String, JSpinner>();
     }
     
+    /** Clears all the current options. */
     protected void clearOptions() {
         textFields.clear();
         checkBoxes.clear();

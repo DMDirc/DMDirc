@@ -73,6 +73,9 @@ public final class MainFrameManager implements FrameManager, Serializable {
      * Reads the object from the stream. 
      *
      * @param stream Stream to read the object from
+     *
+     * @throws IOException on error reading object
+     * @throws ClassNotFoundException on error loading object class
      */
     private void readObject(final ObjectInputStream stream)
     throws IOException, ClassNotFoundException {
