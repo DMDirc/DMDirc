@@ -125,7 +125,13 @@ public final class IdentityManager {
     /** Loads the config identity. */
     private static void loadConfig() {
         try {
-            config = new Identity(new File(Config.getConfigFile()), true);
+            final File file = new File(Config.getConfigFile());
+            
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            
+            config = new Identity(file, true);
             addIdentity(config);
         } catch (InvalidIdentityFileException ex) {
             // This shouldn't happen as we're forcing it to global
