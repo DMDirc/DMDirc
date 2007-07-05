@@ -275,6 +275,17 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addCheckboxOption(tabName, "ui.showinlist",
                 "Show colours in nick list: ", "Show nickname colours in the nicklist",
                 Config.getOptionBool("ui", "shownickcoloursinnicklist"));
+        preferencesPanel.addComboboxOption(tabName, "ui.framemanager",
+                "Frame manager: ", "Which frame manager should be used",
+                new String[]{"treeview", "buttonbar", },
+                Config.getOption("ui", "framemanager", "treeview"), false);
+        preferencesPanel.addComboboxOption(tabName, "ui.framemanagerPosition",
+                "Frame manager position: ", "Where should the frame manager be positioned",
+                new String[]{"top", "bottom", "left", "right"},
+                Config.getOption("ui", "framemanagerPosition", "left"), false);
+        preferencesPanel.addCheckboxOption(tabName, "ui.stylelinks",
+                "Style links: ", "Style links in the textpane",
+                Config.getOptionBool("ui", "stylelinks"));
     }
     
     /**
@@ -339,6 +350,19 @@ public final class PreferencesDialog implements PreferencesInterface {
         preferencesPanel.addCheckboxOption(tabName, "treeview.sortservers",
                 "Sort servers: ", "Sort servers in the treeview",
                 Config.getOptionBool("treeview", "sortservers"));
+        preferencesPanel.addCheckboxOption(tabName, "ui.treeviewActiveBold",
+                "Active node bold: ", "Show the active node in bold",
+                Config.getOptionBool("ui", "treeviewActiveBold"));
+        preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewActiveForeground",
+                "Active node foreground: ", "Foreground colour of the active node",
+                Config.getOption("treeview", "treeviewActiveForeground",
+                Config.getOption("treeview", "foregroundcolour", "")),
+                false, true, true);
+        preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewActiveBackground",
+                "Active node background: ", "Background colour of the active node",
+                Config.getOption("treeview", "treeviewActiveBackground",
+                Config.getOption("treeview", "backgroundcolour", "")),
+                false, true, true);
     }
     
     /**

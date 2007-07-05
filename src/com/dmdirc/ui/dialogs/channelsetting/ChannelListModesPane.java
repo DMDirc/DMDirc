@@ -29,6 +29,7 @@ import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -43,7 +44,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.UIManager;
 
 /**
  * List modes panel.
@@ -186,6 +186,7 @@ public class ChannelListModesPane extends JPanel implements ActionListener {
         add(addListModeButton, constraints);
 
         constraints.gridx = 2;
+        constraints.insets = new Insets(0, SMALL_BORDER, 0, 0);
         add(removeListModeButton, constraints);
 
         update();

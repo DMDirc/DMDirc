@@ -234,6 +234,14 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
 
         channelSettingsPane.addOption("channel.splitusermodes",
                 "Split user modes", OptionType.CHECKBOX);
+        channelSettingsPane.addOption("channel.sendwho", "Send channel WHOs",
+                OptionType.CHECKBOX);
+        channelSettingsPane.addOption("channel.showmodeprefix", "Show mode prefixes",
+                OptionType.CHECKBOX);
+        channelSettingsPane.addOption("ui.shownickcoloursinnicklist", 
+                "Show colours in nicklist", OptionType.CHECKBOX);
+        channelSettingsPane.addOption("ui.shownickcoloursintext", 
+                "Show colours in textpane", OptionType.CHECKBOX);
         channelSettingsPane.addOption("general.cyclemessage", "Cycle message",
                 OptionType.TEXTFIELD);
         channelSettingsPane.addOption("general.kickmessage", "Kick message",
@@ -248,6 +256,14 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
                 OptionType.SPINNER);
         channelSettingsPane.addOption("ui.inputbuffersize", "Input buffer size",
                 OptionType.SPINNER);
+        channelSettingsPane.addOption("ui.inputbackgroundcolour", 
+                "Inputfield background colour", OptionType.COLOUR);
+        channelSettingsPane.addOption("ui.inputforegroundcolour", 
+                "Inputfield foreground colour", OptionType.COLOUR);
+        channelSettingsPane.addOption("ui.nicklistbackgroundcolour", 
+                "Nicklist background colour", OptionType.COLOUR);
+        channelSettingsPane.addOption("ui.nicklistforegroundcolour", 
+                "Nicklist foreground colour", OptionType.COLOUR);
     }
 
     /** Initialises listeners for this dialog. */

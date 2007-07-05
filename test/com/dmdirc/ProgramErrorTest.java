@@ -54,8 +54,8 @@ public class ProgramErrorTest extends TestCase {
     
     public void testGetDate() {
         final ProgramError inst = new ProgramError(level, message, trace, date);
-        assertTrue("Date check after failed.", inst.getDate().after(new Date(date.getTime() - 1000)));
-        assertTrue("Date check before failed.", inst.getDate().before(new Date(date.getTime() + 1000)));
+        assertTrue("Date check after failed.", inst.getDate().after(new Date(date.getTime() - 1)));
+        assertTrue("Date check before failed.", inst.getDate().before(new Date(date.getTime() + 1)));
     }
     
     public void testGetStatus() {
