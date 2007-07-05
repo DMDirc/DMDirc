@@ -124,8 +124,8 @@ public final class Logger {
             
             trace[0] = exception.toString();
             
-            for (int i = 1; i < traceElements.length; i++) {
-                trace[i] = traceElements[i].toString();
+            for (int i = 0; i < traceElements.length; i++) {
+                trace[i + 1] = traceElements[i].toString();
             }
         }
         
