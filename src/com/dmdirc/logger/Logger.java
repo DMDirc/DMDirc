@@ -171,7 +171,8 @@ public final class Logger {
             }
         }
         
-        final File errorFile = new File(errorDir, "" + error.getLevel() + "-" + error.getDate());
+        final File errorFile = new File(errorDir, "" + error.getLevel() + "-" 
+                + error.getDate().getTime() + ".log");
         
         if (errorFile.exists()) {
             boolean rename = false;
@@ -182,14 +183,16 @@ public final class Logger {
         try {
             errorFile.createNewFile();
         } catch (IOException ex) {
-            System.err.println("Error creating new file: " + ex);
+            System.err.println("Error creating new file: ");
+            ex.printStackTrace(System.err);
             return new NullOutputStream();
         }
         
         try {
             return new FileOutputStream(errorFile);
         } catch (FileNotFoundException ex) {
-            System.err.println("Error creating new stream: " + ex);
+            System.err.println("Error creating new stream: ");
+            ex.printStackTrace(System.err);
             return new NullOutputStream();
         }
     }
