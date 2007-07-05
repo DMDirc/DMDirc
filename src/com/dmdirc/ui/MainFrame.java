@@ -62,8 +62,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.AbstractAction;
@@ -768,13 +768,13 @@ public final class MainFrame extends JFrame implements WindowListener,
         windowsMenu.addSeparator();
         
         int i = 0;
-        final Collection<JMenuItem> windowsValues = windows.values();
-        for (JMenuItem mi : windowsValues) {
+        final Iterator<JMenuItem> it = windows.values().iterator();
+        while (it.hasNext()) {
             if (i > 34) {
                 windowsMenu.add(new JMenuItem("..."));
                 break;
             }
-            windowsMenu.add(mi);
+            windowsMenu.add(it.next());
             i++;
         }
     }
