@@ -29,8 +29,8 @@ import com.dmdirc.parser.callbacks.CallbackNotFound;
 import com.dmdirc.parser.callbacks.interfaces.IDataIn;
 import com.dmdirc.parser.callbacks.interfaces.IDataOut;
 import com.dmdirc.ui.CustomInputFrame;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.io.Serializable;
 

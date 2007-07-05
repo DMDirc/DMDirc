@@ -32,13 +32,6 @@ import java.io.Serializable;
  */
 public final class ConfigTarget implements Comparable, Serializable {
     
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = 1;
-    
     /** Indicates that the target is the global default config. */
     public static final int TYPE_GLOBALDEFAULT = 0;
     /** Indicates that the target is a global config source. */
@@ -51,6 +44,13 @@ public final class ConfigTarget implements Comparable, Serializable {
     public static final int TYPE_SERVER = 4;
     /** Indicates that the target targets a channel. */
     public static final int TYPE_CHANNEL = 5;
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /** The type of this target. */
     private int type = 1;

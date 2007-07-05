@@ -23,8 +23,8 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Config;
-import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 

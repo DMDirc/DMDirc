@@ -193,7 +193,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     }
     
     /**
-     * Returns the name of all known options
+     * Returns the name of all known options.
      *
      * @return A list of options
      */

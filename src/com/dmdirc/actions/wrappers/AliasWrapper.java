@@ -30,7 +30,7 @@ import com.dmdirc.actions.ActionManager;
  * 
  * @author chris
  */
-public class AliasWrapper implements ActionWrapper {
+public final class AliasWrapper implements ActionWrapper {
     
     /** Singleton instance of the alias wrapper. */
     private static AliasWrapper me;
@@ -57,12 +57,12 @@ public class AliasWrapper implements ActionWrapper {
     }
     
     /** {@inheritDoc} */
-    public void registerAction(Action action) {
+    public void registerAction(final Action action) {
         System.out.println("Registered action: " + action.getName());
     }
     
     /** {@inheritDoc} */
-    public void unregisterAction(Action action) {
+    public void unregisterAction(final Action action) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

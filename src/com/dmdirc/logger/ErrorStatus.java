@@ -38,6 +38,11 @@ public enum ErrorStatus {
     /** toString value of the item. */
     private String value;
     
+    /** 
+     * Instantiates the enum. 
+     *
+     * @param value toString value
+     */
     ErrorStatus(final String value) {
         this.value = value;
     }

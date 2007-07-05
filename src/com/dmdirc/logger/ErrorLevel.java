@@ -38,6 +38,11 @@ public enum ErrorLevel {
     /** toString value of the item. */
     private String value;
     
+    /** 
+     * Instantiates the enum. 
+     *
+     * @param value toString value
+     */
     ErrorLevel(final String value) {
         this.value = value;
     }

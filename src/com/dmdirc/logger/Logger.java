@@ -24,6 +24,7 @@ package com.dmdirc.logger;
 
 import com.dmdirc.Config;
 import com.dmdirc.ui.dialogs.error.FatalErrorDialog;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -74,7 +75,7 @@ public final class Logger {
      *
      * @param level Severity of the error
      * @param message Brief error description
-     * @param error Cause of error
+     * @param exception Cause of error
      * @param sendable Whether the error is sendable
      */
     private static void error(final ErrorLevel level,

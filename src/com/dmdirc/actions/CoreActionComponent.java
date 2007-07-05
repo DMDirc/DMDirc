@@ -30,6 +30,7 @@ import com.dmdirc.parser.ChannelClientInfo;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.GregorianCalendar;
+
 import javax.swing.KeyStroke;
 
 /**

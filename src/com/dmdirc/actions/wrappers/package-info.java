@@ -20,26 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser;
-
-import com.dmdirc.ui.input.AdditionalTabTargets;
-
-import java.util.List;
-
 /**
- * Intelligent commands implement a method that provides a list of possible
- * options for them, for use (for example) by table completers.
- * @author chris
+ * Action wrappers.
  */
-public interface IntelligentCommand {
-
-    /**
-     * Returns a list of suggestions for the specified argument, given the list
-     * of previous arguments.
-     * @param arg The argument that is being completed
-     * @param previousArgs The contents of the previous arguments, if any
-     * @return A list of suggestions for the argument
-     */
-    AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs);
-    
-}
+package com.dmdirc.actions.wrappers;

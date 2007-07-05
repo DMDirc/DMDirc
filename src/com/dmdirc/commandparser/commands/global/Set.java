@@ -172,7 +172,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc} */
-    public AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {

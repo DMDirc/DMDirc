@@ -26,8 +26,8 @@ import com.dmdirc.Channel;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * Opens the channel settings window for the channel.

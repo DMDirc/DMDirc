@@ -34,10 +34,10 @@ import com.dmdirc.parser.callbacks.CallbackNotFound;
 import com.dmdirc.parser.callbacks.interfaces.INickChanged;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.QueryFrame;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.io.Serializable;
 

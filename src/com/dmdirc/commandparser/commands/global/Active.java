@@ -24,11 +24,11 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
-import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
- * The Active command issues a command to the active window
+ * The Active command issues a command to the active window.
  * @author chris
  */
 public final class Active extends GlobalCommand {

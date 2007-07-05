@@ -37,7 +37,7 @@ import java.util.List;
 
 /**
  * The if plugin command allows the user to execute commands based on whether
- * or not a plugin is loaded
+ * or not a plugin is loaded.
  *
  * @author chris
  */
@@ -108,7 +108,7 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
     }
 
     /** {@inheritDoc} */
-    public AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {

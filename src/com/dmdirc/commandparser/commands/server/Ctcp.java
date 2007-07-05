@@ -93,7 +93,7 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
     }
     
     /** {@inheritDoc} */
-    public AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 1) {

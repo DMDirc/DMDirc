@@ -37,6 +37,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
 import javax.swing.event.EventListenerList;
 
 /**
@@ -100,7 +101,7 @@ public final class ErrorManager implements Serializable {
     }
     
     /**
-     * Returns a list of errors
+     * Returns a list of errors.
      *
      * @return Error list
      */
@@ -156,7 +157,7 @@ public final class ErrorManager implements Serializable {
     /**
      * Sends an error to the developers.
      *
-     * @param ProgramError error to be sent
+     * @param error ProgramError to be sent
      */
     @SuppressWarnings("PMD.SystemPrintln")
     private static void sendErrorInternal(final ProgramError error) {
@@ -258,7 +259,7 @@ public final class ErrorManager implements Serializable {
     }
     
     /**
-     * Fired when an error is deleted
+     * Fired when an error is deleted.
      *
      * @param error Error that has been deleted
      */
