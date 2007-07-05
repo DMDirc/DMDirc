@@ -7,7 +7,7 @@
 					checkstyle-actions,
 					checkstyle-core,
 					checkstyle-commandparser,
-					checkstyle-identities,
+					checkstyle-config,
 					checkstyle-logger,
 					checkstyle-parser,
 					checkstyle-plugins,
@@ -83,15 +83,15 @@
 	</target>
 	
 	
-	<target name="checkstyle-identities">
+	<target name="checkstyle-config">
 		<taskdef resource="checkstyletask.properties"
 						 classpath="checkstyle.jar"/>
 		<checkstyle config="checkstyle/dmdirc_checks.xml" failureProperty="checkstyle.failure"
 								failOnViolation="false">
-			<fileset dir="src/com/dmdirc/identities/" includes="**/*.java"/>
-			<formatter type="xml" tofile="reports/report-identities.xml"/>
+			<fileset dir="src/com/dmdirc/config/" includes="**/*.java"/>
+			<formatter type="xml" tofile="reports/report-config.xml"/>
 		</checkstyle>
-		<xslt in="reports/report-identities.xml" out="reports/report-identities.html" style="checkstyle/checkstyle.xsl"/>
+		<xslt in="reports/report-config.xml" out="reports/report-config.html" style="checkstyle/checkstyle.xsl"/>
 	</target>
 	
 	<target name="checkstyle-commandparser">
