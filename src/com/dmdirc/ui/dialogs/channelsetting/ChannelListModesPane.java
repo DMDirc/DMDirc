@@ -44,11 +44,14 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * List modes panel.
  */
-public final class ChannelListModesPane extends JPanel implements ActionListener {
+public final class ChannelListModesPane extends JPanel implements
+        ActionListener, ListSelectionListener  {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -100,6 +103,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
                 new JComboBox(new DefaultComboBoxModel());
         addListModeButton = new JButton("Add");
         removeListModeButton = new JButton("Remove");
+        removeListModeButton.setEnabled(false);
         
         initListModesPanel();
         initListeners();
@@ -151,8 +155,10 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
             
             final JPanel panel =
                     new JPanel(new BorderLayout());
-            panel.add(new JList(new DefaultListModel()),
-                    BorderLayout.CENTER);
+            final JList list = new JList(new DefaultListModel());
+            list.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+            list.addListSelectionListener(this);
+            panel.add(list, BorderLayout.CENTER);
             listModesPanels.add(panel);
         }
         listModesPanel.setViewportView(listModesPanels.get(0));
@@ -250,6 +256,18 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
             addListMode();
         } else if (removeListModeButton.equals(event.getSource())) {
             removeListMode();
+        }
+    }
+
+    /** {@inheritDoc} */
+    public void valueChanged(final ListSelectionEvent event) {
+        if (!event.getValueIsAdjusting()) {
+            final int selected = ((JList) event.getSource()).getSelectedIndex();
+            if (selected == -1) {
+                removeListModeButton.setEnabled(false);
+            } else {
+                removeListModeButton.setEnabled(true);
+            }
         }
     }
 }

@@ -296,6 +296,11 @@ public final class ErrorListDialog extends StandardDialog implements
     private void updateTable() {
         ((DefaultTableModel) table.getModel()).setDataVector(getTableData(),
                 HEADERS);
+        table.getColumnModel().getColumn(0).setPreferredWidth(40);
+        table.getColumnModel().getColumn(1).setPreferredWidth(100);
+        table.getColumnModel().getColumn(2).setPreferredWidth(80);
+        table.getColumnModel().getColumn(3).setPreferredWidth(100);
+        table.getColumnModel().getColumn(4).setPreferredWidth(280);
     }
     
     /** {@inheritDoc} */
