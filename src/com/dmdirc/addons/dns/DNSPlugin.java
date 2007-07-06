@@ -78,6 +78,13 @@ public class DNSPlugin extends Plugin {
         return "DNS plugin";
     }
     
+    /**
+     * Returns the IP(s) for a hostname.
+     *
+     * @param hostname Hostname to resolve.
+     *
+     * @return Resolved IP(s)
+     */
     public static String getIPs(final String hostname) {
         List<String> results = new ArrayList<String>();
         
@@ -95,6 +102,13 @@ public class DNSPlugin extends Plugin {
         return results.toString();
     }
     
+    /**
+     * Returns the hostname for an ip.
+     *
+     * @param ip IP to resolve
+     *
+     * @return Resolved hostname
+     */
     public static String getHostname(final String ip) {
         try {
             return InetAddress.getByName(ip).getHostName();
