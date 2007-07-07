@@ -141,7 +141,7 @@ public final class Styliser {
                 final String target = string.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
                 
                 final SimpleAttributeSet attribs = new SimpleAttributeSet();
-                attribs.addAttribute("DefaultForeground", UIManager.getFont("TextPane.font"));
+                attribs.addAttribute("DefaultFontFamily", UIManager.getFont("TextPane.font"));
                         
                 while (position < target.length()) {
                     final String next = readUntilControl(target.substring(position));
