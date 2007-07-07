@@ -56,6 +56,7 @@ import java.awt.Insets;
 import java.awt.MouseInfo;
 import java.awt.PointerInfo;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -175,7 +176,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         initKeyHooks();
         
         setTitle(getTitlePrefix());
-                
+        
         imageIcon = new ImageIcon(IconManager.getImage("icon"));
         setIconImage(imageIcon.getImage());
         
@@ -767,15 +768,29 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         windowsMenu.addSeparator();
         
-        int i = 0;
         final Iterator<JMenuItem> it = windows.values().iterator();
+        addToMenu(windowsMenu, it, (int) (windowsMenu.getX() + windowsMenu.getPreferredSize().getHeight()
+            + windowsMenu.getPopupMenu().getPreferredSize().getHeight()));
+    }
+    
+    /**
+     * Adds the JMenuItems in the Iterator to the JMenu specified.
+     *
+     * @param menu Menu to add items to
+     * @param it JMenuItem iterator
+     * @param location X Location of the menu on screen
+     */
+    private void addToMenu(final JMenu menu, final Iterator<JMenuItem> it, 
+            final int location) {
         while (it.hasNext()) {
-            if (i > 34) {
-                windowsMenu.add(new JMenuItem("..."));
+            if (location + menu.getPopupMenu().getPreferredSize().getHeight() 
+            > Toolkit.getDefaultToolkit().getScreenSize().getHeight()) {
+                final JMenu subMenu = new JMenu("More ->");
+                menu.add(subMenu);
+                addToMenu(subMenu, it, 0);
                 break;
             }
-            windowsMenu.add(it.next());
-            i++;
+            menu.add(it.next());
         }
     }
     
