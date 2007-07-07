@@ -23,6 +23,8 @@
 package com.dmdirc.actions.wrappers;
 
 import com.dmdirc.actions.Action;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An action wrapper deals with a specific group of actions in order to provide
@@ -30,27 +32,43 @@ import com.dmdirc.actions.Action;
  * 
  * @author chris
  */
-public interface ActionWrapper {
+public abstract class ActionWrapper {
+    
+    /** A list of registered actions. */
+    protected final List<Action> actions = new ArrayList<Action>();
 
     /**
      * Registers the specified action with this manager.
      * 
      * @param action The action to be registered
      */
-    void registerAction(Action action);
+    public void registerAction(Action action) {
+        actions.add(action);
+    }
     
     /**
      * Unregisters the specified action with this manager.
      * 
      * @param action The action to be unregistered
      */
-    void unregisterAction(Action action);
+    public void unregisterAction(Action action) {
+        actions.remove(action);
+    }
+    
+    /**
+     * Retrieves a list of actions registered with this wrapper.
+     * 
+     * @return A list of registered actions
+     */
+    public List<Action> getActions() {
+        return actions;
+    }
     
     /**
      * Retrieve the group name that this wrapper is using.
      * 
      * @return This wrapper's group name
      */
-    String getGroupName();
+    public abstract String getGroupName();
     
 }
