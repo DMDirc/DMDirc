@@ -116,6 +116,14 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
         updateColour(initialColour);
     }
     
+        
+    /** Sets the colour back to white. */
+    public void clearColour() {
+        value = "";
+        previewPanel.setBackground(ColourManager.getColour("ffffff"));
+        previewPanel.setToolTipText("");
+    }
+    
     /**
      * Returns the selected colour from this component.
      * @return This components colour, as a string
@@ -133,8 +141,13 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
      * @param newColour The new colour to use.
      */
     private void updateColour(final String newColour) {
-        previewPanel.setBackground(ColourManager.parseColour(newColour));
-        previewPanel.setToolTipText(newColour);
+        if ("".equals(newColour)) {
+            previewPanel.setBackground(ColourManager.getColour("ffffff"));
+            previewPanel.setToolTipText("");
+        } else {
+            previewPanel.setBackground(ColourManager.parseColour(newColour));
+            previewPanel.setToolTipText(newColour);
+        }
     }
     
     /** {@inheritDoc}. */
