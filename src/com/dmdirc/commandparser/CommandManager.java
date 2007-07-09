@@ -509,6 +509,15 @@ public final class CommandManager {
     }    
     
     /**
+     * Returns a list containing the global commands that have been initialised
+     * by this command manager.
+     * @return An ArrayList of global commands, or null if none have been loaded
+     */
+    public static List<Command> getGlobalCommands() {
+        return globalCommands;
+    }    
+    
+    /**
      * Returns a list containing the server commands that have been initialised
      * by this command manager.
      * @return An ArrayList of server commands, or null if none have been loaded
