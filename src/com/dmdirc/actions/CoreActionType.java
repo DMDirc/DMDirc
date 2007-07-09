@@ -98,6 +98,10 @@ public enum CoreActionType implements ActionType {
     QUERY_SELF_MESSAGE(CoreActionMetaType.QUERY_EVENT_WITH_ARG, "Private message sent"),
     /** Query action sent. */
     QUERY_SELF_ACTION(CoreActionMetaType.QUERY_EVENT_WITH_ARG, "Private action sent"),
+    /** Query quit event. */
+    QUERY_QUIT(CoreActionMetaType.QUERY_EVENT_WITH_ARG, "Query: user quit"), 
+    /** Query nick change. */
+    QUERY_NICKCHANGE(CoreActionMetaType.QUERY_EVENT_WITH_ARG, "Query: user changed nicks"),
     
     /** Channel window opened. */
     CHANNEL_OPENED(CoreActionMetaType.CHANNEL_EVENT, "Channel window opened"),

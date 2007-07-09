@@ -240,6 +240,13 @@ public final class Formatter {
         defaultProperties.setProperty("querySelfAction", colour + "6* %1$s %4$s");
         defaultProperties.setProperty("queryNickChanged", colour + "3* %1$s is now know as %4$s.");
         defaultProperties.setProperty("userModeChanged", colour + "3 %1$s sets user mode: %4$s.");
+        defaultProperties.setProperty("queryQuitReason", colour + "2* %1$s has quit IRC (%4$s).");
+        
+        // Type: Private event
+        //    1: User nickname
+        //    2: User ident
+        //    3: User host
+        defaultProperties.setProperty("queryQuit", colour + "2* %1$s has quit IRC.");
         
         // Type: Outgoing message
         //    1: Target

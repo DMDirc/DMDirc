@@ -34,6 +34,7 @@ import com.dmdirc.parser.callbacks.CallbackNotFound;
 import com.dmdirc.parser.callbacks.interfaces.INickChanged;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
+import com.dmdirc.parser.callbacks.interfaces.IQuit;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.QueryFrame;
 import com.dmdirc.ui.input.TabCompleter;
@@ -48,7 +49,7 @@ import java.io.Serializable;
  * @author chris
  */
 public final class Query extends WritableFrameContainer implements
-        IPrivateAction, IPrivateMessage, INickChanged, Serializable {
+        IPrivateAction, IPrivateMessage, INickChanged, IQuit, Serializable {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -231,6 +232,7 @@ public final class Query extends WritableFrameContainer implements
         try {
             callbackManager.addCallback("onPrivateAction", this, ClientInfo.parseHost(host));
             callbackManager.addCallback("onPrivateMessage", this, ClientInfo.parseHost(host));
+            callbackManager.addCallback("onQuit", this);
             callbackManager.addCallback("onNickChanged", this);
         } catch (CallbackNotFound ex) {
             Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
@@ -253,11 +255,28 @@ public final class Query extends WritableFrameContainer implements
                 Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
             }
             
-            // TODO: Action hook!
-            frame.addLine("queryNickChanged", sOldNick, cClient.getIdent(),
+            final StringBuffer format = new StringBuffer("queryNickChanged");
+            
+            ActionManager.processEvent(CoreActionType.QUERY_NICKCHANGE, format, this, sOldNick);
+            
+            frame.addLine(format, sOldNick, cClient.getIdent(),
                     cClient.getHost(), cClient.getNickname());
             host = cClient.getNickname() + "!" + cClient.getIdent() + "@" + cClient.getHost();
             updateTitle();
+        }
+    }
+    
+    /** {@inheritDoc} */
+    public void onQuit(final IRCParser tParser, final ClientInfo cClient,
+            final String sReason) {
+        if (cClient.getNickname().equals(ClientInfo.parseHost(host))) {
+            final StringBuffer format = new StringBuffer(sReason.isEmpty() ?
+                "queryQuit" : "queryQuitReason");
+            
+            ActionManager.processEvent(CoreActionType.QUERY_QUIT, format, this, sReason);
+            
+            frame.addLine(format, cClient.getNickname(),
+                    cClient.getIdent(), cClient.getHost(), sReason);
         }
     }
     
@@ -277,6 +296,7 @@ public final class Query extends WritableFrameContainer implements
         server.getParser().getCallbackManager().delCallback("onPrivateAction", this);
         server.getParser().getCallbackManager().delCallback("onPrivateMessage", this);
         server.getParser().getCallbackManager().delCallback("onNickChanged", this);
+        server.getParser().getCallbackManager().delCallback("onQuit", this);
         
         ActionManager.processEvent(CoreActionType.QUERY_CLOSED, null, this);
         
@@ -314,4 +334,5 @@ public final class Query extends WritableFrameContainer implements
         
         MainFrame.getMainFrame().setActiveFrame(frame);
     }
+    
 }
