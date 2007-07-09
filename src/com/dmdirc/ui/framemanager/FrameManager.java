@@ -34,6 +34,7 @@ import javax.swing.JComponent;
 /**
  * A frame manager is a widget that allows the user to navigate between the
  * various frames that will be open at any one time.
+ * 
  * @author chris
  */
 public interface FrameManager {
@@ -41,6 +42,7 @@ public interface FrameManager {
     /**
      * Sets the parent component of this frame manager. The frame manager
      * should render itself within the parent.
+     * 
      * @param parent The parent control
      */
     void setParent(JComponent parent);
@@ -48,6 +50,7 @@ public interface FrameManager {
     /**
      * Indicates whether this frame manager can be positioned vertically
      * (i.e., at the side of the screen).
+     * 
      * @return True iff the frame manager can be positioned vertically
      */
     boolean canPositionVertically();
@@ -55,12 +58,14 @@ public interface FrameManager {
     /**
      * Indicates whether this frame manager can be positioned horizontally
      * (i.e., at the top or bottom of the screen).
+     * 
      * @return True iff the frame manager can be positioned horizontally
      */
     boolean canPositionHorizontally();
     
     /**
      * Indicates that there is a new active frame.
+     * 
      * @param source The object that now has focus
      */
     void setSelected(FrameContainer source);
@@ -68,6 +73,7 @@ public interface FrameManager {
     /**
      * Shows an event notification to the user by colouring the corresponding
      * element to the source a specific colour.
+     * 
      * @param source The object requesting notification
      * @param colour The colour that should be used to indicate the notification
      */
@@ -75,24 +81,28 @@ public interface FrameManager {
     
     /**
      * Removes the notification status of the specified object.
+     * 
      * @param source The object whose notification should be cleared
      */
     void clearNotification(FrameContainer source);
     
     /**
      * Adds a new server instance to this frame manager.
+     * 
      * @param server The server to be added
      */
     void addServer(Server server);
     
     /**
      * Removes a server instance from this frame manager.
+     * 
      * @param server The server to be removed
      */
     void delServer(Server server);
     
     /**
      * Adds a new channel instance to this frame manager.
+     * 
      * @param server The server to which the channel belongs
      * @param channel The channel to be added
      */
@@ -100,6 +110,7 @@ public interface FrameManager {
     
     /**
      * Removes a channel instance from this frame manager.
+     * 
      * @param server The server to which the channel belongs
      * @param channel The channel to be removed
      */
@@ -107,6 +118,7 @@ public interface FrameManager {
     
     /**
      * Adds a new query instance to this frame manager.
+     * 
      * @param server The server to which the query belongs
      * @param query The query to be added
      */
@@ -114,6 +126,7 @@ public interface FrameManager {
     
     /**
      * Removes a query instance from this frame manager.
+     * 
      * @param server The server to which the query belongs
      * @param query The query to be removed
      */
@@ -121,6 +134,7 @@ public interface FrameManager {
     
     /**
      * Adds a new custom window to this frame manager.
+     * 
      * @param server The server to which the window belongs, or null
      * @param window The custom window to be added
      */
@@ -128,9 +142,17 @@ public interface FrameManager {
     
     /**
      * Removes a custom window from this frame manager.
+     * 
      * @param server The server to which the window belongs, or null
      * @param window The custom window to be removed
      */
     void delCustom(Server server, FrameContainer window);
     
+    /**
+     * Informs the frame manager that the specified window has had its icon
+     * updated.
+     * 
+     * @param window The window that was updated
+     */
+    void iconUpdated(FrameContainer window);
 }

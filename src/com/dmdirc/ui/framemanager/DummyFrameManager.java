@@ -123,4 +123,10 @@ public final class DummyFrameManager implements FrameManager {
         MainFrame.getMainFrame().getStatusBar()
                 .setMessage("DummyFrameManager: Now focused: " + source);
     }
+
+    /** {@inheritDoc} */
+    public void iconUpdated(final FrameContainer window) {
+        MainFrame.getMainFrame().getStatusBar()
+                .setMessage("DummyFrameManager: Icon changed: " + window);
+    }
 }

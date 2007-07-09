@@ -227,6 +227,7 @@ public final class Server extends WritableFrameContainer implements
         icon = IconManager.getIcon(ssl ? "secure-server" : "server");
         
         window.setFrameIcon(icon);
+        MainFrame.getMainFrame().getFrameManager().iconUpdated(this);
         
         window.addLine("serverConnecting", server, port);
         

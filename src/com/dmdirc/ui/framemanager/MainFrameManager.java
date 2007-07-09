@@ -170,6 +170,12 @@ public final class MainFrameManager implements FrameManager, Serializable {
         windowMenuFrameManager.delCustom(server, window);
     }
     
+    /** {@inheritDoc} */
+    public void iconUpdated(final FrameContainer window) {
+        frameManager.iconUpdated(window);
+        windowMenuFrameManager.iconUpdated(window);
+    }    
+    
     /**
      * Returns the active frame manager.
      *

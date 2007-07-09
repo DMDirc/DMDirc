@@ -280,6 +280,11 @@ public final class ButtonBar implements FrameManager, ActionListener,
         relayout();
     }
     
+    /** {@inheritDoc} */
+    public void iconUpdated(final FrameContainer window) {
+        buttons.get(window).setIcon(window.getIcon());
+    }    
+    
     /**
      * Called when the user clicks on one of the buttons.
      *

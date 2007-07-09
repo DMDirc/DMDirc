@@ -45,7 +45,7 @@ import javax.swing.JMenuItem;
 /**
  * Manages the window menu window list.
  */
-public final class WindowMenuFrameManager implements FrameManager, 
+public final class WindowMenuFrameManager implements FrameManager,
         ActionListener, Serializable {
     
     /**
@@ -141,6 +141,11 @@ public final class WindowMenuFrameManager implements FrameManager,
     /** {@inheritDoc} */
     public void delCustom(final Server server, final FrameContainer window) {
         removeFramecontainer(window);
+    }
+    
+    /** {@inheritDoc} */
+    public void iconUpdated(final FrameContainer window) {
+        // TODO: Implement
     }
     
     /**

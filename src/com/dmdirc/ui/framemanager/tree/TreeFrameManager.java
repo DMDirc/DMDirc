@@ -354,6 +354,11 @@ public final class TreeFrameManager implements FrameManager,
         }
     }
     
+    /** {@inheritDoc} */
+    public void iconUpdated(final FrameContainer window) {
+        // Do nothing
+    }
+    
     /**
      * Returns the maximum size a node can be without causing scrolling.
      *
@@ -628,4 +633,5 @@ public final class TreeFrameManager implements FrameManager,
         
         return nextNode;
     }
+
 }
