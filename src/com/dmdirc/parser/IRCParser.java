@@ -869,6 +869,7 @@ public final class IRCParser implements Runnable {
 	 * @param sInputString String to uppercase
 	 */
 	public boolean equalsIgnoreCase(final String first, final String second) {
+		if (first == null && second == null) { return true; }
 		if (first == null || second == null) { return false; }
 		boolean result = (first.length() == second.length());
 		if (result) {
