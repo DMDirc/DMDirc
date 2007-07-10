@@ -502,6 +502,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
             if (parent.getNumLines(clipboard) > pasteTrigger) {
                 //show the multi line paste dialog
                 new PasteDialog(this, clipboard).setVisible(true);
+                inputField.setText("");
             } else {
                 //send the lines
                 for (String clipboardLine : clipboardLines) {

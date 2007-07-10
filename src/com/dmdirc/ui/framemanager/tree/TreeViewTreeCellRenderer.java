@@ -35,43 +35,44 @@ import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
+import javax.swing.JLabel;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeCellRenderer;
 
 /**
  * Displays a node in a tree according to its type.
  */
-public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
-    
+public class TreeViewTreeCellRenderer extends JLabel implements 
+        TreeCellRenderer {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
-    
-    /**
-     * The default icon to use for unknown frames.
-     */
+    private static final long serialVersionUID = 2;
+
+    /** The default icon to use for unknown frames. */
     private final Icon defaultIcon;
-    
+
     /** Parent frame manager. */
     private final TreeFrameManager manager;
-    
+
     /**
      * Creates a new instance of TreeViewTreeCellRenderer.
      *
      * @param manager Parent TreeFrameManager
      */
     public TreeViewTreeCellRenderer(final TreeFrameManager manager) {
-        super();
         this.manager = manager;
         defaultIcon = IconManager.getIcon("icon");
     }
-    
+
     /**
      * Configures the renderer based on the passed parameters.
+     * 
      * @param tree JTree for this renderer.
      * @param value node to be renderered.
      * @param sel whether the node is selected.
@@ -79,49 +80,49 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
      * @param leaf whether the node is a leaf.
      * @param row the node's row.
      * @param hasFocus whether the node has focus.
+     * 
      * @return RendererComponent for this node.
      */
-    public final Component getTreeCellRendererComponent(final JTree tree,
-            final Object value, final boolean sel, final boolean expanded,
+    public final Component getTreeCellRendererComponent(final JTree tree, 
+            final Object value, final boolean sel, final boolean expanded, 
             final boolean leaf, final int row, final boolean hasFocus) {
-        
-        super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf,
-                row, hasFocus);
-        
+
         final DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-        
+
+        setText(node.toString());
+
         setBackground(tree.getBackground());
         setOpaque(true);
         setToolTipText(null);
         setBorder(BorderFactory.createEmptyBorder(1, 0, 2, 0));
         setForeground(tree.getForeground());
-        
-        /*final int indent = (UIManager.getInt("Tree.leftChildIndent")
-        + UIManager.getInt("Tree.rightChildIndent")) * (node.getLevel() - 1);
-        setPreferredSize(new Dimension(manager.getNodeWidth() - indent,
-                getFont().getSize() + SMALL_BORDER));*/
-        setPreferredSize(new Dimension(100000, getFont().getSize() + SMALL_BORDER));
+
+        setPreferredSize(new Dimension(100000, getFont().getSize() 
+                + SMALL_BORDER));
+
         if (manager.getRollover() == value) {
             final Color fallback = ColourManager.getColour("b8d6e6");
-            setBackground(Config.getOptionColor("ui", "treeviewRolloverColour",
-                    fallback));
+            setBackground(Config.getOptionColor("ui", 
+                    "treeviewRolloverColour", fallback));
         }
-        
+
         final Object nodeObject = node.getUserObject();
-        
+
         if (nodeObject.equals(manager.getSelected())) {
-            if (Config.hasOption("ui", "treeviewActiveBold")
-            && Config.getOptionBool("ui", "treeviewActiveBold")) {
+            if (Config.hasOption("ui", "treeviewActiveBold") 
+                    && Config.getOptionBool("ui", "treeviewActiveBold")) {
                 setFont(getFont().deriveFont(Font.BOLD));
             }
-            setBackground(Config.getOptionColor("ui", "treeviewActiveBackground", tree.getBackground()));
-            setForeground(Config.getOptionColor("ui", "treeviewActiveForeground", tree.getForeground()));
+            setBackground(Config.getOptionColor("ui", 
+                    "treeviewActiveBackground", tree.getBackground()));
+            setForeground(Config.getOptionColor("ui", 
+                    "treeviewActiveForeground", tree.getForeground()));
         } else {
             setFont(getFont().deriveFont(Font.PLAIN));
         }
-        
+
         if (nodeObject instanceof FrameContainer) {
-            final Color colour =
+            final Color colour = 
                     manager.getNodeColour((FrameContainer) nodeObject);
             if (colour != null) {
                 setForeground(colour);
@@ -130,6 +131,7 @@ public class TreeViewTreeCellRenderer extends DefaultTreeCellRenderer {
         } else {
             setIcon(defaultIcon);
         }
+
         return this;
     }
 }
