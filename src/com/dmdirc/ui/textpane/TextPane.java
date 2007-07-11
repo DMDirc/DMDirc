@@ -209,6 +209,9 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             if (i != selectedRange[0]) {
                 selectedText.append('\n');
             }
+            if (document.getLine(i) == null) {
+                return "";
+            }
             final AttributedCharacterIterator iterator = document.getLine(i).getIterator();
             if (selectedRange[2] == selectedRange[0]) {
                 //loop through range

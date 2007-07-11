@@ -163,7 +163,7 @@ public final class ErrorListDialog extends StandardDialog implements
         getCancelButton().setText("Close");
         sendButton = new JButton("Send");
         deleteButton = new JButton("Delete");
-        deleteAllButton = new JButton("DeleteAll");
+        deleteAllButton = new JButton("Delete All");
         
         sendButton.setEnabled(false);
         deleteButton.setEnabled(false);
