@@ -120,35 +120,35 @@ public final class ServerSettingsDialog extends StandardDialog
      * @param settingsPanel Settings panel to add the options to
      */
     private void addSettings(final SettingsPanel settingsPanel) {
-        settingsPanel.addOption("channel", "splitusermodes", OptionType.CHECKBOX);
-        settingsPanel.addOption("channel", "sendwho", OptionType.CHECKBOX);
-        settingsPanel.addOption("channel", "showmodeprefix", OptionType.CHECKBOX);
+        settingsPanel.addOption("channel.splitusermodes", "Split user modes", OptionType.CHECKBOX);
+        settingsPanel.addOption("channel.sendwho", "Send WHO", OptionType.CHECKBOX);
+        settingsPanel.addOption("channel.showmodeprefix", "Show mode prefix", OptionType.CHECKBOX);
         
-        settingsPanel.addOption("general", "cyclemessage", OptionType.TEXTFIELD);
-        settingsPanel.addOption("general", "kickmessage", OptionType.TEXTFIELD);
-        settingsPanel.addOption("general", "partmessage", OptionType.TEXTFIELD);
+        settingsPanel.addOption("general.cyclemessage", "Cycle message", OptionType.TEXTFIELD);
+        settingsPanel.addOption("general.kickmessage", "Kick message", OptionType.TEXTFIELD);
+        settingsPanel.addOption("general.partmessage", "Part message", OptionType.TEXTFIELD);
         
-        settingsPanel.addOption("ui", "backgroundcolour", OptionType.COLOUR);
-        settingsPanel.addOption("ui", "foregroundcolour", OptionType.COLOUR);
-        settingsPanel.addOption("ui", "frameBufferSize", OptionType.SPINNER);
-        settingsPanel.addOption("ui", "inputBufferSize", OptionType.SPINNER);
-        settingsPanel.addOption("ui", "inputbackgroundcolour", OptionType.COLOUR);
-        settingsPanel.addOption("ui", "inputforegroundcolour", OptionType.COLOUR);
-        settingsPanel.addOption("ui", "nicklistbackgroundcolour", OptionType.COLOUR);
-        settingsPanel.addOption("ui", "nicklistforegroundcolour", OptionType.COLOUR);
-        settingsPanel.addOption("ui", "shownickcoloursinnicklist", OptionType.CHECKBOX);
-        settingsPanel.addOption("ui", "shownickcoloursintext", OptionType.CHECKBOX);
+        settingsPanel.addOption("ui.backgroundcolour", "Background colour", OptionType.COLOUR);
+        settingsPanel.addOption("ui.foregroundcolour", "Foreground colour", OptionType.COLOUR);
+        settingsPanel.addOption("ui.frameBufferSize", "Textpane buffer limit", OptionType.SPINNER);
+        settingsPanel.addOption("ui.inputBufferSize", "Input buffer size", OptionType.SPINNER);
+        settingsPanel.addOption("ui.inputbackgroundcolour", "Input field background colour", OptionType.COLOUR);
+        settingsPanel.addOption("ui.inputforegroundcolour", "Input field foreground colour", OptionType.COLOUR);
+        settingsPanel.addOption("ui.nicklistbackgroundcolour", "Nicklist background colour", OptionType.COLOUR);
+        settingsPanel.addOption("ui.nicklistforegroundcolour", "Nicklist foreground colour", OptionType.COLOUR);
+        settingsPanel.addOption("ui.shownickcoloursinnicklist", "Show coloured nicks in nicklist", OptionType.CHECKBOX);
+        settingsPanel.addOption("ui.shownickcoloursintext", "Show coloured nicks in textpane", OptionType.CHECKBOX);
         
-        settingsPanel.addOption("general", "closechannelsonquit", OptionType.CHECKBOX);
-        settingsPanel.addOption("general", "closechannelsondisconnect", OptionType.CHECKBOX);
-        settingsPanel.addOption("general", "closequeriesonquit", OptionType.CHECKBOX);
-        settingsPanel.addOption("general", "closequeriesondisconnect", OptionType.CHECKBOX);
-        settingsPanel.addOption("general", "quitmessage", OptionType.TEXTFIELD);
-        settingsPanel.addOption("general", "reconnectmessage", OptionType.TEXTFIELD);
-        settingsPanel.addOption("general", "rejoinchannels", OptionType.CHECKBOX);
+        settingsPanel.addOption("general.closechannelsonquit", "Close channels on quit", OptionType.CHECKBOX);
+        settingsPanel.addOption("general.closechannelsondisconnect", "Close channels on disconnect", OptionType.CHECKBOX);
+        settingsPanel.addOption("general.closequeriesonquit", "Close queries on quit", OptionType.CHECKBOX);
+        settingsPanel.addOption("general.closequeriesondisconnect", "Close queries on disconnect", OptionType.CHECKBOX);
+        settingsPanel.addOption("general.quitmessage", "Quit message", OptionType.TEXTFIELD);
+        settingsPanel.addOption("general.reconnectmessage", "Reconnect message", OptionType.TEXTFIELD);
+        settingsPanel.addOption("general.rejoinchannels", "Rejoin channels on reconnect", OptionType.CHECKBOX);
         
-        settingsPanel.addOption("general", "friendlymodes", OptionType.CHECKBOX);
-        settingsPanel.addOption("general", "pingtimeout", OptionType.SPINNER);
+        settingsPanel.addOption("general.friendlymodes", "Show friendly modes", OptionType.CHECKBOX);
+        settingsPanel.addOption("general.pingtimeout", "Ping timeout", OptionType.SPINNER);
     }
     
     /** Initialises the button panel. */
