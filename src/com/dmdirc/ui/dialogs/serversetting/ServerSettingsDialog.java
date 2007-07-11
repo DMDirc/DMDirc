@@ -28,6 +28,7 @@ import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
 import com.dmdirc.ui.components.expandingsettings.SettingsPanel;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.components.expandingsettings.SettingsPanel.OptionType;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -102,6 +103,8 @@ public final class ServerSettingsDialog extends StandardDialog
                 + "network, any settings specified here will overwrite global " 
                 + "settings");
         
+        addSettings(settingsPanel);
+        
         tabbedPane.add("Ignore list", ignoreList);
         tabbedPane.add("settings", settingsPanel);
         
@@ -109,6 +112,43 @@ public final class ServerSettingsDialog extends StandardDialog
         
         this.add(tabbedPane, BorderLayout.CENTER);
         this.add(buttonsPanel, BorderLayout.PAGE_END);
+    }
+    
+    /**
+     * Adds the settings to the panel.
+     *
+     * @param settingsPanel Settings panel to add the options to
+     */
+    private void addSettings(final SettingsPanel settingsPanel) {
+        settingsPanel.addOption("channel", "splitusermodes", OptionType.CHECKBOX);
+        settingsPanel.addOption("channel", "sendwho", OptionType.CHECKBOX);
+        settingsPanel.addOption("channel", "showmodeprefix", OptionType.CHECKBOX);
+        
+        settingsPanel.addOption("general", "cyclemessage", OptionType.TEXTFIELD);
+        settingsPanel.addOption("general", "kickmessage", OptionType.TEXTFIELD);
+        settingsPanel.addOption("general", "partmessage", OptionType.TEXTFIELD);
+        
+        settingsPanel.addOption("ui", "backgroundcolour", OptionType.COLOUR);
+        settingsPanel.addOption("ui", "foregroundcolour", OptionType.COLOUR);
+        settingsPanel.addOption("ui", "frameBufferSize", OptionType.SPINNER);
+        settingsPanel.addOption("ui", "inputBufferSize", OptionType.SPINNER);
+        settingsPanel.addOption("ui", "inputbackgroundcolour", OptionType.COLOUR);
+        settingsPanel.addOption("ui", "inputforegroundcolour", OptionType.COLOUR);
+        settingsPanel.addOption("ui", "nicklistbackgroundcolour", OptionType.COLOUR);
+        settingsPanel.addOption("ui", "nicklistforegroundcolour", OptionType.COLOUR);
+        settingsPanel.addOption("ui", "shownickcoloursinnicklist", OptionType.CHECKBOX);
+        settingsPanel.addOption("ui", "shownickcoloursintext", OptionType.CHECKBOX);
+        
+        settingsPanel.addOption("general", "closechannelsonquit", OptionType.CHECKBOX);
+        settingsPanel.addOption("general", "closechannelsondisconnect", OptionType.CHECKBOX);
+        settingsPanel.addOption("general", "closequeriesonquit", OptionType.CHECKBOX);
+        settingsPanel.addOption("general", "closequeriesondisconnect", OptionType.CHECKBOX);
+        settingsPanel.addOption("general", "quitmessage", OptionType.TEXTFIELD);
+        settingsPanel.addOption("general", "reconnectmessage", OptionType.TEXTFIELD);
+        settingsPanel.addOption("general", "rejoinchannels", OptionType.CHECKBOX);
+        
+        settingsPanel.addOption("general", "friendlymodes", OptionType.CHECKBOX);
+        settingsPanel.addOption("general", "pingtimeout", OptionType.SPINNER);
     }
     
     /** Initialises the button panel. */
