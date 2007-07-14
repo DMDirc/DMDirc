@@ -1086,7 +1086,7 @@ public final class Server extends WritableFrameContainer implements
         if (errorInfo.isException()) {
             Logger.appError(errorLevel, errorInfo.getData(), errorInfo.getException());
         } else {
-            Logger.userError(errorLevel, errorInfo.getData());
+            Logger.appError(errorLevel, errorInfo.getData(), new Exception("fake trace")); //NOPMD
         }
     }
     
