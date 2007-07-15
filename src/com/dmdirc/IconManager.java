@@ -22,11 +22,15 @@
 
 package com.dmdirc;
 
+import com.dmdirc.config.ConfigChangeListener;
+import com.dmdirc.config.ConfigManager;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -38,13 +42,38 @@ import javax.swing.ImageIcon;
  *
  * @author chris
  */
-public final class IconManager {
+public final class IconManager implements ConfigChangeListener {
+    
+    /** Previously created IconManager instance. */
+    private static IconManager me;
+    
+    /** The config manager used for the global config. */
+    private final ConfigManager manager;
+    
+    private final Map<String, Icon> icons;
+    private final Map<String, Image> images;
+    
+    /** Creates a new instance of IconManager. */
+    private IconManager() {
+        manager = new ConfigManager("", "", "");
+        
+        icons = new HashMap<String, Icon>();
+        images = new HashMap<String, Image>();
+        
+        manager.addChangeListener("icon", this);
+    }
     
     /**
-     * Creates a new instance of IconManager.
+     * Returns an instance of IconManager.
+     *
+     * @return Instance of IconManager
      */
-    private IconManager() {
-        // Not meant to be used
+    public static synchronized IconManager getIconManager() {
+        if (me == null) {
+            me = new IconManager();
+        }
+        
+        return me;
     }
     
     /**
@@ -55,8 +84,11 @@ public final class IconManager {
      *
      * @return The icon that should be used for the specified type
      */
-    public static Icon getIcon(final String type) {
-        return new ImageIcon(getScaledImage(new ImageIcon(getIconURL(type)).getImage(), 16, 16));
+    public Icon getIcon(final String type) {
+        if (!icons.containsKey(type)) {
+            icons.put(type, new ImageIcon(getScaledImage(new ImageIcon(getIconURL(type)).getImage(), 16, 16)));
+        }
+        return icons.get(type);
     }
     
     /**
@@ -67,8 +99,11 @@ public final class IconManager {
      *
      * @return The image that should be used for the specified type
      */
-    public static Image getImage(final String type) {
-        return Toolkit.getDefaultToolkit().getDefaultToolkit().createImage(getIconURL(type));
+    public Image getImage(final String type) {
+        if (!images.containsKey(type)) {
+            images.put(type, Toolkit.getDefaultToolkit().getDefaultToolkit().createImage(getIconURL(type)));
+        }
+        return images.get(type);
     }
     
     /**
@@ -80,7 +115,7 @@ public final class IconManager {
      *
      * @return Scaled Image
      */
-    private static Image getScaledImage(final Image image,
+    private Image getScaledImage(final Image image,
             final int width, final int height) {
         return image.getScaledInstance(width , height, Image.SCALE_SMOOTH);
     }
@@ -92,7 +127,7 @@ public final class IconManager {
      *
      * @return The URL that should be used to retrieve the specified icon
      */
-    private static URL getIconURL(final String type) {
+    private URL getIconURL(final String type) {
         final ClassLoader cldr = Thread.currentThread().getContextClassLoader();
         final URL defaultURL = cldr.getResource("com/dmdirc/res/" + type + ".png");
         
@@ -122,6 +157,19 @@ public final class IconManager {
         }
         
         return imageURL;
+    }
+
+    /** {@inheritDoc} */
+    public void configChanged(final String domain, final String key, 
+            final String oldValue, final String newValue) {
+        if ("icon".equals(domain)) {
+            if (images.containsKey(key)) {
+                images.remove(key);
+            }
+            if (icons.containsKey(key)) {
+                icons.remove(key);
+            }
+        }
     }
     
 }

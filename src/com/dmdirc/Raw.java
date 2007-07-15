@@ -65,7 +65,7 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
         
         this.server = newServer;
         
-        icon = IconManager.getIcon("raw");
+        icon = IconManager.getIconManager().getIcon("raw");
         
         frame = new CustomInputFrame(this, newServer.getFrame().getCommandParser());
         frame.setTitle("(Raw log)");

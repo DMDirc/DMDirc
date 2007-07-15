@@ -224,7 +224,7 @@ public final class Server extends WritableFrameContainer implements
         
         configManager = new ConfigManager("", "", server);
         
-        icon = IconManager.getIcon(ssl ? "secure-server" : "server");
+        icon = IconManager.getIconManager().getIcon(ssl ? "secure-server" : "server");
         
         window.setFrameIcon(icon);
         MainFrame.getMainFrame().getFrameManager().iconUpdated(this);

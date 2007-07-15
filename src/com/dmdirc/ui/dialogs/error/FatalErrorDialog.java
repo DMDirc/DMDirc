@@ -119,7 +119,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         infoLabel.setText("DMDirc has encountered a fatal error, it is "
                 + "unable to recover from this error and will terminate.");
         
-        infoLabel.setIcon(IconManager.getIcon("error"));
+        infoLabel.setIcon(IconManager.getIconManager().getIcon("error"));
         
         messageLabel = new JTextArea("Description: \n" + error.getMessage());
         messageLabel.setEditable(false);

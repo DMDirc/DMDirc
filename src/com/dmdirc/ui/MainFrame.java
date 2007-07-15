@@ -177,7 +177,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         setTitle(getTitlePrefix());
         
-        imageIcon = new ImageIcon(IconManager.getImage("icon"));
+        imageIcon = new ImageIcon(IconManager.getIconManager().getImage("icon"));
         setIconImage(imageIcon.getImage());
         
         mainFrameManager.setParent(frameManagerPanel);

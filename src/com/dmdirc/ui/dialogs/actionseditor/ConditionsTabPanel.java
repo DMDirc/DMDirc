@@ -181,9 +181,9 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             final JButton edit = new JButton();
             final JButton delete = new JButton();
             
-            edit.setIcon(IconManager.getIcon("edit-inactive"));
-            edit.setRolloverIcon(IconManager.getIcon("edit"));
-            edit.setPressedIcon(IconManager.getIcon("edit"));
+            edit.setIcon(IconManager.getIconManager().getIcon("edit-inactive"));
+            edit.setRolloverIcon(IconManager.getIconManager().getIcon("edit"));
+            edit.setPressedIcon(IconManager.getIconManager().getIcon("edit"));
             edit.setContentAreaFilled(false);
             edit.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             edit.setMargin(new Insets(0, 0, 0, 0));
@@ -191,9 +191,9 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             edit.setActionCommand("edit");
             edit.addActionListener(this);
             
-            delete.setIcon(IconManager.getIcon("close-inactive"));
-            delete.setRolloverIcon(IconManager.getIcon("close-active"));
-            delete.setPressedIcon(IconManager.getIcon("close-active"));
+            delete.setIcon(IconManager.getIconManager().getIcon("close-inactive"));
+            delete.setRolloverIcon(IconManager.getIconManager().getIcon("close-active"));
+            delete.setPressedIcon(IconManager.getIconManager().getIcon("close-active"));
             delete.setContentAreaFilled(false);
             delete.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             delete.setMargin(new Insets(0, 0, 0, 0));

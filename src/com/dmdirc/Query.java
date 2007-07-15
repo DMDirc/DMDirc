@@ -82,7 +82,7 @@ public final class Query extends WritableFrameContainer implements
         this.server = newServer;
         this.host = newHost;
         
-        icon = IconManager.getIcon("query");
+        icon = IconManager.getIconManager().getIcon("query");
         
         frame = new QueryFrame(this);
         

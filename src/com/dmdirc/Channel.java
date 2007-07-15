@@ -126,7 +126,7 @@ public final class Channel extends WritableFrameContainer implements
         configManager = new ConfigManager(server.getIrcd(), server.getNetwork(),
                 server.getName(), channelInfo.getName());
         
-        icon = IconManager.getIcon("channel");
+        icon = IconManager.getIconManager().getIcon("channel");
         
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(CommandManager.getChannelCommandNames());

@@ -67,7 +67,7 @@ public class TreeViewTreeCellRenderer extends JLabel implements
      */
     public TreeViewTreeCellRenderer(final TreeFrameManager manager) {
         this.manager = manager;
-        defaultIcon = IconManager.getIcon("icon");
+        defaultIcon = IconManager.getIconManager().getIcon("icon");
     }
 
     /**

@@ -107,7 +107,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         setPreferredSize(new Dimension(Short.MAX_VALUE, 25));
         setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
         
-        normalIcon = IconManager.getIcon("normal");
+        normalIcon = IconManager.getIconManager().getIcon("normal");
         
         clearMessage();
         clearError();
@@ -221,16 +221,16 @@ public final class StatusBar extends JPanel implements MouseListener,
         final Icon icon;
         switch (error.getLevel()) {
             case HIGH:
-                icon = IconManager.getIcon("error");
+                icon = IconManager.getIconManager().getIcon("error");
                 break;
             case MEDIUM:
-                icon = IconManager.getIcon("warning");
+                icon = IconManager.getIconManager().getIcon("warning");
                 break;
             case LOW:
-                icon = IconManager.getIcon("info");
+                icon = IconManager.getIconManager().getIcon("info");
                 break;
             default:
-                icon = IconManager.getIcon("info");
+                icon = IconManager.getIconManager().getIcon("info");
                 break;
         }
         setError(icon);

@@ -104,7 +104,7 @@ public final class SystrayPlugin  extends Plugin implements ActionListener, Mous
     
     /** {@inheritDoc} */
     public void onActivate() {
-        icon = new TrayIcon(IconManager.getImage("logo"), "DMDirc", menu);
+        icon = new TrayIcon(IconManager.getIconManager().getImage("logo"), "DMDirc", menu);
         icon.setImageAutoSize(true);
         icon.addMouseListener(this);
         

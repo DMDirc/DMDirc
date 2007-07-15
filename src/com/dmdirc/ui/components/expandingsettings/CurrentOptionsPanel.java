@@ -218,9 +218,9 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
                 label.getFont().getSize()));
         label.setLabelFor(component);
         
-        button.setIcon(IconManager.getIcon("close-inactive"));
-        button.setRolloverIcon(IconManager.getIcon("close-active"));
-        button.setPressedIcon(IconManager.getIcon("close-active"));
+        button.setIcon(IconManager.getIconManager().getIcon("close-inactive"));
+        button.setRolloverIcon(IconManager.getIconManager().getIcon("close-active"));
+        button.setPressedIcon(IconManager.getIconManager().getIcon("close-active"));
         button.setContentAreaFilled(false);
         button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         button.setMargin(new Insets(0, 0, 0, 0));

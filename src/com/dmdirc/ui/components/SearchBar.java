@@ -135,9 +135,9 @@ public final class SearchBar extends JPanel implements ActionListener,
         
         
         
-        closeButton.setIcon(IconManager.getIcon("close-inactive"));
-        closeButton.setRolloverIcon(IconManager.getIcon("close-active"));
-        closeButton.setPressedIcon(IconManager.getIcon("close-active"));
+        closeButton.setIcon(IconManager.getIconManager().getIcon("close-inactive"));
+        closeButton.setRolloverIcon(IconManager.getIconManager().getIcon("close-active"));
+        closeButton.setPressedIcon(IconManager.getIconManager().getIcon("close-active"));
         closeButton.setContentAreaFilled(false);
         closeButton.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         closeButton.setPreferredSize(new Dimension(16, 16));

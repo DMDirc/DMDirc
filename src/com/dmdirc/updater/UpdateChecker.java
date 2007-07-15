@@ -143,7 +143,7 @@ public final class UpdateChecker implements Runnable, MouseListener {
             label = new JLabel();
             label.addMouseListener(this);
             label.setBorder(BorderFactory.createEtchedBorder());
-            label.setIcon(IconManager.getIcon("update"));
+            label.setIcon(IconManager.getIconManager().getIcon("update"));
             MainFrame.getMainFrame().getStatusBar().addComponent(label);
         }
     }
