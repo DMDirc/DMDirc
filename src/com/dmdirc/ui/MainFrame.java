@@ -832,7 +832,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
         final String lnfName = getLookAndFeel(Config.getOption("ui", "lookandfeel"));
         try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             
             final FontUIResource font = new FontUIResource("Dialog", Font.PLAIN , 12);
             
@@ -895,6 +895,13 @@ public final class MainFrame extends JFrame implements WindowListener,
             UIManager.put("Tree.drawHorizontalLines", true);
             UIManager.put("Tree.drawVerticalLines", true);
             UIManager.put("Tree.background", Color.WHITE);
+            
+            //These are likely to change lots, and i cant test them - Greboid
+            UIManager.put("apple.awt.showGrowBox", true);
+            UIManager.put("apple.laf.useScreenMenuBar", true);
+            UIManager.put("com.apple.mrj.application.apple.menu.about.name", "DMDirc: " + Main.VERSION);
+            UIManager.put("com.apple.mrj.application.growbox.intrudes", false);
+            UIManager.put("com.apple.mrj.application.live-resize", true);
             
             if (Config.hasOption("ui", "lookandfeel") && lnfName.length() != 0) {
                 UIManager.setLookAndFeel(lnfName);

@@ -27,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
 import java.io.IOException;
 import java.io.EOFException;
+import java.nio.charset.Charset;
 import java.util.Stack;
 import java.util.ArrayList;
 
@@ -208,7 +209,7 @@ public class ReverseFileReader {
 		// Return the data obtained.
 		byte[] result = new byte[line.size()];
 		for (int i = 0; i < line.size(); ++i) { result[i] = line.get(i); }
-		return new String(result);
+		return new String(result, Charset.forName("UTF-8"));
 	}
 
 	/**

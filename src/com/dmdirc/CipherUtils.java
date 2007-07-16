@@ -27,6 +27,7 @@ import com.dmdirc.logger.Logger;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;
@@ -103,7 +104,7 @@ public final class CipherUtils {
             }
         }
         try {
-            return new String(ecipher.doFinal(str.getBytes("UTF8")));
+            return new String(ecipher.doFinal(str.getBytes("UTF8")), Charset.forName("UTF-8"));
         } catch (BadPaddingException e) {
             Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
         } catch (IllegalBlockSizeException e) {
@@ -131,14 +132,10 @@ public final class CipherUtils {
             }
         }
         try {
-            return new String(dcipher.doFinal(str.getBytes()), "UTF8");
+            return new String(dcipher.doFinal(str.getBytes()), Charset.forName("UTF-8"));
         } catch (BadPaddingException e) {
             Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
         } catch (IllegalBlockSizeException e) {
-            Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
-        } catch (UnsupportedEncodingException e) {
-            Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
-        } catch (IOException e) {
             Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
         }
         return null;
@@ -152,7 +149,7 @@ public final class CipherUtils {
     public static String hash(final String data) {
         try {
             return new String(MessageDigest.getInstance("SHA-512")
-            .digest(data.getBytes("UTF8")));
+            .digest(data.getBytes("UTF8")), Charset.forName("UTF-8"));
         } catch (NoSuchAlgorithmException e) {
             Logger.userError(ErrorLevel.LOW, "Unable to hash string");
         } catch (IOException e) {
