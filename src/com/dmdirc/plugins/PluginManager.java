@@ -197,7 +197,7 @@ public class PluginManager {
 				target = target.substring(myDir.length(), target.length() - 6);
 				// Change / (or \) to .
 				target = target.replace(File.separatorChar, '.');
-				
+                                
 				addPlugin(target);
 			}
 		}
@@ -258,6 +258,7 @@ public class PluginManager {
 	 * Load a plugin with a given className
 	 *
 	 * @param className Class Name of plugin to load.
+	 * @return Loaded plugin or null
 	 */
 	private Plugin loadPlugin(final String className) {
 		Plugin result;
@@ -289,7 +290,10 @@ public class PluginManager {
 		} catch (InstantiationException ie) {
 			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+className+"')");
 			result = null;
-		}
+		} catch (NoClassDefFoundError ncdf) {
+			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+className+"'): Unable to find class: " + ncdf.getMessage());
+			result = null;
+                }
 		
 		return result;
 	}
