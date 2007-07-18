@@ -468,6 +468,7 @@ public final class ChannelInfo {
 	 * Modes are always sent negative then positive and not mixed.
 	 */
 	public void sendModes() { 
+		if (lModeQueue.size() == 0) { return; }
 		final StringBuilder positivemode = new StringBuilder();
 		final StringBuilder positiveparam = new StringBuilder();
 		final StringBuilder negativemode = new StringBuilder();
