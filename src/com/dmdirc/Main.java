@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.dialogs.firstrunwizard.FirstRunWizard;
@@ -63,6 +64,8 @@ public final class Main {
      * @param args the command line arguments
      */
     public static void main(final String[] args) {
+        Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
+        
         final CommandLineParser clp = new CommandLineParser(args);
         
         IdentityManager.load();
