@@ -452,6 +452,11 @@ public abstract class InputFrame extends Frame implements InputWindow,
         String clipboard = null;
         String[] clipboardLines = new String[]{"", };
         
+        if (!Toolkit.getDefaultToolkit().getSystemClipboard().
+                isDataFlavorAvailable(DataFlavor.stringFlavor)) {
+            return;
+        }
+        
         try {
             //get the contents of the input field and combine it with the clipboard
             clipboard = getInputField().getText()
