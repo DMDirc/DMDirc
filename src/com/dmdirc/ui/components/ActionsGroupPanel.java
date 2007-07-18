@@ -104,6 +104,8 @@ public final class ActionsGroupPanel extends JPanel
     
     /** Initialises the components for this panel. */
     private void initComponents() {
+        final JScrollPane pane;
+        
         final Object[][] data = new Object[actions.size()][3];
         
         int i = 0;
@@ -114,13 +116,8 @@ public final class ActionsGroupPanel extends JPanel
             i++;
         }
         
-        table = new JTable(data, HEADERS) {
-            private static final long serialVersionUID = 1;
-            
-            public boolean isCellEditable(final int x, final int y) {
-                return false;
-            }
-        };
+        pane = new JScrollPane();
+        table = new PackingTable(data, HEADERS, false, pane);
         
         table.setCellSelectionEnabled(false);
         table.setColumnSelectionAllowed(false);
@@ -132,7 +129,7 @@ public final class ActionsGroupPanel extends JPanel
         
         table.getSelectionModel().addListSelectionListener(this);
         
-        final JScrollPane pane = new JScrollPane(table);
+        pane.setViewportView(table);
         
         pane.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,

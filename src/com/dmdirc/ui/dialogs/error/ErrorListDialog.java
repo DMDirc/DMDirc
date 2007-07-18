@@ -30,6 +30,7 @@ import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.components.PackingTable;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -70,6 +71,9 @@ public final class ErrorListDialog extends StandardDialog implements
     
     /** Error manager. */
     private final ErrorManager errorManager;
+    
+    /** Table scrollpane. */
+    private JScrollPane scrollPane;
     
     /** Error table. */
     private JTable table;
@@ -122,13 +126,9 @@ public final class ErrorListDialog extends StandardDialog implements
     private void initComponents() {
         initButtonsPanel();
         
-        table = new JTable(new DefaultTableModel(getTableData(), HEADERS) {
-            private static final long serialVersionUID = 1;
-            
-            public boolean isCellEditable(final int x, final int y) {
-                return false;
-            }
-        });
+        scrollPane = new JScrollPane();
+        
+        table = new PackingTable(new DefaultTableModel(getTableData(), HEADERS), false, scrollPane);
         
         table.setAutoCreateRowSorter(true);
         table.setAutoCreateColumnsFromModel(true);
@@ -138,18 +138,13 @@ public final class ErrorListDialog extends StandardDialog implements
         table.setFillsViewportHeight(false);
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         table.getRowSorter().toggleSortOrder(0);
         
         table.getTableHeader().setReorderingAllowed(false);
         
         table.setPreferredScrollableViewportSize(new Dimension(600, 150));
         
-        table.getColumnModel().getColumn(0).setPreferredWidth(40);
-        table.getColumnModel().getColumn(1).setPreferredWidth(100);
-        table.getColumnModel().getColumn(2).setPreferredWidth(80);
-        table.getColumnModel().getColumn(3).setPreferredWidth(100);
-        table.getColumnModel().getColumn(4).setPreferredWidth(280);
+        scrollPane.setViewportView(table);
         
         errorDetails = new ErrorDetailPanel();
     }
@@ -211,8 +206,6 @@ public final class ErrorListDialog extends StandardDialog implements
     private void layoutComponents() {
         getContentPane().setLayout(new BoxLayout(getContentPane(),
                 BoxLayout.PAGE_AXIS));
-        
-        final JScrollPane scrollPane = new JScrollPane(table);
         
         scrollPane.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
@@ -296,11 +289,6 @@ public final class ErrorListDialog extends StandardDialog implements
     private void updateTable() {
         ((DefaultTableModel) table.getModel()).setDataVector(getTableData(),
                 HEADERS);
-        table.getColumnModel().getColumn(0).setPreferredWidth(40);
-        table.getColumnModel().getColumn(1).setPreferredWidth(100);
-        table.getColumnModel().getColumn(2).setPreferredWidth(80);
-        table.getColumnModel().getColumn(3).setPreferredWidth(100);
-        table.getColumnModel().getColumn(4).setPreferredWidth(280);
     }
     
     /** {@inheritDoc} */
