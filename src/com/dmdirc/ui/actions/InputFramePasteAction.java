@@ -26,8 +26,9 @@ import com.dmdirc.ui.components.InputFrame;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 
 import javax.swing.AbstractAction;
 
@@ -64,8 +65,7 @@ public final class InputFramePasteAction extends AbstractAction {
     
     /** {@inheritDoc} */
     public boolean isEnabled() {
-        final Transferable contents = Toolkit.getDefaultToolkit().
-                getSystemClipboard().getContents(this);
-        return contents.isDataFlavorSupported(DataFlavor.stringFlavor);
+        return Toolkit.getDefaultToolkit().getSystemClipboard().
+                isDataFlavorAvailable(DataFlavor.stringFlavor);
     }
 }

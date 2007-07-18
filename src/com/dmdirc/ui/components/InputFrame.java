@@ -38,7 +38,6 @@ import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.HeadlessException;
 import java.awt.Point;
 import java.awt.Robot;
 import java.awt.Toolkit;
@@ -154,14 +153,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
         getInputField().addKeyListener(this);
         getInputField().addMouseListener(this);
         
-        inputFieldPopup = new JPopupMenu();
-        
-        inputFieldPopup.add(new CutAction(getInputField()));
-        inputFieldPopup.add(new CopyAction(getInputField()));
-        inputFieldPopup.add(new InputFramePasteAction(this));
-        inputFieldPopup.setOpaque(true);
-        inputFieldPopup.setLightWeightPopupEnabled(true);
-        
+        initPopupMenu();
         
         awayLabel = new JLabel();
         awayLabel.setText("(away)");
@@ -174,6 +166,17 @@ public abstract class InputFrame extends Frame implements InputWindow,
         inputPanel.add(inputField, BorderLayout.CENTER);
         
         initInputField();
+    }
+    
+    /** Initialises the popupmenu. */
+    private void initPopupMenu() {
+        inputFieldPopup = new JPopupMenu();
+        
+        inputFieldPopup.add(new CutAction(getInputField()));
+        inputFieldPopup.add(new CopyAction(getInputField()));
+        inputFieldPopup.add(new InputFramePasteAction(this));
+        inputFieldPopup.setOpaque(true);
+        inputFieldPopup.setLightWeightPopupEnabled(true);
     }
     
     /**
@@ -430,6 +433,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
             final Point point = getInputField().getMousePosition();
             
             if (point != null) {
+                initPopupMenu();
                 inputFieldPopup.show(this, (int) point.getX(),
                         (int) point.getY() + getTextPane().getHeight()
                         + SMALL_BORDER);
@@ -455,8 +459,6 @@ public abstract class InputFrame extends Frame implements InputWindow,
             .getData(DataFlavor.stringFlavor);
             //split the text
             clipboardLines = getSplitLine(clipboard);
-        } catch (HeadlessException ex) {
-            Logger.userError(ErrorLevel.LOW, "Unable to get clipboard contents");
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to get clipboard contents: " + ex.getMessage());
         } catch (UnsupportedFlavorException ex) {
@@ -482,6 +484,9 @@ public abstract class InputFrame extends Frame implements InputWindow,
                     parent.sendLine(clipboardLine);
                 }
             }
+        }
+        if (event == null) {
+            inputField.setText(inputField.getText() + clipboard);
         }
     }
     
