@@ -27,10 +27,10 @@ import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ErrorStatus;
 import com.dmdirc.logger.ProgramError;
 import com.dmdirc.ui.MainFrame;
+import com.dmdirc.ui.components.PackingTable;
 import com.dmdirc.ui.components.StandardDialog;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import com.dmdirc.ui.components.PackingTable;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;

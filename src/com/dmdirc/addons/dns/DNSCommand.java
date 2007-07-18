@@ -25,6 +25,7 @@ package com.dmdirc.addons.dns;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
+
 import java.util.Timer;
 import java.util.TimerTask;
 

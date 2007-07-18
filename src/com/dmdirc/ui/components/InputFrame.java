@@ -27,6 +27,9 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.actions.InputFramePasteAction;
+import com.dmdirc.ui.actions.CopyAction;
+import com.dmdirc.ui.actions.CutAction;
 import com.dmdirc.ui.dialogs.PasteDialog;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -52,7 +55,6 @@ import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
@@ -96,15 +98,6 @@ public abstract class InputFrame extends Frame implements InputWindow,
     
     /** Popupmenu for this frame. */
     private JPopupMenu inputFieldPopup;
-    
-    /** popup menu item. */
-    private JMenuItem inputPasteMI;
-    
-    /** popup menu item. */
-    private JMenuItem inputCopyMI;
-    
-    /** popup menu item. */
-    private JMenuItem inputCutMI;
     
     /** Robot for the frame. */
     private Robot robot;
@@ -163,17 +156,9 @@ public abstract class InputFrame extends Frame implements InputWindow,
         
         inputFieldPopup = new JPopupMenu();
         
-        
-        inputPasteMI = new JMenuItem("Paste");
-        inputPasteMI.addActionListener(this);
-        inputCopyMI = new JMenuItem("Copy");
-        inputCopyMI.addActionListener(this);
-        inputCutMI = new JMenuItem("Cut");
-        inputCutMI.addActionListener(this);
-        
-        inputFieldPopup.add(inputCutMI);
-        inputFieldPopup.add(inputCopyMI);
-        inputFieldPopup.add(inputPasteMI);
+        inputFieldPopup.add(new CutAction(getInputField()));
+        inputFieldPopup.add(new CopyAction(getInputField()));
+        inputFieldPopup.add(new InputFramePasteAction(this));
         inputFieldPopup.setOpaque(true);
         inputFieldPopup.setLightWeightPopupEnabled(true);
         
@@ -372,7 +357,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
     public void keyPressed(final KeyEvent event) {
         if (event.getSource() == getTextPane()) {
             if ((Config.getOptionBool("ui", "quickCopy")
-                    || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
+            || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
                 event.setSource(getInputField());
                 getInputField().requestFocus();
                 if (robot != null && event.getKeyCode() != KeyEvent.VK_UNDEFINED) {
@@ -453,33 +438,21 @@ public abstract class InputFrame extends Frame implements InputWindow,
         super.processMouseEvent(e);
     }
     
-    /** {@inheritDoc} */
-    public void actionPerformed(final ActionEvent actionEvent) {
-        if (actionEvent.getSource() == inputCopyMI) {
-            getInputField().copy();
-        } else if (actionEvent.getSource() == inputPasteMI) {
-            doPaste(null);
-        } else if (actionEvent.getSource() == inputCutMI) {
-            getInputField().cut();
-        }
-        super.actionPerformed(actionEvent);
-    }
-    
     
     /**
      * Checks and pastes text.
      *
      * @param event the event that triggered the paste
      */
-    private void doPaste(final KeyEvent event) {
+    public void doPaste(final KeyEvent event) {
         String clipboard = null;
         String[] clipboardLines = new String[]{"", };
         
         try {
             //get the contents of the input field and combine it with the clipboard
             clipboard = getInputField().getText()
-                    + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
-                    .getData(DataFlavor.stringFlavor);
+            + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
+            .getData(DataFlavor.stringFlavor);
             //split the text
             clipboardLines = getSplitLine(clipboard);
         } catch (HeadlessException ex) {
@@ -529,7 +502,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
     
     /** {@inheritDoc} */
     @Override
-    public void configChanged(final String domain, final String key, 
+    public void configChanged(final String domain, final String key,
             final String oldValue, final String newValue) {
         super.configChanged(domain, key, oldValue, newValue);
         

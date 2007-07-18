@@ -27,8 +27,8 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
 import com.dmdirc.ui.components.expandingsettings.SettingsPanel;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.components.expandingsettings.SettingsPanel.OptionType;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -103,7 +103,7 @@ public final class ServerSettingsDialog extends StandardDialog
                 + "network, any settings specified here will overwrite global " 
                 + "settings");
         
-        addSettings(settingsPanel);
+        addSettings();
         
         tabbedPane.add("Ignore list", ignoreList);
         tabbedPane.add("settings", settingsPanel);
@@ -114,12 +114,8 @@ public final class ServerSettingsDialog extends StandardDialog
         this.add(buttonsPanel, BorderLayout.PAGE_END);
     }
     
-    /**
-     * Adds the settings to the panel.
-     *
-     * @param settingsPanel Settings panel to add the options to
-     */
-    private void addSettings(final SettingsPanel settingsPanel) {
+    /** Adds the settings to the panel. */
+    private void addSettings() {
         settingsPanel.addOption("channel.splitusermodes", "Split user modes", OptionType.CHECKBOX);
         settingsPanel.addOption("channel.sendwho", "Send WHO", OptionType.CHECKBOX);
         settingsPanel.addOption("channel.showmodeprefix", "Show mode prefix", OptionType.CHECKBOX);

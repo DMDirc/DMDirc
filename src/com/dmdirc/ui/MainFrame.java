@@ -31,6 +31,7 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.components.DMDircEventQueue;
 import com.dmdirc.ui.components.Frame;
 import com.dmdirc.ui.components.StatusBar;
 import com.dmdirc.ui.dialogs.ActionsManagerDialog;
@@ -915,6 +916,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         } catch (IllegalAccessException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to set look and feel: " + lnfName);
         }
+        
+        Toolkit.getDefaultToolkit().getSystemEventQueue().push(new DMDircEventQueue()); 
     }
     
     /**

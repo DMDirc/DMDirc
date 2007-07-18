@@ -62,7 +62,7 @@ public final class TimedCommand extends TimerTask {
         this.origin = origin;
         
         timer = new Timer();
-        timer.scheduleAtFixedRate(this, delay * 1000l, delay * 1000l);
+        timer.scheduleAtFixedRate(this, delay * 1000L, delay * 1000L);
     }
 
     /** {@inheritDoc} */

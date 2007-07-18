@@ -23,9 +23,10 @@
 package com.dmdirc.ui.components;
 
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
-import java.awt.Graphics;
-import javax.swing.JScrollPane;
 
+import java.awt.Graphics;
+
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
@@ -56,6 +57,7 @@ public class PackingTable extends JTable {
      * @param rows Row data
      * @param cols Column data
      * @param editable Whether the table should be editable or not
+     * @param scrollPane Scrollpane parent
      */
     public PackingTable(final Object[][] rows, final Object[] cols,
             final boolean editable, final JScrollPane scrollPane) {
@@ -72,6 +74,7 @@ public class PackingTable extends JTable {
      *
      * @param tableModel Table data model
      * @param editable Whether the table should be editable or not
+     * @param scrollPane Scrollpane parent
      */
     public PackingTable(final TableModel tableModel, final boolean editable,
             final JScrollPane scrollPane) {
@@ -103,7 +106,7 @@ public class PackingTable extends JTable {
     }
     
     /** {@inheritDoc} */
-    public void paint(final Graphics g) {
+    public final void paint(final Graphics g) {
         packColumns();
         super.paint(g);
     }
@@ -141,6 +144,13 @@ public class PackingTable extends JTable {
         
     }
     
+    /**
+     * Returns the width of a column.
+     *
+     * @param col Column to retrieve width for
+     *
+     * @return Width of the specified column
+     */
     private int getWidth(final int col) {
         final TableColumn column = getColumnModel().getColumn(col);
         int width = (int) getTableHeader().getDefaultRenderer().
