@@ -25,13 +25,14 @@ package com.dmdirc.ui.dialogs.error;
 import com.dmdirc.logger.ProgramError;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.UIUtilities.layoutGrid;
+import com.dmdirc.ui.textpane.TextPane;
+import java.text.AttributedString;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import javax.swing.SwingUtilities;
 
 /**
  * Shows information about an error.
@@ -61,7 +62,7 @@ public final class ErrorDetailPanel extends JPanel {
     private JTextField status;
     
     /** Details field. */
-    private JTextArea details;
+    private TextPane details;
     
     /** Creates a new instance of ErrorDetailPanel. */
     public ErrorDetailPanel() {
@@ -85,8 +86,8 @@ public final class ErrorDetailPanel extends JPanel {
         layoutComponents();
     }
     
-    /** 
-     * Sets the error used for this panel. 
+    /**
+     * Sets the error used for this panel.
      *
      * @param newError New ProgramError
      */
@@ -101,41 +102,42 @@ public final class ErrorDetailPanel extends JPanel {
         date = new JTextField();
         level = new JTextField();
         status = new JTextField();
-        details = new JTextArea();
+        details = new TextPane(null);
         
         id.setEditable(false);
         date.setEditable(false);
         level.setEditable(false);
         status.setEditable(false);
-        details.setEditable(false);
-        
-        details.setRows(5);
     }
     
     /** Updates the panels details. */
     private void updateDetails() {
-        if (error == null) {
-            id.setText("");
-            date.setText("");
-            level.setText("");
-            status.setText("");
-            details.setText("");
-            
-            return;
-        }
-        
-        id.setText(String.valueOf(error.getID()));
-        date.setText(error.getDate().toString());
-        level.setText(error.getLevel().toString());
-        status.setText(error.getStatus().toString());
-        details.setText(error.getMessage() + '\n');
-        
-        final String[] trace = error.getTrace();
-        for (String traceLine : trace) {
-            details.setText(details.getText() + traceLine + '\n');
-        }
-        details.setText(details.getText().substring(0, 
-                details.getText().length() - 1));
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                if (error == null) {
+                    id.setText("");
+                    date.setText("");
+                    level.setText("");
+                    status.setText("");
+                    details.clear();
+                    
+                    return;
+                }
+                
+                id.setText(String.valueOf(error.getID()));
+                date.setText(error.getDate().toString());
+                level.setText(error.getLevel().toString());
+                status.setText(error.getStatus().toString());
+                
+                details.addText(new AttributedString(error.getMessage()));
+                final String[] trace = error.getTrace();
+                for (String traceLine : trace) {
+                    details.addText(new AttributedString(traceLine));
+                }
+                
+                details.setScrollBarPosition(0);
+            }
+        });
     }
     
     /** Lays out the components. */
@@ -162,7 +164,7 @@ public final class ErrorDetailPanel extends JPanel {
         
         label = new JLabel("Details: ");
         add(label);
-        add(new JScrollPane(details));
+        add(details);
         
         layoutGrid(this, 5, 2, 0, 0, SMALL_BORDER, SMALL_BORDER);
     }

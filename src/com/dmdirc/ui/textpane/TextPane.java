@@ -406,7 +406,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * @return true or false
      */
     public boolean isValidChannel(final String channel) {
-        if (channel.length() > 0) {
+        if (owner != null && channel.length() > 0) {
             return owner.getContainer().getServer().getParser().isValidChannelName(channel);
         }
         return false;
