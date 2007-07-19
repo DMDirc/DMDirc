@@ -61,6 +61,10 @@ public final class DMDircEventQueue extends EventQueue {
             return;
         }
         
+        if (me == null || me.getComponent() == null) {
+            return;
+        }
+        
         final Component comp = SwingUtilities.getDeepestComponentAt(
                 me.getComponent(), me.getX(), me.getY());
         
