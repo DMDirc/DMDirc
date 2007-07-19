@@ -241,7 +241,9 @@ public final class Server extends WritableFrameContainer implements
         
         final ServerInfo serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);
-        parser = new IRCParser(myInfo, serverInfo).setCreateFake(true);
+        parser = new IRCParser(myInfo, serverInfo);
+        parser.setCreateFake(true);
+        parser.setAddLastLine(true);
         
         if (raw == null && Config.getOptionBool("general", "showrawwindow")) {
             raw = new Raw(this);

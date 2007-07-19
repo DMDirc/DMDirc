@@ -52,6 +52,9 @@ public final class CallbackOnErrorInfo extends CallbackObject {
 		boolean bResult = false;
 		for (int i = 0; i < callbackInfo.size(); i++) {
 			try {
+				if (myParser.getAddLastLine() && errorInfo.hasLastLine()) {
+					errorInfo.appendData("LastLine: "+errorInfo.getLastLine());
+				}
 				((IErrorInfo) callbackInfo.get(i)).onErrorInfo(myParser, errorInfo);
 			} catch (Exception e) {
 				// This will not callErrorInfo or we would get an infinite loop!

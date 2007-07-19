@@ -159,6 +159,15 @@ public final class ParserError {
 	}
 	
 	/**
+	 * Add to the error information
+	 *
+	 * @param data Information to add to the end of the existing Data
+	 */
+	public void appendData(final String data) {
+		errorData = errorData + '[' + data + ']';
+	}
+	
+	/**
 	 * Get the last line recieved from the server before this exception.
 	 *
 	 * @return Returns the error data

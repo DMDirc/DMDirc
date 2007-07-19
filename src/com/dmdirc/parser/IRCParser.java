@@ -187,6 +187,8 @@ public final class IRCParser implements Runnable {
 	
 	/** The last line of input recieved from the server */
 	protected String lastLine = "";
+	/** Should the lastline (where given) be appended to the "data" part of any onErrorInfo call? */
+	protected boolean addLastLine = false;
 	
 	/**
 	* Channel Prefixes (ie # + etc).
@@ -272,11 +274,27 @@ public final class IRCParser implements Runnable {
 	
 	/**
 	 * Get the current Value of createFake.
-	 * This returns "this" and thus can be used in the construction line.
 	 *
 	 * @param newValue New balue to set createFake
 	 */
-	public IRCParser setCreateFake(boolean newValue) { createFake = newValue; return this; }
+	public void setCreateFake(boolean newValue) { createFake = newValue; }
+	
+	/**
+	 * Get the current Value of addLastLine.
+	 *
+	 * @return Value of addLastLine (true if lastLine info will be automatically
+	 *         added to the errorInfo data line). This should be true if lastLine
+	 *         isn't handled any other way.
+	 */
+	public boolean getAddLastLine() { return addLastLine; }
+	
+	/**
+	 * Get the current Value of addLastLine.
+	 * This returns "this" and thus can be used in the construction line.
+	 *
+	 * @param newValue New value to set addLastLine
+	 */
+	public void setAddLastLine(boolean newValue) { addLastLine = newValue; }
 	
 	
 	/**
