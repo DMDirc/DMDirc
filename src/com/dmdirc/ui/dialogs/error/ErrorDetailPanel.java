@@ -114,12 +114,12 @@ public final class ErrorDetailPanel extends JPanel {
     private void updateDetails() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
+                details.clear();
                 if (error == null) {
                     id.setText("");
                     date.setText("");
                     level.setText("");
                     status.setText("");
-                    details.clear();
                     
                     return;
                 }
