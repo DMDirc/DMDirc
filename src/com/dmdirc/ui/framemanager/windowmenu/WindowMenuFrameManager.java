@@ -35,6 +35,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -157,7 +158,7 @@ public final class WindowMenuFrameManager implements FrameManager,
         final JMenuItem mi = new JMenuItem(window.toString(), window.getIcon());
         mi.addActionListener(this);
         menuItemMap.put(window, mi);
-        MainFrame.getMainFrame().populateWindowMenu(menuItemMap);
+        MainFrame.getMainFrame().populateWindowMenu(new HashMap<FrameContainer, JMenuItem>(menuItemMap));
     }
     
     /**
@@ -167,7 +168,7 @@ public final class WindowMenuFrameManager implements FrameManager,
      */
     private void removeFramecontainer(final FrameContainer window) {
         menuItemMap.remove(window);
-        MainFrame.getMainFrame().populateWindowMenu(menuItemMap);
+        MainFrame.getMainFrame().populateWindowMenu(new HashMap<FrameContainer, JMenuItem>(menuItemMap));
     }
     
     /** {@inheritDoc} */
