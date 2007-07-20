@@ -20,16 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.logger;
-
-public class DMDircExceptionHandler implements Thread.UncaughtExceptionHandler {
-    
-    /** Instantiates the Exception handler. */
-    public DMDircExceptionHandler() {
-        super();
-    }
-    
-    public void uncaughtException(final Thread thread, final Throwable throwable) {
-        Logger.appError(ErrorLevel.HIGH, "Uncaught exception", throwable);
-    }
-}
+/**
+ * Reorderable list.
+ */
+package com.dmdirc.ui.components.reorderablelist;

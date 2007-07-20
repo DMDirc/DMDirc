@@ -216,7 +216,11 @@ public final class Identity implements Serializable, Comparable<Identity> {
         }
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * Returns a list of options avaiable in this identity.
+     * 
+     *  @return Option list
+     */
     public List<String> getOptions() {
         final List<String> res = new ArrayList<String>();
         

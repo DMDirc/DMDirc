@@ -22,8 +22,6 @@
 
 package com.dmdirc.addons.dcop;
 
-import com.dmdirc.addons.nowplaying.MediaSource;
-import com.dmdirc.addons.nowplaying.MediaSourceManager;
 import com.dmdirc.plugins.Plugin;
 
 import java.io.BufferedReader;
@@ -37,7 +35,7 @@ import java.util.List;
  * 
  * @author chris
  */
-public final class DcopPlugin extends Plugin implements MediaSourceManager {
+public final class DcopPlugin extends Plugin {
     
     /** Creates a new instance of DcopPlugin. */
     public DcopPlugin() {
@@ -109,16 +107,5 @@ public final class DcopPlugin extends Plugin implements MediaSourceManager {
     /** {@inheritDoc}. */
     public String toString() {
         return "DCOP Plugin";
-    }
-
-    /** {@inheritDoc} */
-    public List<MediaSource> getSources() {
-        final ArrayList<MediaSource> res = new ArrayList<MediaSource>();
-        
-        res.add(new AmarokSource());
-        res.add(new KaffeineSource());
-        res.add(new NoatunSource());
-        
-        return res;
     }
 }

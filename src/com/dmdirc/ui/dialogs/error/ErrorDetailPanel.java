@@ -23,9 +23,10 @@
 package com.dmdirc.ui.dialogs.error;
 
 import com.dmdirc.logger.ProgramError;
+import com.dmdirc.ui.textpane.TextPane;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.UIUtilities.layoutGrid;
-import com.dmdirc.ui.textpane.TextPane;
+
 import java.text.AttributedString;
 
 import javax.swing.JLabel;

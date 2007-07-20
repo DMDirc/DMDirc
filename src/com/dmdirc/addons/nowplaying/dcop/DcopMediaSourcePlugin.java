@@ -20,50 +20,61 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.actions;
+package com.dmdirc.addons.nowplaying.dcop;
 
-import com.dmdirc.ui.components.InputFrame;
-
-import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
+import com.dmdirc.addons.nowplaying.MediaSource;
+import com.dmdirc.addons.nowplaying.MediaSourceManager;
+import com.dmdirc.plugins.Plugin;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Paste action for input frames.
+ * Manages all DCOP based media sources.
  */
-public final class InputFramePasteAction extends AbstractAction {
+public class DcopMediaSourcePlugin extends Plugin
+        implements MediaSourceManager {
     
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * Creates a new instance of DcopMediaSourcePlugin.
      */
-    private static final long serialVersionUID = 1;
+    public DcopMediaSourcePlugin() {
+        super();
+    }
     
-    /** Text component to be acted upon. */
-    private final InputFrame inputFrame;
-    
-    /**
-     * Instantiates a new paste action.
-     *
-     * @param inputFrame Component to be acted upon
-     */
-    public InputFramePasteAction(final InputFrame inputFrame) {
-        super("Paste");
+    /** {@inheritDoc} */
+    public List<MediaSource> getSources() {
+        final List<MediaSource> sources = new ArrayList<MediaSource>();
         
-        this.inputFrame = inputFrame;
+        sources.add(new AmarokSource());
+        sources.add(new KaffeineSource());
+        sources.add(new NoatunSource());
+        
+        return sources;
     }
     
     /** {@inheritDoc} */
-    public void actionPerformed(final ActionEvent e) {
-        inputFrame.doPaste(null);
+    public boolean onLoad() {
+        return true;
     }
     
     /** {@inheritDoc} */
-    public boolean isEnabled() {
-        return Toolkit.getDefaultToolkit().getSystemClipboard().
-                isDataFlavorAvailable(DataFlavor.stringFlavor);
+    public String getVersion() {
+        return "0.1";
     }
+    
+    /** {@inheritDoc} */
+    public String getAuthor() {
+        return "Greboid <greboid@dmdirc.com>";
+    }
+    
+    /** {@inheritDoc} */
+    public String getDescription() {
+        return "Provides DCOP media sources for the now playing plugin";
+    }
+    
+    /** {@inheritDoc} */
+    public String toString() {
+        return "DCOP media sources";
+    }
+    
 }

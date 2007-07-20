@@ -20,16 +20,43 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.logger;
+package com.dmdirc.addons.nowplaying.dcop;
 
-public class DMDircExceptionHandler implements Thread.UncaughtExceptionHandler {
+import com.dmdirc.addons.dcop.DcopPlugin;
+import com.dmdirc.addons.nowplaying.MediaSource;
+
+/**
+ * Uses DCOP to retrieve now playing info from Noatun.
+ *
+ * @author chris
+ */
+public class NoatunSource implements MediaSource {
     
-    /** Instantiates the Exception handler. */
-    public DMDircExceptionHandler() {
-        super();
+    /** Instantiates the media source. */
+    public NoatunSource() {
+        //Do nothing
     }
     
-    public void uncaughtException(final Thread thread, final Throwable throwable) {
-        Logger.appError(ErrorLevel.HIGH, "Uncaught exception", throwable);
+    /** {@inheritDoc} */
+    public boolean isRunning() {       
+        return DcopPlugin.getDcopResult("dcop noatun Noatun state").size() > 0;
     }
+    
+    /** {@inheritDoc} */
+    public boolean isPlaying() {
+        final String result = DcopPlugin.getDcopResult("dcop noatun Noatun state").get(0);
+        
+        return "2".equals(result.trim());
+    }
+    
+    /** {@inheritDoc} */
+    public String getInformation() {
+        return DcopPlugin.getDcopResult("dcop noatun Noatun title").get(0);
+    }
+    
+    /** {@inheritDoc} */
+    public String getName() {
+        return "Noatun";
+    }
+    
 }

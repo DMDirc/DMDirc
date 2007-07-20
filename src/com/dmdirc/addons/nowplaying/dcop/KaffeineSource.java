@@ -20,37 +20,44 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.dcop;
+package com.dmdirc.addons.nowplaying.dcop;
 
+import com.dmdirc.addons.dcop.DcopPlugin;
 import com.dmdirc.addons.nowplaying.MediaSource;
 
 /**
- * Uses DCOP to retrieve now playing info from Amarok.
+ * Uses DCOP to retrieve now playing info from Kaffeine.
  *
  * @author chris
  */
-public class AmarokSource implements MediaSource {
+public class KaffeineSource implements MediaSource {
+    
+    /** Instantiates the media source. */
+    public KaffeineSource() {
+        //Do nothing
+    }
     
     /** {@inheritDoc} */
-    public boolean isRunning() {
-        return DcopPlugin.getDcopResult("dcop amarok player isPlaying").size() > 0;
+    public boolean isRunning() {        
+        return DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying").size() > 0;
     }
     
     /** {@inheritDoc} */
     public boolean isPlaying() {
-        final String result = DcopPlugin.getDcopResult("dcop amarok player isPlaying").get(0);
+        final String result = DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying").get(0);
         
         return Boolean.parseBoolean(result);
     }
     
     /** {@inheritDoc} */
     public String getInformation() {
-        return DcopPlugin.getDcopResult("dcop amarok player nowPlaying").get(0);
+        return DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface artist").get(0) + " - "
+                + DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface title").get(0);
     }
     
     /** {@inheritDoc} */
     public String getName() {
-        return "Amarok";
+        return "Kaffeine";
     }
     
 }

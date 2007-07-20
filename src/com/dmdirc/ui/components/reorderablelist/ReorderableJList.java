@@ -20,38 +20,40 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.dcop;
+package com.dmdirc.ui.components.reorderablelist;
 
-import com.dmdirc.addons.nowplaying.MediaSource;
+
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.ListSelectionModel;
 
 /**
- * Uses DCOP to retrieve now playing info from Kaffeine.
- *
- * @author chris
+ * Reorderable JList.
  */
-public class KaffeineSource implements MediaSource {
+public final class ReorderableJList extends JList {
     
-    /** {@inheritDoc} */
-    public boolean isRunning() {        
-        return DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying").size() > 0;
-    }
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
-    /** {@inheritDoc} */
-    public boolean isPlaying() {
-        final String result = DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface isPlaying").get(0);
+    public ReorderableJList() {
+        super(new DefaultListModel());
         
-        return Boolean.parseBoolean(result);
+        setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        setTransferHandler(new ArrayListTransferHandler());
+        setDragEnabled(true);
     }
     
-    /** {@inheritDoc} */
-    public String getInformation() {
-        return DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface artist").get(0) + " - "
-                + DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface title").get(0);
+    public DefaultListModel getModel() {
+        return (DefaultListModel) super.getModel();
     }
     
-    /** {@inheritDoc} */
-    public String getName() {
-        return "Kaffeine";
+    public void setModel(final DefaultListModel newModel) { //NOPMD stupid
+        super.setModel(newModel);
     }
-    
 }
+
+

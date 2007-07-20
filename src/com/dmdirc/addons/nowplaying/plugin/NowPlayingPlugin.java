@@ -26,22 +26,41 @@ import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.addons.nowplaying.MediaSourceManager;
-import com.dmdirc.addons.nowplaying.plugin.NowPlayingCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.components.PreferencesInterface;
+import com.dmdirc.ui.components.PreferencesPanel;
+import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.components.reorderablelist.ReorderableJList;
 
-import java.util.ArrayList;
+import java.awt.BorderLayout;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Properties;
 
-public class NowPlayingPlugin extends Plugin implements EventPlugin {
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+public class NowPlayingPlugin extends Plugin implements EventPlugin,
+        PreferencesInterface  {
+    
+    /** Config domain. */
+    private static final String MY_DOMAIN = "nowplaying";
     
     /** The sources that we know of. */
     private List<MediaSource> sources;
     
+    /** Sources list. */
+    private ReorderableJList list;
+    
     /** The now playing command we're registering. */
     private NowPlayingCommand command;
+    
+    /** List panel. */
+    private JPanel listPanel;
     
     /** {@inheritDoc} */
     public boolean onLoad() {
@@ -51,7 +70,10 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin {
     /** {@inheritDoc} */
     @Override
     protected void onActivate() {
-        sources = new ArrayList<MediaSource>();
+        sources = new LinkedList<MediaSource>();
+        
+        PluginManager.getPluginManager().addPlugin(
+                "com.dmdirc.addons.nowplaying.dcop.DcopMediaSourcePlugin");
         
         for (Plugin target : PluginManager.getPluginManager().getPlugins()) {
             if (target.isActive()) {
@@ -67,12 +89,15 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin {
     protected void onDeactivate() {
         sources = null;
         
+        PluginManager.getPluginManager().delPlugin(
+                "com.dmdirc.addons.nowplaying.dcop.DcopMediaSourcePlugin");
+        
         CommandManager.unregisterCommand(command);
     }
     
     /** {@inheritDoc} */
     public String getVersion() {
-        return "0.1";
+        return "0.2";
     }
     
     /** {@inheritDoc} */
@@ -91,7 +116,48 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin {
     }
     
     /** {@inheritDoc} */
-    public void processEvent(ActionType type, StringBuffer format, Object... arguments) {
+    public boolean isConfigurable() { return true; }
+    
+    /** {@inheritDoc} */
+    public void showConfig() {
+        final PreferencesPanel preferencesPanel = new PreferencesPanel(this, "Now playing Plugin - Config");
+        
+        initialiseListPanel();
+        
+        preferencesPanel.addCategory("General", "General options for the plugin.");
+        
+        preferencesPanel.replaceOptionPanel("General", listPanel);
+        
+        preferencesPanel.display();
+    }
+    
+    private void initialiseListPanel() {
+        list = new ReorderableJList();
+        listPanel = new JPanel();
+        
+        for (MediaSource source: sources) {
+            list.getModel().addElement(source.getName());
+        }
+        
+        listPanel.setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
+        
+        listPanel.add(new JLabel("Media source order: "), BorderLayout.PAGE_START);
+        listPanel.add(new JScrollPane(list), BorderLayout.CENTER);
+    }
+    
+    /** {@inheritDoc} */
+    public void configClosed(final Properties properties) {
+        //save settings
+    }
+    
+    /** {@inheritDoc} */
+    public void configCancelled() {
+        //Ignore
+    }
+    
+    /** {@inheritDoc} */
+    public void processEvent(final ActionType type, final StringBuffer format,
+            final Object... arguments) {
         if (type == CoreActionType.PLUGIN_ACTIVATED) {
             addPlugin((Plugin) arguments[0]);
         } else if (type == CoreActionType.PLUGIN_DEACTIVATED) {
@@ -195,5 +261,4 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin {
     public List<MediaSource> getSources() {
         return sources;
     }
-    
 }
