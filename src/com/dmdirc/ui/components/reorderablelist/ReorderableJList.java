@@ -28,6 +28,7 @@ import com.dmdirc.logger.Logger;
 
 import java.awt.Cursor;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -74,6 +75,8 @@ public final class ReorderableJList extends JList implements DragSourceListener,
     private int draggedIndex = -1;
     /** Data flavor. */
     private DataFlavor dataFlavor;
+    /** Below drop target. */
+    private boolean belowTarget;
     
     /** Instantiate new ReorderableJList. */
     public ReorderableJList() {
@@ -116,6 +119,13 @@ public final class ReorderableJList extends JList implements DragSourceListener,
      */
     public Object getTargetCell() {
         return dropTargetCell;
+    }
+    
+    /**
+     * Returns whether the target is below the drop cell.
+     */
+    public boolean getBelowTarget() {
+        return belowTarget;
     }
     
     /** {@inheritDoc} */
@@ -172,6 +182,14 @@ public final class ReorderableJList extends JList implements DragSourceListener,
             dropTargetCell = null;
         } else {
             dropTargetCell = getModel().getElementAt(index);
+            //check whether the drop point is after the last index
+            final Rectangle bounds = getCellBounds(index, index);
+            if (index == getModel().getSize() - 1 
+                    && dragPoint.y > bounds.y + bounds.height) {
+                belowTarget = true;
+            } else {
+                belowTarget = false;
+            }
         }
         
         repaint();
@@ -196,7 +214,10 @@ public final class ReorderableJList extends JList implements DragSourceListener,
         }
         //get object location and index
         final Point dropPoint = dtde.getLocation();
-        final int index = locationToIndex(dropPoint);
+        int index = locationToIndex(dropPoint);
+        if (belowTarget) {
+            index++;
+        }
         
         //reject invalid drops
         if ((index == -1) || (index == draggedIndex)) {

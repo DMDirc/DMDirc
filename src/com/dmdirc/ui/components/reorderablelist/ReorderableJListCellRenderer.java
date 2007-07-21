@@ -43,8 +43,6 @@ class ReorderableJListCellRenderer implements ListCellRenderer {
      */
     private static final long serialVersionUID = 1;
     
-    /** Is the cell a drop target. */
-    private boolean isTargetCell;
     /** Parent list. */
     private final ReorderableJList parent;
     
@@ -65,7 +63,7 @@ class ReorderableJListCellRenderer implements ListCellRenderer {
             final boolean hasFocus) {
         final JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        isTargetCell = (value == parent.getTargetCell());
+        final boolean isTargetCell = (value == parent.getTargetCell());
         
         final boolean showSelected = isSelected & (parent.getTargetCell() == null);
         
@@ -86,7 +84,11 @@ class ReorderableJListCellRenderer implements ListCellRenderer {
         
         
         if (isTargetCell) {
-            panel.add(new JSeparator(), BorderLayout.PAGE_START);
+            if (parent.getBelowTarget()) {
+                panel.add(new JSeparator(), BorderLayout.PAGE_END);
+            } else {
+                panel.add(new JSeparator(), BorderLayout.PAGE_START);
+            }
         }
         
         return panel;
