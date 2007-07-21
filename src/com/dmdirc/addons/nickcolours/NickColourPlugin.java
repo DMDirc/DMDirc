@@ -42,6 +42,7 @@ import java.util.Properties;
 
 /**
  * Provides various features related to nickname colouring.
+ * 
  * @author chris
  */
 public final class NickColourPlugin extends Plugin implements EventPlugin, PreferencesInterface {
@@ -76,6 +77,7 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
     
     /**
      * Colours the specified client according to the user's config.
+     * 
      * @param client The client to be coloured
      */
     private void colourClient(final ChannelClientInfo client) {
@@ -97,6 +99,7 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
     /**
      * Puts the specified colour into the given map. The keys are determined
      * by config settings.
+     * 
      * @param map The map to use
      * @param colour The colour to be inserted
      */
@@ -113,6 +116,7 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
     
     /**
      * Retrieves a pseudo-random colour for the specified nickname.
+     * 
      * @param nick The nickname of the client whose colour we're determining
      * @return Colour of the specified nickname
      */
@@ -149,6 +153,7 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
     public void showConfig() {
         final PreferencesPanel preferencesPanel = new PreferencesPanel(this, "NickColour Plugin - Config");
         preferencesPanel.addCategory("General", "General configuration for NickColour plugin.");
+        preferencesPanel.addCategory("Nick colours", "Set colours for specific nicknames.");
         
         preferencesPanel.addCheckboxOption("General", "showintext",
                 "Show colours in text area: ", "Colour nicknames in main text area?",
@@ -174,7 +179,11 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
                 "Colour to use for own nick: ", "Colour used for own nick",
                 Config.getOption(DOMAIN, "owncolour", "1"), true, true);
         
+        preferencesPanel.addPanelOption("Nick colours", "nickcolour", "Nick colours", 
+                "Associate colours with specific users", new NickColourPanel());
+        
         preferencesPanel.display();
+        
     }
     
     /**
