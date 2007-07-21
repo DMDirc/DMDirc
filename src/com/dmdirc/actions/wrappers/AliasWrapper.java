@@ -32,6 +32,9 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Encapsulates alias actions.
  *
@@ -41,6 +44,9 @@ public final class AliasWrapper extends ActionWrapper {
     
     /** Singleton instance of the alias wrapper. */
     private static AliasWrapper me;
+    
+    /** A list of registered alias names. */
+    private final List<String> aliases = new ArrayList<String>();
     
     /**
      * Creates a new instance of AliasWrapper.
@@ -63,6 +69,15 @@ public final class AliasWrapper extends ActionWrapper {
         return me;
     }
     
+    /**
+     * Retrieves a list of alias names registered with this wrapper.
+     * 
+     * @return A list of alias names
+     */
+    public List<String> getAliases() {
+        return new ArrayList<String>(aliases);
+    }
+    
     /** {@inheritDoc} */
     @Override
     public void registerAction(final Action action) {
@@ -70,6 +85,8 @@ public final class AliasWrapper extends ActionWrapper {
             super.registerAction(action);
             
             final String commandName = getCommandName(action);
+            
+            aliases.add(commandName);
             
             for (Server server : ServerManager.getServerManager().getServers()) {
                 server.getTabCompleter().addEntry(commandName);
@@ -86,6 +103,8 @@ public final class AliasWrapper extends ActionWrapper {
             super.unregisterAction(action);
             
             final String commandName = getCommandName(action);
+            
+            aliases.remove(commandName);
             
             for (Server server : ServerManager.getServerManager().getServers()) {
                 server.getTabCompleter().removeEntry(commandName);

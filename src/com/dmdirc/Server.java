@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
@@ -173,6 +174,7 @@ public final class Server extends WritableFrameContainer implements
         
         window.setTitle(server + ":" + port);
         
+        tabCompleter.addEntries(AliasWrapper.getAliasWrapper().getAliases());
         window.getInputHandler().setTabCompleter(tabCompleter);
         
         MainFrame.getMainFrame().addChild(window);
