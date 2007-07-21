@@ -33,6 +33,7 @@ import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.components.InputFrame;
 import com.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.input.InputHandler;
+import com.dmdirc.ui.interfaces.ChannelWindow;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
@@ -63,14 +64,14 @@ import javax.swing.plaf.basic.BasicSplitPaneUI;
  * The channel frame is the GUI component that represents a channel to the user.
  */
 public final class ChannelFrame extends InputFrame implements MouseListener,
-        ActionListener {
+        ActionListener, ChannelWindow {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 9;
+    private static final long serialVersionUID = 10;
     
     /** The nick list model used for this channel's nickname list. */
     private NicklistListModel nicklistModel;
@@ -131,46 +132,35 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
     public CommandParser getCommandParser() {
         return commandParser;
     }
-    
-    /**
-     * Updates the list of clients on this channel.
-     * @param newNames The new list of clients
-     */
-    public void updateNames(final List<ChannelClientInfo> newNames) {
+
+    /** {@inheritDoc} */
+    public void updateNames(final List<ChannelClientInfo> clients) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                nicklistModel.replace(newNames);
+                nicklistModel.replace(clients);
             }
         });
     }
     
-    /**
-     * Has the nick list update, to take into account mode changes.
-     */
+    /** {@inheritDoc} */
     public void updateNames() {
         nicklistModel.sort();
     }
     
-    /**
-     * Adds a client to this channels' nicklist.
-     * @param newName the new client to be added
-     */
-    public void addName(final ChannelClientInfo newName) {
+    /** {@inheritDoc} */
+    public void addName(final ChannelClientInfo client) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                nicklistModel.add(newName);
+                nicklistModel.add(client);
             }
         });
     }
     
-    /**
-     * Removes a client from this channels' nicklist.
-     * @param name the client to be deleted
-     */
-    public void removeName(final ChannelClientInfo name) {
+    /** {@inheritDoc} */
+    public void removeName(final ChannelClientInfo client) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                nicklistModel.remove(name);
+                nicklistModel.remove(client);
             }
         });
     }

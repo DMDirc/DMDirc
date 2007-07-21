@@ -59,7 +59,6 @@ import com.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
 import com.dmdirc.parser.callbacks.interfaces.ISocketClosed;
 import com.dmdirc.parser.callbacks.interfaces.IUserModeChanged;
 import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.ServerFrame;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
@@ -170,7 +169,7 @@ public final class Server extends WritableFrameContainer implements
         
         configManager = new ConfigManager("", "", server);
         
-        window = new ServerFrame(this);
+        window = Main.getUI().getServer(this);
         
         window.setTitle(server + ":" + port);
         

@@ -27,13 +27,16 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.Controller;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.dialogs.firstrunwizard.FirstRunWizard;
+import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
 
 /**
  * Main class, handles initialisation.
+ * 
  * @author chris
  */
 public final class Main {
@@ -61,6 +64,7 @@ public final class Main {
     
     /**
      * Entry procedure.
+     * 
      * @param args the command line arguments
      */
     public static void main(final String[] args) {
@@ -94,6 +98,7 @@ public final class Main {
     
     /**
      * Quits the client nicely.
+     * 
      * @param reason The quit reason to send
      */
     public static void quit(final String reason) {
@@ -104,6 +109,15 @@ public final class Main {
         IdentityManager.save();
         
         System.exit(0);
+    }
+    
+    /**
+     * Retrieves the UI controller that's being used by the client.
+     * 
+     * @return The client's UI controller
+     */
+    public static UIController getUI() {
+        return new Controller();
     }
     
     /**

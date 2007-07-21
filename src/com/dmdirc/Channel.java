@@ -47,9 +47,9 @@ import com.dmdirc.parser.callbacks.interfaces.IChannelPart;
 import com.dmdirc.parser.callbacks.interfaces.IChannelQuit;
 import com.dmdirc.parser.callbacks.interfaces.IChannelTopic;
 import com.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
-import com.dmdirc.ui.ChannelFrame;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.input.TabCompleter;
+import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.messages.Formatter;
@@ -99,8 +99,8 @@ public final class Channel extends WritableFrameContainer implements
     /** The server this channel is on. */
     private Server server;
     
-    /** The ChannelFrame used for this channel. */
-    private ChannelFrame frame;
+    /** The ChannelWindow used for this channel. */
+    private ChannelWindow frame;
     
     /** The tabcompleter used for this channel. */
     private final TabCompleter tabCompleter;
@@ -134,7 +134,7 @@ public final class Channel extends WritableFrameContainer implements
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
-                    frame = new ChannelFrame(Channel.this);
+                    frame = Main.getUI().getChannel(Channel.this);
                     MainFrame.getMainFrame().addChild(frame);
                     frame.setFrameIcon(icon);
                     frame.getInputHandler().setTabCompleter(tabCompleter);
