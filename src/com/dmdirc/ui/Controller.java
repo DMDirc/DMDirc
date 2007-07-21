@@ -10,10 +10,15 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.Channel;
+import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.ui.components.StatusBar;
 import com.dmdirc.ui.framemanager.FrameManager;
 import com.dmdirc.ui.interfaces.ChannelWindow;
+import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.interfaces.QueryWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.UIController;
 
@@ -47,6 +52,17 @@ public class Controller implements UIController {
     /** {@inheritDoc} */
     public ServerWindow getServer(final Server server) {
         return new ServerFrame(server);
+    }
+
+    /** {@inheritDoc} */
+    public QueryWindow getQuery(final Query query) {
+        return new QueryFrame(query);
+    }
+
+    /** {@inheritDoc} */
+    public InputWindow getInputWindow(final WritableFrameContainer owner,
+            final CommandParser commandParser) {
+        return new CustomInputFrame(owner, commandParser);
     }
 
 }

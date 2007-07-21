@@ -28,7 +28,6 @@ import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.callbacks.CallbackNotFound;
 import com.dmdirc.parser.callbacks.interfaces.IDataIn;
 import com.dmdirc.parser.callbacks.interfaces.IDataOut;
-import com.dmdirc.ui.CustomInputFrame;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -53,7 +52,7 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
     private Server server;
     
     /** A serverframe instance used for displaying the raw data.*/
-    private CustomInputFrame frame;
+    private InputWindow frame;
     
     /**
      * Creates a new instance of Raw.
@@ -67,7 +66,7 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
         
         icon = IconManager.getIconManager().getIcon("raw");
         
-        frame = new CustomInputFrame(this, newServer.getFrame().getCommandParser());
+        frame = Main.getUI().getInputWindow(this, newServer.getFrame().getCommandParser());
         frame.setTitle("(Raw log)");
         MainFrame.getMainFrame().addChild(frame);
         frame.getInputHandler().setTabCompleter(server.getTabCompleter());

@@ -23,7 +23,10 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.Channel;
+import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StatusBar;
 import com.dmdirc.ui.framemanager.FrameManager;
@@ -31,35 +34,35 @@ import com.dmdirc.ui.framemanager.FrameManager;
 /**
  * Defines the methods that should be implemented by UI controllers. Controllers
  * handle the various aspects of a UI implementation.
- * 
+ *
  * @author Chris
  */
 public interface UIController {
     
     /**
      * Retrieves the main window used by this UI.
-     * 
+     *
      * @return This UI's main window
      */
     MainFrame getMainWindow();
     
     /**
      * Retrieves the status bar component used by this UI.
-     * 
+     *
      * @return This UI's status bar
      */
     StatusBar getStatusBar();
     
     /**
      * Retrieves the frame manager used by this UI.
-     * 
+     *
      * @return This UI's frame manager
      */
     FrameManager getFrameManager();
     
     /**
      * Creates a channel window for the specified channel.
-     * 
+     *
      * @param channel The channel that is requesting a window be made
      * @return A new channel window for the specified channel
      */
@@ -67,10 +70,27 @@ public interface UIController {
     
     /**
      * Creates a server window for the specified server.
-     * 
+     *
      * @param server The server that is requesting a window be made
      * @return A new server window for the specified server
      */
     ServerWindow getServer(Server server);
-
+    
+    /**
+     * Creates a query window for the specified query.
+     *
+     * @param query The query that is requesting a window be made
+     * @return A new query window for the specified query
+     */
+    QueryWindow getQuery(Query query);
+    
+    /**
+     * Creates a new custom input window instance.
+     * 
+     * @param owner The owner of the input window
+     * @param commandParser The command parser to be used
+     * @return A new custom input window
+     */
+    InputWindow getInputWindow(WritableFrameContainer owner, CommandParser commandParser);
+    
 }

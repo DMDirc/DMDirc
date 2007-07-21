@@ -36,9 +36,9 @@ import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import com.dmdirc.parser.callbacks.interfaces.IQuit;
 import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.QueryFrame;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.interfaces.QueryWindow;
 
 import java.io.Serializable;
 
@@ -61,8 +61,8 @@ public final class Query extends WritableFrameContainer implements
     /** The Server this Query is on. */
     private Server server;
     
-    /** The QueryFrame used for this Query. */
-    private QueryFrame frame;
+    /** The QueryWindow used for this Query. */
+    private QueryWindow frame;
     
     /** The full host of the client associated with this Query. */
     private String host;
@@ -84,7 +84,7 @@ public final class Query extends WritableFrameContainer implements
         
         icon = IconManager.getIconManager().getIcon("query");
         
-        frame = new QueryFrame(this);
+        frame = Main.getUI().getQuery(this);
         
         ActionManager.processEvent(CoreActionType.QUERY_OPENED, null, this);
         
