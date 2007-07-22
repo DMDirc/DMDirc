@@ -34,6 +34,7 @@ import javax.swing.SwingConstants;
 import com.dmdirc.Channel;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionType;
@@ -44,7 +45,6 @@ import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.PreferencesInterface;
 import com.dmdirc.ui.components.PreferencesPanel;
 import com.dmdirc.ui.interfaces.Window;
@@ -96,7 +96,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 * Called when this plugin is Activated.
 	 */
 	public void onActivate() {
-		MainFrame.getMainFrame().getStatusBar().addComponent(panel);
+		Main.getUI().getMainWindow().getStatusBar().addComponent(panel);
 		updateStatus();
 	}
 	
@@ -104,7 +104,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 * Called when this plugin is deactivated.
 	 */
 	public void onDeactivate() {
-		MainFrame.getMainFrame().getStatusBar().removeComponent(panel);
+		Main.getUI().getMainWindow().getStatusBar().removeComponent(panel);
 	}
 	
 	/**
@@ -159,7 +159,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 * Update the window status using the current active window.
 	 */
 	public void updateStatus() {
-		Window active = MainFrame.getMainFrame().getActiveFrame();
+		Window active = Main.getUI().getMainWindow().getActiveFrame();
 
 		if (active != null) {
 			FrameContainer activeFrame = ((InputWindow) active).getContainer();

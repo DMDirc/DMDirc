@@ -50,9 +50,9 @@ import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.EventPlugin;
-import com.dmdirc.ui.components.Frame;
 import com.dmdirc.ui.components.PreferencesInterface;
 import com.dmdirc.ui.components.PreferencesPanel;
+import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Styliser;
 
 /**
@@ -351,7 +351,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 					
 					// Backbuffer Display goes here!
 					if (Config.getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
-						showBackBuffer((Frame)query.getFrame(), getLogFile(client));
+						showBackBuffer(query.getFrame(), getLogFile(client));
 					}
 					
 					appendLine(getLogFile(client), "*** Query opened at: " + openedAtFormat.format(new Date()));
@@ -364,7 +364,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 					
 					// Backbuffer Display goes here!
 					if (Config.getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
-						showBackBuffer((Frame)(((Channel)arguments[0]).getFrame()), getLogFile(channel));
+						showBackBuffer(((Channel)arguments[0]).getFrame(), getLogFile(channel));
 					}
 					
 					appendLine(getLogFile(channel), "*** Channel opened at: " + openedAtFormat.format(new Date()));
@@ -495,7 +495,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	 * @param frame The frame to add the backbuffer lines to
 	 * @param filename File to get backbuffer from
 	 */
-	private void showBackBuffer(final Frame frame, final String filename) {
+	private void showBackBuffer(final Window frame, final String filename) {
 		final int numLines = Config.getOptionInt(MY_DOMAIN, "backbuffer.lines", 0);
 		final String colour = Config.getOption(MY_DOMAIN, "backbuffer.colour");
 		final boolean showTimestamp = Config.getOptionBool(MY_DOMAIN, "backbuffer.timestamp");

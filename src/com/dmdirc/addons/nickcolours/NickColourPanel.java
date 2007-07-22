@@ -23,6 +23,7 @@
 package com.dmdirc.addons.nickcolours;
 
 import com.dmdirc.ui.UIUtilities;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -33,7 +34,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.text.StyleContext.SmallAttributeSet;
 
 /**
  * Panel used for the custom nick colour settings component in the plugin's

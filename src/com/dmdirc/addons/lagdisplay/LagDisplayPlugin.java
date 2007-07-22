@@ -23,12 +23,12 @@
 package com.dmdirc.addons.lagdisplay;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.BorderLayout;
@@ -72,12 +72,12 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin {
     
     /** {@inheritDoc} */
     public void onActivate() {
-        MainFrame.getMainFrame().getStatusBar().addComponent(panel);
+        Main.getUI().getMainWindow().getStatusBar().addComponent(panel);
     }
     
     /** {@inheritDoc} */
     public void onDeactivate() {
-        MainFrame.getMainFrame().getStatusBar().removeComponent(panel);
+        Main.getUI().getMainWindow().getStatusBar().removeComponent(panel);
     }
     
     /** {@inheritDoc} */
@@ -112,12 +112,12 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin {
     /** {@inheritDoc} */
     public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
         if (type.equals(CoreActionType.SERVER_GOTPING)) {
-            final Window active = MainFrame.getMainFrame().getActiveFrame();
+            final Window active = Main.getUI().getMainWindow().getActiveFrame();
             if (((Server) arguments[0]).ownsFrame(active)) {
                 label.setText(formatTime(arguments[1]));
             }
         } else if (type.equals(CoreActionType.SERVER_NOPING)) {
-            final Window active = MainFrame.getMainFrame().getActiveFrame();
+            final Window active = Main.getUI().getMainWindow().getActiveFrame();
             if (((Server) arguments[0]).ownsFrame(active)) {
                 label.setText(formatTime(arguments[1]) + "+");
             }

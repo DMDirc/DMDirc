@@ -25,6 +25,7 @@ package com.dmdirc.addons.nowplaying.dcop;
 import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.addons.nowplaying.MediaSourceManager;
 import com.dmdirc.plugins.Plugin;
+
 import java.util.ArrayList;
 import java.util.List;
 

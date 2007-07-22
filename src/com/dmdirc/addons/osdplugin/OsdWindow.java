@@ -23,7 +23,7 @@
 package com.dmdirc.addons.osdplugin;
 
 import com.dmdirc.Config;
-import com.dmdirc.ui.MainFrame;
+import com.dmdirc.Main;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 
 import java.awt.BorderLayout;
@@ -64,7 +64,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
      * allow itself to be moved)
      */
     public OsdWindow(final String text, final boolean config) {
-        super(MainFrame.getMainFrame(), false);
+        super(Main.getUI().getMainWindow(), false);
         
         setFocusableWindowState(false);
         setAlwaysOnTop(true);

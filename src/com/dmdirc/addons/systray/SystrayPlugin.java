@@ -25,7 +25,6 @@ package com.dmdirc.addons.systray;
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.plugins.Plugin;
-import com.dmdirc.ui.MainFrame;
     
 import java.awt.AWTException;
 import java.awt.MenuItem;
@@ -91,7 +90,7 @@ public final class SystrayPlugin  extends Plugin implements ActionListener, Mous
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
         if (e.getActionCommand().equals("Show/hide")) {
-            MainFrame.getMainFrame().setVisible(!MainFrame.getMainFrame().isVisible());
+            Main.getUI().getMainWindow().setVisible(!Main.getUI().getMainWindow().isVisible());
         } else if (e.getActionCommand().equals("Quit")) {
             Main.quit();
         }
@@ -145,17 +144,17 @@ public final class SystrayPlugin  extends Plugin implements ActionListener, Mous
     /** {@inheritDoc} */
     public void mouseClicked(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            if (MainFrame.getMainFrame().isVisible()) {
+            if (Main.getUI().getMainWindow().isVisible()) {
                 // TODO: Uncomment the code below, with an appropriate replacement
                 //       for requestFocus() that does something more than flash.
                 
-                //if (MainFrame.getMainFrame().isActive()) {
-                MainFrame.getMainFrame().setVisible(false);
+                //if (Main.getUI().getMainWindow().isActive()) {
+                Main.getUI().getMainWindow().setVisible(false);
                 //} else {
-                //    MainFrame.getMainFrame().requestFocus();
+                //    Main.getUI().getMainWindow().requestFocus();
                 //}
             } else {
-                MainFrame.getMainFrame().setVisible(true);
+                Main.getUI().getMainWindow().setVisible(true);
             }
         }
     }
