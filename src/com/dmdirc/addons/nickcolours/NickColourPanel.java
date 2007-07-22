@@ -22,13 +22,18 @@
 
 package com.dmdirc.addons.nickcolours;
 
+import com.dmdirc.ui.UIUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.StyleContext.SmallAttributeSet;
 
 /**
  * Panel used for the custom nick colour settings component in the plugin's
@@ -97,6 +102,17 @@ public class NickColourPanel extends JPanel {
         
         setLayout(new BorderLayout());
         add(scrollPane, BorderLayout.CENTER);
+        
+        final JPanel buttonPanel = new JPanel();
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(UIUtilities.LARGE_BORDER, 0, 0, 0));
+        buttonPanel.setPreferredSize(new Dimension(Short.MAX_VALUE, 25 + UIUtilities.LARGE_BORDER));
+        buttonPanel.setLayout(new BorderLayout());
+        
+        buttonPanel.add(new JButton("Add"), BorderLayout.WEST);
+        buttonPanel.add(new JButton("Edit"), BorderLayout.CENTER);
+        buttonPanel.add(new JButton("Delete"), BorderLayout.EAST);
+        
+        add(buttonPanel, BorderLayout.SOUTH);
     }
     
 }

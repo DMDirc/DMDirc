@@ -23,6 +23,7 @@
 package com.dmdirc.addons.nickcolours;
 
 import com.dmdirc.ui.messages.ColourManager;
+
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
@@ -64,6 +65,8 @@ public class ColourRenderer extends DefaultTableCellRenderer {
         
         if (colour == null) {
             setBorder(new LineBorder(Color.GRAY));
+
+            setBackground(table.getBackground());
         } else {
             setBorder(new LineBorder(Color.BLACK));
             
