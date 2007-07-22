@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.nickcolours;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.JPanel;
@@ -94,7 +95,8 @@ public class NickColourPanel extends JPanel {
         table.setFillsViewportHeight(true);
         table.setDefaultRenderer(Color.class, new ColourRenderer());
         
-        add(scrollPane);
+        setLayout(new BorderLayout());
+        add(scrollPane, BorderLayout.CENTER);
     }
     
 }

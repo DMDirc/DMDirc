@@ -179,8 +179,7 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
                 "Colour to use for own nick: ", "Colour used for own nick",
                 Config.getOption(DOMAIN, "owncolour", "1"), true, true);
         
-        preferencesPanel.addPanelOption("Nick colours", "nickcolour", "Nick colours", 
-                "Associate colours with specific users", new NickColourPanel());
+        preferencesPanel.replaceOptionPanel("Nick colours", new NickColourPanel());
         
         preferencesPanel.display();
         
