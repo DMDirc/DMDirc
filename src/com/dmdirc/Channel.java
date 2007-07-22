@@ -47,7 +47,6 @@ import com.dmdirc.parser.callbacks.interfaces.IChannelPart;
 import com.dmdirc.parser.callbacks.interfaces.IChannelQuit;
 import com.dmdirc.parser.callbacks.interfaces.IChannelTopic;
 import com.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -135,7 +134,7 @@ public final class Channel extends WritableFrameContainer implements
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
                     frame = Main.getUI().getChannel(Channel.this);
-                    MainFrame.getMainFrame().addChild(frame);
+                    Main.getUI().getMainWindow().addChild(frame);
                     frame.setFrameIcon(icon);
                     frame.getInputHandler().setTabCompleter(tabCompleter);
                 }
@@ -299,8 +298,8 @@ public final class Channel extends WritableFrameContainer implements
             public void run() {
                 frame.setTitle(title);
                 
-                if (frame.isMaximum() && frame.equals(MainFrame.getMainFrame().getActiveFrame())) {
-                    MainFrame.getMainFrame().setTitle(MainFrame.getMainFrame().getTitlePrefix() + " - " + title);
+                if (frame.isMaximum() && frame.equals(Main.getUI().getMainWindow().getActiveFrame())) {
+                    Main.getUI().getMainWindow().setTitle(Main.getUI().getMainWindow().getTitlePrefix() + " - " + title);
                 }
             }
         });
@@ -358,7 +357,7 @@ public final class Channel extends WritableFrameContainer implements
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 frame.setVisible(false);
-                MainFrame.getMainFrame().delChild(frame);
+                Main.getUI().getMainWindow().delChild(frame);
                 frame = null;
                 server = null;
             }

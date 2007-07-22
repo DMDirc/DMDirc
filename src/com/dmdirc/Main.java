@@ -28,7 +28,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.Controller;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.dialogs.firstrunwizard.FirstRunWizard;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.updater.UpdateChannel;
@@ -76,7 +75,7 @@ public final class Main {
         
         Config.init();
         
-        MainFrame.initUISettings();
+        getUI().initUISettings();
         
         ActionManager.init();
         
@@ -84,7 +83,7 @@ public final class Main {
         
         ActionManager.loadActions();
         
-        MainFrame.getMainFrame();
+        Main.getUI().getMainWindow();
         
         if (!Config.hasOption("general", "firstRun") || Config.getOptionBool("general", "firstRun")) {
             Config.setOption("general", "firstRun", "false");

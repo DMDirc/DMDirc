@@ -59,7 +59,6 @@ import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
 import com.dmdirc.parser.callbacks.interfaces.ISocketClosed;
 import com.dmdirc.parser.callbacks.interfaces.IUserModeChanged;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
@@ -177,7 +176,7 @@ public final class Server extends WritableFrameContainer implements
         tabCompleter.addEntries(AliasWrapper.getAliasWrapper().getAliases());
         window.getInputHandler().setTabCompleter(tabCompleter);
         
-        MainFrame.getMainFrame().addChild(window);
+        Main.getUI().getMainWindow().addChild(window);
         
         window.open();
         
@@ -228,7 +227,7 @@ public final class Server extends WritableFrameContainer implements
         icon = IconManager.getIconManager().getIcon(ssl ? "secure-server" : "server");
         
         window.setFrameIcon(icon);
-        MainFrame.getMainFrame().getFrameManager().iconUpdated(this);
+        Main.getUI().getMainWindow().getFrameManager().iconUpdated(this);
         
         window.addLine("serverConnecting", server, port);
         
@@ -248,7 +247,7 @@ public final class Server extends WritableFrameContainer implements
         
         if (raw == null && Config.getOptionBool("general", "showrawwindow")) {
             raw = new Raw(this);
-            MainFrame.getMainFrame().getFrameManager().addCustom(this, raw);
+            Main.getUI().getMainWindow().getFrameManager().addCustom(this, raw);
         }
         
         if (raw != null) {
@@ -518,7 +517,7 @@ public final class Server extends WritableFrameContainer implements
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
                     window.setVisible(false);
-                    MainFrame.getMainFrame().delChild(window);
+                    Main.getUI().getMainWindow().delChild(window);
                     window = null;
                 }
             });
@@ -596,7 +595,7 @@ public final class Server extends WritableFrameContainer implements
      * closed).
      */
     public void delRaw() {
-        MainFrame.getMainFrame().getFrameManager().delCustom(this, raw);
+        Main.getUI().getMainWindow().getFrameManager().delCustom(this, raw);
         raw = null;
     }
     
@@ -607,7 +606,7 @@ public final class Server extends WritableFrameContainer implements
      */
     public void delChannel(final String chan) {
         tabCompleter.removeEntry(chan);
-        MainFrame.getMainFrame().getFrameManager().delChannel(
+        Main.getUI().getMainWindow().getFrameManager().delChannel(
                 this, channels.get(parser.toLowerCase(chan)));
         if (!closing) {
             channels.remove(parser.toLowerCase(chan));
@@ -624,7 +623,7 @@ public final class Server extends WritableFrameContainer implements
         
         tabCompleter.addEntry(chan.getName());
         channels.put(parser.toLowerCase(chan.getName()), newChan);
-        MainFrame.getMainFrame().getFrameManager().addChannel(this, newChan);
+        Main.getUI().getMainWindow().getFrameManager().addChannel(this, newChan);
         
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -643,7 +642,7 @@ public final class Server extends WritableFrameContainer implements
         
         tabCompleter.addEntry(ClientInfo.parseHost(host));
         queries.put(parser.toLowerCase(ClientInfo.parseHost(host)), newQuery);
-        MainFrame.getMainFrame().getFrameManager().addQuery(this, newQuery);
+        Main.getUI().getMainWindow().getFrameManager().addQuery(this, newQuery);
     }
     
     /**
@@ -653,7 +652,7 @@ public final class Server extends WritableFrameContainer implements
      */
     public void delQuery(final String host) {
         tabCompleter.removeEntry(ClientInfo.parseHost(host));
-        MainFrame.getMainFrame().getFrameManager().delQuery(this,
+        Main.getUI().getMainWindow().getFrameManager().delQuery(this,
                 queries.get(parser.toLowerCase(ClientInfo.parseHost(host))));
         if (!closing) {
             queries.remove(parser.toLowerCase(ClientInfo.parseHost(host)));
@@ -1032,7 +1031,7 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public void onPingFailed(final IRCParser tParser) {
-        MainFrame.getMainFrame().getStatusBar().setMessage("No ping reply from "
+        Main.getUI().getMainWindow().getStatusBar().setMessage("No ping reply from "
                 + this.server + " for over "
                 + Math.floor(parser.getPingTime(false) / 1000.0) + " seconds.", null, 10);
         

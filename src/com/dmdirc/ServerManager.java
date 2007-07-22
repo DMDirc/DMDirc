@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.util.ArrayList;
@@ -73,7 +72,7 @@ public final class ServerManager {
      */
     public void registerServer(final Server server) {
         servers.add(server);
-        MainFrame.getMainFrame().getFrameManager().addServer(server);
+        Main.getUI().getMainWindow().getFrameManager().addServer(server);
     }
     
     /**
@@ -86,7 +85,7 @@ public final class ServerManager {
         if (!closing) {
             servers.remove(server);
         }
-        MainFrame.getMainFrame().getFrameManager().delServer(server);
+        Main.getUI().getMainWindow().getFrameManager().delServer(server);
     }
     
     /**

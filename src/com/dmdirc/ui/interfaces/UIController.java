@@ -93,4 +93,10 @@ public interface UIController {
      */
     InputWindow getInputWindow(WritableFrameContainer owner, CommandParser commandParser);
     
+    /**
+     * Initialises any settings required by this UI (this is always called
+     * before any aspect of the UI is instansiated).
+     */
+    void initUISettings();
+    
 }

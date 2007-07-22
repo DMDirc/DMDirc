@@ -25,7 +25,6 @@ package com.dmdirc;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.Color;
@@ -100,7 +99,7 @@ public abstract class FrameContainer {
      * Requests that this object's frame be activated.
      */
     public void activateFrame() {
-        MainFrame.getMainFrame().setActiveFrame(getFrame());
+        Main.getUI().getMainWindow().setActiveFrame(getFrame());
     }
     
     /**
@@ -108,7 +107,7 @@ public abstract class FrameContainer {
      */
     protected void clearNotification() {
         notification = Color.BLACK;
-        MainFrame.getMainFrame().getFrameManager().clearNotification(this);
+        Main.getUI().getMainWindow().getFrameManager().clearNotification(this);
     }
     
     /**
@@ -117,10 +116,10 @@ public abstract class FrameContainer {
      * @param colour The colour to use for the notification
      */
     public void sendNotification(final Color colour) {
-        final Window activeFrame = MainFrame.getMainFrame().getActiveFrame();
+        final Window activeFrame = Main.getUI().getMainWindow().getActiveFrame();
         if (activeFrame != null && !activeFrame.equals(getFrame())) {
             notification = colour;
-            MainFrame.getMainFrame().getFrameManager().showNotification(this, colour);
+            Main.getUI().getMainWindow().getFrameManager().showNotification(this, colour);
         }
     }
     
@@ -148,7 +147,7 @@ public abstract class FrameContainer {
      */
     public void windowOpened() {
         final boolean pref = getServer().getConfigManager().getOptionBool("ui", "maximisewindows");
-        if (pref || MainFrame.getMainFrame().getMaximised()) {
+        if (pref || Main.getUI().getMainWindow().getMaximised()) {
             try {
                 getFrame().setMaximum(true);
             } catch (PropertyVetoException ex) {
@@ -175,14 +174,14 @@ public abstract class FrameContainer {
      * Invoked when our window is activated.
      */
     public void windowActivated() {
-        if (MainFrame.getMainFrame().getMaximised()) {
+        if (Main.getUI().getMainWindow().getMaximised()) {
             try {
                 getFrame().setMaximum(true);
             } catch (PropertyVetoException ex) {
                 Logger.userError(ErrorLevel.LOW, "Unable to maximise window");
             }
         }
-        MainFrame.getMainFrame().getFrameManager().setSelected(this);
+        Main.getUI().getMainWindow().getFrameManager().setSelected(this);
         getServer().setActiveFrame(this);
         clearNotification();
     }

@@ -28,7 +28,6 @@ import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.callbacks.CallbackNotFound;
 import com.dmdirc.parser.callbacks.interfaces.IDataIn;
 import com.dmdirc.parser.callbacks.interfaces.IDataOut;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.io.Serializable;
@@ -68,7 +67,7 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
         
         frame = Main.getUI().getInputWindow(this, newServer.getFrame().getCommandParser());
         frame.setTitle("(Raw log)");
-        MainFrame.getMainFrame().addChild(frame);
+        Main.getUI().getMainWindow().addChild(frame);
         frame.getInputHandler().setTabCompleter(server.getTabCompleter());
         frame.setFrameIcon(icon);
         
@@ -96,7 +95,7 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
         server.getParser().getCallbackManager().delCallback("OnDataOut", this);
         
         frame.setVisible(false);
-        MainFrame.getMainFrame().delChild(frame);
+        Main.getUI().getMainWindow().delChild(frame);
         frame = null;
         
         server.delRaw();

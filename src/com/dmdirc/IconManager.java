@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
+
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.io.File;

@@ -35,7 +35,6 @@ import com.dmdirc.parser.callbacks.interfaces.INickChanged;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import com.dmdirc.parser.callbacks.interfaces.IQuit;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.QueryWindow;
@@ -88,7 +87,7 @@ public final class Query extends WritableFrameContainer implements
         
         ActionManager.processEvent(CoreActionType.QUERY_OPENED, null, this);
         
-        MainFrame.getMainFrame().addChild(frame);
+        Main.getUI().getMainWindow().addChild(frame);
         frame.setFrameIcon(icon);
         
         if (!Config.getOptionBool("general", "hidequeries")) {
@@ -218,8 +217,8 @@ public final class Query extends WritableFrameContainer implements
         
         frame.setTitle(title);
         
-        if (frame.isMaximum() && frame.equals(MainFrame.getMainFrame().getActiveFrame())) {
-            MainFrame.getMainFrame().setTitle(MainFrame.getMainFrame().getTitlePrefix() + " - " + title);
+        if (frame.isMaximum() && frame.equals(Main.getUI().getMainWindow().getActiveFrame())) {
+            Main.getUI().getMainWindow().setTitle(Main.getUI().getMainWindow().getTitlePrefix() + " - " + title);
         }
     }
     
@@ -302,7 +301,7 @@ public final class Query extends WritableFrameContainer implements
         
         frame.setVisible(false);
         server.delQuery(host);
-        MainFrame.getMainFrame().delChild(frame);
+        Main.getUI().getMainWindow().delChild(frame);
         frame = null;
         server = null;
     }
@@ -332,7 +331,7 @@ public final class Query extends WritableFrameContainer implements
             show();
         }
         
-        MainFrame.getMainFrame().setActiveFrame(frame);
+        Main.getUI().getMainWindow().setActiveFrame(frame);
     }
     
 }
