@@ -41,7 +41,7 @@ public class ColourRenderer extends DefaultTableCellRenderer {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 1;
     
     /**
      * Creates a new instance of ColourRenderer.
@@ -57,7 +57,10 @@ public class ColourRenderer extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(final JTable table,
             final Object value, final boolean isSelected,
             final boolean hasFocus, final int row, final int column) {
-        Color colour = ColourManager.parseColour((String) value, null);
+        Color colour = null;
+        if (value != null) {
+            colour = ColourManager.parseColour((String) value, null);
+        }
         
         if (colour == null) {
             setBorder(new LineBorder(Color.GRAY));

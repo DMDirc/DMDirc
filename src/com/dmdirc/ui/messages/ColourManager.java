@@ -49,20 +49,22 @@ public final class ColourManager {
     public static Color parseColour(final String spec, final Color fallback) {
         Color res = null;
         
-        if (spec.length() < 3) {
-            int num;
-            
-            try {
-                num = Integer.parseInt(spec);
-            } catch (NumberFormatException ex) {
-                num = -1;
+        if (spec != null) {
+            if (spec.length() < 3) {
+                int num;
+                
+                try {
+                    num = Integer.parseInt(spec);
+                } catch (NumberFormatException ex) {
+                    num = -1;
+                }
+                
+                if (num >= 0 && num <= 15) {
+                    res = getColour(num);
+                }
+            } else if (spec.length() == 6) {
+                res = getColour(spec);
             }
-            
-            if (num >= 0 && num <= 15) {
-                res = getColour(num);
-            }
-        } else if (spec.length() == 6) {
-            res = getColour(spec);
         }
         
         if (res == null) {
@@ -82,8 +84,8 @@ public final class ColourManager {
      */
     public static Color parseColour(final String spec) {
         return parseColour(spec, Color.WHITE);
-    }    
-        
+    }
+    
     /**
      * Returns a Color object that corresponds to the specified 6-digit hex
      * string. If the string is invalid, logs a warning and returns white.
@@ -145,7 +147,7 @@ public final class ColourManager {
                 return Color.WHITE;
         }
     }
-
+    
     /**
      * Retrieves the hex representation of the specified colour.
      * @param colour The colour to be parsed
@@ -166,11 +168,11 @@ public final class ColourManager {
      */
     private static String toHex(final int value) {
         final char[] chars = {
-            '0', '1', '2', '3', '4', '5', '6', '7', 
+            '0', '1', '2', '3', '4', '5', '6', '7',
             '8', '9', 'A', 'B', 'C', 'D', 'E', 'F',
         };
         
         return ("" + chars[value / 16]) + chars[value % 16];
-    }    
+    }
     
 }

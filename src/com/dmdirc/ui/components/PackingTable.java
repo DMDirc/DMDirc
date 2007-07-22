@@ -121,6 +121,10 @@ public class PackingTable extends JTable {
             return;
         }
         
+        if (getRowCount() == 0) {
+            return;
+        }
+        
         final TableColumnModel columnModel = getTableHeader().getColumnModel();
         final int numCols = columnModel.getColumnCount();
         final int totalSize = scrollPane.getViewportBorderBounds().width;

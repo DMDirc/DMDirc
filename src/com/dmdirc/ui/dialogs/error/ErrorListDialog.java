@@ -287,6 +287,10 @@ public final class ErrorListDialog extends StandardDialog implements
     
     /** Updates and resizes the table. */
     private void updateTable() {
+        if (table.getRowCount() == 0) {
+            return;
+        }
+        
         final int row = table.getSelectedRow();
         ((DefaultTableModel) table.getModel()).setDataVector(getTableData(),
                 HEADERS);
