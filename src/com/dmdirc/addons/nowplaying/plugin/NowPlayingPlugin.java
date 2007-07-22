@@ -32,17 +32,11 @@ import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.components.PreferencesInterface;
 import com.dmdirc.ui.components.PreferencesPanel;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.components.reorderablelist.ReorderableJList;
 
-import java.awt.BorderLayout;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 public class NowPlayingPlugin extends Plugin implements EventPlugin,
         PreferencesInterface  {
@@ -53,14 +47,11 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     /** The sources that we know of. */
     private List<MediaSource> sources;
     
-    /** Sources list. */
-    private ReorderableJList list;
-    
     /** The now playing command we're registering. */
     private NowPlayingCommand command;
     
-    /** List panel. */
-    private JPanel listPanel;
+    /** Config panel. */
+    private ConfigPanel configPanel;
     
     /** {@inheritDoc} */
     public boolean onLoad() {
@@ -121,28 +112,13 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     /** {@inheritDoc} */
     public void showConfig() {
         final PreferencesPanel preferencesPanel = new PreferencesPanel(this, "Now playing Plugin - Config");
-        
-        initialiseListPanel();
+        configPanel = new ConfigPanel(sources);
         
         preferencesPanel.addCategory("General", "General options for the plugin.");
         
-        preferencesPanel.replaceOptionPanel("General", listPanel);
+        preferencesPanel.replaceOptionPanel("General", configPanel);
         
         preferencesPanel.display();
-    }
-    
-    private void initialiseListPanel() {
-        list = new ReorderableJList();
-        listPanel = new JPanel();
-        
-        for (MediaSource source: sources) {
-            list.getModel().addElement(source.getName());
-        }
-        
-        listPanel.setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
-        
-        listPanel.add(new JLabel("Media source order: "), BorderLayout.PAGE_START);
-        listPanel.add(new JScrollPane(list), BorderLayout.CENTER);
     }
     
     /** {@inheritDoc} */
