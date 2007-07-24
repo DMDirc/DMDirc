@@ -59,19 +59,48 @@ public final class Identity implements Serializable, Comparable<Identity> {
     private static final long serialVersionUID = 1;
     
     /** The target for this identity. */
-    private final ConfigTarget myTarget = new ConfigTarget();
+    private final ConfigTarget myTarget;
     
     /** The configuration details for this identity. */
     private final Properties properties;
     
     /** The config change listeners for this source. */
-    private final List<ConfigChangeListener> listeners;
+    private final List<ConfigChangeListener> listeners = new ArrayList<ConfigChangeListener>();
     
     /** The file that this identity is read from. */
     private File file;
     
     /** Whether this identity needs to be saved. */
     private boolean needSave;
+    
+    /**
+     * Creates a new identity with the specified properties. Saving is not
+     * supported using this method (i.e., it should only be used for defaults).
+     *
+     * @param properties The properties to use for this identity
+     */
+    public Identity(final Properties properties) {
+        this(properties, null);
+    }
+    
+    /**
+     * Creates a new identity with the specified properties and targets#.
+     * Saving is not supported using this method (i.e., it should only be used
+     * for defaults).
+     *
+     * @param properties The properties to use for this identity
+     * @param target The target of this identity
+     */
+    public Identity(final Properties properties, final ConfigTarget target) {
+        this.properties = properties;
+        
+        if (target == null) {
+            myTarget = new ConfigTarget();
+            myTarget.setGlobalDefault();
+        } else {
+            myTarget = target;
+        }
+    }
     
     /**
      * Creates a new instance of Identity.
@@ -103,6 +132,8 @@ public final class Identity implements Serializable, Comparable<Identity> {
         
         properties.load(stream);
         
+        myTarget = new ConfigTarget();
+        
         if (!properties.containsKey("identity.name") && !forceDefault) {
             throw new InvalidIdentityFileException("No name specified");
         }
@@ -122,8 +153,6 @@ public final class Identity implements Serializable, Comparable<Identity> {
         } else if (!isProfile()) {
             throw new InvalidIdentityFileException("No target and no profile");
         }
-        
-        listeners = new ArrayList<ConfigChangeListener>();
         
         stream.close();
     }
@@ -216,9 +245,9 @@ public final class Identity implements Serializable, Comparable<Identity> {
         }
     }
     
-    /** 
+    /**
      * Returns a list of options avaiable in this identity.
-     * 
+     *
      *  @return Option list
      */
     public List<String> getOptions() {
