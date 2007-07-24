@@ -32,7 +32,6 @@ import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.components.PreferencesInterface;
 import com.dmdirc.ui.components.PreferencesPanel;
-import com.dmdirc.ui.components.reorderablelist.ReorderableJList;
 
 import java.util.LinkedList;
 import java.util.List;

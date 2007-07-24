@@ -566,7 +566,7 @@ public final class PreferencesPanel extends StandardDialog implements
             final String defaultValue, final boolean initialState,
             final boolean showIrcColours, final boolean showHexColours) {
         addComponent(categories.get(category), name, displayName, helpText,
-                OptionType.OPTIONALCOLOUR, defaultValue, initialState, 
+                OptionType.OPTIONALCOLOUR, defaultValue, initialState,
                 showIrcColours, showHexColours);
     }
     
@@ -619,12 +619,7 @@ public final class PreferencesPanel extends StandardDialog implements
     private void saveOptions() {
         final Properties properties = new Properties();
         for (String option : textFields.keySet()) {
-            if (textFields.get(option).getText().equals("")) {
-                properties.remove(option);
-            } else {
-                properties
-                        .setProperty(option, textFields.get(option).getText());
-            }
+            properties.setProperty(option, textFields.get(option).getText());
         }
         for (String option : checkBoxes.keySet()) {
             properties.setProperty(option, ""
