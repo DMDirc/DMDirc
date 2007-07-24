@@ -39,6 +39,8 @@ import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.Identity;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
