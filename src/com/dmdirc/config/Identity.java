@@ -172,7 +172,11 @@ public final class Identity implements Serializable, Comparable<Identity> {
      * @return The name of this identity
      */
     public String getName() {
-        return properties.getProperty("identity.name");
+        if (hasOption("identity", "name")) {
+            return getOption("identity", "name");
+        } else {
+            return "Unnamed";
+        }
     }
     
     /**
@@ -334,10 +338,10 @@ public final class Identity implements Serializable, Comparable<Identity> {
     
     /** {@inheritDoc} */
     @Override
-    public boolean equals(final Object target) {
-        if (target instanceof Identity
-                && getName().equals(((Identity) target).getName())
-                && getTarget() == ((Identity) target).getTarget()) {
+    public boolean equals(final Object obj) {
+        if (obj instanceof Identity
+                && getName().equals(((Identity) obj).getName())
+                && getTarget() == ((Identity) obj).getTarget()) {
             return true;
         }
         return false;
