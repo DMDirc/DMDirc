@@ -113,7 +113,11 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
         
         if (arg == 0) {
             res.setIncludeNormal(false);
-            res.addAll(Arrays.asList(PluginManager.getPluginManager().getNames()));
+
+            for (Plugin possPlugin : PluginManager.getPluginManager().getPossiblePlugins()) {
+                res.add(possPlugin.getClass().getCanonicalName());
+                res.add("!" + possPlugin.getClass().getCanonicalName());
+            }            
         }
         
         return res;

@@ -25,6 +25,7 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.commandparser.IntelligentCommand;
+import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -83,14 +84,17 @@ public final class LoadPlugin extends GlobalCommand implements IntelligentComman
     public String getHelp() {
         return "loadplugin <class> - loads the specified class as a plugin";
     }
-
+    
     /** {@inheritDoc} */
     public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {
             res.setIncludeNormal(false);
-            res.addAll(Arrays.asList(PluginManager.getPluginManager().getNames()));
+            
+            for (Plugin possPlugin : PluginManager.getPluginManager().getPossiblePlugins()) {
+                res.add(possPlugin.getClass().getCanonicalName());
+            }
         }
         
         return res;
