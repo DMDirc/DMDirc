@@ -82,13 +82,14 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 * @return false if the plugin can not be loaded
 	 */
 	public boolean onLoad() {
-/*		final Properties config = Config.getConfig();
+		// Set defaults
+		Properties defaults = new Properties();
+		defaults.setProperty(MY_DOMAIN + "channel.shownone", "true");
+		defaults.setProperty(MY_DOMAIN + "channel.noneprefix", "None:");
+		defaults.setProperty(MY_DOMAIN + "client.showname", "false");
+		defaults.setProperty("identity.name", "WindowStatus Plugin Defaults");
+		IdentityManager.addIdentity(new Identity(defaults));
 		
-		// Set default options if they don't exist
-		updateOption(config, "channel.shownone", "true");
-		updateOption(config, "channel.noneprefix", "None:");
-		updateOption(config, "client.showname", "false");
-*/		
 		return true;
 	}
 	
@@ -164,7 +165,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 		if (active != null) {
 			FrameContainer activeFrame = ((InputWindow) active).getContainer();
 			updateStatus(activeFrame);
-                }
+		}
 	}
 	
 	/**
@@ -267,10 +268,6 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 		preferencesPanel.display();
 	}
 	
-	/** {@inheritDoc} */
-	public void configCancelled() {
-	}
-	
 	/**
 	 * Get the name of the domain we store all settings in the global config under.
 	 *
@@ -281,38 +278,25 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	/**
 	 * Copy the new vaule of an option to the global config.
 	 *
-	 * @param properties Source of option value
+	 * @param properties Source of option value, or null if setting default values
 	 * @param name name of option
-	 * @param defaultValue value to set if source doesn't contain a value.
-	 *                     if this is null, value will not be changed.
 	 */
-	protected void updateOption(final Properties properties, final String name, final String defaultValue) {
-/*		String value = null;
+	protected void updateOption(final Properties properties, final String name) {
+		String value = null;
 		
-		// Get the value from the properties file if one is given
-		// if one isn't given we will just use the defaultValue and set that
+		// Get the value from the properties file if one is given, else use the
+		// value from the global config.
 		if (properties != null) {
-			if (properties == Config.getConfig()) {
-				// If this properties file is the global config, then
-				// we need to prepend our domain name to it.
-				value = properties.getProperty(MY_DOMAIN + "." + name);
-			} else {
-				// Otherwise we do not.
-				value = properties.getProperty(name);
-			}
+			value = properties.getProperty(name);
+		} else {
+			value = Config.getOption(MY_DOMAIN, name);
 		}
 		
-		// Check if the Properties contains the value we want
+		// Check if the Value exists
 		if (value != null) {
-			// It does, so update the global config
+			// It does, so update the global config with the new value
 			Config.setOption(MY_DOMAIN, name, value);
-		} else {
-			// It does not, so check if we have a default value
-			if (defaultValue != null) {
-				// We do, use that instead.
-				Config.setOption(MY_DOMAIN, name, defaultValue);
-			}
-		}*/
+		}
 	}
 	
 	/**
@@ -322,10 +306,15 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 */
 	public void configClosed(final Properties properties) {
 		// Update Config options
-		updateOption(properties, "channel.shownone", null);
-		updateOption(properties, "channel.noneprefix", "");
-		updateOption(properties, "client.showname", null);
+		updateOption(properties, "channel.shownone");
+		updateOption(properties, "channel.noneprefix");
+		updateOption(properties, "client.showname");
 		// Update Status bar
 		updateStatus();
 	}
+	
+	/**
+	 * Called when the preferences dialog is cancelled.
+	 */
+	public void configCancelled() { }
 }

@@ -42,6 +42,8 @@ import com.dmdirc.Config;
 import com.dmdirc.Query;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.Identity;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelClientInfo;
@@ -79,24 +81,22 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	 * @return false if the plugin can not be loaded
 	 */
 	public boolean onLoad() {
-            /* This no longer works. The correct way to use defaults is to
-             * load an identity of type Global Default.
-             
-		final Properties config = Config.getConfig();
-		
-		// Set default options if they don't exist
-		updateOption(config, "general.directory", Config.getConfigDir() + "logs" + System.getProperty("file.separator"));
-		updateOption(config, "general.networkfolders", "true");
-		updateOption(config, "advanced.filenamehash", "false");
-		updateOption(config, "general.addtime", "true");
-		updateOption(config, "general.timestamp", "[dd/MM/yyyy HH:mm:ss]");
-		updateOption(config, "general.stripcodes", "true");
-		updateOption(config, "general.channelmodeprefix", "true");
-		updateOption(config, "backbuffer.autobackbuffer", "true");
-		updateOption(config, "backbuffer.lines", "10");
-		updateOption(config, "backbuffer.colour", "14");
-		updateOption(config, "backbuffer.timestamp", "false");
-		*/
+		// Set defaults
+		Properties defaults = new Properties();
+		defaults.setProperty(MY_DOMAIN + "general.directory", Config.getConfigDir() + "logs" + System.getProperty("file.separator"));
+		defaults.setProperty(MY_DOMAIN + "general.networkfolders", "true");
+		defaults.setProperty(MY_DOMAIN + "advanced.filenamehash", "false");
+		defaults.setProperty(MY_DOMAIN + "general.addtime", "true");
+		defaults.setProperty(MY_DOMAIN + "general.timestamp", "[dd/MM/yyyy HH:mm:ss]");
+		defaults.setProperty(MY_DOMAIN + "general.stripcodes", "true");
+		defaults.setProperty(MY_DOMAIN + "general.channelmodeprefix", "true");
+		defaults.setProperty(MY_DOMAIN + "backbuffer.autobackbuffer", "true");
+		defaults.setProperty(MY_DOMAIN + "backbuffer.lines", "10");
+		defaults.setProperty(MY_DOMAIN + "backbuffer.colour", "14");
+		defaults.setProperty(MY_DOMAIN + "backbuffer.timestamp", "false");
+		defaults.setProperty("identity.name", "Logging Plugin Defaults");
+		IdentityManager.addIdentity(new Identity(defaults));
+
 		final File dir = new File(Config.getOption(MY_DOMAIN, "general.directory"));
 		if (!dir.exists()) {
 			try {
@@ -177,38 +177,25 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	/**
 	 * Copy the new vaule of an option to the global config.
 	 *
-	 * @param properties Source of option value
+	 * @param properties Source of option value, or null if setting default values
 	 * @param name name of option
-	 * @param defaultValue value to set if source doesn't contain a value.
-	 *                     if this is null, value will not be changed.
 	 */
-	protected void updateOption(final Properties properties, final String name, final String defaultValue) {
-/*		String value = null;
+	protected void updateOption(final Properties properties, final String name) {
+		String value = null;
 		
-		// Get the value from the properties file if one is given
-		// if one isn't given we will just use the defaultValue and set that
+		// Get the value from the properties file if one is given, else use the
+		// value from the global config.
 		if (properties != null) {
-			if (properties == Config.getConfig()) {
-				// If this properties file is the global config, then
-				// we need to prepend our domain name to it.
-				value = properties.getProperty(MY_DOMAIN + "." + name);
-			} else {
-				// Otherwise we do not.
-				value = properties.getProperty(name);
-			}
+			value = properties.getProperty(name);
+		} else {
+			value = Config.getOption(MY_DOMAIN, name);
 		}
 		
-		// Check if the Properties contains the value we want
+		// Check if the Value exists
 		if (value != null) {
-			// It does, so update the global config
+			// It does, so update the global config with the new value
 			Config.setOption(MY_DOMAIN, name, value);
-		} else {
-			// It does not, so check if we have a default value
-			if (defaultValue != null) {
-				// We do, use that instead.
-				Config.setOption(MY_DOMAIN, name, defaultValue);
-			}
-		}*/
+		}
 	}
 	
 	/**
@@ -219,16 +206,16 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	public void configClosed(final Properties properties) {
 	
 		// Update Config options
-		updateOption(properties, "general.networkfolders", null);
-		updateOption(properties, "advanced.filenamehash", null);
-		updateOption(properties, "general.addtime", null);
-		updateOption(properties, "general.timestamp", null);
-		updateOption(properties, "general.stripcodes", null);
-		updateOption(properties, "general.channelmodeprefix", null);
-		updateOption(properties, "backbuffer.autobackbuffer", null);
-		updateOption(properties, "backbuffer.lines", null);
-		updateOption(properties, "backbuffer.colour", null);
-		updateOption(properties, "backbuffer.timestamp", null);
+		updateOption(properties, "general.networkfolders");
+		updateOption(properties, "advanced.filenamehash");
+		updateOption(properties, "general.addtime");
+		updateOption(properties, "general.timestamp");
+		updateOption(properties, "general.stripcodes");
+		updateOption(properties, "general.channelmodeprefix");
+		updateOption(properties, "backbuffer.autobackbuffer");
+		updateOption(properties, "backbuffer.lines");
+		updateOption(properties, "backbuffer.colour");
+		updateOption(properties, "backbuffer.timestamp");
 		
 		// Check new dir exists before changing
 		final File dir = new File(properties.getProperty("general.directory"));
@@ -236,22 +223,24 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 			try {
 				dir.mkdirs();
 				dir.createNewFile();
-				updateOption(properties, "general.directory", null);
+				updateOption(properties, "general.directory");
 			} catch (IOException ex) {
 				Logger.userError(ErrorLevel.LOW, "Unable to create new logging dir, not changing");
 			}
 		} else {
 			if (!dir.isDirectory()) {
 				Logger.userError(ErrorLevel.LOW, "Unable to create new logging dir (file exists instead), not changing");
-			} else {		
-				updateOption(properties, "general.directory", null);
+			} else {
+				updateOption(properties, "general.directory");
 			}
 		}
 	}
 	
-	/** {@inheritDoc}. */
-	public void configCancelled() {
-	}
+	
+	/**
+	 * Called when the preferences dialog is cancelled.
+	 */
+	public void configCancelled() { }
 	
 	/**
 	 * Get the plugin version.

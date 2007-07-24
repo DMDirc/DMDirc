@@ -131,6 +131,10 @@ public class ProcessMessage extends IRCProcessor {
 		// CTCPReplies are sent as Notices
 		if (isValidChannelName(token[2])) {
 			iChannel = getChannelInfo(token[2]);
+			if (iChannel == null) {
+				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got message for channel ("+token[2]+") that I am not on.", myParser.getLastLine()));
+				return;
+			}
 			if (iClient != null && iChannel != null) { iChannelClient = iChannel.getUser(iClient); }
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
 				if (!isAction) {

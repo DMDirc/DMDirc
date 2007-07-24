@@ -53,7 +53,7 @@ public final class LoggingCommand extends ServerCommand {
 	 *
 	 * @param origin The frame in which this command was issued
 	 * @param server The server object that this command is associated with
-         * @param isSilent Whether this command is silenced or not
+	 * @param isSilent Whether this command is silenced or not
 	 * @param args The user supplied arguments
 	 */
 	public void execute(final InputWindow origin, final Server server, final boolean isSilent, final String... args) {
@@ -81,36 +81,6 @@ public final class LoggingCommand extends ServerCommand {
 				sendLine(origin, isSilent, "commandOutput", getName() + " reload                     - Reload the logging plugin.");
 				sendLine(origin, isSilent, "commandOutput", getName() + " help                       - Show this help.");
 				sendLine(origin, isSilent, "commandOutput", getName() + " config                     - Show the logging plugin configuration.");
-				sendLine(origin, isSilent, "commandOutput", getName() + " set <help|option> [value]  - Set a configuration option.");
-			} else if (args[0].equalsIgnoreCase("set")) {
-				if (args.length < 2 || args[1].equalsIgnoreCase("help")) {
-                                    // This is stupid and no longer works.
-/*					final Properties config = Config.getConfig();
-					sendLine(origin, isSilent, "commandOutput", "Current Values:");
-					final Enumeration values = config.propertyNames();
-					while (values.hasMoreElements()) {
-						final String property = (String) values.nextElement();
-						
-						if (property.toLowerCase().startsWith(plugin.getDomain().toLowerCase() + ".")) {
-							sendLine(origin, isSilent, "commandOutput", "[" + property.substring(property.indexOf(".") + 1) + "] => " + config.getProperty(property));
-						}
-					}
-					sendLine(origin, isSilent, "commandOutput", "");*/
-					sendLine(origin, isSilent, "commandOutput", "Use " + getName() + " set <option> [value] to change the value. (if [value] is not given, the current value will be displayed)");
-				} else if (args.length > 1) {
-					if (Config.hasOption(plugin.getDomain(), args[1].toLowerCase())) {
-						String newValue = "";
-						if (args.length > 2) { newValue = implodeArgs(2, args); }
-						if (newValue.equals("")) {
-							sendLine(origin, isSilent, "commandOutput", "Current value of '" + args[1] + "' is '" + Config.getOption(plugin.getDomain(), args[1].toLowerCase()) + "'");
-						} else {
-							plugin.updateOption(null, args[1], newValue);
-							sendLine(origin, isSilent, "commandOutput", "Setting '" + args[1] + "' to '" + newValue + "'");
-						}
-					} else {
-						sendLine(origin, isSilent, "commandOutput", "'" + args[1] + "' is not a valid option");
-					}
-				}
 			} else {
 				sendLine(origin, isSilent, "commandOutput", "Unknown command '" + args[0] + "'. Use " + getName() + " help for a list of commands.");
 			}

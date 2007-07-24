@@ -769,12 +769,12 @@ public final class IRCParser implements Runnable {
 		
 		int nParam;
 		callDataIn(line);
-		final String sParam = token[1];
-		
 		setPingNeeded(false);
 //		pingCountDown = pingCountDownLength;
 		
+		
 		try {
+			final String sParam = token[1];
 			if (token[0].equalsIgnoreCase("PING") || token[1].equalsIgnoreCase("PING")) {
 				sendString("PONG :" + sParam);
 			} else if (token[0].equalsIgnoreCase("PONG") || token[1].equalsIgnoreCase("PONG")) {
