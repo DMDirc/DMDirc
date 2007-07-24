@@ -291,10 +291,17 @@ public final class Channel extends WritableFrameContainer implements
      * Updates the title of the channel frame, and of the main frame if appropriate.
      */
     private void updateTitle() {
-        final String title = Styliser.stipControlCodes(channelInfo.getName()
-                + " - " + channelInfo.getTopic());
+        String temp = Styliser.stipControlCodes(channelInfo.getName());
+        
+        if (channelInfo.getTopic().length() > 0) {
+                temp = temp + " - " + Styliser.stipControlCodes(channelInfo.getTopic());
+        }
+        
+        // Needs to be final for AIC
+        final String title = temp;
         
         SwingUtilities.invokeLater(new Runnable() {
+            
             public void run() {
                 frame.setTitle(title);
                 
