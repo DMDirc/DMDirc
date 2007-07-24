@@ -132,6 +132,7 @@ public final class IdentityManager {
             }
             
             config = new Identity(file, true);
+            config.setOption("identity", "name", "Global config (" + Config.getConfigFile() + ")");
             addIdentity(config);
         } catch (InvalidIdentityFileException ex) {
             // This shouldn't happen as we're forcing it to global

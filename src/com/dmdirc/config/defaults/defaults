@@ -1,4 +1,4 @@
-identity.name = Global defaults
+identity.name = DMDirc default settings
 identity.globaldefault = true
 
 general.submitErrors=true
