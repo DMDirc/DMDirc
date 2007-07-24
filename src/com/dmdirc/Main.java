@@ -56,6 +56,11 @@ public final class Main {
     public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE;
     
     /**
+     * The UI to use for the client.
+     */
+    private static UIController controller = new Controller();
+    
+    /**
      * Prevents creation of main.
      */
     private Main() {
@@ -116,7 +121,7 @@ public final class Main {
      * @return The client's UI controller
      */
     public static UIController getUI() {
-        return new Controller();
+        return controller;
     }
     
     /**

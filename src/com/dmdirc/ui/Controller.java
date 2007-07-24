@@ -39,6 +39,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.QueryWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.UIController;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;

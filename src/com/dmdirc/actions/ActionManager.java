@@ -531,7 +531,8 @@ public final class ActionManager {
         String res = target;
         
         for (String key : Config.getOptions("actions")) {
-            res = res.replaceAll("\\$" + key, Config.getOption("actions", key));
+            res = res.replaceAll("\\$" + key, escapeRegex(Config.getOption("actions", key)));
+            res = res.replaceAll("\\$!" + key, Config.getOption("actions", key));
         }
         
         int j = 0;
@@ -539,7 +540,11 @@ public final class ActionManager {
             for (ActionComponent comp : getCompatibleComponents(argument.getClass())) {
                 if (comp.get(argument) != null) {
                     final String value = comp.get(argument).toString();
-                    res = res.replaceAll("\\$\\{" + j + "." + comp.toString() + "\\}", value);
+                    res = res.replaceAll("\\$\\{" + escapeRegex(j + "."
+                            + comp.toString()) + "\\}", escapeRegex(value));
+                    
+                    res = res.replaceAll("\\$!\\{" + escapeRegex(j + "."
+                            + comp.toString()) + "\\}", value);
                 }
             }
             j++;
@@ -551,7 +556,11 @@ public final class ActionManager {
             for (ActionComponent comp : getCompatibleComponents(Server.class)) {
                 if (comp.get(server) != null) {
                     final String value = comp.get(server).toString();
-                    res = res.replaceAll("\\$\\{" + comp.toString() + "\\}", value);
+                    res = res.replaceAll("\\$\\{" + escapeRegex(comp.toString())
+                            + "\\}", escapeRegex(value));
+                    
+                    res = res.replaceAll("\\$!\\{" + escapeRegex(comp.toString())
+                            + "\\}", value);
                 }
             }
         }
@@ -565,11 +574,42 @@ public final class ActionManager {
                 }
                 compound.insert(0, args[i]);
                 
-                res = res.replaceAll("\\$" + (i + 1) + "-", compound.toString());
-                res = res.replaceAll("\\$" + (i + 1), args[i]);
+                res = res.replaceAll("\\$!" + (i + 1) + "-", compound.toString());
+                res = res.replaceAll("\\$!" + (i + 1), args[i]);
+                
+                res = res.replaceAll("\\$" + (i + 1) + "-", escapeRegex(compound.toString()));
+                res = res.replaceAll("\\$" + (i + 1), escapeRegex(args[i]));
             }
         }
         
         return res;
+    }
+    
+    private static String escapeRegex(final String regex) {
+        final StringBuilder result = new StringBuilder(regex.length());
+        
+        for (int i = 0; i < regex.length(); i++) {
+            switch (regex.charAt(i)) {
+            case '.':
+            case '\\':
+            case '$':
+            case '^':
+            case '{':
+            case '}':
+            case '(':
+            case ')':
+            case '[':
+            case ']':
+            case '+':
+            case '*':
+            case '?':
+                result.append('\\');
+                // Fall through:
+            default:
+                result.append(regex.charAt(i));
+            }
+        }
+        
+        return result.toString();
     }
 }

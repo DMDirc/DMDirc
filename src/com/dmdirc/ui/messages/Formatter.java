@@ -74,7 +74,6 @@ public final class Formatter {
         final String res = properties.getProperty(messageType);
         
         if (res == null) {
-            Logger.userError(ErrorLevel.HIGH, "Format string not found: " + messageType);
             return "<No format string for message type " + messageType + ">";
         } else {
             try {

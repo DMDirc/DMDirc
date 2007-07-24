@@ -139,21 +139,12 @@ public abstract class Frame extends JInternalFrame implements Window,
         }
     }
     
-    /**
-     * Makes this frame visible. We don't call this from the constructor
-     * so that we can register an actionlistener for the open event before
-     * the frame is opened.
-     */
+    /** {@inheritDoc} */
     public void open() {
         setVisible(true);
     }
     
-    /**
-     * Adds a line of text to the main text area.
-     *
-     * @param line text to add
-     * @param timestamp Whether to timestamp the line or not
-     */
+    /** {@inheritDoc} */
     public final void addLine(final String line, final boolean timestamp) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

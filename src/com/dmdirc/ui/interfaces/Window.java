@@ -54,6 +54,14 @@ public interface Window {
     void addLine(StringBuffer messageType, Object... args);
     
     /**
+     * Adds the specified raw line to the window, without using a formatter.
+     * 
+     * @param line The line to be added
+     * @param timestamp Whether or not to display the timestamp for this line
+     */
+    void addLine(final String line, final boolean timestamp);
+    
+    /**
      * Clears the main text area of the command window.
      */
     void clear();
