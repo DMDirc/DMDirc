@@ -23,10 +23,11 @@
 package com.dmdirc.addons.osdplugin;
 
 import com.dmdirc.Config;
+import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.plugins.Plugin;
-import com.dmdirc.ui.components.PreferencesInterface;
-import com.dmdirc.ui.components.PreferencesPanel;
+import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.interfaces.PreferencesPanel;
 
 import java.awt.BorderLayout;
 import java.util.Properties;
@@ -94,7 +95,7 @@ public final class OsdPlugin extends Plugin implements PreferencesInterface {
     
     /** {@inheritDoc}. */
     public void showConfig() {
-        final PreferencesPanel preferencesPanel = new PreferencesPanel(this, "OSD Plugin - Config");
+        final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "OSD Plugin - Config");
         final JPanel panel = new JPanel();
         spinner = new JSpinner(new SpinnerNumberModel());
         

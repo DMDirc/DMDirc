@@ -47,8 +47,8 @@ import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.components.PreferencesInterface;
-import com.dmdirc.ui.components.PreferencesPanel;
+import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.interfaces.Window;
 import java.util.Map.Entry;
 
@@ -259,7 +259,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	 * Called to show the Configuration dialog of the plugin if appropriate.
 	 */
 	public void showConfig() {
-		final PreferencesPanel preferencesPanel = new PreferencesPanel(this, "Window Status Plugin - Config");
+		final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "Window Status Plugin - Config");
 		preferencesPanel.addCategory("Channel", "Configuration for Window Status plugin when showing a channel window.");
 		preferencesPanel.addCategory("Client", "Configuration for Window Status plugin when showing a client window.");
 

@@ -25,6 +25,7 @@ package com.dmdirc.addons.nickcolours;
 import com.dmdirc.Channel;
 import com.dmdirc.ChannelClientProperty;
 import com.dmdirc.Config;
+import com.dmdirc.Main;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.parser.ChannelClientInfo;
@@ -32,8 +33,8 @@ import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
-import com.dmdirc.ui.components.PreferencesInterface;
-import com.dmdirc.ui.components.PreferencesPanel;
+import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
@@ -151,7 +152,7 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
     
     /** {@inheritDoc} */
     public void showConfig() {
-        final PreferencesPanel preferencesPanel = new PreferencesPanel(this, "NickColour Plugin - Config");
+        final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "NickColour Plugin - Config");
         preferencesPanel.addCategory("General", "General configuration for NickColour plugin.");
         preferencesPanel.addCategory("Nick colours", "Set colours for specific nicknames.");
         

@@ -31,11 +31,13 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.components.DMDircEventQueue;
+import com.dmdirc.ui.components.SwingPreferencesPanel;
 import com.dmdirc.ui.components.StatusBar;
 import com.dmdirc.ui.framemanager.FrameManager;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.interfaces.QueryWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.UIController;
@@ -55,7 +57,7 @@ import javax.swing.plaf.FontUIResource;
  *
  * @author Chris
  */
-public class Controller implements UIController {
+public class SwingController implements UIController {
     
     /** {@inheritDoc} */
     public MainFrame getMainWindow() {
@@ -91,6 +93,12 @@ public class Controller implements UIController {
     public InputWindow getInputWindow(final WritableFrameContainer owner,
             final CommandParser commandParser) {
         return new CustomInputFrame(owner, commandParser);
+    }
+    
+    /** {@inheritDoc} */
+    public PreferencesPanel getPreferencesPanel(
+            final PreferencesInterface parent, final String title) {
+        return new SwingPreferencesPanel(parent, title);
     }
     
     /** {@inheritDoc} */

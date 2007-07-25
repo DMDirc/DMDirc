@@ -39,6 +39,7 @@ import java.util.Hashtable;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Config;
+import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
@@ -52,8 +53,8 @@ import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.EventPlugin;
-import com.dmdirc.ui.components.PreferencesInterface;
-import com.dmdirc.ui.components.PreferencesPanel;
+import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Styliser;
 
@@ -145,7 +146,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	 * Called to show the Configuration dialog of the plugin if appropriate.
 	 */
 	public void showConfig() {
-		final PreferencesPanel preferencesPanel = new PreferencesPanel(this, "Logging Plugin - Config");
+		final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "Logging Plugin - Config");
 		preferencesPanel.addCategory("General", "General configuration for Logging plugin.");
 		preferencesPanel.addCategory("Back Buffer", "Options related to the automatic backbuffer");
 		preferencesPanel.addCategory("Advanced", "Advanced configuration for Logging plugin. You shouldn't need to edit this unless you know what you are doing.");

@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.components;
+package com.dmdirc.ui.interfaces;
 
 import java.util.Properties;
 

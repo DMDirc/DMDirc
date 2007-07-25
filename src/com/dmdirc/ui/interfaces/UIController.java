@@ -94,6 +94,16 @@ public interface UIController {
     InputWindow getInputWindow(WritableFrameContainer owner, CommandParser commandParser);
     
     /**
+     * Creates a new preferences panel for the specified parent.
+     *
+     * @param parent Preferences panel parent
+     * @param text Preferences panel title
+     *
+     * @return PreferencesPanel
+     */
+    PreferencesPanel getPreferencesPanel(PreferencesInterface parent, String title);
+    
+    /**
      * Initialises any settings required by this UI (this is always called
      * before any aspect of the UI is instansiated).
      */

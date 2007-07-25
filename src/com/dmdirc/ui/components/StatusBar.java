@@ -237,6 +237,11 @@ public final class StatusBar extends JPanel implements MouseListener,
     }
     
     /** {@inheritDoc} */
+    public void fatalError(final ProgramError error) {
+        //Ignore
+    }
+    
+    /** {@inheritDoc} */
     public void errorDeleted(final ProgramError error) {
         //Ignore
     }

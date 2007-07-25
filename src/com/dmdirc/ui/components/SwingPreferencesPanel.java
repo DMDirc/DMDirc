@@ -25,6 +25,9 @@ package com.dmdirc.ui.components;
 import com.dmdirc.Config;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.interfaces.PreferencesPanel;
+import com.dmdirc.ui.interfaces.PreferencesPanel.OptionType;
 import com.dmdirc.ui.MainFrame;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -46,7 +49,6 @@ import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -66,14 +68,15 @@ import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
  * Allows the user to modify global client preferences.
  */
-public final class PreferencesPanel extends StandardDialog implements
-        ActionListener, TreeSelectionListener {
+public final class SwingPreferencesPanel extends StandardDialog implements
+        ActionListener, TreeSelectionListener, PreferencesPanel {
     
     /**
      * A version number for this class. It should be changed whenever the
@@ -81,24 +84,6 @@ public final class PreferencesPanel extends StandardDialog implements
      * serialized objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 7;
-    
-    /** Acceptable input types for the config dialog. */
-    public static enum OptionType {
-        /** JTextfield. */
-        TEXTFIELD,
-        /** JCheckBox. */
-        CHECKBOX,
-        /** JComboBox. */
-        COMBOBOX,
-        /** JSpinner. */
-        SPINNER,
-        /** ColourChooser. */
-        COLOUR,
-        /** OptionalColourChooser. */
-        OPTIONALCOLOUR,
-        /** JPanel. */
-        PANEL,
-    };
     
     /** All text fields in the dialog, used to apply settings. */
     private final Map<String, JTextField> textFields;
@@ -142,25 +127,22 @@ public final class PreferencesPanel extends StandardDialog implements
     /** root node. */
     private DefaultMutableTreeNode rootNode;
     
-    /** Node icons. */
-    private Map<DefaultMutableTreeNode, Icon> nodeIcons;
-    
     /**
-     * Creates a new instance of PreferencesPanel.
-     *
+     * Creates a new instance of SwingPreferencesPanel.
+     * 
      * @param preferencesOwner Owner of the preferences dialog
      */
-    public PreferencesPanel(final PreferencesInterface preferencesOwner) {
+    public SwingPreferencesPanel(final PreferencesInterface preferencesOwner) {
         this(preferencesOwner, "Preferences");
     }
     
     /**
-     * Creates a new instance of PreferencesPanel.
-     *
+     * Creates a new instance of SwingPreferencesPanel.
+     * 
      * @param preferencesOwner Owner of the preferences dialog
      * @param title preferences dialog title
      */
-    public PreferencesPanel(final PreferencesInterface preferencesOwner,
+    public SwingPreferencesPanel(final PreferencesInterface preferencesOwner,
             final String title) {
         super(MainFrame.getMainFrame(), false);
         
@@ -178,8 +160,6 @@ public final class PreferencesPanel extends StandardDialog implements
         optionalColours = new HashMap<String, OptionalColourChooser>();
         
         panels = new ArrayList<JPanel>();
-        
-        nodeIcons = new HashMap<DefaultMutableTreeNode, Icon>();
         
         initComponents();
     }
@@ -361,38 +341,14 @@ public final class PreferencesPanel extends StandardDialog implements
         ((JPanel) parent.getComponent(1)).add(option);
     }
     
-    /**
-     * Adds a named category to the preferences panel.
-     *
-     * @param name Category name
-     * @param blurb category blurb
-     */
+    /** {@inheritDoc} */
     public void addCategory(final String name, final String blurb) {
-        addCategory("", name, blurb, null);
+        addCategory("", name, blurb);
     }
     
-    /**
-     * Adds a named category to the preferences panel.
-     *
-     * @param parentCategory parent category
-     * @param name Category name
-     * @param blurb category blurb
-     */
+    /** {@inheritDoc} */
     public void addCategory(final String parentCategory, final String name,
             final String blurb) {
-        addCategory(parentCategory, name, blurb, null);
-    }
-    
-    /**
-     * Adds a named category to the preferences panel.
-     *
-     * @param parentCategory parent category
-     * @param name Category name
-     * @param blurb category blurb
-     * @param nodeIcon icon for the node
-     */
-    public void addCategory(final String parentCategory, final String name,
-            final String blurb, final Icon nodeIcon) {
         final JPanel panel = new JPanel(new BorderLayout(SMALL_BORDER,
                 LARGE_BORDER));
         
@@ -408,8 +364,6 @@ public final class PreferencesPanel extends StandardDialog implements
                     parentCategory, 0, Position.Bias.Forward)
                     .getLastPathComponent();
         }
-        
-        nodeIcons.put(newNode, nodeIcon);
         
         categories.put(name, panel);
         mainPanel.add(panel, name);
@@ -431,27 +385,13 @@ public final class PreferencesPanel extends StandardDialog implements
         panel.add(new JPanel(new SpringLayout()), BorderLayout.CENTER);
     }
     
-    /**
-     * Replaces the option panel in a category with the specified panel, this
-     * panel will be be automatically laid out.
-     *
-     * @param category category to replace the options panel in
-     * @param panel panel to replace options panel with
-     */
+    /** {@inheritDoc} */
     public void replaceOptionPanel(final String category, final JPanel panel) {
         panels.add(panel);
         categories.get(category).add(panel, 1);
     }
     
-    /**
-     * Adds an option to the specified category.
-     *
-     * @param category category option is to be added to
-     * @param name config name for the option
-     * @param displayName displayable name for the option
-     * @param helpText Help text to be displayed for the option
-     * @param defaultValue default value
-     */
+    /** {@inheritDoc} */
     public void addTextfieldOption(final String category, final String name,
             final String displayName, final String helpText,
             final String defaultValue) {
@@ -459,15 +399,7 @@ public final class PreferencesPanel extends StandardDialog implements
                 OptionType.TEXTFIELD, defaultValue);
     }
     
-    /**
-     * Adds an option to the specified category.
-     *
-     * @param category category option is to be added to
-     * @param name config name for the option
-     * @param displayName displayable name for the option
-     * @param helpText Help text to be displayed for the option
-     * @param defaultValue default value
-     */
+    /** {@inheritDoc} */
     public void addCheckboxOption(final String category, final String name,
             final String displayName, final String helpText,
             final boolean defaultValue) {
@@ -475,17 +407,7 @@ public final class PreferencesPanel extends StandardDialog implements
                 OptionType.CHECKBOX, defaultValue);
     }
     
-    /**
-     * Adds an option to the specified category.
-     *
-     * @param category category option is to be added to
-     * @param name config name for the option
-     * @param displayName displayable name for the option
-     * @param helpText Help text to be displayed for the option
-     * @param options Default combo box options
-     * @param defaultValue default value
-     * @param editable editable combo box
-     */
+    /** {@inheritDoc} */
     public void addComboboxOption(final String category, final String name,
             final String displayName, final String helpText,
             final String[] options, final String defaultValue,
@@ -494,15 +416,7 @@ public final class PreferencesPanel extends StandardDialog implements
                 OptionType.COMBOBOX, options, defaultValue, editable);
     }
     
-    /**
-     * Adds an option to the specified category.
-     *
-     * @param category category option is to be added to
-     * @param name config name for the option
-     * @param displayName displayable name for the option
-     * @param helpText Help text to be displayed for the option
-     * @param defaultValue default value
-     */
+    /** {@inheritDoc} */
     public void addSpinnerOption(final String category, final String name,
             final String displayName, final String helpText,
             final int defaultValue) {
@@ -510,18 +424,7 @@ public final class PreferencesPanel extends StandardDialog implements
                 OptionType.SPINNER, defaultValue);
     }
     
-    /**
-     * Adds an option to the specified category.
-     *
-     * @param category category option is to be added to
-     * @param name config name for the option
-     * @param displayName displayable name for the option
-     * @param helpText Help text to be displayed for the option
-     * @param defaultValue default value
-     * @param minimum minimum value
-     * @param maximum maximum value
-     * @param stepSize step size interval
-     */
+    /** {@inheritDoc} */
     public void addSpinnerOption(final String category, final String name,
             final String displayName, final String helpText,
             final int defaultValue, final int minimum, final int maximum,
@@ -530,17 +433,7 @@ public final class PreferencesPanel extends StandardDialog implements
                 OptionType.SPINNER, defaultValue, minimum, maximum, stepSize);
     }
     
-    /**
-     * Adds an option to the specified category.
-     *
-     * @param category category option is to be added to
-     * @param name config name for the option
-     * @param displayName displayable name for the option
-     * @param helpText Help text to be displayed for the option
-     * @param defaultValue default value
-     * @param showIrcColours show irc colours in the colour picker
-     * @param showHexColours show hex colours in the colour picker
-     */
+    /** {@inheritDoc} */
     public void addColourOption(final String category, final String name,
             final String displayName, final String helpText,
             final String defaultValue, final boolean showIrcColours,
@@ -549,18 +442,7 @@ public final class PreferencesPanel extends StandardDialog implements
                 OptionType.COLOUR, defaultValue, showIrcColours, showHexColours);
     }
     
-    /**
-     * Adds an option to the specified category.
-     *
-     * @param category category option is to be added to
-     * @param name config name for the option
-     * @param displayName displayable name for the option
-     * @param helpText Help text to be displayed for the option
-     * @param defaultValue default value
-     * @param initialState initial state
-     * @param showIrcColours show irc colours in the colour picker
-     * @param showHexColours show hex colours in the colour picker
-     */
+    /** {@inheritDoc} */
     public void addOptionalColourOption(final String category, final String name,
             final String displayName, final String helpText,
             final String defaultValue, final boolean initialState,
@@ -570,15 +452,7 @@ public final class PreferencesPanel extends StandardDialog implements
                 showIrcColours, showHexColours);
     }
     
-    /**
-     * Adds an option to the specified category.
-     *
-     * @param category category option is to be added to
-     * @param name config name for the option
-     * @param displayName displayable name for the option
-     * @param helpText Help text to be displayed for the option
-     * @param panel panel to add
-     */
+    /** {@inheritDoc} */
     public void addPanelOption(final String category, final String name,
             final String displayName, final String helpText,
             final JPanel panel) {
@@ -613,10 +487,8 @@ public final class PreferencesPanel extends StandardDialog implements
         .getSelectionPath().getLastPathComponent().toString());
     }
     
-    /**
-     * Saves the options in the dialog to the config.
-     */
-    private void saveOptions() {
+    /** {@inheritDoc} */
+    public void saveOptions() {
         final Properties properties = new Properties();
         for (String option : textFields.keySet()) {
             properties.setProperty(option, textFields.get(option).getText());
@@ -642,9 +514,7 @@ public final class PreferencesPanel extends StandardDialog implements
         owner.configClosed(properties);
     }
     
-    /**
-     * Lays out the preferences panel and displays it.
-     */
+    /** {@inheritDoc} */
     public void display() {
         for (JPanel panel : categories.values()) {
             if (!panels.contains((JPanel) panel.getComponent(1))) {
@@ -670,7 +540,7 @@ public final class PreferencesPanel extends StandardDialog implements
     /**
      * Preferences tree cell renderer.
      */
-    private class PreferencesTreeCellRenderer extends DefaultTreeCellRenderer {
+    private class PreferencesTreeCellRenderer extends JLabel implements TreeCellRenderer {
         
         /**
          * A version number for this class. It should be changed whenever the class
@@ -696,15 +566,11 @@ public final class PreferencesPanel extends StandardDialog implements
          * @param focused whether the node has focus.
          * @return RendererComponent for this node.
          */
-        @Override
         public final Component getTreeCellRendererComponent(final JTree tree,
                 final Object value, final boolean sel, final boolean expanded,
                 final boolean leaf, final int row, final boolean focused) {
             
-            super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, focused);
-            
-            final DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-            
+            setText(value.toString());
             setBackground(tree.getBackground());
             setForeground(tree.getForeground());
             setOpaque(true);
@@ -715,13 +581,11 @@ public final class PreferencesPanel extends StandardDialog implements
             setPreferredSize(new Dimension((int) tabList.getPreferredSize().getWidth() - 20,
                     getFont().getSize() + SMALL_BORDER));
             
-            if (selected) {
+            if (sel) {
                 setFont(getFont().deriveFont(Font.BOLD));
             } else {
                 setFont(getFont().deriveFont(Font.PLAIN));
             }
-            
-            setIcon(nodeIcons.get(node));
             
             return this;
         }

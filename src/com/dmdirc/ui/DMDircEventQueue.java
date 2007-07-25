@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.components;
+package com.dmdirc.ui;
 
 import com.dmdirc.ui.actions.CopyAction;
 import com.dmdirc.ui.actions.CutAction;

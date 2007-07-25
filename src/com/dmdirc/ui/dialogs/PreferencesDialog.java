@@ -23,8 +23,8 @@
 package com.dmdirc.ui.dialogs;
 
 import com.dmdirc.Config;
-import com.dmdirc.ui.components.PreferencesInterface;
-import com.dmdirc.ui.components.PreferencesPanel;
+import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.components.SwingPreferencesPanel;
 
 import java.util.Map;
 import java.util.Properties;
@@ -48,7 +48,7 @@ public final class PreferencesDialog implements PreferencesInterface {
     private static PreferencesDialog me;
     
     /** preferences panel. */
-    private PreferencesPanel preferencesPanel;
+    private SwingPreferencesPanel preferencesPanel;
     
     /**
      * Creates a new instance of PreferencesDialog.
@@ -70,7 +70,7 @@ public final class PreferencesDialog implements PreferencesInterface {
      */
     private void initComponents() {
         
-        preferencesPanel = new PreferencesPanel(this);
+        preferencesPanel = new SwingPreferencesPanel(this);
         
         initGeneralTab();
         initConnectionTab();

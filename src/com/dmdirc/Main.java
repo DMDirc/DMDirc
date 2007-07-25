@@ -27,7 +27,7 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.ui.Controller;
+import com.dmdirc.ui.SwingController;
 import com.dmdirc.ui.dialogs.firstrunwizard.FirstRunWizard;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.updater.UpdateChannel;
@@ -58,7 +58,7 @@ public final class Main {
     /**
      * The UI to use for the client.
      */
-    private static UIController controller = new Controller();
+    private static UIController controller = new SwingController();
     
     /**
      * Prevents creation of main.

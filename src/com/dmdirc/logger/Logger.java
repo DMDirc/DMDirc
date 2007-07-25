@@ -23,7 +23,6 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.Config;
-import com.dmdirc.ui.dialogs.error.FatalErrorDialog;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -91,12 +90,8 @@ public final class Logger {
             ErrorManager.getErrorManager().sendError(error);
         }
         
-        if (level == ErrorLevel.FATAL) {
-            if (!Config.getOptionBool("general", "submitErrors")) {
-                error.setStatus(ErrorStatus.FINISHED);
-            }
-            new FatalErrorDialog(error);
-            return;
+        if (level == ErrorLevel.FATAL && !Config.getOptionBool("general", "submitErrors")) {
+            error.setStatus(ErrorStatus.FINISHED);
         }
         
         ErrorManager.getErrorManager().addError(error);
@@ -172,7 +167,7 @@ public final class Logger {
             }
         }
         
-        final File errorFile = new File(errorDir, "" + error.getLevel() + "-" 
+        final File errorFile = new File(errorDir, "" + error.getLevel() + "-"
                 + error.getDate().getTime() + ".log");
         
         if (errorFile.exists()) {

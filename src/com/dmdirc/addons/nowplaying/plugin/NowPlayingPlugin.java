@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.nowplaying.plugin;
 
+import com.dmdirc.Main;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.addons.nowplaying.MediaSource;
@@ -30,8 +31,8 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.ui.components.PreferencesInterface;
-import com.dmdirc.ui.components.PreferencesPanel;
+import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.interfaces.PreferencesPanel;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -110,7 +111,7 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     
     /** {@inheritDoc} */
     public void showConfig() {
-        final PreferencesPanel preferencesPanel = new PreferencesPanel(this, "Now playing Plugin - Config");
+        final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "Now playing Plugin - Config");
         configPanel = new ConfigPanel(sources);
         
         preferencesPanel.addCategory("General", "General options for the plugin.");

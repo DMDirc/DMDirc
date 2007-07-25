@@ -86,7 +86,11 @@ public final class ErrorManager implements Serializable {
      */
     public void addError(final ProgramError error) {
         errors.add(error);
-        fireErrorAdded(error);
+        if (error.getLevel() == ErrorLevel.FATAL) {
+            fireFatalError(error);
+        } else {
+            fireErrorAdded(error);
+        }
     }
     
     
@@ -254,6 +258,20 @@ public final class ErrorManager implements Serializable {
         for (int i = 0; i < listeners.length; i += 2) {
             if (listeners[i] == ErrorListener.class) {
                 ((ErrorListener) listeners[i + 1]).errorAdded(error);
+            }
+        }
+    }
+    
+    /**
+     * Fired when the program encounters a fatal error.
+     *
+     * @param error Error that occurred
+     */
+    protected void fireFatalError(final ProgramError error) {
+        final Object[] listeners = errorListeners.getListenerList();
+        for (int i = 0; i < listeners.length; i += 2) {
+            if (listeners[i] == ErrorListener.class) {
+                ((ErrorListener) listeners[i + 1]).fatalError(error);
             }
         }
     }

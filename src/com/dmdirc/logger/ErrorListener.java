@@ -38,6 +38,13 @@ public interface ErrorListener extends EventListener {
     void errorAdded(final ProgramError error);
     
     /**
+     * Fired when the program encounters an error.
+     *
+     * @param error Error that occurred
+     */
+    void fatalError(final ProgramError error);
+    
+    /**
      * Fired when an error is deleted.
      *
      * @param error Error that was deleted

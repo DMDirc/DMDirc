@@ -306,6 +306,11 @@ public final class ErrorListDialog extends StandardDialog implements
     }
     
     /** {@inheritDoc} */
+    public void fatalError(final ProgramError error) {
+        new FatalErrorDialog(error);
+    }
+    
+    /** {@inheritDoc} */
     public void errorDeleted(final ProgramError error) {
         updateTable();
         if (ErrorManager.getErrorManager().getErrorCount() > 0) {
