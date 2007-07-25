@@ -22,9 +22,9 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -47,7 +47,7 @@ public final class Active extends GlobalCommand {
             final String... args) {
         final String command = implodeArgs(args);
         
-        final InputWindow window = (InputWindow) MainFrame.getMainFrame().getActiveFrame();
+        final InputWindow window = (InputWindow) Main.getUI().getMainWindow().getActiveFrame();
         
         if (window != null) {
             window.getCommandParser().parseCommand(window, command);

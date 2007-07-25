@@ -22,10 +22,10 @@
 
 package com.dmdirc.commandparser.commands.server;
 
+import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 
@@ -54,7 +54,7 @@ public final class Echo extends ServerCommand {
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {        
         if (args.length > 0 && args[0].equalsIgnoreCase("--active")) {
-            final Window frame = MainFrame.getMainFrame().getActiveFrame();
+            final Window frame = Main.getUI().getMainWindow().getActiveFrame();
             if (frame instanceof InputWindow) {
                 ((InputWindow) frame).addLine("commandOutput", implodeArgs(1, args));
             }
