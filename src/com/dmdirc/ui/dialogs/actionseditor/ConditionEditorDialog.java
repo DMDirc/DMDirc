@@ -22,12 +22,12 @@
 
 package com.dmdirc.ui.dialogs.actionseditor;
 
+import com.dmdirc.Main;
 import com.dmdirc.actions.ActionComparison;
 import com.dmdirc.actions.ActionComponent;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionType;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.UIUtilities.layoutGrid;
@@ -101,7 +101,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
      */
     private ConditionEditorDialog(final ConditionsTabPanel parent,
             final ActionType trigger, final ActionCondition condition) {
-        super(MainFrame.getMainFrame(), false);
+        super(Main.getUI().getMainWindow(), false);
         
         this.trigger = trigger;
         this.parent = parent;
@@ -126,7 +126,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
         addListeners();
         layoutComponents();
         
-        this.setLocationRelativeTo(MainFrame.getMainFrame());
+        this.setLocationRelativeTo(Main.getUI().getMainWindow());
         
         this.setVisible(true);
     }

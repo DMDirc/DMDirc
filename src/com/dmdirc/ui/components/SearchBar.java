@@ -23,7 +23,7 @@
 package com.dmdirc.ui.components;
 
 import com.dmdirc.IconManager;
-import com.dmdirc.ui.MainFrame;
+import com.dmdirc.Main;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.textpane.TextPane;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -297,7 +297,7 @@ public final class SearchBar extends JPanel implements ActionListener,
         }
         
         //want to continue?
-        if (JOptionPane.showConfirmDialog(MainFrame.getMainFrame(),
+        if (JOptionPane.showConfirmDialog(Main.getUI().getMainWindow(),
                 "Do you want to continue searching from the end?",
                 "Beginning reached", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
@@ -363,7 +363,7 @@ public final class SearchBar extends JPanel implements ActionListener,
         }
         
         //want to continue?
-        if (JOptionPane.showConfirmDialog(MainFrame.getMainFrame(),
+        if (JOptionPane.showConfirmDialog(Main.getUI().getMainWindow(),
                 "Do you want to continue searching from the beginning?",
                 "End reached", JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {

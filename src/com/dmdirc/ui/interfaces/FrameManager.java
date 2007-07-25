@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.framemanager;
+package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;

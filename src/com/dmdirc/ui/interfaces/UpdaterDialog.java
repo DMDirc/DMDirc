@@ -20,49 +20,13 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.framemanager;
-
-import java.util.Locale;
+package com.dmdirc.ui.interfaces;
 
 /**
- * Frame manager position enum.
+ * Updater dialog
  */
-public enum FramemanagerPosition {
-    /** Top of the window. */
-    TOP,
-    /** Left side of the window. */
-    LEFT,
-    /** Bottom of the window. */
-    BOTTOM,
-    /** Right side of the window. */
-    RIGHT,
-    /** Unknown position. */
-    UNKNOWN;
+public interface UpdaterDialog {
     
-    /**
-     * Returns the frame position for s specified string.
-     *
-     * @param name Name of the string
-     *
-     * @return FramemanagerPosition for the string
-     */
-    public static FramemanagerPosition getPosition(final String name) {
-        if (name == null) {
-            return UNKNOWN;
-        }
-        try {
-            return valueOf(name.toUpperCase(Locale.getDefault()));
-        } catch (IllegalArgumentException ex) {
-            return valueOf("UNKNOWN");
-        }
-    }
-    
-    /**
-     * Determines if this position is one of the two horizontal positions.
-     * 
-     * @return True if this is a horizontal position, false otherwise
-     */
-    public boolean isHorizontal() {
-        return this == TOP || this == BOTTOM;
-    }
+    /** Displays the dialog. */
+    void display();
 }

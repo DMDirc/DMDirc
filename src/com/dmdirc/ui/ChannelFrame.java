@@ -23,6 +23,7 @@
 package com.dmdirc.ui;
 
 import com.dmdirc.Channel;
+import com.dmdirc.Main;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.ChannelCommandParser;
 import com.dmdirc.commandparser.Command;
@@ -209,7 +210,7 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
         nickScrollPane.setViewportView(nickList);
         
         nickScrollPane.setMinimumSize(new Dimension(150, 10));
-        getTextPane().setPreferredSize(new Dimension(MainFrame.getMainFrame().getWidth(), 10));
+        getTextPane().setPreferredSize(new Dimension(Main.getUI().getMainWindow().getWidth(), 10));
         
         panel.add(getSearchBar(), BorderLayout.PAGE_START);
         panel.add(inputPanel, BorderLayout.PAGE_END);

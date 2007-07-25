@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.dialogs;
 
+import com.dmdirc.Main;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.InputFrame;
 import com.dmdirc.ui.components.StandardDialog;
@@ -80,7 +81,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
      * @param text text to show in the paste dialog
      */
     public PasteDialog(final InputFrame newParent, final String text) {
-        super(MainFrame.getMainFrame(), false);
+        super(Main.getUI().getMainWindow(), false);
         
         this.parent = newParent;
         
@@ -91,7 +92,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         getOkButton().requestFocus();
         getOkButton().setSelected(true);
         
-        setLocationRelativeTo(MainFrame.getMainFrame());
+        setLocationRelativeTo(Main.getUI().getMainWindow());
     }
     
     /**
@@ -241,7 +242,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
                     + parent.getContainer().getNumLines(textField.getText())
                     + " lines.");
             pack();
-            setLocationRelativeTo(MainFrame.getMainFrame());
+            setLocationRelativeTo(Main.getUI().getMainWindow());
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             this.dispose();
         }

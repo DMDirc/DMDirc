@@ -31,6 +31,7 @@ import com.dmdirc.ui.dialogs.error.ErrorListDialog;
 import com.dmdirc.ui.interfaces.StatusErrorNotifier;
 import com.dmdirc.ui.interfaces.StatusMessageNotifier;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.interfaces.StatusBar;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -50,8 +51,8 @@ import javax.swing.SpringLayout;
 /**
  * Status bar, shows message and info on the gui.
  */
-public final class StatusBar extends JPanel implements MouseListener,
-        ErrorListener {
+public final class SwingStatusBar extends JPanel implements MouseListener,
+        ErrorListener, StatusBar {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -81,8 +82,10 @@ public final class StatusBar extends JPanel implements MouseListener,
     /** Timer to clear the message. */
     private transient TimerTask messageTimer;
     
-    /** Creates a new instance of StatusBar. */
-    public StatusBar() {
+    /**
+     * Creates a new instance of SwingStatusBar.
+     */
+    public SwingStatusBar() {
         super();
         final SpringLayout layout = new SpringLayout();
         
@@ -115,29 +118,14 @@ public final class StatusBar extends JPanel implements MouseListener,
         layoutBar();
     }
     
-    /**
-     * Sets the message in the status bar with a specified callback event
-     * using the default timeout.
-     *
-     * @param newMessage Message to display
-     * @param newNotifier status message notifier to be notified for events on
-     * this message
-     */
+    /** {@inheritDoc} */
     public void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier) {
         final int timeout = Config.getOptionInt("statusBar", "messageDisplayLength", 5);
         setMessage(newMessage, newNotifier, timeout);
     }
     
-    /**
-     * Sets the message in the status bar with a specified callback event for
-     * a specified time.
-     *
-     * @param newMessage Message to display
-     * @param newNotifier status message notifier to be notified for events on
-     * this message
-     * @param timeout message timeout in seconds
-     */
+    /** {@inheritDoc} */
     public synchronized void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier, final int timeout) {
         messageLabel.setText(newMessage);
@@ -156,29 +144,17 @@ public final class StatusBar extends JPanel implements MouseListener,
                 new Date(System.currentTimeMillis() + 250 + timeout * 1000L));
     }
     
-    /**
-     * sets the message in the status bar.
-     *
-     * @param newMessage Message to display
-     */
+    /** {@inheritDoc} */
     public void setMessage(final String newMessage) {
         setMessage(newMessage, null);
     }
     
-    /**
-     * Removes the message from the status bar.
-     */
+    /** {@inheritDoc} */
     public void clearMessage() {
         setMessage("Ready.");
     }
     
-    /**
-     * sets the icon in the status bar with a specified callback event.
-     *
-     * @param newIcon Icon to display
-     * @param newNotifier status error notifier to be notified for events on
-     * this error
-     */
+    /** {@inheritDoc} */
     public synchronized void setError(final Icon newIcon,
             final StatusErrorNotifier newNotifier) {
         //Add to list
@@ -200,18 +176,12 @@ public final class StatusBar extends JPanel implements MouseListener,
                 new Date(System.currentTimeMillis() + 250  + displayLength));
     }
     
-    /**
-     * sets the icon in the status bar.
-     *
-     * @param newIcon Icon to display
-     */
+    /** {@inheritDoc} */
     public void setError(final Icon newIcon) {
         setError(newIcon, null);
     }
     
-    /**
-     * Removes the error state from the status bar.
-     */
+    /** {@inheritDoc} */
     public void clearError() {
         setError(normalIcon);
     }
@@ -279,11 +249,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         }
     }
     
-    /**
-     * Adds a component to the status bar.
-     *
-     * @param component component to add
-     */
+    /** {@inheritDoc} */
     public void addComponent(final Component component) {
         remove(iconLabel);
         add(component);
@@ -291,11 +257,7 @@ public final class StatusBar extends JPanel implements MouseListener,
         layoutBar();
     }
     
-    /**
-     * Removes a component to the status bar.
-     *
-     * @param component component to add
-     */
+    /** {@inheritDoc} */
     public void removeComponent(final Component component) {
         remove(component);
         layoutBar();

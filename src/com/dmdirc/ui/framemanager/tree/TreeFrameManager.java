@@ -29,7 +29,7 @@ import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.framemanager.FrameManager;
+import com.dmdirc.ui.interfaces.FrameManager;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;

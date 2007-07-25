@@ -22,9 +22,9 @@
 
 package com.dmdirc.ui.dialogs.actionseditor;
 
+import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionType;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.StandardDialog;
 import com.dmdirc.ui.dialogs.ActionsManagerDialog;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
@@ -74,7 +74,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
      */
     private ActionsEditorDialog(final ActionsManagerDialog parent,
             final Action action) {
-        super(MainFrame.getMainFrame(), false);
+        super(Main.getUI().getMainWindow(), false);
         
         this.parent = parent;
         this.action = action;
@@ -85,7 +85,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
         addListeners();
         layoutComponents();
         
-        this.setLocationRelativeTo(MainFrame.getMainFrame());
+        this.setLocationRelativeTo(Main.getUI().getMainWindow());
         
         this.setVisible(true);
     }

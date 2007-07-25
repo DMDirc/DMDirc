@@ -23,9 +23,9 @@
 package com.dmdirc.ui.dialogs;
 
 import com.dmdirc.BrowserLauncher;
+import com.dmdirc.Main;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.PluginCellRenderer;
 import com.dmdirc.ui.components.StandardDialog;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
@@ -94,7 +94,7 @@ public final class PluginDialog extends StandardDialog implements
     
     /** Creates a new instance of PluginDialog. */
     private PluginDialog() {
-        super(MainFrame.getMainFrame(), false);
+        super(Main.getUI().getMainWindow(), false);
         setResizable(false);
         initComponents();
         addListeners();
@@ -103,7 +103,7 @@ public final class PluginDialog extends StandardDialog implements
         pluginList.setSelectedIndex(0);
         selectedPlugin = 0;
         
-        this.setLocationRelativeTo(MainFrame.getMainFrame());
+        this.setLocationRelativeTo(Main.getUI().getMainWindow());
         this.setVisible(true);
     }
     

@@ -25,12 +25,12 @@ package com.dmdirc.ui.framemanager.buttonbar;
 import com.dmdirc.Channel;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.UIUtilities;
-import com.dmdirc.ui.framemanager.FrameManager;
-import com.dmdirc.ui.framemanager.FramemanagerPosition;
+import com.dmdirc.ui.interfaces.FrameManager;
+import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.BorderLayout;
@@ -291,7 +291,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
      * @param e The action event associated with this action
      */
     public void actionPerformed(final ActionEvent e) {
-        final Window active = MainFrame.getMainFrame().getActiveFrame();
+        final Window active = Main.getUI().getMainWindow().getActiveFrame();
         
         for (Map.Entry<FrameContainer, JToggleButton> entry : buttons.entrySet()) {
             if (entry.getValue().equals(e.getSource())) {

@@ -24,11 +24,12 @@ package com.dmdirc.ui.framemanager.windowmenu;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.FrameContainerComparator;
-import com.dmdirc.ui.framemanager.FrameManager;
+import com.dmdirc.ui.interfaces.FrameManager;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -160,7 +161,7 @@ public final class WindowMenuFrameManager implements FrameManager,
         mi.addActionListener(this);
         menuItemMap.put(window, mi);
         newMap.putAll(menuItemMap);
-        MainFrame.getMainFrame().populateWindowMenu(newMap);
+        Main.getUI().getMainWindow().populateWindowMenu(newMap);
     }
     
     /**
@@ -173,7 +174,7 @@ public final class WindowMenuFrameManager implements FrameManager,
                 new TreeMap<FrameContainer, JMenuItem>(new FrameContainerComparator());
         menuItemMap.remove(window);
         newMap.putAll(menuItemMap);
-        MainFrame.getMainFrame().populateWindowMenu(newMap);
+        Main.getUI().getMainWindow().populateWindowMenu(newMap);
     }
     
     /** {@inheritDoc} */

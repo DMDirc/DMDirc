@@ -32,20 +32,24 @@ import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.components.SwingPreferencesPanel;
-import com.dmdirc.ui.components.StatusBar;
-import com.dmdirc.ui.framemanager.FrameManager;
+import com.dmdirc.ui.dialogs.SwingUpdaterDialog;
+import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.interfaces.QueryWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
+import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.UIController;
+import com.dmdirc.ui.interfaces.UpdaterDialog;
+import com.dmdirc.updater.Update;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -59,19 +63,27 @@ import javax.swing.plaf.FontUIResource;
  */
 public class SwingController implements UIController {
     
+    /**
+     * Singleton instance of MainFrame.
+     */
+    private static MainFrame me;
+    
     /** {@inheritDoc} */
-    public MainFrame getMainWindow() {
-        return MainFrame.getMainFrame();
+    public synchronized MainFrame getMainWindow() {
+        if (me == null) {
+            me = new MainFrame();
+        }
+        return me;
     }
     
     /** {@inheritDoc} */
     public StatusBar getStatusBar() {
-        return MainFrame.getMainFrame().getStatusBar();
+        return getMainWindow().getStatusBar();
     }
     
     /** {@inheritDoc} */
     public FrameManager getFrameManager() {
-        return MainFrame.getMainFrame().getFrameManager();
+        return getMainWindow().getFrameManager();
     }
     
     /** {@inheritDoc} */
@@ -99,6 +111,11 @@ public class SwingController implements UIController {
     public PreferencesPanel getPreferencesPanel(
             final PreferencesInterface parent, final String title) {
         return new SwingPreferencesPanel(parent, title);
+    }
+    
+    /** {@inheritDoc} */
+    public UpdaterDialog getUpdaterDialog(final List<Update> updates) {
+        return new SwingUpdaterDialog(updates);
     }
     
     /** {@inheritDoc} */

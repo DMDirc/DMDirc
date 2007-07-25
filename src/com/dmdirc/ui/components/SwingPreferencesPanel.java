@@ -23,12 +23,12 @@
 package com.dmdirc.ui.components;
 
 import com.dmdirc.Config;
+import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.interfaces.PreferencesPanel.OptionType;
-import com.dmdirc.ui.MainFrame;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.UIUtilities.layoutGrid;
@@ -66,7 +66,6 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
@@ -144,7 +143,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
      */
     public SwingPreferencesPanel(final PreferencesInterface preferencesOwner,
             final String title) {
-        super(MainFrame.getMainFrame(), false);
+        super(Main.getUI().getMainWindow(), false);
         
         windowTitle = title;
         
@@ -533,7 +532,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                     tabName, 0, Position.Bias.Forward));
         }
         pack();
-        setLocationRelativeTo(MainFrame.getMainFrame());
+        setLocationRelativeTo(Main.getUI().getMainWindow());
         this.setVisible(true);
     }
     

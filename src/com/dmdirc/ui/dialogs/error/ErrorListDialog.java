@@ -22,11 +22,11 @@
 
 package com.dmdirc.ui.dialogs.error;
 
+import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ErrorStatus;
 import com.dmdirc.logger.ProgramError;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.components.PackingTable;
 import com.dmdirc.ui.components.StandardDialog;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
@@ -95,7 +95,7 @@ public final class ErrorListDialog extends StandardDialog implements
     
     /** Creates a new instance of ErrorListDialog. */
     private ErrorListDialog() {
-        super(MainFrame.getMainFrame(), false);
+        super(Main.getUI().getMainWindow(), false);
         
         setTitle("DMDirc: Error list");
         

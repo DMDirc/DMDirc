@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.dialogs.about;
 
-import com.dmdirc.ui.MainFrame;
+import com.dmdirc.Main;
 import com.dmdirc.ui.components.StandardDialog;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
@@ -55,9 +55,9 @@ public final class AboutDialog extends StandardDialog implements
     
     /** Creates a new instance of AboutDialog. */
     private AboutDialog() {
-        super(MainFrame.getMainFrame(), false);
+        super(Main.getUI().getMainWindow(), false);
         initComponents();
-        setLocationRelativeTo(MainFrame.getMainFrame());
+        setLocationRelativeTo(Main.getUI().getMainWindow());
         this.setVisible(true);
     }
     

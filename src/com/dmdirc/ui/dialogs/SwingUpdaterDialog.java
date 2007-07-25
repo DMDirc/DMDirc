@@ -22,11 +22,12 @@
 
 package com.dmdirc.ui.dialogs;
 
-import com.dmdirc.ui.MainFrame;
+import com.dmdirc.Main;
 import com.dmdirc.ui.components.StandardDialog;
 import com.dmdirc.updater.Update;
 import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.interfaces.UpdaterDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -47,7 +48,8 @@ import javax.swing.WindowConstants;
  * and walks them through the process of downloading the update.
  * @author chris
  */
-public final class UpdaterDialog extends StandardDialog implements ActionListener {
+public final class SwingUpdaterDialog extends StandardDialog implements
+        ActionListener, UpdaterDialog {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -57,17 +59,14 @@ public final class UpdaterDialog extends StandardDialog implements ActionListene
     private static final long serialVersionUID = 1;
     
     /** List of updates. */
-    private List<Update> updates;
-    
-    /** Update info header. */
-    private JLabel header;
+    private final List<Update> updates;
     
     /**
      * Creates a new instance of the updater dialog.
      * @param updates A list of updates that are available.
      */
-    public UpdaterDialog(final List<Update> updates) {
-        super(MainFrame.getMainFrame(), false);
+    public SwingUpdaterDialog(final List<Update> updates) {
+        super(Main.getUI().getMainWindow(), false);
         
         this.updates = updates;
         
@@ -77,8 +76,6 @@ public final class UpdaterDialog extends StandardDialog implements ActionListene
         getCancelButton().addActionListener(this);
         
         setTitle("Update available");
-        setLocationRelativeTo(MainFrame.getMainFrame());
-        setVisible(true);
     }
     
     /** Initialises the components. */
@@ -87,10 +84,10 @@ public final class UpdaterDialog extends StandardDialog implements ActionListene
         
         setLayout(new BorderLayout());
         
-        header = new JLabel("<html><big>Update Available</big><br><br>"
+        JLabel header = new JLabel("<html><big>Update Available</big><br><br>"
                 + "An update is available for one or more "
                 + "components of DMDirc:</html>");
-        header.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, 
+        header.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER,
                 LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
         add(header, BorderLayout.NORTH);
         
@@ -114,7 +111,7 @@ public final class UpdaterDialog extends StandardDialog implements ActionListene
         
         final JScrollPane pane = new JScrollPane(table);
         pane.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(SMALL_BORDER, LARGE_BORDER, 
+                BorderFactory.createEmptyBorder(SMALL_BORDER, LARGE_BORDER,
                 SMALL_BORDER, LARGE_BORDER),
                 BorderFactory.createEtchedBorder()));
         pane.setPreferredSize(new Dimension(400, 150));
@@ -122,7 +119,7 @@ public final class UpdaterDialog extends StandardDialog implements ActionListene
         
         final JPanel buttonContainer = new JPanel();
         buttonContainer.setLayout(new BorderLayout());
-        buttonContainer.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 
+        buttonContainer.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 LARGE_BORDER, LARGE_BORDER, LARGE_BORDER));
         
         final JButton lButton = new JButton();
@@ -131,7 +128,7 @@ public final class UpdaterDialog extends StandardDialog implements ActionListene
         rButton.setPreferredSize(new Dimension(100, 30));
         buttonContainer.add(lButton, BorderLayout.WEST);
         buttonContainer.add(rButton, BorderLayout.EAST);
-                
+        
         orderButtons(lButton, rButton);
         //getOkButton().setText("Update");
         
@@ -139,16 +136,22 @@ public final class UpdaterDialog extends StandardDialog implements ActionListene
         
         pack();
     }
-
+    
+    /** {@inheritDoc} */
+    public void display() {
+        setLocationRelativeTo(Main.getUI().getMainWindow());
+        setVisible(true);
+    }
+    
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
         /*if (e.getSource().equals(getOkButton())) {
             getOkButton().setEnabled(false);
-            
+         
             header.setText("<html><big>Updating...</big><br><br>"
                 + "DMDirc is updating the following components:</html>");
         } else if (e.getSource().equals(getCancelButton())) {*/
-            dispose();
+        dispose();
         //}
     }
 }

@@ -25,11 +25,11 @@ package com.dmdirc.ui.components;
 import com.dmdirc.BrowserLauncher;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Main;
 import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.MainFrame;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.Styliser;
@@ -112,15 +112,15 @@ public abstract class Frame extends JInternalFrame implements Window,
         super();
         parent = owner;
         
-        setFrameIcon(MainFrame.getMainFrame().getIcon());
+        setFrameIcon(Main.getUI().getMainWindow().getIcon());
         
         initComponents();
         setMaximizable(true);
         setClosable(true);
         setResizable(true);
         setIconifiable(true);
-        setPreferredSize(new Dimension(MainFrame.getMainFrame().getWidth() / 2,
-                MainFrame.getMainFrame().getHeight() / 3));
+        setPreferredSize(new Dimension(Main.getUI().getMainWindow().getWidth() / 2,
+                Main.getUI().getMainWindow().getHeight() / 3));
         
         addPropertyChangeListener("maximum", this);
         addInternalFrameListener(this);
@@ -134,7 +134,7 @@ public abstract class Frame extends JInternalFrame implements Window,
         config.addChangeListener("ui", "backgroundcolour", this);
         
         final Boolean pref = Config.getOptionBool("ui", "maximisewindows");
-        if (pref || MainFrame.getMainFrame().getMaximised()) {
+        if (pref || Main.getUI().getMainWindow().getMaximised()) {
             hideTitlebar();
         }
     }
@@ -221,12 +221,12 @@ public abstract class Frame extends JInternalFrame implements Window,
     public final void propertyChange(final PropertyChangeEvent event) {
         if (event.getNewValue().equals(Boolean.TRUE)) {
             hideTitlebar();
-            MainFrame.getMainFrame().setMaximised(true);
+            Main.getUI().getMainWindow().setMaximised(true);
         } else {
             showTitlebar();
             
-            MainFrame.getMainFrame().setMaximised(false);
-            MainFrame.getMainFrame().setActiveFrame(this);
+            Main.getUI().getMainWindow().setMaximised(false);
+            Main.getUI().getMainWindow().setActiveFrame(this);
         }
     }
     
@@ -507,7 +507,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     
     /** {@inheritDoc} */
     public void hyperlinkClicked(final String url) {
-        MainFrame.getMainFrame().getStatusBar().setMessage("Opening: " + url);
+        Main.getUI().getMainWindow().getStatusBar().setMessage("Opening: " + url);
         BrowserLauncher.openURL(url);
     }
     

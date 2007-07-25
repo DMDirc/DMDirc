@@ -27,8 +27,6 @@ import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.dialogs.UpdaterDialog;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -72,7 +70,7 @@ public final class UpdateChecker implements Runnable, MouseListener {
     
     /** {@inheritDoc} */
     public void run() {
-        MainFrame.getMainFrame().getStatusBar().setMessage("Checking for updates...");
+        Main.getUI().getMainWindow().getStatusBar().setMessage("Checking for updates...");
         
         updates.clear();
         
@@ -122,7 +120,7 @@ public final class UpdateChecker implements Runnable, MouseListener {
      */
     private void checkLine(final String line) {
         if (line.startsWith("uptodate")) {
-            MainFrame.getMainFrame().getStatusBar().setMessage("No updates available");
+            Main.getUI().getMainWindow().getStatusBar().setMessage("No updates available");
         } else if (line.startsWith("outofdate")) {
             doUpdateAvailable(line);
         } else {
@@ -144,7 +142,7 @@ public final class UpdateChecker implements Runnable, MouseListener {
             label.addMouseListener(this);
             label.setBorder(BorderFactory.createEtchedBorder());
             label.setIcon(IconManager.getIconManager().getIcon("update"));
-            MainFrame.getMainFrame().getStatusBar().addComponent(label);
+            Main.getUI().getMainWindow().getStatusBar().addComponent(label);
         }
     }
     
@@ -165,7 +163,7 @@ public final class UpdateChecker implements Runnable, MouseListener {
         /*
         final List<Update> temp = new ArrayList<Update>();
         temp.add(new Update("outofdate teststuff 20073005 20060101 http://www.example.com/"));
-        new UpdaterDialog(temp);
+        new SwingUpdaterDialog(temp);
          */
         
         new Timer().schedule(new TimerTask() {
@@ -177,7 +175,7 @@ public final class UpdateChecker implements Runnable, MouseListener {
     
     /** {@inheritDoc} */
     public void mouseClicked(final MouseEvent e) {
-        new UpdaterDialog(updates);
+        Main.getUI().getUpdaterDialog(updates).display();
     }
     
     /** {@inheritDoc} */

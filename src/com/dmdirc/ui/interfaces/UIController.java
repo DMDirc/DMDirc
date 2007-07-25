@@ -28,8 +28,8 @@ import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.ui.MainFrame;
-import com.dmdirc.ui.components.StatusBar;
-import com.dmdirc.ui.framemanager.FrameManager;
+import com.dmdirc.updater.Update;
+import java.util.List;
 
 /**
  * Defines the methods that should be implemented by UI controllers. Controllers
@@ -102,6 +102,15 @@ public interface UIController {
      * @return PreferencesPanel
      */
     PreferencesPanel getPreferencesPanel(PreferencesInterface parent, String title);
+    
+    /**
+     * Returns an updater dialog for the specified updates.
+     * 
+     * @param updates Updates available
+     *
+     * @return UpdaterDialog
+     */
+    UpdaterDialog getUpdaterDialog(List<Update> updates);
     
     /**
      * Initialises any settings required by this UI (this is always called

@@ -32,19 +32,20 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.components.Frame;
-import com.dmdirc.ui.components.StatusBar;
+import com.dmdirc.ui.components.SwingStatusBar;
 import com.dmdirc.ui.dialogs.ActionsManagerDialog;
 import com.dmdirc.ui.dialogs.NewServerDialog;
 import com.dmdirc.ui.dialogs.PluginDialog;
 import com.dmdirc.ui.dialogs.PreferencesDialog;
 import com.dmdirc.ui.dialogs.ProfileEditorDialog;
 import com.dmdirc.ui.dialogs.about.AboutDialog;
-import com.dmdirc.ui.framemanager.FrameManager;
-import com.dmdirc.ui.framemanager.FramemanagerPosition;
+import com.dmdirc.ui.interfaces.FrameManager;
+import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.framemanager.MainFrameManager;
 import com.dmdirc.ui.framemanager.windowmenu.WindowMenuFrameManager;
 import com.dmdirc.ui.interfaces.Window;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.interfaces.StatusBar;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -101,10 +102,6 @@ public final class MainFrame extends JFrame implements WindowListener,
     private static final int FRAME_OPENING_OFFSET = 30;
     
     /**
-     * Singleton instance of MainFrame.
-     */
-    private static MainFrame me;
-    /**
      * Whether the internal frames are maximised or not.
      */
     private boolean maximised;
@@ -153,7 +150,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     private JMenuItem toggleStateMenuItem;
     
     /** status bar. */
-    private StatusBar statusBar;
+    private SwingStatusBar statusBar;
     
     /** Frame manager position. */
     private FramemanagerPosition position;
@@ -161,7 +158,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /**
      * Creates new form MainFrame.
      */
-    private MainFrame() {
+    protected MainFrame() {
         super();
         
         windowListFrameManager = new WindowMenuFrameManager();
@@ -221,25 +218,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         addWindowListener(this);
         
         checkWindowState();
-    }
-    
-    /**
-     * Returns the singleton instance of MainFrame.
-     * @return MainFrame instance
-     */
-    public static synchronized MainFrame getMainFrame() {
-        if (me == null) {
-            me = new MainFrame();
-        }
-        return me;
-    }
-    
-    /**
-     * Indicates whether the main frame has been initialised or not.
-     * @return True iff the main frame exists
-     */
-    public static boolean hasMainFrame() {
-        return me != null;
     }
     
     /**
@@ -443,8 +421,8 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /**
      * Returns the status bar instance.
-     *
-     * @return StatusBar instance
+     * 
+     * @return SwingStatusBar instance
      */
     public StatusBar getStatusBar() {
         return statusBar;
@@ -499,7 +477,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         frameManagerPanel = new JPanel();
         desktopPane = new JDesktopPane();
         desktopPane.setBackground(new Color(238, 238, 238));
-        statusBar = new StatusBar();
+        statusBar = new SwingStatusBar();
         
         initSplitPane(mainSplitPane);
         
@@ -792,7 +770,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** Quits the client. */
     public void quit() {
         Config.setOption("ui", "frameManagerSize",
-                String.valueOf(MainFrame.getMainFrame().getFrameManagerSize()));
+                String.valueOf(this.getFrameManagerSize()));
         Main.quit();
     }
     
@@ -811,9 +789,9 @@ public final class MainFrame extends JFrame implements WindowListener,
         } else if (e.getActionCommand().equals("Actions")) {
             ActionsManagerDialog.showActionsManagerDialog();
         } else if (e.getActionCommand().equals("Minimise")) {
-            ((Frame) MainFrame.getMainFrame().getActiveFrame()).minimise();
+            ((Frame) Main.getUI().getMainWindow().getActiveFrame()).minimise();
         } else if (e.getActionCommand().equals("Close")) {
-            ((Frame) MainFrame.getMainFrame().getActiveFrame()).close();
+            ((Frame) Main.getUI().getMainWindow().getActiveFrame()).close();
         }
     }
 }

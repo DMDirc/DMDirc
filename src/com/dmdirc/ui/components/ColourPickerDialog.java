@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.components;
 
-import com.dmdirc.ui.MainFrame;
+import com.dmdirc.Main;
 
 import java.awt.event.ActionListener;
 
@@ -56,7 +56,7 @@ public final class ColourPickerDialog extends StandardDialog {
      * @param showHex show hex colours
      */
     public ColourPickerDialog(final boolean showIRC, final boolean showHex) {
-        super(MainFrame.getMainFrame(), false);
+        super(Main.getUI().getMainWindow(), false);
         
         colourChooser = new ColourPickerPanel(showIRC, showHex);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

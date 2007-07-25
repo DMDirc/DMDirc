@@ -30,6 +30,7 @@ import com.dmdirc.Server;
 import com.dmdirc.ui.framemanager.buttonbar.ButtonBar;
 import com.dmdirc.ui.framemanager.tree.TreeFrameManager;
 import com.dmdirc.ui.framemanager.windowmenu.WindowMenuFrameManager;
+import com.dmdirc.ui.interfaces.FrameManager;
 
 import java.awt.Color;
 import java.io.IOException;

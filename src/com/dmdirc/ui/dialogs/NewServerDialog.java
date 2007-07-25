@@ -23,6 +23,7 @@
 package com.dmdirc.ui.dialogs;
 
 import com.dmdirc.Config;
+import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.config.Identity;
@@ -122,7 +123,7 @@ public final class NewServerDialog extends StandardDialog {
      * Creates a new instance of the dialog.
      */
     private NewServerDialog() {
-        super(MainFrame.getMainFrame(), false);
+        super(Main.getUI().getMainWindow(), false);
         
         initComponents();
         
@@ -147,7 +148,7 @@ public final class NewServerDialog extends StandardDialog {
         me.serverField.requestFocus();
         
         if (ServerManager.getServerManager().numServers() == 0
-                || MainFrame.getMainFrame().getActiveFrame() == null) {
+                || Main.getUI().getMainWindow().getActiveFrame() == null) {
             me.newServerWindowCheck.setSelected(true);
             me.newServerWindowCheck.setEnabled(false);
         } else {
@@ -156,7 +157,7 @@ public final class NewServerDialog extends StandardDialog {
         
         me.populateProfiles();
         
-        me.setLocationRelativeTo(MainFrame.getMainFrame());
+        me.setLocationRelativeTo(Main.getUI().getMainWindow());
         me.setVisible(true);
         me.requestFocus();
     }
@@ -201,11 +202,11 @@ public final class NewServerDialog extends StandardDialog {
                 // Open in a new window?
                 if (newServerWindowCheck.isSelected()
                 || ServerManager.getServerManager().numServers() == 0
-                        || MainFrame.getMainFrame().getActiveFrame() == null) {
+                        || Main.getUI().getMainWindow().getActiveFrame() == null) {
                     new Server(host, port, pass, sslCheck.isSelected(), profile);
                 } else {
                     final Window active =
-                            MainFrame.getMainFrame().getActiveFrame();
+                            Main.getUI().getMainWindow().getActiveFrame();
                     final Server server = ServerManager.getServerManager().
                             getServerFromFrame(active);
                     if (server == null) {

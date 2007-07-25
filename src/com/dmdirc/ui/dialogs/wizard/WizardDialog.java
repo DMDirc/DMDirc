@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.dialogs.wizard;
 
-import com.dmdirc.ui.MainFrame;
+import com.dmdirc.Main;
 import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
@@ -87,7 +87,7 @@ public final class WizardDialog extends JDialog implements ActionListener,
      */
     public WizardDialog(final String title, final List<Step> steps,
             final Wizard wizard, final boolean modal) {
-        super(MainFrame.getMainFrame(), modal);
+        super(Main.getUI().getMainWindow(), modal);
         
         this.title = title;
         this.steps = new ArrayList<Step>(steps);
@@ -178,7 +178,7 @@ public final class WizardDialog extends JDialog implements ActionListener,
             setTitle(title);
             setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             pack();
-            setLocationRelativeTo(MainFrame.getMainFrame());
+            setLocationRelativeTo(Main.getUI().getMainWindow());
             setResizable(false);
             setVisible(true);
         }
