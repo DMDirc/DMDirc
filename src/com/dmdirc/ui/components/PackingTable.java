@@ -121,10 +121,6 @@ public class PackingTable extends JTable {
             return;
         }
         
-        if (getRowCount() == 0) {
-            return;
-        }
-        
         final TableColumnModel columnModel = getTableHeader().getColumnModel();
         final int numCols = columnModel.getColumnCount();
         final int totalSize = scrollPane.getViewportBorderBounds().width;
@@ -160,6 +156,10 @@ public class PackingTable extends JTable {
         int width = (int) getTableHeader().getDefaultRenderer().
                 getTableCellRendererComponent(this, column.getIdentifier()
                 , false, false, -1, col).getPreferredSize().getWidth();
+        
+        if (getRowCount() == 0) {
+            return width + SMALL_BORDER;
+        }
         
         for (int row = 0; row < getRowCount(); row++) {
             width = Math.max(width, (int) getCellRenderer(row, col).
