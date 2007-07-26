@@ -25,8 +25,6 @@ package com.dmdirc.ui.messages;
 import com.dmdirc.Config;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.swing.textpane.IRCTextAttribute;
-import com.dmdirc.ui.swing.textpane.TextPane;
 
 import java.awt.Color;
 import java.awt.font.TextAttribute;
@@ -80,38 +78,6 @@ public final class Styliser {
     
     /** Creates a new instance of Styliser. */
     private Styliser() {
-    }
-    
-    /**
-     * Stylises the specified string and adds it to the passed TextPane.
-     *
-     * @param doc The document which the output should be added to
-     * @param string The line to be stylised and added
-     */
-    public static void addStyledString(final TextPane doc, final String string) {
-        final AttributedString text = styledDocumentToAttributedString(getStyledString(new String[]{string, }));
-        
-        if (text.getIterator().getEndIndex() == 0) {
-            doc.addText(new AttributedString("\n"));
-        } else {
-            doc.addText(text);
-        }
-    }
-    
-    /**
-     * Stylises the specified string and adds it to the passed TextPane.
-     *
-     * @param doc The document which the output should be added to
-     * @param strings The strings to be stylised and added to a line
-     */
-    public static void addStyledString(final TextPane doc, final String[] strings) {
-        final AttributedString text = styledDocumentToAttributedString(getStyledString(strings));
-        
-        if (text.getIterator().getEndIndex() == 0) {
-            doc.addText(new AttributedString("\n"));
-        } else {
-            doc.addText(text);
-        }
     }
     
     /**
@@ -172,7 +138,7 @@ public final class Styliser {
      *
      * @return AttributedString representing the specified StyledDocument
      */
-    private static AttributedString styledDocumentToAttributedString(final StyledDocument doc) {
+    public static AttributedString styledDocumentToAttributedString(final StyledDocument doc) {
         //Now lets get hacky, loop through the styled document and add all styles to an attributedString
         AttributedString attString = null;
         final Element line = doc.getParagraphElement(0);

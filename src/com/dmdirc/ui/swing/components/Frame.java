@@ -32,8 +32,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
-import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.ui.swing.textpane.IRCTextAttribute;
+import com.dmdirc.ui.messages.IRCTextAttribute;
 import com.dmdirc.ui.swing.textpane.TextPane;
 import com.dmdirc.ui.swing.textpane.TextPaneListener;
 
@@ -150,11 +149,11 @@ public abstract class Frame extends JInternalFrame implements Window,
             public void run() {
                 for (String myLine : line.split("\n")) {
                     if (timestamp) {
-                        Styliser.addStyledString(getTextPane(), new String[]{
+                        getTextPane().addStyledString(new String[]{
                             Formatter.formatMessage("timestamp", new Date()),
                             myLine, });
                     } else {
-                        Styliser.addStyledString(getTextPane(), myLine);
+                        getTextPane().addStyledString(myLine);
                     }
                     textPane.trim(Config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE));
                 }

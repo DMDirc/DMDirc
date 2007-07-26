@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.textpane;
+package com.dmdirc.ui.messages;
 
 import java.io.InvalidObjectException;
 import java.text.AttributedCharacterIterator.Attribute;

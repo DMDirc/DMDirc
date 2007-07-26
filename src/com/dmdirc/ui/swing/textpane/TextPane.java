@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.textpane;
 
+import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.swing.components.Frame;
 
 import java.awt.BorderLayout;
@@ -112,6 +113,38 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void addText(final AttributedString text) {
         document.addText(text);
         setScrollBarMax();
+    }
+    
+    /**
+     * Stylises the specified string and adds it to the passed TextPane.
+     *
+     * @param doc The document which the output should be added to
+     * @param string The line to be stylised and added
+     */
+    public void addStyledString(final String string) {
+        final AttributedString text = Styliser.styledDocumentToAttributedString(Styliser.getStyledString(new String[]{string, }));
+        
+        if (text.getIterator().getEndIndex() == 0) {
+            addText(new AttributedString("\n"));
+        } else {
+            addText(text);
+        }
+    }
+    
+    /**
+     * Stylises the specified string and adds it to the passed TextPane.
+     *
+     * @param doc The document which the output should be added to
+     * @param strings The strings to be stylised and added to a line
+     */
+    public void addStyledString(final String[] strings) {
+        final AttributedString text = Styliser.styledDocumentToAttributedString(Styliser.getStyledString(strings));
+        
+        if (text.getIterator().getEndIndex() == 0) {
+            addText(new AttributedString("\n"));
+        } else {
+            addText(text);
+        }
     }
     
     /**

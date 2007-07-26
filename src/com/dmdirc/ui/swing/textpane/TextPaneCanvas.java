@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.textpane;
 
+import com.dmdirc.ui.messages.IRCTextAttribute;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
