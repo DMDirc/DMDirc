@@ -30,6 +30,7 @@ import com.dmdirc.ui.dialogs.ProfileEditorDialog;
 import com.dmdirc.ui.dialogs.wizard.Step;
 import com.dmdirc.ui.dialogs.wizard.Wizard;
 import com.dmdirc.ui.dialogs.wizard.WizardDialog;
+import com.dmdirc.ui.interfaces.FirstRunWizard;
 
 import java.awt.Dimension;
 import java.io.File;
@@ -43,13 +44,13 @@ import java.util.Map.Entry;
 /**
  * First run wizard, used to initially setup the client for the user.
  */
-public final class FirstRunWizard implements Wizard {
+public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
     
     /** Wizard dialog. */
     private static WizardDialog wizardDialog;
     
     /** Instatiate the wizard. */
-    public FirstRunWizard() {
+    public SwingFirstRunWizard() {
     }
     
     /** {@inheritDoc} */
@@ -72,12 +73,8 @@ public final class FirstRunWizard implements Wizard {
         }
     }
     
-    /**
-     * Extracts the core plugins.
-     *
-     * @param resourceManager ResourceManager to use
-     */
-    private void extractPlugins(final ResourceManager resourceManager) {
+    /** {@inheritDoc} */
+    public void extractPlugins(final ResourceManager resourceManager) {
         if (((StepOne) wizardDialog.getStep(0)).getPluginsState()) {
             //Copy plugins
             try {
@@ -89,12 +86,8 @@ public final class FirstRunWizard implements Wizard {
         }
     }
     
-    /**
-     * Extracts the core actions.
-     *
-     * @param resourceManager ResourceManager to use
-     */
-    private void extractActions(final ResourceManager resourceManager) {
+    /** {@inheritDoc} */
+    public void extractActions(final ResourceManager resourceManager) {
         if (((StepOne) wizardDialog.getStep(0)).getActionsState()) {
             //Copy actions
             final Map<String, byte[]> resources =
@@ -125,15 +118,15 @@ public final class FirstRunWizard implements Wizard {
         }
     }
     
-    /** Displays the First run wizard. */
-    public static void display() {
+    /** {@inheritDoc} */
+    public void display() {
         final List<Step> steps = new ArrayList<Step>();
         
         steps.add(new StepOne());
         steps.add(new StepTwo());
         
         wizardDialog = new WizardDialog("Setup wizard", steps,
-                new FirstRunWizard(), true);
+                new SwingFirstRunWizard(), true);
         
         wizardDialog.setPreferredSize(new Dimension(400, 350));
         

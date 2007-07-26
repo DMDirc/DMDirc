@@ -33,6 +33,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.components.SwingPreferencesPanel;
 import com.dmdirc.ui.dialogs.SwingUpdaterDialog;
+import com.dmdirc.ui.dialogs.firstrunwizard.SwingFirstRunWizard;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -116,6 +117,11 @@ public class SwingController implements UIController {
     /** {@inheritDoc} */
     public UpdaterDialog getUpdaterDialog(final List<Update> updates) {
         return new SwingUpdaterDialog(updates);
+    }
+    
+    /** {@inheritDoc} */
+    public void showFirstRunWizard() {
+        new SwingFirstRunWizard().display();
     }
     
     /** {@inheritDoc} */

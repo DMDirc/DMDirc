@@ -113,6 +113,11 @@ public interface UIController {
     UpdaterDialog getUpdaterDialog(List<Update> updates);
     
     /**
+     * Shows the first run wizard for the ui.
+     */
+    void showFirstRunWizard();
+    
+    /**
      * Initialises any settings required by this UI (this is always called
      * before any aspect of the UI is instansiated).
      */

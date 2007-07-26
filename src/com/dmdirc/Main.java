@@ -28,7 +28,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.SwingController;
-import com.dmdirc.ui.dialogs.firstrunwizard.FirstRunWizard;
+import com.dmdirc.ui.dialogs.firstrunwizard.SwingFirstRunWizard;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
@@ -92,7 +92,7 @@ public final class Main {
         
         if (!Config.hasOption("general", "firstRun") || Config.getOptionBool("general", "firstRun")) {
             Config.setOption("general", "firstRun", "false");
-            new FirstRunWizard().display();
+            getUI().showFirstRunWizard();
         }
         
         ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);
