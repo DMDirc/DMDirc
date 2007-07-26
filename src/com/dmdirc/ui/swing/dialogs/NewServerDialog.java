@@ -28,9 +28,8 @@ import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.ui.swing.MainFrame;
-import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 

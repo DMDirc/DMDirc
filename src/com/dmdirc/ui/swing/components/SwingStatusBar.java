@@ -27,11 +27,11 @@ import com.dmdirc.IconManager;
 import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ProgramError;
-import com.dmdirc.ui.swing.dialogs.error.ErrorListDialog;
+import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.StatusErrorNotifier;
 import com.dmdirc.ui.interfaces.StatusMessageNotifier;
+import com.dmdirc.ui.swing.dialogs.error.ErrorListDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
-import com.dmdirc.ui.interfaces.StatusBar;
 
 import java.awt.Component;
 import java.awt.Dimension;

@@ -26,11 +26,11 @@ import com.dmdirc.Config;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.resourcemanager.ResourceManager;
+import com.dmdirc.ui.interfaces.FirstRunWizard;
 import com.dmdirc.ui.swing.dialogs.ProfileEditorDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.Wizard;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
-import com.dmdirc.ui.interfaces.FirstRunWizard;
 
 import java.awt.Dimension;
 import java.io.File;
@@ -47,7 +47,7 @@ import java.util.Map.Entry;
 public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
     
     /** Wizard dialog. */
-    private static WizardDialog wizardDialog;
+    private WizardDialog wizardDialog;
     
     /** Instatiate the wizard. */
     public SwingFirstRunWizard() {
@@ -125,8 +125,7 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
         steps.add(new StepOne());
         steps.add(new StepTwo());
         
-        wizardDialog = new WizardDialog("Setup wizard", steps,
-                new SwingFirstRunWizard(), true);
+        wizardDialog = new WizardDialog("Setup wizard", steps, this, true);
         
         wizardDialog.setPreferredSize(new Dimension(400, 350));
         

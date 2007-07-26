@@ -61,7 +61,6 @@ public interface PreferencesPanel {
      * @param parentCategory parent category
      * @param name Category name
      * @param blurb category blurb
-     * @param nodeIcon icon for the node
      */
     void addCategory(final String parentCategory, final String name,
             final String blurb);

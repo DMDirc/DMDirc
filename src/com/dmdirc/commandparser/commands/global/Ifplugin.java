@@ -75,7 +75,7 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
         
         if (result != negative) {
             if (origin == null) {
-                GlobalCommandParser.getGlobalCommandParser().parseCommand(origin, implodeArgs(1, args));
+                GlobalCommandParser.getGlobalCommandParser().parseCommand(null, implodeArgs(1, args));
             } else {
                 origin.getCommandParser().parseCommand(origin, implodeArgs(1, args));
             }

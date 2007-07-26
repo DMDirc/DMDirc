@@ -23,7 +23,6 @@
 package com.dmdirc.ui.swing.dialogs;
 
 import com.dmdirc.Main;
-import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.InputFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;

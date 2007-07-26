@@ -27,10 +27,10 @@ import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.ServerCommandParser;
-import com.dmdirc.ui.swing.components.InputFrame;
-import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ServerWindow;
+import com.dmdirc.ui.swing.components.InputFrame;
+import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;

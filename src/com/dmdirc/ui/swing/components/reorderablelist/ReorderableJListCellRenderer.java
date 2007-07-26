@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.components.reorderablelist;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -63,7 +64,7 @@ class ReorderableJListCellRenderer implements ListCellRenderer {
             final boolean hasFocus) {
         final JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        final boolean isTargetCell = (value == parent.getTargetCell());
+        final boolean isTargetCell = value == parent.getTargetCell();
         
         final boolean showSelected = isSelected & (parent.getTargetCell() == null);
         

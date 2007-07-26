@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.components.reorderablelist;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -32,13 +33,20 @@ import java.util.ArrayList;
 /**
  * Arraylist transferable.
  */
-public class ArrayListTransferable implements Transferable {
+public final class ArrayListTransferable implements Transferable {
     
+    /** Local tranfer flavour. */
     private DataFlavor localArrayListFlavor;
+    /** Serial transfer flavour. */
     private final DataFlavor serialArrayListFlavor;
+    /** Transferred ArrayList. */
     private final ArrayList data; //NOPMD
     
-    /** Initialises the ArrayListTransferable. */
+    /** 
+     * Initialises the ArrayListTransferable. 
+     *
+     * @param alist ArrayList to transfer
+     */
     public ArrayListTransferable(final ArrayList alist) { //NOPMD
         super();
         
@@ -68,7 +76,7 @@ public class ArrayListTransferable implements Transferable {
     
     /** {@inheritDoc} */
     public DataFlavor[] getTransferDataFlavors() {
-        return new DataFlavor[] { localArrayListFlavor, serialArrayListFlavor };
+        return new DataFlavor[]{localArrayListFlavor, serialArrayListFlavor, };
     }
     
     /** {@inheritDoc} */

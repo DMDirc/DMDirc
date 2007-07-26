@@ -29,6 +29,7 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.updater.Update;
+
 import java.util.List;
 
 /**
@@ -97,7 +98,7 @@ public interface UIController {
      * Creates a new preferences panel for the specified parent.
      *
      * @param parent Preferences panel parent
-     * @param text Preferences panel title
+     * @param title Preferences panel title
      *
      * @return PreferencesPanel
      */

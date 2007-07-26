@@ -27,10 +27,10 @@ import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.swing.framemanager.buttonbar.ButtonBar;
 import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
 import com.dmdirc.ui.swing.framemanager.windowmenu.WindowMenuFrameManager;
-import com.dmdirc.ui.interfaces.FrameManager;
 
 import java.awt.Color;
 import java.io.IOException;

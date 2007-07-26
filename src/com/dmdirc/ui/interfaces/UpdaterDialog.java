@@ -23,7 +23,7 @@
 package com.dmdirc.ui.interfaces;
 
 /**
- * Updater dialog
+ * Updater dialog.
  */
 public interface UpdaterDialog {
     

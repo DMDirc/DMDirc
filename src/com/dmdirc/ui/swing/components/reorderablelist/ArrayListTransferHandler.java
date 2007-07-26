@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.components.reorderablelist;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -38,7 +39,7 @@ import javax.swing.TransferHandler;
 /**
  * Arraylist Transfer handler.
  */
-public class ArrayListTransferHandler extends TransferHandler {
+public final class ArrayListTransferHandler extends TransferHandler {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -47,13 +48,20 @@ public class ArrayListTransferHandler extends TransferHandler {
      */
     private static final long serialVersionUID = 1;
     
+    /** Local Transfer flavour. */
     private DataFlavor localArrayListFlavor;
+    /** Serial Transfer flavour. */
     private final DataFlavor serialArrayListFlavor;
-    private JList source = null;
-    private int[] indices = null;
-    private int addIndex = -1; //Location where items were added
-    private int addCount = 0;  //Number of items added
+    /** Source component. */
+    private JList source;
+    /** Dragged Indices. */
+    private int[] indices;
+    /** Index to add item(s). */
+    private int addIndex = -1;
+    /** Number of items to add. */
+    private int addCount;
     
+    /** Instantiates a new ArrayListTransferHandler. */
     public ArrayListTransferHandler() {
         super();
         
@@ -78,11 +86,11 @@ public class ArrayListTransferHandler extends TransferHandler {
         }
         
         try {
-            target = (JList)c;
+            target = (JList) c;
             if (hasLocalArrayListFlavor(t.getTransferDataFlavors())) {
-                alist = (ArrayList)t.getTransferData(localArrayListFlavor);
+                alist = (ArrayList) t.getTransferData(localArrayListFlavor);
             } else if (hasSerialArrayListFlavor(t.getTransferDataFlavors())) {
-                alist = (ArrayList)t.getTransferData(serialArrayListFlavor);
+                alist = (ArrayList) t.getTransferData(serialArrayListFlavor);
             } else {
                 return false;
             }
@@ -104,7 +112,7 @@ public class ArrayListTransferHandler extends TransferHandler {
             return true;
         }
         
-        final DefaultListModel listModel = (DefaultListModel)target.getModel();
+        final DefaultListModel listModel = (DefaultListModel) target.getModel();
         final int max = listModel.getSize();
         
         if (index < 0) {
@@ -119,7 +127,7 @@ public class ArrayListTransferHandler extends TransferHandler {
         addIndex = index;
         addCount = alist.size();
         
-        for (int i=0; i < alist.size(); i++) {
+        for (int i = 0; i < alist.size(); i++) {
             listModel.add(index++, alist.get(i));
         }
         
@@ -130,7 +138,7 @@ public class ArrayListTransferHandler extends TransferHandler {
     protected void exportDone(final JComponent c, final Transferable data,
             final int action) {
         if ((action == MOVE) && (indices != null)) {
-            final DefaultListModel model = (DefaultListModel)source.getModel();
+            final DefaultListModel model = (DefaultListModel) source.getModel();
             
             if (addCount > 0) {
                 for (int i = 0; i < indices.length; i++) {
@@ -139,7 +147,7 @@ public class ArrayListTransferHandler extends TransferHandler {
                     }
                 }
             }
-            for (int i = indices.length -1; i >= 0; i--) {
+            for (int i = indices.length - 1; i >= 0; i--) {
                 model.remove(indices[i]);
             }
         }
@@ -149,7 +157,13 @@ public class ArrayListTransferHandler extends TransferHandler {
         addCount = 0;
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * Do any of the specified flavours match the local flavour.
+     * 
+     * @param flavors Flavours to check
+     *
+     * @return whether the flavour is supported
+     */
     private boolean hasLocalArrayListFlavor(final DataFlavor[] flavors) {
         if (localArrayListFlavor == null) {
             return false;
@@ -164,7 +178,13 @@ public class ArrayListTransferHandler extends TransferHandler {
         return false;
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * Do any of the specified flavours match the serial flavour.
+     * 
+     * @param flavors Flavours to check
+     *
+     * @return whether the flavour is supported
+     */
     private boolean hasSerialArrayListFlavor(final DataFlavor[] flavors) {
         if (serialArrayListFlavor == null) {
             return false;

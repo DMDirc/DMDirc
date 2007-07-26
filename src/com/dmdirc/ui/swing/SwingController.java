@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing;
 
+
 import com.dmdirc.Channel;
 import com.dmdirc.Config;
 import com.dmdirc.Main;
@@ -31,12 +32,8 @@ import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
-import com.dmdirc.ui.swing.dialogs.SwingUpdaterDialog;
-import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
-import com.dmdirc.ui.swing.dialogs.firstrunwizard.SwingFirstRunWizard;
-import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.ChannelWindow;
+import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.interfaces.PreferencesPanel;
@@ -45,6 +42,10 @@ import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.interfaces.UpdaterDialog;
+import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
+import com.dmdirc.ui.swing.dialogs.SwingUpdaterDialog;
+import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
+import com.dmdirc.ui.swing.dialogs.firstrunwizard.SwingFirstRunWizard;
 import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
 import com.dmdirc.updater.Update;
 
@@ -53,6 +54,7 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -64,12 +66,17 @@ import javax.swing.plaf.FontUIResource;
  *
  * @author Chris
  */
-public class SwingController implements UIController {
+public final class SwingController implements UIController {
     
     /**
      * Singleton instance of MainFrame.
      */
     private static MainFrame me;
+    
+    /** Instantiates a new SwingController. */
+    public SwingController() {
+        //Do nothing
+    }
     
     /** {@inheritDoc} */
     public synchronized MainFrame getMainWindow() {

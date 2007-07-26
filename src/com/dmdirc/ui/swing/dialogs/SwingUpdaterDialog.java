@@ -23,11 +23,11 @@
 package com.dmdirc.ui.swing.dialogs;
 
 import com.dmdirc.Main;
+import com.dmdirc.ui.interfaces.UpdaterDialog;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.updater.Update;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
-import com.dmdirc.ui.interfaces.UpdaterDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -84,7 +84,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         
         setLayout(new BorderLayout());
         
-        JLabel header = new JLabel("<html><big>Update Available</big><br><br>"
+        final JLabel header = new JLabel("<html><big>Update Available</big><br><br>"
                 + "An update is available for one or more "
                 + "components of DMDirc:</html>");
         header.setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER,

@@ -47,8 +47,8 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.DefaultListModel;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
 
@@ -123,6 +123,8 @@ public final class ReorderableJList extends JList implements DragSourceListener,
     
     /**
      * Returns whether the target is below the drop cell.
+     *
+     * @return if the target is above or below the point
      */
     public boolean getBelowTarget() {
         return belowTarget;
@@ -239,9 +241,9 @@ public final class ReorderableJList extends JList implements DragSourceListener,
         }
         
         //move items
-        final boolean sourceBeforeTarget = (draggedIndex < index);
+        final boolean sourceBeforeTarget = draggedIndex < index;
         final DefaultListModel mod = getModel();
-        final int newIndex = (sourceBeforeTarget ? index - 1 : index);
+        final int newIndex = sourceBeforeTarget ? index - 1 : index;
         mod.remove(draggedIndex);
         for (Object item : (ArrayList) dragged) {
             mod.add(newIndex, item);
@@ -271,7 +273,7 @@ public final class ReorderableJList extends JList implements DragSourceListener,
         final Transferable trans = new ArrayListTransferable(transferObject);
         //start drag
         draggedIndex = index;
-        dragSource.startDrag(dge,Cursor.getDefaultCursor(), trans, this);
+        dragSource.startDrag(dge, Cursor.getDefaultCursor(), trans, this);
     }
 }
 

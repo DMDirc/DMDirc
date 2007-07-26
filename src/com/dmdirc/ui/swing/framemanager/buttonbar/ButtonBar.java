@@ -28,10 +28,10 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
-import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.swing.UIUtilities;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

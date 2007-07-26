@@ -31,10 +31,10 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.ui.swing.components.InputFrame;
-import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ChannelWindow;
+import com.dmdirc.ui.swing.components.InputFrame;
+import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
