@@ -20,27 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.textpane;
-
-import java.util.EventListener;
-
 /**
- * Interface for events on the TextPane.
+ * Textpane for the client.
  */
-public interface TextPaneListener extends EventListener {
-    
-    /** 
-     * Fired when a hyperlink is clicked. 
-     *
-     * @param url Hyperlink that was clicked on
-     */
-    void hyperlinkClicked(String url);
-    
-    /**
-     * Fired when a channel is clicked.
-     *
-     * @param channel Name of the channel clicked on
-     */
-    void channelClicked(String channel);
-    
-}
+package com.dmdirc.ui.swing.textpane;

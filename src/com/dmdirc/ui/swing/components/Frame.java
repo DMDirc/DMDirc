@@ -33,9 +33,9 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.ui.textpane.IRCTextAttribute;
-import com.dmdirc.ui.textpane.TextPane;
-import com.dmdirc.ui.textpane.TextPaneListener;
+import com.dmdirc.ui.swing.textpane.IRCTextAttribute;
+import com.dmdirc.ui.swing.textpane.TextPane;
+import com.dmdirc.ui.swing.textpane.TextPaneListener;
 
 import java.awt.Color;
 import java.awt.Dimension;

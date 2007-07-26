@@ -25,8 +25,8 @@ package com.dmdirc.ui.messages;
 import com.dmdirc.Config;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.textpane.IRCTextAttribute;
-import com.dmdirc.ui.textpane.TextPane;
+import com.dmdirc.ui.swing.textpane.IRCTextAttribute;
+import com.dmdirc.ui.swing.textpane.TextPane;
 
 import java.awt.Color;
 import java.awt.font.TextAttribute;

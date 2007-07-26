@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.textpane;
+package com.dmdirc.ui.swing.textpane;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;

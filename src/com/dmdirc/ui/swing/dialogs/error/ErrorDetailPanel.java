@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.error;
 
 import com.dmdirc.logger.ProgramError;
-import com.dmdirc.ui.textpane.TextPane;
+import com.dmdirc.ui.swing.textpane.TextPane;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 

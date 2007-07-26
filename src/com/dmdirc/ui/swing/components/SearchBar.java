@@ -25,7 +25,7 @@ package com.dmdirc.ui.swing.components;
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.ui.messages.ColourManager;
-import com.dmdirc.ui.textpane.TextPane;
+import com.dmdirc.ui.swing.textpane.TextPane;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 

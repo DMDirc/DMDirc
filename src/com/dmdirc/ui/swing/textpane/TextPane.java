@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.textpane;
+package com.dmdirc.ui.swing.textpane;
 
 import com.dmdirc.ui.swing.components.Frame;
 
