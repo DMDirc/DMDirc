@@ -23,10 +23,10 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
+import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.ui.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -52,7 +52,7 @@ public final class ChannelSettings extends ChannelCommand {
      */
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
-        ChannelSettingsDialog.getChannelSettingDialog(channel).setVisible(true);
+        Main.getUI().showChannelSettingsDialog(channel);
     }
     
     /** {@inheritDoc}. */

@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.nickcolours;
 
-import com.dmdirc.ui.UIUtilities;
+import com.dmdirc.ui.swing.UIUtilities;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

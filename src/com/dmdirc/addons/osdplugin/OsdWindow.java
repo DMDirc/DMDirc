@@ -24,7 +24,7 @@ package com.dmdirc.addons.osdplugin;
 
 import com.dmdirc.Config;
 import com.dmdirc.Main;
-import static com.dmdirc.ui.UIUtilities.LARGE_BORDER;
+import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

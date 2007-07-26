@@ -29,7 +29,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.ui.ChannelFrame;
+import com.dmdirc.ui.swing.ChannelFrame;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 

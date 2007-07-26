@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.textpane;
 
-import com.dmdirc.ui.components.Frame;
+import com.dmdirc.ui.swing.components.Frame;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

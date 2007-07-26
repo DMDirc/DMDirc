@@ -23,8 +23,8 @@
 package com.dmdirc.addons.nowplaying.plugin;
 
 import com.dmdirc.addons.nowplaying.MediaSource;
-import com.dmdirc.ui.components.reorderablelist.ReorderableJList;
-import static com.dmdirc.ui.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.components.reorderablelist.ReorderableJList;
+import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
 import java.util.Enumeration;
