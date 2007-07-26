@@ -29,6 +29,7 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.parser.ChannelClientInfo;
+import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.swing.ChannelFrame;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
@@ -105,7 +106,7 @@ public final class SetNickColour extends ChannelCommand {
             if (text) {
                 target.getMap().put(ChannelClientProperty.TEXT_FOREGROUND, newColour);
             }
-            ((ChannelFrame) channel.getFrame()).getNickList().repaint();
+            ((ChannelWindow) channel.getFrame()).updateNames();
         }
     }
     

@@ -26,10 +26,10 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.Command;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
-import com.dmdirc.ui.swing.ChannelFrame;
-import com.dmdirc.ui.swing.QueryFrame;
-import com.dmdirc.ui.swing.ServerFrame;
+import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.interfaces.QueryWindow;
+import com.dmdirc.ui.interfaces.ServerWindow;
 
 import java.util.Collections;
 import java.util.List;
@@ -63,18 +63,18 @@ public final class Help extends ServerCommand {
         sendLine(origin, isSilent, "commandOutput", "-- Global commands ----------------------------------");
         showCommands(CommandManager.getGlobalCommands(), origin, isSilent);
         
-        if (origin instanceof ServerFrame || origin instanceof ChannelFrame
-                || origin instanceof QueryFrame) {
+        if (origin instanceof ServerWindow || origin instanceof ChannelWindow
+                || origin instanceof QueryWindow) {
             sendLine(origin, isSilent, "commandOutput", "-- Server commands ----------------------------------");
             showCommands(CommandManager.getServerCommands(), origin, isSilent);
         }
         
-        if (origin instanceof ChannelFrame) {
+            if (origin instanceof ChannelWindow) {
             sendLine(origin, isSilent, "commandOutput", "-- Channel commands ---------------------------------");
             showCommands(CommandManager.getChannelCommands(), origin, isSilent);
         }
         
-        if (origin instanceof QueryFrame) {
+        if (origin instanceof QueryWindow) {
             sendLine(origin, isSilent, "commandOutput", "-- Query commands -----------------------------------");
             showCommands(CommandManager.getQueryCommands(), origin, isSilent);
             
