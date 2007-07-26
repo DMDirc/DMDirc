@@ -62,6 +62,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.beans.PropertyVetoException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -403,10 +404,9 @@ public final class MainFrame extends JFrame implements WindowListener,
     private void checkWindowState() {
         if (getActiveFrame() == null) {
             toggleStateMenuItem.setEnabled(false);
-            return;
+        } else {
+            toggleStateMenuItem.setEnabled(true);
         }
-        
-        toggleStateMenuItem.setEnabled(true);
         
         if (maximised) {
             toggleStateMenuItem.setText("Restore");
@@ -719,10 +719,19 @@ public final class MainFrame extends JFrame implements WindowListener,
         windowsMenu.removeAll();
         
         JMenuItem menuItem;
+        final Collection<JMenuItem> values = windows.values();
         
         windowsMenu.setMnemonic('w');
         windowsMenu.setText("Window");
         
+        if (values.isEmpty()) {
+            final JMenuItem mi = new JMenuItem("No windows");
+            mi.setEnabled(false);
+            windowsMenu.add(mi);
+            return;
+        }
+        
+        checkWindowState();
         windowsMenu.add(toggleStateMenuItem);
         
         menuItem = new JMenuItem();
@@ -741,9 +750,9 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         windowsMenu.addSeparator();
         
-        final Iterator<JMenuItem> it = windows.values().iterator();
-        addToMenu(windowsMenu, it, (int) (windowsMenu.getX() + windowsMenu.getPreferredSize().getHeight()
-            + windowsMenu.getPopupMenu().getPreferredSize().getHeight()));
+        addToMenu(windowsMenu, values.iterator(), (int) (windowsMenu.getX() 
+                + windowsMenu.getPreferredSize().getHeight()
+                + windowsMenu.getPopupMenu().getPreferredSize().getHeight()));
     }
     
     /**
