@@ -65,7 +65,7 @@ public final class ProgramError implements Serializable {
             final String[] trace, final Date date) {
         this.level = level;
         if (message == null) {
-            message = "No message";
+            this.message = "No message";
         } else {
             this.message = message;
         }
