@@ -23,6 +23,8 @@
 package com.dmdirc.ui.swing.dialogs;
 
 import com.dmdirc.Config;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
 
@@ -402,10 +404,15 @@ public final class PreferencesDialog implements PreferencesInterface {
     public void configClosed(final Properties properties) {
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             final String[] args = ((String) entry.getKey()).split("\\.");
-            if ("".equals(entry.getValue())) {
-                Config.unsetOption(args[0], args[1]);
+            if (args.length == 2) {
+                if ("".equals(entry.getValue()) || entry.getValue() == null) {
+                    Config.unsetOption(args[0], args[1]);
+                } else {
+                    Config.setOption(args[0], args[1], (String) entry.getValue());
+                }
             } else {
-                Config.setOption(args[0], args[1], (String) entry.getValue());
+                Logger.appError(ErrorLevel.LOW, "Invalid setting value: " 
+                        + entry.getKey(), new IllegalArgumentException("Invalid setting: " + entry.getKey()));
             }
         }
         preferencesPanel = null;

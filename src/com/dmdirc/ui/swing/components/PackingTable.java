@@ -152,6 +152,13 @@ public class PackingTable extends JTable {
      * @return Width of the specified column
      */
     private int getWidth(final int col) {
+        if (getColumnCount() == 0) {
+            return 0;
+        }
+        if (getColumnCount() >= col) {
+            return 0;
+        }
+        
         final TableColumn column = getColumnModel().getColumn(col);
         int width = (int) getTableHeader().getDefaultRenderer().
                 getTableCellRendererComponent(this, column.getIdentifier()

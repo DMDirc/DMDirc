@@ -64,7 +64,11 @@ public final class ProgramError implements Serializable {
     public ProgramError(final ErrorLevel level, final String message,
             final String[] trace, final Date date) {
         this.level = level;
-        this.message = message;
+        if (message == null) {
+            message = "No message";
+        } else {
+            this.message = message;
+        }
         this.trace = Arrays.copyOf(trace, trace.length);
         this.date = (Date) date.clone();
         this.status = ErrorStatus.WAITING;
@@ -124,7 +128,7 @@ public final class ProgramError implements Serializable {
         status = newStatus;
         ErrorManager.getErrorManager().fireErrorStatusChanged(this);
     }
-
+    
     /**
      * Returns the ID of this error.
      *
@@ -137,7 +141,7 @@ public final class ProgramError implements Serializable {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "Level: " + getLevel() + " Status: " + getStatus() 
+        return "Level: " + getLevel() + " Status: " + getStatus()
         + " Message: '" + getMessage() + "'";
     }
     
