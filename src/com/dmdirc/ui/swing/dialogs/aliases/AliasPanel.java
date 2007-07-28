@@ -26,20 +26,27 @@ import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import java.util.Arrays;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 
 /**
  * Panel to display an alias
  */
-public final class AliasPanel extends JPanel {
+public final class AliasPanel extends JPanel implements ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -50,7 +57,9 @@ public final class AliasPanel extends JPanel {
     
     private final JTextField name;
     
-    private final JTextField arguments;
+    private final JComboBox argumentComponent;
+    
+    private final JSpinner argumentNumber;
     
     private final JTextArea response;
     
@@ -63,10 +72,15 @@ public final class AliasPanel extends JPanel {
         super();
         
         name = new JTextField();
-        arguments = new JTextField();
+        argumentComponent = new JComboBox(new String[]{"N/A", "greater than", "equals", "less than", });
+        argumentNumber = new JSpinner(new SpinnerNumberModel());
         response = new JTextArea();
         
+        argumentNumber.setEnabled(false);
         response.setRows(5);
+        
+        argumentComponent.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
+        argumentComponent.addActionListener(this);
         
         layoutComponents();
         
@@ -74,37 +88,68 @@ public final class AliasPanel extends JPanel {
     }
     
     private void layoutComponents() {
+        final JPanel panel = new JPanel(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
+        
+        name.setPreferredSize(new Dimension(0, getFont().getSize()));
+        argumentComponent.setPreferredSize(new Dimension(
+                12 * getFont().getSize(), getFont().getSize()));
+        argumentNumber.setPreferredSize(new Dimension(0, getFont().getSize()));
+        response.setPreferredSize(new Dimension(0, getFont().getSize()));
+        
+        panel.add(argumentComponent, BorderLayout.LINE_START);
+        panel.add(argumentNumber, BorderLayout.CENTER);
+        
         setLayout(new SpringLayout());
         
         add(new JLabel("Name: "));
         add(name);
         
         add(new JLabel("# Arguments: "));
-        add(arguments);
+        add(panel);
         
         add(new JLabel("Mapping: "));
         add(new JScrollPane(response));
         
-        layoutGrid(this, 3, 2, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, 
+        layoutGrid(this, 3, 2, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER);
     }
     
     public void setAlias(final Action alias) {
         if (alias == null) {
             name.setText("");
-            arguments.setText("");
+            argumentComponent.setSelectedItem("N/A");
+            argumentNumber.setValue(0);
             response.setText("");
+            name.setEnabled(false);
+            argumentComponent.setEnabled(false);
+            argumentNumber.setEnabled(false);
+            response.setEnabled(false);
         } else {
+            name.setEnabled(true);
+            argumentComponent.setEnabled(true);
+            response.setEnabled(true);
             name.setText(alias.getName());
             if (alias.getConditions().size() > 1) {
                 final ActionCondition condition = alias.getConditions().get(1);
-                arguments.setText(condition.getComparison().getName()
-                + " " + condition.getTarget());
+                argumentComponent.setSelectedItem(condition.getComparison().getName());
+                argumentNumber.setValue(condition.getTarget());
+                argumentNumber.setEnabled(true);
             } else {
-                arguments.setText("N/A");
+                argumentComponent.setSelectedItem("N/A");
+                argumentNumber.setValue(0);
+                argumentNumber.setEnabled(false);
             }
             final String actionResponse = Arrays.toString(alias.getResponse());
             response.setText(actionResponse.substring(1, actionResponse.length() - 1));
+        }
+    }
+    
+    /** {@inheritDoc}. */
+    public void actionPerformed(final ActionEvent e) {
+        if (argumentComponent.getSelectedIndex() > 0) {
+            argumentNumber.setEnabled(true);
+        } else {
+            argumentNumber.setEnabled(false);
         }
     }
     

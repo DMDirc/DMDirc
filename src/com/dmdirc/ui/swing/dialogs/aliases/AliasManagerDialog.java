@@ -28,7 +28,7 @@ import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.StandardDialog;
-import com.dmdirc.ui.swing.dialogs.aliases.AliasPanel;
+import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.Dimension;
@@ -81,7 +81,14 @@ public final class AliasManagerDialog extends StandardDialog implements
     /** Buttons pane. */
     private JPanel buttonsPanel;
     
+    /** Alises. */
     private List<Action> aliases;
+    
+    /** Add/edit button. */
+    private JButton addButton;
+    
+    /** Delete button. */
+    private JButton deleteButton;
     
     /** Creates a new instance of ErrorListDialog. */
     private AliasManagerDialog() {
@@ -144,6 +151,13 @@ public final class AliasManagerDialog extends StandardDialog implements
         buttonsPanel = new JPanel();
         
         orderButtons(new JButton(), new JButton());
+        addButton = new JButton("Add");
+        deleteButton = new JButton("Delete");
+        
+        addButton.setPreferredSize(new Dimension(100, 25));
+	deleteButton.setPreferredSize(new Dimension(100, 25));
+        addButton.setMinimumSize(new Dimension(100, 25));
+	deleteButton.setMinimumSize(new Dimension(100, 25));
         
         buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER));
@@ -153,6 +167,10 @@ public final class AliasManagerDialog extends StandardDialog implements
         
         buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
         buttonsPanel.add(Box.createHorizontalGlue());
+        buttonsPanel.add(deleteButton);
+        buttonsPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
+        buttonsPanel.add(addButton);
+        buttonsPanel.add(Box.createHorizontalStrut(LARGE_BORDER));
         buttonsPanel.add(getLeftButton());
         buttonsPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
         buttonsPanel.add(getRightButton());
@@ -163,6 +181,8 @@ public final class AliasManagerDialog extends StandardDialog implements
         table.getSelectionModel().addListSelectionListener(this);
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
+        addButton.addActionListener(this);
+        deleteButton.addActionListener(this);
     }
     
     /** Lays out the components. */
@@ -215,8 +235,10 @@ public final class AliasManagerDialog extends StandardDialog implements
                 aliasDetails.setAlias(aliases.get(
                         table.getRowSorter().convertRowIndexToModel(
                         table.getSelectedRow())));
+                deleteButton.setEnabled(true);
             } else {
                 aliasDetails.setAlias(null);
+                deleteButton.setEnabled(false);
             }
         }
     }

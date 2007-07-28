@@ -166,14 +166,17 @@ public final class Logger {
                 errorDir.mkdirs();
             }
         }
+        final String logName = error.getDate().getTime() + "-" + error.getLevel();
         
-        final File errorFile = new File(errorDir, "" + error.getLevel() + "-"
-                + error.getDate().getTime() + ".log");
+        
+        final File errorFile = new File(errorDir, logName + ".log");
         
         if (errorFile.exists()) {
             boolean rename = false;
+            int i = 0;
             while (!rename) {
-                rename = errorFile.renameTo(new File(errorFile.getAbsolutePath() + '_'));
+                i++;
+                rename = errorFile.renameTo(new File(errorDir, logName + "-" + i + ".log"));
             }
         }
         try {
