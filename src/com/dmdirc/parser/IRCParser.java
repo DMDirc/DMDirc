@@ -233,6 +233,9 @@ public final class IRCParser implements Runnable {
 	
 	/** Should fake (channel)clients be created for callbacks where they do not exist? */
 	protected boolean createFake = false;
+	
+	/** Should part/quit/kick callbacks be fired before removing the user internally? */
+	protected boolean removeAfterCallback = true;
 		
 	/** This is the TrustManager used for SSL Sockets. */
 	private TrustManager[] myTrustManager = trustAllCerts;
@@ -265,6 +268,8 @@ public final class IRCParser implements Runnable {
 		updateCharArrays((byte)3);
 	}
 	
+	
+	
 	/**
 	 * Get the current Value of createFake.
 	 *
@@ -275,9 +280,23 @@ public final class IRCParser implements Runnable {
 	/**
 	 * Get the current Value of createFake.
 	 *
-	 * @param newValue New balue to set createFake
+	 * @param newValue New value to set createFake
 	 */
 	public void setCreateFake(boolean newValue) { createFake = newValue; }
+	
+	/**
+	 * Get the current Value of removeAfterCallback.
+	 *
+	 * @return Value of removeAfterCallback (true if kick/part/quit callbacks are fired before internal removal)
+	 */
+	public boolean getRemoveAfterCallback() { return removeAfterCallback; }
+	
+	/**
+	 * Get the current Value of removeAfterCallback.
+	 *
+	 * @param newValue New value to set removeAfterCallback
+	 */
+	public void setRemoveAfterCallback(boolean newValue) { removeAfterCallback = newValue; }
 	
 	/**
 	 * Get the current Value of addLastLine.

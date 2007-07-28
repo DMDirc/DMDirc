@@ -62,22 +62,24 @@ public class ProcessQuit extends IRCProcessor {
 			iChannel = myParser.hChannelList.get(e.nextElement());
 			iChannelClient = iChannel.getUser(iClient);
 			if (iChannelClient != null) {
-				callChannelQuit(iChannel,iChannelClient,sReason);
+				if (myParser.removeAfterCallback) { callChannelQuit(iChannel,iChannelClient,sReason); }
 				if (iClient == myParser.cMyself) {
 					iChannel.emptyChannel();
 					myParser.hChannelList.remove(myParser.toLowerCase(iChannel.getName()));
 				} else {
 					iChannel.delClient(iClient);
 				}
+				if (!myParser.removeAfterCallback) { callChannelQuit(iChannel,iChannelClient,sReason); }
 			}
 		}
 
-		callQuit(iClient,sReason);
+		if (myParser.removeAfterCallback) { callQuit(iClient,sReason); }
 		if (iClient == myParser.cMyself) {
 			myParser.hClientList.clear();
 		} else {
 			myParser.hClientList.remove(myParser.toLowerCase(iClient.getNickname()));
 		}
+		if (!myParser.removeAfterCallback) { callQuit(iClient,sReason); }
 	}	
 	
 	/**

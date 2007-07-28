@@ -197,7 +197,6 @@ public class PluginManager {
 				target = target.substring(myDir.length(), target.length() - 6);
 				// Change / (or \) to .
 				target = target.replace(File.separatorChar, '.');
-                                
 				addPlugin(target);
 			}
 		}

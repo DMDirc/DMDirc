@@ -46,7 +46,7 @@ import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
 import com.dmdirc.ui.swing.framemanager.MainFrameManager;
 import com.dmdirc.ui.swing.framemanager.windowmenu.WindowMenuFrameManager;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
-import com.dmdirc.ui.swing.dialogs.error.AliasManagerDialog;
+import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

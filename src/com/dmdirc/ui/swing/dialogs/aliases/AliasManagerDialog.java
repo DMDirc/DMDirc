@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.error;
+package com.dmdirc.ui.swing.dialogs.aliases;
 
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;

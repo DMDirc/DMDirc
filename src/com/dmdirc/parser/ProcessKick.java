@@ -65,17 +65,12 @@ public class ProcessKick extends IRCProcessor {
 			if (token.length > 4) { sReason = token[token.length-1]; }
 			iChannelClient = iChannel.getUser(iClient);
 			iChannelKicker = iChannel.getUser(token[0]);
-			callChannelKick(iChannel,iChannelClient,iChannelKicker,sReason,token[0]);
+			if (myParser.removeAfterCallback) { callChannelKick(iChannel,iChannelClient,iChannelKicker,sReason,token[0]); }
 			iChannel.delClient(iClient);
+			if (!myParser.removeAfterCallback) { callChannelKick(iChannel,iChannelClient,iChannelKicker,sReason,token[0]); }
 			if (iClient == myParser.cMyself) {
 				iChannel.emptyChannel();
 				myParser.hChannelList.remove(myParser.toLowerCase(iChannel.getName()));
-			} else { 
-				// Check if client is still on any channel we are on
-				if (!iClient.checkVisibility()) {
-					// if not, remove them from memory incase they quit without us seeing
-					myParser.hClientList.remove(myParser.toLowerCase(iClient.getNickname()));
-				}
 			}
 		}
 	}
