@@ -46,6 +46,7 @@ import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
 import com.dmdirc.ui.swing.framemanager.MainFrameManager;
 import com.dmdirc.ui.swing.framemanager.windowmenu.WindowMenuFrameManager;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.dialogs.error.AliasManagerDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -421,7 +422,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /**
      * Returns the status bar instance.
-     * 
+     *
      * @return SwingStatusBar instance
      */
     public StatusBar getStatusBar() {
@@ -664,6 +665,13 @@ public final class MainFrame extends JFrame implements WindowListener,
         settingsMenu.add(menuItem);
         
         menuItem = new JMenuItem();
+        menuItem.setMnemonic('l');
+        menuItem.setText("Alias Manager");
+        menuItem.setActionCommand("Aliases");
+        menuItem.addActionListener(this);
+        settingsMenu.add(menuItem);
+        
+        menuItem = new JMenuItem();
         menuItem.setMnemonic('x');
         menuItem.setText("Exit");
         menuItem.setActionCommand("Exit");
@@ -750,9 +758,9 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         windowsMenu.addSeparator();
         
-        addToMenu(windowsMenu, values.iterator(), (int) (windowsMenu.getX() 
-                + windowsMenu.getPreferredSize().getHeight()
-                + windowsMenu.getPopupMenu().getPreferredSize().getHeight()));
+        addToMenu(windowsMenu, values.iterator(), (int) (windowsMenu.getX()
+        + windowsMenu.getPreferredSize().getHeight()
+        + windowsMenu.getPopupMenu().getPreferredSize().getHeight()));
     }
     
     /**
@@ -762,10 +770,10 @@ public final class MainFrame extends JFrame implements WindowListener,
      * @param it JMenuItem iterator
      * @param location X Location of the menu on screen
      */
-    private void addToMenu(final JMenu menu, final Iterator<JMenuItem> it, 
+    private void addToMenu(final JMenu menu, final Iterator<JMenuItem> it,
             final int location) {
         while (it.hasNext()) {
-            if (location + menu.getPopupMenu().getPreferredSize().getHeight() 
+            if (location + menu.getPopupMenu().getPreferredSize().getHeight()
             > Toolkit.getDefaultToolkit().getScreenSize().getHeight()) {
                 final JMenu subMenu = new JMenu("More ->");
                 menu.add(subMenu);
@@ -797,6 +805,8 @@ public final class MainFrame extends JFrame implements WindowListener,
             PluginDialog.showPluginDialog();
         } else if (e.getActionCommand().equals("Actions")) {
             ActionsManagerDialog.showActionsManagerDialog();
+        } else if (e.getActionCommand().equals("Aliases")) {
+            AliasManagerDialog.getAliasManagerDialog().setVisible(true);
         } else if (e.getActionCommand().equals("Minimise")) {
             ((Frame) Main.getUI().getMainWindow().getActiveFrame()).minimise();
         } else if (e.getActionCommand().equals("Close")) {

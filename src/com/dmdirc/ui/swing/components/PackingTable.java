@@ -155,7 +155,7 @@ public class PackingTable extends JTable {
         if (getColumnCount() == 0) {
             return 0;
         }
-        if (getColumnCount() >= col) {
+        if (getColumnCount() <= col) {
             return 0;
         }
         

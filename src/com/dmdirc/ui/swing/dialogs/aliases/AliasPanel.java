@@ -22,12 +22,24 @@
 
 package com.dmdirc.ui.swing.dialogs.aliases;
 
+import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionCondition;
+import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
+import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+
+import java.util.Arrays;
+import javax.swing.JLabel;
+
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SpringLayout;
 
 /**
  * Panel to display an alias
  */
-public class AliasPanel extends JPanel {
+public final class AliasPanel extends JPanel {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -36,9 +48,64 @@ public class AliasPanel extends JPanel {
      */
     private static final long serialVersionUID = 1;
     
-    /** Creates a new instance of AliasPanel. */
-    public AliasPanel() {
+    private final JTextField name;
+    
+    private final JTextField arguments;
+    
+    private final JTextArea response;
+    
+    /**
+     * Creates a new instance of AliasPanel.
+     *
+     * @param alias Alias to display, or null
+     */
+    public AliasPanel(final Action alias) {
         super();
+        
+        name = new JTextField();
+        arguments = new JTextField();
+        response = new JTextArea();
+        
+        response.setRows(5);
+        
+        layoutComponents();
+        
+        setAlias(alias);
+    }
+    
+    private void layoutComponents() {
+        setLayout(new SpringLayout());
+        
+        add(new JLabel("Name: "));
+        add(name);
+        
+        add(new JLabel("# Arguments: "));
+        add(arguments);
+        
+        add(new JLabel("Mapping: "));
+        add(new JScrollPane(response));
+        
+        layoutGrid(this, 3, 2, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, 
+                SMALL_BORDER);
+    }
+    
+    public void setAlias(final Action alias) {
+        if (alias == null) {
+            name.setText("");
+            arguments.setText("");
+            response.setText("");
+        } else {
+            name.setText(alias.getName());
+            if (alias.getConditions().size() > 1) {
+                final ActionCondition condition = alias.getConditions().get(1);
+                arguments.setText(condition.getComparison().getName()
+                + " " + condition.getTarget());
+            } else {
+                arguments.setText("N/A");
+            }
+            final String actionResponse = Arrays.toString(alias.getResponse());
+            response.setText(actionResponse.substring(1, actionResponse.length() - 1));
+        }
     }
     
 }
