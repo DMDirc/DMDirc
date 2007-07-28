@@ -76,11 +76,11 @@ public final class Main {
         
         final CommandLineParser clp = new CommandLineParser(args);
         
-        CommandManager.initCommands();
-        
         IdentityManager.load();
         
         Config.init();
+        
+        CommandManager.initCommands();
         
         getUI().initUISettings();
         
