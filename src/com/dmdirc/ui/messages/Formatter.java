@@ -31,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.IllegalFormatConversionException;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Properties;
@@ -329,6 +330,7 @@ public final class Formatter {
     
     /**
      * Loads the specified file into the formatter.
+     * 
      * @param file File to be loaded
      * @return True iff the operation succeeeded, false otherwise
      */
@@ -337,11 +339,8 @@ public final class Formatter {
         if (myFile.exists()) {
             try {
                 final FileInputStream in = new FileInputStream(myFile);
-                properties.load(in);
+                loadFile(in);
                 in.close();
-            } catch (InvalidPropertiesFormatException ex) {
-                Logger.userError(ErrorLevel.LOW, "Unable to load formatter");
-                return false;
             } catch (FileNotFoundException ex) {
                 return false;
             } catch (IOException ex) {
@@ -353,6 +352,27 @@ public final class Formatter {
         } else {
             return false;
         }
+    }
+    
+    /**
+     * Reads the specified input stream as a properties file and loads the
+     * contained formatter settings into the formatter.
+     * 
+     * @param stream The stream to be read
+     * @return True iff the operation succeeded, false otherwise
+     */
+    public static boolean loadFile(final InputStream stream) {
+        try {
+            properties.load(stream);
+        } catch (InvalidPropertiesFormatException ex) {
+            Logger.userError(ErrorLevel.LOW, "Unable to load formatter");
+            return false;
+        } catch (IOException ex) {
+            Logger.userError(ErrorLevel.LOW, "Unable to load formatter");
+            return false;
+        }
+        
+        return true;
     }
     
     /**

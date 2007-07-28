@@ -49,7 +49,7 @@ import java.util.Properties;
  *
  * @author chris
  */
-public final class Identity implements Serializable, Comparable<Identity> {
+public class Identity implements Serializable, Comparable<Identity> {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -59,19 +59,19 @@ public final class Identity implements Serializable, Comparable<Identity> {
     private static final long serialVersionUID = 1;
     
     /** The target for this identity. */
-    private final ConfigTarget myTarget;
+    protected final ConfigTarget myTarget;
     
     /** The configuration details for this identity. */
-    private final Properties properties;
+    protected final Properties properties;
     
     /** The config change listeners for this source. */
-    private final List<ConfigChangeListener> listeners = new ArrayList<ConfigChangeListener>();
+    protected final List<ConfigChangeListener> listeners = new ArrayList<ConfigChangeListener>();
     
     /** The file that this identity is read from. */
-    private File file;
+    protected File file;
     
     /** Whether this identity needs to be saved. */
-    private boolean needSave;
+    protected boolean needSave;
     
     /**
      * Creates a new identity with the specified properties. Saving is not
@@ -365,7 +365,7 @@ public final class Identity implements Serializable, Comparable<Identity> {
      * @param properties The properties to be included in the identity
      * @return A new identity containing the specified properties
      */
-    private static Identity createIdentity(final Properties properties) {
+    protected static Identity createIdentity(final Properties properties) {
         final String fs = System.getProperty("file.separator");
         final String location = Config.getConfigDir() + "identities" + fs;
         final String name = properties.getProperty("identity.name");
