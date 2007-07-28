@@ -26,8 +26,9 @@ import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.channel.*;
+import com.dmdirc.commandparser.commands.chat.*;
 import com.dmdirc.commandparser.commands.global.*;
-import com.dmdirc.commandparser.commands.query.*;
+//import com.dmdirc.commandparser.commands.query.*;
 import com.dmdirc.commandparser.commands.server.*;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -234,6 +235,10 @@ public final class CommandManager {
      * Instansiates the default commands.
      */
     public static void initCommands() {
+        // Chat commands
+        new Me();
+        new MeEmpty();
+        
         // Channel commands
         new Ban();
         new Benchmark();
@@ -242,8 +247,6 @@ public final class CommandManager {
         new Kick();
         new KickEmpty();
         new KickReason();
-        new Me();
-        new MeEmpty();
         new Mode();
         new Part();
         new PartDefault();
@@ -275,8 +278,6 @@ public final class CommandManager {
         new Whois();
         
         // Query commands
-        new QueryMe();
-        new QueryMeEmpty();
         
         // Global commands
         new Active();

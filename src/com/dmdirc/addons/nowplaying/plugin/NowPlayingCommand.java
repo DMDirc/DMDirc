@@ -22,10 +22,10 @@
 
 package com.dmdirc.addons.nowplaying.plugin;
 
-import com.dmdirc.Channel;
+import com.dmdirc.MessageTarget;
 import com.dmdirc.Server;
 import com.dmdirc.addons.nowplaying.MediaSource;
-import com.dmdirc.commandparser.ChannelCommand;
+import com.dmdirc.commandparser.ChatCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -38,13 +38,13 @@ import java.util.List;
  * variety of media players.
  * @author chris
  */
-public final class NowPlayingCommand extends ChannelCommand implements IntelligentCommand {
+public final class NowPlayingCommand extends ChatCommand implements IntelligentCommand {
     
     /** The plugin that's using this command. */
     final NowPlayingPlugin parent;
     
     /**
-     * Creates a new instance of DcopCommand.
+     * Creates a new instance of NowPlayingCommand.
      *
      * @param parent The plugin that's instansiating this command
      */
@@ -58,7 +58,7 @@ public final class NowPlayingCommand extends ChannelCommand implements Intellige
     
     /** {@inheritDoc} */
     public void execute(final InputWindow origin, final Server server,
-            final Channel channel, final boolean isSilent, final String... args) {
+            final MessageTarget target, final boolean isSilent, final String ... args) {
         if (args.length > 0 && args[0].equalsIgnoreCase("--sources")) {
             doSourceList(origin, isSilent);
         } else if (args.length > 0 && args[0].equalsIgnoreCase("--source")) {
@@ -70,7 +70,7 @@ public final class NowPlayingCommand extends ChannelCommand implements Intellige
                     sendLine(origin, isSilent, "commandError", "Source not found.");
                 } else {
                     if (source.isRunning()) {
-                        channel.sendAction("is playing " + source.getInformation());
+                        target.sendAction("is playing " + source.getInformation());
                     } else {
                         sendLine(origin, isSilent, "commandError", "Source is not running.");
                     }
@@ -80,7 +80,7 @@ public final class NowPlayingCommand extends ChannelCommand implements Intellige
             }
         } else {
             if (parent.hasRunningSource()) {
-                channel.sendAction("is playing " + parent.getBestSource().getInformation());
+                target.sendAction("is playing " + parent.getBestSource().getInformation());
             } else {
                 sendLine(origin, isSilent, "commandError", "No running media sources available.");
             }
