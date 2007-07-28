@@ -47,7 +47,7 @@ import java.io.Serializable;
  * corresponding ServerFrame, and handles user input to a ServerFrame.
  * @author chris
  */
-public final class Query extends WritableFrameContainer implements
+public final class Query extends MessageTarget implements
         IPrivateAction, IPrivateMessage, INickChanged, IQuit, Serializable {
     
     /**

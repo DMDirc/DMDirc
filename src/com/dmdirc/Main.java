@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.plugins.PluginManager;
@@ -74,6 +75,8 @@ public final class Main {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
         
         final CommandLineParser clp = new CommandLineParser(args);
+        
+        CommandManager.initCommands();
         
         IdentityManager.load();
         

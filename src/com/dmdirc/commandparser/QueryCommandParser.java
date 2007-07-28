@@ -73,6 +73,8 @@ public final class QueryCommandParser extends CommandParser {
             final boolean isSilent, final Command command, final String... args) {
         if (command instanceof QueryCommand) {
             ((QueryCommand) command).execute(origin, server, query, isSilent, args);
+        } else if (command instanceof ChatCommand) {
+            ((ChatCommand) command).execute(origin, server, query, isSilent, args);
         } else if (command instanceof ServerCommand) {
             ((ServerCommand) command).execute(origin, server, isSilent, args);
         } else {

@@ -69,7 +69,7 @@ import javax.swing.SwingUtilities;
  *
  * @author chris
  */
-public final class Channel extends WritableFrameContainer implements
+public final class Channel extends MessageTarget implements
         IChannelMessage, IChannelGotNames, IChannelTopic, IChannelJoin,
         IChannelPart, IChannelKick, IChannelQuit, IChannelAction,
         IChannelNickChanged, IChannelModeChanged, IChannelUserModeChanged,
@@ -209,11 +209,7 @@ public final class Channel extends WritableFrameContainer implements
         return server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName());
     }
     
-    /**
-     * Sends the specified string as an action (CTCP) to the channel that this object
-     * represents.
-     * @param action The action to send
-     */
+    /** {@inheritDoc} */
     public void sendAction(final String action) {
         final ClientInfo me = server.getParser().getMyself();
         final String modes = channelInfo.getUser(me).getImportantModePrefix();
@@ -294,7 +290,7 @@ public final class Channel extends WritableFrameContainer implements
         String temp = Styliser.stipControlCodes(channelInfo.getName());
         
         if (channelInfo.getTopic().length() > 0) {
-                temp = temp + " - " + Styliser.stipControlCodes(channelInfo.getTopic());
+            temp = temp + " - " + Styliser.stipControlCodes(channelInfo.getTopic());
         }
         
         // Needs to be final for AIC

@@ -31,6 +31,7 @@ import com.dmdirc.commandparser.commands.query.*;
 import com.dmdirc.commandparser.commands.server.*;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.input.TabCompleter;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -46,41 +47,46 @@ public final class CommandManager {
     /**
      * The global commands that have been instansiated.
      */
-    private static List<Command> globalCommands;
+    private static List<Command> globalCommands = new ArrayList<Command>();
     /**
      * The server commands that have been instansiated.
      */
-    private static List<Command> serverCommands;
+    private static List<Command> serverCommands = new ArrayList<Command>();
     /**
      * The channel commands that have been instansiated.
      */
-    private static List<Command> channelCommands;
+    private static List<Command> channelCommands = new ArrayList<Command>();
     /**
      * The query commands that have been instansiated.
      */
-    private static List<Command> queryCommands;
+    private static List<Command> queryCommands = new ArrayList<Command>();
+    /**
+     * The "chat" commands that have been instansiated.
+     */
+    private static List<Command> chatCommands = new ArrayList<Command>();
+    
     /**
      * The parsers that have requested global commands.
      */
-    private static List<CommandParser> globalParsers;
+    private static List<CommandParser> globalParsers = new ArrayList<CommandParser>();
     /**
      * The parsers that have requested server commands.
      */
-    private static List<CommandParser> serverParsers;
+    private static List<CommandParser> serverParsers = new ArrayList<CommandParser>();
     /**
      * The parsers that have requested channel commands.
      */
-    private static List<CommandParser> channelParsers;
+    private static List<CommandParser> channelParsers = new ArrayList<CommandParser>();
     /**
      * The parsers that have requested query commands.
      */
-    private static List<CommandParser> queryParsers;
+    private static List<CommandParser> queryParsers = new ArrayList<CommandParser>();
     
     /**
      * Channel commands that have been registered to appear in the nicklist
      * popup.
      */
-    private static List<Command> channelPopupCommands;
+    private static List<Command> channelPopupCommands = new ArrayList<Command>();
     
     /**
      * Prevents creation of a new command manager.
@@ -94,54 +100,7 @@ public final class CommandManager {
      * @param command The command to be registered
      */
     public static void registerCommand(final Command command) {
-        if (channelCommands == null) {
-            initLists();
-        }
-        
-        List<CommandParser> target = null;
-        
-        if (command instanceof ChannelCommand) {
-            target = channelParsers;
-            channelCommands.add(command);
-        } else if (command instanceof ServerCommand) {
-            target = serverParsers;
-            serverCommands.add(command);
-        } else if (command instanceof QueryCommand) {
-            target = queryParsers;
-            queryCommands.add(command);
-        } else if (command instanceof GlobalCommand) {
-            target = globalParsers;
-            globalCommands.add(command);
-        } else {
-            Logger.userError(ErrorLevel.HIGH, "Attempted to register an invalid command: "
-                    + command.getClass().getName());
-        }
-        
-        // FIXME: There's no way to kill old/dead entries in the *Parsers lists.
-        //        Ideally, they'd unregister themselves (or so) when unloaded.
-        if (target != null) {
-            for (CommandParser parser : target) {
-                if (parser != null) {
-                    parser.registerCommand(command);
-                }
-            }
-            
-            final String commandName = Config.getCommandChar() + command.getName();
-            
-            for (Server server : ServerManager.getServerManager().getServers()) {
-                if (command instanceof ServerCommand || command instanceof GlobalCommand) {
-                    server.getTabCompleter().addEntry(commandName);
-                } else if (command instanceof ChannelCommand) {
-                    for (String channelName : server.getChannels()) {
-                        server.getChannel(channelName).getTabCompleter().addEntry(commandName);
-                    }
-                } else if (command instanceof QueryCommand) {
-                    for (String queryName : server.getQueries()) {
-                        server.getQuery(queryName).getTabCompleter().addEntry(commandName);
-                    }
-                }
-            }
-        }
+        registerCommand(command, true);
     }
     
     /**
@@ -149,53 +108,109 @@ public final class CommandManager {
      * @param command The command to be unregistered
      */
     public static void unregisterCommand(final Command command) {
-        if (channelCommands == null) {
-            return;
-        }
-        
-        List<CommandParser> target = null;
+        registerCommand(command, false);
+    }
+    
+    /**
+     * Registers or unregisters a command.
+     *
+     * @param command The command to be (un)registered
+     * @param register True if the command should be registered, false if it
+     * should be unregistered.
+     */
+    private static void registerCommand(final Command command, final boolean register) {
+        boolean canContinue = true;
         
         if (command instanceof ChannelCommand) {
-            target = channelParsers;
-            channelCommands.remove(command);
+            registerCommand(command, channelParsers, register);
+            channelCommands.add(command);
         } else if (command instanceof ServerCommand) {
-            target = serverParsers;
-            serverCommands.remove(command);
+            registerCommand(command, serverParsers, register);
+            serverCommands.add(command);
         } else if (command instanceof QueryCommand) {
-            target = queryParsers;
-            queryCommands.remove(command);
+            registerCommand(command, queryParsers, register);
+            queryCommands.add(command);
         } else if (command instanceof GlobalCommand) {
-            target = globalParsers;
-            globalCommands.remove(command);
+            registerCommand(command, globalParsers, register);
+            globalCommands.add(command);
+        } else if (command instanceof ChatCommand) {
+            registerCommand(command, queryParsers, register);
+            registerCommand(command, channelParsers, register);
+            chatCommands.add(command);
         } else {
-            Logger.userError(ErrorLevel.HIGH, "Attempted to unregister an invalid command: "
+            canContinue = false;
+            
+            Logger.userError(ErrorLevel.HIGH, "Attempted to (un)register an invalid command: "
                     + command.getClass().getName());
         }
         
+        if (canContinue) {
+            registerCommandName(command, register);
+        }
+    }
+    
+    /**
+     * Registers the specified command with all of the specified parsers.
+     *
+     * @param command The command to be reigstered
+     * @param parsers The parsers to register the command with
+     */
+    private static void registerCommand(final Command command,
+            final List<CommandParser> parsers, final boolean register) {
         // FIXME: There's no way to kill old/dead entries in the *Parsers lists.
         //        Ideally, they'd unregister themselves (or so) when unloaded.
-        if (target != null) {
-            for (CommandParser parser : target) {
-                if (parser != null) {
-                    parser.unregisterCommand(command);
+        for (CommandParser parser : parsers) {
+            if (register) {
+                parser.registerCommand(command);
+            } else {
+                parser.unregisterCommand(command);
+            }
+        }
+    }
+    
+    /**
+     * Registers or unregisters the specified command's name with the relevant
+     * tab completers.
+     *
+     * @param command The command to be registered
+     * @param register True if the command should be registered, false if it
+     * should be unregistered.
+     */
+    private static void registerCommandName(final Command command,
+            final boolean register) {
+        // Do tab completion
+        final String commandName = Config.getCommandChar() + command.getName();
+        
+        for (Server server : ServerManager.getServerManager().getServers()) {
+            if (command instanceof ServerCommand || command instanceof GlobalCommand) {
+                registerCommandName(server.getTabCompleter(), commandName, register);
+            } else if (command instanceof ChannelCommand || command instanceof ChatCommand) {
+                for (String channelName : server.getChannels()) {
+                    registerCommandName(server.getChannel(channelName).getTabCompleter(), commandName, register);
+                }
+            } else if (command instanceof QueryCommand || command instanceof ChatCommand) {
+                for (String queryName : server.getQueries()) {
+                    registerCommandName(server.getQuery(queryName).getTabCompleter(), commandName, register);
                 }
             }
-            
-            final String commandName = Config.getCommandChar() + command.getName();
-            
-            for (Server server : ServerManager.getServerManager().getServers()) {
-                if (command instanceof ServerCommand || command instanceof GlobalCommand) {
-                    server.getTabCompleter().removeEntry(commandName);
-                } else if (command instanceof ChannelCommand) {
-                    for (String channelName : server.getChannels()) {
-                        server.getChannel(channelName).getTabCompleter().removeEntry(commandName);
-                    }
-                } else if (command instanceof QueryCommand) {
-                    for (String queryName : server.getQueries()) {
-                        server.getQuery(queryName).getTabCompleter().removeEntry(commandName);
-                    }
-                }
-            }
+        }
+    }
+    
+    /**
+     * Registers or unregisters the specified command with the specified tab-
+     * completer.
+     *
+     * @param completer The tab completer to be used
+     * @param name The command name to be registered
+     * @param register True if the command should be registered, false if it
+     * should be unregistered.
+     */
+    private static void registerCommandName(final TabCompleter completer,
+            final String name, final boolean register) {
+        if (register) {
+            completer.addEntry(name);
+        }  else {
+            completer.removeEntry(name);
         }
     }
     
@@ -204,10 +219,6 @@ public final class CommandManager {
      * @param command The command to be registered
      */
     public static void registerPopupCommand(final Command command) {
-        if (channelPopupCommands == null) {
-            initLists();
-        }
-        
         channelPopupCommands.add(command);
     }
     
@@ -216,36 +227,13 @@ public final class CommandManager {
      * @return A list of commands suitable for use in the nicklist popup
      */
     public static List<Command> getNicklistCommands() {
-        if (channelPopupCommands == null) {
-            initLists();
-        }
-        
         return channelPopupCommands;
-    }
-    
-    /**
-     * Initialises the command manager's various command lists.
-     */
-    private static void initLists() {
-        channelCommands = new ArrayList<Command>();
-        serverCommands = new ArrayList<Command>();
-        queryCommands = new ArrayList<Command>();
-        globalCommands = new ArrayList<Command>();
-        
-        channelParsers = new ArrayList<CommandParser>();
-        serverParsers = new ArrayList<CommandParser>();
-        queryParsers = new ArrayList<CommandParser>();
-        globalParsers = new ArrayList<CommandParser>();
-        
-        channelPopupCommands = new ArrayList<Command>();
-        
-        initCommands();
     }
     
     /**
      * Instansiates the default commands.
      */
-    private static void initCommands() {
+    public static void initCommands() {
         // Channel commands
         new Ban();
         new Benchmark();
@@ -297,7 +285,7 @@ public final class CommandManager {
         new ExitDefault();
         new Ifplugin();
         new NewServer();
-        new Notify();        
+        new Notify();
         new LoadFormatter();
         new LoadPlugin();
         new ReloadActions();
@@ -312,11 +300,11 @@ public final class CommandManager {
      * @param parser The parser to load commands into
      */
     public static void loadChannelCommands(final CommandParser parser) {
-        if (channelCommands == null) {
-            initLists();
+        for (Command com : channelCommands) {
+            parser.registerCommand(com);
         }
         
-        for (Command com : channelCommands) {
+        for (Command com : chatCommands) {
             parser.registerCommand(com);
         }
         
@@ -328,10 +316,6 @@ public final class CommandManager {
      * @param parser The parser to load commands into
      */
     public static void loadServerCommands(final CommandParser parser) {
-        if (serverCommands == null) {
-            initLists();
-        }
-        
         final Iterator<Command> it = serverCommands.iterator();
         
         while (it.hasNext()) {
@@ -346,10 +330,6 @@ public final class CommandManager {
      * @param parser The parser to load commands into
      */
     public static void loadGlobalCommands(final CommandParser parser) {
-        if (globalCommands == null) {
-            initLists();
-        }
-        
         for (Command com : globalCommands) {
             parser.registerCommand(com);
         }
@@ -362,11 +342,11 @@ public final class CommandManager {
      * @param parser The parser to load commands into
      */
     protected static void loadQueryCommands(final QueryCommandParser parser) {
-        if (queryCommands == null)    {
-            initLists();
+        for (Command com : queryCommands) {
+            parser.registerCommand(com);
         }
         
-        for (Command com : queryCommands) {
+        for (Command com : chatCommands) {
             parser.registerCommand(com);
         }
         
@@ -376,7 +356,7 @@ public final class CommandManager {
     /**
      * Retrieves the command identified by the specified name, regardless of
      * type.
-     * 
+     *
      * @param name The name to look for
      * @return A command with a matching signature, or null if none were found
      */
@@ -387,6 +367,8 @@ public final class CommandManager {
             return (Command) getServerCommandByName(name);
         } else if (getChannelCommandByName(name) != null) {
             return (Command) getChannelCommandByName(name);
+        } else if (getChatCommandByName(name) != null) {
+            return (Command) getChatCommandByName(name);
         } else {
             return (Command) getChannelCommandByName(name);
         }
@@ -399,10 +381,6 @@ public final class CommandManager {
      * were found.
      */
     public static ServerCommand getServerCommand(final String signature) {
-        if (serverCommands == null) {
-            initLists();
-        }
-        
         for (Command com : serverCommands) {
             if (com.getSignature().equalsIgnoreCase(signature)) {
                 return (ServerCommand) com;
@@ -418,12 +396,8 @@ public final class CommandManager {
      * @return A server command with a matching name, or null if none were found
      */
     public static ServerCommand getServerCommandByName(final String name) {
-        if (serverCommands == null) {
-            initLists();
-        }
-        
         return (ServerCommand) getCommandByName(name, serverCommands);
-    }    
+    }
     
     /**
      * Retrieves the global command identified by the specified signature.
@@ -432,10 +406,6 @@ public final class CommandManager {
      * were found.
      */
     public static GlobalCommand getGlobalCommand(final String signature) {
-        if (globalCommands == null) {
-            initLists();
-        }
-        
         for (Command com : globalCommands) {
             if (com.getSignature().equalsIgnoreCase(signature)) {
                 return (GlobalCommand) com;
@@ -451,10 +421,6 @@ public final class CommandManager {
      * @return A global command with a matching name, or null if none were found
      */
     public static GlobalCommand getGlobalCommandByName(final String name) {
-        if (globalCommands == null) {
-            initLists();
-        }
-        
         return (GlobalCommand) getCommandByName(name, globalCommands);
     }
     
@@ -465,10 +431,6 @@ public final class CommandManager {
      * were found.
      */
     public static ChannelCommand getChannelCommand(final String signature) {
-        if (channelCommands == null) {
-            initLists();
-        }
-        
         for (Command com : channelCommands) {
             if (com.getSignature().equalsIgnoreCase(signature)) {
                 return (ChannelCommand) com;
@@ -484,12 +446,33 @@ public final class CommandManager {
      * @return A channel command with a matching name, or null if none were found
      */
     public static ChannelCommand getChannelCommandByName(final String name) {
-        if (channelCommands == null) {
-            initLists();
+        return (ChannelCommand) getCommandByName(name, channelCommands);
+    }
+    
+    /**
+     * Retrieves the chat command identified by the specified signature.
+     * @param signature The signature to look for
+     * @return A chat command with a matching signature, or null if none
+     * were found.
+     */
+    public static ChatCommand getChatCommand(final String signature) {
+        for (Command com : chatCommands) {
+            if (com.getSignature().equalsIgnoreCase(signature)) {
+                return (ChatCommand) com;
+            }
         }
         
-        return (ChannelCommand) getCommandByName(name, channelCommands);
-    }    
+        return null;
+    }
+    
+    /**
+     * Retrieves the chat command identified by the specified name.
+     * @param name The name to look for
+     * @return A chat command with a matching name, or null if none were found
+     */
+    public static ChatCommand getChatCommandByName(final String name) {
+        return (ChatCommand) getCommandByName(name, chatCommands);
+    }
     
     /**
      * Retrieves the command identified by the specified name.
@@ -498,7 +481,7 @@ public final class CommandManager {
      * @return A command with a matching name, or null if none were found
      */
     private static Command getCommandByName(final String name,
-            final List<Command> list) {        
+            final List<Command> list) {
         for (Command com : list) {
             if (com.getName().equalsIgnoreCase(name)) {
                 return com;
@@ -506,7 +489,7 @@ public final class CommandManager {
         }
         
         return null;
-    }    
+    }
     
     /**
      * Returns a list containing the global commands that have been initialised
@@ -515,7 +498,7 @@ public final class CommandManager {
      */
     public static List<Command> getGlobalCommands() {
         return globalCommands;
-    }    
+    }
     
     /**
      * Returns a list containing the server commands that have been initialised
@@ -536,6 +519,15 @@ public final class CommandManager {
     }
     
     /**
+     * Returns a list containing the chat commands that have been initialised
+     * by this command manager.
+     * @return An ArrayList of chat commands, or null if none have been loaded
+     */
+    public static List<Command> getChatCommands() {
+        return chatCommands;
+    }
+    
+    /**
      * Returns a list containing the query commands that have been initialised
      * by this command manager.
      * @return An ArrayList of query commands, or null if none have been loaded
@@ -550,11 +542,13 @@ public final class CommandManager {
      * @return True iff the command is a channel command, false otherwise
      */
     public static boolean isChannelCommand(final String command) {
-        if (channelCommands == null) {
-            CommandManager.initLists();
+        for (Command chanCommand : channelCommands) {
+            if (chanCommand.getName().equalsIgnoreCase(command)) {
+                return true;
+            }
         }
         
-        for (Command chanCommand : channelCommands) {
+        for (Command chanCommand : chatCommands) {
             if (chanCommand.getName().equalsIgnoreCase(command)) {
                 return true;
             }
@@ -570,10 +564,6 @@ public final class CommandManager {
      * names
      */
     public static List<String> getServerCommandNames() {
-        if (serverCommands == null) {
-            CommandManager.initLists();
-        }
-        
         return getCommandNames(serverCommands);
     }
     
@@ -584,40 +574,36 @@ public final class CommandManager {
      * names
      */
     public static List<String> getGlobalCommandNames() {
-        if (globalCommands == null) {
-            CommandManager.initLists();
-        }
-        
         return getCommandNames(globalCommands);
     }
     
     /**
      * Returns the names (including command char) of all registered channel
      * commands.
-     * @return An ArrayList&lt;String&gt; containing all registered server command
-     * names
+     * @return A list containing all registered channel command names
      */
     public static List<String> getChannelCommandNames() {
-        if (channelCommands == null) {
-            CommandManager.initLists();
-        }
-        
         return getCommandNames(channelCommands);
     }
     
     /**
-     * Returns the names (including command char) of all registered channel
+     * Returns the names (including command char) of all registered query
      * commands.
-     * @return An ArrayList&lt;String&gt; containing all registered server command
-     * names
+     * @return A list containing all registered query command names
      */
     public static List<String> getQueryCommandNames() {
-        if (queryCommands == null) {
-            CommandManager.initLists();
-        }
-        
         return getCommandNames(queryCommands);
     }
+    
+    /**
+     * Returns the names (including command char) of all registered chat
+     * commands.
+     * @return An ArrayList&lt;String&gt; containing all registered chat command
+     * names
+     */
+    public static List<String> getChatCommandNames() {
+        return getCommandNames(chatCommands);
+    }    
     
     /**
      * Iterates through the specified source and returns a list of the names

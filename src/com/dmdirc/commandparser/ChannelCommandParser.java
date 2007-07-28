@@ -73,6 +73,8 @@ public final class ChannelCommandParser extends CommandParser {
             final boolean isSilent, final Command command, final String... args) {
         if (command instanceof ChannelCommand) {
             ((ChannelCommand) command).execute(origin, server, channel, isSilent, args);
+        } else if (command instanceof ChatCommand) {
+            ((ChatCommand) command).execute(origin, server, channel, isSilent, args);
         } else if (command instanceof ServerCommand) {
             ((ServerCommand) command).execute(origin, server, isSilent, args);
         } else {
