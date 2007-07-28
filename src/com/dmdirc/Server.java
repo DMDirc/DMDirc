@@ -176,8 +176,6 @@ public final class Server extends WritableFrameContainer implements
         tabCompleter.addEntries(AliasWrapper.getAliasWrapper().getAliases());
         window.getInputHandler().setTabCompleter(tabCompleter);
         
-        Main.getUI().getMainWindow().addChild(window);
-        
         window.open();
         
         tabCompleter.addEntries(CommandManager.getServerCommandNames());

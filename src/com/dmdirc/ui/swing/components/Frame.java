@@ -136,6 +136,8 @@ public abstract class Frame extends JInternalFrame implements Window,
         if (pref || Main.getUI().getMainWindow().getMaximised()) {
             hideTitlebar();
         }
+        
+        Main.getUI().getMainWindow().addChild(this);
     }
     
     /** {@inheritDoc} */

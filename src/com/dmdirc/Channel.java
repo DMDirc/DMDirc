@@ -134,7 +134,6 @@ public final class Channel extends MessageTarget implements
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
                     frame = Main.getUI().getChannel(Channel.this);
-                    Main.getUI().getMainWindow().addChild(frame);
                     frame.setFrameIcon(icon);
                     frame.getInputHandler().setTabCompleter(tabCompleter);
                 }

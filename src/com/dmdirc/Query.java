@@ -87,7 +87,6 @@ public final class Query extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.QUERY_OPENED, null, this);
         
-        Main.getUI().getMainWindow().addChild(frame);
         frame.setFrameIcon(icon);
         
         if (!Config.getOptionBool("general", "hidequeries")) {
