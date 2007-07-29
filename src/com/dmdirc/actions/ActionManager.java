@@ -27,6 +27,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.actions.wrappers.ActionWrapper;
 import com.dmdirc.actions.wrappers.AliasWrapper;
+import com.dmdirc.actions.wrappers.PerformWrapper;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
@@ -82,6 +83,7 @@ public final class ActionManager {
         registerActionComponents(CoreActionComponent.values());
         
         AliasWrapper.getAliasWrapper();
+        PerformWrapper.getPerformWrapper();
     }
     
     /**
