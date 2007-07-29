@@ -32,8 +32,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.IllegalFormatConversionException;
 import java.util.InvalidPropertiesFormatException;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UnknownFormatConversionException;
@@ -50,8 +52,14 @@ public final class Formatter {
     
     /**
      * The default properties we fall back to if the user hasn't defined their
-     * own. */
+     * own.
+     */
     private static Properties defaultProperties;
+    
+    /**
+     * A cache of types needed by the various formatters.
+     */
+    private static Map<String, Character[]> typeCache;
     
     /**
      * Creates a new instance of Formatter.
@@ -78,13 +86,89 @@ public final class Formatter {
             return "<No format string for message type " + messageType + ">";
         } else {
             try {
-                return String.format(res, arguments);
+                final Object[] newArgs = castArguments(res, arguments);
+                return String.format(res, newArgs);
             } catch (IllegalFormatConversionException ex) {
                 return "<Invalid format string for message type " + messageType + ">";
             } catch (UnknownFormatConversionException ex) {
                 return "<Invalid format string for message type " + messageType + ">";
             }
         }
+    }
+    
+    /**
+     * Casts the specified arguments to the relevant classes, based on the
+     * format type cache.
+     *
+     * @param format The format to be used
+     * @param args The arguments to be casted
+     * @return A new set of arguments of appropriate types
+     */
+    private static Object[] castArguments(final String format, final Object[] args) {
+        if (!typeCache.containsKey(format)) {
+            analyseFormat(format, args);
+        }
+        
+        Object[] res = new Object[args.length];
+        
+        int i = 0;
+        for (Character chr : typeCache.get(format)) {
+            switch (chr) {
+            case 'b': case 'B': case 'h': case 'H': case 's': case 'S':
+                // General (strings)
+                res[i] = args[i].toString();
+                break;
+            case 'c': case 'C':
+                // Character
+                res[i] = ((String) args[i]).charAt(0);
+                break;
+            case 'd': case 'o': case 'x': case 'X':
+                // Integers
+                res[i] = Integer.valueOf((String) args[i]);
+                break;
+            case 'e': case 'E': case 'f': case 'g': case 'G': case 'a': case 'A':
+                // Floating point
+                res[i] = Float.valueOf((String) args[i]);
+                break;
+            case 't': case 'T':
+                // Date
+                if (args[i] instanceof String) {
+                    // Assume it's a timestamp(?)
+                    res[i] = Long.valueOf(1000 * Long.valueOf((String) args[i]));
+                } else {
+                    res[i] = args[i];
+                }
+                break;
+            default:
+                res[i] = args[i];
+            }
+            
+            i++;
+        }
+        
+        return res;
+    }
+    
+    /**
+     * Analyses the specified format string and fills in the format type cache.
+     *
+     * @param format The format to analyse
+     * @param args The raw arguments
+     */
+    private static void analyseFormat(final String format, final Object[] args) {
+        final Character[] types = new Character[args.length];
+        
+        for (int i = 0; i < args.length; i++) {
+            int index = format.indexOf("%" + (i + 1) + "$");
+            
+            if (index > -1) {
+                types[i] = format.charAt(index + 3);
+            } else {
+                types[i] = 's';
+            }
+        }
+        
+        typeCache.put(format, types);
     }
     
     /**
@@ -291,6 +375,7 @@ public final class Formatter {
         defaultProperties.setProperty("numeric_311", "-\n%4$s is %5$s@%6$s (%8$s).");
         defaultProperties.setProperty("numeric_312", "%4$s is connected to %5$s (%6$s).");
         defaultProperties.setProperty("numeric_313", "%4$s %5$s.");
+        defaultProperties.setProperty("numeric_317", "%4$s has been idle for %5$s seconds; signed on at %6$TT on %6$TF.");
         defaultProperties.setProperty("numeric_318", "End of WHOIS info for %4$s.\n-");
         defaultProperties.setProperty("numeric_319", "%4$s is on: %5$s");
         defaultProperties.setProperty("numeric_330", "%4$s %6$s %5$s.");
@@ -307,6 +392,7 @@ public final class Formatter {
             loadDefaults();
         }
         
+        typeCache.remove(name);
         defaultProperties.setProperty(name, format);
     }
     
@@ -315,6 +401,8 @@ public final class Formatter {
      * properties object.
      */
     private static void initialise() {
+        typeCache = new HashMap<String, Character[]>();
+        
         if (defaultProperties == null) {
             loadDefaults();
         }
@@ -330,7 +418,7 @@ public final class Formatter {
     
     /**
      * Loads the specified file into the formatter.
-     * 
+     *
      * @param file File to be loaded
      * @return True iff the operation succeeeded, false otherwise
      */
@@ -357,13 +445,14 @@ public final class Formatter {
     /**
      * Reads the specified input stream as a properties file and loads the
      * contained formatter settings into the formatter.
-     * 
+     *
      * @param stream The stream to be read
      * @return True iff the operation succeeded, false otherwise
      */
     public static boolean loadFile(final InputStream stream) {
         try {
             properties.load(stream);
+            typeCache.clear();
         } catch (InvalidPropertiesFormatException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to load formatter");
             return false;
