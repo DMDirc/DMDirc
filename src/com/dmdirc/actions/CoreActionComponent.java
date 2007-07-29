@@ -148,6 +148,18 @@ public enum CoreActionComponent implements ActionComponent {
         public String getName() { return "host"; }
     },
     
+    /** Returns the number of common channels the client is on. */
+    USER_COMCHANS {
+        /** {@inheritDoc} */
+        public Object get(final Object argument) { return Integer.valueOf(((ChannelClientInfo) argument).getClient().channelCount()); }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return ChannelClientInfo.class; }
+        /** {@inheritDoc} */
+        public Class getType() { return Integer.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "number of common channels"; }        
+    },
+    
     /** Returns the content of a string. */
     STRING_STRING {
         /** {@inheritDoc} */
