@@ -52,7 +52,7 @@ public final class NicklistListModel extends AbstractListModel {
      * Creates a new empty model.
      */
     public NicklistListModel() {
-	super();
+        super();
         nicknames = new ArrayList<ChannelClientInfo>();
     }
     
@@ -61,7 +61,7 @@ public final class NicklistListModel extends AbstractListModel {
      * @param newNicknames list of nicknames used for initialisation
      */
     public NicklistListModel(final List<ChannelClientInfo> newNicknames) {
-	super();
+        super();
         this.nicknames = newNicknames;
         this.sort();
     }
@@ -92,8 +92,10 @@ public final class NicklistListModel extends AbstractListModel {
         final boolean sortByMode = Config.getOptionBool("ui", "sortByMode");
         final boolean sortByCase = Config.getOptionBool("ui", "sortByCase");
         
-        Collections.sort(nicknames,
-                new NicklistComparator(sortByMode, sortByCase));
+        synchronized (nicknames) {
+            Collections.sort(nicknames,
+                    new NicklistComparator(sortByMode, sortByCase));
+        }
         this.rerender();
     }
     

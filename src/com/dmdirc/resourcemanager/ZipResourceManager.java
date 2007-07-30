@@ -33,57 +33,67 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
- * Provides an easy way to access files inside a jar.
+ * Provides an easy way to access files inside a zip or jar.
  */
-public final class JarResourceManager extends ResourceManager {
+public final class ZipResourceManager extends ResourceManager {
     
     /** Zipfile instance. */
-    private final JarFile jarFile;
+    private final ZipFile zipFile;
     
     /** Entries list. */
     private final List<String> entries;
     
     /**
-     * Instantiates JarResourceManager.
+     * Instantiates ZipResourceManager.
      *
-     * @param fileName Filename of the jar to load
-     * @throws IOException Throw when the jar fails to load
+     * @param fileName Filename of the zip to load
+     * @throws IOException Throw when the zip fails to load
      */
-    protected JarResourceManager(final String fileName) throws IOException {
+    protected ZipResourceManager(final String filename) throws IOException {
         super();
         
-        this.jarFile = new JarFile(fileName);
+        this.zipFile = new ZipFile(filename);
         entries = new ArrayList<String>();
-        final Enumeration<? extends JarEntry> jarEntries = jarFile.entries();
-        while (jarEntries.hasMoreElements()) {
-            entries.add(jarEntries.nextElement().getName());
+        final Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
+        while (zipEntries.hasMoreElements()) {
+            entries.add(zipEntries.nextElement().getName());
         }
+    }
+    
+    /**
+     * Returns an instance of a ZipResourceManager for the specified file.
+     *
+     * @param fileName Filename of the zip to load
+     * @throws IOException Throw when the zip fails to load
+     */
+    public static synchronized ZipResourceManager getInstance(final String filename) throws
+            IOException {
+        return new ZipResourceManager(filename);
     }
     
     /** {@inheritDoc} */
     public byte[] getResourceBytes(final String resource) {
-        final ZipEntry jarEntry = jarFile.getEntry(resource);
+        final ZipEntry zipEntry = zipFile.getEntry(resource);
         BufferedInputStream inputStream;
         
         
-        if (jarEntry == null) {
+        if (zipEntry == null) {
             return new byte[0];
         }
         
-        if (jarEntry.isDirectory()) {
+        if (zipEntry.isDirectory()) {
             return new byte[0];
         }
         
-        final byte[] bytes = new byte[(int) jarEntry.getSize()];
+        final byte[] bytes = new byte[(int) zipEntry.getSize()];
         
         try {
             inputStream =
-                    new BufferedInputStream(jarFile.getInputStream(jarEntry));
+                    new BufferedInputStream(zipFile.getInputStream(zipEntry));
         } catch (IOException ex) {
             return new byte[0];
         }
@@ -108,14 +118,14 @@ public final class JarResourceManager extends ResourceManager {
     
     /** {@inheritDoc} */
     public InputStream getResourceInputStream(final String resource) {
-        final JarEntry jarEntry = (JarEntry) jarFile.getEntry(resource);
+        final ZipEntry zipEntry = zipFile.getEntry(resource);
         
-        if (jarEntry == null) {
+        if (zipEntry == null) {
             return null;
         }
         
         try {
-            return jarFile.getInputStream(jarEntry);
+            return zipFile.getInputStream(zipEntry);
         } catch (IOException ex) {
             return null;
         }

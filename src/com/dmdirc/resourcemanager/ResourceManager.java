@@ -74,7 +74,7 @@ public abstract class ResourceManager {
                 if ("file".equals(protocol)) {
                     me = new FileResourceManager();
                 } else if ("jar".equals(protocol)) {
-                    me = new JarResourceManager(path.substring(5, path.length() - 31));
+                    me = new ZipResourceManager(path.substring(5, path.length() - 31));
                 }
             } catch (IOException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to determine how DMDirc"
@@ -91,7 +91,7 @@ public abstract class ResourceManager {
      */
     public final Type getResourceManagerType() {
         getResourceManager();
-        if (me instanceof JarResourceManager) {
+        if (me instanceof ZipResourceManager) {
             return Type.JAR;
         } else if (me instanceof FileResourceManager) {
             return Type.FILE;
