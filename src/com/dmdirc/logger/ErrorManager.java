@@ -151,7 +151,7 @@ public final class ErrorManager implements Serializable {
      */
     @SuppressWarnings("PMD.SystemPrintln")
     public static void sendError(final ProgramError error) {
-        new Timer().schedule(new TimerTask() {
+        new Timer("ErrorManager Timer").schedule(new TimerTask() {
             public void run() {
                 sendErrorInternal(error);
             }

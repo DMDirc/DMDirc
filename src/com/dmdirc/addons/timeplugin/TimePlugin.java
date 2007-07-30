@@ -64,7 +64,7 @@ public final class TimePlugin  extends Plugin {
     public void onActivate() {
         final int offset = 60 - Calendar.getInstance().get(Calendar.SECOND);
         
-        timer = new Timer();
+        timer = new Timer("Time plugin timer");
         
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {

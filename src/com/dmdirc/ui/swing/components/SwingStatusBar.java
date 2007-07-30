@@ -140,7 +140,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
                 clearMessage();
             }
         };
-        new Timer().schedule(messageTimer,
+        new Timer("SwingStatusBar messageTimer").schedule(messageTimer,
                 new Date(System.currentTimeMillis() + 250 + timeout * 1000L));
     }
     
@@ -172,7 +172,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
                 clearError();
             }
         };
-        new Timer().schedule(errorTimer,
+        new Timer("SwingStatusBar errorTimer").schedule(errorTimer,
                 new Date(System.currentTimeMillis() + 250  + displayLength));
     }
     

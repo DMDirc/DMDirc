@@ -237,7 +237,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     /** Closes the dialog, and the client. */
     public void closeDialog() {
         setVisible(false);
-        new Timer().schedule(new TimerTask() {
+        new Timer("Fatal Error Dialog Timer").schedule(new TimerTask() {
             public void run() {
                 Main.getUI().getMainWindow().setVisible(false);
                 while (error.getStatus() != ErrorStatus.FINISHED) {

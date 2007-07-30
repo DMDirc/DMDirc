@@ -166,9 +166,9 @@ public final class UpdateChecker implements Runnable, MouseListener {
         new SwingUpdaterDialog(temp);
          */
         
-        new Timer().schedule(new TimerTask() {
+        new Timer("Update Checker Timer").schedule(new TimerTask() {
             public void run() {
-                new Thread(new UpdateChecker()).start();
+                new Thread(new UpdateChecker(), "UpdateChecker thread").start();
             }
         }, time * 1000);
     }

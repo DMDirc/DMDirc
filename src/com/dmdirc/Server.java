@@ -181,7 +181,7 @@ public final class Server extends WritableFrameContainer implements
         tabCompleter.addEntries(CommandManager.getServerCommandNames());
         tabCompleter.addEntries(CommandManager.getGlobalCommandNames());
         
-        new Timer().scheduleAtFixedRate(new TimerTask() {
+        new Timer("Server Who Timer").scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 for (Channel channel : channels.values()) {
                     channel.checkWho();
@@ -270,7 +270,7 @@ public final class Server extends WritableFrameContainer implements
         window.setAwayIndicator(false);
         
         try {
-            new Thread(parser).start();
+            new Thread(parser, "IRC Parser thread").start();
         } catch (IllegalThreadStateException ex) {
             Logger.appError(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
         }
@@ -984,7 +984,7 @@ public final class Server extends WritableFrameContainer implements
             
             handleNotification("connectRetry", server, delay);
             
-            new Timer().schedule(new TimerTask() {
+            new Timer("Server Reconnect Timer").schedule(new TimerTask() {
                 public void run() {
                     reconnect();
                 }
@@ -1020,7 +1020,7 @@ public final class Server extends WritableFrameContainer implements
             
             handleNotification("connectRetry", server, delay);
             
-            new Timer().schedule(new TimerTask() {
+            new Timer("Server connect error timer").schedule(new TimerTask() {
                 public void run() {
                     reconnect();
                 }

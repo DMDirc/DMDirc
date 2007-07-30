@@ -100,7 +100,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
             this.addMouseMotionListener(this);
         } else {
             addMouseListener(this);
-            new Timer().schedule(new TimerTask() {
+            new Timer("OSD Display Timer").schedule(new TimerTask() {
                 public void run() {
                     setVisible(false);
                 }
