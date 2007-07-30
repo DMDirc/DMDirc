@@ -33,8 +33,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,14 +56,14 @@ public final class ErrorManager implements Serializable {
     private static ErrorManager me;
     
     /** Error list. */
-    private final List<ProgramError> errors;
+    private final Map<Integer, ProgramError> errors;
     
     /** Listener list. */
     private final EventListenerList errorListeners;
     
     /** Creates a new instance of ErrorListDialog. */
     private ErrorManager() {
-        errors = new LinkedList<ProgramError>();
+        errors = new HashMap<Integer, ProgramError>();
         errorListeners = new EventListenerList();
     }
     
@@ -85,7 +85,7 @@ public final class ErrorManager implements Serializable {
      * @param error ProgramError that occurred
      */
     public void addError(final ProgramError error) {
-        errors.add(error);
+        errors.put(error.getID(), error);
         if (error.getLevel() == ErrorLevel.FATAL) {
             fireFatalError(error);
         } else {
@@ -100,7 +100,7 @@ public final class ErrorManager implements Serializable {
      * @param error ProgramError that changed
      */
     public void deleteError(final ProgramError error) {
-        errors.remove(error);
+        errors.remove(error.getID());
         fireErrorDeleted(error);
     }
     
@@ -109,8 +109,8 @@ public final class ErrorManager implements Serializable {
      *
      * @return Error list
      */
-    public List<ProgramError> getErrorList() {
-        return new LinkedList<ProgramError>(errors);
+    public Map<Integer, ProgramError> getErrorList() {
+        return new HashMap<Integer, ProgramError>(errors);
     }
     
     /**
@@ -120,17 +120,6 @@ public final class ErrorManager implements Serializable {
      */
     public int getErrorCount() {
         return errors.size();
-    }
-    
-    /**
-     * Returns the ID of an error.
-     *
-     * @param error Error to get ID for
-     *
-     * @return Error ID
-     */
-    public int getErrorID(final ProgramError error) {
-        return errors.indexOf(error);
     }
     
     /**

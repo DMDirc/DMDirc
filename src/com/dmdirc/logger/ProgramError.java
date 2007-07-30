@@ -36,7 +36,10 @@ public final class ProgramError implements Serializable {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
+    
+    /** Error ID. */
+    private final int id;
     
     /** Error icon. */
     private final ErrorLevel level;
@@ -56,13 +59,15 @@ public final class ProgramError implements Serializable {
     /**
      * Creates a new instance of ProgramError.
      *
+     * @param id error id
      * @param level Error level
      * @param message Error message
      * @param trace Error trace
      * @param date Error time and date
      */
-    public ProgramError(final ErrorLevel level, final String message,
-            final String[] trace, final Date date) {
+    public ProgramError(final int id, final ErrorLevel level, 
+            final String message, final String[] trace, final Date date) {
+        this.id = id;
         this.level = level;
         if (message == null) {
             this.message = "No message";
@@ -135,13 +140,13 @@ public final class ProgramError implements Serializable {
      * @return Error ID
      */
     public int getID() {
-        return ErrorManager.getErrorManager().getErrorID(this);
+        return id;
     }
     
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "Level: " + getLevel() + " Status: " + getStatus()
+        return "ID" + id + " Level: " + getLevel() + " Status: " + getStatus()
         + " Message: '" + getMessage() + "'";
     }
     
