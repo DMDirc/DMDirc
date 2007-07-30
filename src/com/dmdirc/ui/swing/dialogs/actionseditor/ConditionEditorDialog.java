@@ -28,6 +28,7 @@ import com.dmdirc.actions.ActionComponent;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionType;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
@@ -101,7 +102,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
      */
     private ConditionEditorDialog(final ConditionsTabPanel parent,
             final ActionType trigger, final ActionCondition condition) {
-        super(Main.getUI().getMainWindow(), false);
+        super(((MainFrame) Main.getUI().getMainWindow()), false);
         
         this.trigger = trigger;
         this.parent = parent;
@@ -118,17 +119,17 @@ public final class ConditionEditorDialog extends StandardDialog implements
             this.target = condition.getTarget();
         }
         
-        this.setTitle("Condition Editor");
+        setTitle("Condition Editor");
         
-        this.setResizable(false);
+        setResizable(false);
         
         initComponents();
         addListeners();
         layoutComponents();
         
-        this.setLocationRelativeTo(Main.getUI().getMainWindow());
+        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
         
-        this.setVisible(true);
+        setVisible(true);
     }
     
     /**

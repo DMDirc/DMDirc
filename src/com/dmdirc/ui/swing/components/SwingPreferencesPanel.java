@@ -29,6 +29,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.interfaces.PreferencesPanel.OptionType;
+import com.dmdirc.ui.swing.MainFrame;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
@@ -143,7 +144,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
      */
     public SwingPreferencesPanel(final PreferencesInterface preferencesOwner,
             final String title) {
-        super(Main.getUI().getMainWindow(), false);
+        super(((MainFrame) Main.getUI().getMainWindow()), false);
         
         windowTitle = title;
         
@@ -532,7 +533,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                     tabName, 0, Position.Bias.Forward));
         }
         pack();
-        setLocationRelativeTo(Main.getUI().getMainWindow());
+        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
         this.setVisible(true);
     }
     

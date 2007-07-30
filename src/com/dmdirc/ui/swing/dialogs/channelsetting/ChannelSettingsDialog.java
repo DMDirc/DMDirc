@@ -26,6 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.Main;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
@@ -88,7 +89,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
      * @param newChannel The channel object that we're editing settings for
      */
     private ChannelSettingsDialog(final Channel newChannel) {
-        super(Main.getUI().getMainWindow(), false);
+        super(((MainFrame) Main.getUI().getMainWindow()), false);
 
         channel = newChannel;
         identity =
@@ -99,7 +100,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         initListeners();
 
         pack();
-        setLocationRelativeTo(Main.getUI().getMainWindow());
+        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
     }
 
     /**

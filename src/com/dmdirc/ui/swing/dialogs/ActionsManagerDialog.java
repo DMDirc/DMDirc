@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs;
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.ActionsGroupPanel;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsEditorDialog;
@@ -87,14 +88,14 @@ public final class ActionsManagerDialog extends StandardDialog
     
     /** Creates a new instance of ActionsManagerDialog. */
     private ActionsManagerDialog() {
-        super(Main.getUI().getMainWindow(), false);
+        super(((MainFrame) Main.getUI().getMainWindow()), false);
         
         initComponents();
         
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setTitle("Action Manager");
         setResizable(false);
-        setLocationRelativeTo(Main.getUI().getMainWindow());
+        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
         setVisible(true);
     }
     

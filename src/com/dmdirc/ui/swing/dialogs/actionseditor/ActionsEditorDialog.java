@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionType;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.dialogs.ActionsManagerDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -74,20 +75,20 @@ public final class ActionsEditorDialog extends StandardDialog implements
      */
     private ActionsEditorDialog(final ActionsManagerDialog parent,
             final Action action) {
-        super(Main.getUI().getMainWindow(), false);
+        super(((MainFrame) Main.getUI().getMainWindow()), false);
         
         this.parent = parent;
         this.action = action;
         
-        this.setTitle("Actions Editor");
+        setTitle("Actions Editor");
         
         initComponents();
         addListeners();
         layoutComponents();
         
-        this.setLocationRelativeTo(Main.getUI().getMainWindow());
+        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
         
-        this.setVisible(true);
+        setVisible(true);
     }
     
     /**

@@ -29,6 +29,7 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -122,7 +123,7 @@ public final class NewServerDialog extends StandardDialog {
      * Creates a new instance of the dialog.
      */
     private NewServerDialog() {
-        super(Main.getUI().getMainWindow(), false);
+        super(((MainFrame) Main.getUI().getMainWindow()), false);
         
         initComponents();
         
@@ -156,7 +157,7 @@ public final class NewServerDialog extends StandardDialog {
         
         me.populateProfiles();
         
-        me.setLocationRelativeTo(Main.getUI().getMainWindow());
+        me.setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
         me.setVisible(true);
         me.requestFocus();
     }

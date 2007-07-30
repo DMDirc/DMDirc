@@ -133,7 +133,7 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
     public CommandParser getCommandParser() {
         return commandParser;
     }
-
+    
     /** {@inheritDoc} */
     public void updateNames(final List<ChannelClientInfo> clients) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -210,7 +210,8 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
         nickScrollPane.setViewportView(nickList);
         
         nickScrollPane.setMinimumSize(new Dimension(150, 10));
-        getTextPane().setPreferredSize(new Dimension(Main.getUI().getMainWindow().getWidth(), 10));
+        getTextPane().setPreferredSize(new Dimension(((MainFrame)Main.getUI().
+                getMainWindow()).getWidth(), 10));
         
         panel.add(getSearchBar(), BorderLayout.PAGE_START);
         panel.add(inputPanel, BorderLayout.PAGE_END);
@@ -367,7 +368,7 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
     
     /** {@inheritDoc} */
     @Override
-    public void configChanged(final String domain, final String key, 
+    public void configChanged(final String domain, final String key,
             final String oldValue, final String newValue) {
         super.configChanged(domain, key, oldValue, newValue);
         

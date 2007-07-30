@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs;
 import com.dmdirc.Main;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -118,7 +119,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
     
     /** Creates a new instance of ProfileEditorDialog. */
     private ProfileEditorDialog() {
-        super(Main.getUI().getMainWindow(), false);
+        super(((MainFrame) Main.getUI().getMainWindow()), false);
         
         profiles = IdentityManager.getProfiles();
         
@@ -128,8 +129,8 @@ public final class ProfileEditorDialog extends StandardDialog implements
         
         addCallbacks();
         
-        this.setLocationRelativeTo(Main.getUI().getMainWindow());
-        this.setVisible(true);
+        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+        setVisible(true);
     }
     
     /** Creates the dialog if one doesn't exist, and displays it. */

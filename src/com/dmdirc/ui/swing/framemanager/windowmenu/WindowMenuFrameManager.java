@@ -28,6 +28,7 @@ import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ui.interfaces.FrameManager;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.FrameContainerComparator;
 
 import java.awt.Color;
@@ -160,7 +161,7 @@ public final class WindowMenuFrameManager implements FrameManager,
         mi.addActionListener(this);
         menuItemMap.put(window, mi);
         newMap.putAll(menuItemMap);
-        Main.getUI().getMainWindow().populateWindowMenu(newMap);
+        ((MainFrame) Main.getUI().getMainWindow()).populateWindowMenu(newMap);
     }
     
     /**
@@ -173,7 +174,7 @@ public final class WindowMenuFrameManager implements FrameManager,
                 new TreeMap<FrameContainer, JMenuItem>(new FrameContainerComparator());
         menuItemMap.remove(window);
         newMap.putAll(menuItemMap);
-        Main.getUI().getMainWindow().populateWindowMenu(newMap);
+        ((MainFrame) Main.getUI().getMainWindow()).populateWindowMenu(newMap);
     }
     
     /** {@inheritDoc} */

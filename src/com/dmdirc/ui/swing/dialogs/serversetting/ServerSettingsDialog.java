@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs.serversetting;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
@@ -72,7 +73,7 @@ public final class ServerSettingsDialog extends StandardDialog
      * @param server The server object that we're editing settings for
      */
     public ServerSettingsDialog(final Server server) {
-        super(Main.getUI().getMainWindow(), false);
+        super(((MainFrame) Main.getUI().getMainWindow()), false);
         
         this.server = server;
         
@@ -83,7 +84,7 @@ public final class ServerSettingsDialog extends StandardDialog
         initComponents();
         initListeners();
         pack();
-        setLocationRelativeTo(Main.getUI().getMainWindow());
+        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
     }
     
     /** Initialises the main UI components. */

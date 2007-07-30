@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.dialogs;
 
 import com.dmdirc.Main;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.InputFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
@@ -80,7 +81,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
      * @param text text to show in the paste dialog
      */
     public PasteDialog(final InputFrame newParent, final String text) {
-        super(Main.getUI().getMainWindow(), false);
+        super(((MainFrame) Main.getUI().getMainWindow()), false);
         
         this.parent = newParent;
         
@@ -91,7 +92,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         getOkButton().requestFocus();
         getOkButton().setSelected(true);
         
-        setLocationRelativeTo(Main.getUI().getMainWindow());
+        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
     }
     
     /**
@@ -232,7 +233,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
                     parent.getContainer().sendLine(line);
                 }
             }
-            this.dispose();
+            dispose();
         } else if (editButton.equals(actionEvent.getSource())) {
             editButton.setEnabled(false);
             setResizable(true);
@@ -241,9 +242,9 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
                     + parent.getContainer().getNumLines(textField.getText())
                     + " lines.");
             pack();
-            setLocationRelativeTo(Main.getUI().getMainWindow());
+            setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
         } else if (getCancelButton().equals(actionEvent.getSource())) {
-            this.dispose();
+            dispose();
         }
     }
     

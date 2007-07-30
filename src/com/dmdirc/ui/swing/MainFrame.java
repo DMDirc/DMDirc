@@ -33,6 +33,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
+import com.dmdirc.ui.interfaces.MainWindow;
 import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.Frame;
@@ -43,10 +44,10 @@ import com.dmdirc.ui.swing.dialogs.PluginDialog;
 import com.dmdirc.ui.swing.dialogs.PreferencesDialog;
 import com.dmdirc.ui.swing.dialogs.ProfileEditorDialog;
 import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
+import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;
 import com.dmdirc.ui.swing.framemanager.MainFrameManager;
 import com.dmdirc.ui.swing.framemanager.windowmenu.WindowMenuFrameManager;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
-import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -89,7 +90,7 @@ import javax.swing.WindowConstants;
  * The main application frame.
  */
 public final class MainFrame extends JFrame implements WindowListener,
-        ActionListener {
+        ActionListener, MainWindow {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -222,11 +223,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         checkWindowState();
     }
     
-    /**
-     * Adds the specified window as a child of the main frame.
-     *
-     * @param window the window to be added
-     */
+    /** {@inheritDoc}. */
     public void addChild(final Window window) {
         final JInternalFrame frame = (JInternalFrame) window;
         
@@ -250,11 +247,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         yOffset += FRAME_OPENING_OFFSET;
     }
     
-    /**
-     * Removes the specified window from our desktop pane.
-     *
-     * @param window The window to be removed
-     */
+    /** {@inheritDoc}. */
     public void delChild(final Window window) {
         desktopPane.remove((JInternalFrame) window);
         if (desktopPane.getAllFrames().length == 0) {
@@ -262,10 +255,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
     
-    /**
-     * Sets the active internal frame to the one specified.
-     * @param frame The frame to be activated
-     */
+    /** {@inheritDoc}. */
     public void setActiveFrame(final Window frame) {
         if (frame != null) {
             try {
@@ -285,10 +275,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
     
-    /**
-     * Retrieves the frame manager that's currently in use.
-     * @return The current frame manager
-     */
+    /** {@inheritDoc}. */
     public FrameManager getFrameManager() {
         return mainFrameManager;
     }
@@ -307,18 +294,12 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
     
-    /**
-     * Retrieves the application icon.
-     * @return The application icon
-     */
+    /** {@inheritDoc}. */
     public ImageIcon getIcon() {
         return imageIcon;
     }
     
-    /**
-     * Returns the window that is currently active.
-     * @return The active window
-     */
+    /** {@inheritDoc}. */
     public Window getActiveFrame() {
         if (desktopPane.getSelectedFrame() instanceof Window) {
             return (Window) desktopPane.getSelectedFrame();
@@ -327,10 +308,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
     
-    /**
-     * Adds a JMenuItem to the plugin menu.
-     * @param menuItem The menu item to be added.
-     */
+    /** {@inheritDoc}. */
     public void addPluginMenu(final JMenuItem menuItem) {
         if (pluginsMenu.getComponents().length == 1) {
             final JSeparator seperator = new JSeparator();
@@ -340,10 +318,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         pluginsMenu.add(menuItem);
     }
     
-    /**
-     * Removes a JMenuItem from the plugin menu.
-     * @param menuItem The menu item to be removed.
-     */
+    /** {@inheritDoc}. */
     public void removePluginMenu(final JMenuItem menuItem) {
         pluginsMenu.remove(menuItem);
         
@@ -352,10 +327,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
     
-    /**
-     * Sets whether or not the internal frame state is currently maximised.
-     * @param max whether the frame is maxomised
-     */
+    /** {@inheritDoc}. */
     public void setMaximised(final boolean max) {
         maximised = max;
         
@@ -377,11 +349,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         checkWindowState();
     }
     
-    /**
-     * Returns a prefix for use in the titlebar. Includes the version number
-     * if the config option is set.
-     * @return Titlebar prefix
-     */
+    /** {@inheritDoc}. */
     public String getTitlePrefix() {
         if (Config.getOptionBool("ui", "showversion")) {
             return "DMDirc " + Main.VERSION;
@@ -390,10 +358,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
     
-    /**
-     * Gets whether or not the internal frame state is currently maximised.
-     * @return True iff frames should be maximised, false otherwise
-     */
+    /** {@inheritDoc}. */
     public boolean getMaximised() {
         return maximised;
     }
@@ -420,11 +385,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
     
-    /**
-     * Returns the status bar instance.
-     *
-     * @return SwingStatusBar instance
-     */
+    /** {@inheritDoc}. */
     public StatusBar getStatusBar() {
         return statusBar;
     }
@@ -784,16 +745,29 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
     
-    /** Quits the client. */
+    /** {@inheritDoc}. */
     public void quit() {
         Config.setOption("ui", "frameManagerSize",
                 String.valueOf(this.getFrameManagerSize()));
         Main.quit();
     }
     
-    /**
-     * {@inheritDoc}.
-     */
+    /** {@inheritDoc}. */
+    public void setVisible(final boolean visible) { //NOPMD
+        super.setVisible(visible);
+    }
+    
+    /** {@inheritDoc}. */
+    public boolean isVisible() { //NOPMD
+        return super.isVisible();
+    }
+    
+    /** {@inheritDoc}. */
+    public void setTitle(final String newTitle) { //NOPMD
+        super.setTitle(newTitle);
+    }
+    
+    /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
         if (e.getActionCommand().equals("About")) {
             AboutDialog.showAboutDialog();

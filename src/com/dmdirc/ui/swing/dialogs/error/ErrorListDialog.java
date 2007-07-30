@@ -27,6 +27,7 @@ import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ErrorStatus;
 import com.dmdirc.logger.ProgramError;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PackingTable;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
@@ -101,7 +102,7 @@ public final class ErrorListDialog extends StandardDialog implements
     
     /** Creates a new instance of ErrorListDialog. */
     private ErrorListDialog() {
-        super(Main.getUI().getMainWindow(), false);
+        super(((MainFrame) Main.getUI().getMainWindow()), false);
         
         setTitle("DMDirc: Error list");
         

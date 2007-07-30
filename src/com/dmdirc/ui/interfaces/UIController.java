@@ -27,7 +27,6 @@ import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandParser;
-import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.updater.Update;
 
 import java.util.List;
@@ -45,7 +44,7 @@ public interface UIController {
      *
      * @return This UI's main window
      */
-    MainFrame getMainWindow();
+    MainWindow getMainWindow();
     
     /**
      * Retrieves the status bar component used by this UI.

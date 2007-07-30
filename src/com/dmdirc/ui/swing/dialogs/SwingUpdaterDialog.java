@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs;
 
 import com.dmdirc.Main;
 import com.dmdirc.ui.interfaces.UpdaterDialog;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.updater.Update;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
@@ -66,7 +67,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      * @param updates A list of updates that are available.
      */
     public SwingUpdaterDialog(final List<Update> updates) {
-        super(Main.getUI().getMainWindow(), false);
+        super(((MainFrame) Main.getUI().getMainWindow()), false);
         
         this.updates = updates;
         
@@ -139,7 +140,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     
     /** {@inheritDoc} */
     public void display() {
-        setLocationRelativeTo(Main.getUI().getMainWindow());
+        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
         setVisible(true);
     }
     

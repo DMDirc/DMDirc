@@ -33,6 +33,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCTextAttribute;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.textpane.TextPane;
 import com.dmdirc.ui.swing.textpane.TextPaneListener;
 
@@ -118,8 +119,8 @@ public abstract class Frame extends JInternalFrame implements Window,
         setClosable(true);
         setResizable(true);
         setIconifiable(true);
-        setPreferredSize(new Dimension(Main.getUI().getMainWindow().getWidth() / 2,
-                Main.getUI().getMainWindow().getHeight() / 3));
+        setPreferredSize(new Dimension(((MainFrame) Main.getUI().getMainWindow()).getWidth() / 2,
+                ((MainFrame) Main.getUI().getMainWindow()).getHeight() / 3));
         
         addPropertyChangeListener("maximum", this);
         addInternalFrameListener(this);
