@@ -59,7 +59,13 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4;
+    
+    /** Default status bar message. */
+    private static final String DEFAULT_MESSAGE = "Ready.";
+    
+    /** non error state image icon. */
+    private static final Icon DEFAULT_ICON = IconManager.getIconManager().getIcon("normal");
     
     /** message label. */
     private final JLabel messageLabel;
@@ -73,9 +79,6 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     /** current status bar error notifier. */
     private transient StatusErrorNotifier errorNotifier;
     
-    /** non error state image icon. */
-    private final Icon normalIcon;
-    
     /** Timer to clear the error. */
     private transient TimerTask errorTimer;
     
@@ -87,13 +90,12 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
      */
     public SwingStatusBar() {
         super();
-        final SpringLayout layout = new SpringLayout();
         
         setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER));
         
-        messageLabel = new JLabel("Ready");
-        iconLabel = new JLabel();
+        messageLabel = new JLabel(DEFAULT_MESSAGE);
+        iconLabel = new JLabel(DEFAULT_ICON);
         
         messageLabel.setBorder(BorderFactory.createEtchedBorder());
         iconLabel.setBorder(BorderFactory.createEtchedBorder());
@@ -102,7 +104,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         iconLabel.addMouseListener(this);
         ErrorManager.getErrorManager().addErrorListener(this);
         
-        this.setLayout(layout);
+        setLayout(new SpringLayout());
         
         add(messageLabel);
         add(iconLabel);
@@ -110,12 +112,12 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         setPreferredSize(new Dimension(Short.MAX_VALUE, 25));
         setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
         
-        normalIcon = IconManager.getIconManager().getIcon("normal");
-        
-        clearMessage();
-        clearError();
-        
         layoutBar();
+    }
+    
+    /** {@inheritDoc} */
+    public void setMessage(final String newMessage) {
+        setMessage(newMessage, null);
     }
     
     /** {@inheritDoc} */
@@ -135,29 +137,31 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         - messageTimer.scheduledExecutionTime()) <= 0) {
             messageTimer.cancel();
         }
-        messageTimer = new TimerTask() {
-            public void run() {
-                clearMessage();
-            }
-        };
-        new Timer("SwingStatusBar messageTimer").schedule(messageTimer,
-                new Date(System.currentTimeMillis() + 250 + timeout * 1000L));
-    }
-    
-    /** {@inheritDoc} */
-    public void setMessage(final String newMessage) {
-        setMessage(newMessage, null);
+        
+        if (!DEFAULT_MESSAGE.equals(newMessage)) {
+            messageTimer = new TimerTask() {
+                public void run() {
+                    clearMessage();
+                }
+            };
+            new Timer("SwingStatusBar messageTimer").schedule(messageTimer,
+                    new Date(System.currentTimeMillis() + 250 + timeout * 1000L));
+        }
     }
     
     /** {@inheritDoc} */
     public void clearMessage() {
-        setMessage("Ready.");
+        setMessage(DEFAULT_MESSAGE);
+    }
+    
+    /** {@inheritDoc} */
+    public void setError(final Icon newIcon) {
+        setError(newIcon, null);
     }
     
     /** {@inheritDoc} */
     public synchronized void setError(final Icon newIcon,
             final StatusErrorNotifier newNotifier) {
-        //Add to list
         iconLabel.setIcon(newIcon);
         errorNotifier = newNotifier;
         if (errorTimer != null && (System.currentTimeMillis()
@@ -167,23 +171,20 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         
         final int displayLength = Config.getOptionInt("statusBar", "errorDisplayLength", 10000);
         
-        errorTimer = new TimerTask() {
-            public void run() {
-                clearError();
-            }
-        };
-        new Timer("SwingStatusBar errorTimer").schedule(errorTimer,
-                new Date(System.currentTimeMillis() + 250  + displayLength));
-    }
-    
-    /** {@inheritDoc} */
-    public void setError(final Icon newIcon) {
-        setError(newIcon, null);
+        if (!DEFAULT_ICON.equals(newIcon)) {
+            errorTimer = new TimerTask() {
+                public void run() {
+                    clearError();
+                }
+            };
+            new Timer("SwingStatusBar errorTimer").schedule(errorTimer,
+                    new Date(System.currentTimeMillis() + 250  + displayLength));
+        }
     }
     
     /** {@inheritDoc} */
     public void clearError() {
-        setError(normalIcon);
+        setError(DEFAULT_ICON);
     }
     
     /** {@inheritDoc} */
@@ -243,7 +244,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     
     /** {@inheritDoc} */
     public void mouseClicked(final MouseEvent mouseEvent) {
-        if (mouseEvent.getButton() == MouseEvent.BUTTON1 
+        if (mouseEvent.getButton() == MouseEvent.BUTTON1
                 && mouseEvent.getSource() == iconLabel) {
             ErrorListDialog.getErrorListDialog().setVisible(true);
         }
