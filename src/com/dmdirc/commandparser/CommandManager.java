@@ -266,16 +266,19 @@ public final class CommandManager {
         new Echo();
         new Help();
         new Ignore();
-        new Join();
-        new JoinKey();
         new Message();
-        new Motd();
         new Nick();
         new Notice();
         new Query();
         new Raw();
         new Reconnect();
-        new Whois();
+        
+        new RawServerCommand("invite");
+        new RawServerCommand("join");
+        new RawServerCommand("lusers");
+        new RawServerCommand("motd");
+        new RawServerCommand("whois");
+        new RawServerCommand("who");
         
         // Query commands
         

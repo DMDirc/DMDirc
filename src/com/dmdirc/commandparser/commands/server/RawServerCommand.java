@@ -28,37 +28,38 @@ import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
- * The whois command requests information about another user.
+ * Implements a raw server command (i.e., a command that is sent to the server
+ * as-is.
+ * 
  * @author chris
  */
-public final class Whois extends ServerCommand {
+public final class RawServerCommand extends ServerCommand {
+    
+    private final String myName;
     
     /**
-     * Creates a new instance of Whois.
+     * Creates a new instance of RawServerCommand.
+     * 
+     * @param command The command name for this raw command
      */
-    public Whois() {
+    public RawServerCommand(final String command) {
         super();
         
+        myName = command;
+        
         CommandManager.registerCommand(this);
-        CommandManager.registerPopupCommand(this);
     }
     
-    /**
-     * Executes this command.
-     * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
-     * @param isSilent Whether this command is silenced or not
-     * @param args The user supplied arguments
-     */
+    /** {@inheritDoc} */
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
-        server.getParser().sendLine("WHOIS :" + args[0]);
+        server.getParser().sendLine(myName.toUpperCase() + " " + implodeArgs(args));
     }
     
     
     /** {@inheritDoc}. */
     public String getName() {
-        return "whois";
+        return myName;
     }
     
     /** {@inheritDoc}. */
@@ -68,17 +69,17 @@ public final class Whois extends ServerCommand {
     
     /** {@inheritDoc}. */
     public boolean isPolyadic() {
-        return false;
+        return true;
     }
     
     /** {@inheritDoc}. */
     public int getArity() {
-        return 1;
+        return 0;
     }
     
     /** {@inheritDoc}. */
     public String getHelp() {
-        return "whois <user> - requests information about another user";
+        return myName + " [arguments] - sends a " + myName + " command to the server";
     }
     
 }
