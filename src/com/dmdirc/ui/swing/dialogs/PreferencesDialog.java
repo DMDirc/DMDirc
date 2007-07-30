@@ -25,10 +25,14 @@ package com.dmdirc.ui.swing.dialogs;
 import com.dmdirc.Config;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.themes.Theme;
+import com.dmdirc.themes.ThemeManager;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
+import java.util.HashMap;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import javax.swing.UIManager;
@@ -51,6 +55,9 @@ public final class PreferencesDialog implements PreferencesInterface {
     
     /** preferences panel. */
     private SwingPreferencesPanel preferencesPanel;
+    
+    /** Theme map. */
+    private Map<String, String> themes;
     
     /**
      * Creates a new instance of PreferencesDialog.
@@ -79,6 +86,7 @@ public final class PreferencesDialog implements PreferencesInterface {
         initMessagesTab();
         initNotificationsTab();
         initGUITab();
+        initThemesTab();
         initNicklistTab();
         initTreeviewTab();
         initAdvancedTab();
@@ -290,6 +298,28 @@ public final class PreferencesDialog implements PreferencesInterface {
                 Config.getOptionBool("ui", "stylelinks"));
     }
     
+    private void initThemesTab() {
+        final String tabName = "Themes";
+        final Map<String, Theme> availThemes = new ThemeManager().
+                getAvailableThemes();
+        
+        themes = new HashMap<String, String>();
+        
+        for (Entry<String, Theme> entry : availThemes.entrySet()) {
+            themes.put(entry.getKey().substring(entry.getKey().lastIndexOf('/'),
+                    entry.getKey().length()), entry.getKey());
+        }
+        
+        themes.put("None", "");
+        
+        preferencesPanel.addCategory("GUI", tabName, "");
+        
+        preferencesPanel.addComboboxOption(tabName, "general.theme",
+                "Theme: ", "DMDirc theme to user",
+                themes.keySet().toArray(new String[themes.size()]),
+                Config.getOption("general", "theme", ""), false);
+    }
+    
     /**
      * Initialises the Nicklist tab.
      */
@@ -408,10 +438,14 @@ public final class PreferencesDialog implements PreferencesInterface {
                 if ("".equals(entry.getValue()) || entry.getValue() == null) {
                     Config.unsetOption(args[0], args[1]);
                 } else {
-                    Config.setOption(args[0], args[1], (String) entry.getValue());
+                    if ("general".equals(args[0]) && "theme".equals(args[1])) {
+                        Config.setOption(args[0], args[1], themes.get(entry.getValue()));
+                    } else {
+                        Config.setOption(args[0], args[1], (String) entry.getValue());
+                    }
                 }
             } else {
-                Logger.appError(ErrorLevel.LOW, "Invalid setting value: " 
+                Logger.appError(ErrorLevel.LOW, "Invalid setting value: "
                         + entry.getKey(), new IllegalArgumentException("Invalid setting: " + entry.getKey()));
             }
         }
