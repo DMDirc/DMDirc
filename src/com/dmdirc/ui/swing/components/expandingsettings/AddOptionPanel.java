@@ -95,6 +95,8 @@ public final class AddOptionPanel extends JPanel implements ActionListener {
         addOptionComboBox = new JComboBox(new DefaultComboBoxModel());
         addOptionButton = new JButton("Add");
         
+        addOptionComboBox.setRenderer(new AddOptionCellRenderer(parent));
+        
         addInputColourChooser = new ColourChooser();
         addInputText = new JTextField();
         addInputCheckbox = new JCheckBox();
