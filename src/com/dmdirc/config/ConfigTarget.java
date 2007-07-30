@@ -36,14 +36,16 @@ public final class ConfigTarget implements Comparable, Serializable {
     public static final int TYPE_GLOBALDEFAULT = 0;
     /** Indicates that the target is a global config source. */
     public static final int TYPE_GLOBAL = 1;
+    /** Indicates that the target is a theme. */
+    public static final int TYPE_THEME = 2;
     /** Indicates that the target targets an ircd. */
-    public static final int TYPE_IRCD = 2;
+    public static final int TYPE_IRCD = 3;
     /** Indicates that the target targets a network. */
-    public static final int TYPE_NETWORK = 3;
+    public static final int TYPE_NETWORK = 4;
     /** Indicates that the target targets a server. */
-    public static final int TYPE_SERVER = 4;
+    public static final int TYPE_SERVER = 5;
     /** Indicates that the target targets a channel. */
-    public static final int TYPE_CHANNEL = 5;
+    public static final int TYPE_CHANNEL = 6;
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -70,6 +72,11 @@ public final class ConfigTarget implements Comparable, Serializable {
     /** Sets this target to be a global default source. */
     public void setGlobalDefault() {
         type = TYPE_GLOBALDEFAULT;
+    }
+    
+    /** Sets this target to be a theme source. */
+    public void setTheme() {
+        type = TYPE_THEME;
     }
     
     /**
@@ -126,6 +133,8 @@ public final class ConfigTarget implements Comparable, Serializable {
             return "globaldefault";
         case TYPE_GLOBAL:
             return "global";
+        case TYPE_THEME:
+            return "theme";
         case TYPE_IRCD:
             return "ircd";
         case TYPE_NETWORK:
@@ -184,6 +193,8 @@ public final class ConfigTarget implements Comparable, Serializable {
             return "Global defaults";
         case TYPE_GLOBAL:
             return "Global config";
+        case TYPE_THEME:
+            return "Theme config";
         case TYPE_IRCD:
             return "Ircd specific: " + data;
         case TYPE_NETWORK:

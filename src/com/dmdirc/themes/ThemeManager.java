@@ -28,8 +28,8 @@ import com.dmdirc.logger.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Manages available themes.
@@ -50,11 +50,11 @@ public class ThemeManager {
     
     /**
      * Retrieves a list of available themes.
-     * 
+     *
      * @return A list of available themes
      */
-    public List<Theme> getAvailableThemes() {
-        final List<Theme> res = new ArrayList<Theme>();
+    public Map<String, Theme> getAvailableThemes() {
+        final Map<String, Theme> res = new HashMap<String, Theme>();
         
         final File dir = new File(themeDir);
         
@@ -73,15 +73,30 @@ public class ThemeManager {
             for (File file : dir.listFiles()) {
                 if (!file.isDirectory()) {
                     final Theme theme = new Theme(file);
-                    
+                    System.out.println(file.getName());
                     if (theme.isValidTheme()) {
-                        res.add(theme);
+                        System.out.println("Valid");
+                        res.put(file.getName(), theme);
                     }
                 }
             }
         }
         
         return res;
+    }
+    
+    /**
+     * Loads the default theme for the client.
+     */
+    public void loadDefaultTheme() {
+        if (Config.hasOption("general", "theme")) {
+            final String theme = Config.getOption("general", "theme");
+            final Map<String, Theme> themes = getAvailableThemes();
+            
+            if (themes.containsKey(theme)) {
+                themes.get(theme).applyTheme();
+            }
+        }        
     }
     
 }

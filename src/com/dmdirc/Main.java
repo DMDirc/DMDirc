@@ -28,6 +28,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.themes.ThemeManager;
 import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.updater.UpdateChannel;
@@ -89,6 +90,8 @@ public final class Main {
         PluginManager.getPluginManager();
         
         ActionManager.loadActions();
+        
+        new ThemeManager().loadDefaultTheme();
         
         Main.getUI().getMainWindow();
         

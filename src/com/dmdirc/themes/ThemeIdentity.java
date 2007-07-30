@@ -52,7 +52,8 @@ public class ThemeIdentity extends Identity {
      */
     public ThemeIdentity(final InputStream stream) throws IOException,
             InvalidIdentityFileException {
-        super(stream, false);
+        super(stream, true);
+        myTarget.setTheme();
     }
     
     /** {@inheritDoc} */

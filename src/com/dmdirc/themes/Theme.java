@@ -22,21 +22,32 @@
 
 package com.dmdirc.themes;
 
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.InvalidIdentityFileException;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
+import com.dmdirc.resourcemanager.ZipResourceManager;
+import com.dmdirc.ui.messages.Formatter;
+
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Represents one theme file.
- * 
+ *
  * @author Chris
  */
 public class Theme {
     
     /** The file to load the theme from. */
     private final File file;
-
+    
+    private ZipResourceManager rm;
+    
     /**
      * Creates a new instance of Theme.
-     * 
+     *
      * @param file The file to load the theme from
      */
     public Theme(final File file) {
@@ -46,11 +57,46 @@ public class Theme {
     /**
      * Determines if this theme is valid or not (i.e., it is a valid zip file,
      * and it contains one file).
-     * 
+     *
      * @return True if the theme is valid, false otherwise
      */
     public boolean isValidTheme() {
-        return false;
+        try {
+            rm = ZipResourceManager.getInstance(file.getCanonicalPath());
+        } catch (IOException ex) {
+            Logger.userError(ErrorLevel.MEDIUM, "I/O error when loading theme: " + file.getAbsolutePath() + ": " + ex.getMessage());
+            
+            return false;
+        }
+        
+        return true;
     }
-
+    
+    /**
+     * Applies this theme to the client.
+     */
+    public void applyTheme() {
+        if (!isValidTheme() || rm == null) {
+            return;
+        }
+        
+        final InputStream identity = rm.getResourceInputStream("config");
+        final InputStream format = rm.getResourceInputStream("format");
+        
+        if (identity != null) {
+            try {
+                IdentityManager.addIdentity(new ThemeIdentity(identity));
+            } catch (InvalidIdentityFileException ex) {
+                Logger.userError(ErrorLevel.MEDIUM, "Error loading theme identity file: " + ex.getMessage());
+            } catch (IOException ex) {
+                Logger.userError(ErrorLevel.MEDIUM, "Error loading theme identity file: " + ex.getMessage());
+            }
+        }
+        
+        if (format != null) {
+            Formatter.reload();
+            Formatter.loadFile(format);
+        }
+    }
+    
 }
