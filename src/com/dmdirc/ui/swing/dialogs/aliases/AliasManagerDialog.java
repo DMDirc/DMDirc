@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs.aliases;
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PackingTable;
@@ -35,9 +36,9 @@ import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -76,14 +77,14 @@ public final class AliasManagerDialog extends StandardDialog implements
     /** Error table. */
     private JTable table;
     
+    /** Table model. */
+    private DefaultTableModel tableModel;
+    
     /** Error detail panel. */
     private AliasPanel aliasDetails;
     
     /** Buttons pane. */
     private JPanel buttonsPanel;
-    
-    /** Alises. */
-    private List<Action> aliases;
     
     /** Add/edit button. */
     private JButton addButton;
@@ -94,8 +95,6 @@ public final class AliasManagerDialog extends StandardDialog implements
     /** Creates a new instance of ErrorListDialog. */
     private AliasManagerDialog() {
         super(((MainFrame) Main.getUI().getMainWindow()), false);
-        
-        aliases = new ArrayList<Action>();
         
         setTitle("DMDirc: Alias manager");
         
@@ -126,7 +125,8 @@ public final class AliasManagerDialog extends StandardDialog implements
         
         scrollPane = new JScrollPane();
         
-        table = new PackingTable(new DefaultTableModel(getTableData(), HEADERS), false, scrollPane);
+        tableModel = new DefaultTableModel(getTableData(), HEADERS);
+        table = new PackingTable(tableModel, false, scrollPane);
         
         table.setAutoCreateRowSorter(true);
         table.setAutoCreateColumnsFromModel(true);
@@ -144,7 +144,7 @@ public final class AliasManagerDialog extends StandardDialog implements
         
         scrollPane.setViewportView(table);
         
-        aliasDetails = new AliasPanel(null);
+        aliasDetails = new AliasPanel();
     }
     
     /** Initialises the button panel. */
@@ -156,9 +156,9 @@ public final class AliasManagerDialog extends StandardDialog implements
         deleteButton = new JButton("Delete");
         
         addButton.setPreferredSize(new Dimension(100, 25));
-	deleteButton.setPreferredSize(new Dimension(100, 25));
+        deleteButton.setPreferredSize(new Dimension(100, 25));
         addButton.setMinimumSize(new Dimension(100, 25));
-	deleteButton.setMinimumSize(new Dimension(100, 25));
+        deleteButton.setMinimumSize(new Dimension(100, 25));
         
         buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER));
@@ -209,7 +209,7 @@ public final class AliasManagerDialog extends StandardDialog implements
      * @return Error data
      */
     private Object[][] getTableData() {
-        aliases = AliasWrapper.getAliasWrapper().getActions();
+        final List<Action> aliases = AliasWrapper.getAliasWrapper().getActions();
         final Object[][] data = new Object[aliases.size()][3];
         
         for (int i = 0; i < aliases.size(); i++) {
@@ -217,8 +217,20 @@ public final class AliasManagerDialog extends StandardDialog implements
             if (aliases.get(i).getConditions().size() > 1) {
                 final ActionCondition condition =
                         aliases.get(i).getConditions().get(1);
-                data[i][1] = condition.getComparison().getName()
-                + " " + condition.getTarget();
+                switch ((CoreActionComparison) condition.getComparison()) {
+                    case INT_EQUALS:
+                        data[i][1] = "==" + " " + condition.getTarget().toString();
+                        break;
+                    case INT_GREATER:
+                        data[i][1] = ">" + " " + condition.getTarget().toString();
+                        break;
+                    case INT_LESS:
+                        data[i][1] = "<" + " " + condition.getTarget().toString();
+                        break;
+                    default:
+                        data[i][1] = "N/A";
+                        break;
+                }
             } else {
                 data[i][1] = "N/A";
             }
@@ -233,9 +245,9 @@ public final class AliasManagerDialog extends StandardDialog implements
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             if (table.getSelectedRow() > -1) {
-                aliasDetails.setAlias(aliases.get(
-                        table.getRowSorter().convertRowIndexToModel(
-                        table.getSelectedRow())));
+                final int selectedRow = table.getRowSorter().
+                        convertRowIndexToModel(table.getSelectedRow());
+                aliasDetails.setAlias((List) tableModel.getDataVector().get(selectedRow));
                 deleteButton.setEnabled(true);
             } else {
                 aliasDetails.setAlias(null);
@@ -249,7 +261,18 @@ public final class AliasManagerDialog extends StandardDialog implements
         if (e.getSource() == getCancelButton()) {
             dispose();
         } else if (e.getSource() == getOkButton()) {
+            save();
             dispose();
+        }
+    }
+    
+    /** Saves the aliases. */
+    private void save() {
+        final Vector rows = tableModel.getDataVector();
+        
+        for (Object rowObject : rows) {
+            final Vector row = (Vector) rowObject;
+            //do something hacky here
         }
     }
     

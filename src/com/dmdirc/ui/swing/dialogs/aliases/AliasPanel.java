@@ -22,16 +22,13 @@
 
 package com.dmdirc.ui.swing.dialogs.aliases;
 
-import com.dmdirc.actions.Action;
-import com.dmdirc.actions.ActionCondition;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import java.util.Arrays;
+import java.util.List;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
@@ -63,16 +60,12 @@ public final class AliasPanel extends JPanel implements ActionListener {
     
     private final JTextArea response;
     
-    /**
-     * Creates a new instance of AliasPanel.
-     *
-     * @param alias Alias to display, or null
-     */
-    public AliasPanel(final Action alias) {
+    /** Creates a new instance of AliasPanel. */
+    public AliasPanel() {
         super();
         
         name = new JTextField();
-        argumentComponent = new JComboBox(new String[]{"N/A", "greater than", "equals", "less than", });
+        argumentComponent = new JComboBox(new String[]{"N/A", ">", "==", "<", });
         argumentNumber = new JSpinner(new SpinnerNumberModel());
         response = new JTextArea();
         
@@ -84,9 +77,10 @@ public final class AliasPanel extends JPanel implements ActionListener {
         
         layoutComponents();
         
-        setAlias(alias);
+        clear();
     }
     
+    /** Lays out and initialises the components. */
     private void layoutComponents() {
         final JPanel panel = new JPanel(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
         
@@ -114,34 +108,38 @@ public final class AliasPanel extends JPanel implements ActionListener {
                 SMALL_BORDER);
     }
     
-    public void setAlias(final Action alias) {
-        if (alias == null) {
-            name.setText("");
-            argumentComponent.setSelectedItem("N/A");
+    /** Clears the details. */
+    public void clear() {
+        name.setText("");
+        argumentComponent.setSelectedItem("N/A");
+        argumentNumber.setValue(0);
+        response.setText("");
+        name.setEnabled(false);
+        argumentComponent.setEnabled(false);
+        argumentNumber.setEnabled(false);
+        response.setEnabled(false);
+    }
+    
+    /**
+     * Sets the alias details.
+     *
+     * @param alias List of alias details to display
+     */
+    public void setAlias(final List alias) {
+        name.setEnabled(true);
+        argumentComponent.setEnabled(true);
+        response.setEnabled(true);
+        name.setText((String) alias.get(0));
+        final String[] arguments = ((String) alias.get(1)).split("\\s");
+        argumentComponent.setSelectedItem(arguments[0]);
+        if ("N/A".equals(arguments[0])) {
             argumentNumber.setValue(0);
-            response.setText("");
-            name.setEnabled(false);
-            argumentComponent.setEnabled(false);
             argumentNumber.setEnabled(false);
-            response.setEnabled(false);
         } else {
-            name.setEnabled(true);
-            argumentComponent.setEnabled(true);
-            response.setEnabled(true);
-            name.setText(alias.getName());
-            if (alias.getConditions().size() > 1) {
-                final ActionCondition condition = alias.getConditions().get(1);
-                argumentComponent.setSelectedItem(condition.getComparison().getName());
-                argumentNumber.setValue(condition.getTarget());
-                argumentNumber.setEnabled(true);
-            } else {
-                argumentComponent.setSelectedItem("N/A");
-                argumentNumber.setValue(0);
-                argumentNumber.setEnabled(false);
-            }
-            final String actionResponse = Arrays.toString(alias.getResponse());
-            response.setText(actionResponse.substring(1, actionResponse.length() - 1));
+            argumentNumber.setValue(Integer.parseInt(arguments[1]));
+            argumentNumber.setEnabled(true);
         }
+        response.setText((String) alias.get(2));
     }
     
     /** {@inheritDoc}. */
