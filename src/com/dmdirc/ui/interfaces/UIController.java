@@ -23,6 +23,7 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
@@ -83,6 +84,14 @@ public interface UIController {
      * @return A new query window for the specified query
      */
     QueryWindow getQuery(Query query);
+    
+    /**
+     * Creates a new custom window instance.
+     * 
+     * @param owner The owner of the input window
+     * @return A new custom window
+     */
+    Window getWindow(FrameContainer owner);
     
     /**
      * Creates a new custom input window instance.

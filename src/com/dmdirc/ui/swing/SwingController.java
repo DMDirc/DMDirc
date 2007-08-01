@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Config;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
@@ -42,6 +43,7 @@ import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.interfaces.UpdaterDialog;
+import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
 import com.dmdirc.ui.swing.dialogs.SwingUpdaterDialog;
 import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
@@ -109,6 +111,11 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     public QueryWindow getQuery(final Query query) {
         return new QueryFrame(query);
+    }
+    
+    /** {@inheritDoc} */
+    public Window getWindow(final FrameContainer owner) {
+        return new CustomFrame(owner);
     }
     
     /** {@inheritDoc} */

@@ -22,16 +22,12 @@
 
 package com.dmdirc.addons.logging;
 
-import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.interfaces.InputWindow;
-
-import java.util.Enumeration;
-import java.util.Properties;
 
 /**
  * The dcop command retrieves information from a dcop application.
@@ -40,8 +36,9 @@ import java.util.Properties;
  * @version $Id: LoggingCommand.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
 public final class LoggingCommand extends ServerCommand {
+
 	/**
-	 * Creates a new instance of DcopCommand.
+	 * Creates a new instance of LoggingCommand.
 	 */
 	public LoggingCommand() {
 		super();
@@ -75,17 +72,22 @@ public final class LoggingCommand extends ServerCommand {
 					sendLine(origin, isSilent, "commandOutput", "Plugin reloaded.");
 					PluginManager.getPluginManager().getPlugin("com.dmdirc.addons.logging.LoggingPlugin").setActive(wasActive);
 				} else {
-					sendLine(origin, isSilent, "commandOutput", "Plugin failed to reload.");
+					sendLine(origin, isSilent, "commandError", "Plugin failed to reload.");
 				}
+			} else if (args[0].equalsIgnoreCase("history")) {
+				if (!plugin.showHistory(origin)) {
+					sendLine(origin, isSilent, "commandError", "Unable to open history for this window.");
+                                }
 			} else if (args[0].equalsIgnoreCase("help")) {
-				sendLine(origin, isSilent, "commandOutput", getName() + " reload                     - Reload the logging plugin.");
-				sendLine(origin, isSilent, "commandOutput", getName() + " help                       - Show this help.");
-				sendLine(origin, isSilent, "commandOutput", getName() + " config                     - Show the logging plugin configuration.");
+				sendLine(origin, isSilent, "commandOutput", getName() + " reload           - Reload the logging plugin.");
+				sendLine(origin, isSilent, "commandOutput", getName() + " history          - Open the history of this window, if available.");
+				sendLine(origin, isSilent, "commandOutput", getName() + " help             - Show this help.");
+				sendLine(origin, isSilent, "commandOutput", getName() + " config           - Show the logging plugin configuration.");
 			} else {
-				sendLine(origin, isSilent, "commandOutput", "Unknown command '" + args[0] + "'. Use " + getName() + " help for a list of commands.");
+				sendLine(origin, isSilent, "commandError", "Unknown command '" + args[0] + "'. Use " + getName() + " help for a list of commands.");
 			}
 		} else {
-			sendLine(origin, isSilent, "commandOutput", "Use " + getName() + " help for a list of commands.");
+			sendLine(origin, isSilent, "commandError", "Use " + getName() + " help for a list of commands.");
 		}
 	}
 
