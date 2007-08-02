@@ -201,6 +201,9 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             delete.setActionCommand("delete");
             delete.addActionListener(this);
             
+            label.setPreferredSize(new Dimension(Integer.MAX_VALUE, 
+                    label.getFont().getSize()));
+            
             comparisonsPanel.add(edit);
             comparisonsPanel.add(delete);
             comparisonsPanel.add(label);
