@@ -34,6 +34,7 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.Formatter;
 import com.dmdirc.ui.messages.IRCTextAttribute;
 import com.dmdirc.ui.swing.MainFrame;
+import com.dmdirc.ui.swing.actions.SearchAction;
 import com.dmdirc.ui.swing.textpane.TextPane;
 import com.dmdirc.ui.swing.textpane.TextPaneListener;
 
@@ -44,6 +45,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -57,9 +59,11 @@ import java.text.AttributedCharacterIterator;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.InternalFrameEvent;
@@ -214,6 +218,15 @@ public abstract class Frame extends JInternalFrame implements Window,
         
         searchBar = new SearchBar(this);
         searchBar.setVisible(false);
+        
+        getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
+                put(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), "searchAction");
+        
+        getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
+                put(KeyStroke.getKeyStroke(KeyEvent.VK_F,
+                InputEvent.CTRL_DOWN_MASK), "searchAction");
+        
+        getActionMap().put("searchAction", new SearchAction(searchBar));
     }
     
     /**
@@ -475,30 +488,10 @@ public abstract class Frame extends JInternalFrame implements Window,
                 getTextPane().setScrollBarPosition(textPane.getNumLines());
             }
         }
-        if (event.getKeyCode() == KeyEvent.VK_F3) {
-            if (!getSearchBar().isVisible()) {
-                getSearchBar().open();
-            }
-            getSearchBar().search();
-        }
-        if (event.getKeyCode() == KeyEvent.VK_F
-                && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
-                && (event.getModifiers() & KeyEvent.SHIFT_MASK) ==  0) {
-            doSearchBar();
-        }
         if (!Config.getOptionBool("ui", "quickCopy")
-                && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
+        && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
                 && event.getKeyCode() == KeyEvent.VK_C) {
             getTextPane().copy();
-        }
-    }
-    
-    /** Opens, closes or focuses the search bar as appropriate. */
-    private void doSearchBar() {
-        if (getSearchBar().isVisible()) {
-            getSearchBar().getFocus();
-        } else {
-            getSearchBar().open();
         }
     }
     

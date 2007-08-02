@@ -197,6 +197,11 @@ public final class SearchBar extends JPanel implements ActionListener,
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 setVisible(false);
+                if (parent instanceof InputFrame) {
+                    ((InputFrame) parent).getInputField().requestFocus();
+                } else {
+                    parent.requestFocus();
+                }
             }
         }
         );
@@ -206,10 +211,12 @@ public final class SearchBar extends JPanel implements ActionListener,
      * Searches the textpane for text.
      */
     public void search() {
-        if (line == -1) {
-            line = parent.getTextPane().getLastVisibleLine();
+        if (!"".equals(searchBox.getText())) {
+            if (line == -1) {
+                line = parent.getTextPane().getLastVisibleLine();
+            }
+            search(Direction.UP, searchBox.getText(), caseCheck.isSelected());
         }
-        search(Direction.UP, searchBox.getText(), caseCheck.isSelected());
     }
     
     /**
@@ -414,15 +421,6 @@ public final class SearchBar extends JPanel implements ActionListener,
     
     /** {@inheritDoc}. */
     public void keyPressed(final KeyEvent event) {
-        if (event.getKeyCode() == KeyEvent.VK_F3) {
-            search();
-        }
-        
-        if (event.getKeyCode() == KeyEvent.VK_F
-                && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0) {
-            getFocus();
-        }
-        
         if (event.getSource() == searchBox) {
             searchBox.setBackground(ColourManager.getColour("FFFFFF"));
             if (event.getKeyCode() == KeyEvent.VK_ESCAPE) {
