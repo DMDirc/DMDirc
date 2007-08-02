@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.ui.swing.components.Frame;
+import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -66,13 +67,14 @@ public class CustomFrame extends Frame {
         constraints.weightx = 1.0;
         constraints.weighty = 1.0;
         constraints.fill = GridBagConstraints.BOTH;
-        constraints.insets = new Insets(0, 0, 0, 0);
+        constraints.insets = new Insets(0, 0, SMALL_BORDER, 0);
         getContentPane().add(getTextPane(), constraints);
         
         
         constraints.weighty = 0.0;
         constraints.fill = GridBagConstraints.HORIZONTAL;
         constraints.gridy = 1;
+        constraints.insets = new Insets(0, 0, 0, 0);
         getContentPane().add(getSearchBar(), constraints);
         
         pack();
