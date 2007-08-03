@@ -65,6 +65,8 @@ public final class AliasPanel extends JPanel implements ActionListener {
         super();
         
         name = new JTextField();
+        name.setEnabled(false);
+        
         argumentComponent = new JComboBox(new String[]{"N/A", ">", "==", "<", });
         argumentNumber = new JSpinner(new SpinnerNumberModel());
         response = new JTextArea();
@@ -126,7 +128,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
      * @param alias List of alias details to display
      */
     public void setAlias(final List alias) {
-        name.setEnabled(true);
+        name.setEnabled(false);
         argumentComponent.setEnabled(true);
         response.setEnabled(true);
         name.setText((String) alias.get(0));
@@ -139,7 +141,12 @@ public final class AliasPanel extends JPanel implements ActionListener {
             argumentNumber.setValue(Integer.parseInt(arguments[1]));
             argumentNumber.setEnabled(true);
         }
-        response.setText((String) alias.get(2));
+        
+        final StringBuffer sb = new StringBuffer();
+        for (String line : (String[]) alias.get(2)) {
+            sb.append(line).append('\n');
+        }
+        response.setText(sb.substring(0, sb.length() - 1));
     }
     
     /** {@inheritDoc}. */
@@ -151,4 +158,12 @@ public final class AliasPanel extends JPanel implements ActionListener {
         }
     }
     
+    /**
+     * Returns the user response to the alias.
+     *
+     * @return Alias response
+     */
+    protected String[] getResponse() {
+        return response.getText().split("\n");
+    }
 }

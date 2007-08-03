@@ -22,10 +22,14 @@
 
 package com.dmdirc.ui.swing.dialogs.aliases;
 
+import com.dmdirc.Config;
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionComparison;
+import com.dmdirc.actions.CoreActionComponent;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PackingTable;
@@ -36,9 +40,9 @@ import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -51,6 +55,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 /**
  * Alias manager dialog.
@@ -121,12 +126,21 @@ public final class AliasManagerDialog extends StandardDialog implements
     
     /** Initialises the components. */
     private void initComponents() {
+        final TableCellRenderer arrayRenderer = new ArrayCellRenderer();
         initButtonsPanel();
         
         scrollPane = new JScrollPane();
         
         tableModel = new DefaultTableModel(getTableData(), HEADERS);
-        table = new PackingTable(tableModel, false, scrollPane);
+        table = new PackingTable(tableModel, false, scrollPane) {
+            private static final long serialVersionUID = 1;
+            public TableCellRenderer getCellRenderer(int row, int column) {
+                if (column == 2) {
+                    return arrayRenderer;
+                }
+                return super.getCellRenderer(row, column);
+            }
+        };
         
         table.setAutoCreateRowSorter(true);
         table.setAutoCreateColumnsFromModel(true);
@@ -236,6 +250,7 @@ public final class AliasManagerDialog extends StandardDialog implements
             }
             final String response = Arrays.toString(aliases.get(i).getResponse());
             data[i][2] = response.substring(1, response.length() - 1);
+            data[i][2] = aliases.get(i).getResponse();
         }
         
         return data;
@@ -268,12 +283,58 @@ public final class AliasManagerDialog extends StandardDialog implements
     
     /** Saves the aliases. */
     private void save() {
-        final Vector rows = tableModel.getDataVector();
-        
+        final List<String> aliases = AliasWrapper.getAliasWrapper().getAliases();
+        final List rows = tableModel.getDataVector();
         for (Object rowObject : rows) {
-            final Vector row = (Vector) rowObject;
-            //do something hacky here
+            final List row = (List) rowObject;
+            final String name = Config.getCommandChar() + row.get(0);
+            if (aliases.contains(name)) {
+                checkAliasForModicications(row);
+            } else {
+                createNewAlias(row);
+            }
         }
+    }
+    
+    /**
+     * Checks aliases for modifications and saves if needed.
+     *
+     * @param alias Alias to check
+     */
+    private void checkAliasForModicications(final List alias) {
+        //check
+    }
+    
+    /**
+     * Checks aliases for modifications and saves if needed.
+     *
+     * @param alias Alias to check
+     */
+    private void createNewAlias(final List alias) {
+        final List<ActionCondition> conditions = new ArrayList<ActionCondition>();
+        final String[] arguments = ((String) alias.get(1)).split("\\s");
+        
+        conditions.add(new ActionCondition(1, CoreActionComponent.STRING_STRING,
+                CoreActionComparison.STRING_EQUALS, (String) alias.get(0)));
+        
+        if ("==".equals(arguments[0])) {
+            conditions.add(new ActionCondition(2, CoreActionComponent.STRINGARRAY_LENGTH,
+                    CoreActionComparison.INT_EQUALS, arguments[1]));
+        } else if ("<".equals(arguments[0])) {
+            conditions.add(new ActionCondition(2, CoreActionComponent.STRINGARRAY_LENGTH,
+                    CoreActionComparison.INT_LESS, arguments[1]));
+        } else if (">".equals(arguments[0])) {
+            conditions.add(new ActionCondition(2, CoreActionComponent.STRINGARRAY_LENGTH,
+                    CoreActionComparison.INT_GREATER, arguments[1]));
+        }
+        
+        new Action(
+                AliasWrapper.getAliasWrapper().getGroupName(),
+                (String) alias.get(0),
+                new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },
+                (String[]) alias.get(2),
+                conditions,
+                "");
     }
     
 }
