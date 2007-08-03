@@ -1557,6 +1557,7 @@ public final class IRCParser implements Runnable {
 	 * called when there has been no incomming line for 10 seconds.
 	 */
 	protected void pingTimerTask() {
+		if (pingTimer == null) { return; }
 		if (pingNeeded) {
 			if (!callPingFailed()) {
 				pingTimer.cancel();
