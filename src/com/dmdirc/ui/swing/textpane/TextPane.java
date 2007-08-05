@@ -39,6 +39,7 @@ import java.text.AttributedString;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.EventListenerList;
 
@@ -155,6 +156,19 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     public void setScrollBarPosition(final int position) {
         scrollBar.setValue(position);
         canvas.setScrollBarPosition(position);
+    }
+    
+    /**
+     * Enables or disabled the scrollbar for the textpane.
+     *
+     * @param enabled State for the scrollbar
+     */
+    public void setScrollEnabled(final boolean enabled) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                scrollBar.setEnabled(enabled);
+            }
+        });
     }
     
     /**

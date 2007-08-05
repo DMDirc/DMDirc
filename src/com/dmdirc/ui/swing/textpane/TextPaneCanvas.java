@@ -181,6 +181,15 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             useEndChar = selEndChar;
         }
         
+        final int numVisibleLines = (int) formatHeight / lineHeight;
+        
+        if (numVisibleLines >= document.getNumLines()) {
+            startLine = document.getNumLines() - 1;
+            textPane.setScrollEnabled(false);
+        } else {
+            textPane.setScrollEnabled(true);
+        }
+        
         // Iterate through the lines
         for (int i = startLine; i >= 0; i--) {
             float drawPosX;
