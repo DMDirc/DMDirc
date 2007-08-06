@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs;
+package com.dmdirc.ui.swing.dialogs.paste;
 
 import com.dmdirc.Main;
 import com.dmdirc.ui.swing.MainFrame;
@@ -87,6 +87,9 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         
         initComponents(text);
         initListeners();
+        
+        setFocusTraversalPolicy(new PasteDialogFocusTraversalPolicy(
+                getCancelButton(), editButton, getOkButton()));
         
         setFocusable(true);
         getOkButton().requestFocus();
@@ -182,16 +185,10 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
                 new AbstractAction("rightArrowAction") {
             private static final long serialVersionUID = 1;
             public void actionPerformed(final ActionEvent evt) {
-                if (getFocusOwner() == getLeftButton()) {
-                    editButton.requestFocus();
-                    editButton.setSelected(true);
-                } else if (getFocusOwner() == getRightButton()) {
-                    getLeftButton().requestFocus();
-                    getLeftButton().setSelected(true);
-                } else if (getFocusOwner() == editButton) {
-                    getRightButton().requestFocus();
-                    getRightButton().setSelected(true);
-                }
+                final JButton button = (JButton) getFocusTraversalPolicy().
+                        getComponentAfter(PasteDialog.this, getFocusOwner());
+                button.requestFocus();
+                button.setSelected(true);
             }
         }
         );
@@ -200,21 +197,15 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
                 new AbstractAction("leftArrowAction") {
             private static final long serialVersionUID = 1;
             public void actionPerformed(final ActionEvent evt) {
-                if (getFocusOwner() == getLeftButton()) {
-                    getRightButton().requestFocus();
-                    getRightButton().setSelected(true);
-                } else if (getFocusOwner() == getRightButton()) {
-                    editButton.requestFocus();
-                    editButton.setSelected(true);
-                } else if (getFocusOwner() == editButton) {
-                    getLeftButton().requestFocus();
-                    getLeftButton().setSelected(true);
-                }
+                final JButton button = (JButton) getFocusTraversalPolicy().
+                        getComponentBefore(PasteDialog.this, getFocusOwner());
+                button.requestFocus();
+                button.setSelected(true);
             }
         }
         );
         
-        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
         .put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "rightArrowAction");
         getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
         .put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "leftArrowAction");

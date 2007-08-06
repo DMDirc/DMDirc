@@ -32,7 +32,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.swing.actions.CopyAction;
 import com.dmdirc.ui.swing.actions.CutAction;
 import com.dmdirc.ui.swing.actions.InputFramePasteAction;
-import com.dmdirc.ui.swing.dialogs.PasteDialog;
+import com.dmdirc.ui.swing.dialogs.paste.PasteDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.AWTException;
