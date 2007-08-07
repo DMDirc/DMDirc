@@ -41,6 +41,6 @@ public class PingTimer extends TimerTask {
 	
 	/** Timer has been executed. */
 	public void run() {
-		myOwner.pingTimerTask();
+		myOwner.pingTimerTask(this);
 	}
 }
