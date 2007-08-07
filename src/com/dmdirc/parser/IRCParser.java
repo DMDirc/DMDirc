@@ -1550,7 +1550,7 @@ public final class IRCParser implements Runnable {
 		setPingNeeded(false);
 		if (pingTimer != null) { pingTimer.cancel(); }
 		pingTimer = new Timer("IRCParser pingTimer");
-		pingTimer.schedule(new PingTimer(this), 0, pingTimerLength);
+		pingTimer.schedule(new PingTimer(this, pingTimer), 0, pingTimerLength);
 		pingCountDown = 1;
 	}
 	
@@ -1561,8 +1561,8 @@ public final class IRCParser implements Runnable {
 	 *
 	 * @param timer The timer that called this.
 	 */
-	protected void pingTimerTask(final PingTimer tiner) {
-		if (pingTimer != tiner) { return; }
+	protected void pingTimerTask(final Timer timer) {
+		if (pingTimer != timer) { return; }
 		if (pingNeeded) {
 			if (!callPingFailed()) {
 				pingTimer.cancel();

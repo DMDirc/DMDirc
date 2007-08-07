@@ -25,22 +25,27 @@
 package com.dmdirc.parser;
 
 import java.util.TimerTask;
+import java.util.Timer;
 
 public class PingTimer extends TimerTask {
 	/** Owning Parser. */
-	IRCParser myOwner;
+	final IRCParser myOwner;
+	/** The Timer that owns this task */
+	final Timer myTimer;
 	
 	/**
 	 * Create the PingTimer
 	 *
 	 * @param control IRCParser that owns this TimerTask.
+	 * @param timer Timer that owns this TimerTask.
 	 */
-	public PingTimer(IRCParser control) {
+	public PingTimer(final IRCParser control, final Timer timer) {
 		myOwner = control;
+		myTimer = timer;
 	}
 	
 	/** Timer has been executed. */
 	public void run() {
-		myOwner.pingTimerTask(this);
+		myOwner.pingTimerTask(myTimer);
 	}
 }
