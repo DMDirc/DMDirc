@@ -34,10 +34,10 @@ public class CommandLineParser {
      * following order: short option, long option, description, whether or not
      * the option takes an argument.
      */
-    private static final Object[] ARGUMENTS = new Object[]{
-        //'c', "connect", "Connect to the specified server", Boolean.TRUE,
-        "h", "help", "Show command line options and exit", Boolean.FALSE,
-        "v", "version", "Display client version and exit", Boolean.FALSE,
+    private static final Object[][] ARGUMENTS = new Object[][]{
+        //{'c', "connect", "Connect to the specified server", Boolean.TRUE},
+        {'h', "help", "Show command line options and exit", Boolean.FALSE},
+        {'v', "version", "Display client version and exit", Boolean.FALSE},
     };
     
     /**
@@ -45,7 +45,7 @@ public class CommandLineParser {
      *
      * @param arguments The arguments to be parsed
      */
-    public CommandLineParser(String ... arguments) {
+    public CommandLineParser(final String ... arguments) {
         boolean inArg = false;
         char previousArg;
         
@@ -65,14 +65,35 @@ public class CommandLineParser {
             }
         }
     }
-    
+
+    /**
+     * Processes the specified string as a single long argument.
+     * 
+     * @param arg The string entered
+     * @return The short form of the corresponding argument
+     */    
     private char processLongArg(final String arg) {
-        return 'h';
+        for (int i = 0; i < ARGUMENTS.length; i++) {
+            if (arg.equalsIgnoreCase((String) ARGUMENTS[i][1])) {
+                return (Character) ARGUMENTS[i][0];
+            }
+        }
+        
+        doUnknownArg("Unknown argument: " + arg);
+        exit();
+        
+        return '.';        
     }
     
+    /**
+     * Processes the specified string as a single short argument.
+     * 
+     * @param arg The string entered
+     * @return The short form of the corresponding argument
+     */
     private char processShortArg(final String arg) {
-        for (int i = 0; i < ARGUMENTS.length; i += 4) {
-            if (arg.equals(ARGUMENTS[i])) {
+        for (int i = 0; i < ARGUMENTS.length; i++) {
+            if (arg.charAt(0) == ARGUMENTS[i][0]) {
                 return arg.charAt(0);
             }
         }
@@ -83,6 +104,12 @@ public class CommandLineParser {
         return '.';
     }
     
+    /**
+     * Processes the sepcified command-line argument.
+     * 
+     * @param arg The short form of the argument used
+     * @param param The (optional) string parameter for the option
+     */
     private void processArgument(final char arg, final String param) {
         switch (arg) {
         case 'h':
@@ -97,10 +124,15 @@ public class CommandLineParser {
         }
     }
     
+    /**
+     * Informs the user that they entered an unknown argument, prints the
+     * client help, and exits.
+     * 
+     * @param message The message about the unknown argument to be displayed
+     */
     private void doUnknownArg(final String message) {
         System.out.println(message);
-        processArgument('h', null);
-        exit();
+        doHelp();
     }
     
     /**
@@ -110,6 +142,9 @@ public class CommandLineParser {
         System.exit(0);
     }
     
+    /**
+     * Prints out the client version and exits.
+     */
     private void doVersion() {
         System.out.println("DMDirc - a cross-platform, open-source IRC client.");
         System.out.println();
@@ -119,6 +154,9 @@ public class CommandLineParser {
         exit();
     }
     
+    /**
+     * Prints out client help and exits.
+     */
     private void doHelp() {
         exit();
     }
