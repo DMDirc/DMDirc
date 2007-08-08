@@ -41,20 +41,19 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 /**
@@ -73,9 +72,6 @@ public final class AliasManagerDialog extends StandardDialog implements
     /** Previously instantiated instance of AliasManagerDialog. */
     private static AliasManagerDialog me;
     
-    /** Table headers. */
-    private static final String[] HEADERS = new String[]{"Name", "Arguments", "Mapping", };
-    
     /** Table scrollpane. */
     private JScrollPane scrollPane;
     
@@ -83,7 +79,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     private JTable table;
     
     /** Table model. */
-    private DefaultTableModel tableModel;
+    private AliasTableModel tableModel;
     
     /** Error detail panel. */
     private AliasPanel aliasDetails;
@@ -127,18 +123,23 @@ public final class AliasManagerDialog extends StandardDialog implements
     /** Initialises the components. */
     private void initComponents() {
         final TableCellRenderer arrayRenderer = new ArrayCellRenderer();
+        final TableCellRenderer conditionRenderer = new ActionConditionCellRenderer();
         initButtonsPanel();
         
         scrollPane = new JScrollPane();
         
-        tableModel = new DefaultTableModel(getTableData(), HEADERS);
+        tableModel = new AliasTableModel(getTableData());
         table = new PackingTable(tableModel, false, scrollPane) {
             private static final long serialVersionUID = 1;
             public TableCellRenderer getCellRenderer(int row, int column) {
-                if (column == 2) {
-                    return arrayRenderer;
+                switch (column) {
+                    case 1:
+                        return conditionRenderer;
+                    case 2:
+                        return arrayRenderer;
+                    default:
+                        return super.getCellRenderer(row, column);
                 }
-                return super.getCellRenderer(row, column);
             }
         };
         
@@ -159,6 +160,18 @@ public final class AliasManagerDialog extends StandardDialog implements
         scrollPane.setViewportView(table);
         
         aliasDetails = new AliasPanel();
+    }
+    
+    private List<Alias> getTableData() {
+        final List<Alias> aliases = new ArrayList<Alias>();
+        final List<Action> actions = AliasWrapper.getAliasWrapper().getActions();
+        
+        for (Action loopAction : actions) {
+            aliases.add(new Alias(loopAction.getName(),
+                    loopAction.getConditions(), loopAction.getResponse()));
+        }
+        
+        return aliases;
     }
     
     /** Initialises the button panel. */
@@ -217,55 +230,16 @@ public final class AliasManagerDialog extends StandardDialog implements
         getContentPane().add(buttonsPanel);
     }
     
-    /**
-     * Retrieves the error data from the ErrorManager.
-     *
-     * @return Error data
-     */
-    private Object[][] getTableData() {
-        final List<Action> aliases = AliasWrapper.getAliasWrapper().getActions();
-        final Object[][] data = new Object[aliases.size()][3];
-        
-        for (int i = 0; i < aliases.size(); i++) {
-            data[i][0] = aliases.get(i).getName();
-            if (aliases.get(i).getConditions().size() > 1) {
-                final ActionCondition condition =
-                        aliases.get(i).getConditions().get(1);
-                switch ((CoreActionComparison) condition.getComparison()) {
-                    case INT_EQUALS:
-                        data[i][1] = "==" + " " + condition.getTarget().toString();
-                        break;
-                    case INT_GREATER:
-                        data[i][1] = ">" + " " + condition.getTarget().toString();
-                        break;
-                    case INT_LESS:
-                        data[i][1] = "<" + " " + condition.getTarget().toString();
-                        break;
-                    default:
-                        data[i][1] = "N/A";
-                        break;
-                }
-            } else {
-                data[i][1] = "N/A";
-            }
-            final String response = Arrays.toString(aliases.get(i).getResponse());
-            data[i][2] = response.substring(1, response.length() - 1);
-            data[i][2] = aliases.get(i).getResponse();
-        }
-        
-        return data;
-    }
-    
     /** {@inheritDoc}. */
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             if (table.getSelectedRow() > -1) {
                 final int selectedRow = table.getRowSorter().
                         convertRowIndexToModel(table.getSelectedRow());
-                aliasDetails.setAlias((List) tableModel.getDataVector().get(selectedRow));
+                aliasDetails.setAlias(tableModel.getAlias(selectedRow));
                 deleteButton.setEnabled(true);
             } else {
-                aliasDetails.setAlias(null);
+                aliasDetails.clear();
                 deleteButton.setEnabled(false);
             }
         }
@@ -273,7 +247,19 @@ public final class AliasManagerDialog extends StandardDialog implements
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
-        if (e.getSource() == getCancelButton()) {
+        if (e.getSource() == deleteButton) {
+            deleteAction(table.getSelectedRow());
+        } else if (e.getSource() == addButton) {
+            String name = JOptionPane.showInputDialog(this,
+                    "Please enter the name for the new alias.",
+                    "New alias", JOptionPane.QUESTION_MESSAGE);
+            if (name != null && name.length() > 0) {
+                if (name.charAt(0) == '/' || name.charAt(0) == '\\') {
+                    name = name.substring(1);
+                }
+                tableModel.addRow(new Alias(name));
+            }
+        } else if (e.getSource() == getCancelButton()) {
             dispose();
         } else if (e.getSource() == getOkButton()) {
             save();
@@ -281,60 +267,19 @@ public final class AliasManagerDialog extends StandardDialog implements
         }
     }
     
+    private void deleteAction(final int selectedRow) {
+        final int row = table.getRowSorter().
+                convertRowIndexToModel(selectedRow);
+        tableModel.removeRow(row);
+    }
+    
     /** Saves the aliases. */
     private void save() {
-        final List<String> aliases = AliasWrapper.getAliasWrapper().getAliases();
-        final List rows = tableModel.getDataVector();
-        for (Object rowObject : rows) {
-            final List row = (List) rowObject;
-            final String name = Config.getCommandChar() + row.get(0);
-            if (aliases.contains(name)) {
-                checkAliasForModicications(row);
-            } else {
-                createNewAlias(row);
-            }
+        final List<Alias> aliases = tableModel.getAliases();
+        
+        for (Alias alias : aliases) {
+            alias.save();
         }
-    }
-    
-    /**
-     * Checks aliases for modifications and saves if needed.
-     *
-     * @param alias Alias to check
-     */
-    private void checkAliasForModicications(final List alias) {
-        //check
-    }
-    
-    /**
-     * Checks aliases for modifications and saves if needed.
-     *
-     * @param alias Alias to check
-     */
-    private void createNewAlias(final List alias) {
-        final List<ActionCondition> conditions = new ArrayList<ActionCondition>();
-        final String[] arguments = ((String) alias.get(1)).split("\\s");
-        
-        conditions.add(new ActionCondition(1, CoreActionComponent.STRING_STRING,
-                CoreActionComparison.STRING_EQUALS, (String) alias.get(0)));
-        
-        if ("==".equals(arguments[0])) {
-            conditions.add(new ActionCondition(2, CoreActionComponent.STRINGARRAY_LENGTH,
-                    CoreActionComparison.INT_EQUALS, arguments[1]));
-        } else if ("<".equals(arguments[0])) {
-            conditions.add(new ActionCondition(2, CoreActionComponent.STRINGARRAY_LENGTH,
-                    CoreActionComparison.INT_LESS, arguments[1]));
-        } else if (">".equals(arguments[0])) {
-            conditions.add(new ActionCondition(2, CoreActionComponent.STRINGARRAY_LENGTH,
-                    CoreActionComparison.INT_GREATER, arguments[1]));
-        }
-        
-        new Action(
-                AliasWrapper.getAliasWrapper().getGroupName(),
-                (String) alias.get(0),
-                new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },
-                (String[]) alias.get(2),
-                conditions,
-                "");
     }
     
 }

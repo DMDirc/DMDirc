@@ -136,4 +136,10 @@ public class ActionCondition {
         this.target = target;
     }
     
+    /** {@inheritDoc} */
+    public String toString() {
+        return "[ arg=" + arg + ", component=" + component + ", comparison=" 
+                + comparison + ", target=" + target + "]";
+    }
+    
 }

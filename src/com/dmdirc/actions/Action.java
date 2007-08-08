@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -503,6 +504,14 @@ public class Action implements Serializable {
             format.setLength(0);
             format.append(newFormat);
         }
+    }
+    
+    /** {@inheritDoc} */
+    public String toString() {
+        return "[name=" + group + "/" + name + ", triggers=" 
+                + Arrays.toString(triggers) + ", response=" 
+                + Arrays.toString(response) + ", "
+                + conditions + ", format='" + newFormat + "']";
     }
     
 }

@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.aliases;
 
+import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.CoreActionComparison;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import java.awt.BorderLayout;
@@ -127,23 +129,34 @@ public final class AliasPanel extends JPanel implements ActionListener {
      *
      * @param alias List of alias details to display
      */
-    public void setAlias(final List alias) {
+    public void setAlias(final Alias alias) {
+        if (alias == null) {
+            clear();
+        }
         name.setEnabled(false);
         argumentComponent.setEnabled(true);
         response.setEnabled(true);
-        name.setText((String) alias.get(0));
-        final String[] arguments = ((String) alias.get(1)).split("\\s");
-        argumentComponent.setSelectedItem(arguments[0]);
-        if ("N/A".equals(arguments[0])) {
+        name.setText(alias.getName());
+        
+        final List<ActionCondition> arguments = alias.getArguments();
+        ActionCondition argument;
+        
+        if (arguments.size() == 1) {
             argumentNumber.setValue(0);
             argumentNumber.setEnabled(false);
         } else {
-            argumentNumber.setValue(Integer.parseInt(arguments[1]));
+            argument = arguments.get(0);
+            
+            if (argument.getComparison() == CoreActionComparison.STRING_EQUALS) {
+                argument = arguments.get(1);
+            }
+            argumentComponent.setSelectedItem(argument.getComparison().getName());
+            argumentNumber.setValue(Integer.parseInt(argument.getTarget()));
             argumentNumber.setEnabled(true);
         }
         
         final StringBuffer sb = new StringBuffer();
-        for (String line : (String[]) alias.get(2)) {
+        for (String line : alias.getResponse()) {
             sb.append(line).append('\n');
         }
         response.setText(sb.substring(0, sb.length() - 1));

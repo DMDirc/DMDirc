@@ -587,6 +587,7 @@ public final class ActionManager {
         return res;
     }
     
+    @SuppressWarnings("fallthrough")
     private static String escapeRegex(final String regex) {
         final StringBuilder result = new StringBuilder(regex.length());
         
