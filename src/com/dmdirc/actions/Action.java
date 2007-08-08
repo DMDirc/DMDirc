@@ -132,7 +132,10 @@ public class Action implements Serializable {
         this.newFormat = newFormat;
         
         final String fs = System.getProperty("file.separator");
-        final String location = ActionManager.getDirectory() + group + fs + name;
+        final String dir = ActionManager.getDirectory() + group + fs;
+        final String location = dir + name;
+        
+        new File(dir).mkdirs();
         
         file = new File(location);
         
@@ -508,8 +511,8 @@ public class Action implements Serializable {
     
     /** {@inheritDoc} */
     public String toString() {
-        return "[name=" + group + "/" + name + ", triggers=" 
-                + Arrays.toString(triggers) + ", response=" 
+        return "[name=" + group + "/" + name + ", triggers="
+                + Arrays.toString(triggers) + ", response="
                 + Arrays.toString(response) + ", "
                 + conditions + ", format='" + newFormat + "']";
     }

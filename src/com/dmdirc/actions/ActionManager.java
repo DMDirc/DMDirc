@@ -178,7 +178,7 @@ public final class ActionManager {
      */
     private static ActionWrapper getWrapper(final String name) {
         for (ActionWrapper wrapper : actionWrappers) {
-            if (wrapper.getGroupName().equalsIgnoreCase(name)) {
+            if (wrapper.getGroupName().equals(name)) {
                 return wrapper;
             }
         }
