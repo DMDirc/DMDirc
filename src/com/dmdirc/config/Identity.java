@@ -150,7 +150,9 @@ public class Identity implements Serializable, Comparable<Identity> {
             myTarget.setGlobalDefault();
         } else if (forceDefault && !isProfile()) {
             myTarget.setGlobal();
-        } else if (!isProfile()) {
+        } else if (isProfile()) {
+            myTarget.setProfile();
+        } else {
             throw new InvalidIdentityFileException("No target and no profile");
         }
         

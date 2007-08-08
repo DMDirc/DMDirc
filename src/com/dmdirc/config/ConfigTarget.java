@@ -28,9 +28,12 @@ import java.io.Serializable;
  * Represents the target of a particular config source.
  * <p>
  * Note: this class has a natural ordering that is inconsistent with equals.
+ * 
  * @author chris
  */
 public final class ConfigTarget implements Comparable, Serializable {
+    
+    // TODO: Convert this lot to an enum.
     
     /** Indicates that the target is the global default config. */
     public static final int TYPE_GLOBALDEFAULT = 0;
@@ -38,21 +41,23 @@ public final class ConfigTarget implements Comparable, Serializable {
     public static final int TYPE_GLOBAL = 1;
     /** Indicates that the target is a theme. */
     public static final int TYPE_THEME = 2;
+    /** Indicates that the target is a profile. */
+    public static final int TYPE_PROFILE = 3;    
     /** Indicates that the target targets an ircd. */
-    public static final int TYPE_IRCD = 3;
+    public static final int TYPE_IRCD = 4;
     /** Indicates that the target targets a network. */
-    public static final int TYPE_NETWORK = 4;
+    public static final int TYPE_NETWORK = 5;
     /** Indicates that the target targets a server. */
-    public static final int TYPE_SERVER = 5;
+    public static final int TYPE_SERVER = 6;
     /** Indicates that the target targets a channel. */
-    public static final int TYPE_CHANNEL = 6;
+    public static final int TYPE_CHANNEL = 7;
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** The type of this target. */
     private int type = 1;
@@ -79,8 +84,14 @@ public final class ConfigTarget implements Comparable, Serializable {
         type = TYPE_THEME;
     }
     
+    /** Sets this target to be a profile source. */
+    public void setProfile() {
+        type = TYPE_PROFILE;
+    }
+    
     /**
      * Sets this target to target an ircd.
+     * 
      * @param ircd The ircd to target
      */
     public void setIrcd(final String ircd) {
@@ -90,6 +101,7 @@ public final class ConfigTarget implements Comparable, Serializable {
     
     /**
      * Sets this target to target a network.
+     * 
      * @param network The network to target
      */
     public void setNetwork(final String network) {
@@ -99,6 +111,7 @@ public final class ConfigTarget implements Comparable, Serializable {
     
     /**
      * Sets this target to target a server.
+     * 
      * @param server The server to target
      */
     public void setServer(final String server) {
@@ -108,6 +121,7 @@ public final class ConfigTarget implements Comparable, Serializable {
     
     /**
      * Sets this target to target a channel.
+     * 
      * @param channel The channel to target, in the form of channel@network
      */
     public void setChannel(final String channel) {
@@ -117,6 +131,7 @@ public final class ConfigTarget implements Comparable, Serializable {
     
     /**
      * Retrieves the type of this target.
+     * 
      * @return This target's type
      */
     public int getType() {
@@ -125,6 +140,7 @@ public final class ConfigTarget implements Comparable, Serializable {
     
     /**
      * Returns a string representation of the type of this target.
+     * 
      * @return A string describing this target's type
      */
     public String getTypeName() {
@@ -135,6 +151,8 @@ public final class ConfigTarget implements Comparable, Serializable {
             return "global";
         case TYPE_THEME:
             return "theme";
+        case TYPE_PROFILE:
+            return "profile";
         case TYPE_IRCD:
             return "ircd";
         case TYPE_NETWORK:
@@ -150,6 +168,7 @@ public final class ConfigTarget implements Comparable, Serializable {
     
     /**
      * Retrieves the data associated with this target.
+     * 
      * @return This target's data
      */
     public String getData() {
@@ -164,10 +183,10 @@ public final class ConfigTarget implements Comparable, Serializable {
     
     /** {@inheritDoc} */
     @Override
-    public boolean equals(final Object target) {
-        if (target instanceof ConfigTarget
-                && type == ((ConfigTarget) target).getType()
-                && data.equals(((ConfigTarget) target).getData())) {
+    public boolean equals(final Object obj) {
+        if (obj instanceof ConfigTarget
+                && type == ((ConfigTarget) obj).getType()
+                && data.equals(((ConfigTarget) obj).getData())) {
             return true;
         }
         return false;
@@ -175,9 +194,10 @@ public final class ConfigTarget implements Comparable, Serializable {
     
     /**
      * Compares this target to another to determine which is more specific.
+     * 
      * @param target The target to compare to
-     * @return -1 if this config is less specific, 0 if they're equal, +1 if
-     * this is more specific
+     * @return a negative integer if this config is less specific, 0 if they're
+     * equal, or a positive integer if this is more specific
      */
     public int compareTo(final Object target) {
         return type - ((ConfigTarget) target).getType();
@@ -185,6 +205,7 @@ public final class ConfigTarget implements Comparable, Serializable {
     
     /**
      * Returns a string representation of this object.
+     * 
      * @return A string representation of this object
      */
     public String toString() {
@@ -194,7 +215,9 @@ public final class ConfigTarget implements Comparable, Serializable {
         case TYPE_GLOBAL:
             return "Global config";
         case TYPE_THEME:
-            return "Theme config";
+            return "Theme";
+        case TYPE_PROFILE:
+            return "Profile";
         case TYPE_IRCD:
             return "Ircd specific: " + data;
         case TYPE_NETWORK:
