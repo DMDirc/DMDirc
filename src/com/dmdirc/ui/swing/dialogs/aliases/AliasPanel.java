@@ -26,6 +26,7 @@ import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.CoreActionComparison;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -73,7 +74,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
         name = new JTextField();
         name.setEnabled(false);
         
-        argumentComponent = new JComboBox(new String[]{"N/A", ">", "==", "<", });
+        argumentComponent = new JComboBox(new String[]{"N/A", "greater than", "equals", "less than", });
         argumentNumber = new JSpinner(new SpinnerNumberModel());
         response = new JTextArea();
         
@@ -146,6 +147,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
         ActionCondition argument;
         
         if (arguments.size() == 1) {
+            argumentComponent.setSelectedItem("N/A");
             argumentNumber.setValue(0);
             argumentNumber.setEnabled(false);
         } else {
