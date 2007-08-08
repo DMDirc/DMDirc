@@ -23,6 +23,7 @@
 package com.dmdirc.themes;
 
 import com.dmdirc.Config;
+import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -45,7 +46,7 @@ public class ThemeManager {
      * Creates a new instance of theme manager.
      */
     public ThemeManager() {
-        themeDir = Config.getConfigDir() + "themes";
+        themeDir = Main.getConfigDir() + "themes";
     }
     
     /**

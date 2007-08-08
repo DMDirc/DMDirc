@@ -24,6 +24,7 @@ package com.dmdirc.actions;
 
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.actions.wrappers.ActionWrapper;
 import com.dmdirc.actions.wrappers.AliasWrapper;
@@ -326,7 +327,7 @@ public final class ActionManager {
      */
     public static String getDirectory() {
         final String fs = System.getProperty("file.separator");
-        return Config.getConfigDir() + "actions" + fs;
+        return Main.getConfigDir() + "actions" + fs;
     }
     
     /**

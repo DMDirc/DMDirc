@@ -22,7 +22,7 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.Config;
+import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -367,7 +367,7 @@ public class Identity implements Serializable, Comparable<Identity> {
      */
     protected static Identity createIdentity(final Properties properties) {
         final String fs = System.getProperty("file.separator");
-        final String location = Config.getConfigDir() + "identities" + fs;
+        final String location = Main.getConfigDir() + "identities" + fs;
         final String name = properties.getProperty("identity.name");
         
         final File file = new File(location + name);

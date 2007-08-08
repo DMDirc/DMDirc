@@ -32,6 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.dmdirc.Config;
+import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
@@ -59,7 +60,7 @@ public class PluginManager {
 	 */
 	private PluginManager() {
 		final String fs = System.getProperty("file.separator");
-		myDir = Config.getConfigDir() + "plugins" + fs;
+		myDir = Main.getConfigDir() + "plugins" + fs;
 	}
 	
 	/**

@@ -23,6 +23,7 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.Config;
+import com.dmdirc.Main;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -162,7 +163,7 @@ public final class Logger {
     @SuppressWarnings("PMD.SystemPrintln")
     private static synchronized OutputStream createNewErrorFile(final ProgramError error) {
         if (errorDir == null) {
-            errorDir = new File(Config.getConfigDir() + "errors");
+            errorDir = new File(Main.getConfigDir() + "errors");
             if (!errorDir.exists()) {
                 errorDir.mkdirs();
             }

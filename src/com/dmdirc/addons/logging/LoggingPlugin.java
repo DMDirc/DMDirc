@@ -87,7 +87,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
     public boolean onLoad() {
         // Set defaults
         Properties defaults = new Properties();
-        defaults.setProperty(MY_DOMAIN + ".general.directory", Config.getConfigDir() + "logs" + System.getProperty("file.separator"));
+        defaults.setProperty(MY_DOMAIN + ".general.directory", Main.getConfigDir() + "logs" + System.getProperty("file.separator"));
         defaults.setProperty(MY_DOMAIN + ".general.networkfolders", "true");
         defaults.setProperty(MY_DOMAIN + ".advanced.filenamehash", "false");
         defaults.setProperty(MY_DOMAIN + ".general.addtime", "true");

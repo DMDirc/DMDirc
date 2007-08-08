@@ -23,6 +23,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.Config;
+import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -423,7 +424,7 @@ public final class Formatter {
      * @return True iff the operation succeeeded, false otherwise
      */
     public static boolean loadFile(final String file) {
-        final File myFile = new File(Config.getConfigDir() + file);
+        final File myFile = new File(Main.getConfigDir() + file);
         if (myFile.exists()) {
             try {
                 final FileInputStream in = new FileInputStream(myFile);
@@ -474,7 +475,7 @@ public final class Formatter {
             initialise();
         }
         
-        final File myFile = new File(Config.getConfigDir() + target);
+        final File myFile = new File(Main.getConfigDir() + target);
         FileOutputStream file = null;
         
         try {

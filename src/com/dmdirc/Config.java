@@ -50,7 +50,9 @@ public final class Config {
     /**
      * Returns the full path to the application's config file.
      * @return config file
+     * @deprecated No need for this, really
      */
+    @Deprecated
     public static String getConfigFile() {
         return getConfigDir() + "dmdirc.config";
     }
@@ -58,7 +60,9 @@ public final class Config {
     /**
      * Returns the application's config directory.
      * @return configuration directory
+     * @deprecated in favour of Main.getConfigDir()
      */
+    @Deprecated
     public static String getConfigDir() {
         final String fs = System.getProperty("file.separator");
         final String osName = System.getProperty("os.name");

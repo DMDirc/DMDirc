@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.firstrunwizard;
 
-import com.dmdirc.Config;
+import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.resourcemanager.ResourceManager;
@@ -79,7 +79,7 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
             //Copy plugins
             try {
                 resourceManager.extractResources("com/dmdirc/addons",
-                        Config.getConfigDir() + "plugins");
+                        Main.getConfigDir() + "plugins");
             } catch (IOException ex) {
                 Logger.userError(ErrorLevel.LOW, "Failed to extract plugins");
             }
@@ -95,7 +95,7 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
                     "com/dmdirc/actions/defaults");
             for (Entry<String, byte[]> resource : resources.entrySet()) {
                 try {
-                    final String resourceName = Config.getConfigDir() + "actions"
+                    final String resourceName = Main.getConfigDir() + "actions"
                             + resource.getKey().substring(27, resource.getKey().length());
                     final File newDir = new File(
                             resourceName.substring(0, resourceName.lastIndexOf('/')) + "/");

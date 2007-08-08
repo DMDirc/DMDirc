@@ -108,9 +108,20 @@ public class NickColourPanel extends JPanel {
         buttonPanel.setPreferredSize(new Dimension(Short.MAX_VALUE, 25 + UIUtilities.LARGE_BORDER));
         buttonPanel.setLayout(new BorderLayout());
         
-        buttonPanel.add(new JButton("Add"), BorderLayout.WEST);
-        buttonPanel.add(new JButton("Edit"), BorderLayout.CENTER);
-        buttonPanel.add(new JButton("Delete"), BorderLayout.EAST);
+        JButton button;
+        
+        button = new JButton("Add");
+        button.setPreferredSize(new Dimension(100, 20));
+        button.setMaximumSize(new Dimension(100, 20));
+        buttonPanel.add(button, BorderLayout.WEST);
+        button = new JButton("Edit");
+        button.setPreferredSize(new Dimension(100, 20));
+        button.setMaximumSize(new Dimension(100, 20));
+        buttonPanel.add(button, BorderLayout.CENTER);
+        button = new JButton("Delete");
+        button.setPreferredSize(new Dimension(100, 20));        
+        button.setMaximumSize(new Dimension(100, 20));
+        buttonPanel.add(button, BorderLayout.EAST);
         
         add(buttonPanel, BorderLayout.SOUTH);
     }

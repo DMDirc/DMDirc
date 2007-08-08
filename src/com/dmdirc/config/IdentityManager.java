@@ -22,7 +22,7 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.Config;
+import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -95,7 +95,7 @@ public final class IdentityManager {
     /** Loads user-defined identity files. */
     private static void loadUser() {
         final String fs = System.getProperty("file.separator");
-        final String location = Config.getConfigDir() + "identities" + fs;
+        final String location = Main.getConfigDir() + "identities" + fs;
         final File dir = new File(location);
         
         if (!dir.exists()) {
@@ -125,14 +125,14 @@ public final class IdentityManager {
     /** Loads the config identity. */
     private static void loadConfig() {
         try {
-            final File file = new File(Config.getConfigFile());
+            final File file = new File(Main.getConfigDir() + "dmdirc.config");
             
             if (!file.exists()) {
                 file.createNewFile();
             }
             
             config = new Identity(file, true);
-            config.setOption("identity", "name", "Global config (" + Config.getConfigFile() + ")");
+            config.setOption("identity", "name", "Global config");
             addIdentity(config);
         } catch (InvalidIdentityFileException ex) {
             // This shouldn't happen as we're forcing it to global

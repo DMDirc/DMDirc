@@ -36,7 +36,7 @@ import com.dmdirc.updater.UpdateChecker;
 
 /**
  * Main class, handles initialisation.
- * 
+ *
  * @author chris
  */
 public final class Main {
@@ -69,7 +69,7 @@ public final class Main {
     
     /**
      * Entry procedure.
-     * 
+     *
      * @param args the command line arguments
      */
     public static void main(final String[] args) {
@@ -106,8 +106,15 @@ public final class Main {
     }
     
     /**
+     * Quits the client nicely, with the default closing message.
+     */
+    public static void quit() {
+        quit(Config.getOption("general", "closemessage"));
+    }
+    
+    /**
      * Quits the client nicely.
-     * 
+     *
      * @param reason The quit reason to send
      */
     public static void quit(final String reason) {
@@ -122,7 +129,7 @@ public final class Main {
     
     /**
      * Retrieves the UI controller that's being used by the client.
-     * 
+     *
      * @return The client's UI controller
      */
     public static UIController getUI() {
@@ -130,10 +137,25 @@ public final class Main {
     }
     
     /**
-     * Quits the client nicely, with the default closing message.
+     * Returns the application's config directory.
+     * @return configuration directory
      */
-    public static void quit() {
-        quit(Config.getOption("general", "closemessage"));
+    public static String getConfigDir() {
+        final String fs = System.getProperty("file.separator");
+        final String osName = System.getProperty("os.name");
+        String configDir = null;
+        if (osName.startsWith("Mac OS")) {
+            configDir = System.getProperty("user.home") + fs + "Library" + fs + "Preferences" + fs + "DMDirc" + fs;
+        } else if (osName.startsWith("Windows")) {
+            if (System.getenv("APPDATA") == null) {
+                configDir = System.getProperty("user.home") + fs + "DMDirc" + fs;
+            } else {
+                configDir = System.getenv("APPDATA") + fs + "DMDirc" + fs;
+            }
+        } else {
+            configDir = System.getProperty("user.home") + fs + ".DMDirc" + fs;
+        }
+        return configDir;
     }
     
 }
