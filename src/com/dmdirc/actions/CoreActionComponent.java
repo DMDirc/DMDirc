@@ -229,7 +229,7 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         public Class appliesTo() { return KeyStroke.class; }
         /** {@inheritDoc} */
-        public Class getType() { return String.class; }
+        public Class getType() { return Boolean.class; }
         /** {@inheritDoc} */
         public String getName() { return "control key state"; }
     },
@@ -243,7 +243,7 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         public Class appliesTo() { return KeyStroke.class; }
         /** {@inheritDoc} */
-        public Class getType() { return String.class; }
+        public Class getType() { return Boolean.class; }
         /** {@inheritDoc} */
         public String getName() { return "shift key state"; }
     },
@@ -257,7 +257,7 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         public Class appliesTo() { return KeyStroke.class; }
         /** {@inheritDoc} */
-        public Class getType() { return String.class; }
+        public Class getType() { return Boolean.class; }
         /** {@inheritDoc} */
         public String getName() { return "alt key state"; }
     },
