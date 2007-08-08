@@ -31,7 +31,7 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 /**
- *
+ * Table model for displaying aliases.
  */
 public class AliasTableModel extends AbstractTableModel {
     
@@ -146,10 +146,22 @@ public class AliasTableModel extends AbstractTableModel {
         fireTableCellUpdated(rowIndex, columnIndex);
     }
     
+    /**
+     * Gets the alias at the specified row.
+     *
+     * @param rowIndex Row to retrieve
+     *
+     * @return Specified Alias
+     */
     public Alias getAlias(final int rowIndex) {
         return aliases.get(rowIndex);
     }
     
+    /**
+     * Gets a list of all aliases (including deleted ones).
+     *
+     * @return Complete alias list
+     */
     public List<Alias> getAliases() {
         final List<Alias> allAliases = new ArrayList<Alias>();
         allAliases.addAll(aliases);
@@ -157,10 +169,24 @@ public class AliasTableModel extends AbstractTableModel {
         return allAliases;
     }
     
+    /**
+     * Gets the name of the specified alias.
+     *
+     * @param rowIndex row to retrieve
+     *
+     * @return Alias name
+     */
     public String getName(final int rowIndex) {
         return aliases.get(rowIndex).getName();
     }
     
+    /**
+     * Gets the arguments of the specified alias.
+     *
+     * @param rowIndex row to retrieve
+     *
+     * @return Alias arguments
+     */
     public ActionCondition getArguments(final int rowIndex) {
         final List<ActionCondition> arguments = aliases.get(rowIndex).getArguments();
         ActionCondition argument;
@@ -174,15 +200,32 @@ public class AliasTableModel extends AbstractTableModel {
         return argument;
     }
     
+    /**
+     * Gets the response of the specified alias.
+     *
+     * @param rowIndex row to retrieve
+     *
+     * @return Alias response
+     */
     public String[] getResponse(final int rowIndex) {
         return aliases.get(rowIndex).getResponse();
     }
     
+    /**
+     * Adds an alias to the list.
+     *
+     * @param alias Alias to add
+     */
     public void addRow(final Alias alias) {
         aliases.add(alias);
         fireTableRowsInserted(aliases.indexOf(alias), aliases.indexOf(alias));
     }
     
+    /**
+     * Removes a specified row from the list.
+     *
+     * @param row Row to remove
+     */
     public void removeRow(final int row) {
         final Alias alias = aliases.get(row);
         aliases.remove(alias);

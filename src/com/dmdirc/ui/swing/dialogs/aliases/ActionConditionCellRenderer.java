@@ -27,7 +27,7 @@ import com.dmdirc.actions.CoreActionComparison;
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
- * Renders an array as an inline string.
+ * Renders an action condition in plain english.
  */
 public class ActionConditionCellRenderer extends DefaultTableCellRenderer {
     

@@ -22,14 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.aliases;
 
-import com.dmdirc.Config;
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
-import com.dmdirc.actions.ActionCondition;
-import com.dmdirc.actions.ActionType;
-import com.dmdirc.actions.CoreActionComparison;
-import com.dmdirc.actions.CoreActionComponent;
-import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PackingTable;
@@ -162,6 +156,11 @@ public final class AliasManagerDialog extends StandardDialog implements
         aliasDetails = new AliasPanel();
     }
     
+    /**
+     * Gets the table data fromt he alias wrapper.
+     *
+     * @return Alias list
+     */
     private List<Alias> getTableData() {
         final List<Alias> aliases = new ArrayList<Alias>();
         final List<Action> actions = AliasWrapper.getAliasWrapper().getActions();
@@ -267,6 +266,11 @@ public final class AliasManagerDialog extends StandardDialog implements
         }
     }
     
+    /** 
+     * Deletes an actions.
+     *
+     * @param selectedRow row to be deleted
+     */
     private void deleteAction(final int selectedRow) {
         final int row = table.getRowSorter().
                 convertRowIndexToModel(selectedRow);

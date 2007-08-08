@@ -38,16 +38,22 @@ import java.util.List;
  */
 public class Alias {
     
+    /** Has the alias been created. */
     private boolean isNewAlias;
     
+    /** Has the alias been deleted. */
     private boolean isDeletedAlias;
     
+    /** Has the alias been modified. */
     private boolean isModifiedAlias;
     
+    /** Alias name. */
     private String name;
     
+    /** Alias arguments. */
     private List<ActionCondition> arguments;
     
+    /** Alias response. */
     private String[] response;
     
     /**
@@ -86,45 +92,91 @@ public class Alias {
         return isNewAlias;
     }
     
+    /**
+     * checks if the alias is to be deleted.
+     *
+     * @return true iff the alias is to be deleted
+     */
     public boolean isDeleted() {
         return isDeletedAlias;
     }
     
+    /**
+     * Sets whether the alias is to be deleted.
+     *
+     * @param isDeleted true to schedule for deletion
+     */
     public void setDeleted(final boolean isDeleted) {
         this.isDeletedAlias = isDeleted;
     }
     
+    /**
+     * Has the alias been modified.
+     *
+     * @return true iff the alias has been modified
+     */
     public boolean isModified() {
         return isModifiedAlias;
     }
     
+    /**
+     * Returns the aliases name
+     *
+     * @return Aliases name
+     */
     public String getName() {
         return name;
     }
     
+    /**
+     * Sets the aliases name.
+     *
+     * @param name Name to give the alias
+     */
     public void setName(final String name) {
         this.name = name;
         isModifiedAlias = true;
     }
     
+    /**
+     * Gets the aliases arguments.
+     *
+     * @return Argument list
+     */
     public List<ActionCondition> getArguments() {
         return new ArrayList<ActionCondition>(arguments);
     }
     
+    /**
+     * Sets the aliases arguments.
+     *
+     * @param arguments A new list of arguments to set
+     */
     public void setArguments(final List<ActionCondition> arguments) {
         this.arguments = new ArrayList<ActionCondition>(arguments);
         isModifiedAlias = true;
     }
     
+    /**
+     * Gets the aliases response.
+     *
+     * @return Response
+     */
     public String[] getResponse() {
         return response.clone();
     }
     
+    /**
+     * Sets the aliases response.
+     *
+     * @param response New Response
+     */
     public void setResponse(final String[] response) {
         this.response = response.clone();
         isModifiedAlias = true;
     }
     
+    /** Saves the alias if saves/creates/deletes the alias as required. */
     public void save() {
         Action action = null;
         
@@ -165,6 +217,8 @@ public class Alias {
         }
         
         action.save();
+        isNewAlias = false;
+        isModifiedAlias = false;
     }
     
 }

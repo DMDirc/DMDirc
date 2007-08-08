@@ -54,12 +54,16 @@ public final class AliasPanel extends JPanel implements ActionListener {
      */
     private static final long serialVersionUID = 1;
     
+    /** Name field. */
     private final JTextField name;
     
+    /** argument component combo box. */
     private final JComboBox argumentComponent;
     
+    /** Argument number spinner. */
     private final JSpinner argumentNumber;
     
+    /** Response field. */
     private final JTextArea response;
     
     /** Creates a new instance of AliasPanel. */
