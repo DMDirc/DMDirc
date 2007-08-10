@@ -91,6 +91,13 @@ public final class ResponseTabPanel extends JPanel {
                 new Dimension(100, formatter.getFont().getSize()
                 + LARGE_BORDER));
         
+        ((DefaultComboBoxModel) formatter.getModel()).addElement("No change");
+        ((DefaultComboBoxModel) formatter.getModel()).addElement("No response");
+        
+        for (String format : Formatter.getFormats()) {
+            ((DefaultComboBoxModel) formatter.getModel()).addElement(format);
+        }
+        
         if (owner.getAction() == null) {
             return;
         }
@@ -106,13 +113,6 @@ public final class ResponseTabPanel extends JPanel {
         }
         
         responses.setText(responses.getText().substring(0, responses.getText().length() - 1));
-        
-        ((DefaultComboBoxModel) formatter.getModel()).addElement("No change");
-        ((DefaultComboBoxModel) formatter.getModel()).addElement("No response");
-        
-        for (String format : Formatter.getFormats()) {
-            ((DefaultComboBoxModel) formatter.getModel()).addElement(format);
-        }
         
         if (owner.getAction().getNewFormat() == null) {
             formatter.setSelectedIndex(0);

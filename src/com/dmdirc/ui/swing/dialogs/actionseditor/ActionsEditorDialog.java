@@ -27,7 +27,7 @@ import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
-import com.dmdirc.ui.swing.dialogs.ActionsManagerDialog;
+import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsManagerDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;

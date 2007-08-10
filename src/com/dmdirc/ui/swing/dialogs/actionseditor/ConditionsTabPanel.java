@@ -57,6 +57,12 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
      */
     private static final long serialVersionUID = 1;
     
+    /** Number of components for each condition in the editor tab. */
+    private static final int CONDITION_COMPONENT_COUNT = 3;
+    
+    /** Offset from the first component for the delete button. */
+    private static final int DELETE_BUTTON_OFFSET = 1;
+    
     /** Parent ActionsEditorDialog. */
     private final ActionsEditorDialog owner;
     
@@ -279,10 +285,13 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
             if ("edit".equals(event.getActionCommand())) {
                 ConditionEditorDialog.showConditionEditorDialog(this, owner.getTrigger(),
                         conditions.get((Arrays.asList(
-                        comparisonsPanel.getComponents()).indexOf(event.getSource()) - 2) / 4));
+                        comparisonsPanel.getComponents()).indexOf(
+                        event.getSource())) / CONDITION_COMPONENT_COUNT));
             } else if ("delete".equals(event.getActionCommand())) {
                 delCondition((Arrays.asList(
-                        comparisonsPanel.getComponents()).indexOf(event.getSource()) - 3) / 4);
+                        comparisonsPanel.getComponents()).indexOf(
+                        event.getSource()) - DELETE_BUTTON_OFFSET) 
+                        / CONDITION_COMPONENT_COUNT);
             }
         }
     }

@@ -20,14 +20,16 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.components;
+package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionType;
-import com.dmdirc.ui.swing.dialogs.ActionsManagerDialog;
+import com.dmdirc.ui.swing.components.*;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -45,7 +47,7 @@ import javax.swing.event.ListSelectionListener;
  * @author chris
  */
 public final class ActionsGroupPanel extends JPanel
-        implements ListSelectionListener {
+        implements ListSelectionListener, MouseListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -93,7 +95,7 @@ public final class ActionsGroupPanel extends JPanel
         for (Object object : args) {
             res.append(", ");
             if (object instanceof ActionType) {
-            res.append(((ActionType) object).getName());
+                res.append(((ActionType) object).getName());
             } else {
                 res.append(object.toString());
             }
@@ -128,6 +130,7 @@ public final class ActionsGroupPanel extends JPanel
         table.getTableHeader().setReorderingAllowed(false);
         
         table.getSelectionModel().addListSelectionListener(this);
+        table.addMouseListener(this);
         
         pane.setViewportView(table);
         
@@ -170,6 +173,31 @@ public final class ActionsGroupPanel extends JPanel
                 parent.setEditState(false);
             }
         }
+    }
+    
+    public void mouseClicked(final MouseEvent e) {
+        if (e.getClickCount() == 2) {
+            final int row = table.rowAtPoint(e.getPoint());
+            
+            ActionsEditorDialog.showActionsEditorDialog(parent,
+                    actions.get(row));
+        }
+    }
+    
+    public void mousePressed(final MouseEvent e) {
+        //Ignore
+    }
+    
+    public void mouseReleased(final MouseEvent e) {
+        //Ignore
+    }
+    
+    public void mouseEntered(final MouseEvent e) {
+        //Ignore
+    }
+    
+    public void mouseExited(final MouseEvent e) {
+        //Ignore
     }
     
 }

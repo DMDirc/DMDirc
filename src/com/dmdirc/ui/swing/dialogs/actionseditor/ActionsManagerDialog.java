@@ -20,15 +20,13 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs;
+package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.ui.swing.MainFrame;
-import com.dmdirc.ui.swing.components.ActionsGroupPanel;
 import com.dmdirc.ui.swing.components.StandardDialog;
-import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsEditorDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
