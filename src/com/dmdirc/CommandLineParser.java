@@ -47,31 +47,63 @@ public class CommandLineParser {
      */
     public CommandLineParser(final String ... arguments) {
         boolean inArg = false;
-        char previousArg;
+        char previousArg = '.';
         
         for (String arg : arguments) {
             if (!inArg) {
                 if (arg.startsWith("--")) {
                     previousArg = processLongArg(arg.substring(2));
-                    processArgument(previousArg, null);
+                    inArg = checkArgument(previousArg);
                 } else if (arg.startsWith("-")) {
                     previousArg = processShortArg(arg.substring(1));
-                    processArgument(previousArg, null);
+                    inArg = checkArgument(previousArg);
                 } else {
                     doUnknownArg("Unknown argument: " + arg);
                 }
             } else {
-                
+                processArgument(previousArg, arg);
+                inArg = false;
             }
         }
+        
+        if (inArg) {
+            doUnknownArg("Missing parameter for argument: " + previousArg);
+        }
     }
-
+    
+    /**
+     * Checks whether the specified arg type takes an argument. If it does,
+     * this method returns true. If it doesn't, the method processes the
+     * argument and returns false.
+     *
+     * @param argument The short code of the argument
+     * @return True if the arg requires an argument, false otherwise
+     */
+    private boolean checkArgument(final char argument) {
+        boolean needsArg = false;
+        
+        for (int i = 0; i < ARGUMENTS.length; i++) {
+            if (argument == ARGUMENTS[i][0]) {
+                needsArg = (Boolean) ARGUMENTS[i][3];
+                break;
+            }
+        }
+        
+        if (needsArg) {
+            return true;
+        } else {
+            processArgument(argument, null);
+            
+            return false;
+        }
+    }
+    
     /**
      * Processes the specified string as a single long argument.
-     * 
+     *
      * @param arg The string entered
      * @return The short form of the corresponding argument
-     */    
+     */
     private char processLongArg(final String arg) {
         for (int i = 0; i < ARGUMENTS.length; i++) {
             if (arg.equalsIgnoreCase((String) ARGUMENTS[i][1])) {
@@ -82,12 +114,12 @@ public class CommandLineParser {
         doUnknownArg("Unknown argument: " + arg);
         exit();
         
-        return '.';        
+        return '.';
     }
     
     /**
      * Processes the specified string as a single short argument.
-     * 
+     *
      * @param arg The string entered
      * @return The short form of the corresponding argument
      */
@@ -106,7 +138,7 @@ public class CommandLineParser {
     
     /**
      * Processes the sepcified command-line argument.
-     * 
+     *
      * @param arg The short form of the argument used
      * @param param The (optional) string parameter for the option
      */
@@ -119,6 +151,9 @@ public class CommandLineParser {
             doVersion();
             break;
         default:
+            // This really shouldn't ever happen, but we'll handle it nicely
+            // anyway.
+            
             doUnknownArg("Unknown argument: " + arg);
             break;
         }
@@ -127,11 +162,12 @@ public class CommandLineParser {
     /**
      * Informs the user that they entered an unknown argument, prints the
      * client help, and exits.
-     * 
+     *
      * @param message The message about the unknown argument to be displayed
      */
     private void doUnknownArg(final String message) {
         System.out.println(message);
+        System.out.println();
         doHelp();
     }
     
@@ -158,6 +194,35 @@ public class CommandLineParser {
      * Prints out client help and exits.
      */
     private void doHelp() {
+        System.out.println("Usage: java -jar DMDirc.jar [options]");
+        System.out.println();
+        System.out.println("Valid options:");
+        System.out.println();
+        
+        int maxLength = 0;
+        
+        for (Object[] arg : ARGUMENTS) {
+            String needsArg = ((Boolean) arg[3]) ? " <argument>" : "";
+            
+            if ((arg[1] + needsArg).length() > maxLength) {
+                maxLength = (arg[1] + needsArg).length();
+            }
+        }
+        
+        for (Object[] arg : ARGUMENTS) {
+            String needsArg = ((Boolean) arg[3]) ? " <argument>" : "";
+            StringBuilder desc = new StringBuilder(maxLength + 1);
+            desc.append(arg[1]);
+            
+            while (desc.length() < maxLength + 1) {
+                desc.append(' ');
+            }
+            
+            System.out.print("   -" + arg[0] + needsArg);
+            System.out.println(" --" + desc + needsArg + " " + arg[2]);
+            System.out.println();
+        }
+        
         exit();
     }
     

@@ -97,6 +97,18 @@ public enum CoreActionComparison implements ActionComparison {
         /** {@inheritDoc} */
         public String getName() { return "contains"; }
     },
+
+    /** Checks if the string doesn't containt another string. */
+    STRING_NCONTAINS {
+        /** {@inheritDoc} */
+        public boolean test(final Object arg1, final Object arg2) {
+            return ((String) arg1).indexOf((String) arg2) == -1;
+        }
+        /** {@inheritDoc} */
+        public Class appliesTo() { return String.class; }
+        /** {@inheritDoc} */
+        public String getName() { return "doesn't contain"; }
+    },
     
     /** Checks if two boolean values are equal. */
     BOOL_IS {
