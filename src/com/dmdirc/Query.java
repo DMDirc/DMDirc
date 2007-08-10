@@ -95,6 +95,7 @@ public final class Query extends MessageTarget implements
         
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(CommandManager.getQueryCommandNames());
+        tabCompleter.addEntries(CommandManager.getChatCommandNames());
         frame.getInputHandler().setTabCompleter(tabCompleter);
         
         reregister();

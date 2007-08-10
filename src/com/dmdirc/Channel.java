@@ -129,6 +129,7 @@ public final class Channel extends MessageTarget implements
         
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(CommandManager.getChannelCommandNames());
+        tabCompleter.addEntries(CommandManager.getChatCommandNames());
         
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
