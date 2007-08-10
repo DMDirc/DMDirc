@@ -72,6 +72,8 @@ public final class ParamModePanel extends JPanel implements ActionListener {
         super();
         this.mode = thisMode;
         String text;
+        final String tooltip = "Mode " + mode + ": " + 
+                configManager.getOption("server", "mode" + mode);
         
         final SpringLayout layout = new SpringLayout();
         setLayout(layout);
@@ -84,6 +86,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
         }
         
         checkBox = new JCheckBox(text, state);
+        checkBox.setToolTipText(tooltip);
         add(checkBox);
         
         textField = new JTextField(value);

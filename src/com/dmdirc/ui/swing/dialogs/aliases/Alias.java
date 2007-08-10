@@ -134,8 +134,10 @@ public class Alias {
      * @param name Name to give the alias
      */
     public void setName(final String name) {
-        this.name = name;
-        isModifiedAlias = true;
+        if (!this.name.equals(name)) {
+            this.name = name;
+            isModifiedAlias = true;
+        }
     }
     
     /**
@@ -153,8 +155,10 @@ public class Alias {
      * @param arguments A new list of arguments to set
      */
     public void setArguments(final List<ActionCondition> arguments) {
-        this.arguments = new ArrayList<ActionCondition>(arguments);
-        isModifiedAlias = true;
+        if (!this.arguments.equals(arguments)) {
+            this.arguments = new ArrayList<ActionCondition>(arguments);
+            isModifiedAlias = true;
+        }
     }
     
     /**
@@ -172,8 +176,10 @@ public class Alias {
      * @param response New Response
      */
     public void setResponse(final String[] response) {
-        this.response = response.clone();
-        isModifiedAlias = true;
+        if (!this.response.equals(response)) {
+            this.response = response.clone();
+            isModifiedAlias = true;
+        }
     }
     
     /** Saves the alias if saves/creates/deletes the alias as required. */
@@ -191,6 +197,7 @@ public class Alias {
             }
             if (action != null) {
                 action.delete();
+                action = null;
             }
         }
         
@@ -206,7 +213,7 @@ public class Alias {
             }
         }
         
-        if (action == null) {
+        if (isNewAlias) {
             action = new Action(
                     AliasWrapper.getAliasWrapper().getGroupName(),
                     name,
@@ -216,9 +223,11 @@ public class Alias {
                     "");
         }
         
-        action.save();
-        isNewAlias = false;
-        isModifiedAlias = false;
+        if (action != null) {
+            action.save();
+            isNewAlias = false;
+            isModifiedAlias = false;
+        }
     }
     
 }

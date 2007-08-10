@@ -111,14 +111,21 @@ public final class ChannelModesPane extends JPanel {
             final char modeChar = mode.toCharArray()[0];
             final boolean state = ourBooleanModes.split(" ")[0]
                     .contains(mode.subSequence(0, 1));
-            String text = "Mode " + mode;
+            String text;
+            String tooltip;
             
             if (channel.getConfigManager().getOptionBool("server", "friendlymodes")
                     && channel.getConfigManager().hasOption("server", "mode" + mode)) {
                 text = channel.getConfigManager().getOption("server", "mode" + mode);
+            } else {
+                text = "Mode " + mode;
             }
             
+            tooltip = "Mode " + mode + ": " + 
+                    channel.getConfigManager().getOption("server", "mode" + mode);
+            
             final JCheckBox checkBox = new JCheckBox(text, state);
+            checkBox.setToolTipText(tooltip);
             checkBox.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                     0, 0, SMALL_BORDER));
             add(checkBox, constraints);

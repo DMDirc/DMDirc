@@ -232,6 +232,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     /** {@inheritDoc}. */
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
+            
             if (table.getSelectedRow() > -1) {
                 final int selectedRow = table.getRowSorter().
                         convertRowIndexToModel(table.getSelectedRow());
@@ -247,7 +248,8 @@ public final class AliasManagerDialog extends StandardDialog implements
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == deleteButton) {
-            deleteAction(table.getSelectedRow());
+            tableModel.removeRow(table.getRowSorter().
+                    convertRowIndexToModel(table.getSelectedRow()));
         } else if (e.getSource() == addButton) {
             String name = JOptionPane.showInputDialog(this,
                     "Please enter the name for the new alias.",
@@ -257,6 +259,8 @@ public final class AliasManagerDialog extends StandardDialog implements
                     name = name.substring(1);
                 }
                 tableModel.addRow(new Alias(name));
+                final int newRow = tableModel.getRowCount() - 1;
+                table.getSelectionModel().setSelectionInterval(newRow, newRow);
             }
         } else if (e.getSource() == getCancelButton()) {
             dispose();
@@ -264,17 +268,6 @@ public final class AliasManagerDialog extends StandardDialog implements
             save();
             dispose();
         }
-    }
-    
-    /** 
-     * Deletes an actions.
-     *
-     * @param selectedRow row to be deleted
-     */
-    private void deleteAction(final int selectedRow) {
-        final int row = table.getRowSorter().
-                convertRowIndexToModel(selectedRow);
-        tableModel.removeRow(row);
     }
     
     /** Saves the aliases. */
