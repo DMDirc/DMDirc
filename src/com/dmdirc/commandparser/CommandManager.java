@@ -185,11 +185,15 @@ public final class CommandManager {
         for (Server server : ServerManager.getServerManager().getServers()) {
             if (command instanceof ServerCommand || command instanceof GlobalCommand) {
                 registerCommandName(server.getTabCompleter(), commandName, register);
-            } else if (command instanceof ChannelCommand || command instanceof ChatCommand) {
+            }
+            
+            if (command instanceof ChannelCommand || command instanceof ChatCommand) {
                 for (String channelName : server.getChannels()) {
                     registerCommandName(server.getChannel(channelName).getTabCompleter(), commandName, register);
                 }
-            } else if (command instanceof QueryCommand || command instanceof ChatCommand) {
+            } 
+            
+            if (command instanceof QueryCommand || command instanceof ChatCommand) {
                 for (String queryName : server.getQueries()) {
                     registerCommandName(server.getQuery(queryName).getTabCompleter(), commandName, register);
                 }
