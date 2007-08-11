@@ -77,7 +77,7 @@ public final class LoggingCommand extends ServerCommand {
 			} else if (args[0].equalsIgnoreCase("history")) {
 				if (!plugin.showHistory(origin)) {
 					sendLine(origin, isSilent, "commandError", "Unable to open history for this window.");
-                                }
+    		}
 			} else if (args[0].equalsIgnoreCase("help")) {
 				sendLine(origin, isSilent, "commandOutput", getName() + " reload           - Reload the logging plugin.");
 				sendLine(origin, isSilent, "commandOutput", getName() + " history          - Open the history of this window, if available.");

@@ -293,7 +293,7 @@ public class PluginManager {
 		} catch (NoClassDefFoundError ncdf) {
 			Logger.userError(ErrorLevel.LOW, "Unable to instantiate plugin ('"+className+"'): Unable to find class: " + ncdf.getMessage());
 			result = null;
-                }
+		}
 		
 		return result;
 	}
