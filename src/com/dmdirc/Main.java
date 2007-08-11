@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandline.CommandLineParser;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.DMDircExceptionHandler;

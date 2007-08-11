@@ -20,7 +20,9 @@
  * SOFTWARE.
  */
 
-package com.dmdirc;
+package com.dmdirc.commandline;
+
+import com.dmdirc.Main;
 
 /**
  * Parses command line arguments for the client.
