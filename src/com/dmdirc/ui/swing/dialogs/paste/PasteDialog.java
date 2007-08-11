@@ -23,6 +23,8 @@
 package com.dmdirc.ui.swing.dialogs.paste;
 
 import com.dmdirc.Main;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.InputFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
@@ -46,6 +48,12 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.UndoableEditEvent;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.text.Document;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
 
 /**
  * Allows the user to modify global client preferences.
@@ -109,6 +117,8 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         editButton = new JButton("Edit");
         infoLabel = new JTextArea();
         
+        initInputField();
+        
         editButton.setPreferredSize(new Dimension(100, 25));
         editButton.setMinimumSize(new Dimension(100, 25));
         
@@ -170,6 +180,57 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         getContentPane().add(getRightButton(), constraints);
         
         pack();
+    }
+    
+    /**
+     * Initialises the input field.
+     */
+    private void initInputField() {
+        final UndoManager undo = new UndoManager();
+        final Document doc = textField.getDocument();
+        
+        // Listen for undo and redo events
+        doc.addUndoableEditListener(new UndoableEditListener() {
+            public void undoableEditHappened(final UndoableEditEvent evt) {
+                undo.addEdit(evt.getEdit());
+            }
+        });
+        
+        // Create an undo action and add it to the text component
+        textField.getActionMap().put("Undo",
+                new AbstractAction("Undo") {
+            private static final long serialVersionUID = 1;
+            public void actionPerformed(final ActionEvent evt) {
+                try {
+                    if (undo.canUndo()) {
+                        undo.undo();
+                    }
+                } catch (CannotUndoException ex) {
+                    Logger.userError(ErrorLevel.LOW, "Unable to undo");
+                }
+            }
+        });
+        
+        // Bind the undo action to ctl-Z
+        textField.getInputMap().put(KeyStroke.getKeyStroke("control Z"), "Undo");
+        
+        // Create a redo action and add it to the text component
+        textField.getActionMap().put("Redo",
+                new AbstractAction("Redo") {
+            private static final long serialVersionUID = 1;
+            public void actionPerformed(final ActionEvent evt) {
+                try {
+                    if (undo.canRedo()) {
+                        undo.redo();
+                    }
+                } catch (CannotRedoException ex) {
+                    Logger.userError(ErrorLevel.LOW, "Unable to redo");
+                }
+            }
+        });
+        
+        // Bind the redo action to ctl-Y
+        textField.getInputMap().put(KeyStroke.getKeyStroke("control Y"), "Redo");
     }
     
     /**
