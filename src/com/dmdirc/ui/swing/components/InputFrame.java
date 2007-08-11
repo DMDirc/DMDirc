@@ -489,7 +489,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
                     parent.sendLine(clipboardLine);
                 }
             }
-        } else {
+        } else if (event == null) {
             inputField.setText(inputField.getText() + clipboard);
         }
     }
