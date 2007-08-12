@@ -390,7 +390,7 @@ public final class Formatter {
      */
     public static void registerDefault(final String name, final String format) {
         if (defaultProperties == null) {
-            loadDefaults();
+            initialise();
         }
         
         typeCache.remove(name);

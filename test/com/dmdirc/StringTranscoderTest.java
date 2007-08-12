@@ -42,20 +42,13 @@ public class StringTranscoderTest {
 
     @Test
     public void transcode() {
-        System.out.println("transcode");
         String string = new String(new byte[]{(byte) 0xCA, (byte) 0xAE});
-        System.out.println(string);
         
         StringTranscoder instance = new StringTranscoder(Charset.forName("UTF-8"));
         
         String res = instance.encode(string);
-        System.out.println(res);
+
         byte[] result = res.getBytes();
-        
-        for (byte part : result) {
-            System.out.print(" " + part);
-        }
-        System.out.println();
         
         assertEquals(string, instance.decode(new String(result)));
     }

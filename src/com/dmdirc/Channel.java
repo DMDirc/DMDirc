@@ -426,6 +426,7 @@ public final class Channel extends MessageTarget implements
         
         tabCompleter.replaceEntries(names);
         tabCompleter.addEntries(CommandManager.getChannelCommandNames());
+        tabCompleter.addEntries(CommandManager.getChatCommandNames());
         
         ActionManager.processEvent(CoreActionType.CHANNEL_GOTNAMES, null, this);
     }

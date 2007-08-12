@@ -93,6 +93,10 @@ public final class ActionManager {
      * @param wrapper The wrapper to be registered
      */
     public static void registerWrapper(final ActionWrapper wrapper) {
+        if (actionWrappers == null) {
+            init();
+        }
+        
         actionWrappers.add(wrapper);
     }
     

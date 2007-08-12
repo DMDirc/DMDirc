@@ -35,7 +35,6 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.TabCompleter;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -324,10 +323,8 @@ public final class CommandManager {
      * @param parser The parser to load commands into
      */
     public static void loadServerCommands(final CommandParser parser) {
-        final Iterator<Command> it = serverCommands.iterator();
-        
-        while (it.hasNext()) {
-            parser.registerCommand(it.next());
+        for (Command command : serverCommands) {
+            parser.registerCommand(command);
         }
         
         serverParsers.add(parser);
@@ -625,10 +622,9 @@ public final class CommandManager {
         }
         
         final List<String> res = new ArrayList<String>();
-        final Iterator<Command> it = source.iterator();
         
-        while (it.hasNext()) {
-            res.add(Config.getCommandChar() + it.next().getName());
+        for (Command command : source) {
+            res.add(Config.getCommandChar() + command.getName());
         }
         
         return res;
