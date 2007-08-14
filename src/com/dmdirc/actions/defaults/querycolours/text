@@ -1,0 +1,9 @@
+trigger=QUERY_MESSAGE
+conditions=1
+
+condition0-arg=0
+condition0-component=QUERY_COLOUR
+condition0-comparison=COLOUR_NEQUALS
+condition0-target=$highlightcolour
+
+response=/notify $textcolour
