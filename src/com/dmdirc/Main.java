@@ -30,10 +30,12 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.DMDircExceptionHandler;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.themes.ThemeManager;
+import com.dmdirc.ui.dummy.DummyController;
 import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
+import java.awt.GraphicsEnvironment;
 
 /**
  * Main class, handles initialisation.
@@ -75,6 +77,10 @@ public final class Main {
      */
     public static void main(final String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
+        
+        if (GraphicsEnvironment.isHeadless()) {
+            controller = new DummyController();
+        }
         
         final CommandLineParser clp = new CommandLineParser(args);
         
