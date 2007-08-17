@@ -60,8 +60,11 @@ public enum CoreActionType implements ActionType {
     SERVER_BACK(CoreActionMetaType.SERVER_EVENT, "Marked as 'back'"),
     /** Marked as back. */
     SERVER_AWAY(CoreActionMetaType.SERVER_EVENT_WITH_ARG, "Marked as 'away'"),
+    
     /** Auth notice received. */
     SERVER_AUTHNOTICE(CoreActionMetaType.SERVER_EVENT_WITH_ARG, "Received auth notice"),
+    /** Unknown notice received. */
+    SERVER_UNKNOWNNOTICE(CoreActionMetaType.SERVER_UNKNOWN_EVENT, "Received unknown notice"),    
     
     /** User modes changed. */
     SERVER_USERMODES(CoreActionMetaType.SERVER_SOURCED_EVENT_WITH_ARG, "User modes changed"),

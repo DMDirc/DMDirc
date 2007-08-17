@@ -72,6 +72,8 @@ public enum CoreActionMetaType implements ActionMetaType {
     SERVER_SOURCED_EVENT_WITH_ARG(3, new String[]{"server", "user", "message"}, Server.class, ClientInfo.class, String.class),
     /** Server CTCP event. */
     SERVER_CTCP_EVENT(4, new String[]{"server", "user", "type", "content"}, Server.class, ClientInfo.class, String.class, String.class),
+    /** Server event with argument. */
+    SERVER_UNKNOWN_EVENT(4, new String[]{"server", "source", "target", "message"}, Server.class, String.class, String.class, String.class),
     
     /** Query event with argument. */
     QUERY_EVENT_WITH_ARG(2, new String[]{"query", "message"}, Query.class, String.class),

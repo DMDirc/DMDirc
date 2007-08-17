@@ -58,6 +58,7 @@ import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
 import com.dmdirc.parser.callbacks.interfaces.ISocketClosed;
+import com.dmdirc.parser.callbacks.interfaces.IUnknownNotice;
 import com.dmdirc.parser.callbacks.interfaces.IUserModeChanged;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -87,7 +88,7 @@ public final class Server extends WritableFrameContainer implements
         IPrivateCTCP, IPrivateCTCPReply, ISocketClosed, IPrivateNotice,
         IMOTDStart, IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed,
         IPingSuccess, IAwayState, IConnectError, IAwayStateOther, INickInUse,
-        IPost005, INoticeAuth, IUserModeChanged, Serializable {
+        IPost005, INoticeAuth, IUnknownNotice, IUserModeChanged, Serializable {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -103,7 +104,7 @@ public final class Server extends WritableFrameContainer implements
         "OnPrivateCTCPReply", "OnSocketClosed", "OnGotNetwork", "OnNumeric",
         "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed", "OnAwayState",
         "OnAwayStateOther", "OnNickInUse", "OnPost005", "OnNoticeAuth",
-        "OnUserModeChanged",
+        "OnUserModeChanged", "OnUnknownNotice"
     };
     
     /** Open channels that currently exist on the server. */
@@ -924,6 +925,15 @@ public final class Server extends WritableFrameContainer implements
         ActionManager.processEvent(CoreActionType.SERVER_AUTHNOTICE, null, this,
                 sData);
     }
+    
+    /** {@inheritDoc} */
+    public void onUnknownNotice(final IRCParser tParser, final String sMessage,
+            final String sTarget, final String sHost) {
+        handleNotification("unknownNotice", sHost, sTarget, sMessage);
+        
+        ActionManager.processEvent(CoreActionType.SERVER_UNKNOWNNOTICE, null, this,
+                sHost, sTarget, sMessage);
+    }    
     
     /** {@inheritDoc} */
     public void onUserModeChanged(final IRCParser tParser, final ClientInfo cClient,

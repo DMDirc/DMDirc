@@ -367,6 +367,12 @@ public final class Formatter {
         defaultProperties.setProperty("actionTooLong", "Warning: action too long to be sent");
         defaultProperties.setProperty("tabCompletion", colour + "14Multiple possibilities: %1$s");
         
+        // Type: Unknown target events
+        //    1: Source
+        //    2: Target
+        //    3: Message
+        defaultProperties.setProperty("unknownNotice", colour + "5-[%1$s:%2$s]- %3$s");
+        
         // Type: Command usage
         //    1: Command char
         //    2: Command name

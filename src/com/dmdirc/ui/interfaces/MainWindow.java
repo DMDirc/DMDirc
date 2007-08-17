@@ -93,17 +93,21 @@ public interface MainWindow {
      */
     void removePluginMenu(final JMenuItem menuItem);
     
-    /** Quits the client. */
+    /**
+     * Quits the client.
+     */
     void quit();
     
     /**
      * Sets whether or not the internal frame state is currently maximised.
+     * 
      * @param max whether the frame is maxomised
      */
     void setMaximised(final boolean max);
     
     /**
      * Gets whether or not the internal frame state is currently maximised.
+     * 
      * @return True iff frames should be maximised, false otherwise
      */
     boolean getMaximised();
@@ -111,14 +115,23 @@ public interface MainWindow {
     /**
      * Returns a prefix for use in the titlebar. Includes the version number
      * if the config option is set.
+     * 
      * @return Titlebar prefix
      */
     String getTitlePrefix();
     
-    /** Sets the main windows title. */
+    /**
+     * Sets the main window's title.
+     * 
+     * @param newTitle The new title to use for the main window.
+     */
     void setTitle(final String newTitle);
     
-    /** Shows or hides the main window. */
+    /**
+     * Shows or hides the main window.
+     *
+     * @param visible The new visibility of the main window
+     */
     void setVisible(final boolean visible);
     
     /**
