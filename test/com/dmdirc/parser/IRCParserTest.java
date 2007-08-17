@@ -8,6 +8,7 @@ package com.dmdirc.parser;
 
 import com.dmdirc.parser.callbacks.CallbackNotFound;
 import com.dmdirc.parser.callbacks.interfaces.IAwayState;
+import junit.framework.TestCase;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -15,13 +16,13 @@ import static org.junit.Assert.*;
  *
  * @author Chris
  */
-public class IRCParserTest {
+public class IRCParserTest extends TestCase {
     
     public IRCParserTest() {
     }
     
     @Test
-    public void Issue042test() {
+    public void testIssue042() {
         boolean res = false;
         
         try {

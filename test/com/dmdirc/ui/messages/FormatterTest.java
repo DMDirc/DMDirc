@@ -12,6 +12,7 @@ import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import java.io.File;
 import java.util.Set;
+import junit.framework.TestCase;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -22,15 +23,16 @@ import static org.junit.Assert.*;
  *
  * @author chris
  */
-public class FormatterTest {
+public class FormatterTest extends TestCase {
     
     public FormatterTest() {
+        IdentityManager.load();
+        Config.init();
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        IdentityManager.load();
-        Config.init();
+
     }
 
     @AfterClass
@@ -42,7 +44,7 @@ public class FormatterTest {
     }
 
     @Test
-    public void formatMessage() {
+    public void testFormatMessage() {
         Formatter.registerDefault("unitTest", "abc %2$s %1$s def");
         
         // Standard format test
@@ -58,7 +60,7 @@ public class FormatterTest {
     }
 
     @Test
-    public void getFormats() {
+    public void testGetFormats() {
         final Set<String> s1 = Formatter.getFormats();
         Formatter.registerDefault("unitTest3", "abc");
         final Set<String> s2 = Formatter.getFormats();
@@ -69,7 +71,7 @@ public class FormatterTest {
     }
 
     @Test
-    public void hasFormat() {
+    public void testHasFormat() {
         final String[] targets = new String[]{"unknown", "abc", "def", "unittestfail"};
         
         for (String target : targets) {
@@ -82,11 +84,11 @@ public class FormatterTest {
     }
 
     @Test
-    public void registerDefault() {
+    public void testRegisterDefault() {
     }
 
     @Test
-    public void saveAndLoad() {
+    public void testSaveAndLoad() {
         Formatter.registerDefault("unitTest_saveLoad", "");
         
         final String fileName = "unittest_formatter";
@@ -110,7 +112,7 @@ public class FormatterTest {
     }
 
     @Test
-    public void reload() {
+    public void testReload() {
         Formatter.reload();
         
         final Set<String> s1 = Formatter.getFormats();

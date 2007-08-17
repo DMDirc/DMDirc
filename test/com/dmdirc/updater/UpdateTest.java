@@ -7,6 +7,7 @@
 
 package com.dmdirc.updater;
 
+import junit.framework.TestCase;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,7 +18,7 @@ import static org.junit.Assert.*;
  *
  * @author chris
  */
-public class UpdateTest {
+public class UpdateTest extends TestCase {
     
     private final String subject = "outofdate component rversion lversion url";
     
@@ -40,22 +41,22 @@ public class UpdateTest {
     }
 
     @Test
-    public void getComponent() {
+    public void testGetComponent() {
         assertEquals("component", update.getComponent());
     }
 
     @Test
-    public void getLocalVersion() {
+    public void testGetLocalVersion() {
         assertEquals("lversion", update.getLocalVersion());
     }
 
     @Test
-    public void getRemoteVersion() {
+    public void testGetRemoteVersion() {
         assertEquals("rversion", update.getRemoteVersion());
     }
 
     @Test
-    public void getUrl() {
+    public void testGetUrl() {
         assertEquals("url", update.getUrl());
     }
     

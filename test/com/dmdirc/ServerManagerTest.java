@@ -8,6 +8,7 @@
 package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
+import junit.framework.TestCase;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -18,7 +19,7 @@ import static org.junit.Assert.*;
  *
  * @author chris
  */
-public class ServerManagerTest {
+public class ServerManagerTest extends TestCase {
     
     public ServerManagerTest() {
         IdentityManager.load();
@@ -38,7 +39,7 @@ public class ServerManagerTest {
     }
     
     @Test
-    public void getServerManager() {
+    public void testGetServerManager() {
         final ServerManager resultA = ServerManager.getServerManager();
         final ServerManager resultB = ServerManager.getServerManager();
         
@@ -48,7 +49,7 @@ public class ServerManagerTest {
     }
     
     @Test
-    public void registerServer() {
+    public void testRegisterServer() {
         final Server server = new Server("127.0.0.1", 6667, "", false, IdentityManager.getProfiles().get(0));
         
         final ServerManager instance = ServerManager.getServerManager();
@@ -59,7 +60,7 @@ public class ServerManagerTest {
     }
     
     @Test
-    public void unregisterServer() {
+    public void testUnregisterServer() {
         final Server server = new Server("127.0.0.1", 6667, "", false, IdentityManager.getProfiles().get(0));
         
         server.close();
@@ -70,7 +71,7 @@ public class ServerManagerTest {
     }
     
     @Test
-    public void numServers() {
+    public void testNumServers() {
         final ServerManager instance = ServerManager.getServerManager();
         
         assertEquals(instance.getServers().size(), instance.numServers());
@@ -85,7 +86,7 @@ public class ServerManagerTest {
     }
     
     @Test
-    public void getServerFromFrame() {
+    public void testGetServerFromFrame() {
         final Server serverA = new Server("127.0.0.1", 6667, "", false, IdentityManager.getProfiles().get(0));
         final Server serverB = new Server("127.0.0.2", 6667, "", false, IdentityManager.getProfiles().get(0));
         

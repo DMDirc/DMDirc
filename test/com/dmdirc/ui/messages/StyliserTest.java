@@ -8,12 +8,6 @@
 package com.dmdirc.ui.messages;
 
 import junit.framework.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyledDocument;
-import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.Logger;
 
 /**
  *

@@ -8,6 +8,7 @@
 package com.dmdirc;
 
 import java.nio.charset.Charset;
+import junit.framework.TestCase;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -19,7 +20,7 @@ import static org.junit.Assert.*;
  *
  * @author Chris
  */
-public class StringTranscoderTest {
+public class StringTranscoderTest extends TestCase {
     
     public StringTranscoderTest() {
     }
@@ -41,7 +42,7 @@ public class StringTranscoderTest {
     }
 
     @Test
-    public void transcode() {
+    public void testTranscode() {
         String string = new String(new byte[]{(byte) 0xCA, (byte) 0xAE});
         
         StringTranscoder instance = new StringTranscoder(Charset.forName("UTF-8"));

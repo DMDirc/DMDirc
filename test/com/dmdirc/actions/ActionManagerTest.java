@@ -9,6 +9,7 @@ package com.dmdirc.actions;
 
 import com.dmdirc.Config;
 import com.dmdirc.config.IdentityManager;
+import junit.framework.TestCase;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -19,28 +20,29 @@ import static org.junit.Assert.*;
  *
  * @author chris
  */
-public class ActionManagerTest {
+public class ActionManagerTest extends TestCase {
     
     public ActionManagerTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
         IdentityManager.load();
         ActionManager.init();
         Config.init();
     }
-
+    
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        
+    }
+    
     @AfterClass
     public static void tearDownClass() throws Exception {
     }
-
+    
     @Before
     public void setUp() throws Exception {
     }
-
+    
     @Test
-    public void substituteVars() {
+    public void testSubstituteVars() {
         final Object[] args = new Object[]{
             "foo", "someCommand", new String[]{"a", "b", "c", "d"}
         };

@@ -7,6 +7,7 @@
 
 package com.dmdirc.actions;
 
+import junit.framework.TestCase;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,7 +18,7 @@ import static org.junit.Assert.*;
  *
  * @author chris
  */
-public class CoreActionMetaTypeTest {
+public class CoreActionMetaTypeTest extends TestCase {
     
     public CoreActionMetaTypeTest() {
     }
@@ -35,14 +36,14 @@ public class CoreActionMetaTypeTest {
     }
 
     @Test
-    public void checkArgTypeSize() {
+    public void testCheckArgTypeSize() {
         for (CoreActionMetaType type : CoreActionMetaType.values()) {
             assertEquals(type.getArity(), type.getArgTypes().length);
         }
     }
     
     @Test
-    public void checkArgNameSize() {
+    public void testCheckArgNameSize() {
         for (CoreActionMetaType type : CoreActionMetaType.values()) {
             assertEquals(type.getArity(), type.getArgNames().length);
         }

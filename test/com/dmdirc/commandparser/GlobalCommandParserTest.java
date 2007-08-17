@@ -9,6 +9,7 @@ package com.dmdirc.commandparser;
 
 import com.dmdirc.Config;
 import com.dmdirc.config.IdentityManager;
+import junit.framework.TestCase;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -19,7 +20,7 @@ import static org.junit.Assert.*;
  *
  * @author chris
  */
-public class GlobalCommandParserTest {
+public class GlobalCommandParserTest extends TestCase {
     
     public GlobalCommandParserTest() {
     }
@@ -39,7 +40,7 @@ public class GlobalCommandParserTest {
     }
 
     @Test
-    public void getGlobalCommandParser() {
+    public void testGetGlobalCommandParser() {
         final GlobalCommandParser p1 = GlobalCommandParser.getGlobalCommandParser();
         
         final GlobalCommandParser p2 = GlobalCommandParser.getGlobalCommandParser();
