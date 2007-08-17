@@ -149,7 +149,17 @@ public final class Main {
     }
     
     /**
+     * Sets the UI controller that should be used by this client.
+     * 
+     * @param newController The new UI Controller
+     */
+    public static void setUI(final UIController newController) {
+        controller = newController;
+    }
+    
+    /**
      * Returns the application's config directory.
+     * 
      * @return configuration directory
      */
     public static String getConfigDir() {

@@ -8,6 +8,7 @@
 package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.dummy.DummyController;
 import junit.framework.TestCase;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -22,6 +23,7 @@ import static org.junit.Assert.*;
 public class ServerManagerTest extends TestCase {
     
     public ServerManagerTest() {
+        Main.setUI(new DummyController());
         IdentityManager.load();
         Config.init();
     }
