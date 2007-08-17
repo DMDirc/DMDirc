@@ -24,15 +24,18 @@ package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.commandparser.IntelligentCommand;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.List;
 
 /**
  * Allows the user to reload a plugin.
  * @author chris
  */
-public final class ReloadPlugin extends GlobalCommand {
+public final class ReloadPlugin extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Creates a new instance of ReloadPlugin.
@@ -62,7 +65,6 @@ public final class ReloadPlugin extends GlobalCommand {
         }
     }
     
-    
     /** {@inheritDoc}. */
     public String getName() {
         return "reloadplugin";
@@ -86,6 +88,21 @@ public final class ReloadPlugin extends GlobalCommand {
     /** {@inheritDoc}. */
     public String getHelp() {
         return "Reloadplugin <class> - Reloads the specified plugin";
+    }
+
+    /** {@inheritDoc} */
+    public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+        final AdditionalTabTargets res = new AdditionalTabTargets();
+        
+        if (arg == 0) {
+            res.setIncludeNormal(false);
+            
+            for (Plugin possPlugin : PluginManager.getPluginManager().getPlugins()) {
+                res.add(possPlugin.getClass().getCanonicalName());
+            }
+        }
+        
+        return res;
     }
     
 }

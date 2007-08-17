@@ -88,6 +88,11 @@ public final class TabCompleter implements Serializable {
         }
         
         for (String entry : targets) {
+            // Skip over duplicates
+            if (result.hasResult(entry)) {
+                continue;
+            }
+            
             if (Config.getOptionBool("tabcompletion", "casesensitive")) {
                 if (entry.startsWith(partial)) {
                     result.addResult(entry);

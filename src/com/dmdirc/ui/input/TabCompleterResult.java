@@ -43,7 +43,7 @@ public final class TabCompleterResult {
      * Creates a new instance of TabCompleterResult with an empty result set.
      */
     public TabCompleterResult() {
-	this.results = new ArrayList<String>();
+        this.results = new ArrayList<String>();
     }
     
     /**
@@ -51,7 +51,7 @@ public final class TabCompleterResult {
      * @param newResults The list of results that this result set contains
      */
     public TabCompleterResult(final List<String> newResults) {
-	results = newResults;
+        results = newResults;
     }
     
     /**
@@ -59,7 +59,16 @@ public final class TabCompleterResult {
      * @param result The result to be added
      */
     public void addResult(final String result) {
-	results.add(result);
+        results.add(result);
+    }
+    
+    /**
+     * Determines if this result set contains the specified result.
+     * @param result The result to be tested
+     * @return True if this set contains the specified result, false otherwise
+     */
+    public boolean hasResult(final String result) {
+        return results.contains(result);
     }
     
     /**
@@ -67,7 +76,11 @@ public final class TabCompleterResult {
      * @param additional The results to merge
      */
     public void merge(final TabCompleterResult additional) {
-	results.addAll(additional.getResults());
+        for (String result : additional.getResults()) {
+            if (!hasResult(result)) {
+                addResult(result);
+            }
+        }
     }
     
     /**
@@ -75,7 +88,7 @@ public final class TabCompleterResult {
      * @return the size of this result set
      */
     public int getResultCount() {
-	return results.size();
+        return results.size();
     }
     
     /**
@@ -83,27 +96,27 @@ public final class TabCompleterResult {
      * @return longest possible substring matching all results
      */
     public String getBestSubstring() {
-	if (getResultCount() == 0) {
-	    return "";
-	}
-	
-	final boolean caseSensitive = Config.getOptionBool("tabcompletion", "casesensitive");
-	
-	String res = results.get(0);
-	for (String entry : results) {
-	    if (caseSensitive) {
-		while (!entry.startsWith(res)) {
-		    res = res.substring(0, res.length() - 1);
-		}
-	    } else {
-		while (!entry.toLowerCase(Locale.getDefault()).startsWith(
-			res.toLowerCase(Locale.getDefault()))) {
-		    res = res.substring(0, res.length() - 1);
-		}
-	    }
-	}
-	
-	return res;
+        if (getResultCount() == 0) {
+            return "";
+        }
+        
+        final boolean caseSensitive = Config.getOptionBool("tabcompletion", "casesensitive");
+        
+        String res = results.get(0);
+        for (String entry : results) {
+            if (caseSensitive) {
+                while (!entry.startsWith(res)) {
+                    res = res.substring(0, res.length() - 1);
+                }
+            } else {
+                while (!entry.toLowerCase(Locale.getDefault()).startsWith(
+                        res.toLowerCase(Locale.getDefault()))) {
+                    res = res.substring(0, res.length() - 1);
+                }
+            }
+        }
+        
+        return res;
     }
     
     /**
@@ -111,7 +124,7 @@ public final class TabCompleterResult {
      * @return An arraylist containing the results
      */
     public List<String> getResults() {
-	return results;
+        return results;
     }
     
     /** {@inheritDoc} */
@@ -128,6 +141,6 @@ public final class TabCompleterResult {
         }
         
         return buff.toString();
-    }    
+    }
     
 }
