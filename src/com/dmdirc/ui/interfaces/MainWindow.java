@@ -76,7 +76,9 @@ public interface MainWindow {
      * Returns the status bar instance.
      *
      * @return SwingStatusBar instance
+     * @deprecated Use UIController.getStatusBar() instead
      */
+    @Deprecated
     StatusBar getStatusBar();
     
     /**

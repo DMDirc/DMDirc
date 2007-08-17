@@ -62,7 +62,7 @@ public final class Main {
     /**
      * The UI to use for the client.
      */
-    private static UIController controller = new SwingController();
+    private static UIController controller;
     
     /**
      * Prevents creation of main.
@@ -77,10 +77,6 @@ public final class Main {
      */
     public static void main(final String[] args) {
         Thread.setDefaultUncaughtExceptionHandler(new DMDircExceptionHandler());
-        
-        if (GraphicsEnvironment.isHeadless()) {
-            controller = new DummyController();
-        }
         
         final CommandLineParser clp = new CommandLineParser(args);
         
@@ -100,7 +96,7 @@ public final class Main {
         
         new ThemeManager().loadDefaultTheme();
         
-        Main.getUI().getMainWindow();
+        getUI().getMainWindow();
         
         if (!Config.hasOption("general", "firstRun") || Config.getOptionBool("general", "firstRun")) {
             Config.setOption("general", "firstRun", "false");
@@ -140,6 +136,14 @@ public final class Main {
      * @return The client's UI controller
      */
     public static UIController getUI() {
+        if (controller == null) {
+            if (GraphicsEnvironment.isHeadless()) {
+                controller = new DummyController();
+            } else {
+                controller = new SwingController();
+            }
+        }
+        
         return controller;
     }
     

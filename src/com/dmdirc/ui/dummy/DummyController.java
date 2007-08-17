@@ -67,7 +67,7 @@ public class DummyController implements UIController {
     
     /** {@inheritDoc} */
     public StatusBar getStatusBar() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new DummyStatusBar();
     }
     
     /** {@inheritDoc} */

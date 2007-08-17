@@ -85,7 +85,7 @@ public class DummyMainWindow implements MainWindow {
     
     /** {@inheritDoc} */
     public StatusBar getStatusBar() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new DummyStatusBar();
     }
     
     /** {@inheritDoc} */

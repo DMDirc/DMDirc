@@ -8,6 +8,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.Config;
+import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import java.io.File;
 import java.util.Set;
@@ -89,7 +90,7 @@ public class FormatterTest {
         Formatter.registerDefault("unitTest_saveLoad", "");
         
         final String fileName = "unittest_formatter";
-        final File file = new File(Config.getConfigDir() + fileName);
+        final File file = new File(Main.getConfigDir() + fileName);
         
         if (file.exists()) {
             file.delete();
