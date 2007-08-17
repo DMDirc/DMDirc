@@ -35,6 +35,7 @@ import com.dmdirc.ui.swing.SwingController;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.updater.UpdateChannel;
 import com.dmdirc.updater.UpdateChecker;
+
 import java.awt.GraphicsEnvironment;
 
 /**

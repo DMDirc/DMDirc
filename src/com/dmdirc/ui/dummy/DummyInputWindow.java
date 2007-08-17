@@ -22,112 +22,109 @@
 
 package com.dmdirc.ui.dummy;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Query;
-import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandParser;
-import com.dmdirc.ui.interfaces.ChannelWindow;
-import com.dmdirc.ui.interfaces.FrameManager;
+import com.dmdirc.commandparser.GlobalCommandParser;
+import com.dmdirc.config.ConfigManager;
+import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.interfaces.MainWindow;
-import com.dmdirc.ui.interfaces.PreferencesInterface;
-import com.dmdirc.ui.interfaces.PreferencesPanel;
-import com.dmdirc.ui.interfaces.QueryWindow;
-import com.dmdirc.ui.interfaces.ServerWindow;
-import com.dmdirc.ui.interfaces.StatusBar;
-import com.dmdirc.ui.interfaces.UIController;
-import com.dmdirc.ui.interfaces.UpdaterDialog;
-import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.updater.Update;
 
-import java.util.List;
+import java.beans.PropertyVetoException;
+import java.util.Arrays;
+
+import javax.swing.Icon;
+import javax.swing.JTextField;
 
 /**
- * Implements a dummy UI controller.
  *
  * @author Chris
  */
-public class DummyController implements UIController {
+public class DummyInputWindow implements InputWindow {
     
-    private MainWindow mainWindow = new DummyMainWindow();
+    private String title;
     
-    /**
-     * Creates a new instance of DummyController.
-     */
-    public DummyController() {
+    private boolean visible;
+
+    public DummyInputWindow(WritableFrameContainer owner, CommandParser commandParser) {
+    }
+
+    /** {@inheritDoc} */
+    public CommandParser getCommandParser() {
+        return GlobalCommandParser.getGlobalCommandParser();
+    }
+    
+    /** {@inheritDoc} */
+    public InputHandler getInputHandler() {
+        return new InputHandler(new JTextField(), null, this);
+    }
+
+    /** {@inheritDoc} */
+    public void setAwayIndicator(final boolean isAway) {
         // Do nothing
     }
     
     /** {@inheritDoc} */
-    public MainWindow getMainWindow() {
-        return mainWindow;
+    public void addLine(final String messageType, final Object... args) {
+        System.out.println("DummyInputWindow.addLine(" + messageType + ", " + Arrays.toString(args) + ")");
     }
     
     /** {@inheritDoc} */
-    public StatusBar getStatusBar() {
-        return new DummyStatusBar();
+    public void addLine(final StringBuffer messageType, final Object... args) {
+        addLine(messageType.toString(), args);
     }
     
-    /** {@inheritDoc} */
-    public FrameManager getFrameManager() {
+    public void addLine(String line, boolean timestamp) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    public void clear() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /** {@inheritDoc} */
-    public ChannelWindow getChannel(Channel channel) {
+    public ConfigManager getConfigManager() {
+        return new ConfigManager("dummy", "dummy", "dummy");
+    }
+
+    public FrameContainer getContainer() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    /** {@inheritDoc} */
-    public ServerWindow getServer(Server server) {
-        return new DummyServerWindow(server);
-    }
-    
-    /** {@inheritDoc} */
-    public QueryWindow getQuery(Query query) {
+
+    public boolean isVisible() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     /** {@inheritDoc} */
-    public Window getWindow(FrameContainer owner) {
+    public void setVisible(final boolean isVisible) {
+        visible = isVisible;
+    }
+
+    public String getTitle() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    /** {@inheritDoc} */
-    public InputWindow getInputWindow(final WritableFrameContainer owner, final CommandParser commandParser) {
-        return new DummyInputWindow(owner, commandParser);
-    }
-    
-    /** {@inheritDoc} */
-    public PreferencesPanel getPreferencesPanel(PreferencesInterface parent, String title) {
+
+    public boolean isMaximum() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
-    /** {@inheritDoc} */
-    public UpdaterDialog getUpdaterDialog(List<Update> updates) {
+
+    public void setMaximum(boolean b) throws PropertyVetoException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-    
+
     /** {@inheritDoc} */
-    public void showFirstRunWizard() {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void setTitle(final String title) {
+        this.title = title;
     }
-    
+
     /** {@inheritDoc} */
-    public void showChannelSettingsDialog(Channel channel) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
-    /** {@inheritDoc} */
-    public void showServerSettingsDialog(Server server) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
-    /** {@inheritDoc} */
-    public void initUISettings() {
+    public void open() {
         // Do nothing
     }
-    
+
+    /** {@inheritDoc} */
+    public void setFrameIcon(final Icon icon) {
+        // Do nothing
+    }
+
 }
