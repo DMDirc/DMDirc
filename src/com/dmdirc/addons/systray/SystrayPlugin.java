@@ -25,6 +25,7 @@ package com.dmdirc.addons.systray;
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.ui.messages.Styliser;
     
 import java.awt.AWTException;
 import java.awt.MenuItem;
@@ -74,7 +75,7 @@ public final class SystrayPlugin  extends Plugin implements ActionListener, Mous
      */
     public void notify(final String title, final String message, final TrayIcon.MessageType type) {
         if (isActive()) {
-            icon.displayMessage(title, message, type);
+            icon.displayMessage(title, Styliser.stipControlCodes(message), type);
         }
     }
     
