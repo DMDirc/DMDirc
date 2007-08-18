@@ -88,6 +88,7 @@ public class HistoryWindow extends FrameContainer {
 	public void close() {
 		myWindow.setVisible(false);
 		Main.getUI().getMainWindow().delChild(myWindow);
+                Main.getUI().getFrameManager().delCustom(server, this);
 	}
 	
 	/** {@inheritDoc} */
