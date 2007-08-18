@@ -654,7 +654,7 @@ public final class IRCParser implements Runnable {
 	 * @param line Line to get parameter for
 	 * @return Parameter of the line
 	 */
-	protected String getParam(final String line) {
+	public static String getParam(final String line) {
 		String[] params = null;
 		params = line.split(" :", 2);
 		return params[params.length - 1];
@@ -667,7 +667,7 @@ public final class IRCParser implements Runnable {
 	 * @param line Line to tokenise
 	 * @return Array of tokens
 	 */
-	protected String[] tokeniseLine(final String line) {
+	public static String[] tokeniseLine(final String line) {
 		if (line == null) {
 			return new String[]{"", }; // Return empty string[]
 		}
