@@ -542,8 +542,14 @@ public final class ActionManager {
             res = res.replaceAll("\\$!" + key, Config.getOption("actions", key));
         }
         
-        int j = 0;
+        int j = -1;
         for (Object argument : arguments) {
+            j++;
+            
+            if (argument == null) {
+                continue;
+            }
+            
             for (ActionComponent comp : getCompatibleComponents(argument.getClass())) {
                 if (comp.get(argument) != null) {
                     final String value = comp.get(argument).toString();
@@ -554,7 +560,6 @@ public final class ActionManager {
                             + comp.toString()) + "\\}", value);
                 }
             }
-            j++;
         }
         
         if (arguments.length > 0 && arguments[0] instanceof FrameContainer) {
