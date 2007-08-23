@@ -24,6 +24,9 @@ package com.dmdirc.ui.swing.dialogs.aliases;
 
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.CoreActionComparison;
+import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PackingTable;
@@ -87,11 +90,16 @@ public final class AliasManagerDialog extends StandardDialog implements
     /** Delete button. */
     private JButton deleteButton;
     
+    /** Selected row. */
+    private int selectedRow;
+    
     /** Creates a new instance of ErrorListDialog. */
     private AliasManagerDialog() {
         super(((MainFrame) Main.getUI().getMainWindow()), false);
         
         setTitle("DMDirc: Alias manager");
+        
+        selectedRow = -1;
         
         initComponents();
         layoutComponents();
@@ -110,6 +118,8 @@ public final class AliasManagerDialog extends StandardDialog implements
     public static synchronized AliasManagerDialog getAliasManagerDialog() {
         if (me == null) {
             me = new AliasManagerDialog();
+        } else {
+            me.updateTableData();
         }
         return me;
     }
@@ -154,6 +164,13 @@ public final class AliasManagerDialog extends StandardDialog implements
         scrollPane.setViewportView(table);
         
         aliasDetails = new AliasPanel();
+    }
+    
+    /**
+     * Updates the table data.
+     */
+    public void updateTableData() {
+        tableModel.setAliases(getTableData());
     }
     
     /**
@@ -233,6 +250,10 @@ public final class AliasManagerDialog extends StandardDialog implements
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             
+            if (selectedRow > -1) {
+                updateAlias();
+            }
+            
             if (table.getSelectedRow() > -1) {
                 final int selectedRow = table.getRowSorter().
                         convertRowIndexToModel(table.getSelectedRow());
@@ -242,7 +263,29 @@ public final class AliasManagerDialog extends StandardDialog implements
                 aliasDetails.clear();
                 deleteButton.setEnabled(false);
             }
+            
+            selectedRow = table.getSelectedRow();
         }
+    }
+    
+    private void updateAlias() {
+        final Alias alias = tableModel.getAlias(table.getRowSorter().
+                convertRowIndexToModel(selectedRow));
+        final List<ActionCondition> conditions =
+                new ArrayList<ActionCondition>();
+        
+        conditions.add(new ActionCondition(1,
+                CoreActionComponent.STRING_STRING,
+                CoreActionComparison.STRING_EQUALS, alias.getName()));
+        if (aliasDetails.getArguments() != null) {
+            conditions.add(aliasDetails.getArguments());
+        }
+        
+        alias.setArguments(conditions);
+        alias.setResponse(aliasDetails.getResponse());
+        final int selectedRow = table.getSelectedRow();
+        tableModel.fireTableDataChanged();
+        table.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
     }
     
     /** {@inheritDoc}. */

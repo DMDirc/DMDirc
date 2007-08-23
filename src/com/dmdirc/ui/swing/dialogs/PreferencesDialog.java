@@ -306,8 +306,12 @@ public final class PreferencesDialog implements PreferencesInterface {
         themes = new HashMap<String, String>();
         
         for (Entry<String, Theme> entry : availThemes.entrySet()) {
-            themes.put(entry.getKey().substring(entry.getKey().lastIndexOf('/'),
-                    entry.getKey().length()), entry.getKey());
+            if (entry.getKey().indexOf('/') == -1) {
+                themes.put(entry.getKey(), entry.getKey());
+            } else {
+                themes.put(entry.getKey().substring(entry.getKey().lastIndexOf('/'),
+                        entry.getKey().length()), entry.getKey());
+            }
         }
         
         themes.put("None", "");

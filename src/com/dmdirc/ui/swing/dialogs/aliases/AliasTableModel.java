@@ -43,10 +43,10 @@ public class AliasTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 1;
     
     /** Data list. */
-    private final List<Alias> aliases;
+    private List<Alias> aliases;
     
     /** Deleted Data list. */
-    private final List<Alias> deletedAliases;
+    private List<Alias> deletedAliases;
     
     /** Creates a new instance of AliasTableModel. */
     public AliasTableModel() {
@@ -59,6 +59,13 @@ public class AliasTableModel extends AbstractTableModel {
         
         this.aliases = aliases;
         this.deletedAliases = new ArrayList<Alias>();
+    }
+    
+    public void setAliases(final List<Alias> aliases) {
+        this.aliases = aliases;
+        this.deletedAliases = new ArrayList<Alias>();
+        
+        fireTableDataChanged();
     }
     
     /** {@inheritDoc} */

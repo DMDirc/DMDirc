@@ -53,7 +53,7 @@ public final class NicklistListModel extends AbstractListModel {
      */
     public NicklistListModel() {
         super();
-        nicknames = new ArrayList<ChannelClientInfo>();
+        nicknames = Collections.synchronizedList(new ArrayList<ChannelClientInfo>());
     }
     
     /**
@@ -62,7 +62,7 @@ public final class NicklistListModel extends AbstractListModel {
      */
     public NicklistListModel(final List<ChannelClientInfo> newNicknames) {
         super();
-        this.nicknames = newNicknames;
+        this.nicknames = Collections.synchronizedList(newNicknames);
         this.sort();
     }
     

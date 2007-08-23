@@ -164,7 +164,11 @@ public final class ChannelListModesPane extends JPanel implements
             panel.add(list, BorderLayout.CENTER);
             listModesPanels.add(panel);
         }
-        listModesPanel.setViewportView(listModesPanels.get(0));
+        if (listModesPanels.isEmpty()) {
+            listModesPanel.setViewportView(new JPanel());
+        } else {
+            listModesPanel.setViewportView(listModesPanels.get(0));
+        }
         listModesPanel.setVisible(true);
     }
     

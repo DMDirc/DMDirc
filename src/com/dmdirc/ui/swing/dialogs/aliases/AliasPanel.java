@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs.aliases;
 
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.CoreActionComparison;
+import com.dmdirc.actions.CoreActionComponent;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -74,13 +75,16 @@ public final class AliasPanel extends JPanel implements ActionListener {
         name = new JTextField();
         name.setEnabled(false);
         
-        argumentComponent = new JComboBox(new String[]{"N/A", "greater than", "equals", "less than", });
+        argumentComponent = new JComboBox(new CoreActionComparison[]{null,
+        CoreActionComparison.INT_GREATER, CoreActionComparison.INT_EQUALS,
+        CoreActionComparison.INT_LESS, });
         argumentNumber = new JSpinner(new SpinnerNumberModel());
         response = new JTextArea();
         
         argumentNumber.setEnabled(false);
         response.setRows(5);
         
+        argumentComponent.setRenderer(new ActionComparisonCellRenderer());
         argumentComponent.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
         argumentComponent.addActionListener(this);
         
@@ -120,7 +124,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
     /** Clears the details. */
     public void clear() {
         name.setText("");
-        argumentComponent.setSelectedItem("N/A");
+        argumentComponent.setSelectedItem(null);
         argumentNumber.setValue(0);
         response.setText("");
         name.setEnabled(false);
@@ -147,7 +151,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
         ActionCondition argument;
         
         if (arguments.size() == 1) {
-            argumentComponent.setSelectedItem("N/A");
+            argumentComponent.setSelectedItem(null);
             argumentNumber.setValue(0);
             argumentNumber.setEnabled(false);
         } else {
@@ -156,7 +160,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
             if (argument.getComparison() == CoreActionComparison.STRING_EQUALS) {
                 argument = arguments.get(1);
             }
-            argumentComponent.setSelectedItem(argument.getComparison().getName());
+            argumentComponent.setSelectedItem(argument.getComparison());
             argumentNumber.setValue(Integer.parseInt(argument.getTarget()));
             argumentNumber.setEnabled(true);
         }
@@ -174,6 +178,36 @@ public final class AliasPanel extends JPanel implements ActionListener {
             argumentNumber.setEnabled(true);
         } else {
             argumentNumber.setEnabled(false);
+        }
+    }
+    
+    /**
+     * Returns the arguments condition.
+     *
+     * @return Action argument condition
+     */
+    public ActionCondition getArguments() {
+        if (argumentComponent.getSelectedItem() == null) {
+            return null;
+        }
+        switch ((CoreActionComparison) argumentComponent.getSelectedItem()) {
+            case INT_EQUALS:
+                return new ActionCondition(2,
+                        CoreActionComponent.STRINGARRAY_LENGTH,
+                        CoreActionComparison.INT_EQUALS,
+                        argumentNumber.getValue().toString());
+            case INT_GREATER:
+                return new ActionCondition(2,
+                        CoreActionComponent.STRINGARRAY_LENGTH,
+                        CoreActionComparison.INT_EQUALS,
+                        argumentNumber.getValue().toString());
+            case INT_LESS:
+                return new ActionCondition(2,
+                        CoreActionComponent.STRINGARRAY_LENGTH,
+                        CoreActionComparison.INT_EQUALS,
+                        argumentNumber.getValue().toString());
+            default:
+                return null;
         }
     }
     
