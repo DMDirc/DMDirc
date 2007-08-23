@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.textpane;
 
+import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.swing.components.Frame;
 
@@ -421,6 +422,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     
     /**
      * Informs listeners when a word has been clicked on.
+     *
      * @param text word clicked on
      */
     protected void fireHyperlinkClicked(final String text) {
@@ -434,6 +436,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     
     /**
      * Informs listeners when a word has been clicked on.
+     *
      * @param text word clicked on
      */
     protected void fireChannelClicked(final String text) {
@@ -441,6 +444,21 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         for (int i = 0; i < listeners.length; i += 2) {
             if (listeners[i] == TextPaneListener.class) {
                 ((TextPaneListener) listeners[i + 1]).channelClicked(text);
+            }
+        }
+    }
+    
+    /**
+     * Informs listeners when a nickname has been clicked on.
+     *
+     * @param text word clicked on
+     * @param button Button click was triggered by
+     */
+    protected void fireNicknameClicked(final String text, final int button) {
+        final Object[] listeners = textPaneListeners.getListenerList();
+        for (int i = 0; i < listeners.length; i += 2) {
+            if (listeners[i] == TextPaneListener.class) {
+                ((TextPaneListener) listeners[i + 1]).nickNameClicked(text, button);
             }
         }
     }
@@ -457,6 +475,21 @@ public final class TextPane extends JComponent implements AdjustmentListener,
             return owner.getContainer().getServer().getParser().isValidChannelName(channel);
         }
         return false;
+    }
+    
+    /**
+     * Checks whether a given string is a valid nickname.
+     *
+     * @param channel Nickname to verify
+     *
+     * @return true or false
+     */
+    public boolean isValidNickname(final String nickname) {
+        ClientInfo client = null;
+        if (owner != null && nickname.length() > 0) {
+            client = owner.getContainer().getServer().getParser().getClientInfo(nickname);
+        }
+        return client != null;
     }
     
     /** Scrolls one page up in the textpane. */

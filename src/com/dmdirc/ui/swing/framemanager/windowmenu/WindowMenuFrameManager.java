@@ -62,7 +62,6 @@ public final class WindowMenuFrameManager implements FrameManager,
     /** Creates a new instance of WindowMenuFrameManager. */
     public WindowMenuFrameManager() {
         menuItemMap = new TreeMap<FrameContainer, JMenuItem>(new FrameContainerComparator());
-        new TreeMap();
     }
     
     /** {@inheritDoc} */

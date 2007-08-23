@@ -502,7 +502,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     
     /** {@inheritDoc} */
     public void hyperlinkClicked(final String url) {
-        Main.getUI().getMainWindow().getStatusBar().setMessage("Opening: " + url);
+        Main.getUI().getStatusBar().setMessage("Opening: " + url);
         BrowserLauncher.openURL(url);
     }
     
@@ -512,6 +512,15 @@ public abstract class Frame extends JInternalFrame implements Window,
             parent.getServer().getParser().joinChannel(channel);
         } else {
             parent.getServer().getChannel(channel).activateFrame();
+        }
+    }
+    
+    /** {@inheritDoc} */
+    public void nickNameClicked(final String nickname, final int button) {
+        if (MouseEvent.BUTTON1 == button) {
+            //Do something
+        } else if (MouseEvent.BUTTON2 == button) {
+            //Do something
         }
     }
     

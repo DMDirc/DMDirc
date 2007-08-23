@@ -34,13 +34,21 @@ public interface TextPaneListener extends EventListener {
      *
      * @param url Hyperlink that was clicked on
      */
-    void hyperlinkClicked(String url);
+    void hyperlinkClicked(final String url);
     
     /**
      * Fired when a channel is clicked.
      *
      * @param channel Name of the channel clicked on
      */
-    void channelClicked(String channel);
+    void channelClicked(final String channel);
+    
+    /**
+     * Fired when a channel is clicked.
+     *
+     * @param channel Name of the channel clicked on
+     * @param button Button that was clicked
+     */
+    void nickNameClicked(final String channel, final int button);
     
 }

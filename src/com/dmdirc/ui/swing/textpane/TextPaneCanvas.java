@@ -51,7 +51,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * class structure is changed (or anything else that would prevent
      * serialized objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 6;
+    private static final long serialVersionUID = 7;
     
     /** IRCDocument. */
     private final IRCDocument document;
@@ -148,6 +148,11 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             return;
         }
         
+        //check there is some space to draw in
+        if (formatWidth < 1) {
+            return;
+        }
+        
         // Check the start line is in range
         if (startLine >= document.getNumLines()) {
             startLine = document.getNumLines() - 1;
@@ -181,15 +186,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             useEndChar = selEndChar;
         }
         
-        final int numVisibleLines = (int) formatHeight / lineHeight;
-        
-        if (numVisibleLines >= document.getNumLines()) {
-            startLine = document.getNumLines() - 1;
-            textPane.setScrollEnabled(false);
-        } else {
-            textPane.setScrollEnabled(true);
-        }
-        
         // Iterate through the lines
         for (int i = startLine; i >= 0; i--) {
             float drawPosX;
@@ -220,13 +216,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             int chars = 0;
             // Loop through each wrapped line
             while (lineMeasurer.getPosition() < paragraphEnd) {
-                
-                final TextLayout layout;
-                if (formatWidth < 0) {
-                    layout = lineMeasurer.nextLayout(0);
-                } else {
-                    layout = lineMeasurer.nextLayout(formatWidth);
-                }
+                final TextLayout layout = lineMeasurer.nextLayout(formatWidth);
                 
                 // Calculate the Y offset
                 if (wrappedLine == 1) {
@@ -284,11 +274,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         int wrappedLine = 0;
         
         while (lineMeasurer.getPosition() < paragraphEnd) {
-            if (formatWidth < 0) {
-                lineMeasurer.nextLayout(0);
-            } else {
-                lineMeasurer.nextLayout(formatWidth);
-            }
+            lineMeasurer.nextLayout(formatWidth);
             
             wrappedLine++;
         }
@@ -415,7 +401,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 selStartChar = 0;
                 selEndChar = clickedText.length();
             } else if (start != -1 && end != -1) {
-                checkClickedText(clickedText.substring(start, end));
+                checkClickedText(clickedText.substring(start, end), e.getButton());
             }
             
         }
@@ -541,7 +527,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         
         if (point == null) {
             if (e.getXOnScreen() > getLocationOnScreen().getX()
-                    && e.getXOnScreen() < (getLocationOnScreen().getX() + getWidth())) {
+            && e.getXOnScreen() < (getLocationOnScreen().getX() + getWidth())) {
                 if (getLocationOnScreen().getY() > e.getYOnScreen()) {
                     textPane.setScrollBarPosition(scrollBarPosition - 1);
                 } else {
@@ -558,7 +544,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 selEndLine = info[0];
                 selEndChar = info[2];
                 
-                this.repaint();
+                if (isVisible()) {
+                    repaint();
+                }
             }
         }
     }
@@ -567,10 +555,14 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * Checks the clicked text and fires the appropriate events.
      *
      * @param clickedText Text clicked
+     * @param button Button triggering event
      */
-    public void checkClickedText(final String clickedText) {
+    public void checkClickedText(final String clickedText, final int button) {
         if (textPane.isValidChannel(clickedText)) {
             fireChannelClicked(clickedText);
+        }
+        if (textPane.isValidNickname(clickedText)) {
+            fireNicknameClicked(clickedText, button);
         }
     }
     
@@ -624,11 +616,21 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     }
     
     /**
-     * Informs listeners when a word has been clicked on.
+     * Informs listeners when a channel has been clicked on.
      * @param text word clicked on
      */
     private void fireChannelClicked(final String text) {
         textPane.fireChannelClicked(text);
+    }
+    
+    /**
+     * Informs listeners when a nickname has been clicked on.
+     *
+     * @param text word clicked on
+     * @param button Button click was triggered by
+     */
+    private void fireNicknameClicked(final String text, final int button) {
+        textPane.fireNicknameClicked(text, button);
     }
     
     /**
