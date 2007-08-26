@@ -31,7 +31,7 @@ import java.util.Map;
  * Defines attribute keys that can be used to identify text attributes. These
  * keys are used in AttributedCharacterIterator and AttributedString.
  */
-public final class IRCTextAttribute extends Attribute { 
+public final class IRCTextAttribute extends Attribute {
     
     /**
      * A version number for this class. It should be changed whenever the
@@ -79,4 +79,10 @@ public final class IRCTextAttribute extends Attribute {
     
     /** Hyperlink attribute. */
     public static final IRCTextAttribute HYPERLINK = new IRCTextAttribute("hyperlink");
+    
+    /** Nickname attribute. */
+    public static final IRCTextAttribute NICKNAME = new IRCTextAttribute("nickname");
+    
+    /** Channel attribute. */
+    public static final IRCTextAttribute CHANNEL = new IRCTextAttribute("channel");
 }

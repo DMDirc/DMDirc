@@ -243,10 +243,10 @@ public final class Formatter {
         //    3: User ident
         //    4: User host
         //    5: Channel name
-        defaultProperties.setProperty("channelJoin", colour + "3* %2$s (%3$s@%4$s) has joined %5$s.");
-        defaultProperties.setProperty("channelPart", colour + "3* %1$s%2$s (%3$s@%4$s) has left %5$s.");
+        defaultProperties.setProperty("channelJoin", colour + "3* %2$s (%3$s@%4$s) has joined %5$s" + stop + ".");
+        defaultProperties.setProperty("channelPart", colour + "3* %1$s%2$s (%3$s@%4$s) has left %5$s." + stop + "");
         defaultProperties.setProperty("channelQuit", colour + "2* %1$s%2$s (%3$s@%4$s) has quit IRC.");
-        defaultProperties.setProperty("channelSelfJoin", colour + "3* You are now talking in %5$s.");
+        defaultProperties.setProperty("channelSelfJoin", colour + "3* You are now talking in %5$s." + stop + "");
         defaultProperties.setProperty("channelSelfPart", colour + "3* You have left the channel.");
         
         // Type: Channel Event with content
@@ -259,10 +259,10 @@ public final class Formatter {
         defaultProperties.setProperty("channelPartReason", colour + "3* %1$s%2$s (%3$s@%4$s) has left %5$s (%6$s" + stop + ").");
         defaultProperties.setProperty("channelQuitReason", colour + "2* %1$s%2$s (%3$s@%4$s) has quit IRC (%6$s" + stop + ").");
         defaultProperties.setProperty("channelTopicChange", colour + "3* %1$s%2$s has changed the topic to '%6$s" + stop + "'.");
-        defaultProperties.setProperty("channelNickChange", colour + "3* %1$s%2$s is now know as %6$s.");
-        defaultProperties.setProperty("channelModeChange", colour + "3* %1$s%2$s sets mode: %6$s.");
-        defaultProperties.setProperty("channelSelfNickChange", colour + "3* You are now know as %6$s.");
-        defaultProperties.setProperty("channelSelfModeChange", colour + "3* You set mode: %6$s.");
+        defaultProperties.setProperty("channelNickChange", colour + "3* %1$s%2$s is now know as %6$s" + stop + ".");
+        defaultProperties.setProperty("channelModeChange", colour + "3* %1$s%2$s sets mode: %6$s" + stop + ".");
+        defaultProperties.setProperty("channelSelfNickChange", colour + "3* You are now know as %6$s" + stop + ".");
+        defaultProperties.setProperty("channelSelfModeChange", colour + "3* You set mode: %6$s" + stop + ".");
         defaultProperties.setProperty("channelSelfPartReason", colour + "3* You have left the channel.");
         
         // Type: Binary Channel Event
@@ -275,7 +275,7 @@ public final class Formatter {
         //    7: Target user ident
         //    8: Target user host
         //    9: Channel name
-        defaultProperties.setProperty("channelKick", colour + "3* %1$s%2$s has kicked %5$s%6$s from %9$s.");
+        defaultProperties.setProperty("channelKick", colour + "3* %1$s%2$s has kicked %5$s%6$s from %9$s" + stop + ".");
         
         // Type: Binary Channel Event with content
         //    1: Source user mode prefixes
@@ -289,7 +289,7 @@ public final class Formatter {
         //    9: Channel name
         //   10: Content
         defaultProperties.setProperty("channelKickReason", colour + "3* %1$s%2$s has kicked %5$s%6$s from %9$s (%10$s" + stop + ").");
-        defaultProperties.setProperty("channelUserMode_default", colour + "3* %1$s%2$s sets mode %10$s on %6$s.");
+        defaultProperties.setProperty("channelUserMode_default", colour + "3* %1$s%2$s sets mode %10$s on %6$s" + stop + ".");
         
         // Type: Channel topic sync
         //    1: Topic
@@ -301,8 +301,8 @@ public final class Formatter {
         // Type: Channel mode discovery
         //     1: Channel modes
         //     2: Channel name
-        defaultProperties.setProperty("channelNoModes", colour + "3* There are no channel modes for %2$s.");
-        defaultProperties.setProperty("channelModeDiscovered", colour + "3* Channel modes for %2$s are: %1$s.");
+        defaultProperties.setProperty("channelNoModes", colour + "3* There are no channel modes for %2$s" + stop + ".");
+        defaultProperties.setProperty("channelModeDiscovered", colour + "3* Channel modes for %2$s are: %1$s" + stop + ".");
         
         // Type: Private CTCP
         //    1: User nickname
@@ -323,9 +323,9 @@ public final class Formatter {
         defaultProperties.setProperty("queryAction", colour + "6* %1$s %4$s");
         defaultProperties.setProperty("querySelfMessage", "<%1$s> %4$s");
         defaultProperties.setProperty("querySelfAction", colour + "6* %1$s %4$s");
-        defaultProperties.setProperty("queryNickChanged", colour + "3* %1$s is now know as %4$s.");
-        defaultProperties.setProperty("userModeChanged", colour + "3 %1$s sets user mode: %4$s.");
-        defaultProperties.setProperty("queryQuitReason", colour + "2* %1$s has quit IRC (%4$s).");
+        defaultProperties.setProperty("queryNickChanged", colour + "3* %1$s is now know as %4$s" + stop + ".");
+        defaultProperties.setProperty("userModeChanged", colour + "3 %1$s sets user mode: %4$s" + stop + ".");
+        defaultProperties.setProperty("queryQuitReason", colour + "2* %1$s has quit IRC (%4$s" + stop + ").");
         defaultProperties.setProperty("queryMessageHighlight", colour + "4<%1$s> %4$s");
         defaultProperties.setProperty("queryActionHighlight", colour + "6* %1$s %4$s");
         
@@ -352,9 +352,9 @@ public final class Formatter {
         // Type: Miscellaneous
         //    1: Miscellaneous data
         defaultProperties.setProperty("authNotice", colour + "5-AUTH- %1$s");
-        defaultProperties.setProperty("channelNoTopic", colour + "3* There is no topic set for %1$s.");
+        defaultProperties.setProperty("channelNoTopic", colour + "3* There is no topic set for %1$s" + stop + ".");
         defaultProperties.setProperty("rawCommand", colour + "10>>> %1$s");
-        defaultProperties.setProperty("unknownCommand", colour + "14Unknown command %1$s.");
+        defaultProperties.setProperty("unknownCommand", colour + "14Unknown command %1$s" + stop + ".");
         defaultProperties.setProperty("socketClosed", colour + "2-!- You have been disconnected from the server.");
         defaultProperties.setProperty("stonedServer", colour + "2-!- Disconnected from a non-responsive server.");
         defaultProperties.setProperty("motdStart", colour + "10%1$s");
@@ -381,14 +381,14 @@ public final class Formatter {
         
         // Type: Numerical data
         defaultProperties.setProperty("numeric_301", "%4$s is away: %5$s");
-        defaultProperties.setProperty("numeric_311", "-\n%4$s is %5$s@%6$s (%8$s).");
-        defaultProperties.setProperty("numeric_312", "%4$s is connected to %5$s (%6$s).");
+        defaultProperties.setProperty("numeric_311", "-\n%4$s is %5$s@%6$s (%8$s" + stop + ").");
+        defaultProperties.setProperty("numeric_312", "%4$s is connected to %5$s (%6$s" + stop + ").");
         defaultProperties.setProperty("numeric_313", "%4$s %5$s.");
         defaultProperties.setProperty("numeric_317", "%4$s has been idle for %5$s seconds; signed on at %6$TT on %6$TF.");
-        defaultProperties.setProperty("numeric_318", "End of WHOIS info for %4$s.\n-");
+        defaultProperties.setProperty("numeric_318", "End of WHOIS info for %4$s" + stop + ".\n-");
         defaultProperties.setProperty("numeric_319", "%4$s is on: %5$s");
-        defaultProperties.setProperty("numeric_330", "%4$s %6$s %5$s.");
-        defaultProperties.setProperty("numeric_343", "%4$s %6$s %5$s.");
+        defaultProperties.setProperty("numeric_330", "%4$s %6$s %5$s" + stop + ".");
+        defaultProperties.setProperty("numeric_343", "%4$s %6$s %5$s" + stop + ".");
     }
     
     /**

@@ -59,8 +59,12 @@ public final class Styliser {
     public static final char CODE_HEXCOLOUR = 4;
     /** Character used to indicate hyperlinks. */
     public static final char CODE_HYPERLINK = 5;
+    /** Character used to indicate channel links. */
+    public static final char CODE_CHANNEL = 6;
     /** The character used for stopping all formatting. */
     public static final char CODE_STOP = 15;
+    /** Character used to indicate nickname links. */
+    public static final char CODE_NICKNAME = 16;
     /** The character used for marking up fixed pitch text. */
     public static final char CODE_FIXED = 17;
     /** The character used for marking up italic text. */
@@ -68,13 +72,19 @@ public final class Styliser {
     /** The character used for marking up underlined text. */
     public static final char CODE_UNDERLINE = 31;
     
+    /** Internal chars. */
+    private static final String INTERNAL_CHARS = CODE_HYPERLINK + "" + CODE_CHANNEL;
+    
     /** Characters allowed to be used in an URL. */
     private static final String CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
             + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC
-            + CODE_UNDERLINE + "\"]";
+            + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + "\"]";
     
     /** The regular expression to use for marking up URLs. */
     private static final String URL_REGEXP = "(?i)([a-z]+://" + CHARS + "+|(?<![a-z:])www\\." + CHARS + "+)";
+    
+    /** The regular expression to use for marking up channels. */
+    private static final String URL_CHANNEL = "(?i)(?<![^\\s])([#&]" + CHARS + "+)";
     
     /** Creates a new instance of Styliser. */
     private Styliser() {
@@ -104,11 +114,13 @@ public final class Styliser {
                 int offset = styledDoc.getLength();
                 int position = 0;
                 
-                final String target = string.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
+                final String target = string.replaceAll(INTERNAL_CHARS, "")
+                        .replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK)
+                        .replaceAll(URL_CHANNEL, CODE_CHANNEL + "$0" + CODE_CHANNEL);
                 
                 final SimpleAttributeSet attribs = new SimpleAttributeSet();
                 attribs.addAttribute("DefaultFontFamily", UIManager.getFont("TextPane.font"));
-                        
+                
                 while (position < target.length()) {
                     final String next = readUntilControl(target.substring(position));
                     
@@ -158,26 +170,41 @@ public final class Styliser {
                 final Object attrib = ae.nextElement();
                 
                 if (attrib == IRCTextAttribute.HYPERLINK) {
-                    //hyperlink
-                    attString.addAttribute(IRCTextAttribute.HYPERLINK, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                    //Hyperlink
+                    attString.addAttribute(IRCTextAttribute.HYPERLINK,
+                            as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == IRCTextAttribute.NICKNAME) {
+                    //Nicknames
+                    attString.addAttribute(IRCTextAttribute.NICKNAME,
+                            as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == IRCTextAttribute.CHANNEL) {
+                    //Channels
+                    attString.addAttribute(IRCTextAttribute.CHANNEL,
+                            as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
                 } else if (attrib == ColorConstants.Foreground) {
                     //Foreground
-                    attString.addAttribute(TextAttribute.FOREGROUND, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                    attString.addAttribute(TextAttribute.FOREGROUND,
+                            as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
                 } else if (attrib == ColorConstants.Background) {
                     //Background
-                    attString.addAttribute(TextAttribute.BACKGROUND, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                    attString.addAttribute(TextAttribute.BACKGROUND,
+                            as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
                 } else if (attrib == FontConstants.Bold) {
                     //Bold
-                    attString.addAttribute(TextAttribute.WEIGHT, TextAttribute.WEIGHT_BOLD, element.getStartOffset(), element.getEndOffset());
+                    attString.addAttribute(TextAttribute.WEIGHT,
+                            TextAttribute.WEIGHT_BOLD, element.getStartOffset(), element.getEndOffset());
                 } else if (attrib == FontConstants.Family) {
                     //Family
-                    attString.addAttribute(TextAttribute.FAMILY, as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                    attString.addAttribute(TextAttribute.FAMILY,
+                            as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
                 } else if (attrib == FontConstants.Italic) {
                     //italics
-                    attString.addAttribute(TextAttribute.POSTURE, TextAttribute.POSTURE_OBLIQUE, element.getStartOffset(), element.getEndOffset());
+                    attString.addAttribute(TextAttribute.POSTURE,
+                            TextAttribute.POSTURE_OBLIQUE, element.getStartOffset(), element.getEndOffset());
                 } else if (attrib == CharacterConstants.Underline) {
                     //Underline
-                    attString.addAttribute(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON, element.getStartOffset(), element.getEndOffset());
+                    attString.addAttribute(TextAttribute.UNDERLINE,
+                            TextAttribute.UNDERLINE_ON, element.getStartOffset(), element.getEndOffset());
                 }
             }
         }
@@ -228,6 +255,8 @@ public final class Styliser {
         pos = checkChar(pos, input.indexOf(CODE_ITALIC));
         pos = checkChar(pos, input.indexOf(CODE_FIXED));
         pos = checkChar(pos, input.indexOf(CODE_HYPERLINK));
+        pos = checkChar(pos, input.indexOf(CODE_NICKNAME));
+        pos = checkChar(pos, input.indexOf(CODE_CHANNEL));
         
         return input.substring(0, pos);
     }
@@ -281,6 +310,28 @@ public final class Styliser {
             } else {
                 attribs.removeAttribute(IRCTextAttribute.HYPERLINK);
             }
+            return 1;
+        }
+        
+        // Channel links
+        if (string.charAt(0) == CODE_CHANNEL) {           
+            if (attribs.getAttribute(IRCTextAttribute.CHANNEL) == null) {
+                attribs.addAttribute(IRCTextAttribute.CHANNEL, readUntilControl(string.substring(1)));
+            } else {
+                attribs.removeAttribute(IRCTextAttribute.CHANNEL);
+            }
+            
+            return 1;
+        }
+        
+        // Nickname links
+        if (string.charAt(0) == CODE_NICKNAME) {
+            if (attribs.getAttribute(IRCTextAttribute.NICKNAME) == null) {
+                attribs.addAttribute(IRCTextAttribute.NICKNAME, readUntilControl(string.substring(1)));
+            } else {
+                attribs.removeAttribute(IRCTextAttribute.NICKNAME);
+            }
+            
             return 1;
         }
         
