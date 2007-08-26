@@ -59,7 +59,7 @@ public abstract class ResourceManager {
     public static final synchronized ResourceManager getResourceManager() {
         if (me == null) {
             String path = Thread.currentThread().getContextClassLoader().
-                    getResource("com/dmdirc/ui/MainFrame.class").getPath();
+                    getResource("com/dmdirc/Main.class").getPath();
             
             try {
                 path = java.net.URLDecoder.decode(path, "UTF-8");
@@ -68,7 +68,7 @@ public abstract class ResourceManager {
             }
             
             final String protocol = Thread.currentThread().getContextClassLoader().
-                    getResource("com/dmdirc/ui/MainFrame.class").getProtocol();
+                    getResource("com/dmdirc/Main.class").getProtocol();
             
             try {
                 if ("file".equals(protocol)) {
