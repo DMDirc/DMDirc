@@ -66,6 +66,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.plaf.basic.BasicInternalFrameUI;
@@ -125,6 +126,7 @@ public abstract class Frame extends JInternalFrame implements Window,
         setIconifiable(true);
         setPreferredSize(new Dimension(((MainFrame) Main.getUI().getMainWindow()).getWidth() / 2,
                 ((MainFrame) Main.getUI().getMainWindow()).getHeight() / 3));
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         
         addPropertyChangeListener("maximum", this);
         addInternalFrameListener(this);
