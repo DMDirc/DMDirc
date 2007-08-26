@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.textpane;
 
 import com.dmdirc.ui.messages.IRCTextAttribute;
+import java.awt.Cursor;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -52,6 +53,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * serialized objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 7;
+    
+    /** Hand cursor. */
+    private static final Cursor HAND_CURSOR = new Cursor(Cursor.HAND_CURSOR);
     
     /** IRCDocument. */
     private final IRCDocument document;
@@ -513,7 +517,23 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     
     /** {@inheritDoc}. */
     public void mouseMoved(final MouseEvent e) {
-        //Ignore
+        final int[] info = getClickPosition(this.getMousePosition());
+        
+        if (info[0] != -1) {
+            final AttributedCharacterIterator iterator = document.getLine(info[0]).getIterator();
+            iterator.setIndex(info[2]);
+            final Object linkattr = iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+            if (linkattr instanceof String) {
+                setCursor(HAND_CURSOR);
+                return;
+            }
+        }
+        if (getCursor() == HAND_CURSOR) {
+            setCursor(Cursor.getDefaultCursor());
+        }
+        
+        e.setSource(textPane);
+        textPane.dispatchEvent(e);
     }
     
     /**
