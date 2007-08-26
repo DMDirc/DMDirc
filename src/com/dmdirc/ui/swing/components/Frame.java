@@ -26,6 +26,7 @@ import com.dmdirc.BrowserLauncher;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
+import com.dmdirc.StringTranscoder;
 import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
@@ -55,6 +56,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.Charset;
 import java.text.AttributedCharacterIterator;
 import java.util.Date;
 
@@ -108,6 +110,9 @@ public abstract class Frame extends JInternalFrame implements Window,
     /** search bar. */
     private SearchBar searchBar;
     
+    /** String transcoder. */
+    private StringTranscoder transcoder;
+    
     /**
      * Creates a new instance of Frame.
      *
@@ -115,9 +120,14 @@ public abstract class Frame extends JInternalFrame implements Window,
      */
     public Frame(final FrameContainer owner) {
         super();
+        final ConfigManager config = owner.getConfigManager();
+        final Boolean pref = Config.getOptionBool("ui", "maximisewindows");
         parent = owner;
         
         setFrameIcon(Main.getUI().getMainWindow().getIcon());
+        
+        transcoder = new StringTranscoder(Charset.forName(
+                config.getOption("channel", "encoding", "UTF-8")));
         
         initComponents();
         setMaximizable(true);
@@ -131,15 +141,12 @@ public abstract class Frame extends JInternalFrame implements Window,
         addPropertyChangeListener("maximum", this);
         addInternalFrameListener(this);
         
-        final ConfigManager config = owner.getConfigManager();
-        
         getTextPane().setBackground(config.getOptionColour("ui", "backgroundcolour", Color.WHITE));
         getTextPane().setForeground(config.getOptionColour("ui", "foregroundcolour", Color.BLACK));
         
         config.addChangeListener("ui", "foregroundcolour", this);
         config.addChangeListener("ui", "backgroundcolour", this);
         
-        final Boolean pref = Config.getOptionBool("ui", "maximisewindows");
         if (pref || Main.getUI().getMainWindow().getMaximised()) {
             hideTitlebar();
         }
@@ -154,9 +161,10 @@ public abstract class Frame extends JInternalFrame implements Window,
     
     /** {@inheritDoc} */
     public final void addLine(final String line, final boolean timestamp) {
+        final String encodedLine = transcoder.decode(line);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                for (String myLine : line.split("\n")) {
+                for (String myLine : encodedLine.split("\n")) {
                     if (timestamp) {
                         getTextPane().addStyledString(new String[]{
                             Formatter.formatMessage("timestamp", new Date()),
@@ -354,6 +362,15 @@ public abstract class Frame extends JInternalFrame implements Window,
      */
     public final TextPane getTextPane() {
         return textPane;
+    }
+    
+    /**
+     * Returns the transcoder for this frame.
+     *
+     * @return String transcoder for this frame
+     */
+    public StringTranscoder getTranscoder() {
+        return transcoder;
     }
     
     /** {@inheritDoc} */
