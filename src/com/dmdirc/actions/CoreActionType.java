@@ -32,6 +32,11 @@ public enum CoreActionType implements ActionType {
     CLIENT_OPENED(CoreActionMetaType.CLIENT_EVENT, "Client opened"),
     /** Client closed. */
     CLIENT_CLOSED(CoreActionMetaType.CLIENT_EVENT, "Client closed"),
+    /** Client minimised. */
+    CLIENT_MINIMISED(CoreActionMetaType.CLIENT_EVENT, "Client minimised"),
+    /** Client unminimised. */
+    CLIENT_UNMINIMISED(CoreActionMetaType.CLIENT_EVENT, "Client unminimised"),    
+    
     /** Function key pressed. */
     CLIENT_FKEY_PRESSED(CoreActionMetaType.CLIENT_EVENT_WITH_KEY, "Function key pressed"),
     
@@ -175,5 +180,4 @@ public enum CoreActionType implements ActionType {
     public String getName() {
         return name;
     }
-    
 }

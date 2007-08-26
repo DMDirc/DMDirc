@@ -22,12 +22,18 @@
 
 package com.dmdirc.addons.systray;
 
+import com.dmdirc.Config;
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
+import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.messages.Styliser;
-    
+import com.dmdirc.ui.swing.MainFrame;
+
 import java.awt.AWTException;
+import java.awt.Frame;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
@@ -36,13 +42,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.SwingUtilities;
 
 /**
  * The Systray plugin shows DMDirc in the user's system tray, and allows
  * notifications to be disabled.
  * @author chris
  */
-public final class SystrayPlugin  extends Plugin implements ActionListener, MouseListener {
+public final class SystrayPlugin extends Plugin implements ActionListener,
+        MouseListener, EventPlugin {
     
     /** The command we registered. */
     private PopupCommand command;
@@ -145,17 +153,12 @@ public final class SystrayPlugin  extends Plugin implements ActionListener, Mous
     /** {@inheritDoc} */
     public void mouseClicked(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            if (Main.getUI().getMainWindow().isVisible()) {
-                // TODO: Uncomment the code below, with an appropriate replacement
-                //       for requestFocus() that does something more than flash.
-                
-                //if (Main.getUI().getMainWindow().isActive()) {
+            if (Main.getUI().getMainWindow().isVisible()) {               
                 Main.getUI().getMainWindow().setVisible(false);
-                //} else {
-                //    Main.getUI().getMainWindow().requestFocus();
-                //}
             } else {
                 Main.getUI().getMainWindow().setVisible(true);
+                ((MainFrame) Main.getUI().getMainWindow()).setState(Frame.NORMAL);
+                ((MainFrame) Main.getUI().getMainWindow()).toFront();
             }
         }
     }
@@ -178,6 +181,14 @@ public final class SystrayPlugin  extends Plugin implements ActionListener, Mous
     /** {@inheritDoc} */
     public void mouseExited(final MouseEvent e) {
         //Ignore
+    }
+    
+    /** {@inheritDoc} */
+    public void processEvent(final ActionType type, final StringBuffer format,
+            final Object... arguments) {
+        if (type == CoreActionType.CLIENT_MINIMISED && Config.getOptionBool("plugin-systray", "autominimise")) {
+            Main.getUI().getMainWindow().setVisible(false);
+        }
     }
     
 }

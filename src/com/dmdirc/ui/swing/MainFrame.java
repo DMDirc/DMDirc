@@ -412,12 +412,12 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /** {@inheritDoc}. */
     public void windowIconified(final WindowEvent windowEvent) {
-        //ignore
+        ActionManager.processEvent(CoreActionType.CLIENT_MINIMISED, null);
     }
     
     /** {@inheritDoc}. */
     public void windowDeiconified(final WindowEvent windowEvent) {
-        //ignore
+        ActionManager.processEvent(CoreActionType.CLIENT_UNMINIMISED, null);
     }
     
     /** {@inheritDoc}. */
