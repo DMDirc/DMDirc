@@ -149,11 +149,13 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         
         //check theres something to draw
         if (document.getNumLines() == 0) {
+            setCursor(Cursor.getDefaultCursor());
             return;
         }
         
         //check there is some space to draw in
         if (formatWidth < 1) {
+            setCursor(Cursor.getDefaultCursor());
             return;
         }
         
@@ -257,6 +259,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 drawPosY -= lineHeight * (wrappedLine - 1);
             }
             if (drawPosY <= 0) {
+                checkForLink();
                 break;
             }
         }
@@ -517,7 +520,12 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     
     /** {@inheritDoc}. */
     public void mouseMoved(final MouseEvent e) {
-        final int[] info = getClickPosition(this.getMousePosition());
+        checkForLink();
+    }
+    
+    /** Checks for a link under the cursor and sets appropriately. */
+    private void checkForLink() {
+        final int[] info = getClickPosition(getMousePosition());
         
         if (info[0] != -1) {
             final AttributedCharacterIterator iterator = document.getLine(info[0]).getIterator();
@@ -531,9 +539,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         if (getCursor() == HAND_CURSOR) {
             setCursor(Cursor.getDefaultCursor());
         }
-        
-        e.setSource(textPane);
-        textPane.dispatchEvent(e);
     }
     
     /**
