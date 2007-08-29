@@ -65,7 +65,7 @@ import javax.swing.SwingUtilities;
 /**
  * The Channel class represents the client's view of the channel. It handles
  * callbacks for channel events from the parser, maintains the corresponding
- * ChannelFrame, and handles user input to a ChannelFrame.
+ * ChannelWindow, and handles user input for the channel.
  *
  * @author chris
  */
@@ -99,7 +99,7 @@ public final class Channel extends MessageTarget implements
     private Server server;
     
     /** The ChannelWindow used for this channel. */
-    private ChannelWindow frame;
+    private ChannelWindow window;
     
     /** The tabcompleter used for this channel. */
     private final TabCompleter tabCompleter;
@@ -134,9 +134,9 @@ public final class Channel extends MessageTarget implements
         try {
             SwingUtilities.invokeAndWait(new Runnable() {
                 public void run() {
-                    frame = Main.getUI().getChannel(Channel.this);
-                    frame.setFrameIcon(icon);
-                    frame.getInputHandler().setTabCompleter(tabCompleter);
+                    window = Main.getUI().getChannel(Channel.this);
+                    window.setFrameIcon(icon);
+                    window.getInputHandler().setTabCompleter(tabCompleter);
                 }
             });
         } catch (InvocationTargetException ex) {
@@ -170,10 +170,10 @@ public final class Channel extends MessageTarget implements
     }
     
     /**
-     * Shows this channel's frame.
+     * Shows this channel's window.
      */
     public void show() {
-        frame.open();
+        window.open();
     }
     
     /** {@inheritDoc} */
@@ -194,10 +194,10 @@ public final class Channel extends MessageTarget implements
             ActionManager.processEvent(CoreActionType.CHANNEL_SELF_MESSAGE, buff,
                     this, channelInfo.getUser(me), line);
             
-            frame.addLine(buff, modes, details[0], details[1], details[2],
+            window.addLine(buff, modes, details[0], details[1], details[2],
                     line, channelInfo);
             
-            channelInfo.sendMessage(frame.getTranscoder().encode(line));
+            channelInfo.sendMessage(window.getTranscoder().encode(line));
         } else {
             sendLine(line.substring(0, getMaxLineLength()));
             sendLine(line.substring(getMaxLineLength()));
@@ -215,17 +215,17 @@ public final class Channel extends MessageTarget implements
         final String modes = channelInfo.getUser(me).getImportantModePrefix();
         
         if (server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName()) <= action.length()) {
-            frame.addLine("actionTooLong", action.length());
+            window.addLine("actionTooLong", action.length());
         } else {
             final StringBuffer buff = new StringBuffer("channelSelfAction");
             
             ActionManager.processEvent(CoreActionType.CHANNEL_SELF_ACTION, buff,
                     this, channelInfo.getUser(me), action);
             
-            frame.addLine(buff, modes, me.getNickname(), me.getIdent(),
+            window.addLine(buff, modes, me.getNickname(), me.getIdent(),
                     me.getHost(), action, channelInfo);
             
-            channelInfo.sendAction(frame.getTranscoder().encode(action));
+            channelInfo.sendAction(window.getTranscoder().encode(action));
         }
     }
     
@@ -257,11 +257,11 @@ public final class Channel extends MessageTarget implements
     }
     
     /**
-     * Returns the internal frame belonging to this object.
-     * @return This object's internal frame
+     * Returns the internal window belonging to this object.
+     * @return This object's internal window
      */
     public InputWindow getFrame() {
-        return frame;
+        return window;
     }
     
     /**
@@ -279,12 +279,12 @@ public final class Channel extends MessageTarget implements
         onChannel = true;
         
         final ClientInfo me = server.getParser().getMyself();
-        frame.addLine("channelSelfJoin", "", me.getNickname(), me.getIdent(),
+        window.addLine("channelSelfJoin", "", me.getNickname(), me.getIdent(),
                 me.getHost(), channelInfo.getName());
     }
     
     /**
-     * Updates the title of the channel frame, and of the main frame if appropriate.
+     * Updates the title of the channel window, and of the main window if appropriate.
      */
     private void updateTitle() {
         String temp = Styliser.stipControlCodes(channelInfo.getName());
@@ -299,9 +299,9 @@ public final class Channel extends MessageTarget implements
         SwingUtilities.invokeLater(new Runnable() {
             
             public void run() {
-                frame.setTitle(title);
+                window.setTitle(title);
                 
-                if (frame.isMaximum() && frame.equals(Main.getUI().getMainWindow().getActiveFrame())) {
+                if (window.isMaximum() && window.equals(Main.getUI().getMainWindow().getActiveFrame())) {
                     Main.getUI().getMainWindow().setTitle(Main.getUI().getMainWindow().getTitlePrefix() + " - " + title);
                 }
             }
@@ -332,11 +332,11 @@ public final class Channel extends MessageTarget implements
     public void resetWindow() {
         onChannel = false;
         
-        frame.updateNames(new ArrayList<ChannelClientInfo>());
+        window.updateNames(new ArrayList<ChannelClientInfo>());
     }
     
     /**
-     * Parts the channel and then closes the frame.
+     * Parts the channel and then closes the window.
      */
     public void close() {
         part(configManager.getOption("general", "partmessage"));
@@ -359,9 +359,9 @@ public final class Channel extends MessageTarget implements
         
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                frame.setVisible(false);
-                Main.getUI().getMainWindow().delChild(frame);
-                frame = null;
+                window.setVisible(false);
+                Main.getUI().getMainWindow().delChild(window);
+                window = null;
                 server = null;
             }
         });
@@ -393,7 +393,7 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_MESSAGE, buff, this, cChannelClient, sMessage);
         
-        frame.addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
+        window.addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
     }
     
     /** {@inheritDoc} */
@@ -410,13 +410,13 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_ACTION, buff, this, cChannelClient, sMessage);
         
-        frame.addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
+        window.addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
     }
     
     /** {@inheritDoc} */
     public void onChannelGotNames(final IRCParser tParser, final ChannelInfo cChannel) {
         
-        frame.updateNames(channelInfo.getChannelClients());
+        window.updateNames(channelInfo.getChannelClients());
         
         final ArrayList<String> names = new ArrayList<String>();
         
@@ -439,7 +439,7 @@ public final class Channel extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.CHANNEL_GOTTOPIC, buff, this);
             
-            frame.addLine(buff, cChannel.getTopic(), cChannel.getTopicUser(),
+            window.addLine(buff, cChannel.getTopic(), cChannel.getTopicUser(),
                     1000 * cChannel.getTopicTime(), cChannel);
         } else {
             final ChannelClientInfo user = cChannel.getUser(cChannel.getTopicUser());
@@ -451,7 +451,7 @@ public final class Channel extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.CHANNEL_TOPICCHANGE, buff, this, user, topic);
             
-            frame.addLine(buff, modes, parts[0], parts[1], parts[2], cChannel, topic);
+            window.addLine(buff, modes, parts[0], parts[1], parts[2], cChannel, topic);
         }
         updateTitle();
     }
@@ -465,10 +465,10 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_JOIN, buff, this, cChannelClient);
         
-        frame.addLine(buff, "", client.getNickname(), client.getIdent(),
+        window.addLine(buff, "", client.getNickname(), client.getIdent(),
                 client.getHost(), cChannel);
         
-        frame.addName(cChannelClient);
+        window.addName(cChannelClient);
         tabCompleter.addEntry(cChannelClient.getNickname());
     }
     
@@ -502,9 +502,9 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_PART, buff, this, cChannelClient, sReason);
         
-        frame.addLine(buff, modes, nick, ident, host, cChannel, sReason);
+        window.addLine(buff, modes, nick, ident, host, cChannel, sReason);
         
-        frame.removeName(cChannelClient);
+        window.removeName(cChannelClient);
         
         tabCompleter.removeEntry(cChannelClient.getNickname());
     }
@@ -533,10 +533,10 @@ public final class Channel extends MessageTarget implements
         ActionManager.processEvent(CoreActionType.CHANNEL_KICK, buff, this,
                 cKickedByClient, cKickedClient, sReason);
         
-        frame.addLine(buff, kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,
+        window.addLine(buff, kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,
                 victim, victimident, victimhost, cChannel.getName(), sReason);
         
-        frame.removeName(cKickedClient);
+        window.removeName(cKickedClient);
         
         tabCompleter.removeEntry(cKickedClient.getNickname());
         
@@ -564,10 +564,10 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, buff, this, cChannelClient, sReason);
         
-        frame.addLine(buff, modes, source, client.getIdent(),
+        window.addLine(buff, modes, source, client.getIdent(),
                 client.getHost(), cChannel, sReason);
         
-        frame.removeName(cChannelClient);
+        window.removeName(cChannelClient);
         tabCompleter.removeEntry(cChannelClient.getNickname());
     }
     
@@ -589,8 +589,8 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_NICKCHANGE, buff, this, cChannelClient, sOldNick);
         
-        frame.addLine(buff, modes, sOldNick, ident, host, cChannel, nick);
-        frame.updateNames();
+        window.addLine(buff, modes, sOldNick, ident, host, cChannel, nick);
+        window.updateNames();
     }
     
     /** {@inheritDoc} */
@@ -607,7 +607,7 @@ public final class Channel extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, buff, this, cChannelClient, sModes);
             
-            frame.addLine(buff, sModes, cChannel.getName());
+            window.addLine(buff, sModes, cChannel.getName());
         } else {
             final String modes = getModes(cChannelClient);
             final String[] details = getDetails(cChannelClient);
@@ -622,11 +622,11 @@ public final class Channel extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, buff, this, cChannelClient, sModes);
             
-            frame.addLine(type,  modes, details[0], details[1],
+            window.addLine(type,  modes, details[0], details[1],
                     details[2], cChannel.getName(), sModes);
         }
         
-        frame.updateNames();
+        window.updateNames();
     }
     
     /** {@inheritDoc} */
@@ -648,7 +648,7 @@ public final class Channel extends MessageTarget implements
                 format = "channelUserMode_default";
             }
             
-            frame.addLine(format, sourceModes, sourceHost[0], sourceHost[1],
+            window.addLine(format, sourceModes, sourceHost[0], sourceHost[1],
                     sourceHost[2], targetModes, targetNick, targetIdent,
                     targetHost, cChannel, sMode);
         }
@@ -665,7 +665,7 @@ public final class Channel extends MessageTarget implements
         final String modes = getModes(cChannelClient);
         final String[] source = getDetails(cChannelClient);
         
-        frame.addLine("channelCTCP", modes, source[0], source[1], source[2],
+        window.addLine("channelCTCP", modes, source[0], source[1], source[2],
                 sType, sMessage, cChannel);
         
         server.sendCTCPReply(source[0], sType, sMessage);

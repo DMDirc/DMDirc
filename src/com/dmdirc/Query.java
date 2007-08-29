@@ -44,7 +44,7 @@ import java.io.Serializable;
 /**
  * The Query class represents the client's view of a query with another user.
  * It handles callbacks for query events from the parser, maintains the
- * corresponding ServerFrame, and handles user input to a ServerFrame.
+ * corresponding QueryWindow, and handles user input for the query.
  * @author chris
  */
 public final class Query extends MessageTarget implements
@@ -61,12 +61,12 @@ public final class Query extends MessageTarget implements
     private Server server;
     
     /** The QueryWindow used for this Query. */
-    private QueryWindow frame;
+    private QueryWindow window;
     
     /** The full host of the client associated with this Query. */
     private String host;
     
-    /** The tab completer for the query frame. */
+    /** The tab completer for the query window. */
     private final TabCompleter tabCompleter;
     
     /**
@@ -83,20 +83,20 @@ public final class Query extends MessageTarget implements
         
         icon = IconManager.getIconManager().getIcon("query");
         
-        frame = Main.getUI().getQuery(this);
+        window = Main.getUI().getQuery(this);
         
         ActionManager.processEvent(CoreActionType.QUERY_OPENED, null, this);
         
-        frame.setFrameIcon(icon);
+        window.setFrameIcon(icon);
         
         if (!Config.getOptionBool("general", "hidequeries")) {
-            frame.open();
+            window.open();
         }
         
         tabCompleter = new TabCompleter(server.getTabCompleter());
         tabCompleter.addEntries(CommandManager.getQueryCommandNames());
         tabCompleter.addEntries(CommandManager.getChatCommandNames());
-        frame.getInputHandler().setTabCompleter(tabCompleter);
+        window.getInputHandler().setTabCompleter(tabCompleter);
         
         reregister();
         
@@ -104,19 +104,15 @@ public final class Query extends MessageTarget implements
     }
     
     /**
-     * Shows this query's frame.
+     * Shows this query's window.
      */
     public void show() {
-        frame.open();
+        window.open();
     }
     
-    /**
-     * Returns the internal frame belonging to this object.
-     *
-     * @return This object's internal frame
-     */
+    /** {@inheritDoc} */
     public InputWindow getFrame() {
-        return frame;
+        return window;
     }
     
     /**
@@ -133,13 +129,13 @@ public final class Query extends MessageTarget implements
         final ClientInfo client = server.getParser().getMyself();
         
         if (line.length() <= getMaxLineLength()) {
-            server.getParser().sendMessage(ClientInfo.parseHost(host), frame.getTranscoder().encode(line));
+            server.getParser().sendMessage(ClientInfo.parseHost(host), window.getTranscoder().encode(line));
             
             final StringBuffer buff = new StringBuffer("querySelfMessage");
             
             ActionManager.processEvent(CoreActionType.QUERY_SELF_MESSAGE, buff, this, line);
             
-            frame.addLine(buff, client.getNickname(), client.getIdent(), client.getHost(), line);
+            window.addLine(buff, client.getNickname(), client.getIdent(), client.getHost(), line);
         } else {
             sendLine(line.substring(0, getMaxLineLength()));
             sendLine(line.substring(getMaxLineLength()));
@@ -161,15 +157,15 @@ public final class Query extends MessageTarget implements
         final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", host);
         
         if (maxLineLength >= action.length() + 2) {
-            server.getParser().sendAction(ClientInfo.parseHost(host), frame.getTranscoder().encode(action));
+            server.getParser().sendAction(ClientInfo.parseHost(host), window.getTranscoder().encode(action));
             
             final StringBuffer buff = new StringBuffer("querySelfAction");
             
             ActionManager.processEvent(CoreActionType.QUERY_SELF_ACTION, buff, this, action);
             
-            frame.addLine(buff, client.getNickname(), client.getIdent(), client.getHost(), action);
+            window.addLine(buff, client.getNickname(), client.getIdent(), client.getHost(), action);
         } else {
-            frame.addLine("actionTooLong", action.length());
+            window.addLine("actionTooLong", action.length());
         }
     }
     
@@ -188,7 +184,7 @@ public final class Query extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.QUERY_MESSAGE, buff, this, message);
         
-        frame.addLine(buff, parts[0], parts[1], parts[2], message);
+        window.addLine(buff, parts[0], parts[1], parts[2], message);
     }
     
     /**
@@ -206,18 +202,18 @@ public final class Query extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.QUERY_ACTION, buff, this, message);
         
-        frame.addLine(buff, parts[0], parts[1], parts[2], message);
+        window.addLine(buff, parts[0], parts[1], parts[2], message);
     }
     
     /**
-     * Updates the QueryFrame title.
+     * Updates the QueryWindow's title.
      */
     private void updateTitle() {
         final String title = ClientInfo.parseHost(host);
         
-        frame.setTitle(title);
+        window.setTitle(title);
         
-        if (frame.isMaximum() && frame.equals(Main.getUI().getMainWindow().getActiveFrame())) {
+        if (window.isMaximum() && window.equals(Main.getUI().getMainWindow().getActiveFrame())) {
             Main.getUI().getMainWindow().setTitle(Main.getUI().getMainWindow().getTitlePrefix() + " - " + title);
         }
     }
@@ -258,7 +254,7 @@ public final class Query extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.QUERY_NICKCHANGE, format, this, sOldNick);
             
-            frame.addLine(format, sOldNick, cClient.getIdent(),
+            window.addLine(format, sOldNick, cClient.getIdent(),
                     cClient.getHost(), cClient.getNickname());
             host = cClient.getNickname() + "!" + cClient.getIdent() + "@" + cClient.getHost();
             updateTitle();
@@ -274,7 +270,7 @@ public final class Query extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.QUERY_QUIT, format, this, sReason);
             
-            frame.addLine(format, cClient.getNickname(),
+            window.addLine(format, cClient.getNickname(),
                     cClient.getIdent(), cClient.getHost(), sReason);
         }
     }
@@ -289,7 +285,7 @@ public final class Query extends MessageTarget implements
     }
     
     /**
-     * Closes the query and associated frame.
+     * Closes the query and associated window.
      */
     public void close() {
         server.getParser().getCallbackManager().delCallback("onPrivateAction", this);
@@ -299,10 +295,10 @@ public final class Query extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.QUERY_CLOSED, null, this);
         
-        frame.setVisible(false);
+        window.setVisible(false);
         server.delQuery(host);
-        Main.getUI().getMainWindow().delChild(frame);
-        frame = null;
+        Main.getUI().getMainWindow().delChild(window);
+        window = null;
         server = null;
     }
     
@@ -327,11 +323,11 @@ public final class Query extends MessageTarget implements
     /** {@inheritDoc} */
     @Override
     public void activateFrame() {
-        if (!frame.isVisible()) {
+        if (!window.isVisible()) {
             show();
         }
         
-        Main.getUI().getMainWindow().setActiveFrame(frame);
+        Main.getUI().getMainWindow().setActiveFrame(window);
     }
     
 }

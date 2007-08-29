@@ -37,7 +37,7 @@ import java.io.Serializable;
  * received to/from the server).
  * @author chris
  */
-public final class Raw extends WritableFrameContainer implements IDataIn, 
+public final class Raw extends WritableFrameContainer implements IDataIn,
         IDataOut, Serializable {
     
     /**
@@ -50,8 +50,8 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
     /** The server object that's being monitored. */
     private Server server;
     
-    /** A serverframe instance used for displaying the raw data.*/
-    private InputWindow frame;
+    /** An InputWindow used for displaying the raw data.*/
+    private InputWindow window;
     
     /**
      * Creates a new instance of Raw.
@@ -65,12 +65,12 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
         
         icon = IconManager.getIconManager().getIcon("raw");
         
-        frame = Main.getUI().getInputWindow(this, newServer.getFrame().getCommandParser());
-        frame.setTitle("(Raw log)");
-        frame.getInputHandler().setTabCompleter(server.getTabCompleter());
-        frame.setFrameIcon(icon);
+        window = Main.getUI().getInputWindow(this, newServer.getFrame().getCommandParser());
+        window.setTitle("(Raw log)");
+        window.getInputHandler().setTabCompleter(server.getTabCompleter());
+        window.setFrameIcon(icon);
         
-        frame.open();
+        window.open();
     }
     
     /**
@@ -85,17 +85,14 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
         }
     }
     
-    /**
-     * Closes the raw window. Removes parser callbacks, removes the actual.
-     * frame, and removes references to the frame and server.
-     */
+    /** {@inheritDoc} */
     public void close() {
         server.getParser().getCallbackManager().delCallback("OnDataIn", this);
         server.getParser().getCallbackManager().delCallback("OnDataOut", this);
         
-        frame.setVisible(false);
-        Main.getUI().getMainWindow().delChild(frame);
-        frame = null;
+        window.setVisible(false);
+        Main.getUI().getMainWindow().delChild(window);
+        window = null;
         
         server.delRaw();
         
@@ -104,40 +101,33 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
     
     /** {@inheritDoc} */
     public InputWindow getFrame() {
-        return frame;
+        return window;
     }
     
     /** {@inheritDoc} */
     public void onDataIn(final IRCParser tParser, final String sData) {
-        frame.addLine("rawIn", sData);
+        window.addLine("rawIn", sData);
     }
     
     /** {@inheritDoc} */
     public void onDataOut(final IRCParser tParser, final String sData,
             final boolean bFromParser) {
-        frame.addLine("rawOut", sData);
+        window.addLine("rawOut", sData);
     }
     
-    /**
-     * Returns "Raw"...
-     * @return A string representation of this raw object
-     */
+    /** {@inheritDoc} */
     public String toString() {
         return "Raw";
     }
     
-    /**
-     * Returns the server instance associated with this frame.
-     *
-     * @return the associated server connection
-     */
+    /** {@inheritDoc} */
     public Server getServer() {
         return server;
     }
     
     /** {@inheritDoc} */
     public void sendLine(final String line) {
-        server.sendLine(frame.getTranscoder().encode(line));
+        server.sendLine(window.getTranscoder().encode(line));
     }
     
     /** {@inheritDoc} */
