@@ -158,4 +158,22 @@ public final class ServerManager {
         return null;
     }
     
+    /**
+     * Retrieves a list of servers connected to the specified network.
+     * 
+     * @param network The network to search for
+     * @return A list of servers connected to the network
+     */
+    public List<Server> getServersByNetwork(final String network) {
+        final List<Server> res = new ArrayList<Server>();
+        
+        for (Server server : servers) {
+            if (server.getNetwork().equalsIgnoreCase(network)) {
+                res.add(server);
+            }
+        }
+        
+        return res;
+    }
+    
 }

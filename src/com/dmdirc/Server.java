@@ -130,6 +130,9 @@ public final class Server extends WritableFrameContainer implements
     /** The profile we're using. */
     private transient Identity profile;
     
+    /** Channels we're meant to auto-join. */
+    private final List<String> autochannels;
+    
     /**
      * Used to indicate that this server is in the process of closing all of its
      * windows, and thus requests for individual ones to be closed should be
@@ -162,6 +165,21 @@ public final class Server extends WritableFrameContainer implements
      */
     public Server(final String server, final int port, final String password,
             final boolean ssl, final Identity profile) {
+        this(server, port, password, ssl, profile, new ArrayList<String>());
+    }
+    
+    /**
+     * Creates a new instance of Server.
+     *
+     * @param server The hostname/ip of the server to connect to
+     * @param port The port to connect to
+     * @param password The server password
+     * @param ssl Whether to use SSL or not
+     * @param profile The profile to use
+     * @param autochannels A list of channels to auto-join when we connect
+     */
+    public Server(final String server, final int port, final String password,
+            final boolean ssl, final Identity profile, final List<String> autochannels) {
         super();
         
         this.server = server;
@@ -181,6 +199,8 @@ public final class Server extends WritableFrameContainer implements
         
         tabCompleter.addEntries(CommandManager.getServerCommandNames());
         tabCompleter.addEntries(CommandManager.getGlobalCommandNames());
+        
+        this.autochannels = autochannels;
         
         new Timer("Server Who Timer").scheduleAtFixedRate(new TimerTask() {
             public void run() {
@@ -1075,6 +1095,10 @@ public final class Server extends WritableFrameContainer implements
             for (Channel chan : channels.values()) {
                 chan.join();
             }
+        }
+        
+        for (String channel : autochannels) {
+            parser.joinChannel(channel);
         }
     }
     
