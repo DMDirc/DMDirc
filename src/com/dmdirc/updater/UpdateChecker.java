@@ -56,10 +56,10 @@ import javax.swing.JLabel;
 public final class UpdateChecker implements Runnable, MouseListener {
     
     /** The label used to indicate that there's an update available. */
-    private JLabel label;
+    private static JLabel label;
     
     /** The list of updates that are available. */
-    private final List<Update> updates = new ArrayList<Update>();
+    private static final List<Update> updates = new ArrayList<Update>();
     
     /**
      * Instantiates an Updatechecker.
@@ -134,7 +134,7 @@ public final class UpdateChecker implements Runnable, MouseListener {
      *
      * @param line The line that was received from the update server
      */
-    private void doUpdateAvailable(final String line) {
+    public void doUpdateAvailable(final String line) {
         updates.add(new Update(line));
         
         if (label == null) {

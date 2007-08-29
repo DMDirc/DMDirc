@@ -288,6 +288,7 @@ public final class CommandManager {
         // Global commands
         new Active();
         new AllServers();
+        new Debug();
         new Exit();
         new ExitDefault();
         new Ifplugin();
