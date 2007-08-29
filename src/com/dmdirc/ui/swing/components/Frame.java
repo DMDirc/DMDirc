@@ -174,7 +174,8 @@ public abstract class Frame extends JInternalFrame implements Window,
     
     /** {@inheritDoc} */
     public final void addLine(final String line, final boolean timestamp) {
-        final String encodedLine = transcoder.decode(line);
+        // Why are we decoding here?
+        final String encodedLine = line; // transcoder.decode(line);
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 for (String myLine : encodedLine.split("\n")) {

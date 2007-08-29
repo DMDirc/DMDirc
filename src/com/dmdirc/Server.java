@@ -299,7 +299,7 @@ public final class Server extends WritableFrameContainer implements
     /** {@inheritDoc} */
     public void sendLine(final String line) {
         if (parser != null && !closing) {
-            parser.sendLine(line);
+            parser.sendLine(window.getTranscoder().encode(line));
         }
     }
     

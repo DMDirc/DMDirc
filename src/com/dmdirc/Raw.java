@@ -137,7 +137,7 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
     
     /** {@inheritDoc} */
     public void sendLine(final String line) {
-        server.sendLine(line);
+        server.sendLine(frame.getTranscoder().encode(line));
     }
     
     /** {@inheritDoc} */

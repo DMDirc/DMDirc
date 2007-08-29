@@ -133,7 +133,7 @@ public final class Query extends MessageTarget implements
         final ClientInfo client = server.getParser().getMyself();
         
         if (line.length() <= getMaxLineLength()) {
-            server.getParser().sendMessage(ClientInfo.parseHost(host), line);
+            server.getParser().sendMessage(ClientInfo.parseHost(host), frame.getTranscoder().encode(line));
             
             final StringBuffer buff = new StringBuffer("querySelfMessage");
             
@@ -161,7 +161,7 @@ public final class Query extends MessageTarget implements
         final int maxLineLength = server.getParser().getMaxLength("PRIVMSG", host);
         
         if (maxLineLength >= action.length() + 2) {
-            server.getParser().sendAction(ClientInfo.parseHost(host), action);
+            server.getParser().sendAction(ClientInfo.parseHost(host), frame.getTranscoder().encode(action));
             
             final StringBuffer buff = new StringBuffer("querySelfAction");
             

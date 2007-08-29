@@ -197,7 +197,7 @@ public final class Channel extends MessageTarget implements
             frame.addLine(buff, modes, details[0], details[1], details[2],
                     line, channelInfo);
             
-            channelInfo.sendMessage(line);
+            channelInfo.sendMessage(frame.getTranscoder().encode(line));
         } else {
             sendLine(line.substring(0, getMaxLineLength()));
             sendLine(line.substring(getMaxLineLength()));
@@ -225,7 +225,7 @@ public final class Channel extends MessageTarget implements
             frame.addLine(buff, modes, me.getNickname(), me.getIdent(),
                     me.getHost(), action, channelInfo);
             
-            channelInfo.sendAction(action);
+            channelInfo.sendAction(frame.getTranscoder().encode(action));
         }
     }
     
@@ -286,7 +286,7 @@ public final class Channel extends MessageTarget implements
     /**
      * Updates the title of the channel frame, and of the main frame if appropriate.
      */
-    private void updateTitle() {
+    private void updateTitle() {       
         String temp = Styliser.stipControlCodes(channelInfo.getName());
         
         if (channelInfo.getTopic().length() > 0) {
