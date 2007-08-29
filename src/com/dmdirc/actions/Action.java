@@ -185,7 +185,6 @@ public class Action implements Serializable {
             response = properties.getProperty("response").split("\n");
         } else {
             error("No response specified");
-            properties.list(System.out);
             return;
         }
         

@@ -23,6 +23,7 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.StringTranscoder;
 import com.dmdirc.config.ConfigManager;
 
 import java.beans.PropertyVetoException;
@@ -134,5 +135,12 @@ public interface Window {
      * @param icon The icon to be used
      */
     void setFrameIcon(Icon icon);
+    
+    /**
+     * Returns the transcoder that is being used by the UI.
+     * 
+     * @return This window's transcoder
+     */
+    StringTranscoder getTranscoder();
     
 }

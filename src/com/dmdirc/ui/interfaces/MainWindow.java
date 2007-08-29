@@ -73,15 +73,6 @@ public interface MainWindow {
     Window getActiveFrame();
     
     /**
-     * Returns the status bar instance.
-     *
-     * @return SwingStatusBar instance
-     * @deprecated Use UIController.getStatusBar() instead
-     */
-    @Deprecated
-    StatusBar getStatusBar();
-    
-    /**
      * Adds a JMenuItem to the plugin menu.
      *
      * @param menuItem The menu item to be added.

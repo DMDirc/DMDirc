@@ -24,6 +24,7 @@ package com.dmdirc.addons.redirectplugin;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
+import com.dmdirc.StringTranscoder;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.ui.input.InputHandler;
@@ -31,6 +32,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Formatter;
 
 import java.beans.PropertyVetoException;
+import java.nio.charset.Charset;
 
 import javax.swing.Icon;
 
@@ -136,6 +138,11 @@ public class FakeInputWindow implements InputWindow {
     /** {@inheritDoc} */
     public void setFrameIcon(final Icon icon) {
         // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    public StringTranscoder getTranscoder() {
+        return new StringTranscoder(Charset.defaultCharset());
     }
 
 }

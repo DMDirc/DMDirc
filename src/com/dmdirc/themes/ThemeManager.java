@@ -74,9 +74,7 @@ public class ThemeManager {
             for (File file : dir.listFiles()) {
                 if (!file.isDirectory()) {
                     final Theme theme = new Theme(file);
-                    System.out.println(file.getName());
                     if (theme.isValidTheme()) {
-                        System.out.println("Valid");
                         res.put(file.getName(), theme);
                     }
                 }

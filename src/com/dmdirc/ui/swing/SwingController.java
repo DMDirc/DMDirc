@@ -45,6 +45,7 @@ import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.interfaces.UpdaterDialog;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
+import com.dmdirc.ui.swing.components.SwingStatusBar;
 import com.dmdirc.ui.swing.dialogs.SwingUpdaterDialog;
 import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.swing.dialogs.firstrunwizard.SwingFirstRunWizard;
@@ -75,6 +76,8 @@ public final class SwingController implements UIController {
      */
     private static MainFrame me;
     
+    private static SwingStatusBar statusBar;
+    
     /** Instantiates a new SwingController. */
     public SwingController() {
         //Do nothing
@@ -83,14 +86,19 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     public synchronized MainFrame getMainWindow() {
         if (me == null) {
-            me = new MainFrame();
+            statusBar = new SwingStatusBar();
+            me = new MainFrame(statusBar);
         }
         return me;
     }
     
     /** {@inheritDoc} */
-    public StatusBar getStatusBar() {
-        return getMainWindow().getStatusBar();
+    public synchronized StatusBar getStatusBar() {
+        if (statusBar == null)  {
+            getMainWindow();
+        }
+        
+        return statusBar;
     }
     
     /** {@inheritDoc} */
@@ -144,7 +152,7 @@ public final class SwingController implements UIController {
     public void showChannelSettingsDialog(final Channel channel) {
         ChannelSettingsDialog.getChannelSettingDialog(channel).setVisible(true);
     }
-
+    
     /** {@inheritDoc} */
     public void showServerSettingsDialog(final Server server) {
         new ServerSettingsDialog(server).setVisible(true);

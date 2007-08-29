@@ -70,7 +70,7 @@ public final class UpdateChecker implements Runnable, MouseListener {
     
     /** {@inheritDoc} */
     public void run() {
-        Main.getUI().getMainWindow().getStatusBar().setMessage("Checking for updates...");
+        Main.getUI().getStatusBar().setMessage("Checking for updates...");
         
         updates.clear();
         
@@ -120,7 +120,7 @@ public final class UpdateChecker implements Runnable, MouseListener {
      */
     private void checkLine(final String line) {
         if (line.startsWith("uptodate")) {
-            Main.getUI().getMainWindow().getStatusBar().setMessage("No updates available");
+            Main.getUI().getStatusBar().setMessage("No updates available");
         } else if (line.startsWith("outofdate")) {
             doUpdateAvailable(line);
         } else {
@@ -142,7 +142,7 @@ public final class UpdateChecker implements Runnable, MouseListener {
             label.addMouseListener(this);
             label.setBorder(BorderFactory.createEtchedBorder());
             label.setIcon(IconManager.getIconManager().getIcon("update"));
-            Main.getUI().getMainWindow().getStatusBar().addComponent(label);
+            Main.getUI().getStatusBar().addComponent(label);
         }
     }
     

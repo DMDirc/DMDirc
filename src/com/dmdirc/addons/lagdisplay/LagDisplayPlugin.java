@@ -72,12 +72,12 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin {
     
     /** {@inheritDoc} */
     public void onActivate() {
-        Main.getUI().getMainWindow().getStatusBar().addComponent(panel);
+        Main.getUI().getStatusBar().addComponent(panel);
     }
     
     /** {@inheritDoc} */
     public void onDeactivate() {
-        Main.getUI().getMainWindow().getStatusBar().removeComponent(panel);
+        Main.getUI().getStatusBar().removeComponent(panel);
     }
     
     /** {@inheritDoc} */

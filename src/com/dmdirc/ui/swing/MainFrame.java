@@ -34,7 +34,6 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.MainWindow;
-import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.Frame;
 import com.dmdirc.ui.swing.components.SwingStatusBar;
@@ -152,22 +151,21 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** Toggle state menu item. */
     private JMenuItem toggleStateMenuItem;
     
-    /** status bar. */
-    private SwingStatusBar statusBar;
-    
     /** Frame manager position. */
     private FramemanagerPosition position;
     
     /**
      * Creates new form MainFrame.
+     *
+     * @param statusBar The status bar to use.
      */
-    protected MainFrame() {
+    protected MainFrame(final SwingStatusBar statusBar) {
         super();
         
         windowListFrameManager = new WindowMenuFrameManager();
         mainFrameManager = new MainFrameManager();
         
-        initComponents();
+        initComponents(statusBar);
         initKeyHooks();
         
         setTitle(getTitlePrefix());
@@ -388,11 +386,6 @@ public final class MainFrame extends JFrame implements WindowListener,
     }
     
     /** {@inheritDoc}. */
-    public StatusBar getStatusBar() {
-        return statusBar;
-    }
-    
-    /** {@inheritDoc}. */
     public void windowOpened(final WindowEvent windowEvent) {
         //ignore
     }
@@ -434,14 +427,15 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /**
      * Initialises the components for this frame.
+     *
+     * @param statusBar The status bar to use
      */
-    private void initComponents() {
+    private void initComponents(final SwingStatusBar statusBar) {
         final JSplitPane mainSplitPane = new JSplitPane();
         
         frameManagerPanel = new JPanel();
         desktopPane = new JDesktopPane();
         desktopPane.setBackground(new Color(238, 238, 238));
-        statusBar = new SwingStatusBar();
         
         initSplitPane(mainSplitPane);
         
@@ -486,66 +480,66 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
         
         if (!mainFrameManager.canPositionVertically()
-        && (position == FramemanagerPosition.LEFT
+                && (position == FramemanagerPosition.LEFT
                 || position == FramemanagerPosition.RIGHT)) {
             position = FramemanagerPosition.BOTTOM;
         }
         if (!mainFrameManager.canPositionHorizontally()
-        && (position == FramemanagerPosition.TOP
+                && (position == FramemanagerPosition.TOP
                 || position == FramemanagerPosition.BOTTOM)) {
             position = FramemanagerPosition.LEFT;
         }
         
         switch (position) {
-            case TOP:
-                mainSplitPane.setTopComponent(frameManagerPanel);
-                mainSplitPane.setBottomComponent(desktopPane);
-                mainSplitPane.setResizeWeight(0.0);
-                mainSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-                frameManagerPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE,
-                        Config.getOptionInt("ui", "frameManagerSize", 50)));
-                frameManagerPanel.setMinimumSize(new Dimension(Integer.MAX_VALUE, 50));
-                desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-                desktopPane.setMinimumSize(new Dimension(Integer.MAX_VALUE, 300));
-                break;
-            case LEFT:
-                mainSplitPane.setLeftComponent(frameManagerPanel);
-                mainSplitPane.setRightComponent(desktopPane);
-                mainSplitPane.setResizeWeight(0.0);
-                mainSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-                frameManagerPanel.setPreferredSize(new Dimension(
-                        Config.getOptionInt("ui", "frameManagerSize", 150),
-                        Integer.MAX_VALUE));
-                frameManagerPanel.setMinimumSize(new Dimension(150, Integer.MAX_VALUE));
-                desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-                desktopPane.setMinimumSize(new Dimension(300, Integer.MAX_VALUE));
-                break;
-            case BOTTOM:
-                mainSplitPane.setTopComponent(desktopPane);
-                mainSplitPane.setBottomComponent(frameManagerPanel);
-                mainSplitPane.setResizeWeight(1.0);
-                mainSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
-                frameManagerPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE,
-                        Config.getOptionInt("ui", "frameManagerSize", 50)));
-                frameManagerPanel.setMinimumSize(new Dimension(Integer.MAX_VALUE,
-                        50));
-                desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-                desktopPane.setMinimumSize(new Dimension(Integer.MAX_VALUE, 300));
-                break;
-            case RIGHT:
-                mainSplitPane.setLeftComponent(desktopPane);
-                mainSplitPane.setRightComponent(frameManagerPanel);
-                mainSplitPane.setResizeWeight(1.0);
-                mainSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
-                frameManagerPanel.setPreferredSize(new Dimension(
-                        Config.getOptionInt("ui", "frameManagerSize", 50),
-                        Integer.MAX_VALUE));
-                frameManagerPanel.setMinimumSize(new Dimension(50, Integer.MAX_VALUE));
-                desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-                desktopPane.setMinimumSize(new Dimension(300, Integer.MAX_VALUE));
-                break;
-            default:
-                break;
+        case TOP:
+            mainSplitPane.setTopComponent(frameManagerPanel);
+            mainSplitPane.setBottomComponent(desktopPane);
+            mainSplitPane.setResizeWeight(0.0);
+            mainSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+            frameManagerPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE,
+                    Config.getOptionInt("ui", "frameManagerSize", 50)));
+            frameManagerPanel.setMinimumSize(new Dimension(Integer.MAX_VALUE, 50));
+            desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+            desktopPane.setMinimumSize(new Dimension(Integer.MAX_VALUE, 300));
+            break;
+        case LEFT:
+            mainSplitPane.setLeftComponent(frameManagerPanel);
+            mainSplitPane.setRightComponent(desktopPane);
+            mainSplitPane.setResizeWeight(0.0);
+            mainSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+            frameManagerPanel.setPreferredSize(new Dimension(
+                    Config.getOptionInt("ui", "frameManagerSize", 150),
+                    Integer.MAX_VALUE));
+            frameManagerPanel.setMinimumSize(new Dimension(150, Integer.MAX_VALUE));
+            desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+            desktopPane.setMinimumSize(new Dimension(300, Integer.MAX_VALUE));
+            break;
+        case BOTTOM:
+            mainSplitPane.setTopComponent(desktopPane);
+            mainSplitPane.setBottomComponent(frameManagerPanel);
+            mainSplitPane.setResizeWeight(1.0);
+            mainSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
+            frameManagerPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE,
+                    Config.getOptionInt("ui", "frameManagerSize", 50)));
+            frameManagerPanel.setMinimumSize(new Dimension(Integer.MAX_VALUE,
+                    50));
+            desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+            desktopPane.setMinimumSize(new Dimension(Integer.MAX_VALUE, 300));
+            break;
+        case RIGHT:
+            mainSplitPane.setLeftComponent(desktopPane);
+            mainSplitPane.setRightComponent(frameManagerPanel);
+            mainSplitPane.setResizeWeight(1.0);
+            mainSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
+            frameManagerPanel.setPreferredSize(new Dimension(
+                    Config.getOptionInt("ui", "frameManagerSize", 50),
+                    Integer.MAX_VALUE));
+            frameManagerPanel.setMinimumSize(new Dimension(50, Integer.MAX_VALUE));
+            desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
+            desktopPane.setMinimumSize(new Dimension(300, Integer.MAX_VALUE));
+            break;
+        default:
+            break;
         }
         
         mainSplitPane.setContinuousLayout(true);
@@ -722,8 +716,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         windowsMenu.addSeparator();
         
         addToMenu(windowsMenu, values.iterator(), (int) (windowsMenu.getX()
-        + windowsMenu.getPreferredSize().getHeight()
-        + windowsMenu.getPopupMenu().getPreferredSize().getHeight()));
+                + windowsMenu.getPreferredSize().getHeight()
+                + windowsMenu.getPopupMenu().getPreferredSize().getHeight()));
     }
     
     /**
@@ -737,7 +731,7 @@ public final class MainFrame extends JFrame implements WindowListener,
             final int location) {
         while (it.hasNext()) {
             if (location + menu.getPopupMenu().getPreferredSize().getHeight()
-            > Toolkit.getDefaultToolkit().getScreenSize().getHeight()) {
+                    > Toolkit.getDefaultToolkit().getScreenSize().getHeight()) {
                 final JMenu subMenu = new JMenu("More ->");
                 menu.add(subMenu);
                 addToMenu(subMenu, it, 0);

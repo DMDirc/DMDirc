@@ -23,6 +23,7 @@
 package com.dmdirc.ui.dummy;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.StringTranscoder;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.GlobalCommandParser;
@@ -31,6 +32,7 @@ import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.beans.PropertyVetoException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import javax.swing.Icon;
@@ -45,10 +47,10 @@ public class DummyInputWindow implements InputWindow {
     private String title;
     
     private boolean visible;
-
+    
     public DummyInputWindow(WritableFrameContainer owner, CommandParser commandParser) {
     }
-
+    
     /** {@inheritDoc} */
     public CommandParser getCommandParser() {
         return GlobalCommandParser.getGlobalCommandParser();
@@ -58,7 +60,7 @@ public class DummyInputWindow implements InputWindow {
     public InputHandler getInputHandler() {
         return new InputHandler(new JTextField(), null, this);
     }
-
+    
     /** {@inheritDoc} */
     public void setAwayIndicator(final boolean isAway) {
         // Do nothing
@@ -86,45 +88,50 @@ public class DummyInputWindow implements InputWindow {
     public ConfigManager getConfigManager() {
         return new ConfigManager("dummy", "dummy", "dummy");
     }
-
+    
     public FrameContainer getContainer() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     public boolean isVisible() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     /** {@inheritDoc} */
     public void setVisible(final boolean isVisible) {
         visible = isVisible;
     }
-
+    
     public String getTitle() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     public boolean isMaximum() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     public void setMaximum(boolean b) throws PropertyVetoException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-
+    
     /** {@inheritDoc} */
     public void setTitle(final String title) {
         this.title = title;
     }
-
+    
     /** {@inheritDoc} */
     public void open() {
         // Do nothing
     }
-
+    
     /** {@inheritDoc} */
     public void setFrameIcon(final Icon icon) {
         // Do nothing
     }
-
+    
+    /** {@inheritDoc} */
+    public StringTranscoder getTranscoder() {
+        return new StringTranscoder(Charset.defaultCharset());
+    }
+    
 }

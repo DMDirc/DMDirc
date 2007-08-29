@@ -51,49 +51,49 @@ public final class DummyFrameManager implements FrameManager {
     
     /** {@inheritDoc} */
     public void addServer(final Server server) {
-        Main.getUI().getMainWindow().getStatusBar()
+        Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: addServer: " + server);
     }
     
     /** {@inheritDoc} */
     public void delServer(final Server server) {
-        Main.getUI().getMainWindow().getStatusBar()
+        Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: delServer: " + server);
     }
     
     /** {@inheritDoc} */
     public void addChannel(final Server server, final Channel channel) {
-        Main.getUI().getMainWindow().getStatusBar()
+        Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: addChannel: " + channel + "@" + server);
     }
     
     /** {@inheritDoc} */
     public void delChannel(final Server server, final Channel channel) {
-        Main.getUI().getMainWindow().getStatusBar()
+        Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: delChannel: " + channel + "@" + server);
     }
     
     /** {@inheritDoc} */
     public void addQuery(final Server server, final Query query) {
-        Main.getUI().getMainWindow().getStatusBar()
+        Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: addQuery: " + query + "@" + server);
     }
     
     /** {@inheritDoc} */
     public void delQuery(final Server server, final Query query) {
-        Main.getUI().getMainWindow().getStatusBar()
+        Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: delQuery: " + query + "@" + server);
     }
     
     /** {@inheritDoc} */
     public void addCustom(final Server server, final FrameContainer window) {
-        Main.getUI().getMainWindow().getStatusBar()
+        Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: addCustom: " + window + "@" + server);
     }
     
     /** {@inheritDoc} */
     public void delCustom(final Server server, final FrameContainer window) {
-        Main.getUI().getMainWindow().getStatusBar()
+        Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: delCustom: " + window + "@" + server);
     }
     
@@ -109,25 +109,25 @@ public final class DummyFrameManager implements FrameManager {
     
     /** {@inheritDoc} */
     public void showNotification(final FrameContainer source, final Color colour) {
-        Main.getUI().getMainWindow().getStatusBar()
+        Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: Notifcation for " + source);
     }
     
     /** {@inheritDoc} */
     public void clearNotification(final FrameContainer source) {
-        Main.getUI().getMainWindow().getStatusBar()
+        Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: Clear notification for " + source);
     }
     
     /** {@inheritDoc} */
     public void setSelected(final FrameContainer source) {
-        Main.getUI().getMainWindow().getStatusBar()
+        Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: Now focused: " + source);
     }
 
     /** {@inheritDoc} */
     public void iconUpdated(final FrameContainer window) {
-        Main.getUI().getMainWindow().getStatusBar()
+        Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: Icon changed: " + window);
     }
 }

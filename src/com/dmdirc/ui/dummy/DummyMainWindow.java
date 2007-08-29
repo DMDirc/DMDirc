@@ -84,6 +84,7 @@ public class DummyMainWindow implements MainWindow {
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public StatusBar getStatusBar() {
         return new DummyStatusBar();
     }

@@ -24,6 +24,7 @@ package com.dmdirc.ui.dummy;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.StringTranscoder;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.GlobalCommandParser;
 import com.dmdirc.config.ConfigManager;
@@ -31,6 +32,7 @@ import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ServerWindow;
 
 import java.beans.PropertyVetoException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import javax.swing.Icon;
@@ -129,6 +131,11 @@ public class DummyServerWindow implements ServerWindow {
     /** {@inheritDoc} */
     public void setFrameIcon(final Icon icon) {
         // Do nothing
+    }
+    
+    /** {@inheritDoc} */
+    public StringTranscoder getTranscoder() {
+        return new StringTranscoder(Charset.defaultCharset());
     }
     
 }
