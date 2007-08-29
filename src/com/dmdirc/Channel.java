@@ -286,7 +286,7 @@ public final class Channel extends MessageTarget implements
     /**
      * Updates the title of the channel frame, and of the main frame if appropriate.
      */
-    private void updateTitle() {       
+    private void updateTitle() {
         String temp = Styliser.stipControlCodes(channelInfo.getName());
         
         if (channelInfo.getTopic().length() > 0) {
@@ -709,6 +709,13 @@ public final class Channel extends MessageTarget implements
      * @return A string[] containing displayable components
      */
     private String[] getDetails(final ChannelClientInfo client) {
+        if (client == null) {
+            // WTF?
+            Logger.appError(ErrorLevel.HIGH, "Channel.getDetails called with null ChannelClientInfo",
+                    new UnsupportedOperationException());
+            return new String[]{"null", "null", "nullity.dmdirc.com"};
+        }
+        
         final String[] res = new String[3];
         res[0] = client.getNickname();
         res[1] = client.getClient().getIdent();
