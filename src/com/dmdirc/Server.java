@@ -1040,7 +1040,7 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public void onPingFailed(final IRCParser tParser) {
-        Main.getUI().getMainWindow().getStatusBar().setMessage("No ping reply from "
+        Main.getUI().getStatusBar().setMessage("No ping reply from "
                 + this.server + " for over "
                 + Math.floor(parser.getPingTime(false) / 1000.0) + " seconds.", null, 10);
         

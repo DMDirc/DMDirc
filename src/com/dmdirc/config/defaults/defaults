@@ -48,6 +48,16 @@ notifications.numeric_318=active
 notifications.numeric_319=active
 notifications.numeric_330=active
 notifications.numeric_343=active
+
+notifications.numeric_401=server
+notifications.numeric_421=server
+notifications.numeric_461=server
+notifications.numeric_471=server
+notifications.numeric_472=server
+notifications.numeric_473=server
+notifications.numeric_474=server
+notifications.numeric_475=server
+notifications.numeric_479=server
         
 ui.backgroundcolour=0
 ui.foregroundcolour=1

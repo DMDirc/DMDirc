@@ -389,6 +389,16 @@ public final class Formatter {
         defaultProperties.setProperty("numeric_319", "%4$s is on: %5$s");
         defaultProperties.setProperty("numeric_330", "%4$s %6$s %5$s" + stop + ".");
         defaultProperties.setProperty("numeric_343", "%4$s %6$s %5$s" + stop + ".");
+        
+        defaultProperties.setProperty("numeric_401", "6A7000%4$s" + stop + ": %5$s");
+        defaultProperties.setProperty("numeric_421", "6A7000%4$s" + stop + ": %5$s");
+        defaultProperties.setProperty("numeric_461", "6A7000%4$s" + stop + ": %5$s");
+        defaultProperties.setProperty("numeric_471", "6A7000%4$s" + stop + ": %5$s");
+        defaultProperties.setProperty("numeric_472", "6A7000%4$s" + stop + ": %5$s");
+        defaultProperties.setProperty("numeric_473", "6A7000%4$s" + stop + ": %5$s");
+        defaultProperties.setProperty("numeric_474", "6A7000%4$s" + stop + ": %5$s");
+        defaultProperties.setProperty("numeric_475", "6A7000%4$s" + stop + ": %5$s");
+        defaultProperties.setProperty("numeric_479", "6A7000%4$s" + stop + ": %5$s");
     }
     
     /**
