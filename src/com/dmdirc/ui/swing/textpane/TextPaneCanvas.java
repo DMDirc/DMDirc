@@ -380,9 +380,19 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         if (info[0] != -1) {
             final AttributedCharacterIterator iterator = document.getLine(info[0]).getIterator();
             iterator.setIndex(info[2]);
-            final Object linkattr = iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+            Object linkattr = iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
             if (linkattr instanceof String) {
-                fireHyperlinkClicked((String) linkattr);
+                fireHyperlinkClicked((String) linkattr, e);
+                return;
+            }
+            linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
+            if (linkattr instanceof String) {
+                fireChannelClicked((String) linkattr, e);
+                return;
+            }
+            linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
+            if (linkattr instanceof String) {
+                fireNicknameClicked((String) linkattr, e);
                 return;
             }
             
@@ -407,8 +417,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 selEndLine = info[0];
                 selStartChar = 0;
                 selEndChar = clickedText.length();
-            } else if (start != -1 && end != -1) {
-                checkClickedText(clickedText.substring(start, end), e.getButton());
             }
             
         }
@@ -530,7 +538,17 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         if (info[0] != -1) {
             final AttributedCharacterIterator iterator = document.getLine(info[0]).getIterator();
             iterator.setIndex(info[2]);
-            final Object linkattr = iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+            Object linkattr = iterator.getAttributes().get(IRCTextAttribute.HYPERLINK);
+            if (linkattr instanceof String) {
+                setCursor(HAND_CURSOR);
+                return;
+            }
+            linkattr = iterator.getAttributes().get(IRCTextAttribute.CHANNEL);
+            if (linkattr instanceof String) {
+                setCursor(HAND_CURSOR);
+                return;
+            }
+            linkattr = iterator.getAttributes().get(IRCTextAttribute.NICKNAME);
             if (linkattr instanceof String) {
                 setCursor(HAND_CURSOR);
                 return;
@@ -577,21 +595,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     }
     
     /**
-     * Checks the clicked text and fires the appropriate events.
-     *
-     * @param clickedText Text clicked
-     * @param button Button triggering event
-     */
-    public void checkClickedText(final String clickedText, final int button) {
-        if (textPane.isValidChannel(clickedText)) {
-            fireChannelClicked(clickedText);
-        }
-        if (textPane.isValidNickname(clickedText)) {
-            fireNicknameClicked(clickedText, button);
-        }
-    }
-    
-    /**
      *
      * Returns the line information from a mouse click inside the textpane.
      *
@@ -634,28 +637,32 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     
     /**
      * Informs listeners when a word has been clicked on.
+     *
      * @param text word clicked on
+     * @param event Triggering Event
      */
-    private void fireHyperlinkClicked(final String text) {
-        textPane.fireHyperlinkClicked(text);
+    private void fireHyperlinkClicked(final String text, final MouseEvent event) {
+        textPane.fireHyperlinkClicked(text, event);
     }
     
     /**
      * Informs listeners when a channel has been clicked on.
+     *
      * @param text word clicked on
+     * @param event Triggering Event
      */
-    private void fireChannelClicked(final String text) {
-        textPane.fireChannelClicked(text);
+    private void fireChannelClicked(final String text, final MouseEvent event) {
+        textPane.fireChannelClicked(text, event);
     }
     
     /**
      * Informs listeners when a nickname has been clicked on.
      *
      * @param text word clicked on
-     * @param button Button click was triggered by
+     * @param event Triggering Event
      */
-    private void fireNicknameClicked(final String text, final int button) {
-        textPane.fireNicknameClicked(text, button);
+    private void fireNicknameClicked(final String text, final MouseEvent event) {
+        textPane.fireNicknameClicked(text, event);
     }
     
     /**

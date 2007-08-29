@@ -92,12 +92,6 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
     /** The channel object that owns this frame. */
     private final Channel parent;
     
-    /** nicklist popup menu. */
-    private JPopupMenu nicklistPopup;
-    
-    /** Command map. */
-    private final Map<String, Command> commands;
-    
     /**
      * Creates a new instance of ChannelFrame. Sets up callbacks and handlers,
      * and default options for the form.
@@ -107,8 +101,6 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
         super(owner);
         
         parent = owner;
-        
-        commands = new HashMap<String, Command>();
         
         initComponents();
         
@@ -184,10 +176,6 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
         getPopup().add(settingsMI);
         final JPanel panel = new JPanel(new BorderLayout());
         
-        nicklistPopup = new JPopupMenu();
-        popuplateNicklistPopup();
-        
-        
         splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
         
         final JScrollPane nickScrollPane = new JScrollPane();
@@ -254,22 +242,6 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
         }
         if (actionEvent.getSource() == settingsMI) {
             ChannelSettingsDialog.getChannelSettingDialog((Channel) getContainer()).setVisible(true);
-        }
-    }
-    
-    /** Popuplates the nicklist popup. */
-    private void popuplateNicklistPopup() {
-        nicklistPopup.removeAll();
-        commands.clear();
-        
-        final List<Command> commandList = CommandManager.getNicklistCommands();
-        for (Command command : commandList) {
-            commands.put(command.getName(), command);
-            final JMenuItem mi = new JMenuItem(command.getName().substring(0, 1).
-                    toUpperCase(Locale.getDefault()) + command.getName().substring(1));
-            mi.setActionCommand(command.getName());
-            mi.addActionListener(this);
-            nicklistPopup.add(mi);
         }
     }
     

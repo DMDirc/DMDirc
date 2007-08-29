@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.textpane;
 
+import java.awt.event.MouseEvent;
 import java.util.EventListener;
 
 /**
@@ -33,22 +34,24 @@ public interface TextPaneListener extends EventListener {
      * Fired when a hyperlink is clicked. 
      *
      * @param url Hyperlink that was clicked on
+     * @param event Triggering Event
      */
-    void hyperlinkClicked(final String url);
+    void hyperlinkClicked(final String url, final MouseEvent event);
     
     /**
      * Fired when a channel is clicked.
      *
      * @param channel Name of the channel clicked on
+     * @param event Triggering Event
      */
-    void channelClicked(final String channel);
+    void channelClicked(final String channel, final MouseEvent event);
     
     /**
      * Fired when a channel is clicked.
      *
      * @param channel Name of the channel clicked on
-     * @param button Button that was clicked
+     * @param event Triggering Event
      */
-    void nickNameClicked(final String channel, final int button);
+    void nickNameClicked(final String channel, final MouseEvent event);
     
 }

@@ -33,6 +33,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.text.AttributedCharacterIterator;
@@ -424,12 +425,13 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * Informs listeners when a word has been clicked on.
      *
      * @param text word clicked on
+     * @param event Triggering Event
      */
-    protected void fireHyperlinkClicked(final String text) {
+    protected void fireHyperlinkClicked(final String text, final MouseEvent event) {
         final Object[] listeners = textPaneListeners.getListenerList();
         for (int i = 0; i < listeners.length; i += 2) {
             if (listeners[i] == TextPaneListener.class) {
-                ((TextPaneListener) listeners[i + 1]).hyperlinkClicked(text);
+                ((TextPaneListener) listeners[i + 1]).hyperlinkClicked(text, event);
             }
         }
     }
@@ -438,12 +440,13 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * Informs listeners when a word has been clicked on.
      *
      * @param text word clicked on
+     * @param event Triggering Event
      */
-    protected void fireChannelClicked(final String text) {
+    protected void fireChannelClicked(final String text, final MouseEvent event) {
         final Object[] listeners = textPaneListeners.getListenerList();
         for (int i = 0; i < listeners.length; i += 2) {
             if (listeners[i] == TextPaneListener.class) {
-                ((TextPaneListener) listeners[i + 1]).channelClicked(text);
+                ((TextPaneListener) listeners[i + 1]).channelClicked(text, event);
             }
         }
     }
@@ -452,13 +455,13 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * Informs listeners when a nickname has been clicked on.
      *
      * @param text word clicked on
-     * @param button Button click was triggered by
+     * @param event Triggering Event
      */
-    protected void fireNicknameClicked(final String text, final int button) {
+    protected void fireNicknameClicked(final String text, final MouseEvent event) {
         final Object[] listeners = textPaneListeners.getListenerList();
         for (int i = 0; i < listeners.length; i += 2) {
             if (listeners[i] == TextPaneListener.class) {
-                ((TextPaneListener) listeners[i + 1]).nickNameClicked(text, button);
+                ((TextPaneListener) listeners[i + 1]).nickNameClicked(text, event);
             }
         }
     }

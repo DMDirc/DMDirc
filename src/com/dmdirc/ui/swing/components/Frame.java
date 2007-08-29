@@ -27,6 +27,8 @@ import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.StringTranscoder;
+import com.dmdirc.commandparser.Command;
+import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
@@ -59,6 +61,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.text.AttributedCharacterIterator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -113,6 +119,12 @@ public abstract class Frame extends JInternalFrame implements Window,
     /** String transcoder. */
     private StringTranscoder transcoder;
     
+    /** nicklist popup menu. */
+    protected JPopupMenu nicklistPopup;
+    
+    /** Command map. */
+    protected final Map<String, Command> commands;
+    
     /**
      * Creates a new instance of Frame.
      *
@@ -123,6 +135,7 @@ public abstract class Frame extends JInternalFrame implements Window,
         final ConfigManager config = owner.getConfigManager();
         final Boolean pref = Config.getOptionBool("ui", "maximisewindows");
         parent = owner;
+        commands = new HashMap<String, Command>();
         
         setFrameIcon(Main.getUI().getMainWindow().getIcon());
         
@@ -225,6 +238,9 @@ public abstract class Frame extends JInternalFrame implements Window,
         popup.add(copyMI);
         popup.setOpaque(true);
         popup.setLightWeightPopupEnabled(true);
+        
+        nicklistPopup = new JPopupMenu();
+        popuplateNicklistPopup();
         
         searchBar = new SearchBar(this);
         searchBar.setVisible(false);
@@ -520,26 +536,34 @@ public abstract class Frame extends JInternalFrame implements Window,
     }
     
     /** {@inheritDoc} */
-    public void hyperlinkClicked(final String url) {
-        Main.getUI().getStatusBar().setMessage("Opening: " + url);
-        BrowserLauncher.openURL(url);
-    }
-    
-    /** {@inheritDoc} */
-    public void channelClicked(final String channel) {
-        if (parent.getServer().getParser().getChannelInfo(channel) == null) {
-            parent.getServer().getParser().joinChannel(channel);
+    public void hyperlinkClicked(final String url, final MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            //Show hyperlink popup
         } else {
-            parent.getServer().getChannel(channel).activateFrame();
+            Main.getUI().getStatusBar().setMessage("Opening: " + url);
+            BrowserLauncher.openURL(url);
         }
     }
     
     /** {@inheritDoc} */
-    public void nickNameClicked(final String nickname, final int button) {
-        if (MouseEvent.BUTTON1 == button) {
-            //Do something
-        } else if (MouseEvent.BUTTON2 == button) {
-            //Do something
+    public void channelClicked(final String channel, final MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            //Show channel popup
+        } else {
+            if (parent.getServer().getParser().getChannelInfo(channel) == null) {
+                parent.getServer().getParser().joinChannel(channel);
+            } else {
+                parent.getServer().getChannel(channel).activateFrame();
+            }
+        }
+    }
+    
+    /** {@inheritDoc} */
+    public void nickNameClicked(final String nickname, final MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            final Point point = getMousePosition();
+            popuplateNicklistPopup();
+            nicklistPopup.show(this, (int) point.getX(), (int) point.getY());
         }
     }
     
@@ -567,6 +591,22 @@ public abstract class Frame extends JInternalFrame implements Window,
             setIcon(true);
         } catch (PropertyVetoException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
+        }
+    }
+    
+    /** Popuplates the nicklist popup. */
+    protected void popuplateNicklistPopup() {
+        nicklistPopup.removeAll();
+        commands.clear();
+        
+        final List<Command> commandList = CommandManager.getNicklistCommands();
+        for (Command command : commandList) {
+            commands.put(command.getName(), command);
+            final JMenuItem mi = new JMenuItem(command.getName().substring(0, 1).
+                    toUpperCase(Locale.getDefault()) + command.getName().substring(1));
+            mi.setActionCommand(command.getName());
+            mi.addActionListener(this);
+            nicklistPopup.add(mi);
         }
     }
     
