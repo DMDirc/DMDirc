@@ -164,6 +164,10 @@ public final class FileResourceManager extends ResourceManager {
     private static List<File> getFileListing(final File startingDirectory) {
         final List<File> result = new ArrayList<File>();
         
+        if (startingDirectory.listFiles() == null) {
+            return result;
+        }
+        
         final List<File> files = Arrays.asList(startingDirectory.listFiles());
         for (File file : files) {
             if (file.isFile()) {
