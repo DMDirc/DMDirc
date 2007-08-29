@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -74,7 +75,11 @@ public abstract class ResourceManager {
                 if ("file".equals(protocol)) {
                     me = new FileResourceManager();
                 } else if ("jar".equals(protocol)) {
-                    me = new ZipResourceManager(path.substring(5, path.length() - 31));
+                    if (System.getProperty("os.name").startsWith("Windows")) {
+                        me = new ZipResourceManager(path.substring(6, path.length() - 23));
+                    } else {
+                        me = new ZipResourceManager(path.substring(5, path.length() - 23));
+                    }
                 }
             } catch (IOException ex) {
                 Logger.appError(ErrorLevel.MEDIUM, "Unable to determine how DMDirc"
@@ -109,7 +114,7 @@ public abstract class ResourceManager {
      * @throws IOException if the write operation fails
      */
     public final void resourceToFile(final byte[] resource, final File file)
-            throws IOException {
+    throws IOException {
         final FileOutputStream out = new FileOutputStream(file, false);
         
         out.write(resource);

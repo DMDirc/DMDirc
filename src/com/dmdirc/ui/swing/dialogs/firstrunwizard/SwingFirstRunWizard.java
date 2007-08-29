@@ -23,11 +23,13 @@
 package com.dmdirc.ui.swing.dialogs.firstrunwizard;
 
 import com.dmdirc.Main;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.resourcemanager.ResourceManager;
 import com.dmdirc.ui.interfaces.FirstRunWizard;
 import com.dmdirc.ui.swing.dialogs.ProfileEditorDialog;
+import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsManagerDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.Wizard;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
@@ -115,6 +117,7 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
                     Logger.userError(ErrorLevel.LOW, "Failed to extract actions");
                 }
             }
+            ActionManager.loadActions();
         }
     }
     
