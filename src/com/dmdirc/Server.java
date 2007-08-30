@@ -873,7 +873,7 @@ public final class Server extends WritableFrameContainer implements
             }
         }
         
-        if (newNick == null) {
+        if (newNick == null || newNick.isEmpty()) {
             newNick = lastNick + (int) (Math.random() * 10);
         }
         
