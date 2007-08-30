@@ -63,7 +63,7 @@ public class Action implements Serializable {
     private String name;
     
     /** The file containing this action. */
-    private final File file;
+    private File file;
     
     /** The properties read for this action. */
     private Properties properties;
@@ -252,6 +252,7 @@ public class Action implements Serializable {
         }
         
         try {
+            System.out.println(file.getAbsolutePath());
             final FileOutputStream outputStream = new FileOutputStream(file);
             properties.store(outputStream, "Created by GUI actions editor");
             outputStream.close();
@@ -348,8 +349,12 @@ public class Action implements Serializable {
      * @param newName The new name for this action
      */
     public void rename(final String newName) {
-        file.renameTo(new File(file.getParent() + System.getProperty("file.separator") + newName));
+        file.delete();
+        
+        file = new File(file.getParent() + System.getProperty("file.separator") + newName);
         name = newName;
+        
+        save();
     }
     
     /**
@@ -363,7 +368,10 @@ public class Action implements Serializable {
         final String fs = System.getProperty("file.separator");
         final String location = ActionManager.getDirectory() + group + fs + name;
         
-        file.renameTo(new File(location));
+        file.delete();
+        file = new File(location);
+        
+        save();
     }
     
     /**
