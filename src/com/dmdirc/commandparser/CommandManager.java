@@ -280,7 +280,7 @@ public final class CommandManager {
         new RawServerCommand("join");
         new RawServerCommand("lusers");
         new RawServerCommand("motd");
-        new RawServerCommand("whois");
+        registerPopupCommand(new RawServerCommand("whois"));
         new RawServerCommand("who");
         
         // Query commands
