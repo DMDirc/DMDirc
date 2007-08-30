@@ -195,7 +195,7 @@ public final class Channel extends MessageTarget implements
                     this, channelInfo.getUser(me), line);
             
             window.addLine(buff, modes, details[0], details[1], details[2],
-                    line, channelInfo);
+                    window.getTranscoder().encode(line), channelInfo);
             
             channelInfo.sendMessage(window.getTranscoder().encode(line));
         } else {
@@ -223,7 +223,7 @@ public final class Channel extends MessageTarget implements
                     this, channelInfo.getUser(me), action);
             
             window.addLine(buff, modes, me.getNickname(), me.getIdent(),
-                    me.getHost(), action, channelInfo);
+                    me.getHost(), window.getTranscoder().encode(action), channelInfo);
             
             channelInfo.sendAction(window.getTranscoder().encode(action));
         }

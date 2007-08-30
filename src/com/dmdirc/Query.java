@@ -135,7 +135,8 @@ public final class Query extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.QUERY_SELF_MESSAGE, buff, this, line);
             
-            window.addLine(buff, client.getNickname(), client.getIdent(), client.getHost(), line);
+            window.addLine(buff, client.getNickname(), client.getIdent(), 
+                    client.getHost(), window.getTranscoder().encode(line));
         } else {
             sendLine(line.substring(0, getMaxLineLength()));
             sendLine(line.substring(getMaxLineLength()));
@@ -163,7 +164,8 @@ public final class Query extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.QUERY_SELF_ACTION, buff, this, action);
             
-            window.addLine(buff, client.getNickname(), client.getIdent(), client.getHost(), action);
+            window.addLine(buff, client.getNickname(), client.getIdent(), 
+                    client.getHost(), window.getTranscoder().encode(action));
         } else {
             window.addLine("actionTooLong", action.length());
         }
