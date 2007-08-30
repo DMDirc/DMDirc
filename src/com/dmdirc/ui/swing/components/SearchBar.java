@@ -29,6 +29,7 @@ import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.textpane.TextPane;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
+import com.dmdirc.ui.swing.actions.SearchAction;
 
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -41,9 +42,11 @@ import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
@@ -59,7 +62,7 @@ public final class SearchBar extends JPanel implements ActionListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4;
+    private static final long serialVersionUID = 5;
     
     /** Frame parent. */
     private final Frame parent;
@@ -100,6 +103,11 @@ public final class SearchBar extends JPanel implements ActionListener,
         super();
         
         this.parent = newParent;
+        
+        getInputMap(JComponent.WHEN_FOCUSED).
+                put(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), "searchAction");
+        
+        getActionMap().put("searchAction", new SearchAction(this));
         
         initComponents();
         layoutComponents();
@@ -163,7 +171,7 @@ public final class SearchBar extends JPanel implements ActionListener,
     /** Adds listeners to components. */
     private void addListeners() {
         closeButton.addActionListener(this);
-        this.addKeyListener(this);
+        addKeyListener(this);
         searchBox.addKeyListener(this);
         nextButton.addActionListener(this);
         prevButton.addActionListener(this);

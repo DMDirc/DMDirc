@@ -27,8 +27,10 @@ import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.StringTranscoder;
+import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.Command;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
@@ -60,6 +62,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.text.AttributedCharacterIterator;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -595,12 +598,30 @@ public abstract class Frame extends JInternalFrame implements Window,
     }
     
     /** Popuplates the nicklist popup. */
-    protected void popuplateNicklistPopup() {
+    protected final void popuplateNicklistPopup() {
         nicklistPopup.removeAll();
         commands.clear();
         
         final List<Command> commandList = CommandManager.getNicklistCommands();
+        final List<Command> serverCommands = new ArrayList<Command>();
+        final List<Command> channelCommands = new ArrayList<Command>();
         for (Command command : commandList) {
+            if (command instanceof ServerCommand) {
+                serverCommands.add(command);
+            } else if (command instanceof ChannelCommand) {
+                channelCommands.add(command);
+            }
+        }
+        for (Command command : serverCommands) {
+            commands.put(command.getName(), command);
+            final JMenuItem mi = new JMenuItem(command.getName().substring(0, 1).
+                    toUpperCase(Locale.getDefault()) + command.getName().substring(1));
+            mi.setActionCommand(command.getName());
+            mi.addActionListener(this);
+            nicklistPopup.add(mi);
+        }
+        nicklistPopup.addSeparator();
+        for (Command command : channelCommands) {
             commands.put(command.getName(), command);
             final JMenuItem mi = new JMenuItem(command.getName().substring(0, 1).
                     toUpperCase(Locale.getDefault()) + command.getName().substring(1));
