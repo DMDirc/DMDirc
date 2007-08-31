@@ -169,7 +169,7 @@ public final class NewServerDialog extends StandardDialog {
         serverField.setText("blueyonder.uk.quakenet.org");
         portField.setText("7000");
         passwordField.setText("");
-        sslCheck.setEnabled(false);
+        sslCheck.setSelected(false);
         newServerWindowCheck.setEnabled(false);
         
         me.serverField.requestFocus();
