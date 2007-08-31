@@ -145,17 +145,7 @@ public final class NewServerDialog extends StandardDialog {
             me = new NewServerDialog();
         }
         
-        me.serverField.requestFocus();
-        
-        if (ServerManager.getServerManager().numServers() == 0
-                || Main.getUI().getMainWindow().getActiveFrame() == null) {
-            me.newServerWindowCheck.setSelected(true);
-            me.newServerWindowCheck.setEnabled(false);
-        } else {
-            me.newServerWindowCheck.setEnabled(true);
-        }
-        
-        me.populateProfiles();
+        me.update();
         
         me.setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
         me.setVisible(true);
@@ -172,6 +162,27 @@ public final class NewServerDialog extends StandardDialog {
             me = new NewServerDialog();
         }
         return me;
+    }
+    
+    /** Updates the values to defaults. */
+    private void update() {
+        serverField.setText("blueyonder.uk.quakenet.org");
+        portField.setText("7000");
+        passwordField.setText("");
+        sslCheck.setEnabled(false);
+        newServerWindowCheck.setEnabled(false);
+        
+        me.serverField.requestFocus();
+        
+        if (ServerManager.getServerManager().numServers() == 0
+                || Main.getUI().getMainWindow().getActiveFrame() == null) {
+            me.newServerWindowCheck.setSelected(true);
+            me.newServerWindowCheck.setEnabled(false);
+        } else {
+            me.newServerWindowCheck.setEnabled(true);
+        }
+        
+        me.populateProfiles();
     }
     
     /**
@@ -257,15 +268,11 @@ public final class NewServerDialog extends StandardDialog {
         serverLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         serverLabel.setText("Server:");
         
-        serverField.setText("blueyonder.uk.quakenet.org");
-        
         instructionLabel.setText("To connect to a new IRC server, enter "
                 + "the server name below");
         
         portLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         portLabel.setText("Port:");
-        
-        portField.setText("7000");
         
         passwordLabel.setText("Password:");
         
@@ -282,19 +289,6 @@ public final class NewServerDialog extends StandardDialog {
         newServerWindowCheck.setBorder(
                 BorderFactory.createEmptyBorder(0, 0, 0, 0));
         newServerWindowCheck.setMargin(new Insets(0, 0, 0, 0));
-        
-        rememberPasswordCheck.setText("Remember server password");
-        rememberPasswordCheck.setBorder(
-                BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        rememberPasswordCheck.setEnabled(false);
-        rememberPasswordCheck.setMargin(new Insets(0, 0, 0, 0));
-        
-        autoConnectCheck.setText("Connect to this server automatically "
-                + "in the future");
-        autoConnectCheck.setBorder(
-                BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        autoConnectCheck.setEnabled(false);
-        autoConnectCheck.setMargin(new Insets(0, 0, 0, 0));
         
         sslCheck.setText("Use a secure (SSL) connection");
         sslCheck.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -420,16 +414,10 @@ public final class NewServerDialog extends StandardDialog {
         constraints.gridy = 7;
         getContentPane().add(newServerWindowCheck, constraints);
         
-        constraints.gridy = 8;
-        getContentPane().add(rememberPasswordCheck, constraints);
-        
-        constraints.gridy = 9;
-        getContentPane().add(autoConnectCheck, constraints);
-        
         constraints.weighty = 0.0;
         constraints.weightx = 1.0;
         constraints.gridx = 0;
-        constraints.gridy = 10;
+        constraints.gridy = 8;
         constraints.gridwidth = 2;
         constraints.fill = GridBagConstraints.BOTH;
         getContentPane().add(Box.createHorizontalGlue(), constraints);
