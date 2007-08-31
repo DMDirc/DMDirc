@@ -22,7 +22,10 @@
 
 package com.dmdirc.ui.swing.textpane;
 
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ClientInfo;
+import com.dmdirc.ui.messages.IRCTextAttribute;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.swing.components.Frame;
 
@@ -36,14 +39,23 @@ import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.font.TextAttribute;
 import java.text.AttributedCharacterIterator;
 import java.text.AttributedString;
+import java.util.Enumeration;
 
 import javax.swing.JComponent;
 import javax.swing.JScrollBar;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.EventListenerList;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Element;
+import javax.swing.text.StyleConstants.CharacterConstants;
+import javax.swing.text.StyleConstants.ColorConstants;
+import javax.swing.text.StyleConstants.FontConstants;
+import javax.swing.text.StyledDocument;
 
 /**
  * Styled, scrollable text pane.
@@ -124,7 +136,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * @param string The line to be stylised and added
      */
     public void addStyledString(final String string) {
-        final AttributedString text = Styliser.styledDocumentToAttributedString(
+        final AttributedString text = styledDocumentToAttributedString(
                 Styliser.getStyledString(new String[]{string, }));
         
         if (text.getIterator().getEndIndex() == 0) {
@@ -140,7 +152,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * @param strings The strings to be stylised and added to a line
      */
     public void addStyledString(final String[] strings) {
-        final AttributedString text = Styliser.styledDocumentToAttributedString(
+        final AttributedString text = styledDocumentToAttributedString(
                 Styliser.getStyledString(strings));
         
         if (text.getIterator().getEndIndex() == 0) {
@@ -148,6 +160,75 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         } else {
             addText(text);
         }
+    }
+    
+    /**
+     * Converts a StyledDocument into an AttributedString.
+     *
+     * @param doc StyledDocument to convert
+     *
+     * @return AttributedString representing the specified StyledDocument
+     */
+    public static AttributedString styledDocumentToAttributedString(final StyledDocument doc) {
+        //Now lets get hacky, loop through the styled document and add all styles to an attributedString
+        AttributedString attString = null;
+        final Element line = doc.getParagraphElement(0);
+        try {
+            attString = new AttributedString(line.getDocument().getText(0, line.getDocument().getLength()));
+        } catch (BadLocationException ex) {
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "Unable to insert styled string: " + ex.getMessage());
+        }
+        for (int i = 0; i < line.getElementCount(); i++) {
+            final Element element = line.getElement(i);
+            
+            final AttributeSet as = element.getAttributes();
+            final Enumeration<?> ae = as.getAttributeNames();
+            
+            while (ae.hasMoreElements()) {
+                final Object attrib = ae.nextElement();
+                
+                if (attrib == IRCTextAttribute.HYPERLINK) {
+                    //Hyperlink
+                    attString.addAttribute(IRCTextAttribute.HYPERLINK,
+                            as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == IRCTextAttribute.NICKNAME) {
+                    //Nicknames
+                    attString.addAttribute(IRCTextAttribute.NICKNAME,
+                            as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == IRCTextAttribute.CHANNEL) {
+                    //Channels
+                    attString.addAttribute(IRCTextAttribute.CHANNEL,
+                            as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == ColorConstants.Foreground) {
+                    //Foreground
+                    attString.addAttribute(TextAttribute.FOREGROUND,
+                            as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == ColorConstants.Background) {
+                    //Background
+                    attString.addAttribute(TextAttribute.BACKGROUND,
+                            as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == FontConstants.Bold) {
+                    //Bold
+                    attString.addAttribute(TextAttribute.WEIGHT,
+                            TextAttribute.WEIGHT_BOLD, element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == FontConstants.Family) {
+                    //Family
+                    attString.addAttribute(TextAttribute.FAMILY,
+                            as.getAttribute(attrib), element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == FontConstants.Italic) {
+                    //italics
+                    attString.addAttribute(TextAttribute.POSTURE,
+                            TextAttribute.POSTURE_OBLIQUE, element.getStartOffset(), element.getEndOffset());
+                } else if (attrib == CharacterConstants.Underline) {
+                    //Underline
+                    attString.addAttribute(TextAttribute.UNDERLINE,
+                            TextAttribute.UNDERLINE_ON, element.getStartOffset(), element.getEndOffset());
+                }
+            }
+        }
+        
+        return attString;
     }
     
     /**

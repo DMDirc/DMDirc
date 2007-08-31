@@ -236,6 +236,10 @@ public final class ActionsManagerDialog extends StandardDialog
         
         final Map<String, List<Action>> actionGroups = ActionManager.getGroups();
         
+        if (actionGroups == null) {
+            return;
+        }
+        
         final Object[] keys = actionGroups.keySet().toArray();
         
         Arrays.sort(keys);

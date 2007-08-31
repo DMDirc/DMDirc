@@ -26,30 +26,22 @@ import com.dmdirc.Channel;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import java.awt.Color;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Toolkit;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
-import javax.swing.AbstractAction;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.SimpleAttributeSet;
 
 /**
  * Topic panel.
@@ -159,13 +151,7 @@ public final class TopicModesPane extends JPanel implements KeyListener,
         constraints.gridy = 1;
         add(scrollPane, constraints);
         
-        if (topicLengthMax == 0) {
-            topicLengthLabel.setText(topicText.getText().length() + " characters");
-        } else {
-            topicLengthLabel.setText(topicLengthMax
-                    - topicText.getText().length() + " of " + topicLengthMax
-                    + " available");
-        }
+        topicChanged();
         
         constraints.gridy = 2;
         add(topicLengthLabel, constraints);
@@ -203,14 +189,17 @@ public final class TopicModesPane extends JPanel implements KeyListener,
     
     private void topicChanged() {
         if (topicLengthMax == 0) {
+            topicLengthLabel.setForeground(Color.BLACK);
             topicLengthLabel.setText(topicText.getText().length() 
             + " characters");
         } else {
             final int charsLeft = topicLengthMax - topicText.getText().length();
             if (charsLeft >= 0) {
+                topicLengthLabel.setForeground(Color.BLACK);
                 topicLengthLabel.setText(charsLeft + " of " + topicLengthMax 
                         + " available");
             } else {
+                topicLengthLabel.setForeground(Color.RED);
                 topicLengthLabel.setText(0 + " of " + topicLengthMax 
                         + " available " + (- 1 * charsLeft) 
                         + " too many characters");

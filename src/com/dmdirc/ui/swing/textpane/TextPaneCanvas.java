@@ -34,9 +34,11 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.font.LineBreakMeasurer;
+import java.awt.font.TextAttribute;
 import java.awt.font.TextHitInfo;
 import java.awt.font.TextLayout;
 import java.text.AttributedCharacterIterator;
+import java.text.AttributedString;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -330,28 +332,28 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
             
             // If the selection includes the chars we're showing
             if (lastChar > chars && firstChar < chars + layout.getCharacterCount()) {
-                final int trans = (int) (lineHeight / 2f + drawPosY);
-                final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
                 final String text = textPane.getTextFromLine(line).substring(firstChar, lastChar);
                 
-                g.setColor(textPane.getForeground());
-                
-                g.translate(3, trans);
-                g.fill(shape);
-                g.translate(-3, -1 * trans);
-                
-                g.setColor(textPane.getBackground());
-                
-                if (firstChar == 0) {
-                    g.translate(0, trans);
-                } else {
-                    g.translate(shape.getBounds().getX(), trans);
+                if (text.isEmpty()) {
+                    return;
                 }
-                g.drawString(text, drawPosX,  0);
-                if (firstChar == 0) {
-                    g.translate(0, -1 * trans);
-                } else {
-                    g.translate(-1 * shape.getBounds().getX(), -1 * trans);
+                
+                final int trans = (int) (lineHeight / 2f + drawPosY);
+                final AttributedString as = new AttributedString(
+                        textPane.getLine(line).getIterator(), firstChar, lastChar);
+                as.addAttribute(TextAttribute.FOREGROUND, textPane.getBackground());
+                as.addAttribute(TextAttribute.BACKGROUND, textPane.getForeground());
+                final TextLayout newLayout = new TextLayout(as.getIterator(),g.getFontRenderContext());
+                final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
+                
+                if (firstChar != 0) {
+                    g.translate(shape.getBounds().getX(), 0);
+                }
+                
+                newLayout.draw(g, drawPosX, trans);
+                
+                if (firstChar != 0) {
+                    g.translate(-1 * shape.getBounds().getX(), 0);
                 }
             }
         }

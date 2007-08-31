@@ -164,6 +164,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
             final StatusErrorNotifier newNotifier) {
         iconLabel.setIcon(newIcon);
         errorNotifier = newNotifier;
+        
         if (errorTimer != null && (System.currentTimeMillis()
         - errorTimer.scheduledExecutionTime()) <= 0) {
             errorTimer.cancel();

@@ -291,8 +291,10 @@ public final class AliasManagerDialog extends StandardDialog implements
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == deleteButton) {
-            tableModel.removeRow(table.getRowSorter().
-                    convertRowIndexToModel(table.getSelectedRow()));
+            if (table.getSelectedRow() != -1) {
+                tableModel.removeRow(table.getRowSorter().
+                        convertRowIndexToModel(table.getSelectedRow()));
+            }
         } else if (e.getSource() == addButton) {
             String name = JOptionPane.showInputDialog(this,
                     "Please enter the name for the new alias.",
