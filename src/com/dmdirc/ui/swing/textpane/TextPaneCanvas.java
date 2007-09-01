@@ -624,11 +624,12 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     } else if (textLayouts.get(entry.getValue()).getPart() == linePart) {
                         final TextHitInfo hit = entry.getValue().hitTestChar(
                                 (int) point.getX() - 6, (int) point.getY());
-                        if (hit.isLeadingEdge() || hit.getCharIndex() == 0) {
+                        /*if (hit.isLeadingEdge() || hit.getCharIndex() == 0) {
                             pos += hit.getCharIndex();
                         } else {
                             pos += hit.getCharIndex() + 1;
-                        }
+                        }*/
+                        pos += hit.getInsertionIndex();
                     }
                 }
             }
