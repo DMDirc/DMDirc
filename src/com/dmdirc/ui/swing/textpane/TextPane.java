@@ -24,10 +24,8 @@ package com.dmdirc.ui.swing.textpane;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.ui.messages.IRCTextAttribute;
 import com.dmdirc.ui.messages.Styliser;
-import com.dmdirc.ui.swing.components.Frame;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -68,10 +66,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
-    
-    /** Parent frame container. */
-    private final Frame owner;
+    private static final long serialVersionUID = 4;
     
     /** Scrollbar for the component. */
     private final JScrollBar scrollBar;
@@ -83,42 +78,36 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     /** Listener list. */
     private final EventListenerList textPaneListeners;
     
-    /**
-     * Creates a new instance of TextPane.
-     *
-     * @param owner Parent frame
-     */
-    public TextPane(final Frame owner) {
+    /** Creates a new instance of TextPane. */
+    public TextPane() {
         super();
-        
-        this.owner = owner;
         
         textPaneListeners = new EventListenerList();
         
         document = new IRCDocument();
         
-        this.setMinimumSize(new Dimension(0, 0));
+        setMinimumSize(new Dimension(0, 0));
         
-        this.setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
         
         canvas = new TextPaneCanvas(this, document);
         
-        this.setBorder(UIManager.getBorder("TextField.border"));
+        setBorder(UIManager.getBorder("TextField.border"));
         
-        this.add(canvas, BorderLayout.CENTER);
+        add(canvas, BorderLayout.CENTER);
         
         
         scrollBar = new JScrollBar(JScrollBar.VERTICAL);
-        this.add(scrollBar, BorderLayout.LINE_END);
+        add(scrollBar, BorderLayout.LINE_END);
         
-        this.setAutoscrolls(true);
+        setAutoscrolls(true);
         
         scrollBar.setMaximum(document.getNumLines());
         scrollBar.setBlockIncrement(10);
         scrollBar.setUnitIncrement(1);
         scrollBar.addAdjustmentListener(this);
         
-        this.addMouseWheelListener(this);
+        addMouseWheelListener(this);
     }
     
     /**
@@ -545,35 +534,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
                 ((TextPaneListener) listeners[i + 1]).nickNameClicked(text, event);
             }
         }
-    }
-    
-    /**
-     * Checks whether a given string is a valid channel.
-     *
-     * @param channel Channel name to verify
-     *
-     * @return true or false
-     */
-    public boolean isValidChannel(final String channel) {
-        if (owner != null && channel.length() > 0) {
-            return owner.getContainer().getServer().getParser().isValidChannelName(channel);
-        }
-        return false;
-    }
-    
-    /**
-     * Checks whether a given string is a valid nickname.
-     *
-     * @param channel Nickname to verify
-     *
-     * @return true or false
-     */
-    public boolean isValidNickname(final String nickname) {
-        ClientInfo client = null;
-        if (owner != null && nickname.length() > 0) {
-            client = owner.getContainer().getServer().getParser().getClientInfo(nickname);
-        }
-        return client != null;
     }
     
     /** Scrolls one page up in the textpane. */

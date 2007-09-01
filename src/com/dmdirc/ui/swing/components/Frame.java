@@ -217,7 +217,7 @@ public abstract class Frame extends JInternalFrame implements Window,
      * Initialises the components for this frame.
      */
     private void initComponents() {
-        setTextPane(new TextPane(this));
+        setTextPane(new TextPane());
         
         getTextPane().addMouseListener(this);
         getTextPane().addKeyListener(this);

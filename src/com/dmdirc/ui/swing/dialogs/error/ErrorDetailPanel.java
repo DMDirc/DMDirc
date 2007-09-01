@@ -103,7 +103,7 @@ public final class ErrorDetailPanel extends JPanel {
         date = new JTextField();
         level = new JTextField();
         status = new JTextField();
-        details = new TextPane(null);
+        details = new TextPane();
         
         id.setEditable(false);
         date.setEditable(false);

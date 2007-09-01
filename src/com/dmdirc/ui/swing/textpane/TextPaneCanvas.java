@@ -54,7 +54,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * class structure is changed (or anything else that would prevent
      * serialized objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 7;
+    private static final long serialVersionUID = 8;
     
     /** Hand cursor. */
     private static final Cursor HAND_CURSOR = new Cursor(Cursor.HAND_CURSOR);
@@ -377,7 +377,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         String clickedText = "";
         final int start;
         final int end;
-        final int[] info = getClickPosition(this.getMousePosition());
+        final int[] info = getClickPosition(getMousePosition());
         
         if (info[0] != -1) {
             final AttributedCharacterIterator iterator = document.getLine(info[0]).getIterator();
@@ -568,7 +568,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      * @param e responsible mouse event
      */
     private void highlightEvent(final MouseEventType type, final MouseEvent e) {
-        final Point point = this.getMousePosition();
+        final Point point = getMousePosition();
         
         if (point == null) {
             if (e.getXOnScreen() > getLocationOnScreen().getX()
@@ -624,11 +624,6 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                     } else if (textLayouts.get(entry.getValue()).getPart() == linePart) {
                         final TextHitInfo hit = entry.getValue().hitTestChar(
                                 (int) point.getX() - 6, (int) point.getY());
-                        /*if (hit.isLeadingEdge() || hit.getCharIndex() == 0) {
-                            pos += hit.getCharIndex();
-                        } else {
-                            pos += hit.getCharIndex() + 1;
-                        }*/
                         pos += hit.getInsertionIndex();
                     }
                 }
