@@ -347,6 +347,15 @@ public final class Channel extends MessageTarget implements
      * Closes the window without parting the channel.
      */
     public void closeWindow() {
+        closeWindow(true);
+    }
+    
+    /**
+     * Closes the window without parting the channel.
+     *
+     * @param shouldRemove Whether we should remove the window from the server
+     */
+    public void closeWindow(final boolean shouldRemove) {
         final CallbackManager callbackManager = server.getParser().getCallbackManager();
         
         for (String callback : CALLBACKS) {
@@ -355,7 +364,9 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, null, this);
         
-        server.delChannel(channelInfo.getName());
+        if (shouldRemove) {
+            server.delChannel(channelInfo.getName());
+        }
         
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {

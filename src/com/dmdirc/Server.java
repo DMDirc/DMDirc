@@ -107,6 +107,22 @@ public final class Server extends WritableFrameContainer implements
         "OnUserModeChanged", "OnUnknownNotice"
     };
     
+    /** An enumeration of possible states for servers. */
+    public static enum STATE {
+        /** Indicates the client is in the process of connecting. */
+        CONNECTING,
+        /** Indicates the client has connected to the server. */
+        CONNECTED,
+        /** Indicates that we've been temporarily disconnected. */
+        TRANSIENTLY_DISCONNECTED,
+        /** Indicates that the user has told us to disconnect. */
+        DISCONNECTED,
+        /** Indicates we're waiting for the auto-reconnect timer to fire. */
+        RECONNECT_WAIT,
+        /** Indicates that the server frame and its children are closing. */
+        CLOSING,
+    };
+    
     /** Open channels that currently exist on the server. */
     private final Map<String, Channel> channels  = new Hashtable<String, Channel>();
     /** Open query windows on the server. */
@@ -130,15 +146,13 @@ public final class Server extends WritableFrameContainer implements
     /** The profile we're using. */
     private transient Identity profile;
     
+    /** The current state of this server. */
+    private STATE myState = STATE.DISCONNECTED;
+    /** The timer we're using to delay reconnects. */
+    private Timer reconnectTimer;
+    
     /** Channels we're meant to auto-join. */
     private final List<String> autochannels;
-    
-    /**
-     * Used to indicate that this server is in the process of closing all of its
-     * windows, and thus requests for individual ones to be closed should be
-     * ignored.
-     */
-    private boolean closing;
     
     /** The tabcompleter used for this server. */
     private final TabCompleter tabCompleter = new TabCompleter();
@@ -151,8 +165,6 @@ public final class Server extends WritableFrameContainer implements
     private boolean away;
     /** Our reason for being away, if any. */
     private String awayMessage;
-    /** Whether we should attempt to reconnect or not. */
-    private boolean reconnect = true;
     
     /**
      * Creates a new instance of Server.
@@ -224,12 +236,13 @@ public final class Server extends WritableFrameContainer implements
      */
     public void connect(final String server, final int port, final String password,
             final boolean ssl, final Identity profile) {
-        if (closing) {
-            Logger.userError(ErrorLevel.MEDIUM, "Attempted to connect to a server while frame is closing.");
+        if (myState == STATE.CLOSING) {
             return;
+        } else if (myState == STATE.RECONNECT_WAIT) {
+            reconnectTimer.cancel();
         }
         
-        reconnect = true;
+        myState = Server.STATE.CONNECTING;
         
         if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
             disconnect(configManager.getOption("general", "quitmessage"));
@@ -305,6 +318,10 @@ public final class Server extends WritableFrameContainer implements
      * @param reason The quit reason to send
      */
     public void reconnect(final String reason) {
+        if (myState == STATE.CLOSING) {
+            return;
+        }
+        
         disconnect(reason);
         connect(server, port, password, ssl, profile);
     }
@@ -318,7 +335,7 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public void sendLine(final String line) {
-        if (parser != null && !closing) {
+        if (parser != null && myState == STATE.CONNECTED) {
             parser.sendLine(window.getTranscoder().encode(line));
         }
     }
@@ -513,8 +530,6 @@ public final class Server extends WritableFrameContainer implements
      * @param reason reason for closing
      */
     public void close(final String reason) {
-        closing = true;
-        
         if (parser != null) {
             // Unregister parser callbacks
             parser.getCallbackManager().delAllCallback(this);
@@ -522,6 +537,9 @@ public final class Server extends WritableFrameContainer implements
         
         // Disconnect from the server
         disconnect(reason);
+        
+        myState = STATE.CLOSING;
+        
         // Close all channel windows
         closeChannels();
         // Close all query windows
@@ -558,7 +576,14 @@ public final class Server extends WritableFrameContainer implements
      * @param reason disconnect reason
      */
     public void disconnect(final String reason) {
-        reconnect = false;
+        switch (myState) {
+        case CLOSING:
+        case DISCONNECTED:
+        case TRANSIENTLY_DISCONNECTED:
+            return;
+        case RECONNECT_WAIT:
+            reconnectTimer.cancel();
+        }
         
         if (parser != null && parser.isReady()) {
             parser.disconnect(reason);
@@ -579,13 +604,10 @@ public final class Server extends WritableFrameContainer implements
      * Closes all open channel windows associated with this server.
      */
     private void closeChannels() {
-        final boolean wasClosing = closing;
-        closing = true;
         for (Channel channel : channels.values()) {
-            channel.closeWindow();
+            channel.closeWindow(false);
         }
         channels.clear();
-        closing = wasClosing;
     }
     
     /**
@@ -601,13 +623,10 @@ public final class Server extends WritableFrameContainer implements
      * Closes all open query windows associated with this server.
      */
     private void closeQueries() {
-        final boolean wasClosing = closing;
-        closing = true;
         for (Query query : queries.values()) {
-            query.close();
+            query.close(false);
         }
         queries.clear();
-        closing = wasClosing;
     }
     
     /**
@@ -628,9 +647,7 @@ public final class Server extends WritableFrameContainer implements
         tabCompleter.removeEntry(chan);
         Main.getUI().getMainWindow().getFrameManager().delChannel(
                 this, channels.get(parser.toLowerCase(chan)));
-        if (!closing) {
-            channels.remove(parser.toLowerCase(chan));
-        }
+        channels.remove(parser.toLowerCase(chan));
     }
     
     /**
@@ -674,9 +691,7 @@ public final class Server extends WritableFrameContainer implements
         tabCompleter.removeEntry(ClientInfo.parseHost(host));
         Main.getUI().getMainWindow().getFrameManager().delQuery(this,
                 queries.get(parser.toLowerCase(ClientInfo.parseHost(host))));
-        if (!closing) {
-            queries.remove(parser.toLowerCase(ClientInfo.parseHost(host)));
-        }
+        queries.remove(parser.toLowerCase(ClientInfo.parseHost(host)));
     }
     
     /** {@inheritDoc} */
@@ -953,7 +968,7 @@ public final class Server extends WritableFrameContainer implements
         
         ActionManager.processEvent(CoreActionType.SERVER_UNKNOWNNOTICE, null, this,
                 sHost, sTarget, sMessage);
-    }    
+    }
     
     /** {@inheritDoc} */
     public void onUserModeChanged(final IRCParser tParser, final ClientInfo cClient,
@@ -994,10 +1009,12 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public void onSocketClosed(final IRCParser tParser) {
-        if (!reconnect) {
+        if (myState == STATE.CLOSING || myState == STATE.DISCONNECTED) {
             // This has been triggered via .discconect()
             return;
         }
+        
+        myState = STATE.TRANSIENTLY_DISCONNECTED;
         
         handleNotification("socketClosed", this.server);
         
@@ -1009,13 +1026,17 @@ public final class Server extends WritableFrameContainer implements
             closeQueries();
         }
         
-        if (reconnect && Config.getOptionBool("general", "reconnectondisconnect")) {
+        if (Config.getOptionBool("general", "reconnectondisconnect")) {
+            myState = STATE.RECONNECT_WAIT;
+            
             final int delay = Config.getOptionInt("general", "reconnectdelay", 5);
             
             handleNotification("connectRetry", server, delay);
             
-            new Timer("Server Reconnect Timer").schedule(new TimerTask() {
+            reconnectTimer = new Timer("Server Reconnect Timer");
+            reconnectTimer.schedule(new TimerTask() {
                 public void run() {
+                    myState = STATE.TRANSIENTLY_DISCONNECTED;
                     reconnect();
                 }
             }, delay * 1000);
@@ -1024,6 +1045,8 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public void onConnectError(final IRCParser tParser, final ParserError errorInfo) {
+        myState = STATE.TRANSIENTLY_DISCONNECTED;
+        
         String description = "";
         
         if (errorInfo.getException() == null) {
@@ -1046,12 +1069,16 @@ public final class Server extends WritableFrameContainer implements
         handleNotification("connectError", server, description);
         
         if (Config.getOptionBool("general", "reconnectonconnectfailure")) {
+            myState = STATE.RECONNECT_WAIT;
+            
             final int delay = Config.getOptionInt("general", "reconnectdelay", 5);
             
             handleNotification("connectRetry", server, delay);
             
-            new Timer("Server connect error timer").schedule(new TimerTask() {
+            reconnectTimer = new Timer("Server connect error timer");
+            reconnectTimer.schedule(new TimerTask() {
                 public void run() {
+                    myState = STATE.TRANSIENTLY_DISCONNECTED;
                     reconnect();
                 }
             }, delay * 1000);

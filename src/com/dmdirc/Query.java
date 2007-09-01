@@ -135,7 +135,7 @@ public final class Query extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.QUERY_SELF_MESSAGE, buff, this, line);
             
-            window.addLine(buff, client.getNickname(), client.getIdent(), 
+            window.addLine(buff, client.getNickname(), client.getIdent(),
                     client.getHost(), window.getTranscoder().encode(line));
         } else {
             sendLine(line.substring(0, getMaxLineLength()));
@@ -164,7 +164,7 @@ public final class Query extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.QUERY_SELF_ACTION, buff, this, action);
             
-            window.addLine(buff, client.getNickname(), client.getIdent(), 
+            window.addLine(buff, client.getNickname(), client.getIdent(),
                     client.getHost(), window.getTranscoder().encode(action));
         } else {
             window.addLine("actionTooLong", action.length());
@@ -290,6 +290,15 @@ public final class Query extends MessageTarget implements
      * Closes the query and associated window.
      */
     public void close() {
+        close(true);
+    }
+    
+    /**
+     * Closes the query and associated window.
+     *
+     * @param shouldRemove Whether or not we should remove the window from the server.
+     */
+    public void close(final boolean shouldRemove) {
         server.getParser().getCallbackManager().delCallback("onPrivateAction", this);
         server.getParser().getCallbackManager().delCallback("onPrivateMessage", this);
         server.getParser().getCallbackManager().delCallback("onNickChanged", this);
@@ -299,7 +308,11 @@ public final class Query extends MessageTarget implements
         
         window.setVisible(false);
         server.delQuery(host);
-        Main.getUI().getMainWindow().delChild(window);
+        
+        if (shouldRemove) {
+            Main.getUI().getMainWindow().delChild(window);
+        }
+        
         window = null;
         server = null;
     }
