@@ -22,6 +22,7 @@
 
 package com.dmdirc.logger;
 
+import com.dmdirc.Main;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -178,7 +179,8 @@ public final class ErrorManager implements Serializable {
                 final String content =
                         "message=" + URLEncoder.encode(error.getMessage(), "UTF-8")
                         + "&trace=" + URLEncoder.encode(Arrays.toString(
-                        error.getTrace()), "UTF-8");
+                        error.getTrace()), "UTF-8") + "&version="
+                        + URLEncoder.encode(Main.VERSION + "(" + Main.RELEASE_DATE + ")", "UTF-8");
                 printout.writeBytes(content);
                 printout.flush();
                 printout.close();
