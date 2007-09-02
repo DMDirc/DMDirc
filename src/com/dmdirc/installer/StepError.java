@@ -26,10 +26,9 @@ import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import java.awt.BorderLayout;
+
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JTextArea;
 
 /**
@@ -41,15 +40,14 @@ public final class StepError extends Step {
 	 * structure is changed (or anything else that would prevent serialized
 	 * objects being unserialized with the new class).
 	 */
-	private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 2;
 	
 	/**
 	 * Creates a new instance of StepOne.
 	 */
 	public StepError() {
 		super();
-		final GridBagConstraints constraints = new GridBagConstraints();
-		setLayout(new GridBagLayout());
+		setLayout(new BorderLayout());
 		setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
 		
 		JTextArea infoLabel;
@@ -61,14 +59,6 @@ public final class StepError extends Step {
 		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
 			
-		constraints.weightx = 1.0;
-		constraints.fill = constraints.BOTH;
-		constraints.gridx = 0;
-		constraints.gridy = 0;
-		add(infoLabel, constraints);
-
-		constraints.weighty = 1.0;
-		constraints.gridy = 4;
-		add(Box.createVerticalGlue(), constraints);
+		add(infoLabel, BorderLayout.CENTER);
 	}
 }

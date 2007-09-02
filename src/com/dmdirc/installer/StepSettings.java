@@ -28,6 +28,8 @@ import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
+
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
@@ -44,7 +46,7 @@ public final class StepSettings extends Step {
 	 * structure is changed (or anything else that would prevent serialized
 	 * objects being unserialized with the new class).
 	 */
-	private static final long serialVersionUID = 1;
+	private static final long serialVersionUID = 2;
 	
 	/** Shorcuts checkbox. */
 	private final JCheckBox shortcuts = new JCheckBox("Setup shortcuts to DMDirc?");
@@ -68,6 +70,8 @@ public final class StepSettings extends Step {
 		infoLabel.setHighlighter(null);
 		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
+                
+                shortcuts.setSelected(true);
 			
 		constraints.weightx = 1.0;
 		constraints.fill = constraints.BOTH;
@@ -76,23 +80,25 @@ public final class StepSettings extends Step {
 		constraints.gridwidth = 2;
 		add(infoLabel, constraints);
 
+                constraints.weightx = 0.0;
 		constraints.gridwidth = 1;
 		constraints.gridy = 1;
-		add(new JLabel("Install Location:"), constraints);
+                constraints.fill = constraints.NONE;
+		add(new JLabel("Install Location: "), constraints);
+                constraints.fill = constraints.HORIZONTAL;
 		constraints.gridx = 1;
 		add(location, constraints);
 		
-		constraints.gridwidth = 2;
-		constraints.gridx = 0;
-		constraints.gridy = 2;
-		add(new JLabel(" "), constraints);
+                constraints.gridwidth = 2;
 		constraints.gridy = 3;
-		shortcuts.setSelected(true);
+                constraints.gridx = 0;
+                constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
 		add(shortcuts, constraints);
-
-		constraints.weighty = 1.0;
-		constraints.gridy = 4;
-		add(Box.createVerticalGlue(), constraints);
+                
+                constraints.gridy = 4;
+                constraints.weighty = 1.0;
+                constraints.fill = constraints.BOTH;
+                add(Box.createVerticalGlue(), constraints);
 	}
 	
 	/**
