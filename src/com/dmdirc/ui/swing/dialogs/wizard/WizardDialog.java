@@ -29,7 +29,12 @@ import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
 import java.awt.Insets;
+import java.awt.MouseInfo;
+import java.awt.PointerInfo;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
@@ -65,6 +70,9 @@ public final class WizardDialog extends JDialog implements ActionListener,
     /** Wizard. */
     private final transient Wizard wizard;
     
+    /** Does this wizard use mainframe. */
+    private final boolean hasMainframe;
+    
     /** Button panel. */
     private JPanel buttonsPanel;
     /** Title panel. */
@@ -79,7 +87,7 @@ public final class WizardDialog extends JDialog implements ActionListener,
     private JLabel progressLabel;
     
     /**
-     * Creates a new instance of WizardFrame.
+     * Creates a new instance of WizardFrame that requires a mainframe.
      *
      * @param title Title for the wizard
      * @param steps Steps for the wizard
@@ -89,6 +97,26 @@ public final class WizardDialog extends JDialog implements ActionListener,
     public WizardDialog(final String title, final List<Step> steps,
             final Wizard wizard, final boolean modal) {
         super(((MainFrame) Main.getUI().getMainWindow()), modal);
+        hasMainframe = true;
+        
+        this.title = title;
+        this.steps = new ArrayList<Step>(steps);
+        this.wizard = wizard;
+        initComponents();
+        layoutComponents();
+    }
+    
+    /**
+     * Creates a new instance of WizardFrame that doesn't require a mainframe.
+     *
+     * @param title Title for the wizard
+     * @param steps Steps for the wizard
+     * @param wizard Wizard to inform of changes
+     */
+    public WizardDialog(final String title, final List<Step> steps,
+            final Wizard wizard) {
+        super();
+        hasMainframe = false;
         
         this.title = title;
         this.steps = new ArrayList<Step>(steps);
@@ -179,7 +207,19 @@ public final class WizardDialog extends JDialog implements ActionListener,
             setTitle(title);
             setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             pack();
-            setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+            if (hasMainframe) {
+                setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+            } else {
+                // Position wizard center-screen on the correct monitor of a
+                // multi-monitor system. (See MainFrame constructor for more info)
+                final PointerInfo myPointerInfo = MouseInfo.getPointerInfo();
+                final GraphicsDevice myDevice = myPointerInfo.getDevice();
+                final GraphicsConfiguration myGraphicsConfig = myDevice.getDefaultConfiguration();
+                final Rectangle gcBounds = myGraphicsConfig.getBounds();
+                final int xPos = gcBounds.x + ((gcBounds.width - getWidth()) / 2);
+                final int yPos = gcBounds.y + ((gcBounds.height - getHeight()) / 2);
+                setLocation(xPos, yPos);
+            }
             setResizable(false);
             setVisible(true);
         }
@@ -203,6 +243,15 @@ public final class WizardDialog extends JDialog implements ActionListener,
         steps.add(step);
     }
     
+    /**
+     * Enables or disables the "next step" button
+     *
+     * @param newValue boolean true to make "next" button enabled, else false
+     */
+    public void enableNextStep(final boolean newValue) {
+        next.setEnabled(newValue);
+    }
+    
     /** Moves to the next step. */
     private void nextStep() {
         steps.get(currentStep).setVisible(false);
@@ -219,7 +268,11 @@ public final class WizardDialog extends JDialog implements ActionListener,
             this.dispose();
             wizard.wizardFinished();
         }
-        steps.get(currentStep).setVisible(true);
+        final Step newstep = steps.get(currentStep);
+        if (newstep instanceof SpecialStep) {
+            ((SpecialStep)newstep).showStep();
+        }
+        newstep.setVisible(true);
     }
     
     /** Moves to the previous step. */
