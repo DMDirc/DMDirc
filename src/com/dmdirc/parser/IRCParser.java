@@ -28,6 +28,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
@@ -240,6 +241,9 @@ public final class IRCParser implements Runnable {
 	/** This is the TrustManager used for SSL Sockets. */
 	private TrustManager[] myTrustManager = trustAllCerts;
 	
+	/** This is the IP we want to bind to. */
+	private String bindIP = "";
+	
 	/**
 	 * Default constructor, ServerInfo and MyInfo need to be added separately (using IRC.me and IRC.server).
 	 */
@@ -268,7 +272,19 @@ public final class IRCParser implements Runnable {
 		updateCharArrays((byte)3);
 	}
 	
+	/**
+	 * Get the current Value of bindIP.
+	 *
+	 * @return Value of bindIP ("" for default IP)
+	 */
+	public String getBindIP() { return bindIP; }
 	
+	/**
+	 * Set the current Value of bindIP.
+	 *
+	 * @param newValue New value to set bindIP
+	 */
+	public void setBindIP(final String newValue) { bindIP = newValue; }
 	
 	/**
 	 * Get the current Value of createFake.
@@ -278,7 +294,7 @@ public final class IRCParser implements Runnable {
 	public boolean getCreateFake() { return createFake; }
 	
 	/**
-	 * Get the current Value of createFake.
+	 * Set the current Value of createFake.
 	 *
 	 * @param newValue New value to set createFake
 	 */
@@ -542,6 +558,7 @@ public final class IRCParser implements Runnable {
 	 * @throws KeyManagementException if the trustManager is invalid
 	 */
 	private void connect() throws UnknownHostException, IOException, NoSuchAlgorithmException, KeyManagementException {
+			boolean needtobind = false;
 			resetState();
 			callDebugInfo(DEBUG_SOCKET, "Connecting to " + server.getHost() + ":" + server.getPort());
 			
@@ -549,13 +566,27 @@ public final class IRCParser implements Runnable {
 				callDebugInfo(DEBUG_SOCKET, "Using Proxy");
 				final Proxy.Type proxyType = Proxy.Type.SOCKS;
 				socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
-				
-				socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
 			} else {
 				callDebugInfo(DEBUG_SOCKET, "Not using Proxy");
 				if (!server.getSSL()) {
 					socket = new Socket(server.getHost(), server.getPort());
 				}
+			}
+			
+			if (bindIP != null && bindIP != "") {
+				if (socket == null) {
+					needtobind = true;
+				} else {
+					callDebugInfo(DEBUG_SOCKET, "Binding to IP: "+bindIP);
+					try {
+						socket.bind(new InetSocketAddress(bindIP, 0));
+					} catch (IOException e) {
+						callDebugInfo(DEBUG_SOCKET, "Binding failed");
+					}
+				}
+			}
+			if (server.getUseSocks()) {
+				socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
 			}
 			
 			if (server.getSSL()) {
@@ -570,7 +601,17 @@ public final class IRCParser implements Runnable {
 				if (server.getUseSocks()) {
 					socket = socketFactory.createSocket(socket, server.getHost(), server.getPort(), false);
 				} else {
-					socket = socketFactory.createSocket(server.getHost(), server.getPort());
+					if (needtobind) {
+						callDebugInfo(DEBUG_SOCKET, "Binding to IP: "+bindIP);
+						try {
+							socket = socketFactory.createSocket(server.getHost(), server.getPort(), InetAddress.getByName(bindIP), 0);
+						} catch (UnknownHostException e) {
+							callDebugInfo(DEBUG_SOCKET, "Bind failed.");
+							socket = socketFactory.createSocket(server.getHost(), server.getPort());
+						}
+					} else {
+						socket = socketFactory.createSocket(server.getHost(), server.getPort());
+					}
 				}
 			}
 			
