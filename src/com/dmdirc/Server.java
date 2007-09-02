@@ -278,6 +278,10 @@ public final class Server extends WritableFrameContainer implements
         parser.setCreateFake(true);
         parser.setAddLastLine(true);
         
+        if (configManager.hasOption("general", "bindip")) {
+            parser.setBindIP(configManager.getOption("general", "bindip"));
+        }
+        
         if (raw == null && Config.getOptionBool("general", "showrawwindow")) {
             raw = new Raw(this);
             Main.getUI().getMainWindow().getFrameManager().addCustom(this, raw);
