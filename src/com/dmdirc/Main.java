@@ -138,7 +138,7 @@ public final class Main {
      */
     public static UIController getUI() {
         if (controller == null) {
-            if (GraphicsEnvironment.isHeadless()) {
+            if (true || GraphicsEnvironment.isHeadless()) {
                 controller = new DummyController();
             } else {
                 controller = new SwingController();
