@@ -22,6 +22,12 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.actions.metatypes.ChannelEvents;
+import com.dmdirc.actions.metatypes.ClientEvents;
+import com.dmdirc.actions.metatypes.PluginEvents;
+import com.dmdirc.actions.metatypes.QueryEvents;
+import com.dmdirc.actions.metatypes.ServerEvents;
+
 /**
  * An enumeration of actions that are raised by the core.
  * @author chris
@@ -29,131 +35,131 @@ package com.dmdirc.actions;
 public enum CoreActionType implements ActionType {
     
     /** Client opened. */
-    CLIENT_OPENED(CoreActionMetaType.CLIENT_EVENT, "Client opened"),
+    CLIENT_OPENED(ClientEvents.CLIENT_EVENT, "Client opened"),
     /** Client closed. */
-    CLIENT_CLOSED(CoreActionMetaType.CLIENT_EVENT, "Client closed"),
+    CLIENT_CLOSED(ClientEvents.CLIENT_EVENT, "Client closed"),
     /** Client minimised. */
-    CLIENT_MINIMISED(CoreActionMetaType.CLIENT_EVENT, "Client minimised"),
+    CLIENT_MINIMISED(ClientEvents.CLIENT_EVENT, "Client minimised"),
     /** Client unminimised. */
-    CLIENT_UNMINIMISED(CoreActionMetaType.CLIENT_EVENT, "Client unminimised"),    
+    CLIENT_UNMINIMISED(ClientEvents.CLIENT_EVENT, "Client unminimised"),    
     
     /** Function key pressed. */
-    CLIENT_FKEY_PRESSED(CoreActionMetaType.CLIENT_EVENT_WITH_KEY, "Function key pressed"),
+    CLIENT_FKEY_PRESSED(ClientEvents.CLIENT_EVENT_WITH_KEY, "Function key pressed"),
     
     /** Frame changed. */
-    CLIENT_FRAME_CHANGED(CoreActionMetaType.CLIENT_EVENT_WITH_FRAME, "Frame changed"),
+    CLIENT_FRAME_CHANGED(ClientEvents.CLIENT_EVENT_WITH_FRAME, "Frame changed"),
     /** User input. */
-    CLIENT_USER_INPUT(CoreActionMetaType.CLIENT_EVENT_WITH_BUFFER, "User input"),
-    
-    /** Plugin loaded. */
-    PLUGIN_LOADED(CoreActionMetaType.PLUGIN_EVENT, "Plugin loaded"),
-    /** Plugin unloaded. */
-    PLUGIN_UNLOADED(CoreActionMetaType.PLUGIN_EVENT, "Plugin unloaded"),
-    /** Plugin activated. */
-    PLUGIN_ACTIVATED(CoreActionMetaType.PLUGIN_EVENT, "Plugin activated"),
-    /** Plugin deactivated. */
-    PLUGIN_DEACTIVATED(CoreActionMetaType.PLUGIN_EVENT, "Plugin deactivated"),
-    
+    CLIENT_USER_INPUT(ClientEvents.CLIENT_EVENT_WITH_BUFFER, "User input"),
+       
     /** Unknown command. */
-    UNKNOWN_COMMAND(CoreActionMetaType.UNKNOWN_COMMAND, "Unknown command entered"),
+    UNKNOWN_COMMAND(ClientEvents.UNKNOWN_COMMAND, "Unknown command entered"),
     
     /** Server numeric received. */
-    SERVER_NUMERIC(CoreActionMetaType.SERVER_NUMERIC, "Numeric event received"),
+    SERVER_NUMERIC(ServerEvents.SERVER_NUMERIC, "Numeric event received"),
     /** Server connected. */
-    SERVER_CONNECTED(CoreActionMetaType.SERVER_EVENT, "Server connected"),
+    SERVER_CONNECTED(ServerEvents.SERVER_EVENT, "Server connected"),
     /** Marked as away. */
-    SERVER_BACK(CoreActionMetaType.SERVER_EVENT, "Marked as 'back'"),
+    SERVER_BACK(ServerEvents.SERVER_EVENT, "Marked as 'back'"),
     /** Marked as back. */
-    SERVER_AWAY(CoreActionMetaType.SERVER_EVENT_WITH_ARG, "Marked as 'away'"),
+    SERVER_AWAY(ServerEvents.SERVER_EVENT_WITH_ARG, "Marked as 'away'"),
     
     /** Auth notice received. */
-    SERVER_AUTHNOTICE(CoreActionMetaType.SERVER_EVENT_WITH_ARG, "Received auth notice"),
+    SERVER_AUTHNOTICE(ServerEvents.SERVER_EVENT_WITH_ARG, "Received auth notice"),
     /** Unknown notice received. */
-    SERVER_UNKNOWNNOTICE(CoreActionMetaType.SERVER_UNKNOWN_EVENT, "Received unknown notice"),    
+    SERVER_UNKNOWNNOTICE(ServerEvents.SERVER_UNKNOWN_EVENT, "Received unknown notice"),    
     
     /** User modes changed. */
-    SERVER_USERMODES(CoreActionMetaType.SERVER_SOURCED_EVENT_WITH_ARG, "User modes changed"),
+    SERVER_USERMODES(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "User modes changed"),
     
     /** Private CTCP received. */
-    SERVER_CTCP(CoreActionMetaType.SERVER_CTCP_EVENT, "CTCP received"),
+    SERVER_CTCP(ServerEvents.SERVER_CTCP_EVENT, "CTCP received"),
     /** Private CTCPR received. */
-    SERVER_CTCPR(CoreActionMetaType.SERVER_CTCP_EVENT, "CTCP reply received"),
+    SERVER_CTCPR(ServerEvents.SERVER_CTCP_EVENT, "CTCP reply received"),
     
     /** Private notice received. */
-    SERVER_NOTICE(CoreActionMetaType.SERVER_SOURCED_EVENT_WITH_ARG, "Notice received"),
+    SERVER_NOTICE(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "Notice received"),
     
     /** MOTD starting. */
-    SERVER_MOTDSTART(CoreActionMetaType.SERVER_EVENT_WITH_ARG, "Start of MOTD received"),
+    SERVER_MOTDSTART(ServerEvents.SERVER_EVENT_WITH_ARG, "Start of MOTD received"),
     /** MOTD ended. */
-    SERVER_MOTDEND(CoreActionMetaType.SERVER_EVENT, "End of MOTD received"),    
+    SERVER_MOTDEND(ServerEvents.SERVER_EVENT, "End of MOTD received"),    
     /** MOTD line. */
-    SERVER_MOTDLINE(CoreActionMetaType.SERVER_EVENT_WITH_ARG, "MOTD line received"),    
+    SERVER_MOTDLINE(ServerEvents.SERVER_EVENT_WITH_ARG, "MOTD line received"),    
     
     /** Ping reply received. */
-    SERVER_GOTPING(CoreActionMetaType.SERVER_PING, "Received server ping reply"),
+    SERVER_GOTPING(ServerEvents.SERVER_PING, "Received server ping reply"),
     /** Missed server ping reply. */
-    SERVER_NOPING(CoreActionMetaType.SERVER_PING, "Missed server ping reply"),
-    
-    /** Query opened. */
-    QUERY_OPENED(CoreActionMetaType.QUERY_EVENT, "Query window opened"),
-    /** Query closed. */
-    QUERY_CLOSED(CoreActionMetaType.QUERY_EVENT, "Query window closed"),
-    /** Query message received. */
-    QUERY_MESSAGE(CoreActionMetaType.QUERY_EVENT_WITH_ARG, "Private message received"),
-    /** Query action received. */
-    QUERY_ACTION(CoreActionMetaType.QUERY_EVENT_WITH_ARG, "Private action received"),
-    /** Query message sent. */
-    QUERY_SELF_MESSAGE(CoreActionMetaType.QUERY_EVENT_WITH_ARG, "Private message sent"),
-    /** Query action sent. */
-    QUERY_SELF_ACTION(CoreActionMetaType.QUERY_EVENT_WITH_ARG, "Private action sent"),
-    /** Query quit event. */
-    QUERY_QUIT(CoreActionMetaType.QUERY_EVENT_WITH_ARG, "Query: user quit"), 
-    /** Query nick change. */
-    QUERY_NICKCHANGE(CoreActionMetaType.QUERY_EVENT_WITH_ARG, "Query: user changed nicks"),
-    
+    SERVER_NOPING(ServerEvents.SERVER_PING, "Missed server ping reply"),
+       
     /** Channel window opened. */
-    CHANNEL_OPENED(CoreActionMetaType.CHANNEL_EVENT, "Channel window opened"),
+    CHANNEL_OPENED(ChannelEvents.CHANNEL_EVENT, "Channel window opened"),
     /** Channel window closed. */
-    CHANNEL_CLOSED(CoreActionMetaType.CHANNEL_EVENT, "Channel window closed"),
+    CHANNEL_CLOSED(ChannelEvents.CHANNEL_EVENT, "Channel window closed"),
     /** Names reply received. */
-    CHANNEL_GOTNAMES(CoreActionMetaType.CHANNEL_EVENT, "Channel names reply received"),
+    CHANNEL_GOTNAMES(ChannelEvents.CHANNEL_EVENT, "Channel names reply received"),
     /** Channel topic received. */
-    CHANNEL_GOTTOPIC(CoreActionMetaType.CHANNEL_EVENT, "Channel topic received"),
+    CHANNEL_GOTTOPIC(ChannelEvents.CHANNEL_EVENT, "Channel topic received"),
     
     /** Channel message sent. */
-    CHANNEL_SELF_MESSAGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel message sent"),
+    CHANNEL_SELF_MESSAGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel message sent"),
     /** Channel action sent. */
-    CHANNEL_SELF_ACTION(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel action sent"),
+    CHANNEL_SELF_ACTION(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel action sent"),
     
     /** Channel message received. */
-    CHANNEL_MESSAGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel message received"),
+    CHANNEL_MESSAGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel message received"),
     /** Channel actions received. */
-    CHANNEL_ACTION(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel action received"),
+    CHANNEL_ACTION(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Channel action received"),
     
     /** Someone joined a channel. */
-    CHANNEL_JOIN(CoreActionMetaType.CHANNEL_SOURCED_EVENT, "Someone joined a channel"),
+    CHANNEL_JOIN(ChannelEvents.CHANNEL_SOURCED_EVENT, "Someone joined a channel"),
     /** Someone left a channel. */
-    CHANNEL_PART(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone left a channel"),
+    CHANNEL_PART(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone left a channel"),
     /** Someone quit. */
-    CHANNEL_QUIT(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone quit IRC"),
+    CHANNEL_QUIT(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone quit IRC"),
     /** Someone was kicked. */
-    CHANNEL_KICK(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_VICTIM, "Someone kicked someone"),
+    CHANNEL_KICK(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_VICTIM, "Someone kicked someone"),
     
     /** Someone marked as away. */
-    CHANNEL_USERAWAY(CoreActionMetaType.CHANNEL_SOURCED_EVENT, "Someone is marked as 'away'"),
+    CHANNEL_USERAWAY(ChannelEvents.CHANNEL_SOURCED_EVENT, "Someone is marked as 'away'"),
     /** Someone marked as back. */
-    CHANNEL_USERBACK(CoreActionMetaType.CHANNEL_SOURCED_EVENT, "Someone is marked as 'back'"),
+    CHANNEL_USERBACK(ChannelEvents.CHANNEL_SOURCED_EVENT, "Someone is marked as 'back'"),
     
     /** Channel mode changes. */
-    CHANNEL_MODECHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed channel modes"),
+    CHANNEL_MODECHANGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed channel modes"),
     /** Someone changed someone else's user modes. */
-    CHANNEL_USERMODECHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_VICTIM, "Someone changed someone else's modes"),
+    CHANNEL_USERMODECHANGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_VICTIM, "Someone changed someone else's modes"),
     
     /** Someone changed nickname. */
-    CHANNEL_NICKCHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed nicknames"),
+    CHANNEL_NICKCHANGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed nicknames"),
     
     /** Someone changed a topic. */
-    CHANNEL_TOPICCHANGE(CoreActionMetaType.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed channel topic");
+    CHANNEL_TOPICCHANGE(ChannelEvents.CHANNEL_SOURCED_EVENT_WITH_ARG, "Someone changed channel topic"),
+    
+    /** Query opened. */
+    QUERY_OPENED(QueryEvents.QUERY_EVENT, "Query window opened"),
+    /** Query closed. */
+    QUERY_CLOSED(QueryEvents.QUERY_EVENT, "Query window closed"),
+    /** Query message received. */
+    QUERY_MESSAGE(QueryEvents.QUERY_EVENT_WITH_ARG, "Private message received"),
+    /** Query action received. */
+    QUERY_ACTION(QueryEvents.QUERY_EVENT_WITH_ARG, "Private action received"),
+    /** Query message sent. */
+    QUERY_SELF_MESSAGE(QueryEvents.QUERY_EVENT_WITH_ARG, "Private message sent"),
+    /** Query action sent. */
+    QUERY_SELF_ACTION(QueryEvents.QUERY_EVENT_WITH_ARG, "Private action sent"),
+    /** Query quit event. */
+    QUERY_QUIT(QueryEvents.QUERY_EVENT_WITH_ARG, "Query: user quit"), 
+    /** Query nick change. */
+    QUERY_NICKCHANGE(QueryEvents.QUERY_EVENT_WITH_ARG, "Query: user changed nicks"),    
+    
+    /** Plugin loaded. */
+    PLUGIN_LOADED(PluginEvents.PLUGIN_EVENT, "Plugin loaded"),
+    /** Plugin unloaded. */
+    PLUGIN_UNLOADED(PluginEvents.PLUGIN_EVENT, "Plugin unloaded"),
+    /** Plugin activated. */
+    PLUGIN_ACTIVATED(PluginEvents.PLUGIN_EVENT, "Plugin activated"),
+    /** Plugin deactivated. */
+    PLUGIN_DEACTIVATED(PluginEvents.PLUGIN_EVENT, "Plugin deactivated");
     
     /** The type of this action. */
     private final ActionMetaType type;

@@ -20,38 +20,36 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions;
+package com.dmdirc.ui.swing.dialogs.actionseditor;
+
+import com.dmdirc.actions.ActionType;
+
+import java.util.Comparator;
 
 /**
- * Encapsulates the methods that all action types are required to implement.
- * @author chris
+ * Implements a comparator for action types that compares their names.
+ * 
+ * @author Chris
  */
-public interface ActionMetaType {
+public class ActionTypeComparator implements Comparator<ActionType> {
+
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;        
     
     /**
-     * Retrieves the arity of this type.
-     * @return The arity of this action type
+     * Creates a new instance of ActionTypeComparator.
      */
-    int getArity();
-    
-    /**
-     * Retrieves the type of arguments that actions of this type should expect.
-     * @return The type of arguments expected
-     */
-    Class[] getArgTypes();
-    
-    /**
-     * Retrieves the names of the arguments that actions of this type should
-     * expect.
-     * @return The names of the expected arguments
-     */
-    String[] getArgNames();
-    
-    /**
-     * Retrieves the name of a logical group for this meta-type to be put into.
-     * 
-     * @return The meta-type's group name
-     */
-    String getGroup();
-    
+    public ActionTypeComparator() {
+        // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    public int compare(final ActionType o1, final ActionType o2) {
+        return o1.getName().compareTo(o2.getName());
+    }
+
 }

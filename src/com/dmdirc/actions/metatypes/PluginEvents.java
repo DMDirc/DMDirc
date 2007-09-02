@@ -20,38 +20,53 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.actions;
+package com.dmdirc.actions.metatypes;
+
+import com.dmdirc.actions.ActionMetaType;
+import com.dmdirc.plugins.Plugin;
 
 /**
- * Encapsulates the methods that all action types are required to implement.
- * @author chris
+ * Defines plugin-related events.
+ *
+ * @author Chris
  */
-public interface ActionMetaType {
+public enum PluginEvents implements ActionMetaType {
+    
+    /** Plugin event type. */
+    PLUGIN_EVENT(new String[]{"plugin"}, Plugin.class);
+    
+    private String[] argNames;
+    private Class[] argTypes;
     
     /**
-     * Retrieves the arity of this type.
-     * @return The arity of this action type
+     * Creates a new instance of this meta-type.
+     *
+     * @param argNames The names of the meta-type's arguments
+     * @param argTypes The types of the meta-type's arguments
      */
-    int getArity();
+    PluginEvents(final String[] argNames, final Class ... argTypes) {
+        this.argNames = argNames;
+        this.argTypes = argTypes;
+    }
     
-    /**
-     * Retrieves the type of arguments that actions of this type should expect.
-     * @return The type of arguments expected
-     */
-    Class[] getArgTypes();
+    /** {@inheritDoc} */
+    public int getArity() {
+        return argNames.length;
+    }
     
-    /**
-     * Retrieves the names of the arguments that actions of this type should
-     * expect.
-     * @return The names of the expected arguments
-     */
-    String[] getArgNames();
+    /** {@inheritDoc} */
+    public Class[] getArgTypes() {
+        return argTypes;
+    }
     
-    /**
-     * Retrieves the name of a logical group for this meta-type to be put into.
-     * 
-     * @return The meta-type's group name
-     */
-    String getGroup();
+    /** {@inheritDoc} */
+    public String[] getArgNames() {
+        return argNames;
+    }
+    
+    /** {@inheritDoc} */
+    public String getGroup() {
+        return "Plugin Events";
+    }    
     
 }

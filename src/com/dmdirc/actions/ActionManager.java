@@ -37,6 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,10 +61,13 @@ public final class ActionManager {
     private static List<ActionWrapper> actionWrappers;
     
     /** A map linking types and a list of actions that're registered for them. */
-    private static HashMap<ActionType, List<Action>> actions;
+    private static Map<ActionType, List<Action>> actions;
     
     /** A map linking groups and a list of actions that're in them. */
-    private static HashMap<String, List<Action>> groups;
+    private static Map<String, List<Action>> groups;
+    
+    /** A map of the action type groups to the action types within. */
+    private static Map<String, List<ActionType>> actionTypeGroups;
     
     /** Creates a new instance of ActionManager. */
     private ActionManager() {
@@ -78,6 +82,7 @@ public final class ActionManager {
         actionComparisons = new ArrayList<ActionComparison>();
         actionComponents = new ArrayList<ActionComponent>();
         actionWrappers = new ArrayList<ActionWrapper>();
+        actionTypeGroups = new LinkedHashMap<String, List<ActionType>>();
         
         registerActionTypes(CoreActionType.values());
         registerActionComparisons(CoreActionComparison.values());
@@ -107,7 +112,12 @@ public final class ActionManager {
      */
     public static void registerActionTypes(final ActionType[] types) {
         for (ActionType type : types) {
+            if (!actionTypeGroups.containsKey(type.getType().getGroup())) {
+                actionTypeGroups.put(type.getType().getGroup(), new ArrayList<ActionType>());
+            }
+            
             actionTypes.add(type);
+            actionTypeGroups.get(type.getType().getGroup()).add(type);
         }
     }
     
@@ -140,6 +150,15 @@ public final class ActionManager {
      */
     public static Map<String, List<Action>> getGroups() {
         return groups;
+    }
+    
+    /**
+     * Returns a map of type groups to types.
+     * 
+     * @return A map of type groups to types
+     */
+    public static Map<String, List<ActionType>> getTypeGroups() {
+        return actionTypeGroups;
     }
     
     /**

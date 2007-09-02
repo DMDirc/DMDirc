@@ -51,4 +51,9 @@ public enum TimeActionMetaType implements ActionMetaType {
     /** {@inheritDoc} */
     public abstract String[] getArgNames();
     
+    /** {@inheritDoc} */
+    public String getGroup() {
+        return "Time Events";
+    }    
+    
 }

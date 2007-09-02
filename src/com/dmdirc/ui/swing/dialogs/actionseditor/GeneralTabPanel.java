@@ -88,16 +88,11 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     /** Initialises the components. */
     private void initComponents() {
         name = new JTextField();
-        trigger = new JComboBox(new DefaultComboBoxModel());
+        trigger = new JComboBox(new ActionTypeModel(ActionManager.getTypeGroups()));
         otherTriggers = new JList(new DefaultListModel());
         
-        trigger.setRenderer(new ActionCellRenderer());
+        trigger.setRenderer(new ActionTypeRenderer());
         otherTriggers.setCellRenderer(new ActionCellRenderer());
-        
-        ((DefaultComboBoxModel) trigger.getModel()).addElement("");
-        for (ActionType thisType : ActionManager.getTypes().toArray(new ActionType[0])) {
-            ((DefaultComboBoxModel) trigger.getModel()).addElement(thisType);
-        }
         
         name.setPreferredSize(new Dimension(100, name.getFont().getSize()));
         
