@@ -564,29 +564,28 @@ public final class IRCParser implements Runnable {
 			
 			if (server.getUseSocks()) {
 				callDebugInfo(DEBUG_SOCKET, "Using Proxy");
+				if (bindIP != null && bindIP != "") {
+					callDebugInfo(DEBUG_SOCKET, "IP Binding is not possible when using a proxy.");
+				}
 				final Proxy.Type proxyType = Proxy.Type.SOCKS;
 				socket = new Socket(new Proxy(proxyType, new InetSocketAddress(server.getProxyHost(), server.getProxyPort())));
+				
+				socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
 			} else {
 				callDebugInfo(DEBUG_SOCKET, "Not using Proxy");
 				if (!server.getSSL()) {
-					socket = new Socket(server.getHost(), server.getPort());
-				}
-			}
-			
-			if (bindIP != null && bindIP != "") {
-				if (socket == null) {
-					needtobind = true;
-				} else {
-					callDebugInfo(DEBUG_SOCKET, "Binding to IP: "+bindIP);
-					try {
-						socket.bind(new InetSocketAddress(bindIP, 0));
-					} catch (IOException e) {
-						callDebugInfo(DEBUG_SOCKET, "Binding failed");
+					if (bindIP != null && bindIP != "") {
+						callDebugInfo(DEBUG_SOCKET, "Binding to IP: "+bindIP);
+						try {
+							socket = new Socket(server.getHost(), server.getPort(), InetAddress.getByName(bindIP), 0);
+						} catch (IOException e) {
+							callDebugInfo(DEBUG_SOCKET, "Binding failed: "+e.getMessage());
+							socket = new Socket(server.getHost(), server.getPort());
+						}
+					} else {
+						socket = new Socket(server.getHost(), server.getPort());
 					}
 				}
-			}
-			if (server.getUseSocks()) {
-				socket.connect(new InetSocketAddress(server.getHost(), server.getPort()));
 			}
 			
 			if (server.getSSL()) {
@@ -601,12 +600,12 @@ public final class IRCParser implements Runnable {
 				if (server.getUseSocks()) {
 					socket = socketFactory.createSocket(socket, server.getHost(), server.getPort(), false);
 				} else {
-					if (needtobind) {
+					if (bindIP != null && bindIP != "") {
 						callDebugInfo(DEBUG_SOCKET, "Binding to IP: "+bindIP);
 						try {
 							socket = socketFactory.createSocket(server.getHost(), server.getPort(), InetAddress.getByName(bindIP), 0);
 						} catch (UnknownHostException e) {
-							callDebugInfo(DEBUG_SOCKET, "Bind failed.");
+							callDebugInfo(DEBUG_SOCKET, "Bind failed: "+e.getMessage());
 							socket = socketFactory.createSocket(server.getHost(), server.getPort());
 						}
 					} else {
