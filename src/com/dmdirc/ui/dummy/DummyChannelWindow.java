@@ -32,6 +32,7 @@ import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import java.beans.PropertyVetoException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.Icon;
@@ -148,8 +149,9 @@ public class DummyChannelWindow implements ChannelWindow {
         // Do nothing
     }
 
+    /** {@inheritDoc} */
     public StringTranscoder getTranscoder() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new StringTranscoder(Charset.defaultCharset());
     }
 
 }
