@@ -26,7 +26,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.StringTranscoder;
 import com.dmdirc.commandparser.CommandParser;
-import com.dmdirc.commandparser.GlobalCommandParser;
+import com.dmdirc.commandparser.ServerCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ServerWindow;
@@ -56,7 +56,7 @@ public class DummyServerWindow implements ServerWindow {
     
     /** {@inheritDoc} */
     public CommandParser getCommandParser() {
-        return GlobalCommandParser.getGlobalCommandParser();
+        return new ServerCommandParser(parent);
     }
     
     /** {@inheritDoc} */
@@ -83,8 +83,9 @@ public class DummyServerWindow implements ServerWindow {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
+    /** {@inheritDoc} */
     public void clear() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println("DummyServerWindow.clear()");
     }
     
     /** {@inheritDoc} */
@@ -92,8 +93,9 @@ public class DummyServerWindow implements ServerWindow {
         return new ConfigManager("dummy", "dummy", "dummy");
     }
     
+    /** {@inheritDoc} */
     public FrameContainer getContainer() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return parent;
     }
     
     public boolean isVisible() {

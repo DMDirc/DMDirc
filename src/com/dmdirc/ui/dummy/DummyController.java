@@ -77,7 +77,7 @@ public class DummyController implements UIController {
     
     /** {@inheritDoc} */
     public ChannelWindow getChannel(Channel channel) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new DummyChannelWindow(channel);
     }
     
     /** {@inheritDoc} */
@@ -112,7 +112,7 @@ public class DummyController implements UIController {
     
     /** {@inheritDoc} */
     public void showFirstRunWizard() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        System.out.println("DummyController.showFirstRunWizard()");
     }
     
     /** {@inheritDoc} */
