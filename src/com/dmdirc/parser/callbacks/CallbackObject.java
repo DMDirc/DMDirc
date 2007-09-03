@@ -39,7 +39,7 @@ import com.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
  */
 public abstract class CallbackObject {
 	/** Arraylist for storing callback information related to the callback. */
-	protected ArrayList<ICallbackInterface> callbackInfo = new ArrayList<ICallbackInterface>();
+	protected volatile ArrayList<ICallbackInterface> callbackInfo = new ArrayList<ICallbackInterface>();
 	
 	/** Reference to the IRCParser that owns this callback. */
 	protected IRCParser myParser;

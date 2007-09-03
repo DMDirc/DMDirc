@@ -661,16 +661,20 @@ public final class IRCParser implements Runnable {
 			try {
 				lastLine = in.readLine(); // Blocking :/
 				if (lastLine == null) {
-					currentSocketState = STATE_CLOSED;
-					callSocketClosed();
+					if (currentSocketState != STATE_CLOSED) { 
+						currentSocketState = STATE_CLOSED;
+						callSocketClosed();
+					}
 					reset();
 					break;
 				} else {
 					processLine(lastLine);
 				}
 			} catch (IOException e) {
-				currentSocketState = STATE_CLOSED;
-				callSocketClosed();
+				if (currentSocketState != STATE_CLOSED) { 
+					currentSocketState = STATE_CLOSED;
+					callSocketClosed();
+				}
 				reset();
 				break;
 			}
@@ -1431,8 +1435,10 @@ public final class IRCParser implements Runnable {
 		} catch (Exception e) {
 			/* Do Nothing */
 		} finally {
-			currentSocketState = STATE_CLOSED;
-			callSocketClosed();
+			if (currentSocketState != STATE_CLOSED) { 
+				currentSocketState = STATE_CLOSED;
+				callSocketClosed();
+			}
 			reset();
 		}
 	}

@@ -41,7 +41,7 @@ import com.dmdirc.parser.callbacks.interfaces.ICallbackInterface;
 public abstract class CallbackObjectSpecific extends CallbackObject {
 	
 	/** Hashtable for storing specific information for callback. */	
-	protected Hashtable<ICallbackInterface, String> specificData = new Hashtable<ICallbackInterface, String>();
+	protected volatile Hashtable<ICallbackInterface, String> specificData = new Hashtable<ICallbackInterface, String>();
 	
 	/**
 	 * Create a new instance of the Callback Object.
