@@ -75,16 +75,19 @@ public final class Styliser {
     /** Internal chars. */
     private static final String INTERNAL_CHARS = CODE_HYPERLINK + "" + CODE_CHANNEL;
     
-    /** Characters allowed to be used in an URL. */
-    private static final String CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
+    /** Regexp to match characters which shouldn't be used in channel links. */
+    private static final String RESERVED_CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
             + CODE_STOP + CODE_HEXCOLOUR + CODE_FIXED + CODE_ITALIC
             + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + "\"]";
     
+    /** Defines all characters allowed in URLs per W3 specs. */
+    private static final String URL_CHARS = "[a-z0-9$\\-_@\\.&\\+!\\*\"'\\(\\),=;/#\\?:]";
+    
     /** The regular expression to use for marking up URLs. */
-    private static final String URL_REGEXP = "(?i)([a-z]+://" + CHARS + "+|(?<![a-z:])www\\." + CHARS + "+)";
+    private static final String URL_REGEXP = "(?i)([a-z]+://" + URL_CHARS + "+|(?<![a-z0-9:])www\\." + URL_CHARS + "+)";
     
     /** The regular expression to use for marking up channels. */
-    private static final String URL_CHANNEL = "(?i)(?<![^\\s])([#&]" + CHARS + "+)";
+    private static final String URL_CHANNEL = "(?i)(?<![^\\s])([#&]" + RESERVED_CHARS + "+)";
     
     /** Creates a new instance of Styliser. */
     private Styliser() {
