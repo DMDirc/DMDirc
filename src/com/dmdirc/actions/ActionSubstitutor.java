@@ -23,8 +23,9 @@
 package com.dmdirc.actions;
 
 import com.dmdirc.Config;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.Server;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +82,46 @@ public class ActionSubstitutor {
         }
         
         return res;
+    }
+    
+    /**
+     * Retrieves a list of server substitutions, if this action type supports
+     * them.
+     * Note: does not include initial $.
+     *
+     * @return A map of server substitution names and their descriptions.
+     */
+    public Map<String, String> getServerSubstitutions() {
+        final Map<String, String> res = new HashMap<String, String>();
+        
+        if (type.getType().getArgTypes().length > 0) {
+            Class target = type.getType().getArgTypes()[0];
+            
+            while (target != null && target != FrameContainer.class) {
+                target = target.getSuperclass();
+            }
+            
+            if (target == FrameContainer.class) {
+                for (ActionComponent comp : ActionManager.getCompatibleComponents(Server.class)) {
+                    final String key = "{" + comp.toString() + "}";
+                    final String desc = "The connection's " + comp.getName();
+                    
+                    res.put(key, desc);
+                }
+            }
+        }
+        
+        return res;
+    }
+    
+    /**
+     * Determines whether or not word substitutions will work for this action
+     * type. Word substitutions take the form $1, $1-5, $6-, etc.
+     *
+     * @return True if word substitutions are supported, false otherwise.
+     */
+    public boolean usesWordSubstitutions() {
+        return type.getType().getArgTypes().length > 2 && type.getType().getArgTypes()[2] == String[].class;
     }
     
 }
