@@ -252,7 +252,6 @@ public class Action implements Serializable {
         }
         
         try {
-            System.out.println(file.getAbsolutePath());
             final FileOutputStream outputStream = new FileOutputStream(file);
             properties.store(outputStream, "Created by GUI actions editor");
             outputStream.close();
