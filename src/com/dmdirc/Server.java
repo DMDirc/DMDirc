@@ -581,13 +581,15 @@ public final class Server extends WritableFrameContainer implements
      */
     public void disconnect(final String reason) {
         switch (myState) {
-        case CLOSING:
-        case DISCONNECTED:
-        case TRANSIENTLY_DISCONNECTED:
-            return;
-        case RECONNECT_WAIT:
-            reconnectTimer.cancel();
+            case CLOSING:
+            case DISCONNECTED:
+            case TRANSIENTLY_DISCONNECTED:
+                return;
+            case RECONNECT_WAIT:
+                reconnectTimer.cancel();
         }
+        
+        myState = STATE.DISCONNECTED;
         
         if (parser != null && parser.isReady()) {
             parser.disconnect(reason);
@@ -1013,14 +1015,14 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public void onSocketClosed(final IRCParser tParser) {
+        handleNotification("socketClosed", this.server);
+               
         if (myState == STATE.CLOSING || myState == STATE.DISCONNECTED) {
-            // This has been triggered via .discconect()
+            // This has been triggered via .disconect()
             return;
         }
         
         myState = STATE.TRANSIENTLY_DISCONNECTED;
-        
-        handleNotification("socketClosed", this.server);
         
         if (configManager.getOptionBool("general", "closechannelsondisconnect")) {
             closeChannels();
@@ -1028,8 +1030,8 @@ public final class Server extends WritableFrameContainer implements
         
         if (configManager.getOptionBool("general", "closequeriesondisconnect")) {
             closeQueries();
-        }
-        
+        }        
+                
         if (Config.getOptionBool("general", "reconnectondisconnect")) {
             myState = STATE.RECONNECT_WAIT;
             
@@ -1040,8 +1042,10 @@ public final class Server extends WritableFrameContainer implements
             reconnectTimer = new Timer("Server Reconnect Timer");
             reconnectTimer.schedule(new TimerTask() {
                 public void run() {
-                    myState = STATE.TRANSIENTLY_DISCONNECTED;
-                    reconnect();
+                    if (myState == STATE.RECONNECT_WAIT) {
+                        myState = STATE.TRANSIENTLY_DISCONNECTED;
+                        reconnect();
+                    }
                 }
             }, delay * 1000);
         }
@@ -1082,8 +1086,10 @@ public final class Server extends WritableFrameContainer implements
             reconnectTimer = new Timer("Server connect error timer");
             reconnectTimer.schedule(new TimerTask() {
                 public void run() {
-                    myState = STATE.TRANSIENTLY_DISCONNECTED;
-                    reconnect();
+                    if (myState == STATE.RECONNECT_WAIT) {
+                        myState = STATE.TRANSIENTLY_DISCONNECTED;
+                        reconnect();
+                    }
                 }
             }, delay * 1000);
         }
