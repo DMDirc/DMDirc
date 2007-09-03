@@ -302,7 +302,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 					// ActionManager.processEvent(CoreActionType.QUERY_CLOSED, this);
 					query = (Query)arguments[0];
 					if (query.getServer() != null) {
-						Logger.appError(ErrorLevel.MEDIUM, "Query object has no server ("+thisType.toString()+")", new Exception("Query object has no server ("+thisType.toString()+")""));
+						Logger.appError(ErrorLevel.MEDIUM, "Query object has no server ("+thisType.toString()+")", new Exception("Query object has no server ("+thisType.toString()+")"));
 						break;
 					}
 					parser = query.getServer().getParser();
@@ -342,7 +342,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 					// ActionManager.processEvent(CoreActionType.QUERY_OPENED, this);
 					query = (Query)arguments[0];
 					if (query.getServer() != null) {
-						Logger.appError(ErrorLevel.MEDIUM, "Query object has no server ("+thisType.toString()+")", new Exception("Query object has no server ("+thisType.toString()+")""));
+						Logger.appError(ErrorLevel.MEDIUM, "Query object has no server ("+thisType.toString()+")", new Exception("Query object has no server ("+thisType.toString()+")"));
 						break;
 					}
 					parser = query.getServer().getParser();
@@ -379,7 +379,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 					// ActionManager.processEvent(CoreActionType.QUERY_MESSAGE, this, message);
 					query = (Query)arguments[0];
 					if (query.getServer() != null) {
-						Logger.appError(ErrorLevel.MEDIUM, "Query object has no server ("+thisType.toString()+")", new Exception("Query object has no server ("+thisType.toString()+")""));
+						Logger.appError(ErrorLevel.MEDIUM, "Query object has no server ("+thisType.toString()+")", new Exception("Query object has no server ("+thisType.toString()+")"));
 						break;
 					}
 					parser = query.getServer().getParser();
