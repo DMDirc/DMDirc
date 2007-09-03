@@ -1135,7 +1135,8 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public void onErrorInfo(final IRCParser tParser, final ParserError errorInfo) {
-        ErrorLevel errorLevel;
+        ErrorLevel errorLevel = ErrorLevel.MEDIUM;
+        
         if (errorInfo.isFatal()) {
             errorLevel = ErrorLevel.FATAL;
         } else if (errorInfo.isError()) {
@@ -1152,7 +1153,9 @@ public final class Server extends WritableFrameContainer implements
         if (errorInfo.isException()) {
             Logger.appError(errorLevel, errorInfo.getData(), errorInfo.getException());
         } else {
-            Logger.appError(errorLevel, errorInfo.getData(), new Exception("fake trace")); //NOPMD
+            Logger.appError(errorLevel, errorInfo.getData(),
+                    new Exception("Parser exception.\n\n\tLast line:\t"
+                    + errorInfo.getLastLine() + "\n\tServer:\t" + server + "\n")); //NOPMD
         }
     }
     
