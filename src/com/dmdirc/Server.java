@@ -193,7 +193,7 @@ public final class Server extends WritableFrameContainer implements
     public Server(final String server, final int port, final String password,
             final boolean ssl, final Identity profile, final List<String> autochannels) {
         super();
-                
+        
         this.server = server;
         
         icon = IconManager.getIconManager().getIcon(ssl ? "secure-server" : "server");
@@ -1139,6 +1139,19 @@ public final class Server extends WritableFrameContainer implements
         
         for (String channel : autochannels) {
             parser.joinChannel(channel);
+        }
+        
+        // Check we have mode aliases
+        final String modes = parser.getBoolChanModes() + parser.getListChanModes()
+        + parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
+        
+        for (int i = 0; i < modes.length(); i++) {
+            final char mode = modes.charAt(i);
+            if (!configManager.hasOption("server", "mode" + mode)) {
+                Logger.appError(ErrorLevel.LOW, "No mode alias for mode +" + mode,
+                        new Exception("No more alias for mode +" + mode + "\n" // NOPMD
+                        + "Network: " + parser.getNetworkName() + "\n"));
+            }
         }
     }
     
