@@ -22,8 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard;
 
-import javax.swing.JPanel;
-
 /**
  * Wizard step that needs to know when it is about to be displayed
  */

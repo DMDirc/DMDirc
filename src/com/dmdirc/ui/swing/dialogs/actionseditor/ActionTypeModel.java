@@ -72,7 +72,4 @@ public class ActionTypeModel extends DefaultComboBoxModel {
             super.setSelectedItem(anObject);
         }
     }
-    
-    
-    
 }

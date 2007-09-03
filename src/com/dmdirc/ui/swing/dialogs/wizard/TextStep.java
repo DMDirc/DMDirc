@@ -22,8 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard;
 
-import javax.swing.JPanel;
-
 /**
  * Wizard step that has a modifiable text-based component
  */

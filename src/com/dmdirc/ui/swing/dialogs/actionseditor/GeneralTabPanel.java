@@ -32,8 +32,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -89,6 +87,8 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     private void initComponents() {
         name = new JTextField();
         trigger = new JComboBox(new ActionTypeModel(ActionManager.getTypeGroups()));
+        //Only fire events on selection not on highlight
+        trigger.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
         otherTriggers = new JList(new DefaultListModel());
         
         trigger.setRenderer(new ActionTypeRenderer());

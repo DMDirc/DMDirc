@@ -270,7 +270,7 @@ public final class WizardDialog extends JDialog implements ActionListener,
         }
         final Step newstep = steps.get(currentStep);
         if (newstep instanceof SpecialStep) {
-            ((SpecialStep)newstep).showStep();
+            ((SpecialStep) newstep).showStep();
         }
         newstep.setVisible(true);
     }
