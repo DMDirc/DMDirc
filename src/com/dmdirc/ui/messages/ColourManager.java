@@ -26,6 +26,8 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The colour manager manages the colour scheme for the IRC client. It allows
@@ -33,6 +35,17 @@ import java.awt.Color;
  * @author chris
  */
 public final class ColourManager {
+    
+    /** Colour cache. */
+    private final static Map<String, Color> colourCache = new HashMap<String, Color>();
+    
+    /** Colours used for the standard 16 IRC colours. */
+    private final static Color[] ircColours = {
+        Color.WHITE, Color.BLACK, new Color(0, 0, 127), new Color(0, 141, 0),
+        Color.RED, new Color(127, 0, 0), new Color(160, 15, 160), new Color(252, 127, 0),
+        Color.YELLOW, new Color(0, 252, 0), new Color(0, 128, 128), new Color(0, 255, 255),
+        Color.BLUE, new Color(255, 0, 255), Color.GRAY, Color.LIGHT_GRAY
+    };
     
     /** Creates a new instance of ColourManager. */
     private ColourManager() {
@@ -47,6 +60,10 @@ public final class ColourManager {
      * @return A colour representation of the specified string
      */
     public static Color parseColour(final String spec, final Color fallback) {
+        if (colourCache.containsKey(spec)) {
+            return colourCache.get(spec);
+        }
+        
         Color res = null;
         
         if (spec != null) {
@@ -70,6 +87,8 @@ public final class ColourManager {
         if (res == null) {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid colour format: " + spec);
             res = fallback;
+        } else {
+            colourCache.put(spec, res);
         }
         
         return res;
@@ -93,12 +112,21 @@ public final class ColourManager {
      * @return A Color object corresponding to the hex input
      */
     public static Color getColour(final String hex) {
+        if (colourCache.containsKey(hex)) {
+            return colourCache.get(hex);
+        }
+        
+        Color colour = null;
+        
         try {
-            return Color.decode("#" + hex);
+            colour = Color.decode("#" + hex);
         } catch (NumberFormatException ex) {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid colour #" + hex);
             return Color.WHITE;
         }
+        
+        colourCache.put(hex, colour);
+        return colour;
     }
     
     /**
@@ -109,42 +137,12 @@ public final class ColourManager {
      * @return The corresponding Color object
      */
     public static Color getColour(final int number) {
-        switch (number) {
-            case 0:
-                return Color.WHITE;
-            case 1:
-                return Color.BLACK;
-            case 2:
-                return new Color(0, 0, 127);
-            case 3:
-                return new Color(0, 141, 0);
-            case 4:
-                return Color.RED;
-            case 5:
-                return new Color(127, 0, 0);
-            case 6:
-                return new Color(160, 15, 160);
-            case 7:
-                return new Color(252, 127, 0);
-            case 8:
-                return Color.YELLOW;
-            case 9:
-                return new Color(0, 252, 0);
-            case 10:
-                return new Color(0, 128, 128);
-            case 11:
-                return new Color(0, 255, 255);
-            case 12:
-                return Color.BLUE;
-            case 13:
-                return new Color(255, 0, 255);
-            case 14:
-                return Color.GRAY;
-            case 15:
-                return Color.LIGHT_GRAY;
-            default:
-                Logger.userError(ErrorLevel.MEDIUM, "Invalid colour: " + number);
-                return Color.WHITE;
+        
+        if (number >= 0 && number <= 15) {
+            return ircColours[number];
+        } else {
+            Logger.userError(ErrorLevel.MEDIUM, "Invalid colour: " + number);
+            return Color.WHITE;
         }
     }
     
