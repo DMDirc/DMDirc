@@ -78,6 +78,7 @@ public final class CallbackManager {
 		addCallbackType(new CallbackOnDebugInfo(myParser, this));
 		addCallbackType(new CallbackOnErrorInfo(myParser, this));
 		addCallbackType(new CallbackOnGotNetwork(myParser, this));
+		addCallbackType(new CallbackOnInvite(myParser, this));
 		addCallbackType(new CallbackOnMOTDEnd(myParser, this));
 		addCallbackType(new CallbackOnMOTDLine(myParser, this));
 		addCallbackType(new CallbackOnMOTDStart(myParser, this));

@@ -80,6 +80,8 @@ public class ProcessingManager {
 		addProcessor(new ProcessAway(myParser, this));
 		// 352
 		addProcessor(new ProcessWho(myParser, this));
+		// INVITE
+		addProcessor(new ProcessInvite(myParser, this));
 		// JOIN
 		addProcessor(new ProcessJoin(myParser, this));
 		// KICK
