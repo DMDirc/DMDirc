@@ -193,8 +193,10 @@ public final class Server extends WritableFrameContainer implements
     public Server(final String server, final int port, final String password,
             final boolean ssl, final Identity profile, final List<String> autochannels) {
         super();
-        
+                
         this.server = server;
+        
+        icon = IconManager.getIconManager().getIcon(ssl ? "secure-server" : "server");
         
         ServerManager.getServerManager().registerServer(this);
         
@@ -206,6 +208,8 @@ public final class Server extends WritableFrameContainer implements
         
         tabCompleter.addEntries(AliasWrapper.getAliasWrapper().getAliases());
         window.getInputHandler().setTabCompleter(tabCompleter);
+        
+        window.setFrameIcon(icon);
         
         window.open();
         
@@ -257,7 +261,6 @@ public final class Server extends WritableFrameContainer implements
         configManager = new ConfigManager("", "", server);
         
         icon = IconManager.getIconManager().getIcon(ssl ? "secure-server" : "server");
-        
         window.setFrameIcon(icon);
         Main.getUI().getMainWindow().getFrameManager().iconUpdated(this);
         
@@ -1016,7 +1019,7 @@ public final class Server extends WritableFrameContainer implements
     /** {@inheritDoc} */
     public void onSocketClosed(final IRCParser tParser) {
         handleNotification("socketClosed", this.server);
-               
+        
         if (myState == STATE.CLOSING || myState == STATE.DISCONNECTED) {
             // This has been triggered via .disconect()
             return;
@@ -1030,8 +1033,8 @@ public final class Server extends WritableFrameContainer implements
         
         if (configManager.getOptionBool("general", "closequeriesondisconnect")) {
             closeQueries();
-        }        
-                
+        }
+        
         if (Config.getOptionBool("general", "reconnectondisconnect")) {
             myState = STATE.RECONNECT_WAIT;
             
