@@ -283,6 +283,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
                 final String[] lines = textField.getText().split("\\n");
                 for (String line : lines) {
                     parent.getContainer().sendLine(line);
+                    parent.getInputHandler().addToBuffer(line);
                 }
             }
             dispose();
