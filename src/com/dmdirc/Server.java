@@ -1149,8 +1149,9 @@ public final class Server extends WritableFrameContainer implements
             final char mode = modes.charAt(i);
             if (!configManager.hasOption("server", "mode" + mode)) {
                 Logger.appError(ErrorLevel.LOW, "No mode alias for mode +" + mode,
-                        new Exception("No more alias for mode +" + mode + "\n" // NOPMD
-                        + "Network: " + parser.getNetworkName() + "\n"));
+                        new Exception("No mode alias for mode +" + mode + "\n" // NOPMD
+                        + "Network: " + parser.getNetworkName() + "\n"
+                        + "IRCd: " + parser.getIRCD(false) + "\n\n"));
             }
         }
     }
