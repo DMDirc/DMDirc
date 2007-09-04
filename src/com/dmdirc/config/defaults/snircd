@@ -27,3 +27,5 @@ server.modeN = No channel notices
 server.enablemodeN = true
 server.modeu = No quit mesages
 server.enablemodeu = true
+server.modeT = No multi-target messages
+server.modeM = Mute non-registered users
