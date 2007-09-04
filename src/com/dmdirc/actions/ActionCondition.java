@@ -60,8 +60,8 @@ public class ActionCondition {
      * @param args The event arguments to be tested
      * @return True if the condition holds, false otherwise
      */
-    public boolean test(final Object ... args) {
-        final String thisTarget = ActionManager.substituteVars(getTarget(), args);
+    public boolean test(final ActionSubstitutor sub, final Object ... args) {
+        final String thisTarget = sub.doSubstitution(getTarget(), args);
         return getComparison().test(getComponent().get(args[getArg()]), thisTarget);
     }
     

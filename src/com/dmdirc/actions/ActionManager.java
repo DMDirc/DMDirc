@@ -22,10 +22,7 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.Config;
-import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
-import com.dmdirc.Server;
 import com.dmdirc.actions.wrappers.ActionWrapper;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
@@ -544,104 +541,5 @@ public final class ActionManager {
         }
         
         return null;
-    }
-    
-    /**
-     * Substitutes variables into the string based on the arguments.
-     *
-     * @param target The string to be altered
-     * @param arguments The arguments for the action
-     * @return The target string with all variables substituted
-     */
-    public static String substituteVars(final String target, final Object ... arguments) {
-        String res = target;
-        
-        for (String key : Config.getOptions("actions")) {
-            res = res.replaceAll("\\$" + key, escapeRegex(Config.getOption("actions", key)));
-            res = res.replaceAll("\\$!" + key, Config.getOption("actions", key));
-        }
-        
-        int j = -1;
-        for (Object argument : arguments) {
-            j++;
-            
-            if (argument == null) {
-                continue;
-            }
-            
-            for (ActionComponent comp : getCompatibleComponents(argument.getClass())) {
-                if (comp.get(argument) != null) {
-                    final String value = comp.get(argument).toString();
-                    res = res.replaceAll("\\$\\{" + escapeRegex(j + "."
-                            + comp.toString()) + "\\}", escapeRegex(value));
-                    
-                    res = res.replaceAll("\\$!\\{" + escapeRegex(j + "."
-                            + comp.toString()) + "\\}", value);
-                }
-            }
-        }
-        
-        if (arguments.length > 0 && arguments[0] instanceof FrameContainer) {
-            final Server server = ((FrameContainer) arguments[0]).getServer();
-            
-            for (ActionComponent comp : getCompatibleComponents(Server.class)) {
-                if (comp.get(server) != null) {
-                    final String value = comp.get(server).toString();
-                    res = res.replaceAll("\\$\\{" + escapeRegex(comp.toString())
-                            + "\\}", escapeRegex(value));
-                    
-                    res = res.replaceAll("\\$!\\{" + escapeRegex(comp.toString())
-                            + "\\}", value);
-                }
-            }
-        }
-        
-        if (arguments.length > 2 && arguments[2] instanceof String[]) {
-            final String[] args = (String[]) arguments[2];
-            final StringBuffer compound = new StringBuffer();
-            for (int i = args.length - 1; i >= 0; i--) {
-                if (compound.length() > 0) {
-                    compound.insert(0, ' ');
-                }
-                compound.insert(0, args[i]);
-                
-                res = res.replaceAll("\\$!" + (i + 1) + "-", compound.toString());
-                res = res.replaceAll("\\$!" + (i + 1), args[i]);
-                
-                res = res.replaceAll("\\$" + (i + 1) + "-", escapeRegex(compound.toString()));
-                res = res.replaceAll("\\$" + (i + 1), escapeRegex(args[i]));
-            }
-        }
-        
-        return res;
-    }
-    
-    @SuppressWarnings("fallthrough")
-    private static String escapeRegex(final String regex) {
-        final StringBuilder result = new StringBuilder(regex.length());
-        
-        for (int i = 0; i < regex.length(); i++) {
-            switch (regex.charAt(i)) {
-            case '.':
-            case '\\':
-            case '$':
-            case '^':
-            case '{':
-            case '}':
-            case '(':
-            case ')':
-            case '[':
-            case ']':
-            case '+':
-            case '*':
-            case '?':
-                result.append('\\');
-                // Fall through:
-            default:
-                result.append(regex.charAt(i));
-            }
-        }
-        
-        return result.toString();
     }
 }

@@ -60,6 +60,17 @@ public class ActionSubstitutor {
     }
     
     /**
+     * Substitutes in config variables into the specified target.
+     *
+     * @param target The StringBuilder to modify
+     */
+    private void doConfigSubstitutions(final StringBuilder target) {
+        for (String option : Config.getOptions("actions")) {
+            doReplacement(target, "$" + option, Config.getOption("actions", option));
+        }
+    }
+    
+    /**
      * Retrieves a list of substitutions derived from argument and component
      * combinations, along with a corresponding friendly name for them.
      * Note: does not include initial $.
@@ -85,6 +96,26 @@ public class ActionSubstitutor {
     }
     
     /**
+     * Substitutes in component-style substitutions.
+     *
+     * @param target The stringbuilder to be changed
+     * @param args The arguments passed for this action type
+     */
+    private void doComponentSubstitutions(final StringBuilder target, final Object ... args) {
+        int i = 0;
+        for (Class myClass : type.getType().getArgTypes()) {
+            for (ActionComponent comp : ActionManager.getCompatibleComponents(myClass)) {
+                final String needle = "${" + i + "." + comp.toString() + "}";
+                final String replacement = comp.get(args[i]).toString();
+                
+                doReplacement(target, needle, replacement);
+            }
+            
+            i++;
+        }
+    }
+    
+    /**
      * Retrieves a list of server substitutions, if this action type supports
      * them.
      * Note: does not include initial $.
@@ -94,24 +125,55 @@ public class ActionSubstitutor {
     public Map<String, String> getServerSubstitutions() {
         final Map<String, String> res = new HashMap<String, String>();
         
-        if (type.getType().getArgTypes().length > 0) {
-            Class target = type.getType().getArgTypes()[0];
-            
-            while (target != null && target != FrameContainer.class) {
-                target = target.getSuperclass();
-            }
-            
-            if (target == FrameContainer.class) {
-                for (ActionComponent comp : ActionManager.getCompatibleComponents(Server.class)) {
-                    final String key = "{" + comp.toString() + "}";
-                    final String desc = "The connection's " + comp.getName();
-                    
-                    res.put(key, desc);
-                }
+        if (hasFrameContainer()) {
+            for (ActionComponent comp : ActionManager.getCompatibleComponents(Server.class)) {
+                final String key = "{" + comp.toString() + "}";
+                final String desc = "The connection's " + comp.getName();
+                
+                res.put(key, desc);
             }
         }
         
         return res;
+    }
+    
+    /**
+     * Substitutes in server substitutions.
+     *
+     * @param target The stringbuilder to be changed
+     * @param args The arguments passed for this action type
+     */
+    private void doServerSubstitutions(final StringBuilder target, final Object ... args) {
+        if (hasFrameContainer()) {
+            for (ActionComponent comp : ActionManager.getCompatibleComponents(Server.class)) {
+                final String key = "${" + comp.toString() + "}";
+                final Object res = comp.get(((FrameContainer) args[0]).getServer());
+                
+                if (res != null) {
+                    doReplacement(target, key, res.toString());
+                }
+            }
+        }
+    }
+    
+    /**
+     * Returns true if this action type's first argument is a frame container,
+     * or descendent of one.
+     *
+     * @return True if this action type's first arg extends or is a FrameContainer
+     */
+    private boolean hasFrameContainer() {
+        Class target = null;
+        
+        if (type.getType().getArgTypes().length > 0) {
+            target = type.getType().getArgTypes()[0];
+            
+            while (target != null && target != FrameContainer.class) {
+                target = target.getSuperclass();
+            }
+        }
+        
+        return target == FrameContainer.class;
     }
     
     /**
@@ -122,6 +184,79 @@ public class ActionSubstitutor {
      */
     public boolean usesWordSubstitutions() {
         return type.getType().getArgTypes().length > 2 && type.getType().getArgTypes()[2] == String[].class;
+    }
+    
+    /**
+     * Substitutes in word substitutions.
+     *
+     * @param target The stringbuilder to be changed
+     * @param args The arguments passed for this action type
+     */
+    private void doWordSubstitutions(final StringBuilder target, final Object ... args) {
+        if (args.length > 1) {
+            String[] words = null;
+            
+            if (args.length > 2 && args[2] instanceof String[]) {
+                words = (String[]) args[2];
+            } else if (args.length > 2 && args[2] instanceof String) {
+                words = ((String) args[2]).split(" ");
+            } else if (args[1] instanceof String[]) {
+                words = (String[]) args[1];
+            } else if (args[1] instanceof String) {
+                words = ((String) args[1]).split(" ");
+            } else {
+                return;
+            }
+            
+            final StringBuffer compound = new StringBuffer();
+            for (int i = words.length - 1; i >= 0; i--) {
+                if (compound.length() > 0) {
+                    compound.insert(0, ' ');
+                }
+                compound.insert(0, args[i]);
+                
+                doReplacement(target, "\\$" + (i + 1) + "-", compound.toString());
+                doReplacement(target, "\\$" + (i + 1), words[i]);
+            }
+        }
+    }
+    
+    /**
+     * Performs all applicable substitutions on the specified string, with the
+     * specified arguments.
+     *
+     * @param target The string to be altered
+     * @param args The arguments for the action type
+     */
+    public String doSubstitution(final String target, final Object ... args) {
+        final StringBuilder res = new StringBuilder(target);
+        
+        doConfigSubstitutions(res);
+        doServerSubstitutions(res, args);
+        doComponentSubstitutions(res, args);
+        doWordSubstitutions(res, args);
+        
+        return res.toString();
+    }
+    
+    /**
+     * Replaces all occurances of needle in haystack with replacement.
+     *
+     * @param haystack The stringbuilder that is to be modified
+     * @param needle The search string
+     * @param replacement The string to be substituted in
+     */
+    private void doReplacement(final StringBuilder haystack, final String needle,
+            final String replacement) {
+        int i = -1;
+        
+        do {
+            i = haystack.indexOf(needle);
+            
+            if (i != -1) {
+                haystack.replace(i, i + needle.length(), replacement);
+            }
+        } while (i != -1);
     }
     
 }

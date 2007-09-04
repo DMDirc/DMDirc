@@ -480,8 +480,10 @@ public class Action implements Serializable {
      * @param arguments The arguments from the action that caused this trigger.
      */
     public void trigger(final StringBuffer format, final Object ... arguments) {
+        final ActionSubstitutor sub = new ActionSubstitutor(triggers[0]);
+        
         for (ActionCondition condition : conditions) {
-            if (!condition.test(arguments)) {
+            if (!condition.test(sub, arguments)) {
                 return;
             }
         }
@@ -492,7 +494,7 @@ public class Action implements Serializable {
         
         if (arguments.length > 0 && arguments[0] instanceof WritableFrameContainer) {
             cw = ((WritableFrameContainer) arguments[0]).getFrame();
-        } else if (active != null && active instanceof InputWindow) {
+        } else if (active instanceof InputWindow) {
             cw = (InputWindow) Main.getUI().getMainWindow().getActiveFrame();
         } else if (ServerManager.getServerManager().numServers() > 0) {
             cw = ServerManager.getServerManager().getServers().get(0).getFrame();
@@ -506,7 +508,7 @@ public class Action implements Serializable {
         }
         
         for (String command : response) {
-            cp.parseCommand(cw, ActionManager.substituteVars(command, arguments));
+            cp.parseCommand(cw, new ActionSubstitutor(triggers[0]).doSubstitution(command, arguments));
         }
         
         if (newFormat != null && format != null) {
