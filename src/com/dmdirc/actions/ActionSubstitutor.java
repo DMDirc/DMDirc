@@ -215,10 +215,10 @@ public class ActionSubstitutor {
                 if (compound.length() > 0) {
                     compound.insert(0, ' ');
                 }
-                compound.insert(0, args[i]);
+                compound.insert(0, words[i]);
                 
-                doReplacement(target, "\\$" + (i + 1) + "-", compound.toString());
-                doReplacement(target, "\\$" + (i + 1), words[i]);
+                doReplacement(target, "$" + (i + 1) + "-", compound.toString());
+                doReplacement(target, "$" + (i + 1), words[i]);
             }
         }
     }
