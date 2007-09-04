@@ -24,6 +24,8 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.actions.ActionType;
 
+import java.io.Serializable;
+
 import java.util.Comparator;
 
 /**
@@ -31,7 +33,7 @@ import java.util.Comparator;
  * 
  * @author Chris
  */
-public class ActionTypeComparator implements Comparator<ActionType> {
+public class ActionTypeComparator implements Comparator<ActionType>, Serializable {
 
     /**
      * A version number for this class. It should be changed whenever the class

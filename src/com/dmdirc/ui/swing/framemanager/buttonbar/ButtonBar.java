@@ -88,7 +88,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
     private JPanel panel;
     
     /** The currently selected window. */
-    private FrameContainer selected;
+    private transient FrameContainer selected;
     
     /** The number of buttons per row or column. */
     private int cells = 1;

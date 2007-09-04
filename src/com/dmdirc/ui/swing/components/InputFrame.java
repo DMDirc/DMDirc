@@ -50,6 +50,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.io.Serializable;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -71,7 +72,8 @@ import javax.swing.undo.UndoManager;
  * Frame with an input field.
  */
 public abstract class InputFrame extends Frame implements InputWindow,
-        InternalFrameListener, MouseListener, ActionListener, KeyListener {
+        InternalFrameListener, MouseListener, ActionListener, KeyListener, 
+        Serializable {
     
     /**
      * A version number for this class. It should be changed whenever the class

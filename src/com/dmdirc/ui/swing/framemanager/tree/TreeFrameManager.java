@@ -118,7 +118,7 @@ public final class TreeFrameManager implements FrameManager,
     /**
      * The object that is currently selected.
      */
-    private FrameContainer selected;
+    private transient FrameContainer selected;
     
     /** Parent JComponent. */
     private JComponent parent;

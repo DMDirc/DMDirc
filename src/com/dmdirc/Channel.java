@@ -608,7 +608,7 @@ public final class Channel extends MessageTarget implements
     public void onChannelModeChanged(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
         if (sHost.length() == 0) {
-            final StringBuffer buff = new StringBuffer();
+            final StringBuffer buff = new StringBuffer(21);
             
             if (sModes.length() <= 1) {
                 buff.append("channelNoModes");

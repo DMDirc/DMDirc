@@ -66,7 +66,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4;
     
     /** Number of lines Label. */
     private JTextArea infoLabel;
@@ -280,7 +280,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
     public void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
             if (textField.getText().length() > 0) {
-                final String[] lines = textField.getText().split("\\n");
+                final String[] lines = textField.getText().split("\n");
                 for (String line : lines) {
                     parent.getContainer().sendLine(line);
                     parent.getInputHandler().addToBuffer(line);
