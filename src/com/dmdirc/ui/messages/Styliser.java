@@ -81,7 +81,7 @@ public final class Styliser {
             + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + "\"]";
     
     /** Defines all characters allowed in URLs per W3 specs. */
-    private static final String URL_CHARS = "[a-z0-9$\\-_@\\.&\\+!\\*\"'\\(\\),=;/#\\?:]";
+    private static final String URL_CHARS = "[a-z0-9$\\-_@\\.&\\+!\\*\"'\\(\\),=;/#\\?:%]";
     
     /** The regular expression to use for marking up URLs. */
     private static final String URL_REGEXP = "(?i)([a-z]+://" + URL_CHARS + "+|(?<![a-z0-9:])www\\." + URL_CHARS + "+)";
