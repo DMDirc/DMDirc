@@ -1350,7 +1350,7 @@ public final class IRCParser implements Runnable {
 	 */
 	public void sendMessage(final String sTarget, final String sMessage) {
 		if (sTarget == null || sMessage == null) { return; }
-		if (sTarget.equals("") || sMessage.equals("")) { return; }
+		if (sTarget.equals("")/* || sMessage.equals("")*/) { return; }
 		
 		sendString("PRIVMSG " + sTarget + " :" + sMessage);
 	}
@@ -1363,7 +1363,7 @@ public final class IRCParser implements Runnable {
 	 */
 	public void sendNotice(final String sTarget, final String sMessage) {
 		if (sTarget == null || sMessage == null) { return; }
-		if (sTarget.equals("") || sMessage.equals("")) { return; }
+		if (sTarget.equals("")/* || sMessage.equals("")*/) { return; }
 		
 		sendString("NOTICE " + sTarget + " :" + sMessage);
 	}
@@ -1389,7 +1389,7 @@ public final class IRCParser implements Runnable {
 		if (sTarget == null || sMessage == null) { return; }
 		if (sTarget.equals("") || sType.equals("")) { return; }
 		final char char1 = (char) 1;
-		if (!sMessage.equals("")) { sMessage = " " + sMessage; }
+/*		if (!sMessage.equals("")) { */sMessage = " " + sMessage; /*}*/
 		sendString("PRIVMSG " + sTarget + " :" + char1 + sType.toUpperCase() + sMessage + char1);
 	}
 	
@@ -1404,7 +1404,7 @@ public final class IRCParser implements Runnable {
 		if (sTarget == null || sMessage == null) { return; }
 		if (sTarget.equals("") || sType.equals("")) { return; }
 		final char char1 = (char) 1;
-		if (!sMessage.equals("")) { sMessage = " " + sMessage; }
+/*		if (!sMessage.equals("")) { */sMessage = " " + sMessage; /*}*/
 		sendString("NOTICE " + sTarget + " :" + char1 + sType.toUpperCase() + sMessage + char1);
 	}
 	
