@@ -20,43 +20,37 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.nowplaying.dcop;
+package com.dmdirc.ui.swing.dialogs.actionseditor;
 
-import com.dmdirc.addons.dcop.DcopPlugin;
-import com.dmdirc.addons.nowplaying.MediaSource;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JPanel;
 
 /**
- * Uses DCOP to retrieve now playing info from Amarok.
- *
- * @author chris
+ * Lists substitutions for use in actions.
  */
-public class AmarokSource implements MediaSource {
+public class SubstitutionsJPanel extends JPanel {
     
-    /** Instantiates the media source. */
-    public AmarokSource() {
-        //Do nothing
-    }
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
-    /** {@inheritDoc} */
-    public boolean isRunning() {
-        return DcopPlugin.getDcopResult("dcop amarok player isPlaying").size() > 0;
-    }
+    /** Substitutions list. */
+    private final JList list;
     
-    /** {@inheritDoc} */
-    public boolean isPlaying() {
-        final String result = DcopPlugin.getDcopResult("dcop amarok player isPlaying").get(0);
+    /** Creates a new instance of SubstitutionsJPanel. */
+    public SubstitutionsJPanel() {
+        super();
         
-        return Boolean.parseBoolean(result);
+        list = new JList(new DefaultListModel());
     }
     
-    /** {@inheritDoc} */
-    public String getInformation() {
-        return DcopPlugin.getDcopResult("dcop amarok player nowPlaying").get(0);
-    }
-    
-    /** {@inheritDoc} */
-    public String getName() {
-        return "Amarok";
+    public void populateList() {
+        //populate the list
+        final DefaultListModel model = (DefaultListModel) list.getModel();
     }
     
 }

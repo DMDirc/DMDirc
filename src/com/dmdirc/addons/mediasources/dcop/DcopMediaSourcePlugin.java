@@ -20,13 +20,15 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.addons.nowplaying.dcop;
+package com.dmdirc.addons.mediasources.dcop;
 
 import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.addons.nowplaying.MediaSourceManager;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -35,27 +37,32 @@ import java.util.List;
 public class DcopMediaSourcePlugin extends Plugin
         implements MediaSourceManager {
     
+    /** Media sources. */
+    private final List<MediaSource> sources;
+    
     /**
      * Creates a new instance of DcopMediaSourcePlugin.
      */
     public DcopMediaSourcePlugin() {
         super();
+        sources = new ArrayList<MediaSource>();
+        sources.add(new AmarokSource());
+        sources.add(new KaffeineSource());
+        sources.add(new NoatunSource());
     }
     
     /** {@inheritDoc} */
     public List<MediaSource> getSources() {
-        final List<MediaSource> sources = new ArrayList<MediaSource>();
-        
-        sources.add(new AmarokSource());
-        sources.add(new KaffeineSource());
-        sources.add(new NoatunSource());
-        
         return sources;
     }
     
     /** {@inheritDoc} */
     public boolean onLoad() {
-        return true;
+        if (Arrays.asList(PluginManager.getPluginManager().getNames()).
+                contains("com.dmdirc.addons.dcop.dcopplugin")) {
+            return true;
+        }
+        return false;
     }
     
     /** {@inheritDoc} */
@@ -77,5 +84,4 @@ public class DcopMediaSourcePlugin extends Plugin
     public String toString() {
         return "DCOP media sources";
     }
-    
 }

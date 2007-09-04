@@ -65,9 +65,10 @@ public class ConfigPanel extends JPanel {
     /** Initialises the components. */
     private void initComponents() {
         list = new ReorderableJList();
+        list.setCellRenderer(new MediaSourceListRenderer());
         
         for (MediaSource source: sources) {
-            list.getModel().addElement(source.getName());
+            list.getModel().addElement(source);
         }
         
         setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
@@ -76,13 +77,13 @@ public class ConfigPanel extends JPanel {
         add(new JScrollPane(list), BorderLayout.CENTER);
     }
     
-    public List<Object> getSources() {
-        final List<Object> newSources = new LinkedList<Object>();
+    public List<MediaSource> getSources() {
+        final List<MediaSource> newSources = new LinkedList<MediaSource>();
         
         final Enumeration<?> values = list.getModel().elements();
         
         while (values.hasMoreElements()) {
-            newSources.add(values.nextElement());
+            newSources.add((MediaSource) values.nextElement());
         }
         
         return newSources;

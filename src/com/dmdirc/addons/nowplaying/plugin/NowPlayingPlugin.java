@@ -42,7 +42,7 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
         PreferencesInterface  {
     
     /** Config domain. */
-    private static final String MY_DOMAIN = "nowplaying";
+    private static final String MY_DOMAIN = "plugin-nowplaying";
     
     /** The sources that we know of. */
     private List<MediaSource> sources;
@@ -63,9 +63,6 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     protected void onActivate() {
         sources = new LinkedList<MediaSource>();
         
-        PluginManager.getPluginManager().addPlugin(
-                "com.dmdirc.addons.nowplaying.dcop.DcopMediaSourcePlugin");
-        
         for (Plugin target : PluginManager.getPluginManager().getPlugins()) {
             if (target.isActive()) {
                 addPlugin(target);
@@ -79,9 +76,6 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     @Override
     protected void onDeactivate() {
         sources = null;
-        
-        PluginManager.getPluginManager().delPlugin(
-                "com.dmdirc.addons.nowplaying.dcop.DcopMediaSourcePlugin");
         
         CommandManager.unregisterCommand(command);
     }
@@ -124,6 +118,7 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     /** {@inheritDoc} */
     public void configClosed(final Properties properties) {
         //save settings
+        sources = configPanel.getSources();
     }
     
     /** {@inheritDoc} */
