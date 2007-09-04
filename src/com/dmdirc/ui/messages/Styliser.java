@@ -27,21 +27,13 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
 import java.awt.Color;
-import java.awt.font.TextAttribute;
-import java.text.AttributedString;
-import java.util.Enumeration;
 import java.util.Locale;
 
 import javax.swing.UIManager;
-import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Element;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleConstants.CharacterConstants;
-import javax.swing.text.StyleConstants.ColorConstants;
-import javax.swing.text.StyleConstants.FontConstants;
 import javax.swing.text.StyledDocument;
 
 /**
@@ -81,7 +73,7 @@ public final class Styliser {
             + CODE_UNDERLINE + CODE_CHANNEL + CODE_NICKNAME + "\"]";
     
     /** Defines all characters allowed in URLs per W3 specs. */
-    private static final String URL_CHARS = "[a-z0-9$\\-_@\\.&\\+!\\*\"'\\(\\),=;/#\\?:%]";
+    private static final String URL_CHARS = "[a-z0-9$\\-_@\\.&\\+!\\*\"'\\(\\),=;/#\\?:%~]";
     
     /** The regular expression to use for marking up URLs. */
     private static final String URL_REGEXP = "(?i)([a-z]+://" + URL_CHARS + "+|(?<![a-z0-9:])www\\." + URL_CHARS + "+)";
