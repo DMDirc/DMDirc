@@ -35,6 +35,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 /**
@@ -57,7 +58,7 @@ public class NickColourPanel extends JPanel implements ActionListener {
     
     /** The plugin we're associated with. */
     private final NickColourPlugin plugin;
-    
+        
     /** The table headings. */
     private final String[] headers = {"Network", "Nickname", "Text colour", "Nicklist colour"};
     
@@ -70,8 +71,8 @@ public class NickColourPanel extends JPanel implements ActionListener {
         this.plugin = plugin;
         
         final Object[][] data = plugin.getData();
-        
-        table = new JTable(data, headers) {
+                
+        table = new JTable(new DefaultTableModel(data, headers)) {
             
             /**
              * A version number for this class. It should be changed whenever the class
@@ -137,6 +138,17 @@ public class NickColourPanel extends JPanel implements ActionListener {
 
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
+        if (e.getActionCommand().equals("Add")) {
+            
+        } else if (e.getActionCommand().equals("Edit")) {
+            
+        } else if (e.getActionCommand().equals("Delete")) {
+            final int row = table.getSelectedRow();
+            
+            if (row > -1) {
+                ((DefaultTableModel) table.getModel()).removeRow(row);
+            }
+        }
     }
         
 }

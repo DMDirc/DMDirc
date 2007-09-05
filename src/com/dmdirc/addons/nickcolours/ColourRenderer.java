@@ -59,7 +59,7 @@ public class ColourRenderer extends DefaultTableCellRenderer {
             final Object value, final boolean isSelected,
             final boolean hasFocus, final int row, final int column) {
         Color colour = null;
-        if (value != null) {
+        if (value != null && !((String) value).isEmpty()) {
             colour = ColourManager.parseColour((String) value, null);
         }
         
