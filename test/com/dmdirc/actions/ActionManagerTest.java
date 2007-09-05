@@ -40,7 +40,7 @@ public class ActionManagerTest extends TestCase {
     @Before
     public void setUp() throws Exception {
     }
-    
+    /*
     @Test
     public void testSubstituteVars() {
         final Object[] args = new Object[]{
@@ -51,6 +51,6 @@ public class ActionManagerTest extends TestCase {
         final String expected = "Blah blah someCommand a b c dd a b c d";
         
         assertEquals(expected, ActionManager.substituteVars(subject, args));
-    }
+    }*/
     
 }
