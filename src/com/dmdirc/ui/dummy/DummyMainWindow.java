@@ -82,13 +82,7 @@ public class DummyMainWindow implements MainWindow {
     public Window getActiveFrame() {
         return active;
     }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public StatusBar getStatusBar() {
-        return new DummyStatusBar();
-    }
-    
+       
     /** {@inheritDoc} */
     public void addPluginMenu(final JMenuItem menuItem) {
         pluginMenu.add(menuItem);

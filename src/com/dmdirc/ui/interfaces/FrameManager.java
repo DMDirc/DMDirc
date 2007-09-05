@@ -105,7 +105,9 @@ public interface FrameManager {
      * 
      * @param server The server to which the channel belongs
      * @param channel The channel to be added
+     * @deprecated Functionality should be the same as addCustom()
      */
+    @Deprecated
     void addChannel(Server server, Channel channel);
     
     /**
@@ -113,7 +115,9 @@ public interface FrameManager {
      * 
      * @param server The server to which the channel belongs
      * @param channel The channel to be removed
+     * @deprecated Functionality should be the same as delCustom()
      */
+    @Deprecated
     void delChannel(Server server, Channel channel);
     
     /**
@@ -121,7 +125,9 @@ public interface FrameManager {
      * 
      * @param server The server to which the query belongs
      * @param query The query to be added
+     * @deprecated Functionality should be the same as addCustom()
      */
+    @Deprecated
     void addQuery(Server server, Query query);
     
     /**
@@ -129,7 +135,9 @@ public interface FrameManager {
      * 
      * @param server The server to which the query belongs
      * @param query The query to be removed
+     * @deprecated Functionality should be the same as delCustom()
      */
+    @Deprecated
     void delQuery(Server server, Query query);
     
     /**

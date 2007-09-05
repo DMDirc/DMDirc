@@ -46,41 +46,7 @@ public final class Config {
     public static void init() {
         manager = new ConfigManager("", "", "");
     }
-    
-    /**
-     * Returns the full path to the application's config file.
-     * @return config file
-     * @deprecated No need for this, really
-     */
-    @Deprecated
-    public static String getConfigFile() {
-        return getConfigDir() + "dmdirc.config";
-    }
-    
-    /**
-     * Returns the application's config directory.
-     * @return configuration directory
-     * @deprecated in favour of Main.getConfigDir()
-     */
-    @Deprecated
-    public static String getConfigDir() {
-        final String fs = System.getProperty("file.separator");
-        final String osName = System.getProperty("os.name");
-        String configDir = null;
-        if (osName.startsWith("Mac OS")) {
-            configDir = System.getProperty("user.home") + fs + "Library" + fs + "Preferences" + fs + "DMDirc" + fs;
-        } else if (osName.startsWith("Windows")) {
-            if (System.getenv("APPDATA") == null) {
-                configDir = System.getProperty("user.home") + fs + "DMDirc" + fs;
-            } else {
-                configDir = System.getenv("APPDATA") + fs + "DMDirc" + fs;
-            }
-        } else {
-            configDir = System.getProperty("user.home") + fs + ".DMDirc" + fs;
-        }
-        return configDir;
-    }
-    
+        
     /**
      * Determines if the specified option exists.
      * @return true iff the option exists, false otherwise
