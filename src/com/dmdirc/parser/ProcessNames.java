@@ -72,16 +72,15 @@ public class ProcessNames extends IRCProcessor {
 				sNameBit = sNames[j];
 				// If name is empty (ie there was an extra space) ignore it.
 				if (sNameBit.length() == 0) { continue; }
+				// This next bit of code allows for any ircd which decides to use @+Foo in names
 				for (int i = 0; i < sNameBit.length(); ++i) {
 					Character cMode = sNameBit.charAt(i);
-					if (myParser.hPrefixMap.containsKey(cMode)) {
-						// hPrefixMap contains @, o, +, v this caused issue 107
-						// hPrefixModes only contains o, v so if the mode is in hPrefixMap
-						// and not in hPrefixModes, its ok to use.
-						if (!myParser.hPrefixModes.containsKey(cMode)) {
-							sModes.append(cMode);
-							nPrefix = nPrefix + myParser.hPrefixModes.get(myParser.hPrefixMap.get(cMode));
-						}
+					// hPrefixMap contains @, o, +, v this caused issue 107
+					// hPrefixModes only contains o, v so if the mode is in hPrefixMap
+					// and not in hPrefixModes, its ok to use.
+					if (myParser.hPrefixMap.containsKey(cMode) && !myParser.hPrefixModes.containsKey(cMode)) {
+						sModes.append(cMode);
+						nPrefix = nPrefix + myParser.hPrefixModes.get(myParser.hPrefixMap.get(cMode));
 					} else {
 						sName = sNameBit.substring(i);
 						break;
