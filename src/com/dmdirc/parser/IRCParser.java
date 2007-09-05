@@ -1500,19 +1500,29 @@ public final class IRCParser implements Runnable {
 		if (h005Info.containsKey("004IRCD")) {
 			final String version = h005Info.get("004IRCD");
 			if (getType) {
-				if (version.matches("(?i).*asuka.*")) { return "asuka"; }
+				// This ilst is vaugly based on http://searchirc.com/ircd-versions,
+				// but keeping groups of ircd's together (ie hybrid-based, ircu-based)
+				if (version.matches("(?i).*unreal.*")) { return "unreal"; }
+				else if (version.matches("(?i).*bahamut.*")) { return "bahamut"; }
+				else if (version.matches("(?i).*nefarious.*")) { return "nefarious"; }
+				else if (version.matches("(?i).*asuka.*")) { return "asuka"; }
 				else if (version.matches("(?i).*snircd.*")) { return "snircd"; }
+				else if (version.matches("(?i).*beware.*")) { return "bircd"; }
+				else if (version.matches("(?i).*ircu.*")) { return "ircu"; }
+				else if (version.matches("(?i).*plexus.*")) { return "plexus"; }
+				else if (version.matches("(?i).*ircd.hybrid.*")) { return "hybrid7"; }
+				else if (version.matches("(?i).*hybrid.*")) { return "hybrid"; }
+				else if (version.matches("(?i).*charybdis.*")) { return "charybdis"; }
+				else if (version.matches("(?i).*inspircd.*")) { return "inspircd"; }
+				else if (version.matches("(?i).*ultimateircd.*")) { return "ultimateircd"; }
+				else if (version.matches("(?i).*critenircd.*")) { return "critenircd"; }
+				else if (version.matches("(?i).*fqircd.*")) { return "fqircd"; }
+				else if (version.matches("(?i).*conferenceroom.*")) { return "conferenceroom"; }
 				else if (version.matches("(?i).*hyperion.*")) { return "hyperion"; }
 				else if (version.matches("(?i).*dancer.*")) { return "dancer"; }
 				else if (version.matches("(?i).*austhex.*")) { return "austhex"; }
 				else if (version.matches("(?i).*austirc.*")) { return "austirc"; }
 				else if (version.matches("(?i).*ratbox.*")) { return "ratbox"; }
-				else if (version.matches("(?i).*ircd.hybrid.*")) { return "hybrid7"; }
-				else if (version.matches("(?i).*hybrid.*")) { return "hybrid"; }
-				else if (version.matches("(?i).*beware.*")) { return "bircd"; }
-				else if (version.matches("(?i).*ircu.*")) { return "ircu"; }
-				else if (version.matches("(?i).*unreal.*")) { return "unreal"; }
-				else if (version.matches("(?i).*bahamut.*")) { return "bahamut"; }
 				else {
 					// Stupid networks go here...
 					if (sNetworkName.equalsIgnoreCase("ircnet")) { return "ircnet"; }
