@@ -56,7 +56,9 @@ public final class ActionTypeRenderer extends DefaultListCellRenderer {
             final boolean cellHasFocus) {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         
-        if (value instanceof String && !((String) value).isEmpty()) {
+        if (value == null) {
+            setText("");
+        } else if (value instanceof String && !((String) value).isEmpty()) {
             setBackground(Color.GRAY);
             setFont(getFont().deriveFont(Font.BOLD));
             setText(value.toString());
