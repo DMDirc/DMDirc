@@ -175,7 +175,9 @@ public final class UpdateChecker implements Runnable, MouseListener {
     
     /** {@inheritDoc} */
     public void mouseClicked(final MouseEvent e) {
-        Main.getUI().getUpdaterDialog(updates).display();
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            Main.getUI().getUpdaterDialog(updates).display();
+        }
     }
     
     /** {@inheritDoc} */
