@@ -1611,10 +1611,10 @@ public final class IRCParser implements Runnable {
 		} else {
 			--pingCountDown;
 			if (pingCountDown < 1) {
-				sendLine("PING "+System.currentTimeMillis());
 				pingTime = System.currentTimeMillis();
 				setPingNeeded(true);
 				pingCountDown = pingCountDownLength;
+				sendLine("PING "+System.currentTimeMillis());
 			}
 		}
 	}
