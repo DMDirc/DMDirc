@@ -36,6 +36,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -61,7 +62,8 @@ public final class WindowMenuFrameManager implements FrameManager,
     
     /** Creates a new instance of WindowMenuFrameManager. */
     public WindowMenuFrameManager() {
-        menuItemMap = new TreeMap<FrameContainer, JMenuItem>(new FrameContainerComparator());
+        menuItemMap = Collections.synchronizedSortedMap(
+                new TreeMap<FrameContainer, JMenuItem>(new FrameContainerComparator()));
     }
     
     /** {@inheritDoc} */
@@ -81,14 +83,12 @@ public final class WindowMenuFrameManager implements FrameManager,
     
     /** {@inheritDoc} */
     public void setSelected(final FrameContainer source) {
-        synchronized (menuItemMap) {
-            for (Entry<FrameContainer, JMenuItem> entry : menuItemMap.entrySet()) {
-                final JMenuItem mi = entry.getValue();
-                if (entry.getKey() == source) {
-                    mi.setFont(mi.getFont().deriveFont(Font.BOLD));
-                } else {
-                    mi.setFont(mi.getFont().deriveFont(Font.PLAIN));
-                }
+        for (Entry<FrameContainer, JMenuItem> entry : menuItemMap.entrySet()) {
+            final JMenuItem mi = entry.getValue();
+            if (entry.getKey() == source) {
+                mi.setFont(mi.getFont().deriveFont(Font.BOLD));
+            } else {
+                mi.setFont(mi.getFont().deriveFont(Font.PLAIN));
             }
         }
     }
@@ -155,7 +155,7 @@ public final class WindowMenuFrameManager implements FrameManager,
      */
     private void addFrameContainer(final FrameContainer window) {
         final JMenuItem mi = new JMenuItem(window.toString(), window.getIcon());
-        final TreeMap<FrameContainer, JMenuItem> newMap = 
+        final TreeMap<FrameContainer, JMenuItem> newMap =
                 new TreeMap<FrameContainer, JMenuItem>(new FrameContainerComparator());
         mi.addActionListener(this);
         menuItemMap.put(window, mi);
@@ -169,7 +169,7 @@ public final class WindowMenuFrameManager implements FrameManager,
      * @param window Window to remove from list
      */
     private void removeFramecontainer(final FrameContainer window) {
-        final TreeMap<FrameContainer, JMenuItem> newMap = 
+        final TreeMap<FrameContainer, JMenuItem> newMap =
                 new TreeMap<FrameContainer, JMenuItem>(new FrameContainerComparator());
         menuItemMap.remove(window);
         newMap.putAll(menuItemMap);

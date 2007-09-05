@@ -655,7 +655,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         menuItem = new JMenuItem();
         menuItem.setMnemonic('a');
-        menuItem.setText("#DMDirc");
+        menuItem.setText("Join #DMDirc");
         menuItem.setActionCommand("JoinDevChat");
         menuItem.addActionListener(this);
         helpMenu.add(menuItem);
@@ -805,7 +805,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 if (server.hasChannel("#DMDirc")) {
                     server.getChannel("#DMDirc").activateFrame();
                 } else {
-                    server.sendLine("JOIN :#DMDirc");
+                    server.getParser().sendLine("JOIN :#DMDirc");
                 }
             }
         }
