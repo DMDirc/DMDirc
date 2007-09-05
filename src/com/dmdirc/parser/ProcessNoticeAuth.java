@@ -25,7 +25,6 @@
 package com.dmdirc.parser;
 
 import com.dmdirc.parser.callbacks.CallbackOnNoticeAuth;
-import com.dmdirc.parser.callbacks.interfaces.INoticeAuth;
 
 /**
  * Process a NoticeAuth message.
@@ -37,7 +36,7 @@ public class ProcessNoticeAuth extends IRCProcessor {
 	 * @param sParam Type of line to process ("Notice Auth")
 	 * @param token IRCTokenised line to process
 	 */
-	public void process(String sParam, String[] token) {
+	public void process(final String sParam, final String[] token) {
 		callNoticeAuth(token[token.length-1]);
 	}
 	
@@ -47,8 +46,8 @@ public class ProcessNoticeAuth extends IRCProcessor {
 	 * @see INoticeAuth
 	 * @param data Incomming Line.
 	 */
-	protected boolean callNoticeAuth(String data) {
-		CallbackOnNoticeAuth cb = (CallbackOnNoticeAuth)getCallbackManager().getCallbackType("OnNoticeAuth");
+	protected boolean callNoticeAuth(final String data) {
+		final CallbackOnNoticeAuth cb = (CallbackOnNoticeAuth)getCallbackManager().getCallbackType("OnNoticeAuth");
 		if (cb != null) { return cb.call(data); }
 		return false;
 	}
@@ -65,12 +64,12 @@ public class ProcessNoticeAuth extends IRCProcessor {
 	} 
 	
 	/**
-	 * Create a new instance of the IRCProcessor Object
+	 * Create a new instance of the ProcessNoticeAuth Object
 	 *
-	 * @param parser IRCParser That owns this IRCProcessor
-	 * @param manager ProcessingManager that is in charge of this IRCProcessor
+	 * @param parser IRCParser That owns this object
+	 * @param manager ProcessingManager that is in charge of this object
 	 */
-	protected ProcessNoticeAuth (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
+	protected ProcessNoticeAuth (final IRCParser parser, final ProcessingManager manager) { super(parser, manager); }
 	
 	/**
 	 * Get SVN Version information.

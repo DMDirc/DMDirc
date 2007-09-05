@@ -25,7 +25,6 @@
 package com.dmdirc.parser;
 
 import com.dmdirc.parser.callbacks.CallbackOnChannelTopic;
-import com.dmdirc.parser.callbacks.interfaces.IChannelTopic;
 
 /**
  * Process a topic change.
@@ -37,7 +36,7 @@ public class ProcessTopic extends IRCProcessor {
 	 * @param sParam Type of line to process ("TOPIC", "332", "333")
 	 * @param token IRCTokenised line to process
 	 */
-	public void process(String sParam, String[] token) {
+	public void process(final String sParam, final String[] token) {
 		ChannelInfo iChannel;
 		if (sParam.equals("332")) {
 			iChannel = getChannelInfo(token[3]);
@@ -51,13 +50,11 @@ public class ProcessTopic extends IRCProcessor {
 			callChannelTopic(iChannel,true);
 		} else {
 			if (myParser.ALWAYS_UPDATECLIENT) {
-				ClientInfo iClient = getClientInfo(token[0]);
-				if (iClient != null) {
-					if (iClient.getHost().equals("")) {iClient.setUserBits(token[0],false); }
-				}
+				final ClientInfo iClient = getClientInfo(token[0]);
+				if (iClient != null && iClient.getHost().length() == 0) {iClient.setUserBits(token[0],false); }
 			}
 			iChannel = getChannelInfo(token[2]);
-			if (iChannel == null) { return; };
+			if (iChannel == null) { return; }
 			iChannel.setTopicTime(System.currentTimeMillis() / 1000);
 			if (token[0].charAt(0) == ':') { token[0] = token[0].substring(1); }
 			iChannel.setTopicUser(token[0]);
@@ -73,8 +70,8 @@ public class ProcessTopic extends IRCProcessor {
 	 * @param cChannel Channel that topic was set on
 	 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
 	 */
-	protected boolean callChannelTopic(ChannelInfo cChannel, boolean bIsJoinTopic) {
-		CallbackOnChannelTopic cb = (CallbackOnChannelTopic)getCallbackManager().getCallbackType("OnChannelTopic");
+	protected boolean callChannelTopic(final ChannelInfo cChannel, final boolean bIsJoinTopic) {
+		final CallbackOnChannelTopic cb = (CallbackOnChannelTopic)getCallbackManager().getCallbackType("OnChannelTopic");
 		if (cb != null) { return cb.call(cChannel, bIsJoinTopic); }
 		return false;
 	}

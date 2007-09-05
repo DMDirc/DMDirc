@@ -25,7 +25,6 @@
 package com.dmdirc.parser;
 
 import com.dmdirc.parser.callbacks.CallbackOnNickInUse;
-import com.dmdirc.parser.callbacks.interfaces.INickInUse;
 
 /**
  * Process a NickInUse message.
@@ -49,17 +48,21 @@ public class ProcessNickInUse extends IRCProcessor {
 	 * @param sParam Type of line to process ("433")
 	 * @param token IRCTokenised line to process
 	 */
-	public void process(String sParam, String[] token) {
+	public void process(final String sParam, final String[] token) {
 		if (!callNickInUse(token[3])) {
 			// Manually handle nick in use.
 			callDebugInfo(myParser.DEBUG_INFO,"No Nick in use Handler.");
 			if (!myParser.got001) {
 				callDebugInfo(myParser.DEBUG_INFO,"Using inbuilt handler");
 				// If this is before 001 we will try and get a nickname, else we will leave the nick as-is
-				if (!myParser.triedAlt) { myParser.setNickname(myParser.me.getAltNickname()); myParser.triedAlt = true; }
-				else {
-					if (myParser.equalsIgnoreCase(myParser.sThinkNickname, myParser.me.getAltNickname())) { myParser.sThinkNickname = myParser.me.getNickname(); }
-					myParser.setNickname(myParser.me.getPrependChar()+myParser.sThinkNickname);
+				if (myParser.triedAlt) {
+					if (myParser.equalsIgnoreCase(myParser.sThinkNickname, myParser.me.getAltNickname())) {
+						myParser.sThinkNickname = myParser.me.getNickname();
+					}
+					myParser.setNickname(myParser.me.getPrependChar()+myParser.sThinkNickname);                                    
+				} else {
+					myParser.setNickname(myParser.me.getAltNickname());
+					myParser.triedAlt = true; 
 				}
 			}
 		}
@@ -72,7 +75,7 @@ public class ProcessNickInUse extends IRCProcessor {
 	 * @see INickInUse
 	 */
 	protected boolean callNickInUse(final String nickname) {
-		CallbackOnNickInUse cb = (CallbackOnNickInUse)getCallbackManager().getCallbackType("OnNickInUse");
+		final CallbackOnNickInUse cb = (CallbackOnNickInUse)getCallbackManager().getCallbackType("OnNickInUse");
 		if (cb != null) { return cb.call(nickname); }
 		return false;
 	}
@@ -89,12 +92,12 @@ public class ProcessNickInUse extends IRCProcessor {
 	} 
 	
 	/**
-	 * Create a new instance of the IRCProcessor Object
+	 * Create a new instance of the ProcessNickInUse Object
 	 *
-	 * @param parser IRCParser That owns this IRCProcessor
-	 * @param manager ProcessingManager that is in charge of this IRCProcessor
+	 * @param parser IRCParser That owns this object
+	 * @param manager ProcessingManager that is in charge of this object
 	 */
-	protected ProcessNickInUse (IRCParser parser, ProcessingManager manager) { super(parser, manager); }
+	protected ProcessNickInUse (final IRCParser parser, final ProcessingManager manager) { super(parser, manager); }
 	
 	/**
 	 * Get SVN Version information.

@@ -25,7 +25,6 @@
 package com.dmdirc.parser;
 
 import com.dmdirc.parser.callbacks.CallbackOnChannelPart;
-import com.dmdirc.parser.callbacks.interfaces.IChannelPart;
 
 /**
  * Process a channel part.
@@ -37,7 +36,7 @@ public class ProcessPart extends IRCProcessor {
 	 * @param sParam Type of line to process ("PART")
 	 * @param token IRCTokenised line to process
 	 */
-	public void process(String sParam, String[] token) {
+	public void process(final String sParam, final String[] token) {
 		// :nick!ident@host PART #Channel
 		// :nick!ident@host PART #Channel :reason
 		if (token.length < 3) { return; }
@@ -49,9 +48,9 @@ public class ProcessPart extends IRCProcessor {
 		iChannel = getChannelInfo(token[2]);
 		
 		if (iClient == null) { return; }
-		if (myParser.ALWAYS_UPDATECLIENT) {
+		if (myParser.ALWAYS_UPDATECLIENT && iClient.getHost().length() == 0) {
 			// This may seem pointless - updating before they leave - but the formatter needs it!
-			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0],false); }
+			iClient.setUserBits(token[0],false);
 		}
 		if (iChannel == null) { 
 			if (iClient != myParser.cMyself) {
@@ -85,8 +84,8 @@ public class ProcessPart extends IRCProcessor {
 	 * @param cChannelClient Client that parted
 	 * @param sReason Reason given for parting (May be "")
 	 */
-	protected boolean callChannelPart(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
-		CallbackOnChannelPart cb = (CallbackOnChannelPart)getCallbackManager().getCallbackType("OnChannelPart");
+	protected boolean callChannelPart(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
+		final CallbackOnChannelPart cb = (CallbackOnChannelPart)getCallbackManager().getCallbackType("OnChannelPart");
 		if (cb != null) { return cb.call(cChannel, cChannelClient, sReason); }
 		return false;
 	}

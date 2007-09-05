@@ -26,9 +26,6 @@ package com.dmdirc.parser;
 
 import com.dmdirc.parser.callbacks.CallbackOnChannelQuit;
 import com.dmdirc.parser.callbacks.CallbackOnQuit;
-import com.dmdirc.parser.callbacks.interfaces.IChannelQuit;
-import com.dmdirc.parser.callbacks.interfaces.IQuit;
-import java.util.Enumeration;
 
 /**
  * Process a Quit message.
@@ -40,26 +37,24 @@ public class ProcessQuit extends IRCProcessor {
 	 * @param sParam Type of line to process ("QUIT")
 	 * @param token IRCTokenised line to process
 	 */
-	public void process(String sParam, String[] token) {
+	public void process(final String sParam, final String[] token) {
 		// :nick!ident@host QUIT
 		// :nick!ident@host QUIT :reason
 		if (token.length < 2) { return; }
 		ClientInfo iClient;
-		ChannelInfo iChannel;
 		ChannelClientInfo iChannelClient;
 		
 		iClient = getClientInfo(token[0]);
 		
 		if (iClient == null) { return; }
-		if (myParser.ALWAYS_UPDATECLIENT) {
+		if (myParser.ALWAYS_UPDATECLIENT && iClient.getHost().length() == 0) {
 			// This may seem pointless - updating before they leave - but the formatter needs it!
-			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0],false); }
+			iClient.setUserBits(token[0],false);
 		}
 		String sReason = "";
 		if (token.length > 2) { sReason = token[token.length-1]; }
 		
-		for (Enumeration e = myParser.hChannelList.keys(); e.hasMoreElements();) {
-			iChannel = myParser.hChannelList.get(e.nextElement());
+		for (ChannelInfo iChannel : myParser.hChannelList.values()) {
 			iChannelClient = iChannel.getUser(iClient);
 			if (iChannelClient != null) {
 				if (myParser.removeAfterCallback) { callChannelQuit(iChannel,iChannelClient,sReason); }
@@ -90,8 +85,8 @@ public class ProcessQuit extends IRCProcessor {
 	 * @param cChannelClient User thats quitting
 	 * @param sReason Quit reason
 	 */
-	protected boolean callChannelQuit(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sReason) {
-		CallbackOnChannelQuit cb = (CallbackOnChannelQuit)getCallbackManager().getCallbackType("OnChannelQuit");
+	protected boolean callChannelQuit(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
+		final CallbackOnChannelQuit cb = (CallbackOnChannelQuit)getCallbackManager().getCallbackType("OnChannelQuit");
 		if (cb != null) { return cb.call(cChannel, cChannelClient, sReason); }
 		return false;
 	}
@@ -103,8 +98,8 @@ public class ProcessQuit extends IRCProcessor {
 	 * @param cClient Client Quitting
 	 * @param sReason Reason for quitting (may be "")
 	 */
-	protected boolean callQuit(ClientInfo cClient, String sReason) {
-		CallbackOnQuit cb = (CallbackOnQuit)getCallbackManager().getCallbackType("OnQuit");
+	protected boolean callQuit(final ClientInfo cClient, final String sReason) {
+		final CallbackOnQuit cb = (CallbackOnQuit)getCallbackManager().getCallbackType("OnQuit");
 		if (cb != null) { return cb.call(cClient, sReason); }
 		return false;
 	}
