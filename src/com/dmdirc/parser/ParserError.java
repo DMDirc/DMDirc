@@ -116,7 +116,7 @@ public final class ParserError {
 	 * @return Returns true if getLastLine returns anything non null, non empty.
 	 */
 	public boolean hasLastLine() {
-		return (lastLine == null || lastLine.length() == 0);
+		return (lastLine == null || lastLine.isEmpty());
 	}
 	
 	/**

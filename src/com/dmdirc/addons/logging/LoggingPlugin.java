@@ -483,7 +483,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 					// ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, this, cChannelClient, sModes);
 					channel = ((Channel)arguments[0]).getChannelInfo();
 					channelClient = (ChannelClientInfo) arguments[1];
-					if (channelClient.getNickname().length() == 0) {
+					if (channelClient.getNickname().isEmpty()) {
 						appendLine(getLogFile(channel), "*** Channel modes are: " + (String) arguments[2]);
 					} else {
 						appendLine(getLogFile(channel), "*** " + getDisplayName(channelClient) + " set modes: " + (String) arguments[2]);

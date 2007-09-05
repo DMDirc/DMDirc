@@ -86,7 +86,7 @@ public abstract class CommandParser implements Serializable {
      */
     public final void parseCommand(final InputWindow origin,
             final String line, final boolean parseChannel) {
-        if (line.length() == 0) {
+        if (line.isEmpty()) {
             return;
         }
         

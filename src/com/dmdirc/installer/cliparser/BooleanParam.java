@@ -50,7 +50,7 @@ public class BooleanParam extends CLIParam {
 	 */
 	public boolean setValue(final String value) {
 		// if no value, or an empty value is given, toggle the value
-		if (value == null || value.length() == 0) {
+		if (value == null || value.isEmpty()) {
 			myValue = !myValue;
 			return true;
 		// Check if value is a word that means "true"

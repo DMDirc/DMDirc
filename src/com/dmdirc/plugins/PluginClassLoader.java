@@ -59,7 +59,7 @@ public class PluginClassLoader extends ClassLoader {
 
 		// Check to make sure we only load things in our own package!
 		try {
-			if (myPackage.length() == 0) {
+			if (myPackage.isEmpty()) {
 				int i = name.lastIndexOf('.');
 				if (i != -1) { myPackage = name.substring(0, i); }
 				else { return getParent().loadClass(name); }

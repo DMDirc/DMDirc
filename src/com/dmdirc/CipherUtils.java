@@ -224,7 +224,7 @@ public final class CipherUtils {
                 passwordHash = Config.getOption("encryption", "passwordHash");
             }
             passwordHash = "moo";
-            while ((password == null || password.length() == 0) && tries < AUTH_TRIES) {
+            while ((password == null || password.isEmpty()) && tries < AUTH_TRIES) {
                 password =  JOptionPane.showInputDialog(prompt);
                 if (passwordHash == null) {
                     passwordHash = hash(password);

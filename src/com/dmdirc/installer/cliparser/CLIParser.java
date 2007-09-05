@@ -81,7 +81,7 @@ public class CLIParser {
 	 */
 	public boolean add(final CLIParam param) {
 		boolean validChar = (param.getChr() == 0 || !params.containsKey(param.getChr()));
-		boolean validString = (param.getString().length() == 0 || !params.containsKey("-"+param.getString()));
+		boolean validString = (param.getString().isEmpty() || !params.containsKey("-"+param.getString()));
 		if (validChar && validString) {
 			if (param.getChr() != 0) {
 				params.put(""+param.getChr(), param);

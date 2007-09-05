@@ -48,7 +48,7 @@ public class ProcessPart extends IRCProcessor {
 		iChannel = getChannelInfo(token[2]);
 		
 		if (iClient == null) { return; }
-		if (myParser.ALWAYS_UPDATECLIENT && iClient.getHost().length() == 0) {
+		if (myParser.ALWAYS_UPDATECLIENT && iClient.getHost().isEmpty()) {
 			// This may seem pointless - updating before they leave - but the formatter needs it!
 			iClient.setUserBits(token[0],false);
 		}

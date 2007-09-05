@@ -253,7 +253,7 @@ public final class InputHandler implements KeyListener, ActionListener {
         if (bufferPosition != bufferMaximum) {
             bufferPosition = normalise(bufferPosition + 1);
             retrieveBuffer();
-        } else if (target.getText().length() == 0) {
+        } else if (target.getText().isEmpty()) {
             // Beep or something
         } else {
             addToBuffer(target.getText());
@@ -266,7 +266,7 @@ public final class InputHandler implements KeyListener, ActionListener {
     private void doTabCompletion() {
         final String text = target.getText();
         
-        if (text.length() == 0) {
+        if (text.isEmpty()) {
             doNormalTabCompletion(text, 0, 0, null);
             return;
         }

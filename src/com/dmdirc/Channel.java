@@ -495,14 +495,14 @@ public final class Channel extends MessageTarget implements
         String type = "";
         
         if (nick.equals(tParser.getMyself().getNickname())) {
-            if (sReason.length() == 0) {
+            if (sReason.isEmpty()) {
                 type = "channelSelfPart";
             } else {
                 type = "channelSelfPartReason";
             }
             resetWindow();
         } else {
-            if (sReason.length() == 0) {
+            if (sReason.isEmpty()) {
                 type = "channelPart";
             } else {
                 type = "channelPartReason";
@@ -533,7 +533,7 @@ public final class Channel extends MessageTarget implements
         
         String type = "";
         
-        if (sReason.length() == 0) {
+        if (sReason.isEmpty()) {
             type = "channelKick";
         } else {
             type = "channelKickReason";
@@ -565,7 +565,7 @@ public final class Channel extends MessageTarget implements
         
         String type = "";
         
-        if (sReason.length() == 0) {
+        if (sReason.isEmpty()) {
             type = "channelQuit";
         } else {
             type = "channelQuitReason";
@@ -607,7 +607,7 @@ public final class Channel extends MessageTarget implements
     /** {@inheritDoc} */
     public void onChannelModeChanged(final IRCParser tParser, final ChannelInfo cChannel,
             final ChannelClientInfo cChannelClient, final String sHost, final String sModes) {
-        if (sHost.length() == 0) {
+        if (sHost.isEmpty()) {
             final StringBuffer buff = new StringBuffer(21);
             
             if (sModes.length() <= 1) {

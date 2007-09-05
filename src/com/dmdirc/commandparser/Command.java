@@ -83,7 +83,7 @@ public abstract class Command implements Comparable<Command> {
     protected final String implodeArgs(final int offset, final String... args) {
         String res = "";
         for (int i = offset; i < args.length; i++) {
-            if (res.length() == 0) {
+            if (res.isEmpty()) {
                 res = args[i];
             } else {
                 res = res.concat(" " + args[i]);
