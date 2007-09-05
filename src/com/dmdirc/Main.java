@@ -66,6 +66,11 @@ public final class Main {
     private static UIController controller;
     
     /**
+     * The config dir to use for the client.
+     */
+    private static String configdir;
+    
+    /**
      * Prevents creation of main.
      */
     private Main() {
@@ -152,7 +157,7 @@ public final class Main {
     
     /**
      * Sets the UI controller that should be used by this client.
-     * 
+     *
      * @param newController The new UI Controller
      */
     public static void setUI(final UIController newController) {
@@ -161,25 +166,36 @@ public final class Main {
     
     /**
      * Returns the application's config directory.
-     * 
+     *
      * @return configuration directory
      */
     public static String getConfigDir() {
-        final String fs = System.getProperty("file.separator");
-        final String osName = System.getProperty("os.name");
-        String configDir = null;
-        if (osName.startsWith("Mac OS")) {
-            configDir = System.getProperty("user.home") + fs + "Library" + fs + "Preferences" + fs + "DMDirc" + fs;
-        } else if (osName.startsWith("Windows")) {
-            if (System.getenv("APPDATA") == null) {
-                configDir = System.getProperty("user.home") + fs + "DMDirc" + fs;
+        if (configdir == null) {
+            final String fs = System.getProperty("file.separator");
+            final String osName = System.getProperty("os.name");
+            if (osName.startsWith("Mac OS")) {
+                configdir = System.getProperty("user.home") + fs + "Library" + fs + "Preferences" + fs + "DMDirc" + fs;
+            } else if (osName.startsWith("Windows")) {
+                if (System.getenv("APPDATA") == null) {
+                    configdir = System.getProperty("user.home") + fs + "DMDirc" + fs;
+                } else {
+                    configdir = System.getenv("APPDATA") + fs + "DMDirc" + fs;
+                }
             } else {
-                configDir = System.getenv("APPDATA") + fs + "DMDirc" + fs;
+                configdir = System.getProperty("user.home") + fs + ".DMDirc" + fs;
             }
-        } else {
-            configDir = System.getProperty("user.home") + fs + ".DMDirc" + fs;
         }
-        return configDir;
+        
+        return configdir;
+    }
+    
+    /**
+     * Sets the config directory for this client.
+     *
+     * @param newdir The new configuration directory
+     */
+    public static void setConfigDir(final String newdir) {
+        configdir = newdir;
     }
     
 }

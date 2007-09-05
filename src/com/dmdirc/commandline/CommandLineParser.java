@@ -43,7 +43,9 @@ public class CommandLineParser {
      */
     private static final Object[][] ARGUMENTS = new Object[][]{
         {'c', "connect", "Connect to the specified server", Boolean.TRUE},
+        {'d', "directory", "Use the specified configuration directory", Boolean.TRUE},
         {'h', "help", "Show command line options and exit", Boolean.FALSE},
+        {'p', "portable", "Enable portable mode", Boolean.FALSE},
         {'v', "version", "Display client version and exit", Boolean.FALSE},
     };
     
@@ -157,8 +159,14 @@ public class CommandLineParser {
             case 'c':
                 doConnect(param);
                 break;
+            case 'd':
+                doDirectory(param);
+                break;
             case 'h':
                 doHelp();
+                break;
+            case 'p':
+                doDirectory(System.getProperty("user.dir") + System.getProperty("file.separator"));
                 break;
             case 'v':
                 doVersion();
@@ -191,16 +199,29 @@ public class CommandLineParser {
         System.exit(0);
     }
     
+    /**
+     * Handles the --connect argument.
+     *
+     * @param address The address the user told us to connect to
+     */
     private void doConnect(final String address) {
         IrcAddress myAddress = null;
         
         try {
             myAddress = new IrcAddress(address);
+            addresses.add(myAddress);
         } catch (InvalidAddressException ex) {
             doUnknownArg("Invalid address specified: " + ex.getMessage());
         }
-        
-        addresses.add(myAddress);
+    }
+    
+    /**
+     * Sets the config directory to the one specified.
+     *
+     * @param dir The new config directory
+     */
+    private void doDirectory(final String dir) {
+        Main.setConfigDir(dir);
     }
     
     /**
