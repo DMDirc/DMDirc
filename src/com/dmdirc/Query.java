@@ -307,11 +307,12 @@ public final class Query extends MessageTarget implements
         ActionManager.processEvent(CoreActionType.QUERY_CLOSED, null, this);
         
         window.setVisible(false);
-        server.delQuery(host);
         
         if (shouldRemove) {
-            Main.getUI().getMainWindow().delChild(window);
+            server.delQuery(host);
         }
+        
+        Main.getUI().getMainWindow().delChild(window);
         
         window = null;
         server = null;
