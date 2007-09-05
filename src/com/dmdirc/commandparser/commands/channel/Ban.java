@@ -56,7 +56,7 @@ public final class Ban extends ChannelCommand {
         
         String host = args[0];
         final ChannelClientInfo user = channel.getChannelInfo().getUser(args[0]);
-        if (user != null && user.getClient().getHost().length() > 0) {
+        if (user != null && !user.getClient().getHost().isEmpty()) {
             // TODO: Customisable ban masks, somehow.
             host = "*!*@" + user.getClient().getHost();
         }

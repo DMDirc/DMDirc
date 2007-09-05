@@ -239,7 +239,7 @@ public final class SwingController implements UIController {
             UIManager.put("com.apple.mrj.application.growbox.intrudes", false);
             UIManager.put("com.apple.mrj.application.live-resize", true);
             
-            if (Config.hasOption("ui", "lookandfeel") && lnfName.length() != 0) {
+            if (Config.hasOption("ui", "lookandfeel") && !lnfName.isEmpty()) {
                 UIManager.setLookAndFeel(lnfName);
             }
         } catch (InstantiationException ex) {

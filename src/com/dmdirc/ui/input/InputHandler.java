@@ -395,7 +395,7 @@ public final class InputHandler implements KeyListener, ActionListener {
     public void actionPerformed(final ActionEvent actionEvent) {
         final String line = actionEvent.getActionCommand();
         
-        if (line.length() > 0) {
+        if (!line.isEmpty()) {
             final StringBuffer thisBuffer = new StringBuffer(line);
             
             ActionManager.processEvent(CoreActionType.CLIENT_USER_INPUT, null,

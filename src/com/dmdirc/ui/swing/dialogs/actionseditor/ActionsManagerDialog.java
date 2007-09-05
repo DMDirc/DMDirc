@@ -286,7 +286,7 @@ public final class ActionsManagerDialog extends StandardDialog
         } else if (e.getActionCommand().equals("group.add")) {
             final String newGroup = JOptionPane.showInputDialog(this,
                     "Please enter the name of the group to be created.");
-            if (newGroup != null && newGroup.length() > 0) {
+            if (newGroup != null && !newGroup.isEmpty()) {
                 ActionManager.makeGroup(newGroup);
                 loadGroups();
             }
@@ -307,7 +307,7 @@ public final class ActionsManagerDialog extends StandardDialog
                     "Please enter a new name for the '" + group
                     + "' group.",
                     "Group rename", JOptionPane.QUESTION_MESSAGE);
-            if (newName != null && newName.length() > 0) {
+            if (newName != null && !newName.isEmpty()) {
                 ActionManager.renameGroup(group, newName);
                 loadGroups();
             }

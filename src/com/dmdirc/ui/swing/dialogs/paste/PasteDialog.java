@@ -279,7 +279,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
      */
     public void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
-            if (textField.getText().length() > 0) {
+            if (!textField.getText().isEmpty()) {
                 final String[] lines = textField.getText().split("\n");
                 for (String line : lines) {
                     parent.getContainer().sendLine(line);

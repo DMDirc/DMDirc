@@ -86,7 +86,7 @@ public class CLIParser {
 			if (param.getChr() != 0) {
 				params.put(""+param.getChr(), param);
 			}
-			if (param.getString().length() > 0) {
+			if (!param.getString().isEmpty()) {
 				params.put("-"+param.getString(), param);
 			}
 			paramList.add(param);
@@ -192,7 +192,7 @@ public class CLIParser {
 			} else {
 				System.out.print("   ");
 			}
-			if (param.getString().length() > 0) {
+			if (!param.getString().isEmpty()) {
 				System.out.print("--"+param.getString()+" ");
 			} else {
 				System.out.print("\t\t");
@@ -224,12 +224,12 @@ public class CLIParser {
 						System.out.println("Unknown Param: -"+name);
 						if (helpParam != null) {
 							String command = "";
-							if (helpParam.getString().length() > 0) {
+							if (!helpParam.getString().isEmpty()) {
 								command = helpParam.getString();
 							} else if (helpParam.getChr() != 0) {
 								command = ""+helpParam.getChr();
 							}
-							if (command.length() > 0) {
+							if (!command.isEmpty()) {
 								System.out.println("Use "+command+" to get help.");
 							}
 						}

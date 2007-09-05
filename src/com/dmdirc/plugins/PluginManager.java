@@ -71,7 +71,7 @@ public class PluginManager {
 			final String[] autoLoadList = Config.getOption("plugins", "autoload").split("\n");
 			for (String plugin : autoLoadList) {
 				plugin = plugin.trim();
-				if (plugin.length() > 0 && plugin.charAt(0) != '#' && addPlugin(plugin)) {
+				if (!plugin.isEmpty() && plugin.charAt(0) != '#' && addPlugin(plugin)) {
 					getPlugin(plugin).setActive(true);
 				}
 			}
@@ -226,7 +226,7 @@ public class PluginManager {
 					if (plugin.isActive()) {
 						newAutoLoadList.append(pluginName+"\n");
 					}
-				} else if (pluginName.length() > 0) {
+				} else if (!pluginName.isEmpty()) {
 					newAutoLoadList.append(pluginName+"\n");
 				}
 			}

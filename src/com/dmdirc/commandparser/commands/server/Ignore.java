@@ -62,7 +62,7 @@ public final class Ignore extends ServerCommand {
             if (identity.hasOption("network", "ignorelist")) {
                 final String list = identity.getOption("network", "ignorelist");
                 
-                if (list.length() > 0) {
+                if (!list.isEmpty()) {
                     sendLine(origin, isSilent, "commandOutput", "Ignore list:");
                     
                     int i = 0;

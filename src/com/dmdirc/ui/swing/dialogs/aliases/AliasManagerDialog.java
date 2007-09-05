@@ -299,7 +299,7 @@ public final class AliasManagerDialog extends StandardDialog implements
             String name = JOptionPane.showInputDialog(this,
                     "Please enter the name for the new alias.",
                     "New alias", JOptionPane.QUESTION_MESSAGE);
-            if (name != null && name.length() > 0) {
+            if (name != null && !name.isEmpty()) {
                 if (name.charAt(0) == '/' || name.charAt(0) == '\\') {
                     name = name.substring(1);
                 }

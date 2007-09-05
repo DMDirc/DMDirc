@@ -196,7 +196,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     
     /** {@inheritDoc} */
     public final void addLine(final String messageType, final Object... args) {
-        if (messageType.length() > 0) {
+        if (!messageType.isEmpty()) {
             addLine(Formatter.formatMessage(messageType, args), true);
         }
     }

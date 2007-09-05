@@ -625,7 +625,7 @@ public final class IRCParser implements Runnable {
 	 * Send server connection strings (NICK/USER/PASS).
 	 */
 	private void sendConnectionStrings() {
-		if (server.getPassword().length() > 0) {
+		if (!server.getPassword().isEmpty()) {
 			sendString("PASS " + server.getPassword());
 		}
 		setNickname(me.getNickname());

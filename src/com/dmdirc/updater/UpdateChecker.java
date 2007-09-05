@@ -95,7 +95,7 @@ public final class UpdateChecker implements Runnable, MouseListener {
             
             String line = null;
             do {
-                if (line != null && line.length() > 0) {
+                if (line != null && !line.isEmpty()) {
                     checkLine(line);
                 }
                 

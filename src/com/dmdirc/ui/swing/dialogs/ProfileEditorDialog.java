@@ -462,7 +462,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
         ((DefaultListModel) altNick.getModel()).clear();
         
         if (profiles.get(index).getOption("profile", "altnicks") != null
-                && profiles.get(index).getOption("profile", "altnicks").length() != 0) {
+                && !profiles.get(index).getOption("profile", "altnicks").isEmpty()) {
             altNicks = profiles.get(index).getOption("profile", "altnicks").split("\\n");
             
             for (String altNickname : altNicks) {
