@@ -20,4 +20,10 @@ elif [ "$1" = "--findbugs" ]; then
 else
 	$ANT -k -buildfile $MYDIR/doreports.xml domostreports
 fi
-/bin/sh $MYDIR/oblong.sh "Reports" "Report Generation Complete"
+LINE=`cat junitreports/overview-summary.html | grep "%</td"`
+PASSRATE=`expr "$LINE" : '.*<td>\(.*\)%</td>'`
+if [ "${PASSRATE}" = "" ]; then
+	/bin/sh $MYDIR/oblong.sh "Reports" "Report Generation Complete (Junit tests failed to run)"
++else
+	/bin/sh $MYDIR/oblong.sh "Reports" "Report Generation Complete (Junit Pass Rate: ${PASSRATE}%)"
+fi
