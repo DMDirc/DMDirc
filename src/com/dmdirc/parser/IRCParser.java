@@ -1519,6 +1519,7 @@ public final class IRCParser implements Runnable {
 				else if (version.matches("(?i).*beware.*")) { return "bircd"; }
 				else if (version.matches("(?i).*ircu.*")) { return "ircu"; }
 				else if (version.matches("(?i).*unreal.*")) { return "unreal"; }
+				else if (version.matches("(?i).*bahamut.*")) { return "bahamut"; }
 				else {
 					// Stupid networks go here...
 					if (sNetworkName.equalsIgnoreCase("ircnet")) { return "ircnet"; }
