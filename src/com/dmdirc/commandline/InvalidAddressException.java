@@ -24,7 +24,7 @@ package com.dmdirc.commandline;
 
 /**
  * Thrown to indicate that an invalid IRC address has been used.
- * 
+ *
  * @author Chris
  */
 public class InvalidAddressException extends Exception {
@@ -34,15 +34,25 @@ public class InvalidAddressException extends Exception {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;    
-
+    private static final long serialVersionUID = 2;
+    
     /**
      * Creates a new InvalidAddressException.
-     * 
+     *
      * @param message The message to use
      */
     public InvalidAddressException(final String message) {
         super(message);
     }
-
+    
+    /**
+     * Creates a new InvalidAddressException.
+     * 
+     * @param message The message to use
+     * @param ex The cause of this exception
+     */
+    public InvalidAddressException(final String message, final Throwable ex) {
+        super(message, ex);
+    }    
+    
 }

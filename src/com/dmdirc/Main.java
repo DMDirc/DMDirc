@@ -107,6 +107,8 @@ public final class Main {
         ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);
         
         UpdateChecker.init();
+        
+        clp.processArguments();
     }
     
     /**

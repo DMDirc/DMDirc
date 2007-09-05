@@ -23,6 +23,11 @@
 package com.dmdirc.commandline;
 
 import com.dmdirc.Main;
+import com.dmdirc.Server;
+import com.dmdirc.config.IdentityManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Parses command line arguments for the client.
@@ -37,10 +42,13 @@ public class CommandLineParser {
      * the option takes an argument.
      */
     private static final Object[][] ARGUMENTS = new Object[][]{
-        //{'c', "connect", "Connect to the specified server", Boolean.TRUE},
+        {'c', "connect", "Connect to the specified server", Boolean.TRUE},
         {'h', "help", "Show command line options and exit", Boolean.FALSE},
         {'v', "version", "Display client version and exit", Boolean.FALSE},
     };
+    
+    /** A list of addresses to autoconnect to. */
+    private final List<IrcAddress> addresses = new ArrayList<IrcAddress>();
     
     /**
      * Creates a new instance of CommandLineParser.
@@ -52,19 +60,19 @@ public class CommandLineParser {
         char previousArg = '.';
         
         for (String arg : arguments) {
-            if (!inArg) {
+            if (inArg) {
+                processArgument(previousArg, arg);
+                inArg = false;
+            } else {
                 if (arg.startsWith("--")) {
                     previousArg = processLongArg(arg.substring(2));
                     inArg = checkArgument(previousArg);
-                } else if (arg.startsWith("-")) {
+                } else if (arg.charAt(0) == '-') {
                     previousArg = processShortArg(arg.substring(1));
                     inArg = checkArgument(previousArg);
                 } else {
                     doUnknownArg("Unknown argument: " + arg);
-                }
-            } else {
-                processArgument(previousArg, arg);
-                inArg = false;
+                }                
             }
         }
         
@@ -146,18 +154,21 @@ public class CommandLineParser {
      */
     private void processArgument(final char arg, final String param) {
         switch (arg) {
-        case 'h':
-            doHelp();
-            break;
-        case 'v':
-            doVersion();
-            break;
-        default:
-            // This really shouldn't ever happen, but we'll handle it nicely
-            // anyway.
-            
-            doUnknownArg("Unknown argument: " + arg);
-            break;
+            case 'c':
+                doConnect(param);
+                break;
+            case 'h':
+                doHelp();
+                break;
+            case 'v':
+                doVersion();
+                break;
+            default:
+                // This really shouldn't ever happen, but we'll handle it nicely
+                // anyway.
+                
+                doUnknownArg("Unknown argument: " + arg);
+                break;
         }
     }
     
@@ -178,6 +189,18 @@ public class CommandLineParser {
      */
     private void exit() {
         System.exit(0);
+    }
+    
+    private void doConnect(final String address) {
+        IrcAddress myAddress = null;
+        
+        try {
+            myAddress = new IrcAddress(address);
+        } catch (InvalidAddressException ex) {
+            doUnknownArg("Invalid address specified: " + ex.getMessage());
+        }
+        
+        addresses.add(myAddress);
     }
     
     /**
@@ -204,7 +227,7 @@ public class CommandLineParser {
         int maxLength = 0;
         
         for (Object[] arg : ARGUMENTS) {
-            String needsArg = ((Boolean) arg[3]) ? " <argument>" : "";
+            final String needsArg = ((Boolean) arg[3]) ? " <argument>" : "";
             
             if ((arg[1] + needsArg).length() > maxLength) {
                 maxLength = (arg[1] + needsArg).length();
@@ -212,8 +235,9 @@ public class CommandLineParser {
         }
         
         for (Object[] arg : ARGUMENTS) {
-            String needsArg = ((Boolean) arg[3]) ? " <argument>" : "";
-            StringBuilder desc = new StringBuilder(maxLength + 1);
+            final String needsArg = ((Boolean) arg[3]) ? " <argument>" : "";
+            final StringBuilder desc = new StringBuilder(maxLength + 1);
+            
             desc.append(arg[1]);
             
             while (desc.length() < maxLength + 1) {
@@ -226,6 +250,18 @@ public class CommandLineParser {
         }
         
         exit();
+    }
+    
+    /**
+     * Processes arguments once the client has been loaded properly.
+     * This allows us to auto-connect to servers, etc.
+     */
+    public void processArguments() {
+       for (IrcAddress address : addresses)  {
+           new Server(address.getServer(), address.getPort(), address.getPassword(),
+                   address.isSSL(), IdentityManager.getProfiles().get(0),
+                   address.getChannels());
+       }
     }
     
 }

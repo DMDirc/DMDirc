@@ -146,7 +146,11 @@ public abstract class FrameContainer {
      * Invoked when our window has been opened.
      */
     public void windowOpened() {
-        final boolean pref = getServer().getConfigManager().getOptionBool("ui", "maximisewindows");
+        if (getServer() == null || getConfigManager() == null || getFrame() == null) {
+            return;
+        }
+        
+        final boolean pref = getConfigManager().getOptionBool("ui", "maximisewindows");
         if (pref || Main.getUI().getMainWindow().getMaximised()) {
             try {
                 getFrame().setMaximum(true);
