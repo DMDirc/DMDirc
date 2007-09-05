@@ -202,7 +202,7 @@ public final class SettingsPanel extends JPanel {
                     currentOptionsPanel.getOption(entry.getKey(),
                     entry.getValue());
             final String[] splitOption = entry.getKey().split("\\.");
-            if ("".equals(value)) {
+            if (value.isEmpty()) {
                 config.unsetOption(splitOption[0], splitOption[1]);
             } else {
                 config.setOption(splitOption[0], splitOption[1], value);

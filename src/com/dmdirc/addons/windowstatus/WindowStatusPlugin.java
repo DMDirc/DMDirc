@@ -198,7 +198,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
                 if (!names.containsKey(im)) {
                     String mode = client.getImportantModePrefix();
                     
-                    if (mode.equals("")) {
+                    if (mode.isEmpty()) {
                         if (Config.getOptionBool(MY_DOMAIN, "channel.shownone")) {
                             if (Config.hasOption(MY_DOMAIN, "channel.noneprefix")) {
                                 mode = Config.getOption(MY_DOMAIN, "channel.noneprefix");
@@ -238,7 +238,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
                 final ClientInfo client = frame.getServer().getParser().getClientInfo(frame.getHost());
                 if (client != null) {
                     final String realname = client.getRealName();
-                    if (!realname.equals("")) {
+                    if (!realname.isEmpty()) {
                         textString.append(" - "+client.getRealName());
                     }
                 }

@@ -131,7 +131,7 @@ public final class ColourChooser extends JPanel implements ActionListener {
      * @param newColour The new colour to use.
      */
     private void updateColour(final String newColour) {
-        if ("".equals(newColour)) {
+        if (newColour.isEmpty()) {
             previewPanel.setBackground(ColourManager.getColour("ffffff"));
             previewPanel.setToolTipText("");
         } else {

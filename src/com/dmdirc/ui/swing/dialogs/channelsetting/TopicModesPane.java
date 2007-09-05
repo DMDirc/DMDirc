@@ -158,7 +158,7 @@ public final class TopicModesPane extends JPanel implements KeyListener,
         
         topicWho.setSize(30, 0);
         topicWho.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0, 0, 0));
-        if ("".equals(topic)) {
+        if (topic.isEmpty()) {
             topicWho.setText("No topic set.");
         } else {
             topicWho.setText("<html>Set by "

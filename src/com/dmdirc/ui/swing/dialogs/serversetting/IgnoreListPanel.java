@@ -176,7 +176,7 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
         if (e.getSource() == addButton) {
             final String newName = JOptionPane.showInputDialog(this,
                     "Please enter the new ignore item", "");
-            if (newName != null && !"".equals(newName)) {
+            if (newName != null && !newName.isEmpty()) {
                 listModel.addElement(newName);
             }
         } else if (e.getSource() == delButton && list.getSelectedIndex() != -1

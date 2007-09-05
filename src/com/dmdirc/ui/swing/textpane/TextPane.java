@@ -441,7 +441,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     
     /** Adds the selected text to the clipboard. */
     public void copy() {
-        if (getSelectedText() != null && !"".equals(getSelectedText())) {
+        if (getSelectedText() != null && !getSelectedText().isEmpty()) {
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(
                     new StringSelection(getSelectedText()), null);
         }

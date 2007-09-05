@@ -116,7 +116,7 @@ public final class ResponseTabPanel extends JPanel {
         
         if (owner.getAction().getNewFormat() == null) {
             formatter.setSelectedIndex(0);
-        } else if ("".equals(owner.getAction().getNewFormat())) {
+        } else if (owner.getAction().getNewFormat().isEmpty()) {
             formatter.setSelectedIndex(1);
         } else {
             formatter.setSelectedItem(owner.getAction().getNewFormat());

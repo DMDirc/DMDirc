@@ -219,7 +219,7 @@ public final class SearchBar extends JPanel implements ActionListener,
      * Searches the textpane for text.
      */
     public void search() {
-        if (!"".equals(searchBox.getText())) {
+        if (!searchBox.getText().isEmpty()) {
             if (line == -1) {
                 line = parent.getTextPane().getLastVisibleLine();
             }
@@ -238,7 +238,7 @@ public final class SearchBar extends JPanel implements ActionListener,
             final boolean caseSensitive) {
         boolean foundText = false;
         
-        if (!"".equals(text) && checkOccurs(searchBox.getText(), caseCheck.isSelected())) {
+        if (!text.isEmpty() && checkOccurs(searchBox.getText(), caseCheck.isSelected())) {
             if (direction == Direction.UP) {
                 foundText = searchUp(text, caseSensitive);
             } else {

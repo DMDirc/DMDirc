@@ -326,7 +326,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
         } else if (event.getSource() == addButton) {
             final String newName = JOptionPane.showInputDialog(this,
                     "Please enter the new profile's name", "New profile");
-            if (newName != null && !"".equals(newName)) {
+            if (newName != null && !newName.isEmpty()) {
                 final Identity newIdentity = Identity.buildProfile(newName);
                 profiles = IdentityManager.getProfiles();
                 populateList();
@@ -356,14 +356,14 @@ public final class ProfileEditorDialog extends StandardDialog implements
             final String newName = JOptionPane.showInputDialog(this,
                     "Please enter the new name for the profile",
                     profileList.getSelectedValue());
-            if (newName != null && !"".equals(newName)) {
+            if (newName != null && !newName.isEmpty()) {
                 profiles.get(profileList.getSelectedIndex()).setOption("identity", "name", newName);
                 profileList.repaint();
             }
         } else if ("addAltNick".equals(event.getActionCommand())) {
             final String newName = JOptionPane.showInputDialog(this,
                     "Please enter the new nickname", "New alt nickname");
-            if (newName != null && !"".equals(newName)) {
+            if (newName != null && !newName.isEmpty()) {
                 ((DefaultListModel) altNick.getModel()).addElement(newName);
             }
         } else if ("editAltNick".equals(event.getActionCommand())) {
@@ -371,7 +371,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
                 final String newName = JOptionPane.showInputDialog(this,
                         "Please enter the nickname for the alt nickname",
                         altNick.getSelectedValue());
-                if (newName != null && !"".equals(newName)) {
+                if (newName != null && !newName.isEmpty()) {
                     ((DefaultListModel) altNick.getModel()).setElementAt(newName, altNick.getSelectedIndex());
                 }
             }

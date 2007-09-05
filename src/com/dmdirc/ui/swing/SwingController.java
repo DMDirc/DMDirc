@@ -265,7 +265,7 @@ public final class SwingController implements UIController {
     private String getLookAndFeel(final String displayName) {
         final StringBuilder classNameBuilder = new StringBuilder();
         
-        if (displayName != null && !"".equals(displayName)) {
+        if (displayName != null && !displayName.isEmpty()) {
             for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
                 if (laf.getName().equals(displayName)) {
                     classNameBuilder.setLength(0);

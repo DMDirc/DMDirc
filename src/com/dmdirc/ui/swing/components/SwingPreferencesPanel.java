@@ -276,7 +276,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             final String title, final String helpText, final OptionType type,
             final Object... args) {
         final JLabel label = new JLabel(title, JLabel.TRAILING);
-        if ("".equals(helpText)) {
+        if (helpText.equals("")) {
             label.setToolTipText("No help available.");
         } else {
             label.setToolTipText(helpText);
@@ -357,7 +357,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         
         newNode = new DefaultMutableTreeNode(name);
         
-        if ("".equals(parentCategory)) {
+        if (parentCategory.isEmpty()) {
             parent = rootNode;
         } else {
             parent = (DefaultMutableTreeNode) tabList.getNextMatch(
@@ -377,7 +377,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         infoLabel.setLineWrap(true);
         infoLabel.setHighlighter(null);
         infoLabel.setBackground(panel.getBackground());
-        if ("".equals(blurb)) {
+        if (blurb.isEmpty()) {
             infoLabel.setVisible(false);
         }
         
@@ -525,7 +525,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         }
         final String tabName = Config.getOption("dialogstate", owner.getClass().getName());
         
-        if (tabName == null || "".equals(tabName)) {
+        if (tabName == null || tabName.isEmpty()) {
             cardLayout.first(mainPanel);
             tabList.setSelectionPath(tabList.getPathForRow(0));
         } else {
