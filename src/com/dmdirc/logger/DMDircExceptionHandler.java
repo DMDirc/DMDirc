@@ -34,6 +34,6 @@ public final class DMDircExceptionHandler implements Thread.UncaughtExceptionHan
     
     /** {@inheritDoc} */
     public void uncaughtException(final Thread thread, final Throwable throwable) {
-        Logger.appError(ErrorLevel.HIGH, "Uncaught exception", throwable);
+        Logger.appError(ErrorLevel.HIGH, throwable.toString(), throwable);
     }
 }
