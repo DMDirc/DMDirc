@@ -174,6 +174,10 @@ public abstract class FrameContainer {
      * Invoked when our window is activated.
      */
     public void windowActivated() {
+        if (getFrame() == null) {
+            return;
+        }
+        
         if (Main.getUI().getMainWindow().getMaximised()) {
             try {
                 getFrame().setMaximum(true);
