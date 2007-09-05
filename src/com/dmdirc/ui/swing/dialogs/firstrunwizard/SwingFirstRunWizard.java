@@ -66,8 +66,12 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
         if (resourceManager == null) {
             return;
         }
-        extractPlugins(resourceManager);
-        extractActions(resourceManager);
+        if (((StepOne) wizardDialog.getStep(0)).getPluginsState()) {
+            extractPlugins(resourceManager);
+        }
+        if (((StepOne) wizardDialog.getStep(0)).getActionsState()) {
+            extractActions(resourceManager);
+        }
         
         if (((StepTwo) wizardDialog.getStep(1)).getProfileManagerState()) {
             ProfileEditorDialog.showActionsManagerDialog();
@@ -76,48 +80,53 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
     
     /** {@inheritDoc} */
     public void extractPlugins(final ResourceManager resourceManager) {
-        if (((StepOne) wizardDialog.getStep(0)).getPluginsState()) {
-            //Copy plugins
-            try {
-                resourceManager.extractResources("com/dmdirc/addons",
-                        Main.getConfigDir() + "plugins");
-            } catch (IOException ex) {
-                Logger.userError(ErrorLevel.LOW, "Failed to extract plugins");
-            }
+        extractCorePlugins(resourceManager.getResourceManager());
+    }
+    
+    public static void extractCorePlugins(final ResourceManager resourceManager) {
+        //Copy plugins
+        try {
+            resourceManager.extractResources("com/dmdirc/addons",
+                    Main.getConfigDir() + "plugins");
+        } catch (IOException ex) {
+            Logger.userError(ErrorLevel.LOW, "Failed to extract plugins");
         }
     }
     
     /** {@inheritDoc} */
     public void extractActions(final ResourceManager resourceManager) {
-        if (((StepOne) wizardDialog.getStep(0)).getActionsState()) {
-            //Copy actions
-            final Map<String, byte[]> resources =
-                    resourceManager.getResourcesStartingWithAsBytes(
-                    "com/dmdirc/actions/defaults");
-            for (Entry<String, byte[]> resource : resources.entrySet()) {
-                try {
-                    final String resourceName = Main.getConfigDir() + "actions"
-                            + resource.getKey().substring(27, resource.getKey().length());
-                    final File newDir = new File(
-                            resourceName.substring(0, resourceName.lastIndexOf('/')) + "/");
-                    
-                    if (!newDir.exists()) {
-                        newDir.mkdirs();
-                    }
-                    
-                    final File newFile = new File(newDir,
-                            resourceName.substring(resourceName.lastIndexOf('/') + 1,
-                            resourceName.length()));
-                    
-                    if (!newFile.isDirectory()) {
-                        resourceManager.resourceToFile(resource.getValue(), newFile);
-                    }
-                } catch (IOException ex) {
-                    Logger.userError(ErrorLevel.LOW, "Failed to extract actions");
+        extractCoreActions(resourceManager.getResourceManager());
+    }
+    
+    /** {@inheritDoc} */
+    public static void extractCoreActions(final ResourceManager resourceManager) {
+        //Copy actions
+        final Map<String, byte[]> resources =
+                resourceManager.getResourcesStartingWithAsBytes(
+                "com/dmdirc/actions/defaults");
+        for (Entry<String, byte[]> resource : resources.entrySet()) {
+            try {
+                final String resourceName = Main.getConfigDir() + "actions"
+                        + resource.getKey().substring(27, resource.getKey().length());
+                final File newDir = new File(
+                        resourceName.substring(0, resourceName.lastIndexOf('/')) + "/");
+                
+                if (!newDir.exists()) {
+                    newDir.mkdirs();
                 }
+                
+                final File newFile = new File(newDir,
+                        resourceName.substring(resourceName.lastIndexOf('/') + 1,
+                        resourceName.length()));
+                
+                if (!newFile.isDirectory()) {
+                    resourceManager.resourceToFile(resource.getValue(), newFile);
+                }
+            } catch (IOException ex) {
+                Logger.userError(ErrorLevel.LOW, "Failed to extract actions");
             }
-            ActionManager.loadActions();
         }
+        ActionManager.loadActions();
     }
     
     /** {@inheritDoc} */
