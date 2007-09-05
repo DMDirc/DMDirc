@@ -83,6 +83,11 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
         extractCorePlugins(resourceManager.getResourceManager());
     }
     
+    /**
+     * Extracts the core plugins.
+     *
+     * @param resourceManager ResourceManager to use
+     */
     public static void extractCorePlugins(final ResourceManager resourceManager) {
         //Copy plugins
         try {
@@ -98,7 +103,11 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
         extractCoreActions(resourceManager.getResourceManager());
     }
     
-    /** {@inheritDoc} */
+    /**
+     * Extracts the core actions.
+     *
+     * @param resourceManager ResourceManager to use
+     */
     public static void extractCoreActions(final ResourceManager resourceManager) {
         //Copy actions
         final Map<String, byte[]> resources =
