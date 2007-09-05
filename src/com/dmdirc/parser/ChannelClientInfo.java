@@ -179,7 +179,7 @@ public final class ChannelClientInfo {
 	 */
 	public String getImportantModePrefix() {
 		String sModes = this.getChanModeStr(true);
-		if (!sModes.equals("")) { sModes = "" + sModes.charAt(0); }
+		if (!sModes.isEmpty()) { sModes = "" + sModes.charAt(0); }
 		return sModes;
 	}
 	
@@ -199,7 +199,7 @@ public final class ChannelClientInfo {
 	 * @param sReason Why are they being kicked? "" for no reason
 	 */
 	public void kick(String sReason) {
-		if (!sReason.equals("")) { sReason = " :" + sReason; }
+		if (!sReason.isEmpty()) { sReason = " :" + sReason; }
 		myParser.sendString("KICK " + myChannel + " " + this.getNickname() + sReason);
 	}
 	

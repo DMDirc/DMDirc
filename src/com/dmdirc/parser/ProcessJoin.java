@@ -53,7 +53,7 @@ public class ProcessJoin extends IRCProcessor {
 			myParser.hClientList.put(myParser.toLowerCase(iClient.getNickname()),iClient);
 		}
 		// Check to see if we know the host/ident for this client to facilitate dmdirc Formatter
-		if (iClient.getHost().equals("")) { iClient.setUserBits(token[0],false); }
+		if (iClient.getHost().isEmpty()) { iClient.setUserBits(token[0],false); }
 		if (iChannel == null) { 
 			if (iClient != myParser.cMyself) {
 				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got join for channel ("+token[token.length-1]+") that I am not on. [User: "+token[0]+"]", myParser.getLastLine()));

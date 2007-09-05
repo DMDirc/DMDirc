@@ -59,7 +59,7 @@ public final class ChannelListModeItem {
 		myItem = item;
 		myTime = time;
 		myOwner = owner;
-		if (!owner.equals("") && owner.charAt(0) == ':') { myOwner = owner.substring(1); }
+		if (!owner.isEmpty() && owner.charAt(0) == ':') { myOwner = owner.substring(1); }
 	}
 	
 	/**

@@ -441,7 +441,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 					line = "*** " + getDisplayName(channelClient) + " (" + client.toString() + ") left the channel";
 					
 					reason = (String) arguments[2];
-					if (!reason.equals("")) {
+					if (!reason.isEmpty()) {
 						line = line + " (" + reason + ")";
 					}
 					appendLine(getLogFile(channel), line);
@@ -454,7 +454,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 					line = "*** " + getDisplayName(channelClient) + " (" + client.toString() + ") Quit IRC";
 					
 					reason = (String) arguments[2];
-					if (!reason.equals("")) {
+					if (!reason.isEmpty()) {
 						line = line + " (" + reason + ")";
 					}
 					appendLine(getLogFile(channel), line);
@@ -467,7 +467,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 					line = "*** " + getDisplayName(channelClient) + " was kicked by " + getDisplayName(kickerClient);
 					
 					reason = (String) arguments[3];
-					if (!reason.equals("")) {
+					if (!reason.isEmpty()) {
 						line = line + " (" + reason + ")";
 					}
 					appendLine(getLogFile(channel), line);
@@ -675,13 +675,13 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	private String getDisplayName(final ClientInfo client, final String overrideNick) {
 		String result = "";
 		if (client == null) {
-			if (overrideNick.equals("")) {
+			if (overrideNick.isEmpty()) {
 				result = "Unknown Client";
 			} else {
 				result = overrideNick;
 			}
 		} else {
-			if (overrideNick.equals("")) {
+			if (overrideNick.isEmpty()) {
 				result = client.getNickname();
 			} else {
 				result = overrideNick;
@@ -710,13 +710,13 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	private String getDisplayName(final ChannelClientInfo channelClient, final String overrideNick) {
 		String result = "";
 		if (channelClient == null) {
-			if (overrideNick.equals("")) {
+			if (overrideNick.isEmpty()) {
 				result = "Unknown Client";
 			} else {
 				result = overrideNick;
 			}
 		} else {
-			if (overrideNick.equals("")) {
+			if (overrideNick.isEmpty()) {
 				if (Config.getOptionBool(MY_DOMAIN, "general.channelmodeprefix")) {
 					result = channelClient.toString();
 				} else {

@@ -107,7 +107,7 @@ public class ProcessMessage extends IRCProcessor {
 					bits = bits[0].split(Char1.toString(),2);
 					sCTCP = bits[1];
 					// remove the trailing char1
-					if (!sMessage.equals("")) { sMessage = sMessage.split(Char1.toString(),2)[0]; }
+					if (!sMessage.isEmpty()) { sMessage = sMessage.split(Char1.toString(),2)[0]; }
 					else { sCTCP = sCTCP.split(Char1.toString(),2)[0]; }
 					callDebugInfo(myParser.DEBUG_INFO, "CTCP: \"%s\" \"%s\"",sCTCP,sMessage);
 				}
@@ -120,7 +120,7 @@ public class ProcessMessage extends IRCProcessor {
 		iClient = getClientInfo(token[0]);
 		if (myParser.ALWAYS_UPDATECLIENT && iClient != null) {
 			// Facilitate DMDIRC Formatter
-			if (iClient.getHost().equals("")) {iClient.setUserBits(token[0],false); }
+			if (iClient.getHost().isEmpty()) {iClient.setUserBits(token[0],false); }
 		}
 		
 		// Fire the appropriate callbacks.

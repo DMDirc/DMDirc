@@ -312,7 +312,7 @@ public final class ChannelInfo {
 		}
 		for (char cTemp : hParamModes.keySet()) {
 			sTemp = hParamModes.get(cTemp);
-			if (!sTemp.equals("")) {
+			if (!sTemp.isEmpty()) {
 				sModes.append(cTemp);
 				sModeParams.append(" ").append(this.getModeParam(cTemp));
  			}
@@ -328,7 +328,7 @@ public final class ChannelInfo {
 	 * @param sValue String repreenting value (if "" mode is unset)
 	 */	
 	protected void setModeParam(final Character cMode, final String sValue) { 
-		if (sValue.equals("")) {
+		if (sValue.isEmpty()) {
 			if (hParamModes.containsKey(cMode)) {
 				hParamModes.remove(cMode);
 			}
@@ -510,7 +510,7 @@ public final class ChannelInfo {
 	 * @param sMessage Message to send
 	 */
 	public void sendMessage(final String sMessage) { 
-		if (sMessage.equals("")) { return; }
+		if (sMessage.isEmpty()) { return; }
 		
 		myParser.sendString("PRIVMSG " + sName + " :" + sMessage);	
 	}
@@ -521,7 +521,7 @@ public final class ChannelInfo {
 	 * @param sMessage Message to send
 	 */
 	public void sendNotice(final String sMessage) { 
-		if (sMessage.equals("")) { return; }
+		if (sMessage.isEmpty()) { return; }
 		
 		myParser.sendString("NOTICE " + sName + " :" + sMessage);	
 	}
@@ -532,7 +532,7 @@ public final class ChannelInfo {
 	 * @param sMessage Message to send
 	 */
 	public void sendAction(final String sMessage) { 
-		if (sMessage.equals("")) { return; }
+		if (sMessage.isEmpty()) { return; }
 		sendCTCP("ACTION", sMessage);
 	}
 	
@@ -543,9 +543,9 @@ public final class ChannelInfo {
 	 * @param sMessage Optional Additional Parameters
 	 */
 	public void sendCTCP(final String sType, String sMessage) { 
-		if (sType.equals("")) { return; }
+		if (sType.isEmpty()) { return; }
 		final char char1 = (char) 1;
-		if (!sMessage.equals("")) { sMessage = " " + sMessage; }
+		if (!sMessage.isEmpty()) { sMessage = " " + sMessage; }
 		sendMessage(char1 + sType.toUpperCase() + sMessage + char1);
 	}
 	
@@ -556,9 +556,9 @@ public final class ChannelInfo {
 	 * @param sMessage Optional Additional Parameters
 	 */
 	public void sendCTCPReply(final String sType, String sMessage) { 
-		if (sType.equals("")) { return; }
+		if (sType.isEmpty()) { return; }
 		final char char1 = (char) 1;
-		if (!sMessage.equals("")) { sMessage = " " + sMessage; }
+		if (!sMessage.isEmpty()) { sMessage = " " + sMessage; }
 		sendNotice(char1 + sType.toUpperCase() + sMessage + char1);	
 	}
 	

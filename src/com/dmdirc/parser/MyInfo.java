@@ -59,7 +59,7 @@ public final class MyInfo {
 		} catch (SecurityException e) {
 			result = null;
 		}
-		if (result != null && !result.equals("")) {
+		if (result != null && !result.isEmpty()) {
 			nickname = result;
 			username = nickname;
 			realname = nickname+" - DMDIrc";
@@ -78,7 +78,7 @@ public final class MyInfo {
 	 * @param newValue Value to set to.
 	 */
 	public void setNickname(final String newValue) {
-		if (newValue != null && !newValue.equals("")) {
+		if (newValue != null && !newValue.isEmpty()) {
 			nickname = newValue;
 		}
 	}
@@ -96,7 +96,7 @@ public final class MyInfo {
 	 * @param newValue Value to set to.
 	 */
 	public void setAltNickname(final String newValue) {
-		if (newValue != null && !newValue.equals("")) {
+		if (newValue != null && !newValue.isEmpty()) {
 			altNickname = newValue;
 		}
 	}
@@ -114,7 +114,7 @@ public final class MyInfo {
 	 * @param newValue Value to set to.
 	 */
 	public void setRealname(final String newValue) {
-		if (newValue != null && !newValue.equals("")) {
+		if (newValue != null && !newValue.isEmpty()) {
 			realname = newValue;
 		}
 	}
@@ -132,7 +132,7 @@ public final class MyInfo {
 	 * @param newValue Value to set to.
 	 */
 	public void setUsername(final String newValue) {
-		if (newValue != null && !newValue.equals("")) {
+		if (newValue != null && !newValue.isEmpty()) {
 			username = newValue;
 		}
 	}

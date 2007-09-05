@@ -53,7 +53,7 @@ public class ProcessKick extends IRCProcessor {
 		
 		if (myParser.ALWAYS_UPDATECLIENT && iKicker != null) {
 			// To facilitate dmdirc formatter, get user information
-			if (iKicker.getHost().equals("")) { iKicker.setUserBits(token[0],false); }
+			if (iKicker.getHost().isEmpty()) { iKicker.setUserBits(token[0],false); }
 		}
 
 		if (iChannel == null) { 

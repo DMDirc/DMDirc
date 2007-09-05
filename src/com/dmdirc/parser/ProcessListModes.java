@@ -107,7 +107,7 @@ public class ProcessListModes extends IRCProcessor {
 			}
 			if (token.length > (tokenStart+1)) { owner = token[tokenStart+1]; }
 			if (token.length > tokenStart) { item = token[tokenStart]; }
-			if (!item.equals("")) {
+			if (!item.isEmpty()) {
 				ChannelListModeItem clmi = new ChannelListModeItem(item, owner, time);
 				callDebugInfo(myParser.DEBUG_INFO, "List Mode: %c [%s/%s/%d]",mode, item, owner, time);
 				channel.setListModeParam(mode, clmi, true);

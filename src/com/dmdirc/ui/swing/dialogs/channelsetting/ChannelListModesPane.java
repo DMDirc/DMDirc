@@ -266,7 +266,7 @@ public final class ChannelListModesPane extends JPanel implements
         modeMask =
                 JOptionPane.showInputDialog(listModesPanel,
                 "Please enter the hostmask for the new " + modeText);
-        if (modeMask != null && (!modeMask.equals("") || modeMask.length() > 0)) {
+        if (modeMask != null && (!modeMask.isEmpty() || modeMask.length() > 0)) {
             final DefaultListModel model =
                     (DefaultListModel) ((JList) listModesPanels.get(selectedIndex).getComponent(0)).getModel();
             model.addElement(new ChannelListModeItem(modeMask, "",

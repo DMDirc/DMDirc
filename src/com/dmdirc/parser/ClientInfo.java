@@ -135,7 +135,7 @@ public final class ClientInfo {
 	public static String[] parseHostFull(String sWho) {
 		String[] sTemp = null;
 		final String[] result = new String[3];
-		if (!sWho.equals("")) {
+		if (!sWho.isEmpty()) {
 			if (sWho.charAt(0) == ':') { sWho = sWho.substring(1); }
 		}
 		sTemp = sWho.split("@", 2);
@@ -155,8 +155,8 @@ public final class ClientInfo {
 	 */	
 	public void setUserBits(final String sHostmask, final boolean bUpdateNick) {
 		final String[] sTemp = parseHostFull(sHostmask);
-		if (!sTemp[2].equals("")) { sHost = sTemp[2]; }
-		if (!sTemp[1].equals("")) { sIdent = sTemp[1]; }
+		if (!sTemp[2].isEmpty()) { sHost = sTemp[2]; }
+		if (!sTemp[1].isEmpty()) { sIdent = sTemp[1]; }
 		if (bUpdateNick) { sNickname = sTemp[0]; }
 	}
 	
