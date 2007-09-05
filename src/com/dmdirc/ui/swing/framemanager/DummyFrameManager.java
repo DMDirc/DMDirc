@@ -62,24 +62,28 @@ public final class DummyFrameManager implements FrameManager {
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void addChannel(final Server server, final Channel channel) {
         Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: addChannel: " + channel + "@" + server);
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void delChannel(final Server server, final Channel channel) {
         Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: delChannel: " + channel + "@" + server);
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void addQuery(final Server server, final Query query) {
         Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: addQuery: " + query + "@" + server);
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void delQuery(final Server server, final Query query) {
         Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: delQuery: " + query + "@" + server);

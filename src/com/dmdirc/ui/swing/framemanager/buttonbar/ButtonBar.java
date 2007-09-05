@@ -246,21 +246,25 @@ public final class ButtonBar implements FrameManager, ActionListener,
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void addChannel(final Server server, final Channel channel) {
         addCustom(server, channel);
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void delChannel(final Server server, final Channel channel) {
         delCustom(server, channel);
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void addQuery(final Server server, final Query query) {
         addCustom(server, query);
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void delQuery(final Server server, final Query query) {
         delCustom(server, query);
     }

@@ -38,7 +38,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -51,7 +50,6 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableModel;
 
 /**
  * Error list dialog.
@@ -69,10 +67,6 @@ public final class ErrorListDialog extends StandardDialog implements
     /** Previously instantiated instance of ErrorListDialog. */
     private static ErrorListDialog me;
     
-    /** Error table headers. */
-    private static final String[] HEADERS = new String[]{"ID", "Time",
-    "Severity", "Report status", "Message", };
-    
     /** Error manager. */
     private final ErrorManager errorManager;
     
@@ -83,7 +77,7 @@ public final class ErrorListDialog extends StandardDialog implements
     private JTable table;
     
     /** Table model. */
-    private DefaultTableModel tableModel;
+    private ErrorTableModel tableModel;
     
     /** Error detail panel. */
     private ErrorDetailPanel errorDetails;
@@ -135,7 +129,8 @@ public final class ErrorListDialog extends StandardDialog implements
         
         scrollPane = new JScrollPane();
         
-        tableModel = new DefaultTableModel(getTableData(), HEADERS);
+        tableModel = new ErrorTableModel(new ArrayList<ProgramError>(
+                errorManager.getErrorList().values()));
         table = new PackingTable(tableModel, false, scrollPane);
         
         table.setAutoCreateRowSorter(true);
@@ -227,35 +222,13 @@ public final class ErrorListDialog extends StandardDialog implements
         getContentPane().add(buttonsPanel);
     }
     
-    /**
-     * Retrieves the error data from the ErrorManager.
-     *
-     * @return Error data
-     */
-    private Object[][] getTableData() {
-        final List<ProgramError> errors = new ArrayList<ProgramError>(
-                errorManager.getErrorList().values());
-        
-        final Object[][] data = new Object[errors.size()][5];
-        
-        for (int i = 0; i < errors.size(); i++) {
-            final ProgramError error = errors.get(i);
-            data[i][0] = error.getID();
-            data[i][1] = error.getDate();
-            data[i][2] = error.getLevel();
-            data[i][3] = error.getStatus();
-            data[i][4] = error.getMessage();
-        }
-        
-        return data;
-    }
-    
     /** {@inheritDoc}. */
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             if (table.getSelectedRow() > -1) {
-                final ProgramError error = errorManager.getError((Integer)
-                tableModel.getValueAt(table.getSelectedRow(), 0));
+                final ProgramError error = tableModel.getError(
+                        table.getRowSorter().convertRowIndexToModel(
+                        table.getSelectedRow()));
                 errorDetails.setError(error);
                 deleteButton.setEnabled(true);
                 if (error.getStatus() == ErrorStatus.NOT_APPLICABLE
@@ -277,13 +250,13 @@ public final class ErrorListDialog extends StandardDialog implements
         if (e.getSource() == getCancelButton()) {
             dispose();
         } else if (e.getSource() == deleteButton) {
-            ErrorManager.getErrorManager().deleteError(errorManager.getError(
-                    table.getRowSorter().convertRowIndexToModel(
-                    table.getSelectedRow())));
+            ErrorManager.getErrorManager().deleteError(tableModel.getError(
+                        table.getRowSorter().convertRowIndexToModel(
+                        table.getSelectedRow())));
         } else if (e.getSource() == sendButton) {
-            ErrorManager.getErrorManager().sendError(errorManager.getError(
-                    table.getRowSorter().convertRowIndexToModel(
-                    table.getSelectedRow())));
+            ErrorManager.getErrorManager().sendError(tableModel.getError(
+                        table.getRowSorter().convertRowIndexToModel(
+                        table.getSelectedRow())));
         } else if (e.getSource() == deleteAllButton) {
             final Collection<ProgramError> errors =
                     ErrorManager.getErrorManager().getErrorList().values();
@@ -295,13 +268,7 @@ public final class ErrorListDialog extends StandardDialog implements
     
     /** {@inheritDoc} */
     public void errorAdded(final ProgramError error) {
-        tableModel.addRow(new Object[]{
-            error.getID(),
-            error.getDate(),
-            error.getLevel(),
-            error.getStatus(),
-            error.getMessage(),
-        });
+        tableModel.addRow(error);
         final int selectedRow = table.getSelectedRow();
         tableModel.fireTableDataChanged();
         table.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
@@ -315,38 +282,26 @@ public final class ErrorListDialog extends StandardDialog implements
     
     /** {@inheritDoc} */
     public void errorDeleted(final ProgramError error) {
-        final Vector rows = tableModel.getDataVector(); //NOPMD stupid core classes
+        tableModel.removeRow(error);
+        final int selectedRow = table.getSelectedRow();
+        tableModel.fireTableDataChanged();
+        table.getSelectionModel().setSelectionInterval(selectedRow,
+                selectedRow);
         
-        int i;
-        for (i = 0; i < rows.size(); i++) {
-            if (((Vector) rows.get(i)).get(0).equals(error.getID())) { //NOPMD stupid core classes
-                table.getSelectionModel().setSelectionInterval(-1, -1);
-                tableModel.removeRow(i);
-                final int selectedRow = table.getSelectedRow();
-                tableModel.fireTableDataChanged();
-                table.getSelectionModel().setSelectionInterval(selectedRow, 
-                        selectedRow);
-            }
-        }
-        
-        if (ErrorManager.getErrorManager().getErrorCount() > 0) {
+        if (tableModel.getRowCount() > 0) {
             deleteAllButton.setEnabled(true);
         }
     }
     
     /** {@inheritDoc} */
     public void errorStatusChanged(final ProgramError error) {
-        final Vector rows = tableModel.getDataVector(); //NOPMD stupid core classes
+        final int errorRow = tableModel.indexOf(error);
         
-        int i;
-        for (i = 0; i < rows.size(); i++) {
-            if (((Vector) rows.get(i)).get(0).equals(error.getID())) { //NOPMD stupid core classes
-                tableModel.setValueAt(error.getStatus(), i, 3);
-                final int selectedRow = table.getSelectedRow();
-                tableModel.fireTableDataChanged();
-                table.getSelectionModel().setSelectionInterval(selectedRow, 
-                        selectedRow);
-            }
+        if (errorRow != -1) {
+            final int selectedRow = table.getSelectedRow();
+            tableModel.fireTableDataChanged();
+            table.getSelectionModel().setSelectionInterval(selectedRow,
+                    selectedRow);
         }
     }
     

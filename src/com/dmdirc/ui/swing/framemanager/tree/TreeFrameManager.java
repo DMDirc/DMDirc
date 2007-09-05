@@ -301,6 +301,7 @@ public final class TreeFrameManager implements FrameManager,
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void addChannel(final Server server, final Channel channel) {
         final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(channel, node);
@@ -312,6 +313,7 @@ public final class TreeFrameManager implements FrameManager,
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void delChannel(final Server server, final Channel channel) {
         if (nodes != null && nodes.get(channel) != null) {
             model.removeNodeFromParent(nodes.get(channel));
@@ -319,6 +321,7 @@ public final class TreeFrameManager implements FrameManager,
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void addQuery(final Server server, final Query query) {
         final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(query, node);
@@ -330,6 +333,7 @@ public final class TreeFrameManager implements FrameManager,
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void delQuery(final Server server, final Query query) {
         if (nodes != null && nodes.get(query) != null) {
             model.removeNodeFromParent(nodes.get(query));
@@ -337,6 +341,7 @@ public final class TreeFrameManager implements FrameManager,
     }
     
     /** {@inheritDoc} */
+
     public void addCustom(final Server server, final FrameContainer window) {
         final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(window, node);

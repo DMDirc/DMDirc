@@ -114,21 +114,25 @@ public final class WindowMenuFrameManager implements FrameManager,
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void addChannel(final Server server, final Channel channel) {
         addFrameContainer(channel);
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void delChannel(final Server server, final Channel channel) {
         removeFramecontainer(channel);
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void addQuery(final Server server, final Query query) {
         addFrameContainer(query);
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void delQuery(final Server server, final Query query) {
         removeFramecontainer(query);
     }

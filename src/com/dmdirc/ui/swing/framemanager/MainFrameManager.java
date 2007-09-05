@@ -136,24 +136,28 @@ public final class MainFrameManager implements FrameManager, Serializable {
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void addChannel(final Server server, final Channel channel) {
         frameManager.addChannel(server, channel);
         windowMenuFrameManager.addChannel(server, channel);
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void delChannel(final Server server, final Channel channel) {
         frameManager.delChannel(server, channel);
         windowMenuFrameManager.delChannel(server, channel);
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void addQuery(final Server server, final Query query) {
         frameManager.addQuery(server, query);
         windowMenuFrameManager.addQuery(server, query);
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public void delQuery(final Server server, final Query query) {
         frameManager.delQuery(server, query);
         windowMenuFrameManager.delQuery(server, query);
