@@ -27,6 +27,8 @@ import com.dmdirc.ui.swing.UIUtilities;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
@@ -41,7 +43,7 @@ import javax.swing.table.TableCellRenderer;
  *
  * @author Chris
  */
-public class NickColourPanel extends JPanel {
+public class NickColourPanel extends JPanel implements ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -51,7 +53,10 @@ public class NickColourPanel extends JPanel {
     private static final long serialVersionUID = 1;    
     
     /** The table used for displaying the options. */
-    private JTable table;
+    private final JTable table;
+    
+    /** The plugin we're associated with. */
+    private final NickColourPlugin plugin;
     
     /** The table headings. */
     private final String[] headers = {"Network", "Nickname", "Text colour", "Nicklist colour"};
@@ -59,11 +64,12 @@ public class NickColourPanel extends JPanel {
     /**
      * Creates a new instance of NickColourPanel.
      */
-    public NickColourPanel() {
-        final Object[][] data = {
-            {"Quakenet", "MD87", null, "4"},
-            {"Quakenet", "Dataforce", "FFFF00", "FFFF00"}
-        };
+    public NickColourPanel(final NickColourPlugin plugin) {
+        super();
+        
+        this.plugin = plugin;
+        
+        final Object[][] data = plugin.getData();
         
         table = new JTable(data, headers) {
             
@@ -113,17 +119,24 @@ public class NickColourPanel extends JPanel {
         button = new JButton("Add");
         button.setPreferredSize(new Dimension(100, 20));
         button.setMaximumSize(new Dimension(100, 20));
+        button.addActionListener(this);
         buttonPanel.add(button, BorderLayout.WEST);
         button = new JButton("Edit");
         button.setPreferredSize(new Dimension(100, 20));
         button.setMaximumSize(new Dimension(100, 20));
+        button.addActionListener(this);
         buttonPanel.add(button, BorderLayout.CENTER);
         button = new JButton("Delete");
         button.setPreferredSize(new Dimension(100, 20));        
         button.setMaximumSize(new Dimension(100, 20));
+        button.addActionListener(this);
         buttonPanel.add(button, BorderLayout.EAST);
         
         add(buttonPanel, BorderLayout.SOUTH);
     }
-    
+
+    /** {@inheritDoc} */
+    public void actionPerformed(final ActionEvent e) {
+    }
+        
 }

@@ -63,13 +63,15 @@ public class ColourRenderer extends DefaultTableCellRenderer {
             colour = ColourManager.parseColour((String) value, null);
         }
         
+        setHorizontalAlignment(CENTER);
+        
         if (colour == null) {
             setBorder(new LineBorder(Color.GRAY));
-
+            setText("Not Set");
             setBackground(table.getBackground());
         } else {
             setBorder(new LineBorder(Color.BLACK));
-            
+            setText("");
             setBackground(colour);
         }
         

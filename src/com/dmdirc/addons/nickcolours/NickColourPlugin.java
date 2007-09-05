@@ -38,6 +38,9 @@ import com.dmdirc.ui.interfaces.PreferencesPanel;
 import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -133,6 +136,43 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
         return ColourManager.parseColour(randColours[count]);
     }
     
+    /**
+     * Reads the nick colour data from the config.
+     *
+     * @return A multi-dimensional array of nick colour info.
+     */
+    public Object[][] getData() {
+        final List<Object[]> data = new ArrayList<Object[]>();
+        
+        for (String key : Config.getOptions(DOMAIN)) {
+            if (key.startsWith("color:")) {
+                final String network = key.substring(6, key.indexOf(':', 6));
+                final String user = key.substring(1 + key.indexOf(':', 6));
+                String[] parts = Config.getOption(DOMAIN, key).split(":");
+                
+                if (parts.length == 0) {
+                    parts = new String[]{null, null};
+                } else if (parts.length == 1) {
+                    parts = new String[]{parts[0], null};
+                }
+                
+                
+                data.add(new Object[]{network, user, parts[0], parts[1]});
+            }
+        }
+        
+        final Object[][] res = new Object[data.size()][4];
+        
+        int i = 0;
+        for (Object[] row : data) {
+            res[i] = row;
+            
+            i++;
+        }
+        
+        return res;
+    }
+    
     /** {@inheritDoc} */
     public boolean onLoad() {
         return true;
@@ -180,7 +220,7 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
                 "Colour to use for own nick: ", "Colour used for own nick",
                 Config.getOption(DOMAIN, "owncolour", "1"), true, true);
         
-        preferencesPanel.replaceOptionPanel("Nick colours", new NickColourPanel());
+        preferencesPanel.replaceOptionPanel("Nick colours", new NickColourPanel(this));
         
         preferencesPanel.display();
         
