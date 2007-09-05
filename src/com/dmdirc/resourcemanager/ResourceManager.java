@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -88,6 +89,35 @@ public abstract class ResourceManager {
         return me;
     }
     
+    public static final synchronized String getCurrentWorkingDirectory() {
+        final URL resource = Thread.currentThread().getContextClassLoader().
+                        getResource("com/dmdirc/Main.class");
+        String path = "";
+        
+        final String protocol = resource.getProtocol();
+        
+        if ("file".equals(protocol)) {
+            path = Thread.currentThread().
+                    getContextClassLoader().getResource("").getPath();
+        } else if ("jar".equals(protocol)) {
+            final String tempPath = resource.getPath();
+            if (System.getProperty("os.name").startsWith("Windows")) {
+                path = tempPath.substring(6, tempPath.length() - 23);
+            } else {
+                path = tempPath.substring(5, tempPath.length() - 23);
+            }
+            path = path.substring(0, path.lastIndexOf('/') + 1);
+        }
+        
+        try {
+            path = java.net.URLDecoder.decode(path, "UTF-8");
+        } catch (UnsupportedEncodingException ex) {
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to decode path");
+            path = "";
+        }
+        return path;
+    }
+    
     /**
      * Returns the type of the resource manager.
      *
@@ -113,7 +143,7 @@ public abstract class ResourceManager {
      * @throws IOException if the write operation fails
      */
     public final void resourceToFile(final byte[] resource, final File file)
-            throws IOException {
+    throws IOException {
         final FileOutputStream out = new FileOutputStream(file, false);
         
         out.write(resource);

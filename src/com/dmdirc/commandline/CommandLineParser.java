@@ -25,6 +25,7 @@ package com.dmdirc.commandline;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.resourcemanager.ResourceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -166,7 +167,7 @@ public class CommandLineParser {
                 doHelp();
                 break;
             case 'p':
-                doDirectory(System.getProperty("user.dir") + System.getProperty("file.separator"));
+                doDirectory(ResourceManager.getCurrentWorkingDirectory());
                 break;
             case 'v':
                 doVersion();
