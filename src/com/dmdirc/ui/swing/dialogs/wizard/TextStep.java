@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.wizard;
 
 /**
- * Wizard step that has a modifiable text-based component
+ * Wizard step that has a modifiable text-based component.
  */
 public interface TextStep {
     /**

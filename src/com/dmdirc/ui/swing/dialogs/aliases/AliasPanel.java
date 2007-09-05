@@ -25,17 +25,17 @@ package com.dmdirc.ui.swing.dialogs.aliases;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
-import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
+
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -45,7 +45,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 
 /**
- * Panel to display an alias
+ * Panel to display an alias.
  */
 public final class AliasPanel extends JPanel implements ActionListener {
     

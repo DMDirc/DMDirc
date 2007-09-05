@@ -95,7 +95,7 @@ public final class PluginDialog extends StandardDialog implements
     
     /** Creates a new instance of PluginDialog. */
     private PluginDialog() {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         setResizable(false);
         initComponents();
         addListeners();
@@ -104,7 +104,7 @@ public final class PluginDialog extends StandardDialog implements
         pluginList.setSelectedIndex(0);
         selectedPlugin = 0;
         
-        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         setVisible(true);
     }
     

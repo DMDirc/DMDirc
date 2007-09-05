@@ -20,48 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.actions;
-
-import com.dmdirc.ui.swing.components.SearchBar;
-
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
-
 /**
- * Opens and focuses the search bar.
+ * Alias manager.
  */
-public final class SearchAction extends AbstractAction {
-    
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = 2;
-    
-    /** Parent searchbar. */
-    private final SearchBar searchBar;
-    
-    /** 
-     * Creates a new instance of SearchAction. 
-     *
-     * @param searchBar Parent searchbar.
-     */
-    public SearchAction(final SearchBar searchBar) {
-        super("Search");
-        
-        this.searchBar = searchBar;
-    }
-    
-    /** {@inheritDoc} */
-    public void actionPerformed(final ActionEvent e) { 
-        if (searchBar.isVisible()) {
-            searchBar.getFocus();
-            searchBar.search();
-        } else {
-            searchBar.open();
-        }
-    } 
-    
-}
+package com.dmdirc.ui.swing.dialogs.aliases;

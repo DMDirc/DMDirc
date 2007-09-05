@@ -29,8 +29,8 @@ import com.dmdirc.themes.Theme;
 import com.dmdirc.themes.ThemeManager;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
-import java.util.HashMap;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -298,6 +298,7 @@ public final class PreferencesDialog implements PreferencesInterface {
                 Config.getOptionBool("ui", "stylelinks"));
     }
     
+    /** Initialises the themes tab. */
     private void initThemesTab() {
         final String tabName = "Themes";
         final Map<String, Theme> availThemes = new ThemeManager().

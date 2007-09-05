@@ -37,14 +37,14 @@ import java.util.Map;
 public final class ColourManager {
     
     /** Colour cache. */
-    private final static Map<String, Color> colourCache = new HashMap<String, Color>();
+    private static final Map<String, Color> COLOUR_CACHE = new HashMap<String, Color>();
     
     /** Colours used for the standard 16 IRC colours. */
-    private final static Color[] ircColours = {
+    private static final Color[] IRC_COLOURS = {
         Color.WHITE, Color.BLACK, new Color(0, 0, 127), new Color(0, 141, 0),
         Color.RED, new Color(127, 0, 0), new Color(160, 15, 160), new Color(252, 127, 0),
         Color.YELLOW, new Color(0, 252, 0), new Color(0, 128, 128), new Color(0, 255, 255),
-        Color.BLUE, new Color(255, 0, 255), Color.GRAY, Color.LIGHT_GRAY
+        Color.BLUE, new Color(255, 0, 255), Color.GRAY, Color.LIGHT_GRAY,
     };
     
     /** Creates a new instance of ColourManager. */
@@ -60,8 +60,8 @@ public final class ColourManager {
      * @return A colour representation of the specified string
      */
     public static Color parseColour(final String spec, final Color fallback) {
-        if (colourCache.containsKey(spec)) {
-            return colourCache.get(spec);
+        if (COLOUR_CACHE.containsKey(spec)) {
+            return COLOUR_CACHE.get(spec);
         }
         
         Color res = null;
@@ -88,7 +88,7 @@ public final class ColourManager {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid colour format: " + spec);
             res = fallback;
         } else {
-            colourCache.put(spec, res);
+            COLOUR_CACHE.put(spec, res);
         }
         
         return res;
@@ -112,8 +112,8 @@ public final class ColourManager {
      * @return A Color object corresponding to the hex input
      */
     public static Color getColour(final String hex) {
-        if (colourCache.containsKey(hex)) {
-            return colourCache.get(hex);
+        if (COLOUR_CACHE.containsKey(hex)) {
+            return COLOUR_CACHE.get(hex);
         }
         
         Color colour = null;
@@ -125,7 +125,7 @@ public final class ColourManager {
             return Color.WHITE;
         }
         
-        colourCache.put(hex, colour);
+        COLOUR_CACHE.put(hex, colour);
         return colour;
     }
     
@@ -139,7 +139,7 @@ public final class ColourManager {
     public static Color getColour(final int number) {
         
         if (number >= 0 && number <= 15) {
-            return ircColours[number];
+            return IRC_COLOURS[number];
         } else {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid colour: " + number);
             return Color.WHITE;

@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Actions alias wrapper.
  */
-public class Alias {
+public final class Alias {
     
     /** Has the alias been created. */
     private boolean isNewAlias;
@@ -74,6 +74,8 @@ public class Alias {
      * Wraps an existing Action in an Alias.
      *
      * @param name Alias name
+     * @param arguments List of arguments for the alias
+     * @param response Response for the alias
      */
     public Alias(final String name, final List<ActionCondition> arguments,
             final String[] response) {
@@ -84,7 +86,7 @@ public class Alias {
     }
     
     /**
-     * Checks whether this is a new alias
+     * Checks whether this is a new alias.
      *
      * @return true iff the alias is new
      */
@@ -120,7 +122,7 @@ public class Alias {
     }
     
     /**
-     * Returns the aliases name
+     * Returns the aliases name.
      *
      * @return Aliases name
      */
@@ -189,7 +191,7 @@ public class Alias {
         if (isDeletedAlias) {
             final List<Action> actions = AliasWrapper.getAliasWrapper().getActions();
             
-            for(Action loopAction : actions) {
+            for (Action loopAction : actions) {
                 if (name.equals(loopAction.getName())) {
                     action = loopAction;
                     break;
@@ -205,7 +207,7 @@ public class Alias {
             //find alias
             final List<Action> actions = AliasWrapper.getAliasWrapper().getActions();
             
-            for(Action loopAction : actions) {
+            for (Action loopAction : actions) {
                 if (name.equals(loopAction.getName())) {
                     action = loopAction;
                     break;

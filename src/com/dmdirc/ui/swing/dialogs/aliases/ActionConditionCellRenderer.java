@@ -24,12 +24,13 @@ package com.dmdirc.ui.swing.dialogs.aliases;
 
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.CoreActionComparison;
+
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  * Renders an action condition in plain english.
  */
-public class ActionConditionCellRenderer extends DefaultTableCellRenderer {
+public final class ActionConditionCellRenderer extends DefaultTableCellRenderer {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -52,9 +53,9 @@ public class ActionConditionCellRenderer extends DefaultTableCellRenderer {
         
         final ActionCondition value = (ActionCondition) aValue;
         
-        if (value.getComparison() == CoreActionComparison.INT_EQUALS ||
-                value.getComparison() == CoreActionComparison.INT_GREATER ||
-                value.getComparison() == CoreActionComparison.INT_LESS) {
+        if (value.getComparison() == CoreActionComparison.INT_EQUALS 
+                || value.getComparison() == CoreActionComparison.INT_GREATER 
+                || value.getComparison() == CoreActionComparison.INT_LESS) {
             setText(value.getComparison().getName() + " " + value.getTarget());
         } else {
             setText(value.toString());

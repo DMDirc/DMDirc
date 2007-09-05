@@ -24,7 +24,7 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionType;
-import com.dmdirc.ui.swing.components.*;
+import com.dmdirc.ui.swing.components.PackingTable;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
@@ -175,6 +175,7 @@ public final class ActionsGroupPanel extends JPanel
         }
     }
     
+    /** {@inheritDoc}. */
     public void mouseClicked(final MouseEvent e) {
         if (e.getClickCount() == 2) {
             final int row = table.rowAtPoint(e.getPoint());
@@ -184,18 +185,22 @@ public final class ActionsGroupPanel extends JPanel
         }
     }
     
+    /** {@inheritDoc}. */
     public void mousePressed(final MouseEvent e) {
         //Ignore
     }
     
+    /** {@inheritDoc}. */
     public void mouseReleased(final MouseEvent e) {
         //Ignore
     }
     
+    /** {@inheritDoc}. */
     public void mouseEntered(final MouseEvent e) {
         //Ignore
     }
     
+    /** {@inheritDoc}. */
     public void mouseExited(final MouseEvent e) {
         //Ignore
     }

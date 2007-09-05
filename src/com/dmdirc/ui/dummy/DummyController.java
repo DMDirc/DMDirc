@@ -46,12 +46,11 @@ import java.util.List;
 
 /**
  * Implements a dummy UI controller.
- *
- * @author Chris
  */
-public class DummyController implements UIController {
+public final class DummyController implements UIController {
     
-    private MainWindow mainWindow = new DummyMainWindow();
+    /** Main window. */
+    private final MainWindow mainWindow = new DummyMainWindow();
     
     /**
      * Creates a new instance of DummyController.
@@ -76,37 +75,39 @@ public class DummyController implements UIController {
     }
     
     /** {@inheritDoc} */
-    public ChannelWindow getChannel(Channel channel) {
+    public ChannelWindow getChannel(final Channel channel) {
         return new DummyChannelWindow(channel);
     }
     
     /** {@inheritDoc} */
-    public ServerWindow getServer(Server server) {
+    public ServerWindow getServer(final Server server) {
         return new DummyServerWindow(server);
     }
     
     /** {@inheritDoc} */
-    public QueryWindow getQuery(Query query) {
+    public QueryWindow getQuery(final Query query) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /** {@inheritDoc} */
-    public Window getWindow(FrameContainer owner) {
+    public Window getWindow(final FrameContainer owner) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /** {@inheritDoc} */
-    public InputWindow getInputWindow(final WritableFrameContainer owner, final CommandParser commandParser) {
+    public InputWindow getInputWindow(final WritableFrameContainer owner, 
+            final CommandParser commandParser) {
         return new DummyInputWindow(owner, commandParser);
     }
     
     /** {@inheritDoc} */
-    public PreferencesPanel getPreferencesPanel(PreferencesInterface parent, String title) {
+    public PreferencesPanel getPreferencesPanel(final PreferencesInterface parent, 
+            final String title) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /** {@inheritDoc} */
-    public UpdaterDialog getUpdaterDialog(List<Update> updates) {
+    public UpdaterDialog getUpdaterDialog(final List<Update> updates) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
@@ -116,12 +117,12 @@ public class DummyController implements UIController {
     }
     
     /** {@inheritDoc} */
-    public void showChannelSettingsDialog(Channel channel) {
+    public void showChannelSettingsDialog(final Channel channel) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
     /** {@inheritDoc} */
-    public void showServerSettingsDialog(Server server) {
+    public void showServerSettingsDialog(final Server server) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

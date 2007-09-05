@@ -29,7 +29,7 @@ import javax.swing.JPanel;
 /**
  * Lists substitutions for use in actions.
  */
-public class SubstitutionsJPanel extends JPanel {
+public final class SubstitutionsJPanel extends JPanel {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -48,6 +48,7 @@ public class SubstitutionsJPanel extends JPanel {
         list = new JList(new DefaultListModel());
     }
     
+    /** Populates the list with valid substitutions. */
     public void populateList() {
         //populate the list
         final DefaultListModel model = (DefaultListModel) list.getModel();

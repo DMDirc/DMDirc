@@ -25,12 +25,13 @@ package com.dmdirc.ui.swing.dialogs.paste;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.FocusTraversalPolicy;
+
 import javax.swing.JButton;
 
 /**
  * Focus traversal policy for the paste dialog.
  */
-public class PasteDialogFocusTraversalPolicy extends FocusTraversalPolicy {
+public final class PasteDialogFocusTraversalPolicy extends FocusTraversalPolicy {
     
     /** Cancel button. */
     private final JButton cancelButton;
@@ -39,7 +40,13 @@ public class PasteDialogFocusTraversalPolicy extends FocusTraversalPolicy {
     /** Send button. */
     private final JButton sendButton;
     
-    /** Creates a new instance of PasteDialogFocusTraversalPolicy. */
+    /** 
+     * Creates a new instance of PasteDialogFocusTraversalPolicy. 
+     *
+     * @param cancelButton Cancel button
+     * @param editButton Edit button
+     * @param sendButton Send button
+     */
     public PasteDialogFocusTraversalPolicy(final JButton cancelButton,
             final JButton editButton, final JButton sendButton) {
         super();

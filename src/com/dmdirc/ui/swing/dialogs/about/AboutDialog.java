@@ -56,9 +56,9 @@ public final class AboutDialog extends StandardDialog implements
     
     /** Creates a new instance of AboutDialog. */
     private AboutDialog() {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         initComponents();
-        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         setVisible(true);
     }
     

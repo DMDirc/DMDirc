@@ -39,17 +39,24 @@ import javax.swing.Icon;
 import javax.swing.JTextField;
 
 /**
- *
- * @author Chris
+ * Dummy server window, used for testing.
  */
-public class DummyServerWindow implements ServerWindow {
+public final class DummyServerWindow implements ServerWindow {
     
+    /** Parent server. */
     private final Server parent;
     
+    /** Are we visible? */
     private boolean visible;
     
+    /** Server window title. */
     private String title;
     
+    /** 
+     * Instantiates this DummyServerWindow. 
+     *
+     * @param parent Parent server
+     */
     public DummyServerWindow(final Server parent) {
         this.parent = parent;
     }
@@ -79,7 +86,8 @@ public class DummyServerWindow implements ServerWindow {
         addLine(messageType.toString(), args);
     }
     
-    public void addLine(String line, boolean timestamp) {
+    /** {@inheritDoc} */
+    public void addLine(final String line, final boolean timestamp) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
@@ -98,6 +106,7 @@ public class DummyServerWindow implements ServerWindow {
         return parent;
     }
     
+    /** {@inheritDoc} */
     public boolean isVisible() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -112,11 +121,13 @@ public class DummyServerWindow implements ServerWindow {
         return title;
     }
     
+    /** {@inheritDoc} */
     public boolean isMaximum() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public void setMaximum(boolean b) throws PropertyVetoException {
+    /** {@inheritDoc} */
+    public void setMaximum(final boolean b) throws PropertyVetoException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

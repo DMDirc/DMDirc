@@ -27,7 +27,6 @@ import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
-import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsManagerDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
@@ -75,7 +74,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
      */
     private ActionsEditorDialog(final ActionsManagerDialog parent,
             final Action action) {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         
         this.parent = parent;
         this.action = action;
@@ -86,7 +85,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
         addListeners();
         layoutComponents();
         
-        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         
         setVisible(true);
     }

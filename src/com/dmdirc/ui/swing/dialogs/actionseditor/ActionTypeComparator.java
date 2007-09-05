@@ -33,7 +33,7 @@ import java.util.Comparator;
  * 
  * @author Chris
  */
-public class ActionTypeComparator implements Comparator<ActionType>, Serializable {
+public final class ActionTypeComparator implements Comparator<ActionType>, Serializable {
 
     /**
      * A version number for this class. It should be changed whenever the class

@@ -23,14 +23,16 @@
 package com.dmdirc.ui.swing.dialogs.aliases;
 
 import com.dmdirc.actions.ActionComparison;
+
 import java.awt.Component;
+
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 
 /**
  * Renders an action comparison in plain english.
  */
-public class ActionComparisonCellRenderer extends DefaultListCellRenderer {
+public final class ActionComparisonCellRenderer extends DefaultListCellRenderer {
     
     /**
      * A version number for this class. It should be changed whenever the class

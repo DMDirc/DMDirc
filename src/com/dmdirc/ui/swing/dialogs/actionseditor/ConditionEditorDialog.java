@@ -102,7 +102,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
      */
     private ConditionEditorDialog(final ConditionsTabPanel parent,
             final ActionType trigger, final ActionCondition condition) {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         
         this.trigger = trigger;
         this.parent = parent;
@@ -127,7 +127,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
         addListeners();
         layoutComponents();
         
-        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         
         setVisible(true);
     }

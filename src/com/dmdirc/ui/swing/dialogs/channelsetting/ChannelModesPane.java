@@ -49,7 +49,7 @@ public final class ChannelModesPane extends JPanel {
     private static final long serialVersionUID = 1;
     
     /** Parent channel. */
-    private Channel channel;
+    private final Channel channel;
     
     /** The checkboxes used for boolean modes. */
     private Map<String, JCheckBox> modeCheckBoxes;
@@ -63,6 +63,8 @@ public final class ChannelModesPane extends JPanel {
      * @param channel Parent channel
      */
     public ChannelModesPane(final Channel channel) {
+        super();
+        
         this.channel = channel;
         
         initModesPanel();
@@ -122,8 +124,8 @@ public final class ChannelModesPane extends JPanel {
             }
             
             if (channel.getConfigManager().hasOption("server", "mode" + mode)) {
-                tooltip = "Mode " + mode + ": " +
-                        channel.getConfigManager().getOption("server", "mode" + mode);
+                tooltip = "Mode " + mode + ": " + channel.getConfigManager().
+                        getOption("server", "mode" + mode);
             } else {
                 tooltip = "Mode " + mode + ": Unknown";
             }

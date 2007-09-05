@@ -66,8 +66,6 @@ import javax.swing.plaf.FontUIResource;
 
 /**
  * Controls the main swing UI.
- *
- * @author Chris
  */
 public final class SwingController implements UIController {
     
@@ -76,7 +74,8 @@ public final class SwingController implements UIController {
      */
     private static MainFrame me;
     
-    private static SwingStatusBar statusBar;
+    /** Status bar. */
+    private SwingStatusBar statusBar;
     
     /** Instantiates a new SwingController. */
     public SwingController() {

@@ -144,7 +144,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
      */
     public SwingPreferencesPanel(final PreferencesInterface preferencesOwner,
             final String title) {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         
         windowTitle = title;
         
@@ -276,7 +276,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
             final String title, final String helpText, final OptionType type,
             final Object... args) {
         final JLabel label = new JLabel(title, JLabel.TRAILING);
-        if (helpText.equals("")) {
+        if (helpText.isEmpty()) {
             label.setToolTipText("No help available.");
         } else {
             label.setToolTipText(helpText);
@@ -533,7 +533,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                     tabName, 0, Position.Bias.Forward));
         }
         pack();
-        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         this.setVisible(true);
     }
     

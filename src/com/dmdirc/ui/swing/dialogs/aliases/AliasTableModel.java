@@ -33,7 +33,7 @@ import javax.swing.table.AbstractTableModel;
 /**
  * Table model for displaying aliases.
  */
-public class AliasTableModel extends AbstractTableModel {
+public final class AliasTableModel extends AbstractTableModel {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -53,7 +53,11 @@ public class AliasTableModel extends AbstractTableModel {
         this(new ArrayList<Alias>());
     }
     
-    /** Creates a new instance of AliasTableModel. */
+    /** 
+     * Creates a new instance of AliasTableModel. 
+     *
+     * @param aliases List of aliases
+     */
     public AliasTableModel(final List<Alias> aliases) {
         super();
         
@@ -61,6 +65,11 @@ public class AliasTableModel extends AbstractTableModel {
         this.deletedAliases = new ArrayList<Alias>();
     }
     
+    /** 
+     * Sets the alias list.
+     *
+     * @param aliases List of aliases
+     */
     public void setAliases(final List<Alias> aliases) {
         this.aliases = aliases;
         this.deletedAliases = new ArrayList<Alias>();

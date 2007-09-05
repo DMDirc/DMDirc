@@ -98,11 +98,11 @@ public abstract class Frame extends JInternalFrame implements Window,
      */
     private static final long serialVersionUID = 5;
     
-    /** Frame output pane. */
-    private TextPane textPane;
-    
     /** The channel object that owns this frame. */
     private final FrameContainer parent;
+    
+    /** Frame output pane. */
+    private TextPane textPane;
     
     /** Popupmenu for this frame. */
     private JPopupMenu popup;
@@ -122,11 +122,11 @@ public abstract class Frame extends JInternalFrame implements Window,
     /** String transcoder. */
     private StringTranscoder transcoder;
     
-    /** nicklist popup menu. */
-    protected JPopupMenu nicklistPopup;
-    
     /** Command map. */
     protected final Map<String, Command> commands;
+    
+    /** nicklist popup menu. */
+    protected JPopupMenu nicklistPopup;
     
     /**
      * Creates a new instance of Frame.

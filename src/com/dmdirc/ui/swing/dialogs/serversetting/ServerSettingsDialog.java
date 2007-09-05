@@ -73,7 +73,7 @@ public final class ServerSettingsDialog extends StandardDialog
      * @param server The server object that we're editing settings for
      */
     public ServerSettingsDialog(final Server server) {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         
         this.server = server;
         
@@ -84,7 +84,7 @@ public final class ServerSettingsDialog extends StandardDialog
         initComponents();
         initListeners();
         pack();
-        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
     }
     
     /** Initialises the main UI components. */

@@ -23,8 +23,8 @@
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.actions.ActionType;
-import java.util.Collections;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +36,7 @@ import javax.swing.DefaultComboBoxModel;
  * 
  * @author Chris
  */
-public class ActionTypeModel extends DefaultComboBoxModel {
+public final class ActionTypeModel extends DefaultComboBoxModel {
     
     /**
      * A version number for this class. It should be changed whenever the class

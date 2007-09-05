@@ -96,7 +96,7 @@ public final class WizardDialog extends JDialog implements ActionListener,
      */
     public WizardDialog(final String title, final List<Step> steps,
             final Wizard wizard, final boolean modal) {
-        super(((MainFrame) Main.getUI().getMainWindow()), modal);
+        super((MainFrame) Main.getUI().getMainWindow(), modal);
         hasMainframe = true;
         
         this.title = title;
@@ -208,7 +208,7 @@ public final class WizardDialog extends JDialog implements ActionListener,
             setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             pack();
             if (hasMainframe) {
-                setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+                setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
             } else {
                 // Position wizard center-screen on the correct monitor of a
                 // multi-monitor system. (See MainFrame constructor for more info)
@@ -244,7 +244,7 @@ public final class WizardDialog extends JDialog implements ActionListener,
     }
     
     /**
-     * Enables or disables the "next step" button
+     * Enables or disables the "next step" button.
      *
      * @param newValue boolean true to make "next" button enabled, else false
      */

@@ -89,7 +89,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
      * @param newChannel The channel object that we're editing settings for
      */
     private ChannelSettingsDialog(final Channel newChannel) {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
 
         channel = newChannel;
         identity =
@@ -100,7 +100,7 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         initListeners();
 
         pack();
-        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
     }
 
     /**

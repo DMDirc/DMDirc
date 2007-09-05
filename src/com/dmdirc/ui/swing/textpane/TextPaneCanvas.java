@@ -23,8 +23,8 @@
 package com.dmdirc.ui.swing.textpane;
 
 import com.dmdirc.ui.messages.IRCTextAttribute;
-import java.awt.Cursor;
 
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -343,8 +343,10 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                         textPane.getLine(line).getIterator(), firstChar, lastChar);
                 as.addAttribute(TextAttribute.FOREGROUND, textPane.getBackground());
                 as.addAttribute(TextAttribute.BACKGROUND, textPane.getForeground());
-                final TextLayout newLayout = new TextLayout(as.getIterator(),g.getFontRenderContext());
-                final Shape shape = layout.getLogicalHighlightShape(firstChar - chars, lastChar - chars);
+                final TextLayout newLayout = new TextLayout(as.getIterator(),
+                        g.getFontRenderContext());
+                final Shape shape = layout.getLogicalHighlightShape(firstChar 
+                        - chars, lastChar - chars);
                 
                 if (firstChar != 0) {
                     g.translate(shape.getBounds().getX(), 0);

@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.wizard;
 
 /**
- * Wizard step that needs to know when it is about to be displayed
+ * Wizard step that needs to know when it is about to be displayed.
  */
 public interface SpecialStep {
     /**

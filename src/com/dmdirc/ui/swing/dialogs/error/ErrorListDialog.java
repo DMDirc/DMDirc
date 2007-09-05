@@ -38,7 +38,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -96,7 +95,7 @@ public final class ErrorListDialog extends StandardDialog implements
     
     /** Creates a new instance of ErrorListDialog. */
     private ErrorListDialog() {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         
         setTitle("DMDirc: Error list");
         

@@ -26,8 +26,8 @@ import com.dmdirc.Channel;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
-import java.awt.Color;
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.KeyEvent;
@@ -187,6 +187,7 @@ public final class TopicModesPane extends JPanel implements KeyListener,
         //Ignore
     }
     
+    /** Handles the topic change. */
     private void topicChanged() {
         if (topicLengthMax == 0) {
             topicLengthLabel.setForeground(Color.BLACK);
@@ -201,7 +202,7 @@ public final class TopicModesPane extends JPanel implements KeyListener,
             } else {
                 topicLengthLabel.setForeground(Color.RED);
                 topicLengthLabel.setText(0 + " of " + topicLengthMax 
-                        + " available " + (- 1 * charsLeft) 
+                        + " available " + (-1 * charsLeft) 
                         + " too many characters");
             }
         }
@@ -221,14 +222,17 @@ public final class TopicModesPane extends JPanel implements KeyListener,
         //ignore, unused.
     }
     
+    /** {@inheritDoc}. */
     public void insertUpdate(final DocumentEvent e) {
         topicChanged();
     }
     
+    /** {@inheritDoc}. */
     public void removeUpdate(final DocumentEvent e) {
         topicChanged();
     }
     
+    /** {@inheritDoc}. */
     public void changedUpdate(final DocumentEvent e) {
         //Ignore
     }

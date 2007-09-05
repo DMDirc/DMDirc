@@ -39,16 +39,24 @@ import javax.swing.Icon;
 import javax.swing.JTextField;
 
 /**
- *
- * @author Chris
+ * Dummy input window, used for testing.
  */
-public class DummyInputWindow implements InputWindow {
+public final class DummyInputWindow implements InputWindow {
     
+    /** Window title. */
     private String title;
-    
+    /** Are we visible? */
     private boolean visible;
     
-    public DummyInputWindow(WritableFrameContainer owner, CommandParser commandParser) {
+    /** 
+     * Instantiates a new DummyInputWindow.
+     * 
+     * @param owner Parent window
+     * @param commandParser Parent command parser
+     */
+    public DummyInputWindow(final WritableFrameContainer owner, 
+            final CommandParser commandParser) {
+        //Do nothing.
     }
     
     /** {@inheritDoc} */
@@ -76,10 +84,12 @@ public class DummyInputWindow implements InputWindow {
         addLine(messageType.toString(), args);
     }
     
-    public void addLine(String line, boolean timestamp) {
+    /** {@inheritDoc} */
+    public void addLine(final String line, final boolean timestamp) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
+    /** {@inheritDoc} */
     public void clear() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -89,10 +99,12 @@ public class DummyInputWindow implements InputWindow {
         return new ConfigManager("dummy", "dummy", "dummy");
     }
     
+    /** {@inheritDoc} */
     public FrameContainer getContainer() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
+    /** {@inheritDoc} */
     public boolean isVisible() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -102,15 +114,18 @@ public class DummyInputWindow implements InputWindow {
         visible = isVisible;
     }
     
+    /** {@inheritDoc} */
     public String getTitle() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
+    /** {@inheritDoc} */
     public boolean isMaximum() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     
-    public void setMaximum(boolean b) throws PropertyVetoException {
+    /** {@inheritDoc} */
+    public void setMaximum(final boolean b) throws PropertyVetoException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
     

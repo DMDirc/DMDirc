@@ -119,7 +119,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
     
     /** Creates a new instance of ProfileEditorDialog. */
     private ProfileEditorDialog() {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         
         profiles = IdentityManager.getProfiles();
         
@@ -129,7 +129,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
         
         addCallbacks();
         
-        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         setVisible(true);
     }
     

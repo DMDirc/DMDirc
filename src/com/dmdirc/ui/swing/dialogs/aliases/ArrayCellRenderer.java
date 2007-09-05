@@ -23,12 +23,13 @@
 package com.dmdirc.ui.swing.dialogs.aliases;
 
 import java.util.Arrays;
+
 import javax.swing.table.DefaultTableCellRenderer;
 
 /**
  * Renders an array as an inline string.
  */
-public class ArrayCellRenderer extends DefaultTableCellRenderer {
+public final class ArrayCellRenderer extends DefaultTableCellRenderer {
     
     /**
      * A version number for this class. It should be changed whenever the class

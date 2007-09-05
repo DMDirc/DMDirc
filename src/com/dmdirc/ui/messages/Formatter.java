@@ -110,7 +110,7 @@ public final class Formatter {
             analyseFormat(format, args);
         }
         
-        Object[] res = new Object[args.length];
+        final Object[] res = new Object[args.length];
         
         int i = 0;
         for (Character chr : typeCache.get(format)) {
@@ -160,7 +160,7 @@ public final class Formatter {
         final Character[] types = new Character[args.length];
         
         for (int i = 0; i < args.length; i++) {
-            int index = format.indexOf("%" + (i + 1) + "$");
+            final int index = format.indexOf("%" + (i + 1) + "$");
             
             if (index > -1) {
                 types[i] = format.charAt(index + 3);

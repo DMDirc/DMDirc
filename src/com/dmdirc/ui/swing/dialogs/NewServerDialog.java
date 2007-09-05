@@ -123,7 +123,7 @@ public final class NewServerDialog extends StandardDialog {
      * Creates a new instance of the dialog.
      */
     private NewServerDialog() {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         
         initComponents();
         
@@ -147,7 +147,7 @@ public final class NewServerDialog extends StandardDialog {
         
         me.update();
         
-        me.setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
         me.requestFocus();
     }

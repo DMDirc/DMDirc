@@ -95,7 +95,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     
     /** Creates a new instance of ErrorListDialog. */
     private AliasManagerDialog() {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         
         setTitle("DMDirc: Alias manager");
         
@@ -135,7 +135,7 @@ public final class AliasManagerDialog extends StandardDialog implements
         tableModel = new AliasTableModel(getTableData());
         table = new PackingTable(tableModel, false, scrollPane) {
             private static final long serialVersionUID = 1;
-            public TableCellRenderer getCellRenderer(int row, int column) {
+            public TableCellRenderer getCellRenderer(final int row, final int column) {
                 switch (column) {
                     case 1:
                         return conditionRenderer;
@@ -255,9 +255,8 @@ public final class AliasManagerDialog extends StandardDialog implements
             }
             
             if (table.getSelectedRow() > -1) {
-                final int selectedRow = table.getRowSorter().
-                        convertRowIndexToModel(table.getSelectedRow());
-                aliasDetails.setAlias(tableModel.getAlias(selectedRow));
+                aliasDetails.setAlias(tableModel.getAlias(table.getRowSorter().
+                        convertRowIndexToModel(table.getSelectedRow())));
                 deleteButton.setEnabled(true);
             } else {
                 aliasDetails.clear();
@@ -268,6 +267,7 @@ public final class AliasManagerDialog extends StandardDialog implements
         }
     }
     
+    /** Updates the selected alias with the edited details. */
     private void updateAlias() {
         final Alias alias = tableModel.getAlias(table.getRowSorter().
                 convertRowIndexToModel(selectedRow));
@@ -283,9 +283,10 @@ public final class AliasManagerDialog extends StandardDialog implements
         
         alias.setArguments(conditions);
         alias.setResponse(aliasDetails.getResponse());
-        final int selectedRow = table.getSelectedRow();
+        final int localSelectedRow = table.getSelectedRow();
         tableModel.fireTableDataChanged();
-        table.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
+        table.getSelectionModel().setSelectionInterval(localSelectedRow, 
+                localSelectedRow);
     }
     
     /** {@inheritDoc}. */

@@ -57,7 +57,7 @@ public final class ColourPickerDialog extends StandardDialog {
      * @param showHex show hex colours
      */
     public ColourPickerDialog(final boolean showIRC, final boolean showHex) {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         
         colourChooser = new ColourPickerPanel(showIRC, showHex);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

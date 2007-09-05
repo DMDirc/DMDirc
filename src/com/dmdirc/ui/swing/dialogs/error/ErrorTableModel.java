@@ -35,7 +35,7 @@ import javax.swing.table.AbstractTableModel;
 /**
  * Table model for displaying program errors.
  */
-public class ErrorTableModel extends AbstractTableModel {
+public final class ErrorTableModel extends AbstractTableModel {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -52,14 +52,23 @@ public class ErrorTableModel extends AbstractTableModel {
         this(new ArrayList<ProgramError>());
     }
     
-    /** Creates a new instance of ErrorTableModel. */
+    /** 
+     * Creates a new instance of ErrorTableModel. 
+     *
+     * @param errors List of errors.
+     */
     public ErrorTableModel(final List<ProgramError> errors) {
         super();
         
         this.errors = errors;
     }
     
-    public void setAliases(final List<ProgramError> errors) {
+    /**
+     * Sets the list of errors.
+     *
+     * @param errors List of errors
+     */
+    public void setErrors(final List<ProgramError> errors) {
         this.errors = errors;
         
         fireTableDataChanged();
@@ -168,6 +177,8 @@ public class ErrorTableModel extends AbstractTableModel {
      * Returns the index of the specified error or -1 if the error is not found.
      *
      * @param error ProgramError to locate
+     *
+     * @return Error index or -1 if not found
      */
     public int indexOf(final ProgramError error) {
         return errors.indexOf(error);

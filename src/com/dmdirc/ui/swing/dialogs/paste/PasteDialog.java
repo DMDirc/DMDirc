@@ -89,7 +89,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
      * @param text text to show in the paste dialog
      */
     public PasteDialog(final InputFrame newParent, final String text) {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         
         this.parent = newParent;
         
@@ -103,7 +103,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         getOkButton().requestFocus();
         getOkButton().setSelected(true);
         
-        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
     }
     
     /**
@@ -295,7 +295,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
                     + parent.getContainer().getNumLines(textField.getText())
                     + " lines.");
             pack();
-            setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+            setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             dispose();
         }

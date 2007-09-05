@@ -25,51 +25,65 @@ package com.dmdirc.ui.dummy;
 import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.StatusErrorNotifier;
 import com.dmdirc.ui.interfaces.StatusMessageNotifier;
+
 import java.awt.Component;
+
 import javax.swing.Icon;
 
 /**
- *
- * @author Chris
+ * Dummy status bar, used for testing.
  */
-public class DummyStatusBar implements StatusBar {
+public final class DummyStatusBar implements StatusBar {
 
+    /** Instantiates DummyStatusBar. */
     public DummyStatusBar() {
+        //Do nothing.
     }
 
-    public void setMessage(String newMessage) {
+    /** {@inheritDoc} */
+    public void setMessage(final String newMessage) {
         System.out.println("DummyStatusBar: " + newMessage);
     }
 
-    public void setMessage(String newMessage, StatusMessageNotifier newNotifier) {
+    /** {@inheritDoc} */
+    public void setMessage(final String newMessage, 
+            final StatusMessageNotifier newNotifier) {
         System.out.println("DummyStatusBar: " + newMessage);
     }
 
-    public void setMessage(String newMessage, StatusMessageNotifier newNotifier, int timeout) {
+    /** {@inheritDoc} */
+    public void setMessage(final String newMessage, 
+            final StatusMessageNotifier newNotifier, final int timeout) {
         System.out.println("DummyStatusBar: " + newMessage);
     }
 
+    /** {@inheritDoc} */
     public void clearMessage() {
         System.out.println("DummyStatusBar: message cleared");
     }
 
-    public void setError(Icon newIcon) {
+    /** {@inheritDoc} */
+    public void setError(final Icon newIcon) {
         // Do nothing
     }
 
-    public void setError(Icon newIcon, StatusErrorNotifier newNotifier) {
+    /** {@inheritDoc} */
+    public void setError(final Icon newIcon, final StatusErrorNotifier newNotifier) {
         // Do nothing
     }
 
+    /** {@inheritDoc} */
     public void clearError() {
         // Do nothing
     }
 
-    public void addComponent(Component component) {
+    /** {@inheritDoc} */
+    public void addComponent(final Component component) {
         // Do nothing
     }
 
-    public void removeComponent(Component component) {
+    /** {@inheritDoc} */
+    public void removeComponent(final Component component) {
         // Do nothing
     }
 

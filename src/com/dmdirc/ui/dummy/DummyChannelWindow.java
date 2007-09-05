@@ -31,23 +31,29 @@ import com.dmdirc.config.ConfigManager;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ChannelWindow;
+
 import java.beans.PropertyVetoException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.swing.Icon;
 import javax.swing.JTextField;
 
 /**
- *
- * @author Chris
+ * Dummy channel window, used for testing.
  */
-public class DummyChannelWindow implements ChannelWindow {
-    
+public final class DummyChannelWindow implements ChannelWindow {
+    /** Parent channel. */
     private final Channel parent;
-    
+    /** Window title. */
     private String title;
 
+    /** 
+     * Instantiates a new DummyChannelWindow. 
+     *
+     * @param parent Parent channel
+     */
     public DummyChannelWindow(final Channel parent) {
         this.parent = parent;
     }
@@ -57,6 +63,7 @@ public class DummyChannelWindow implements ChannelWindow {
         // Do nothing
     }
 
+    /** {@inheritDoc} */
     public void addName(final ChannelClientInfo client) {
         // Do nothing
     }
@@ -81,7 +88,8 @@ public class DummyChannelWindow implements ChannelWindow {
         return new InputHandler(new JTextField(), getCommandParser(), this);
     }
 
-    public void setAwayIndicator(boolean isAway) {
+    /** {@inheritDoc} */
+    public void setAwayIndicator(final boolean isAway) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -95,10 +103,12 @@ public class DummyChannelWindow implements ChannelWindow {
         addLine(messageType.toString(), args);
     }
 
-    public void addLine(String line, boolean timestamp) {
+    /** {@inheritDoc} */
+    public void addLine(final String line, final boolean timestamp) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /** {@inheritDoc} */
     public void clear() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
@@ -113,11 +123,13 @@ public class DummyChannelWindow implements ChannelWindow {
         return parent;
     }
 
+    /** {@inheritDoc} */
     public boolean isVisible() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void setVisible(boolean isVisible) {
+    /** {@inheritDoc} */
+    public void setVisible(final boolean isVisible) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
@@ -126,20 +138,22 @@ public class DummyChannelWindow implements ChannelWindow {
         return title;
     }
 
+    /** {@inheritDoc} */
     public boolean isMaximum() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void setMaximum(boolean b) throws PropertyVetoException {
+    /** {@inheritDoc} */
+    public void setMaximum(final boolean b) throws PropertyVetoException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     /** {@inheritDoc} */
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         this.title = title;
     }
 
-    /** {@inehritDoc} */
+    /** {@inheritDoc} */
     public void open() {
         // Do nothing
     }

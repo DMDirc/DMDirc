@@ -86,14 +86,14 @@ public final class ActionsManagerDialog extends StandardDialog
     
     /** Creates a new instance of ActionsManagerDialog. */
     private ActionsManagerDialog() {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         
         initComponents();
         
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setTitle("Action Manager");
         setResizable(false);
-        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         setVisible(true);
     }
     

@@ -67,7 +67,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      * @param updates A list of updates that are available.
      */
     public SwingUpdaterDialog(final List<Update> updates) {
-        super(((MainFrame) Main.getUI().getMainWindow()), false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         
         this.updates = updates;
         
@@ -140,7 +140,7 @@ public final class SwingUpdaterDialog extends StandardDialog implements
     
     /** {@inheritDoc} */
     public void display() {
-        setLocationRelativeTo(((MainFrame) Main.getUI().getMainWindow()));
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         setVisible(true);
     }
     

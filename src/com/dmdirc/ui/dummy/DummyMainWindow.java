@@ -24,33 +24,36 @@ package com.dmdirc.ui.dummy;
 
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.MainWindow;
-import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.framemanager.DummyFrameManager;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
-
 import javax.swing.JMenuItem;
 
 /**
- *
- * @author Chris
+ * Dummy main window, used for testing.
  */
-public class DummyMainWindow implements MainWindow {
+public final class DummyMainWindow implements MainWindow {
     
+    /** List of windows. */
     private final List<Window> windows = new ArrayList<Window>();
+    /** List of plugin menu items. */
     private final List<JMenuItem> pluginMenu = new ArrayList<JMenuItem>();
-    private boolean maximised = false;
+    /** Are the windows maximised? */
+    private boolean maximised;
+    /** Are we visible? */
     private boolean visible = true;
-    
-    private Window active = null;
+    /** Active window. */
+    private Window active;
     
     /**
      * Creates a new instance of DummyMainWindow.
      */
     public DummyMainWindow() {
+        //Do nothing.
     }
     
     /** {@inheritDoc} */
