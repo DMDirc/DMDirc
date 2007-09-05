@@ -26,9 +26,6 @@ package com.dmdirc.parser;
 
 import com.dmdirc.parser.callbacks.CallbackOnChannelNickChanged;
 import com.dmdirc.parser.callbacks.CallbackOnNickChanged;
-import com.dmdirc.parser.callbacks.interfaces.IChannelNickChanged;
-import com.dmdirc.parser.callbacks.interfaces.INickChanged;
-import java.util.Enumeration;
 
 /**
  * Process a Nick change.
@@ -43,7 +40,6 @@ public class ProcessNick extends IRCProcessor {
 	public void process(String sParam, String[] token) {
 		ClientInfo iClient;
 		ChannelClientInfo iChannelClient;
-		ChannelInfo iChannel;
 		String oldNickname;
 		
 		iClient = getClientInfo(token[0]);
@@ -66,8 +62,7 @@ public class ProcessNick extends IRCProcessor {
 					myParser.hClientList.put(myParser.toLowerCase(iClient.getNickname()),iClient);
 				}
 				
-				for (Enumeration e = myParser.hChannelList.keys(); e.hasMoreElements();) {
-					iChannel = myParser.hChannelList.get(e.nextElement());
+				for (ChannelInfo iChannel : myParser.hChannelList.values()) {
 					// Find the user (using the old nickname)
 					iChannelClient = iChannel.getUser(oldNickname);
 					if (iChannelClient != null) {

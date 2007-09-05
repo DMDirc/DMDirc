@@ -24,7 +24,6 @@
 
 package com.dmdirc.parser.callbacks;
 
-import java.util.Enumeration;
 import java.util.Hashtable;
 
 import com.dmdirc.parser.IRCParser;
@@ -171,9 +170,7 @@ public final class CallbackManager {
 	 * @param o instance of ICallbackInterface to add.
 	 */
 	public void addAllCallback(final ICallbackInterface o) {
-		CallbackObject cb;
-		for (final Enumeration e = callbackHash.keys(); e.hasMoreElements();) {
-			cb = callbackHash.get(e.nextElement());
+		for (CallbackObject cb : callbackHash.values()) {
 			if (cb != null) { cb.add(o); }
 		}
 	}

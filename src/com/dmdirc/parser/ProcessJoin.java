@@ -26,9 +26,6 @@ package com.dmdirc.parser;
 
 import com.dmdirc.parser.callbacks.CallbackOnChannelJoin;
 import com.dmdirc.parser.callbacks.CallbackOnChannelSelfJoin;
-import com.dmdirc.parser.callbacks.interfaces.IChannelJoin;
-import com.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
-import java.util.Enumeration;
 
 /**
  * Process a channel join.
@@ -42,7 +39,6 @@ public class ProcessJoin extends IRCProcessor {
 	 */
 	public void process(String sParam, String[] token) {
 		// :nick!ident@host JOIN (:)#Channel
-		Character cTemp;
 		Byte nTemp;
 		if (token.length < 3) { return; }
 		ClientInfo iClient;
@@ -67,8 +63,7 @@ public class ProcessJoin extends IRCProcessor {
 			sendString("MODE "+iChannel.getName());
 			
 			// Find out the lists currently in use
-			for (Enumeration e = myParser.hChanModesOther.keys(); e.hasMoreElements();) {
-				cTemp = (Character)e.nextElement();
+			for (Character cTemp : myParser.hChanModesOther.keySet()) {
 				nTemp = myParser.hChanModesOther.get(cTemp);
 				if (nTemp == myParser.MODE_LIST) { sendString("MODE "+iChannel.getName()+" "+cTemp); }
 			}

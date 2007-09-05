@@ -25,7 +25,6 @@
 package com.dmdirc.parser;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -140,8 +139,8 @@ public final class ChannelInfo {
 	 */
 	public ArrayList<ChannelClientInfo> getChannelClients() {
 		final ArrayList<ChannelClientInfo> lClients = new ArrayList<ChannelClientInfo>();
-		for (final Enumeration e = hChannelUserList.keys(); e.hasMoreElements();) {
-			lClients.add(hChannelUserList.get(e.nextElement()));
+                for (ChannelClientInfo client : hChannelUserList.values()) {
+			lClients.add(client);
 		}
 		return lClients;
 	}
