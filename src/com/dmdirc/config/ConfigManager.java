@@ -269,21 +269,25 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
         String comp = "";
         
         switch (identity.getTarget().getType()) {
-        case ConfigTarget.TYPE_IRCD:
-            comp = ircd;
-            break;
-        case ConfigTarget.TYPE_NETWORK:
-            comp = network;
-            break;
-        case ConfigTarget.TYPE_SERVER:
-            comp = server;
-            break;
-        case ConfigTarget.TYPE_CHANNEL:
-            comp = channel;
-            break;
-        default:
-            comp = "<Unknown>";
-            break;
+            case ConfigTarget.TYPE_IRCD:
+                comp = ircd;
+                break;
+            case ConfigTarget.TYPE_NETWORK:
+                comp = network;
+                break;
+            case ConfigTarget.TYPE_SERVER:
+                comp = server;
+                break;
+            case ConfigTarget.TYPE_CHANNEL:
+                comp = channel;
+                break;
+            case ConfigTarget.TYPE_PROFILE:
+                // We don't want profiles'
+                comp = null;
+                break;
+            default:
+                comp = "<Unknown>";
+                break;
         }
         
         if (comp != null && comp.equalsIgnoreCase(identity.getTarget().getData())) {
@@ -303,7 +307,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     
     /**
      * Adds a change listener for the specified domain.
-     * 
+     *
      * @param domain The domain to be monitored
      * @param listener The listener to register
      */
@@ -311,14 +315,14 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
             final ConfigChangeListener listener) {
         addListener(domain, listener);
     }
-
+    
     /**
      * Adds a change listener for the specified domain and key.
-     * 
+     *
      * @param domain The domain of the option
      * @param key The option to be monitored
      * @param listener The listener to register
-     */    
+     */
     public void addChangeListener(final String domain, final String key,
             final ConfigChangeListener listener) {
         addListener(domain + "." + key, listener);
@@ -326,18 +330,18 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     
     /**
      * Removes the specified listener for all domains and options.
-     * 
+     *
      * @param listener The listener to be removed
      */
     public void removeListener(final ConfigChangeListener listener) {
-       for (List<ConfigChangeListener> list : listeners.values()) {
-           list.remove(listener);
-       }
+        for (List<ConfigChangeListener> list : listeners.values()) {
+            list.remove(listener);
+        }
     }
     
     /**
      * Adds the specified listener to the internal map/list.
-     * 
+     *
      * @param key The key to use (domain or domain.key)
      * @param listener The listener to register
      */
@@ -361,7 +365,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
         }
         
         if (listeners.containsKey(domain + "." + key)) {
-            targets.addAll(listeners.get(domain + "." + key));            
+            targets.addAll(listeners.get(domain + "." + key));
         }
         
         for (ConfigChangeListener listener : targets) {

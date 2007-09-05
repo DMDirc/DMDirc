@@ -144,7 +144,7 @@ public final class IdentityManager {
     
     /**
      * Retrieves the identity used for the global config.
-     * 
+     *
      * @return The global config identity
      */
     public static Identity getConfigIdentity() {
@@ -236,24 +236,27 @@ public final class IdentityManager {
         
         for (Identity identity : identities) {
             switch (identity.getTarget().getType()) {
-            case ConfigTarget.TYPE_IRCD:
-                comp = ircd;
-                break;
-            case ConfigTarget.TYPE_NETWORK:
-                comp = network;
-                break;
-            case ConfigTarget.TYPE_SERVER:
-                comp = server;
-                break;
-            case ConfigTarget.TYPE_CHANNEL:
-                comp = channel;
-                break;
-            default:
-                comp = "";
-                break;
+                case ConfigTarget.TYPE_IRCD:
+                    comp = ircd;
+                    break;
+                case ConfigTarget.TYPE_NETWORK:
+                    comp = network;
+                    break;
+                case ConfigTarget.TYPE_SERVER:
+                    comp = server;
+                    break;
+                case ConfigTarget.TYPE_CHANNEL:
+                    comp = channel;
+                    break;
+                case ConfigTarget.TYPE_PROFILE:
+                    comp = null;
+                    break;
+                default:
+                    comp = "";
+                    break;
             }
             
-            if (comp.equalsIgnoreCase(identity.getTarget().getData()) || comp.isEmpty()) {
+            if (comp != null && (comp.equalsIgnoreCase(identity.getTarget().getData()) || comp.isEmpty())) {
                 sources.add(identity);
             }
         }
