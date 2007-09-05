@@ -23,10 +23,10 @@
  */
 
 package com.dmdirc.parser;
-import com.dmdirc.parser.callbacks.interfaces.INumeric;
+
 import com.dmdirc.parser.callbacks.CallbackOnNumeric;
+
 import java.util.Hashtable;
-import java.util.Enumeration;
 
 /**
  * IRC Parser Processing Manager.
@@ -40,7 +40,7 @@ public class ProcessingManager {
 	IRCParser myParser = null;
 	
 	/** Hashtable used to store the different types of IRCProcessor known. */
-	private Hashtable<String,IRCProcessor> processHash = new Hashtable<String,IRCProcessor>();
+	private final Hashtable<String,IRCProcessor> processHash = new Hashtable<String,IRCProcessor>();
 
 	/**
 	 * Constructor to create a ProcessingManager
@@ -54,7 +54,7 @@ public class ProcessingManager {
 	/**
 	 * Debugging Data to the console.
 	 */
-	private void DoDebug(String line, Object... args) {
+	private void DoDebug(final String line, final Object... args) {
 		myParser.callDebugInfo(myParser.DEBUG_PROCESSOR, line, args);
 	}
 	
@@ -129,18 +129,13 @@ public class ProcessingManager {
 	public void empty() {
 		processHash.clear();
 	}
-	
-	/** Empty clone method to prevent cloning to get more copies of the ProcessingManager */
-	public Object clone() throws CloneNotSupportedException {
-		throw new CloneNotSupportedException();
-	}
 
 	/**
 	 * Add new Process type.
 	 *
 	 * @param processor IRCProcessor subclass for the processor.
 	 */
-	public void addProcessor(IRCProcessor processor) {	
+	public void addProcessor(final IRCProcessor processor) {	
 		// handles() returns a String array of all the tokens
 		// that this processor will parse.
 		addProcessor(processor.handles(), processor);
@@ -152,7 +147,7 @@ public class ProcessingManager {
 	 * @param processor IRCProcessor subclass for the processor.
 	 * @param handles String Array of tokens to add this processor as a hadler for
 	 */
-	public void addProcessor(String[] handles, IRCProcessor processor) {	
+	public void addProcessor(final String[] handles, final IRCProcessor processor) {	
 		DoDebug("Adding processor: "+processor.getName());
 		
 		try {
@@ -175,12 +170,10 @@ public class ProcessingManager {
 	 *
 	 * @param processor IRCProcessor subclass for the processor.
 	 */
-	public void delProcessor(IRCProcessor processor) {	
+	public void delProcessor(final IRCProcessor processor) {	
 		IRCProcessor testProcessor;
-		String elementName;
 		DoDebug("Deleting processor: "+processor.getName());
-		for (Enumeration e = processHash.keys(); e.hasMoreElements();) {
-			elementName = (String)e.nextElement();
+		for (String elementName : processHash.keySet()) {
 			DoDebug("\t Checking handler for: "+elementName);
 			testProcessor = processHash.get(elementName);
 			if (testProcessor.getName().equalsIgnoreCase(processor.getName())) {
@@ -196,7 +189,7 @@ public class ProcessingManager {
 	 * @param sParam Type of line to process ("005", "PRIVMSG" etc)
 	 * @return IRCProcessor for the given param.
 	 */
-	public IRCProcessor getProcessor(String sParam) throws ProcessorNotFound {
+	public IRCProcessor getProcessor(final String sParam) throws ProcessorNotFound {
 		if (processHash.containsKey(sParam.toLowerCase())) {
 			return processHash.get(sParam.toLowerCase());
 		} else {
@@ -211,7 +204,7 @@ public class ProcessingManager {
 	 * @param token IRCTokenised line to process
 	 * @throws ProcessorNotFound exception if no processors exists to handle the line
 	 */
-	public void process(String sParam, String[] token) throws ProcessorNotFound {
+	public void process(final String sParam, final String[] token) throws ProcessorNotFound {
 		IRCProcessor messageProcessor = null;
 		try {
 			messageProcessor = getProcessor(sParam);
@@ -219,9 +212,9 @@ public class ProcessingManager {
 		} catch (ProcessorNotFound p) {
 			throw p;
 		} catch (Exception e) {
-			StringBuilder line = new StringBuilder();
+			final StringBuilder line = new StringBuilder();
 			for (int i = 0; i < token.length; ++i ) { line.append(" ").append(token[i]); }
-			ParserError ei = new ParserError(ParserError.ERROR_WARNING,"Exception in Parser. [Param: "+sParam+"] [Processor: "+messageProcessor+"]", line.toString().trim());
+			final ParserError ei = new ParserError(ParserError.ERROR_WARNING,"Exception in Parser. [Param: "+sParam+"] [Processor: "+messageProcessor+"]", line.toString().trim());
 			ei.setException(e);
 			myParser.callErrorInfo(ei);
 		} finally {
@@ -241,8 +234,8 @@ public class ProcessingManager {
 	 * @param token IRC Tokenised line
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callNumeric(int numeric, String[] token) {
-		CallbackOnNumeric cb = (CallbackOnNumeric)myParser.getCallbackManager().getCallbackType("OnNumeric");
+	protected boolean callNumeric(final int numeric, final String[] token) {
+		final CallbackOnNumeric cb = (CallbackOnNumeric)myParser.getCallbackManager().getCallbackType("OnNumeric");
 		if (cb != null) { return cb.call(numeric, token); }
 		return false;
 	}

@@ -33,15 +33,16 @@ import java.util.ArrayList;
  * @version $Id$
  */
 public class RegexStringList {
+	
 	/** Arraylist storing ignore patterns */
-	private ArrayList<String> ignoreInfo = new ArrayList<String>();
+	private final ArrayList<String> ignoreInfo = new ArrayList<String>();
 	
 	/**
 	 * Add a new ignore pattern to the ignore list.
 	 *
 	 * @param pattern Regex syntax for the ignore (Pattern is matched case-insensitively as ^pattern$)
 	 */
-	public void add(String pattern) {
+	public void add(final String pattern) {
 		for (int i = 0; i < this.count(); ++i) {
 			if (pattern.equalsIgnoreCase(this.get(i))) {
 				return;
@@ -55,7 +56,7 @@ public class RegexStringList {
 	 *
 	 * @param position Position in the list to remove
 	 */
-	public void remove(int position) {
+	public void remove(final int position) {
 		if (position < this.count()) {
 			ignoreInfo.remove(position);
 		}
@@ -74,7 +75,7 @@ public class RegexStringList {
 	 * @param check String to check (Patterns are matched case-insensitively as ^pattern$)
 	 * @return integer showing the position of the first match in the ignore list (-1 if none)
 	 */
-	public int matches(String check) {
+	public int matches(final String check) {
 		for (int i = 0; i < this.count(); ++i) {
 			if (check.matches("(?i)"+this.get(i))) {
 				return i;
@@ -90,7 +91,7 @@ public class RegexStringList {
 	 * @param check String to check (Patterns are matched case-insensitively as ^pattern$)
 	 * @return boolean true/false
 	 */
-	public boolean matches(int position, String check) {
+	public boolean matches(final int position, final String check) {
 		if (position < this.count()) {
 			return check.matches("(?i)"+this.get(position));
 		} else {
@@ -104,7 +105,7 @@ public class RegexStringList {
 	 * @param position Position to check
 	 * @return String showing the pattern. ("" if position isn't valid)
 	 */
-	public String get(int position) {
+	public String get(final int position) {
 		if (position < this.count()) {
 			return ignoreInfo.get(position);
 		} else {
@@ -118,7 +119,7 @@ public class RegexStringList {
 	 * @param position Position to change
 	 * @param pattern New pattern
 	 */
-	public void set(int position, String pattern) {
+	public void set(final int position, final String pattern) {
 		if (position < this.count()) {
 			ignoreInfo.set(position, pattern);
 		}

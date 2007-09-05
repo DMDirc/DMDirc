@@ -43,7 +43,7 @@ public class ProcessorNotFound extends Exception {
 	 *
 	 * @param message Reason for exception
 	 */
-	public ProcessorNotFound(String message) { super(message); }
+	public ProcessorNotFound(final String message) { super(message); }
 	
 	/**
 	 * Get SVN Version information.

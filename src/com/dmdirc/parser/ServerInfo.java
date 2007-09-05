@@ -71,7 +71,7 @@ public class ServerInfo {
 	 *
 	 * @param newValue Value to set to.
 	 */
-	public void setHost(String newValue) { host = newValue; }
+	public void setHost(final String newValue) { host = newValue; }
 	
 	/**
 	 * Get the hostname.
@@ -85,7 +85,7 @@ public class ServerInfo {
 	 *
 	 * @param newValue Value to set to.
 	 */
-	public void setPort(int newValue) { port = newValue; }
+	public void setPort(final int newValue) { port = newValue; }
 	
 	/**
 	 * Get the port.
@@ -99,7 +99,7 @@ public class ServerInfo {
 	 *
 	 * @param newValue Value to set to.
 	 */
-	public void setPassword(String newValue) { password = newValue; }
+	public void setPassword(final String newValue) { password = newValue; }
 	
 	/**
 	 * Get the password.
@@ -113,7 +113,7 @@ public class ServerInfo {
 	 *
 	 * @param newValue true if server uses ssl, else false
 	 */
-	public void setSSL(boolean newValue) { isSSL = newValue; }
+	public void setSSL(final boolean newValue) { isSSL = newValue; }
 	
 	/**
 	 * Get if the server uses ssl.
@@ -127,7 +127,7 @@ public class ServerInfo {
 	 *
 	 * @param newValue true if we are using socks, else false
 	 */
-	public void setUseSocks(boolean newValue) { useSocksProxy = newValue; }
+	public void setUseSocks(final boolean newValue) { useSocksProxy = newValue; }
 	
 	/**
 	 * Get if we are connecting via a socks proxy.
@@ -141,7 +141,7 @@ public class ServerInfo {
 	 *
 	 * @param newValue Value to set to.
 	 */
-	public void setProxyHost(String newValue) { proxyHost = newValue; }
+	public void setProxyHost(final String newValue) { proxyHost = newValue; }
 	
 	/**
 	 * Get the Proxy hostname.
@@ -155,7 +155,7 @@ public class ServerInfo {
 	 *
 	 * @param newValue Value to set to.
 	 */
-	public void setProxyPort(int newValue) { proxyPort = newValue; }
+	public void setProxyPort(final int newValue) { proxyPort = newValue; }
 	
 	/**
 	 * Get the Proxy port.

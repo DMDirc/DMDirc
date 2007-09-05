@@ -24,15 +24,8 @@
 
 package com.dmdirc.parser;
 
-import java.util.Enumeration;
-
-import com.dmdirc.parser.ClientInfo;
-import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.callbacks.CallbackOnAwayStateOther;
-import com.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
 import com.dmdirc.parser.callbacks.CallbackOnChannelAwayStateOther;
-import com.dmdirc.parser.callbacks.interfaces.IChannelAwayStateOther;
 
 /**
  * Process a /who reply
@@ -44,7 +37,7 @@ public class ProcessWho extends IRCProcessor {
 	 * @param sParam Type of line to process ("352")
 	 * @param token IRCTokenised line to process
 	 */
-	public void process(String sParam, String[] token) {
+	public void process(final String sParam, final String[] token) {
 		// :blueyonder2.uk.quakenet.org 352 Dataforce #mdbot shane Tobavaj.users.quakenet.org *.quakenet.org Tobavaj G+x :3 Tobavaj - http://shane.dmdirc.com/scriptbot.php
 		//              0               1      2        3     4              5                      6           7     8        9
 		// :blueyonder2.uk.quakenet.org 352 Dataforce #mdbot ~Dataforce ResNetUser-BrynDinas-147.143.246.102.bangor.ac.uk *.quakenet.org Dataforce H@ :0 Dataforce
@@ -57,29 +50,27 @@ public class ProcessWho extends IRCProcessor {
 //		ChannelInfo channel = myParser.getChannelInfo(token[3]);
 //		ChannelClientInfo channelClient = channel.getUser(token[7]);
 //		ClientInfo client = channelClient.getClient();
-		ClientInfo client = myParser.getClientInfo(token[7]);
+		final ClientInfo client = myParser.getClientInfo(token[7]);
 		if (client != null) {
 			// Update ident/host
 			client.setUserBits(token[7]+"!"+token[4]+"@"+token[5], false);
 			// Update real name
 			if (client.getRealName().equals("")) {
 				try {
-					String name = token[9].split(" ", 2)[1];
+					final String name = token[9].split(" ", 2)[1];
 					client.setRealName(name);
 				} catch (Exception e) { /* Do Nothing */ }
 			}
 			// Update away state
-			String mode = token[8];
-			boolean isAway = mode.matches(".*G.*");
+			final String mode = token[8];
+			final boolean isAway = mode.indexOf('G') != -1;
 			if (client.getAwayState() != isAway) {
 //				System.out.println("Away state for '"+client+"' changed to: "+isAway);
 				client.setAwayState(isAway);
 				callAwayStateOther(client, isAway);
 				
-				ChannelInfo iChannel;
 				ChannelClientInfo iChannelClient;
-				for (Enumeration e = myParser.hChannelList.keys(); e.hasMoreElements();) {
-					iChannel = myParser.hChannelList.get(e.nextElement());
+				for (ChannelInfo iChannel : myParser.hChannelList.values()) {
 					iChannelClient = iChannel.getUser(client);
 					if (iChannelClient != null) {
 						callChannelAwayStateOther(iChannel,iChannelClient,isAway);
@@ -97,8 +88,8 @@ public class ProcessWho extends IRCProcessor {
 	 * @param state Away State (true if away, false if here)
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callAwayStateOther(ClientInfo client, boolean state) {
-		CallbackOnAwayStateOther cb = (CallbackOnAwayStateOther)myParser.getCallbackManager().getCallbackType("OnAwayStateOther");
+	protected boolean callAwayStateOther(final ClientInfo client, final boolean state) {
+		final CallbackOnAwayStateOther cb = (CallbackOnAwayStateOther)myParser.getCallbackManager().getCallbackType("OnAwayStateOther");
 		if (cb != null) { return cb.call(client, state); }
 		return false;
 	}
@@ -112,8 +103,8 @@ public class ProcessWho extends IRCProcessor {
 	 * @param state Away State (true if away, false if here)
 	 * @return true if a method was called, false otherwise
 	 */
-	protected boolean callChannelAwayStateOther(ChannelInfo channel, ChannelClientInfo channelClient, boolean state) {
-		CallbackOnChannelAwayStateOther cb = (CallbackOnChannelAwayStateOther)myParser.getCallbackManager().getCallbackType("OnChannelAwayStateOther");
+	protected boolean callChannelAwayStateOther(final ChannelInfo channel, final ChannelClientInfo channelClient, final boolean state) {
+		final CallbackOnChannelAwayStateOther cb = (CallbackOnChannelAwayStateOther)myParser.getCallbackManager().getCallbackType("OnChannelAwayStateOther");
 		if (cb != null) { return cb.call(channel, channelClient, state); }
 		return false;
 	}
