@@ -146,7 +146,8 @@ public class ActionSubstitutor {
      * @param args The arguments passed for this action type
      */
     private void doServerSubstitutions(final StringBuilder target, final Object ... args) {
-        if (args.length > 0 && args[0] instanceof FrameContainer) {
+        if (args.length > 0 && args[0] instanceof FrameContainer
+                && ((FrameContainer) args[0]).getServer() != null) {
             for (ActionComponent comp : ActionManager.getCompatibleComponents(Server.class)) {
                 final String key = "${" + comp.toString() + "}";
                 final Object res = comp.get(((FrameContainer) args[0]).getServer());

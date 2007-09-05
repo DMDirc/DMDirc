@@ -20,18 +20,17 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.commands.server;
+package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
  * The clear command clears the main text area of the current window.
  * @author chris
  */
-public final class Clear extends ServerCommand {
+public final class Clear extends GlobalCommand {
     
     /**
      * Creates a new instance of Clear.
@@ -45,12 +44,11 @@ public final class Clear extends ServerCommand {
     /**
      * Executes this command.
      * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
-    public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final String... args) {
+    public void execute(final InputWindow origin, final boolean isSilent, 
+            final String... args) {
         origin.clear();
     }
     

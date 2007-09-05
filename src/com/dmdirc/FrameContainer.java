@@ -190,8 +190,11 @@ public abstract class FrameContainer {
             }
         }
         Main.getUI().getMainWindow().getFrameManager().setSelected(this);
-        getServer().setActiveFrame(this);
         clearNotification();
+        
+        if (getServer() != null) {
+            getServer().setActiveFrame(this);
+        }
     }
     
     /**

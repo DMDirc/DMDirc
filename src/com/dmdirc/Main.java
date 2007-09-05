@@ -107,13 +107,17 @@ public final class Main {
         if (!Config.hasOption("general", "firstRun") || Config.getOptionBool("general", "firstRun")) {
             Config.setOption("general", "firstRun", "false");
             getUI().showFirstRunWizard();
-        }
+        }       
         
-        ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);
+        ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);       
         
         UpdateChecker.init();
-        
+                
         clp.processArguments();
+        
+        if (Config.getOptionBool("general", "showglobalwindow")) {
+            new GlobalWindow();
+        }        
     }
     
     /**

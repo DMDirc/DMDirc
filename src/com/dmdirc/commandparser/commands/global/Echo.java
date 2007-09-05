@@ -20,12 +20,11 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.commands.server;
+package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Main;
-import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.Window;
 
@@ -33,7 +32,7 @@ import com.dmdirc.ui.interfaces.Window;
  * The echo commands simply echos text to the current window.
  * @author chris
  */
-public final class Echo extends ServerCommand {
+public final class Echo extends GlobalCommand {
     
     /**
      * Creates a new instance of Echo.
@@ -47,12 +46,11 @@ public final class Echo extends ServerCommand {
     /**
      * Executes this command.
      * @param origin The frame in which this command was issued
-     * @param server The server object that this command is associated with
      * @param isSilent Whether this command is silenced or not
      * @param args The user supplied arguments
      */
-    public void execute(final InputWindow origin, final Server server,
-            final boolean isSilent, final String... args) {        
+    public void execute(final InputWindow origin, final boolean isSilent, 
+            final String... args) {        
         if (args.length > 0 && args[0].equalsIgnoreCase("--active")) {
             final Window frame = Main.getUI().getMainWindow().getActiveFrame();
             if (frame instanceof InputWindow) {

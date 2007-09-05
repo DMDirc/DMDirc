@@ -105,7 +105,7 @@ public abstract class CommandParser implements Serializable {
             
             assert args.length > 0;
             
-            if (args.length >= 2 && parseChannel && origin != null
+            if (args.length >= 2 && parseChannel && origin != null && origin.getContainer().getServer() != null
                     && origin.getContainer().getServer().getParser().isValidChannelName(args[1])
                     && CommandManager.isChannelCommand(command)) {
                 final Server server = origin.getContainer().getServer();

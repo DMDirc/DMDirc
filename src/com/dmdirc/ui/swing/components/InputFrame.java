@@ -136,7 +136,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
     
     /** {@inheritDoc} */
     public void open() {
-        if (Config.getOptionBool("ui", "awayindicator")) {
+        if (Config.getOptionBool("ui", "awayindicator") && getContainer().getServer() != null) {
             awayLabel.setVisible(getContainer().getServer().isAway());
         }
         super.open();

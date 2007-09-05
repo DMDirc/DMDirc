@@ -190,7 +190,7 @@ public final class CommandManager {
                 for (String channelName : server.getChannels()) {
                     registerCommandName(server.getChannel(channelName).getTabCompleter(), commandName, register);
                 }
-            } 
+            }
             
             if (command instanceof QueryCommand || command instanceof ChatCommand) {
                 for (String queryName : server.getQueries()) {
@@ -262,11 +262,9 @@ public final class CommandManager {
         new Away();
         new Back();
         new ChangeServer();
-        new Clear();
         new ConfigInfo();
         new Ctcp();
         new Disconnect();
-        new Echo();
         new Help();
         new Ignore();
         new Message();
@@ -288,7 +286,9 @@ public final class CommandManager {
         // Global commands
         new Active();
         new AllServers();
+        new Clear();
         new Debug();
+        new Echo();
         new Exit();
         new ExitDefault();
         new Ifplugin();
@@ -609,7 +609,7 @@ public final class CommandManager {
      */
     public static List<String> getChatCommandNames() {
         return getCommandNames(chatCommands);
-    }    
+    }
     
     /**
      * Iterates through the specified source and returns a list of the names
