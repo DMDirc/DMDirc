@@ -24,6 +24,8 @@ package com.dmdirc.installer;
 
 import com.dmdirc.ui.swing.dialogs.wizard.TextStep;
 
+import java.io.File;
+
 /**
  * Installs DMDirc on windows
  *
@@ -38,18 +40,55 @@ public class WindowsInstaller extends Installer {
 	}
 	
 	/**
-	 * Main Setup stuff
-	 *
-	 * @param location Location where app was installed to.
-	 * @param step The step that called this
-	 */
-	public void doSetup(final String location, final TextStep step) { }
-	 
-	/**
 	 * Setup shortcuts
 	 *
-	 * @param location Location where app was installed to.
+	 * @param location Location where app will be installed to.
 	 * @param step The step that called this
+	 * @param shortcutType TYpe of shortcuts to add.
 	 */
-	public void setupShortcuts(final String location, final TextStep step) { }
+	public void setupShortcuts(final String location, final TextStep step, final int shortcutType) {
+		// Shortcut.exe is from http://www.optimumx.com/download/#Shortcut
+		if (new File("Shortcut.exe").exists()) {
+			String filename;
+			File dir;
+			if ((shortcutType & SHORTCUT_DESKTOP) == SHORTCUT_DESKTOP) {
+				filename = System.getProperty("user.home")+"\\Desktop\\DMDirc.lnk";
+				dir = new File(System.getProperty("user.home")+"\\Desktop");
+				if (!dir.exists()) { dir.mkdir(); }
+			} else if ((shortcutType & SHORTCUT_MENU) == SHORTCUT_MENU) {
+				filename = System.getProperty("user.home")+"\\Start Menu\\Programs\\DMDirc\\DMDirc.lnk";
+				dir = new File(System.getProperty("user.home")+"\\Start Menu\\Programs\\DMDirc");
+				if (!dir.exists()) { dir.mkdir(); }
+			} else if ((shortcutType & SHORTCUT_QUICKLAUNCH) == SHORTCUT_QUICKLAUNCH) {
+				filename = System.getProperty("user.home")+"\\Application Data\\Microsoft\\Internet Explorer\\Quick Launch\\DMDirc.lnk";
+				dir = new File(System.getProperty("user.home")+"\\Application Data\\Microsoft\\Internet Explorer\\Quick Launch");
+				if (!dir.exists()) { dir.mkdir(); }
+			} else {
+				return;
+			}
+			File oldFile = new File(filename);
+			if (oldFile.exists()) { oldFile.delete(); }
+			try {
+				final Process shortcutProcess = Runtime.getRuntime().exec(new String[] {
+				                      "Shotcut.exe",
+				                      "/F:"+filename,
+				                      "/A:C",
+				                      "/T:"+location+"\\DMDirc.bat",
+				                      "/W:"+location,
+				                      "/I:"+location+"\\icon.ico",
+				                      "/D:DMDirc IRC Client"
+				                      });
+				new StreamReader(shortcutProcess.getInputStream()).start();
+				new StreamReader(shortcutProcess.getErrorStream()).start();
+				shortcutProcess.waitFor();
+				if (shortcutProcess.exitValue() != 0) {
+					step.addText("Error creating shortcuts: Unknown Reason");
+				}
+			} catch (Exception e) {
+				step.addText("Error creating shortcuts: "+e.getMessage());
+			}
+		} else {
+			step.addText("Error creating shortcuts: Unable to find Shortcut.exe");
+		}
+	}
 }

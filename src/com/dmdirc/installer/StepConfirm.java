@@ -22,6 +22,7 @@
 
 package com.dmdirc.installer;
 
+import com.dmdirc.installer.WindowsInstaller;
 import com.dmdirc.ui.swing.dialogs.wizard.SpecialStep;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
@@ -68,16 +69,35 @@ public final class StepConfirm extends Step implements SpecialStep {
 	 * Display Step.
 	 */
 	public void showStep() {
-		String shortcutText = "Do not";
+		String shortcutText = "";
 		
-		if (((StepSettings) Main.getWizardDialog().getStep(1)).getShortcutsState()) {
-			shortcutText = "Do";
+		StepSettings settings = ((StepSettings) Main.getWizardDialog().getStep(1));
+		
+		if (settings.getShortcutMenuState()) {
+			shortcutText = shortcutText + " - Do Set up Menu shortcuts"+ "\n";
+		} else {
+			shortcutText = shortcutText + " - Do Not Set up Menu shortcuts"+ "\n";
 		}
+		
+		if (settings.getShortcutDesktopState()) {
+			shortcutText = shortcutText + " - Do Set up Desktop shortcuts"+ "\n";
+		} else {
+			shortcutText = shortcutText + " - Do Not Set up Desktop shortcuts"+ "\n";
+		}
+		
+		if (Main.getInstaller() instanceof WindowsInstaller) {
+			if (settings.getShortcutQuickState()) {
+				shortcutText = shortcutText + " - Do Set up Quick Launch shortcuts"+ "\n";
+			} else {
+				shortcutText = shortcutText + " - Do Not Set up Quick Launch shortcuts"+ "\n";
+			}
+		}
+	
 		
 		infoLabel.setText("Please check that these settings are correct:\n\n"
 		                + " - Install Location:\n"
 		                + "    " +((StepSettings) Main.getWizardDialog().getStep(1)).getInstallLocation() + "\n"
-		                + " - " + shortcutText + " setup shortcuts\n\n"
+		                + shortcutText + "\n"
 		                + "If these are correct, press next to begin the installation, else press previous to change them");
 	}
 }

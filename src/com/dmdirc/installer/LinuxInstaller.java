@@ -25,6 +25,9 @@ package com.dmdirc.installer;
 import com.dmdirc.installer.cliparser.CLIParser;
 import com.dmdirc.ui.swing.dialogs.wizard.TextStep;
 
+import java.io.PrintWriter;
+import java.io.IOException;
+
 /**
  * Installs DMDirc on linux
  *
@@ -42,20 +45,58 @@ public class LinuxInstaller extends Installer {
 		}
 	}
 	 
-	
-	/**
-	 * Main Setup stuff
-	 *
-	 * @param location Location where app was installed to.
-	 * @param step The step that called this
-	 */
-	public void doSetup(final String location, final TextStep step) { }
-	 
 	/**
 	 * Setup shortcuts
 	 *
-	 * @param location Location where app was installed to.
+	 * @param location Location where app will be installed to.
 	 * @param step The step that called this
+	 * @param shortcutType TYpe of shortcuts to add.
 	 */
-	public void setupShortcuts(final String location, final TextStep step) { }
+	public void setupShortcuts(final String location, final TextStep step, final int shortcutType) {
+		PrintWriter writer = null;
+		try {
+			String filename;
+			if ((shortcutType & SHORTCUT_DESKTOP) == SHORTCUT_DESKTOP) {
+				filename = System.getProperty("user.home")+"/Desktop/DMDirc.desktop";
+			} else if ((shortcutType & SHORTCUT_MENU) == SHORTCUT_MENU) {
+				if (CLIParser.getCLIParser().getParamNumber("-isroot") > 0) {
+					filename = "/usr/share/applications/DMDirc.desktop";
+				} else {
+					filename = System.getProperty("user.home")+"/.local/share/applications/DMDirc.desktop";
+				}
+			} else {
+				return;
+			}
+			writer = new PrintWriter(filename);
+			writeFile(writer, location);
+		} catch (Exception e) {
+			step.addText("Error creating shortcuts: "+e.toString());
+		} finally {
+			if (writer != null) {
+				writer.close();
+			}
+		}
+	}
+	
+	/**
+	 * Write the .desktop file
+	 *
+	 * @param writer PrintWriter to write to
+	 * @param location Location of installed files
+	 * @throws IOException if an error occurs when writing
+	 */
+	private void writeFile(final PrintWriter writer, final String location) throws IOException {
+		writer.println("[Desktop Entry]");
+		writer.println("Categories=Network;IRCClient;");
+		writer.println("Comment=DMDirc IRC Client");
+		writer.println("Encoding=UTF-8");
+		writer.println("Exec=java -jar "+location+"/DMDirc.jar");
+		writer.println("GenericName=IRC Client");
+		writer.println("Icon="+location+"/icon.svg");
+		writer.println("Name=DMDirc");
+		writer.println("StartupNotify=true");
+		writer.println("Terminal=false");
+		writer.println("TerminalOptions=");
+		writer.println("Type=Application");
+	}
 }

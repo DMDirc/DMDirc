@@ -22,6 +22,7 @@
 
 package com.dmdirc.installer;
 
+import com.dmdirc.installer.WindowsInstaller;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -46,10 +47,14 @@ public final class StepSettings extends Step {
 	 * structure is changed (or anything else that would prevent serialized
 	 * objects being unserialized with the new class).
 	 */
-	private static final long serialVersionUID = 2;
+	private static final long serialVersionUID = 3;
 	
-	/** Shorcuts checkbox. */
-	private final JCheckBox shortcuts = new JCheckBox("Setup shortcuts to DMDirc?");
+	/** Menu Shorcuts checkbox. */
+	private final JCheckBox shortcutMenu = new JCheckBox("Setup menu shortcut to DMDirc?");
+	/** Desktop Shorcuts checkbox. */
+	private final JCheckBox shortcutDesktop = new JCheckBox("Setup desktop shortcut to DMDirc?");
+	/** Quick-Launch Shorcuts checkbox. */
+	private final JCheckBox shortcutQuick = new JCheckBox("Setup Quicklaunch shortcut to DMDirc?");
 	/** Install Location input. */
 	private final JTextField location = new JTextField(Main.getInstaller().defaultInstallLocation(), 20);
 	
@@ -70,8 +75,10 @@ public final class StepSettings extends Step {
 		infoLabel.setHighlighter(null);
 		infoLabel.setBackground(getBackground());
 		infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, SMALL_BORDER, 0));
-                
-                shortcuts.setSelected(true);
+		
+		shortcutMenu.setSelected(true);
+		shortcutDesktop.setSelected(true);
+		shortcutQuick.setSelected(true);
 			
 		constraints.weightx = 1.0;
 		constraints.fill = constraints.BOTH;
@@ -80,34 +87,60 @@ public final class StepSettings extends Step {
 		constraints.gridwidth = 2;
 		add(infoLabel, constraints);
 
-                constraints.weightx = 0.0;
+		constraints.weightx = 0.0;
 		constraints.gridwidth = 1;
 		constraints.gridy = 1;
-                constraints.fill = constraints.NONE;
+		constraints.fill = constraints.NONE;
 		add(new JLabel("Install Location: "), constraints);
-                constraints.fill = constraints.HORIZONTAL;
+		constraints.fill = constraints.HORIZONTAL;
 		constraints.gridx = 1;
 		add(location, constraints);
 		
-                constraints.gridwidth = 2;
+		constraints.gridwidth = 2;
 		constraints.gridy = 3;
-                constraints.gridx = 0;
-                constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
-		add(shortcuts, constraints);
-                
-                constraints.gridy = 4;
-                constraints.weighty = 1.0;
-                constraints.fill = constraints.BOTH;
-                add(Box.createVerticalGlue(), constraints);
+		constraints.gridx = 0;
+		constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
+		add(shortcutMenu, constraints);
+		
+		constraints.gridy = 4;
+		add(shortcutDesktop, constraints);
+		
+		if (Main.getInstaller() instanceof WindowsInstaller) {
+			constraints.gridy = 5;
+			add(shortcutQuick, constraints);
+		}
+		
+		constraints.gridy = (constraints.gridy + 1);
+		constraints.weighty = 1.0;
+		constraints.fill = constraints.BOTH;
+		add(Box.createVerticalGlue(), constraints);
 	}
 	
 	/**
-	 * Returns the state of the shortcuts checkbox.
+	 * Returns the state of the shortcutMenu checkbox.
 	 *
-	 * @return shortcuts checkbox state
+	 * @return shortcutMenu checkbox state
 	 */
-	public boolean getShortcutsState() {
-		return shortcuts.isSelected();
+	public boolean getShortcutMenuState() {
+		return shortcutMenu.isSelected();
+	}
+	
+	/**
+	 * Returns the state of the shortcutDesktop checkbox.
+	 *
+	 * @return shortcutDesktop checkbox state
+	 */
+	public boolean getShortcutDesktopState() {
+		return shortcutDesktop.isSelected();
+	}
+	
+	/**
+	 * Returns the state of the shortcutDesktop checkbox.
+	 *
+	 * @return shortcutDesktop checkbox state
+	 */
+	public boolean getShortcutQuickState() {
+		return shortcutQuick.isSelected();
 	}
 	
 	/**

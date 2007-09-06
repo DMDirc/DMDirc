@@ -24,12 +24,26 @@ package com.dmdirc.installer;
 
 import com.dmdirc.ui.swing.dialogs.wizard.TextStep;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.nio.channels.FileChannel;
+
 /**
  * Installs DMDirc
  *
  * @author Shane Mc Cormack
  */
 public abstract class Installer {
+	/** Put a shortcut on the desktop */
+	public static final int SHORTCUT_DESKTOP = 1;
+	/** Put a shortcut on the menu (kmenu, start menu etc) */
+	public static final int SHORTCUT_MENU = 2;
+	/** Put a shortcut on the quicklaunch bar (Windows Only) */
+	public static final int SHORTCUT_QUICKLAUNCH = 4;
+	
 	/**
 	 * Get the default install location
 	 */
@@ -38,16 +52,68 @@ public abstract class Installer {
 	/**
 	 * Main Setup stuff
 	 *
-	 * @param location Location where app was installed to.
+	 * @param location Location where app will be installed to.
 	 * @param step The step that called this
+	 * @return TRue if installation passed, else false; 
 	 */
-	abstract void doSetup(final String location, final TextStep step);
+	public boolean doSetup(final String location, final TextStep step) {
+		// Create the directory
+		final File directory = new File(location);
+		if (!directory.exists()) { directory.mkdir(); }
+	
+		try {
+			File dir = new File(".");
+			FilenameFilter filter = new FilenameFilter() {
+				public boolean accept(File dir, String name) {
+					return !name.startsWith(".") &&
+					       !name.equalsIgnoreCase("installer.jar") &&
+					       !name.equalsIgnoreCase("setup.exe") &&
+					       !name.equalsIgnoreCase("setup.sh") &&
+					       !name.equalsIgnoreCase("shortcut.exe");
+				}
+			};
+			String[] children = dir.list(filter);
+			if (children != null) {
+				for (String filename : children) {
+					step.addText("Copying "+filename);
+					copyFile(filename, location+File.separator+filename);
+				}
+			}
+		} catch (IOException e) {
+			step.addText("Error copying files: "+e.getMessage());
+			return false;
+		}
+		step.addText("File Copying Complete.");
+		return true;
+	}
 	
 	/**
 	 * Setup shortcuts
 	 *
-	 * @param location Location where app was installed to.
+	 * @param location Location where app will be installed to.
 	 * @param step The step that called this
+	 * @param shortcutType TYpe of shortcuts to add.
 	 */
-	abstract void setupShortcuts(final String location, final TextStep step);
+	abstract void setupShortcuts(final String location, final TextStep step, final int shortcutType);
+	
+	/**
+	 * Copy a file from one location to another.
+	 * Based on http://www.exampledepot.com/egs/java.io/CopyFile.html
+	 *
+	 * @param srcFile Original file
+	 * @param dstFile New file
+	 */
+	protected final void copyFile(final String srcFile, final String dstFile) throws IOException {
+		if (new File(srcFile).exists()) {
+			FileChannel srcChannel = new FileInputStream(srcFile).getChannel();
+			FileChannel dstChannel = new FileOutputStream(dstFile).getChannel();
+			
+			dstChannel.transferFrom(srcChannel, 0, srcChannel.size());
+			
+			srcChannel.close();
+			dstChannel.close();
+		} else {
+			throw new IOException(srcFile+" does not exist.");
+		}
+	}
 }

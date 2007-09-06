@@ -22,6 +22,7 @@
 
 package com.dmdirc.installer;
 
+import com.dmdirc.installer.WindowsInstaller;
 import com.dmdirc.ui.swing.dialogs.wizard.SpecialStep;
 import com.dmdirc.ui.swing.dialogs.wizard.TextStep;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
@@ -85,12 +86,31 @@ public final class StepInstall extends Step implements SpecialStep, TextStep {
 		addText("Installing files to: "+location);
 		Main.getInstaller().doSetup(location, this);
 		
-		if (((StepSettings) Main.getWizardDialog().getStep(1)).getShortcutsState()) {
-			addText("Setting up shortcuts");
-			Main.getInstaller().setupShortcuts(location, this);
+		StepSettings settings = ((StepSettings) Main.getWizardDialog().getStep(1));
+		
+		if (settings.getShortcutMenuState()) {
+			addText("Setting up Menu shortcuts");
+			Main.getInstaller().setupShortcuts(location, this, Installer.SHORTCUT_MENU);
 		} else {
-			addText("Not setting up shortcuts");
+			addText("Not setting up Menu shortcuts");
 		}
+		
+		if (settings.getShortcutDesktopState()) {
+			addText("Setting up Desktop shortcuts");
+			Main.getInstaller().setupShortcuts(location, this, Installer.SHORTCUT_DESKTOP);
+		} else {
+			addText("Not setting up Desktop shortcuts");
+		}
+		
+		if (Main.getInstaller() instanceof WindowsInstaller) {
+			if (settings.getShortcutQuickState()) {
+				addText("Setting up QuickLaunch shortcuts");
+				Main.getInstaller().setupShortcuts(location, this, Installer.SHORTCUT_QUICKLAUNCH);
+			} else {
+				addText("Not setting up QuickLaunch shortcuts");
+			}
+		}
+		
 		addText("");
 		addText("Installation finished\n");
 		Main.getWizardDialog().enableNextStep(true);
