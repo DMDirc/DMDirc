@@ -72,8 +72,14 @@ public final class ParamModePanel extends JPanel implements ActionListener {
         super();
         this.mode = thisMode;
         String text;
-        final String tooltip = "Mode " + mode + ": " + configManager.
+        String tooltip = "Mode " + mode + ": " + configManager.
                 getOption("server", "mode" + mode);
+        if (configManager.hasOption("server", "mode" + mode)) {
+                tooltip = "Mode " + mode + ": " + configManager.getOption(
+                        "server", "mode" + mode);
+            } else {
+                tooltip = "Mode " + mode + ": Unknown";
+            }
         
         final SpringLayout layout = new SpringLayout();
         setLayout(layout);

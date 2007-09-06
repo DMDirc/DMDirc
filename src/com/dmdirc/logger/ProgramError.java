@@ -36,7 +36,7 @@ public final class ProgramError implements Serializable {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Error ID. */
     private final int id;
@@ -65,7 +65,7 @@ public final class ProgramError implements Serializable {
      * @param trace Error trace
      * @param date Error time and date
      */
-    public ProgramError(final int id, final ErrorLevel level, 
+    public ProgramError(final int id, final ErrorLevel level,
             final String message, final String[] trace, final Date date) {
         this.id = id;
         this.level = level;
@@ -130,8 +130,10 @@ public final class ProgramError implements Serializable {
      * @param newStatus new ErrorStatus for the error
      */
     public void setStatus(final ErrorStatus newStatus) {
-        status = newStatus;
-        ErrorManager.getErrorManager().fireErrorStatusChanged(this);
+        if (status != newStatus) {
+            status = newStatus;
+            ErrorManager.getErrorManager().fireErrorStatusChanged(this);
+        }
     }
     
     /**
