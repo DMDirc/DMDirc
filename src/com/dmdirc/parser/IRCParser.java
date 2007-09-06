@@ -681,6 +681,19 @@ public final class IRCParser implements Runnable {
 		callDebugInfo(DEBUG_INFO, "End Thread Execution");
 	}
 	
+	/**
+	 * Get the current local port number.
+	 *
+	 * @return 0 if not connected, else the current local port number
+	 */
+	public int getLocalPort() {
+		if (currentSocketState == STATE_OPEN) {
+			return socket.getLocalPort();
+		} else {
+			return 0;
+		}
+	}
+	
 	/** Close socket on destroy. */
 	protected void finalize() throws Throwable {
 		try { socket.close(); }

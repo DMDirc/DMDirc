@@ -73,7 +73,9 @@ public class WindowsInstaller extends Installer {
 				                      "Shotcut.exe",
 				                      "/F:"+filename,
 				                      "/A:C",
-				                      "/T:"+location+"\\DMDirc.bat",
+//				                      "/T:"+location+"\\DMDirc.bat",
+				                      "/T:javaw.exe",
+				                      "/P:-jar DMDirc.jar",
 				                      "/W:"+location,
 				                      "/I:"+location+"\\icon.ico",
 				                      "/D:DMDirc IRC Client"
