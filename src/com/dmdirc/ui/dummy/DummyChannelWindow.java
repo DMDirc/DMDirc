@@ -48,6 +48,10 @@ public final class DummyChannelWindow implements ChannelWindow {
     private final Channel parent;
     /** Window title. */
     private String title;
+    /** is maximised? */
+    private boolean maximised;
+    /** is visible? */
+    private boolean visible;
 
     /** 
      * Instantiates a new DummyChannelWindow. 
@@ -125,12 +129,12 @@ public final class DummyChannelWindow implements ChannelWindow {
 
     /** {@inheritDoc} */
     public boolean isVisible() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return visible;
     }
 
     /** {@inheritDoc} */
     public void setVisible(final boolean isVisible) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        visible = isVisible;
     }
 
     /** {@inheritDoc} */
@@ -140,12 +144,12 @@ public final class DummyChannelWindow implements ChannelWindow {
 
     /** {@inheritDoc} */
     public boolean isMaximum() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return maximised;
     }
 
     /** {@inheritDoc} */
     public void setMaximum(final boolean b) throws PropertyVetoException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        maximised = b;
     }
 
     /** {@inheritDoc} */
