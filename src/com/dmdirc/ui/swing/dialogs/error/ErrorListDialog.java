@@ -289,6 +289,8 @@ public final class ErrorListDialog extends StandardDialog implements
         
         if (tableModel.getRowCount() > 0) {
             deleteAllButton.setEnabled(true);
+        } else {
+            deleteAllButton.setEnabled(false);
         }
     }
     

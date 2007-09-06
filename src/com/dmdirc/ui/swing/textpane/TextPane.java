@@ -452,6 +452,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         document.clear();
         setScrollBarPosition(0);
         setScrollBarMax();
+        canvas.repaint();
     }
     
     /** Clears the selection. */
