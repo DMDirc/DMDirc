@@ -97,7 +97,9 @@ public class IdentdPlugin extends Plugin implements EventPlugin {
      */
     private Server getServerByPort(final int port) {
         for (Server server : ServerManager.getServerManager().getServers()) {
-            // TODO: Look up the port
+            if (server.getParser().getLocalPort() == port) {
+                return server;
+            }
         }
         
         return null;
