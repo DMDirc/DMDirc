@@ -45,7 +45,7 @@ import java.util.Properties;
 
 /**
  * Provides various features related to nickname colouring.
- * 
+ *
  * @author chris
  */
 public final class NickColourPlugin extends Plugin implements EventPlugin, PreferencesInterface {
@@ -56,7 +56,7 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
     /** "Random" colours to use to colour nicknames. */
     private String[] randColours = new String[] {
         "E90E7F", "8E55E9", "B30E0E", "18B33C",
-        "58ADB3", "9E54B3", "B39875", "3176B3", 
+        "58ADB3", "9E54B3", "B39875", "3176B3",
     };
     
     /** Creates a new instance of NickColourPlugin. */
@@ -83,47 +83,53 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
     
     /**
      * Colours the specified client according to the user's config.
-     * 
+     *
      * @param network The network to use for the colouring
      * @param client The client to be coloured
      */
     private void colourClient(final String network, final ChannelClientInfo client) {
         final Map map = client.getMap();
         final ClientInfo myself = client.getClient().getParser().getMyself();
-        final String nickOption = "color:" + network + ":" + client.getNickname();
-        
+        final String nickOption = "color:"
+                + client.getClient().getParser().toLowerCase(network + ":" + client.getNickname());
+               
         if (Config.getOptionBool(DOMAIN, "useowncolour") && client.getClient().equals(myself)) {
             final Color color = ColourManager.parseColour(Config.getOption(DOMAIN, "owncolour"));
-            putColour(map, color);
-        } else if (Config.hasOption(DOMAIN, nickOption)) {
-            final Color color = ColourManager.parseColour(Config.getOption(DOMAIN, nickOption));
-            putColour(map, color);
+            putColour(map, color, color);
         }  else if (Config.getOptionBool(DOMAIN, "userandomcolour")) {
-            putColour(map, getColour(client.getNickname()));
+            putColour(map, getColour(client.getNickname()), getColour(client.getNickname()));
         }
+        
+        if (Config.hasOption(DOMAIN, nickOption)) {
+            final String[] parts = getParts(nickOption);
+            final Color textColor = ColourManager.parseColour(parts[0]);
+            final Color nickColor = ColourManager.parseColour(parts[1]);
+            
+            putColour(map, textColor, nickColor);
+        }        
     }
     
     /**
      * Puts the specified colour into the given map. The keys are determined
      * by config settings.
-     * 
+     *
      * @param map The map to use
      * @param colour The colour to be inserted
      */
     @SuppressWarnings("unchecked")
-    private void putColour(final Map map, final Color colour) {
-        if (Config.getOptionBool(DOMAIN, "settext")) {
-            map.put(ChannelClientProperty.TEXT_FOREGROUND, colour);
+    private void putColour(final Map map, final Color textColour, final Color nickColour) {
+        if (Config.getOptionBool(DOMAIN, "settext") && textColour != null) {
+            map.put(ChannelClientProperty.TEXT_FOREGROUND, textColour);
         }
         
-        if (Config.getOptionBool(DOMAIN, "setnicklist")) {
-            map.put(ChannelClientProperty.NICKLIST_FOREGROUND, colour);
+        if (Config.getOptionBool(DOMAIN, "setnicklist") && nickColour != null) {
+            map.put(ChannelClientProperty.NICKLIST_FOREGROUND, nickColour);
         }
     }
     
     /**
      * Retrieves a pseudo-random colour for the specified nickname.
-     * 
+     *
      * @param nick The nickname of the client whose colour we're determining
      * @return Colour of the specified nickname
      */
@@ -151,13 +157,7 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
             if (key.startsWith("color:")) {
                 final String network = key.substring(6, key.indexOf(':', 6));
                 final String user = key.substring(1 + key.indexOf(':', 6));
-                String[] parts = Config.getOption(DOMAIN, key).split(":");
-                
-                if (parts.length == 0) {
-                    parts = new String[]{null, null};
-                } else if (parts.length == 1) {
-                    parts = new String[]{parts[0], null};
-                }
+                final String[] parts = getParts(key);
                 
                 
                 data.add(new Object[]{network, user, parts[0], parts[1]});
@@ -174,6 +174,18 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
         }
         
         return res;
+    }
+    
+    private String[] getParts(final String key) {
+        String[] parts = Config.getOption(DOMAIN, key).split(":");
+        
+        if (parts.length == 0) {
+            parts = new String[]{null, null};
+        } else if (parts.length == 1) {
+            parts = new String[]{parts[0], null};
+        }
+        
+        return parts;
     }
     
     /** {@inheritDoc} */
