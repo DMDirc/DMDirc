@@ -85,8 +85,8 @@ public final class ActionManager {
         registerActionComparisons(CoreActionComparison.values());
         registerActionComponents(CoreActionComponent.values());
         
-        AliasWrapper.getAliasWrapper();
-        PerformWrapper.getPerformWrapper();
+        registerWrapper(AliasWrapper.getAliasWrapper());
+        registerWrapper(PerformWrapper.getPerformWrapper());
     }
     
     /**
@@ -199,7 +199,7 @@ public final class ActionManager {
      */
     private static ActionWrapper getWrapper(final String name) {
         for (ActionWrapper wrapper : actionWrappers) {
-            if (wrapper.getGroupName().equals(name)) {
+            if (name.equals(wrapper.getGroupName())) {
                 return wrapper;
             }
         }

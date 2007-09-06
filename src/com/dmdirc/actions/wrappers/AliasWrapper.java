@@ -63,7 +63,6 @@ public final class AliasWrapper extends ActionWrapper {
     public static synchronized AliasWrapper getAliasWrapper() {
         if (me == null) {
             me = new AliasWrapper();
-            ActionManager.registerWrapper(me);
         }
         
         return me;

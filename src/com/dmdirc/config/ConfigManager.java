@@ -29,6 +29,7 @@ import com.dmdirc.ui.messages.ColourManager;
 import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -165,6 +166,21 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
         
         return Boolean.parseBoolean(getOption(domain, option));
     }
+    
+    /**
+     * Retrieves a list representation of the specified option.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @return The list representation of the option
+     */
+    public List<String> getOptionList(final String domain, final String option) {
+        if (!hasOption(domain, option)) {
+            return new ArrayList<String>();
+        }
+        
+        return Arrays.asList(getOption(domain, option).split("\n"));
+    }    
     
     /**
      * Retrieves an integral representation of the specified option.

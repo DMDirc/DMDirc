@@ -235,6 +235,48 @@ public class Identity implements Serializable, Comparable<Identity> {
     }
     
     /**
+     * Sets the specified option in this identity to the specified value.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @param value The new value for the option
+     */
+    public void setOption(final String domain, final String option,
+            final int value) {
+        setOption(domain, option, String.valueOf(value));
+    }
+    
+    /**
+     * Sets the specified option in this identity to the specified value.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @param value The new value for the option
+     */
+    public void setOption(final String domain, final String option,
+            final boolean value) {
+        setOption(domain, option, String.valueOf(value));
+    }
+    
+    /**
+     * Sets the specified option in this identity to the specified value.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @param value The new value for the option
+     */
+    public void setOption(final String domain, final String option,
+            final List<String> value) {
+        final StringBuilder temp = new StringBuilder();
+        for (String part : value) {
+            temp.append('\n');
+            temp.append(value);
+        }
+        
+        setOption(domain, option, temp.substring(1));
+    }
+    
+    /**
      * Unsets a specified option.
      *
      * @param domain domain of the option

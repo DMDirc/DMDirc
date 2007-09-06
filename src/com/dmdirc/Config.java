@@ -46,7 +46,7 @@ public final class Config {
     public static void init() {
         manager = new ConfigManager("", "", "");
     }
-        
+    
     /**
      * Determines if the specified option exists.
      * @return true iff the option exists, false otherwise
@@ -94,6 +94,17 @@ public final class Config {
      */
     public static boolean getOptionBool(final String domain, final String option) {
         return manager.getOptionBool(domain, option);
+    }
+    
+    /**
+     * Retrieves a list representation of the specified option.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @return The list representation of the option
+     */
+    public static List<String> getOptionList(final String domain, final String option) {
+        return manager.getOptionList(domain, option);
     }
     
     /**
@@ -146,7 +157,7 @@ public final class Config {
     }
     
     /**
-     * Sets a specified option.
+     * Sets the specified option.
      * @param domain domain of the option
      * @param option name of the option
      * @param value value of the option
@@ -157,7 +168,40 @@ public final class Config {
     }
     
     /**
-     * Unsets a specified option.
+     * Sets the specified option.
+     * @param domain domain of the option
+     * @param option name of the option
+     * @param value value of the option
+     */
+    public static void setOption(final String domain, final String option,
+            final int value) {
+        IdentityManager.getConfigIdentity().setOption(domain, option, value);
+    }
+    
+    /**
+     * Sets the specified option.
+     * @param domain domain of the option
+     * @param option name of the option
+     * @param value value of the option
+     */
+    public static void setOption(final String domain, final String option,
+            final boolean value) {
+        IdentityManager.getConfigIdentity().setOption(domain, option, value);
+    }
+    
+    /**
+     * Sets the specified option.
+     * @param domain domain of the option
+     * @param option name of the option
+     * @param value value of the option
+     */
+    public static void setOption(final String domain, final String option,
+            final List<String> value) {
+        IdentityManager.getConfigIdentity().setOption(domain, option, value);
+    }
+    
+    /**
+     * Unsets the specified option.
      * @param domain domain of the option
      * @param option name of the option
      */

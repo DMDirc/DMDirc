@@ -42,7 +42,7 @@ public abstract class ActionWrapper {
      * 
      * @param action The action to be registered
      */
-    public void registerAction(Action action) {
+    public void registerAction(final Action action) {
         actions.add(action);
     }
     
@@ -51,7 +51,7 @@ public abstract class ActionWrapper {
      * 
      * @param action The action to be unregistered
      */
-    public void unregisterAction(Action action) {
+    public void unregisterAction(final Action action) {
         actions.remove(action);
     }
     

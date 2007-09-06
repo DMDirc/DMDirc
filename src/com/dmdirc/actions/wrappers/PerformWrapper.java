@@ -44,8 +44,6 @@ public class PerformWrapper extends ActionWrapper {
      */
     private PerformWrapper() {
         super();
-        
-        ActionManager.registerWrapper(me);
     }
     
     /**
