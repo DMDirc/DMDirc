@@ -39,7 +39,6 @@ import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -70,24 +69,28 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
             final Object... arguments) {
         if (type.equals(CoreActionType.CHANNEL_GOTNAMES)) {
             final ChannelInfo chanInfo = ((Channel) arguments[0]).getChannelInfo();
+            final String network = ((Channel) arguments[0]).getServer().getNetwork();
             
             for (ChannelClientInfo client : chanInfo.getChannelClients()) {
-                colourClient(client);
+                colourClient(network, client);
             }
         } else if (type.equals(CoreActionType.CHANNEL_JOIN)) {
-            colourClient((ChannelClientInfo) arguments[1]);
+            final String network = ((Channel) arguments[0]).getServer().getNetwork();
+            
+            colourClient(network, (ChannelClientInfo) arguments[1]);
         }
     }
     
     /**
      * Colours the specified client according to the user's config.
      * 
+     * @param network The network to use for the colouring
      * @param client The client to be coloured
      */
-    private void colourClient(final ChannelClientInfo client) {
+    private void colourClient(final String network, final ChannelClientInfo client) {
         final Map map = client.getMap();
         final ClientInfo myself = client.getClient().getParser().getMyself();
-        final String nickOption = "colour-" + client.getNickname();
+        final String nickOption = "color:" + network + ":" + client.getNickname();
         
         if (Config.getOptionBool(DOMAIN, "useowncolour") && client.getClient().equals(myself)) {
             final Color color = ColourManager.parseColour(Config.getOption(DOMAIN, "owncolour"));
