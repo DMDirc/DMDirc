@@ -23,7 +23,9 @@
 package com.dmdirc.actions.wrappers;
 
 import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionComponent;
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -35,13 +37,15 @@ import com.dmdirc.logger.Logger;
  */
 public class PerformWrapper extends ActionWrapper {
     
-    private static PerformWrapper me;
+    private static PerformWrapper me = new PerformWrapper();
     
     /**
      * Creates a new instance of PerformWrapper.
      */
     private PerformWrapper() {
         super();
+        
+        ActionManager.registerWrapper(me);
     }
     
     /**
@@ -49,12 +53,7 @@ public class PerformWrapper extends ActionWrapper {
      *
      * @return A singleton instance of PerformWrapper
      */
-    public static synchronized PerformWrapper getPerformWrapper() {
-        if (me == null) {
-            me = new PerformWrapper();
-            ActionManager.registerWrapper(me);
-        }
-        
+    public static PerformWrapper getPerformWrapper() {
         return me;
     }
     
@@ -66,11 +65,56 @@ public class PerformWrapper extends ActionWrapper {
     /** {@inheritDoc} */
     @Override
     public void registerAction(final Action action) {
-        if (action.getTriggers().length == 1 && action.getTriggers()[0] == CoreActionType.SERVER_CONNECTED) {
+        if (action.getTriggers().length == 1
+                && action.getTriggers()[0] == CoreActionType.SERVER_CONNECTED
+                && action.getConditions().size() == 1
+                && (action.getConditions().get(0).getComponent() == CoreActionComponent.SERVER_NETWORK
+                || action.getConditions().get(0).getComponent() == CoreActionComponent.SERVER_NAME)) {
             super.registerAction(action);
         } else {
             Logger.userError(ErrorLevel.MEDIUM, "Invalid perform action: " + action.getName());
         }
+    }
+    
+    /**
+     * Retrieve the action that handles the perform for the specified server,
+     * or null if no such action exists.
+     *
+     * @param server The server to look for
+     * @return The action that handles the server's perform, or null
+     */
+    public Action getActionForServer(final String server) {
+        return getAction(CoreActionComponent.SERVER_NAME, server);
+    }
+
+    /**
+     * Retrieve the action that handles the perform for the specified network,
+     * or null if no such action exists.
+     *
+     * @param network The network to look for
+     * @return The action that handles the network's perform, or null
+     */    
+    public Action getActionForNetwork(final String network) {
+        return getAction(CoreActionComponent.SERVER_NETWORK, network);
+    }
+    
+    /**
+     * Retrieve an action with a condition that checks the specified component,
+     * and matches it against the specified target.
+     *
+     * @param component The action component to look for
+     * @param target The string the component is matched against
+     * @return The matching action if one exists, or null
+     */    
+    private Action getAction(final ActionComponent component, final String target) {
+        for (Action action : actions) {
+            if (action.getConditions().get(0).getComponent() == component
+                    && action.getConditions().get(0).getTarget().equalsIgnoreCase(target)) {
+                return action;
+            }
+        }
+        
+        return null;
     }
     
 }
