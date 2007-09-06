@@ -41,7 +41,7 @@ public enum CoreActionType implements ActionType {
     /** Client minimised. */
     CLIENT_MINIMISED(ClientEvents.CLIENT_EVENT, "Client minimised"),
     /** Client unminimised. */
-    CLIENT_UNMINIMISED(ClientEvents.CLIENT_EVENT, "Client unminimised"),    
+    CLIENT_UNMINIMISED(ClientEvents.CLIENT_EVENT, "Client unminimised"),
     
     /** Function key pressed. */
     CLIENT_FKEY_PRESSED(ClientEvents.CLIENT_EVENT_WITH_KEY, "Function key pressed"),
@@ -50,7 +50,7 @@ public enum CoreActionType implements ActionType {
     CLIENT_FRAME_CHANGED(ClientEvents.CLIENT_EVENT_WITH_FRAME, "Frame changed"),
     /** User input. */
     CLIENT_USER_INPUT(ClientEvents.CLIENT_EVENT_WITH_BUFFER, "User input"),
-       
+    
     /** Unknown command. */
     UNKNOWN_COMMAND(ClientEvents.UNKNOWN_COMMAND, "Unknown command entered"),
     
@@ -58,6 +58,10 @@ public enum CoreActionType implements ActionType {
     SERVER_NUMERIC(ServerEvents.SERVER_NUMERIC, "Numeric event received"),
     /** Server connected. */
     SERVER_CONNECTED(ServerEvents.SERVER_EVENT, "Server connected"),
+    /** Server connecting. */
+    SERVER_CONNECTING(ServerEvents.SERVER_EVENT, "Server connecting"),
+    /** Server connection error. */
+    SERVER_CONNECTERROR(ServerEvents.SERVER_EVENT_WITH_ARG, "Server connection error"),    
     /** Marked as away. */
     SERVER_BACK(ServerEvents.SERVER_EVENT, "Marked as 'back'"),
     /** Marked as back. */
@@ -66,7 +70,7 @@ public enum CoreActionType implements ActionType {
     /** Auth notice received. */
     SERVER_AUTHNOTICE(ServerEvents.SERVER_EVENT_WITH_ARG, "Received auth notice"),
     /** Unknown notice received. */
-    SERVER_UNKNOWNNOTICE(ServerEvents.SERVER_UNKNOWN_EVENT, "Received unknown notice"),    
+    SERVER_UNKNOWNNOTICE(ServerEvents.SERVER_UNKNOWN_EVENT, "Received unknown notice"),
     
     /** User modes changed. */
     SERVER_USERMODES(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "User modes changed"),
@@ -82,15 +86,15 @@ public enum CoreActionType implements ActionType {
     /** MOTD starting. */
     SERVER_MOTDSTART(ServerEvents.SERVER_EVENT_WITH_ARG, "Start of MOTD received"),
     /** MOTD ended. */
-    SERVER_MOTDEND(ServerEvents.SERVER_EVENT, "End of MOTD received"),    
+    SERVER_MOTDEND(ServerEvents.SERVER_EVENT, "End of MOTD received"),
     /** MOTD line. */
-    SERVER_MOTDLINE(ServerEvents.SERVER_EVENT_WITH_ARG, "MOTD line received"),    
+    SERVER_MOTDLINE(ServerEvents.SERVER_EVENT_WITH_ARG, "MOTD line received"),
     
     /** Ping reply received. */
     SERVER_GOTPING(ServerEvents.SERVER_PING, "Received server ping reply"),
     /** Missed server ping reply. */
     SERVER_NOPING(ServerEvents.SERVER_PING, "Missed server ping reply"),
-       
+    
     /** Channel window opened. */
     CHANNEL_OPENED(ChannelEvents.CHANNEL_EVENT, "Channel window opened"),
     /** Channel window closed. */
@@ -148,9 +152,9 @@ public enum CoreActionType implements ActionType {
     /** Query action sent. */
     QUERY_SELF_ACTION(QueryEvents.QUERY_EVENT_WITH_ARG, "Private action sent"),
     /** Query quit event. */
-    QUERY_QUIT(QueryEvents.QUERY_EVENT_WITH_ARG, "Query: user quit"), 
+    QUERY_QUIT(QueryEvents.QUERY_EVENT_WITH_ARG, "Query: user quit"),
     /** Query nick change. */
-    QUERY_NICKCHANGE(QueryEvents.QUERY_EVENT_WITH_ARG, "Query: user changed nicks"),    
+    QUERY_NICKCHANGE(QueryEvents.QUERY_EVENT_WITH_ARG, "Query: user changed nicks"),
     
     /** Plugin loaded. */
     PLUGIN_LOADED(PluginEvents.PLUGIN_EVENT, "Plugin loaded"),

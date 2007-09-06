@@ -246,6 +246,8 @@ public final class Server extends WritableFrameContainer implements
             reconnectTimer.cancel();
         }
         
+        ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
+        
         myState = Server.STATE.CONNECTING;
         
         if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
@@ -1077,6 +1079,8 @@ public final class Server extends WritableFrameContainer implements
             }
         }
         
+        ActionManager.processEvent(CoreActionType.SERVER_CONNECTERROR, null, this, description);
+        
         handleNotification("connectError", server, description);
         
         if (Config.getOptionBool("general", "reconnectonconnectfailure")) {
@@ -1177,8 +1181,8 @@ public final class Server extends WritableFrameContainer implements
             Logger.appError(errorLevel, errorInfo.getData(), errorInfo.getException());
         } else {
             Logger.appError(errorLevel, errorInfo.getData(),
-                    new Exception("Parser exception.\n\n\tLast line:\t"
-                    + errorInfo.getLastLine() + "\n\tServer:\t" + server + "\n")); //NOPMD
+                    new Exception("Parser exception.\n\n\tLast line:\t" //NOPMD
+                    + errorInfo.getLastLine() + "\n\tServer:\t" + server + "\n"));
         }
     }
     
