@@ -776,7 +776,7 @@ public final class Server extends WritableFrameContainer implements
      */
     public void handleNotification(final String messageType, final Object... args) {
         String target = "server";
-        if (configManager.hasOption("notifications", messageType)) {
+        if (configManager != null && configManager.hasOption("notifications", messageType)) {
             final String newTarget = configManager.getOption("notifications", messageType);
             if ("server".equals(newTarget) || "all".equals(newTarget) || "active".equals(newTarget)) {
                 target = newTarget;
