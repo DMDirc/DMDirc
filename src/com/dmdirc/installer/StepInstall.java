@@ -102,7 +102,7 @@ public final class StepInstall extends Step implements SpecialStep, TextStep {
 			addText("Not setting up Desktop shortcuts");
 		}
 		
-		if (Main.getInstaller() instanceof WindowsInstaller) {
+		if (Main.getInstaller() instanceof WindowsInstaller && ((WindowsInstaller)Main.getInstaller()).showQuicklaunch()) {
 			if (settings.getShortcutQuickState()) {
 				addText("Setting up QuickLaunch shortcuts");
 				Main.getInstaller().setupShortcuts(location, this, Installer.SHORTCUT_QUICKLAUNCH);

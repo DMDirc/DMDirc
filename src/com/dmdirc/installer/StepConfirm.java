@@ -85,14 +85,13 @@ public final class StepConfirm extends Step implements SpecialStep {
 			shortcutText = shortcutText + " - Do Not Set up Desktop shortcuts"+ "\n";
 		}
 		
-		if (Main.getInstaller() instanceof WindowsInstaller) {
+		if (Main.getInstaller() instanceof WindowsInstaller && ((WindowsInstaller)Main.getInstaller()).showQuicklaunch()) {
 			if (settings.getShortcutQuickState()) {
 				shortcutText = shortcutText + " - Do Set up Quick Launch shortcuts"+ "\n";
 			} else {
 				shortcutText = shortcutText + " - Do Not Set up Quick Launch shortcuts"+ "\n";
 			}
 		}
-	
 		
 		infoLabel.setText("Please check that these settings are correct:\n\n"
 		                + " - Install Location:\n"

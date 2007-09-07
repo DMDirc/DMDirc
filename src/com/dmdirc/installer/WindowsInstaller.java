@@ -36,7 +36,46 @@ public class WindowsInstaller extends Installer {
 	 * Get the default install location
 	 */
 	public String defaultInstallLocation() {
-		return "C:\\Program Files\\DMDirc";
+		String filename = System.getEnv("PROGRAMFILES");
+		if (filename == null) {
+			if (isVista()) {
+				filename = System.getProperty("user.home")+"\\Desktop\\DMDirc";
+			} else {
+				filename = "C:\\Program Files";
+			}
+		}
+		return filename+"\\DMDirc";
+	}
+	
+	/**
+	 * Are we running vista? -_-
+	 *
+	 * @return True if this is vista.
+	 */
+	public boolean isVista() {
+		return System.getProperty("os.name").indexOf("Vista") >= 0;
+	}
+	
+	/**
+	 * Are we running NT?
+	 *
+	 * @return True if this is NT.
+	 */
+	public boolean isNT() {
+		final String osName = System.getProperty("os.name");
+		return (osName.indexOf("NT") >= 0  || osName.indexOf("2000") >= 0 || osName.indexOf("2003") >= 0 || osName.indexOf("XP") >= 0);
+	}
+	
+	/**
+	 * Check if this OS has quicklaunch
+	 *
+	 * @return True if this OS hash a quick launch toolbar
+	 */
+	public boolean showQuicklaunch() {
+		// return !(System.getProperty("os.name").indexOf("95") >= 0);
+		
+		// Disabled due to quicklaunch not being in a fixed location/language
+		return false;
 	}
 	
 	/**
@@ -49,29 +88,52 @@ public class WindowsInstaller extends Installer {
 	public void setupShortcuts(final String location, final TextStep step, final int shortcutType) {
 		// Shortcut.exe is from http://www.optimumx.com/download/#Shortcut
 		if (new File("Shortcut.exe").exists()) {
-			String filename;
+			String filename = "";
 			File dir;
+			
 			if ((shortcutType & SHORTCUT_DESKTOP) == SHORTCUT_DESKTOP) {
-				filename = System.getProperty("user.home")+"\\Desktop\\DMDirc.lnk";
-				dir = new File(System.getProperty("user.home")+"\\Desktop");
-				if (!dir.exists()) { dir.mkdir(); }
+				if (isNT() || isVista()) {
+					filename = System.getProperty("user.home")+"\\Desktop";
+				} else {
+					filename = System.getenv("WINDIR")+"\\Desktop";
+				}
 			} else if ((shortcutType & SHORTCUT_MENU) == SHORTCUT_MENU) {
-				filename = System.getProperty("user.home")+"\\Start Menu\\Programs\\DMDirc\\DMDirc.lnk";
-				dir = new File(System.getProperty("user.home")+"\\Start Menu\\Programs\\DMDirc");
-				if (!dir.exists()) { dir.mkdir(); }
-			} else if ((shortcutType & SHORTCUT_QUICKLAUNCH) == SHORTCUT_QUICKLAUNCH) {
-				filename = System.getProperty("user.home")+"\\Application Data\\Microsoft\\Internet Explorer\\Quick Launch\\DMDirc.lnk";
-				dir = new File(System.getProperty("user.home")+"\\Application Data\\Microsoft\\Internet Explorer\\Quick Launch");
-				if (!dir.exists()) { dir.mkdir(); }
+				if (isVista()) {
+					filename = System.getenv("APPDATA")+"\\Roaming\\Microsoft\\Windows";
+				} else {
+					filename = System.getProperty("user.home");
+				}
+				filename = filename+"\\Start Menu\\Programs\\DMDirc";
+			
+			} else if ((shortcutType & SHORTCUT_QUICKLAUNCH) == SHORTCUT_QUICKLAUNCH && showQuicklaunch()) {
+				if (isVista()) {
+				
+				} else {
+					filename = System.getProperty("user.home")+"\\Application Data\\Microsoft\\Internet Explorer\\Quick Launch";
+				}
 			} else {
 				return;
 			}
-			File oldFile = new File(filename);
+			
+			if (filename.length() = 0) {
+				step.addText("Error creating shortcut. Not applicable to this System");
+				return;
+			}
+			
+			// Check the dir exists
+			dir = new File(filename);
+			if (!dir.exists()) { dir.mkdir(); }
+			
+			// Delete an older shortcut
+			File oldFile = new File(filename+"\\DMDirc.lnk");
 			if (oldFile.exists()) { oldFile.delete(); }
+			
 			try {
+//				final String thisDirName = new File("").getAbsolutePath();
 				final Process shortcutProcess = Runtime.getRuntime().exec(new String[] {
-				                      "Shotcut.exe",
-				                      "/F:"+filename,
+//				                      thisDirName+"/Shortcut.exe",
+				                      "Shortcut.exe",
+				                      "/F:"+filename+"\\DMDirc.lnk",
 				                      "/A:C",
 //				                      "/T:"+location+"\\DMDirc.bat",
 				                      "/T:javaw.exe",
@@ -87,7 +149,7 @@ public class WindowsInstaller extends Installer {
 					step.addText("Error creating shortcuts: Unknown Reason");
 				}
 			} catch (Exception e) {
-				step.addText("Error creating shortcuts: "+e.getMessage());
+				step.addText("Error creating shortcut: "+e.getMessage());
 			}
 		} else {
 			step.addText("Error creating shortcuts: Unable to find Shortcut.exe");
