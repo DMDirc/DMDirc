@@ -25,6 +25,8 @@ package com.dmdirc.actions;
 import com.dmdirc.Channel;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelClientInfo;
 
 import java.awt.Color;
@@ -79,7 +81,23 @@ public enum CoreActionComponent implements ActionComponent {
     /** Returns the nickname for the server. */
     SERVER_MYNICKNAME {
         /** {@inheritDoc} */
-        public Object get(final Object argument) { return ((Server) argument).getParser().getMyself().getNickname(); }
+        public Object get(final Object argument) {
+            final Server server = (Server) argument;
+            
+            if (server == null || server.getParser() == null || server.getParser().getMyself() == null) {
+                Logger.appError(ErrorLevel.LOW, "SERVER_MYNICKNAME.get() called with null element",
+                        new UnsupportedOperationException(
+                        server == null ? "Server was null" :
+                            server.getParser() == null ? "Parser was null" :
+                                server.getParser().getMyself() == null ? "Myself was null" :
+                                    "Unknown"
+                        ));
+                
+                return "null";
+            } else {
+                return server.getParser().getMyself().getNickname();
+            }
+        }
         /** {@inheritDoc} */
         public Class appliesTo() { return Server.class; }
         /** {@inheritDoc} */
@@ -157,7 +175,7 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         public Class getType() { return Integer.class; }
         /** {@inheritDoc} */
-        public String getName() { return "number of common channels"; }        
+        public String getName() { return "number of common channels"; }
     },
     
     /** Returns the content of a string. */
