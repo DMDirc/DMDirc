@@ -41,8 +41,8 @@ public abstract class Installer {
 	public static final int SHORTCUT_DESKTOP = 1;
 	/** Put a shortcut on the menu (kmenu, start menu etc) */
 	public static final int SHORTCUT_MENU = 2;
-//	/** Put a shortcut on the quicklaunch bar (Windows Only) */
-//	public static final int SHORTCUT_QUICKLAUNCH = 4;
+	/** Put a shortcut on the quicklaunch bar (Windows Only) */
+	public static final int SHORTCUT_QUICKLAUNCH = 4;
 	
 	/**
 	 * Get the default install location

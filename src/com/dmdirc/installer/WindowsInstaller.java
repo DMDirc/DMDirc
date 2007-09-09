@@ -36,7 +36,7 @@ public class WindowsInstaller extends Installer {
 	 * Get the default install location
 	 */
 	public String defaultInstallLocation() {
-		String filename = System.getEnv("PROGRAMFILES");
+		String filename = System.getenv("PROGRAMFILES");
 		if (filename == null) {
 			if (isVista()) {
 				filename = System.getProperty("user.home")+"\\Desktop\\DMDirc";
@@ -115,7 +115,7 @@ public class WindowsInstaller extends Installer {
 				return;
 			}
 			
-			if (filename.length() = 0) {
+			if (filename.length() == 0) {
 				step.addText("Error creating shortcut. Not applicable to this System");
 				return;
 			}

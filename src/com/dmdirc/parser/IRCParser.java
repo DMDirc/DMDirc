@@ -505,7 +505,9 @@ public final class IRCParser implements Runnable {
 	 *
 	 * @see IPost005
 	 */
-	protected boolean callPost005() {
+	protected synchronized boolean callPost005() {
+		if (post005) { return false; }
+		post005 = true;
 		final CallbackOnPost005 cb = (CallbackOnPost005)getCallbackManager().getCallbackType("OnPost005");
 		if (cb != null) { return cb.call(); }
 		return false;
@@ -861,7 +863,6 @@ public final class IRCParser implements Runnable {
 					if (!post005) {
 						try { nParam = Integer.parseInt(token[1]); } catch (Exception e) { nParam = -1; }
 						if (nParam < 0 || nParam > 5) {
-							post005 = true;
 							callPost005();
 						}
 					}
