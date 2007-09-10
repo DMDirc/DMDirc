@@ -270,9 +270,8 @@ public class Identity implements Serializable, Comparable<Identity> {
         final StringBuilder temp = new StringBuilder();
         for (String part : value) {
             temp.append('\n');
-            temp.append(value);
+            temp.append(part);
         }
-        
         setOption(domain, option, temp.substring(1));
     }
     
