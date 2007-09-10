@@ -46,6 +46,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -53,7 +54,7 @@ import javax.swing.JSeparator;
 /**
  * Basic wizard container.
  */
-public final class WizardDialog extends JDialog implements ActionListener,
+public final class WizardDialog extends JFrame implements ActionListener,
         Serializable {
     
     /**
@@ -96,7 +97,7 @@ public final class WizardDialog extends JDialog implements ActionListener,
      */
     public WizardDialog(final String title, final List<Step> steps,
             final Wizard wizard, final boolean modal) {
-        super((MainFrame) Main.getUI().getMainWindow(), modal);
+        super();
         hasMainframe = true;
         
         this.title = title;
