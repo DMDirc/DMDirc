@@ -31,6 +31,7 @@ import com.dmdirc.parser.ChannelClientInfo;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import javax.swing.KeyStroke;
@@ -219,7 +220,7 @@ public enum CoreActionComponent implements ActionComponent {
         /** {@inheritDoc} */
         public Object get(final Object argument) { return ((GregorianCalendar) argument).getTime().toString(); }
         /** {@inheritDoc} */
-        public Class appliesTo() { return GregorianCalendar.class; }
+        public Class appliesTo() { return Calendar.class; }
         /** {@inheritDoc} */
         public Class getType() { return String.class; }
         /** {@inheritDoc} */
