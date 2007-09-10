@@ -22,6 +22,7 @@
 
 package com.dmdirc.addons.nowplaying.plugin;
 
+import com.dmdirc.Config;
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
@@ -33,6 +34,7 @@ import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.interfaces.PreferencesPanel;
+import java.util.ArrayList;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +44,7 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
         PreferencesInterface  {
     
     /** Config domain. */
-    private static final String MY_DOMAIN = "plugin-nowplaying";
+    private static final String DOMAIN = "plugin-nowplaying";
     
     /** The sources that we know of. */
     private List<MediaSource> sources;
@@ -53,6 +55,12 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     /** Config panel. */
     private ConfigPanel configPanel;
     
+    public NowPlayingPlugin() {
+        super();
+        
+        sources = new ArrayList<MediaSource>();
+    }
+    
     /** {@inheritDoc} */
     public boolean onLoad() {
         return true;
@@ -61,7 +69,7 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     /** {@inheritDoc} */
     @Override
     protected void onActivate() {
-        sources = new LinkedList<MediaSource>();
+        sources.clear();
         
         for (Plugin target : PluginManager.getPluginManager().getPlugins()) {
             if (target.isActive()) {
@@ -70,6 +78,7 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
         }
         
         command = new NowPlayingCommand(this);
+        loadSettings();
     }
     
     /** {@inheritDoc} */
@@ -119,11 +128,26 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     public void configClosed(final Properties properties) {
         //save settings
         sources = configPanel.getSources();
+        saveSettings();
     }
     
     /** {@inheritDoc} */
     public void configCancelled() {
         //Ignore
+    }
+    
+    /** Saves the plugins settings. */
+    private void saveSettings() {
+        final List<String> values = new LinkedList<String>();
+        for (final MediaSource source : sources) {
+            values.add(source.getName());
+        }
+        Config.setOption(DOMAIN, "sourceOrder", values);
+    }
+    
+    /** Loads the plugins settings. */
+    private void loadSettings() {
+        final List<String> values = Config.getOptionList(DOMAIN, "sourceOrder");
     }
     
     /** {@inheritDoc} */
@@ -174,7 +198,7 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
      * @return True if there are running sources, false otherwise
      */
     public boolean hasRunningSource() {
-        for (MediaSource source : sources) {
+        for (final MediaSource source : sources) {
             if (source.isRunning()) {
                 return true;
             }
@@ -195,7 +219,7 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     public MediaSource getBestSource() {
         MediaSource paused = null;
         
-        for (MediaSource source : sources) {
+        for (final MediaSource source : sources) {
             if (source.isRunning()) {
                 if (source.isPlaying()) {
                     return source;
@@ -215,7 +239,7 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
      * @return The source with the specified name or null if none were found.
      */
     public MediaSource getSource(final String name) {
-        for (MediaSource source : sources) {
+        for (final MediaSource source : sources) {
             if (source.getName().equalsIgnoreCase(name)) {
                 return source;
             }
@@ -230,6 +254,6 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
      * @return All known media sources
      */
     public List<MediaSource> getSources() {
-        return sources;
+        return new ArrayList<MediaSource>(sources);
     }
 }
