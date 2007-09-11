@@ -22,13 +22,12 @@
 
 package com.dmdirc.addons.nickcolours;
 
-import com.dmdirc.Main;
-import com.dmdirc.ui.swing.MainFrame;
-import com.dmdirc.ui.swing.components.ColourPickerPanel;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.components.ColourChooser;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -45,7 +44,7 @@ import javax.swing.SpringLayout;
 /**
  * New nick colour input dialog.
  */
-public class NewNickColourInputDialog extends StandardDialog 
+public class NewNickColourInputDialog extends StandardDialog
         implements ActionListener {
     
     /** Buttons panel. */
@@ -58,9 +57,9 @@ public class NewNickColourInputDialog extends StandardDialog
     /** network textfield. */
     private JTextField network;
     /** text colour input. */
-    private ColourPickerPanel textColour;
+    private ColourChooser textColour;
     /** nicklist colour input. */
-    private ColourPickerPanel nicklistColour;
+    private ColourChooser nicklistColour;
     
     /** Creates a new instance of NewNickColourInputDialog. */
     public NewNickColourInputDialog() {
@@ -81,12 +80,21 @@ public class NewNickColourInputDialog extends StandardDialog
         
         nickname = new JTextField();
         network = new JTextField();
-        textColour = new ColourPickerPanel(true, true);
-        nicklistColour = new ColourPickerPanel(true, true);
+        textColour = new ColourChooser("", true, true);
+        nicklistColour = new ColourChooser("", true, true);
+        
+        nickname.setPreferredSize(new Dimension(10,
+                nickname.getFont().getSize() - SMALL_BORDER));
+        network.setPreferredSize(new Dimension(10,
+                network.getFont().getSize() - SMALL_BORDER));
+        textColour.setPreferredSize(new Dimension(10,
+                textColour.getFont().getSize() - SMALL_BORDER));
+        nicklistColour.setPreferredSize(new Dimension(10,
+                nicklistColour.getFont().getSize() - SMALL_BORDER));
     }
     
     /** Initialises the content panel. */
-    private void layoutContentPanel() {        
+    private void layoutContentPanel() {
         contentPanel.setLayout(new SpringLayout());
         
         contentPanel.add(new JLabel("Nickname: "));
@@ -101,12 +109,12 @@ public class NewNickColourInputDialog extends StandardDialog
         contentPanel.add(new JLabel("Nicklist colour: "));
         contentPanel.add(nicklistColour);
         
-        layoutGrid(contentPanel, 4, 2, SMALL_BORDER, SMALL_BORDER, 
+        layoutGrid(contentPanel, 4, 2, SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER);
     }
     
     /** Initialises the button panel. */
-    private void layoutButtonsPanel() {        
+    private void layoutButtonsPanel() {
         buttonsPanel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         
@@ -119,15 +127,15 @@ public class NewNickColourInputDialog extends StandardDialog
     
     /** Initialises the listeners. */
     private void initListeners() {
-        textColour.addActionListener(this);
-        nicklistColour.addActionListener(this);
+        getOkButton().addActionListener(this);
+        getCancelButton().addActionListener(this);
     }
     
     /** Lays out the components. */
     private void layoutComponents() {
         layoutContentPanel();
         layoutButtonsPanel();
-
+        
         setLayout(new BorderLayout());
         
         add(contentPanel, BorderLayout.CENTER);
@@ -135,9 +143,20 @@ public class NewNickColourInputDialog extends StandardDialog
         
         pack();
     }
-
+    
     /** {@inheritDoc} */
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
+        if (e.getSource() == getOkButton()) {
+            saveSettings();
+            dispose();
+        } else if (e.getSource() == getCancelButton()) {
+            dispose();
+        }
+    }
+    
+    /** Saves settings. */
+    public void saveSettings() {
+        //do stuff.
     }
     
     public static void main(final String[] args) {
