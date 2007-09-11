@@ -22,7 +22,6 @@
 
 package com.dmdirc.addons.nowplaying.plugin;
 
-import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.ui.swing.components.reorderablelist.ReorderableJList;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -51,13 +50,13 @@ public class ConfigPanel extends JPanel {
     private ReorderableJList list;
     
     /** Media sources. */
-    private final List<MediaSource> sources;
+    private final List<String> sources;
     
     /** Creates a new instance of ConfigPanel. */
-    public ConfigPanel(List<MediaSource> sources) {
+    public ConfigPanel(final List<String> sources) {
         super();
         
-        this.sources = new LinkedList<MediaSource>(sources);
+        this.sources = new LinkedList<String>(sources);
         
         initComponents();
     }
@@ -65,9 +64,8 @@ public class ConfigPanel extends JPanel {
     /** Initialises the components. */
     private void initComponents() {
         list = new ReorderableJList();
-        list.setCellRenderer(new MediaSourceListRenderer());
         
-        for (MediaSource source: sources) {
+        for (String source : sources) {
             list.getModel().addElement(source);
         }
         
@@ -77,13 +75,13 @@ public class ConfigPanel extends JPanel {
         add(new JScrollPane(list), BorderLayout.CENTER);
     }
     
-    public List<MediaSource> getSources() {
-        final List<MediaSource> newSources = new LinkedList<MediaSource>();
+    public List<String> getSources() {
+        final List<String> newSources = new LinkedList<String>();
         
         final Enumeration<?> values = list.getModel().elements();
         
         while (values.hasMoreElements()) {
-            newSources.add((MediaSource) values.nextElement());
+            newSources.add((String) values.nextElement());
         }
         
         return newSources;

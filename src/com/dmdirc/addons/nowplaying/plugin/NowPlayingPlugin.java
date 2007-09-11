@@ -34,9 +34,9 @@ import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.interfaces.PreferencesPanel;
-import java.util.ArrayList;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -55,6 +55,9 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     /** Config panel. */
     private ConfigPanel configPanel;
     
+    /** The user's preferred order for source usage. */
+    private List<String> order;
+    
     public NowPlayingPlugin() {
         super();
         
@@ -71,6 +74,8 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     protected void onActivate() {
         sources.clear();
         
+        loadSettings();
+        
         for (Plugin target : PluginManager.getPluginManager().getPlugins()) {
             if (target.isActive()) {
                 addPlugin(target);
@@ -78,7 +83,6 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
         }
         
         command = new NowPlayingCommand(this);
-        loadSettings();
     }
     
     /** {@inheritDoc} */
@@ -110,12 +114,15 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     }
     
     /** {@inheritDoc} */
-    public boolean isConfigurable() { return true; }
+    public boolean isConfigurable() {
+        return true;
+    }
     
     /** {@inheritDoc} */
     public void showConfig() {
         final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "Now playing Plugin - Config");
-        configPanel = new ConfigPanel(sources);
+        
+        configPanel = new ConfigPanel(order);
         
         preferencesPanel.addCategory("General", "General options for the plugin.");
         
@@ -126,8 +133,8 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     
     /** {@inheritDoc} */
     public void configClosed(final Properties properties) {
-        //save settings
-        sources = configPanel.getSources();
+        order = configPanel.getSources();
+        
         saveSettings();
     }
     
@@ -138,16 +145,16 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     
     /** Saves the plugins settings. */
     private void saveSettings() {
-        final List<String> values = new LinkedList<String>();
-        for (final MediaSource source : sources) {
-            values.add(source.getName());
-        }
-        Config.setOption(DOMAIN, "sourceOrder", values);
+        Config.setOption(DOMAIN, "sourceOrder", order);
     }
     
     /** Loads the plugins settings. */
     private void loadSettings() {
-        final List<String> values = Config.getOptionList(DOMAIN, "sourceOrder");
+        if (Config.hasOption(DOMAIN, "sourceOrder")) {
+            order = Config.getOptionList(DOMAIN, "sourceOrder");
+        } else {
+            order = new ArrayList<String>();
+        }
     }
     
     /** {@inheritDoc} */
@@ -169,10 +176,27 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     private void addPlugin(final Plugin target) {
         if (target instanceof MediaSource) {
             sources.add((MediaSource) target);
+            addSourceToOrder((MediaSource) target);
         }
         
         if (target instanceof MediaSourceManager) {
             sources.addAll(((MediaSourceManager) target).getSources());
+            
+            for (MediaSource source : ((MediaSourceManager) target).getSources()) {
+                addSourceToOrder(source);
+            }
+        }
+    }
+    
+    /**
+     * Checks to see if the specified media source needs to be added to our
+     * order list, and adds it if neccessary.
+     *
+     * @param source The media source to be tested
+     */
+    private void addSourceToOrder(final MediaSource source) {
+        if (!order.contains(source.getName())) {
+            order.add(source.getName());
         }
     }
     
@@ -218,6 +242,8 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
      */
     public MediaSource getBestSource() {
         MediaSource paused = null;
+        
+        Collections.sort(sources, new MediaSourceComparator(order));
         
         for (final MediaSource source : sources) {
             if (source.isRunning()) {

@@ -24,37 +24,46 @@ package com.dmdirc.addons.nowplaying.plugin;
 
 import com.dmdirc.addons.nowplaying.MediaSource;
 
-import java.awt.Component;
-
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JList;
+import java.util.Comparator;
+import java.util.List;
 
 /**
- * Displays Media sources in a list.
+ * Sorts media sources according to an ordered list of their names.
+ *
+ * @author chris
  */
-public final class MediaSourceListRenderer extends DefaultListCellRenderer {
+public class MediaSourceComparator implements Comparator<MediaSource> {
+    
+    /** The order that the sources should be checked. */
+    private final List<String> order;
     
     /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
+     * Creates a new instance of MediaSourceComparator.
+     * NB: The order list may be altered during comparisons.
+     *
+     * @param order An ordered list of media source names
      */
-    private static final long serialVersionUID = 1;
-    
-    /** Creates a new instance of MediaSourceListRenderer. */
-    public MediaSourceListRenderer() {
-        super();
+    public MediaSourceComparator(final List<String> order) {
+        this.order = order;
+    }
+
+    /** {@inheritDoc} */
+    public int compare(final MediaSource o1, final MediaSource o2) {
+        return getPosition(o1) - getPosition(o2);
     }
     
-    /** @{inheritDoc} */
-    public Component getListCellRendererComponent(final JList list,
-            final Object value, final int index, final boolean isSelected,
-            final boolean cellHasFocus) {
-        super.getListCellRendererComponent(list, value, index, isSelected, 
-                cellHasFocus);
-        setText(((MediaSource) value).getName());
+    /**
+     * Retrieves the position of the source within the order list.
+     * If the source is not present it is appended to the list.
+     *
+     * @param source The media source to be tested
+     */
+    private int getPosition(final MediaSource source) {
+        if (!order.contains(source.getName())) {
+            order.add(source.getName());
+        }
         
-        return this;
+        return order.indexOf(source.getName());
     }
     
 }
