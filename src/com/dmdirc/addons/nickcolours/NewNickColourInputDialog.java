@@ -40,6 +40,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import javax.swing.WindowConstants;
 
 /**
  * New nick colour input dialog.
@@ -65,6 +66,8 @@ public class NewNickColourInputDialog extends StandardDialog
     public NewNickColourInputDialog() {
         //super((MainFrame) Main.getUI().getMainWindow(), false);
         super(null, false);
+        
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         
         initComponents();
         initListeners();
