@@ -52,7 +52,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Previously created instance of ActionsEditorDialog. */
     private static ActionsEditorDialog me;
@@ -65,6 +65,8 @@ public final class ActionsEditorDialog extends StandardDialog implements
     private JTabbedPane tabbedPane;
     /** Buttons panel. */
     private JPanel buttonsPanel;
+    /** Substitutions panel. */
+    private SubstitutionsPanel subsPanel;
     
     /**
      * Creates a new instance of ActionsEditorDialog.
@@ -121,6 +123,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
         initButtonsPanel();
         
         tabbedPane = new JTabbedPane();
+        subsPanel = new SubstitutionsPanel();
         
         tabbedPane.setPreferredSize(new Dimension(400, 160));
         
@@ -253,5 +256,14 @@ public final class ActionsEditorDialog extends StandardDialog implements
      */
     public int getConditionCount() {
         return ((ConditionsTabPanel) tabbedPane.getComponentAt(1)).getConditions().size();
+    }
+    
+    /**
+     * Returns the substitutions panel.
+     *
+     * @return SubsitutionsPanel.
+     */
+    public SubstitutionsPanel getSubstitutionsPanel() {
+        return subsPanel;
     }
 }

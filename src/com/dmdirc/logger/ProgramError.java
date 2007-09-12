@@ -67,13 +67,24 @@ public final class ProgramError implements Serializable {
      */
     public ProgramError(final int id, final ErrorLevel level,
             final String message, final String[] trace, final Date date) {
+        if (id < 0) {
+            throw new IllegalArgumentException("ID must be a positive integer: " + id);
+        }
+        if (level == null) {
+            throw new IllegalArgumentException("Level cannot be null");
+        }
+        if (message == null || message.isEmpty()) {
+            throw new IllegalArgumentException("Message cannot be null or an empty string");
+        }
+        if (trace == null || trace.length == 0) {
+            throw new IllegalArgumentException("Trace cannot be null or an empty array");
+        }
+        if (date == null) {
+            throw new IllegalArgumentException("date cannot be null");
+        }
         this.id = id;
         this.level = level;
-        if (message == null) {
-            this.message = "No message";
-        } else {
-            this.message = message;
-        }
+        this.message = message;
         this.trace = Arrays.copyOf(trace, trace.length);
         this.date = (Date) date.clone();
         this.status = ErrorStatus.WAITING;
@@ -130,7 +141,7 @@ public final class ProgramError implements Serializable {
      * @param newStatus new ErrorStatus for the error
      */
     public void setStatus(final ErrorStatus newStatus) {
-        if (status != newStatus) {
+        if (newStatus != null && !status.equals(newStatus)) {
             status = newStatus;
             ErrorManager.getErrorManager().fireErrorStatusChanged(this);
         }

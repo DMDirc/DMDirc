@@ -24,6 +24,7 @@ package com.dmdirc.addons.nowplaying.plugin;
 
 import com.dmdirc.addons.nowplaying.MediaSource;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
@@ -32,7 +33,14 @@ import java.util.List;
  *
  * @author chris
  */
-public class MediaSourceComparator implements Comparator<MediaSource> {
+public class MediaSourceComparator implements Comparator<MediaSource>, Serializable {
+    
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
     
     /** The order that the sources should be checked. */
     private final List<String> order;

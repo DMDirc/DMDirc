@@ -60,7 +60,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Previously created instance of ConditionEditorDialog. */
     private static ConditionEditorDialog me;
@@ -84,6 +84,8 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private JPanel buttonsPanel;
     /** Parent conditions panel. */
     private JPanel conditionsPanel;
+    /** Substitutions panel. */
+    private SubstitutionsPanel substitutionsPanel;
     /** Argument combobox. */
     private JComboBox arguments;
     /** Component combobox. */
@@ -160,6 +162,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
     /** Initialises the components. */
     private void initComponents() {
         initButtonsPanel();
+        substitutionsPanel = parent.getOwner().getSubstitutionsPanel();
         conditionsPanel = new JPanel();
         arguments = new JComboBox(new DefaultComboBoxModel());
         components = new JComboBox(new DefaultComboBoxModel());
@@ -325,6 +328,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
         this.setLayout(new BorderLayout());
         
         this.add(conditionsPanel, BorderLayout.CENTER);
+        this.add(substitutionsPanel, BorderLayout.LINE_END);
         this.add(buttonsPanel, BorderLayout.PAGE_END);
     }
     

@@ -55,7 +55,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Number of components for each condition in the editor tab. */
     private static final int CONDITION_COMPONENT_COUNT = 3;
@@ -294,5 +294,14 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
                         / CONDITION_COMPONENT_COUNT);
             }
         }
+    }
+
+    /**
+     * Returns this panels parent ActionsEditorDialog
+     *
+     * @return ActionsEditorDialog
+     */
+    public ActionsEditorDialog getOwner() {
+        return owner;
     }
 }

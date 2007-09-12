@@ -48,6 +48,13 @@ import javax.swing.WindowConstants;
 public class NewNickColourInputDialog extends StandardDialog
         implements ActionListener {
     
+    /**
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
+     */
+    private static final long serialVersionUID = 1;
+    
     /** Buttons panel. */
     private JPanel buttonsPanel;
     /** content panel. */
