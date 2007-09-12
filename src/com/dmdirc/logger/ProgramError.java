@@ -76,8 +76,8 @@ public final class ProgramError implements Serializable {
         if (message == null || message.isEmpty()) {
             throw new IllegalArgumentException("Message cannot be null or an empty string");
         }
-        if (trace == null || trace.length == 0) {
-            throw new IllegalArgumentException("Trace cannot be null or an empty array");
+        if (trace == null) {
+            throw new IllegalArgumentException("Trace cannot be null");
         }
         if (date == null) {
             throw new IllegalArgumentException("date cannot be null");
