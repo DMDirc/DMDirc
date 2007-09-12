@@ -22,15 +22,15 @@
  * SVN: $Id$
  */
 
-package com.dmdirc.parser;
+package com.dmdirc.parser.callbacks;
 
 /**
- * IRC Parser Processor Not Found Exception.
+ * IRC Parser Callback Exception.
  *
- * @author Shane Mc Cormack
- * @version $Id$
+ * @author            Shane Mc Cormack
+ * @version           $Id$
  */
-public class ProcessorNotFound extends Exception {
+public class CallbackNotFoundException extends Exception {
 	/**
 	 * A version number for this class. It should be changed whenever the class
 	 * structure is changed (or anything else that would prevent serialized
@@ -39,16 +39,16 @@ public class ProcessorNotFound extends Exception {
 	private static final long serialVersionUID = 1;
 	
 	/**
-	 * Create a new ProcessorNotFound Exception.
+	 * Create a new CallbackNotFound Exception.
 	 *
 	 * @param message Reason for exception
 	 */
-	public ProcessorNotFound(final String message) { super(message); }
+	public CallbackNotFoundException(final String message) { super(message); }
 	
 	/**
 	 * Get SVN Version information.
 	 *
 	 * @return SVN Version String
 	 */
-	public static String getSvnInfo () { return "$Id$"; }	
+	public static String getSvnInfo() { return "$Id$"; }	
 }

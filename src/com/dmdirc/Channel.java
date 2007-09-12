@@ -33,7 +33,7 @@ import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.callbacks.CallbackManager;
-import com.dmdirc.parser.callbacks.CallbackNotFound;
+import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
 import com.dmdirc.parser.callbacks.interfaces.IChannelAction;
 import com.dmdirc.parser.callbacks.interfaces.IChannelCTCP;
@@ -164,7 +164,7 @@ public final class Channel extends MessageTarget implements
             for (String callback : CALLBACKS) {
                 callbackManager.addCallback(callback, this, channel);
             }
-        } catch (CallbackNotFound ex) {
+        } catch (CallbackNotFoundException ex) {
             Logger.appError(ErrorLevel.FATAL, "Unable to load channel", ex);
         }
     }

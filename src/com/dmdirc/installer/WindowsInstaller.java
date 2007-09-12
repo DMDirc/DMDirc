@@ -67,56 +67,78 @@ public class WindowsInstaller extends Installer {
 	}
 	
 	/**
-	 * Check if this OS has quicklaunch
+	 * Check if this OS supports a given shortcut Type
 	 *
-	 * @return True if this OS hash a quick launch toolbar
+	 * @param shortcutType Type of shortcut to check
+	 * @return True if this OS supports a given shortcut Type
 	 */
-	public boolean showQuicklaunch() {
-		// return !(System.getProperty("os.name").indexOf("95") >= 0);
-		
-		// Disabled due to quicklaunch not being in a fixed location/language
-		return false;
+	public boolean supportsShortcut(final ShortcutType shortcutType) {
+		switch (shortcutType) {
+			case QUICKLAUNCH:
+				// Only windows 95 doesn't have quick launch
+				return !(System.getProperty("os.name").indexOf("95") >= 0);
+			case DESKTOP:
+			case MENU:
+				// All versions of windows have desktop and menu
+				return true;
+			default:
+				// Anything else that gets added should be false until the relevent
+				// code is added
+				return false;
+		}
 	}
 	
 	/**
-	 * Setup shortcuts
+	 * Setup shortcut
 	 *
 	 * @param location Location where app will be installed to.
-	 * @param step The step that called this
-	 * @param shortcutType TYpe of shortcuts to add.
+	 * @param shortcutType Type of shortcut to add.
 	 */
-	public void setupShortcuts(final String location, final TextStep step, final int shortcutType) {
+	public void setupShortcut(final String location, final ShortcutType shortcutType) {
 		// Shortcut.exe is from http://www.optimumx.com/download/#Shortcut
+		
+		if (!supportsShortcut(shortcutType)) {
+			step.addText(" - Error creating shortcut. Not applicable to this Operating System");
+			return;
+		}
+		
 		if (new File("Shortcut.exe").exists()) {
 			String filename = "";
 			File dir;
 			
-			if ((shortcutType & SHORTCUT_DESKTOP) == SHORTCUT_DESKTOP) {
-				if (isNT() || isVista()) {
-					filename = System.getProperty("user.home")+"\\Desktop";
-				} else {
-					filename = System.getenv("WINDIR")+"\\Desktop";
-				}
-			} else if ((shortcutType & SHORTCUT_MENU) == SHORTCUT_MENU) {
-				if (isVista()) {
-					filename = System.getenv("APPDATA")+"\\Roaming\\Microsoft\\Windows";
-				} else {
-					filename = System.getProperty("user.home");
-				}
-				filename = filename+"\\Start Menu\\Programs\\DMDirc";
-			
-			} else if ((shortcutType & SHORTCUT_QUICKLAUNCH) == SHORTCUT_QUICKLAUNCH && showQuicklaunch()) {
-				if (isVista()) {
-				
-				} else {
-					filename = System.getProperty("user.home")+"\\Application Data\\Microsoft\\Internet Explorer\\Quick Launch";
-				}
-			} else {
-				return;
+			switch (shortcutType) {
+				case DESKTOP:
+					if (isNT() || isVista()) {
+						filename = System.getProperty("user.home")+"\\Desktop";
+					} else {
+						filename = System.getenv("WINDIR")+"\\Desktop";
+					}
+					break;
+					
+				case MENU:
+					if (isVista()) {
+						filename = System.getenv("APPDATA")+"\\Microsoft\\Windows";
+					} else {
+						filename = System.getProperty("user.home");
+					}
+					filename = filename+"\\Start Menu\\Programs\\DMDirc";
+					break;
+					
+				case QUICKLAUNCH:
+					if (isVista()) {
+						filename = System.getProperty("user.home")+"\\AppData\\Roaming\\Microsoft\\Internet Explorer\\Quick Launch";
+					} else {
+						filename = System.getProperty("user.home")+"\\Application Data\\Microsoft\\Internet Explorer\\Quick Launch";
+					}
+					break;
+					
+				default:
+					step.addText(" - Error creating shortcut. Not applicable to this Operating System");
+					return;
 			}
 			
 			if (filename.length() == 0) {
-				step.addText("Error creating shortcut. Not applicable to this System");
+				step.addText(" - Error creating shortcut. Not applicable to this System");
 				return;
 			}
 			
@@ -130,7 +152,7 @@ public class WindowsInstaller extends Installer {
 			
 			try {
 //				final String thisDirName = new File("").getAbsolutePath();
-				final Process shortcutProcess = Runtime.getRuntime().exec(new String[] {
+					final String[] command = new String[] {
 //				                      thisDirName+"/Shortcut.exe",
 				                      "Shortcut.exe",
 				                      "/F:"+filename+"\\DMDirc.lnk",
@@ -141,18 +163,25 @@ public class WindowsInstaller extends Installer {
 				                      "/W:"+location,
 				                      "/I:"+location+"\\icon.ico",
 				                      "/D:DMDirc IRC Client"
-				                      });
+				                      };
+				final Process shortcutProcess = Runtime.getRuntime().exec(command);
 				new StreamReader(shortcutProcess.getInputStream()).start();
 				new StreamReader(shortcutProcess.getErrorStream()).start();
 				shortcutProcess.waitFor();
 				if (shortcutProcess.exitValue() != 0) {
-					step.addText("Error creating shortcuts: Unknown Reason");
+					step.addText(" - Error creating shortcut: Unknown Reason");
+					System.out.println(java.util.Arrays.toString(command));
+					System.out.println("");
+					for (String bit : command) {
+						System.out.print(bit+' ');
+					}
+					System.out.println("");
 				}
 			} catch (Exception e) {
-				step.addText("Error creating shortcut: "+e.getMessage());
+				step.addText(" - Error creating shortcut: "+e.getMessage());
 			}
 		} else {
-			step.addText("Error creating shortcuts: Unable to find Shortcut.exe");
+			step.addText(" - Error creating shortcut: Unable to find Shortcut.exe");
 		}
 	}
 }

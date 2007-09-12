@@ -22,6 +22,7 @@
 
 package com.dmdirc.installer;
 
+import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.installer.WindowsInstaller;
 import com.dmdirc.ui.swing.dialogs.wizard.SpecialStep;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
@@ -73,19 +74,23 @@ public final class StepConfirm extends Step implements SpecialStep {
 		
 		StepSettings settings = ((StepSettings) Main.getWizardDialog().getStep(1));
 		
-		if (settings.getShortcutMenuState()) {
-			shortcutText = shortcutText + " - Do Set up Menu shortcuts"+ "\n";
-		} else {
-			shortcutText = shortcutText + " - Do Not Set up Menu shortcuts"+ "\n";
+		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
+			if (settings.getShortcutMenuState()) {
+				shortcutText = shortcutText + " - Do Set up Menu shortcuts"+ "\n";
+			} else {
+				shortcutText = shortcutText + " - Do Not Set up Menu shortcuts"+ "\n";
+			}
 		}
 		
-		if (settings.getShortcutDesktopState()) {
-			shortcutText = shortcutText + " - Do Set up Desktop shortcuts"+ "\n";
-		} else {
-			shortcutText = shortcutText + " - Do Not Set up Desktop shortcuts"+ "\n";
+		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
+			if (settings.getShortcutDesktopState()) {
+				shortcutText = shortcutText + " - Do Set up Desktop shortcuts"+ "\n";
+			} else {
+				shortcutText = shortcutText + " - Do Not Set up Desktop shortcuts"+ "\n";
+			}
 		}
 		
-		if (Main.getInstaller() instanceof WindowsInstaller && ((WindowsInstaller)Main.getInstaller()).showQuicklaunch()) {
+		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
 			if (settings.getShortcutQuickState()) {
 				shortcutText = shortcutText + " - Do Set up Quick Launch shortcuts"+ "\n";
 			} else {

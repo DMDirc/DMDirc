@@ -57,14 +57,14 @@ public final class Main implements Wizard {
 	public void stepChanged(final int oldStep, final int newStep) {	}
 
 	/**
-	 * Called when the wizard finishes. 
+	 * Called when the wizard finishes.
 	 */
 	public void wizardFinished() { }
 
 	/**
-	 * Displays the Installer wizard.
+	 * Creates and Displays the Installer wizard.
 	 */
-	public void display() {
+	private Main() {
 		final List<Step> steps = new ArrayList<Step>();
 		final String osName = System.getProperty("os.name");
 		
@@ -82,9 +82,8 @@ public final class Main implements Wizard {
 			releaseName = " "+cli.getParam("-release").getStringValue();
 		}
 		
-		wizardDialog = new WizardDialog("DMDirc"+releaseName+" Installer", steps, this);
+		setWizardDialog(new WizardDialog("DMDirc"+releaseName+" Installer", steps, this));
 		wizardDialog.setPreferredSize(new Dimension(400, 350));
-		wizardDialog.display();
 	}
 	
 	/**
@@ -111,24 +110,38 @@ public final class Main implements Wizard {
 	 */
 	private static void setupCLIParser() {
 		cli.clear();
-		cli.add(new BooleanParam((char)0, "isRoot", "Installing as Root"));
+		cli.add(new BooleanParam((char)0, "isroot", "Installing as Root"));
 		cli.add(new StringParam('r', "release", "Release Name"));
 	}
 	
 	/**
 	 * Get the WizardDialog
+	 *
+	 * @return The current wizardDialog
 	 */
-	public static WizardDialog getWizardDialog () {
+	public static synchronized WizardDialog getWizardDialog() {
+		if (wizardDialog == null) {
+			new Main();
+		}
 		return wizardDialog;
+	}
+	
+	/**
+	 * Set the WizardDialog
+	 *
+	 * @return Set the current wizardDialog to the given one
+	 */
+	private static void setWizardDialog(final WizardDialog dialog) {
+		wizardDialog = dialog;
 	}
 
 	/**
 	 * Run the installer
 	 */
 	public static void main (String[] args) {
+		System.out.println("");
 		setupCLIParser();
 		cli.parseArgs(args, false);
-		
-		new Main().display();
+		getWizardDialog().display();
 	}
 }

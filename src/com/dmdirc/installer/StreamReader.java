@@ -31,6 +31,9 @@ public class StreamReader extends Thread {
 	/** This is the Input Stream we are reading */
 	private InputStream stream;
 	
+	/** This is the Input Stream we are reading */
+	private String prefix = null;
+	
 	/**
 	 * Create a new Stream Reader
 	 *
@@ -39,12 +42,26 @@ public class StreamReader extends Thread {
 	public StreamReader(final InputStream stream) {
 		this.stream = stream;
 	}
+	
+	/**
+	 * Create a new Stream Reader that outputs to the console
+	 *
+	 * @param stream The stream to read
+	 * @param prefix Prefix of outputed messages
+	 */
+	public StreamReader(final InputStream stream, final String prefix) {
+		this.stream = stream;
+		this.prefix = prefix;
+	}
 
 	public void run() {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
 		try {
-			while (reader.readLine() != null) {
-				/* Do Nothing */
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (prefix != null) {
+					System.out.printf("[%s] %s%n", prefix, line);
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

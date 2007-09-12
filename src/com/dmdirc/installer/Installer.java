@@ -36,13 +36,12 @@ import java.nio.channels.FileChannel;
  *
  * @author Shane Mc Cormack
  */
-public abstract class Installer {
-	/** Put a shortcut on the desktop */
-	public static final int SHORTCUT_DESKTOP = 1;
-	/** Put a shortcut on the menu (kmenu, start menu etc) */
-	public static final int SHORTCUT_MENU = 2;
-	/** Put a shortcut on the quicklaunch bar (Windows Only) */
-	public static final int SHORTCUT_QUICKLAUNCH = 4;
+public abstract class Installer extends Thread {
+	/** Types of shortcut */
+	public static enum ShortcutType { DESKTOP, MENU, QUICKLAUNCH; }
+	
+	/** Step where things happen. */
+	protected StepInstall step = null;
 	
 	/**
 	 * Get the default install location
@@ -50,13 +49,37 @@ public abstract class Installer {
 	abstract String defaultInstallLocation();
 	
 	/**
+	 * This is what helps actually perform the installation in run().
+	 * This is a hack to keep the installing and the GUI separate.
+	 *
+	 * @param step The step that called this
+	 */
+	public final void setInstallStep(final StepInstall step) {
+		this.step = step;
+	}
+	
+	/**
+	 * Create a new Installer
+	 */
+	public final void Installer() {
+		this.setName("Installer-Thread");
+	}
+	
+	/**
+	 * This step performs the installation, via the StepInstall step.
+	 */
+	public final void run() {
+		step.performInstall(this);
+	}
+	
+	/**
 	 * Main Setup stuff
 	 *
 	 * @param location Location where app will be installed to.
 	 * @param step The step that called this
-	 * @return TRue if installation passed, else false; 
+	 * @return True if installation passed, else false; 
 	 */
-	public boolean doSetup(final String location, final TextStep step) {
+	public boolean doSetup(final String location) {
 		// Create the directory
 		final File directory = new File(location);
 		if (!directory.exists()) { directory.mkdir(); }
@@ -88,13 +111,22 @@ public abstract class Installer {
 	}
 	
 	/**
-	 * Setup shortcuts
+	 * Check if this OS supports a given shortcut Type
+	 *
+	 * @param shortcutType Type of shortcut to check
+	 * @return True if this OS supports a given shortcut Type
+	 */
+	public boolean supportsShortcut(final ShortcutType shortcutType) {
+		return false;
+	}
+	
+	/**
+	 * Setup shortcut
 	 *
 	 * @param location Location where app will be installed to.
-	 * @param step The step that called this
-	 * @param shortcutType TYpe of shortcuts to add.
+	 * @param shortcutType Type of shortcut to add.
 	 */
-	abstract void setupShortcuts(final String location, final TextStep step, final int shortcutType);
+	abstract void setupShortcut(final String location, final ShortcutType shortcutType);
 	
 	/**
 	 * Copy a file from one location to another.

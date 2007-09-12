@@ -22,7 +22,7 @@
 
 package com.dmdirc.installer;
 
-import com.dmdirc.installer.WindowsInstaller;
+import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.ui.swing.dialogs.wizard.SpecialStep;
 import com.dmdirc.ui.swing.dialogs.wizard.TextStep;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
@@ -80,34 +80,47 @@ public final class StepInstall extends Step implements SpecialStep, TextStep {
 	 */
 	public void showStep() {
 		Main.getWizardDialog().enableNextStep(false);
+		Main.getWizardDialog().enablePreviousStep(false);
+		Main.getInstaller().setInstallStep(this);
+		Main.getInstaller().start();
+	}
+	
+	/**
+	 * Perform the installation.
+	 */
+	public void performInstall(final Installer myInstaller) {
 		infoLabel.setText("Beginning Install..\n");
 		final String location = ((StepSettings) Main.getWizardDialog().getStep(1)).getInstallLocation();
 		
 		addText("Installing files to: "+location);
-		Main.getInstaller().doSetup(location, this);
+		myInstaller.doSetup(location);
 		
 		StepSettings settings = ((StepSettings) Main.getWizardDialog().getStep(1));
 		
-		if (settings.getShortcutMenuState()) {
-			addText("Setting up Menu shortcuts");
-			Main.getInstaller().setupShortcuts(location, this, Installer.SHORTCUT_MENU);
-		} else {
-			addText("Not setting up Menu shortcuts");
-		}
-		
-		if (settings.getShortcutDesktopState()) {
-			addText("Setting up Desktop shortcuts");
-			Main.getInstaller().setupShortcuts(location, this, Installer.SHORTCUT_DESKTOP);
-		} else {
-			addText("Not setting up Desktop shortcuts");
-		}
-		
-		if (Main.getInstaller() instanceof WindowsInstaller && ((WindowsInstaller)Main.getInstaller()).showQuicklaunch()) {
-			if (settings.getShortcutQuickState()) {
-				addText("Setting up QuickLaunch shortcuts");
-				Main.getInstaller().setupShortcuts(location, this, Installer.SHORTCUT_QUICKLAUNCH);
+		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
+			if (settings.getShortcutMenuState()) {
+				addText("Setting up Menu shortcut");
+				myInstaller.setupShortcut(location, ShortcutType.MENU);
 			} else {
-				addText("Not setting up QuickLaunch shortcuts");
+				addText("Not setting up Menu shortcut");
+			}
+		}
+		
+		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
+			if (settings.getShortcutDesktopState()) {
+				addText("Setting up Desktop shortcut");
+				myInstaller.setupShortcut(location, ShortcutType.DESKTOP);
+			} else {
+				addText("Not setting up Desktop shortcut");
+			}
+		}
+		
+		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
+			if (settings.getShortcutQuickState()) {
+				addText("Setting up QuickLaunch shortcut");
+				myInstaller.setupShortcut(location, ShortcutType.QUICKLAUNCH);
+			} else {
+				addText("Not setting up QuickLaunch shortcut");
 			}
 		}
 		

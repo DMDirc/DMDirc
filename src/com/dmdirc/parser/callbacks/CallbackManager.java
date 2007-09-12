@@ -177,35 +177,35 @@ public final class CallbackManager {
 	
 	/**
 	 * Add a callback.
- 	 * This method will throw a CallbackNotFound Exception if the callback does not exist.
+ 	 * This method will throw a CallbackNotFoundException if the callback does not exist.
 	 *
 	 * @param callbackName Name of callback object.
 	 * @param o instance of ICallbackInterface to add.
-	 * @throws CallbackNotFound If callback is not found.
+	 * @throws CallbackNotFoundException If callback is not found.
 	 * @throws NullPointerException If 'o' is null
 	 */
-	public void addCallback(final String callbackName, final ICallbackInterface o) throws CallbackNotFound {
+	public void addCallback(final String callbackName, final ICallbackInterface o) throws CallbackNotFoundException {
 		if (o == null) { throw new NullPointerException("CallbackInterface is null"); }
 		final CallbackObject cb = getCallbackType(callbackName);
 		if (cb != null) { cb.add(o); }
-		else { throw new CallbackNotFound("Callback '"+callbackName+"' could not be found."); }
+		else { throw new CallbackNotFoundException("Callback '"+callbackName+"' could not be found."); }
 	}
 	
 	/**
 	 * Add a callback with a specific target.
- 	 * This method will throw a CallbackNotFound Exception if the callback does not exist.
+ 	 * This method will throw a CallbackNotFoundException if the callback does not exist.
 	 *
 	 * @param callbackName Name of callback object.
 	 * @param o instance of ICallbackInterface to add.
 	 * @param target Parameter to specify that a callback should only fire for specific things
-	 * @throws CallbackNotFound If callback is not found.
+	 * @throws CallbackNotFoundException If callback is not found.
 	 * @throws NullPointerException If 'o' is null
 	 */
-	public void addCallback(final String callbackName, final ICallbackInterface o, final String target) throws CallbackNotFound {
+	public void addCallback(final String callbackName, final ICallbackInterface o, final String target) throws CallbackNotFoundException {
 		if (o == null) { throw new NullPointerException("CallbackInterface is null"); }
 		CallbackObjectSpecific cb = (CallbackObjectSpecific)getCallbackType(callbackName);
 		if (cb != null) { cb.add(o,target); }
-		else { throw new CallbackNotFound("Callback '"+callbackName+"' could not be found."); }
+		else { throw new CallbackNotFoundException("Callback '"+callbackName+"' could not be found."); }
 	}
 	
 	/**
@@ -230,7 +230,7 @@ public final class CallbackManager {
 	 * @param callbackName Name of callback object.
 	 * @param o instance of ICallbackInterface to add.
 	 * @param target Parameter to specify that a callback should only fire for specific things
-	 * @throws CallbackNotFound If callback is not found.
+	 * @throws CallbackNotFoundException If callback is not found.
 	 */
 	public boolean addNonCriticalCallback(final String callbackName, final ICallbackInterface o, final String target) {
 		try {

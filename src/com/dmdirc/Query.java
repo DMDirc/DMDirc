@@ -30,7 +30,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.callbacks.CallbackManager;
-import com.dmdirc.parser.callbacks.CallbackNotFound;
+import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.INickChanged;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
@@ -231,7 +231,7 @@ public final class Query extends MessageTarget implements
             callbackManager.addCallback("onPrivateMessage", this, ClientInfo.parseHost(host));
             callbackManager.addCallback("onQuit", this);
             callbackManager.addCallback("onNickChanged", this);
-        } catch (CallbackNotFound ex) {
+        } catch (CallbackNotFoundException ex) {
             Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
         }
     }
@@ -248,7 +248,7 @@ public final class Query extends MessageTarget implements
             try {
                 callbackManager.addCallback("onPrivateAction", this, cClient.getNickname());
                 callbackManager.addCallback("onPrivateMessage", this, cClient.getNickname());
-            } catch (CallbackNotFound ex) {
+            } catch (CallbackNotFoundException ex) {
                 Logger.appError(ErrorLevel.HIGH, "Unable to get query events", ex);
             }
             

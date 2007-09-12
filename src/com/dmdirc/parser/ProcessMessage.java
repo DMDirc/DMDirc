@@ -69,14 +69,27 @@ public class ProcessMessage extends IRCProcessor {
 		if (myParser.getIgnoreList().matches(sMessage) > -1) { return; }
 		
 		// Lines such as:
-		// "nick!user@host PRIVMSG #channel"
+		// "nick!user@host PRIVMSG"
 		// are invalid, stop processing.
-		if (token.length < 4) { return; }
+		if (token.length < 3) { return; }
+		
+		// Is this actually a notice auth?
+		if (token[0].indexOf('!') == -1 && token[1].equalsIgnoreCase("NOTICE") && token[2].equalsIgnoreCase("AUTH")) {
+			try {
+				myParser.getProcessingManager().process("Notice Auth", token);
+			} catch (ProcessorNotFoundException e) { }
+			return;
+		}
 		
 		ChannelClientInfo iChannelClient = null;
 		ChannelInfo iChannel = null;
 		ClientInfo iClient = null;
-		sMessage = token[token.length-1];
+		// "nick!user@host PRIVMSG #Channel" should be processed as "nick!user@host PRIVMSG #Channel :"
+		if (token.length < 4) {
+			sMessage = "";
+		} else {
+			sMessage = token[token.length-1];
+		}
 		String bits[] = sMessage.split(" ", 2);
 		final Character Char1 = Character.valueOf((char)1);
 		String sCTCP = "";

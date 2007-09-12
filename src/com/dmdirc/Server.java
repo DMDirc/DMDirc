@@ -36,7 +36,7 @@ import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.MyInfo;
 import com.dmdirc.parser.ParserError;
 import com.dmdirc.parser.ServerInfo;
-import com.dmdirc.parser.callbacks.CallbackNotFound;
+import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IAwayState;
 import com.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
 import com.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
@@ -300,7 +300,7 @@ public final class Server extends WritableFrameContainer implements
             for (String callback : CALLBACKS) {
                 parser.getCallbackManager().addCallback(callback, this);
             }
-        } catch (CallbackNotFound ex) {
+        } catch (CallbackNotFoundException ex) {
             Logger.appError(ErrorLevel.FATAL, "Unable to register server event handlers", ex);
         }
         

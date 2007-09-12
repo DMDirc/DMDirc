@@ -1474,11 +1474,16 @@ public final class IRCParser implements Runnable {
 		if (sChannelName == null || sChannelName.isEmpty()) { return false; }
 		// Check its not ourself (PM recieved before 005)
 		if (equalsIgnoreCase(getMyNickname(), sChannelName)) { return false; }
+		// Check if we know of any valid chan prefixes
+		if (hChanPrefix.size() == 0) {
+			// We don't. Lets check against RFC2811-Specified channel types
+			char first = sChannelName.charAt(0);
+			return first == '#' || first == '&' || first == '!' || first == '+';
+		}
 		// Otherwise return true if:
-		// 005 has not been recieved yet
 		// Channel equals "0"
 		// first character of the channel name is a valid channel prefix.
-		return hChanPrefix.size() == 0 || hChanPrefix.containsKey(sChannelName.charAt(0)) || sChannelName.equals("0");
+		return hChanPrefix.containsKey(sChannelName.charAt(0)) || sChannelName.equals("0");
 	}
 	
 	/**

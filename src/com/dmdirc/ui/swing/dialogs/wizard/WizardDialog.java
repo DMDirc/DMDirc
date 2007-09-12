@@ -253,6 +253,15 @@ public final class WizardDialog extends JFrame implements ActionListener,
         next.setEnabled(newValue);
     }
     
+    /**
+     * Enables or disables the "previous step" button.
+     *
+     * @param newValue boolean true to make "previous" button enabled, else false
+     */
+    public void enablePreviousStep(final boolean newValue) {
+        prev.setEnabled(newValue);
+    }
+    
     /** Moves to the next step. */
     private void nextStep() {
         steps.get(currentStep).setVisible(false);

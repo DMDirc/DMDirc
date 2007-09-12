@@ -35,42 +35,83 @@ import java.io.IOException;
  */
 public class LinuxInstaller extends Installer {
 	/**
+	 * Are we running as root?
+	 */
+	private boolean isRoot() {
+		return (CLIParser.getCLIParser().getParamNumber("-isroot") > 0);
+	}
+
+	/**
 	 * Get the default install location
 	 */
 	public String defaultInstallLocation() {
-		if (CLIParser.getCLIParser().getParamNumber("-isroot") > 0) {
+		if (isRoot()) {
 			return "/usr/local/DMDirc";
 		} else {
 			return System.getProperty("user.home") + "/DMDirc";
 		}
 	}
-	 
+	
 	/**
-	 * Setup shortcuts
+	 * Check if this OS supports a given shortcut Type
+	 *
+	 * @param shortcutType Type of shortcut to check
+	 * @return True if this OS supports a given shortcut Type
+	 */
+	public boolean supportsShortcut(final ShortcutType shortcutType) {
+		switch (shortcutType) {
+			case QUICKLAUNCH:
+				return false;
+			case DESKTOP:
+				// No desktop for root
+				return !isRoot();
+			case MENU:
+				// Both root and non-root have a menu
+				return true;
+			default:
+				// Anything else that gets added should be false until the relevent
+				// code is added
+				return false;
+		}
+	}
+
+	/**
+	 * Setup shortcut
 	 *
 	 * @param location Location where app will be installed to.
-	 * @param step The step that called this
-	 * @param shortcutType TYpe of shortcuts to add.
+	 * @param shortcutType Type of shortcut to add.
 	 */
-	public void setupShortcuts(final String location, final TextStep step, final int shortcutType) {
+	public void setupShortcut(final String location, final ShortcutType shortcutType) {
+		if (!supportsShortcut(shortcutType)) {
+			step.addText(" - Error creating shortcut. Not applicable to this Operating System");
+			return;
+		}
+		
 		PrintWriter writer = null;
 		try {
 			String filename;
-			if ((shortcutType & SHORTCUT_DESKTOP) == SHORTCUT_DESKTOP) {
-				filename = System.getProperty("user.home")+"/Desktop/DMDirc.desktop";
-			} else if ((shortcutType & SHORTCUT_MENU) == SHORTCUT_MENU) {
-				if (CLIParser.getCLIParser().getParamNumber("-isroot") > 0) {
-					filename = "/usr/share/applications/DMDirc.desktop";
-				} else {
-					filename = System.getProperty("user.home")+"/.local/share/applications/DMDirc.desktop";
-				}
-			} else {
-				return;
+
+			switch (shortcutType) {
+				case DESKTOP:
+					filename = System.getProperty("user.home")+"/Desktop/DMDirc.desktop";
+					break;
+					
+				case MENU:
+					if (CLIParser.getCLIParser().getParamNumber("-isroot") > 0) {
+						filename = "/usr/share/applications/DMDirc.desktop";
+					} else {
+						filename = System.getProperty("user.home")+"/.local/share/applications/DMDirc.desktop";
+					}
+					break;
+					
+				default:
+					step.addText(" - Error creating shortcut. Not applicable to this Operating System");
+					return;
 			}
 			writer = new PrintWriter(filename);
 			writeFile(writer, location);
 		} catch (Exception e) {
-			step.addText("Error creating shortcuts: "+e.toString());
+			step.addText(" - Error creating shortcut: "+e.toString());
 		} finally {
 			if (writer != null) {
 				writer.close();
@@ -93,7 +134,11 @@ public class LinuxInstaller extends Installer {
 		writer.println("Exec=java -jar "+location+"/DMDirc.jar");
 		writer.println("GenericName=IRC Client");
 		writer.println("Icon="+location+"/icon.svg");
-		writer.println("Name=DMDirc");
+		if (isRoot()) {
+			writer.println("Name=DMDirc (Global)");
+		} else {
+			writer.println("Name=DMDirc");
+		}
 		writer.println("StartupNotify=true");
 		writer.println("Terminal=false");
 		writer.println("TerminalOptions=");

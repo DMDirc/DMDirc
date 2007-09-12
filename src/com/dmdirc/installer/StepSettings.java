@@ -22,6 +22,7 @@
 
 package com.dmdirc.installer;
 
+import com.dmdirc.installer.Installer.ShortcutType;
 import com.dmdirc.installer.WindowsInstaller;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
@@ -97,16 +98,21 @@ public final class StepSettings extends Step {
 		add(location, constraints);
 		
 		constraints.gridwidth = 2;
-		constraints.gridy = 3;
 		constraints.gridx = 0;
 		constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
-		add(shortcutMenu, constraints);
 		
-		constraints.gridy = 4;
-		add(shortcutDesktop, constraints);
+		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
+			constraints.gridy = (constraints.gridy + 1);
+			add(shortcutMenu, constraints);
+		}
 		
-		if (Main.getInstaller() instanceof WindowsInstaller && ((WindowsInstaller)Main.getInstaller()).showQuicklaunch()) {
-			constraints.gridy = 5;
+		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
+			constraints.gridy = (constraints.gridy + 1);
+			add(shortcutDesktop, constraints);
+		}
+		
+		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
+			constraints.gridy = (constraints.gridy + 1);
 			add(shortcutQuick, constraints);
 		}
 		

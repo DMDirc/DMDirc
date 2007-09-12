@@ -189,11 +189,11 @@ public class ProcessingManager {
 	 * @param sParam Type of line to process ("005", "PRIVMSG" etc)
 	 * @return IRCProcessor for the given param.
 	 */
-	public IRCProcessor getProcessor(final String sParam) throws ProcessorNotFound {
+	public IRCProcessor getProcessor(final String sParam) throws ProcessorNotFoundException {
 		if (processHash.containsKey(sParam.toLowerCase())) {
 			return processHash.get(sParam.toLowerCase());
 		} else {
-			throw new ProcessorNotFound("No processors will handle "+sParam);
+			throw new ProcessorNotFoundException("No processors will handle "+sParam);
 		}
 	}
 	
@@ -202,14 +202,14 @@ public class ProcessingManager {
 	 *
 	 * @param sParam Type of line to process ("005", "PRIVMSG" etc)
 	 * @param token IRCTokenised line to process
-	 * @throws ProcessorNotFound exception if no processors exists to handle the line
+	 * @throws ProcessorNotFoundException exception if no processors exists to handle the line
 	 */
-	public void process(final String sParam, final String[] token) throws ProcessorNotFound {
+	public void process(final String sParam, final String[] token) throws ProcessorNotFoundException {
 		IRCProcessor messageProcessor = null;
 		try {
 			messageProcessor = getProcessor(sParam);
 			messageProcessor.process(sParam, token);
-		} catch (ProcessorNotFound p) {
+		} catch (ProcessorNotFoundException p) {
 			throw p;
 		} catch (Exception e) {
 			final StringBuilder line = new StringBuilder();

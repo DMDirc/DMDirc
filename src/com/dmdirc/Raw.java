@@ -25,7 +25,7 @@ package com.dmdirc;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.IRCParser;
-import com.dmdirc.parser.callbacks.CallbackNotFound;
+import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IDataIn;
 import com.dmdirc.parser.callbacks.interfaces.IDataOut;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -80,7 +80,7 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
         try {
             server.getParser().getCallbackManager().addCallback("OnDataIn", this);
             server.getParser().getCallbackManager().addCallback("OnDataOut", this);
-        } catch (CallbackNotFound ex) {
+        } catch (CallbackNotFoundException ex) {
             Logger.appError(ErrorLevel.HIGH, "Unable to register raw callbacks", ex);
         }
     }
