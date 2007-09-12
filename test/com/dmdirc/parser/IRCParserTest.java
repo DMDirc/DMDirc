@@ -6,7 +6,7 @@
 
 package com.dmdirc.parser;
 
-import com.dmdirc.parser.callbacks.CallbackNotFound;
+import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IAwayState;
 import junit.framework.TestCase;
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class IRCParserTest extends TestCase {
                     throw new UnsupportedOperationException("Not supported yet.");
                 }
             });
-        } catch (CallbackNotFound ex) {
+        } catch (CallbackNotFoundException ex) {
             res = true;
         }
         
