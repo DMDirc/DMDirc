@@ -59,7 +59,11 @@ public final class Main implements Wizard {
 	/**
 	 * Called when the wizard finishes.
 	 */
-	public void wizardFinished() { }
+	public void wizardFinished() {
+		Thread temp = myInstaller;
+		myInstaller = null;
+		if (temp != null) { temp.interrupt(); }
+	}
 
 	/**
 	 * Creates and Displays the Installer wizard.
