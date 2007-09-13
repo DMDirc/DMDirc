@@ -22,16 +22,18 @@
 
 package com.dmdirc.installer;
 
-import java.awt.Dimension;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.dmdirc.installer.cliparser.CLIParser;
 import com.dmdirc.installer.cliparser.BooleanParam;
 import com.dmdirc.installer.cliparser.StringParam;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.Wizard;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
+import java.awt.Dimension;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * Main installer window
@@ -69,6 +71,18 @@ public final class Main implements Wizard {
 	 * Creates and Displays the Installer wizard.
 	 */
 	private Main() {
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (InstantiationException ex) {
+			//Ignore, revert to default
+		} catch (ClassNotFoundException ex) {
+			//Ignore, revert to default
+		} catch (UnsupportedLookAndFeelException ex) {
+			//Ignore, revert to default
+		} catch (IllegalAccessException ex) {
+			//Ignore, revert to default
+		}
+		
 		final List<Step> steps = new ArrayList<Step>();
 		final String osName = System.getProperty("os.name");
 		

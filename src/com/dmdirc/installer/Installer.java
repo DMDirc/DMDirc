@@ -22,8 +22,6 @@
 
 package com.dmdirc.installer;
 
-import com.dmdirc.ui.swing.dialogs.wizard.TextStep;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -61,8 +59,8 @@ public abstract class Installer extends Thread {
 	/**
 	 * Create a new Installer
 	 */
-	public final void Installer() {
-		this.setName("Installer-Thread");
+	public Installer() {
+		super("Installer-Thread");
 	}
 	
 	/**
