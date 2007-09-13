@@ -121,6 +121,8 @@ public class ProcessingManager {
 		// 367
 		// 368
 		addProcessor(new ProcessListModes(myParser, this));
+		// WALLOPS
+		addProcessor(new ProcessWallops(myParser, this));
 	}
 	
 	/**

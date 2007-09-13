@@ -103,6 +103,9 @@ public final class CallbackManager {
 		addCallbackType(new CallbackOnUnknownMessage(myParser, this));
 		addCallbackType(new CallbackOnUnknownNotice(myParser, this));
 		addCallbackType(new CallbackOnUserModeChanged(myParser, this));
+		addCallbackType(new CallbackOnWallDesync(myParser, this));
+		addCallbackType(new CallbackOnWallop(myParser, this));
+		addCallbackType(new CallbackOnWalluser(myParser, this));
 	}
 
 	/**
