@@ -139,8 +139,6 @@ public class Action implements Serializable {
         
         file = new File(location);
         
-        save();
-        
         ActionManager.registerAction(this);
     }
     
