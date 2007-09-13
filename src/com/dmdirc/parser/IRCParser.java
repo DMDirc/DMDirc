@@ -1692,7 +1692,7 @@ public final class IRCParser implements Runnable {
 	 * If after 001 this returns the exact same as getMyself.getNickname();
 	 * Before 001 it returns the nickname that the parser Thinks it has.
 	 *
-	 * @return cMyself reference
+	 * @return Current nickname.
 	 */
 	public String getMyNickname() {
 		if (cMyself == null) {
@@ -1700,6 +1700,16 @@ public final class IRCParser implements Runnable {
 		} else {
 			return cMyself.getNickname();
 		}
+	}
+	
+	/**
+	 * Get the current username (Specified in MyInfo on construction).
+	 * Get the username given in MyInfo
+	 *
+	 * @return My username.
+	 */
+	public String getMyUsername() {
+		return me.getUsername();
 	}
 	
 	/**
