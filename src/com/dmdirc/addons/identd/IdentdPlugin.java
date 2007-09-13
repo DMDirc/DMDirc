@@ -22,87 +22,240 @@
 
 package com.dmdirc.addons.identd;
 
+import com.dmdirc.Config;
+import com.dmdirc.Main;
 import com.dmdirc.Server;
-import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.IdentityManager;
+import com.dmdirc.config.Identity;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
+import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.interfaces.PreferencesPanel;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
- * The Identd plugin answers ident requests from IRC servers. For privacy, it
- * is only active while there is an active connection attempt.
+ * The Identd plugin answers ident requests from IRC servers.
  *
- * @author Chris
+ * @author Shane
  */
-public class IdentdPlugin extends Plugin implements EventPlugin {
-    
-    private final List<Server> servers = new ArrayList<Server>();
-    
-    /**
-     * Creates a new instance of IdentdPlugin.
-     */
-    public IdentdPlugin() {
-    }
-    
-    /** {@inheritDoc} */
-    public boolean onLoad() {
-        return true;
-    }
-    
-    /** {@inheritDoc} */
-    public String getVersion() {
-        return "0.1";
-    }
-    
-    /** {@inheritDoc} */
-    public String getAuthor() {
-        return "Chris <chris@dmdirc.com>";
-    }
-    
-    /** {@inheritDoc} */
-    public String getDescription() {
-        return "Answers ident requests from IRC servers";
-    }
-    
-    /** {@inheritDoc} */
-    public String toString() {
-        return "Identd";
-    }
-    
-    /** {@inheritDoc} */
-    public void processEvent(final ActionType type, final StringBuffer format,
-            final Object... arguments) {
-        if (type == CoreActionType.SERVER_CONNECTING) {
-            if (servers.size() == 0) {
-                // TODO: Start the identd
-            }
-            
-            servers.add((Server) arguments[0]);
-        } else if (type == CoreActionType.SERVER_CONNECTED || type == CoreActionType.SERVER_CONNECTERROR) {
-            servers.remove((Server) arguments[0]);
-            
-            if (servers.size() == 0) {
-                // TODO: Stop the identd
-            }
-        }
-    }
-    
-    /**
-     * Retrieves the server that is bound to the specified local port.
-     *
-     * @param The server instance listening on the specified port
-     */
-    private Server getServerByPort(final int port) {
-        for (Server server : ServerManager.getServerManager().getServers()) {
-            if (server.getParser().getLocalPort() == port) {
-                return server;
-            }
-        }
-        
-        return null;
-    }
-    
+public class IdentdPlugin extends Plugin implements EventPlugin, PreferencesInterface {
+	/** What domain do we store all settings in the global config under. */
+	private static final String MY_DOMAIN = "plugin-Identd";
+	/** Array list to store all the servers in that need ident replies */
+	private final List<Server> servers = new ArrayList<Server>();
+	/** The IdentdServer that we use*/
+	private IdentdServer myServer;
+
+	/**
+	 * Creates a new instance of IdentdPlugin.
+	 */
+	public IdentdPlugin() { }
+	
+	/**
+	 * Called when the plugin is loaded.
+	 *
+	 * @return false if the plugin can not be loaded
+	 */
+	public boolean onLoad() {
+		// Set defaults
+		Properties defaults = new Properties();
+		defaults.setProperty(getDomain() + "general.useUsername", "false");
+		defaults.setProperty(getDomain() + "general.useNickname", "false");
+		defaults.setProperty(getDomain() + "general.useCustomName", "false");
+		defaults.setProperty(getDomain() + "general.customName", "DMDirc-user");
+		
+		defaults.setProperty(getDomain() + "advanced.alwaysOn", "false");
+		defaults.setProperty(getDomain() + "advanced.port", "113");
+		defaults.setProperty(getDomain() + "advanced.useCustomSystem", "false");
+		defaults.setProperty(getDomain() + "advanced.customSystem", "OTHER");
+		defaults.setProperty(getDomain() + "advanced.isHiddenUser", "false");
+		defaults.setProperty(getDomain() + "advanced.isNoUser", "false");
+
+		defaults.setProperty("identity.name", "Identd Plugin Defaults");
+		IdentityManager.addIdentity(new Identity(defaults));
+		
+		return true;
+	}
+	
+	
+	/**
+	 * Called when this plugin is Activated.
+	 */
+	public void onActivate() {
+		myServer = new IdentdServer(this);
+		if (Config.getOptionBool(getDomain(), "advanced.alwaysOn")) {
+			myServer.startServer();
+		}
+	}
+	
+	/**
+	 * Called when this plugin is deactivated.
+	 */
+	public void onDeactivate() {
+		myServer.stopServer();
+		servers.clear();
+	}
+	
+	/**
+	 * Get the plugin version.
+	 *
+	 * @return Plugin Version
+	 */
+	public String getVersion() {
+		return "0.1";
+	}
+	
+	/**
+	 * Get the plugin Author.
+	 *
+	 * @return Author of plugin
+	 */
+	public String getAuthor() {
+		return "Shane <shane@dmdirc.com>";
+	}
+	
+	/**
+	 * Get the plugin Description.
+	 *
+	 * @return Description of plugin
+	 */
+	public String getDescription() {
+		return "Answers ident requests from IRC servers";
+	}
+	
+	/**
+	 * Get the name of the plugin (used in "Manage Plugins" dialog).
+	 *
+	 * @return Name of plugin
+	 */
+	public String toString() {
+		return "Identd";
+	}
+	
+	/**
+	 * Process an event of the specified type.
+	 *
+	 * @param type The type of the event to process
+	 * @param format Format of messages that are about to be sent. (May be null)
+	 * @param arguments The arguments for the event
+	 */
+	public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
+		if (type == CoreActionType.SERVER_CONNECTING) {
+			synchronized (servers) {
+				if (servers.size() == 0) {
+					myServer.startServer();
+				}
+				servers.add((Server) arguments[0]);
+			}
+		} else if (type == CoreActionType.SERVER_CONNECTED || type == CoreActionType.SERVER_CONNECTERROR) {
+			synchronized (servers) {
+				servers.remove((Server) arguments[0]);
+			
+				if (servers.size() == 0) {
+					if (!Config.getOptionBool(getDomain(), "advanced.alwaysOn")) {
+						myServer.stopServer();
+					}
+				}
+			}
+		}
+	}
+	
+	
+	
+	/**
+	 * Called to see if the plugin has configuration options (via dialog).
+	 *
+	 * @return true if the plugin has configuration options via a dialog.
+	 */
+	public boolean isConfigurable() { return true; }
+	
+	/**
+	 * Called to show the Configuration dialog of the plugin if appropriate.
+	 */
+	public void showConfig() {
+		final PreferencesPanel preferencesPanel = Main.getUI().getPreferencesPanel(this, "Identd Plugin - Config");
+		preferencesPanel.addCategory("General", "General Identd Plugin config ('Lower' options take priority over those above them)");
+		preferencesPanel.addCategory("Advanced", "Advanced Identd Plugin config - Only edit these if you need to/know what you are doing. Editing these could prevent access to some servers. ('Lower' options take priority over those above them)");
+		
+		preferencesPanel.addCheckboxOption("General", "general.useUsername", "Use connection username rather than system username: ", "If this is enabled, the username for the connection will be used rather than '"+System.getProperty("user.name")+"'", Config.getOptionBool(getDomain(), "general.useUsername"));
+		preferencesPanel.addCheckboxOption("General", "general.useNickname", "Use connection nickname rather than system username: ", "If this is enabled, the nickname for the connection will be used rather than '"+System.getProperty("user.name")+"'", Config.getOptionBool(getDomain(), "general.useNickname"));
+		preferencesPanel.addCheckboxOption("General", "general.useCustomName", "Use custom name all the time: ", "If this is enabled, the name specified below will be used all the time", Config.getOptionBool(getDomain(), "general.useCustomName"));
+		preferencesPanel.addTextfieldOption("General", "general.customName", "Custom Name to use: ", "The custom name to use when 'Use Custom Name' is enabled", Config.getOption(getDomain(), "general.customName"));
+		
+		preferencesPanel.addCheckboxOption("Advanced", "advanced.alwaysOn", "Always have ident port open: ", "By default the identd only runs when there is active connection attempts. This overrides that.", Config.getOptionBool(getDomain(), "advanced.alwaysOn"));
+		preferencesPanel.addSpinnerOption("Advanced", "advanced.port", "What port should the identd listen on: ", "Default port is 113, this is probably useless if changed unless you port forward ident to a different port", Config.getOptionInt(getDomain(), "advanced.port", 113));
+		preferencesPanel.addCheckboxOption("Advanced", "advanced.useCustomSystem", "Use custom os type: ", "By default the plugin uses 'UNIX' or 'WIN32' as the system type, this can be overriden by enabling this.", Config.getOptionBool(getDomain(), "advanced.useCustomSystem"));
+		preferencesPanel.addTextfieldOption("Advanced", "advanced.customSystem", "Custom System to use: ", "The custom system to use when 'Use Custom System' is enabled", Config.getOption(getDomain(), "advanced.customSystem"));
+		preferencesPanel.addCheckboxOption("Advanced", "advanced.isHiddenUser", "Respond to ident requests with HIDDEN-USER error: ", "By default the plugin will give a USERID response, this can force an 'ERROR : HIDDEN-USER' response instead.", Config.getOptionBool(getDomain(), "advanced.isHiddenUser"));
+		preferencesPanel.addCheckboxOption("Advanced", "advanced.isNoUser", "Respond to ident requests with NO-USER error: ", "By default the plugin will give a USERID response, this can force an 'ERROR : NO-USER' response instead. (Overrides HIDDEN-USER)", Config.getOptionBool(getDomain(), "advanced.isNoUser"));
+		
+		preferencesPanel.display();
+	}
+	
+	/**
+	 * Get the name of the domain we store all settings in the global config under.
+	 *
+	 * @return the plugins domain
+	 */
+	protected static String getDomain() { return MY_DOMAIN; }
+	
+	/**
+	 * Copy the new vaule of an option to the global config.
+	 *
+	 * @param properties Source of option value, or null if setting default values
+	 * @param name name of option
+	 */
+	protected void updateOption(final Properties properties, final String name) {
+		String value = null;
+		
+		// Get the value from the properties file if one is given, else use the
+		// value from the global config.
+		if (properties != null) {
+			value = properties.getProperty(name);
+		} else {
+			value = Config.getOption(getDomain(), name);
+		}
+		
+		// Check if the Value exists
+		if (value != null) {
+			// It does, so update the global config with the new value
+			Config.setOption(getDomain(), name, value);
+		}
+	}
+	
+	/**
+	 * Called when the preferences dialog is closed.
+	 *
+	 * @param properties user preferences
+	 */
+	public void configClosed(final Properties properties) {
+		// Update Config options
+		final int oldPort = Config.getOptionInt(getDomain(), "advanced.port", 113);
+		updateOption(properties, "general.useUsername");
+		updateOption(properties, "general.useNickname");
+		updateOption(properties, "general.useCustomName");
+		updateOption(properties, "general.customName");
+		
+		updateOption(properties, "advanced.alwaysOn");
+		updateOption(properties, "advanced.port");
+		updateOption(properties, "advanced.useCustomSystem");
+		updateOption(properties, "advanced.customSystem");
+		updateOption(properties, "advanced.isHiddenUser");
+		updateOption(properties, "advanced.isNoUser");
+		final int newPort = Config.getOptionInt(getDomain(), "advanced.port", 113);
+		if (myServer.isRunning() && oldPort != newPort) {
+			myServer.stopServer();
+			myServer.startServer();
+		}
+	}
+	
+	/**
+	 * Called when the preferences dialog is cancelled.
+	 */
+	public void configCancelled() { }
+	
 }
