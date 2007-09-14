@@ -58,7 +58,7 @@ public final class InputFramePasteAction extends AbstractAction {
     
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
-        inputFrame.doPaste(null);
+        inputFrame.doPaste();
     }
     
     /** {@inheritDoc} */

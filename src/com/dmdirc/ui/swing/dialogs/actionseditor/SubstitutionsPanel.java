@@ -24,12 +24,16 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.actions.ActionSubstitutor;
 import com.dmdirc.actions.ActionType;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 
 import java.util.Map.Entry;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 /**
  * Lists substitutions for use in actions.
@@ -48,13 +52,13 @@ public final class SubstitutionsPanel extends JPanel {
     
     /** Action type. */
     private ActionType type;
-
+    
     /** Creates a new instance of SubstitutionsPanel. */
     public SubstitutionsPanel() {
         super();
         list = new JList(new DefaultListModel());
         list.setVisibleRowCount(5);
-
+        
         setVisible(true);
     }
     
@@ -70,6 +74,8 @@ public final class SubstitutionsPanel extends JPanel {
         
         list = new JList(new DefaultListModel());
         populateList();
+        
+        layoutComponents();
     }
     
     public void setType(final ActionType type) {
@@ -80,10 +86,16 @@ public final class SubstitutionsPanel extends JPanel {
     /** Populates the list with valid substitutions. */
     public void populateList() {
         //populate the list
+        list.setVisible(false);
+        
+        if (type == null) {
+            ((DefaultListModel) list.getModel()).clear();
+            list.setVisible(true);
+            return;
+        }
+        
         final ActionSubstitutor sub = new ActionSubstitutor(type);
         final DefaultListModel model = (DefaultListModel) list.getModel();
-        
-        list.setVisible(false);
         
         model.clear();
         
@@ -100,5 +112,16 @@ public final class SubstitutionsPanel extends JPanel {
         }
         
         list.setVisible(true);
+    }
+    
+    /** Lays out the components. */
+    private void layoutComponents() {
+        setLayout(new BorderLayout());
+        
+        add(new JLabel("ZOMG SUBSTITUTIONS"), BorderLayout.PAGE_START);
+        //add(new JScrollPane(list), BorderLayout.CENTER);
+        
+        setMinimumSize(new Dimension(100, 200));
+        setPreferredSize(new Dimension(100, 200));
     }
 }

@@ -72,7 +72,7 @@ import javax.swing.undo.UndoManager;
  * Frame with an input field.
  */
 public abstract class InputFrame extends Frame implements InputWindow,
-        InternalFrameListener, MouseListener, ActionListener, KeyListener, 
+        InternalFrameListener, MouseListener, ActionListener, KeyListener,
         Serializable {
     
     /**
@@ -230,6 +230,10 @@ public abstract class InputFrame extends Frame implements InputWindow,
         
         // Bind the redo action to ctl-Y
         getInputField().getInputMap().put(KeyStroke.getKeyStroke("control Y"), "Redo");
+        
+        getInputField().getActionMap().put("PasteAction", new InputFramePasteAction(this));
+        getInputField().getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("shift INSERT"), "PasteAction");
+        getInputField().getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("ctrl V"), "PasteAction");
     }
     
     /**
@@ -360,21 +364,17 @@ public abstract class InputFrame extends Frame implements InputWindow,
     
     /** {@inheritDoc} */
     public void keyPressed(final KeyEvent event) {
-        if (event.getSource() == getTextPane()) {
-            if ((Config.getOptionBool("ui", "quickCopy")
-            || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
-                event.setSource(getInputField());
-                getInputField().requestFocus();
-                if (robot != null && event.getKeyCode() != KeyEvent.VK_UNDEFINED) {
-                    robot.keyPress(event.getKeyCode());
-                    if (event.getKeyCode() == KeyEvent.VK_SHIFT) {
-                        robot.keyRelease(event.getKeyCode());
-                    }
+        if (event.getSource() == getTextPane()
+        && (Config.getOptionBool("ui", "quickCopy")
+        || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
+            event.setSource(getInputField());
+            getInputField().requestFocus();
+            if (robot != null && event.getKeyCode() != KeyEvent.VK_UNDEFINED) {
+                robot.keyPress(event.getKeyCode());
+                if (event.getKeyCode() == KeyEvent.VK_SHIFT) {
+                    robot.keyRelease(event.getKeyCode());
                 }
             }
-        } else if ((event.getModifiers() & KeyEvent.CTRL_MASK) != 0
-                && event.getKeyCode() == KeyEvent.VK_V) {
-            doPaste(event);
         }
         super.keyPressed(event);
     }
@@ -450,7 +450,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
      *
      * @param event the event that triggered the paste
      */
-    public void doPaste(final KeyEvent event) {
+    public void doPaste() {
         String clipboard = null;
         String[] clipboardLines = new String[]{"", };
         
@@ -474,10 +474,6 @@ public abstract class InputFrame extends Frame implements InputWindow,
         
         //check theres something to paste
         if (clipboard != null && clipboardLines.length > 1) {
-            //if this was fired by an event, consume the event
-            if (event != null) {
-                event.consume();
-            }
             //check the limit
             final int pasteTrigger = Config.getOptionInt("ui", "pasteProtectionLimit", 1);
             //check whether the number of lines is over the limit
@@ -491,7 +487,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
                     parent.sendLine(clipboardLine);
                 }
             }
-        } else if (event == null) {
+        } else {
             inputField.setText(inputField.getText() + clipboard);
         }
     }
