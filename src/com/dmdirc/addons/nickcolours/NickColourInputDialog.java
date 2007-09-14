@@ -26,9 +26,9 @@ import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.components.ColourChooser;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -45,7 +45,7 @@ import javax.swing.WindowConstants;
 /**
  * New nick colour input dialog.
  */
-public class NewNickColourInputDialog extends StandardDialog
+public class NickColourInputDialog extends StandardDialog
         implements ActionListener {
     
     /**
@@ -69,29 +69,52 @@ public class NewNickColourInputDialog extends StandardDialog
     /** nicklist colour input. */
     private ColourChooser nicklistColour;
     
-    /** Creates a new instance of NewNickColourInputDialog. */
-    public NewNickColourInputDialog() {
-        //super((MainFrame) Main.getUI().getMainWindow(), false);
+    /**
+     * Creates a new instance of NickColourInputDialog. 
+     * 
+     * @param nickname The nickname that's currently set
+     * @param network The network that's currently set
+     * @param textcolour The text colour that's currently set
+     * @param nickcolour The nicklist colour that's currently set
+     */
+    public NickColourInputDialog(final String nickname, final String network,
+            final String textcolour, final String nickcolour) {
         super(null, false);
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         
-        initComponents();
+        initComponents(nickname, network, textcolour, nickcolour);
         initListeners();
         layoutComponents();
     }
+
+    /**
+     * Creates a new instance of NickColourInputDialog. 
+     */    
+    public NickColourInputDialog() {
+        this("", "", "", "");
+    }
     
-    /** Initialises the components. */
-    private void initComponents() {
+    /**
+     * Initialises the components.
+     * 
+     * @param defaultNickname The default value for the nickname text field
+     * @param defaultNetwork The default value for the network text field
+     * @param defaultTextColour The default value for the text colour option
+     * @param defaultNickColour The default value for the nick colour option
+     */
+    private void initComponents(final String defaultNickname,
+            final String defaultNetwork, final String defaultTextColour,
+            final String defaultNickColour) {
         contentPanel = new JPanel();
         buttonsPanel = new JPanel();
         
         orderButtons(new JButton(), new JButton());
         
-        nickname = new JTextField();
-        network = new JTextField();
-        textColour = new ColourChooser("", true, true);
-        nicklistColour = new ColourChooser("", true, true);
+        nickname = new JTextField(defaultNickname);
+        network = new JTextField(defaultNetwork);
+        textColour = new ColourChooser(defaultTextColour, true, true);
+        nicklistColour = new ColourChooser(defaultNickColour, true, true);
         
         nickname.setPreferredSize(new Dimension(10,
                 nickname.getFont().getSize() - SMALL_BORDER));
@@ -168,9 +191,5 @@ public class NewNickColourInputDialog extends StandardDialog
     public void saveSettings() {
         //do stuff.
     }
-    
-    public static void main(final String[] args) {
-        new NewNickColourInputDialog().setVisible(true);
-    }
-    
+        
 }
