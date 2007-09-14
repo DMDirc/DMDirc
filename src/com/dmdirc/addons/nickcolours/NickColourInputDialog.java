@@ -22,6 +22,8 @@
 
 package com.dmdirc.addons.nickcolours;
 
+import com.dmdirc.Main;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -79,13 +81,18 @@ public class NickColourInputDialog extends StandardDialog
      */
     public NickColourInputDialog(final String nickname, final String network,
             final String textcolour, final String nickcolour) {
-        super(null, false);
+        super((MainFrame) Main.getUI().getMainWindow(), false);
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         
         initComponents(nickname, network, textcolour, nickcolour);
         initListeners();
         layoutComponents();
+        
+        setTitle("Nick colour editor");
+
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        setVisible(true);
     }
 
     /**

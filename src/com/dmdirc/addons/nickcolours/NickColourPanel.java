@@ -51,14 +51,14 @@ public class NickColourPanel extends JPanel implements ActionListener {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;    
+    private static final long serialVersionUID = 1;
     
     /** The table used for displaying the options. */
     private final JTable table;
     
     /** The plugin we're associated with. */
     private final NickColourPlugin plugin;
-        
+    
     /** The table headings. */
     private final String[] headers = {"Network", "Nickname", "Text colour", "Nicklist colour"};
     
@@ -71,7 +71,7 @@ public class NickColourPanel extends JPanel implements ActionListener {
         this.plugin = plugin;
         
         final Object[][] data = plugin.getData();
-                
+        
         table = new JTable(new DefaultTableModel(data, headers)) {
             
             /**
@@ -128,27 +128,45 @@ public class NickColourPanel extends JPanel implements ActionListener {
         button.addActionListener(this);
         buttonPanel.add(button, BorderLayout.CENTER);
         button = new JButton("Delete");
-        button.setPreferredSize(new Dimension(100, 20));        
+        button.setPreferredSize(new Dimension(100, 20));
         button.setMaximumSize(new Dimension(100, 20));
         button.addActionListener(this);
         buttonPanel.add(button, BorderLayout.EAST);
         
         add(buttonPanel, BorderLayout.SOUTH);
     }
-
+    
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
+        final DefaultTableModel model = ((DefaultTableModel) table.getModel());
+        
         if (e.getActionCommand().equals("Add")) {
-            
+            new NickColourInputDialog();
         } else if (e.getActionCommand().equals("Edit")) {
+            final int row = table.getSelectedRow();
             
+            final String network = (String) model.getValueAt(row, 0);
+            final String nickname = (String) model.getValueAt(row, 1);
+            
+            String textcolour = (String) model.getValueAt(row, 2);
+            String nickcolour = (String) model.getValueAt(row, 3);
+            
+            if (textcolour == null) {
+                textcolour = "";
+            }
+            
+            if (nickcolour == null) {
+                nickcolour = "";
+            }
+            
+            new NickColourInputDialog(nickname, network, textcolour, nickcolour);
         } else if (e.getActionCommand().equals("Delete")) {
             final int row = table.getSelectedRow();
             
             if (row > -1) {
-                ((DefaultTableModel) table.getModel()).removeRow(row);
+                model.removeRow(row);
             }
         }
     }
-        
+    
 }
