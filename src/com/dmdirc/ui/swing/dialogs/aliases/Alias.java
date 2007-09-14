@@ -22,13 +22,9 @@
 
 package com.dmdirc.ui.swing.dialogs.aliases;
 
-import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
-import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
-import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.actions.wrappers.AliasWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,15 +33,6 @@ import java.util.List;
  * Actions alias wrapper.
  */
 public final class Alias {
-    
-    /** Has the alias been created. */
-    private boolean isNewAlias;
-    
-    /** Has the alias been deleted. */
-    private boolean isDeletedAlias;
-    
-    /** Has the alias been modified. */
-    private boolean isModifiedAlias;
     
     /** Alias name. */
     private String name;
@@ -63,7 +50,6 @@ public final class Alias {
      */
     public Alias(final String name) {
         this.name = name;
-        this.isNewAlias = true;
         this.arguments = new ArrayList<ActionCondition>();
         this.arguments.add(new ActionCondition(1, CoreActionComponent.STRING_STRING,
                 CoreActionComparison.STRING_EQUALS, name));
@@ -80,45 +66,8 @@ public final class Alias {
     public Alias(final String name, final List<ActionCondition> arguments,
             final String[] response) {
         this.name = name;
-        this.isNewAlias = false;
         this.arguments = new ArrayList<ActionCondition>(arguments);
         this.response = response.clone();
-    }
-    
-    /**
-     * Checks whether this is a new alias.
-     *
-     * @return true iff the alias is new
-     */
-    public boolean isNew() {
-        return isNewAlias;
-    }
-    
-    /**
-     * checks if the alias is to be deleted.
-     *
-     * @return true iff the alias is to be deleted
-     */
-    public boolean isDeleted() {
-        return isDeletedAlias;
-    }
-    
-    /**
-     * Sets whether the alias is to be deleted.
-     *
-     * @param isDeleted true to schedule for deletion
-     */
-    public void setDeleted(final boolean isDeleted) {
-        this.isDeletedAlias = isDeleted;
-    }
-    
-    /**
-     * Has the alias been modified.
-     *
-     * @return true iff the alias has been modified
-     */
-    public boolean isModified() {
-        return isModifiedAlias;
     }
     
     /**
@@ -138,7 +87,16 @@ public final class Alias {
     public void setName(final String name) {
         if (!this.name.equals(name)) {
             this.name = name;
-            isModifiedAlias = true;
+            
+            ActionCondition argument;
+            
+            argument = arguments.get(0);
+            
+            if (argument.getComparison() != CoreActionComparison.STRING_EQUALS) {
+                argument = arguments.get(1);
+            }
+            
+            argument.setTarget(name);
         }
     }
     
@@ -152,6 +110,27 @@ public final class Alias {
     }
     
     /**
+     * Gets the aliases number of arguments argument
+     *
+     * @return Number of arguments ActionCondition or null
+     */
+    public ActionCondition getArgsArgument() {
+        ActionCondition argument;
+        
+        argument = arguments.get(0);
+        
+        if (argument.getComparison() == CoreActionComparison.STRING_EQUALS) {
+            if (arguments.size() > 1) {
+                argument = arguments.get(1);
+            } else {
+                argument = null;
+            }
+        }
+        
+        return argument;
+    }
+    
+    /**
      * Sets the aliases arguments.
      *
      * @param arguments A new list of arguments to set
@@ -159,7 +138,6 @@ public final class Alias {
     public void setArguments(final List<ActionCondition> arguments) {
         if (!this.arguments.equals(arguments)) {
             this.arguments = new ArrayList<ActionCondition>(arguments);
-            isModifiedAlias = true;
         }
     }
     
@@ -180,56 +158,6 @@ public final class Alias {
     public void setResponse(final String[] response) {
         if (!this.response.equals(response)) {
             this.response = response.clone();
-            isModifiedAlias = true;
         }
     }
-    
-    /** Saves the alias if saves/creates/deletes the alias as required. */
-    public void save() {
-        Action action = null;
-        
-        if (isDeletedAlias) {
-            final List<Action> actions = AliasWrapper.getAliasWrapper().getActions();
-            
-            for (Action loopAction : actions) {
-                if (name.equals(loopAction.getName())) {
-                    action = loopAction;
-                    break;
-                }
-            }
-            if (action != null) {
-                action.delete();
-                action = null;
-            }
-        }
-        
-        if (isModifiedAlias) {
-            //find alias
-            final List<Action> actions = AliasWrapper.getAliasWrapper().getActions();
-            
-            for (Action loopAction : actions) {
-                if (name.equals(loopAction.getName())) {
-                    action = loopAction;
-                    break;
-                }
-            }
-        }
-        
-        if (isNewAlias) {
-            action = new Action(
-                    AliasWrapper.getAliasWrapper().getGroupName(),
-                    name,
-                    new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },
-                    response,
-                    arguments,
-                    "");
-        }
-        
-        if (action != null) {
-            action.save();
-            isNewAlias = false;
-            isModifiedAlias = false;
-        }
-    }
-    
 }

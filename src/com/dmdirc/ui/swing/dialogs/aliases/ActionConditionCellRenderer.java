@@ -37,7 +37,7 @@ public final class ActionConditionCellRenderer extends DefaultTableCellRenderer 
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Creates a new instance of ActionConditionCellRenderer. */
     public ActionConditionCellRenderer() {
@@ -47,7 +47,7 @@ public final class ActionConditionCellRenderer extends DefaultTableCellRenderer 
     /** {@inheritDoc} */
     public void setValue(final Object aValue) {
         if (aValue == null) {
-            setText("N/A");
+            setText("Any");
             return;
         }
         

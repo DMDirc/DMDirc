@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs.aliases;
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.wrappers.AliasWrapper;
@@ -64,7 +65,7 @@ public final class AliasManagerDialog extends StandardDialog implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Previously instantiated instance of AliasManagerDialog. */
     private static AliasManagerDialog me;
@@ -118,9 +119,8 @@ public final class AliasManagerDialog extends StandardDialog implements
     public static synchronized AliasManagerDialog getAliasManagerDialog() {
         if (me == null) {
             me = new AliasManagerDialog();
-        } else {
-            me.updateTableData();
         }
+        me.updateTableData();
         return me;
     }
     
@@ -250,7 +250,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             
-            if (selectedRow > -1) {
+            if (selectedRow > -1 && selectedRow < tableModel.getRowCount()) {
                 updateAlias();
             }
             
@@ -281,33 +281,21 @@ public final class AliasManagerDialog extends StandardDialog implements
             conditions.add(aliasDetails.getArguments());
         }
         
+        alias.setName(aliasDetails.getName());
         alias.setArguments(conditions);
         alias.setResponse(aliasDetails.getResponse());
         final int localSelectedRow = table.getSelectedRow();
         tableModel.fireTableDataChanged();
-        table.getSelectionModel().setSelectionInterval(localSelectedRow, 
+        table.getSelectionModel().setSelectionInterval(localSelectedRow,
                 localSelectedRow);
     }
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == deleteButton) {
-            if (table.getSelectedRow() != -1) {
-                tableModel.removeRow(table.getRowSorter().
-                        convertRowIndexToModel(table.getSelectedRow()));
-            }
+            delete();
         } else if (e.getSource() == addButton) {
-            String name = JOptionPane.showInputDialog(this,
-                    "Please enter the name for the new alias.",
-                    "New alias", JOptionPane.QUESTION_MESSAGE);
-            if (name != null && !name.isEmpty()) {
-                if (name.charAt(0) == '/' || name.charAt(0) == '\\') {
-                    name = name.substring(1);
-                }
-                tableModel.addRow(new Alias(name));
-                final int newRow = tableModel.getRowCount() - 1;
-                table.getSelectionModel().setSelectionInterval(newRow, newRow);
-            }
+            add();
         } else if (e.getSource() == getCancelButton()) {
             dispose();
         } else if (e.getSource() == getOkButton()) {
@@ -316,12 +304,59 @@ public final class AliasManagerDialog extends StandardDialog implements
         }
     }
     
+    /** Adds an alias. */
+    private void add() {
+        String name = JOptionPane.showInputDialog(this,
+                "Please enter the name for the new alias.",
+                "New alias", JOptionPane.QUESTION_MESSAGE);
+        if (name != null && !name.isEmpty()) {
+            if (name.charAt(0) == '/' || name.charAt(0) == '\\') {
+                name = name.substring(1);
+            }
+            tableModel.addRow(new Alias(name));
+            final int newRow = tableModel.getRowCount() - 1;
+            table.getSelectionModel().setSelectionInterval(newRow, newRow);
+        }
+    }
+    
+    /** Deletes an alias. */
+    private void delete() {
+        if (table.getSelectedRow() != -1) {
+            tableModel.removeRow(table.getRowSorter().
+                    convertRowIndexToModel(table.getSelectedRow()));
+        }
+    }
+    
     /** Saves the aliases. */
     private void save() {
         final List<Alias> aliases = tableModel.getAliases();
         
         for (Alias alias : aliases) {
-            alias.save();
+            final ActionCondition argsCondition = alias.getArgsArgument();
+            final String argsString;
+            if (argsCondition == null) {
+                argsString = "Any";
+            } else {
+                argsString = argsCondition.getTarget();
+            }
+            /* if new
+            new Action(
+                    AliasWrapper.getAliasWrapper().getGroupName(),
+                    alias.getName() + argsString,
+                    new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },
+                    alias.getResponse(),
+                    alias.getArguments(),
+                    "").save();
+             */
+            /* if to be modified
+            action.setConditions(alias.getArguments());
+            action.setResponse(alias.getResponse());
+            action.save();
+             */
+            /* if to be deleted
+            action.delete();
+             */
+            ActionManager.loadActions();
         }
     }
     

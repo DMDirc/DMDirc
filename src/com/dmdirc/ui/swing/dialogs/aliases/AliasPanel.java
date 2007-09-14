@@ -54,7 +54,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Name field. */
     private final JTextField name;
@@ -124,6 +124,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
     /** Clears the details. */
     public void clear() {
         name.setText("");
+        name.setEnabled(false);
         argumentComponent.setSelectedItem(null);
         argumentNumber.setValue(0);
         response.setText("");
@@ -142,7 +143,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
         if (alias == null) {
             clear();
         }
-        name.setEnabled(false);
+        name.setEnabled(true);
         argumentComponent.setEnabled(true);
         response.setEnabled(true);
         name.setText(alias.getName());
@@ -179,6 +180,15 @@ public final class AliasPanel extends JPanel implements ActionListener {
         } else {
             argumentNumber.setEnabled(false);
         }
+    }
+    
+    /**
+     * Returns the current name.
+     *
+     * @return Alias name
+     */
+    public String getName() {
+        return name.getText();
     }
     
     /**

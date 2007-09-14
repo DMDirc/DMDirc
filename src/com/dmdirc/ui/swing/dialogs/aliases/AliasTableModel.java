@@ -40,13 +40,10 @@ public final class AliasTableModel extends AbstractTableModel {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Data list. */
     private List<Alias> aliases;
-    
-    /** Deleted Data list. */
-    private List<Alias> deletedAliases;
     
     /** Creates a new instance of AliasTableModel. */
     public AliasTableModel() {
@@ -62,7 +59,6 @@ public final class AliasTableModel extends AbstractTableModel {
         super();
         
         this.aliases = aliases;
-        this.deletedAliases = new ArrayList<Alias>();
     }
     
     /** 
@@ -71,8 +67,8 @@ public final class AliasTableModel extends AbstractTableModel {
      * @param aliases List of aliases
      */
     public void setAliases(final List<Alias> aliases) {
+        this.aliases.clear();
         this.aliases = aliases;
-        this.deletedAliases = new ArrayList<Alias>();
         
         fireTableDataChanged();
     }
@@ -97,7 +93,8 @@ public final class AliasTableModel extends AbstractTableModel {
             case 2:
                 return "Response";
             default:
-                return null;
+                throw new IllegalArgumentException("Unknown column: " 
+                        + columnIndex);
         }
     }
     
@@ -111,7 +108,8 @@ public final class AliasTableModel extends AbstractTableModel {
             case 2:
                 return String[].class;
             default:
-                return null;
+                throw new IllegalArgumentException("Unknown column: " 
+                        + columnIndex);
         }
     }
     
@@ -179,10 +177,7 @@ public final class AliasTableModel extends AbstractTableModel {
      * @return Complete alias list
      */
     public List<Alias> getAliases() {
-        final List<Alias> allAliases = new ArrayList<Alias>();
-        allAliases.addAll(aliases);
-        allAliases.addAll(deletedAliases);
-        return allAliases;
+        return aliases;
     }
     
     /**
@@ -243,10 +238,7 @@ public final class AliasTableModel extends AbstractTableModel {
      * @param row Row to remove
      */
     public void removeRow(final int row) {
-        final Alias alias = aliases.get(row);
-        aliases.remove(alias);
-        deletedAliases.add(alias);
-        alias.setDeleted(true);
+        aliases.remove(row);
         fireTableRowsDeleted(row, row);
     }
     
