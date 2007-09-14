@@ -617,6 +617,7 @@ public final class Server extends WritableFrameContainer implements
     private void closeChannels() {
         for (Channel channel : channels.values()) {
             channel.closeWindow(false);
+            Main.getUI().getMainWindow().getFrameManager().delCustom(this, channel);
         }
         channels.clear();
     }
@@ -627,7 +628,6 @@ public final class Server extends WritableFrameContainer implements
     private void clearChannels() {
         for (Channel channel : channels.values()) {
             channel.resetWindow();
-            Main.getUI().getMainWindow().getFrameManager().delCustom(this, channel);
         }
     }
     
