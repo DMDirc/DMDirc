@@ -378,7 +378,7 @@ public final class Server extends WritableFrameContainer implements
      * @return True iff the channel is known, false otherwise
      */
     public boolean hasChannel(final String channel) {
-        return channels.containsKey(parser.toLowerCase(channel));
+        return parser != null && channels.containsKey(parser.toLowerCase(channel));
     }
     
     /**
