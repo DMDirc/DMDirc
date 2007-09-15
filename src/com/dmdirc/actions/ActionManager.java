@@ -46,25 +46,26 @@ import java.util.Map;
 public final class ActionManager {
     
     /** A list of registered action types. */
-    private static List<ActionType> actionTypes;
+    private final static List<ActionType> actionTypes = new ArrayList<ActionType>();
     
     /** A list of registered action components. */
-    private static List<ActionComponent> actionComponents;
+    private final static List<ActionComponent> actionComponents = new ArrayList<ActionComponent>();
     
     /** A list of registered action comparisons. */
-    private static List<ActionComparison> actionComparisons;
+    private final static List<ActionComparison> actionComparisons = new ArrayList<ActionComparison>();
     
     /** A list of all action wrappers that have registered with us. */
-    private static List<ActionWrapper> actionWrappers;
+    private final static List<ActionWrapper> actionWrappers = new ArrayList<ActionWrapper>();
     
     /** A map linking types and a list of actions that're registered for them. */
-    private static Map<ActionType, List<Action>> actions;
+    private final static Map<ActionType, List<Action>> actions = new HashMap<ActionType, List<Action>>();
     
     /** A map linking groups and a list of actions that're in them. */
-    private static Map<String, List<Action>> groups;
+    private final static Map<String, List<Action>> groups = new HashMap<String, List<Action>>();
     
     /** A map of the action type groups to the action types within. */
-    private static Map<String, List<ActionType>> actionTypeGroups;
+    private final static Map<String, List<ActionType>> actionTypeGroups
+            = new LinkedHashMap<String, List<ActionType>>();
     
     /** Creates a new instance of ActionManager. */
     private ActionManager() {
@@ -74,13 +75,7 @@ public final class ActionManager {
     /**
      * Initialises the action manager.
      */
-    public static void init() {
-        actionTypes = new ArrayList<ActionType>();
-        actionComparisons = new ArrayList<ActionComparison>();
-        actionComponents = new ArrayList<ActionComponent>();
-        actionWrappers = new ArrayList<ActionWrapper>();
-        actionTypeGroups = new LinkedHashMap<String, List<ActionType>>();
-        
+    public static void init() {        
         registerActionTypes(CoreActionType.values());
         registerActionComparisons(CoreActionComparison.values());
         registerActionComponents(CoreActionComponent.values());
@@ -162,8 +157,8 @@ public final class ActionManager {
      * Loads actions from the user's directory.
      */
     public static void loadActions() {
-        actions = new HashMap<ActionType, List<Action>>();
-        groups = new HashMap<String, List<Action>>();
+        actions.clear();
+        groups.clear();
         
         final File dir = new File(getDirectory());
         
