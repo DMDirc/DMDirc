@@ -287,7 +287,7 @@ public class Identity implements Serializable, Comparable<Identity> {
         properties.remove(domain + "." + option);
         needSave = true;
         
-        for (ConfigChangeListener listener : listeners) {
+        for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
             listener.configChanged(domain, option, value, null);
         }
     }
