@@ -319,9 +319,9 @@ public class Identity implements Serializable, Comparable<Identity> {
                 
                 needSave = false;
             } catch (FileNotFoundException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Unable to save identity file");
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to save identity file: " + ex.getMessage());
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Unable to save identity file");
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to save identity file: " + ex.getMessage());
             }
         }
     }
@@ -409,6 +409,12 @@ public class Identity implements Serializable, Comparable<Identity> {
      * @return A new identity containing the specified properties
      */
     protected static Identity createIdentity(final Properties properties) {
+        if (!properties.containsKey("identity.name") || properties.getProperty("identity.name").isEmpty()) {
+            Logger.appError(ErrorLevel.LOW, "createIdentity caleld with invalid identity", 
+                    new InvalidIdentityFileException("identity.name is not set"));
+            return null;
+        }
+        
         final String fs = System.getProperty("file.separator");
         final String location = Main.getConfigDir() + "identities" + fs;
         final String name = properties.getProperty("identity.name");
@@ -423,7 +429,7 @@ public class Identity implements Serializable, Comparable<Identity> {
                 properties.store(writer, "");
                 writer.close();
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.MEDIUM, "Unable to write new identity file");
+                Logger.userError(ErrorLevel.MEDIUM, "Unable to write new identity file: " + ex.getMessage());
                 return null;
             }
         }
@@ -434,13 +440,13 @@ public class Identity implements Serializable, Comparable<Identity> {
             
             return identity;
         } catch (MalformedURLException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to open new identity file");
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to open new identity file: " + ex.getMessage());
             return null;
         } catch (InvalidIdentityFileException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to open new identity file");
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to open new identity file: " + ex.getMessage());
             return null;
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.MEDIUM, "Unable to open new identity file");
+            Logger.userError(ErrorLevel.MEDIUM, "Unable to open new identity file: " + ex.getMessage());
             return null;
         }
     }
