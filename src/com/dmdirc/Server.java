@@ -534,6 +534,15 @@ public final class Server extends WritableFrameContainer implements
     }
     
     /**
+     * Retrieves the current state for this server.
+     * 
+     * @return This server's state
+     */
+    public STATE getState() {
+        return myState;
+    }
+    
+    /**
      * Closes this server connection and associated windows.
      *
      * @param reason reason for closing
