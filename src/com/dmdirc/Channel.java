@@ -199,7 +199,7 @@ public final class Channel extends MessageTarget implements
             ActionManager.processEvent(CoreActionType.CHANNEL_SELF_MESSAGE, buff,
                     this, channelInfo.getUser(me), line);
             
-            window.addLine(buff, modes, details[0], details[1], details[2],
+            addLine(buff, modes, details[0], details[1], details[2],
                     window.getTranscoder().encode(line), channelInfo);
             
             channelInfo.sendMessage(window.getTranscoder().encode(line));
@@ -220,14 +220,14 @@ public final class Channel extends MessageTarget implements
         final String modes = channelInfo.getUser(me).getImportantModePrefix();
         
         if (server.getParser().getMaxLength("PRIVMSG", getChannelInfo().getName()) <= action.length()) {
-            window.addLine("actionTooLong", action.length());
+            addLine("actionTooLong", action.length());
         } else {
             final StringBuffer buff = new StringBuffer("channelSelfAction");
             
             ActionManager.processEvent(CoreActionType.CHANNEL_SELF_ACTION, buff,
                     this, channelInfo.getUser(me), action);
             
-            window.addLine(buff, modes, me.getNickname(), me.getIdent(),
+            addLine(buff, modes, me.getNickname(), me.getIdent(),
                     me.getHost(), window.getTranscoder().encode(action), channelInfo);
             
             channelInfo.sendAction(window.getTranscoder().encode(action));
@@ -284,7 +284,7 @@ public final class Channel extends MessageTarget implements
         onChannel = true;
         
         final ClientInfo me = server.getParser().getMyself();
-        window.addLine("channelSelfJoin", "", me.getNickname(), me.getIdent(),
+        addLine("channelSelfJoin", "", me.getNickname(), me.getIdent(),
                 me.getHost(), channelInfo.getName());
     }
     
@@ -409,7 +409,7 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_MESSAGE, buff, this, cChannelClient, sMessage);
         
-        window.addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
+        addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
     }
     
     /** {@inheritDoc} */
@@ -426,7 +426,7 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_ACTION, buff, this, cChannelClient, sMessage);
         
-        window.addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
+        addLine(buff, modes, parts[0], parts[1], parts[2], sMessage, cChannel);
     }
     
     /** {@inheritDoc} */
@@ -455,7 +455,7 @@ public final class Channel extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.CHANNEL_GOTTOPIC, buff, this);
             
-            window.addLine(buff, cChannel.getTopic(), cChannel.getTopicUser(),
+            addLine(buff, cChannel.getTopic(), cChannel.getTopicUser(),
                     1000 * cChannel.getTopicTime(), cChannel);
         } else {
             final ChannelClientInfo user = cChannel.getUser(cChannel.getTopicUser());
@@ -467,7 +467,7 @@ public final class Channel extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.CHANNEL_TOPICCHANGE, buff, this, user, topic);
             
-            window.addLine(buff, modes, parts[0], parts[1], parts[2], cChannel, topic);
+            addLine(buff, modes, parts[0], parts[1], parts[2], cChannel, topic);
         }
         updateTitle();
     }
@@ -481,7 +481,7 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_JOIN, buff, this, cChannelClient);
         
-        window.addLine(buff, "", client.getNickname(), client.getIdent(),
+        addLine(buff, "", client.getNickname(), client.getIdent(),
                 client.getHost(), cChannel);
         
         window.addName(cChannelClient);
@@ -518,7 +518,7 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_PART, buff, this, cChannelClient, sReason);
         
-        window.addLine(buff, modes, nick, ident, host, cChannel, sReason);
+        addLine(buff, modes, nick, ident, host, cChannel, sReason);
         
         window.removeName(cChannelClient);
         
@@ -549,7 +549,7 @@ public final class Channel extends MessageTarget implements
         ActionManager.processEvent(CoreActionType.CHANNEL_KICK, buff, this,
                 cKickedByClient, cKickedClient, sReason);
         
-        window.addLine(buff, kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,
+        addLine(buff, kickermodes, kicker[0], kicker[1], kicker[2], victimmodes,
                 victim, victimident, victimhost, cChannel.getName(), sReason);
         
         window.removeName(cKickedClient);
@@ -580,7 +580,7 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, buff, this, cChannelClient, sReason);
         
-        window.addLine(buff, modes, source, client.getIdent(),
+        addLine(buff, modes, source, client.getIdent(),
                 client.getHost(), cChannel, sReason);
         
         window.removeName(cChannelClient);
@@ -605,7 +605,7 @@ public final class Channel extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.CHANNEL_NICKCHANGE, buff, this, cChannelClient, sOldNick);
         
-        window.addLine(buff, modes, sOldNick, ident, host, cChannel, nick);
+        addLine(buff, modes, sOldNick, ident, host, cChannel, nick);
         window.updateNames();
     }
     
@@ -623,7 +623,7 @@ public final class Channel extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, buff, this, cChannelClient, sModes);
             
-            window.addLine(buff, sModes, cChannel.getName());
+            addLine(buff, sModes, cChannel.getName());
         } else {
             final String modes = getModes(cChannelClient);
             final String[] details = getDetails(cChannelClient);
@@ -638,7 +638,7 @@ public final class Channel extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.CHANNEL_MODECHANGE, buff, this, cChannelClient, sModes);
             
-            window.addLine(type,  modes, details[0], details[1],
+            addLine(type,  modes, details[0], details[1],
                     details[2], cChannel.getName(), sModes);
         }
         
@@ -664,7 +664,7 @@ public final class Channel extends MessageTarget implements
                 format = "channelUserMode_default";
             }
             
-            window.addLine(format, sourceModes, sourceHost[0], sourceHost[1],
+            addLine(format, sourceModes, sourceHost[0], sourceHost[1],
                     sourceHost[2], targetModes, targetNick, targetIdent,
                     targetHost, cChannel, sMode);
         }
@@ -681,7 +681,7 @@ public final class Channel extends MessageTarget implements
         final String modes = getModes(cChannelClient);
         final String[] source = getDetails(cChannelClient);
         
-        window.addLine("channelCTCP", modes, source[0], source[1], source[2],
+        addLine("channelCTCP", modes, source[0], source[1], source[2],
                 sType, sMessage, cChannel);
         
         server.sendCTCPReply(source[0], sType, sMessage);

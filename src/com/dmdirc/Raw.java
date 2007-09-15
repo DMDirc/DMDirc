@@ -106,13 +106,13 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
     
     /** {@inheritDoc} */
     public void onDataIn(final IRCParser tParser, final String sData) {
-        window.addLine("rawIn", sData);
+        addLine("rawIn", sData);
     }
     
     /** {@inheritDoc} */
     public void onDataOut(final IRCParser tParser, final String sData,
             final boolean bFromParser) {
-        window.addLine("rawOut", sData);
+        addLine("rawOut", sData);
     }
     
     /** {@inheritDoc} */

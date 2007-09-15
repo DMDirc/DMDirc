@@ -204,4 +204,30 @@ public abstract class FrameContainer {
         // Do nothing.
     }
     
+    /**
+     * Adds a line to this container's window. If the window is null for some
+     * reason, the line is silently discarded.
+     * 
+     * @param type The message type to use
+     * @param args The message's arguments
+     */
+    protected void addLine(final String type, final Object ... args) {
+        if (getFrame() != null) {
+            getFrame().addLine(type, args);
+        }
+    }
+    
+    /**
+     * Adds a line to this container's window. If the window is null for some
+     * reason, the line is silently discarded.
+     * 
+     * @param type The message type to use
+     * @param args The message's arguments
+     */
+    protected void addLine(final StringBuffer type, final Object ... args) {
+        if (getFrame() != null) {
+            getFrame().addLine(type, args);
+        }
+    }    
+    
 }

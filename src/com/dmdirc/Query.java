@@ -135,7 +135,7 @@ public final class Query extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.QUERY_SELF_MESSAGE, buff, this, line);
             
-            window.addLine(buff, client.getNickname(), client.getIdent(),
+            addLine(buff, client.getNickname(), client.getIdent(),
                     client.getHost(), window.getTranscoder().encode(line));
         } else {
             sendLine(line.substring(0, getMaxLineLength()));
@@ -164,10 +164,10 @@ public final class Query extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.QUERY_SELF_ACTION, buff, this, action);
             
-            window.addLine(buff, client.getNickname(), client.getIdent(),
+            addLine(buff, client.getNickname(), client.getIdent(),
                     client.getHost(), window.getTranscoder().encode(action));
         } else {
-            window.addLine("actionTooLong", action.length());
+            addLine("actionTooLong", action.length());
         }
     }
     
@@ -186,7 +186,7 @@ public final class Query extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.QUERY_MESSAGE, buff, this, message);
         
-        window.addLine(buff, parts[0], parts[1], parts[2], message);
+        addLine(buff, parts[0], parts[1], parts[2], message);
     }
     
     /**
@@ -204,7 +204,7 @@ public final class Query extends MessageTarget implements
         
         ActionManager.processEvent(CoreActionType.QUERY_ACTION, buff, this, message);
         
-        window.addLine(buff, parts[0], parts[1], parts[2], message);
+        addLine(buff, parts[0], parts[1], parts[2], message);
     }
     
     /**
@@ -256,7 +256,7 @@ public final class Query extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.QUERY_NICKCHANGE, format, this, sOldNick);
             
-            window.addLine(format, sOldNick, cClient.getIdent(),
+            addLine(format, sOldNick, cClient.getIdent(),
                     cClient.getHost(), cClient.getNickname());
             host = cClient.getNickname() + "!" + cClient.getIdent() + "@" + cClient.getHost();
             updateTitle();
@@ -272,7 +272,7 @@ public final class Query extends MessageTarget implements
             
             ActionManager.processEvent(CoreActionType.QUERY_QUIT, format, this, sReason);
             
-            window.addLine(format, cClient.getNickname(),
+            addLine(format, cClient.getNickname(),
                     cClient.getIdent(), cClient.getHost(), sReason);
         }
     }

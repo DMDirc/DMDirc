@@ -266,7 +266,7 @@ public final class Server extends WritableFrameContainer implements
         window.setFrameIcon(icon);
         Main.getUI().getMainWindow().getFrameManager().iconUpdated(this);
         
-        window.addLine("serverConnecting", server, port);
+        addLine("serverConnecting", server, port);
         
         final MyInfo myInfo = new MyInfo();
         myInfo.setNickname(profile.getOption("profile", "nickname"));
@@ -774,7 +774,7 @@ public final class Server extends WritableFrameContainer implements
             query.getFrame().addLine(messageType, args);
         }
         
-        window.addLine(messageType, args);
+        addLine(messageType, args);
     }
     
     /**
@@ -931,7 +931,7 @@ public final class Server extends WritableFrameContainer implements
         
         ActionManager.processEvent(CoreActionType.SERVER_MOTDSTART, buffer, this, sData);
         
-        window.addLine(buffer, sData);
+        addLine(buffer, sData);
     }
     
     /** {@inheritDoc} */
@@ -940,7 +940,7 @@ public final class Server extends WritableFrameContainer implements
         
         ActionManager.processEvent(CoreActionType.SERVER_MOTDLINE, buffer, this, sData);
         
-        window.addLine(buffer, sData);
+        addLine(buffer, sData);
     }
     
     /** {@inheritDoc} */
@@ -949,7 +949,7 @@ public final class Server extends WritableFrameContainer implements
         
         ActionManager.processEvent(CoreActionType.SERVER_MOTDEND, buffer, this);
         
-        window.addLine(buffer, "End of server's MOTD.");
+        addLine(buffer, "End of server's MOTD.");
     }
     
     /** {@inheritDoc} */
@@ -1007,7 +1007,7 @@ public final class Server extends WritableFrameContainer implements
         ActionManager.processEvent(CoreActionType.SERVER_USERMODES, format,
                 this, setter, sModes);
         
-        window.addLine(format, setterParts[0], setterParts[1], setterParts[2],
+        addLine(format, setterParts[0], setterParts[1], setterParts[2],
                 sModes);
     }
     
