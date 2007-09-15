@@ -339,6 +339,10 @@ public final class Query extends MessageTarget implements
     /** {@inheritDoc} */
     @Override
     public void activateFrame() {
+        if (window == null) {
+            return;
+        }
+        
         if (!window.isVisible()) {
             show();
         }
