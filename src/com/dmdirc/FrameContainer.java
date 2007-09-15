@@ -92,7 +92,11 @@ public abstract class FrameContainer {
      * @return the associated config manager
      */
     public ConfigManager getConfigManager() {
-        return getServer().getConfigManager();
+        if (getServer() == null) {
+            return null;
+        } else {
+            return getServer().getConfigManager();
+        }
     }
     
     /**
@@ -207,7 +211,7 @@ public abstract class FrameContainer {
     /**
      * Adds a line to this container's window. If the window is null for some
      * reason, the line is silently discarded.
-     * 
+     *
      * @param type The message type to use
      * @param args The message's arguments
      */
@@ -220,7 +224,7 @@ public abstract class FrameContainer {
     /**
      * Adds a line to this container's window. If the window is null for some
      * reason, the line is silently discarded.
-     * 
+     *
      * @param type The message type to use
      * @param args The message's arguments
      */
@@ -228,6 +232,6 @@ public abstract class FrameContainer {
         if (getFrame() != null) {
             getFrame().addLine(type, args);
         }
-    }    
+    }
     
 }
