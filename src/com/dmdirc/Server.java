@@ -535,7 +535,7 @@ public final class Server extends WritableFrameContainer implements
     
     /**
      * Retrieves the current state for this server.
-     * 
+     *
      * @return This server's state
      */
     public STATE getState() {
@@ -595,12 +595,12 @@ public final class Server extends WritableFrameContainer implements
      */
     public void disconnect(final String reason) {
         switch (myState) {
-            case CLOSING:
-            case DISCONNECTED:
-            case TRANSIENTLY_DISCONNECTED:
-                return;
-            case RECONNECT_WAIT:
-                reconnectTimer.cancel();
+        case CLOSING:
+        case DISCONNECTED:
+        case TRANSIENTLY_DISCONNECTED:
+            return;
+        case RECONNECT_WAIT:
+            reconnectTimer.cancel();
         }
         
         myState = STATE.DISCONNECTED;
@@ -1049,21 +1049,7 @@ public final class Server extends WritableFrameContainer implements
         }
         
         if (Config.getOptionBool("general", "reconnectondisconnect")) {
-            myState = STATE.RECONNECT_WAIT;
-            
-            final int delay = Config.getOptionInt("general", "reconnectdelay", 5);
-            
-            handleNotification("connectRetry", server, delay);
-            
-            reconnectTimer = new Timer("Server Reconnect Timer");
-            reconnectTimer.schedule(new TimerTask() {
-                public void run() {
-                    if (myState == STATE.RECONNECT_WAIT) {
-                        myState = STATE.TRANSIENTLY_DISCONNECTED;
-                        reconnect();
-                    }
-                }
-            }, delay * 1000);
+            doDelayedReconnect();
         }
     }
     
@@ -1095,22 +1081,29 @@ public final class Server extends WritableFrameContainer implements
         handleNotification("connectError", server, description);
         
         if (Config.getOptionBool("general", "reconnectonconnectfailure")) {
-            myState = STATE.RECONNECT_WAIT;
-            
-            final int delay = Config.getOptionInt("general", "reconnectdelay", 5);
-            
-            handleNotification("connectRetry", server, delay);
-            
-            reconnectTimer = new Timer("Server connect error timer");
-            reconnectTimer.schedule(new TimerTask() {
-                public void run() {
-                    if (myState == STATE.RECONNECT_WAIT) {
-                        myState = STATE.TRANSIENTLY_DISCONNECTED;
-                        reconnect();
-                    }
-                }
-            }, delay * 1000);
+            doDelayedReconnect();
         }
+    }
+    
+    /**
+     * Schedules a reconnect attempt to be performed after a user-defiend delay.
+     */
+    private void doDelayedReconnect() {
+        final int delay = Math.max(1, Config.getOptionInt("general", "reconnectdelay", 5));
+        
+        handleNotification("connectRetry", server, delay);
+        
+        reconnectTimer = new Timer("Server Reconnect Timer");
+        reconnectTimer.schedule(new TimerTask() {
+            public void run() {
+                if (myState == STATE.RECONNECT_WAIT) {
+                    myState = STATE.TRANSIENTLY_DISCONNECTED;
+                    reconnect();
+                }
+            }
+        }, delay * 1000);
+        
+        myState = STATE.RECONNECT_WAIT;
     }
     
     /** {@inheritDoc} */
@@ -1158,7 +1151,7 @@ public final class Server extends WritableFrameContainer implements
         
         // Check we have mode aliases
         final String modes = parser.getBoolChanModes() + parser.getListChanModes()
-        + parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
+                + parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
         
         for (int i = 0; i < modes.length(); i++) {
             final char mode = modes.charAt(i);
