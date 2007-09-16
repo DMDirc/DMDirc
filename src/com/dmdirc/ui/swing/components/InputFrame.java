@@ -63,6 +63,7 @@ import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.undo.CannotRedoException;
 import javax.swing.undo.CannotUndoException;
@@ -461,9 +462,8 @@ public abstract class InputFrame extends Frame implements InputWindow,
         
         try {
             //get the contents of the input field and combine it with the clipboard
-            clipboard = getInputField().getText()
-            + (String) Toolkit.getDefaultToolkit().getSystemClipboard()
-            .getData(DataFlavor.stringFlavor);
+            clipboard = (String) Toolkit.getDefaultToolkit().
+                    getSystemClipboard().getData(DataFlavor.stringFlavor);
             //split the text
             clipboardLines = getSplitLine(clipboard);
         } catch (IOException ex) {
@@ -474,6 +474,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
         
         //check theres something to paste
         if (clipboard != null && clipboardLines.length > 1) {
+            clipboard = getInputField().getText() + clipboard;
             //check the limit
             final int pasteTrigger = Config.getOptionInt("ui", "pasteProtectionLimit", 1);
             //check whether the number of lines is over the limit
@@ -488,7 +489,11 @@ public abstract class InputFrame extends Frame implements InputWindow,
                 }
             }
         } else {
-            inputField.setText(inputField.getText() + clipboard);
+            try {
+                inputField.getDocument().insertString(inputField.getCaretPosition(), clipboard, null);
+            } catch (BadLocationException ex) {
+                Logger.appError(ErrorLevel.LOW, "Unable to paste clipboard contents", ex);
+            }
         }
     }
     
