@@ -41,25 +41,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JMenuItem;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 /**
  * The ServerFrame is the MDI window that shows server messages to the user.
  */
 public final class ServerFrame extends InputFrame implements ServerWindow,
-        ActionListener {
+        ActionListener, PopupMenuListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 8;
+    private static final long serialVersionUID = 9;
     
     /** This channel's command parser. */
     private final ServerCommandParser commandParser;
-    
-    /** This frame's parent. */
-    private final Server parent;
     
     /** popup menu item. */
     private JMenuItem settingsMI;
@@ -70,8 +69,6 @@ public final class ServerFrame extends InputFrame implements ServerWindow,
      */
     public ServerFrame(final Server owner) {
         super(owner);
-        
-        parent = owner;
         
         initComponents();
         
@@ -125,6 +122,7 @@ public final class ServerFrame extends InputFrame implements ServerWindow,
         settingsMI.addActionListener(this);
         getPopup().addSeparator();
         getPopup().add(settingsMI);
+        getPopup().addPopupMenuListener(this);
         
         final GridBagConstraints constraints = new GridBagConstraints();
         
@@ -155,6 +153,29 @@ public final class ServerFrame extends InputFrame implements ServerWindow,
         if (actionEvent.getSource() == settingsMI) {
             new ServerSettingsDialog(getContainer().getServer()).setVisible(true);
         }
+    }
+
+    public long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
+    /** {@inheritDoc}. */
+    public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
+        if (getContainer().getServer().getState().equals(Server.STATE.CONNECTED)) {
+            settingsMI.setEnabled(true);
+        } else {
+            settingsMI.setEnabled(false);
+        }
+    }
+
+    /** {@inheritDoc}. */
+    public void popupMenuWillBecomeInvisible(final PopupMenuEvent e) {
+        //Ignore
+    }
+
+    /** {@inheritDoc}. */
+    public void popupMenuCanceled(final PopupMenuEvent e) {
+        //Ignore
     }
     
 }
