@@ -22,9 +22,9 @@
 
 package com.dmdirc.ui.swing.dialogs.serversetting;
 
-import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.Dimension;
@@ -55,7 +55,7 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Parent server. */
     private final Server server;
@@ -166,7 +166,8 @@ public final class IgnoreListPanel extends JPanel implements ActionListener,
             ignoreList.append((String) listModel.getElementAt(i));
         }
 
-        Config.setOption("network", "ignorelist", ignoreList.toString());
+        IdentityManager.getNetworkConfig(server.getNetwork()).
+                setOption("network", "ignorelist", ignoreList.toString());
         
         server.updateIgnoreList();
     }
