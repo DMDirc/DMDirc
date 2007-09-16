@@ -1138,6 +1138,7 @@ public final class Server extends WritableFrameContainer implements
     /** {@inheritDoc} */
     public void onPost005(final IRCParser tParser) {
         ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
+        myState = STATE.CONNECTED;
         
         if (configManager.hasOption("general", "rejoinchannels")) {
             for (Channel chan : channels.values()) {
