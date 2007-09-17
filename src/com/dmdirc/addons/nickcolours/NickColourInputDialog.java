@@ -57,6 +57,14 @@ public class NickColourInputDialog extends StandardDialog
      */
     private static final long serialVersionUID = 1;
     
+    /** Whether or not this is a new entry (as opposed to editing an old one). */
+    private boolean isnew;
+    /** The row we're editing, if this isn't a new entry. */
+    private int row;
+    
+    /** The NickColourPanel we're reporting to. */
+    private final NickColourPanel panel;
+    
     /** Buttons panel. */
     private JPanel buttonsPanel;
     /** content panel. */
@@ -72,16 +80,22 @@ public class NickColourInputDialog extends StandardDialog
     private ColourChooser nicklistColour;
     
     /**
-     * Creates a new instance of NickColourInputDialog. 
-     * 
+     * Creates a new instance of NickColourInputDialog.
+     *
+     * @param panel The panel that's opening this dialog
+     * @param row The row of the table we're editing
      * @param nickname The nickname that's currently set
      * @param network The network that's currently set
      * @param textcolour The text colour that's currently set
      * @param nickcolour The nicklist colour that's currently set
      */
-    public NickColourInputDialog(final String nickname, final String network,
+    public NickColourInputDialog(final NickColourPanel panel, final int row,
+            final String nickname, final String network,
             final String textcolour, final String nickcolour) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
+        
+        this.panel = panel;
+        this.row = row;
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         
@@ -90,21 +104,25 @@ public class NickColourInputDialog extends StandardDialog
         layoutComponents();
         
         setTitle("Nick colour editor");
-
+        
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         setVisible(true);
     }
-
+    
     /**
-     * Creates a new instance of NickColourInputDialog. 
-     */    
-    public NickColourInputDialog() {
-        this("", "", "", "");
+     * Creates a new instance of NickColourInputDialog.
+     *
+     * @param panel The panel that's opening this dialog
+     */
+    public NickColourInputDialog(final NickColourPanel panel) {
+        this(panel, -1, "", "", "", "");
+        
+        isnew = true;
     }
     
     /**
      * Initialises the components.
-     * 
+     *
      * @param defaultNickname The default value for the nickname text field
      * @param defaultNetwork The default value for the network text field
      * @param defaultTextColour The default value for the text colour option
@@ -196,7 +214,16 @@ public class NickColourInputDialog extends StandardDialog
     
     /** Saves settings. */
     public void saveSettings() {
-        //do stuff.
-    }
+        final String myNetwork = network.getText().toLowerCase();
+        final String myNickname = nickname.getText().toLowerCase();
+        final String myTextColour = textColour.getColour();
+        final String myNickColour = nicklistColour.getColour();
         
+        if (!isnew) {
+            panel.removeRow(row);
+        }
+        
+        panel.addRow(myNetwork, myNickname, myTextColour, myNickColour);
+    }
+    
 }

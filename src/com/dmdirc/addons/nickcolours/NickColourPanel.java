@@ -141,7 +141,7 @@ public class NickColourPanel extends JPanel implements ActionListener {
         final DefaultTableModel model = ((DefaultTableModel) table.getModel());
         
         if (e.getActionCommand().equals("Add")) {
-            new NickColourInputDialog();
+            new NickColourInputDialog(this);
         } else if (e.getActionCommand().equals("Edit")) {
             final int row = table.getSelectedRow();
             
@@ -159,7 +159,7 @@ public class NickColourPanel extends JPanel implements ActionListener {
                 nickcolour = "";
             }
             
-            new NickColourInputDialog(nickname, network, textcolour, nickcolour);
+            new NickColourInputDialog(this, row, nickname, network, textcolour, nickcolour);
         } else if (e.getActionCommand().equals("Delete")) {
             final int row = table.getSelectedRow();
             
@@ -167,6 +167,29 @@ public class NickColourPanel extends JPanel implements ActionListener {
                 model.removeRow(row);
             }
         }
+    }
+    
+    /**
+     * Removes a row from the table.
+     * 
+     * @param row The row to be removed
+     */
+    void removeRow(final int row) {
+        ((DefaultTableModel) table.getModel()).removeRow(row);
+    }
+    
+    /**
+     * Adds a row to the table.
+     * 
+     * @param network The network setting
+     * @param nickname The nickname setting
+     * @param textcolour The textpane colour setting
+     * @param nickcolour The nick list colour setting
+     */
+    void addRow(final String network, final String nickname,
+            final String textcolour, final String nickcolour) {
+        final DefaultTableModel model = ((DefaultTableModel) table.getModel());
+        model.addRow(new Object[]{network, nickname, textcolour, nickcolour});
     }
     
 }
