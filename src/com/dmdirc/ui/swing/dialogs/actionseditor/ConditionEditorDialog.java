@@ -162,7 +162,8 @@ public final class ConditionEditorDialog extends StandardDialog implements
     /** Initialises the components. */
     private void initComponents() {
         initButtonsPanel();
-        substitutionsPanel = parent.getOwner().getSubstitutionsPanel();
+        substitutionsPanel = new SubstitutionsPanel(parent.getOwner().getTrigger());
+                
         conditionsPanel = new JPanel();
         arguments = new JComboBox(new DefaultComboBoxModel());
         components = new JComboBox(new DefaultComboBoxModel());
@@ -325,11 +326,11 @@ public final class ConditionEditorDialog extends StandardDialog implements
     
     /** Lays out the button panel. */
     private void layoutButtonPanel() {
-        this.setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
         
-        this.add(conditionsPanel, BorderLayout.CENTER);
-        this.add(substitutionsPanel, BorderLayout.LINE_END);
-        this.add(buttonsPanel, BorderLayout.PAGE_END);
+        add(conditionsPanel, BorderLayout.CENTER);
+        add(substitutionsPanel, BorderLayout.LINE_END);
+        add(buttonsPanel, BorderLayout.PAGE_END);
     }
     
     /** {@inheritDoc}. */
@@ -367,9 +368,9 @@ public final class ConditionEditorDialog extends StandardDialog implements
                 condition.setTarget(targetText.getText());
                 parent.doConditions();
             }
-            this.dispose();
+            dispose();
         } else if (event.getSource() == getCancelButton()) {
-            this.dispose();
+            dispose();
         }
     }
     

@@ -22,34 +22,40 @@
 
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
+
+import java.awt.Component;
+
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
+
 /**
- * Wrapper for action substitutions.
+ * Displays actions using getName not toString.
  */
-public final class ActionSubstitution {
-    
-    /** Substitution name. */
-    private final String name;
-    /** Subsitution value. */
-    private final String value;
-    
-    /** Creates a new instance of ActionSubstitution. */
-    public ActionSubstitution(final String name, final String value) {
-        this.name = name;
-        this.value = "$" + value;
-    }
+public final class ActionSubstititionRenderer extends DefaultListCellRenderer {
     
     /**
-     * Returns the value of this substitution.
-     *
-     * @return Substitution value   
+     * A version number for this class. It should be changed whenever the class
+     * structure is changed (or anything else that would prevent serialized
+     * objects being unserialized with the new class).
      */
-    public String getValue() {
-        return name;
+    private static final long serialVersionUID = 1;
+    
+    /**
+     * Creates a new instance of ActionSubstititionRenderer.
+     */
+    public ActionSubstititionRenderer() {
+        super();
     }
     
     /** {@inheritDoc} */
-    public String toString() {
-        return value;
+    public Component getListCellRendererComponent(final JList list,
+            final Object value, final int index, final boolean isSelected,
+            final boolean cellHasFocus) {
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        
+        setText(((ActionSubstitution) value).getValue());
+        
+        return this;
     }
     
 }

@@ -29,6 +29,7 @@ import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
@@ -60,6 +61,8 @@ public final class ResponseTabPanel extends JPanel {
     private JComboBox formatter;
     /** Formatter scrollpane. */
     private JScrollPane scrollPane;
+    /** Substitutions panel. */
+    private SubstitutionsPanel subsPanel;
     
     /**
      * Creates a new instance of ResponseTabPanel.
@@ -77,6 +80,7 @@ public final class ResponseTabPanel extends JPanel {
     
     /** Initialises the components. */
     private void initComponents() {
+        subsPanel = new SubstitutionsPanel(owner.getTrigger());
         responses = new JTextArea();
         formatter = new JComboBox(new DefaultComboBoxModel());
         scrollPane = new JScrollPane(responses);
@@ -139,6 +143,16 @@ public final class ResponseTabPanel extends JPanel {
         constraints.gridy = 0;
         add(new JLabel("Execute the following commands: "), constraints);
         
+        constraints.gridwidth = 1;
+        constraints.gridheight = 3;
+        constraints.gridx = 4;
+        constraints.insets = new Insets(0, SMALL_BORDER, 0, 0);
+        add(subsPanel, constraints);
+        
+        constraints.insets = new Insets(0, 0, 0, 0);
+        constraints.gridheight = 1;
+        constraints.gridwidth = 4;
+        constraints.gridx = 0;
         constraints.weighty = 1.0;
         constraints.gridy = 1;
         add(scrollPane, constraints);

@@ -22,18 +22,25 @@
 
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
+import com.dmdirc.Config;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionSubstitutor;
 import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.config.IdentityManager;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import java.util.Map.Entry;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.WindowConstants;
 
 /**
  * Lists substitutions for use in actions.
@@ -55,11 +62,7 @@ public final class SubstitutionsPanel extends JPanel {
     
     /** Creates a new instance of SubstitutionsPanel. */
     public SubstitutionsPanel() {
-        super();
-        list = new JList(new DefaultListModel());
-        list.setVisibleRowCount(5);
-        
-        setVisible(true);
+        this(null);
     }
     
     /**
@@ -73,6 +76,8 @@ public final class SubstitutionsPanel extends JPanel {
         this.type = type;
         
         list = new JList(new DefaultListModel());
+        list.setCellRenderer(new ActionSubstititionRenderer());
+        list.setDragEnabled(true);
         populateList();
         
         layoutComponents();
@@ -85,19 +90,21 @@ public final class SubstitutionsPanel extends JPanel {
     
     /** Populates the list with valid substitutions. */
     public void populateList() {
+        final DefaultListModel model = (DefaultListModel) list.getModel();
+        
         //populate the list
         list.setVisible(false);
         
+        model.clear();
+        
         if (type == null) {
-            ((DefaultListModel) list.getModel()).clear();
+            
             list.setVisible(true);
+            
             return;
         }
         
         final ActionSubstitutor sub = new ActionSubstitutor(type);
-        final DefaultListModel model = (DefaultListModel) list.getModel();
-        
-        model.clear();
         
         for (final Entry<String, String> entry : sub.getComponentSubstitutions().entrySet()) {
             model.addElement(new ActionSubstitution(entry.getValue(), entry.getKey()));
@@ -118,10 +125,33 @@ public final class SubstitutionsPanel extends JPanel {
     private void layoutComponents() {
         setLayout(new BorderLayout());
         
-        add(new JLabel("ZOMG SUBSTITUTIONS"), BorderLayout.PAGE_START);
-        //add(new JScrollPane(list), BorderLayout.CENTER);
+        add(new JLabel("Substitutions"), BorderLayout.PAGE_START);
+        add(new JScrollPane(list), BorderLayout.CENTER);
         
         setMinimumSize(new Dimension(100, 200));
         setPreferredSize(new Dimension(100, 200));
+    }
+    
+    
+    public JList getList() {
+        return list;
+    }
+    
+    public static void main(final String[] args) {
+        IdentityManager.load();
+        Config.init();
+        CommandManager.initCommands();
+        ActionManager.init();
+        ActionManager.loadActions();
+        
+        final JFrame frame = new JFrame();
+        final SubstitutionsPanel subsPanel = new SubstitutionsPanel(CoreActionType.CHANNEL_MESSAGE);
+        
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        
+        frame.add(subsPanel);
+        
+        frame.pack();
+        frame.setVisible(true);
     }
 }
