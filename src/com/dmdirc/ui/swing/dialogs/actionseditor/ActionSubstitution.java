@@ -32,7 +32,12 @@ public final class ActionSubstitution {
     /** Subsitution value. */
     private final String value;
     
-    /** Creates a new instance of ActionSubstitution. */
+    /** 
+     * Creates a new instance of ActionSubstitution. 
+     *
+     * @param name Name of the substitution
+     * @param value Value of the substitution
+     */
     public ActionSubstitution(final String name, final String value) {
         this.name = name;
         this.value = "$" + value;

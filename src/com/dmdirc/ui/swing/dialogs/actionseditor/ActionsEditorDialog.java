@@ -256,9 +256,9 @@ public final class ActionsEditorDialog extends StandardDialog implements
     }
     
     /**
-     * Returns the substitutions panel.
+     * Sets the action type for the dialog
      *
-     * @return SubsitutionsPanel.
+     * @param type New ActionType for the dialog
      */
     public void setType(final ActionType type) {
         if (tabbedPane.getComponentCount() > 2) {

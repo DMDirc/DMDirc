@@ -111,7 +111,7 @@ public final class Alias {
     }
     
     /**
-     * Gets the aliases number of arguments argument
+     * Gets the aliases number of arguments argument.
      *
      * @return Number of arguments ActionCondition or null
      */

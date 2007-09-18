@@ -25,7 +25,7 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 import java.util.EventListener;
 
 /**
- * Substitutions listener
+ * Substitutions listener.
  */
 public interface SubstitutionsPanelListener extends EventListener {
     

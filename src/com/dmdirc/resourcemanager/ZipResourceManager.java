@@ -50,7 +50,7 @@ public final class ZipResourceManager extends ResourceManager {
     /**
      * Instantiates ZipResourceManager.
      *
-     * @param fileName Filename of the zip to load
+     * @param filename Filename of the zip to load
      * @throws IOException Throw when the zip fails to load
      */
     protected ZipResourceManager(final String filename) throws IOException {
@@ -67,7 +67,7 @@ public final class ZipResourceManager extends ResourceManager {
     /**
      * Returns an instance of a ZipResourceManager for the specified file.
      *
-     * @param fileName Filename of the zip to load
+     * @param filename Filename of the zip to load
      * @throws IOException Throw when the zip fails to load
      */
     public static synchronized ZipResourceManager getInstance(final String filename) throws

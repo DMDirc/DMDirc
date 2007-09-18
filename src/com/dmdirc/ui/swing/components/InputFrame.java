@@ -446,11 +446,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
     }
     
     
-    /**
-     * Checks and pastes text.
-     *
-     * @param event the event that triggered the paste
-     */
+    /** Checks and pastes text. */
     public void doPaste() {
         String clipboard = null;
         String[] clipboardLines = new String[]{"", };
