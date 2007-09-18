@@ -345,7 +345,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
                 as.addAttribute(TextAttribute.BACKGROUND, textPane.getForeground());
                 final TextLayout newLayout = new TextLayout(as.getIterator(),
                         g.getFontRenderContext());
-                final Shape shape = layout.getLogicalHighlightShape(firstChar 
+                final Shape shape = layout.getLogicalHighlightShape(firstChar
                         - chars, lastChar - chars);
                 
                 if (firstChar != 0) {
@@ -571,28 +571,29 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     private void highlightEvent(final MouseEventType type, final MouseEvent e) {
         final Point point = getMousePosition();
-        
-        if (point == null) {
-            if (e.getXOnScreen() > getLocationOnScreen().getX()
-            && e.getXOnScreen() < (getLocationOnScreen().getX() + getWidth())) {
-                if (getLocationOnScreen().getY() > e.getYOnScreen()) {
-                    textPane.setScrollBarPosition(scrollBarPosition - 1);
-                } else {
-                    textPane.setScrollBarPosition(scrollBarPosition + 1);
+        if (isVisible()) {
+            if (point == null) {
+                if (e.getXOnScreen() > getLocationOnScreen().getX()
+                && e.getXOnScreen() < (getLocationOnScreen().getX() + getWidth())) {
+                    if (getLocationOnScreen().getY() > e.getYOnScreen()) {
+                        textPane.setScrollBarPosition(scrollBarPosition - 1);
+                    } else {
+                        textPane.setScrollBarPosition(scrollBarPosition + 1);
+                    }
                 }
-            }
-        } else {
-            final int[] info = getClickPosition(point);
-            if (info[0] != -1 && info[1] != -1) {
-                if (type == MouseEventType.CLICK) {
-                    selStartLine = info[0];
-                    selStartChar = info[2];
-                }
-                selEndLine = info[0];
-                selEndChar = info[2];
-                
-                if (isVisible()) {
-                    repaint();
+            } else {
+                final int[] info = getClickPosition(point);
+                if (info[0] != -1 && info[1] != -1) {
+                    if (type == MouseEventType.CLICK) {
+                        selStartLine = info[0];
+                        selStartChar = info[2];
+                    }
+                    selEndLine = info[0];
+                    selEndChar = info[2];
+                    
+                    if (isVisible()) {
+                        repaint();
+                    }
                 }
             }
         }
