@@ -142,6 +142,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
     public void setAlias(final Alias alias) {
         if (alias == null) {
             clear();
+            return;
         }
         name.setEnabled(true);
         argumentComponent.setEnabled(true);

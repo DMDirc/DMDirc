@@ -27,6 +27,7 @@ import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -156,7 +157,7 @@ public final class Alias {
      * @param response New Response
      */
     public void setResponse(final String[] response) {
-        if (!this.response.equals(response)) {
+        if (!Arrays.equals(this.response, response)) {
             this.response = response.clone();
         }
     }
