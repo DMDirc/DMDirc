@@ -298,8 +298,8 @@ public final class TreeFrameManager implements FrameManager,
         if (nodes != null && nodes.get(server) != null) {
             final DefaultMutableTreeNode node = nodes.get(server);
             if (node.getLevel() == 0) {
-                Logger.appError(ErrorLevel.MEDIUM, 
-                        "delServer triggered for root node", 
+                Logger.appError(ErrorLevel.MEDIUM,
+                        "delServer triggered for root node",
                         new IllegalArgumentException());
             } else {
                 model.removeNodeFromParent(nodes.get(server));
@@ -348,7 +348,6 @@ public final class TreeFrameManager implements FrameManager,
     }
     
     /** {@inheritDoc} */
-    
     public void addCustom(final Server server, final FrameContainer window) {
         final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(window, node);
@@ -362,7 +361,13 @@ public final class TreeFrameManager implements FrameManager,
     /** {@inheritDoc} */
     public void delCustom(final Server server, final FrameContainer window) {
         if (nodes != null && nodes.get(window) != null) {
-            model.removeNodeFromParent(nodes.get(window));
+            if (nodes.get(window).getLevel() == 0) {
+                Logger.appError(ErrorLevel.MEDIUM,
+                        "delServer triggered for root node",
+                        new IllegalArgumentException());
+            } else {
+                model.removeNodeFromParent(nodes.get(window));
+            }
         }
     }
     
