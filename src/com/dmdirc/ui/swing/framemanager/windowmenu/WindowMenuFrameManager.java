@@ -36,11 +36,12 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -84,9 +85,8 @@ public final class WindowMenuFrameManager implements FrameManager,
     
     /** {@inheritDoc} */
     public void setSelected(final FrameContainer source) {
-        for (Entry<FrameContainer, JMenuItem> entry : 
-            new TreeSet<Entry<FrameContainer, JMenuItem>>(
-                    menuItemMap.entrySet())) {
+        for (Entry<FrameContainer, JMenuItem> entry : new ArrayList<
+                Entry<FrameContainer, JMenuItem>>(menuItemMap.entrySet())) {
                 final JMenuItem mi = entry.getValue();
                 if (entry.getKey() == source) {
                     mi.setFont(mi.getFont().deriveFont(Font.BOLD));

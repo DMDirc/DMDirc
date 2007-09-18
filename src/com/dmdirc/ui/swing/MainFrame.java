@@ -601,7 +601,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         settingsMenu.setMnemonic('s');
         
         fileMenu.setMnemonic('f');
-        fileMenu.setText("File");
+        fileMenu.setText("Server");
         
         miAddServer.setText("New Server...");
         miAddServer.setMnemonic('n');
