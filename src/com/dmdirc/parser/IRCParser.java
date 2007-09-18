@@ -48,6 +48,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Timer;
 
@@ -183,7 +184,7 @@ public final class IRCParser implements Runnable {
 	 * see MODE_LIST<br>
 	 * see MODE_SET<br>
 	 * see MODE_UNSET<br>
-*/
+	 */
 	Hashtable<Character, Byte> hChanModesOther = new Hashtable<Character, Byte>();
 	
 	/** The last line of input recieved from the server */
@@ -197,11 +198,11 @@ public final class IRCParser implements Runnable {
 	*/
 	Hashtable<Character, Boolean> hChanPrefix = new Hashtable<Character, Boolean>();
 	/** Hashtable storing all known clients based on nickname (in lowercase). */
-	Hashtable<String, ClientInfo> hClientList = new Hashtable<String, ClientInfo>();
+	private Hashtable<String, ClientInfo> hClientList = new Hashtable<String, ClientInfo>();
 	/** Hashtable storing all known channels based on chanel name (inc prefix - in lowercase). */
-	Hashtable<String, ChannelInfo> hChannelList = new Hashtable<String, ChannelInfo>();
+	private Hashtable<String, ChannelInfo> hChannelList = new Hashtable<String, ChannelInfo>();
 	/** Reference to the ClientInfo object that references ourself. */
-	ClientInfo cMyself = null;
+	private ClientInfo cMyself = null;
 	/** Hashtable storing all information gathered from 005. */
 	Hashtable<String, String> h005Info = new Hashtable<String, String>();
 
@@ -1686,6 +1687,13 @@ public final class IRCParser implements Runnable {
 	 * @return cMyself reference
 	 */
 	public ClientInfo getMyself() { return cMyself; }
+
+	/**
+	 * Set the cMySelf variable
+	 *
+	 * @param client new "myself" client
+	 */
+	public void setMyself(final ClientInfo client) { cMyself = client; }
 	
 	/**
 	 * Get the current nickname.
@@ -1711,7 +1719,96 @@ public final class IRCParser implements Runnable {
 	public String getMyUsername() {
 		return me.getUsername();
 	}
-	
+
+	/**
+	 * Add a client to the ClientList
+	 *
+	 * @param client Client to add
+	 */
+	public void addClient(final ClientInfo client) {
+		hClientList.put(toLowerCase(client.getNickname()),client);
+	}
+
+	/**
+	 * Remove a client from the ClientList
+	 *
+	 * @param client Client to remove
+	 */
+	public void removeClient(final ClientInfo client) {
+		if (client != cMyself) {
+			hClientList.remove(toLowerCase(client.getNickname()));
+		}
+	}
+
+	/**
+	 * Get the number of known clients
+	 *
+	 * @return Count of known clients
+	 */
+	public int knownClients() {
+		return hClientList.size();
+	}
+
+	/**
+	 * Get the known clients as a collection
+	 *
+	 * @return Known clients as a collection
+	 */
+	public Collection<ClientInfo> getClients() {
+		return hClientList.values();
+	}
+
+	/**
+	 * Clear the client list
+	 */
+	public void clearClients() {
+		hClientList.clear();
+		addClient(getMyself());
+	}
+
+	/**
+	 * Add a channel to the ChannelList
+	 *
+	 * @param channel Channel to add
+	 */
+	public void addChannel(final ChannelInfo channel) {
+		hChannelList.put(toLowerCase(channel.getName()), channel);
+	}
+
+	/**
+	 * Remove a channel from the ChannelList
+	 *
+	 * @param channel Channel to remove
+	 */
+	public void removeChannel(final ChannelInfo channel) {
+		hChannelList.remove(toLowerCase(channel.getName()));
+	}
+
+	/**
+	 * Get the number of known channel
+	 *
+	 * @return Count of known channel
+	 */
+	public int knownChannels() {
+		return hChannelList.size();
+	}
+
+	/**
+	 * Get the known channels as a collection
+	 *
+	 * @return Known channels as a collection
+	 */
+	public Collection<ChannelInfo> getChannels() {
+		return hChannelList.values();
+	}
+
+	/**
+	 * Clear the channel list
+	 */
+	public void clearChannels() {
+		hChannelList.clear();
+	}
+
 	/**
 	 * Get SVN Version information.
 	 *

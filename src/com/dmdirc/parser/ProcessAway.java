@@ -43,8 +43,8 @@ public class ProcessAway extends IRCProcessor {
 			ClientInfo iClient = myParser.getClientInfo(token[3]);
 			if (iClient != null) { iClient.setAwayReason(token[token.length-1]); }
 		} else {
-			myParser.cMyself.setAwayState(sParam.equals("306"));
-			callAwayState(myParser.cMyself.getAwayState(), myParser.cMyself.getAwayReason());
+			myParser.getMyself().setAwayState(sParam.equals("306"));
+			callAwayState(myParser.getMyself().getAwayState(), myParser.getMyself().getAwayReason());
 		}
 	}
 	

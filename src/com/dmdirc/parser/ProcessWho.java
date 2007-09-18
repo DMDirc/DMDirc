@@ -70,7 +70,7 @@ public class ProcessWho extends IRCProcessor {
 				callAwayStateOther(client, isAway);
 				
 				ChannelClientInfo iChannelClient;
-				for (ChannelInfo iChannel : myParser.hChannelList.values()) {
+				for (ChannelInfo iChannel : myParser.getChannels()) {
 					iChannelClient = iChannel.getUser(client);
 					if (iChannelClient != null) {
 						callChannelAwayStateOther(iChannel,iChannelClient,isAway);

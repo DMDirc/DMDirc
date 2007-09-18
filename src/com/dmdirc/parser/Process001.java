@@ -51,10 +51,10 @@ public class Process001 extends IRCProcessor {
 		temp = sNick.split("!",2);
 		sNick = temp[0];  /* */
 		
-		myParser.cMyself = getClientInfo(sNick);
-		if (myParser.cMyself == null) {
-			myParser.cMyself = new ClientInfo(myParser, sNick);
-			myParser.hClientList.put(myParser.toLowerCase(myParser.cMyself.getNickname()),myParser.cMyself);
+		myParser.setMyself(getClientInfo(sNick));
+		if (myParser.getMyself() == null) {
+			myParser.setMyself(new ClientInfo(myParser, sNick));
+			myParser.addClient(myParser.getMyself());
 		}
 		
 		callServerReady();

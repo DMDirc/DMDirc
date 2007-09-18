@@ -166,7 +166,7 @@ public class ProcessMessage extends IRCProcessor {
 					callChannelNotice(iChannel, iChannelClient, sMessage, token[0]);
 				}
 			}
-		} else if (myParser.equalsIgnoreCase(token[2], myParser.cMyself.getNickname())) {
+		} else if (myParser.equalsIgnoreCase(token[2], myParser.getMyself().getNickname())) {
 			if (sParam.equalsIgnoreCase("PRIVMSG")) {
 				if (!isAction) {
 					if (isCTCP) {

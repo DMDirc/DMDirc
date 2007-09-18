@@ -103,7 +103,7 @@ public class ProcessMode extends IRCProcessor {
 		if (iChannel == null) { 
 			callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got modes for channel ("+sChannelName+") that I am not on.", myParser.getLastLine()));
 			iChannel = new ChannelInfo(myParser, sChannelName);
-			myParser.hChannelList.put(myParser.toLowerCase(iChannel.getName()),iChannel);
+			myParser.addChannel(iChannel);
 		}
 		// Get the current channel modes
 		if (!sParam.equals("324")) { nCurrent = iChannel.getMode(); }
@@ -138,7 +138,7 @@ public class ProcessMode extends IRCProcessor {
 						if (iClient == null) { 
 							callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got mode for client not known at all - Added", myParser.getLastLine()));
 							iClient = new ClientInfo(myParser, sModeParam);
-							myParser.hClientList.put(myParser.toLowerCase(iClient.getNickname()),iClient);
+							myParser.addClient(iClient);
 						}
 						iChannelClientInfo = iChannel.addClient(iClient);
 					}

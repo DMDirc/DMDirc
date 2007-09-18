@@ -53,7 +53,7 @@ public class ProcessPart extends IRCProcessor {
 			iClient.setUserBits(token[0],false);
 		}
 		if (iChannel == null) { 
-			if (iClient != myParser.cMyself) {
+			if (iClient != myParser.getMyself()) {
 				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got part for channel ("+token[2]+") that I am not on. [User: "+token[0]+"]", myParser.getLastLine()));
 			}
 			return;
@@ -69,9 +69,9 @@ public class ProcessPart extends IRCProcessor {
 			callDebugInfo(myParser.DEBUG_INFO, "Removing %s from %s",iClient.getNickname(),iChannel.getName());
 			iChannel.delClient(iClient);
 			if (!myParser.removeAfterCallback) { callChannelPart(iChannel,iChannelClient,sReason); }
-			if (iClient == myParser.cMyself) {
+			if (iClient == myParser.getMyself()) {
 				iChannel.emptyChannel();
-				myParser.hChannelList.remove(myParser.toLowerCase(iChannel.getName()));
+				myParser.removeChannel(iChannel);
 			}
 		}
 	}

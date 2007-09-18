@@ -57,7 +57,7 @@ public class ProcessKick extends IRCProcessor {
 		}
 
 		if (iChannel == null) { 
-			if (iClient != myParser.cMyself) {
+			if (iClient != myParser.getMyself()) {
 				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got kick for channel ("+token[2]+") that I am not on. [User: "+token[3]+"]", myParser.getLastLine()));
 			}
 			return;
@@ -68,9 +68,9 @@ public class ProcessKick extends IRCProcessor {
 			if (myParser.removeAfterCallback) { callChannelKick(iChannel,iChannelClient,iChannelKicker,sReason,token[0]); }
 			iChannel.delClient(iClient);
 			if (!myParser.removeAfterCallback) { callChannelKick(iChannel,iChannelClient,iChannelKicker,sReason,token[0]); }
-			if (iClient == myParser.cMyself) {
+			if (iClient == myParser.getMyself()) {
 				iChannel.emptyChannel();
-				myParser.hChannelList.remove(myParser.toLowerCase(iChannel.getName()));
+				myParser.removeChannel(iChannel);
 			}
 		}
 	}

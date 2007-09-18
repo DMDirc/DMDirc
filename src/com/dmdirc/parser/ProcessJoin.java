@@ -50,16 +50,16 @@ public class ProcessJoin extends IRCProcessor {
 		
 		if (iClient == null) { 
 			iClient = new ClientInfo(myParser, token[0]);
-			myParser.hClientList.put(myParser.toLowerCase(iClient.getNickname()),iClient);
+			myParser.addClient(iClient);
 		}
 		// Check to see if we know the host/ident for this client to facilitate dmdirc Formatter
 		if (iClient.getHost().isEmpty()) { iClient.setUserBits(token[0],false); }
 		if (iChannel == null) { 
-			if (iClient != myParser.cMyself) {
+			if (iClient != myParser.getMyself()) {
 				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got join for channel ("+token[token.length-1]+") that I am not on. [Me: "+myParser.getMyself()+"]", myParser.getLastLine()));
 			}
 			iChannel = new ChannelInfo(myParser, token[token.length-1]);
-			myParser.hChannelList.put(myParser.toLowerCase(iChannel.getName()),iChannel);
+			myParser.addChannel(iChannel);
 			sendString("MODE "+iChannel.getName());
 			
 			// Find out the lists currently in use

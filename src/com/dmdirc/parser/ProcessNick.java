@@ -49,7 +49,7 @@ public class ProcessNick extends IRCProcessor {
 			final boolean isSameNick = myParser.equalsIgnoreCase(oldNickname, token[token.length-1]);
 			
 			if (!isSameNick) {
-				myParser.hClientList.remove(oldNickname);
+				myParser.removeClient(getClientInfo(oldNickname));
 			}
 			// Change the nickame
 			iClient.setUserBits(token[token.length-1],true);
@@ -59,10 +59,10 @@ public class ProcessNick extends IRCProcessor {
 				myParser.disconnect("Fatal Parser Error");
 			} else {
 				if (!isSameNick) {
-					myParser.hClientList.put(myParser.toLowerCase(iClient.getNickname()),iClient);
+					myParser.addClient(iClient);
 				}
 				
-				for (ChannelInfo iChannel : myParser.hChannelList.values()) {
+				for (ChannelInfo iChannel : myParser.getChannels()) {
 					// Find the user (using the old nickname)
 					iChannelClient = iChannel.getUser(oldNickname);
 					if (iChannelClient != null) {

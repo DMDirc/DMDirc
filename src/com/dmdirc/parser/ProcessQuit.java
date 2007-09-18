@@ -54,13 +54,13 @@ public class ProcessQuit extends IRCProcessor {
 		String sReason = "";
 		if (token.length > 2) { sReason = token[token.length-1]; }
 		
-		for (ChannelInfo iChannel : myParser.hChannelList.values()) {
+		for (ChannelInfo iChannel : myParser.getChannels()) {
 			iChannelClient = iChannel.getUser(iClient);
 			if (iChannelClient != null) {
 				if (myParser.removeAfterCallback) { callChannelQuit(iChannel,iChannelClient,sReason); }
-				if (iClient == myParser.cMyself) {
+				if (iClient == myParser.getMyself()) {
 					iChannel.emptyChannel();
-					myParser.hChannelList.remove(myParser.toLowerCase(iChannel.getName()));
+					myParser.removeChannel(iChannel);
 				} else {
 					iChannel.delClient(iClient);
 				}
@@ -69,10 +69,10 @@ public class ProcessQuit extends IRCProcessor {
 		}
 
 		if (myParser.removeAfterCallback) { callQuit(iClient,sReason); }
-		if (iClient == myParser.cMyself) {
-			myParser.hClientList.clear();
+		if (iClient == myParser.getMyself()) {
+			myParser.clearClients();
 		} else {
-			myParser.hClientList.remove(myParser.toLowerCase(iClient.getNickname()));
+			myParser.removeClient(iClient);
 		}
 		if (!myParser.removeAfterCallback) { callQuit(iClient,sReason); }
 	}	

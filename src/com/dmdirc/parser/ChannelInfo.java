@@ -139,7 +139,7 @@ public final class ChannelInfo {
 	 */
 	public ArrayList<ChannelClientInfo> getChannelClients() {
 		final ArrayList<ChannelClientInfo> lClients = new ArrayList<ChannelClientInfo>();
-                for (ChannelClientInfo client : hChannelUserList.values()) {
+		for (ChannelClientInfo client : hChannelUserList.values()) {
 			lClients.add(client);
 		}
 		return lClients;
@@ -153,8 +153,8 @@ public final class ChannelInfo {
 		for (ChannelClientInfo client : hChannelUserList.values()) {
 			cTemp = client.getClient();
 			cTemp.delChannelClientInfo(client);
-			if (!cTemp.checkVisibility()) {
-				myParser.hClientList.remove(myParser.toLowerCase(cTemp.getNickname()));
+			if (cTemp != myParser.getMyself() && !cTemp.checkVisibility()) {
+				myParser.removeClient(cTemp);
 			}
 		}
 		hChannelUserList.clear();
@@ -217,7 +217,7 @@ public final class ChannelInfo {
 			ClientInfo clTemp = cTemp.getClient();
 			clTemp.delChannelClientInfo(cTemp);
 			if (clTemp != myParser.getMyself() && !clTemp.checkVisibility()) {
-				myParser.hClientList.remove(myParser.toLowerCase(cTemp.getNickname()));
+				myParser.removeClient(clTemp);
 			}
 			hChannelUserList.remove(myParser.toLowerCase(cTemp.getNickname()));
 		}
