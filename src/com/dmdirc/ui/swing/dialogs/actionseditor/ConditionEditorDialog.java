@@ -130,6 +130,8 @@ public final class ConditionEditorDialog extends StandardDialog implements
         addListeners();
         layoutComponents();
         
+        //setSize(new Dimension(770, 300));
+        
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         
         setVisible(true);
@@ -322,13 +324,17 @@ public final class ConditionEditorDialog extends StandardDialog implements
         conditionsPanel.add(new JLabel("Target: "));
         conditionsPanel.add(targetText);
         
-        layoutGrid(conditionsPanel, 4, 2, SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER);
+        layoutGrid(conditionsPanel, 4, 2, SMALL_BORDER, SMALL_BORDER, 0, 
+                SMALL_BORDER);
     }
     
     /** Lays out the button panel. */
     private void layoutButtonPanel() {
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
+        
+        substitutionsPanel.setPreferredSize(new Dimension(250, 150));
+        substitutionsPanel.setBorder(BorderFactory.createEmptyBorder(0, 0,
+                0, SMALL_BORDER));
         
         add(conditionsPanel, BorderLayout.CENTER);
         add(substitutionsPanel, BorderLayout.LINE_END);

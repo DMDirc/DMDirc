@@ -99,7 +99,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         
         trigger.setPreferredSize(new Dimension(100, trigger.getFont().getSize()));
         
-        otherTriggers.setVisibleRowCount(2);
+        otherTriggers.setVisibleRowCount(7);
         otherTriggers.setEnabled(false);
         
         if (owner.getAction() == null) {

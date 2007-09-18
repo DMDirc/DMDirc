@@ -85,8 +85,11 @@ public final class ActionsEditorDialog extends StandardDialog implements
         addListeners();
         layoutComponents();
         
+        setSize(new Dimension(770, 300));
+        
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         
+        setResizable(false);
         setVisible(true);
     }
     
@@ -121,8 +124,6 @@ public final class ActionsEditorDialog extends StandardDialog implements
         initButtonsPanel();
         
         tabbedPane = new JTabbedPane();
-        
-        tabbedPane.setPreferredSize(new Dimension(400, 160));
         
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));

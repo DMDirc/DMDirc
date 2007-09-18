@@ -93,6 +93,7 @@ public final class ActionsManagerDialog extends StandardDialog
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setTitle("Action Manager");
         setResizable(false);
+        setSize(new Dimension(770, 300));
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         setVisible(true);
     }
