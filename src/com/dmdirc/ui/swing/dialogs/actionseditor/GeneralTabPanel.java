@@ -54,7 +54,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Parent ActionsEditorDialog. */
     private final ActionsEditorDialog owner;
@@ -128,7 +128,7 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
                         ((DefaultListModel) otherTriggers.getModel()).addElement(thisType);
                     }
         }
-        owner.getSubstitutionsPanel().setType((ActionType) trigger.getSelectedItem());
+        owner.setType((ActionType) trigger.getSelectedItem());
         otherTriggers.repaint();
     }
     

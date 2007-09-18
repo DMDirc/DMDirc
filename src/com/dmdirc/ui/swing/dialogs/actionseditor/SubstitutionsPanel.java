@@ -22,30 +22,31 @@
 
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
-import com.dmdirc.Config;
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionSubstitutor;
 import com.dmdirc.actions.ActionType;
-import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.config.IdentityManager;
+import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Map.Entry;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.WindowConstants;
+import javax.swing.event.EventListenerList;
 
 /**
  * Lists substitutions for use in actions.
  */
-public final class SubstitutionsPanel extends JPanel {
+public final class SubstitutionsPanel extends JPanel implements MouseListener,
+        ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -59,6 +60,12 @@ public final class SubstitutionsPanel extends JPanel {
     
     /** Action type. */
     private ActionType type;
+    
+    /** Add button. */
+    private JButton add;
+    
+    /** Listener list. */
+    private final EventListenerList listeners;
     
     /** Creates a new instance of SubstitutionsPanel. */
     public SubstitutionsPanel() {
@@ -75,14 +82,25 @@ public final class SubstitutionsPanel extends JPanel {
         
         this.type = type;
         
+        listeners = new EventListenerList();
+        
+        add = new JButton("Insert Substitution");
+        add.addActionListener(this);
+        
         list = new JList(new DefaultListModel());
         list.setCellRenderer(new ActionSubstititionRenderer());
         list.setDragEnabled(true);
+        list.addMouseListener(this);
         populateList();
         
         layoutComponents();
     }
     
+    /**
+     * Sets the action type of the substitutor.
+     *
+     * @param type Action type to show substitutions for
+     */
     public void setType(final ActionType type) {
         this.type = type;
         populateList();
@@ -123,35 +141,84 @@ public final class SubstitutionsPanel extends JPanel {
     
     /** Lays out the components. */
     private void layoutComponents() {
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
         
         add(new JLabel("Substitutions"), BorderLayout.PAGE_START);
         add(new JScrollPane(list), BorderLayout.CENTER);
+        add(add, BorderLayout.PAGE_END);
         
         setMinimumSize(new Dimension(100, 200));
         setPreferredSize(new Dimension(100, 200));
     }
     
-    
-    public JList getList() {
-        return list;
+    /** {@inheritDoc} */
+    public void actionPerformed(final ActionEvent e) {
+        if (list.getSelectedValue() != null) {
+            fireSubstitutionInsert((ActionSubstitution) list.getSelectedValue());
+        }
     }
     
-    public static void main(final String[] args) {
-        IdentityManager.load();
-        Config.init();
-        CommandManager.initCommands();
-        ActionManager.init();
-        ActionManager.loadActions();
-        
-        final JFrame frame = new JFrame();
-        final SubstitutionsPanel subsPanel = new SubstitutionsPanel(CoreActionType.CHANNEL_MESSAGE);
-        
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        
-        frame.add(subsPanel);
-        
-        frame.pack();
-        frame.setVisible(true);
+    /** {@inheritDoc} */
+    public void mouseClicked(final MouseEvent e) {
+        if (list.getSelectedValue() != null && e.getClickCount() == 2) {
+            fireSubstitutionInsert((ActionSubstitution) list.getSelectedValue());
+        }
+    }
+    
+    /** {@inheritDoc} */
+    public void mousePressed(final MouseEvent e) {
+        //Ignore
+    }
+    
+    /** {@inheritDoc} */
+    public void mouseReleased(final MouseEvent e) {
+        //Ignore
+    }
+    
+    /** {@inheritDoc} */
+    public void mouseEntered(final MouseEvent e) {
+        //Ignore
+    }
+    
+    /** {@inheritDoc} */
+    public void mouseExited(final MouseEvent e) {
+        //Ignore
+    }
+    
+    /**
+     * Adds a SubstitutionsPanelListener to the listener list.
+     *
+     * @param listener Listener to add
+     */
+    public void addSubstitutionsPanelListener(final SubstitutionsPanelListener listener) {
+        synchronized (listeners) {
+            if (listener == null) {
+                return;
+            }
+            listeners.add(SubstitutionsPanelListener.class, listener);
+        }
+    }
+    
+    /**
+     * Removes a SubstitutionsPanelListener from the listener list.
+     *
+     * @param listener Listener to remove
+     */
+    public void removeSubstitutionsPanelListener(final SubstitutionsPanelListener listener) {
+        listeners.remove(SubstitutionsPanelListener.class, listener);
+    }
+    
+    /**
+     * Informs listeners when a substitution needs inserting.
+     *
+     * @param substitution ActionSubtitution that needs inserting
+     */
+    private void fireSubstitutionInsert(final ActionSubstitution substitution) {
+        final Object[] listenersList = listeners.getListenerList();
+        for (int i = 0; i < listenersList.length; i += 2) {
+            if (listenersList[i] == SubstitutionsPanelListener.class) {
+                ((SubstitutionsPanelListener) listenersList[i + 1]).substitutionInsert(substitution);
+            }
+        }
     }
 }

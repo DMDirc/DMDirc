@@ -48,12 +48,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
+import javax.swing.text.BadLocationException;
 
 /**
  * Action conditions editing dialog, used in the actions editor dialog.
  */
 public final class ConditionEditorDialog extends StandardDialog implements
-        ActionListener {
+        ActionListener, SubstitutionsPanelListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -297,6 +298,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
         arguments.addActionListener(this);
         components.addActionListener(this);
         comparisons.addActionListener(this);
+        substitutionsPanel.addSubstitutionsPanelListener(this);
     }
     
     /** Lays out the components in the dialog. */
@@ -372,6 +374,24 @@ public final class ConditionEditorDialog extends StandardDialog implements
         } else if (event.getSource() == getCancelButton()) {
             dispose();
         }
+    }
+    
+    /** {@inheritDoc} */
+    public void substitutionInsert(final ActionSubstitution substitution) {
+        try {
+            targetText.getDocument().insertString(targetText.getCaretPosition(), substitution.toString(), null);
+        } catch (BadLocationException ex) {
+            //Ignore
+        }
+    }
+    
+    /**
+     * Sets the Actiontype of the substitutions panel.
+     *
+     * @param type ActionType for the panel
+     */
+    public void setTrigger(final ActionType type) {
+        substitutionsPanel.setType(type);
     }
     
 }

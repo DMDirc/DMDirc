@@ -22,6 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.actionseditor;
 
+import com.dmdirc.actions.ActionType;
 import com.dmdirc.ui.messages.Formatter;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -44,7 +45,8 @@ import javax.swing.text.BadLocationException;
  * Response tab panel, response and formatter editing for the actions editor
  * dialog.
  */
-public final class ResponseTabPanel extends JPanel {
+public final class ResponseTabPanel extends JPanel implements 
+        SubstitutionsPanelListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -85,9 +87,11 @@ public final class ResponseTabPanel extends JPanel {
         formatter = new JComboBox(new DefaultComboBoxModel());
         scrollPane = new JScrollPane(responses);
         
+        subsPanel.addSubstitutionsPanelListener(this);
+        
         scrollPane.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
-                LARGE_BORDER, 0), scrollPane.getBorder()
+                SMALL_BORDER, 0), scrollPane.getBorder()
                 ));
         
         responses.setRows(3);
@@ -192,6 +196,24 @@ public final class ResponseTabPanel extends JPanel {
             format = null;
         }
         return format;
+    }
+
+    /** {@inheritDoc} */
+    public void substitutionInsert(final ActionSubstitution substitution) {
+        try {
+            responses.getDocument().insertString(responses.getCaretPosition(), substitution.toString(), null);
+        } catch (BadLocationException ex) {
+            //Ignore
+        }
+    }
+    
+    /**
+     * Sets the Actiontype of the substitutions panel.
+     *
+     * @param type ActionType for the panel
+     */
+    public void setTrigger(final ActionType type) {
+        subsPanel.setType(type);
     }
     
 }
