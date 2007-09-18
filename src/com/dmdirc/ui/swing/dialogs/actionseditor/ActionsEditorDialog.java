@@ -261,6 +261,8 @@ public final class ActionsEditorDialog extends StandardDialog implements
      * @return SubsitutionsPanel.
      */
     public void setType(final ActionType type) {
-        ((ResponseTabPanel) tabbedPane.getComponentAt(2)).setTrigger(type);
+        if (tabbedPane.getComponentCount() > 2) {
+            ((ResponseTabPanel) tabbedPane.getComponentAt(2)).setTrigger(type);
+        }
     }
 }
