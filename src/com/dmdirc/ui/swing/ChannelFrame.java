@@ -324,11 +324,13 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
      */
     private boolean selectNickUnderCursor() {
         boolean suceeded = false;
-        for (int i = 0; i < nickList.getModel().getSize(); i++) {
-            if (nickList.getCellBounds(i, i).contains(nickList.getMousePosition())) {
-                nickList.setSelectedIndex(i);
-                suceeded = true;
-                break;
+        if (nickList.getMousePosition() != null) {
+            for (int i = 0; i < nickList.getModel().getSize(); i++) {
+                if (nickList.getCellBounds(i, i).contains(nickList.getMousePosition())) {
+                    nickList.setSelectedIndex(i);
+                    suceeded = true;
+                    break;
+                }
             }
         }
         return suceeded;
