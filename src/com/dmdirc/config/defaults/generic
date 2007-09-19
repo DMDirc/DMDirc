@@ -1,7 +1,7 @@
 # RFC-specified channel modes
 
 identity.name = Generic mode aliases
-identity.ircd = generic
+identity.globaldefault = true
 
 # -- 1459 --
 server.modeb = Ban
