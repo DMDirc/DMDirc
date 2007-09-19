@@ -188,12 +188,13 @@ public final class ConditionEditorDialog extends StandardDialog implements
         comparisons.setPreferredSize(new Dimension(300, comparisons.getFont().getSize()));
         targetText.setPreferredSize(new Dimension(300, targetText.getFont().getSize()));
         
+        subsButton = new JButton("Show substitutions");
+        cancelSubsButton = new JButton("Back");
+        
         components.setEnabled(false);
         comparisons.setEnabled(false);
         targetText.setEnabled(false);
-        
-        subsButton = new JButton("Show substitutions");
-        cancelSubsButton = new JButton("Back");
+        subsButton.setEnabled(false);
         
         populateArguments();
     }
@@ -264,11 +265,13 @@ public final class ConditionEditorDialog extends StandardDialog implements
         if (comparison == null) {
             comparisons.setSelectedIndex(-1);
             targetText.setEnabled(false);
+            subsButton.setEnabled(false);
             target = null;
             getOkButton().setEnabled(false);
         } else {
             comparisons.setSelectedItem(comparison);
             targetText.setEnabled(true);
+            subsButton.setEnabled(true);
             getOkButton().setEnabled(true);
         }
         
