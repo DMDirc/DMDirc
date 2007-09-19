@@ -634,6 +634,9 @@ public abstract class Frame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     public void configChanged(final String domain, final String key,
             final String oldValue, final String newValue) {
+        if (getConfigManager() == null) {
+            return;
+        }
         if ("ui".equals(domain)) {
             if ("foregroundcolour".equals(key)) {
                 getTextPane().setForeground(getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK));
