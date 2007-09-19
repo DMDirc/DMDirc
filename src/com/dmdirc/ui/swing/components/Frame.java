@@ -61,6 +61,8 @@ import java.beans.PropertyVetoException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
+import java.nio.charset.IllegalCharsetNameException;
+import java.nio.charset.UnsupportedCharsetException;
 import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
 import java.util.Date;
@@ -142,8 +144,16 @@ public abstract class Frame extends JInternalFrame implements Window,
         
         setFrameIcon(Main.getUI().getMainWindow().getIcon());
         
-        transcoder = new StringTranscoder(Charset.forName(
-                config.getOption("channel", "encoding", "UTF-8")));
+        try {
+            transcoder = new StringTranscoder(Charset.forName(
+                    config.getOption("channel", "encoding", "UTF-8")));
+        } catch (UnsupportedCharsetException ex) {
+            transcoder = new StringTranscoder(Charset.forName("UTF-8"));
+        } catch (IllegalCharsetNameException ex) {
+            transcoder = new StringTranscoder(Charset.forName("UTF-8"));
+        } catch (IllegalArgumentException ex) {
+            transcoder = new StringTranscoder(Charset.forName("UTF-8"));
+        } 
         
         initComponents();
         setMaximizable(true);
