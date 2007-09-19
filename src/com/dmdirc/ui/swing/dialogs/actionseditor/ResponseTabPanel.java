@@ -148,14 +148,14 @@ public final class ResponseTabPanel extends JPanel implements
         add(new JLabel("Execute the following commands: "), constraints);
         
         constraints.gridwidth = 1;
-        constraints.gridheight = 3;
+        constraints.gridheight = 2;
         constraints.gridx = 4;
-        constraints.insets = new Insets(0, SMALL_BORDER, 0, 0);
+        constraints.insets = new Insets(0, SMALL_BORDER, SMALL_BORDER, 0);
         add(subsPanel, constraints);
         
         constraints.insets = new Insets(0, 0, 0, 0);
         constraints.gridheight = 1;
-        constraints.gridwidth = 4;
+        constraints.gridwidth = 3;
         constraints.gridx = 0;
         constraints.weighty = 1.0;
         constraints.gridy = 1;
@@ -169,7 +169,7 @@ public final class ResponseTabPanel extends JPanel implements
         
         constraints.weightx = 1.0;
         constraints.gridx = 1;
-        constraints.gridwidth = 3;
+        constraints.gridwidth = 4;
         add(formatter, constraints);
     }
     
