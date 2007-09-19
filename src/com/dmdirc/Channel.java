@@ -216,6 +216,11 @@ public final class Channel extends MessageTarget implements
     
     /** {@inheritDoc} */
     public void sendAction(final String action) {
+        if (server.getParser().getChannelInfo(channelInfo.getName()) == null) {
+            // We're not in the channel
+            return;
+        }
+        
         final ClientInfo me = server.getParser().getMyself();
         final String modes = channelInfo.getUser(me).getImportantModePrefix();
         
