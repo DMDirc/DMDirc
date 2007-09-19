@@ -34,9 +34,12 @@ import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -53,7 +56,7 @@ import javax.swing.SpringLayout;
  * Action conditions editing dialog, used in the actions editor dialog.
  */
 public final class ConditionEditorDialog extends StandardDialog implements
-        ActionListener, SubstitutionsPanelListener {
+        ActionListener, SubstitutionsPanelListener, FocusListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -100,6 +103,8 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private JButton subsButton;
     /** cancel substitutions button. */
     private JButton cancelSubsButton;
+    /** Focused main component. */
+    private Component focusedComponent;
     
     /**
      * Creates a new instance of ConditionEditorDialog.
@@ -315,6 +320,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
         substitutionsPanel.addSubstitutionsPanelListener(this);
         subsButton.addActionListener(this);
         cancelSubsButton.addActionListener(this);
+        subsButton.addFocusListener(this);
     }
     
     /** Lays out the components in the dialog. */
@@ -371,9 +377,13 @@ public final class ConditionEditorDialog extends StandardDialog implements
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == subsButton) {
+            if (getFocusOwner() != subsButton) {
+                focusedComponent = getFocusOwner();
+            }
             glassPane.setVisible(true);
         } else if (event.getSource() == cancelSubsButton) {
             glassPane.setVisible(false);
+            focusedComponent.requestFocus();
         } else if (event.getSource() == arguments && conditionsPanel.isVisible()) {
             if (arguments.getSelectedItem() == null) {
                 argument = -1;
@@ -417,6 +427,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
     public void substitutionInsert(final ActionSubstitution substitution) {
         glassPane.setVisible(false);
         targetText.replaceSelection(substitution.toString());
+        focusedComponent.requestFocus();
     }
     
     /**
@@ -426,6 +437,16 @@ public final class ConditionEditorDialog extends StandardDialog implements
      */
     public void setTrigger(final ActionType type) {
         substitutionsPanel.setType(type);
+    }
+    
+    /** {@inheritDoc} */
+    public void focusGained(final FocusEvent e) {
+        focusedComponent = e.getOppositeComponent();
+    }
+    
+    /** {@inheritDoc} */
+    public void focusLost(final FocusEvent e) {
+        //Ignore
     }
     
 }
