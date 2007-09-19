@@ -86,13 +86,13 @@ public final class WindowMenuFrameManager implements FrameManager,
     public void setSelected(final FrameContainer source) {
         for (Entry<FrameContainer, JMenuItem> entry : new ArrayList<
                 Entry<FrameContainer, JMenuItem>>(menuItemMap.entrySet())) {
-                final JMenuItem mi = entry.getValue();
-                if (entry.getKey() == source) {
-                    mi.setFont(mi.getFont().deriveFont(Font.BOLD));
-                } else {
-                    mi.setFont(mi.getFont().deriveFont(Font.PLAIN));
-                }
+            final JMenuItem mi = entry.getValue();
+            if (entry.getKey() == source) {
+                mi.setFont(mi.getFont().deriveFont(Font.BOLD));
+            } else {
+                mi.setFont(mi.getFont().deriveFont(Font.PLAIN));
             }
+        }
     }
     
     /** {@inheritDoc} */
@@ -164,8 +164,10 @@ public final class WindowMenuFrameManager implements FrameManager,
         final TreeMap<FrameContainer, JMenuItem> newMap =
                 new TreeMap<FrameContainer, JMenuItem>(new FrameContainerComparator());
         mi.addActionListener(this);
-        menuItemMap.put(window, mi);
-        newMap.putAll(menuItemMap);
+        synchronized (menuItemMap) {
+            menuItemMap.put(window, mi);
+            newMap.putAll(menuItemMap);
+        }
         ((MainFrame) Main.getUI().getMainWindow()).populateWindowMenu(newMap);
     }
     
@@ -177,8 +179,10 @@ public final class WindowMenuFrameManager implements FrameManager,
     private void removeFramecontainer(final FrameContainer window) {
         final TreeMap<FrameContainer, JMenuItem> newMap =
                 new TreeMap<FrameContainer, JMenuItem>(new FrameContainerComparator());
-        menuItemMap.remove(window);
-        newMap.putAll(menuItemMap);
+        synchronized (menuItemMap) {
+            menuItemMap.remove(window);
+            newMap.putAll(menuItemMap);
+        }
         ((MainFrame) Main.getUI().getMainWindow()).populateWindowMenu(newMap);
     }
     
