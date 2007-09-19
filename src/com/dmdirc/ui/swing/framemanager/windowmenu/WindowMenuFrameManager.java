@@ -84,13 +84,15 @@ public final class WindowMenuFrameManager implements FrameManager,
     
     /** {@inheritDoc} */
     public void setSelected(final FrameContainer source) {
-        for (Entry<FrameContainer, JMenuItem> entry : new ArrayList<
-                Entry<FrameContainer, JMenuItem>>(menuItemMap.entrySet())) {
-            final JMenuItem mi = entry.getValue();
-            if (entry.getKey() == source) {
-                mi.setFont(mi.getFont().deriveFont(Font.BOLD));
-            } else {
-                mi.setFont(mi.getFont().deriveFont(Font.PLAIN));
+        synchronized (menuItemMap) {
+            for (Entry<FrameContainer, JMenuItem> entry : new ArrayList<
+                    Entry<FrameContainer, JMenuItem>>(menuItemMap.entrySet())) {
+                final JMenuItem mi = entry.getValue();
+                if (entry.getKey() == source) {
+                    mi.setFont(mi.getFont().deriveFont(Font.BOLD));
+                } else {
+                    mi.setFont(mi.getFont().deriveFont(Font.PLAIN));
+                }
             }
         }
     }
