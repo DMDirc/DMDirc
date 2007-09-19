@@ -29,6 +29,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.actions.CopyAction;
 import com.dmdirc.ui.swing.actions.CutAction;
 import com.dmdirc.ui.swing.actions.InputFramePasteAction;
@@ -43,7 +44,6 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -52,7 +52,6 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.Serializable;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -61,13 +60,6 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.event.InternalFrameEvent;
 import javax.swing.event.InternalFrameListener;
-import javax.swing.event.UndoableEditEvent;
-import javax.swing.event.UndoableEditListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.undo.CannotRedoException;
-import javax.swing.undo.CannotUndoException;
-import javax.swing.undo.UndoManager;
 
 /**
  * Frame with an input field.
@@ -186,51 +178,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
      * Initialises the input field.
      */
     private void initInputField() {
-        final UndoManager undo = new UndoManager();
-        final Document doc = getInputField().getDocument();
-        
-        // Listen for undo and redo events
-        doc.addUndoableEditListener(new UndoableEditListener() {
-            public void undoableEditHappened(final UndoableEditEvent evt) {
-                undo.addEdit(evt.getEdit());
-            }
-        });
-        
-        // Create an undo action and add it to the text component
-        getInputField().getActionMap().put("Undo",
-                new AbstractAction("Undo") {
-            private static final long serialVersionUID = 1;
-            public void actionPerformed(final ActionEvent evt) {
-                try {
-                    if (undo.canUndo()) {
-                        undo.undo();
-                    }
-                } catch (CannotUndoException ex) {
-                    Logger.userError(ErrorLevel.LOW, "Unable to undo");
-                }
-            }
-        });
-        
-        // Bind the undo action to ctl-Z
-        getInputField().getInputMap().put(KeyStroke.getKeyStroke("control Z"), "Undo");
-        
-        // Create a redo action and add it to the text component
-        getInputField().getActionMap().put("Redo",
-                new AbstractAction("Redo") {
-            private static final long serialVersionUID = 1;
-            public void actionPerformed(final ActionEvent evt) {
-                try {
-                    if (undo.canRedo()) {
-                        undo.redo();
-                    }
-                } catch (CannotRedoException ex) {
-                    Logger.userError(ErrorLevel.LOW, "Unable to redo");
-                }
-            }
-        });
-        
-        // Bind the redo action to ctl-Y
-        getInputField().getInputMap().put(KeyStroke.getKeyStroke("control Y"), "Redo");
+        UIUtilities.addUndoManager(getInputField());
         
         getInputField().getActionMap().put("PasteAction", new InputFramePasteAction(this));
         getInputField().getInputMap(WHEN_FOCUSED).put(KeyStroke.getKeyStroke("shift INSERT"), "PasteAction");
@@ -485,11 +433,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
                 }
             }
         } else {
-            try {
-                inputField.getDocument().insertString(inputField.getCaretPosition(), clipboard, null);
-            } catch (BadLocationException ex) {
-                Logger.appError(ErrorLevel.LOW, "Unable to paste clipboard contents", ex);
-            }
+            inputField.replaceSelection(clipboard);
         }
     }
     

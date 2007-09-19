@@ -25,6 +25,8 @@ package com.dmdirc.ui.swing.dialogs.channelsetting;
 import com.dmdirc.Channel;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.ui.swing.UIUtilities;
+import com.dmdirc.ui.swing.actions.TopicPasteAction;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.Color;
@@ -171,6 +173,9 @@ public final class TopicModesPane extends JPanel implements KeyListener,
         constraints.anchor = GridBagConstraints.LINE_START;
         constraints.gridy = 3;
         add(topicWho, constraints);
+        
+        topicText.getActionMap().put("paste-from-clipboard", new TopicPasteAction());
+        UIUtilities.addUndoManager(topicText);
     }
     
     /** Processes the topic and changes it if necessary. */
@@ -191,18 +196,18 @@ public final class TopicModesPane extends JPanel implements KeyListener,
     private void topicChanged() {
         if (topicLengthMax == 0) {
             topicLengthLabel.setForeground(Color.BLACK);
-            topicLengthLabel.setText(topicText.getText().length() 
+            topicLengthLabel.setText(topicText.getText().length()
             + " characters");
         } else {
             final int charsLeft = topicLengthMax - topicText.getText().length();
             if (charsLeft >= 0) {
                 topicLengthLabel.setForeground(Color.BLACK);
-                topicLengthLabel.setText(charsLeft + " of " + topicLengthMax 
+                topicLengthLabel.setText(charsLeft + " of " + topicLengthMax
                         + " available");
             } else {
                 topicLengthLabel.setForeground(Color.RED);
-                topicLengthLabel.setText(0 + " of " + topicLengthMax 
-                        + " available " + (-1 * charsLeft) 
+                topicLengthLabel.setText(0 + " of " + topicLengthMax
+                        + " available " + (-1 * charsLeft)
                         + " too many characters");
             }
         }

@@ -22,12 +22,20 @@
 
 package com.dmdirc.ui.swing;
 
+import com.dmdirc.ui.swing.actions.InputFramePasteAction;
+import com.dmdirc.ui.swing.actions.RedoAction;
+import com.dmdirc.ui.swing.actions.UndoAction;
+import com.dmdirc.ui.swing.components.DMDircUndoableEditListener;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
 
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
+import javax.swing.text.JTextComponent;
+import javax.swing.undo.UndoManager;
 
 /**
  * UI constants.
@@ -119,5 +127,25 @@ public final class UIUtilities {
         final SpringLayout layout = (SpringLayout) parent.getLayout();
         final Component constraints = parent.getComponent(row * columns + column);
         return layout.getConstraints(constraints);
+    }
+    
+    public static void addUndoManager(final JTextComponent component) {
+        final UndoManager undoManager = new UndoManager();
+        
+        // Listen for undo and redo events
+        component.getDocument().addUndoableEditListener(
+                new DMDircUndoableEditListener(undoManager));
+        
+        // Create an undo action and add it to the text component
+        component.getActionMap().put("Undo", new UndoAction(undoManager));
+        
+        // Bind the undo action to ctl-Z
+        component.getInputMap().put(KeyStroke.getKeyStroke("control Z"), "Undo");
+        
+        // Create a redo action and add it to the text component
+        component.getActionMap().put("Redo", new RedoAction(undoManager));
+        
+        // Bind the redo action to ctl-Y
+        component.getInputMap().put(KeyStroke.getKeyStroke("control Y"), "Redo");
     }
 }
