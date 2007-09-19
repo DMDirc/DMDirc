@@ -23,4 +23,11 @@ server.moder = Reop users
 
 # Standard user modes, I can't believe they're not in the RFCs. Maybe I missed them.
 server.modeo = Op
+server.modeh = Half-op
 server.modev = Voice
+
+# Defacto standards
+server.modec = No formatting
+server.modeM = Mute non-registered users
+server.modeO = IRCops only
+server.modeR = Only registered users can join
