@@ -1528,8 +1528,8 @@ public final class IRCParser implements Runnable {
 				else if (version.matches("(?i).*asuka.*")) { return "asuka"; }
 				else if (version.matches("(?i).*snircd.*")) { return "snircd"; }
 				else if (version.matches("(?i).*beware.*")) { return "bircd"; }
-				else if (version.matches("(?i).*u2\.[0-9]+\.H\..*")) { return "irchispano"; }
-				else if (version.matches("(?i).*u2\.[0-9]+\.*")) { return "ircu"; }
+				else if (version.matches("(?i).*u2\\.[0-9]+\\.H\\..*")) { return "irchispano"; }
+				else if (version.matches("(?i).*u2\\.[0-9]+\\.*")) { return "ircu"; }
 				else if (version.matches("(?i).*ircu.*")) { return "ircu"; }
 				else if (version.matches("(?i).*plexus.*")) { return "plexus"; }
 				else if (version.matches("(?i).*ircd.hybrid.*")) { return "hybrid7"; }
