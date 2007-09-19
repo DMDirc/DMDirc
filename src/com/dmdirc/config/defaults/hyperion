@@ -17,6 +17,5 @@ server.modej = Juped
 server.modeL = Allow large lists
 server.modeP = Permanent channel
 server.modeQ = No forwarded users
-server.moder = No unidentified users
 server.modeR = Silence unidentified users
 server.modez = Reduced moderation

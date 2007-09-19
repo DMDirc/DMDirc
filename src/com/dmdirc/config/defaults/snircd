@@ -4,7 +4,6 @@
 identity.name = Snircd mode aliases
 identity.ircd = snircd
 
-server.moder = Registered users only
 server.modeD = Auditorium mode
 server.moded = Auditorium mode
 server.enablemodec = true

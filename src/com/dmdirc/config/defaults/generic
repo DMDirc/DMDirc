@@ -19,7 +19,7 @@ server.modea = Anonymous chat
 server.modee = Exception
 server.modeI = Invite
 server.modeq = Quiet
-server.moder = Reop users
+#server.moder = Reop users
 
 # Standard user modes, I can't believe they're not in the RFCs. Maybe I missed them.
 server.modeo = Op
@@ -30,4 +30,5 @@ server.modev = Voice
 server.modec = No formatting
 server.modeM = Mute non-registered users
 server.modeO = IRCops only
+server.moder = Registered users only
 server.modeR = Only registered users can join

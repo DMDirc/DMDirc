@@ -4,7 +4,6 @@
 identity.name = Asuka mode aliases
 identity.ircd = asuka
 
-server.moder = Registered users only
 server.modeD = Auditorium mode
 server.moded = Auditorium mode
 server.modeC = No channel CTCPs
