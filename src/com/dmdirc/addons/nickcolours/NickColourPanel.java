@@ -29,6 +29,9 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 
@@ -64,6 +67,8 @@ public class NickColourPanel extends JPanel implements ActionListener {
     
     /**
      * Creates a new instance of NickColourPanel.
+     * 
+     * @param plugin The plugin that owns this panel
      */
     public NickColourPanel(final NickColourPlugin plugin) {
         super();
@@ -190,6 +195,24 @@ public class NickColourPanel extends JPanel implements ActionListener {
             final String textcolour, final String nickcolour) {
         final DefaultTableModel model = ((DefaultTableModel) table.getModel());
         model.addRow(new Object[]{network, nickname, textcolour, nickcolour});
+    }
+    
+    /**
+     * Retrieves the current data in use by this panel.
+     * 
+     * @return This panel's current data.
+     */
+    List<Object[]> getData() {
+        final List<Object[]> res = new ArrayList<Object[]>();
+        final DefaultTableModel model = ((DefaultTableModel) table.getModel());
+        
+        for (Object row : model.getDataVector()) {
+            final Vector vrow = (Vector) row;
+            
+            res.add(new Object[]{vrow.elementAt(0), vrow.elementAt(1), vrow.elementAt(2), vrow.elementAt(3)});
+        }
+        
+        return res;
     }
     
 }

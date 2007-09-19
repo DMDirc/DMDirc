@@ -59,6 +59,9 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
         "58ADB3", "9E54B3", "B39875", "3176B3",
     };
     
+    /** The nick colour panel we use for config. */
+    private NickColourPanel nickpanel;
+    
     /** Creates a new instance of NickColourPlugin. */
     public NickColourPlugin() {
         super();
@@ -183,6 +186,13 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
         return res;
     }
     
+    /**
+     * Retrieves the config option with the specified key, and returns an
+     * array of the colours that should be used for it.
+     * 
+     * @param key The config key to look up
+     * @return The colours specified by the given key
+     */
     private String[] getParts(final String key) {
         String[] parts = Config.getOption(DOMAIN, key).split(":");
         
@@ -241,8 +251,9 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
         preferencesPanel.addColourOption("General", "owncolour",
                 "Colour to use for own nick: ", "Colour used for own nick",
                 Config.getOption(DOMAIN, "owncolour", "1"), true, true);
-        
-        preferencesPanel.replaceOptionPanel("Nick colours", new NickColourPanel(this));
+
+        nickpanel = new NickColourPanel(this);
+        preferencesPanel.replaceOptionPanel("Nick colours", nickpanel);
         
         preferencesPanel.display();
         
@@ -262,15 +273,26 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
         
         Config.setOption(DOMAIN, "settext", properties.getProperty("settext"));
         Config.setOption(DOMAIN, "setnicklist", properties.getProperty("setnicklist"));
+        
+        // Remove all old config entries
+        for (Object[] parts : getData()) {
+            Config.unsetOption(DOMAIN, "color:" + parts[0] + ":" + parts[1]);
+        }
+        
+        // And write the new ones
+        for (Object[] row : nickpanel.getData()) {
+            Config.setOption(DOMAIN, "color:" + row[0] + ":" + row[1], row[2] + ":" + row[3]);
+        }
     }
     
     /** {@inheritDoc} */
     public void configCancelled() {
+        // Do nothing
     }
     
     /** {@inheritDoc} */
     public String getVersion() {
-        return "0.0";
+        return "0.5";
     }
     
     /** {@inheritDoc} */
