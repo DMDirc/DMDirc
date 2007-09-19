@@ -48,7 +48,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
-import javax.swing.text.BadLocationException;
 
 /**
  * Action conditions editing dialog, used in the actions editor dialog.
@@ -95,6 +94,8 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private JComboBox comparisons;
     /** Target textfield. */
     private JTextField targetText;
+    /** show substitutions button. */
+    private JButton subsButton;
     
     /**
      * Creates a new instance of ConditionEditorDialog.
@@ -185,6 +186,8 @@ public final class ConditionEditorDialog extends StandardDialog implements
         components.setEnabled(false);
         comparisons.setEnabled(false);
         targetText.setEnabled(false);
+        
+        subsButton = new JButton("Show substitutions");
         
         populateArguments();
     }
@@ -301,10 +304,11 @@ public final class ConditionEditorDialog extends StandardDialog implements
         components.addActionListener(this);
         comparisons.addActionListener(this);
         substitutionsPanel.addSubstitutionsPanelListener(this);
+        subsButton.addActionListener(this);
     }
     
     /** Lays out the components in the dialog. */
-    private void layoutComponents() {
+    private void layoutComponents() {        
         layoutConditionsPanel();
         layoutButtonPanel();
         
@@ -323,9 +327,11 @@ public final class ConditionEditorDialog extends StandardDialog implements
         conditionsPanel.add(comparisons);
         conditionsPanel.add(new JLabel("Target: "));
         conditionsPanel.add(targetText);
+        conditionsPanel.add(Box.createGlue());
+        conditionsPanel.add(subsButton);
         
-        layoutGrid(conditionsPanel, 4, 2, SMALL_BORDER, SMALL_BORDER, 0, 
-                SMALL_BORDER);
+        layoutGrid(conditionsPanel, 5, 2, SMALL_BORDER, SMALL_BORDER, 
+                SMALL_BORDER, SMALL_BORDER);
     }
     
     /** Lays out the button panel. */
@@ -333,17 +339,22 @@ public final class ConditionEditorDialog extends StandardDialog implements
         setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
         
         substitutionsPanel.setPreferredSize(new Dimension(250, 150));
-        substitutionsPanel.setBorder(BorderFactory.createEmptyBorder(0, 0,
-                0, SMALL_BORDER));
+        substitutionsPanel.setBorder(BorderFactory.createEmptyBorder(
+                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         
         add(conditionsPanel, BorderLayout.CENTER);
-        add(substitutionsPanel, BorderLayout.LINE_END);
         add(buttonsPanel, BorderLayout.PAGE_END);
+        
+        substitutionsPanel.setOpaque(true);
+        setGlassPane(substitutionsPanel);
+        substitutionsPanel.setVisible(false);
     }
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
-        if (event.getSource() == arguments && conditionsPanel.isVisible()) {
+        if (event.getSource() == subsButton) {
+            substitutionsPanel.setVisible(true);
+        } else if (event.getSource() == arguments && conditionsPanel.isVisible()) {
             if (arguments.getSelectedItem() == null) {
                 argument = -1;
             } else {
@@ -384,6 +395,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
     
     /** {@inheritDoc} */
     public void substitutionInsert(final ActionSubstitution substitution) {
+        substitutionsPanel.setVisible(false);
         targetText.replaceSelection(substitution.toString());
     }
     
