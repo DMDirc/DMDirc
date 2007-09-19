@@ -200,11 +200,7 @@ public final class ResponseTabPanel extends JPanel implements
 
     /** {@inheritDoc} */
     public void substitutionInsert(final ActionSubstitution substitution) {
-        try {
-            responses.getDocument().insertString(responses.getCaretPosition(), substitution.toString(), null);
-        } catch (BadLocationException ex) {
-            //Ignore
-        }
+            responses.replaceSelection(substitution.toString());
     }
     
     /**

@@ -384,11 +384,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
     
     /** {@inheritDoc} */
     public void substitutionInsert(final ActionSubstitution substitution) {
-        try {
-            targetText.getDocument().insertString(targetText.getCaretPosition(), substitution.toString(), null);
-        } catch (BadLocationException ex) {
-            //Ignore
-        }
+        targetText.replaceSelection(substitution.toString());
     }
     
     /**
