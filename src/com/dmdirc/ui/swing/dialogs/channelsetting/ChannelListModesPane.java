@@ -26,7 +26,6 @@ import com.dmdirc.Channel;
 import com.dmdirc.parser.ChannelListModeItem;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -71,7 +70,7 @@ public final class ChannelListModesPane extends JPanel implements
     private final JComboBox listModesMenu;
     
     /** Arraylist of jpanels containing the listmodes. */
-    private final List<JPanel> listModesPanels;
+    private final List<JList> listModesPanels;
     
     /** JPanel used to show listmodespanels in. */
     private final JScrollPane listModesPanel;
@@ -100,7 +99,7 @@ public final class ChannelListModesPane extends JPanel implements
                 BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
                 SMALL_BORDER, 0),
                 listModesPanel.getBorder()));
-        listModesPanels = new ArrayList<JPanel>();
+        listModesPanels = new ArrayList<JList>();
         listModesArray =
                 channel.getServer().getParser().getListChanModes().toCharArray();
         listModesMenu =
@@ -128,7 +127,7 @@ public final class ChannelListModesPane extends JPanel implements
             final ArrayList<ChannelListModeItem> listItems =
                     channel.getChannelInfo().getListModeParam(mode);
             final DefaultListModel model =
-                    (DefaultListModel) ((JList) listModesPanels.get(i).getComponent(0)).getModel();
+                    (DefaultListModel) listModesPanels.get(i).getModel();
             
             model.removeAllElements();
             for (ChannelListModeItem listItem : listItems) {
@@ -156,13 +155,12 @@ public final class ChannelListModesPane extends JPanel implements
             }
             model.addElement(modeText);
             
-            final JPanel panel =
-                    new JPanel(new BorderLayout());
             final JList list = new JList(new DefaultListModel());
+            list.setVisibleRowCount(15);
             list.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             list.addListSelectionListener(this);
-            panel.add(list, BorderLayout.CENTER);
-            listModesPanels.add(panel);
+            
+            listModesPanels.add(list);
         }
         if (listModesPanels.isEmpty()) {
             listModesPanel.setViewportView(new JPanel());
