@@ -1167,21 +1167,8 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public void onErrorInfo(final IRCParser tParser, final ParserError errorInfo) {
-        ErrorLevel errorLevel = ErrorLevel.MEDIUM;
-        
-        if (errorInfo.isFatal()) {
-            errorLevel = ErrorLevel.FATAL;
-        } else if (errorInfo.isError()) {
-            errorLevel = ErrorLevel.HIGH;
-        } else if (errorInfo.isWarning()) {
-            errorLevel = ErrorLevel.MEDIUM;
-        } else {
-            Logger.appError(ErrorLevel.LOW,
-                    "Unknown error level for parser error: " + errorInfo.getData(),
-                    new IllegalArgumentException("Illegal error level: " + errorInfo.getLevel()));
-            return;
-        }
-        
+        final ErrorLevel errorLevel = ErrorLevel.UNKNOWN;
+                
         if (errorInfo.isException()) {
             Logger.appError(errorLevel, errorInfo.getData(), errorInfo.getException());
         } else {
