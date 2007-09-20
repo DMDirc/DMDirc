@@ -61,10 +61,10 @@ public final class ErrorListDialog extends StandardDialog implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Previously instantiated instance of ErrorListDialog. */
-    private static ErrorListDialog me;
+    private static ErrorListDialog me  = new ErrorListDialog();
     
     /** Error manager. */
     private final ErrorManager errorManager;
@@ -115,11 +115,10 @@ public final class ErrorListDialog extends StandardDialog implements
      *
      * @return Instance of ErrorListDialog
      */
-    public static synchronized ErrorListDialog getErrorListDialog() {
-        if (me == null) {
-            me = new ErrorListDialog();
+    public static ErrorListDialog getErrorListDialog() {
+        synchronized (me) {
+            return me;
         }
-        return me;
     }
     
     /** Initialises the components. */
@@ -250,12 +249,12 @@ public final class ErrorListDialog extends StandardDialog implements
             dispose();
         } else if (e.getSource() == deleteButton) {
             ErrorManager.getErrorManager().deleteError(tableModel.getError(
-                        table.getRowSorter().convertRowIndexToModel(
-                        table.getSelectedRow())));
+                    table.getRowSorter().convertRowIndexToModel(
+                    table.getSelectedRow())));
         } else if (e.getSource() == sendButton) {
             ErrorManager.getErrorManager().sendError(tableModel.getError(
-                        table.getRowSorter().convertRowIndexToModel(
-                        table.getSelectedRow())));
+                    table.getRowSorter().convertRowIndexToModel(
+                    table.getSelectedRow())));
         } else if (e.getSource() == deleteAllButton) {
             final Collection<ProgramError> errors =
                     ErrorManager.getErrorManager().getErrorList().values();

@@ -51,10 +51,10 @@ public final class ErrorManager implements Serializable {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Previously instantiated instance of ErrorManager. */
-    private static ErrorManager me;
+    private static ErrorManager me = new ErrorManager();
     
     /** Error list. */
     private final Map<Integer, ProgramError> errors;
@@ -73,11 +73,10 @@ public final class ErrorManager implements Serializable {
      *
      * @return Instance of ErrorManager
      */
-    public static synchronized ErrorManager getErrorManager() {
-        if (me == null) {
-            me = new ErrorManager();
+    public static ErrorManager getErrorManager() {
+        synchronized (me) {
+            return me;
         }
-        return me;
     }
     
     /**
