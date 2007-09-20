@@ -30,6 +30,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Shape;
+import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -129,6 +130,12 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
      */
     public void paintComponent(final Graphics graphics) {
         final Graphics2D g = (Graphics2D) graphics;
+        
+        final Map desktopHints = (Map) Toolkit.getDefaultToolkit().
+                getDesktopProperty("awt.font.desktophints");
+        if (desktopHints != null) {
+            g.addRenderingHints(desktopHints);
+        }
         
         final float formatWidth = getWidth() - 6;
         final float formatHeight = getHeight();
