@@ -1691,7 +1691,7 @@ public final class IRCParser implements Runnable {
 	public ClientInfo getMyself() { return cMyself; }
 
 	/**
-	 * Set the cMySelf variable
+	 * Set the cMyself variable
 	 *
 	 * @param client new "myself" client
 	 */
@@ -1732,14 +1732,25 @@ public final class IRCParser implements Runnable {
 	}
 
 	/**
-	 * Remove a client from the ClientList
+	 * Remove a client from the ClientList.
+	 * This WILL NOT allow cMyself to be removed from the list.
 	 *
 	 * @param client Client to remove
 	 */
 	public void removeClient(final ClientInfo client) {
 		if (client != cMyself) {
-			hClientList.remove(toLowerCase(client.getNickname()));
+			forceRemoveClient(client);
 		}
+	}
+	
+	/**
+	 * Remove a client from the ClientList.
+.	 * This WILL allow cMyself to be removed from the list
+	 *
+	 * @param client Client to remove
+	 */
+	protected void forceRemoveClient(final ClientInfo client) {
+		hClientList.remove(toLowerCase(client.getNickname()));
 	}
 
 	/**

@@ -49,7 +49,7 @@ public class ProcessNick extends IRCProcessor {
 			final boolean isSameNick = myParser.equalsIgnoreCase(oldNickname, token[token.length-1]);
 			
 			if (!isSameNick) {
-				myParser.removeClient(getClientInfo(oldNickname));
+				myParser.forceRemoveClient(getClientInfo(oldNickname));
 			}
 			// Change the nickame
 			iClient.setUserBits(token[token.length-1],true);
