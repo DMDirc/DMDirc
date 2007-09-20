@@ -33,7 +33,9 @@ public enum ErrorLevel {
     /** Medium priority error. */
     MEDIUM("Medium"),
     /** Low priority error. */
-    LOW("Low");
+    LOW("Low"),
+    /** Unknown priority error. */
+    UNKNOWN("Unknown");
     
     /** toString value of the item. */
     private String value;
