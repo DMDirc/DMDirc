@@ -299,10 +299,7 @@ public final class ErrorListDialog extends StandardDialog implements
         final int errorRow = tableModel.indexOf(error);
         
         if (errorRow != -1) {
-            final int selectedRow = table.getSelectedRow();
-            tableModel.fireTableDataChanged();
-            table.getSelectionModel().setSelectionInterval(selectedRow,
-                    selectedRow);
+            tableModel.fireTableRowsUpdated(errorRow, errorRow);
         }
     }
     
