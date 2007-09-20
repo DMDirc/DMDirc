@@ -267,9 +267,8 @@ public final class ErrorListDialog extends StandardDialog implements
     
     /** {@inheritDoc} */
     public void errorAdded(final ProgramError error) {
-        tableModel.addRow(error);
         final int selectedRow = table.getSelectedRow();
-        tableModel.fireTableDataChanged();
+        tableModel.addRow(error);
         table.getSelectionModel().setSelectionInterval(selectedRow, selectedRow);
         deleteAllButton.setEnabled(true);
     }
@@ -281,9 +280,11 @@ public final class ErrorListDialog extends StandardDialog implements
     
     /** {@inheritDoc} */
     public void errorDeleted(final ProgramError error) {
+        int selectedRow = table.getSelectedRow();
         tableModel.removeRow(error);
-        final int selectedRow = table.getSelectedRow();
-        tableModel.fireTableDataChanged();
+        if (selectedRow >= tableModel.getRowCount()) {
+            selectedRow = tableModel.getRowCount() - 1;
+        }
         table.getSelectionModel().setSelectionInterval(selectedRow,
                 selectedRow);
         
