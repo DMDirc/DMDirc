@@ -63,6 +63,7 @@ public final class CallbackOnErrorInfo extends CallbackObject {
 			}
 			bResult = true;
 		}
+		myParser.onPostErrorInfo(errorInfo, bResult);
 		return bResult;
 	}	
 	

@@ -213,6 +213,9 @@ public final class IRCParser implements Runnable {
 	ProcessingManager myProcessingManager = new ProcessingManager(this);
 	/** Reference to the callback Manager. */
 	CallbackManager myCallbackManager = new CallbackManager(this);
+	
+	/** Should we automatically disconnect on fatal errors?. */
+	private boolean disconnectOnFatal = true;
 
 	/** Current Socket State. */
 	private byte currentSocketState;
@@ -551,7 +554,34 @@ public final class IRCParser implements Runnable {
 		updateCharArrays((byte)3);
 	}
 
+	/**
+	 * Called after other error callbacks.
+	 * CallbackOnErrorInfo automatically calls this *AFTER* any registered callbacks
+	 * for it are called.
+	 *
+	 * @param errorInfo ParserError object representing the error.
+	 * @param called True/False depending on the the success of other callbacks.
+	 */
+	public void onPostErrorInfo(final ParserError errorInfo, final boolean called) {
+		if (errorInfo.isFatal() && disconnectOnFatal) {
+			disconnect("Fatal Parser Error");
+		}
+	}
 	
+	/**
+	 * Get the current Value of disconnectOnFatal.
+	 *
+	 * @return Value of disconnectOnFatal (true if the parser automatically disconnects on fatal errors, else false)
+	 */
+	public boolean getDisconnectOnFatal() { return disconnectOnFatal; }
+	
+	/**
+	 * Set the current Value of disconnectOnFatal.
+	 *
+	 * @param newValue New value to set disconnectOnFatal
+	 */
+	public void setDisconnectOnFatal(final boolean newValue) { disconnectOnFatal = newValue; }
+		
 	/**
 	 * Connect to IRC.
 	 *
