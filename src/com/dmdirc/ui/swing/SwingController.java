@@ -87,8 +87,8 @@ public final class SwingController implements UIController {
     public synchronized MainFrame getMainWindow() {
         if (me == null) {
             statusBar = new SwingStatusBar();
-            ErrorListDialog.getErrorListDialog();
             me = new MainFrame(statusBar);
+            ErrorListDialog.getErrorListDialog();
         }
         return me;
     }
