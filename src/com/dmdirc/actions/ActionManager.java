@@ -160,6 +160,10 @@ public final class ActionManager {
         actions.clear();
         groups.clear();
         
+        for (ActionWrapper wrapper : actionWrappers) {
+            wrapper.clearActions();
+        }
+        
         final File dir = new File(getDirectory());
         
         if (!dir.exists()) {

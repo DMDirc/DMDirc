@@ -56,6 +56,13 @@ public abstract class ActionWrapper {
     }
     
     /**
+     * Removes all actions from this manager.
+     */
+    public void clearActions() {
+        actions.clear();
+    }
+    
+    /**
      * Retrieves a list of actions registered with this wrapper.
      * 
      * @return A list of registered actions
