@@ -35,8 +35,8 @@ import java.util.List;
  */
 public final class Alias {
     
-    /** Alias name. */
-    private String name;
+    /** Alias command. */
+    private String command;
     
     /** Alias arguments. */
     private List<ActionCondition> arguments;
@@ -47,13 +47,13 @@ public final class Alias {
     /**
      * Creates a new Alias wrapper.
      *
-     * @param name Alias name
+     * @param name Alias command
      */
-    public Alias(final String name) {
-        this.name = name;
+    public Alias(final String command) {
+        this.command = command;
         this.arguments = new ArrayList<ActionCondition>();
         this.arguments.add(new ActionCondition(1, CoreActionComponent.STRING_STRING,
-                CoreActionComparison.STRING_EQUALS, name));
+                CoreActionComparison.STRING_EQUALS, command));
         this.response = new String[]{"", };
     }
     
@@ -66,28 +66,28 @@ public final class Alias {
      */
     public Alias(final String name, final List<ActionCondition> arguments,
             final String[] response) {
-        this.name = name;
+        this.command = name;
         this.arguments = new ArrayList<ActionCondition>(arguments);
         this.response = response.clone();
     }
     
     /**
-     * Returns the aliases name.
+     * Returns the aliases command.
      *
-     * @return Aliases name
+     * @return Aliases command
      */
-    public String getName() {
-        return name;
+    public String getCommand() {
+        return command;
     }
     
     /**
-     * Sets the aliases name.
+     * Sets the aliases command.
      *
-     * @param name Name to give the alias
+     * @param name Command to give the alias
      */
-    public void setName(final String name) {
-        if (!this.name.equals(name)) {
-            this.name = name;
+    public void setCommand(final String command) {
+        if (!this.command.equals(command)) {
+            this.command = command;
             
             ActionCondition argument;
             
@@ -97,7 +97,21 @@ public final class Alias {
                 argument = arguments.get(1);
             }
             
-            argument.setTarget(name);
+            argument.setTarget(command);
+        }
+    }
+    
+    /**
+     * Returns the aliases name.
+     *
+     * @return Aliases name
+     */
+    public String getName() {
+        final ActionCondition condition = getArgsArgument();
+        if (condition == null) {
+            return command + "-Any";
+        } else {
+            return command + condition.getTarget();
         }
     }
     
@@ -164,7 +178,7 @@ public final class Alias {
     
     /** {@inheritDoc} */
     public String toString() {
-        return "[name=aliases/" + name + ", triggers="
+        return "[name=aliases/" + getName() + ", triggers="
                 + "[UNKNOWN_COMMAND], response="
                 + Arrays.toString(response) + ", "
                 + arguments + ", format='']";

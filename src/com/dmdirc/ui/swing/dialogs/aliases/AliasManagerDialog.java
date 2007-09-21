@@ -185,8 +185,18 @@ public final class AliasManagerDialog extends StandardDialog implements
         final List<Action> actions = AliasWrapper.getAliasWrapper().getActions();
         
         for (Action loopAction : actions) {
-            aliases.add(new Alias(loopAction.getName(),
-                    loopAction.getConditions(), loopAction.getResponse()));
+            final List<ActionCondition> arguments = loopAction.getConditions();
+            
+            ActionCondition argument;
+            
+            argument = arguments.get(0);
+            
+            if (argument.getComparison() != CoreActionComparison.STRING_EQUALS) {
+                argument = arguments.get(1);
+            }
+            
+            aliases.add(new Alias(argument.getTarget(),
+                    arguments, loopAction.getResponse()));
         }
         
         return aliases;
@@ -280,12 +290,12 @@ public final class AliasManagerDialog extends StandardDialog implements
         
         conditions.add(new ActionCondition(1,
                 CoreActionComponent.STRING_STRING,
-                CoreActionComparison.STRING_EQUALS, alias.getName()));
+                CoreActionComparison.STRING_EQUALS, alias.getCommand()));
         if (aliasDetails.getArguments() != null) {
             conditions.add(aliasDetails.getArguments());
         }
         
-        alias.setName(aliasDetails.getName());
+        alias.setCommand(aliasDetails.getCommand());
         alias.setArguments(conditions);
         alias.setResponse(aliasDetails.getResponse());
         final int localSelectedRow = table.getSelectedRow();
@@ -314,7 +324,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     /** Adds an alias. */
     private void add() {
         String name = JOptionPane.showInputDialog(this,
-                "Please enter the name for the new alias.",
+                "Please enter the command name for the new alias.",
                 "New alias", JOptionPane.QUESTION_MESSAGE);
         if (name != null && !name.isEmpty()) {
             if (name.charAt(0) == '/' || name.charAt(0) == '\\') {
@@ -395,6 +405,7 @@ public final class AliasManagerDialog extends StandardDialog implements
         for (Alias alias : aliases) {
             final Action action = getAction(alias);
             if (action != null) {
+                action.rename(alias.getName());
                 action.setConditions(alias.getArguments());
                 action.setResponse(alias.getResponse());
                 action.save();

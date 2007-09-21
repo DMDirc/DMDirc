@@ -57,7 +57,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
     private static final long serialVersionUID = 2;
     
     /** Name field. */
-    private final JTextField name;
+    private final JTextField command;
     
     /** argument component combo box. */
     private final JComboBox argumentComponent;
@@ -75,8 +75,8 @@ public final class AliasPanel extends JPanel implements ActionListener {
     public AliasPanel() {
         super();
         
-        name = new JTextField();
-        name.setEnabled(false);
+        command = new JTextField();
+        command.setEnabled(false);
         
         argumentComponent = new JComboBox(new CoreActionComparison[]{null,
         CoreActionComparison.INT_GREATER, CoreActionComparison.INT_EQUALS,
@@ -100,7 +100,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
     private void layoutComponents() {
         final JPanel panel = new JPanel(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
         
-        name.setPreferredSize(new Dimension(0, getFont().getSize()));
+        command.setPreferredSize(new Dimension(0, getFont().getSize()));
         argumentComponent.setPreferredSize(new Dimension(
                 12 * getFont().getSize(), getFont().getSize()));
         argumentNumber.setPreferredSize(new Dimension(0, getFont().getSize()));
@@ -111,8 +111,8 @@ public final class AliasPanel extends JPanel implements ActionListener {
         
         setLayout(new SpringLayout());
         
-        add(new JLabel("Name: "));
-        add(name);
+        add(new JLabel("Command: "));
+        add(command);
         
         add(new JLabel("# Arguments: "));
         add(panel);
@@ -127,12 +127,12 @@ public final class AliasPanel extends JPanel implements ActionListener {
     /** Clears the details. */
     public void clear() {
         alias = null;
-        name.setText("");
-        name.setEnabled(false);
+        command.setText("");
+        command.setEnabled(false);
         argumentComponent.setSelectedItem(null);
         argumentNumber.setValue(0);
         response.setText("");
-        name.setEnabled(false);
+        command.setEnabled(false);
         argumentComponent.setEnabled(false);
         argumentNumber.setEnabled(false);
         response.setEnabled(false);
@@ -149,10 +149,10 @@ public final class AliasPanel extends JPanel implements ActionListener {
             return;
         }
         this.alias = alias;
-        name.setEnabled(true);
+        command.setEnabled(true);
         argumentComponent.setEnabled(true);
         response.setEnabled(true);
-        name.setText(alias.getName());
+        command.setText(alias.getCommand());
         
         final List<ActionCondition> arguments = alias.getArguments();
         ActionCondition argument;
@@ -189,12 +189,12 @@ public final class AliasPanel extends JPanel implements ActionListener {
     }
     
     /**
-     * Returns the current name.
+     * Returns the current command.
      *
-     * @return Alias name
+     * @return Alias command
      */
-    public String getName() {
-        return name.getText();
+    public String getCommand() {
+        return command.getText();
     }
     
     /**

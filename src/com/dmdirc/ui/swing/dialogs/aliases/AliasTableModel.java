@@ -85,7 +85,7 @@ public final class AliasTableModel extends AbstractTableModel {
     public String getColumnName(final int columnIndex) {
         switch(columnIndex) {
             case 0:
-                return "Name";
+                return "Command";
             case 1:
                 return "# of Arguments";
             case 2:
@@ -126,7 +126,7 @@ public final class AliasTableModel extends AbstractTableModel {
         }
         switch(columnIndex) {
             case 0:
-                return aliases.get(rowIndex).getName();
+                return aliases.get(rowIndex).getCommand();
             case 1:
                 return aliases.get(rowIndex).getArgsArgument();
             case 2:
@@ -148,7 +148,7 @@ public final class AliasTableModel extends AbstractTableModel {
         }
         switch(columnIndex) {
             case 0:
-                aliases.get(rowIndex).setName((String) aValue);
+                aliases.get(rowIndex).setCommand((String) aValue);
                 break;
             case 1:
                 aliases.get(rowIndex).getArguments().set(1, (ActionCondition) aValue);
