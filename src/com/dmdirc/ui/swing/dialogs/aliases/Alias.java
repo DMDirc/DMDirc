@@ -161,4 +161,12 @@ public final class Alias {
             this.response = response.clone();
         }
     }
+    
+    /** {@inheritDoc} */
+    public String toString() {
+        return "[name=aliases/" + name + ", triggers="
+                + "[UNKNOWN_COMMAND], response="
+                + Arrays.toString(response) + ", "
+                + arguments + ", format='']";
+    }
 }

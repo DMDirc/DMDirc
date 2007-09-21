@@ -23,7 +23,6 @@
 package com.dmdirc.ui.swing.dialogs.aliases;
 
 import com.dmdirc.actions.ActionCondition;
-import com.dmdirc.actions.CoreActionComparison;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +39,7 @@ public final class AliasTableModel extends AbstractTableModel {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Data list. */
     private List<Alias> aliases;
@@ -50,31 +49,30 @@ public final class AliasTableModel extends AbstractTableModel {
         this(new ArrayList<Alias>());
     }
     
-    /** 
-     * Creates a new instance of AliasTableModel. 
+    /**
+     * Creates a new instance of AliasTableModel.
      *
      * @param aliases List of aliases
      */
     public AliasTableModel(final List<Alias> aliases) {
         super();
         
-        this.aliases = aliases;
+        this.aliases = new ArrayList<Alias>(aliases);
     }
     
-    /** 
+    /**
      * Sets the alias list.
      *
      * @param aliases List of aliases
      */
     public void setAliases(final List<Alias> aliases) {
-        this.aliases.clear();
-        this.aliases = aliases;
+        this.aliases = new ArrayList<Alias>(aliases);
         
         fireTableDataChanged();
     }
     
     /** {@inheritDoc} */
-    public int getRowCount() {        
+    public int getRowCount() {
         return aliases.size();
     }
     
@@ -93,7 +91,7 @@ public final class AliasTableModel extends AbstractTableModel {
             case 2:
                 return "Response";
             default:
-                throw new IllegalArgumentException("Unknown column: " 
+                throw new IllegalArgumentException("Unknown column: "
                         + columnIndex);
         }
     }
@@ -108,7 +106,7 @@ public final class AliasTableModel extends AbstractTableModel {
             case 2:
                 return String[].class;
             default:
-                throw new IllegalArgumentException("Unknown column: " 
+                throw new IllegalArgumentException("Unknown column: "
                         + columnIndex);
         }
     }
@@ -121,29 +119,33 @@ public final class AliasTableModel extends AbstractTableModel {
     /** {@inheritDoc} */
     public Object getValueAt(final int rowIndex, final int columnIndex) {
         if (aliases.size() <= rowIndex) {
-            return null;
+            throw new IndexOutOfBoundsException(rowIndex + " >= " + aliases.size());
         }
-        switch(columnIndex) { //NOPMD
+        if (rowIndex < 0) {
+            throw new IllegalArgumentException("Must specify a positive integer");
+        }
+        switch(columnIndex) {
             case 0:
                 return aliases.get(rowIndex).getName();
             case 1:
-                final List<ActionCondition> conditions =
-                        aliases.get(rowIndex).getArguments();
-                if (conditions.size() > 1) {
-                    return conditions.get(1);
-                } else {
-                    return null;
-                }
+                return aliases.get(rowIndex).getArgsArgument();
             case 2:
                 return aliases.get(rowIndex).getResponse();
             default:
-                return null;
+                throw new IllegalArgumentException("Unknown column: "
+                        + columnIndex);
         }
     }
     
     /** {@inheritDoc} */
     public void setValueAt(final Object aValue, final int rowIndex,
             final int columnIndex) {
+        if (aliases.size() <= rowIndex) {
+            throw new IndexOutOfBoundsException(rowIndex + " >= " + aliases.size());
+        }
+        if (rowIndex < 0) {
+            throw new IllegalArgumentException("Must specify a positive integer");
+        }
         switch(columnIndex) {
             case 0:
                 aliases.get(rowIndex).setName((String) aValue);
@@ -155,7 +157,8 @@ public final class AliasTableModel extends AbstractTableModel {
                 aliases.get(rowIndex).setResponse((String[]) aValue);
                 break;
             default:
-                break;
+                throw new IllegalArgumentException("Unknown column: "
+                        + columnIndex);
         }
         fireTableCellUpdated(rowIndex, columnIndex);
     }
@@ -177,49 +180,12 @@ public final class AliasTableModel extends AbstractTableModel {
      * @return Complete alias list
      */
     public List<Alias> getAliases() {
-        return aliases;
-    }
-    
-    /**
-     * Gets the name of the specified alias.
-     *
-     * @param rowIndex row to retrieve
-     *
-     * @return Alias name
-     */
-    public String getName(final int rowIndex) {
-        return aliases.get(rowIndex).getName();
-    }
-    
-    /**
-     * Gets the arguments of the specified alias.
-     *
-     * @param rowIndex row to retrieve
-     *
-     * @return Alias arguments
-     */
-    public ActionCondition getArguments(final int rowIndex) {
-        final List<ActionCondition> arguments = aliases.get(rowIndex).getArguments();
-        ActionCondition argument;
-        
-        argument = arguments.get(0);
-        
-        if (argument.getComparison() == CoreActionComparison.STRING_EQUALS) {
-            argument = arguments.get(1);
+        /*System.out.print("getAliases -> ");
+        for (Alias alias : aliases) {
+            System.out.print(alias.getName() + ", ");
         }
-        
-        return argument;
-    }
-    
-    /**
-     * Gets the response of the specified alias.
-     *
-     * @param rowIndex row to retrieve
-     *
-     * @return Alias response
-     */
-    public String[] getResponse(final int rowIndex) {
-        return aliases.get(rowIndex).getResponse();
+        System.out.println("");*/
+        return new ArrayList<Alias>(aliases);
     }
     
     /**
@@ -238,7 +204,16 @@ public final class AliasTableModel extends AbstractTableModel {
      * @param row Row to remove
      */
     public void removeRow(final int row) {
+        /*System.out.print("removing row: " + row + " (" + aliases.get(row).getName() + ") -> ");
+        for (Alias alias : aliases) {
+            System.out.print(alias.getName() + ", ");
+        }
+        System.out.print(" -> ");*/
         aliases.remove(row);
+        /*for (Alias alias : aliases) {
+            System.out.print(alias.getName() + ", ");
+        }
+        System.out.println("");*/
         fireTableRowsDeleted(row, row);
     }
     

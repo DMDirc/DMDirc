@@ -65,10 +65,10 @@ public final class AliasManagerDialog extends StandardDialog implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Previously instantiated instance of AliasManagerDialog. */
-    private static AliasManagerDialog me;
+    private static AliasManagerDialog me = new AliasManagerDialog();
     
     /** Table scrollpane. */
     private JScrollPane scrollPane;
@@ -116,12 +116,11 @@ public final class AliasManagerDialog extends StandardDialog implements
      *
      * @return Instance of AliasManagerDialog
      */
-    public static synchronized AliasManagerDialog getAliasManagerDialog() {
-        if (me == null) {
-            me = new AliasManagerDialog();
+    public static AliasManagerDialog getAliasManagerDialog() {
+        synchronized (me) {
+            me.updateTableData();
+            return me;
         }
-        me.updateTableData();
-        return me;
     }
     
     /** Initialises the components. */
@@ -132,7 +131,7 @@ public final class AliasManagerDialog extends StandardDialog implements
         
         scrollPane = new JScrollPane();
         
-        tableModel = new AliasTableModel(getTableData());
+        tableModel = new AliasTableModel();
         table = new PackingTable(tableModel, false, scrollPane) {
             private static final long serialVersionUID = 1;
             public TableCellRenderer getCellRenderer(final int row, final int column) {
@@ -299,6 +298,9 @@ public final class AliasManagerDialog extends StandardDialog implements
         } else if (e.getSource() == getCancelButton()) {
             dispose();
         } else if (e.getSource() == getOkButton()) {
+            if (table.getSelectedRow() != -1) {
+                updateAlias();
+            }
             save();
             dispose();
         }
@@ -329,35 +331,37 @@ public final class AliasManagerDialog extends StandardDialog implements
     
     /** Saves the aliases. */
     private void save() {
-        final List<Alias> aliases = tableModel.getAliases();
+        /*
+        //delete        
+        action.delete();        
         
-        for (Alias alias : aliases) {
-            final ActionCondition argsCondition = alias.getArgsArgument();
-            final String argsString;
-            if (argsCondition == null) {
-                argsString = "Any";
-            } else {
-                argsString = argsCondition.getTarget();
-            }
-            /* if new
-            new Action(
-                    AliasWrapper.getAliasWrapper().getGroupName(),
-                    alias.getName() + argsString,
-                    new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },
-                    alias.getResponse(),
-                    alias.getArguments(),
-                    "").save();
-             */
-            /* if to be modified
+        //new
+        final ActionCondition argsCondition = alias.getArgsArgument();
+        final String argsString;
+        if (argsCondition == null) {
+            argsString = "Any";
+        } else {
+            argsString = argsCondition.getTarget();
+        }
+        new Action(
+                AliasWrapper.getAliasWrapper().getGroupName(),
+                alias.getName() + argsString,
+                new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },
+                alias.getResponse(),
+                alias.getArguments(),
+                "").save();
+        
+        
+        //modified
+        final Action action = getAction(alias);
+        if (action != null) {
             action.setConditions(alias.getArguments());
             action.setResponse(alias.getResponse());
             action.save();
-             */
-            /* if to be deleted
-            action.delete();
-             */
-            ActionManager.loadActions();
         }
-    }
-    
+        
+        //common
+        ActionManager.loadActions();
+        */
+    }    
 }
