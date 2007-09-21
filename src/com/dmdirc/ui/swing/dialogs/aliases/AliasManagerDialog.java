@@ -25,8 +25,11 @@ package com.dmdirc.ui.swing.dialogs.aliases;
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PackingTable;
@@ -38,6 +41,7 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.BorderFactory;
@@ -332,39 +336,92 @@ public final class AliasManagerDialog extends StandardDialog implements
     
     /** Saves the aliases. */
     private void save() {
+        final List<Action> actions = new ArrayList<Action>(
+                AliasWrapper.getAliasWrapper().getActions());
         final List<Alias> aliases = tableModel.getAliases();
         
-        /*
-        //delete
-        action.delete();
-         
-        //new
-        final ActionCondition argsCondition = alias.getArgsArgument();
-        final String argsString;
-        if (argsCondition == null) {
-            argsString = "Any";
-        } else {
-            argsString = argsCondition.getTarget();
+        final List<Alias> newAliases = new ArrayList<Alias>();
+        final List<Alias> modifiedAliases = new ArrayList<Alias>();
+        
+        for (Alias alias : aliases) {
+            final Action action = getAction(alias);
+            
+            if (action == null) {
+                newAliases.add(alias);
+            } else {
+                if (!action.getName().equals(alias.getName())
+                || !action.getConditions().equals(alias.getArguments())
+                || !Arrays.equals(action.getResponse(), alias.getResponse())) {
+                    modifiedAliases.add(alias);
+                }
+                actions.remove(action);
+            }
         }
-        new Action(
-                AliasWrapper.getAliasWrapper().getGroupName(),
-                alias.getName() + argsString,
-                new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },
-                alias.getResponse(),
-                alias.getArguments(),
-                "").save();
-         
-         
-        //modified
-        final Action action = getAction(alias);
-        if (action != null) {
-            action.setConditions(alias.getArguments());
-            action.setResponse(alias.getResponse());
-            action.save();
+        
+        for (Action action : actions) {
+            action.delete();
         }
-         
-        //common
+        
+        saveNewAliases(newAliases);
+        
+        saveModifiedAliases(modifiedAliases);
+        
         ActionManager.loadActions();
-         */
+    }
+    
+    /**
+     * Saves new aliases
+     * 
+     * @param aliases List of new aliases to save
+     */
+    private void saveNewAliases(final List<Alias> aliases) {
+        for (Alias alias : aliases) {
+            new Action(
+                    AliasWrapper.getAliasWrapper().getGroupName(),
+                    alias.getName(),
+                    new ActionType[] {CoreActionType.UNKNOWN_COMMAND, },
+                    alias.getResponse(),
+                    alias.getArguments(),
+                    "").save();
+        }
+    }
+    
+    /**
+     * Saves modified aliases
+     * 
+     * @param aliases List of modified aliases to save
+     */
+    private void saveModifiedAliases(final List<Alias> aliases) {
+        for (Alias alias : aliases) {
+            final Action action = getAction(alias);
+            if (action != null) {
+                action.setConditions(alias.getArguments());
+                action.setResponse(alias.getResponse());
+                action.save();
+            }
+        }
+    }
+    
+    /**
+     * Returns the action corresponding to the specified alias
+     *
+     * @param alias Alias to check
+     *
+     * @return Corresponding action or null if none found
+     */
+    private Action getAction(final Alias alias) {
+        final List<Action> actions = new ArrayList<Action>(
+                AliasWrapper.getAliasWrapper().getActions());
+        Action action = null;
+        
+        for (Action loopAction : actions) {
+            if (loopAction.getName().equals(alias.getName())
+            && loopAction.getConditions().equals(alias.getArguments())) {
+                action = loopAction;
+                break;
+            }
+        }
+        
+        return action;
     }
 }
