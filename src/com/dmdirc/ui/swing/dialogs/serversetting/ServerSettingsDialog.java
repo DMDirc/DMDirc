@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs.serversetting;
 
 import com.dmdirc.Main;
 import com.dmdirc.Server;
+import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
@@ -68,6 +69,8 @@ public final class ServerSettingsDialog extends StandardDialog
     private PerformPanel performPanel;
     /** Settings panel. */
     private SettingsPanel settingsPanel;
+    /** The tabbed pane. */
+    private JTabbedPane tabbedPane;
     
     /**
      * Creates a new instance of ServerSettingsDialog.
@@ -94,7 +97,7 @@ public final class ServerSettingsDialog extends StandardDialog
         orderButtons(new JButton(), new JButton());
         initButtonsPanel();
         
-        final JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane = new JTabbedPane();
         
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, 0, SMALL_BORDER));
@@ -102,10 +105,10 @@ public final class ServerSettingsDialog extends StandardDialog
         ignoreList = new IgnoreListPanel(server);
         
         performPanel = new PerformPanel(server);
-
+        
         settingsPanel = new SettingsPanel(IdentityManager.getNetworkConfig(
-                server.getNetwork()), "These settings are specific to this " 
-                + "network, any settings specified here will overwrite global " 
+                server.getNetwork()), "These settings are specific to this "
+                + "network, any settings specified here will overwrite global "
                 + "settings");
         
         addSettings();
@@ -118,6 +121,9 @@ public final class ServerSettingsDialog extends StandardDialog
         
         this.add(tabbedPane, BorderLayout.CENTER);
         this.add(buttonsPanel, BorderLayout.PAGE_END);
+        
+        tabbedPane.setSelectedIndex(server.getConfigManager().
+                getOptionInt("dialogstate", "serversettingsdialog", 0));
     }
     
     /** Adds the settings to the panel. */
@@ -178,6 +184,10 @@ public final class ServerSettingsDialog extends StandardDialog
         settingsPanel.save();
         performPanel.savePerforms();
         ignoreList.saveList();
+
+        final Identity identity = IdentityManager.getNetworkConfig(server.getNetwork());
+        identity.setOption("dialogstate", "serversettingsdialog",
+                String.valueOf(tabbedPane.getSelectedIndex()));
     }
     
     /** {@inheritDoc} */
