@@ -392,6 +392,7 @@ public final class Formatter {
         
         defaultProperties.setProperty("numeric_401", "6A7000%4$s" + stop + ": %5$s");
         defaultProperties.setProperty("numeric_421", "6A7000%4$s" + stop + ": %5$s");
+        defaultProperties.setProperty("numeric_433", "6A7000%4$s" + stop + ": %5$s");
         defaultProperties.setProperty("numeric_461", "6A7000%4$s" + stop + ": %5$s");
         defaultProperties.setProperty("numeric_471", "6A7000%4$s" + stop + ": %5$s");
         defaultProperties.setProperty("numeric_472", "6A7000%4$s" + stop + ": %5$s");
