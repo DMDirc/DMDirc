@@ -224,7 +224,7 @@ public final class ChannelListModesPane extends JPanel implements
             final ArrayList<ChannelListModeItem> listItems =
                     channel.getChannelInfo().getListModeParam(mode);
             final Enumeration<?> values =
-                    ((DefaultListModel) ((JList) listModesPanels.get(i).getComponent(0)).getModel()).elements();
+                    ((DefaultListModel) listModesPanels.get(i).getModel()).elements();
             
             for (ChannelListModeItem listItem : listItems) {
                 currentModes.put(listItem.toString(), mode);

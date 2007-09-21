@@ -25,14 +25,15 @@ package com.dmdirc.installer;
 import com.dmdirc.installer.cliparser.CLIParser;
 import com.dmdirc.installer.cliparser.BooleanParam;
 import com.dmdirc.installer.cliparser.StringParam;
+import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.Wizard;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
+
 import java.awt.Dimension;
 import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.UIManager;
+import java.util.List;
 import javax.swing.UnsupportedLookAndFeelException;
 
 /**
@@ -72,7 +73,7 @@ public final class Main implements Wizard {
 	 */
 	private Main() {
 		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			UIUtilities.initUISettings();
 		} catch (InstantiationException ex) {
 			//Ignore, revert to default
 		} catch (ClassNotFoundException ex) {

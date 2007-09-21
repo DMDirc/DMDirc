@@ -22,18 +22,25 @@
 
 package com.dmdirc.ui.swing;
 
-import com.dmdirc.ui.swing.actions.InputFramePasteAction;
 import com.dmdirc.ui.swing.actions.RedoAction;
 import com.dmdirc.ui.swing.actions.UndoAction;
 import com.dmdirc.ui.swing.components.DMDircUndoableEditListener;
+
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import javax.swing.JComponent;
+import java.awt.Font;
+import java.awt.Insets;
+import javax.swing.BorderFactory;
 import javax.swing.KeyStroke;
 
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.FontUIResource;
 import javax.swing.text.JTextComponent;
 import javax.swing.undo.UndoManager;
 
@@ -147,5 +154,105 @@ public final class UIUtilities {
         
         // Bind the redo action to ctl-Y
         component.getInputMap().put(KeyStroke.getKeyStroke("control Y"), "Redo");
+    }
+    
+    /**
+     * Initialises any settings required by this UI (this is always called
+     * before any aspect of the UI is instansiated).
+     *
+     * @throws InstantiationException
+     * @throws ClassNotFoundException
+     * @throws UnsupportedLookAndFeelException
+     * @throws IllegalAccessException
+     */
+    public static void initUISettings() throws InstantiationException,
+            ClassNotFoundException, UnsupportedLookAndFeelException,
+            IllegalAccessException {
+        
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        
+        final FontUIResource font = new FontUIResource("Dialog", Font.PLAIN , 12);
+        
+        UIManager.put("TableHeader.font", font);
+        UIManager.put("ToggleButton.font", font);
+        UIManager.put("ScrollPane.font", font);
+        UIManager.put("Spinner.font", font);
+        UIManager.put("RadioButtonMenuItem.font", font);
+        UIManager.put("Slider.font", font);
+        UIManager.put("OptionPane.font", font);
+        UIManager.put("ToolBar.font", font);
+        UIManager.put("CheckBoxMenuItem.font", font);
+        UIManager.put("Table.font", font);
+        UIManager.put("MenuBar.font", font);
+        UIManager.put("PopupMenu.font", font);
+        UIManager.put("DesktopIcon.font", font);
+        UIManager.put("TextPane.font", font);
+        UIManager.put("ProgressBar.font", font);
+        UIManager.put("FormattedTextField.font", font);
+        UIManager.put("ColorChooser.font", font);
+        UIManager.put("Viewport.font", font);
+        UIManager.put("ToolTip.font", font);
+        UIManager.put("Label.font", font);
+        UIManager.put("TextField.font", font);
+        UIManager.put("PasswordField.font", font);
+        UIManager.put("Button.font", font);
+        UIManager.put("RadioButton.font", font);
+        UIManager.put("CheckBox.font", font);
+        UIManager.put("ComboBox.font", font);
+        UIManager.put("Menu.font", font);
+        UIManager.put("List.font", font);
+        UIManager.put("MenuItem.font", font);
+        UIManager.put("Panel.font", font);
+        UIManager.put("TitledBorder.font", font);
+        UIManager.put("TabbedPane.font", font);
+        UIManager.put("Tree.font", font);
+        UIManager.put("InternalFrame.titleFont", font);
+        UIManager.put("EditorPane.font", font);
+        UIManager.put("TextArea.font", font);
+        
+        UIManager.put("CheckBoxMenuItem.acceleratorFont",
+                font.deriveFont((float) font.getSize() - 2));
+        UIManager.put("Menu.acceleratorFont",
+                font.deriveFont((float) font.getSize() - 2));
+        UIManager.put("MenuItem.acceleratorFont",
+                font.deriveFont((float) font.getSize() - 2));
+        
+        UIManager.put("swing.boldMetal", false);
+        UIManager.put("InternalFrame.useTaskBar", false);
+        UIManager.put("SplitPaneDivider.border", BorderFactory.createEmptyBorder());
+        UIManager.put("TabbedPane.contentBorderInsets", new Insets(1, 1, 1, 1));
+        UIManager.put("Tree.scrollsOnExpand", true);
+        UIManager.put("Tree.scrollsHorizontallyAndVertically", true);
+        
+        UIManager.put("Tree.dropCellBackground", Color.WHITE);
+        UIManager.put("Tree.selectionBackground", Color.WHITE);
+        UIManager.put("Tree.textBackground", Color.WHITE);
+        UIManager.put("Tree.selectionBorderColor", Color.WHITE);
+        UIManager.put("Tree.drawsFocusBorder", false);
+        UIManager.put("Tree.drawHorizontalLines", true);
+        UIManager.put("Tree.drawVerticalLines", true);
+        UIManager.put("Tree.background", Color.WHITE);
+    }
+    
+    /**
+     * Returns the class name of the look and feel from its display name.
+     *
+     * @param displayName Look and feel display name
+     *
+     * @return Look and feel class name or a zero length string
+     */
+    public static String getLookAndFeel(final String displayName) {
+        final StringBuilder classNameBuilder = new StringBuilder();
+        
+        if (displayName != null && !displayName.isEmpty()) {
+            for (LookAndFeelInfo laf : UIManager.getInstalledLookAndFeels()) {
+                if (laf.getName().equals(displayName)) {
+                    classNameBuilder.setLength(0);
+                    classNameBuilder.append(laf.getClassName());
+                    break;
+                }
+            }
+        }
+        return classNameBuilder.toString();
     }
 }

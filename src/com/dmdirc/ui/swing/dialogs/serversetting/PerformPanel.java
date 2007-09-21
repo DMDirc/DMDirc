@@ -89,22 +89,18 @@ public final class PerformPanel extends JPanel implements ActionListener {
     
     /** Initialises teh components. */
     private void initComponents() {
-        setLayout(new BorderLayout());
+        setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER, 
+                SMALL_BORDER, SMALL_BORDER));
+        setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
         
         target = new JComboBox(
                 new Object[]{"Network perform (" + server.getNetwork() + ")",
                 "Server perform (" + server.getName() + ")"});
-        target.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER),
-                target.getBorder()));
         add(target, BorderLayout.NORTH);
         
         textarea = new JTextArea();
-        final JScrollPane scrollpane = new JScrollPane(textarea);
-        scrollpane.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(0, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER),
-                scrollpane.getBorder()));
-        add(scrollpane);
+        
+        add(new JScrollPane(textarea));
     }
     
     /** Adds listeners to the components. */
