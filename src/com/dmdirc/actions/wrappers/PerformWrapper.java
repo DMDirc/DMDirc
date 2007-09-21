@@ -24,11 +24,16 @@ package com.dmdirc.actions.wrappers;
 
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionComponent;
+import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.ActionType;
+import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An action wrapper for performs.
@@ -94,6 +99,46 @@ public class PerformWrapper extends ActionWrapper {
      */    
     public Action getActionForNetwork(final String network) {
         return getAction(CoreActionComponent.SERVER_NETWORK, network);
+    }
+    
+    /**
+     * Creates a new, empty, perform wrapper for the specified server.
+     * 
+     * @param server The server to create the action for
+     * @return The new perform wrapper action
+     */
+    public Action createActionForServer(final String server) {
+        return createAction(server, "");
+    }
+
+    /**
+     * Creates a new, empty, perform wrapper for the specified network.
+     * 
+     * @param network The network to create the action for
+     * @return The new perform wrapper action
+     */    
+    public Action createActionForNetwork(final String network) {
+        return createAction("", network);
+    }
+    
+    /**
+     * Creates a new, empty, perform wrapper for the specified server or
+     * network. Note that both server and network must be specified, and
+     * exactly one of them must be empty.
+     * 
+     * @param server The server to create the action for
+     * @param network The network to create the action for
+     * @return The new perform wrapper action
+     */    
+    private Action createAction(final String server, final String network) {
+        final List<ActionCondition> conditions = new ArrayList<ActionCondition>();
+        final CoreActionComponent component =
+                server.isEmpty() ? CoreActionComponent.SERVER_NETWORK : CoreActionComponent.SERVER_NAME;
+        
+        conditions.add(new ActionCondition(0, component, CoreActionComparison.STRING_EQUALS, server + network));
+        
+        return new Action(getGroupName(), server + network, new ActionType[]{CoreActionType.SERVER_CONNECTED},
+                new String[0], conditions, null);
     }
     
     /**

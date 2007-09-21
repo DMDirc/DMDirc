@@ -64,7 +64,9 @@ public final class ServerSettingsDialog extends StandardDialog
     
     /** Ignore list panel. */
     private IgnoreListPanel ignoreList;
-    /** Settingspanel. */
+    /** Perform panel. */
+    private PerformPanel performPanel;
+    /** Settings panel. */
     private SettingsPanel settingsPanel;
     
     /**
@@ -98,6 +100,8 @@ public final class ServerSettingsDialog extends StandardDialog
                 SMALL_BORDER, 0, SMALL_BORDER));
         
         ignoreList = new IgnoreListPanel(server);
+        
+        performPanel = new PerformPanel(server);
 
         settingsPanel = new SettingsPanel(IdentityManager.getNetworkConfig(
                 server.getNetwork()), "These settings are specific to this " 
@@ -107,6 +111,7 @@ public final class ServerSettingsDialog extends StandardDialog
         addSettings();
         
         tabbedPane.add("Ignore list", ignoreList);
+        tabbedPane.add("Perform", performPanel);
         tabbedPane.add("settings", settingsPanel);
         
         this.setLayout(new BorderLayout());
@@ -171,6 +176,7 @@ public final class ServerSettingsDialog extends StandardDialog
     /** Saves the settings from this dialog. */
     public void saveSettings() {
         settingsPanel.save();
+        performPanel.savePerforms();
         ignoreList.saveList();
     }
     
