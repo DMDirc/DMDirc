@@ -25,7 +25,6 @@ package com.dmdirc.ui.swing.dialogs.aliases;
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
-import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.wrappers.AliasWrapper;
@@ -249,7 +248,9 @@ public final class AliasManagerDialog extends StandardDialog implements
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             
-            if (selectedRow > -1 && selectedRow < tableModel.getRowCount()) {
+            if (selectedRow > -1 && selectedRow < tableModel.getRowCount()
+            && aliasDetails.getAlias() == tableModel.getAlias(
+                    table.getRowSorter().convertRowIndexToModel(selectedRow))) {
                 updateAlias();
             }
             
@@ -331,10 +332,12 @@ public final class AliasManagerDialog extends StandardDialog implements
     
     /** Saves the aliases. */
     private void save() {
-        /*
-        //delete        
-        action.delete();        
+        final List<Alias> aliases = tableModel.getAliases();
         
+        /*
+        //delete
+        action.delete();
+         
         //new
         final ActionCondition argsCondition = alias.getArgsArgument();
         final String argsString;
@@ -350,8 +353,8 @@ public final class AliasManagerDialog extends StandardDialog implements
                 alias.getResponse(),
                 alias.getArguments(),
                 "").save();
-        
-        
+         
+         
         //modified
         final Action action = getAction(alias);
         if (action != null) {
@@ -359,9 +362,9 @@ public final class AliasManagerDialog extends StandardDialog implements
             action.setResponse(alias.getResponse());
             action.save();
         }
-        
+         
         //common
         ActionManager.loadActions();
-        */
-    }    
+         */
+    }
 }

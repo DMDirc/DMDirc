@@ -180,11 +180,6 @@ public final class AliasTableModel extends AbstractTableModel {
      * @return Complete alias list
      */
     public List<Alias> getAliases() {
-        /*System.out.print("getAliases -> ");
-        for (Alias alias : aliases) {
-            System.out.print(alias.getName() + ", ");
-        }
-        System.out.println("");*/
         return new ArrayList<Alias>(aliases);
     }
     
@@ -204,16 +199,7 @@ public final class AliasTableModel extends AbstractTableModel {
      * @param row Row to remove
      */
     public void removeRow(final int row) {
-        /*System.out.print("removing row: " + row + " (" + aliases.get(row).getName() + ") -> ");
-        for (Alias alias : aliases) {
-            System.out.print(alias.getName() + ", ");
-        }
-        System.out.print(" -> ");*/
         aliases.remove(row);
-        /*for (Alias alias : aliases) {
-            System.out.print(alias.getName() + ", ");
-        }
-        System.out.println("");*/
         fireTableRowsDeleted(row, row);
     }
     

@@ -68,6 +68,9 @@ public final class AliasPanel extends JPanel implements ActionListener {
     /** Response field. */
     private final JTextArea response;
     
+    /** Alias. */
+    private Alias alias;
+    
     /** Creates a new instance of AliasPanel. */
     public AliasPanel() {
         super();
@@ -123,6 +126,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
     
     /** Clears the details. */
     public void clear() {
+        alias = null;
         name.setText("");
         name.setEnabled(false);
         argumentComponent.setSelectedItem(null);
@@ -144,6 +148,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
             clear();
             return;
         }
+        this.alias = alias;
         name.setEnabled(true);
         argumentComponent.setEnabled(true);
         response.setEnabled(true);
@@ -229,5 +234,14 @@ public final class AliasPanel extends JPanel implements ActionListener {
      */
     protected String[] getResponse() {
         return response.getText().split("\n");
+    }
+    
+    /**
+     * Returns the alias being shown in this panel.
+     *
+     * @return Alias
+     */
+    protected Alias getAlias() {
+        return alias;
     }
 }
