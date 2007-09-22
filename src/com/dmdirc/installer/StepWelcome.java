@@ -52,9 +52,9 @@ public final class StepWelcome extends Step {
 		
 		JTextArea infoLabel;
 		infoLabel = new JTextArea("This application will install DMDirc on this computer.\n\n"
-		                        + "DMDirc is Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack and Gregory Holmes."
+		                        + "DMDirc is Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack and Gregory Holmes.\n\n"
 		                        + "DMDirc is released under the MIT License, more information is available at http://www.dmdirc.com\n\n"
-		                        + "Please click next to continue, or close if you do not wish to install DMDirc at this time.");
+		                        + "Please click Next to continue, or close if you do not wish to install DMDirc at this time.");
 		infoLabel.setEditable(false);
 		infoLabel.setWrapStyleWord(true);
 		infoLabel.setLineWrap(true);

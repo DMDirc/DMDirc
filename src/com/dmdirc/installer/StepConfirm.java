@@ -76,25 +76,25 @@ public final class StepConfirm extends Step implements SpecialStep {
 		
 		if (Main.getInstaller().supportsShortcut(ShortcutType.MENU)) {
 			if (settings.getShortcutMenuState()) {
-				shortcutText = shortcutText + " - Do Set up Menu shortcuts"+ "\n";
+				shortcutText = shortcutText + " - Do set up Menu shortcuts"+ "\n";
 			} else {
-				shortcutText = shortcutText + " - Do Not Set up Menu shortcuts"+ "\n";
+				shortcutText = shortcutText + " - Do not set up Menu shortcuts"+ "\n";
 			}
 		}
 		
 		if (Main.getInstaller().supportsShortcut(ShortcutType.DESKTOP)) {
 			if (settings.getShortcutDesktopState()) {
-				shortcutText = shortcutText + " - Do Set up Desktop shortcuts"+ "\n";
+				shortcutText = shortcutText + " - Do set up Desktop shortcuts"+ "\n";
 			} else {
-				shortcutText = shortcutText + " - Do Not Set up Desktop shortcuts"+ "\n";
+				shortcutText = shortcutText + " - Do not set up Desktop shortcuts"+ "\n";
 			}
 		}
 		
 		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
 			if (settings.getShortcutQuickState()) {
-				shortcutText = shortcutText + " - Do Set up Quick Launch shortcuts"+ "\n";
+				shortcutText = shortcutText + " - Do set up Quick Launch shortcuts"+ "\n";
 			} else {
-				shortcutText = shortcutText + " - Do Not Set up Quick Launch shortcuts"+ "\n";
+				shortcutText = shortcutText + " - Do not set up Quick Launch shortcuts"+ "\n";
 			}
 		}
 		
@@ -102,6 +102,6 @@ public final class StepConfirm extends Step implements SpecialStep {
 		                + " - Install Location:\n"
 		                + "    " +((StepSettings) Main.getWizardDialog().getStep(1)).getInstallLocation() + "\n"
 		                + shortcutText + "\n"
-		                + "If these are correct, press next to begin the installation, else press previous to change them");
+		                + "If these are correct, press Next to begin the installation, else press Previous to change them");
 	}
 }

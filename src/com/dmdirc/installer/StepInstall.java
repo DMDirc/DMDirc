@@ -117,10 +117,10 @@ public final class StepInstall extends Step implements SpecialStep, TextStep {
 		
 		if (Main.getInstaller().supportsShortcut(ShortcutType.QUICKLAUNCH)) {
 			if (settings.getShortcutQuickState()) {
-				addText("Setting up QuickLaunch shortcut");
+				addText("Setting up Quick Launch shortcut");
 				myInstaller.setupShortcut(location, ShortcutType.QUICKLAUNCH);
 			} else {
-				addText("Not setting up QuickLaunch shortcut");
+				addText("Not setting up Quick Launch shortcut");
 			}
 		}
 		

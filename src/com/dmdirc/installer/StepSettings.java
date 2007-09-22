@@ -51,11 +51,11 @@ public final class StepSettings extends Step {
 	private static final long serialVersionUID = 3;
 	
 	/** Menu Shorcuts checkbox. */
-	private final JCheckBox shortcutMenu = new JCheckBox("Setup menu shortcut to DMDirc?");
+	private final JCheckBox shortcutMenu = new JCheckBox("Setup Menu shortcut to DMDirc?");
 	/** Desktop Shorcuts checkbox. */
-	private final JCheckBox shortcutDesktop = new JCheckBox("Setup desktop shortcut to DMDirc?");
+	private final JCheckBox shortcutDesktop = new JCheckBox("Setup Desktop shortcut to DMDirc?");
 	/** Quick-Launch Shorcuts checkbox. */
-	private final JCheckBox shortcutQuick = new JCheckBox("Setup Quicklaunch shortcut to DMDirc?");
+	private final JCheckBox shortcutQuick = new JCheckBox("Setup Quick Launch shortcut to DMDirc?");
 	/** Install Location input. */
 	private final JTextField location = new JTextField(Main.getInstaller().defaultInstallLocation(), 20);
 	
