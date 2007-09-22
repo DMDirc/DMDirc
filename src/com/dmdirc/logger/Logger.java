@@ -127,7 +127,7 @@ public final class Logger {
         }
         
         final ProgramError error = new ProgramError(
-                ErrorManager.getErrorManager().getErrorCount(), level, message, 
+                ErrorManager.getErrorManager().getNextErrorID(), level, message, 
                 trace, new Date(System.currentTimeMillis()));
         
         writeError(error);

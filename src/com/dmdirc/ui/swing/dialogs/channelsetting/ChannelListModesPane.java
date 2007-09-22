@@ -61,7 +61,7 @@ public final class ChannelListModesPane extends JPanel implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Channel. */
     private final Channel channel;
@@ -266,7 +266,7 @@ public final class ChannelListModesPane extends JPanel implements
                 "Please enter the hostmask for the new " + modeText);
         if (modeMask != null && (!modeMask.isEmpty() || !modeMask.isEmpty())) {
             final DefaultListModel model =
-                    (DefaultListModel) ((JList) listModesPanels.get(selectedIndex).getComponent(0)).getModel();
+                    (DefaultListModel) listModesPanels.get(selectedIndex).getModel();
             model.addElement(new ChannelListModeItem(modeMask, "",
                     System.currentTimeMillis() / 1000));
         }
@@ -275,8 +275,7 @@ public final class ChannelListModesPane extends JPanel implements
     /** Removes a list mode. */
     private void removeListMode() {
         final int selectedIndex = listModesMenu.getSelectedIndex();
-        final JList list =
-                (JList) listModesPanels.get(selectedIndex).getComponent(0);
+        final JList list = listModesPanels.get(selectedIndex);
         for (Object mode : list.getSelectedValues()) {
             ((DefaultListModel) list.getModel()).removeElement(mode);
         }

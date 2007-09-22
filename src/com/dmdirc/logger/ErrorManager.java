@@ -62,6 +62,9 @@ public final class ErrorManager implements Serializable {
     /** Listener list. */
     private final EventListenerList errorListeners;
     
+    /** Next error ID. */
+    private int nextErrorID;
+    
     /** Creates a new instance of ErrorListDialog. */
     private ErrorManager() {
         errors = new HashMap<Integer, ProgramError>();
@@ -123,9 +126,18 @@ public final class ErrorManager implements Serializable {
     }
     
     /**
-     * Returns the ID of an error.
+     * Returns the next error ID.
      *
-     * @param id Error ID to get
+     * @return Next error ID
+     */
+    public int getNextErrorID() {
+        return nextErrorID++;
+    }
+    
+    /**
+     * Returns specified program error
+     *
+     * @param id ID of the error to fetch
      *
      * @return ProgramError with specified ID
      */
