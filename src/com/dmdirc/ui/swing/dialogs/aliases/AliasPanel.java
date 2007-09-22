@@ -35,12 +35,14 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 
@@ -76,12 +78,14 @@ public final class AliasPanel extends JPanel implements ActionListener {
         super();
         
         command = new JTextField();
+        command.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.
+                getKeyStroke(new Character(' '), 0), "none");
         command.setEnabled(false);
         
         argumentComponent = new JComboBox(new CoreActionComparison[]{null,
         CoreActionComparison.INT_GREATER, CoreActionComparison.INT_EQUALS,
         CoreActionComparison.INT_LESS, });
-        argumentNumber = new JSpinner(new SpinnerNumberModel());
+        argumentNumber = new JSpinner(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
         response = new JTextArea();
         
         argumentNumber.setEnabled(false);
@@ -117,7 +121,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
         add(new JLabel("# Arguments: "));
         add(panel);
         
-        add(new JLabel("Mapping: "));
+        add(new JLabel("Response: "));
         add(new JScrollPane(response));
         
         layoutGrid(this, 3, 2, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER,
@@ -181,8 +185,15 @@ public final class AliasPanel extends JPanel implements ActionListener {
     
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
+        ((SpinnerNumberModel) argumentNumber.getModel()).setMinimum(0);
         if (argumentComponent.getSelectedIndex() > 0) {
             argumentNumber.setEnabled(true);
+            if (argumentComponent.getSelectedItem() == CoreActionComparison.INT_LESS) {
+                if (argumentNumber.getModel().getValue().equals(0)) {
+                    argumentNumber.getModel().setValue(1);
+                }
+                ((SpinnerNumberModel) argumentNumber.getModel()).setMinimum(1);
+            }
         } else {
             argumentNumber.setEnabled(false);
         }

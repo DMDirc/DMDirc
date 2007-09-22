@@ -61,7 +61,7 @@ public final class ErrorListDialog extends StandardDialog implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4  ;
     
     /** Previously instantiated instance of ErrorListDialog. */
     private static ErrorListDialog me  = new ErrorListDialog();
@@ -298,7 +298,7 @@ public final class ErrorListDialog extends StandardDialog implements
     public void errorStatusChanged(final ProgramError error) {
         final int errorRow = tableModel.indexOf(error);
         
-        if (errorRow != -1) {
+        if (errorRow != -1 && errorRow <= tableModel.getRowCount()) {
             tableModel.fireTableRowsUpdated(errorRow, errorRow);
         }
     }

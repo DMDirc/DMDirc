@@ -285,6 +285,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     private void updateAlias() {
         final Alias alias = tableModel.getAlias(table.getRowSorter().
                 convertRowIndexToModel(selectedRow));
+        final int localSelectedRow = table.getSelectedRow();
         final List<ActionCondition> conditions =
                 new ArrayList<ActionCondition>();
         
@@ -298,10 +299,7 @@ public final class AliasManagerDialog extends StandardDialog implements
         alias.setCommand(aliasDetails.getCommand());
         alias.setArguments(conditions);
         alias.setResponse(aliasDetails.getResponse());
-        final int localSelectedRow = table.getSelectedRow();
-        tableModel.fireTableDataChanged();
-        table.getSelectionModel().setSelectionInterval(localSelectedRow,
-                localSelectedRow);
+        tableModel.fireTableRowsUpdated(localSelectedRow, localSelectedRow);
     }
     
     /** {@inheritDoc}. */

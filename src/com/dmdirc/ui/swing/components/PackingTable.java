@@ -28,6 +28,7 @@ import java.awt.Graphics;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
@@ -61,12 +62,7 @@ public class PackingTable extends JTable {
      */
     public PackingTable(final Object[][] rows, final Object[] cols,
             final boolean editable, final JScrollPane scrollPane) {
-        super(rows, cols);
-        
-        this.editable = editable;
-        this.scrollPane = scrollPane;
-        
-        super.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        this((TableModel) new DefaultTableModel(rows, cols), editable, scrollPane);
     }
     
     /**
@@ -84,6 +80,7 @@ public class PackingTable extends JTable {
         this.scrollPane = scrollPane;
         
         super.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        super.getTableHeader().setResizingAllowed(false);
     }
     
     /** {@inheritDoc} */

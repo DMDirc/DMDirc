@@ -54,7 +54,7 @@ public final class ActionComparisonCellRenderer extends DefaultListCellRenderer 
         super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
         
         if (value == null) {
-            setText("N/A");
+            setText("Any");
         } else {
             setText(((ActionComparison) value).getName());
         }

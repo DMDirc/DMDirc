@@ -23,17 +23,17 @@
 package com.dmdirc.ui.swing.dialogs.error;
 
 import com.dmdirc.logger.ProgramError;
-import com.dmdirc.ui.swing.textpane.TextPane;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 
-import java.text.AttributedString;
-
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
 
 /**
  * Shows information about an error.
@@ -45,7 +45,7 @@ public final class ErrorDetailPanel extends JPanel {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** Error to show. */
     private ProgramError error;
@@ -63,7 +63,10 @@ public final class ErrorDetailPanel extends JPanel {
     private JTextField status;
     
     /** Details field. */
-    private TextPane details;
+    private JTextArea details;
+    
+    /** Details scrollpane. */
+    private JScrollPane scrollPane;
     
     /** Creates a new instance of ErrorDetailPanel. */
     public ErrorDetailPanel() {
@@ -103,19 +106,23 @@ public final class ErrorDetailPanel extends JPanel {
         date = new JTextField();
         level = new JTextField();
         status = new JTextField();
-        details = new TextPane();
+        details = new JTextArea();
+        scrollPane = new JScrollPane(details);
         
         id.setEditable(false);
         date.setEditable(false);
         level.setEditable(false);
         status.setEditable(false);
+        details.setEditable(false);
+        details.setRows(5);
+        details.setWrapStyleWord(true);
     }
     
     /** Updates the panels details. */
     private void updateDetails() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                details.clear();
+                details.setText("");
                 if (error == null) {
                     id.setText("");
                     date.setText("");
@@ -130,13 +137,23 @@ public final class ErrorDetailPanel extends JPanel {
                 level.setText(error.getLevel().toString());
                 status.setText(error.getStatus().toString());
                 
-                details.addText(new AttributedString(error.getMessage()));
+                details.append(error.getMessage() + '\n');
                 final String[] trace = error.getTrace();
                 for (String traceLine : trace) {
-                    details.addText(new AttributedString(traceLine));
+                    details.append(traceLine + '\n');
+                }
+                try {
+                    details.getDocument().remove(details.getDocument().getLength() - 1, 1);
+                } catch (BadLocationException ex) {
+                    //Ignore
                 }
                 
-                details.setScrollBarPosition(0);
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        scrollPane.getVerticalScrollBar().setValue(0);
+                    }
+                }
+                );
             }
         });
     }
@@ -165,7 +182,7 @@ public final class ErrorDetailPanel extends JPanel {
         
         label = new JLabel("Details: ");
         add(label);
-        add(details);
+        add(scrollPane);
         
         layoutGrid(this, 5, 2, 0, 0, SMALL_BORDER, SMALL_BORDER);
     }
