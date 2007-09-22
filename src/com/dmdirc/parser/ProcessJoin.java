@@ -69,9 +69,21 @@ public class ProcessJoin extends IRCProcessor {
 			}
 			callChannelSelfJoin(iChannel);
 		} else {
-			// This is only done if we are on the channel. Else we wait for names.
-			iChannelClient = iChannel.addClient(iClient);
-			callChannelJoin(iChannel, iChannelClient);
+			if (iClient == myParser.getMyself()) {
+				// If this is us thats joining, and we think the channel already exists.
+				// 1) Raise an error
+				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got self-join for channel ("+token[token.length-1]+") that I am already on. [Me: "+myParser.getMyself()+"]", myParser.getLastLine()));
+				// 2) Profit ?
+			} else if (iChannel.getUser(iClient) != null) {
+				// Client joined channel that we already know of.
+				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got join for channel ("+token[token.length-1]+") from a user that is already on the channel. [Me: "+myParser.getMyself()+"]", myParser.getLastLine()));
+			} else {
+				// This is only done if we are already the channel, and it isn't us that
+				// joined.
+				
+				iChannelClient = iChannel.addClient(iClient);
+				callChannelJoin(iChannel, iChannelClient);
+			}
 		}
 	}	
 	
