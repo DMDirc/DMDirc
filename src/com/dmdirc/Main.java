@@ -48,12 +48,12 @@ public final class Main {
     /**
      * Stores the current textual program version.
      */
-    public static final String VERSION = "0.5RC1";
+    public static final String VERSION = "SVN";
     
     /**
      * Stores the release date of this version.
      */
-    public static final int RELEASE_DATE = 20070921;
+    public static final int RELEASE_DATE = 0;
     
     /**
      * Stores the update channel that this version came from, if any.
