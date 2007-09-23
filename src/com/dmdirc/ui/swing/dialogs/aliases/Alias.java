@@ -176,6 +176,21 @@ public final class Alias {
         }
     }
     
+    /**
+     * Checks if the specified alias matches this one
+     *
+     * @param alias Alias to check a match with
+     *
+     * @return true iif the alias matches this one
+     */
+    public boolean matches(final Alias alias) {
+        if (alias.getCommand().equalsIgnoreCase(command) 
+        && alias.getArguments().equals(arguments)) {
+            return true;
+        }
+        return false;
+    }
+    
     /** {@inheritDoc} */
     public String toString() {
         return "[name=aliases/" + getName() + ", triggers="
