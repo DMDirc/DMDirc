@@ -31,13 +31,12 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 
 import javax.swing.AbstractAction;
-import javax.swing.JTextArea;
-import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
 
 /**
  * Paste action that strips newlines from pastes.
  */
-public class TopicPasteAction extends AbstractAction {
+public class NoNewlinesPasteAction extends AbstractAction {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -46,17 +45,19 @@ public class TopicPasteAction extends AbstractAction {
      */
     private static final long serialVersionUID = 1;
     
-    /** Creates a new instance of TopicPasteAction. */
-    public TopicPasteAction() {
+    /**
+     * Creates a new instance of NoNewlinesPasteAction.
+     */
+    public NoNewlinesPasteAction() {
         super("TopicPasteAction");
     }
     
     /** {@inheritDoc} */
     public void actionPerformed(final ActionEvent e) {
-        final JTextArea comp;
+        final JTextComponent comp;
         
-        if (e.getSource() instanceof JTextArea) {
-            comp = (JTextArea) e.getSource();
+        if (e.getSource() instanceof JTextComponent) {
+            comp = (JTextComponent) e.getSource();
         } else {
             return;
         }
@@ -69,19 +70,19 @@ public class TopicPasteAction extends AbstractAction {
         }
         
         try {
-            //get the contents of the input field and combine it with the clipboard
+            //get the contents of the clipboard
             clipboard = (String) Toolkit.getDefaultToolkit().
                     getSystemClipboard().getData(DataFlavor.stringFlavor);
-            //split the text
+            //remove newlines
             clipboard = clipboard.replaceAll("(\r\n|\n|\r)", " ");
+            
+            //insert the contents at the current cursor position
+            comp.replaceSelection(clipboard);
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to get clipboard contents: " + ex.getMessage());
         } catch (UnsupportedFlavorException ex) {
             Logger.appError(ErrorLevel.LOW, "Unable to get clipboard contents", ex);
         }
-        
-        //insert the contents at the current cursor position
-        comp.replaceSelection(clipboard);
     }
     
 }

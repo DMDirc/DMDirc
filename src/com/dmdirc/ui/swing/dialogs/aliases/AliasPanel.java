@@ -25,8 +25,10 @@ package com.dmdirc.ui.swing.dialogs.aliases;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
+import com.dmdirc.ui.swing.UIUtilities;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
+import com.dmdirc.ui.swing.actions.NoSpacesPasteAction;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -94,6 +96,11 @@ public final class AliasPanel extends JPanel implements ActionListener {
         argumentComponent.setRenderer(new ActionComparisonCellRenderer());
         argumentComponent.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
         argumentComponent.addActionListener(this);
+        
+        command.getActionMap().put("paste-from-clipboard", new NoSpacesPasteAction());
+        
+        UIUtilities.addUndoManager(command);
+        UIUtilities.addUndoManager(response);
         
         layoutComponents();
         
@@ -226,12 +233,12 @@ public final class AliasPanel extends JPanel implements ActionListener {
             case INT_GREATER:
                 return new ActionCondition(2,
                         CoreActionComponent.STRINGARRAY_LENGTH,
-                        CoreActionComparison.INT_EQUALS,
+                        CoreActionComparison.INT_GREATER,
                         argumentNumber.getValue().toString());
             case INT_LESS:
                 return new ActionCondition(2,
                         CoreActionComponent.STRINGARRAY_LENGTH,
-                        CoreActionComparison.INT_EQUALS,
+                        CoreActionComparison.INT_LESS,
                         argumentNumber.getValue().toString());
             default:
                 return null;

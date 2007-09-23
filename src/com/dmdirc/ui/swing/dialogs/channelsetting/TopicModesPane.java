@@ -26,7 +26,7 @@ import com.dmdirc.Channel;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.swing.UIUtilities;
-import com.dmdirc.ui.swing.actions.TopicPasteAction;
+import com.dmdirc.ui.swing.actions.NoNewlinesPasteAction;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.Color;
@@ -174,7 +174,7 @@ public final class TopicModesPane extends JPanel implements KeyListener,
         constraints.gridy = 3;
         add(topicWho, constraints);
         
-        topicText.getActionMap().put("paste-from-clipboard", new TopicPasteAction());
+        topicText.getActionMap().put("paste-from-clipboard", new NoNewlinesPasteAction());
         UIUtilities.addUndoManager(topicText);
     }
     
