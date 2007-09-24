@@ -59,10 +59,10 @@ public final class ActionsManagerDialog extends StandardDialog
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Previously created instance of ActionsManagerDialog. */
-    private static ActionsManagerDialog me;
+    private static ActionsManagerDialog me = new ActionsManagerDialog();
     
     /** Height of the buttons, in pixels. */
     private static final int BUTTON_HEIGHT = 25;
@@ -99,10 +99,8 @@ public final class ActionsManagerDialog extends StandardDialog
     }
     
     /** Creates the dialog if one doesn't exist, and displays it. */
-    public static synchronized void showActionsManagerDialog() {
-        if (me == null) {
-            me = new ActionsManagerDialog();
-        } else {
+    public static  void showActionsManagerDialog() {
+        synchronized (me) {
             me.loadGroups();
             me.setVisible(true);
             me.requestFocus();
@@ -314,9 +312,11 @@ public final class ActionsManagerDialog extends StandardDialog
             }
         } else if (e.getActionCommand().equals("action.edit")) {
             final JTable table = ((ActionsGroupPanel) groups.getSelectedComponent()).getTable();
-            final int row = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
-            ActionsEditorDialog.showActionsEditorDialog(this,
-                    ((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row));
+            if (table.getSelectedRow() != -1 && table.getSelectedRow() < table.getRowCount()) {
+                final int row = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
+                ActionsEditorDialog.showActionsEditorDialog(this,
+                        ((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row));
+        }
         } else if (e.getActionCommand().equals("action.new")) {
             ActionsEditorDialog.showActionsEditorDialog(this);
         } else if (e.getActionCommand().equals("action.delete")) {
