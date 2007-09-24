@@ -455,7 +455,7 @@ public final class AliasManagerDialog extends StandardDialog implements
                 return true;
             }
         }
-        
+
         return false;
     }
 }

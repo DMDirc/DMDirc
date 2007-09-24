@@ -275,7 +275,9 @@ public final class AliasPanel extends JPanel implements ActionListener {
         conditions.add(new ActionCondition(1,
                 CoreActionComponent.STRING_STRING,
                 CoreActionComparison.STRING_EQUALS, getCommand()));
-        conditions.add(getArguments());
+        if (getArguments() != null) {
+            conditions.add(getArguments());
+        }
         return new Alias(getCommand(), conditions, getResponse());
     }
     

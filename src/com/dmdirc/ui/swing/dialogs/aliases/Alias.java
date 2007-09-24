@@ -184,11 +184,7 @@ public final class Alias {
      * @return true iif the alias matches this one
      */
     public boolean matches(final Alias alias) {
-        if (alias.getCommand().equalsIgnoreCase(command) 
-        && alias.getArguments().equals(arguments)) {
-            return true;
-        }
-        return false;
+        return alias.getCommand().equalsIgnoreCase(command) && alias.getArguments().equals(arguments);
     }
     
     /** {@inheritDoc} */
