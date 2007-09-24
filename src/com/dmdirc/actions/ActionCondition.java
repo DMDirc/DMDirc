@@ -141,5 +141,14 @@ public class ActionCondition {
         return "[ arg=" + arg + ", component=" + component + ", comparison=" 
                 + comparison + ", target=" + target + "]";
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+        final ActionCondition o = (ActionCondition) obj;
+        
+        return arg == o.getArg() && component == o.getComponent()
+                && comparison == o.getComparison() && target.equals(o.getTarget());
+    }
     
 }
