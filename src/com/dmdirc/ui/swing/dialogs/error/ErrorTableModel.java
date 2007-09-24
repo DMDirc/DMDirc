@@ -90,7 +90,7 @@ public final class ErrorTableModel extends AbstractTableModel {
             case 0:
                 return "ID";
             case 1:
-                return "Time";
+                return "Date";
             case 2:
                 return "Severity";
             case 3:
