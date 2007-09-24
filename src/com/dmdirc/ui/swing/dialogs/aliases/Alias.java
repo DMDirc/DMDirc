@@ -177,6 +177,17 @@ public final class Alias {
     }
     
     /**
+     * Updates this alias with the details of another alias.
+     *
+     * @param alias Alias to retrieve details from
+     */
+    public void update(final Alias alias) {
+        setArguments(alias.getArguments());
+        setCommand(alias.getCommand());
+        setResponse(alias.getResponse());
+    }
+    
+    /**
      * Checks if the specified alias matches this one
      *
      * @param alias Alias to check a match with

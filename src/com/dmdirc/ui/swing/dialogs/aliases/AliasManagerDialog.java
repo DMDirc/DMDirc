@@ -282,31 +282,14 @@ public final class AliasManagerDialog extends StandardDialog implements
     }
     
     /** Updates the selected alias with the edited details. */
-    private boolean updateAlias() {
+    private void updateAlias() {
         final Alias alias = tableModel.getAlias(table.getRowSorter().
                 convertRowIndexToModel(selectedRow));
-        final Alias newAlias = aliasDetails.getNewAlias();
-        final List<ActionCondition> conditions =
-                new ArrayList<ActionCondition>();
         
-        if (checkDuplicateAlias(newAlias)) {
-            return false;
-        }
+        alias.update(aliasDetails.getNewAlias());
         
-        conditions.add(new ActionCondition(1,
-                CoreActionComponent.STRING_STRING,
-                CoreActionComparison.STRING_EQUALS, alias.getCommand()));
-        if (aliasDetails.getArguments() != null) {
-            conditions.add(aliasDetails.getArguments());
-        }
-        
-        alias.setCommand(aliasDetails.getCommand());
-        alias.setArguments(conditions);
-        alias.setResponse(aliasDetails.getResponse());
-        tableModel.fireTableRowsUpdated(tableModel.indexOf(alias), 
+        tableModel.fireTableRowsUpdated(tableModel.indexOf(alias),
                 tableModel.indexOf(alias));
-        
-        return true;
     }
     
     /** {@inheritDoc}. */
@@ -318,7 +301,10 @@ public final class AliasManagerDialog extends StandardDialog implements
         } else if (e.getSource() == getCancelButton()) {
             dispose();
         } else if (e.getSource() == getOkButton()) {
-            if (table.getSelectedRow() != -1 && !updateAlias()) {
+            if (table.getSelectedRow() != -1) {
+                updateAlias();
+            }
+            if (checkForDuplicates()) {
                 JOptionPane.showMessageDialog(this,
                         "There are duplicate aliases in the table, these need "
                         + "to be removed before saving", "Duplicates",
@@ -443,19 +429,25 @@ public final class AliasManagerDialog extends StandardDialog implements
     /**
      * Checks if ths alias matches another alias
      *
-     * @param alias Alias to check
-     *
-     * @return true iif the alias matches another
+     * @return true iif there are duplicate matches
      */
-    private boolean checkDuplicateAlias(final Alias alias) {
+    private boolean checkForDuplicates() {
         final List<Alias> aliases = tableModel.getAliases();
         
-        for (Alias loopAlias : aliases) {
-            if (loopAlias.matches(alias)) {
+        for (Alias alias : aliases) {
+            int matches = 0;
+            
+            for (Alias loopAlias : aliases) {
+                if (loopAlias.matches(alias)) {
+                    matches++;
+                }
+            }
+            
+            if (matches > 1) {
                 return true;
             }
         }
-
+        
         return false;
     }
 }
