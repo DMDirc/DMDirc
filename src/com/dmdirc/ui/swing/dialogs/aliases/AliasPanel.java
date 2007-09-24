@@ -34,6 +34,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JComboBox;
@@ -261,5 +262,25 @@ public final class AliasPanel extends JPanel implements ActionListener {
      */
     protected Alias getAlias() {
         return alias;
+    }
+    
+    /**
+     * Returns an alias reflecting the changes in this panel.
+     *
+     * @return New alias reflecting the edited alias.
+     */
+    protected Alias getNewAlias() {
+        final List<ActionCondition> conditions =
+                new ArrayList<ActionCondition>();
+        conditions.add(new ActionCondition(1,
+                CoreActionComponent.STRING_STRING,
+                CoreActionComparison.STRING_EQUALS, getCommand()));
+        conditions.add(getArguments());
+        return new Alias(getCommand(), conditions, getResponse());
+    }
+    
+    /** Focuses the command field. */
+    public void focusCommand() {
+        command.requestFocus();
     }
 }

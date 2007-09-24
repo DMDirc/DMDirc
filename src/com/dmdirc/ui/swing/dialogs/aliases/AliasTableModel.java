@@ -203,4 +203,14 @@ public final class AliasTableModel extends AbstractTableModel {
         fireTableRowsDeleted(row, row);
     }
     
+    /**
+     * Returns the index of the specified alias.
+     *
+     * @param alias Alias to get index of
+     *
+     * @return Index of the alias or -1 if not found.
+     */
+    public int indexOf(final Alias alias) {
+        return aliases.indexOf(alias);
+    }
 }

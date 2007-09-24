@@ -285,11 +285,11 @@ public final class AliasManagerDialog extends StandardDialog implements
     private boolean updateAlias() {
         final Alias alias = tableModel.getAlias(table.getRowSorter().
                 convertRowIndexToModel(selectedRow));
-        final int localSelectedRow = table.getSelectedRow();
+        final Alias newAlias = aliasDetails.getNewAlias();
         final List<ActionCondition> conditions =
                 new ArrayList<ActionCondition>();
         
-        if (checkDuplicateAlias(alias)) {
+        if (checkDuplicateAlias(newAlias)) {
             return false;
         }
         
@@ -303,9 +303,8 @@ public final class AliasManagerDialog extends StandardDialog implements
         alias.setCommand(aliasDetails.getCommand());
         alias.setArguments(conditions);
         alias.setResponse(aliasDetails.getResponse());
-        if (tableModel.getRowCount() < localSelectedRow) {
-            tableModel.fireTableRowsUpdated(localSelectedRow, localSelectedRow);
-        }
+        tableModel.fireTableRowsUpdated(tableModel.indexOf(alias), 
+                tableModel.indexOf(alias));
         
         return true;
     }
@@ -320,9 +319,9 @@ public final class AliasManagerDialog extends StandardDialog implements
             dispose();
         } else if (e.getSource() == getOkButton()) {
             if (table.getSelectedRow() != -1 && !updateAlias()) {
-                JOptionPane.showMessageDialog(this, 
-                        "There are duplicate aliases in the table, these need " 
-                        + "to be removed before saving", "Duplicates", 
+                JOptionPane.showMessageDialog(this,
+                        "There are duplicate aliases in the table, these need "
+                        + "to be removed before saving", "Duplicates",
                         JOptionPane.WARNING_MESSAGE);
                 return;
             }
@@ -333,17 +332,12 @@ public final class AliasManagerDialog extends StandardDialog implements
     
     /** Adds an alias. */
     private void add() {
-        String name = JOptionPane.showInputDialog(this,
-                "Please enter the command name for the new alias.",
-                "New alias", JOptionPane.QUESTION_MESSAGE);
-        if (name != null && !name.isEmpty()) {
-            if (name.charAt(0) == '/' || name.charAt(0) == '\\') {
-                name = name.substring(1);
-            }
-            tableModel.addRow(new Alias(name));
-            final int newRow = tableModel.getRowCount() - 1;
-            table.getSelectionModel().setSelectionInterval(newRow, newRow);
-        }
+        final Alias alias = new Alias("");
+        tableModel.addRow(alias);
+        final int newRow = table.getRowSorter().
+                convertRowIndexToView(tableModel.indexOf(alias));
+        table.getSelectionModel().setSelectionInterval(newRow, newRow);
+        aliasDetails.focusCommand();
     }
     
     /** Deletes an alias. */

@@ -60,13 +60,13 @@ public final class Alias {
     /**
      * Wraps an existing Action in an Alias.
      *
-     * @param name Alias name
+     * @param name Alias command
      * @param arguments List of arguments for the alias
      * @param response Response for the alias
      */
-    public Alias(final String name, final List<ActionCondition> arguments,
+    public Alias(final String command, final List<ActionCondition> arguments,
             final String[] response) {
-        this.command = name;
+        this.command = command;
         this.arguments = new ArrayList<ActionCondition>(arguments);
         this.response = response.clone();
     }
