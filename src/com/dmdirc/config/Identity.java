@@ -229,7 +229,7 @@ public class Identity implements Serializable, Comparable<Identity> {
         properties.setProperty(domain + "." + option, value);
         needSave = true;
         
-        for (ConfigChangeListener listener : listeners) {
+        for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
             listener.configChanged(domain, option, oldValue, value);
         }
     }
