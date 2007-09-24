@@ -47,12 +47,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * Allows the user to manage actions.
  */
 public final class ActionsManagerDialog extends StandardDialog
-        implements ActionListener {
+        implements ActionListener, ChangeListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -210,6 +212,8 @@ public final class ActionsManagerDialog extends StandardDialog
         
         loadGroups();
         
+        groups.addChangeListener(this);
+        
         pack();
     }
     
@@ -283,53 +287,79 @@ public final class ActionsManagerDialog extends StandardDialog
         || e.getSource() == getCancelButton() || e.getSource() == getOkButton()) {
             dispose();
         } else if (e.getActionCommand().equals("group.add")) {
-            final String newGroup = JOptionPane.showInputDialog(this,
-                    "Please enter the name of the group to be created.");
-            if (newGroup != null && !newGroup.isEmpty()) {
-                ActionManager.makeGroup(newGroup);
-                loadGroups();
-            }
+            groupAdd();
         } else if (e.getActionCommand().equals("group.delete")) {
-            final String group = groups.getTitleAt(groups.getSelectedIndex());
-            final int response = JOptionPane.showConfirmDialog(this,
-                    "Are you sure you wish to delete the '" + group
-                    + "' group and all actions within it?",
-                    "Confirm deletion", JOptionPane.YES_NO_OPTION);
-            if (response == JOptionPane.YES_OPTION) {
-                ActionManager.removeGroup(group);
-                loadGroups();
-            }
+            groupDelete();
         } else if (e.getActionCommand().equals("group.rename")) {
-            final String group = groups.getTitleAt(groups.getSelectedIndex());
-            
-            final String newName = JOptionPane.showInputDialog(this,
-                    "Please enter a new name for the '" + group
-                    + "' group.",
-                    "Group rename", JOptionPane.QUESTION_MESSAGE);
-            if (newName != null && !newName.isEmpty()) {
-                ActionManager.renameGroup(group, newName);
-                loadGroups();
-            }
+            groupRename();
         } else if (e.getActionCommand().equals("action.edit")) {
-            final JTable table = ((ActionsGroupPanel) groups.getSelectedComponent()).getTable();
-            if (table.getSelectedRow() != -1 && table.getSelectedRow() < table.getRowCount()) {
-                final int row = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
-                ActionsEditorDialog.showActionsEditorDialog(this,
-                        ((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row));
-        }
+            actionEdit();
         } else if (e.getActionCommand().equals("action.new")) {
             ActionsEditorDialog.showActionsEditorDialog(this);
         } else if (e.getActionCommand().equals("action.delete")) {
-            final int response = JOptionPane.showConfirmDialog(this,
-                    "Are you sure you wish to delete this action?",
-                    "Confirm deletion", JOptionPane.YES_NO_OPTION);
-            if (response == JOptionPane.YES_OPTION) {
-                final JTable table = ((ActionsGroupPanel) groups.getSelectedComponent()).getTable();
-                final int row = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
-                ActionManager.deleteAction(((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row));
-                loadGroups();
-            }
+            actionDelete();
         }
+    }
+    
+    private void groupAdd() {
+        final String newGroup = JOptionPane.showInputDialog(this,
+                "Please enter the name of the group to be created.");
+        if (newGroup != null && !newGroup.isEmpty()) {
+            ActionManager.makeGroup(newGroup);
+            loadGroups();
+        }
+    }
+    
+    private void groupDelete() {
+        final String group = groups.getTitleAt(groups.getSelectedIndex());
+        final int response = JOptionPane.showConfirmDialog(this,
+                "Are you sure you wish to delete the '" + group
+                + "' group and all actions within it?",
+                "Confirm deletion", JOptionPane.YES_NO_OPTION);
+        if (response == JOptionPane.YES_OPTION) {
+            ActionManager.removeGroup(group);
+            loadGroups();
+        }
+    }
+    
+    private void groupRename() {
+        final String group = groups.getTitleAt(groups.getSelectedIndex());
+        
+        final String newName = JOptionPane.showInputDialog(this,
+                "Please enter a new name for the '" + group
+                + "' group.",
+                "Group rename", JOptionPane.QUESTION_MESSAGE);
+        if (newName != null && !newName.isEmpty()) {
+            ActionManager.renameGroup(group, newName);
+            loadGroups();
+        }
+    }
+    
+    private void actionEdit() {
+        final JTable table = ((ActionsGroupPanel) groups.getSelectedComponent()).getTable();
+        if (table.getSelectedRow() != -1 && table.getSelectedRow() < table.getRowCount()) {
+            final int row = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
+            ActionsEditorDialog.showActionsEditorDialog(this,
+                    ((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row));
+        }
+    }
+    
+    private void actionDelete() {
+        final int response = JOptionPane.showConfirmDialog(this,
+                "Are you sure you wish to delete this action?",
+                "Confirm deletion", JOptionPane.YES_NO_OPTION);
+        if (response == JOptionPane.YES_OPTION) {
+            final JTable table = ((ActionsGroupPanel) groups.getSelectedComponent()).getTable();
+            final int row = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
+            ActionManager.deleteAction(((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row));
+            loadGroups();
+            setEditState(false);
+        }
+    }
+
+    /** {@inheritDoc} */
+    public void stateChanged(final ChangeEvent e) {
+        setEditState(false);
     }
     
 }
