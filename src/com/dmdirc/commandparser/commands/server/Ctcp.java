@@ -57,7 +57,7 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         if (args.length < 2) {
-            sendLine(origin, isSilent, "CommandUsage", Config.getCommandChar(),
+            sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(),
                     "ctcp", "<target> <type> [arguments]");
         } else {
             server.getParser().sendLine("PRIVMSG " + args[0] + " :"
