@@ -107,8 +107,7 @@ public final class IRCParser implements Runnable {
 	/** Length of time to wait between ping stuff. */
 	private long pingTimerLength = 10000;
 	/** Is a ping needed? */
-	private Boolean pingNeeded = false; // This is Boolean not boolean because
-	                                    // synchronized does not work on primatives.
+	private volatile Boolean pingNeeded = false;
 	/** Time last ping was sent at. */
 	private long pingTime;
 	/** Current Server Lag. */
@@ -877,7 +876,6 @@ public final class IRCParser implements Runnable {
 		callDataIn(line);
 		setPingNeeded(false);
 //		pingCountDown = pingCountDownLength;
-		
 		
 		if (token.length < 2) {
 			return;
@@ -1669,7 +1667,7 @@ public final class IRCParser implements Runnable {
 	 */
 	protected void pingTimerTask(final Timer timer) {
 		if (!pingTimer.equals(timer)) { return; }
-		if (pingNeeded) {
+		if (getPingNeeded()) {
 			if (!callPingFailed()) {
 				pingTimer.cancel();
 				disconnect("Server not responding.");
@@ -1713,7 +1711,20 @@ public final class IRCParser implements Runnable {
 	 */
 	private void setPingNeeded(final boolean newStatus)  {
 		synchronized (pingNeeded) {
+//			System.out.println("Ping needed is now: "+newStatus);
 			pingNeeded = newStatus;
+		}
+	}
+	
+	/**
+	 * Get if a ping is needed or not.
+	 *
+	 * @return value of pingNeeded.
+	 */
+	private boolean getPingNeeded()  {
+		synchronized (pingNeeded) {
+//			System.out.println("Pingneeded = "+pingNeeded);
+			return pingNeeded;
 		}
 	}
 	
