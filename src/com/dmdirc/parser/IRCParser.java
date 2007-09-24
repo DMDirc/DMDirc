@@ -870,10 +870,10 @@ public final class IRCParser implements Runnable {
 	 * @param line IRC Line to process
 	 */
 	private void processLine(final String line) {
-		final String[] token = tokeniseLine(line);
-		
-		int nParam;
 		callDataIn(line);
+		
+		final String[] token = tokeniseLine(line);
+		int nParam;
 		setPingNeeded(false);
 //		pingCountDown = pingCountDownLength;
 		
