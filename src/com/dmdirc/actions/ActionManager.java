@@ -75,7 +75,7 @@ public final class ActionManager {
     /**
      * Initialises the action manager.
      */
-    public static void init() {        
+    public static void init() {
         registerActionTypes(CoreActionType.values());
         registerActionComparisons(CoreActionComparison.values());
         registerActionComponents(CoreActionComponent.values());
@@ -90,10 +90,6 @@ public final class ActionManager {
      * @param wrapper The wrapper to be registered
      */
     public static void registerWrapper(final ActionWrapper wrapper) {
-        if (actionWrappers == null) {
-            init();
-        }
-        
         actionWrappers.add(wrapper);
     }
     
@@ -146,7 +142,7 @@ public final class ActionManager {
     
     /**
      * Returns a map of type groups to types.
-     * 
+     *
      * @return A map of type groups to types
      */
     public static Map<String, List<ActionType>> getTypeGroups() {
@@ -234,10 +230,6 @@ public final class ActionManager {
      * @param action The action to be registered
      */
     public static void registerAction(final Action action) {
-        if (actions == null) {
-            init();
-        }
-        
         for (ActionType trigger : action.getTriggers()) {
             if (!actions.containsKey(trigger)) {
                 actions.put(trigger, new ArrayList<Action>());
@@ -263,10 +255,6 @@ public final class ActionManager {
      * @param action The action to be unregistered
      */
     public static void unregisterAction(final Action action) {
-        if (actions == null) {
-            return;
-        }
-        
         for (Map.Entry<ActionType, List<Action>> map : actions.entrySet()) {
             if (map.getValue().contains(action)) {
                 map.getValue().remove(action);
@@ -286,10 +274,6 @@ public final class ActionManager {
      * @param action The action to be deleted
      */
     public static void deleteAction(final Action action) {
-        if (actions == null) {
-            init();
-        }
-        
         unregisterAction(action);
         
         action.delete();
@@ -305,10 +289,6 @@ public final class ActionManager {
      */
     public static void processEvent(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
-        if (actionTypes == null) {
-            init();
-        }
-        
         if (type.getType().getArity() == arguments.length) {
             PluginManager.getPluginManager().processEvent(type, format, arguments);
             triggerActions(type, format, arguments);
@@ -328,10 +308,6 @@ public final class ActionManager {
      */
     private static void triggerActions(final ActionType type,
             final StringBuffer format, final Object ... arguments) {
-        if (actions == null) {
-            return;
-        }
-        
         if (actions.containsKey(type)) {
             for (Action action : actions.get(type)) {
                 action.trigger(format, arguments);
@@ -415,10 +391,6 @@ public final class ActionManager {
      * @return The actioncomparison with the specified name, or null on failure
      */
     public static ActionType getActionType(final String type) {
-        if (actionTypes == null) {
-            init();
-        }
-        
         for (ActionType target : actionTypes) {
             if (((Enum) target).name().equals(type)) {
                 return target;
@@ -508,10 +480,6 @@ public final class ActionManager {
      * @return The actioncomponent with the specified name, or null on failure
      */
     public static ActionComponent getActionComponent(final String type) {
-        if (actionComponents == null) {
-            init();
-        }
-        
         for (ActionComponent target : actionComponents) {
             if (((Enum) target).name().equals(type)) {
                 return target;
@@ -529,10 +497,6 @@ public final class ActionManager {
      * @return The actiontype with the specified name, or null on failure
      */
     public static ActionComparison getActionComparison(final String type) {
-        if (actionComparisons == null) {
-            init();
-        }
-        
         for (ActionComparison target : actionComparisons) {
             if (((Enum) target).name().equals(type)) {
                 return target;
