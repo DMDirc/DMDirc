@@ -47,7 +47,7 @@ public final class Alias {
     /**
      * Creates a new Alias wrapper.
      *
-     * @param name Alias command
+     * @param command Alias command
      */
     public Alias(final String command) {
         this.command = command;
@@ -60,7 +60,7 @@ public final class Alias {
     /**
      * Wraps an existing Action in an Alias.
      *
-     * @param name Alias command
+     * @param command Alias command
      * @param arguments List of arguments for the alias
      * @param response Response for the alias
      */
@@ -83,7 +83,7 @@ public final class Alias {
     /**
      * Sets the aliases command.
      *
-     * @param name Command to give the alias
+     * @param command Command to give the alias
      */
     public void setCommand(final String command) {
         if (!this.command.equals(command)) {

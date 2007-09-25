@@ -110,7 +110,7 @@ public final class ReorderableJList extends JList implements DragSourceListener,
     /** 
      * Sets the model for the list.
      *
-     * @param newModel Model for the list
+     * @param model Model for the list
      */
     public void setModel(final DefaultListModel model) { //NOPMD stupid
         super.setModel(model);
