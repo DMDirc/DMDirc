@@ -66,10 +66,10 @@ public final class ProfileEditorDialog extends StandardDialog implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Previously created instance of ProfileEditorDialog. */
-    private static ProfileEditorDialog me;
+    private static ProfileEditorDialog me = new ProfileEditorDialog();
     
     /** Component panel. */
     private JPanel panel;
@@ -92,23 +92,15 @@ public final class ProfileEditorDialog extends StandardDialog implements
     /** info label. */
     private JTextArea infoLabel;
     
-    /** nickname label. */
-    private JLabel nicknameLabel;
     /** nickname field. */
     private JTextField nickname;
     
-    /** realname label. */
-    private JLabel realnameLabel;
     /** realname field. */
     private JTextField realname;
     
-    /** Ident label. */
-    private JLabel identLabel;
     /**  Ident field. */
     private JTextField ident;
     
-    /** Alternate nicknames label. */
-    private JLabel altNickLabel;
     /** Alternate nicknames list. */
     private JList altNick;
     /** Alternate nicknames button panel. */
@@ -134,10 +126,8 @@ public final class ProfileEditorDialog extends StandardDialog implements
     }
     
     /** Creates the dialog if one doesn't exist, and displays it. */
-    public static synchronized void showActionsManagerDialog() {
-        if (me == null) {
-            me = new ProfileEditorDialog();
-        } else {
+    public static void showActionsManagerDialog() {
+        synchronized (me) {
             me.setVisible(true);
             me.requestFocus();
         }
@@ -185,25 +175,17 @@ public final class ProfileEditorDialog extends StandardDialog implements
         infoLabel.setHighlighter(null);
         infoLabel.setBackground(panel.getBackground());
         
-        nicknameLabel = new JLabel("Nickname: ");
-        
         nickname = new JTextField();
         nickname.setPreferredSize(new Dimension(150, 10));
         nickname.setText(profiles.get(0).getOption("profile", "nickname"));
-        
-        realnameLabel = new JLabel("Realname: ");
         
         realname = new JTextField();
         realname.setPreferredSize(new Dimension(150, 10));
         realname.setText(profiles.get(0).getOption("profile", "realname"));
         
-        identLabel = new JLabel("Ident: ");
-        
         ident = new JTextField();
         ident.setPreferredSize(new Dimension(150, 10));
         ident.setText(profiles.get(0).getOption("profile", "ident"));
-        
-        altNickLabel = new JLabel("Alt nicknames: ");
         
         altNick = new JList(new DefaultListModel());
         altNick.setVisibleRowCount(2);
@@ -237,13 +219,13 @@ public final class ProfileEditorDialog extends StandardDialog implements
         final GridBagConstraints constraints = new GridBagConstraints();
         getContentPane().setLayout(new GridBagLayout());
         
-        panel.add(nicknameLabel);
+        panel.add(new JLabel("Nickname: "));
         panel.add(nickname);
-        panel.add(realnameLabel);
+        panel.add(new JLabel("Realname: "));
         panel.add(realname);
-        panel.add(identLabel);
+        panel.add(new JLabel("Ident: "));
         panel.add(ident);
-        panel.add(altNickLabel);
+        panel.add(new JLabel("Alt nicknames: "));
         panel.add(new JScrollPane(altNick));
         panel.add(Box.createHorizontalBox());
         panel.add(altNickButtonsPanel);
@@ -324,74 +306,123 @@ public final class ProfileEditorDialog extends StandardDialog implements
         if (event.getSource() == revertButton) {
             populateProfile(selectedProfile);
         } else if (event.getSource() == addButton) {
-            final String newName = JOptionPane.showInputDialog(this,
-                    "Please enter the new profile's name", "New profile");
-            if (newName != null && !newName.isEmpty()) {
-                final Identity newIdentity = Identity.buildProfile(newName);
-                profiles = IdentityManager.getProfiles();
-                populateList();
-                selectedProfile = profiles.indexOf(newIdentity);
-                populateProfile(selectedProfile);
-                profileList.repaint();
-            }
+            addProfile();
         } else if (event.getSource() == deleteButton) {
+            deleteProfile();
+        } else if (event.getSource() == renameButton) {
+            renameProfile();
+        } else if ("addAltNick".equals(event.getActionCommand())) {
+            addAltNick();
+        } else if ("editAltNick".equals(event.getActionCommand())) {
+            editAltNick();
+        } else if ("deleteAltNick".equals(event.getActionCommand())) {
+            deleteAltNick();
+        } else if (event.getSource() == getOkButton()) {
+            saveSettings();
+        } else if (event.getSource() == getCancelButton()) {
+            cancelDialog();
+        }
+    }
+    
+    /** Adds a profile. */
+    private void addProfile() {
+        final String newName = JOptionPane.showInputDialog(this,
+                "Please enter the new profile's name", "New profile");
+        if (newName != null && !newName.isEmpty()) {
+            final Identity newIdentity = Identity.buildProfile(newName);
+            profiles = IdentityManager.getProfiles();
+            populateList();
+            selectedProfile = profiles.indexOf(newIdentity);
+            populateProfile(selectedProfile);
+            profileList.setSelectedIndex(selectedProfile);
+            profileList.repaint();
+        }
+    }
+    
+    /** Deletes a profile. */
+    private void deleteProfile() {
+        final int response = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete this profile?",
+                "Delete confirmaton", JOptionPane.YES_NO_OPTION);
+        if (response == JOptionPane.YES_OPTION) {
+            final Identity oldIdentity =
+                    profiles.get(profileList.getSelectedIndex());
+            oldIdentity.delete();
+            profiles = IdentityManager.getProfiles();
+            populateList();
+            selectedProfile = profiles.indexOf(oldIdentity);
+            selectedProfile--;
+            if (selectedProfile < 0) {
+                selectedProfile = 0;
+            }
+            if (selectedProfile != -1 && profileList.getModel().getSize() > 0) {
+                populateProfile(selectedProfile);
+            } else {
+                clearProfile();
+            }
+            profileList.repaint();
+            renameButton.setEnabled(false);
+            deleteButton.setEnabled(false);
+        }
+    }
+    
+    /** Renames a profile. */
+    private void renameProfile() {
+        final String newName = JOptionPane.showInputDialog(this,
+                "Please enter the new name for the profile",
+                profileList.getSelectedValue());
+        if (newName != null && !newName.isEmpty()) {
+            profiles.get(profileList.getSelectedIndex()).setOption("identity", "name", newName);
+            profileList.repaint();
+        }
+    }
+    
+    /** Adds an alternate nick. */
+    private void addAltNick() {
+        final String newName = JOptionPane.showInputDialog(this,
+                "Please enter the new nickname", "New alt nickname");
+        if (newName != null && !newName.isEmpty()) {
+            ((DefaultListModel) altNick.getModel()).addElement(newName);
+        }
+    }
+    
+    /** Edits an alternate nick. */
+    private void editAltNick() {
+        if (altNick.getSelectedIndex() != -1) {
+            final String newName = JOptionPane.showInputDialog(this,
+                    "Please enter the nickname for the alt nickname",
+                    altNick.getSelectedValue());
+            if (newName != null && !newName.isEmpty()) {
+                ((DefaultListModel) altNick.getModel()).setElementAt(newName, altNick.getSelectedIndex());
+            }
+        }
+    }
+    
+    /** Deletes an alternate nick. */
+    private void deleteAltNick() {
+        if (altNick.getSelectedIndex() != -1) {
             final int response = JOptionPane.showConfirmDialog(this,
-                    "Are you sure you want to delete this profile?",
+                    "Are you sure you want to delete this nick?",
                     "Delete confirmaton", JOptionPane.YES_NO_OPTION);
             if (response == JOptionPane.YES_OPTION) {
-                final Identity oldIdentity =
-                        profiles.get(profileList.getSelectedIndex());
-                oldIdentity.delete();
-                profiles = IdentityManager.getProfiles();
-                populateList();
-                selectedProfile = profiles.indexOf(oldIdentity);
-                selectedProfile--;
-                if (selectedProfile < 0) {
-                    selectedProfile = 0;
-                }
-                populateProfile(selectedProfile);
-                profileList.repaint();
+                ((DefaultListModel) altNick.getModel()).removeElementAt(altNick.getSelectedIndex());
             }
-        } else if (event.getSource() == renameButton) {
-            final String newName = JOptionPane.showInputDialog(this,
-                    "Please enter the new name for the profile",
-                    profileList.getSelectedValue());
-            if (newName != null && !newName.isEmpty()) {
-                profiles.get(profileList.getSelectedIndex()).setOption("identity", "name", newName);
-                profileList.repaint();
-            }
-        } else if ("addAltNick".equals(event.getActionCommand())) {
-            final String newName = JOptionPane.showInputDialog(this,
-                    "Please enter the new nickname", "New alt nickname");
-            if (newName != null && !newName.isEmpty()) {
-                ((DefaultListModel) altNick.getModel()).addElement(newName);
-            }
-        } else if ("editAltNick".equals(event.getActionCommand())) {
-            if (altNick.getSelectedIndex() != -1) {
-                final String newName = JOptionPane.showInputDialog(this,
-                        "Please enter the nickname for the alt nickname",
-                        altNick.getSelectedValue());
-                if (newName != null && !newName.isEmpty()) {
-                    ((DefaultListModel) altNick.getModel()).setElementAt(newName, altNick.getSelectedIndex());
-                }
-            }
-        } else if ("deleteAltNick".equals(event.getActionCommand())) {
-            if (altNick.getSelectedIndex() != -1) {
-                final int response = JOptionPane.showConfirmDialog(this,
-                        "Are you sure you want to delete this nick?",
-                        "Delete confirmaton", JOptionPane.YES_NO_OPTION);
-                if (response == JOptionPane.YES_OPTION) {
-                    ((DefaultListModel) altNick.getModel()).removeElementAt(altNick.getSelectedIndex());
-                }
-            }
-        } else if (event.getSource() == getOkButton()) {
-            saveProfile(selectedProfile);
-            NewServerDialog.getNewServerDialog().populateProfiles();
-            this.dispose();
-        } else if (event.getSource() == getCancelButton()) {
-            NewServerDialog.getNewServerDialog().populateProfiles();
-            this.dispose();
         }
+    }
+    
+    /** Closes and saves the dialog. */
+    private void saveSettings() {
+        if (selectedProfile != -1 && profileList.getModel().getSize() > 0) {
+            saveProfile(selectedProfile);
+        }
+        NewServerDialog.getNewServerDialog().populateProfiles();
+        this.dispose();
+    }
+    
+    /** cancels the dialog */
+    private void cancelDialog() {
+        NewServerDialog.getNewServerDialog().populateProfiles();
+        dispose();
     }
     
     /** {@inheritDoc}. */
@@ -399,8 +430,15 @@ public final class ProfileEditorDialog extends StandardDialog implements
         if (!selectionEvent.getValueIsAdjusting()) {
             final int selected = ((JList) selectionEvent.getSource()).getSelectedIndex();
             if (selected >= 0) {
-                saveProfile(selectedProfile);
+                if (selectedProfile != -1 && profileList.getModel().getSize() > 0) {
+                    saveProfile(selectedProfile);
+                }
                 populateProfile(selected);
+                renameButton.setEnabled(true);
+                deleteButton.setEnabled(true);
+            } else {
+                renameButton.setEnabled(false);
+                deleteButton.setEnabled(false);
             }
             selectedProfile = selected;
         }
@@ -428,6 +466,14 @@ public final class ProfileEditorDialog extends StandardDialog implements
         populateAltNicks(index);
     }
     
+    /** Clears the profile. */
+    private void clearProfile() {
+        nickname.setText("");
+        realname.setText("");
+        ident.setText("");
+        ((DefaultListModel) altNick.getModel()).clear();
+    }
+    
     /**
      *  Saves the profile options for the given index.
      *
@@ -435,6 +481,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
      */
     private void saveProfile(final int index) {
         StringBuffer altNicks;
+        
         
         final Identity profile = profiles.get(index);
         
