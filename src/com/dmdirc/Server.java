@@ -613,7 +613,7 @@ public final class Server extends WritableFrameContainer implements
         
         myState = STATE.DISCONNECTED;
         
-        if (parser != null && parser.isReady()) {
+        if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
             parser.disconnect(reason);
             
             if (configManager.getOptionBool("general", "closechannelsonquit")) {
