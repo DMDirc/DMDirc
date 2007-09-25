@@ -800,7 +800,7 @@ public final class Server extends WritableFrameContainer implements
             }
         }
         if ("server".equals(target)) {
-            getFrame().addLine(messageType, args);
+            addLine(messageType, args);
         } else if ("all".equals(target)) {
             addLineToAll(messageType, args);
         } else if ("active".equals(target)) {
