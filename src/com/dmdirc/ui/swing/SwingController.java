@@ -160,6 +160,10 @@ public final class SwingController implements UIController {
             final String aaSetting = Config.getOption("ui", "antialias");
             System.setProperty("awt.useSystemAAFontSettings", aaSetting);
             System.setProperty("swing.aatext", aaSetting);
+        } else {
+            Config.setOption("ui", "antialias", "true");
+            System.setProperty("awt.useSystemAAFontSettings", "true");
+            System.setProperty("swing.aatext", "true");
         }
         try {
             UIUtilities.initUISettings();
