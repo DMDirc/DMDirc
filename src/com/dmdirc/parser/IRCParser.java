@@ -1465,7 +1465,7 @@ public final class IRCParser implements Runnable {
 	 * @param sReason Reason for quitting.
 	 */
 	public void disconnect(final String sReason) {
-		quit(sReason);
+		if (got001) { quit(sReason); }
 		try {
 			socket.close();
 		} catch (Exception e) {
