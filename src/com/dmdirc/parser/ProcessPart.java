@@ -83,6 +83,7 @@ public class ProcessPart extends IRCProcessor {
 	 * @param cChannel Channel that the user parted
 	 * @param cChannelClient Client that parted
 	 * @param sReason Reason given for parting (May be "")
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelPart(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
 		final CallbackOnChannelPart cb = (CallbackOnChannelPart)getCallbackManager().getCallbackType("OnChannelPart");

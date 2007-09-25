@@ -84,6 +84,7 @@ public class ProcessQuit extends IRCProcessor {
 	 * @param cChannel Channel that user was on
 	 * @param cChannelClient User thats quitting
 	 * @param sReason Quit reason
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelQuit(final ChannelInfo cChannel, final ChannelClientInfo cChannelClient, final String sReason) {
 		final CallbackOnChannelQuit cb = (CallbackOnChannelQuit)getCallbackManager().getCallbackType("OnChannelQuit");
@@ -97,6 +98,7 @@ public class ProcessQuit extends IRCProcessor {
 	 * @see IQuit
 	 * @param cClient Client Quitting
 	 * @param sReason Reason for quitting (may be "")
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callQuit(final ClientInfo cClient, final String sReason) {
 		final CallbackOnQuit cb = (CallbackOnQuit)getCallbackManager().getCallbackType("OnQuit");

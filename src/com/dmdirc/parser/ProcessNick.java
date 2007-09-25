@@ -88,6 +88,7 @@ public class ProcessNick extends IRCProcessor {
 	 * @param cChannel One of the channels that the user is on
 	 * @param cChannelClient Client changing nickname
 	 * @param sOldNick Nickname before change
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelNickChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sOldNick) {
 		CallbackOnChannelNickChanged cb = (CallbackOnChannelNickChanged)getCallbackManager().getCallbackType("OnChannelNickChanged");
@@ -101,6 +102,7 @@ public class ProcessNick extends IRCProcessor {
 	 * @see INickChanged
 	 * @param cClient Client changing nickname
 	 * @param sOldNick Nickname before change
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNickChanged(ClientInfo cClient, String sOldNick) {
 		CallbackOnNickChanged cb = (CallbackOnNickChanged)getCallbackManager().getCallbackType("OnNickChanged");

@@ -25,7 +25,6 @@
 package com.dmdirc.parser;
 
 import com.dmdirc.parser.callbacks.CallbackOnPasswordRequired;
-import com.dmdirc.parser.callbacks.interfaces.IPasswordRequired;
 
 /**
  * Process a 464 message.
@@ -58,6 +57,7 @@ public class Process464 extends IRCProcessor {
 	 * Callback to all objects implementing the PasswordRequired Callback.
 	 *
 	 * @see IPasswordRequired
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callPasswordRequired() {
 		CallbackOnPasswordRequired cb = (CallbackOnPasswordRequired)getCallbackManager().getCallbackType("OnPasswordRequired");

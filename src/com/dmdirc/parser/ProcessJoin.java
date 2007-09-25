@@ -94,6 +94,7 @@ public class ProcessJoin extends IRCProcessor {
 	 * @see IChannelJoin
 	 * @param cChannel Channel Object
 	 * @param cChannelClient ChannelClient object for new person
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelJoin(ChannelInfo cChannel, ChannelClientInfo cChannelClient) {
 		CallbackOnChannelJoin cb = (CallbackOnChannelJoin)getCallbackManager().getCallbackType("OnChannelJoin");
@@ -106,6 +107,7 @@ public class ProcessJoin extends IRCProcessor {
 	 *
 	 * @see IChannelSelfJoin
 	 * @param cChannel Channel Object
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelSelfJoin(ChannelInfo cChannel) {
 		CallbackOnChannelSelfJoin cb = (CallbackOnChannelSelfJoin)getCallbackManager().getCallbackType("OnChannelSelfJoin");

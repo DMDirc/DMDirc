@@ -69,6 +69,7 @@ public class ProcessTopic extends IRCProcessor {
 	 * @see IChannelTopic
 	 * @param cChannel Channel that topic was set on
 	 * @param bIsJoinTopic True when getting topic on join, false if set by user/server
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelTopic(final ChannelInfo cChannel, final boolean bIsJoinTopic) {
 		final CallbackOnChannelTopic cb = (CallbackOnChannelTopic)getCallbackManager().getCallbackType("OnChannelTopic");

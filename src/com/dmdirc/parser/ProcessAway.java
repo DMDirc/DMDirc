@@ -26,7 +26,6 @@ package com.dmdirc.parser;
 
 import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.parser.callbacks.CallbackOnAwayState;
-import com.dmdirc.parser.callbacks.interfaces.IAwayState;
 
 /**
  * Process an Away/Back message.

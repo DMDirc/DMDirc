@@ -24,17 +24,13 @@
 
 package com.dmdirc.parser;
 
-import java.util.Calendar;
 import com.dmdirc.parser.callbacks.CallbackOnChannelSingleModeChanged;
 import com.dmdirc.parser.callbacks.CallbackOnChannelNonUserModeChanged;
 import com.dmdirc.parser.callbacks.CallbackOnChannelModeChanged;
 import com.dmdirc.parser.callbacks.CallbackOnChannelUserModeChanged;
 import com.dmdirc.parser.callbacks.CallbackOnUserModeChanged;
-import com.dmdirc.parser.callbacks.interfaces.IChannelSingleModeChanged;
-import com.dmdirc.parser.callbacks.interfaces.IChannelNonUserModeChanged;
-import com.dmdirc.parser.callbacks.interfaces.IChannelModeChanged;
-import com.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
-import com.dmdirc.parser.callbacks.interfaces.IUserModeChanged;
+
+import java.util.Calendar;
 
 /**
  * Process a Mode line.
@@ -256,6 +252,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @param cChannelClient Client chaning the modes (null if server)
 	 * @param sHost Host doing the mode changing (User host or server name)
 	 * @param sModes Exact String parsed
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelModeChanged(ChannelInfo cChannel, ChannelClientInfo cChannelClient, String sHost, String sModes) {
 		CallbackOnChannelModeChanged cb = (CallbackOnChannelModeChanged)getCallbackManager().getCallbackType("OnChannelModeChanged");
@@ -272,6 +269,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @param cSetByClient Client chaning the modes (null if server)
 	 * @param sMode String representing mode change (ie +o)
 	 * @param sHost Host doing the mode changing (User host or server name)
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callChannelUserModeChanged(ChannelInfo cChannel, ChannelClientInfo cChangedClient, ChannelClientInfo cSetByClient, String sHost, String sMode) {
 		CallbackOnChannelUserModeChanged cb = (CallbackOnChannelUserModeChanged)getCallbackManager().getCallbackType("OnChannelUserModeChanged");
@@ -286,6 +284,7 @@ public class ProcessMode extends IRCProcessor {
 	 * @param cClient Client that had the mode changed (almost always us)
 	 * @param sSetby Host that set the mode (us or servername)
 	 * @param sModes The modes set.
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callUserModeChanged(ClientInfo cClient, String sSetby, String sModes) {
 		CallbackOnUserModeChanged cb = (CallbackOnUserModeChanged)getCallbackManager().getCallbackType("OnUserModeChanged");

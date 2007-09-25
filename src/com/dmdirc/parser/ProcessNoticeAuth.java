@@ -45,6 +45,7 @@ public class ProcessNoticeAuth extends IRCProcessor {
 	 *
 	 * @see INoticeAuth
 	 * @param data Incomming Line.
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNoticeAuth(final String data) {
 		final CallbackOnNoticeAuth cb = (CallbackOnNoticeAuth)getCallbackManager().getCallbackType("OnNoticeAuth");

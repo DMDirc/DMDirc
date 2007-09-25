@@ -73,6 +73,7 @@ public class ProcessNickInUse extends IRCProcessor {
 	 *
 	 * @param nickname Nickname that was wanted.
 	 * @see INickInUse
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callNickInUse(final String nickname) {
 		final CallbackOnNickInUse cb = (CallbackOnNickInUse)getCallbackManager().getCallbackType("OnNickInUse");

@@ -25,7 +25,6 @@
 package com.dmdirc.parser;
 
 import com.dmdirc.parser.callbacks.CallbackOnGotNetwork;
-import com.dmdirc.parser.callbacks.interfaces.IGotNetwork;
 
 /**
  * Process ISUPPORT lines.
@@ -128,6 +127,7 @@ public class Process004005 extends IRCProcessor {
 	 * This takes no params of its own, but works them out itself.
 	 *
 	 * @see IGotNetwork
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callGotNetwork() {
 		String networkName = myParser.sNetworkName;

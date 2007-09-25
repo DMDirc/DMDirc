@@ -64,6 +64,7 @@ public class ProcessWallops extends IRCProcessor {
 	 * @see IWallop
 	 * @param host Host of the user who sent the wallop
 	 * @param message The message
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callWallop(String message, String host) {
 		CallbackOnWallop cb = (CallbackOnWallop)getCallbackManager().getCallbackType("OnWallop");
@@ -77,6 +78,7 @@ public class ProcessWallops extends IRCProcessor {
 	 * @see IWalluser
 	 * @param host Host of the user who sent the walluser
 	 * @param message The message
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callWalluser(String message, String host) {
 		CallbackOnWalluser cb = (CallbackOnWalluser)getCallbackManager().getCallbackType("OnWalluser");
@@ -90,6 +92,7 @@ public class ProcessWallops extends IRCProcessor {
 	 * @see IWallDesync
 	 * @param host Host of the user who sent the WallDesync
 	 * @param message The message
+         * @return true if a method was called, false otherwise
 	 */
 	protected boolean callWallDesync(String message, String host) {
 		CallbackOnWallDesync cb = (CallbackOnWallDesync)getCallbackManager().getCallbackType("OnWallDesync");
