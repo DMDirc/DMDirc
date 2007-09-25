@@ -240,10 +240,13 @@ public final class Server extends WritableFrameContainer implements
      */
     public void connect(final String server, final int port, final String password,
             final boolean ssl, final Identity profile) {
-        if (myState == STATE.CLOSING) {
-            return;
-        } else if (myState == STATE.RECONNECT_WAIT) {
+        if (myState == STATE.RECONNECT_WAIT) {
             reconnectTimer.cancel();
+        } else if (myState != STATE.TRANSIENTLY_DISCONNECTED && myState != STATE.DISCONNECTED) {
+            Logger.appError(ErrorLevel.MEDIUM,
+                    "Connect attempt while not expecting one",
+                    new UnsupportedOperationException("Current state: " + myState));
+            return;
         }
         
         ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
@@ -251,6 +254,9 @@ public final class Server extends WritableFrameContainer implements
         myState = Server.STATE.CONNECTING;
         
         if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
+            Logger.appError(ErrorLevel.MEDIUM,
+                    "Parser was still connected when making a connection attempt",
+                    new UnsupportedOperationException());
             disconnect(configManager.getOption("general", "quitmessage"));
         }
         
@@ -1055,6 +1061,13 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public void onConnectError(final IRCParser tParser, final ParserError errorInfo) {
+        if (myState != STATE.CONNECTING) {
+            Logger.appError(ErrorLevel.MEDIUM,
+                    "Connection error while not expecting a connection attempt",
+                    new UnsupportedOperationException("Current state: " + myState));
+            return;
+        }
+        
         myState = STATE.TRANSIENTLY_DISCONNECTED;
         
         String description = "";
@@ -1168,7 +1181,7 @@ public final class Server extends WritableFrameContainer implements
     /** {@inheritDoc} */
     public void onErrorInfo(final IRCParser tParser, final ParserError errorInfo) {
         final ErrorLevel errorLevel = ErrorLevel.UNKNOWN;
-                
+        
         if (errorInfo.isException()) {
             Logger.appError(errorLevel, errorInfo.getData(), errorInfo.getException());
         } else {
