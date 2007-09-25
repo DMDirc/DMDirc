@@ -77,7 +77,7 @@ public class ProcessJoin extends IRCProcessor {
 				// 2) Profit ?
 			} else if (iChannel.getUser(iClient) != null) {
 				// Client joined channel that we already know of.
-				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got join for channel ("+token[token.length-1]+") from a user that is already on the channel. [Me: "+myParser.getMyself()+"]", myParser.getLastLine()));
+//				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got join for channel ("+token[token.length-1]+") from a user that is already on the channel. [Me: "+myParser.getMyself()+"]", myParser.getLastLine()));
 			} else {
 				// This is only done if we are already the channel, and it isn't us that
 				// joined.

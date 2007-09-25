@@ -129,10 +129,10 @@ public class ProcessMode extends IRCProcessor {
 					iChannelClientInfo = iChannel.getUser(sModeParam);
 					if (iChannelClientInfo == null) {
 						// Client not known?
-						callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got mode for client not known on channel - Added", myParser.getLastLine()));
+//						callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got mode for client not known on channel - Added", myParser.getLastLine()));
 						iClient = getClientInfo(sModeParam);
 						if (iClient == null) { 
-							callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got mode for client not known at all - Added", myParser.getLastLine()));
+//							callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got mode for client not known at all - Added", myParser.getLastLine()));
 							iClient = new ClientInfo(myParser, sModeParam);
 							myParser.addClient(iClient);
 						}
@@ -147,7 +147,7 @@ public class ProcessMode extends IRCProcessor {
 					continue;
 				} else {
 					// unknown mode - add as boolean
-					callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got unknown mode "+cMode+" - Added as boolean mode", myParser.getLastLine()));
+//					callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got unknown mode "+cMode+" - Added as boolean mode", myParser.getLastLine()));
 					myParser.hChanModesBool.put(cMode,myParser.nNextKeyCMBool);
 					nValue = myParser.nNextKeyCMBool;
 					bBooleanMode = true;

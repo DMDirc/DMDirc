@@ -1666,7 +1666,7 @@ public final class IRCParser implements Runnable {
 	 * @param timer The timer that called this.
 	 */
 	protected void pingTimerTask(final Timer timer) {
-		if (!pingTimer.equals(timer)) { return; }
+		if (pingTimer == null || !pingTimer.equals(timer)) { return; }
 		if (getPingNeeded()) {
 			if (!callPingFailed()) {
 				pingTimer.cancel();
