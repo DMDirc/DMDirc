@@ -266,7 +266,7 @@ public final class ActionsManagerDialog extends StandardDialog
             addAction.setEnabled(true);
         }
         
-        if (groups.getTabCount() > 0) {
+        if (groups.getTabCount() > 0 && selectedGroup < groups.getTabCount()) {
             groups.setSelectedIndex(selectedGroup == -1 ? 0 : selectedGroup);
         }
     }
@@ -355,13 +355,15 @@ public final class ActionsManagerDialog extends StandardDialog
                 "Confirm deletion", JOptionPane.YES_NO_OPTION);
         if (response == JOptionPane.YES_OPTION) {
             final JTable table = ((ActionsGroupPanel) groups.getSelectedComponent()).getTable();
-            final int row = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
-            ActionManager.deleteAction(((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row));
-            loadGroups();
-            setEditState(false);
+            if (table.getSelectedRow() != -1 && table.getSelectedRow() < table.getRowCount()) {
+                final int row = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
+                ActionManager.deleteAction(((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row));
+                loadGroups();
+                setEditState(false);
+            }
         }
     }
-
+    
     /** {@inheritDoc} */
     public void stateChanged(final ChangeEvent e) {
         setEditState(false);

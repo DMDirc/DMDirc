@@ -161,6 +161,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
         me.populateArguments();
         me.setVisible(true);
         me.requestFocus();
+        me.arguments.requestFocus();
     }
     
     /**
