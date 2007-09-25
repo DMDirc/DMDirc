@@ -68,7 +68,7 @@ public final class ColourChooser extends JPanel implements ActionListener {
     
     /** Creates a new instance of ColourChooser. */
     public ColourChooser() {
-        this("", true, true);
+        this("ffffff", true, true);
     }
     
     /**
@@ -121,7 +121,7 @@ public final class ColourChooser extends JPanel implements ActionListener {
     
     /** Sets the colour back to white. */
     public void clearColour() {
-        value = "";
+        value = "ffffff";
         previewPanel.setBackground(ColourManager.getColour("ffffff"));
         previewPanel.setToolTipText("");
     }

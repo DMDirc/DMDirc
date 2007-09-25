@@ -119,7 +119,7 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
         
     /** Sets the colour back to white. */
     public void clearColour() {
-        value = "";
+        value = "ffffff";
         previewPanel.setBackground(ColourManager.getColour("ffffff"));
         previewPanel.setToolTipText("");
     }

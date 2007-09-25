@@ -169,7 +169,7 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
      * @return Option value or a blank string
      */
     public String getOption(final String optionName, final OptionType type) {
-        String returnValue = "";
+        String returnValue = null;
         switch (type) {
             case TEXTFIELD:
                 if (textFields.containsKey(optionName)) {
@@ -177,9 +177,12 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
                 }
                 break;
             case CHECKBOX:
-                if (checkBoxes.containsKey(optionName)
-                && checkBoxes.get(optionName).isSelected()) {
-                    returnValue = "true";
+                if (checkBoxes.containsKey(optionName)) {
+                    if (checkBoxes.get(optionName).isSelected()) {
+                        returnValue = "true";
+                    } else {
+                        returnValue = "false";
+                    }
                 }
                 break;
             case COLOUR:
