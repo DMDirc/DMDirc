@@ -52,6 +52,9 @@ public final class DummyServerWindow implements ServerWindow {
     /** Server window title. */
     private String title;
     
+    /** are we maximised? */
+    private boolean maximised;
+    
     /** 
      * Instantiates this DummyServerWindow. 
      *
@@ -108,7 +111,7 @@ public final class DummyServerWindow implements ServerWindow {
     
     /** {@inheritDoc} */
     public boolean isVisible() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return visible;
     }
     
     /** {@inheritDoc} */
@@ -123,12 +126,12 @@ public final class DummyServerWindow implements ServerWindow {
     
     /** {@inheritDoc} */
     public boolean isMaximum() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return maximised;
     }
     
     /** {@inheritDoc} */
     public void setMaximum(final boolean b) throws PropertyVetoException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        maximised = b;
     }
     
     /** {@inheritDoc} */

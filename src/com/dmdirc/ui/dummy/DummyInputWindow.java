@@ -47,6 +47,8 @@ public final class DummyInputWindow implements InputWindow {
     private String title;
     /** Are we visible? */
     private boolean visible;
+    /** are we maximised? */
+    private boolean maximised;
     
     /** 
      * Instantiates a new DummyInputWindow.
@@ -106,7 +108,7 @@ public final class DummyInputWindow implements InputWindow {
     
     /** {@inheritDoc} */
     public boolean isVisible() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return visible;
     }
     
     /** {@inheritDoc} */
@@ -116,17 +118,17 @@ public final class DummyInputWindow implements InputWindow {
     
     /** {@inheritDoc} */
     public String getTitle() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return title;
     }
     
     /** {@inheritDoc} */
     public boolean isMaximum() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return maximised;
     }
     
     /** {@inheritDoc} */
     public void setMaximum(final boolean b) throws PropertyVetoException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        maximised = b;
     }
     
     /** {@inheritDoc} */

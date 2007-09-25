@@ -82,7 +82,7 @@ public final class AliasPanel extends JPanel implements ActionListener {
         
         command = new JTextField();
         command.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.
-                getKeyStroke(new Character(' '), 0), "none");
+                getKeyStroke(Character.valueOf(' '), 0), "none");
         command.setEnabled(false);
         
         argumentComponent = new JComboBox(new CoreActionComparison[]{null,
