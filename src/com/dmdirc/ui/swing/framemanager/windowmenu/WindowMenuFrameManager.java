@@ -153,7 +153,9 @@ public final class WindowMenuFrameManager implements FrameManager,
     
     /** {@inheritDoc} */
     public void iconUpdated(final FrameContainer window) {
-        menuItemMap.get(window).setIcon(window.getIcon());
+        if (menuItemMap.get(window) != null) {
+            menuItemMap.get(window).setIcon(window.getIcon());
+        }
     }
     
     /**
