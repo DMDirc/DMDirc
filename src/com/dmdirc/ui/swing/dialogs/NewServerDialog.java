@@ -29,6 +29,7 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
@@ -43,16 +44,17 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.InputVerifier;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  * Dialog that allows the user to enter details of a new server to connect to.
@@ -66,10 +68,16 @@ public final class NewServerDialog extends StandardDialog {
      */
     private static final long serialVersionUID = 8;
     
+    /** The minimum port number. */
+    private static final int MIN_PORT = 0;
+    
+    /** The maximum port number. */
+    private static final int MAX_PORT = 65535;
+    
     /**
      * A previously created instance of NewServerDialog.
      */
-    private static NewServerDialog me;
+    private static NewServerDialog me = new NewServerDialog();;
     
     /** checkbox. */
     private JCheckBox newServerWindowCheck;
@@ -85,9 +93,6 @@ public final class NewServerDialog extends StandardDialog {
     
     /** label. */
     private JLabel serverLabel;
-    
-    /** label. */
-    private JLabel instructionLabel;
     
     /** label. */
     private JLabel portLabel;
@@ -132,7 +137,6 @@ public final class NewServerDialog extends StandardDialog {
         serverField.setText(Config.getOption("general", "server"));
         portField.setText(Config.getOption("general", "port"));
         passwordField.setText(Config.getOption("general", "password"));
-        portField.setInputVerifier(new PortVerifier());
         
         addCallbacks();
     }
@@ -140,16 +144,14 @@ public final class NewServerDialog extends StandardDialog {
     /**
      * Creates the new server dialog if one doesn't exist, and displays it.
      */
-    public static synchronized void showNewServerDialog() {
-        if (me == null) {
-            me = new NewServerDialog();
+    public static  void showNewServerDialog() {
+        synchronized (me) {
+            me.update();
+            
+            me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+            me.setVisible(true);
+            me.requestFocus();
         }
-        
-        me.update();
-        
-        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
-        me.setVisible(true);
-        me.requestFocus();
     }
     
     /**
@@ -157,11 +159,10 @@ public final class NewServerDialog extends StandardDialog {
      *
      * @return The current NewServerDialog instance
      */
-    public static synchronized NewServerDialog getNewServerDialog() {
-        if (me == null) {
-            me = new NewServerDialog();
+    public static NewServerDialog getNewServerDialog() {
+        synchronized (me) {
+            return me;
         }
-        return me;
     }
     
     /** Updates the values to defaults. */
@@ -199,10 +200,14 @@ public final class NewServerDialog extends StandardDialog {
                 final String host = serverField.getText();
                 final String pass = passwordField.getText();
                 int port;
-                try {
+                if (verifyPort(portField.getText())) {
                     port = Integer.parseInt(portField.getText());
-                } catch (NumberFormatException ex) {
-                    port = 6667;
+                } else {
+                    portField.setBackground(ColourManager.getColour("ff0000"));
+                    portField.requestFocus();
+                    portField.setSelectionStart(0);
+                    portField.setSelectionEnd(portField.getDocument().getLength());
+                    return;
                 }
                 
                 NewServerDialog.this.setVisible(false);
@@ -245,7 +250,6 @@ public final class NewServerDialog extends StandardDialog {
         
         serverLabel = new JLabel();
         serverField = new JTextField();
-        instructionLabel = new JLabel();
         portLabel = new JLabel();
         portField = new JTextField();
         passwordLabel = new JLabel();
@@ -268,11 +272,25 @@ public final class NewServerDialog extends StandardDialog {
         serverLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         serverLabel.setText("Server:");
         
-        instructionLabel.setText("To connect to a new IRC server, enter "
-                + "the server name below");
-        
         portLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         portLabel.setText("Port:");
+        
+        portField.getDocument().addDocumentListener(
+                new DocumentListener() {
+            public void insertUpdate(final DocumentEvent e) {
+                portField.setBackground(UIManager.getColor("TextField.background"));
+            }
+            
+            public void removeUpdate(final DocumentEvent e) {
+                portField.setBackground(UIManager.getColor("TextField.background"));
+            }
+            
+            public void changedUpdate(final DocumentEvent e) {
+                //Ignore
+            }
+            
+        }
+        );
         
         passwordLabel.setText("Password:");
         
@@ -322,7 +340,8 @@ public final class NewServerDialog extends StandardDialog {
         constraints.anchor = GridBagConstraints.WEST;
         constraints.insets = new Insets(LARGE_BORDER, LARGE_BORDER,
                 LARGE_BORDER, LARGE_BORDER);
-        getContentPane().add(instructionLabel, constraints);
+        getContentPane().add(new JLabel("To connect to a new IRC server, enter "
+                + "the server name below"), constraints);
         
         constraints.gridy = 1;
         constraints.insets = new Insets(SMALL_BORDER, LARGE_BORDER,
@@ -438,36 +457,17 @@ public final class NewServerDialog extends StandardDialog {
         pack();
     }
     
-}
-
-/**
- * Verifies that the port number is a valid port.
- */
-class PortVerifier extends InputVerifier {
-    
-    /** The minimum port number. */
-    private static final int MIN_PORT = 0;
-    
-    /** The maximum port number. */
-    private static final int MAX_PORT = 65535;
-    
-    /**
-     * Creates a new instance of PortVerifier.
-     */
-    public PortVerifier() {
-        super();
-    }
-    
     /**
      * Verifies that the number specified in the textfield is a valid port.
-     * @param jComponent The component to be tested
+     *
+     * @param port Port to be tested
+     *
      * @return true iff the number is a valid port, false otherwise
      */
-    public boolean verify(final JComponent jComponent) {
-        final JTextField textField = (JTextField) jComponent;
+    public boolean verifyPort(final String port) {
         try {
-            final int port = Integer.parseInt(textField.getText());
-            return port > MIN_PORT && port <= MAX_PORT;
+            final int portInt = Integer.parseInt(port);
+            return portInt > MIN_PORT && portInt <= MAX_PORT;
         } catch (NumberFormatException e) {
             return false;
         }
