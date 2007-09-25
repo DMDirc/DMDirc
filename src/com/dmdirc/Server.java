@@ -242,11 +242,13 @@ public final class Server extends WritableFrameContainer implements
             final boolean ssl, final Identity profile) {
         if (myState == STATE.RECONNECT_WAIT) {
             reconnectTimer.cancel();
-        } else if (myState != STATE.TRANSIENTLY_DISCONNECTED && myState != STATE.DISCONNECTED) {
+        } else if (myState == STATE.CLOSING) {
             Logger.appError(ErrorLevel.MEDIUM,
                     "Connect attempt while not expecting one",
                     new UnsupportedOperationException("Current state: " + myState));
             return;
+        } else if (myState == STATE.CONNECTED || myState == STATE.CONNECTING) {
+            disconnect(configManager.getOption("general", "quitmessage"));
         }
         
         ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
