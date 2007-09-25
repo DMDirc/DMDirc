@@ -29,12 +29,16 @@ import javax.swing.undo.UndoManager;
 /**
  * Undoable edit listener.
  */
-public class DMDircUndoableEditListener implements UndoableEditListener {
+public final class DMDircUndoableEditListener implements UndoableEditListener {
     
     /** Undo manager. */
     private final UndoManager undoManager;
     
-    /** Creates a new instance of UndoableEditListener. */
+    /** 
+     * Creates a new instance of DMDircUndoableEditListener. 
+     *
+     * @param undoManager UndoManager to use for this listener
+     */
     public DMDircUndoableEditListener(final UndoManager undoManager) {
         super();
         

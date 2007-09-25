@@ -297,7 +297,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     }
 
     /**
-     * Returns this panels parent ActionsEditorDialog
+     * Returns this panels parent ActionsEditorDialog.
      *
      * @return ActionsEditorDialog
      */

@@ -28,7 +28,6 @@ import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionComparison;
-import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.ui.swing.MainFrame;
@@ -370,7 +369,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     }
     
     /**
-     * Saves new aliases
+     * Saves new aliases.
      *
      * @param aliases List of new aliases to save
      */
@@ -387,7 +386,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     }
     
     /**
-     * Saves modified aliases
+     * Saves modified aliases.
      *
      * @param aliases List of modified aliases to save
      */
@@ -404,7 +403,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     }
     
     /**
-     * Returns the action corresponding to the specified alias
+     * Returns the action corresponding to the specified alias.
      *
      * @param alias Alias to check
      *
@@ -427,7 +426,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     }
     
     /**
-     * Checks if ths alias matches another alias
+     * Checks if ths alias matches another alias.
      *
      * @return true iif there are duplicate matches
      */

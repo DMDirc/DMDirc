@@ -22,13 +22,14 @@
 
 package com.dmdirc.ui.swing.dialogs.aliases;
 
+
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.ui.swing.UIUtilities;
+import com.dmdirc.ui.swing.actions.NoSpacesPasteAction;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
-import com.dmdirc.ui.swing.actions.NoSpacesPasteAction;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

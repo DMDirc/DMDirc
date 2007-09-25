@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.actions;
 
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -36,7 +37,7 @@ import javax.swing.text.JTextComponent;
 /**
  * Paste action that strips newlines from pastes.
  */
-public class NoNewlinesPasteAction extends AbstractAction {
+public final class NoNewlinesPasteAction extends AbstractAction {
     
     /**
      * A version number for this class. It should be changed whenever the class

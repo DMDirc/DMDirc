@@ -178,6 +178,8 @@ public final class SwingController implements UIController {
             UIManager.put("com.apple.mrj.application.growbox.intrudes", false);
             UIManager.put("com.apple.mrj.application.live-resize", true);
             
+        } catch (UnsupportedOperationException ex) {
+            Logger.userError(ErrorLevel.LOW, "Unable to set UI Settings");
         } catch (UnsupportedLookAndFeelException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to set UI Settings");
         } catch (IllegalAccessException ex) {

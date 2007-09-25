@@ -301,6 +301,7 @@ public final class ActionsManagerDialog extends StandardDialog
         }
     }
     
+    /** Adds a group. */
     private void groupAdd() {
         final String newGroup = JOptionPane.showInputDialog(this,
                 "Please enter the name of the group to be created.");
@@ -310,6 +311,7 @@ public final class ActionsManagerDialog extends StandardDialog
         }
     }
     
+    /** Deletes a group. */
     private void groupDelete() {
         final String group = groups.getTitleAt(groups.getSelectedIndex());
         final int response = JOptionPane.showConfirmDialog(this,
@@ -322,6 +324,7 @@ public final class ActionsManagerDialog extends StandardDialog
         }
     }
     
+    /** Renames a group. */
     private void groupRename() {
         final String group = groups.getTitleAt(groups.getSelectedIndex());
         
@@ -335,6 +338,7 @@ public final class ActionsManagerDialog extends StandardDialog
         }
     }
     
+    /** Edits an action. */
     private void actionEdit() {
         final JTable table = ((ActionsGroupPanel) groups.getSelectedComponent()).getTable();
         if (table.getSelectedRow() != -1 && table.getSelectedRow() < table.getRowCount()) {
@@ -344,6 +348,7 @@ public final class ActionsManagerDialog extends StandardDialog
         }
     }
     
+    /** Deletes an action. */
     private void actionDelete() {
         final int response = JOptionPane.showConfirmDialog(this,
                 "Are you sure you wish to delete this action?",

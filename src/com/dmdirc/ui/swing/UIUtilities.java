@@ -32,9 +32,9 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
+
 import javax.swing.BorderFactory;
 import javax.swing.KeyStroke;
-
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
 import javax.swing.UIManager;
@@ -136,6 +136,10 @@ public final class UIUtilities {
         return layout.getConstraints(constraints);
     }
     
+    /**
+     * Adds an undo manager and associated key bindings to the specified text
+     * component.
+     */
     public static void addUndoManager(final JTextComponent component) {
         final UndoManager undoManager = new UndoManager();
         
@@ -160,16 +164,27 @@ public final class UIUtilities {
      * Initialises any settings required by this UI (this is always called
      * before any aspect of the UI is instansiated).
      *
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
-     * @throws UnsupportedLookAndFeelException
-     * @throws IllegalAccessException
+     * @throws UnsupportedOperationException If unable to switch to the system
+     * look and feel
      */
-    public static void initUISettings() throws InstantiationException,
-            ClassNotFoundException, UnsupportedLookAndFeelException,
-            IllegalAccessException {
+    public static void initUISettings() {
         
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        try {
+            
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (InstantiationException ex) {
+            throw new UnsupportedOperationException("Unable to switch to the "
+                    + "system look and feel", ex);
+        } catch (ClassNotFoundException ex) {
+            throw new UnsupportedOperationException("Unable to switch to the "
+                    + "system look and feel", ex);
+        } catch (UnsupportedLookAndFeelException ex) {
+            throw new UnsupportedOperationException("Unable to switch to the "
+                    + "system look and feel", ex);
+        } catch (IllegalAccessException ex) {
+            throw new UnsupportedOperationException("Unable to switch to the "
+                    + "system look and feel", ex);
+        }
         
         final FontUIResource font = new FontUIResource("Dialog", Font.PLAIN , 12);
         

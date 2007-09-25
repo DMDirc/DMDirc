@@ -155,10 +155,6 @@ public final class ServerFrame extends InputFrame implements ServerWindow,
         }
     }
 
-    public long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
     /** {@inheritDoc}. */
     public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
         if (getContainer().getServer().getState().equals(Server.STATE.CONNECTED)) {

@@ -34,7 +34,6 @@ import java.awt.Dimension;
 import java.util.ArrayList;
 
 import java.util.List;
-import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * Main installer window
@@ -74,13 +73,7 @@ public final class Main implements Wizard {
 	private Main() {
 		try {
 			UIUtilities.initUISettings();
-		} catch (InstantiationException ex) {
-			//Ignore, revert to default
-		} catch (ClassNotFoundException ex) {
-			//Ignore, revert to default
-		} catch (UnsupportedLookAndFeelException ex) {
-			//Ignore, revert to default
-		} catch (IllegalAccessException ex) {
+		} catch (UnsupportedOperationException ex) {
 			//Ignore, revert to default
 		}
 		

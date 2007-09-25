@@ -257,7 +257,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
     }
     
     /**
-     * Sets the action type for the dialog
+     * Sets the action type for the dialog/
      *
      * @param type New ActionType for the dialog
      */

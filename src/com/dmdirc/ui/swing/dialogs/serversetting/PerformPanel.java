@@ -95,7 +95,7 @@ public final class PerformPanel extends JPanel implements ActionListener {
         
         target = new JComboBox(
                 new Object[]{"Network perform (" + server.getNetwork() + ")",
-                "Server perform (" + server.getName() + ")"});
+                "Server perform (" + server.getName() + ")",});
         add(target, BorderLayout.NORTH);
         
         textarea = new JTextArea();

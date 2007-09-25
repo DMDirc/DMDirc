@@ -34,7 +34,7 @@ import javax.swing.undo.UndoManager;
 /**
  * Handles redo's on text components.
  */
-public class RedoAction extends AbstractAction {
+public final class RedoAction extends AbstractAction {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -46,7 +46,11 @@ public class RedoAction extends AbstractAction {
     /** Undo manager. */
     private final UndoManager undoManager;
     
-    /** Creates a new instance of UndoAction. */
+    /** 
+     * Creates a new instance of RedoAction. 
+     *
+     * @param undoManager UndoManager to use for this redo action
+     */
     public RedoAction(final UndoManager undoManager) {
         super("Undo");
         
