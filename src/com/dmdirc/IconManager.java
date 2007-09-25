@@ -150,7 +150,7 @@ public final class IconManager implements ConfigChangeListener {
             }
             
             //check if the url has content
-            if (imageURL.getContent() == null)  {
+            if (imageURL == null || imageURL.getContent() == null)  {
                 imageURL = defaultURL;
             }
         } catch (IOException ex) {

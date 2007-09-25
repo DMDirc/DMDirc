@@ -299,7 +299,7 @@ public final class TreeFrameManager implements FrameManager,
             final DefaultMutableTreeNode node = nodes.get(server);
             if (node.getLevel() == 0) {
                 Logger.appError(ErrorLevel.MEDIUM,
-                        "delServer triggered for root node",
+                        "delServer triggered for root node" + node.toString(),
                         new IllegalArgumentException());
             } else {
                 model.removeNodeFromParent(nodes.get(server));
