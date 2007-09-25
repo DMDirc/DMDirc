@@ -445,11 +445,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
      * @return Split line array
      */
     private String[] getSplitLine(final String line) {
-        String newLine;
-        newLine = line.replace("\r\n", "\n");
-        newLine = newLine.replace('\r', '\n');
-        
-        return newLine.split("\n");
+        return line.replace("\r\n", "\n").replace('\r', '\n').split("\n");
     }
     
     /** {@inheritDoc} */
@@ -458,7 +454,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
             final String oldValue, final String newValue) {
         super.configChanged(domain, key, oldValue, newValue);
         
-        if ("ui".equals(domain)) {
+        if ("ui".equals(domain) && getInputField() != null && getConfigManager() != null) {
             if ("inputbackgroundcolour".equals(key) || "backgroundcolour".equals(key)) {
                 getInputField().setBackground(getConfigManager().getOptionColour("ui", "inputbackgroundcolour",
                         getConfigManager().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
