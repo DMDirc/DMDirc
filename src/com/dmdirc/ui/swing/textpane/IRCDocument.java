@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.text.AttributedString;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.event.EventListenerList;
 
 /**
  * Data contained in a TextPane.
@@ -37,14 +38,18 @@ public final class IRCDocument implements Serializable {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4;
     
     /** List of stylised lines of text. */
     private final List<AttributedString> iterators;
     
+    /** Listener list. */
+    private final EventListenerList listeners;
+    
     /** Creates a new instance of IRCDocument. */
     protected IRCDocument() {
         iterators = new ArrayList<AttributedString>();
+        listeners = new EventListenerList();
     }
     
     /**
@@ -64,11 +69,7 @@ public final class IRCDocument implements Serializable {
      * @return Line at the specified number or null
      */
     protected AttributedString getLine(final int lineNumber) {
-        if (iterators.size() > lineNumber) {
-            return iterators.get(lineNumber);
-        } else {
-            return null;
-        }
+        return iterators.get(lineNumber);
     }
     
     /**
@@ -78,6 +79,7 @@ public final class IRCDocument implements Serializable {
     protected void addText(final AttributedString text) {
         synchronized (iterators) {
             iterators.add(text);
+            fireLineAdded(iterators.indexOf(text));
         }
     }
     
@@ -91,12 +93,77 @@ public final class IRCDocument implements Serializable {
             while (iterators.size() > numLines) {
                 iterators.remove(0);
             }
+            fireTrimmed();
         }
     }
     
     /** Clears all lines from the document. */
     protected void clear() {
-        iterators.clear();
+        synchronized (iterators) {
+            iterators.clear();
+            fireCleared();
+        }
+    }
+    
+    /**
+     * Adds a IRCDocumentListener to the listener list.
+     *
+     * @param listener Listener to add
+     */
+    public void addIRCDocumentListener(final IRCDocumentListener listener) {
+        synchronized (listeners) {
+            if (listener == null) {
+                return;
+            }
+            listeners.add(IRCDocumentListener.class, listener);
+        }
+    }
+    
+    /**
+     * Removes a IRCDocumentListener from the listener list.
+     *
+     * @param listener Listener to remove
+     */
+    public void removeIRCDocumentListener(final IRCDocumentListener listener) {
+        listeners.remove(IRCDocumentListener.class, listener);
+    }
+    
+    /**
+     * Fires the line added method on all listeners.
+     *
+     * @param index Index of the added line
+     */
+    protected void fireLineAdded(final int index) {
+        final Object[] listenerList = listeners.getListenerList();
+        for (int i = 0; i < listenerList.length; i += 2) {
+            if (listenerList[i] == IRCDocumentListener.class) {
+                ((IRCDocumentListener) listenerList[i + 1]).lineAdded(index, iterators.size());
+            }
+        }
+    }
+    
+    /**
+     * Fires the trimmed method on all listeners.
+     */
+    protected void fireTrimmed() {
+        final Object[] listenerList = listeners.getListenerList();
+        for (int i = 0; i < listenerList.length; i += 2) {
+            if (listenerList[i] == IRCDocumentListener.class) {
+                ((IRCDocumentListener) listenerList[i + 1]).trimmed(iterators.size());
+            }
+        }
+    }
+    
+    /**
+     * fires the cleared method on all listeners.
+     */
+    protected void fireCleared() {
+        final Object[] listenerList = listeners.getListenerList();
+        for (int i = 0; i < listenerList.length; i += 2) {
+            if (listenerList[i] == IRCDocumentListener.class) {
+                ((IRCDocumentListener) listenerList[i + 1]).cleared();
+            }
+        }
     }
 }
 

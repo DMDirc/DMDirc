@@ -769,4 +769,9 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
     public void componentHidden(final ComponentEvent e) {
         //Ignore
     }
+    
+    /** Clears the line wrapping cache. */
+    protected void clearWrapCache() {
+        lineWrap.clear();
+    }
 }

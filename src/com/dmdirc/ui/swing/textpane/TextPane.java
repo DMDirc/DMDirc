@@ -59,7 +59,7 @@ import javax.swing.text.StyledDocument;
  * Styled, scrollable text pane.
  */
 public final class TextPane extends JComponent implements AdjustmentListener,
-        MouseWheelListener {
+        MouseWheelListener, IRCDocumentListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -108,6 +108,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         scrollBar.addAdjustmentListener(this);
         
         addMouseWheelListener(this);
+        document.addIRCDocumentListener(this);
     }
     
     /**
@@ -116,7 +117,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     public void addText(final AttributedString text) {
         document.addText(text);
-        setScrollBarMax();
     }
     
     /**
@@ -274,7 +274,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     
     /** Sets the scrollbar to the maximum position. */
     public void setScrollBarMax() {
-        final int lines = document.getNumLines();
+        final int lines = document.getNumLines() - 1;
         if (lines <= 1) {
             scrollBar.setEnabled(false);
         } else {
@@ -282,7 +282,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         }
         scrollBar.setMaximum(lines);
         if (!scrollBar.getValueIsAdjusting()
-        && (scrollBar.getValue() == scrollBar.getMaximum() - 1)) {
+        && (scrollBar.getValue() == lines - 1)) {
             setScrollBarPosition(lines);
         }
     }
@@ -549,5 +549,21 @@ public final class TextPane extends JComponent implements AdjustmentListener,
         //setScrollBarPosition(canvas.getFirstVisibleLine());
         //use this method for now, its consistent with the block unit for the scrollbar
         setScrollBarPosition(scrollBar.getValue() - 10);
+    }
+
+    /** {@inheritDoc}. */
+    public void lineAdded(final int line, final int size) {
+        setScrollBarMax();
+    }
+
+    /** {@inheritDoc}. */
+    public void trimmed(final int numLines) {
+        canvas.clearWrapCache();
+        setScrollBarMax();
+    }
+
+    /** {@inheritDoc}. */
+    public void cleared() {
+        clear();
     }
 }
