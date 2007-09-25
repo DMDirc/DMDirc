@@ -321,8 +321,7 @@ public final class ActionManager {
      * @return The directory that should be used to store actions
      */
     public static String getDirectory() {
-        final String fs = System.getProperty("file.separator");
-        return Main.getConfigDir() + "actions" + fs;
+        return Main.getConfigDir() + "actions" + System.getProperty("file.separator");
     }
     
     /**
@@ -343,7 +342,12 @@ public final class ActionManager {
      */
     public static void removeGroup(final String group) {
         if (groups.containsKey(group)) {
+            for (Action action : new ArrayList<Action>(groups.get(group))) {
+                unregisterAction(action);
+            }
+            
             final File dir = new File(getDirectory() + group);
+            
             for (File file : dir.listFiles()) {
                 if (!file.delete()) {
                     Logger.userError(ErrorLevel.MEDIUM, "Unable to remove file: "
