@@ -153,7 +153,7 @@ public abstract class Frame extends JInternalFrame implements Window,
             transcoder = new StringTranscoder(Charset.forName("UTF-8"));
         } catch (IllegalArgumentException ex) {
             transcoder = new StringTranscoder(Charset.forName("UTF-8"));
-        } 
+        }
         
         initComponents();
         setMaximizable(true);
@@ -198,7 +198,11 @@ public abstract class Frame extends JInternalFrame implements Window,
                     } else {
                         getTextPane().addStyledString(myLine);
                     }
-                    textPane.trim(Config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE));
+                    final int trimSize = Config.getOptionInt("ui",
+                            "frameBufferSize", Integer.MAX_VALUE);
+                    if (trimSize > 0) {
+                        textPane.trim(trimSize);
+                    }
                 }
             }
         });

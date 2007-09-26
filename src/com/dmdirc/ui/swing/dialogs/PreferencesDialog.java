@@ -432,7 +432,8 @@ public final class PreferencesDialog implements PreferencesInterface {
                 Config.getOptionBool("ui", "showversion"));
         preferencesPanel.addSpinnerOption(tabName, "ui.frameBufferSize",
                 "Frame buffer size: ", "Sets the maximum number of lines in the frame buffer.",
-                Config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE));
+                Config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE),
+                1, Integer.MAX_VALUE, 1);
     }
     
     /** {@inheritDoc}. */
