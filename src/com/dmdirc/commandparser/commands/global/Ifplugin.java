@@ -61,7 +61,7 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
             return;
         }
         
-        final boolean negative = args[0].charAt(0) == '?';
+        final boolean negative = args[0].charAt(0) == '!';
         
         final String pname = args[0].substring(negative ? 1 : 0);
         
