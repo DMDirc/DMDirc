@@ -54,6 +54,14 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             new UpdateChecker().doUpdateAvailable("outofdate dummy 1337 0 http://www.example.com/");
         } else if (command.equals("showraw") && origin != null) {
             
+        } else if (command.equals("colourspam") && origin != null) {
+            for (int i = 0; i < 100; i++) {
+            sendLine(origin, isSilent, "commandOutput", ((char) 3) + "5Colour! "
+                    + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
+                    + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
+                    + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
+                    + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! ");
+            }
         } else {
             sendLine(origin, isSilent, "commandError", "Unknown debug action.");
         }
@@ -81,11 +89,13 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     
     public AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
+        
         res.setIncludeNormal(false);
         res.add("fakeusererror");
         res.add("fakeapperror");
         res.add("fakeupdate");
         res.add("showraw");
+        res.add("colourspam");
         
         return res;
     }

@@ -125,14 +125,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      * @param string The line to be stylised and added
      */
     public void addStyledString(final String string) {
-        final AttributedString text = styledDocumentToAttributedString(
-                Styliser.getStyledString(new String[]{string, }));
-        
-        if (text.getIterator().getEndIndex() == 0) {
-            addText(new AttributedString("\n"));
-        } else {
-            addText(text);
-        }
+        addStyledString(new String[]{string, });
     }
     
     /**
@@ -142,7 +135,7 @@ public final class TextPane extends JComponent implements AdjustmentListener,
      */
     public void addStyledString(final String[] strings) {
         final AttributedString text = styledDocumentToAttributedString(
-                Styliser.getStyledString(strings));
+                Styliser.getStyledString(strings, null));
         
         if (text.getIterator().getEndIndex() == 0) {
             addText(new AttributedString("\n"));

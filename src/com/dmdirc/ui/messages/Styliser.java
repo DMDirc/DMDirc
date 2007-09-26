@@ -23,6 +23,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.Config;
+import com.dmdirc.FrameContainer;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -89,10 +90,11 @@ public final class Styliser {
      * Stylises the specified string.
      *
      * @param strings The line to be stylised
-     *
+     * @param context The context of the string to be styled
+     * 
      * @return StyledDocument for the inputted strings
      */
-    public static StyledDocument getStyledString(final String[] strings) {
+    public static StyledDocument getStyledString(final String[] strings, final FrameContainer context) {
         final StyledDocument styledDoc = new DefaultStyledDocument();
         
         for (int i = 0; i < strings.length; i++) {
