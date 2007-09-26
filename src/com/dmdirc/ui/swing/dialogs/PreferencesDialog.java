@@ -164,7 +164,7 @@ public final class PreferencesDialog implements PreferencesInterface {
                 Config.getOptionBool("general", "reconnectondisconnect"));
         preferencesPanel.addSpinnerOption(tabName, "general.reconnectdelay",
                 "Reconnect delay: ", "How long to wait before attempting to reconnect to a server",
-                Config.getOptionInt("general", "reconnectdelay", 30));
+                Config.getOptionInt("general", "reconnectdelay", 30), 0, Integer.MAX_VALUE, 1);
         preferencesPanel.addCheckboxOption(tabName, "general.rejoinchannels",
                 "Rejoin open channels: ", "Rejoin open channels when reconnecting to a server",
                 Config.getOptionBool("general", "rejoinchannels"));
@@ -417,7 +417,7 @@ public final class PreferencesDialog implements PreferencesInterface {
                 Config.getOptionBool("browser", "uselaunchdelay"));
         preferencesPanel.addSpinnerOption(tabName, "browser.launchdelay",
                 "Browser launch delay (ms): ", "Minimum time between opening of URLs",
-                Config.getOptionInt("browser", "launchdelay", 500));
+                Config.getOptionInt("browser", "launchdelay", 500), 0, Integer.MAX_VALUE, 1);
         preferencesPanel.addCheckboxOption(tabName, "general.autoSubmitErrors",
                 "Automatically submit errors: ", "Automatically submit client errors to the developers",
                 Config.getOptionBool("general", "autoSubmitErrors"));
