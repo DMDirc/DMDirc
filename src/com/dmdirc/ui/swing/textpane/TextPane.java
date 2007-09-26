@@ -564,6 +564,6 @@ public final class TextPane extends JComponent implements AdjustmentListener,
 
     /** {@inheritDoc}. */
     public void cleared() {
-        clear();
+        canvas.clearWrapCache();
     }
 }
