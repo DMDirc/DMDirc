@@ -67,8 +67,10 @@ public final class Ignore extends ServerCommand {
                     
                     int i = 0;
                     for (String line : list.split("\n")) {
-                        i++;
-                        sendLine(origin, isSilent, "commandOutput", i + ". " + line);
+                        if (!line.isEmpty()) {
+                            i++;
+                            sendLine(origin, isSilent, "commandOutput", i + ". " + line);
+                        }
                     }
                     
                 } else {
