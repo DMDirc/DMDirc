@@ -48,10 +48,10 @@ public final class PreferencesDialog implements PreferencesInterface {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 7;
+    private static final long serialVersionUID = 8;
     
     /** A previously created instance of PreferencesDialog. */
-    private static PreferencesDialog me;
+    private static PreferencesDialog me = new PreferencesDialog();
     
     /** preferences panel. */
     private SwingPreferencesPanel preferencesPanel;
@@ -66,12 +66,11 @@ public final class PreferencesDialog implements PreferencesInterface {
     }
     
     /** Creates the dialog if one doesn't exist, and displays it. */
-    public static synchronized void showPreferencesDialog() {
-        if (me == null) {
-            me = new PreferencesDialog();
+    public static  void showPreferencesDialog() {
+        synchronized (me) {
+            me.initComponents();
+            me.preferencesPanel.requestFocus();
         }
-        me.initComponents();
-        me.preferencesPanel.requestFocus();
     }
     
     /**
@@ -241,12 +240,17 @@ public final class PreferencesDialog implements PreferencesInterface {
      */
     private void initGUITab() {
         final LookAndFeelInfo[] plaf = UIManager.getInstalledLookAndFeels();
+        final String sysLafClass = UIManager.getSystemLookAndFeelClassName();
         final String[] lafs = new String[plaf.length];
         final String tabName = "GUI";
+        String sysLafName = "";
         
         int i = 0;
         for (LookAndFeelInfo laf : plaf) {
             lafs[i++] = laf.getName();
+            if (laf.getClassName().equals(sysLafClass)) {
+                sysLafName = laf.getName();
+            }
         }
         
         preferencesPanel.addCategory(tabName, "");
@@ -272,7 +276,7 @@ public final class PreferencesDialog implements PreferencesInterface {
                 Config.getOptionBool("general", "showcolourdialog"));
         preferencesPanel.addComboboxOption(tabName, "ui.lookandfeel",
                 "Look and feel: ", "The Java Look and Feel to use", lafs,
-                Config.getOption("ui", "lookandfeel"), false);
+                Config.getOption("ui", "lookandfeel", sysLafName), false);
         preferencesPanel.addCheckboxOption(tabName, "ui.antialias",
                 "System anti-alias: ", "Anti-alias all fonts",
                 Config.getOptionBool("ui", "antialias"));
