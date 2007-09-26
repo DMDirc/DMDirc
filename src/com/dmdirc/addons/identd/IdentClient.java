@@ -105,8 +105,8 @@ public final class IdentClient implements Runnable {
 		final int myPort;
 		final int theirPort;
 		try {
-			myPort = Integer.parseInt(bits[0]);
-			theirPort = Integer.parseInt(bits[1]);
+			myPort = Integer.parseInt(bits[0].trim());
+			theirPort = Integer.parseInt(bits[1].trim());
 		} catch (NumberFormatException e) {
 			return String.format("%s : ERROR : X-INVALID-INPUT", input);
 		}
@@ -115,9 +115,11 @@ public final class IdentClient implements Runnable {
 			return String.format("%d , %d : ERROR : INVALID-PORT", myPort, theirPort);
 		}
 		
-		final Server server = getServerByPort(theirPort);
-		if (server == null || Config.getOptionBool(IdentdPlugin.getDomain(), "advanced.isNoUser")) {
-			return String.format("%d , %d : ERROR : NO-USER", myPort, theirPort);
+		final Server server = getServerByPort(myPort);
+		if (!Config.getOptionBool(IdentdPlugin.getDomain(), "advanced.alwaysOn")) {
+			if (server == null || Config.getOptionBool(IdentdPlugin.getDomain(), "advanced.isNoUser")) {
+				return String.format("%d , %d : ERROR : NO-USER", myPort, theirPort);
+			}
 		}
 		
 		if (Config.getOptionBool(IdentdPlugin.getDomain(), "advanced.isHiddenUser")) {
@@ -148,9 +150,9 @@ public final class IdentClient implements Runnable {
 		final String customName = Config.getOption(IdentdPlugin.getDomain(), "general.customName");
 		if (Config.getOptionBool(IdentdPlugin.getDomain(), "general.useCustomName") && customName != null && customName.length() > 0 && customName.length() < 513) {
 			username = customName;
-		} else if (Config.getOptionBool(IdentdPlugin.getDomain(), "general.useNickname")) {
+		} else if (server != null && Config.getOptionBool(IdentdPlugin.getDomain(), "general.useNickname")) {
 			username = server.getParser().getMyNickname();
-		} else if (Config.getOptionBool(IdentdPlugin.getDomain(), "general.useUsername")) {
+		} else if (server != null && Config.getOptionBool(IdentdPlugin.getDomain(), "general.useUsername")) {
 			username = server.getParser().getMyUsername();
 		} else {
 			username = System.getProperty("user.name");
