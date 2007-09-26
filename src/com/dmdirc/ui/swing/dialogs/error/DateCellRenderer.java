@@ -22,15 +22,14 @@
 
 package com.dmdirc.ui.swing.dialogs.error;
 
-import java.awt.Component;
 import java.util.Date;
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JList;
+
+import javax.swing.table.DefaultTableCellRenderer;
 
 /**
- * List cell renderer for dates.    
+ * List cell renderer for dates.
  */
-public class DateCellRenderer extends DefaultListCellRenderer {
+public final class DateCellRenderer extends DefaultTableCellRenderer {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -45,18 +44,29 @@ public class DateCellRenderer extends DefaultListCellRenderer {
     }
     
     /** {@inheritDoc} */
-    public Component getListCellRendererComponent(final JList list,
-            final Object value, final int index, final boolean isSelected,
-            final boolean hasFocus) {
+    public void setValue(final Object value) {
+        setText("" + duration((new Date().getTime() - ((Date) value).getTime()) / 1000));
+    }
+    
+    /**
+     * Get the duration in seconds as a string.
+     *
+     * @param secondsInput to get duration for
+     *
+     * @return Duration as a string
+     */
+    private String duration(final long secondsInput) {
+        final StringBuilder result = new StringBuilder();
+        final long hours = secondsInput / 3600;
+        final long minutes = secondsInput / 60 % 60;
+        final long seconds = secondsInput % 60;
         
-        super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
-        
-        if (value instanceof Date) {
-            setText(((Date) value).toString());
-        } else {
-            setText(value.toString());
+        if (hours > 0) { 
+            result.append(hours).append(":");
         }
         
-        return this;
+        result.append(String.format("%0,2d:%0,2d", minutes, seconds));
+        
+        return result.toString();
     }
 }

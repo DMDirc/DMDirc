@@ -139,6 +139,9 @@ public final class ErrorDetailPanel extends JPanel {
                 
                 details.append(error.getMessage() + '\n');
                 final String[] trace = error.getTrace();
+                if (trace.length > 0) {
+                    details.append("\n");
+                }
                 for (String traceLine : trace) {
                     details.append(traceLine + '\n');
                 }

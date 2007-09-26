@@ -49,6 +49,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.TableCellRenderer;
 
 /**
  * Error list dialog.
@@ -61,10 +62,10 @@ public final class ErrorListDialog extends StandardDialog implements
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4  ;
+    private static final long serialVersionUID = 4;
     
     /** Previously instantiated instance of ErrorListDialog. */
-    private static ErrorListDialog me  = new ErrorListDialog();
+    private static ErrorListDialog me = new ErrorListDialog();
     
     /** Error manager. */
     private final ErrorManager errorManager;
@@ -129,7 +130,17 @@ public final class ErrorListDialog extends StandardDialog implements
         
         tableModel = new ErrorTableModel(new ArrayList<ProgramError>(
                 errorManager.getErrorList().values()));
-        table = new PackingTable(tableModel, false, scrollPane);
+        table = new PackingTable(tableModel, false, scrollPane) {
+            private static final long serialVersionUID = 1;
+            public TableCellRenderer getCellRenderer(final int row, final int column) {
+                switch (column) {
+                    case 1:
+                        return new DateCellRenderer();
+                    default:
+                        return super.getCellRenderer(row, column);
+                }
+            }
+        };
         
         table.setAutoCreateRowSorter(true);
         table.setAutoCreateColumnsFromModel(true);
