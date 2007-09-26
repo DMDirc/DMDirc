@@ -1381,6 +1381,48 @@ public final class IRCParser implements Runnable {
 	}
 	
 	/**
+	 * Get the max number of list modes.
+	 *
+	 * @param mode The mode to know the max number for
+	 * @return The max number of list modes for the given mode.
+	 *         - returns 0 if mode is not found in MAXLIST (unless MAXBANS is
+	 *           specified, then this value is returned)
+	 *         - returns -1 if MAXLIST or MAXBANS were not in 005
+	 */
+	public int getMaxListModes(final char mode) {
+		// MAXLIST=bdeI:50
+		// MAXLIST=b:60,e:60,I:60
+		// MAXBANS=30
+		int result = 0;
+		
+		// Try in MAXLIST
+		if (h005Info.get("MAXLIST") != null) {
+			final String maxlist = h005Info.get("MAXLIST");
+			final String[] bits = maxlist.split(",");
+			for (String bit : bits) {
+				final String[] parts = maxlist.split(":", 2);
+				if (parts.length == 2 && parts[0].indexOf(mode) > -1) {
+					try {
+						result = Integer.parseInt(parts[1]);
+						break;
+					} catch (NumberFormatException nfe) { result = -1; }
+				}
+			}
+		}
+		
+		// If not in max list, try MAXBANS
+		if (result == 0 && h005Info.get("MAXBANS") != null) {
+			try {
+				result = Integer.parseInt(h005Info.get("MAXBANS"));
+			} catch (NumberFormatException nfe) { result = -1; }
+		} else {
+			result = -1;
+			callErrorInfo(new ParserError(ParserError.ERROR_ERROR, "Unable to discover max list modes."));
+		}
+		return result;
+	}
+	
+	/**
 	 * Send a private message to a target.
 	 *
 	 * @param sTarget Target
