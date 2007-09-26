@@ -145,10 +145,23 @@ public class ActionCondition {
     /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof ActionCondition)) {
+            return false;
+        }
+        
         final ActionCondition o = (ActionCondition) obj;
         
         return arg == o.getArg() && component == o.getComponent()
                 && comparison == o.getComparison() && target.equals(o.getTarget());
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode() {
+        return arg & component.hashCode() & comparison.hashCode() & target.hashCode();
     }
     
 }
