@@ -3,7 +3,7 @@ conditions=1
 
 condition0-arg=1
 condition0-component=STRING_STRING
-condition0-comparison=STRING_REGEX
+condition0-comparison=STRING_CONTAINS
 condition0-target=${SERVER_MYNICKNAME}
 
 response=/notify $highlightcolour
