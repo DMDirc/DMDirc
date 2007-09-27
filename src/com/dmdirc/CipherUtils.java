@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -217,18 +218,18 @@ public final class CipherUtils {
         String passwordHash = null;
         String prompt = "Please enter your password";
         int tries = 1;
-        if (Config.hasOption("encryption", "password")) {
-            password = Config.getOption("encryption", "password");
+        if (IdentityManager.getGlobalConfig().hasOption("encryption", "password")) {
+            password = IdentityManager.getGlobalConfig().getOption("encryption", "password");
         } else {
-            if (Config.hasOption("encryption", "passwordHash")) {
-                passwordHash = Config.getOption("encryption", "passwordHash");
+            if (IdentityManager.getGlobalConfig().hasOption("encryption", "passwordHash")) {
+                passwordHash = IdentityManager.getGlobalConfig().getOption("encryption", "passwordHash");
             }
             passwordHash = "moo";
             while ((password == null || password.isEmpty()) && tries < AUTH_TRIES) {
                 password =  JOptionPane.showInputDialog(prompt);
                 if (passwordHash == null) {
                     passwordHash = hash(password);
-                    Config.setOption("encryption", "passwordHash", passwordHash);
+                    IdentityManager.getConfigIdentity().setOption("encryption", "passwordHash", passwordHash);
                 }
                 if (!hash(password).equals(passwordHash)) {
                     prompt = "<html>Password mis-match<br>Please re-enter "

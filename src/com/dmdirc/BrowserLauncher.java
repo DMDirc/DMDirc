@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -74,10 +75,11 @@ public final class BrowserLauncher {
         final Date oldLaunch = lastLaunch;
         lastLaunch = new Date();
         
-        if (Config.getOptionBool("browser", "uselaunchdelay") && oldLaunch != null) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("browser", "uselaunchdelay")
+                && oldLaunch != null) {
             final Long diff = lastLaunch.getTime() - oldLaunch.getTime();
             
-            if (diff < Config.getOptionInt("browser", "launchdelay", 500)) {
+            if (diff < IdentityManager.getGlobalConfig().getOptionInt("browser", "launchdelay", 500)) {
                 return;
             }
         }
@@ -124,8 +126,8 @@ public final class BrowserLauncher {
      */
     private static String getBrowserLinux() {
         String browser = null;
-        if (Config.hasOption("general", "browser")) {
-            browser = Config.getOption("general", "browser");
+        if (IdentityManager.getGlobalConfig().hasOption("general", "browser")) {
+            browser = IdentityManager.getGlobalConfig().getOption("general", "browser");
         } else {
             final String[] browsers =
             {"firefox", "konqueror", "epiphany", "opera", "mozilla", };
