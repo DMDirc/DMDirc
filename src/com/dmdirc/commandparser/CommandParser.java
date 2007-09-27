@@ -194,7 +194,7 @@ public abstract class CommandParser implements Serializable {
         long res = 0;
         
         for (PreviousCommand pc : history) {
-            if (pc.getLine().matches(command)) {
+            if (pc.getLine().matches("(?i)" + command)) {
                 res = Math.max(res, pc.getTime());
             }
         }

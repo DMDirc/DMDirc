@@ -37,7 +37,7 @@ notifications.socketClosed=all
 notifications.stonedServer=all
 notifications.privateNotice=all
 notifications.privateCTCP=server
-notifications.privateCTCPreply=server
+notifications.privateCTCPreply=lastcommand:ctcp %1$s %4$S
         
 notifications.numeric_301=group:whois
 notifications.numeric_307=group:whois
