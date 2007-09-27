@@ -87,7 +87,7 @@ public interface UIController {
     
     /**
      * Creates a new custom window instance.
-     * 
+     *
      * @param owner The owner of the input window
      * @return A new custom window
      */
@@ -95,7 +95,7 @@ public interface UIController {
     
     /**
      * Creates a new custom input window instance.
-     * 
+     *
      * @param owner The owner of the input window
      * @param commandParser The command parser to be used
      * @return A new custom input window
@@ -114,7 +114,7 @@ public interface UIController {
     
     /**
      * Returns an updater dialog for the specified updates.
-     * 
+     *
      * @param updates Updates available
      *
      * @return UpdaterDialog
@@ -125,6 +125,11 @@ public interface UIController {
      * Shows the first run wizard for the ui.
      */
     void showFirstRunWizard();
+    
+    /**
+     * Shows the (addons) migration wizard for the ui.
+     */
+    void showMigrationWizard();
     
     /**
      * Shows a channel settigns dialog for specified channel.

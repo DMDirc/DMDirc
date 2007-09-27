@@ -61,6 +61,12 @@ public final class Main {
     public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE;
     
     /**
+     * A revision number for actions and core plugins. If this is increased,
+     * users will be prompted to re-extract them.
+     */
+    private static final int ADDON_REVISION = 0;
+    
+    /**
      * The UI to use for the client.
      */
     private static UIController controller;
@@ -87,9 +93,7 @@ public final class Main {
         final CommandLineParser clp = new CommandLineParser(args);
         
         IdentityManager.load();
-        
-        Config.init();
-        
+                
         CommandManager.initCommands();
         
         getUI().initUISettings();
@@ -106,18 +110,21 @@ public final class Main {
         
         if (!Config.hasOption("general", "firstRun") || Config.getOptionBool("general", "firstRun")) {
             Config.setOption("general", "firstRun", "false");
+            Config.setOption("general", "addonrevision", ADDON_REVISION);
             getUI().showFirstRunWizard();
-        }       
+        } else if (Config.getOptionInt("general", "addonrevision", -1) < ADDON_REVISION) {
+            Config.setOption("general", "addonrevision", ADDON_REVISION);
+        }
         
-        ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);       
+        ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);
         
         UpdateChecker.init();
-                
+        
         clp.processArguments();
         
         if (Config.getOptionBool("general", "showglobalwindow")) {
             new GlobalWindow();
-        }        
+        }
     }
     
     /**

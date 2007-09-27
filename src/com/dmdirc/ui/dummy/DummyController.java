@@ -117,6 +117,11 @@ public final class DummyController implements UIController {
     }
     
     /** {@inheritDoc} */
+    public void showMigrationWizard() {
+        System.out.println("DummyController.showMigrationWizard()");
+    }    
+    
+    /** {@inheritDoc} */
     public void showChannelSettingsDialog(final Channel channel) {
         throw new UnsupportedOperationException("Not supported yet.");
     }

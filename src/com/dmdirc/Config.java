@@ -22,7 +22,6 @@
 
 package com.dmdirc;
 
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 
 import java.awt.Color;
@@ -34,17 +33,9 @@ import java.util.List;
  * @author chris
  */
 public final class Config {
-    
-    /** The config manager used for the global config. */
-    private static ConfigManager manager;
-    
+        
     /** Disallow creation of a new instance of Config. */
     private Config() {
-    }
-    
-    /** Initialises the config manager. */
-    public static void init() {
-        manager = IdentityManager.getGlobalConfig();
     }
     
     /**
@@ -54,7 +45,7 @@ public final class Config {
      * @param option the name of the option
      */
     public static boolean hasOption(final String domain, final String option) {
-        return manager.hasOption(domain, option);
+        return IdentityManager.getGlobalConfig().hasOption(domain, option);
     }
     
     /**
@@ -72,7 +63,7 @@ public final class Config {
      * @param option the name of the option
      */
     public static String getOption(final String domain, final String option) {
-        return manager.getOption(domain, option, "");
+        return IdentityManager.getGlobalConfig().getOption(domain, option, "");
     }
     
     /**
@@ -83,7 +74,7 @@ public final class Config {
      * @param fallback the balue to be returned if the option is not found
      */
     public static String getOption(final String domain, final String option, final String fallback) {
-        return manager.getOption(domain, option, fallback);
+        return IdentityManager.getGlobalConfig().getOption(domain, option, fallback);
     }
     
     /**
@@ -93,7 +84,7 @@ public final class Config {
      * @param option the name of the option
      */
     public static boolean getOptionBool(final String domain, final String option) {
-        return manager.getOptionBool(domain, option);
+        return IdentityManager.getGlobalConfig().getOptionBool(domain, option);
     }
     
     /**
@@ -104,7 +95,7 @@ public final class Config {
      * @return The list representation of the option
      */
     public static List<String> getOptionList(final String domain, final String option) {
-        return manager.getOptionList(domain, option);
+        return IdentityManager.getGlobalConfig().getOptionList(domain, option);
     }
     
     /**
@@ -115,7 +106,7 @@ public final class Config {
      * @param fallback The value to use if the option can't be parsed
      */
     public static int getOptionInt(final String domain, final String option, final int fallback) {
-        return manager.getOptionInt(domain, option, fallback);
+        return IdentityManager.getGlobalConfig().getOptionInt(domain, option, fallback);
     }
     
     /**
@@ -126,7 +117,7 @@ public final class Config {
      * @param fallback The value to use if the colour can't be parsed
      */
     public static Color getOptionColor(final String domain, final String option, final Color fallback) {
-        return manager.getOptionColour(domain, option, fallback);
+        return IdentityManager.getGlobalConfig().getOptionColour(domain, option, fallback);
     }
     
     /**
@@ -135,7 +126,7 @@ public final class Config {
      * @return A list of options in the specified domain
      */
     public static List<String> getOptions(final String domain) {
-        return manager.getOptions(domain);
+        return IdentityManager.getGlobalConfig().getOptions(domain);
     }
     
     /**
@@ -146,7 +137,7 @@ public final class Config {
         final ArrayList<String> res = new ArrayList<String>();
         String domain;
         
-        for (String key : manager.getOptions()) {
+        for (String key : IdentityManager.getGlobalConfig().getOptions()) {
             domain = key.substring(0, key.indexOf('.'));
             if (!res.contains(domain)) {
                 res.add(domain);

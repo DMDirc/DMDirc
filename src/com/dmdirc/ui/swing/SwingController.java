@@ -144,6 +144,11 @@ public final class SwingController implements UIController {
     }
     
     /** {@inheritDoc} */
+    public void showMigrationWizard() {
+        new SwingFirstRunWizard().display();
+    }    
+    
+    /** {@inheritDoc} */
     public void showChannelSettingsDialog(final Channel channel) {
         ChannelSettingsDialog.getChannelSettingDialog(channel).setVisible(true);
     }
