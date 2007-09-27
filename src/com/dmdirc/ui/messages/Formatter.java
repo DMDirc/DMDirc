@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.IllegalFormatConversionException;
 import java.util.InvalidPropertiesFormatException;
 import java.util.Map;
+import java.util.MissingFormatArgumentException;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UnknownFormatConversionException;
@@ -90,9 +91,14 @@ public final class Formatter {
                 final Object[] newArgs = castArguments(res, arguments);
                 return String.format(res, newArgs);
             } catch (IllegalFormatConversionException ex) {
-                return "<Invalid format string for message type " + messageType + ">";
+                return "<Invalid format string for message type " + messageType
+                        + "; Error: Illegal format conversion: " + ex.getMessage() + ">";
             } catch (UnknownFormatConversionException ex) {
-                return "<Invalid format string for message type " + messageType + ">";
+                return "<Invalid format string for message type " + messageType
+                        + "; Error: Unknown format conversion: " + ex.getMessage() + ">";
+            } catch (MissingFormatArgumentException ex) {
+                return "<Invalid format string for message type " + messageType
+                        + "; Error: Missing format argument: " + ex.getMessage() + ">";
             }
         }
     }
