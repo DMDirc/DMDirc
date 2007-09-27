@@ -106,6 +106,7 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
         
         getConfigManager().addChangeListener("ui", "nicklistforegroundcolour", this);
         getConfigManager().addChangeListener("ui", "nicklistbackgroundcolour", this);
+        getConfigManager().addChangeListener("nicklist", "altBackgroundColour", this);
         
         commandParser = new ChannelCommandParser(((Channel) getContainer()).
                 getServer(), (Channel) getContainer());
@@ -352,6 +353,8 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
                 nickList.setForeground(getConfigManager().getOptionColour("ui", "nicklistforegroundcolour",
                         getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
             }
+        } else if ("nicklist".equals(domain) && "altBackgroundColour".equals(key)) {
+            nickList.repaint();
         }
     }
 }
