@@ -23,10 +23,10 @@
 package com.dmdirc.ui.swing;
 
 
-import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.ServerCommandParser;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.swing.components.InputFrame;
@@ -92,7 +92,7 @@ public final class ServerFrame extends InputFrame implements ServerWindow,
      */
     @Override
     public void setAwayIndicator(final boolean newAwayState) {
-        if (Config.getOptionBool("ui", "awayindicator")) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "awayindicator")) {
             if (newAwayState) {
                 inputPanel.add(awayLabel, BorderLayout.LINE_START);
                 awayLabel.setVisible(true);

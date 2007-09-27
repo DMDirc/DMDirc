@@ -28,6 +28,7 @@ import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelInfo;
@@ -224,7 +225,7 @@ public final class Server extends WritableFrameContainer implements
                     channel.checkWho();
                 }
             }
-        }, 0, Config.getOptionInt("general", "whotime", 60000));
+        }, 0, configManager.getOptionInt("general", "whotime", 60000));
         
         connect(server, port, password, ssl, profile);
     }
@@ -295,7 +296,7 @@ public final class Server extends WritableFrameContainer implements
             parser.setBindIP(configManager.getOption("general", "bindip"));
         }
         
-        if (raw == null && Config.getOptionBool("general", "showrawwindow")) {
+        if (raw == null && IdentityManager.getGlobalConfig().getOptionBool("general", "showrawwindow")) {
             raw = new Raw(this);
             Main.getUI().getMainWindow().getFrameManager().addCustom(this, raw);
         }
@@ -347,7 +348,7 @@ public final class Server extends WritableFrameContainer implements
      * Reconnects to the IRC server.
      */
     public void reconnect() {
-        reconnect(Config.getOption("general", "reconnectmessage"));
+        reconnect(configManager.getOption("general", "reconnectmessage"));
     }
     
     /** {@inheritDoc} */
@@ -1056,7 +1057,7 @@ public final class Server extends WritableFrameContainer implements
             closeQueries();
         }
         
-        if (Config.getOptionBool("general", "reconnectondisconnect")) {
+        if (configManager.getOptionBool("general", "reconnectondisconnect")) {
             doDelayedReconnect();
         }
     }
@@ -1095,7 +1096,7 @@ public final class Server extends WritableFrameContainer implements
         
         handleNotification("connectError", server, description);
         
-        if (Config.getOptionBool("general", "reconnectonconnectfailure")) {
+        if (configManager.getOptionBool("general", "reconnectonconnectfailure")) {
             doDelayedReconnect();
         }
     }
@@ -1104,7 +1105,7 @@ public final class Server extends WritableFrameContainer implements
      * Schedules a reconnect attempt to be performed after a user-defiend delay.
      */
     private void doDelayedReconnect() {
-        final int delay = Math.max(1, Config.getOptionInt("general", "reconnectdelay", 5));
+        final int delay = Math.max(1, configManager.getOptionInt("general", "reconnectdelay", 5));
         
         handleNotification("connectRetry", server, delay);
         

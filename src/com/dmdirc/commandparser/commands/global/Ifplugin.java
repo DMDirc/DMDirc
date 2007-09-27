@@ -22,17 +22,16 @@
 
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.Config;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.commandparser.GlobalCommandParser;
 import com.dmdirc.commandparser.IntelligentCommand;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -56,7 +55,8 @@ public final class Ifplugin extends GlobalCommand implements IntelligentCommand 
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         if (args.length <= 1) {
-            sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(),
+            sendLine(origin, isSilent, "commandUsage", 
+                    IdentityManager.getGlobalConfig().getOption("general", "commandchar"),
                     "ifplugin", "<[!]plugin> <command>");
             return;
         }

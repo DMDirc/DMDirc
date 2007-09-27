@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.commandparser.commands.channel.*;
@@ -30,6 +29,7 @@ import com.dmdirc.commandparser.commands.chat.*;
 import com.dmdirc.commandparser.commands.global.*;
 //import com.dmdirc.commandparser.commands.query.*;
 import com.dmdirc.commandparser.commands.server.*;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.TabCompleter;
@@ -179,7 +179,8 @@ public final class CommandManager {
     private static void registerCommandName(final Command command,
             final boolean register) {
         // Do tab completion
-        final String commandName = Config.getCommandChar() + command.getName();
+        final String commandName = IdentityManager.getGlobalConfig()
+                .getOption("general", "commandchar") + command.getName();
         
         for (Server server : ServerManager.getServerManager().getServers()) {
             if (command instanceof ServerCommand || command instanceof GlobalCommand) {
@@ -626,7 +627,7 @@ public final class CommandManager {
         final List<String> res = new ArrayList<String>();
         
         for (Command command : source) {
-            res.add(Config.getCommandChar() + command.getName());
+            res.add(IdentityManager.getGlobalConfig().getOption("general", "commandchar") + command.getName());
         }
         
         return res;
