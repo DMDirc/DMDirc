@@ -26,7 +26,6 @@ import com.dmdirc.ChannelClientProperty;
 import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.parser.ChannelClientInfo;
-import com.dmdirc.ui.messages.ColourManager;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -49,6 +48,9 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
      */
     private static final long serialVersionUID = 3;
     
+    /** Config manager. */
+    private final ConfigManager config;
+    
     /** Nicklist alternate background colour. */
     private Color altBackgroundColour;
     
@@ -62,6 +64,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
      */
     public NicklistRenderer(final ConfigManager config) {
         super();
+        this.config = config;
         config.addChangeListener("ui", "shownickcoloursinnicklist", this);
         config.addChangeListener("nicklist", "altBackgroundColour", this);
         
@@ -102,10 +105,11 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
     public void configChanged(final String domain, final String key,
             final String oldValue, final String newValue) {
         if ("nicklist".equals(domain) && "altBackgroundColour".equals(key)) {
-            altBackgroundColour = ColourManager.parseColour(newValue);
+            altBackgroundColour = config.getOptionColour("nicklist", 
+                    "altBackgroundColour", getBackground());
         }
-        if ("ui".equals(domain) && "shownickvoloursinnicklist".equals(key)) {
-            showColours = Boolean.parseBoolean(newValue);
+        if ("ui".equals(domain) && "shownickcoloursinnicklist".equals(key)) {
+            showColours = config.getOptionBool("ui", "shownickcoloursinnicklist");
         }
     }
     

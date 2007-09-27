@@ -129,6 +129,9 @@ public abstract class Frame extends JInternalFrame implements Window,
     /** nicklist popup menu. */
     protected JPopupMenu nicklistPopup;
     
+    /** Frame buffer size. */
+    private int frameBufferSize;
+    
     /**
      * Creates a new instance of Frame.
      *
@@ -138,6 +141,8 @@ public abstract class Frame extends JInternalFrame implements Window,
         super();
         final ConfigManager config = owner.getConfigManager();
         final Boolean pref = config.getOptionBool("ui", "maximisewindows");
+        frameBufferSize = config.getOptionInt("ui", "frameBufferSize", 
+                Integer.MAX_VALUE);
         parent = owner;
         commands = new HashMap<String, Command>();
         
@@ -198,10 +203,8 @@ public abstract class Frame extends JInternalFrame implements Window,
                     } else {
                         getTextPane().addStyledString(myLine);
                     }
-                    final int trimSize = getConfigManager().getOptionInt("ui",
-                            "frameBufferSize", Integer.MAX_VALUE);
-                    if (trimSize > 0) {
-                        textPane.trim(trimSize);
+                    if (frameBufferSize > 0) {
+                        textPane.trim(frameBufferSize);
                     }
                 }
             }
@@ -661,9 +664,14 @@ public abstract class Frame extends JInternalFrame implements Window,
         }
         if ("ui".equals(domain)) {
             if ("foregroundcolour".equals(key)) {
-                getTextPane().setForeground(getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK));
+                getTextPane().setForeground(getConfigManager().
+                        getOptionColour("ui", "foregroundcolour", Color.BLACK));
             } else if ("backgroundcolour".equals(key)) {
-                getTextPane().setBackground(getConfigManager().getOptionColour("ui", "backgroundcolour", Color.WHITE));
+                getTextPane().setBackground(getConfigManager().
+                        getOptionColour("ui", "backgroundcolour", Color.WHITE));
+            } else if ("frameBufferSize".equals(key)) {
+                frameBufferSize = getContainer().getConfigManager().
+                        getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE);
             }
         }
     }
