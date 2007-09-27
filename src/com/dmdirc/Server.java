@@ -813,6 +813,29 @@ public final class Server extends WritableFrameContainer implements
             addLineToAll(messageType, args);
         } else if ("active".equals(target)) {
             addLineToActive(messageType, args);
+        } else if (target.startsWith("lastcommand:")) {
+            final String command = String.format(target.substring(12), args);
+            
+            WritableFrameContainer best = this;
+            long besttime = 0;
+            
+            final List<WritableFrameContainer> containers = new ArrayList<WritableFrameContainer>();
+            containers.addAll(channels.values());
+            containers.addAll(queries.values());
+            
+            if (raw != null) {
+                containers.add(raw);
+            }
+            
+            for (WritableFrameContainer container: containers) {
+                long time = container.getFrame().getCommandParser().getCommandTime(command);
+                if (time > besttime) {
+                    besttime = time;
+                    best = container;
+                }
+            }
+            
+            best.addLine(messageType, args);
         } else if (!"none".equals(target)) {
             Logger.userError(ErrorLevel.MEDIUM,
                     "Invalid notification target for type " + messageType + ": " + target);

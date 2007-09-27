@@ -67,7 +67,7 @@ notifications.numeric_671=group:whois
 
 notifications.numeric_705=server
 
-notifications.whois=active
+notifications.whois=lastcommand:whois %4$s
         
 ui.backgroundcolour=0
 ui.foregroundcolour=1

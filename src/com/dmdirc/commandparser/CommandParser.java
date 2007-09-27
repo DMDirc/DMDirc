@@ -29,7 +29,9 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,6 +53,11 @@ public abstract class CommandParser implements Serializable {
      * Commands that are associated with this parser.
      */
     private final Map<String, Command> commands;
+    
+    /**
+     * A history of commands that have been entered into this parser.
+     */
+    private final List<PreviousCommand> history = new ArrayList<PreviousCommand>();
     
     /** Creates a new instance of CommandParser. */
     public CommandParser() {
@@ -90,12 +97,14 @@ public abstract class CommandParser implements Serializable {
             return;
         }
         
-        if (line.charAt(0) == IdentityManager.getGlobalConfig().getOption("general", "commandchar").charAt(0)) {
+        if (line.charAt(0) == IdentityManager.getGlobalConfig()
+                .getOption("general", "commandchar").charAt(0)) {
             int offset = 1;
             boolean silent = false;
             
             if (line.length() > offset
-                    && line.charAt(offset) == IdentityManager.getGlobalConfig().getOption("general", "silencechar").charAt(0)) {
+                    && line.charAt(offset) == IdentityManager.getGlobalConfig()
+                    .getOption("general", "silencechar").charAt(0)) {
                 silent = true;
                 offset++;
             }
@@ -106,7 +115,8 @@ public abstract class CommandParser implements Serializable {
             
             assert args.length > 0;
             
-            if (args.length >= 2 && parseChannel && origin != null && origin.getContainer().getServer() != null
+            if (args.length >= 2 && parseChannel && origin != null
+                    && origin.getContainer().getServer() != null
                     && origin.getContainer().getServer().getParser().isValidChannelName(args[1])
                     && CommandManager.isChannelCommand(command)) {
                 final Server server = origin.getContainer().getServer();
@@ -138,8 +148,10 @@ public abstract class CommandParser implements Serializable {
             // have error handlers if there are too few arguments (e.g., msg/0 and
             // msg/1 would return errors, so msg only gets called with 2+ args).
             if (commands.containsKey(signature.toLowerCase())) {
+                addHistory(command, comargs);
                 executeCommand(origin, silent, commands.get(signature.toLowerCase()), comargs);
             } else if (commands.containsKey(command.toLowerCase())) {
+                addHistory(command, comargs);
                 executeCommand(origin, silent, commands.get(command.toLowerCase()), comargs);
             } else {
                 handleInvalidCommand(origin, command, comargs);
@@ -147,6 +159,47 @@ public abstract class CommandParser implements Serializable {
         } else {
             handleNonCommand(origin, line);
         }
+    }
+    
+    /**
+     * Adds a command to this parser's history.
+     *
+     * @param command The command name that was used
+     * @param args The arguments for the command, if any
+     */
+    private void addHistory(final String command, final String... args) {
+        final StringBuilder builder = new StringBuilder(command);
+        
+        for (String arg : args) {
+            builder.append(' ');
+            builder.append(arg);
+        }
+        
+        history.add(new PreviousCommand(builder.toString()));
+        
+        while (history.size() >
+                IdentityManager.getGlobalConfig().getOptionInt("general", "commandhistory", 10)) {
+            history.remove(0);
+        }
+    }
+    
+    /**
+     * Retrieves the most recent time that the specified command was used.
+     * Commands should not include command or silence chars.
+     *
+     * @param command The command to search for
+     * @return The timestamp that the command was used, or 0 if it wasn't
+     */
+    public long getCommandTime(final String command) {
+        long res = 0;
+        
+        for (PreviousCommand pc : history) {
+            if (pc.getLine().equalsIgnoreCase(command)) {
+                res = Math.max(res, pc.getTime());
+            }
+        }
+        
+        return res;
     }
     
     /**
