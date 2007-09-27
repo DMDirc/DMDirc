@@ -47,7 +47,7 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     private static final String DOMAIN = "plugin-nowplaying";
     
     /** The sources that we know of. */
-    private List<MediaSource> sources;
+    private final List<MediaSource> sources = new ArrayList<MediaSource>();
     
     /** The now playing command we're registering. */
     private NowPlayingCommand command;
@@ -60,8 +60,6 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     
     public NowPlayingPlugin() {
         super();
-        
-        sources = new ArrayList<MediaSource>();
     }
     
     /** {@inheritDoc} */
@@ -88,7 +86,7 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     /** {@inheritDoc} */
     @Override
     protected void onDeactivate() {
-        sources = null;
+        sources.clear();
         
         CommandManager.unregisterCommand(command);
     }
