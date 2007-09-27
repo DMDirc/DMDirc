@@ -814,7 +814,13 @@ public final class Server extends WritableFrameContainer implements
         } else if ("active".equals(target)) {
             addLineToActive(messageType, args);
         } else if (target.startsWith("lastcommand:")) {
-            final String command = String.format(target.substring(12), args);
+            final Object[] escapedargs = new Object[args.length];
+            
+            for (int i = 0; i < args.length; i++) {
+                escapedargs[i] = "\\Q" + args[i] + "\\E";
+            }
+            
+            final String command = String.format(target.substring(12), escapedargs);
             
             WritableFrameContainer best = this;
             long besttime = 0;
