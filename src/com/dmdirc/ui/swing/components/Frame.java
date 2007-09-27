@@ -409,6 +409,9 @@ public abstract class Frame extends JInternalFrame implements Window,
     /** {@inheritDoc} */
     @Override
     public final String getName() {
+        if (parent == null) {
+            return "";
+        }
         return parent.toString();
     }
     
