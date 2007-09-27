@@ -226,7 +226,7 @@ public class Identity implements Serializable, Comparable<Identity> {
             final String value) {
         final String oldValue = getOption(domain, option);
         
-        if (!oldValue.equals(value)) {
+        if ((oldValue == null && value != null) || !oldValue.equals(value)) {
             properties.setProperty(domain + "." + option, value);
             needSave = true;
             
