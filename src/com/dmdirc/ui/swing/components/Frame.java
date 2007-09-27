@@ -164,6 +164,7 @@ public abstract class Frame extends JInternalFrame implements Window,
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         
         addPropertyChangeListener("maximum", this);
+        addPropertyChangeListener("UI", this);
         addInternalFrameListener(this);
         
         getTextPane().setBackground(config.getOptionColour("ui", "backgroundcolour", Color.WHITE));
@@ -276,14 +277,18 @@ public abstract class Frame extends JInternalFrame implements Window,
      * {@inheritDoc}
      */
     public final void propertyChange(final PropertyChangeEvent event) {
-        if (event.getNewValue().equals(Boolean.TRUE)) {
+        if ("maximum".equals(event.getPropertyName())) {
+            if (event.getNewValue().equals(Boolean.TRUE)) {
+                hideTitlebar();
+                Main.getUI().getMainWindow().setMaximised(true);
+            } else {
+                showTitlebar();
+                
+                Main.getUI().getMainWindow().setMaximised(false);
+                Main.getUI().getMainWindow().setActiveFrame(this);
+            }
+        } else if ("UI".equals(event.getPropertyName()) && isMaximum()) {
             hideTitlebar();
-            Main.getUI().getMainWindow().setMaximised(true);
-        } else {
-            showTitlebar();
-            
-            Main.getUI().getMainWindow().setMaximised(false);
-            Main.getUI().getMainWindow().setActiveFrame(this);
         }
     }
     
@@ -444,7 +449,7 @@ public abstract class Frame extends JInternalFrame implements Window,
      */
     public void mouseReleased(final MouseEvent mouseEvent) {
         if (getConfigManager().getOptionBool("ui", "quickCopy")
-                && mouseEvent.getSource() == getTextPane()) {
+        && mouseEvent.getSource() == getTextPane()) {
             getTextPane().copy();
             getTextPane().clearSelection();
         }
