@@ -26,6 +26,7 @@ import com.dmdirc.Main;
 import com.dmdirc.actions.wrappers.ActionWrapper;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
+import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -68,6 +69,10 @@ public final class ActionManager {
     private final static Map<String, List<ActionType>> actionTypeGroups
             = new LinkedHashMap<String, List<ActionType>>();
     
+    /** Indicates whether or not user actions should be killed (not processed). */
+    private static boolean killSwitch
+            = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch");
+    
     /** Creates a new instance of ActionManager. */
     private ActionManager() {
         // Shouldn't be instansiated
@@ -83,6 +88,12 @@ public final class ActionManager {
         
         registerWrapper(AliasWrapper.getAliasWrapper());
         registerWrapper(PerformWrapper.getPerformWrapper());
+        
+        IdentityManager.getGlobalConfig().addChangeListener("actions", "killswitch",new ConfigChangeListener() {
+            public void configChanged(String domain, String key, String oldValue, String newValue) {
+                killSwitch = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch");
+            }
+        });
     }
     
     /**
@@ -168,7 +179,8 @@ public final class ActionManager {
                 dir.mkdirs();
                 dir.createNewFile();
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.HIGH, "I/O error when creating actions directory: " + ex.getMessage());
+                Logger.userError(ErrorLevel.HIGH, "I/O error when creating actions directory: "
+                        + ex.getMessage());
             }
         }
         
@@ -293,7 +305,7 @@ public final class ActionManager {
         if (type.getType().getArity() == arguments.length) {
             PluginManager.getPluginManager().processEvent(type, format, arguments);
             
-            if (!IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch")) {
+            if (!killSwitch) {
                 triggerActions(type, format, arguments);
             }
         } else {
