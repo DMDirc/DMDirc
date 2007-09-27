@@ -801,19 +801,21 @@ public final class Server extends WritableFrameContainer implements
      * @param args The arguments for the message
      */
     public void handleNotification(final String messageType, final Object... args) {
-        String target = "server";
-        if (configManager != null && configManager.hasOption("notifications", messageType)) {
-            final String newTarget = configManager.getOption("notifications", messageType);
-            if ("server".equals(newTarget) || "all".equals(newTarget) || "active".equals(newTarget)) {
-                target = newTarget;
-            }
+        String target = configManager.getOption("notifications", messageType, "server");
+        
+        if (target.startsWith("group:")) {
+            target = configManager.getOption("notifications", target.substring(6), "server");
         }
+        
         if ("server".equals(target)) {
             addLine(messageType, args);
         } else if ("all".equals(target)) {
             addLineToAll(messageType, args);
         } else if ("active".equals(target)) {
             addLineToActive(messageType, args);
+        } else if (!"none".equals(target)) {
+            Logger.userError(ErrorLevel.MEDIUM,
+                    "Invalid notification target for type " + messageType + ": " + target);
         }
     }
     

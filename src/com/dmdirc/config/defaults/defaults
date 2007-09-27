@@ -39,16 +39,16 @@ notifications.privateNotice=all
 notifications.privateCTCP=server
 notifications.privateCTCPreply=server
         
-notifications.numeric_301=active
-notifications.numeric_307=active
-notifications.numeric_311=active
-notifications.numeric_312=active
-notifications.numeric_313=active
-notifications.numeric_317=active
-notifications.numeric_318=active
-notifications.numeric_319=active
-notifications.numeric_330=active
-notifications.numeric_343=active
+notifications.numeric_301=group:whois
+notifications.numeric_307=group:whois
+notifications.numeric_311=group:whois
+notifications.numeric_312=group:whois
+notifications.numeric_313=group:whois
+notifications.numeric_317=group:whois
+notifications.numeric_318=group:whois
+notifications.numeric_319=group:whois
+notifications.numeric_330=group:whois
+notifications.numeric_343=group:whois
 
 notifications.numeric_401=server
 notifications.numeric_421=server
@@ -63,9 +63,11 @@ notifications.numeric_479=server
 
 notifications.numeric_524=server
 
-notifications.numeric_671=active
+notifications.numeric_671=group:whois
 
 notifications.numeric_705=server
+
+notifications.whois=active
         
 ui.backgroundcolour=0
 ui.foregroundcolour=1
