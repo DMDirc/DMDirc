@@ -27,7 +27,6 @@ public class FormatterTest extends TestCase {
     
     public FormatterTest() {
         IdentityManager.load();
-        Config.init();
     }
 
     @BeforeClass

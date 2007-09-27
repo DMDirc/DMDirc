@@ -28,7 +28,6 @@ public class GlobalCommandParserTest extends TestCase {
     @BeforeClass
     public static void setUpClass() throws Exception {
         IdentityManager.load();
-        Config.init();
     }
 
     @AfterClass

@@ -25,7 +25,6 @@ public class ServerManagerTest extends TestCase {
     public ServerManagerTest() {
         Main.setUI(new DummyController());
         IdentityManager.load();
-        Config.init();
     }
     
     @BeforeClass
