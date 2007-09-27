@@ -24,7 +24,7 @@ package com.dmdirc.ui.swing.dialogs.error;
 
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
-import com.dmdirc.logger.ErrorStatus;
+import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -240,7 +240,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         new Timer("Fatal Error Dialog Timer").schedule(new TimerTask() {
             public void run() {
                 Main.getUI().getMainWindow().setVisible(false);
-                while (error.getStatus() != ErrorStatus.FINISHED) {
+                while (error.getReportStatus() != ErrorReportStatus.FINISHED) {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException ex) {

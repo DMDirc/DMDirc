@@ -53,8 +53,11 @@ public final class ProgramError implements Serializable {
     /** Date/time error occurred. */
     private final Date date;
     
-    /** Error status. */
-    private ErrorStatus status;
+    /** Error report Status. */
+    private ErrorReportStatus reportStatus;
+    
+    /** Error fixed Status. */
+    private ErrorFixedStatus fixedStatus;
     
     /**
      * Creates a new instance of ProgramError.
@@ -87,7 +90,8 @@ public final class ProgramError implements Serializable {
         this.message = message;
         this.trace = Arrays.copyOf(trace, trace.length);
         this.date = (Date) date.clone();
-        this.status = ErrorStatus.WAITING;
+        this.reportStatus = ErrorReportStatus.WAITING;
+        this.fixedStatus = ErrorFixedStatus.UNKNOWN;
     }
     
     /**
@@ -127,22 +131,43 @@ public final class ProgramError implements Serializable {
     }
     
     /**
-     * Returns the status of this error.
-     *
-     * @return Error status
+     * Returns the reportStatus of this error.
+     * 
+     * @return Error reportStatus
      */
-    public ErrorStatus getStatus() {
-        return status;
+    public ErrorReportStatus getReportStatus() {
+        return reportStatus;
     }
     
     /**
-     * Sets the status of this error.
-     *
-     * @param newStatus new ErrorStatus for the error
+     * Returns the fixed status of this error.
+     * 
+     * @return Error fixed status
      */
-    public void setStatus(final ErrorStatus newStatus) {
-        if (newStatus != null && !status.equals(newStatus)) {
-            status = newStatus;
+    public ErrorFixedStatus getFixedStatus() {
+        return fixedStatus;
+    }
+    
+    /**
+     * Sets the report Status of this error.
+     * 
+     * @param newStatus new ErrorReportStatus for the error
+     */
+    public void setReportStatus(final ErrorReportStatus newStatus) {
+        if (newStatus != null && !reportStatus.equals(newStatus)) {
+            reportStatus = newStatus;
+            ErrorManager.getErrorManager().fireErrorStatusChanged(this);
+        }
+    }
+    
+    /**
+     * Sets the fixed status of this error.
+     * 
+     * @param newStatus new ErrorFixedStatus for the error
+     */
+    public void setFixedStatus(final ErrorFixedStatus newStatus) {
+        if (newStatus != null && !fixedStatus.equals(newStatus)) {
+            fixedStatus = newStatus;
             ErrorManager.getErrorManager().fireErrorStatusChanged(this);
         }
     }
@@ -159,7 +184,7 @@ public final class ProgramError implements Serializable {
     /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "ID" + id + " Level: " + getLevel() + " Status: " + getStatus()
+        return "ID" + id + " Level: " + getLevel() + " Status: " + getReportStatus()
         + " Message: '" + getMessage() + "'";
     }
     

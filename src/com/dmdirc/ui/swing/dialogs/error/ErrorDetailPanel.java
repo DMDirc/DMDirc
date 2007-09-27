@@ -22,6 +22,8 @@
 
 package com.dmdirc.ui.swing.dialogs.error;
 
+import com.dmdirc.logger.ErrorListener;
+import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ProgramError;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
@@ -38,14 +40,14 @@ import javax.swing.text.BadLocationException;
 /**
  * Shows information about an error.
  */
-public final class ErrorDetailPanel extends JPanel {
+public final class ErrorDetailPanel extends JPanel implements ErrorListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Error to show. */
     private ProgramError error;
@@ -59,8 +61,11 @@ public final class ErrorDetailPanel extends JPanel {
     /** Severity field. */
     private JTextField level;
     
-    /** Status field. */
-    private JTextField status;
+    /** Report Status field. */
+    private JTextField reportStatus;
+    
+    /** Error status field. */
+    private JTextField errorStatus;
     
     /** Details field. */
     private JTextArea details;
@@ -105,17 +110,21 @@ public final class ErrorDetailPanel extends JPanel {
         id = new JTextField();
         date = new JTextField();
         level = new JTextField();
-        status = new JTextField();
+        reportStatus = new JTextField();
+        errorStatus = new JTextField();
         details = new JTextArea();
         scrollPane = new JScrollPane(details);
         
         id.setEditable(false);
         date.setEditable(false);
         level.setEditable(false);
-        status.setEditable(false);
+        reportStatus.setEditable(false);
+        errorStatus.setEditable(false);
         details.setEditable(false);
         details.setRows(5);
         details.setWrapStyleWord(true);
+        
+        ErrorManager.getErrorManager().addErrorListener(this);
     }
     
     /** Updates the panels details. */
@@ -127,7 +136,8 @@ public final class ErrorDetailPanel extends JPanel {
                     id.setText("");
                     date.setText("");
                     level.setText("");
-                    status.setText("");
+                    reportStatus.setText("");
+                    errorStatus.setText("");
                     
                     return;
                 }
@@ -135,7 +145,8 @@ public final class ErrorDetailPanel extends JPanel {
                 id.setText(String.valueOf(error.getID()));
                 date.setText(error.getDate().toString());
                 level.setText(error.getLevel().toString());
-                status.setText(error.getStatus().toString());
+                reportStatus.setText(error.getReportStatus().toString());
+                errorStatus.setText(error.getFixedStatus().toString());
                 
                 details.append(error.getMessage() + '\n');
                 final String[] trace = error.getTrace();
@@ -181,13 +192,36 @@ public final class ErrorDetailPanel extends JPanel {
         
         label = new JLabel("Report status: ");
         add(label);
-        add(status);
+        add(reportStatus);
+        
+        label = new JLabel("Error status: ");
+        add(label);
+        add(errorStatus);
         
         label = new JLabel("Details: ");
         add(label);
         add(scrollPane);
         
-        layoutGrid(this, 5, 2, 0, 0, SMALL_BORDER, SMALL_BORDER);
+        layoutGrid(this, 6, 2, 0, 0, SMALL_BORDER, SMALL_BORDER);
+    }
+
+    public void errorAdded(final ProgramError error) {
+        //Ignore
+    }
+
+    public void fatalError(final ProgramError error) {
+        //Ignore
+    }
+
+    public void errorDeleted(final ProgramError error) {
+        //Ignore
+    }
+
+    public void errorStatusChanged(final ProgramError error) {
+        if (this.error != null && this.error.equals(error)) {
+            reportStatus.setText(error.getReportStatus().toString());
+            errorStatus.setText(error.getFixedStatus().toString());
+        }
     }
     
 }

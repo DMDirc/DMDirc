@@ -25,13 +25,15 @@ package com.dmdirc.logger;
 /**
  * Error report status.
  */
-public enum ErrorStatus {
+public enum ErrorReportStatus {
     /** Not applicable. */
     NOT_APPLICABLE("Not applicable"),
     /** Finished state. */
     FINISHED("Finished"),
     /** Sending state. */
     SENDING("Sending..."),
+    /** Error sending. */
+    ERROR("Error sending"),
     /** Waiting state. */
     WAITING("Waiting");
     
@@ -43,7 +45,7 @@ public enum ErrorStatus {
      *
      * @param value toString value
      */
-    ErrorStatus(final String value) {
+    ErrorReportStatus(final String value) {
         this.value = value;
     }
     

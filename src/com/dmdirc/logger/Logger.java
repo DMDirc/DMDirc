@@ -84,7 +84,7 @@ public final class Logger {
         final ProgramError error = createError(level, message, exception);
         
         if (!sendable) {
-            error.setStatus(ErrorStatus.NOT_APPLICABLE);
+            error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
         }
         
         if (sendable && Config.getOptionBool("general", "submitErrors")) {
@@ -92,7 +92,7 @@ public final class Logger {
         }
         
         if (level == ErrorLevel.FATAL && !Config.getOptionBool("general", "submitErrors")) {
-            error.setStatus(ErrorStatus.FINISHED);
+            error.setReportStatus(ErrorReportStatus.FINISHED);
         }
         
         ErrorManager.getErrorManager().addError(error);

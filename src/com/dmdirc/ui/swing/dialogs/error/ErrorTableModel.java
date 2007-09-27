@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing.dialogs.error;
 
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.ErrorStatus;
+import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
 
 import java.util.ArrayList;
@@ -90,7 +90,7 @@ public final class ErrorTableModel extends AbstractTableModel {
             case 0:
                 return "ID";
             case 1:
-                return "Date";
+                return "Time";
             case 2:
                 return "Severity";
             case 3:
@@ -112,7 +112,7 @@ public final class ErrorTableModel extends AbstractTableModel {
             case 2:
                 return ErrorLevel.class;
             case 3:
-                return ErrorStatus.class;
+                return ErrorReportStatus.class;
             case 4:
                 return String.class;
             default:
@@ -135,7 +135,7 @@ public final class ErrorTableModel extends AbstractTableModel {
             case 2:
                 return errors.get(rowIndex).getLevel();
             case 3:
-                return errors.get(rowIndex).getStatus();
+                return errors.get(rowIndex).getReportStatus();
             case 4:
                 return errors.get(rowIndex).getMessage();
             default:
@@ -148,13 +148,13 @@ public final class ErrorTableModel extends AbstractTableModel {
             final int columnIndex) {
         switch(columnIndex) {
             case 3:
-                if (aValue instanceof ErrorStatus) {
-                    errors.get(rowIndex).setStatus((ErrorStatus) aValue);
+                if (aValue instanceof ErrorReportStatus) {
+                    errors.get(rowIndex).setReportStatus((ErrorReportStatus) aValue);
                     break;
                 } else {
                     throw new IllegalArgumentException("Received: "
                             + aValue.getClass() + ", expecting: "
-                            + ErrorStatus.class);
+                            + ErrorReportStatus.class);
                 }
             default:
                 throw new UnsupportedOperationException("Only editing the "

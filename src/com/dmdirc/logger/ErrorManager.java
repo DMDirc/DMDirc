@@ -23,6 +23,7 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.Main;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -33,8 +34,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -69,6 +72,7 @@ public final class ErrorManager implements Serializable {
     private ErrorManager() {
         errors = new HashMap<Integer, ProgramError>();
         errorListeners = new EventListenerList();
+        nextErrorID = 0;
     }
     
     /**
@@ -172,10 +176,9 @@ public final class ErrorManager implements Serializable {
         BufferedReader printin;
         String response = "";
         int tries = 0;
+        final List<String> responseList = new ArrayList<String>();
         
-        error.setStatus(ErrorStatus.SENDING);
-        
-        System.err.println("Sending error report...");
+        error.setReportStatus(ErrorReportStatus.SENDING);
         
         while (!"Error report submitted. Thank you.".equalsIgnoreCase(response)
         || tries >= 5) {
@@ -201,18 +204,18 @@ public final class ErrorManager implements Serializable {
                 do {
                     if (line != null) {
                         response = line;
-                        System.err.println(line);
+                        responseList.add(line);
                     }
                     
                     line = printin.readLine();
                 } while (line != null);
                 printin.close();
             } catch (MalformedURLException ex) {
-                System.err.println("Malformed URL, unable to send error report.");
+                //Unable to send error report
             } catch (UnsupportedEncodingException ex) {
-                System.err.println("Unsupported exception,  unable to send error report.");
+                //Unable to send error report
             } catch (IOException ex) {
-                System.err.println("IO Error, unable to send error report.");
+                //Unable to send error report
             }
             
             try {
@@ -224,7 +227,33 @@ public final class ErrorManager implements Serializable {
             tries++;
         }
         
-        error.setStatus(ErrorStatus.FINISHED);
+        checkResponses(error, response, responseList);
+    }
+    
+    /** Checks the responses and sets status accordingly. */
+    private static void checkResponses(final ProgramError error, 
+            final String response, final List<String> responseList) {
+        if ("Error report submitted. Thank you.".equalsIgnoreCase(response)) {
+            error.setReportStatus(ErrorReportStatus.FINISHED);
+        } else {
+            error.setReportStatus(ErrorReportStatus.ERROR);
+        }
+        
+        if (responseList.size() == 1) {
+            error.setFixedStatus(ErrorFixedStatus.NEW);
+            return;
+        }
+        
+        final String responseToCheck = responseList.get(0);
+        if (responseToCheck.matches(".*fixed.*")) {
+            error.setFixedStatus(ErrorFixedStatus.FIXED);
+        } else if (responseToCheck.matches(".*invalid.*")) {
+            error.setFixedStatus(ErrorFixedStatus.INVALID);
+        } else if (responseToCheck.matches(".*previously.*")) {
+            error.setFixedStatus(ErrorFixedStatus.KNOWN);
+        } else {
+            error.setFixedStatus(ErrorFixedStatus.NEW);
+        }
     }
     
     /**

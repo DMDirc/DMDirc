@@ -25,7 +25,7 @@ package com.dmdirc.ui.swing.dialogs.error;
 import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
-import com.dmdirc.logger.ErrorStatus;
+import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.PackingTable;
@@ -240,8 +240,8 @@ public final class ErrorListDialog extends StandardDialog implements
                         table.getSelectedRow()));
                 errorDetails.setError(error);
                 deleteButton.setEnabled(true);
-                if (error.getStatus() == ErrorStatus.NOT_APPLICABLE
-                        || error.getStatus() == ErrorStatus.FINISHED) {
+                if (error.getReportStatus() == ErrorReportStatus.NOT_APPLICABLE
+                        || error.getReportStatus() == ErrorReportStatus.FINISHED) {
                     sendButton.setEnabled(false);
                 } else {
                     sendButton.setEnabled(true);
