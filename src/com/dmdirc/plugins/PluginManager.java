@@ -141,8 +141,12 @@ public class PluginManager {
 	 */
 	public boolean reloadPlugin(final String className) {
 		if (!knownPlugins.containsKey(className.toLowerCase())) { return false; }
+		final boolean wasActive = getPlugin(className).isActive();
 		delPlugin(className);
-		return addPlugin(className);
+		final boolean result = addPlugin(className);
+		if (result) { getPlugin(className).setActive(wasActive); }
+		return result;
+		
 	}
 	
 	/**
