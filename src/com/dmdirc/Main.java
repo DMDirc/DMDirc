@@ -94,6 +94,8 @@ public final class Main {
         
         IdentityManager.load();
         
+        clp.applySettings();
+        
         CommandManager.initCommands();
         
         getUI().initUISettings();

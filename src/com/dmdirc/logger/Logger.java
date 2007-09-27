@@ -82,17 +82,19 @@ public final class Logger {
             final String message, final Throwable exception,
             final boolean sendable) {
         final ProgramError error = createError(level, message, exception);
+        final boolean report = 
+                IdentityManager.getGlobalConfig().getOptionBool("general", "submitErrors")
+                & !IdentityManager.getGlobalConfig().getOptionBool("temp", "noerrorreporting");
         
         if (!sendable) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
         }
         
-        if (sendable && IdentityManager.getGlobalConfig().getOptionBool("general", "submitErrors")) {
+        if (sendable && report) {
             ErrorManager.getErrorManager().sendError(error);
         }
         
-        if (level == ErrorLevel.FATAL
-                && !IdentityManager.getGlobalConfig().getOptionBool("general", "submitErrors")) {
+        if (level == ErrorLevel.FATAL && !report) {
             error.setReportStatus(ErrorReportStatus.FINISHED);
         }
         

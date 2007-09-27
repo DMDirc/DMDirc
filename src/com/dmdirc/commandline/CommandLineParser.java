@@ -47,11 +47,15 @@ public class CommandLineParser {
         {'d', "directory", "Use the specified configuration directory", Boolean.TRUE},
         {'h', "help", "Show command line options and exit", Boolean.FALSE},
         {'p', "portable", "Enable portable mode", Boolean.FALSE},
+        {'r', "disable-reporting", "Disable automatic error reporting", Boolean.FALSE},
         {'v', "version", "Display client version and exit", Boolean.FALSE},
     };
     
     /** A list of addresses to autoconnect to. */
     private final List<IrcAddress> addresses = new ArrayList<IrcAddress>();
+    
+    /** Whether to disable error reporting or not. */
+    private boolean disablereporting = false;
     
     /**
      * Creates a new instance of CommandLineParser.
@@ -75,7 +79,7 @@ public class CommandLineParser {
                     inArg = checkArgument(previousArg);
                 } else {
                     doUnknownArg("Unknown argument: " + arg);
-                }                
+                }
             }
         }
         
@@ -157,27 +161,30 @@ public class CommandLineParser {
      */
     private void processArgument(final char arg, final String param) {
         switch (arg) {
-            case 'c':
-                doConnect(param);
-                break;
-            case 'd':
-                doDirectory(param);
-                break;
-            case 'h':
-                doHelp();
-                break;
-            case 'p':
-                doDirectory(ResourceManager.getCurrentWorkingDirectory());
-                break;
-            case 'v':
-                doVersion();
-                break;
-            default:
-                // This really shouldn't ever happen, but we'll handle it nicely
-                // anyway.
-                
-                doUnknownArg("Unknown argument: " + arg);
-                break;
+        case 'c':
+            doConnect(param);
+            break;
+        case 'd':
+            doDirectory(param);
+            break;
+        case 'h':
+            doHelp();
+            break;
+        case 'p':
+            doDirectory(ResourceManager.getCurrentWorkingDirectory());
+            break;
+        case 'r':
+            disablereporting = true;
+            break;
+        case 'v':
+            doVersion();
+            break;
+        default:
+            // This really shouldn't ever happen, but we'll handle it nicely
+            // anyway.
+            
+            doUnknownArg("Unknown argument: " + arg);
+            break;
         }
     }
     
@@ -275,15 +282,24 @@ public class CommandLineParser {
     }
     
     /**
+     * Applies any applicable settings to the config identity.
+     */
+    public void applySettings() {
+        if (disablereporting) {
+            IdentityManager.getConfigIdentity().setOption("temp", "noerrorreporting", true);
+        }
+    }
+    
+    /**
      * Processes arguments once the client has been loaded properly.
      * This allows us to auto-connect to servers, etc.
      */
     public void processArguments() {
-       for (IrcAddress address : addresses)  {
-           new Server(address.getServer(), address.getPort(), address.getPassword(),
-                   address.isSSL(), IdentityManager.getProfiles().get(0),
-                   address.getChannels());
-       }
+        for (IrcAddress address : addresses)  {
+            new Server(address.getServer(), address.getPort(), address.getPassword(),
+                    address.isSSL(), IdentityManager.getProfiles().get(0),
+                    address.getChannels());
+        }
     }
     
 }

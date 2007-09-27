@@ -327,7 +327,7 @@ public class Identity implements Serializable, Comparable<Identity> {
                     final String domain = ((String) key).substring(0, ((String) key).indexOf('.'));
                     final String option = ((String) key).substring(1 + ((String) key).indexOf('.'));
                     final String global = globalConfig.getOption(domain, option, null);
-                    if (properties.getProperty((String) key).equals(global)) {
+                    if (properties.getProperty((String) key).equals(global) || "temp".equals(domain)) {
                         properties.remove(key);
                     }
                 }
