@@ -8,7 +8,7 @@
 package com.dmdirc;
 
 import com.dmdirc.logger.ErrorLevel;
-import com.dmdirc.logger.ErrorStatus;
+import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
 
 import java.util.Arrays;
@@ -60,14 +60,14 @@ public class ProgramErrorTest extends TestCase {
     
     public void testGetStatus() {
         final ProgramError inst = new ProgramError(0, level, message, trace, date);
-        assertEquals("Get status check failed.", ErrorStatus.WAITING, inst.getStatus());
+        assertEquals("Get status check failed.", ErrorReportStatus.WAITING, inst.getReportStatus());
     }
     
     public void testSetStatus() {
         final ProgramError inst = new ProgramError(0, level, message, trace, date);
-        assertEquals("Get status check failed.", ErrorStatus.WAITING, inst.getStatus());
-        inst.setStatus(ErrorStatus.FINISHED);
-        assertEquals("Set status check failed.", ErrorStatus.FINISHED, inst.getStatus());
+        assertEquals("Get status check failed.", ErrorReportStatus.WAITING, inst.getReportStatus());
+        inst.setReportStatus(ErrorReportStatus.FINISHED);
+        assertEquals("Set status check failed.", ErrorReportStatus.FINISHED, inst.getReportStatus());
     }
     
 }
