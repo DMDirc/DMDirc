@@ -74,8 +74,7 @@ public class GlobalWindow extends WritableFrameContainer {
 
     public void sendLine(final String line) {
         GlobalCommandParser.getGlobalCommandParser().parseCommand(window, 
-                IdentityManager.getGlobalConfig().getOption("general", "commandchar")
-                + line);
+                CommandManager.getCommandChar() + line);
     }
 
     public int getMaxLineLength() {

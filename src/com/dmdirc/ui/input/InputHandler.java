@@ -290,9 +290,7 @@ public final class InputHandler implements KeyListener, ActionListener {
             end = start;
         }
         
-        if (start > 0
-                && text.charAt(0) == IdentityManager.getGlobalConfig()
-                .getOption("general", "commandchar").charAt(0)) {
+        if (start > 0 && text.charAt(0) == CommandManager.getCommandChar()) {
             doCommandTabCompletion(text, start, end);
         } else {
             doNormalTabCompletion(text, start, end, null);

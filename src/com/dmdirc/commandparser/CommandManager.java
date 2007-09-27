@@ -29,6 +29,7 @@ import com.dmdirc.commandparser.commands.chat.*;
 import com.dmdirc.commandparser.commands.global.*;
 //import com.dmdirc.commandparser.commands.query.*;
 import com.dmdirc.commandparser.commands.server.*;
+import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -88,11 +89,37 @@ public final class CommandManager {
      */
     private static List<Command> channelPopupCommands = new ArrayList<Command>();
     
+    /** The command char we're using. */
+    private static char commandChar = IdentityManager.getGlobalConfig()
+            .getOption("general", "commandchar").charAt(0);
+    
+    /** The silence char we're using. */
+    private static char silenceChar = IdentityManager.getGlobalConfig()
+            .getOption("general", "silencechar").charAt(0);
+    
     /**
      * Prevents creation of a new command manager.
      */
     private CommandManager() {
         //do nothing
+    }
+    
+    /**
+     * Returns the current command character.
+     * 
+     * @return the current command char
+     */
+    public static char getCommandChar() {
+        return commandChar;
+    }
+
+    /**
+     * Returns the current silence character.
+     * 
+     * @return the current silence char
+     */    
+    public static char getSilenceChar() {
+        return silenceChar;
     }
     
     /**
@@ -179,8 +206,7 @@ public final class CommandManager {
     private static void registerCommandName(final Command command,
             final boolean register) {
         // Do tab completion
-        final String commandName = IdentityManager.getGlobalConfig()
-                .getOption("general", "commandchar") + command.getName();
+        final String commandName = getCommandChar() + command.getName();
         
         for (Server server : ServerManager.getServerManager().getServers()) {
             if (command instanceof ServerCommand || command instanceof GlobalCommand) {
@@ -303,6 +329,19 @@ public final class CommandManager {
         new SaveConfig();
         new SaveFormatter();
         new Set();
+        
+        // Set up a listener for config changes
+        final ConfigChangeListener listener = new ConfigChangeListener() {
+            public void configChanged(String domain, String key, String oldValue, String newValue) {
+                commandChar = IdentityManager.getGlobalConfig()
+                        .getOption("general", "commandchar").charAt(0);
+                silenceChar = IdentityManager.getGlobalConfig()
+                        .getOption("general", "silencechar").charAt(0);
+            }
+        };
+        
+        IdentityManager.getGlobalConfig().addChangeListener("general", "commandchar", listener);
+        IdentityManager.getGlobalConfig().addChangeListener("general", "silencechar", listener);
     }
     
     /**
@@ -627,7 +666,7 @@ public final class CommandManager {
         final List<String> res = new ArrayList<String>();
         
         for (Command command : source) {
-            res.add(IdentityManager.getGlobalConfig().getOption("general", "commandchar") + command.getName());
+            res.add(getCommandChar() + command.getName());
         }
         
         return res;

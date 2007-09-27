@@ -79,7 +79,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
         final StringBuffer output = new StringBuffer(67);
         
         output.append("Valid domains (use ");
-        output.append(IdentityManager.getGlobalConfig().getOption("general", "commandchar"));
+        output.append(CommandManager.getCommandChar());
         output.append("set <domain> to see options within a domain): ");
         
         for (String domain : IdentityManager.getGlobalConfig().getDomains()) {

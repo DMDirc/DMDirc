@@ -97,14 +97,11 @@ public abstract class CommandParser implements Serializable {
             return;
         }
         
-        if (line.charAt(0) == IdentityManager.getGlobalConfig()
-                .getOption("general", "commandchar").charAt(0)) {
+        if (line.charAt(0) == CommandManager.getCommandChar()) {
             int offset = 1;
             boolean silent = false;
             
-            if (line.length() > offset
-                    && line.charAt(offset) == IdentityManager.getGlobalConfig()
-                    .getOption("general", "silencechar").charAt(0)) {
+            if (line.length() > offset && line.charAt(offset) == CommandManager.getSilenceChar()) {
                 silent = true;
                 offset++;
             }

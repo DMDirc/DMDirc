@@ -126,8 +126,7 @@ public abstract class Command implements Comparable<Command> {
      */
     protected final void showUsage(final InputWindow target,
             final boolean isSilent, final String name, final String args) {
-        sendLine(target, isSilent, "commandUsage",
-                IdentityManager.getGlobalConfig().getOption("general", "commandchar"),
+        sendLine(target, isSilent, "commandUsage", CommandManager.getCommandChar(),
                 name, args);
     }    
     

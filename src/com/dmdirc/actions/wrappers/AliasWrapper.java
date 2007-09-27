@@ -27,7 +27,7 @@ import com.dmdirc.ServerManager;
 import com.dmdirc.actions.Action;
 import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -124,8 +124,7 @@ public final class AliasWrapper extends ActionWrapper {
     private String getCommandName(final Action action) {
         for (ActionCondition condition : action.getConditions()) {
             if (condition.getArg() == 1) {
-                return IdentityManager.getGlobalConfig()
-                        .getOption("general", "commandchar") + condition.getTarget();
+                return CommandManager.getCommandChar() + condition.getTarget();
             }
         }
         
