@@ -22,10 +22,8 @@
 
 package com.dmdirc.ui.swing.framemanager;
 
-import com.dmdirc.Channel;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.swing.framemanager.buttonbar.ButtonBar;
@@ -134,35 +132,7 @@ public final class MainFrameManager implements FrameManager, Serializable {
         frameManager.delServer(server);
         windowMenuFrameManager.delServer(server);
     }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addChannel(final Server server, final Channel channel) {
-        frameManager.addChannel(server, channel);
-        windowMenuFrameManager.addChannel(server, channel);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void delChannel(final Server server, final Channel channel) {
-        frameManager.delChannel(server, channel);
-        windowMenuFrameManager.delChannel(server, channel);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addQuery(final Server server, final Query query) {
-        frameManager.addQuery(server, query);
-        windowMenuFrameManager.addQuery(server, query);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void delQuery(final Server server, final Query query) {
-        frameManager.delQuery(server, query);
-        windowMenuFrameManager.delQuery(server, query);
-    }
-    
+        
     /** {@inheritDoc} */
     public void addCustom(final Server server, final FrameContainer window) {
         frameManager.addCustom(server, window);

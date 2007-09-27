@@ -22,10 +22,8 @@
 
 package com.dmdirc.ui.swing.framemanager.windowmenu;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
-import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.swing.MainFrame;
@@ -115,30 +113,6 @@ public final class WindowMenuFrameManager implements FrameManager,
     /** {@inheritDoc} */
     public void delServer(final Server server) {
         removeFramecontainer(server);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addChannel(final Server server, final Channel channel) {
-        addFrameContainer(channel);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void delChannel(final Server server, final Channel channel) {
-        removeFramecontainer(channel);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addQuery(final Server server, final Query query) {
-        addFrameContainer(query);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void delQuery(final Server server, final Query query) {
-        removeFramecontainer(query);
     }
     
     /** {@inheritDoc} */

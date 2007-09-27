@@ -22,11 +22,9 @@
 
 package com.dmdirc.ui.swing.framemanager.buttonbar;
 
-import com.dmdirc.Channel;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
-import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
@@ -244,31 +242,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
         
         relayout();
     }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addChannel(final Server server, final Channel channel) {
-        addCustom(server, channel);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void delChannel(final Server server, final Channel channel) {
-        delCustom(server, channel);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addQuery(final Server server, final Query query) {
-        addCustom(server, query);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void delQuery(final Server server, final Query query) {
-        delCustom(server, query);
-    }
-    
+        
     /** {@inheritDoc} */
     public void addCustom(final Server server, final FrameContainer window) {
         windows.get(server).add(window);

@@ -22,9 +22,7 @@
 
 package com.dmdirc.ui.interfaces;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Query;
 import com.dmdirc.Server;
 
 import java.awt.Color;
@@ -98,47 +96,7 @@ public interface FrameManager {
      * 
      * @param server The server to be removed
      */
-    void delServer(Server server);
-    
-    /**
-     * Adds a new channel instance to this frame manager.
-     * 
-     * @param server The server to which the channel belongs
-     * @param channel The channel to be added
-     * @deprecated Functionality should be the same as addCustom()
-     */
-    @Deprecated
-    void addChannel(Server server, Channel channel);
-    
-    /**
-     * Removes a channel instance from this frame manager.
-     * 
-     * @param server The server to which the channel belongs
-     * @param channel The channel to be removed
-     * @deprecated Functionality should be the same as delCustom()
-     */
-    @Deprecated
-    void delChannel(Server server, Channel channel);
-    
-    /**
-     * Adds a new query instance to this frame manager.
-     * 
-     * @param server The server to which the query belongs
-     * @param query The query to be added
-     * @deprecated Functionality should be the same as addCustom()
-     */
-    @Deprecated
-    void addQuery(Server server, Query query);
-    
-    /**
-     * Removes a query instance from this frame manager.
-     * 
-     * @param server The server to which the query belongs
-     * @param query The query to be removed
-     * @deprecated Functionality should be the same as delCustom()
-     */
-    @Deprecated
-    void delQuery(Server server, Query query);
+    void delServer(Server server);   
     
     /**
      * Adds a new custom window to this frame manager.

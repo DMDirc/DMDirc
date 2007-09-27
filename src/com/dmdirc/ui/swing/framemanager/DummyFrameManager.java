@@ -22,10 +22,8 @@
 
 package com.dmdirc.ui.swing.framemanager;
 
-import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
-import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.ui.interfaces.FrameManager;
 
@@ -59,34 +57,6 @@ public final class DummyFrameManager implements FrameManager {
     public void delServer(final Server server) {
         Main.getUI().getStatusBar()
                 .setMessage("DummyFrameManager: delServer: " + server);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addChannel(final Server server, final Channel channel) {
-        Main.getUI().getStatusBar()
-                .setMessage("DummyFrameManager: addChannel: " + channel + "@" + server);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void delChannel(final Server server, final Channel channel) {
-        Main.getUI().getStatusBar()
-                .setMessage("DummyFrameManager: delChannel: " + channel + "@" + server);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addQuery(final Server server, final Query query) {
-        Main.getUI().getStatusBar()
-                .setMessage("DummyFrameManager: addQuery: " + query + "@" + server);
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void delQuery(final Server server, final Query query) {
-        Main.getUI().getStatusBar()
-                .setMessage("DummyFrameManager: delQuery: " + query + "@" + server);
     }
     
     /** {@inheritDoc} */

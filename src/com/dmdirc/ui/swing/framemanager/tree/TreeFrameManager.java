@@ -22,10 +22,8 @@
 
 package com.dmdirc.ui.swing.framemanager.tree;
 
-import com.dmdirc.Channel;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -304,46 +302,6 @@ public final class TreeFrameManager implements FrameManager,
             } else {
                 model.removeNodeFromParent(nodes.get(server));
             }
-        }
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addChannel(final Server server, final Channel channel) {
-        final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-        nodes.put(channel, node);
-        node.setUserObject(channel);
-        model.insertNodeInto(node, nodes.get(server));
-        tree.expandPath(new TreePath(node.getPath()).getParentPath());
-        final Rectangle view = tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
-        tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void delChannel(final Server server, final Channel channel) {
-        if (nodes != null && nodes.get(channel) != null) {
-            model.removeNodeFromParent(nodes.get(channel));
-        }
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void addQuery(final Server server, final Query query) {
-        final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-        nodes.put(query, node);
-        node.setUserObject(query);
-        model.insertNodeInto(node, nodes.get(server));
-        tree.expandPath(new TreePath(node.getPath()).getParentPath());
-        final Rectangle view = tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
-        tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
-    }
-    
-    /** {@inheritDoc} */
-    @Deprecated
-    public void delQuery(final Server server, final Query query) {
-        if (nodes != null && nodes.get(query) != null) {
-            model.removeNodeFromParent(nodes.get(query));
         }
     }
     
