@@ -53,11 +53,7 @@ public class ProcessNames extends IRCProcessor {
 			
 			iChannel = getChannelInfo(token[4]);
 		
-			if (iChannel == null) { 
-				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got names for channel ("+token[4]+") that I am not on.", myParser.getLastLine()));
-				iChannel = new ChannelInfo(myParser, token[4]);
-				myParser.addChannel(iChannel);
-			}
+			if (iChannel == null) { return; }
 			
 			// If we are not expecting names, clear the current known names - this is fresh stuff!
 			if (!iChannel.getAddingNames()) { iChannel.emptyChannel(); }

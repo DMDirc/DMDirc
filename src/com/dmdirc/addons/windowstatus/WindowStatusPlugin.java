@@ -32,7 +32,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import com.dmdirc.Channel;
-import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.Query;
@@ -199,9 +198,9 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 					String mode = client.getImportantModePrefix();
 					
 					if (mode.isEmpty()) {
-						if (Config.getOptionBool(MY_DOMAIN, "channel.shownone")) {
-							if (Config.hasOption(MY_DOMAIN, "channel.noneprefix")) {
-								mode = Config.getOption(MY_DOMAIN, "channel.noneprefix");
+						if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "channel.shownone")) {
+							if (IdentityManager.getGlobalConfig().hasOption(MY_DOMAIN, "channel.noneprefix")) {
+								mode = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "channel.noneprefix");
 							} else {
 								mode = "None:";
 							}
@@ -234,7 +233,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 			final Query frame = (Query)current;
 			
 			textString.append(frame.getHost());
-			if (Config.getOptionBool(MY_DOMAIN, "client.showname")) {
+			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "client.showname")) {
 				final ClientInfo client = frame.getServer().getParser().getClientInfo(frame.getHost());
 				if (client != null) {
 					final String realname = client.getRealName();
@@ -262,10 +261,10 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 		preferencesPanel.addCategory("Channel", "Configuration for Window Status plugin when showing a channel window.");
 		preferencesPanel.addCategory("Client", "Configuration for Window Status plugin when showing a client window.");
 		
-		preferencesPanel.addCheckboxOption("Channel", "channel.shownone", "Show 'none' count: ", "Should the count for uses with no state be shown?", Config.getOptionBool(MY_DOMAIN, "channel.shownone"));
-		preferencesPanel.addTextfieldOption("Channel", "channel.noneprefix", "Prefix used before 'none' count: ", "The Prefix to use when showing the 'none' count", Config.getOption(MY_DOMAIN, "channel.noneprefix"));
+		preferencesPanel.addCheckboxOption("Channel", "channel.shownone", "Show 'none' count: ", "Should the count for uses with no state be shown?", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "channel.shownone"));
+		preferencesPanel.addTextfieldOption("Channel", "channel.noneprefix", "Prefix used before 'none' count: ", "The Prefix to use when showing the 'none' count", IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "channel.noneprefix"));
 		
-		preferencesPanel.addCheckboxOption("Client", "client.showname", "Show Client realname if known: ", "Should the realname for clients be shown if known?", Config.getOptionBool(MY_DOMAIN, "client.showname"));
+		preferencesPanel.addCheckboxOption("Client", "client.showname", "Show Client realname if known: ", "Should the realname for clients be shown if known?", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "client.showname"));
 		preferencesPanel.display();
 	}
 	
@@ -290,13 +289,13 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 		if (properties != null) {
 			value = properties.getProperty(name);
 		} else {
-			value = Config.getOption(MY_DOMAIN, name);
+			value = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, name);
 		}
 		
 		// Check if the Value exists
 		if (value != null) {
 			// It does, so update the global config with the new value
-			Config.setOption(MY_DOMAIN, name, value);
+			IdentityManager.getConfigIdentity().setOption(MY_DOMAIN, name, value);
 		}
 	}
 	

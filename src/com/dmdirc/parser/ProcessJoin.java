@@ -37,7 +37,7 @@ public class ProcessJoin extends IRCProcessor {
 	 * @param sParam Type of line to process ("JOIN")
 	 * @param token IRCTokenised line to process
 	 */
-	public void process(String sParam, String[] token) {
+	public void process(final String sParam, final String[] token) {
 		// :nick!ident@host JOIN (:)#Channel
 		Byte nTemp;
 		if (token.length < 3) { return; }
@@ -54,7 +54,7 @@ public class ProcessJoin extends IRCProcessor {
 		}
 		// Check to see if we know the host/ident for this client to facilitate dmdirc Formatter
 		if (iClient.getHost().isEmpty()) { iClient.setUserBits(token[0],false); }
-		if (iChannel == null) { 
+		if (iChannel == null) {
 			if (iClient != myParser.getMyself()) {
 				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got join for channel ("+token[token.length-1]+") that I am not on. [Me: "+myParser.getMyself()+"]", myParser.getLastLine()));
 			}
@@ -70,18 +70,15 @@ public class ProcessJoin extends IRCProcessor {
 			callChannelSelfJoin(iChannel);
 		} else {
 			if (iClient == myParser.getMyself()) {
-				// If this is us thats joining, and we think the channel already exists.
-				// 1) Raise an error
-// or not -_-
-//				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got self-join for channel ("+token[token.length-1]+") that I am already on. [Me: "+myParser.getMyself()+"]", myParser.getLastLine()));
-				// 2) Profit ?
+				try {
+					myParser.getProcessingManager().process("PART", token);
+					myParser.getProcessingManager().process("JOIN", token);
+				} catch (ProcessorNotFoundException e) { }
 			} else if (iChannel.getUser(iClient) != null) {
 				// Client joined channel that we already know of.
-//				callErrorInfo(new ParserError(ParserError.ERROR_WARNING, "Got join for channel ("+token[token.length-1]+") from a user that is already on the channel. [Me: "+myParser.getMyself()+"]", myParser.getLastLine()));
 			} else {
 				// This is only done if we are already the channel, and it isn't us that
 				// joined.
-				
 				iChannelClient = iChannel.addClient(iClient);
 				callChannelJoin(iChannel, iChannelClient);
 			}

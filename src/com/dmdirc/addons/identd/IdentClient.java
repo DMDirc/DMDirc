@@ -22,9 +22,9 @@
 
 package com.dmdirc.addons.identd;
 
-import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.logger.ErrorLevel;
 
@@ -116,13 +116,13 @@ public final class IdentClient implements Runnable {
 		}
 		
 		final Server server = getServerByPort(myPort);
-		if (!Config.getOptionBool(IdentdPlugin.getDomain(), "advanced.alwaysOn")) {
-			if (server == null || Config.getOptionBool(IdentdPlugin.getDomain(), "advanced.isNoUser")) {
+		if (!IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "advanced.alwaysOn")) {
+			if (server == null || IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "advanced.isNoUser")) {
 				return String.format("%d , %d : ERROR : NO-USER", myPort, theirPort);
 			}
 		}
 		
-		if (Config.getOptionBool(IdentdPlugin.getDomain(), "advanced.isHiddenUser")) {
+		if (IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "advanced.isHiddenUser")) {
 			return String.format("%d , %d : ERROR : HIDDEN-USER", myPort, theirPort);
 		}
 		
@@ -130,8 +130,8 @@ public final class IdentClient implements Runnable {
 		final String os;
 		final String username;
 
-		final String customSystem = Config.getOption(IdentdPlugin.getDomain(), "advanced.customSystem");
-		if (Config.getOptionBool(IdentdPlugin.getDomain(), "advanced.useCustomSystem") && customSystem != null && customSystem.length() > 0 && customSystem.length() < 513) {
+		final String customSystem = IdentityManager.getGlobalConfig().getOption(IdentdPlugin.getDomain(), "advanced.customSystem");
+		if (IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "advanced.useCustomSystem") && customSystem != null && customSystem.length() > 0 && customSystem.length() < 513) {
 			os = customSystem;
 		} else {
 			// Tad excessive maybe, but complete!
@@ -147,12 +147,12 @@ public final class IdentClient implements Runnable {
 			else { os = "UNKNOWN"; }
 		}
 		
-		final String customName = Config.getOption(IdentdPlugin.getDomain(), "general.customName");
-		if (Config.getOptionBool(IdentdPlugin.getDomain(), "general.useCustomName") && customName != null && customName.length() > 0 && customName.length() < 513) {
+		final String customName = IdentityManager.getGlobalConfig().getOption(IdentdPlugin.getDomain(), "general.customName");
+		if (IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "general.useCustomName") && customName != null && customName.length() > 0 && customName.length() < 513) {
 			username = customName;
-		} else if (server != null && Config.getOptionBool(IdentdPlugin.getDomain(), "general.useNickname")) {
+		} else if (server != null && IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "general.useNickname")) {
 			username = server.getParser().getMyNickname();
-		} else if (server != null && Config.getOptionBool(IdentdPlugin.getDomain(), "general.useUsername")) {
+		} else if (server != null && IdentityManager.getGlobalConfig().getOptionBool(IdentdPlugin.getDomain(), "general.useUsername")) {
 			username = server.getParser().getMyUsername();
 		} else {
 			username = System.getProperty("user.name");

@@ -22,11 +22,11 @@
 
 package com.dmdirc.addons.logging;
 
-import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.Window;
 import java.util.Stack;
 
@@ -68,7 +68,7 @@ public class HistoryWindow extends FrameContainer {
 		
 		Main.getUI().getFrameManager().addCustom(server, this);
 		
-		final Stack<String> lines = reader.getLines(Config.getOptionInt("plugin-Logging", "history.lines", 50000));
+		final Stack<String> lines = reader.getLines(IdentityManager.getGlobalConfig().getOptionInt("plugin-Logging", "history.lines", 50000));
 		while (lines.size() > 0) {
 			myWindow.addLine(lines.pop(), false);
 		}

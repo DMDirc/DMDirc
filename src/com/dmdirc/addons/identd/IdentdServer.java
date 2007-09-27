@@ -22,7 +22,7 @@
 
 package com.dmdirc.addons.identd;
 
-import com.dmdirc.Config;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.logger.ErrorLevel;
 
@@ -117,7 +117,7 @@ public final class IdentdServer implements Runnable {
 	public void startServer() {
 		if (myThread == null) {
 			try {
-				final int identPort = Config.getOptionInt(IdentdPlugin.getDomain(), "advanced.port", 113);
+				final int identPort = IdentityManager.getGlobalConfig().getOptionInt(IdentdPlugin.getDomain(), "advanced.port", 113);
 				serverSocket = new ServerSocket(identPort);
 				myThread = new Thread(this);
 				myThread.start();

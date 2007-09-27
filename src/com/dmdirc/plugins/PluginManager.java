@@ -146,6 +146,15 @@ public class PluginManager {
 	}
 	
 	/**
+	 * Reload all plugins.
+	 */
+	public void reloadAllPlugins() {
+		for (String pluginName : getNames()) {
+			reloadPlugin(pluginName);
+		}
+	}
+	
+	/**
 	 * Get a plugin instance.
 	 *
 	 * @param className Class name of plugin

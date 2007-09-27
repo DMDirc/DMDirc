@@ -22,7 +22,6 @@
 
 package com.dmdirc.addons.identd;
 
-import com.dmdirc.Config;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionType;
@@ -87,7 +86,7 @@ public class IdentdPlugin extends Plugin implements EventPlugin, PreferencesInte
 	 */
 	public void onActivate() {
 		myServer = new IdentdServer(this);
-		if (Config.getOptionBool(getDomain(), "advanced.alwaysOn")) {
+		if (IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn")) {
 			myServer.startServer();
 		}
 	}
@@ -156,7 +155,7 @@ public class IdentdPlugin extends Plugin implements EventPlugin, PreferencesInte
 				servers.remove((Server) arguments[0]);
 			
 				if (servers.size() == 0) {
-					if (!Config.getOptionBool(getDomain(), "advanced.alwaysOn")) {
+					if (!IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn")) {
 						myServer.stopServer();
 					}
 				}
@@ -181,17 +180,17 @@ public class IdentdPlugin extends Plugin implements EventPlugin, PreferencesInte
 		preferencesPanel.addCategory("General", "General Identd Plugin config ('Lower' options take priority over those above them)");
 		preferencesPanel.addCategory("Advanced", "Advanced Identd Plugin config - Only edit these if you need to/know what you are doing. Editing these could prevent access to some servers. ('Lower' options take priority over those above them)");
 		
-		preferencesPanel.addCheckboxOption("General", "general.useUsername", "Use connection username rather than system username: ", "If this is enabled, the username for the connection will be used rather than '"+System.getProperty("user.name")+"'", Config.getOptionBool(getDomain(), "general.useUsername"));
-		preferencesPanel.addCheckboxOption("General", "general.useNickname", "Use connection nickname rather than system username: ", "If this is enabled, the nickname for the connection will be used rather than '"+System.getProperty("user.name")+"'", Config.getOptionBool(getDomain(), "general.useNickname"));
-		preferencesPanel.addCheckboxOption("General", "general.useCustomName", "Use custom name all the time: ", "If this is enabled, the name specified below will be used all the time", Config.getOptionBool(getDomain(), "general.useCustomName"));
-		preferencesPanel.addTextfieldOption("General", "general.customName", "Custom Name to use: ", "The custom name to use when 'Use Custom Name' is enabled", Config.getOption(getDomain(), "general.customName"));
+		preferencesPanel.addCheckboxOption("General", "general.useUsername", "Use connection username rather than system username: ", "If this is enabled, the username for the connection will be used rather than '"+System.getProperty("user.name")+"'", IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "general.useUsername"));
+		preferencesPanel.addCheckboxOption("General", "general.useNickname", "Use connection nickname rather than system username: ", "If this is enabled, the nickname for the connection will be used rather than '"+System.getProperty("user.name")+"'", IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "general.useNickname"));
+		preferencesPanel.addCheckboxOption("General", "general.useCustomName", "Use custom name all the time: ", "If this is enabled, the name specified below will be used all the time", IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "general.useCustomName"));
+		preferencesPanel.addTextfieldOption("General", "general.customName", "Custom Name to use: ", "The custom name to use when 'Use Custom Name' is enabled", IdentityManager.getGlobalConfig().getOption(getDomain(), "general.customName"));
 		
-		preferencesPanel.addCheckboxOption("Advanced", "advanced.alwaysOn", "Always have ident port open: ", "By default the identd only runs when there is active connection attempts. This overrides that.", Config.getOptionBool(getDomain(), "advanced.alwaysOn"));
-		preferencesPanel.addSpinnerOption("Advanced", "advanced.port", "What port should the identd listen on: ", "Default port is 113, this is probably useless if changed unless you port forward ident to a different port", Config.getOptionInt(getDomain(), "advanced.port", 113));
-		preferencesPanel.addCheckboxOption("Advanced", "advanced.useCustomSystem", "Use custom OS: ", "By default the plugin uses 'UNIX' or 'WIN32' as the system type, this can be overriden by enabling this.", Config.getOptionBool(getDomain(), "advanced.useCustomSystem"));
-		preferencesPanel.addTextfieldOption("Advanced", "advanced.customSystem", "Custom OS to use: ", "The custom system to use when 'Use Custom System' is enabled", Config.getOption(getDomain(), "advanced.customSystem"));
-		preferencesPanel.addCheckboxOption("Advanced", "advanced.isHiddenUser", "Respond to ident requests with HIDDEN-USER error: ", "By default the plugin will give a USERID response, this can force an 'ERROR : HIDDEN-USER' response instead.", Config.getOptionBool(getDomain(), "advanced.isHiddenUser"));
-		preferencesPanel.addCheckboxOption("Advanced", "advanced.isNoUser", "Respond to ident requests with NO-USER error: ", "By default the plugin will give a USERID response, this can force an 'ERROR : NO-USER' response instead. (Overrides HIDDEN-USER)", Config.getOptionBool(getDomain(), "advanced.isNoUser"));
+		preferencesPanel.addCheckboxOption("Advanced", "advanced.alwaysOn", "Always have ident port open: ", "By default the identd only runs when there is active connection attempts. This overrides that.", IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn"));
+		preferencesPanel.addSpinnerOption("Advanced", "advanced.port", "What port should the identd listen on: ", "Default port is 113, this is probably useless if changed unless you port forward ident to a different port", IdentityManager.getGlobalConfig().getOptionInt(getDomain(), "advanced.port", 113));
+		preferencesPanel.addCheckboxOption("Advanced", "advanced.useCustomSystem", "Use custom OS: ", "By default the plugin uses 'UNIX' or 'WIN32' as the system type, this can be overriden by enabling this.", IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.useCustomSystem"));
+		preferencesPanel.addTextfieldOption("Advanced", "advanced.customSystem", "Custom OS to use: ", "The custom system to use when 'Use Custom System' is enabled", IdentityManager.getGlobalConfig().getOption(getDomain(), "advanced.customSystem"));
+		preferencesPanel.addCheckboxOption("Advanced", "advanced.isHiddenUser", "Respond to ident requests with HIDDEN-USER error: ", "By default the plugin will give a USERID response, this can force an 'ERROR : HIDDEN-USER' response instead.", IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.isHiddenUser"));
+		preferencesPanel.addCheckboxOption("Advanced", "advanced.isNoUser", "Respond to ident requests with NO-USER error: ", "By default the plugin will give a USERID response, this can force an 'ERROR : NO-USER' response instead. (Overrides HIDDEN-USER)", IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.isNoUser"));
 		
 		preferencesPanel.display();
 	}
@@ -217,13 +216,13 @@ public class IdentdPlugin extends Plugin implements EventPlugin, PreferencesInte
 		if (properties != null) {
 			value = properties.getProperty(name);
 		} else {
-			value = Config.getOption(getDomain(), name);
+			value = IdentityManager.getGlobalConfig().getOption(getDomain(), name);
 		}
 		
 		// Check if the Value exists
 		if (value != null) {
 			// It does, so update the global config with the new value
-			Config.setOption(getDomain(), name, value);
+			IdentityManager.getConfigIdentity().setOption(getDomain(), name, value);
 		}
 	}
 	
@@ -234,7 +233,7 @@ public class IdentdPlugin extends Plugin implements EventPlugin, PreferencesInte
 	 */
 	public void configClosed(final Properties properties) {
 		// Update Config options
-		final int oldPort = Config.getOptionInt(getDomain(), "advanced.port", 113);
+		final int oldPort = IdentityManager.getGlobalConfig().getOptionInt(getDomain(), "advanced.port", 113);
 		updateOption(properties, "general.useUsername");
 		updateOption(properties, "general.useNickname");
 		updateOption(properties, "general.useCustomName");
@@ -246,7 +245,7 @@ public class IdentdPlugin extends Plugin implements EventPlugin, PreferencesInte
 		updateOption(properties, "advanced.customSystem");
 		updateOption(properties, "advanced.isHiddenUser");
 		updateOption(properties, "advanced.isNoUser");
-		final int newPort = Config.getOptionInt(getDomain(), "advanced.port", 113);
+		final int newPort = IdentityManager.getGlobalConfig().getOptionInt(getDomain(), "advanced.port", 113);
 		if (myServer.isRunning() && oldPort != newPort) {
 			myServer.stopServer();
 			myServer.startServer();
