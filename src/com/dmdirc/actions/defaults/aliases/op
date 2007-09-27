@@ -1,0 +1,20 @@
+trigger=UNKNOWN_COMMAND
+conditions=3
+
+condition2-arg=2
+condition2-component=STRINGARRAY_LENGTH
+condition2-comparison=INT_LESS
+condition2-target=16
+
+condition1-arg=2
+condition1-component=STRINGARRAY_LENGTH
+condition1-comparison=INT_GREATER
+condition1-target=0
+
+condition0-arg=1
+condition0-component=STRING_STRING
+condition0-comparison=STRING_EQUALS
+condition0-target=op
+
+response=/mode ooooooooooooooo $1-
+format=

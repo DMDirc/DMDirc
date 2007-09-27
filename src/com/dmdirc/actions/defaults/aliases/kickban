@@ -1,0 +1,15 @@
+trigger=UNKNOWN_COMMAND
+conditions=2
+
+condition1-arg=2
+condition1-component=STRINGARRAY_LENGTH
+condition1-comparison=INT_GREATER
+condition1-target=0
+
+condition0-arg=1
+condition0-component=STRING_STRING
+condition0-comparison=STRING_EQUALS
+condition0-target=kickban
+
+response=/ban $1\n/kick $1-
+format=
