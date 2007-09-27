@@ -77,7 +77,20 @@ public final class Styliser {
     private static final String URL_CHARS = "[a-z0-9$\\-_@\\.&\\+!\\*\"'\\(\\),=;/#\\?:%~]";
     
     /** The regular expression to use for marking up URLs. */
-    private static final String URL_REGEXP = "(?i)([a-z]+://" + URL_CHARS + "+|(?<![a-z0-9:])www\\." + URL_CHARS + "+)";
+    private static final String URL_REGEXP = "(?i)([a-z]+://" + URL_CHARS
+            + "+|(?<![a-z0-9:])www\\." + URL_CHARS + "+)";
+    
+    /** Regular expression for intelligent handling of closing brackets. */
+    private static final String URL_INT1 = "(\\([^\\)]*?" + CODE_HYPERLINK
+            + "[^" + CODE_HYPERLINK + "]+)(\\)[;:!,\\.]?)" + CODE_HYPERLINK;
+    
+    /** Regular expression for intelligent handling of double quotes. */
+    private static final String URL_INT2 = "(\"[^\"]*?" + CODE_HYPERLINK
+            + "[^" + CODE_HYPERLINK + "]+)(\"[;:!,\\.\\)]?)" + CODE_HYPERLINK;
+    
+    /** Regular expression for intelligent handling of single quotes. */
+    private static final String URL_INT3 = "('[^']*?" + CODE_HYPERLINK
+            + "[^" + CODE_HYPERLINK + "]+)('[;:!,\\.\\)]?)" + CODE_HYPERLINK;
     
     /** The regular expression to use for marking up channels. */
     private static final String URL_CHANNEL = "(?i)(?<![^\\s])([#&]" + RESERVED_CHARS + "+)";
@@ -91,7 +104,7 @@ public final class Styliser {
      *
      * @param strings The line to be stylised
      * @param context The context of the string to be styled
-     * 
+     *
      * @return StyledDocument for the inputted strings
      */
     public static StyledDocument getStyledString(final String[] strings, final FrameContainer context) {
@@ -111,9 +124,16 @@ public final class Styliser {
                 int offset = styledDoc.getLength();
                 int position = 0;
                 
-                final String target = string.replaceAll(INTERNAL_CHARS, "")
-                        .replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK)
-                        .replaceAll(URL_CHANNEL, CODE_CHANNEL + "$0" + CODE_CHANNEL);
+                String target = string.replaceAll(INTERNAL_CHARS, "");;
+                
+                if (target.matches(".*" + URL_REGEXP + ".*")) {
+                    target = target.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK)
+                            .replaceAll(URL_INT1, "$1" + CODE_HYPERLINK + "$2")
+                            .replaceAll(URL_INT2, "$1" + CODE_HYPERLINK + "$2")
+                            .replaceAll(URL_INT3, "$1" + CODE_HYPERLINK + "$2");
+                }
+                
+                target = target.replaceAll(URL_CHANNEL, CODE_CHANNEL + "$0" + CODE_CHANNEL);
                 
                 final SimpleAttributeSet attribs = new SimpleAttributeSet();
                 attribs.addAttribute("DefaultFontFamily", UIManager.getFont("TextPane.font"));
@@ -242,7 +262,7 @@ public final class Styliser {
         }
         
         // Channel links
-        if (string.charAt(0) == CODE_CHANNEL) {           
+        if (string.charAt(0) == CODE_CHANNEL) {
             if (attribs.getAttribute(IRCTextAttribute.CHANNEL) == null) {
                 attribs.addAttribute(IRCTextAttribute.CHANNEL, readUntilControl(string.substring(1)));
             } else {
