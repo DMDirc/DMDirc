@@ -93,7 +93,7 @@ public final class Main {
         final CommandLineParser clp = new CommandLineParser(args);
         
         IdentityManager.load();
-                
+        
         CommandManager.initCommands();
         
         getUI().initUISettings();
@@ -127,6 +127,14 @@ public final class Main {
         if (IdentityManager.getGlobalConfig().getOptionBool("general", "showglobalwindow")) {
             new GlobalWindow();
         }
+        
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            public void run() {
+                ActionManager.processEvent(CoreActionType.CLIENT_CLOSED, null);
+                ServerManager.getServerManager().disconnectAll("Unexpected shutdown");
+                IdentityManager.save();
+            }
+        }, "Shutdown thread"));
     }
     
     /**
@@ -142,11 +150,7 @@ public final class Main {
      * @param reason The quit reason to send
      */
     public static void quit(final String reason) {
-        ActionManager.processEvent(CoreActionType.CLIENT_CLOSED, null);
-        
         ServerManager.getServerManager().disconnectAll(reason);
-        
-        IdentityManager.save();
         
         System.exit(0);
     }
