@@ -26,6 +26,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.commandparser.IntelligentCommand;
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.Identity;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -78,6 +79,10 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         } else if (command.equals("rungc")) {
             System.gc();
             sendLine(origin, isSilent, "commandOutput", "Invoked garbage collector.");
+        } else if (command.equals("configinfo") && origin != null) {
+            for (Identity source : origin.getConfigManager().getSources()) {
+                sendLine(origin, isSilent, "commandOutput", source.getTarget() + " - " + source);
+            }
         } else {
             sendLine(origin, isSilent, "commandError", "Unknown debug action.");
         }
@@ -115,6 +120,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         res.add("configstats");
         res.add("meminfo");
         res.add("rungc");
+        res.add("configinfo");
         
         return res;
     }

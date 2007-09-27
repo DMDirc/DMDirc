@@ -271,7 +271,6 @@ public final class CommandManager {
         
         // Channel commands
         new Ban();
-        new Benchmark();
         new ChannelSettings();
         new Cycle();
         new Kick();
@@ -289,7 +288,6 @@ public final class CommandManager {
         new Away();
         new Back();
         new ChangeServer();
-        new ConfigInfo();
         new Ctcp();
         new Disconnect();
         new Help();
