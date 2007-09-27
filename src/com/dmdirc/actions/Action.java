@@ -223,6 +223,13 @@ public class Action implements Serializable {
         final StringBuffer responseString = new StringBuffer();
         
         for (ActionType trigger : triggers) {
+            if (trigger == null) {
+                Logger.appError(ErrorLevel.LOW, "ActionType was null", 
+                        new IllegalArgumentException("Triggers: "
+                        + Arrays.toString(triggers)));
+                continue;
+            }
+            
             triggerString.append('|');
             triggerString.append(trigger.toString());
         }
