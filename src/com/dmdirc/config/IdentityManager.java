@@ -76,8 +76,8 @@ public final class IdentityManager {
         
         final String base = "com/dmdirc/config/defaults/";
         
-        final String[] urls = {"asuka", "snircd", "bahamut", "hyperion",
-        "unreal", "generic", "defaults", };
+        final String[] urls = {"asuka", "bahamut", "defaults", "generic", 
+        "hyperion", "ircu", "plexus", "snircd", "unreal", };
         
         for (String url : urls) {
             try {

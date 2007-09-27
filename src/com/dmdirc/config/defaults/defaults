@@ -40,6 +40,7 @@ notifications.privateCTCP=server
 notifications.privateCTCPreply=server
         
 notifications.numeric_301=active
+notifications.numeric_307=active
 notifications.numeric_311=active
 notifications.numeric_312=active
 notifications.numeric_313=active
@@ -59,6 +60,12 @@ notifications.numeric_473=server
 notifications.numeric_474=server
 notifications.numeric_475=server
 notifications.numeric_479=server
+
+notifications.numeric_524=server
+
+notifications.numeric_671=active
+
+notifications.numeric_705=server
         
 ui.backgroundcolour=0
 ui.foregroundcolour=1

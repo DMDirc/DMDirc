@@ -387,6 +387,7 @@ public final class Formatter {
         
         // Type: Numerical data
         defaultProperties.setProperty("numeric_301", "%4$s is away: %5$s");
+        defaultProperties.setProperty("numeric_307", "%4$s %5$s.");
         defaultProperties.setProperty("numeric_311", "-\n%4$s is %5$s@%6$s (%8$s" + stop + ").");
         defaultProperties.setProperty("numeric_312", "%4$s is connected to %5$s (%6$s" + stop + ").");
         defaultProperties.setProperty("numeric_313", "%4$s %5$s.");
@@ -406,6 +407,12 @@ public final class Formatter {
         defaultProperties.setProperty("numeric_474", "6A7000%4$s" + stop + ": %5$s");
         defaultProperties.setProperty("numeric_475", "6A7000%4$s" + stop + ": %5$s");
         defaultProperties.setProperty("numeric_479", "6A7000%4$s" + stop + ": %5$s");
+        
+        defaultProperties.setProperty("numeric_524", "6A7000%4$s" + stop + ": %5$s");
+        
+        defaultProperties.setProperty("numeric_671", "%4$s %5$s.");
+        
+        defaultProperties.setProperty("numeric_705", "%5$s");
     }
     
     /**

@@ -31,4 +31,4 @@ server.modec = No formatting
 server.modeM = Mute non-registered users
 server.modeO = IRCops only
 server.moder = Registered users only
-server.modeR = Only registered users can join
+server.modeR = Registered users only
