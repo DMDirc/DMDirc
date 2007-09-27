@@ -130,9 +130,7 @@ public final class TreeFrameManager implements FrameManager,
     /**
      * creates a new instance of the TreeFrameManager.
      */
-    public TreeFrameManager() {
-        final TreeViewTreeCellRenderer renderer = new TreeViewTreeCellRenderer(this);
-        
+    public TreeFrameManager() {        
         nodes = new Hashtable<FrameContainer, DefaultMutableTreeNode>();
         nodeColours = new Hashtable<FrameContainer, Color>();
         popup = new JPopupMenu();
@@ -140,6 +138,8 @@ public final class TreeFrameManager implements FrameManager,
         root = new DefaultMutableTreeNode("DMDirc");
         model = new TreeViewModel(root);
         tree = new JTree(model);
+        
+        final TreeViewTreeCellRenderer renderer = new TreeViewTreeCellRenderer(this);
         
         closeMenuItem.setActionCommand("Close");
         popup.add(closeMenuItem);
@@ -350,6 +350,15 @@ public final class TreeFrameManager implements FrameManager,
         } else {
             return parent.getWidth() - 25;
         }
+    }
+    
+    /**
+     * Returns the tree for this frame manager.
+     *
+     * @return Tree for the manager
+     */
+    public JTree getTree() {
+        return tree;
     }
     
     /** {@inheritDoc} */
