@@ -129,7 +129,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     
     /**
      * Creates a new instance of SwingPreferencesPanel.
-     * 
+     *
      * @param preferencesOwner Owner of the preferences dialog
      */
     public SwingPreferencesPanel(final PreferencesInterface preferencesOwner) {
@@ -138,7 +138,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     
     /**
      * Creates a new instance of SwingPreferencesPanel.
-     * 
+     *
      * @param preferencesOwner Owner of the preferences dialog
      * @param title preferences dialog title
      */
@@ -509,7 +509,15 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         }
         for (String option : colours.keySet()) {
             properties
-                    .setProperty(option, "" + colours.get(option).getColour());
+                    .setProperty(option, colours.get(option).getColour());
+        }
+        for (String option : optionalColours.keySet()) {
+            final OptionalColourChooser colour = optionalColours.get(option);
+            if (colour.isEnabled()) {
+                properties.setProperty(option, colour.getColour());
+            } else {
+                properties.setProperty(option, "");
+            }
         }
         owner.configClosed(properties);
     }

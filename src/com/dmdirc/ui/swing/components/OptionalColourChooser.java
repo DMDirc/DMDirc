@@ -124,16 +124,19 @@ public final class OptionalColourChooser extends JPanel implements ActionListene
         previewPanel.setToolTipText("");
     }
     
+    /** {@inheritDoc} */
+    @Override
+    public boolean isEnabled() {
+        return enabled.isSelected();
+    }
+    
     /**
      * Returns the selected colour from this component.
+     *
      * @return This components colour, as a string
      */
     public String getColour() {
-        if (enabled.isEnabled()) {
-            return value;
-        } else {
-            return "";
-        }
+        return value;
     }
     
     /**
