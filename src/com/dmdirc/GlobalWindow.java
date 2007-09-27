@@ -82,7 +82,7 @@ public class GlobalWindow extends WritableFrameContainer {
     
     @Override
     public ConfigManager getConfigManager() {
-        return new ConfigManager("", "", "");
+        return IdentityManager.getGlobalConfig();
     }
     
 }

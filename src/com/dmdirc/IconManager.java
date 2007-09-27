@@ -24,6 +24,7 @@ package com.dmdirc;
 
 import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.config.IdentityManager;
 
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -56,7 +57,7 @@ public final class IconManager implements ConfigChangeListener {
     
     /** Creates a new instance of IconManager. */
     private IconManager() {
-        manager = new ConfigManager("", "", "");
+        manager = IdentityManager.getGlobalConfig();
         
         icons = new HashMap<String, Icon>();
         images = new HashMap<String, Image>();

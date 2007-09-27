@@ -44,7 +44,7 @@ public final class Config {
     
     /** Initialises the config manager. */
     public static void init() {
-        manager = new ConfigManager("", "", "");
+        manager = IdentityManager.getGlobalConfig();
     }
     
     /**

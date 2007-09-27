@@ -25,6 +25,8 @@ package com.dmdirc.ui.swing.framemanager.tree;
 import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.config.ConfigChangeListener;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
@@ -63,7 +65,7 @@ import javax.swing.tree.TreeSelectionModel;
  */
 public final class TreeFrameManager implements FrameManager,
         MouseListener, ActionListener, MouseMotionListener, MouseWheelListener,
-        AdjustmentListener, Serializable {
+        AdjustmentListener, Serializable, ConfigChangeListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -169,6 +171,10 @@ public final class TreeFrameManager implements FrameManager,
         tree.addMouseListener(this);
         tree.addMouseMotionListener(this);
         tree.addMouseWheelListener(this);
+        
+        IdentityManager.getGlobalConfig().addChangeListener("treeview", this);
+        IdentityManager.getGlobalConfig().addChangeListener("ui", "backgroundcolour", this);
+        IdentityManager.getGlobalConfig().addChangeListener("ui", "foregroundcolour", this);
     }
     
     /** {@inheritDoc} */
@@ -605,6 +611,17 @@ public final class TreeFrameManager implements FrameManager,
         }
         
         return nextNode;
+    }
+
+    /** {@inheritDoc} */
+    public void configChanged(final String domain, final String key, 
+            final String oldValue, final String newValue) {
+        tree.setBackground(Config.getOptionColor("treeview", "backgroundcolour",
+                Config.getOptionColor("ui", "backgroundcolour", Color.WHITE)));
+        tree.setForeground(Config.getOptionColor("treeview", "foregroundcolour",
+                Config.getOptionColor("ui", "foregroundcolour", Color.BLACK)));
+        
+        tree.repaint();
     }
     
 }
