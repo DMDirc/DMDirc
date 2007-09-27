@@ -22,13 +22,13 @@
 
 package com.dmdirc.ui.input;
 
-import com.dmdirc.Config;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.Command;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.commandparser.IntelligentCommand;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.swing.components.ColourPickerDialog;
@@ -290,7 +290,9 @@ public final class InputHandler implements KeyListener, ActionListener {
             end = start;
         }
         
-        if (start > 0 && text.charAt(0) == Config.getCommandChar().charAt(0)) {
+        if (start > 0
+                && text.charAt(0) == IdentityManager.getGlobalConfig()
+                .getOption("general", "commandchar").charAt(0)) {
             doCommandTabCompletion(text, start, end);
         } else {
             doNormalTabCompletion(text, start, end, null);
@@ -365,7 +367,7 @@ public final class InputHandler implements KeyListener, ActionListener {
             // Multiple results
             final String sub = res.getBestSubstring();
             if (sub.equalsIgnoreCase(word)) {
-                final String style = Config.getOption("tabcompletion", "style", "bash");
+                final String style = IdentityManager.getGlobalConfig().getOption("tabcompletion", "style", "bash");
                 
                 // TODO: Other possible actions (mIRC-style etc)
                 
@@ -496,7 +498,7 @@ public final class InputHandler implements KeyListener, ActionListener {
      * @param hex show hex colours in the colour picker
      */
     private void showColourPicker(final boolean irc, final boolean hex) {
-        if (Config.getOptionBool("general", "showcolourdialog")) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("general", "showcolourdialog")) {
             colourPicker = new ColourPickerDialog(irc, hex);
             colourPicker.addActionListener(new ActionListener() {
                 public void actionPerformed(final ActionEvent actionEvent) {

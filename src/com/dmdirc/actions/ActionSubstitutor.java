@@ -22,9 +22,9 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.config.IdentityManager;
 
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +56,7 @@ public class ActionSubstitutor {
      * @return A list of global variable names that will be substituted
      */
     public List<String> getConfigSubstitutions() {
-        return Config.getOptions("actions");
+        return IdentityManager.getGlobalConfig().getOptions("actions");
     }
     
     /**
@@ -65,8 +65,9 @@ public class ActionSubstitutor {
      * @param target The StringBuilder to modify
      */
     private void doConfigSubstitutions(final StringBuilder target) {
-        for (String option : Config.getOptions("actions")) {
-            doReplacement(target, "$" + option, Config.getOption("actions", option));
+        for (String option : IdentityManager.getGlobalConfig().getOptions("actions")) {
+            doReplacement(target, "$" + option,
+                    IdentityManager.getGlobalConfig().getOption("actions", option));
         }
     }
     
@@ -230,6 +231,7 @@ public class ActionSubstitutor {
      *
      * @param target The string to be altered
      * @param args The arguments for the action type
+     * @return The substituted string
      */
     public String doSubstitution(final String target, final Object ... args) {
         final StringBuilder res = new StringBuilder(target);

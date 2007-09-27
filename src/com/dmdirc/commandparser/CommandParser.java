@@ -22,10 +22,10 @@
 
 package com.dmdirc.commandparser;
 
-import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.io.Serializable;
@@ -90,11 +90,12 @@ public abstract class CommandParser implements Serializable {
             return;
         }
         
-        if (line.charAt(0) == Config.getCommandChar().charAt(0)) {
+        if (line.charAt(0) == IdentityManager.getGlobalConfig().getOption("general", "commandchar").charAt(0)) {
             int offset = 1;
             boolean silent = false;
             
-            if (line.length() > offset && line.charAt(offset) == Config.getOption("general", "silencechar").charAt(0)) {
+            if (line.length() > offset
+                    && line.charAt(offset) == IdentityManager.getGlobalConfig().getOption("general", "silencechar").charAt(0)) {
                 silent = true;
                 offset++;
             }

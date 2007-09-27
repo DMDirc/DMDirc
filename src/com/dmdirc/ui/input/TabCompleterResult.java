@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.input;
 
-import com.dmdirc.Config;
+import com.dmdirc.config.IdentityManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +100,8 @@ public final class TabCompleterResult {
             return "";
         }
         
-        final boolean caseSensitive = Config.getOptionBool("tabcompletion", "casesensitive");
+        final boolean caseSensitive = IdentityManager.getGlobalConfig()
+                .getOptionBool("tabcompletion", "casesensitive");
         
         String res = results.get(0);
         for (String entry : results) {

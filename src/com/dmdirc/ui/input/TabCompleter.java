@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.input;
 
-import com.dmdirc.Config;
+import com.dmdirc.config.IdentityManager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -93,7 +93,7 @@ public final class TabCompleter implements Serializable {
                 continue;
             }
             
-            if (Config.getOptionBool("tabcompletion", "casesensitive")) {
+            if (IdentityManager.getGlobalConfig().getOptionBool("tabcompletion", "casesensitive")) {
                 if (entry.startsWith(partial)) {
                     result.addResult(entry);
                 }
