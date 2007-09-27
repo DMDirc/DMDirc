@@ -22,6 +22,7 @@
 
 package com.dmdirc.actions;
 
+import com.dmdirc.Config;
 import com.dmdirc.Main;
 import com.dmdirc.actions.wrappers.ActionWrapper;
 import com.dmdirc.actions.wrappers.AliasWrapper;
@@ -291,7 +292,10 @@ public final class ActionManager {
             final StringBuffer format, final Object ... arguments) {
         if (type.getType().getArity() == arguments.length) {
             PluginManager.getPluginManager().processEvent(type, format, arguments);
-            triggerActions(type, format, arguments);
+            
+            if (!Config.getOptionBool("actions", "killswitch")) {
+                triggerActions(type, format, arguments);
+            }
         } else {
             Logger.appError(ErrorLevel.MEDIUM, "Invalid number of arguments for action",
                     new IllegalArgumentException());
