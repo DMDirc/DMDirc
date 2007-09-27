@@ -426,7 +426,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         
         preferencesPanel.addTextfieldOption(tabName, "general.browser",
                 "Browser: ", "The browser to use for opening URLs (only required when auto detection fails)",
-                config.getOption("general", "browser"));
+                config.getOption("general", "browser", ""));
         preferencesPanel.addCheckboxOption(tabName, "browser.uselaunchdelay",
                 "Use browser delay: ", "Enable delay between browser launches (to prevent mistakenly double clicking)",
                 config.getOptionBool("browser", "uselaunchdelay"));
