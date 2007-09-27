@@ -31,7 +31,9 @@ import java.util.List;
 /**
  * Reads/writes the application's config file.
  * @author chris
+ * @deprecated Use IdentityManager.getGlobalConfig() instead
  */
+@Deprecated
 public final class Config {
         
     /** Disallow creation of a new instance of Config. */
