@@ -50,8 +50,20 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
     /** Wizard dialog. */
     private WizardDialog wizardDialog;
     
+    /** First run or update. */
+    private boolean firstRun = true;
+    
     /** Instatiate the wizard. */
     public SwingFirstRunWizard() {
+    }
+    
+    /**
+     * Instantiate the wizard.
+     *
+     * @param firstRun is this the first run or an update?
+     */
+    public SwingFirstRunWizard(final boolean firstRun) {
+        this.firstRun = firstRun;
     }
     
     /** {@inheritDoc} */
@@ -73,7 +85,7 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
             extractActions(resourceManager);
         }
         
-        if (((StepTwo) wizardDialog.getStep(1)).getProfileManagerState()) {
+        if (firstRun && ((StepTwo) wizardDialog.getStep(1)).getProfileManagerState()) {
             ProfileEditorDialog.showActionsManagerDialog();
         }
     }
@@ -142,8 +154,12 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
     public void display() {
         final List<Step> steps = new ArrayList<Step>();
         
-        steps.add(new StepOne());
-        steps.add(new StepTwo());
+        if (firstRun) {
+            steps.add(new SetupStep());
+            steps.add(new StepTwo());
+        } else {
+            steps.add(new UpdateStep());
+        }
         
         wizardDialog = new WizardDialog("Setup wizard", steps, this, true);
         

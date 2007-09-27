@@ -23,104 +23,37 @@
 package com.dmdirc.ui.swing.dialogs.firstrunwizard;
 
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
-import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.JCheckBox;
-import javax.swing.JTextArea;
 
 /**
  * Queries the user for which core actions they wish to extract.
  */
-public final class StepOne extends Step {
-    
-    /**
-     * A version number for this class. It should be changed whenever the class
-     * structure is changed (or anything else that would prevent serialized
-     * objects being unserialized with the new class).
-     */
-    private static final long serialVersionUID = 1;
+public abstract class StepOne extends Step {
     
     /** Plugins checkbox. */
-    private final JCheckBox plugins;
+    protected final JCheckBox plugins;
     /** Actions checkbox. */
-    private final JCheckBox actions;
+    protected final JCheckBox actions;
     
-    /**
-     * Creates a new instance of StepOne.
-     */
+    /** Creates a new instance of StepOne. */
     public StepOne() {
         super();
-        final GridBagConstraints constraints = new GridBagConstraints();
-        setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
-                SMALL_BORDER, LARGE_BORDER));
         
         plugins = new JCheckBox("Install core plugins?");
         actions = new JCheckBox("Install core actions?");
         
-        JTextArea infoLabel;
-        
-        infoLabel = new JTextArea("It appears that this is the first time "
-                + "that you have run DMDirc. "
-                + "This short wizard will help you setup DMDirc.\n\n"
-                + "DMDirc comes with a set of core plugins that add "
-                + "functionality such as channel logging to the client. "
-                + "Thse plugins need to be copied into your home directory to"
-                + " be used. If you would like the wizard to copy the core "
-                + "plugins for you, tick the box below.");
-        infoLabel.setEditable(false);
-        infoLabel.setWrapStyleWord(true);
-        infoLabel.setLineWrap(true);
-        infoLabel.setHighlighter(null);
-        infoLabel.setBackground(getBackground());
-        infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 
-                SMALL_BORDER, 0));
-        
-        constraints.weightx = 1.0;
-        constraints.fill = constraints.BOTH;
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        add(infoLabel, constraints);
-
-        constraints.gridy = 1;
-        add(plugins, constraints);
-        
-        infoLabel = new JTextArea("DMDirc also comes with a set of core"
-                + " 'actions' that serve as examples and add some basic"
-                + " functionality such as highlighting. If you would like"
-                + " the wizard to copy the core actions for you, tick the"
-                + " box below.");
-        infoLabel.setEditable(false);
-        infoLabel.setWrapStyleWord(true);
-        infoLabel.setLineWrap(true);
-        infoLabel.setHighlighter(null);
-        infoLabel.setBackground(getBackground());
-        infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0, 
-                SMALL_BORDER, 0));
-
-        constraints.gridy = 2;
-        add(infoLabel, constraints);
-
-        constraints.gridy = 3;
-        add(actions, constraints);
-        
-        constraints.weighty = 1.0;
-        constraints.gridy = 4;
-        add(Box.createVerticalGlue(), constraints);
+        initComponents();
     }
-
+    
+    protected abstract void initComponents();
+    
     /**
      * Returns the state of the plugins checkbox.
      *
      * @return Plugins checkbox state
      */
-    public boolean getPluginsState() {
+    public final boolean getPluginsState() {
         return plugins.isSelected();
     }
 
@@ -129,7 +62,7 @@ public final class StepOne extends Step {
      *
      * @return Actions checkbox state
      */
-    public boolean getActionsState() {
+    public final boolean getActionsState() {
         return actions.isSelected();
     }
     

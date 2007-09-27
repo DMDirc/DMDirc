@@ -145,7 +145,7 @@ public final class SwingController implements UIController {
     
     /** {@inheritDoc} */
     public void showMigrationWizard() {
-        new SwingFirstRunWizard().display();
+        new SwingFirstRunWizard(false).display();
     }    
     
     /** {@inheritDoc} */
