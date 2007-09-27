@@ -309,7 +309,7 @@ public final class ErrorListDialog extends StandardDialog implements
     public void errorStatusChanged(final ProgramError error) {
         final int errorRow = tableModel.indexOf(error);
         
-        if (errorRow != -1 && errorRow <= tableModel.getRowCount()) {
+        if (errorRow != -1 && errorRow < tableModel.getRowCount()) {
             tableModel.fireTableRowsUpdated(errorRow, errorRow);
         }
     }
