@@ -23,17 +23,22 @@
 package com.dmdirc.ui.swing.dialogs;
 
 import com.dmdirc.Config;
+import com.dmdirc.Main;
+import com.dmdirc.config.ConfigChangeListener;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.themes.Theme;
 import com.dmdirc.themes.ThemeManager;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import javax.swing.JOptionPane;
 
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -41,7 +46,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 /**
  * Allows the user to modify global client preferences.
  */
-public final class PreferencesDialog implements PreferencesInterface {
+public final class PreferencesDialog implements PreferencesInterface, ConfigChangeListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -59,10 +64,14 @@ public final class PreferencesDialog implements PreferencesInterface {
     /** Theme map. */
     private Map<String, String> themes;
     
+    /** restart warning issued. */
+    private boolean restartNeeded;
+    
     /**
      * Creates a new instance of PreferencesDialog.
      */
     private PreferencesDialog() {
+        IdentityManager.getGlobalConfig().addChangeListener("ui", this);
     }
     
     /** Creates the dialog if one doesn't exist, and displays it. */
@@ -79,6 +88,7 @@ public final class PreferencesDialog implements PreferencesInterface {
     private void initComponents() {
         
         preferencesPanel = new SwingPreferencesPanel(this);
+        restartNeeded = false;
         
         initGeneralTab();
         initConnectionTab();
@@ -460,5 +470,20 @@ public final class PreferencesDialog implements PreferencesInterface {
     /** {@inheritDoc} */
     public void configCancelled() {
         //Ignore
+    }
+    
+    /** {@inheritDoc} */
+    public void configChanged(final String domain, final String key,
+            final String oldValue, final String newValue) {
+        if ("ui".equals(domain) && ("lookandfeel".equals(key)
+        || "framemanager".equals(key) || "framemanagerPosition".equals(key))
+        && !restartNeeded) {
+            JOptionPane.showMessageDialog((MainFrame) Main.getUI().
+                    getMainWindow(), "One or more of the changes you made " 
+                    + "won't take effect until you restart the client.",
+                    "Restart needed", JOptionPane.INFORMATION_MESSAGE);
+            restartNeeded = true;
+        }
+        
     }
 }
