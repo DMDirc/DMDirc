@@ -25,7 +25,6 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -47,9 +46,7 @@ public final class ChangeServer extends ServerCommand {
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         if (args.length == 0) {
-            sendLine(origin, isSilent, "commandUsage",
-                    IdentityManager.getGlobalConfig().getOption("general", "commandchar"),
-                    "server", "[--ssl] <host[:port]> [password]");
+            showUsage(origin, isSilent, "server", "[--ssl] <host[:port]> [password]");
             return;
         }
         

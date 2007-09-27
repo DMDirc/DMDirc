@@ -26,7 +26,6 @@ import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.IntelligentCommand;
 import com.dmdirc.commandparser.ServerCommand;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -57,9 +56,7 @@ public final class Ctcp extends ServerCommand implements IntelligentCommand {
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         if (args.length < 2) {
-            sendLine(origin, isSilent, "commandUsage",
-                    IdentityManager.getGlobalConfig().getOption("general", "commandchar"),
-                    "ctcp", "<target> <type> [arguments]");
+            showUsage(origin, isSilent, "ctcp", "<target> <type> [arguments]");
         } else {
             server.getParser().sendLine("PRIVMSG " + args[0] + " :"
                     + ((char) 1) + implodeArgs(1, args) + ((char) 1));

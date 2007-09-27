@@ -125,9 +125,7 @@ public final class Ignore extends ServerCommand {
             }
             
         } else {
-            sendLine(origin, isSilent, "commandUsage", 
-                     IdentityManager.getGlobalConfig().getOption("general", "commandchar"),
-                     "ignore", "<add|remove|view> [host]");
+            showUsage(origin, isSilent, "ignore", "<add|remove|view> [host]");
         }
         
         server.updateIgnoreList();

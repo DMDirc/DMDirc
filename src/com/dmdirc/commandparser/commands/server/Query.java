@@ -25,7 +25,6 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -48,9 +47,7 @@ public final class Query extends ServerCommand {
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         if (args.length == 0) {
-            sendLine(origin, isSilent, "commandUsage", 
-                     IdentityManager.getGlobalConfig().getOption("general", "commandchar"),
-                    "query", "<target> <message>");
+            showUsage(origin, isSilent, "query", "<target> <message>");
         }
         if (args.length >= 1) {
             if (server.getQuery(args[0]) == null) {

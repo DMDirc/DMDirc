@@ -25,7 +25,6 @@ package com.dmdirc.commandparser.commands.server;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -53,9 +52,7 @@ public final class Message extends ServerCommand {
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
         if (args.length < 2) {
-            sendLine(origin, isSilent, "commandUsage", 
-                     IdentityManager.getGlobalConfig().getOption("general", "commandchar"),
-                     "msg", "<target> <message>");
+            showUsage(origin, isSilent, "msg", "<target> <message>");
         } else {
             server.getParser().sendLine("PRIVMSG " + args[0] + " :"
                     + implodeArgs(1, args));

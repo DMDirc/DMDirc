@@ -47,9 +47,7 @@ public final class NewServer extends GlobalCommand {
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         if (args.length == 0) {
-            origin.addLine("commandUsage",
-                    IdentityManager.getGlobalConfig().getOption("general", "commandchar"),
-                    "newserver", "[--ssl] <host[:port]> [password]");
+            showUsage(origin, isSilent, "newserver", "[--ssl] <host[:port]> [password]");
             return;
         }
         

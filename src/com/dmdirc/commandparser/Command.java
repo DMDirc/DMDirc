@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser;
 
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -114,6 +115,21 @@ public abstract class Command implements Comparable<Command> {
             target.addLine(type, args);
         }
     }
+    
+    /**
+     * Sends a usage line, if appropriate, to the specified target.
+     * 
+     * @param target The command window to send the line to
+     * @param isSilent Whether this command is being silenced or not
+     * @param name The name of the command that's raising the error
+     * @param args The arguments that the command accepts or expects
+     */
+    protected final void showUsage(final InputWindow target,
+            final boolean isSilent, final String name, final String args) {
+        sendLine(target, isSilent, "commandUsage",
+                IdentityManager.getGlobalConfig().getOption("general", "commandchar"),
+                name, args);
+    }    
     
     /** {@inheritDoc} */
     public final int compareTo(final Command o) {

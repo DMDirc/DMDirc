@@ -26,7 +26,6 @@ import com.dmdirc.MessageTarget;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChatCommand;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -46,9 +45,7 @@ public final class MeEmpty extends ChatCommand {
     /** {@inheritDoc} */
     public void execute(final InputWindow origin, final Server server,
             final MessageTarget target, final boolean isSilent, final String... args) {
-        sendLine(origin, isSilent, "commandUsage", 
-                IdentityManager.getGlobalConfig().getOption("general", "commandchar"),
-                "me", "<action>");
+        showUsage(origin, isSilent, "me", "<action>");
     }
     
     /** {@inheritDoc}. */

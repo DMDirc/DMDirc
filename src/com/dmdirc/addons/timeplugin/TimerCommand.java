@@ -24,7 +24,6 @@ package com.dmdirc.addons.timeplugin;
 
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
-import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -70,9 +69,7 @@ public final class TimerCommand extends GlobalCommand {
      * @param isSilent Whether this command is being silenced or not
      */
     private void doUsage(final InputWindow origin, final boolean isSilent) {
-        sendLine(origin, isSilent, "commandUsage", 
-                IdentityManager.getGlobalConfig().getOption("general", "commandchar"),
-                "timer", "<repetitions> <interval> <command>");
+        showUsage(origin, isSilent, "timer", "<repetitions> <interval> <command>");
     }
     
     /** {@inheritDoc} */
