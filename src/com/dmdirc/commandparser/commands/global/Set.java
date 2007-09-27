@@ -33,6 +33,7 @@ import java.util.List;
 
 /**
  * The set command allows the user to inspect and change global config settings.
+ *
  * @author chris
  */
 public final class Set extends GlobalCommand implements IntelligentCommand {
@@ -60,12 +61,17 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
             doShowOption(origin, isSilent, args[0], args[1]);
             break;
         default:
-            doSetOption(origin, isSilent, args[0], args[1], implodeArgs(2, args));
+            if (args[0].equalsIgnoreCase("--unset")) {
+                doUnsetOption(origin, isSilent, args[1], args[2]);
+            } else {
+                doSetOption(origin, isSilent, args[0], args[1], implodeArgs(2, args));
+            }
         }
     }
     
     /**
      * Shows the user a list of valid domains.
+     *
      * @param origin The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
      */
@@ -86,6 +92,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Shows the user a list of valid options within a domain.
+     *
      * @param origin The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
      * @param domain The domain to be inspected
@@ -115,6 +122,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Shows the user the current value of one option.
+     *
      * @param origin The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
      * @param domain The domain of the option
@@ -132,6 +140,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     
     /**
      * Sets the value of the specified option.
+     *
      * @param origin The window the command was issued from
      * @param isSilent Whether or not the command is being silenced or not
      * @param domain The domain of the option
@@ -144,6 +153,21 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
         Config.setOption(domain, option, newvalue);
         
         sendLine(origin, isSilent, "commandOutput", domain + "." + option + " has been set to: " + newvalue);
+    }
+    
+    /**
+     * Unsets the specified option.
+     *
+     * @param origin The window the command was issued from
+     * @param isSilent Whether or not the command is being silenced or not
+     * @param domain The domain of the option
+     * @param option The name of the option
+     */
+    private void doUnsetOption(final InputWindow origin,
+            final boolean isSilent, final String domain, final String option) {
+        Config.unsetOption(domain, option);
+        
+        sendLine(origin, isSilent, "commandOutput", domain + "." + option + " has been unset.");
     }
     
     /** {@inheritDoc} */
@@ -168,7 +192,8 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     
     /** {@inheritDoc} */
     public String getHelp() {
-        return "set [domain [option [newvalue]]] - inspect or change configuration settings";
+        return "set [domain [option [newvalue]]] - inspect or change configuration settings"
+                + "\nset --unset <domain> <option> - unset the specified option";
     }
     
     /** {@inheritDoc} */
@@ -177,9 +202,17 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
         
         if (arg == 0) {
             res.addAll(Config.getDomains());
+            res.add("--unset");
             res.setIncludeNormal(false);
         } else if (arg == 1 && previousArgs.size() >= 1) {
-            res.addAll(Config.getOptions(previousArgs.get(0)));
+            if (previousArgs.get(0).equalsIgnoreCase("--unset")) {
+                res.addAll(Config.getDomains());
+            } else {
+                res.addAll(Config.getOptions(previousArgs.get(0)));
+            }
+            res.setIncludeNormal(false);
+        } else if (arg == 2 && previousArgs.get(0).equalsIgnoreCase("--unset")) {
+            res.addAll(Config.getOptions(previousArgs.get(1)));
             res.setIncludeNormal(false);
         }
         

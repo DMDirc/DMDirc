@@ -71,8 +71,6 @@ ui.showversion=true
 ui.quickCopy=false
 ui.pasteProtectionLimit=1
         
-ui.treeviewRolloverEnabled=true
-ui.treeviewRolloverColour=f0f0f0
 ui.treeviewActiveBold=true
 treeview.sortwindows=true
 treeview.sortservers=true

@@ -299,6 +299,7 @@ public final class CommandManager {
         new ReloadActions();
         new ReloadFormatter();
         new ReloadPlugin();
+        new SaveConfig();
         new SaveFormatter();
         new Set();
     }
