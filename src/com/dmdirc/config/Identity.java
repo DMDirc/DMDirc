@@ -272,7 +272,7 @@ public class Identity implements Serializable, Comparable<Identity> {
             temp.append('\n');
             temp.append(part);
         }
-        setOption(domain, option, temp.substring(1));
+        setOption(domain, option, temp.length() > 0 ? temp.substring(1) : temp.toString());
     }
     
     /**
