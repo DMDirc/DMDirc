@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.ChannelClientProperty;
+import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.messages.ColourManager;
@@ -38,26 +39,35 @@ import javax.swing.JList;
 /**
  * Renders the nicklist.
  */
-public final class NicklistRenderer extends DefaultListCellRenderer {
+public final class NicklistRenderer extends DefaultListCellRenderer implements
+        ConfigChangeListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
-    /** The config manager to be used for this nick list. */
-    private final ConfigManager config;
+    /** Nicklist alternate background colour. */
+    private Color altBackgroundColour;
+    
+    /** Show nick colours. */
+    private boolean showColours;
     
     /**
      * Creates a new instance of NicklistRenderer.
      *
      * @param newConfig ConfigManager for the associated channel
      */
-    public NicklistRenderer(final ConfigManager newConfig) {
+    public NicklistRenderer(final ConfigManager config) {
         super();
-        config = newConfig;
+        config.addChangeListener("ui", "shownickcoloursinnicklist", this);
+        config.addChangeListener("nicklist", "altBackgroundColour", this);
+        
+        altBackgroundColour = config.getOptionColour("nicklist",
+                "altBackgroundColour", getBackground());
+        showColours = config.getOptionBool("ui", "shownickcoloursinnicklist");
     }
     
     /** {@inheritDoc} */
@@ -68,13 +78,12 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
         super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         
         if (!isSelected && (index & 1) == 1) {
-            this.setBackground(config.getOptionColour("nicklist", "altBackgroundColour",
-                    getBackground()));
+            this.setBackground(altBackgroundColour);
         }
         
         final Map map = ((ChannelClientInfo) value).getMap();
         
-        if (config.getOptionBool("ui", "shownickcoloursinnicklist") && map != null) {
+        if (showColours && map != null) {
             if (map.containsKey(ChannelClientProperty.NICKLIST_FOREGROUND)) {
                 setForeground((Color) map.get(ChannelClientProperty.NICKLIST_FOREGROUND));
             }
@@ -87,6 +96,17 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
         this.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
         
         return this;
+    }
+    
+    /** {@inheritDoc} */
+    public void configChanged(final String domain, final String key,
+            final String oldValue, final String newValue) {
+        if ("nicklist".equals(domain) && "altBackgroundColour".equals(key)) {
+            altBackgroundColour = ColourManager.parseColour(newValue);
+        }
+        if ("ui".equals(domain) && "shownickvoloursinnicklist".equals(key)) {
+            showColours = Boolean.parseBoolean(newValue);
+        }
     }
     
 }
