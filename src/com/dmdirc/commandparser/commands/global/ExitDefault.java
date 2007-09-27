@@ -22,9 +22,9 @@
 
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.Config;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -50,7 +50,7 @@ public final class ExitDefault extends GlobalCommand {
         String def;
         
         if (origin == null) {
-            def = Config.getOption("general", "closemessage");
+            def = IdentityManager.getGlobalConfig().getOption("general", "closemessage");
         } else {
             def = origin.getConfigManager().getOption("general", "closemessage");
         }

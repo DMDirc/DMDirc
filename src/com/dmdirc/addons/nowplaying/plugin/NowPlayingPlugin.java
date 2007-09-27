@@ -22,13 +22,13 @@
 
 package com.dmdirc.addons.nowplaying.plugin;
 
-import com.dmdirc.Config;
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.addons.nowplaying.MediaSource;
 import com.dmdirc.addons.nowplaying.MediaSourceManager;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
@@ -143,13 +143,13 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
     
     /** Saves the plugins settings. */
     private void saveSettings() {
-        Config.setOption(DOMAIN, "sourceOrder", order);
+        IdentityManager.getConfigIdentity().setOption(DOMAIN, "sourceOrder", order);
     }
     
     /** Loads the plugins settings. */
     private void loadSettings() {
-        if (Config.hasOption(DOMAIN, "sourceOrder")) {
-            order = Config.getOptionList(DOMAIN, "sourceOrder");
+        if (IdentityManager.getGlobalConfig().hasOption(DOMAIN, "sourceOrder")) {
+            order = IdentityManager.getGlobalConfig().getOptionList(DOMAIN, "sourceOrder");
         } else {
             order = new ArrayList<String>();
         }

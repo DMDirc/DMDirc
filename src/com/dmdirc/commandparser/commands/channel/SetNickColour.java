@@ -24,10 +24,10 @@ package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
 import com.dmdirc.ChannelClientProperty;
-import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.swing.ChannelFrame;
@@ -74,7 +74,8 @@ public final class SetNickColour extends ChannelCommand {
         }
         
         if (args.length <= offset) {
-            sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(),
+            sendLine(origin, isSilent, "commandUsage",
+                    IdentityManager.getGlobalConfig().getOption("general", "commandchar"),
                     "setnickcolour", "[--nicklist|--text] <nick> [colour]");
             return;
         }

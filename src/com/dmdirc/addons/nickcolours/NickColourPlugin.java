@@ -24,10 +24,10 @@ package com.dmdirc.addons.nickcolours;
 
 import com.dmdirc.Channel;
 import com.dmdirc.ChannelClientProperty;
-import com.dmdirc.Config;
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.ClientInfo;
@@ -96,14 +96,16 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
         final String nickOption = "color:"
                 + client.getClient().getParser().toLowerCase(network + ":" + client.getNickname());
         
-        if (Config.getOptionBool(DOMAIN, "useowncolour") && client.getClient().equals(myself)) {
-            final Color color = ColourManager.parseColour(Config.getOption(DOMAIN, "owncolour"));
+        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "useowncolour")
+                && client.getClient().equals(myself)) {
+            final Color color = ColourManager.parseColour(
+                    IdentityManager.getGlobalConfig().getOption(DOMAIN, "owncolour"));
             putColour(map, color, color);
-        }  else if (Config.getOptionBool(DOMAIN, "userandomcolour")) {
+        }  else if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "userandomcolour")) {
             putColour(map, getColour(client.getNickname()), getColour(client.getNickname()));
         }
         
-        if (Config.hasOption(DOMAIN, nickOption)) {
+        if (IdentityManager.getGlobalConfig().hasOption(DOMAIN, nickOption)) {
             final String[] parts = getParts(nickOption);
             Color textColor = null;
             Color nickColor = null;
@@ -128,11 +130,11 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
      */
     @SuppressWarnings("unchecked")
     private void putColour(final Map map, final Color textColour, final Color nickColour) {
-        if (Config.getOptionBool(DOMAIN, "settext") && textColour != null) {
+        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "settext") && textColour != null) {
             map.put(ChannelClientProperty.TEXT_FOREGROUND, textColour);
         }
         
-        if (Config.getOptionBool(DOMAIN, "setnicklist") && nickColour != null) {
+        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "setnicklist") && nickColour != null) {
             map.put(ChannelClientProperty.NICKLIST_FOREGROUND, nickColour);
         }
     }
@@ -163,7 +165,7 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
     public Object[][] getData() {
         final List<Object[]> data = new ArrayList<Object[]>();
         
-        for (String key : Config.getOptions(DOMAIN)) {
+        for (String key : IdentityManager.getGlobalConfig().getOptions(DOMAIN)) {
             if (key.startsWith("color:")) {
                 final String network = key.substring(6, key.indexOf(':', 6));
                 final String user = key.substring(1 + key.indexOf(':', 6));
@@ -194,7 +196,7 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
      * @return The colours specified by the given key
      */
     private String[] getParts(final String key) {
-        String[] parts = Config.getOption(DOMAIN, key).split(":");
+        String[] parts = IdentityManager.getGlobalConfig().getOption(DOMAIN, key).split(":");
         
         if (parts.length == 0) {
             parts = new String[]{null, null};
@@ -212,8 +214,8 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
     
     /** {@inheritDoc} */
     public void onActivate() {
-        if (Config.hasOption(DOMAIN, "randomcolours")) {
-            randColours = Config.getOption(DOMAIN, "randomcolours").split("\n");
+        if (IdentityManager.getGlobalConfig().hasOption(DOMAIN, "randomcolours")) {
+            randColours = IdentityManager.getGlobalConfig().getOption(DOMAIN, "randomcolours").split("\n");
         }
     }
     
@@ -230,27 +232,27 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
         
         preferencesPanel.addCheckboxOption("General", "showintext",
                 "Show colours in text area: ", "Colour nicknames in main text area?",
-                Config.getOptionBool("ui", "shownickcoloursintext"));
+                IdentityManager.getGlobalConfig().getOptionBool("ui", "shownickcoloursintext"));
         preferencesPanel.addCheckboxOption("General", "showinlist",
                 "Show colours in nick list: ", "Colour nicknames in channel user lists?",
-                Config.getOptionBool("ui", "shownickcoloursinnicklist"));
+                IdentityManager.getGlobalConfig().getOptionBool("ui", "shownickcoloursinnicklist"));
         
         preferencesPanel.addCheckboxOption("General", "settext",
                 "Set colours in text area: ", "Should the plugin set the text colour of nicks?",
-                Config.getOptionBool(DOMAIN, "settext"));
+                IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "settext"));
         preferencesPanel.addCheckboxOption("General", "setnicklist",
                 "Set colours in nick list: ", "Should the plugin set the nicklist colour of nicks?",
-                Config.getOptionBool(DOMAIN, "setnicklist"));
+                IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "setnicklist"));
         
         preferencesPanel.addCheckboxOption("General", "userandomcolour",
                 "Enable Random Colour: ", "Use a pseudo-random colour for each person?",
-                Config.getOptionBool(DOMAIN, "userandomcolour"));
+                IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "userandomcolour"));
         preferencesPanel.addCheckboxOption("General", "useowncolour",
                 "Use colour for own nick: ", "Always use the same colour for own nick?",
-                Config.getOptionBool(DOMAIN, "useowncolour"));
+                IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "useowncolour"));
         preferencesPanel.addColourOption("General", "owncolour",
                 "Colour to use for own nick: ", "Colour used for own nick",
-                Config.getOption(DOMAIN, "owncolour", "1"), true, true);
+                IdentityManager.getGlobalConfig().getOption(DOMAIN, "owncolour", "1"), true, true);
 
         nickpanel = new NickColourPanel(this);
         preferencesPanel.replaceOptionPanel("Nick colours", nickpanel);
@@ -265,23 +267,23 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
      * @param properties user preferences
      */
     public void configClosed(final Properties properties) {
-        Config.setOption("ui", "shownickcoloursintext", properties.getProperty("showintext"));
-        Config.setOption("ui", "shownickcoloursinnicklist", properties.getProperty("showinlist"));
-        Config.setOption(DOMAIN, "userandomcolour", properties.getProperty("userandomcolour"));
-        Config.setOption(DOMAIN, "useowncolour", properties.getProperty("useowncolour"));
-        Config.setOption(DOMAIN, "owncolour", properties.getProperty("owncolour"));
+        IdentityManager.getConfigIdentity().setOption("ui", "shownickcoloursintext", properties.getProperty("showintext"));
+        IdentityManager.getConfigIdentity().setOption("ui", "shownickcoloursinnicklist", properties.getProperty("showinlist"));
+        IdentityManager.getConfigIdentity().setOption(DOMAIN, "userandomcolour", properties.getProperty("userandomcolour"));
+        IdentityManager.getConfigIdentity().setOption(DOMAIN, "useowncolour", properties.getProperty("useowncolour"));
+        IdentityManager.getConfigIdentity().setOption(DOMAIN, "owncolour", properties.getProperty("owncolour"));
         
-        Config.setOption(DOMAIN, "settext", properties.getProperty("settext"));
-        Config.setOption(DOMAIN, "setnicklist", properties.getProperty("setnicklist"));
+        IdentityManager.getConfigIdentity().setOption(DOMAIN, "settext", properties.getProperty("settext"));
+        IdentityManager.getConfigIdentity().setOption(DOMAIN, "setnicklist", properties.getProperty("setnicklist"));
         
         // Remove all old config entries
         for (Object[] parts : getData()) {
-            Config.unsetOption(DOMAIN, "color:" + parts[0] + ":" + parts[1]);
+            IdentityManager.getConfigIdentity().unsetOption(DOMAIN, "color:" + parts[0] + ":" + parts[1]);
         }
         
         // And write the new ones
         for (Object[] row : nickpanel.getData()) {
-            Config.setOption(DOMAIN, "color:" + row[0] + ":" + row[1], row[2] + ":" + row[3]);
+            IdentityManager.getConfigIdentity().setOption(DOMAIN, "color:" + row[0] + ":" + row[1], row[2] + ":" + row[3]);
         }
     }
     

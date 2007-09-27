@@ -22,9 +22,9 @@
 
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.Config;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.ColourManager;
 
@@ -59,7 +59,8 @@ public final class Notify extends GlobalCommand {
         final Color colour = ColourManager.parseColour(args[0], null);
         
         if (colour == null) {
-            sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(), "notify",
+            sendLine(origin, isSilent, "commandUsage", 
+                    IdentityManager.getGlobalConfig().getOption("general", "commandchar"), "notify",
                     "<colour> - colour must be an IRC colour code (0-15) or a hex string (e.g. FFFF00).");
         } else if (origin != null) {            
             // There's not much point echoing an error if the origin isn't

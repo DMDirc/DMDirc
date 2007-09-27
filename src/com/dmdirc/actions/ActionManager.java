@@ -22,11 +22,11 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.Config;
 import com.dmdirc.Main;
 import com.dmdirc.actions.wrappers.ActionWrapper;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.actions.wrappers.PerformWrapper;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
@@ -293,7 +293,7 @@ public final class ActionManager {
         if (type.getType().getArity() == arguments.length) {
             PluginManager.getPluginManager().processEvent(type, format, arguments);
             
-            if (!Config.getOptionBool("actions", "killswitch")) {
+            if (!IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch")) {
                 triggerActions(type, format, arguments);
             }
         } else {

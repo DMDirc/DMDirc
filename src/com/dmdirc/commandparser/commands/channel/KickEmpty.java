@@ -23,10 +23,10 @@
 package com.dmdirc.commandparser.commands.channel;
 
 import com.dmdirc.Channel;
-import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
@@ -52,7 +52,9 @@ public final class KickEmpty extends ChannelCommand {
      */
     public void execute(final InputWindow origin, final Server server,
             final Channel channel, final boolean isSilent, final String... args) {
-        sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(), "kick", "<user> [reason]");
+        sendLine(origin, isSilent, "commandUsage", 
+                IdentityManager.getGlobalConfig().getOption("general", "commandchar"),
+                "kick", "<user> [reason]");
     }
     
     /** {@inheritDoc}. */
