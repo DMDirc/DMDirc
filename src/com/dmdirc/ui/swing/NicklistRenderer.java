@@ -62,15 +62,14 @@ public final class NicklistRenderer extends DefaultListCellRenderer {
     
     /** {@inheritDoc} */
     public Component getListCellRendererComponent(final JList list,
-            final Object value, final int index, final boolean selected,
-            final boolean focused) {
+            final Object value, final int index, final boolean isSelected,
+            final boolean cellHasFocus) {
         
-        super.getListCellRendererComponent(list, value, index, selected, focused);
+        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         
-        if (config.getOptionBool("nicklist", "altBackground") && !selected
-                && (index & 1) == 1) {
+        if (!isSelected && (index & 1) == 1) {
             this.setBackground(config.getOptionColour("nicklist", "altBackgroundColour",
-                    ColourManager.getColour("f0f0f0")));
+                    getBackground()));
         }
         
         final Map map = ((ChannelClientInfo) value).getMap();

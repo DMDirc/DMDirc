@@ -102,9 +102,8 @@ public class TreeViewTreeCellRenderer extends JLabel implements
                 + SMALL_BORDER));
 
         if (manager.getRollover() == value) {
-            final Color fallback = ColourManager.getColour("b8d6e6");
             setBackground(Config.getOptionColor("ui", 
-                    "treeviewRolloverColour", fallback));
+                    "treeviewRolloverColour", getBackground()));
         }
 
         final Object nodeObject = node.getUserObject();

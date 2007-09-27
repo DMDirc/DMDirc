@@ -346,13 +346,10 @@ public final class PreferencesDialog implements PreferencesInterface {
                 Config.getOption("nicklist", "foregroundcolour",
                 Config.getOption("ui", "foregroundcolour", "")),
                 false, true, true);
-        preferencesPanel.addCheckboxOption(tabName, "nicklist.altBackground",
-                "Alternating nicklist", "Use an alternate background colour for every other entry",
-                Config.getOptionBool("nicklist", "altBackground"));
-        preferencesPanel.addColourOption(tabName, "nicklist.altBackgroundColour",
+        preferencesPanel.addOptionalColourOption(tabName, "nicklist.altBackgroundColour",
                 "Alternate nicklist colour: ", "Alternate background colour to use",
                 Config.getOption("nicklist", "altBackgroundColour", "f0f0f0"),
-                false, true);
+                false, true, true);
         preferencesPanel.addCheckboxOption(tabName, "ui.sortByMode",
                 "Nicklist sort by mode: ", "Sort nicklist by user mode",
                 Config.getOptionBool("ui", "sortByMode"));
@@ -378,13 +375,10 @@ public final class PreferencesDialog implements PreferencesInterface {
                 Config.getOption("treeview", "foregroundcolour",
                 Config.getOption("ui", "foregroundcolour", "")),
                 false, true, true);
-        preferencesPanel.addCheckboxOption(tabName, "ui.treeviewRolloverEnabled",
-                "Rollover enabled: ", "Use a different background colour when cursor is over a treeview node",
-                Config.getOptionBool("ui", "treeviewRolloverEnabled"));
-        preferencesPanel.addColourOption(tabName, "ui.treeviewRolloverColour",
+        preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewRolloverColour",
                 "Rollover colour: ", "Rollover colour to use",
-                Config.getOption("ui", "treeviewRolloverColour"),
-                true, true);
+                Config.getOption("ui", "treeviewRolloverColour", "f0f0f0"),
+                false, true, true);
         preferencesPanel.addCheckboxOption(tabName, "treeview.sortwindows",
                 "Sort windows: ", "Sort windows of servers in the treeview",
                 Config.getOptionBool("treeview", "sortwindows"));

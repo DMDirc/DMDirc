@@ -511,14 +511,12 @@ public final class TreeFrameManager implements FrameManager,
      */
     private DefaultMutableTreeNode getNodeForLocation(final int x, final int y) {
         DefaultMutableTreeNode node = null;
-        if (Config.getOptionBool("ui", "treeviewRolloverEnabled")) {
-            final TreePath selectedPath = tree.getPathForLocation(x, y);
-            if (selectedPath == null) {
-                this.showRollover(null);
-            } else {
-                node = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
-                this.showRollover((DefaultMutableTreeNode) selectedPath.getLastPathComponent());
-            }
+        final TreePath selectedPath = tree.getPathForLocation(x, y);
+        if (selectedPath == null) {
+            this.showRollover(null);
+        } else {
+            node = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
+            this.showRollover((DefaultMutableTreeNode) selectedPath.getLastPathComponent());
         }
         return node;
     }
@@ -586,14 +584,14 @@ public final class TreeFrameManager implements FrameManager,
             if (thisNode.getParent().getIndex(thisNode) == 0) {
                 //first server - last child of parent's last child
                 nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
-                thisNode.getParent()).getLastChild();
+                        thisNode.getParent()).getLastChild();
                 if (nextNode.getChildCount() > 0) {
                     nextNode = (DefaultMutableTreeNode) nextNode.getLastChild();
                 }
             } else {
                 //other servers - last child of previous sibling
                 nextNode = (DefaultMutableTreeNode)
-                (thisNode.getPreviousSibling()).getLastChild();
+                        (thisNode.getPreviousSibling()).getLastChild();
             }
         } else {
             if (thisNode.getParent().getIndex(thisNode) == 0) {
@@ -630,7 +628,7 @@ public final class TreeFrameManager implements FrameManager,
                 //no next server, use first
                 if (nextNode == null) {
                     nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
-                    thisNode.getParent()).getFirstChild();
+                            thisNode.getParent()).getFirstChild();
                 }
             }
         } else {
@@ -640,7 +638,7 @@ public final class TreeFrameManager implements FrameManager,
                 //parent doesnt have a next sibling, get the first child of the grandparent
                 if (nextNode == null) {
                     nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
-                    thisNode.getParent().getParent()).getFirstChild();
+                            thisNode.getParent().getParent()).getFirstChild();
                 }
             } else {
                 //other frames - get the next sibling
