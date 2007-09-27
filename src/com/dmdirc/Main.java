@@ -108,12 +108,13 @@ public final class Main {
         
         getUI().getMainWindow();
         
-        if (!Config.hasOption("general", "firstRun") || Config.getOptionBool("general", "firstRun")) {
-            Config.setOption("general", "firstRun", "false");
-            Config.setOption("general", "addonrevision", ADDON_REVISION);
+        if (!IdentityManager.getGlobalConfig().hasOption("general", "firstRun")
+                || IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun")) {
+            IdentityManager.getConfigIdentity().setOption("general", "firstRun", "false");
+            IdentityManager.getConfigIdentity().setOption("general", "addonrevision", ADDON_REVISION);
             getUI().showFirstRunWizard();
-        } else if (Config.getOptionInt("general", "addonrevision", -1) < ADDON_REVISION) {
-            Config.setOption("general", "addonrevision", ADDON_REVISION);
+        } else if (IdentityManager.getGlobalConfig().getOptionInt("general", "addonrevision", -1) < ADDON_REVISION) {
+            IdentityManager.getConfigIdentity().setOption("general", "addonrevision", ADDON_REVISION);
             getUI().showMigrationWizard();
         }
         
@@ -123,7 +124,7 @@ public final class Main {
         
         clp.processArguments();
         
-        if (Config.getOptionBool("general", "showglobalwindow")) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("general", "showglobalwindow")) {
             new GlobalWindow();
         }
     }
@@ -132,7 +133,7 @@ public final class Main {
      * Quits the client nicely, with the default closing message.
      */
     public static void quit() {
-        quit(Config.getOption("general", "closemessage"));
+        quit(IdentityManager.getGlobalConfig().getOption("general", "closemessage"));
     }
     
     /**

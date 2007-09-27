@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing;
 
-import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
@@ -355,7 +354,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /** {@inheritDoc}. */
     public String getTitlePrefix() {
-        if (Config.getOptionBool("ui", "showversion")) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "showversion")) {
             return "DMDirc " + Main.VERSION;
         } else {
             return "DMDirc";
@@ -400,7 +399,8 @@ public final class MainFrame extends JFrame implements WindowListener,
      * @param windowEvent The event associated with this callback
      */
     public void windowClosing(final WindowEvent windowEvent) {
-        ServerManager.getServerManager().closeAll(Config.getOption("general", "closemessage"));
+        ServerManager.getServerManager().closeAll(
+                IdentityManager.getGlobalConfig().getOption("general", "closemessage"));
         quit();
     }
     
@@ -477,7 +477,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         mainSplitPane.setOneTouchExpandable(false);
         
         position = FramemanagerPosition.getPosition(
-                Config.getOption("ui", "framemanagerPosition"));
+                IdentityManager.getGlobalConfig().getOption("ui", "framemanagerPosition"));
         
         if (position == FramemanagerPosition.UNKNOWN) {
             position = FramemanagerPosition.LEFT;
@@ -501,7 +501,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 mainSplitPane.setResizeWeight(0.0);
                 mainSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
                 frameManagerPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE,
-                        Config.getOptionInt("ui", "frameManagerSize", 50)));
+                        IdentityManager.getGlobalConfig().getOptionInt("ui", "frameManagerSize", 50)));
                 frameManagerPanel.setMinimumSize(new Dimension(Integer.MAX_VALUE, 50));
                 desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
                 desktopPane.setMinimumSize(new Dimension(Integer.MAX_VALUE, 300));
@@ -512,7 +512,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 mainSplitPane.setResizeWeight(0.0);
                 mainSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
                 frameManagerPanel.setPreferredSize(new Dimension(
-                        Config.getOptionInt("ui", "frameManagerSize", 150),
+                        IdentityManager.getGlobalConfig().getOptionInt("ui", "frameManagerSize", 150),
                         Integer.MAX_VALUE));
                 frameManagerPanel.setMinimumSize(new Dimension(150, Integer.MAX_VALUE));
                 desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
@@ -524,7 +524,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 mainSplitPane.setResizeWeight(1.0);
                 mainSplitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
                 frameManagerPanel.setPreferredSize(new Dimension(Integer.MAX_VALUE,
-                        Config.getOptionInt("ui", "frameManagerSize", 50)));
+                        IdentityManager.getGlobalConfig().getOptionInt("ui", "frameManagerSize", 50)));
                 frameManagerPanel.setMinimumSize(new Dimension(Integer.MAX_VALUE,
                         50));
                 desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
@@ -536,7 +536,7 @@ public final class MainFrame extends JFrame implements WindowListener,
                 mainSplitPane.setResizeWeight(1.0);
                 mainSplitPane.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
                 frameManagerPanel.setPreferredSize(new Dimension(
-                        Config.getOptionInt("ui", "frameManagerSize", 50),
+                        IdentityManager.getGlobalConfig().getOptionInt("ui", "frameManagerSize", 50),
                         Integer.MAX_VALUE));
                 frameManagerPanel.setMinimumSize(new Dimension(50, Integer.MAX_VALUE));
                 desktopPane.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
@@ -754,7 +754,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /** {@inheritDoc}. */
     public void quit() {
-        Config.setOption("ui", "frameManagerSize",
+        IdentityManager.getConfigIdentity().setOption("ui", "frameManagerSize",
                 String.valueOf(this.getFrameManagerSize()));
         Main.quit();
     }
