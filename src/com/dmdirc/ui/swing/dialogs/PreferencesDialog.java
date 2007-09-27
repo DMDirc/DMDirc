@@ -265,14 +265,12 @@ public final class PreferencesDialog implements PreferencesInterface {
                 "Input background colour: ", "Background colour to use for input fields",
                 Config.getOption("ui", "inputbackgroundcolour",
                 Config.getOption("ui", "backgroundcolour", "")),
-                Config.getOption("ui", "inputbackgroundcolour", "").equals("") ?
-                    false : true, true, true);
+                Config.hasOption("ui", "inputbackgroundcolour"), true, true);
         preferencesPanel.addOptionalColourOption(tabName, "ui.inputforegroundcolour",
                 "Input foreground colour: ", "Foreground colour to use for input fields",
                 Config.getOption("ui", "inputforegroundcolour",
                 Config.getOption("ui", "foregroundcolour", "")),
-                Config.getOption("ui", "inputforegroundcolour", "").equals("") ?
-                    false : true, true, true);
+                Config.hasOption("ui", "inputforegroundcolour"), true, true);
         preferencesPanel.addCheckboxOption(tabName, "general.showcolourdialog",
                 "Show colour dialog: ", "Show colour picker dialog when inserting colour control codes",
                 Config.getOptionBool("general", "showcolourdialog"));
@@ -342,19 +340,16 @@ public final class PreferencesDialog implements PreferencesInterface {
                 "Nicklist background colour: ", "Background colour to use for the nicklist",
                 Config.getOption("nicklist", "backgroundcolour",
                 Config.getOption("ui", "backgroundcolour", "")),
-                Config.getOption("nicklist", "backgroundcolour", "").equals("") ?
-                    false : true, true, true);
+                Config.hasOption("nicklist", "backgroundcolour"), true, true);
         preferencesPanel.addOptionalColourOption(tabName, "nicklist.foregroundcolour",
                 "Nicklist foreground colour: ", "Foreground colour to use for the nicklist",
                 Config.getOption("nicklist", "foregroundcolour",
                 Config.getOption("ui", "foregroundcolour", "")),
-                Config.getOption("nicklist", "foregroundcolour", "").equals("") ?
-                    false : true, true, true);
+                Config.hasOption("nicklist", "foregroundcolour"), true, true);
         preferencesPanel.addOptionalColourOption(tabName, "nicklist.altBackgroundColour",
                 "Alternate nicklist colour: ", "Alternate background colour to use",
                 Config.getOption("nicklist", "altBackgroundColour", "f0f0f0"),
-                Config.getOption("nicklist", "altBackgroundColour", "").equals("") ?
-                    false : true, true, true);
+                Config.hasOption("nicklist", "altBackgroundColour"), true, true);
         preferencesPanel.addCheckboxOption(tabName, "ui.sortByMode",
                 "Nicklist sort by mode: ", "Sort nicklist by user mode",
                 Config.getOptionBool("ui", "sortByMode"));
@@ -374,19 +369,16 @@ public final class PreferencesDialog implements PreferencesInterface {
                 "Treeview background colour: ", "Background colour to use for the treeview",
                 Config.getOption("treeview", "backgroundcolour",
                 Config.getOption("ui", "backgroundcolour", "")),
-                Config.getOption("treeview", "backgroundcolour", "").equals("") ?
-                    false : true, true, true);
+                Config.hasOption("treeview", "backgroundcolour"), true, true);
         preferencesPanel.addOptionalColourOption(tabName, "treeview.foregroundcolour",
                 "Treeview foreground colour: ", "Foreground colour to use for the treeview",
                 Config.getOption("treeview", "foregroundcolour",
                 Config.getOption("ui", "foregroundcolour", "")),
-                Config.getOption("treeview", "foregroundcolour", "").equals("") ?
-                    false : true, true, true);
+                Config.hasOption("treeview", "foregroundcolour"), true, true);
         preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewRolloverColour",
                 "Rollover colour: ", "Rollover colour to use",
                 Config.getOption("ui", "treeviewRolloverColour", "f0f0f0"),
-                Config.getOption("ui", "treeviewRolloverColour", "").equals("") ?
-                    false : true, true, true);
+                Config.hasOption("ui", "treeviewRolloverColour"), true, true);
         preferencesPanel.addCheckboxOption(tabName, "treeview.sortwindows",
                 "Sort windows: ", "Sort windows of servers in the treeview",
                 Config.getOptionBool("treeview", "sortwindows"));
@@ -400,14 +392,12 @@ public final class PreferencesDialog implements PreferencesInterface {
                 "Active node foreground: ", "Foreground colour of the active node",
                 Config.getOption("treeview", "treeviewActiveForeground",
                 Config.getOption("treeview", "foregroundcolour", "")),
-                Config.getOption("treeview", "treeviewActiveForeground", "").equals("") ?
-                    false : true, true, true);
+                Config.hasOption("treeview", "treeviewActiveForeground"), true, true);
         preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewActiveBackground",
                 "Active node background: ", "Background colour of the active node",
                 Config.getOption("treeview", "treeviewActiveBackground",
                 Config.getOption("treeview", "backgroundcolour", "")),
-                Config.getOption("treeview", "treeviewActiveBackground", "").equals("") ?
-                    false : true, true, true);
+                Config.hasOption("treeview", "treeviewActiveBackground"), true, true);
     }
     
     /**
