@@ -114,6 +114,7 @@ public final class Main {
             getUI().showFirstRunWizard();
         } else if (Config.getOptionInt("general", "addonrevision", -1) < ADDON_REVISION) {
             Config.setOption("general", "addonrevision", ADDON_REVISION);
+            getUI().showMigrationWizard();
         }
         
         ActionManager.processEvent(CoreActionType.CLIENT_OPENED, null);
