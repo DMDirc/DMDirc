@@ -57,7 +57,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SpinnerNumberModel;
@@ -371,12 +370,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                 parent.getChildCount());
         tabList.scrollPathToVisible(new TreePath(newNode.getPath()));
         
-        final JTextArea infoLabel = new JTextArea(blurb);
-        infoLabel.setEditable(false);
-        infoLabel.setWrapStyleWord(true);
-        infoLabel.setLineWrap(true);
-        infoLabel.setHighlighter(null);
-        infoLabel.setBackground(panel.getBackground());
+        final TextLabel infoLabel = new TextLabel(blurb, this);
         if (blurb.isEmpty()) {
             infoLabel.setVisible(false);
         }

@@ -27,6 +27,7 @@ import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.ui.swing.components.ImageButton;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
+import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -42,7 +43,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.SpringLayout;
 
 /**
@@ -72,7 +72,7 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
     private JPanel comparisonsPanel;
     
     /** Info blurb. */
-    private JTextArea infoLabel;
+    private TextLabel infoLabel;
     /** No conditions label. */
     private JLabel noConditions;
     /** New comparison button. */
@@ -106,20 +106,14 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
         comparisonsPanel = new JPanel();
         noConditions = new JLabel("No conditions set.");
         newComparison = new JButton("New");
-        infoLabel = new JTextArea("This action will only be executed if the "
-                + "following are true:");
+        infoLabel = new TextLabel("This action will only be executed if the "
+                + "following are true:", this);
         
         infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
         
         comparisonsPanel.setBorder(BorderFactory.createEmptyBorder(0,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-        
-        infoLabel.setEditable(false);
-        infoLabel.setWrapStyleWord(true);
-        infoLabel.setLineWrap(true);
-        infoLabel.setHighlighter(null);
-        infoLabel.setBackground(this.getBackground());
         
         setNewConditionButton(false);
         

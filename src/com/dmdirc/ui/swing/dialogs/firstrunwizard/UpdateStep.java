@@ -24,13 +24,13 @@ package com.dmdirc.ui.swing.dialogs.firstrunwizard;
 
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.JTextArea;
 
 /**
  * Queries the user for which core actions they wish to extract.
@@ -57,15 +57,10 @@ public final class UpdateStep extends StepOne {
         setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
                 SMALL_BORDER, LARGE_BORDER));
         
-        JTextArea infoLabel;
+        TextLabel infoLabel;
         
-        infoLabel = new JTextArea("The core plugins have been been updated" +
-                " would you like to re-extract these to update them?");
-        infoLabel.setEditable(false);
-        infoLabel.setWrapStyleWord(true);
-        infoLabel.setLineWrap(true);
-        infoLabel.setHighlighter(null);
-        infoLabel.setBackground(getBackground());
+        infoLabel = new TextLabel("The core plugins have been been updated" +
+                " would you like to re-extract these to update them?", this);
         infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0,
                 SMALL_BORDER, 0));
         
@@ -78,13 +73,8 @@ public final class UpdateStep extends StepOne {
         constraints.gridy = 1;
         add(plugins, constraints);
         
-        infoLabel = new JTextArea("It's possible the actions have also been"
-                + " updated, do you want to re-extract these too?");
-        infoLabel.setEditable(false);
-        infoLabel.setWrapStyleWord(true);
-        infoLabel.setLineWrap(true);
-        infoLabel.setHighlighter(null);
-        infoLabel.setBackground(getBackground());
+        infoLabel = new TextLabel("It's possible the actions have also been"
+                + " updated, do you want to re-extract these too?", this);
         infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
                 SMALL_BORDER, 0));
         

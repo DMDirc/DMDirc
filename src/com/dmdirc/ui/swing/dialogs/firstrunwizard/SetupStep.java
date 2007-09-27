@@ -24,13 +24,13 @@ package com.dmdirc.ui.swing.dialogs.firstrunwizard;
 
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.JTextArea;
 
 /**
  * Queries the user for which core actions they wish to extract.
@@ -57,22 +57,17 @@ public final class SetupStep extends StepOne {
         setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
                 SMALL_BORDER, LARGE_BORDER));
         
-        JTextArea infoLabel;
+        TextLabel infoLabel;
         
-        infoLabel = new JTextArea("It appears that this is the first time "
+        infoLabel = new TextLabel("It appears that this is the first time "
                 + "that you have run DMDirc. "
                 + "This short wizard will help you setup DMDirc.\n\n"
                 + "DMDirc comes with a set of core plugins that add "
                 + "functionality such as channel logging to the client. "
                 + "Thse plugins need to be copied into your home directory to"
                 + " be used. If you would like the wizard to copy the core "
-                + "plugins for you, tick the box below.");
-        infoLabel.setEditable(false);
-        infoLabel.setWrapStyleWord(true);
-        infoLabel.setLineWrap(true);
-        infoLabel.setHighlighter(null);
-        infoLabel.setBackground(getBackground());
-        infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0,
+                + "plugins for you, tick the box below.", this);
+        infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
                 SMALL_BORDER, 0));
         
         constraints.weightx = 1.0;
@@ -84,16 +79,11 @@ public final class SetupStep extends StepOne {
         constraints.gridy = 1;
         add(plugins, constraints);
         
-        infoLabel = new JTextArea("DMDirc also comes with a set of core"
+        infoLabel = new TextLabel("DMDirc also comes with a set of core"
                 + " 'actions' that serve as examples and add some basic"
                 + " functionality such as highlighting. If you would like"
                 + " the wizard to copy the core actions for you, tick the"
-                + " box below.");
-        infoLabel.setEditable(false);
-        infoLabel.setWrapStyleWord(true);
-        infoLabel.setLineWrap(true);
-        infoLabel.setHighlighter(null);
-        infoLabel.setBackground(getBackground());
+                + " box below.", this);
         infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
                 SMALL_BORDER, 0));
         

@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs.firstrunwizard;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -32,7 +33,6 @@ import java.awt.GridBagLayout;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
-import javax.swing.JTextArea;
 
 /**
  * Queries the user for which core actions they wish to extract.
@@ -62,17 +62,10 @@ public final class StepTwo extends Step {
         
         profile = new JCheckBox("Launch profile manager?");
         
-        JTextArea infoLabel;
-        
-        infoLabel = new JTextArea("DMDirc uses a set of 'profiles' to determine"
+        final TextLabel infoLabel = new TextLabel("DMDirc uses a set of 'profiles' to determine"
                 + " your nickname, realname, etc when connecting to a server. "
                 + "If you would like the wizard to open the profile manager "
-                + "for you, tick the box below.");
-        infoLabel.setEditable(false);
-        infoLabel.setWrapStyleWord(true);
-        infoLabel.setLineWrap(true);
-        infoLabel.setHighlighter(null);
-        infoLabel.setBackground(getBackground());
+                + "for you, tick the box below.", this);
         infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 
                 SMALL_BORDER, 0));
         

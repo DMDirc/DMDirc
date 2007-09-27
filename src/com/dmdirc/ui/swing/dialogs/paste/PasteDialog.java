@@ -28,6 +28,7 @@ import com.dmdirc.ui.swing.UIUtilities;
 import com.dmdirc.ui.swing.components.InputFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
+import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -62,7 +63,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
     private static final long serialVersionUID = 4;
     
     /** Number of lines Label. */
-    private JTextArea infoLabel;
+    private TextLabel infoLabel;
     
     /** Text area scrollpane. */
     private JScrollPane scrollPane;
@@ -108,7 +109,7 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         scrollPane = new JScrollPane();
         textField = new JTextArea(text);
         editButton = new JButton("Edit");
-        infoLabel = new JTextArea();
+        infoLabel = new TextLabel(this);
         
         UIUtilities.addUndoManager(textField);
         
@@ -126,11 +127,6 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
         infoLabel.setText("This will be sent as "
                 + parent.getContainer().getNumLines(textField.getText())
                 + " lines. Are you sure you want to continue?");
-        infoLabel.setEditable(false);
-        infoLabel.setWrapStyleWord(true);
-        infoLabel.setLineWrap(true);
-        infoLabel.setHighlighter(null);
-        infoLabel.setBackground(this.getBackground());
         
         textField.setBorder(
                 BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));

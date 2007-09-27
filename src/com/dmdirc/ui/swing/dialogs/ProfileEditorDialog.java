@@ -30,6 +30,7 @@ import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
+import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -48,7 +49,6 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
@@ -90,7 +90,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
     private JButton revertButton;
     
     /** info label. */
-    private JTextArea infoLabel;
+    private TextLabel infoLabel;
     
     /** nickname field. */
     private JTextField nickname;
@@ -165,15 +165,10 @@ public final class ProfileEditorDialog extends StandardDialog implements
         
         renameButton = new JButton("Rename");
         
-        infoLabel = new JTextArea("Profiles describe information needed to "
+        infoLabel = new TextLabel("Profiles describe information needed to "
                 + "connect to a server.  You can use a different profile for "
                 + "each connection. Profiles are automatically saved when you "
-                + "select another or click OK");
-        infoLabel.setEditable(false);
-        infoLabel.setWrapStyleWord(true);
-        infoLabel.setLineWrap(true);
-        infoLabel.setHighlighter(null);
-        infoLabel.setBackground(panel.getBackground());
+                + "select another or click OK", this);
         
         nickname = new JTextField();
         nickname.setPreferredSize(new Dimension(150, 10));

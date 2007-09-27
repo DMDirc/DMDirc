@@ -31,6 +31,8 @@ import com.dmdirc.ui.swing.components.PluginCellRenderer;
 import com.dmdirc.ui.swing.components.StandardDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.components.HTMLLabel;
+import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -43,10 +45,8 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JEditorPane;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
@@ -88,10 +88,10 @@ public final class PluginDialog extends StandardDialog implements
     private int selectedPlugin;
     
     /** Blurb label. */
-    private JTextArea blurbLabel;
+    private TextLabel blurbLabel;
     
     /** Info Label. */
-    private JEditorPane infoLabel;
+    private HTMLLabel infoLabel;
     
     /** Creates a new instance of PluginDialog. */
     private PluginDialog() {
@@ -143,23 +143,14 @@ public final class PluginDialog extends StandardDialog implements
         toggleButton = new JButton("Enable");
         toggleButton.setEnabled(false);
         
-        blurbLabel = new JTextArea("Plugins allow you to extend the functionality of DMDirc."
-                + " Plugins enabled here will also be enabled next time you start the client.");
-        blurbLabel.setEditable(false);
-        blurbLabel.setWrapStyleWord(true);
-        blurbLabel.setLineWrap(true);
-        blurbLabel.setHighlighter(null);
-        blurbLabel.setBackground(this.getBackground());
+        blurbLabel = new TextLabel("Plugins allow you to extend the functionality of DMDirc."
+                + " Plugins enabled here will also be enabled next time you start the client.", this);
         
-        infoLabel = new JEditorPane("text/html", "<html><center style='font-family: "
+        infoLabel = new HTMLLabel("<html><center style='font-family: "
                 + blurbLabel.getFont().getFamily() + "; font-size:"
                 + blurbLabel.getFont().getSize() + "pt;'>You can get "
                 + "more plugins from the <a href=\"http://addons.dmdirc.com/\">"
-                + "Addons site</a></center></html>");
-        infoLabel.setFont(blurbLabel.getFont());
-        infoLabel.setEditable(false);
-        infoLabel.setHighlighter(null);
-        infoLabel.setBackground(this.getBackground());
+                + "Addons site</a></center></html>", this);
         
         populateList();
     }
@@ -286,7 +277,7 @@ public final class PluginDialog extends StandardDialog implements
             selectedPlugin = selected;
         }
     }
-
+    
     /** {@inheritDoc}. */
     public void hyperlinkUpdate(final HyperlinkEvent e) {
         if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {

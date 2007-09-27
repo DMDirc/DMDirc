@@ -28,6 +28,7 @@ import com.dmdirc.logger.ErrorReportStatus;
 import com.dmdirc.logger.ProgramError;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.components.TextLabel;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -106,7 +107,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
     private void initComponents() {
         final JTextArea stacktraceField = new JTextArea();
         
-        messageLabel = new JTextArea();
+        messageLabel = new TextLabel(this);
         infoLabel = new JLabel();
         showMore = new JButton();
         scrollPane = new JScrollPane();
@@ -121,12 +122,7 @@ public final class FatalErrorDialog extends JDialog implements ActionListener,
         
         infoLabel.setIcon(IconManager.getIconManager().getIcon("error"));
         
-        messageLabel = new JTextArea("Description: \n" + error.getMessage());
-        messageLabel.setEditable(false);
-        messageLabel.setWrapStyleWord(true);
-        messageLabel.setLineWrap(true);
-        messageLabel.setHighlighter(null);
-        messageLabel.setBackground(getContentPane().getBackground());
+        messageLabel = new TextLabel("Description: \n" + error.getMessage(), this);
         
         showMore.setText("Show details");
         showMore.addActionListener(this);

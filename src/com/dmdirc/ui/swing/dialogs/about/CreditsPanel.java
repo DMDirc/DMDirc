@@ -24,11 +24,10 @@ package com.dmdirc.ui.swing.dialogs.about;
 
 import com.dmdirc.BrowserLauncher;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.components.HTMLLabel;
 
 import java.awt.BorderLayout;
-
 import javax.swing.BorderFactory;
-import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.event.HyperlinkEvent;
@@ -56,10 +55,7 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
     
     /** Initialises the components. */
     private void initComponents() {
-        final JEditorPane about = new JEditorPane();
-        
-        about.setContentType("text/html");
-        about.setText("<html>"
+        final HTMLLabel about = new HTMLLabel("<html>"
                 + "<div style='font-family: "
                 + UIManager.getFont("TextField.font").getFamily() + "; font-size:"
                 + UIManager.getFont("TextField.font").getSize() + "pt;'>"
@@ -74,13 +70,9 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
                 + "<li><a href=\"http://www.pling.org.uk\">Chris 'laser' Northwood</a></li>"
                 + "<li><a href=\"http://www.zipplet.co.uk\">Michael 'Zipplet' Nixon</a></li>"
                 + "</ul>"
-                + "</div></html>");
-        about.setEditable(false);
-        about.setHighlighter(null);
-        about.setBackground(this.getBackground());
+                + "</div></html>", this);
         about.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-        about.addHyperlinkListener(this);
         
         setLayout(new BorderLayout());
         

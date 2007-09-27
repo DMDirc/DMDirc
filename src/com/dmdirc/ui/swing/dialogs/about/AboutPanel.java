@@ -25,11 +25,10 @@ package com.dmdirc.ui.swing.dialogs.about;
 import com.dmdirc.BrowserLauncher;
 import com.dmdirc.Main;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.components.HTMLLabel;
 
 import java.awt.BorderLayout;
-
 import javax.swing.BorderFactory;
-import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.event.HyperlinkEvent;
@@ -57,10 +56,7 @@ public final class AboutPanel extends JPanel implements HyperlinkListener {
     
     /** Initialises the components. */
     private void initComponents() {
-        final JEditorPane about = new JEditorPane();
-        
-        about.setContentType("text/html");
-        about.setText("<html>"
+        final HTMLLabel about = new HTMLLabel("<html>"
                 + "<center style='font-family: "
                 + UIManager.getFont("TextField.font").getFamily() + "; font-size:"
                 + UIManager.getFont("TextField.font").getSize() + "pt;'>"
@@ -68,13 +64,9 @@ public final class AboutPanel extends JPanel implements HyperlinkListener {
                 + "<p>Easy to use, cross-platform IRC client.</p>"
                 + "<p>Version: " + Main.VERSION + "</p>"
                 + "<p><a href=\"http://www.dmdirc.com\">www.dmdirc.com</a></p>"
-                + "</center></html>");
-        about.setEditable(false);
-        about.setHighlighter(null);
-        about.setBackground(this.getBackground());
+                + "</center></html>", this);
         about.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-        about.addHyperlinkListener(this);
         
         setLayout(new BorderLayout());
         
