@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.Config;
 import com.dmdirc.Main;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -442,8 +442,8 @@ public final class Formatter {
         
         properties = new Properties(defaultProperties);
         
-        if (Config.hasOption("general", "formatters")) {
-            for (String file : Config.getOption("general", "formatters").split("\n")) {
+        if (IdentityManager.getGlobalConfig().hasOption("general", "formatters")) {
+            for (String file : IdentityManager.getGlobalConfig().getOptionList("general", "formatters")) {
                 loadFile(file);
             }
         }

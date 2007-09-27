@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.swing.components;
 
-import com.dmdirc.Config;
 import com.dmdirc.Main;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
@@ -461,7 +461,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
      */
     public void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
-            Config.setOption("dialogstate", owner.getClass().getName(),
+            IdentityManager.getConfigIdentity().setOption("dialogstate", owner.getClass().getName(),
                     tabList.getSelectionPath().getLastPathComponent().toString());
             saveOptions();
             dispose();
@@ -525,7 +525,8 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                         SMALL_BORDER, LARGE_BORDER, LARGE_BORDER);
             }
         }
-        final String tabName = Config.getOption("dialogstate", owner.getClass().getName());
+        final String tabName = IdentityManager.getGlobalConfig().getOption("dialogstate",
+                owner.getClass().getName());
         
         if (tabName == null || tabName.isEmpty()) {
             cardLayout.first(mainPanel);

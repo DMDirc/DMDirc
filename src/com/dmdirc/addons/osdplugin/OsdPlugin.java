@@ -22,9 +22,10 @@
 
 package com.dmdirc.addons.osdplugin;
 
-import com.dmdirc.Config;
 import com.dmdirc.Main;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.config.Identity;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.interfaces.PreferencesPanel;
@@ -99,7 +100,7 @@ public final class OsdPlugin extends Plugin implements PreferencesInterface {
         final JPanel panel = new JPanel();
         spinner = new JSpinner(new SpinnerNumberModel());
         
-        spinner.setValue(Config.getOptionInt(MY_DOMAIN, "fontSize", 20));
+        spinner.setValue(IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "fontSize", 20));
         
         panel.setLayout(new BorderLayout());
         panel.add(spinner);
@@ -110,13 +111,13 @@ public final class OsdPlugin extends Plugin implements PreferencesInterface {
                 "Changes the font size of the OSD", panel);
         preferencesPanel.addColourOption("General", "bgcolour",
                 "Background Colour: ", "Background colour for the OSD",
-                Config.getOption(MY_DOMAIN, "bgcolour", "2222aa"), true, true);
+                IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "bgcolour", "2222aa"), true, true);
         preferencesPanel.addColourOption("General", "fgcolour",
                 "Foreground Colour: ", "Foreground colour for the OSD",
-                Config.getOption(MY_DOMAIN, "fgcolour", "ffffff"), true, true);
+                IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "fgcolour", "ffffff"), true, true);
         preferencesPanel.addSpinnerOption("General", "timeout", "Timeout: ",
                 "Length of times in seconds before the OSD window times out",
-                Config.getOptionInt(MY_DOMAIN, "timeout", 15));
+                IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "timeout", 15));
         
         osdWindow = new OsdWindow("Please drag this OSD to position", true);
         
@@ -125,22 +126,24 @@ public final class OsdPlugin extends Plugin implements PreferencesInterface {
     
     /** {@inheritDoc}. */
     public void configClosed(final Properties properties) {
+        final Identity config = IdentityManager.getConfigIdentity();
+        
         if (spinner != null) {
-            Config.setOption(MY_DOMAIN, "fontSize", String.valueOf(spinner.getValue()));
+            config.setOption(MY_DOMAIN, "fontSize", String.valueOf(spinner.getValue()));
         }
         if (properties.getProperty("fgcolour") != null) {
-            Config.setOption(MY_DOMAIN, "fgcolour", properties.getProperty("fgcolour"));
+            config.setOption(MY_DOMAIN, "fgcolour", properties.getProperty("fgcolour"));
         }
         if (properties.getProperty("bgcolour") != null) {
-            Config.setOption(MY_DOMAIN, "bgcolour", properties.getProperty("bgcolour"));
+            config.setOption(MY_DOMAIN, "bgcolour", properties.getProperty("bgcolour"));
         }
         if (properties.getProperty("timeout") != null) {
-            Config.setOption(MY_DOMAIN, "timeout", properties.getProperty("timeout"));
+            config.setOption(MY_DOMAIN, "timeout", properties.getProperty("timeout"));
         }
         if (osdWindow != null && osdWindow.isVisible()) {
-            Config.setOption(MY_DOMAIN, "locationX",
+            config.setOption(MY_DOMAIN, "locationX",
                     String.valueOf((int) osdWindow.getLocationOnScreen().getX()));
-            Config.setOption(MY_DOMAIN, "locationY",
+            config.setOption(MY_DOMAIN, "locationY",
                     String.valueOf((int) osdWindow.getLocationOnScreen().getY()));
             osdWindow.dispose();
         }

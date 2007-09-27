@@ -24,13 +24,13 @@ package com.dmdirc.ui.swing;
 
 
 import com.dmdirc.Channel;
-import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.CommandParser;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.ChannelWindow;
@@ -161,22 +161,23 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     public void initUISettings() {
         // For this to work it *HAS* to be before anything else UI related.
-        if (Config.hasOption("ui", "antialias")) {
-            final String aaSetting = Config.getOption("ui", "antialias");
+        if (IdentityManager.getGlobalConfig().hasOption("ui", "antialias")) {
+            final String aaSetting = IdentityManager.getGlobalConfig().getOption("ui", "antialias");
             System.setProperty("awt.useSystemAAFontSettings", aaSetting);
             System.setProperty("swing.aatext", aaSetting);
         } else {
-            Config.setOption("ui", "antialias", "true");
+            IdentityManager.getConfigIdentity().setOption("ui", "antialias", "true");
             System.setProperty("awt.useSystemAAFontSettings", "true");
             System.setProperty("swing.aatext", "true");
         }
+        
         try {
             UIUtilities.initUISettings();
             
             final String lnfName = UIUtilities.getLookAndFeel(
-                    Config.getOption("ui", "lookandfeel"));
+                    IdentityManager.getGlobalConfig().getOption("ui", "lookandfeel"));
             
-            if (Config.hasOption("ui", "lookandfeel") && !lnfName.isEmpty()) {
+            if (IdentityManager.getGlobalConfig().hasOption("ui", "lookandfeel") && !lnfName.isEmpty()) {
                 UIManager.setLookAndFeel(lnfName);
             }
             

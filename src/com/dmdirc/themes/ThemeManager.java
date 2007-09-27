@@ -22,8 +22,8 @@
 
 package com.dmdirc.themes;
 
-import com.dmdirc.Config;
 import com.dmdirc.Main;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -64,7 +64,8 @@ public class ThemeManager {
                 dir.mkdirs();
                 dir.createNewFile();
             } catch (IOException ex) {
-                Logger.userError(ErrorLevel.HIGH, "I/O error when creating themes directory: " + ex.getMessage());
+                Logger.userError(ErrorLevel.HIGH,
+                        "I/O error when creating themes directory: " + ex.getMessage());
             }
         }
         
@@ -88,8 +89,8 @@ public class ThemeManager {
      * Loads the default theme for the client.
      */
     public void loadDefaultTheme() {
-        if (Config.hasOption("general", "theme")) {
-            final String theme = Config.getOption("general", "theme");
+        if (IdentityManager.getGlobalConfig().hasOption("general", "theme")) {
+            final String theme = IdentityManager.getGlobalConfig().getOption("general", "theme");
             final Map<String, Theme> themes = getAvailableThemes();
             
             if (themes.containsKey(theme)) {

@@ -22,9 +22,9 @@
 
 package com.dmdirc.updater;
 
-import com.dmdirc.Config;
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -102,7 +102,8 @@ public final class UpdateChecker implements Runnable, MouseListener {
                 line = printin.readLine();
             } while (line != null);
             printin.close();
-            Config.setOption("updater", "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
+            IdentityManager.getConfigIdentity().setOption("updater",
+                    "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
             UpdateChecker.init();
         } catch (MalformedURLException ex) {
             Logger.appError(ErrorLevel.LOW, "Error when checking for updates", ex);
@@ -151,8 +152,8 @@ public final class UpdateChecker implements Runnable, MouseListener {
      * frequency specified in the config.
      */
     public static void init() {
-        final int last = Config.getOptionInt("updater", "lastcheck", 0);
-        final int freq = Config.getOptionInt("updater", "frequency", 86400);
+        final int last = IdentityManager.getGlobalConfig().getOptionInt("updater", "lastcheck", 0);
+        final int freq = IdentityManager.getGlobalConfig().getOptionInt("updater", "frequency", 86400);
         final int timestamp = (int) (new Date().getTime() / 1000);
         int time = 0;
         

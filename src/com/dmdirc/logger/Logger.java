@@ -22,8 +22,8 @@
 
 package com.dmdirc.logger;
 
-import com.dmdirc.Config;
 import com.dmdirc.Main;
+import com.dmdirc.config.IdentityManager;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -87,11 +87,12 @@ public final class Logger {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);
         }
         
-        if (sendable && Config.getOptionBool("general", "submitErrors")) {
+        if (sendable && IdentityManager.getGlobalConfig().getOptionBool("general", "submitErrors")) {
             ErrorManager.getErrorManager().sendError(error);
         }
         
-        if (level == ErrorLevel.FATAL && !Config.getOptionBool("general", "submitErrors")) {
+        if (level == ErrorLevel.FATAL
+                && !IdentityManager.getGlobalConfig().getOptionBool("general", "submitErrors")) {
             error.setReportStatus(ErrorReportStatus.FINISHED);
         }
         
@@ -127,7 +128,7 @@ public final class Logger {
         }
         
         final ProgramError error = new ProgramError(
-                ErrorManager.getErrorManager().getNextErrorID(), level, message, 
+                ErrorManager.getErrorManager().getNextErrorID(), level, message,
                 trace, new Date(System.currentTimeMillis()));
         
         writeError(error);

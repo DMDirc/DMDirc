@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.components;
 
-import com.dmdirc.Config;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
@@ -129,7 +128,8 @@ public abstract class InputFrame extends Frame implements InputWindow,
     
     /** {@inheritDoc} */
     public void open() {
-        if (Config.getOptionBool("ui", "awayindicator") && getContainer().getServer() != null) {
+        if (getConfigManager().getOptionBool("ui", "awayindicator")
+                && getContainer().getServer() != null) {
             awayLabel.setVisible(getContainer().getServer().isAway());
         }
         super.open();
@@ -314,7 +314,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
     /** {@inheritDoc} */
     public void keyPressed(final KeyEvent event) {
         if (event.getSource() == getTextPane()
-        && (Config.getOptionBool("ui", "quickCopy")
+        && (getConfigManager().getOptionBool("ui", "quickCopy")
         || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
             event.setSource(getInputField());
             getInputField().requestFocus();
@@ -420,7 +420,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
         if (clipboard != null && clipboardLines.length > 1) {
             clipboard = getInputField().getText() + clipboard;
             //check the limit
-            final int pasteTrigger = Config.getOptionInt("ui", "pasteProtectionLimit", 1);
+            final int pasteTrigger = getConfigManager().getOptionInt("ui", "pasteProtectionLimit", 1);
             //check whether the number of lines is over the limit
             if (parent.getNumLines(clipboard) > pasteTrigger) {
                 //show the multi line paste dialog

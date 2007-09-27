@@ -22,11 +22,11 @@
 
 package com.dmdirc.addons.systray;
 
-import com.dmdirc.Config;
 import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.messages.Styliser;
@@ -42,7 +42,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.SwingUtilities;
 
 /**
  * The Systray plugin shows DMDirc in the user's system tray, and allows
@@ -186,7 +185,8 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     /** {@inheritDoc} */
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
-        if (type == CoreActionType.CLIENT_MINIMISED && Config.getOptionBool("plugin-systray", "autominimise")) {
+        if (type == CoreActionType.CLIENT_MINIMISED
+                && IdentityManager.getGlobalConfig().getOptionBool("plugin-systray", "autominimise")) {
             Main.getUI().getMainWindow().setVisible(false);
         }
     }

@@ -23,7 +23,6 @@
 package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.BrowserLauncher;
-import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.StringTranscoder;
@@ -138,7 +137,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     public Frame(final FrameContainer owner) {
         super();
         final ConfigManager config = owner.getConfigManager();
-        final Boolean pref = Config.getOptionBool("ui", "maximisewindows");
+        final Boolean pref = config.getOptionBool("ui", "maximisewindows");
         parent = owner;
         commands = new HashMap<String, Command>();
         
@@ -198,7 +197,7 @@ public abstract class Frame extends JInternalFrame implements Window,
                     } else {
                         getTextPane().addStyledString(myLine);
                     }
-                    final int trimSize = Config.getOptionInt("ui",
+                    final int trimSize = getConfigManager().getOptionInt("ui",
                             "frameBufferSize", Integer.MAX_VALUE);
                     if (trimSize > 0) {
                         textPane.trim(trimSize);
@@ -444,7 +443,8 @@ public abstract class Frame extends JInternalFrame implements Window,
      * Not needed for this class. {@inheritDoc}
      */
     public void mouseReleased(final MouseEvent mouseEvent) {
-        if (Config.getOptionBool("ui", "quickCopy") && mouseEvent.getSource() == getTextPane()) {
+        if (getConfigManager().getOptionBool("ui", "quickCopy")
+                && mouseEvent.getSource() == getTextPane()) {
             getTextPane().copy();
             getTextPane().clearSelection();
         }
@@ -543,7 +543,7 @@ public abstract class Frame extends JInternalFrame implements Window,
                 getTextPane().setScrollBarPosition(textPane.getNumLines());
             }
         }
-        if (!Config.getOptionBool("ui", "quickCopy")
+        if (!getConfigManager().getOptionBool("ui", "quickCopy")
         && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
                 && event.getKeyCode() == KeyEvent.VK_C) {
             getTextPane().copy();

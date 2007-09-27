@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
@@ -391,7 +391,7 @@ public final class Styliser {
      * @param attribs The attributes to be modified.
      */
     private static void toggleLink(final SimpleAttributeSet attribs) {
-        if (Config.getOptionBool("ui", "stylelinks")) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "stylelinks")) {
             if (attribs.getAttribute(IRCTextAttribute.HYPERLINK) == null) {
                 // Add the hyperlink style
                 

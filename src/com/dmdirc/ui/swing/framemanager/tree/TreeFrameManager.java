@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.framemanager.tree;
 
-import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
 import com.dmdirc.config.ConfigChangeListener;
@@ -275,10 +274,10 @@ public final class TreeFrameManager implements FrameManager,
         parent.setLayout(new BorderLayout());
         parent.add(scrollPane);
         
-        tree.setBackground(Config.getOptionColor("treeview", "backgroundcolour",
-                Config.getOptionColor("ui", "backgroundcolour", Color.WHITE)));
-        tree.setForeground(Config.getOptionColor("treeview", "foregroundcolour",
-                Config.getOptionColor("ui", "foregroundcolour", Color.BLACK)));
+        tree.setBackground(IdentityManager.getGlobalConfig().getOptionColour("treeview", "backgroundcolour",
+                IdentityManager.getGlobalConfig().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
+        tree.setForeground(IdentityManager.getGlobalConfig().getOptionColour("treeview", "foregroundcolour",
+                IdentityManager.getGlobalConfig().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
         
         this.parent = parent;
     }
@@ -616,10 +615,10 @@ public final class TreeFrameManager implements FrameManager,
     /** {@inheritDoc} */
     public void configChanged(final String domain, final String key, 
             final String oldValue, final String newValue) {
-        tree.setBackground(Config.getOptionColor("treeview", "backgroundcolour",
-                Config.getOptionColor("ui", "backgroundcolour", Color.WHITE)));
-        tree.setForeground(Config.getOptionColor("treeview", "foregroundcolour",
-                Config.getOptionColor("ui", "foregroundcolour", Color.BLACK)));
+        tree.setBackground(IdentityManager.getGlobalConfig().getOptionColour("treeview", "backgroundcolour",
+                IdentityManager.getGlobalConfig().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
+        tree.setForeground(IdentityManager.getGlobalConfig().getOptionColour("treeview", "foregroundcolour",
+                IdentityManager.getGlobalConfig().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
         
         tree.repaint();
     }
