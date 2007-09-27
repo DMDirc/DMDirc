@@ -25,12 +25,15 @@ package com.dmdirc.commandparser.commands.global;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.commandparser.IntelligentCommand;
+import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.updater.UpdateChecker;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides various handy ways to test or debug the client.
@@ -61,6 +64,11 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
                     + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
                     + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
                     + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! ");
+            }
+        } else if (command.equals("configstats")) {
+            for (Map.Entry<String, Integer> entry : ConfigManager.getStats().entrySet()) {
+                sendLine(origin, isSilent, "commandOutput",
+                        entry.getKey() + " - " + entry.getValue());
             }
         } else {
             sendLine(origin, isSilent, "commandError", "Unknown debug action.");
@@ -96,6 +104,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         res.add("fakeupdate");
         res.add("showraw");
         res.add("colourspam");
+        res.add("configstats");
         
         return res;
     }

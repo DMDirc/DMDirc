@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * The config manager manages the various config sources for each entity.
@@ -46,7 +47,10 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
+    
+    /** Temporary map for lookup stats. */
+    private static final Map<String, Integer> stats = new TreeMap<String, Integer>();    
     
     /** A list of sources for this config manager. */
     private List<Identity> sources;
@@ -107,6 +111,8 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
      * @return The value of the option
      */
     public String getOption(final String domain, final String option) {
+        doStats(domain, option);
+        
         for (Identity source : sources) {
             if (source.hasOption(domain, option)) {
                 return source.getOption(domain, option);
@@ -126,6 +132,8 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
      */
     public String getOption(final String domain, final String option,
             final String fallback) {
+        doStats(domain, option);
+        
         for (Identity source : sources) {
             if (source.hasOption(domain, option)) {
                 return source.getOption(domain, option);
@@ -133,6 +141,27 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
         }
         
         return fallback;
+    }
+    
+    /**
+     * Records the lookup request for the specified domain & option.
+     * 
+     * @param domain The domain that is being looked up
+     * @param option The option that is being looked up
+     */
+    private void doStats(final String domain, final String option) {
+        final String key = domain + "." + option;
+        
+        stats.put(key, 1 + (stats.containsKey(key) ? stats.get(key) : 0));
+    }
+    
+    /**
+     * Retrieves the statistic map.
+     * 
+     * @return A map of config options to lookup counts
+     */
+    public static Map<String, Integer> getStats() {
+        return stats;
     }
     
     /**
