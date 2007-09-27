@@ -47,7 +47,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** Temporary map for lookup stats. */
     private static final Map<String, Integer> stats = new TreeMap<String, Integer>();    
@@ -296,6 +296,8 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
      * @return True iff the option exists, false otherwise.
      */
     public boolean hasOption(final String domain, final String option) {
+        doStats(domain, option);
+        
         for (Identity source : sources) {
             if (source.hasOption(domain, option)) {
                 return true;
