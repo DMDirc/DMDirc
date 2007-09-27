@@ -26,6 +26,7 @@ import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.resourcemanager.ResourceManager;
 import com.dmdirc.ui.interfaces.FirstRunWizard;
 import com.dmdirc.ui.swing.dialogs.ProfileEditorDialog;
@@ -105,6 +106,7 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
         try {
             resourceManager.extractResources("com/dmdirc/addons",
                     Main.getConfigDir() + "plugins");
+            PluginManager.getPluginManager().reloadAllPlugins();
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.LOW, "Failed to extract plugins");
         }
@@ -161,7 +163,7 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
             steps.add(new UpdateStep());
         }
         
-        wizardDialog = new WizardDialog("Setup wizard", steps, this, true);
+        wizardDialog = new WizardDialog(firstRun ? "Setup wizard" : "Migration wizard", steps, this, true);
         
         wizardDialog.setPreferredSize(new Dimension(400, 350));
         
