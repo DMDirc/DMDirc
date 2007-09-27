@@ -55,21 +55,29 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             Logger.appError(ErrorLevel.HIGH, "Debug (app) error message", new Exception());
         } else if (command.equals("fakeupdate")) {
             new UpdateChecker().doUpdateAvailable("outofdate dummy 1337 0 http://www.example.com/");
-        } else if (command.equals("showraw") && origin != null) {
-            
+        } else if (command.equals("showraw") && origin != null && origin.getContainer() != null
+                && origin.getContainer().getServer() != null) {
+            origin.getContainer().getServer().addRaw();
         } else if (command.equals("colourspam") && origin != null) {
             for (int i = 0; i < 100; i++) {
-            sendLine(origin, isSilent, "commandOutput", ((char) 3) + "5Colour! "
-                    + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
-                    + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
-                    + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
-                    + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! ");
+                sendLine(origin, isSilent, "commandOutput", ((char) 3) + "5Colour! "
+                        + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
+                        + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
+                        + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
+                        + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! ");
             }
         } else if (command.equals("configstats")) {
             for (Map.Entry<String, Integer> entry : ConfigManager.getStats().entrySet()) {
                 sendLine(origin, isSilent, "commandOutput",
                         entry.getKey() + " - " + entry.getValue());
             }
+        } else if (command.equals("meminfo")) {
+            sendLine(origin, isSilent, "commandOutput", "Total Memory: " + Runtime.getRuntime().totalMemory());
+            sendLine(origin, isSilent, "commandOutput", "Free Memory: " + Runtime.getRuntime().freeMemory());
+            sendLine(origin, isSilent, "commandOutput", "Used Memory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));
+        } else if (command.equals("rungc")) {
+            System.gc();
+            sendLine(origin, isSilent, "commandOutput", "Invoked garbage collector.");
         } else {
             sendLine(origin, isSilent, "commandError", "Unknown debug action.");
         }
@@ -105,6 +113,8 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         res.add("showraw");
         res.add("colourspam");
         res.add("configstats");
+        res.add("meminfo");
+        res.add("rungc");
         
         return res;
     }

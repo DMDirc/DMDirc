@@ -297,11 +297,8 @@ public final class Server extends WritableFrameContainer implements
         }
         
         if (raw == null && IdentityManager.getGlobalConfig().getOptionBool("general", "showrawwindow")) {
-            raw = new Raw(this);
-            Main.getUI().getMainWindow().getFrameManager().addCustom(this, raw);
-        }
-        
-        if (raw != null) {
+            addRaw();
+        } else if (raw != null) {
             raw.registerCallbacks();
         }
         
@@ -448,6 +445,15 @@ public final class Server extends WritableFrameContainer implements
         }
         
         return res;
+    }
+    
+    /**
+     * Adds a raw window to this server.
+     */
+    public void addRaw() {
+        raw = new Raw(this);
+        Main.getUI().getMainWindow().getFrameManager().addCustom(this, raw);
+        raw.registerCallbacks();
     }
     
     /**
