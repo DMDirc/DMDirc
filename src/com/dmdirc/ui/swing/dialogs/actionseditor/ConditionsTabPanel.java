@@ -24,12 +24,12 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.IconManager;
 import com.dmdirc.actions.ActionCondition;
+import com.dmdirc.ui.swing.components.ImageButton;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -184,27 +184,15 @@ public final class ConditionsTabPanel extends JPanel implements ActionListener {
                     + "'s " + condition.getComponent().getName() + " "
                     + condition.getComparison().getName()
                     + " '" + condition.getTarget() + "'");
-            final JButton edit = new JButton();
-            final JButton delete = new JButton();
+            final ImageButton edit = new ImageButton("edit",
+                    IconManager.getIconManager().getIcon("edit-inactive"),
+                    IconManager.getIconManager().getIcon("edit"));
+            final ImageButton delete = new ImageButton("delete",
+                    IconManager.getIconManager().getIcon("close-inactive"),
+                    IconManager.getIconManager().getIcon("close-active"));
             
-            edit.setIcon(IconManager.getIconManager().getIcon("edit-inactive"));
-            edit.setRolloverIcon(IconManager.getIconManager().getIcon("edit"));
-            edit.setPressedIcon(IconManager.getIconManager().getIcon("edit"));
-            edit.setContentAreaFilled(false);
-            edit.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-            edit.setMargin(new Insets(0, 0, 0, 0));
-            edit.setPreferredSize(new Dimension(16, 0));
-            edit.setActionCommand("edit");
             edit.addActionListener(this);
             
-            delete.setIcon(IconManager.getIconManager().getIcon("close-inactive"));
-            delete.setRolloverIcon(IconManager.getIconManager().getIcon("close-active"));
-            delete.setPressedIcon(IconManager.getIconManager().getIcon("close-active"));
-            delete.setContentAreaFilled(false);
-            delete.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-            delete.setMargin(new Insets(0, 0, 0, 0));
-            delete.setPreferredSize(new Dimension(16, 0));
-            delete.setActionCommand("delete");
             delete.addActionListener(this);
             
             label.setPreferredSize(new Dimension(Integer.MAX_VALUE, 

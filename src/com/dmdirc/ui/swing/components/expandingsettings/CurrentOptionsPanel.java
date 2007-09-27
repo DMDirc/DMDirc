@@ -24,20 +24,17 @@ package com.dmdirc.ui.swing.components.expandingsettings;
 
 import com.dmdirc.IconManager;
 import com.dmdirc.ui.swing.components.ColourChooser;
+import com.dmdirc.ui.swing.components.ImageButton;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
 
 import java.awt.Dimension;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -211,7 +208,9 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
     private void addCurrentOption(final String configName, final String displayName,
             final JPanel panel, final JComponent component) {
         final JLabel label = new JLabel();
-        final JButton button = new JButton();
+        final ImageButton button = new ImageButton(configName,
+                IconManager.getIconManager().getIcon("close-inactive"),
+                IconManager.getIconManager().getIcon("close-active"));
         
         component.setPreferredSize(new Dimension(150,
                 component.getFont().getSize()));
@@ -221,14 +220,6 @@ public final class CurrentOptionsPanel extends JPanel implements ActionListener 
                 label.getFont().getSize()));
         label.setLabelFor(component);
         
-        button.setIcon(IconManager.getIconManager().getIcon("close-inactive"));
-        button.setRolloverIcon(IconManager.getIconManager().getIcon("close-active"));
-        button.setPressedIcon(IconManager.getIconManager().getIcon("close-active"));
-        button.setContentAreaFilled(false);
-        button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        button.setMargin(new Insets(0, 0, 0, 0));
-        button.setPreferredSize(new Dimension(16, 0));
-        button.setActionCommand(configName);
         button.addActionListener(this);
         
         panel.add(label);

@@ -39,7 +39,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Locale;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -49,7 +48,6 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
 
 /**
  * Status bar, shows message and info on the gui.
@@ -68,7 +66,7 @@ public final class SearchBar extends JPanel implements ActionListener,
     private final Frame parent;
     
     /** Close button. */
-    private JButton closeButton;
+    private ImageButton closeButton;
     
     /** Next match button. */
     private JButton nextButton;
@@ -116,7 +114,9 @@ public final class SearchBar extends JPanel implements ActionListener,
     
     /** Initialises components. */
     private void initComponents() {
-        closeButton = new JButton();
+        closeButton = new ImageButton("close", 
+                IconManager.getIconManager().getIcon("close-inactive"), 
+                IconManager.getIconManager().getIcon("close-active"));
         nextButton = new JButton();
         prevButton = new JButton();
         caseCheck = new JCheckBox();
@@ -126,9 +126,6 @@ public final class SearchBar extends JPanel implements ActionListener,
         prevButton.setText("Earlier");
         caseCheck.setText("Case sensitive");
         
-        closeButton.setMargin(new Insets(0, 0, 0, 0));
-        closeButton.setPreferredSize(new Dimension(50, 0));
-        
         nextButton.setMargin(new Insets(0, 0, 0, 0));
         nextButton.setPreferredSize(new Dimension(50, 0));
         
@@ -137,19 +134,8 @@ public final class SearchBar extends JPanel implements ActionListener,
         
         caseCheck.setPreferredSize(new Dimension(110, 0));
         
-        searchBox.setBorder(BorderFactory.createCompoundBorder(
-                searchBox.getBorder(), new EmptyBorder(2, 2, 2, 2)));
-        
-        searchBox.setPreferredSize(new Dimension(300, searchBox.getFont().getSize() - SMALL_BORDER));
-        
-        
-        
-        closeButton.setIcon(IconManager.getIconManager().getIcon("close-inactive"));
-        closeButton.setRolloverIcon(IconManager.getIconManager().getIcon("close-active"));
-        closeButton.setPressedIcon(IconManager.getIconManager().getIcon("close-active"));
-        closeButton.setContentAreaFilled(false);
-        closeButton.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        closeButton.setPreferredSize(new Dimension(16, 16));
+        searchBox.setPreferredSize(new Dimension(300, searchBox.getFont().
+                getSize() + SMALL_BORDER + SMALL_BORDER));
         
         line = -1;
         index = 0;
