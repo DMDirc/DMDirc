@@ -22,9 +22,9 @@
 
 package com.dmdirc.ui.swing.framemanager;
 
-import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Server;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.swing.framemanager.buttonbar.ButtonBar;
 import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
@@ -57,7 +57,7 @@ public final class MainFrameManager implements FrameManager, Serializable {
     
     /** Creates a new instance of MainFrameManager. */
     public MainFrameManager() {
-        final String manager = Config.getOption("ui", "framemanager", "treeview");
+        final String manager = IdentityManager.getGlobalConfig().getOption("ui", "framemanager", "treeview");
         
         if (manager.equalsIgnoreCase("buttonbar")) {
             frameManager = new ButtonBar();
@@ -79,7 +79,7 @@ public final class MainFrameManager implements FrameManager, Serializable {
     private void readObject(final ObjectInputStream stream)
     throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        final String manager = Config.getOption("ui", "framemanager", "treeview");
+        final String manager = IdentityManager.getGlobalConfig().getOption("ui", "framemanager", "treeview");
         
         if (manager.equalsIgnoreCase("buttonbar")) {
             frameManager = new ButtonBar();

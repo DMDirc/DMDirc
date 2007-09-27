@@ -22,8 +22,8 @@
 
 package com.dmdirc.ui.swing.components;
 
-import com.dmdirc.Config;
 import com.dmdirc.IconManager;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ProgramError;
@@ -123,7 +123,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     /** {@inheritDoc} */
     public void setMessage(final String newMessage,
             final StatusMessageNotifier newNotifier) {
-        final int timeout = Config.getOptionInt("statusBar", "messageDisplayLength", 5);
+        final int timeout =  IdentityManager.getGlobalConfig().getOptionInt("statusBar", "messageDisplayLength", 5);
         setMessage(newMessage, newNotifier, timeout);
     }
     
@@ -170,7 +170,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
             errorTimer.cancel();
         }
         
-        final int displayLength = Config.getOptionInt("statusBar", "errorDisplayLength", 10000);
+        final int displayLength = IdentityManager.getGlobalConfig().getOptionInt("statusBar", "errorDisplayLength", 10000);
         
         if (!DEFAULT_ICON.equals(newIcon)) {
             errorTimer = new TimerTask() {

@@ -314,6 +314,25 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     }
     
     /**
+     * Returns the name of all domains known by this manager.
+     * 
+     * @return A list of domains known to this manager
+     */
+    public List<String> getDomains() {
+        final ArrayList<String> res = new ArrayList<String>();
+        String domain;
+        
+        for (String key : getOptions()) {
+            domain = key.substring(0, key.indexOf('.'));
+            if (!res.contains(domain)) {
+                res.add(domain);
+            }
+        }
+        
+        return res;
+    }    
+    
+    /**
      * Retrieves a list of sources for this config manager.
      * @return This config manager's sources.
      */

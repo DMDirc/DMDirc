@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs;
 
-import com.dmdirc.Config;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
@@ -134,9 +133,9 @@ public final class NewServerDialog extends StandardDialog {
         
         layoutComponents();
         
-        serverField.setText(Config.getOption("general", "server"));
-        portField.setText(Config.getOption("general", "port"));
-        passwordField.setText(Config.getOption("general", "password"));
+        serverField.setText(IdentityManager.getGlobalConfig().getOption("general", "server"));
+        portField.setText(IdentityManager.getGlobalConfig().getOption("general", "port"));
+        passwordField.setText(IdentityManager.getGlobalConfig().getOption("general", "password"));
         
         addCallbacks();
     }

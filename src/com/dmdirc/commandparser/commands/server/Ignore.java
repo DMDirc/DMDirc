@@ -22,7 +22,6 @@
 
 package com.dmdirc.commandparser.commands.server;
 
-import com.dmdirc.Config;
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.ServerCommand;
@@ -126,8 +125,9 @@ public final class Ignore extends ServerCommand {
             }
             
         } else {
-            sendLine(origin, isSilent, "commandUsage", Config.getCommandChar(), "ignore",
-                    "<add|remove|view> [host]");
+            sendLine(origin, isSilent, "commandUsage", 
+                     IdentityManager.getGlobalConfig().getOption("general", "commandchar"),
+                     "ignore", "<add|remove|view> [host]");
         }
         
         server.updateIgnoreList();

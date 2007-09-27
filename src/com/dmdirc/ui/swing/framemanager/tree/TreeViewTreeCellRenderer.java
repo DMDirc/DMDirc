@@ -22,10 +22,9 @@
 
 package com.dmdirc.ui.swing.framemanager.tree;
 
-import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.IconManager;
-import com.dmdirc.ui.messages.ColourManager;
+import com.dmdirc.config.IdentityManager;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.Color;
@@ -102,20 +101,20 @@ public class TreeViewTreeCellRenderer extends JLabel implements
                 + SMALL_BORDER));
 
         if (manager.getRollover() == value) {
-            setBackground(Config.getOptionColor("ui", 
+            setBackground(IdentityManager.getGlobalConfig().getOptionColour("ui", 
                     "treeviewRolloverColour", getBackground()));
         }
 
         final Object nodeObject = node.getUserObject();
 
         if (nodeObject.equals(manager.getSelected())) {
-            if (Config.hasOption("ui", "treeviewActiveBold") 
-                    && Config.getOptionBool("ui", "treeviewActiveBold")) {
+            if (IdentityManager.getGlobalConfig().hasOption("ui", "treeviewActiveBold") 
+                    && IdentityManager.getGlobalConfig().getOptionBool("ui", "treeviewActiveBold")) {
                 setFont(getFont().deriveFont(Font.BOLD));
             }
-            setBackground(Config.getOptionColor("ui", 
+            setBackground(IdentityManager.getGlobalConfig().getOptionColour("ui", 
                     "treeviewActiveBackground", tree.getBackground()));
-            setForeground(Config.getOptionColor("ui", 
+            setForeground(IdentityManager.getGlobalConfig().getOptionColour("ui", 
                     "treeviewActiveForeground", tree.getForeground()));
         } else {
             setFont(getFont().deriveFont(Font.PLAIN));

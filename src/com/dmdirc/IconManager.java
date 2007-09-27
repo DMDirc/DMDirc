@@ -134,7 +134,7 @@ public final class IconManager implements ConfigChangeListener {
         final URL defaultURL = cldr.getResource("com/dmdirc/res/" + type + ".png");
         
         //Get the path for the url
-        final String path = Config.getOption("icon", type, "com/dmdirc/res/" + type + ".png");
+        final String path = IdentityManager.getGlobalConfig().getOption("icon", type, "com/dmdirc/res/" + type + ".png");
         
         //Get the url for the speficied path
         URL imageURL = cldr.getResource(path);

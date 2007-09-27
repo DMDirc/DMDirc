@@ -23,10 +23,10 @@
 package com.dmdirc.ui.swing.framemanager.tree;
 
 import com.dmdirc.Channel;
-import com.dmdirc.Config;
 import com.dmdirc.Query;
 import com.dmdirc.Raw;
 import com.dmdirc.Server;
+import com.dmdirc.config.IdentityManager;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -88,7 +88,7 @@ public class TreeViewModel extends DefaultTreeModel {
 	    final DefaultMutableTreeNode parent) {
 	
 	if (parent.equals(root)
-	&& !Config.getOptionBool("treeview", "sortservers")) {
+	&& !IdentityManager.getGlobalConfig().getOptionBool("treeview", "sortservers")) {
 	    return parent.getChildCount();
 	}
 	
@@ -98,7 +98,7 @@ public class TreeViewModel extends DefaultTreeModel {
 	    if (sortBefore(newChild, child)) {
 		return i;
 	    } else if (!sortAfter(newChild, child)
-	    && Config.getOptionBool("treeview", "sortwindows")
+	    && IdentityManager.getGlobalConfig().getOptionBool("treeview", "sortwindows")
 	    && newChild.getUserObject().toString().compareToIgnoreCase(
 		    child.getUserObject().toString()) < 0) {
 		return i;

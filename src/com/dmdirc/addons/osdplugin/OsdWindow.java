@@ -22,8 +22,8 @@
 
 package com.dmdirc.addons.osdplugin;
 
-import com.dmdirc.Config;
 import com.dmdirc.Main;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.swing.MainFrame;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 
@@ -70,27 +70,29 @@ public final class OsdWindow extends JDialog implements MouseListener,
         setFocusableWindowState(false);
         setAlwaysOnTop(true);
         setSize(new Dimension(500, 
-                Config.getOptionInt("plugin-OSD", "fontSize", 20) + LARGE_BORDER));
+                IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "fontSize", 20)
+                + LARGE_BORDER));
         setResizable(false);
         setUndecorated(true);
         
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         
-        setLocation(Config.getOptionInt("plugin-OSD", "locationX", 20),
-                Config.getOptionInt("plugin-OSD", "locationY", 20));
+        setLocation(IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "locationX", 20),
+                IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "locationY", 20));
         
         final JPanel panel = new JPanel();
         panel.setBorder(new LineBorder(Color.BLACK));
-        panel.setBackground(Config.getOptionColor("plugin-OSD",
+        panel.setBackground(IdentityManager.getGlobalConfig().getOptionColour("plugin-OSD",
                 "bgcolour", Color.decode("#2222aa")));
         
         setContentPane(panel);
         setLayout(new BorderLayout());
         
         final JLabel label = new JLabel(text);
-        label.setForeground(Config.getOptionColor("plugin-OSD",
+        label.setForeground(IdentityManager.getGlobalConfig().getOptionColour("plugin-OSD",
                 "fgcolour", Color.decode("#ffffff")));
-        label.setFont(label.getFont().deriveFont((float) Config.getOptionInt("plugin-OSD",
+        label.setFont(label.getFont().deriveFont(
+                (float) IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD",
                 "fontSize", 20)));
         label.setHorizontalAlignment(SwingConstants.CENTER);
         add(label);
@@ -105,7 +107,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
                 public void run() {
                     setVisible(false);
                 }
-            }, Config.getOptionInt("plugin-OSD", "timeout", 15) * 1000);
+            }, IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "timeout", 15) * 1000);
         }
     }
     

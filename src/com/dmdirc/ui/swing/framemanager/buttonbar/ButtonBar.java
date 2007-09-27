@@ -22,10 +22,10 @@
 
 package com.dmdirc.ui.swing.framemanager.buttonbar;
 
-import com.dmdirc.Config;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.Window;
@@ -101,7 +101,8 @@ public final class ButtonBar implements FrameManager, ActionListener,
     public ButtonBar() {
         windows = new HashMap<Server, List<FrameContainer>>();
         buttons = new HashMap<FrameContainer, JToggleButton>();
-        position = FramemanagerPosition.getPosition(Config.getOption("ui", "framemanagerPosition"));
+        position = FramemanagerPosition.getPosition(
+                IdentityManager.getGlobalConfig().getOption("ui", "framemanagerPosition"));
         
         panel = new JPanel(new GridBagLayout());
     }

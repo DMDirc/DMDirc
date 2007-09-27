@@ -22,10 +22,10 @@
 
 package com.dmdirc.commandparser.commands.global;
 
-import com.dmdirc.Config;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.GlobalCommand;
 import com.dmdirc.commandparser.IntelligentCommand;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -79,10 +79,10 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
         final StringBuffer output = new StringBuffer(67);
         
         output.append("Valid domains (use ");
-        output.append(Config.getCommandChar());
+        output.append(IdentityManager.getGlobalConfig().getOption("general", "commandchar"));
         output.append("set <domain> to see options within a domain): ");
         
-        for (String domain : Config.getDomains()) {
+        for (String domain : IdentityManager.getGlobalConfig().getDomains()) {
             output.append(domain);
             output.append(", ");
         }
@@ -107,7 +107,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
         
         boolean found = false;
         
-        for (String option : Config.getOptions(domain)) {
+        for (String option : IdentityManager.getGlobalConfig().getOptions(domain)) {
             output.append(option);
             output.append(", ");
             found = true;
@@ -116,7 +116,8 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
         if (found) {
             sendLine(origin, isSilent, "commandOutput", output.substring(0, output.length() - 2));
         } else {
-            sendLine(origin, isSilent, "commandError", "There are no options in the domain '" + domain + "'.");
+            sendLine(origin, isSilent, "commandError", 
+                    "There are no options in the domain '" + domain + "'.");
         }
     }
     
@@ -130,9 +131,9 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      */
     private void doShowOption(final InputWindow origin,
             final boolean isSilent, final String domain, final String option) {
-        if (Config.hasOption(domain, option)) {
+        if (IdentityManager.getGlobalConfig().hasOption(domain, option)) {
             sendLine(origin, isSilent, "commandOutput", "The current value of " + domain + "." + option
-                    + " is: " + Config.getOption(domain, option));
+                    + " is: " + IdentityManager.getGlobalConfig().getOption(domain, option));
         } else {
             sendLine(origin, isSilent, "commandError", "Option not found: " + domain + "." + option);
         }
@@ -150,7 +151,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     private void doSetOption(final InputWindow origin,
             final boolean isSilent, final String domain, final String option,
             final String newvalue) {
-        Config.setOption(domain, option, newvalue);
+        IdentityManager.getConfigIdentity().setOption(domain, option, newvalue);
         
         sendLine(origin, isSilent, "commandOutput", domain + "." + option + " has been set to: " + newvalue);
     }
@@ -165,7 +166,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
      */
     private void doUnsetOption(final InputWindow origin,
             final boolean isSilent, final String domain, final String option) {
-        Config.unsetOption(domain, option);
+        IdentityManager.getConfigIdentity().unsetOption(domain, option);
         
         sendLine(origin, isSilent, "commandOutput", domain + "." + option + " has been unset.");
     }
@@ -201,18 +202,18 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         if (arg == 0) {
-            res.addAll(Config.getDomains());
+            res.addAll(IdentityManager.getGlobalConfig().getDomains());
             res.add("--unset");
             res.setIncludeNormal(false);
         } else if (arg == 1 && previousArgs.size() >= 1) {
             if (previousArgs.get(0).equalsIgnoreCase("--unset")) {
-                res.addAll(Config.getDomains());
+                res.addAll(IdentityManager.getGlobalConfig().getDomains());
             } else {
-                res.addAll(Config.getOptions(previousArgs.get(0)));
+                res.addAll(IdentityManager.getGlobalConfig().getOptions(previousArgs.get(0)));
             }
             res.setIncludeNormal(false);
         } else if (arg == 2 && previousArgs.get(0).equalsIgnoreCase("--unset")) {
-            res.addAll(Config.getOptions(previousArgs.get(1)));
+            res.addAll(IdentityManager.getGlobalConfig().getOptions(previousArgs.get(1)));
             res.setIncludeNormal(false);
         }
         

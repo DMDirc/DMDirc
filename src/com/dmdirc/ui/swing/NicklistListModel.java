@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing;
 
-import com.dmdirc.Config;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.parser.ChannelClientInfo;
 
 import java.util.ArrayList;
@@ -89,8 +89,8 @@ public final class NicklistListModel extends AbstractListModel {
      * method changes
      */
     public void sort() {
-        final boolean sortByMode = Config.getOptionBool("ui", "sortByMode");
-        final boolean sortByCase = Config.getOptionBool("ui", "sortByCase");
+        final boolean sortByMode = IdentityManager.getGlobalConfig().getOptionBool("ui", "sortByMode");
+        final boolean sortByCase = IdentityManager.getGlobalConfig().getOptionBool("ui", "sortByCase");
         
         synchronized (nicknames) {
             Collections.sort(nicknames,
