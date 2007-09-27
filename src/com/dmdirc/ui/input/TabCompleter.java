@@ -78,6 +78,9 @@ public final class TabCompleter implements Serializable {
         final TabCompleterResult result = new TabCompleterResult();
         
         final List<String> targets = new ArrayList<String>();
+        
+        final boolean caseSensitive = IdentityManager.getGlobalConfig()
+                .getOptionBool("tabcompletion", "casesensitive");
                 
         if (additionals != null) {
             targets.addAll(additionals);
@@ -93,7 +96,7 @@ public final class TabCompleter implements Serializable {
                 continue;
             }
             
-            if (IdentityManager.getGlobalConfig().getOptionBool("tabcompletion", "casesensitive")) {
+            if (caseSensitive) {
                 if (entry.startsWith(partial)) {
                     result.addResult(entry);
                 }
