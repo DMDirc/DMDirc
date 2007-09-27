@@ -31,11 +31,11 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.dmdirc.Config;
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.logger.ErrorLevel;
 
@@ -67,8 +67,8 @@ public class PluginManager {
 	 * Autoloads plugins.
 	 */
 	private void doAutoLoad() {
-		if (Config.hasOption("plugins", "autoload")) {
-			final String[] autoLoadList = Config.getOption("plugins", "autoload").split("\n");
+		if (IdentityManager.getGlobalConfig().hasOption("plugins", "autoload")) {
+			final String[] autoLoadList = IdentityManager.getGlobalConfig().getOption("plugins", "autoload").split("\n");
 			for (String plugin : autoLoadList) {
 				plugin = plugin.trim();
 				if (!plugin.isEmpty() && plugin.charAt(0) != '#' && addPlugin(plugin)) {
@@ -224,8 +224,8 @@ public class PluginManager {
 	 * @param plugin to add/remove (Decided automatically based on isActive())
 	 */
 	public void updateAutoLoad(final Plugin plugin) {
-		if (Config.hasOption("plugins", "autoload")) {
-			final String[] autoLoadList = Config.getOption("plugins", "autoload").split("\n");
+		if (IdentityManager.getGlobalConfig().hasOption("plugins", "autoload")) {
+			final String[] autoLoadList = IdentityManager.getGlobalConfig().getOption("plugins", "autoload").split("\n");
 			final StringBuffer newAutoLoadList = new StringBuffer();
 			boolean found = false;
 			for (String pluginName : autoLoadList) {
@@ -242,9 +242,9 @@ public class PluginManager {
 			if (!found && plugin.isActive()) {
 				newAutoLoadList.append(plugin.getClass().getName()+"\n");
 			}
-			Config.setOption("plugins", "autoload", newAutoLoadList.toString());
+			IdentityManager.getConfigIdentity().setOption("plugins", "autoload", newAutoLoadList.toString());
 		} else if (plugin.isActive()) {
-			Config.setOption("plugins", "autoload", plugin.getClass().getName());
+			IdentityManager.getConfigIdentity().setOption("plugins", "autoload", plugin.getClass().getName());
 		}
 	}
 	
