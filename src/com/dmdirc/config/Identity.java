@@ -226,11 +226,13 @@ public class Identity implements Serializable, Comparable<Identity> {
             final String value) {
         final String oldValue = getOption(domain, option);
         
-        properties.setProperty(domain + "." + option, value);
-        needSave = true;
-        
-        for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
-            listener.configChanged(domain, option, oldValue, value);
+        if (!oldValue.equals(value)) {
+            properties.setProperty(domain + "." + option, value);
+            needSave = true;
+            
+            for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
+                listener.configChanged(domain, option, oldValue, value);
+            }
         }
     }
     
@@ -410,7 +412,7 @@ public class Identity implements Serializable, Comparable<Identity> {
      */
     protected static Identity createIdentity(final Properties properties) {
         if (!properties.containsKey("identity.name") || properties.getProperty("identity.name").isEmpty()) {
-            Logger.appError(ErrorLevel.LOW, "createIdentity caleld with invalid identity", 
+            Logger.appError(ErrorLevel.LOW, "createIdentity caleld with invalid identity",
                     new InvalidIdentityFileException("identity.name is not set"));
             return null;
         }
