@@ -41,13 +41,16 @@ import java.util.List;
 public final class IdentityManager {
     
     /** The identities that have been loaded into this manager. */
-    private static List<Identity> identities;
+    private final static List<Identity> identities = new ArrayList<Identity>();
     
     /** The config managers that have registered with this manager. */
-    private static List<ConfigManager> managers;
+    private final static List<ConfigManager> managers = new ArrayList<ConfigManager>();
     
     /** The identity file used for the global config. */
     private static Identity config;
+    
+    /** The config manager used for global settings. */
+    private static ConfigManager globalconfig;
     
     /** Creates a new instance of IdentityManager. */
     private IdentityManager() {
@@ -55,8 +58,8 @@ public final class IdentityManager {
     
     /** Loads all identity files. */
     public static void load() {
-        identities = new ArrayList<Identity>();
-        managers = new ArrayList<ConfigManager>();
+        identities.clear();
+        managers.clear();
         
         loadDefaults();
         loadUser();
@@ -155,10 +158,8 @@ public final class IdentityManager {
      * Saves all modified identity files to disk.
      */
     public static void save() {
-        if (identities != null) {
-            for (Identity identity : identities) {
-                identity.save();
-            }
+        for (Identity identity : identities) {
+            identity.save();
         }
     }
     
@@ -167,10 +168,6 @@ public final class IdentityManager {
      * @param identity The identity to be added
      */
     public static void addIdentity(final Identity identity) {
-        if (identities == null) {
-            load();
-        }
-        
         identities.add(identity);
         
         for (ConfigManager manager : managers) {
@@ -191,10 +188,6 @@ public final class IdentityManager {
      * @param manager The ConfigManager to add
      */
     public static void addConfigManager(final ConfigManager manager) {
-        if (managers == null) {
-            load();
-        }
-        
         managers.add(manager);
     }
     
@@ -204,10 +197,6 @@ public final class IdentityManager {
      */
     public static List<Identity> getProfiles() {
         final List<Identity> profiles = new ArrayList<Identity>();
-        
-        if (identities == null) {
-            load();
-        }
         
         for (Identity identity : identities) {
             if (identity.isProfile()) {
@@ -236,24 +225,24 @@ public final class IdentityManager {
         
         for (Identity identity : identities) {
             switch (identity.getTarget().getType()) {
-                case ConfigTarget.TYPE_IRCD:
-                    comp = ircd;
-                    break;
-                case ConfigTarget.TYPE_NETWORK:
-                    comp = network;
-                    break;
-                case ConfigTarget.TYPE_SERVER:
-                    comp = server;
-                    break;
-                case ConfigTarget.TYPE_CHANNEL:
-                    comp = channel;
-                    break;
-                case ConfigTarget.TYPE_PROFILE:
-                    comp = null;
-                    break;
-                default:
-                    comp = "";
-                    break;
+            case ConfigTarget.TYPE_IRCD:
+                comp = ircd;
+                break;
+            case ConfigTarget.TYPE_NETWORK:
+                comp = network;
+                break;
+            case ConfigTarget.TYPE_SERVER:
+                comp = server;
+                break;
+            case ConfigTarget.TYPE_CHANNEL:
+                comp = channel;
+                break;
+            case ConfigTarget.TYPE_PROFILE:
+                comp = null;
+                break;
+            default:
+                comp = "";
+                break;
             }
             
             if (comp != null && (comp.equalsIgnoreCase(identity.getTarget().getData()) || comp.isEmpty())) {
@@ -277,6 +266,19 @@ public final class IdentityManager {
     public static List<Identity> getSources(final String ircd,
             final String network, final String server) {
         return getSources(ircd, network, server, "<Unknown>");
+    }
+    
+    /**
+     * Retrieves the global config manager.
+     *
+     * @return The global config manager
+     */
+    public static synchronized ConfigManager getGlobalConfig() {
+        if (globalconfig == null) {
+            globalconfig = new ConfigManager("", "", "");
+        }
+        
+        return globalconfig;
     }
     
     /**
