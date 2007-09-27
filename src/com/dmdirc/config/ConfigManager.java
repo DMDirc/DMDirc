@@ -50,7 +50,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     private static final long serialVersionUID = 3;
     
     /** Temporary map for lookup stats. */
-    private static final Map<String, Integer> stats = new TreeMap<String, Integer>();    
+    private static final Map<String, Integer> stats = new TreeMap<String, Integer>();
     
     /** A list of sources for this config manager. */
     private List<Identity> sources;
@@ -145,7 +145,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     
     /**
      * Records the lookup request for the specified domain & option.
-     * 
+     *
      * @param domain The domain that is being looked up
      * @param option The option that is being looked up
      */
@@ -157,7 +157,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     
     /**
      * Retrieves the statistic map.
-     * 
+     *
      * @return A map of config options to lookup counts
      */
     public static Map<String, Integer> getStats() {
@@ -209,7 +209,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
         }
         
         return Arrays.asList(getOption(domain, option).split("\n"));
-    }    
+    }
     
     /**
      * Retrieves an integral representation of the specified option.
@@ -308,6 +308,15 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     }
     
     /**
+     * Removes the specified identity from this manager.
+     *
+     * @param identity The identity to be removed
+     */
+    public void removeIdentity(final Identity identity) {
+        sources.remove(identity);
+    }
+    
+    /**
      * Called whenever there is a new identity available. Checks if the
      * identity is relevant for this manager, and adds it if it is.
      * @param identity The identity to be checked
@@ -316,25 +325,25 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
         String comp = "";
         
         switch (identity.getTarget().getType()) {
-            case ConfigTarget.TYPE_IRCD:
-                comp = ircd;
-                break;
-            case ConfigTarget.TYPE_NETWORK:
-                comp = network;
-                break;
-            case ConfigTarget.TYPE_SERVER:
-                comp = server;
-                break;
-            case ConfigTarget.TYPE_CHANNEL:
-                comp = channel;
-                break;
-            case ConfigTarget.TYPE_PROFILE:
-                // We don't want profiles'
-                comp = null;
-                break;
-            default:
-                comp = "<Unknown>";
-                break;
+        case ConfigTarget.TYPE_IRCD:
+            comp = ircd;
+            break;
+        case ConfigTarget.TYPE_NETWORK:
+            comp = network;
+            break;
+        case ConfigTarget.TYPE_SERVER:
+            comp = server;
+            break;
+        case ConfigTarget.TYPE_CHANNEL:
+            comp = channel;
+            break;
+        case ConfigTarget.TYPE_PROFILE:
+            // We don't want profiles'
+            comp = null;
+            break;
+        default:
+            comp = "<Unknown>";
+            break;
         }
         
         if (comp != null && comp.equalsIgnoreCase(identity.getTarget().getData())) {
@@ -346,7 +355,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     
     /**
      * Returns the name of all domains known by this manager.
-     * 
+     *
      * @return A list of domains known to this manager
      */
     public List<String> getDomains() {
@@ -361,7 +370,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
         }
         
         return res;
-    }    
+    }
     
     /**
      * Retrieves a list of sources for this config manager.

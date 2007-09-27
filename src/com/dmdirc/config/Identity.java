@@ -37,8 +37,10 @@ import java.io.OutputStream;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * An identity is a group of settings that are applied to a connection, server,
@@ -314,6 +316,23 @@ public class Identity implements Serializable, Comparable<Identity> {
      */
     public void save() {
         if (needSave && file != null) {
+            if (myTarget.getType() == ConfigTarget.TYPE_GLOBAL) {
+                // If we're the global config, unset useless settings that are
+                // covered by global defaults.
+                
+                final ConfigManager globalConfig = new ConfigManager("", "", "");
+                globalConfig.removeIdentity(this);
+                
+                for (Object key : new HashSet<Object>(properties.keySet())) {
+                    final String domain = ((String) key).substring(0, ((String) key).indexOf('.'));
+                    final String option = ((String) key).substring(1 + ((String) key).indexOf('.'));
+                    final String global = globalConfig.getOption(domain, option, null);
+                    if (properties.getProperty((String) key).equals(global)) {
+                        properties.remove(key);
+                    }
+                }
+            }
+            
             try {
                 final OutputStream stream = new FileOutputStream(file);
                 properties.store(stream, null);
