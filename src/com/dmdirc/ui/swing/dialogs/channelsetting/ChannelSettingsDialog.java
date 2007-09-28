@@ -51,38 +51,39 @@ import javax.swing.WindowConstants;
  * Allows the user to modify channel settings (modes, topics, etc).
  */
 public final class ChannelSettingsDialog extends StandardDialog implements ActionListener {
-
+    
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 7;
-
+    
     /** Channel settings dialogs, semi singleton use. */
-    private static Map<Channel, ChannelSettingsDialog> dialogs;
-
+    private static Map<Channel, ChannelSettingsDialog> dialogs =
+            new HashMap<Channel, ChannelSettingsDialog>();
+    
     /** The channel object that this dialog belongs to. */
     private final Channel channel;
-
+    
     /** Tabbed pane. */
     private JTabbedPane tabbedPane;
-
+    
     /** Client settings panel. */
     private SettingsPanel channelSettingsPane;
-
+    
     /** List modes panel. */
     private ChannelModesPane channelModesPane;
-
+    
     /** List modes panel. */
     private TopicModesPane topicModesPane;
-
+    
     /** List modes panel. */
     private ChannelListModesPane channelListModesPane;
-
+    
     /** Channel identity file. */
     private final Identity identity;
-
+    
     /**
      * Creates a new instance of ChannelSettingsDialog.
      *
@@ -90,19 +91,19 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
      */
     private ChannelSettingsDialog(final Channel newChannel) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
-
+        
         channel = newChannel;
         identity =
                 IdentityManager.getChannelConfig(channel.getServer().
                 getNetwork(), channel.getChannelInfo().getName());
-
+        
         initComponents();
         initListeners();
-
+        
         pack();
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
     }
-
+    
     /**
      * Returns an instance of the CSD for the specified channel.
      *
@@ -110,36 +111,33 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
      *
      * @return CSD instance for the specified channel
      */
-    public static synchronized ChannelSettingsDialog getChannelSettingDialog(final Channel channel) {
-        if (dialogs == null) {
-            dialogs =
-                    new HashMap<Channel, ChannelSettingsDialog>();
+    public static ChannelSettingsDialog getChannelSettingDialog(final Channel channel) {
+        synchronized (dialogs) {
+            if (dialogs.containsKey(channel)) {
+                dialogs.get(channel).update();
+            } else {
+                dialogs.put(channel, new ChannelSettingsDialog(channel));
+            }
+            
+            return dialogs.get(channel);
         }
-
-        if (dialogs.containsKey(channel)) {
-            dialogs.get(channel).update();
-        } else {
-            dialogs.put(channel, new ChannelSettingsDialog(channel));
-        }
-
-        return dialogs.get(channel);
     }
-
+    
     /** Initialises the main UI components. */
     private void initComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
         tabbedPane = new JTabbedPane();
-
+        
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         getContentPane().setLayout(new GridBagLayout());
         setTitle("Channel settings for " + channel);
         setResizable(false);
-
+        
         final JButton button1 = new JButton();
         final JButton button2 = new JButton();
-
+        
         orderButtons(button1, button2);
-
+        
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.gridwidth = 3;
@@ -150,13 +148,13 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
                 new Insets(SMALL_BORDER, SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER);
         getContentPane().add(tabbedPane, constraints);
-
+        
         constraints.weighty = 0.0;
         constraints.gridx = 0;
         constraints.gridy = 1;
         constraints.gridwidth = 1;
         getContentPane().add(Box.createHorizontalGlue(), constraints);
-
+        
         constraints.weightx = 0.0;
         constraints.insets.set(0, SMALL_BORDER, SMALL_BORDER, SMALL_BORDER);
         constraints.gridx = 1;
@@ -164,45 +162,45 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         constraints.anchor = GridBagConstraints.EAST;
         constraints.fill = GridBagConstraints.NONE;
         getContentPane().add(getLeftButton(), constraints);
-
+        
         constraints.gridx = 2;
         constraints.insets.set(0, 0, SMALL_BORDER, SMALL_BORDER);
         getContentPane().add(getRightButton(), constraints);
-
+        
         initIrcTab();
-
+        
         initListModesTab();
-
+        
         initSettingsTab();
-
+        
         tabbedPane.setSelectedIndex(channel.getConfigManager().
                 getOptionInt("dialogstate", "channelsettingsdialog", 0));
     }
-
+    
     /** Updates the dialogs content. */
     private void update() {
         channelListModesPane.update();
         channelModesPane.update();
         channelSettingsPane.update();
         topicModesPane.update();
-
+        
         tabbedPane.setSelectedIndex(channel.getConfigManager().
                 getOptionInt("dialogstate", "channelsettingsdialog", 0));
     }
-
+    
     /** Initialises the IRC Settings tab. */
     private void initIrcTab() {
         final GridBagConstraints constraints = new GridBagConstraints();
         final JPanel settingsPanel = new JPanel(new GridBagLayout());
-
+        
         tabbedPane.addTab("IRC Settings", settingsPanel);
-
+        
         settingsPanel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-
+        
         channelModesPane = new ChannelModesPane(channel);
         topicModesPane = new TopicModesPane(channel, this);
-
+        
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.fill = GridBagConstraints.BOTH;
@@ -212,37 +210,37 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         constraints.gridy = 1;
         settingsPanel.add(topicModesPane, constraints);
     }
-
+    
     /** Initialises the IRC Settings tab. */
     private void initListModesTab() {
         channelListModesPane = new ChannelListModesPane(channel);
         tabbedPane.addTab("List Modes", channelListModesPane);
     }
-
+    
     /** Initialises the channel Settings (identities) tab. */
     private void initSettingsTab() {
-
+        
         initSettingsPanel();
-
+        
         tabbedPane.addTab("Client Settings", channelSettingsPane);
     }
-
+    
     /** Initialises the channel settings. */
     private void initSettingsPanel() {
         channelSettingsPane =
                 new SettingsPanel(identity,
-                "These settings are specific to this channel on this network, " 
+                "These settings are specific to this channel on this network, "
                 + "any settings specified here will overwrite global settings");
-
+        
         channelSettingsPane.addOption("channel.splitusermodes",
                 "Split user modes", OptionType.CHECKBOX);
         channelSettingsPane.addOption("channel.sendwho", "Send channel WHOs",
                 OptionType.CHECKBOX);
         channelSettingsPane.addOption("channel.showmodeprefix", "Show mode prefixes",
                 OptionType.CHECKBOX);
-        channelSettingsPane.addOption("ui.shownickcoloursinnicklist", 
+        channelSettingsPane.addOption("ui.shownickcoloursinnicklist",
                 "Show colours in nicklist", OptionType.CHECKBOX);
-        channelSettingsPane.addOption("ui.shownickcoloursintext", 
+        channelSettingsPane.addOption("ui.shownickcoloursintext",
                 "Show colours in textpane", OptionType.CHECKBOX);
         channelSettingsPane.addOption("general.cyclemessage", "Cycle message",
                 OptionType.TEXTFIELD);
@@ -258,24 +256,24 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
                 OptionType.SPINNER);
         channelSettingsPane.addOption("ui.inputbuffersize", "Input buffer size",
                 OptionType.SPINNER);
-        channelSettingsPane.addOption("ui.inputbackgroundcolour", 
+        channelSettingsPane.addOption("ui.inputbackgroundcolour",
                 "Inputfield background colour", OptionType.COLOUR);
-        channelSettingsPane.addOption("ui.inputforegroundcolour", 
+        channelSettingsPane.addOption("ui.inputforegroundcolour",
                 "Inputfield foreground colour", OptionType.COLOUR);
-        channelSettingsPane.addOption("ui.nicklistbackgroundcolour", 
+        channelSettingsPane.addOption("ui.nicklistbackgroundcolour",
                 "Nicklist background colour", OptionType.COLOUR);
-        channelSettingsPane.addOption("ui.nicklistforegroundcolour", 
+        channelSettingsPane.addOption("ui.nicklistforegroundcolour",
                 "Nicklist foreground colour", OptionType.COLOUR);
-        channelSettingsPane.addOption("channel.encoding", "Encoding", 
+        channelSettingsPane.addOption("channel.encoding", "Encoding",
                 OptionType.TEXTFIELD);
     }
-
+    
     /** Initialises listeners for this dialog. */
     private void initListeners() {
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
     }
-
+    
     /**
      * Called whenever the user clicks on one of the two buttons.
      *
@@ -288,17 +286,17 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
             setVisible(false);
         }
     }
-
+    
     /** Saves the settings. */
     protected void save() {
         channelModesPane.setChangedBooleanModes();
         topicModesPane.setChangedTopic();
         channelSettingsPane.save();
         channelListModesPane.save();
-
+        
         identity.setOption("dialogstate", "channelsettingsdialog",
                 String.valueOf(tabbedPane.getSelectedIndex()));
-
+        
         setVisible(false);
     }
 }
