@@ -458,12 +458,19 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
             final String[] args = ((String) entry.getKey()).split("\\.");
             if (args.length == 2) {
                 if (((String) entry.getValue()).isEmpty() || entry.getValue() == null) {
-                    identity.unsetOption(args[0], args[1]);
+                    if (identity.hasOption(args[0], args[1])) {
+                        identity.unsetOption(args[0], args[1]);
+                    }
                 } else {
+                    final Object object = config.getOption(args[0], args[1]);
                     if ("general".equals(args[0]) && "theme".equals(args[1])) {
-                        identity.setOption(args[0], args[1], themes.get(entry.getValue()));
+                        if (object == null || !object.equals(themes.get(entry.getValue()))) {
+                            identity.setOption(args[0], args[1], themes.get(entry.getValue()));
+                        }
                     } else {
-                        identity.setOption(args[0], args[1], (String) entry.getValue());
+                        if (object == null || !object.equals(entry.getValue())) {
+                            identity.setOption(args[0], args[1], (String) entry.getValue());
+                        }
                     }
                 }
             } else {
