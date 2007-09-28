@@ -322,7 +322,11 @@ public class PluginManager {
 		for (String pluginName : knownPlugins.keySet()) {
 			final Plugin plugin = knownPlugins.get(pluginName);
 			if (plugin instanceof EventPlugin && plugin.isActive()) {
-				((EventPlugin)plugin).processEvent(type, format, arguments);
+				try {
+					((EventPlugin)plugin).processEvent(type, format, arguments);
+				} catch (Exception e) {
+					Logger.userError(ErrorLevel.LOW, "Error with processEvent for "+pluginName+" ("+type+") - "+e.getMessage());
+				}
 			}
 		}
 	}
