@@ -72,21 +72,25 @@ public final class ConfigTarget implements Comparable, Serializable {
     /** Sets this target to be a global config source. */
     public void setGlobal() {
         type = TYPE_GLOBAL;
+        data = "";
     }
     
     /** Sets this target to be a global default source. */
     public void setGlobalDefault() {
         type = TYPE_GLOBALDEFAULT;
+        data = "";
     }
     
     /** Sets this target to be a theme source. */
     public void setTheme() {
         type = TYPE_THEME;
+        data = "";
     }
     
     /** Sets this target to be a profile source. */
     public void setProfile() {
         type = TYPE_PROFILE;
+        data = "";
     }
     
     /**

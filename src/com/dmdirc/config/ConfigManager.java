@@ -342,7 +342,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
             comp = null;
             break;
         default:
-            comp = "<Unknown>";
+            comp = "";
             break;
         }
         
