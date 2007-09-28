@@ -419,6 +419,7 @@ public final class TreeFrameManager implements FrameManager,
      * @param event mouse event.
      */
     public void mouseExited(final MouseEvent event) {
+        tree.repaint();
         //Do nothing
     }
     

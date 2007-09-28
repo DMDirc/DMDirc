@@ -129,7 +129,7 @@ public class TreeViewTreeCellRenderer extends JLabel implements
         setPreferredSize(new Dimension(100000, getFont().getSize()
         + SMALL_BORDER));
         
-        if (manager.getRollover() == value) {
+        if (tree.getMousePosition() != null && manager.getRollover() == value) {
             setBackground(rolloverColour);
         }
         
