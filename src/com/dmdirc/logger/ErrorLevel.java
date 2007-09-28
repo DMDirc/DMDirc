@@ -54,4 +54,40 @@ public enum ErrorLevel {
     public String toString() {
         return value;
     }
+    
+    /**
+     * Returns if the specified error is more important than this one
+     *
+     * @param level Error level to compare
+     *
+     * @return true iif the error is more important
+     */
+    public boolean moreImportant(final ErrorLevel level) {
+        switch (level) {
+            case FATAL:
+                return true;
+            case HIGH:
+                if (this == FATAL) {
+                    return true;
+                }
+                return false;
+            case MEDIUM:
+                if (this == HIGH || this == FATAL) {
+                    return true;
+                }
+                return false;
+            case LOW:
+                if (this == MEDIUM || this == HIGH || this == FATAL) {
+                    return true;
+                }
+                return false;
+            case UNKNOWN:
+                if (this == LOW || this == MEDIUM || this == HIGH || this == FATAL) {
+                    return true;
+                }
+                return false;
+            default:
+                return false;
+        }
+    }
 }

@@ -63,21 +63,6 @@ public final class DummyStatusBar implements StatusBar {
     }
 
     /** {@inheritDoc} */
-    public void setError(final Icon newIcon) {
-        // Do nothing
-    }
-
-    /** {@inheritDoc} */
-    public void setError(final Icon newIcon, final StatusErrorNotifier newNotifier) {
-        // Do nothing
-    }
-
-    /** {@inheritDoc} */
-    public void clearError() {
-        // Do nothing
-    }
-
-    /** {@inheritDoc} */
     public void addComponent(final Component component) {
         // Do nothing
     }

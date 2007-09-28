@@ -24,11 +24,11 @@ package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.IconManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.ErrorListener;
 import com.dmdirc.logger.ErrorManager;
 import com.dmdirc.logger.ProgramError;
 import com.dmdirc.ui.interfaces.StatusBar;
-import com.dmdirc.ui.interfaces.StatusErrorNotifier;
 import com.dmdirc.ui.interfaces.StatusMessageNotifier;
 import com.dmdirc.ui.swing.dialogs.error.ErrorListDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -76,14 +76,11 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     /** current status bar message notifier. */
     private transient StatusMessageNotifier messageNotifier;
     
-    /** current status bar error notifier. */
-    private transient StatusErrorNotifier errorNotifier;
-    
-    /** Timer to clear the error. */
-    private transient TimerTask errorTimer;
-    
     /** Timer to clear the message. */
     private transient TimerTask messageTimer;
+    
+    /** Currently showing error level. */
+    private ErrorLevel errorLevel;
     
     /**
      * Creates a new instance of SwingStatusBar.
@@ -103,6 +100,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         messageLabel.addMouseListener(this);
         iconLabel.addMouseListener(this);
         ErrorManager.getErrorManager().addErrorListener(this);
+        clearError();
         
         setLayout(new SpringLayout());
         
@@ -155,57 +153,30 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     }
     
     /** {@inheritDoc} */
-    public void setError(final Icon newIcon) {
-        setError(newIcon, null);
-    }
-    
-    /** {@inheritDoc} */
-    public synchronized void setError(final Icon newIcon,
-            final StatusErrorNotifier newNotifier) {
-        iconLabel.setIcon(newIcon);
-        errorNotifier = newNotifier;
-        
-        if (errorTimer != null && (System.currentTimeMillis()
-        - errorTimer.scheduledExecutionTime()) <= 0) {
-            errorTimer.cancel();
-        }
-        
-        final int displayLength = IdentityManager.getGlobalConfig().getOptionInt("statusBar", "errorDisplayLength", 10000);
-        
-        if (!DEFAULT_ICON.equals(newIcon)) {
-            errorTimer = new TimerTask() {
-                public void run() {
-                    clearError();
-                }
-            };
-            new Timer("SwingStatusBar errorTimer").schedule(errorTimer,
-                    new Date(System.currentTimeMillis() + 250  + displayLength));
-        }
-    }
-    
-    /** {@inheritDoc} */
     public void clearError() {
-        setError(DEFAULT_ICON);
+        iconLabel.setIcon(DEFAULT_ICON);
+        errorLevel = ErrorLevel.UNKNOWN;
     }
     
     /** {@inheritDoc} */
     public void errorAdded(final ProgramError error) {
-        final Icon icon;
+        if (error.getLevel().moreImportant(errorLevel)) {
+            errorLevel = error.getLevel();
+            iconLabel.setIcon(getIcon(error));
+        }
+    }
+    
+    private Icon getIcon(final ProgramError error) {
         switch (error.getLevel()) {
             case HIGH:
-                icon = IconManager.getIconManager().getIcon("error");
-                break;
+                return IconManager.getIconManager().getIcon("error");
             case MEDIUM:
-                icon = IconManager.getIconManager().getIcon("warning");
-                break;
+                return IconManager.getIconManager().getIcon("warning");
             case LOW:
-                icon = IconManager.getIconManager().getIcon("info");
-                break;
+                return IconManager.getIconManager().getIcon("info");
             default:
-                icon = IconManager.getIconManager().getIcon("info");
-                break;
+                return IconManager.getIconManager().getIcon("info");
         }
-        setError(icon);
     }
     
     /** {@inheritDoc} */
@@ -248,6 +219,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         if (mouseEvent.getButton() == MouseEvent.BUTTON1
                 && mouseEvent.getSource() == iconLabel) {
             ErrorListDialog.getErrorListDialog().setVisible(true);
+            clearError();
         }
     }
     

@@ -67,28 +67,6 @@ public interface StatusBar {
     void clearMessage();
     
     /**
-     * sets the icon in the status bar.
-     *
-     * @param newIcon Icon to display
-     */
-    void setError(final Icon newIcon);
-    
-    /**
-     * sets the icon in the status bar with a specified callback event.
-     *
-     * @param newIcon Icon to display
-     * @param newNotifier status error notifier to be notified for events on
-     * this error
-     */
-    void setError(final Icon newIcon,
-            final StatusErrorNotifier newNotifier);
-    
-    /**
-     * Removes the error state from the status bar.
-     */
-    void clearError();
-    
-    /**
      * Adds a component to the status bar.
      *
      * @param component component to add
