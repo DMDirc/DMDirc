@@ -23,9 +23,9 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.Server;
-import com.dmdirc.commandparser.Command;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.QueryWindow;

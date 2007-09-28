@@ -20,11 +20,14 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser;
+package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.PreviousCommand;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 

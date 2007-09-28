@@ -20,18 +20,24 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser;
+package com.dmdirc.commandparser.parsers;
 
-import com.dmdirc.Channel;
+import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.ChatCommand;
+import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.QueryCommand;
+import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
- * A command parser that is tailored for use in a channel environment. Handles
- * both channel and server commands.
+ * A command parser that is tailored for use in a query environment. Handles
+ * both query and server commands.
  * @author chris
  */
-public final class ChannelCommandParser extends CommandParser {
+public final class QueryCommandParser extends CommandParser {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -45,36 +51,36 @@ public final class ChannelCommandParser extends CommandParser {
      */
     private final Server server;
     /**
-     * The channel instance that this parser is attached to.
+     * The query instance that this parser is attached to.
      */
-    private final Channel channel;
+    private final Query query;
     
     /**
-     * Creates a new instance of ChannelCommandParser.
+     * Creates a new instance of QueryCommandParser.
      * @param newServer The server instance that this parser is attached to
-     * @param newChannel The channel instance that this parser is attached to
+     * @param newQuery The query instance that this parser is attached to
      */
-    public ChannelCommandParser(final Server newServer, final Channel newChannel) {
+    public QueryCommandParser(final Server newServer, final Query newQuery) {
         super();
         
-        this.server = newServer;
-        this.channel = newChannel;
+        server = newServer;
+        query = newQuery;
     }
     
     /** Loads the relevant commands into the parser. */
     protected void loadCommands() {
         CommandManager.loadGlobalCommands(this);
         CommandManager.loadServerCommands(this);
-        CommandManager.loadChannelCommands(this);
+        CommandManager.loadQueryCommands(this);
     }
     
     /** {@inheritDoc} */
     protected void executeCommand(final InputWindow origin,
             final boolean isSilent, final Command command, final String... args) {
-        if (command instanceof ChannelCommand) {
-            ((ChannelCommand) command).execute(origin, server, channel, isSilent, args);
+        if (command instanceof QueryCommand) {
+            ((QueryCommand) command).execute(origin, server, query, isSilent, args);
         } else if (command instanceof ChatCommand) {
-            ((ChatCommand) command).execute(origin, server, channel, isSilent, args);
+            ((ChatCommand) command).execute(origin, server, query, isSilent, args);
         } else if (command instanceof ServerCommand) {
             ((ServerCommand) command).execute(origin, server, isSilent, args);
         } else {
@@ -89,7 +95,7 @@ public final class ChannelCommandParser extends CommandParser {
      * @param line The line input by the user
      */
     protected void handleNonCommand(final InputWindow origin, final String line) {
-        channel.sendLine(line);
+        query.sendLine(line);
     }
     
 }

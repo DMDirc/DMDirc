@@ -24,11 +24,18 @@ package com.dmdirc.commandparser;
 
 import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
+import com.dmdirc.commandparser.commands.ChannelCommand;
+import com.dmdirc.commandparser.commands.ChatCommand;
+import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.QueryCommand;
+import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.commandparser.commands.channel.*;
 import com.dmdirc.commandparser.commands.chat.*;
 import com.dmdirc.commandparser.commands.global.*;
 //import com.dmdirc.commandparser.commands.query.*;
 import com.dmdirc.commandparser.commands.server.*;
+import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
@@ -106,18 +113,18 @@ public final class CommandManager {
     
     /**
      * Returns the current command character.
-     * 
+     *
      * @return the current command char
      */
     public static char getCommandChar() {
         return commandChar;
     }
-
+    
     /**
      * Returns the current silence character.
-     * 
+     *
      * @return the current silence char
-     */    
+     */
     public static char getSilenceChar() {
         return silenceChar;
     }
@@ -386,7 +393,7 @@ public final class CommandManager {
      * Loads all query commands into the specified parser.
      * @param parser The parser to load commands into
      */
-    protected static void loadQueryCommands(final QueryCommandParser parser) {
+    public static void loadQueryCommands(final CommandParser parser) {
         for (Command com : queryCommands) {
             parser.registerCommand(com);
         }

@@ -20,26 +20,29 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser;
+package com.dmdirc.commandparser.commands;
 
-import java.util.Date;
+import com.dmdirc.MessageTarget;
+import com.dmdirc.Server;
+import com.dmdirc.ui.interfaces.InputWindow;
 
-public final class PreviousCommand {
+/**
+ * Represents a command that can be performed in the context of a "chat" window
+ * (i.e., a channel or a query).
+ *
+ * @author Chris
+ */
+public abstract class ChatCommand extends Command {
     
-    private final String line;
-    private final long time;
-    
-    public PreviousCommand(final String line) {
-        this.line = line;
-        this.time = new Date().getTime();
-    }
-    
-    public long getTime() {
-        return time;
-    }
-    
-    public String getLine() {
-        return line;
-    }
-    
+    /**
+     * Executes this command.
+     * 
+     * @param origin The window in which the command was typed
+     * @param server The server instance that this command is being executed on
+     * @param target The target of this command
+     * @param isSilent Whether this command is silenced or not
+     * @param args Arguments passed to this command
+     */
+    public abstract void execute(InputWindow origin, Server server, MessageTarget target,
+            boolean isSilent, String... args);
 }

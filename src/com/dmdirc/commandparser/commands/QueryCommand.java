@@ -20,26 +20,26 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser;
+package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.ui.input.AdditionalTabTargets;
-
-import java.util.List;
+import com.dmdirc.Query;
+import com.dmdirc.Server;
+import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
- * Intelligent commands implement a method that provides a list of possible
- * options for them, for use (for example) by table completers.
+ * Represents a command which can be performed only in the context of a query.
  * @author chris
  */
-public interface IntelligentCommand {
-
+public abstract class QueryCommand extends Command {
+        
     /**
-     * Returns a list of suggestions for the specified argument, given the list
-     * of previous arguments.
-     * @param arg The argument that is being completed
-     * @param previousArgs The contents of the previous arguments, if any
-     * @return A list of suggestions for the argument
+     * Executes this command.
+     * @param origin The window in which the command was typed
+     * @param server The server instance that this command is being executed on
+     * @param query The query object that the commadparser is associated with
+     * @param isSilent Whether this command is silenced or not
+     * @param args Arguments passed to this command
      */
-    AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs);
-    
+    public abstract void execute(InputWindow origin, Server server, Query query,
+            boolean isSilent, String... args);
 }

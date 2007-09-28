@@ -20,26 +20,23 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser;
+package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.Query;
-import com.dmdirc.Server;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
- * Represents a command which can be performed only in the context of a query.
+ * Represents a generic global command. Global commands are associated with
+ * no servers.
  * @author chris
  */
-public abstract class QueryCommand extends Command {
+public abstract class GlobalCommand extends Command {
         
     /**
-     * Executes this command.
+     * Executes this command. Note that for global commands, origin may be
+     * null.
      * @param origin The window in which the command was typed
-     * @param server The server instance that this command is being executed on
-     * @param query The query object that the commadparser is associated with
      * @param isSilent Whether this command is silenced or not
      * @param args Arguments passed to this command
      */
-    public abstract void execute(InputWindow origin, Server server, Query query,
-            boolean isSilent, String... args);
+    public abstract void execute(InputWindow origin, boolean isSilent, String ... args);
 }

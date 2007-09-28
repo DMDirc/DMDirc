@@ -23,8 +23,8 @@
 package com.dmdirc.commandparser.commands.global;
 
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.GlobalCommand;
-import com.dmdirc.commandparser.IntelligentCommand;
+import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;

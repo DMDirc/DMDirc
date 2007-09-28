@@ -25,7 +25,7 @@ package com.dmdirc.commandparser.commands.channel;
 import com.dmdirc.Channel;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
-import com.dmdirc.commandparser.ChannelCommand;
+import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 

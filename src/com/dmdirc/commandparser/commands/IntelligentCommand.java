@@ -20,25 +20,26 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser;
+package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.Server;
-import com.dmdirc.ui.interfaces.InputWindow;
+import com.dmdirc.ui.input.AdditionalTabTargets;
+
+import java.util.List;
 
 /**
- * Represents a generic server command. Server commands are associated with
- * a server instance.
+ * Intelligent commands implement a method that provides a list of possible
+ * options for them, for use (for example) by table completers.
  * @author chris
  */
-public abstract class ServerCommand extends Command {
-    
+public interface IntelligentCommand {
+
     /**
-     * Executes this command.
-     * @param origin The window in which the command was typed
-     * @param server The server instance that this command is being executed on
-     * @param isSilent Whether this command is silenced or not
-     * @param args Arguments passed to this command
+     * Returns a list of suggestions for the specified argument, given the list
+     * of previous arguments.
+     * @param arg The argument that is being completed
+     * @param previousArgs The contents of the previous arguments, if any
+     * @return A list of suggestions for the argument
      */
-    public abstract void execute(InputWindow origin, Server server,
-            boolean isSilent, String ... args);
+    AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs);
+    
 }

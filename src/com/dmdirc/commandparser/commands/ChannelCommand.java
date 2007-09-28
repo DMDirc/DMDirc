@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser;
+package com.dmdirc.commandparser.commands;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Server;

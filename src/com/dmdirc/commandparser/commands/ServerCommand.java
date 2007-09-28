@@ -20,59 +20,25 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser.commands.global;
+package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.Server;
 import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.messages.Formatter;
 
 /**
- * Allows the user to reload the message formatter.
+ * Represents a generic server command. Server commands are associated with
+ * a server instance.
  * @author chris
  */
-public final class ReloadFormatter extends GlobalCommand {
+public abstract class ServerCommand extends Command {
     
     /**
-     * Creates a new instance of ReloadFormatter.
+     * Executes this command.
+     * @param origin The window in which the command was typed
+     * @param server The server instance that this command is being executed on
+     * @param isSilent Whether this command is silenced or not
+     * @param args Arguments passed to this command
      */
-    public ReloadFormatter() {
-        super();
-        
-        CommandManager.registerCommand(this);
-    }
-    
-    /** {@inheritDoc} */
-    public void execute(final InputWindow origin, final boolean isSilent,
-            final String... args) {
-        Formatter.reload();
-        sendLine(origin, isSilent, "commandOutput", "Formatter reloaded.");
-    }
-    
-    
-    /** {@inheritDoc}. */
-    public String getName() {
-        return "reloadformatter";
-    }
-    
-    /** {@inheritDoc}. */
-    public boolean showInHelp() {
-        return true;
-    }
-    
-    /** {@inheritDoc}. */
-    public boolean isPolyadic() {
-        return false;
-    }
-    
-    /** {@inheritDoc}. */
-    public int getArity() {
-        return 0;
-    }
-    
-    /** {@inheritDoc}. */
-    public String getHelp() {
-        return "reloadformatter - reloads the message formatter";
-    }
-    
+    public abstract void execute(InputWindow origin, Server server,
+            boolean isSilent, String ... args);
 }

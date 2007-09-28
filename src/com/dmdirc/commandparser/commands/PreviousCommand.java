@@ -20,23 +20,26 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser;
+package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.Date;
 
-/**
- * Represents a generic global command. Global commands are associated with
- * no servers.
- * @author chris
- */
-public abstract class GlobalCommand extends Command {
-        
-    /**
-     * Executes this command. Note that for global commands, origin may be
-     * null.
-     * @param origin The window in which the command was typed
-     * @param isSilent Whether this command is silenced or not
-     * @param args Arguments passed to this command
-     */
-    public abstract void execute(InputWindow origin, boolean isSilent, String ... args);
+public final class PreviousCommand {
+    
+    private final String line;
+    private final long time;
+    
+    public PreviousCommand(final String line) {
+        this.line = line;
+        this.time = new Date().getTime();
+    }
+    
+    public long getTime() {
+        return time;
+    }
+    
+    public String getLine() {
+        return line;
+    }
+    
 }

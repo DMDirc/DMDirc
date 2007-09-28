@@ -20,8 +20,11 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser;
+package com.dmdirc.commandparser.parsers;
 
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.InputWindow;

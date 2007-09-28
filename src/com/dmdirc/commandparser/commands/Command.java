@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser;
+package com.dmdirc.commandparser.commands;
 
-import com.dmdirc.config.IdentityManager;
+import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**

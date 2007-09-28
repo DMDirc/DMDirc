@@ -20,18 +20,20 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser;
+package com.dmdirc.commandparser.parsers;
 
-import com.dmdirc.Query;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
- * A command parser that is tailored for use in a query environment. Handles
- * both query and server commands.
+ * A command parser used in the context of a server.
  * @author chris
  */
-public final class QueryCommandParser extends CommandParser {
+public final class ServerCommandParser extends CommandParser {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -44,38 +46,27 @@ public final class QueryCommandParser extends CommandParser {
      * The server instance that this parser is attached to.
      */
     private final Server server;
-    /**
-     * The query instance that this parser is attached to.
-     */
-    private final Query query;
     
     /**
-     * Creates a new instance of QueryCommandParser.
+     * Creates a new instance of ServerCommandParser.
      * @param newServer The server instance that this parser is attached to
-     * @param newQuery The query instance that this parser is attached to
      */
-    public QueryCommandParser(final Server newServer, final Query newQuery) {
+    public ServerCommandParser(final Server newServer) {
         super();
         
         server = newServer;
-        query = newQuery;
     }
     
     /** Loads the relevant commands into the parser. */
     protected void loadCommands() {
         CommandManager.loadGlobalCommands(this);
         CommandManager.loadServerCommands(this);
-        CommandManager.loadQueryCommands(this);
     }
     
     /** {@inheritDoc} */
     protected void executeCommand(final InputWindow origin,
             final boolean isSilent, final Command command, final String... args) {
-        if (command instanceof QueryCommand) {
-            ((QueryCommand) command).execute(origin, server, query, isSilent, args);
-        } else if (command instanceof ChatCommand) {
-            ((ChatCommand) command).execute(origin, server, query, isSilent, args);
-        } else if (command instanceof ServerCommand) {
+        if (command instanceof ServerCommand) {
             ((ServerCommand) command).execute(origin, server, isSilent, args);
         } else {
             ((GlobalCommand) command).execute(origin, isSilent, args);
@@ -89,7 +80,7 @@ public final class QueryCommandParser extends CommandParser {
      * @param line The line input by the user
      */
     protected void handleNonCommand(final InputWindow origin, final String line) {
-        query.sendLine(line);
+        server.getParser().sendLine(line);
     }
     
 }

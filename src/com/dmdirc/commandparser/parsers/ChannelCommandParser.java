@@ -20,16 +20,24 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.commandparser;
+package com.dmdirc.commandparser.parsers;
 
+import com.dmdirc.Channel;
 import com.dmdirc.Server;
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.ChannelCommand;
+import com.dmdirc.commandparser.commands.ChatCommand;
+import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**
- * A command parser used in the context of a server.
+ * A command parser that is tailored for use in a channel environment. Handles
+ * both channel and server commands.
  * @author chris
  */
-public final class ServerCommandParser extends CommandParser {
+public final class ChannelCommandParser extends CommandParser {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -42,27 +50,38 @@ public final class ServerCommandParser extends CommandParser {
      * The server instance that this parser is attached to.
      */
     private final Server server;
+    /**
+     * The channel instance that this parser is attached to.
+     */
+    private final Channel channel;
     
     /**
-     * Creates a new instance of ServerCommandParser.
+     * Creates a new instance of ChannelCommandParser.
      * @param newServer The server instance that this parser is attached to
+     * @param newChannel The channel instance that this parser is attached to
      */
-    public ServerCommandParser(final Server newServer) {
+    public ChannelCommandParser(final Server newServer, final Channel newChannel) {
         super();
         
-        server = newServer;
+        this.server = newServer;
+        this.channel = newChannel;
     }
     
     /** Loads the relevant commands into the parser. */
     protected void loadCommands() {
         CommandManager.loadGlobalCommands(this);
         CommandManager.loadServerCommands(this);
+        CommandManager.loadChannelCommands(this);
     }
     
     /** {@inheritDoc} */
     protected void executeCommand(final InputWindow origin,
             final boolean isSilent, final Command command, final String... args) {
-        if (command instanceof ServerCommand) {
+        if (command instanceof ChannelCommand) {
+            ((ChannelCommand) command).execute(origin, server, channel, isSilent, args);
+        } else if (command instanceof ChatCommand) {
+            ((ChatCommand) command).execute(origin, server, channel, isSilent, args);
+        } else if (command instanceof ServerCommand) {
             ((ServerCommand) command).execute(origin, server, isSilent, args);
         } else {
             ((GlobalCommand) command).execute(origin, isSilent, args);
@@ -76,7 +95,7 @@ public final class ServerCommandParser extends CommandParser {
      * @param line The line input by the user
      */
     protected void handleNonCommand(final InputWindow origin, final String line) {
-        server.getParser().sendLine(line);
+        channel.sendLine(line);
     }
     
 }
