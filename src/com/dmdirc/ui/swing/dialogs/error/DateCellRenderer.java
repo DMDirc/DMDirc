@@ -59,13 +59,13 @@ public final class DateCellRenderer extends DefaultTableCellRenderer {
         final StringBuilder result = new StringBuilder();
         final long hours = secondsInput / 3600;
         final long minutes = secondsInput / 60 % 60;
-        final long seconds = secondsInput % 60;
+        //final long seconds = secondsInput % 60;
         
         if (hours > 0) { 
-            result.append(hours).append(":");
+            result.append(hours).append("h ");
         }
         
-        result.append(String.format("%0,2d:%0,2d", minutes, seconds));
+        result.append(minutes).append("m");
         
         return result.toString();
     }

@@ -191,8 +191,9 @@ public final class ErrorManager implements Serializable {
             
             tries++;
             
-        } while(!response.get(response.size() - 1).equalsIgnoreCase(
-                "Error report submitted. Thank you.") || tries >= 5);
+        } while(response.size() > 1 && !response.get(response.size() - 1).
+                equalsIgnoreCase("Error report submitted. Thank you.") 
+                || tries >= 5);
         
         checkResponses(error, response);
     }
@@ -200,8 +201,8 @@ public final class ErrorManager implements Serializable {
     /** Checks the responses and sets status accordingly. */
     private static void checkResponses(final ProgramError error,
             final List<String> response) {
-        if (response.get(response.size() - 1).equalsIgnoreCase(
-                "Error report submitted. Thank you.")) {
+        if (response.size() > 1 && response.get(response.size() - 1).
+                equalsIgnoreCase("Error report submitted. Thank you.")) {
             error.setReportStatus(ErrorReportStatus.FINISHED);
         } else {
             error.setReportStatus(ErrorReportStatus.ERROR);

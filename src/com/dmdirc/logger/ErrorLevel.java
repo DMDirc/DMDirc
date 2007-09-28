@@ -63,6 +63,10 @@ public enum ErrorLevel {
      * @return true iif the error is more important
      */
     public boolean moreImportant(final ErrorLevel level) {
+        if (level == null) {
+            return false;
+        }
+        
         switch (level) {
             case FATAL:
                 return true;
