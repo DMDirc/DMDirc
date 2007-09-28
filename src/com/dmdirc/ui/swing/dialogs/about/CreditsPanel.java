@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs.about;
 
-import com.dmdirc.BrowserLauncher;
+import com.dmdirc.util.BrowserLauncher;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.components.HTMLLabel;
 

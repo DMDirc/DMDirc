@@ -7,6 +7,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.util.StringTranscoder;
 import java.nio.charset.Charset;
 import junit.framework.TestCase;
 import org.junit.After;

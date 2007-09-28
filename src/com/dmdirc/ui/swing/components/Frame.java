@@ -22,10 +22,10 @@
 
 package com.dmdirc.ui.swing.components;
 
-import com.dmdirc.BrowserLauncher;
+import com.dmdirc.util.BrowserLauncher;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
-import com.dmdirc.StringTranscoder;
+import com.dmdirc.util.StringTranscoder;
 import com.dmdirc.commandparser.ChannelCommand;
 import com.dmdirc.commandparser.Command;
 import com.dmdirc.commandparser.CommandManager;

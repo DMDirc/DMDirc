@@ -24,7 +24,7 @@ package com.dmdirc.ui.dummy;
 
 import com.dmdirc.Channel;
 import com.dmdirc.FrameContainer;
-import com.dmdirc.StringTranscoder;
+import com.dmdirc.util.StringTranscoder;
 import com.dmdirc.commandparser.ChannelCommandParser;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.config.ConfigManager;

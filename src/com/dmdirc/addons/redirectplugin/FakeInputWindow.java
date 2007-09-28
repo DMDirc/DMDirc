@@ -24,7 +24,7 @@ package com.dmdirc.addons.redirectplugin;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.MessageTarget;
-import com.dmdirc.StringTranscoder;
+import com.dmdirc.util.StringTranscoder;
 import com.dmdirc.commandparser.CommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.ui.input.InputHandler;

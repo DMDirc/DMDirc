@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc;
+package com.dmdirc.util;
 
 import java.nio.charset.Charset;
 

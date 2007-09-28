@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.swing.dialogs;
 
-import com.dmdirc.BrowserLauncher;
+import com.dmdirc.util.BrowserLauncher;
 import com.dmdirc.Main;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;

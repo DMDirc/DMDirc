@@ -23,7 +23,7 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.StringTranscoder;
+import com.dmdirc.util.StringTranscoder;
 import com.dmdirc.config.ConfigManager;
 
 import java.beans.PropertyVetoException;

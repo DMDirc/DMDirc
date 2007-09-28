@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc;
+package com.dmdirc.util;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
