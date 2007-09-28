@@ -27,9 +27,10 @@ import com.dmdirc.actions.ActionCondition;
 import com.dmdirc.actions.CoreActionComparison;
 import com.dmdirc.actions.CoreActionComponent;
 import com.dmdirc.ui.swing.UIUtilities;
-import com.dmdirc.ui.swing.actions.NoSpacesPasteAction;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
+import com.dmdirc.ui.swing.actions.SanitisedFilenamePasteAction;
+import com.dmdirc.ui.swing.components.SanitisedFilenameFilter;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -49,6 +50,7 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
+import javax.swing.text.AbstractDocument;
 
 /**
  * Panel to display an alias.
@@ -99,7 +101,8 @@ public final class AliasPanel extends JPanel implements ActionListener {
         argumentComponent.putClientProperty("JComboBox.isTableCellEditor", Boolean.TRUE);
         argumentComponent.addActionListener(this);
         
-        command.getActionMap().put("paste-from-clipboard", new NoSpacesPasteAction());
+        ((AbstractDocument) command.getDocument()).setDocumentFilter(new SanitisedFilenameFilter());
+        command.getActionMap().put("paste-from-clipboard", new SanitisedFilenamePasteAction());
         
         UIUtilities.addUndoManager(command);
         UIUtilities.addUndoManager(response);

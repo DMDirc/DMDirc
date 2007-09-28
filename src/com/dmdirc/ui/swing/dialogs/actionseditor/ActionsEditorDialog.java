@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing.dialogs.actionseditor;
 
 import com.dmdirc.Main;
 import com.dmdirc.actions.Action;
+import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
@@ -33,11 +34,13 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -65,19 +68,23 @@ public final class ActionsEditorDialog extends StandardDialog implements
     private JTabbedPane tabbedPane;
     /** Buttons panel. */
     private JPanel buttonsPanel;
+    /** Actions group. */
+    private final String group;
     
     /**
      * Creates a new instance of ActionsEditorDialog.
      *
      * @param parent parent dialog
      * @param action actions to be edited
+     * @param group group name
      */
     private ActionsEditorDialog(final ActionsManagerDialog parent,
-            final Action action) {
+            final Action action, final String group) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
         
         this.parent = parent;
         this.action = action;
+        this.group = group;
         
         setTitle("Actions Editor");
         
@@ -97,10 +104,11 @@ public final class ActionsEditorDialog extends StandardDialog implements
      * Creates the dialog if one doesn't exist, and displays it.
      *
      * @param parent parent dialog
+     * @param group group name
      */
     public static synchronized void showActionsEditorDialog(
-            final ActionsManagerDialog parent) {
-        showActionsEditorDialog(parent, null);
+            final ActionsManagerDialog parent, final String group) {
+        showActionsEditorDialog(parent, null, group);
     }
     
     /**
@@ -108,13 +116,15 @@ public final class ActionsEditorDialog extends StandardDialog implements
      *
      * @param parent parent dialog
      * @param action actions to be edited
+     * @param group group name
      */
     public static synchronized void showActionsEditorDialog(
-            final ActionsManagerDialog parent, final Action action) {
+            final ActionsManagerDialog parent, final Action action,
+            final String group) {
         if (me != null) {
             me.dispose();
         }
-        me = new ActionsEditorDialog(parent, action);
+        me = new ActionsEditorDialog(parent, action, group);
         me.setVisible(true);
         me.requestFocus();
     }
@@ -175,12 +185,11 @@ public final class ActionsEditorDialog extends StandardDialog implements
                 ConditionEditorDialog.getConditionEditorDialog().dispose();
             }
             saveSettings();
-            this.dispose();
         } else if (event.getSource() == getCancelButton()) {
             if (ConditionEditorDialog.getConditionEditorDialog() != null) {
                 ConditionEditorDialog.getConditionEditorDialog().dispose();
             }
-            this.dispose();
+            dispose();
         }
     }
     
@@ -200,6 +209,15 @@ public final class ActionsEditorDialog extends StandardDialog implements
     
     /** Saves this (new|edited) actions. */
     private void saveSettings() {
+        if (checkDuplicateName(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName())) {
+                JOptionPane.showMessageDialog(this,
+                        "Another action already has this name, please changes it",
+                        "Duplicates",
+                        JOptionPane.WARNING_MESSAGE);
+                tabbedPane.setSelectedIndex(0);
+                ((GeneralTabPanel) tabbedPane.getComponentAt(0)).requestNameFocus();
+                return;
+        }
         if (action == null) {
             action = new Action(parent.getSelectedGroup(),
                     ((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName(),
@@ -218,6 +236,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
         }
         action.save();
         parent.loadGroups();
+        dispose();
     }
     
     /**
@@ -265,5 +284,23 @@ public final class ActionsEditorDialog extends StandardDialog implements
         if (tabbedPane.getComponentCount() > 2) {
             ((ResponseTabPanel) tabbedPane.getComponentAt(2)).setTrigger(type);
         }
+    }
+    
+    /** 
+     * Checks for duplicate action name. 
+     *
+     * @param name Name to check for duplicate actions
+     */
+    private boolean checkDuplicateName(final String name) {
+        final List<Action> actions = ActionManager.getGroups().get(group);
+        
+        for (Action loopAction : actions) {
+            if (loopAction.getName().equals(name) 
+            && !loopAction.equals(action)) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

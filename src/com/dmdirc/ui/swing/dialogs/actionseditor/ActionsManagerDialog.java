@@ -248,8 +248,8 @@ public final class ActionsManagerDialog extends StandardDialog
         Arrays.sort(keys);
         
         for (Object group : keys) {
-            groups.addTab((String) group,
-                    new ActionsGroupPanel(this, actionGroups.get(group)));
+            groups.addTab((String) group, new ActionsGroupPanel(this, 
+                    actionGroups.get(group), (String) group));
         }
         
         if (groups.getTabCount() == 0) {
@@ -278,7 +278,6 @@ public final class ActionsManagerDialog extends StandardDialog
      */
     public String getSelectedGroup() {
         return groups.getTitleAt(groups.getSelectedIndex());
-        
     }
     
     /** {@inheritDoc} */
@@ -295,7 +294,8 @@ public final class ActionsManagerDialog extends StandardDialog
         } else if (e.getActionCommand().equals("action.edit")) {
             actionEdit();
         } else if (e.getActionCommand().equals("action.new")) {
-            ActionsEditorDialog.showActionsEditorDialog(this);
+            ActionsEditorDialog.showActionsEditorDialog(this, groups.
+                    getTitleAt(groups.getSelectedIndex()));
         } else if (e.getActionCommand().equals("action.delete")) {
             actionDelete();
         }
@@ -344,7 +344,8 @@ public final class ActionsManagerDialog extends StandardDialog
         if (table.getSelectedRow() != -1 && table.getSelectedRow() < table.getRowCount()) {
             final int row = table.getRowSorter().convertRowIndexToModel(table.getSelectedRow());
             ActionsEditorDialog.showActionsEditorDialog(this,
-                    ((ActionsGroupPanel) groups.getSelectedComponent()).getAction(row));
+                    ((ActionsGroupPanel) groups.getSelectedComponent()).
+                    getAction(row), groups.getTitleAt(groups.getSelectedIndex()));
         }
     }
     

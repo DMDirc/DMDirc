@@ -26,6 +26,8 @@ import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.ActionType;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.layoutGrid;
+import com.dmdirc.ui.swing.actions.SanitisedFilenamePasteAction;
+import com.dmdirc.ui.swing.components.SanitisedFilenameFilter;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -43,6 +45,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingUtilities;
+import javax.swing.text.AbstractDocument;
 
 /**
  * General tab panel, name and trigger editing for the actions editor dialog.
@@ -101,6 +104,9 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         
         otherTriggers.setVisibleRowCount(7);
         otherTriggers.setEnabled(false);
+        
+        ((AbstractDocument) name.getDocument()).setDocumentFilter(new SanitisedFilenameFilter());
+        name.getActionMap().put("paste-from-clipboard", new SanitisedFilenamePasteAction());
         
         if (owner.getAction() == null) {
             return;
@@ -249,7 +255,8 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
             owner.setNewConditionButtonState(false);
         } else {
             owner.getOkButton().setEnabled(true);
-            if (owner.getTrigger().getType().getArgNames().length > 0) {
+            if (owner.getTrigger() != null && 
+                    owner.getTrigger().getType().getArgNames().length > 0) {
                 owner.setNewConditionButtonState(true);
             }
         }
@@ -271,5 +278,10 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
         }
         
         return compatible;
+    }
+    
+    /** Requests focus on the name component. */
+    public void requestNameFocus() {
+        name.requestFocus();
     }
 }

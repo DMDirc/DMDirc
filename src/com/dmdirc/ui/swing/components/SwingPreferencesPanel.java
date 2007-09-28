@@ -525,15 +525,18 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                         SMALL_BORDER, LARGE_BORDER, LARGE_BORDER);
             }
         }
-        final String tabName = IdentityManager.getGlobalConfig().getOption("dialogstate",
-                owner.getClass().getName());
-        
-        if (tabName == null || tabName.isEmpty()) {
-            cardLayout.first(mainPanel);
-            tabList.setSelectionPath(tabList.getPathForRow(0));
-        } else {
-            tabList.setSelectionPath(tabList.getNextMatch(
-                    tabName, 0, Position.Bias.Forward));
+        if (IdentityManager.getGlobalConfig().hasOption("dialogstate", 
+                owner.getClass().getName())) {
+            final String tabName = IdentityManager.getGlobalConfig().
+                    getOption("dialogstate", owner.getClass().getName());
+            
+            if (tabName == null || tabName.isEmpty()) {
+                cardLayout.first(mainPanel);
+                tabList.setSelectionPath(tabList.getPathForRow(0));
+            } else {
+                tabList.setSelectionPath(tabList.getNextMatch(
+                        tabName, 0, Position.Bias.Forward));
+            }
         }
         pack();
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());

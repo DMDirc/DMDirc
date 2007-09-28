@@ -68,18 +68,23 @@ public final class ActionsGroupPanel extends JPanel
     /** The JTable we use to display data. */
     private JTable table;
     
+    /** group name. */
+    private String group;
+    
     /**
      * Creates a new instance of ActionsGroupPanel.
      *
      * @param parent parent dialog
      * @param actions Actions list to show
+     * @param group Group name
      */
     public ActionsGroupPanel(final ActionsManagerDialog parent,
-            final List<Action> actions) {
+            final List<Action> actions, final String group) {
         super();
         
         this.parent = parent;
         this.actions = actions;
+        this.group = group;
         
         initComponents();
     }
@@ -91,6 +96,10 @@ public final class ActionsGroupPanel extends JPanel
      */
     private String implode(final Object[] args) {
         final StringBuffer res = new StringBuffer();
+        
+        if (args == null) {
+            return "";
+        }
         
         for (Object object : args) {
             res.append(", ");
@@ -164,6 +173,15 @@ public final class ActionsGroupPanel extends JPanel
         return actions.get(index);
     }
     
+    /**
+     * Returns the actions list for this group.
+     *
+     * @return Actions list
+     */
+    public List<Action> getActions() {
+        return actions;
+    }
+    
     /** {@inheritDoc}. */
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
@@ -181,7 +199,7 @@ public final class ActionsGroupPanel extends JPanel
             final int row = table.rowAtPoint(e.getPoint());
             
             ActionsEditorDialog.showActionsEditorDialog(parent,
-                    actions.get(row));
+                    actions.get(row), group);
         }
     }
     
