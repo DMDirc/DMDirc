@@ -462,7 +462,12 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                         identity.unsetOption(args[0], args[1]);
                     }
                 } else {
-                    final Object object = config.getOption(args[0], args[1]);
+                    final Object object;
+                    if (config.hasOption(args[0], args[1])) {
+                        object= config.getOption(args[0], args[1]);
+                    } else {
+                        object = null;
+                    }
                     if ("general".equals(args[0]) && "theme".equals(args[1])) {
                         if (object == null || !object.equals(themes.get(entry.getValue()))) {
                             identity.setOption(args[0], args[1], themes.get(entry.getValue()));
