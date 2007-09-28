@@ -59,9 +59,6 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     /** The global config manager. */
     private final ConfigManager config = IdentityManager.getGlobalConfig();
     
-    /** The identity we write settings to. */
-    private final Identity identity = IdentityManager.getConfigIdentity();
-    
     /** A previously created instance of PreferencesDialog. */
     private static PreferencesDialog me = new PreferencesDialog();
     
@@ -117,9 +114,9 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         final String tabName = "General";
         preferencesPanel.addCategory(tabName, "");
         
-        preferencesPanel.addCheckboxOption(tabName, "ui.confirmQuit", 
-                "Confirm quit", "Do you want to confirm closing the client", 
-                config.hasOption("ui", "confirmQuit"));
+        preferencesPanel.addCheckboxOption(tabName, "ui.confirmQuit",
+                "Confirm quit", "Do you want to confirm closing the client",
+                config.getOptionBool(   "ui", "confirmQuit"));
         preferencesPanel.addCheckboxOption(tabName, "channel.splitusermodes",
                 "Split user modes: ", "Show individual mode lines for each mode change that affects a user (e.g. op, devoice)",
                 config.getOptionBool("channel", "splitusermodes"));
@@ -410,14 +407,14 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                 config.getOptionBool("ui", "treeviewActiveBold"));
         preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewActiveForeground",
                 "Active node foreground: ", "Foreground colour of the active node",
-                config.getOption("treeview", "treeviewActiveForeground",
-                config.getOption("treeview", "foregroundcolour", "")),
-                config.hasOption("treeview", "treeviewActiveForeground"), true, true);
+                config.getOption("ui", "treeviewActiveForeground",
+                config.getOption("ui", "foregroundcolour", "")),
+                config.hasOption("ui", "treeviewActiveForeground"), true, true);
         preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewActiveBackground",
                 "Active node background: ", "Background colour of the active node",
-                config.getOption("treeview", "treeviewActiveBackground",
-                config.getOption("treeview", "backgroundcolour", "")),
-                config.hasOption("treeview", "treeviewActiveBackground"), true, true);
+                config.getOption("ui", "treeviewActiveBackground",
+                config.getOption("ui", "backgroundcolour", "")),
+                config.hasOption("ui", "treeviewActiveBackground"), true, true);
     }
     
     /**
@@ -456,10 +453,11 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     
     /** {@inheritDoc}. */
     public void configClosed(final Properties properties) {
+        final Identity identity = IdentityManager.getConfigIdentity();
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
             final String[] args = ((String) entry.getKey()).split("\\.");
             if (args.length == 2) {
-                if ("".equals(entry.getValue()) || entry.getValue() == null) {
+                if (((String) entry.getValue()).isEmpty() || entry.getValue() == null) {
                     identity.unsetOption(args[0], args[1]);
                 } else {
                     if ("general".equals(args[0]) && "theme".equals(args[1])) {
@@ -489,7 +487,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         || "framemanager".equals(key) || "framemanagerPosition".equals(key))
         && !restartNeeded) {
             JOptionPane.showMessageDialog((MainFrame) Main.getUI().
-                    getMainWindow(), "One or more of the changes you made " 
+                    getMainWindow(), "One or more of the changes you made "
                     + "won't take effect until you restart the client.",
                     "Restart needed", JOptionPane.INFORMATION_MESSAGE);
             restartNeeded = true;
