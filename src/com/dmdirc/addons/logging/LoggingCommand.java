@@ -24,10 +24,13 @@ package com.dmdirc.addons.logging;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.IntelligentCommand;
 import com.dmdirc.commandparser.ServerCommand;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
+import java.util.List;
 
 /**
  * The dcop command retrieves information from a dcop application.
@@ -35,7 +38,7 @@ import com.dmdirc.ui.interfaces.InputWindow;
  * @author Shane "Dataforce" Mc Cormack
  * @version $Id: LoggingCommand.java 969 2007-04-30 18:38:20Z ShaneMcC $
  */
-public final class LoggingCommand extends ServerCommand {
+public final class LoggingCommand extends ServerCommand implements IntelligentCommand {
 
 	/**
 	 * Creates a new instance of LoggingCommand.
@@ -89,6 +92,26 @@ public final class LoggingCommand extends ServerCommand {
 		} else {
 			sendLine(origin, isSilent, "commandError", "Use " + getName() + " help for a list of commands.");
 		}
+	}
+
+	/**
+	 * Returns a list of suggestions for the specified argument, given the list
+	 * of previous arguments.
+	 *
+	 * @param arg The argument that is being completed
+	 * @param previousArgs The contents of the previous arguments, if any
+	 * @return A list of suggestions for the argument
+	 */
+	public AdditionalTabTargets getSuggestions(final int arg, final List<String> previousArgs) {
+			final AdditionalTabTargets res = new AdditionalTabTargets();
+			if (arg == 0) {
+				res.add("config");
+				res.add("reload");
+				res.add("history");
+				res.add("help");
+				res.setIncludeNormal(false);
+			}
+			return res;
 	}
 
 	/**

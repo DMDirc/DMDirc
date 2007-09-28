@@ -43,6 +43,7 @@ import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.logger.ErrorLevel;
@@ -69,6 +70,9 @@ import java.io.FileNotFoundException;
 public final class LoggingPlugin extends Plugin implements EventPlugin, PreferencesInterface {
 	/** What domain do we store all settings in the global config under. */
 	private static final String MY_DOMAIN = "plugin-Logging";
+	
+	/** The command we registered */
+	private LoggingCommand command;
 	
 	/** Hashtable of open files */
 	Hashtable<String,BufferedWriter> openFiles = new Hashtable<String,BufferedWriter>();
@@ -115,15 +119,22 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 			}
 		}
 		
-		new LoggingCommand();
-		
 		return true;
+	}
+	
+	/**
+	 * Called when this plugin is activated.
+	 */
+	public void onActivate() {
+		command = new LoggingCommand();
 	}
 	
 	/**
 	 * Called when this plugin is deactivated.
 	 */
 	public void onDeactivate() {
+		CommandManager.unregisterCommand(command);
+		
 		BufferedWriter file;
 		synchronized (openFiles) {
 			for (String filename : openFiles.keySet()) {

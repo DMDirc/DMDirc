@@ -107,7 +107,7 @@ public class PluginManager {
 				return true;
 			}
 		} catch (Exception e) {
-			Logger.userError(ErrorLevel.MEDIUM, "Error loading "+className);
+			Logger.userError(ErrorLevel.MEDIUM, "Error loading "+className+" - "+e.getMessage());
 		}
 		return false;
 	}
@@ -126,7 +126,7 @@ public class PluginManager {
 			ActionManager.processEvent(CoreActionType.PLUGIN_UNLOADED, null, plugin);
 			plugin.onUnload();
 		} catch (Exception e) {
-			Logger.userError(ErrorLevel.MEDIUM, "Error in onUnload() for '"+className+"'");
+			Logger.userError(ErrorLevel.MEDIUM, "Error in onUnload() for '"+className+"' - "+e.getMessage());
 		}
 		knownPlugins.remove(className.toLowerCase());
 		plugin = null;
