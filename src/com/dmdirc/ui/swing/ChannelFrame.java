@@ -24,11 +24,11 @@ package com.dmdirc.ui.swing;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Main;
-import com.dmdirc.commandparser.ChannelCommand;
-import com.dmdirc.commandparser.ChannelCommandParser;
-import com.dmdirc.commandparser.Command;
-import com.dmdirc.commandparser.CommandParser;
-import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.commandparser.commands.ChannelCommand;
+import com.dmdirc.commandparser.parsers.ChannelCommandParser;
+import com.dmdirc.commandparser.commands.Command;
+import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ChannelWindow;

@@ -25,9 +25,9 @@ package com.dmdirc.addons.nowplaying.plugin;
 import com.dmdirc.MessageTarget;
 import com.dmdirc.Server;
 import com.dmdirc.addons.nowplaying.MediaSource;
-import com.dmdirc.commandparser.ChatCommand;
+import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.IntelligentCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 

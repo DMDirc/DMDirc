@@ -23,7 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.GlobalCommandParser;
+import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.TabCompleter;

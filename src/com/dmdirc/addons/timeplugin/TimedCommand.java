@@ -22,8 +22,8 @@
 
 package com.dmdirc.addons.timeplugin;
 
-import com.dmdirc.commandparser.CommandParser;
-import com.dmdirc.commandparser.GlobalCommandParser;
+import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.Timer;

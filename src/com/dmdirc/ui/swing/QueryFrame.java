@@ -23,8 +23,8 @@
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.Query;
-import com.dmdirc.commandparser.CommandParser;
-import com.dmdirc.commandparser.QueryCommandParser;
+import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.commandparser.parsers.QueryCommandParser;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.QueryWindow;
 import com.dmdirc.ui.swing.components.InputFrame;

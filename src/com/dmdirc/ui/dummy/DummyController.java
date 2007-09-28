@@ -27,7 +27,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.commandparser.CommandParser;
+import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.InputWindow;

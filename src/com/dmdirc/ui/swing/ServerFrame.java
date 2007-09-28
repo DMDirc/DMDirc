@@ -24,8 +24,8 @@ package com.dmdirc.ui.swing;
 
 
 import com.dmdirc.Server;
-import com.dmdirc.commandparser.CommandParser;
-import com.dmdirc.commandparser.ServerCommandParser;
+import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ServerWindow;

@@ -24,10 +24,10 @@ package com.dmdirc.ui.input;
 
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
-import com.dmdirc.commandparser.Command;
+import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.CommandParser;
-import com.dmdirc.commandparser.IntelligentCommand;
+import com.dmdirc.commandparser.parsers.CommandParser;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;

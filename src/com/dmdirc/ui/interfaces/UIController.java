@@ -27,7 +27,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Query;
 import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.commandparser.CommandParser;
+import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.updater.Update;
 
 import java.util.List;

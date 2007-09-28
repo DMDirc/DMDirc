@@ -23,7 +23,7 @@
 package com.dmdirc.ui.swing;
 
 import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.commandparser.CommandParser;
+import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.swing.components.InputFrame;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;

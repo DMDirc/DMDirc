@@ -24,7 +24,7 @@ package com.dmdirc.addons.dcop;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.util.List;

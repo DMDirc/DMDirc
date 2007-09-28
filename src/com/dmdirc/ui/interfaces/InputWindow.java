@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.interfaces;
 
-import com.dmdirc.commandparser.CommandParser;
+import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.ui.input.InputHandler;
 
 /**

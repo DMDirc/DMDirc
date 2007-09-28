@@ -24,7 +24,7 @@ package com.dmdirc.addons.redirectplugin;
 
 import com.dmdirc.MessageTarget;
 import com.dmdirc.Server;
-import com.dmdirc.commandparser.ChatCommand;
+import com.dmdirc.commandparser.commands.ChatCommand;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 /**

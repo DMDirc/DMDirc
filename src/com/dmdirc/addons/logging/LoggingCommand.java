@@ -24,8 +24,8 @@ package com.dmdirc.addons.logging;
 
 import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.IntelligentCommand;
-import com.dmdirc.commandparser.ServerCommand;
+import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
