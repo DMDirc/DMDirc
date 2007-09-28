@@ -23,17 +23,10 @@
 package com.dmdirc.logger;
 
 import com.dmdirc.Main;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
+import com.dmdirc.util.Downloader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -170,81 +163,56 @@ public final class ErrorManager implements Serializable {
      */
     @SuppressWarnings("PMD.SystemPrintln")
     private static void sendErrorInternal(final ProgramError error) {
-        URL url;
-        URLConnection urlConn;
-        DataOutputStream printout;
-        BufferedReader printin;
-        String response = "";
+        final Map<String, String> postData = new HashMap<String, String>();
+        List<String> response = new ArrayList<String>();
         int tries = 0;
-        final List<String> responseList = new ArrayList<String>();
+        
+        postData.put("message", error.getMessage());
+        postData.put("trace", Arrays.toString(error.getTrace()));
+        postData.put("version", Main.VERSION + "(" + Main.RELEASE_DATE + ")");
         
         error.setReportStatus(ErrorReportStatus.SENDING);
         
-        while (!"Error report submitted. Thank you.".equalsIgnoreCase(response)
-        || tries >= 5) {
-            try {
-                url = new URL("http://www.dmdirc.com/error.php");
-                urlConn = url.openConnection();
-                urlConn.setDoInput(true);
-                urlConn.setDoOutput(true);
-                urlConn.setUseCaches(false);
-                urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                printout = new DataOutputStream(urlConn.getOutputStream());
-                final String content =
-                        "message=" + URLEncoder.encode(error.getMessage(), "UTF-8")
-                        + "&trace=" + URLEncoder.encode(Arrays.toString(
-                        error.getTrace()), "UTF-8") + "&version="
-                        + URLEncoder.encode(Main.VERSION + "(" + Main.RELEASE_DATE + ")", "UTF-8");
-                printout.writeBytes(content);
-                printout.flush();
-                printout.close();
-                printin = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-                
-                String line = null;
-                do {
-                    if (line != null) {
-                        response = line;
-                        responseList.add(line);
-                    }
-                    
-                    line = printin.readLine();
-                } while (line != null);
-                printin.close();
-            } catch (MalformedURLException ex) {
-                //Unable to send error report
-            } catch (UnsupportedEncodingException ex) {
-                //Unable to send error report
-            } catch (IOException ex) {
-                //Unable to send error report
+        do {
+            if (tries != 0) {
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ex) {
+                    //Ignore
+                }
             }
-            
             try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-                //Ignore
+                response = Downloader.getPage("http://www.dmdirc.com/error.php", postData);
+            } catch (MalformedURLException ex) {
+                //Ignore, wont happen
+            } catch (IOException ex) {
+                //Ignore being handled
             }
             
             tries++;
-        }
+            
+        } while(!response.get(response.size() - 1).equalsIgnoreCase(
+                "Error report submitted. Thank you.") || tries >= 5);
         
-        checkResponses(error, response, responseList);
+        checkResponses(error, response);
     }
     
     /** Checks the responses and sets status accordingly. */
-    private static void checkResponses(final ProgramError error, 
-            final String response, final List<String> responseList) {
-        if ("Error report submitted. Thank you.".equalsIgnoreCase(response)) {
+    private static void checkResponses(final ProgramError error,
+            final List<String> response) {
+        if (response.get(response.size() - 1).equalsIgnoreCase(
+                "Error report submitted. Thank you.")) {
             error.setReportStatus(ErrorReportStatus.FINISHED);
         } else {
             error.setReportStatus(ErrorReportStatus.ERROR);
         }
         
-        if (responseList.size() == 1) {
+        if (response.size() == 1) {
             error.setFixedStatus(ErrorFixedStatus.NEW);
             return;
         }
         
-        final String responseToCheck = responseList.get(0);
+        final String responseToCheck = response.get(0);
         if (responseToCheck.matches(".*fixed.*")) {
             error.setFixedStatus(ErrorFixedStatus.FIXED);
         } else if (responseToCheck.matches(".*invalid.*")) {
