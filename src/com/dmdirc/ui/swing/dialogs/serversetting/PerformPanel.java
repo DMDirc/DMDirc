@@ -172,6 +172,7 @@ public final class PerformPanel extends JPanel implements ActionListener {
                 serverAction = PerformWrapper.getPerformWrapper().createActionForServer(server.getName());
             }
             serverAction.setResponse(serverPerform.split("\n"));
+            serverAction.save();
         }
         
         if (!networkPerform.isEmpty() || networkAction != null) {
@@ -179,6 +180,7 @@ public final class PerformPanel extends JPanel implements ActionListener {
                 networkAction = PerformWrapper.getPerformWrapper().createActionForNetwork(server.getNetwork());
             }
             networkAction.setResponse(networkPerform.split("\n"));
+            networkAction.save();
         }
     }
     
