@@ -82,15 +82,15 @@ public final class Styliser {
     
     /** Regular expression for intelligent handling of closing brackets. */
     private static final String URL_INT1 = "(\\([^\\)]*?" + CODE_HYPERLINK
-            + "[^" + CODE_HYPERLINK + "]+)(\\)[;:!,\\.]?)" + CODE_HYPERLINK;
+            + "[^" + CODE_HYPERLINK + "]+)(\\)['\";:!,\\.\\)]*)" + CODE_HYPERLINK;
     
     /** Regular expression for intelligent handling of double quotes. */
     private static final String URL_INT2 = "(\"[^\"]*?" + CODE_HYPERLINK
-            + "[^" + CODE_HYPERLINK + "]+)(\"[;:!,\\.\\)]?)" + CODE_HYPERLINK;
+            + "[^" + CODE_HYPERLINK + "]+)(\"[\"';:!,\\.\\)]?)" + CODE_HYPERLINK;
     
     /** Regular expression for intelligent handling of single quotes. */
     private static final String URL_INT3 = "('[^']*?" + CODE_HYPERLINK
-            + "[^" + CODE_HYPERLINK + "]+)('[;:!,\\.\\)]?)" + CODE_HYPERLINK;
+            + "[^" + CODE_HYPERLINK + "]+)('[\"';:!,\\.\\)]?)" + CODE_HYPERLINK;
     
     /** The regular expression to use for marking up channels. */
     private static final String URL_CHANNEL = "(?i)(?<![^\\s])([#&]" + RESERVED_CHARS + "+)";
@@ -127,10 +127,16 @@ public final class Styliser {
                 String target = string.replaceAll(INTERNAL_CHARS, "");;
                 
                 if (target.matches(".*" + URL_REGEXP + ".*")) {
-                    target = target.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK)
-                            .replaceAll(URL_INT1, "$1" + CODE_HYPERLINK + "$2")
-                            .replaceAll(URL_INT2, "$1" + CODE_HYPERLINK + "$2")
-                            .replaceAll(URL_INT3, "$1" + CODE_HYPERLINK + "$2");
+                    target = target.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
+                    String target2 = "";
+                    
+                    for (int j = 0; j < 5 && !target.equals(target2); j++) {
+                        target2 = target;
+                        target = target
+                                .replaceAll(URL_INT1, "$1" + CODE_HYPERLINK + "$2")
+                                .replaceAll(URL_INT2, "$1" + CODE_HYPERLINK + "$2")
+                                .replaceAll(URL_INT3, "$1" + CODE_HYPERLINK + "$2");
+                    }
                 }
                 
                 target = target.replaceAll(URL_CHANNEL, CODE_CHANNEL + "$0" + CODE_CHANNEL);
