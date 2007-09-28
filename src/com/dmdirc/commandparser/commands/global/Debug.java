@@ -83,6 +83,8 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             for (Identity source : origin.getConfigManager().getSources()) {
                 sendLine(origin, isSilent, "commandOutput", source.getTarget() + " - " + source);
             }
+        } else if (command.equals("forceupdate")) {
+            new Thread(new UpdateChecker(), "Forced update checker").start();
         } else {
             sendLine(origin, isSilent, "commandError", "Unknown debug action.");
         }
@@ -121,6 +123,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         res.add("meminfo");
         res.add("rungc");
         res.add("configinfo");
+        res.add("forceupdate");
         
         return res;
     }

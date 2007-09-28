@@ -27,6 +27,7 @@ import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.util.Downloader;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -79,36 +80,20 @@ public final class UpdateChecker implements Runnable, MouseListener {
         DataOutputStream printout;
         BufferedReader printin;
         try {
-            url = new URL("http://www.dmdirc.com/update.php");
-            urlConn = url.openConnection();
-            urlConn.setDoInput(true);
-            urlConn.setDoOutput(true);
-            urlConn.setUseCaches(false);
-            urlConn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            printout = new DataOutputStream(urlConn.getOutputStream());
             final String content = "component=client&channel="
                     + Main.UPDATE_CHANNEL + "&date=" + Main.RELEASE_DATE;
-            printout.writeBytes(content);
-            printout.flush();
-            printout.close();
-            printin = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
             
-            String line = null;
-            do {
-                if (line != null && !line.isEmpty()) {
-                    checkLine(line);
-                }
-                
-                line = printin.readLine();
-            } while (line != null);
-            printin.close();
+            final List<String> response = Downloader.getPage("http://www.dmdirc.com/update.php", content);
+            
+            for (String line : response) {
+                checkLine(line);
+            }
+            
             IdentityManager.getConfigIdentity().setOption("updater",
                     "lastcheck", String.valueOf((int) (new Date().getTime() / 1000)));
             UpdateChecker.init();
         } catch (MalformedURLException ex) {
             Logger.appError(ErrorLevel.LOW, "Error when checking for updates", ex);
-        } catch (UnsupportedEncodingException ex) {
-            Logger.userError(ErrorLevel.LOW, "Encoding error when checking for updates: " + ex.getMessage());
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.LOW, "I/O error when checking for updates: " + ex.getMessage());
         }
