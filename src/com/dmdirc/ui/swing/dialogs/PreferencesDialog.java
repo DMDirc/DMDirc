@@ -117,6 +117,9 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         final String tabName = "General";
         preferencesPanel.addCategory(tabName, "");
         
+        preferencesPanel.addCheckboxOption(tabName, "ui.confirmQuit", 
+                "Confirm quit", "Do you want to confirm closing the client", 
+                config.hasOption("ui", "confirmQuit"));
         preferencesPanel.addCheckboxOption(tabName, "channel.splitusermodes",
                 "Split user modes: ", "Show individual mode lines for each mode change that affects a user (e.g. op, devoice)",
                 config.getOptionBool("channel", "splitusermodes"));

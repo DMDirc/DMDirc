@@ -81,6 +81,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
@@ -399,8 +400,6 @@ public final class MainFrame extends JFrame implements WindowListener,
      * @param windowEvent The event associated with this callback
      */
     public void windowClosing(final WindowEvent windowEvent) {
-        ServerManager.getServerManager().closeAll(
-                IdentityManager.getGlobalConfig().getOption("general", "closemessage"));
         quit();
     }
     
@@ -754,6 +753,15 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /** {@inheritDoc}. */
     public void quit() {
+        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "confirmQuit") &&
+                JOptionPane.showConfirmDialog(this,
+                "You are about to quit DMDirc, are you sure?",
+                "Quit confirm", JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE) != JOptionPane.YES_OPTION) {
+            return;
+        }
+        ServerManager.getServerManager().closeAll(
+                IdentityManager.getGlobalConfig().getOption("general", "closemessage"));
         IdentityManager.getConfigIdentity().setOption("ui", "frameManagerSize",
                 String.valueOf(this.getFrameManagerSize()));
         Main.quit();
