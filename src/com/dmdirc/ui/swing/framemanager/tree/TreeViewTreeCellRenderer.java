@@ -135,16 +135,6 @@ public class TreeViewTreeCellRenderer extends JLabel implements
         
         final Object nodeObject = node.getUserObject();
         
-        if (nodeObject.equals(manager.getSelected())) {
-            if (activeBold) {
-                setFont(getFont().deriveFont(Font.BOLD));
-            }
-            setBackground(activeBackground);
-            setForeground(activeForeground);
-        } else {
-            setFont(getFont().deriveFont(Font.PLAIN));
-        }
-        
         if (nodeObject instanceof FrameContainer) {
             final Color colour =
                     manager.getNodeColour((FrameContainer) nodeObject);
@@ -154,6 +144,16 @@ public class TreeViewTreeCellRenderer extends JLabel implements
             setIcon(((FrameContainer) nodeObject).getIcon());
         } else {
             setIcon(defaultIcon);
+        }
+        
+        if (nodeObject.equals(manager.getSelected())) {
+            if (activeBold) {
+                setFont(getFont().deriveFont(Font.BOLD));
+            }
+            setBackground(activeBackground);
+            setForeground(activeForeground);
+        } else {
+            setFont(getFont().deriveFont(Font.PLAIN));
         }
         
         return this;
