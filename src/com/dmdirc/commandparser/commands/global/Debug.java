@@ -50,10 +50,27 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     public void execute(InputWindow origin, boolean isSilent, String... args) {
         final String command = args[0].toLowerCase();
         
-        if (command.equals("fakeusererror")) {
-            Logger.userError(ErrorLevel.HIGH, "Debug (user) error message");
-        } else if (command.equals("fakeapperror")) {
-            Logger.appError(ErrorLevel.HIGH, "Debug (app) error message", new Exception());
+        if (command.equals("error")) {
+            ErrorLevel el = ErrorLevel.HIGH;
+            if (args.length > 2) {
+                String level = args[2];
+                
+                if (level.equals("low")) {
+                    el = ErrorLevel.LOW;
+                } else if (level.equals("medium")) {
+                    el = ErrorLevel.MEDIUM;
+                } else if (level.equals("fatal")) {
+                    el = ErrorLevel.FATAL;
+                } else if (level.equals("unknown")) {
+                    el = ErrorLevel.UNKNOWN;
+                }
+            }
+
+            if (args.length > 1 && args[1].equals("user")) {
+                Logger.userError(el, "Debug error message");
+            } else {
+                Logger.appError(el, "Debug error message", new Exception());
+            }
         } else if (command.equals("fakeupdate")) {
             new UpdateChecker().doUpdateAvailable("outofdate dummy 1337 0 http://www.example.com/");
         } else if (command.equals("showraw") && origin != null && origin.getContainer() != null
@@ -99,11 +116,11 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     }
     
     public boolean isPolyadic() {
-        return false;
+        return true;
     }
     
     public int getArity() {
-        return 1;
+        return 0;
     }
     
     public String getHelp() {
@@ -114,16 +131,27 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         res.setIncludeNormal(false);
-        res.add("fakeusererror");
-        res.add("fakeapperror");
-        res.add("fakeupdate");
-        res.add("showraw");
-        res.add("colourspam");
-        res.add("configstats");
-        res.add("meminfo");
-        res.add("rungc");
-        res.add("configinfo");
-        res.add("forceupdate");
+        
+        if (arg == 0) {
+            res.add("error");
+            res.add("fakeupdate");
+            res.add("showraw");
+            res.add("colourspam");
+            res.add("configstats");
+            res.add("meminfo");
+            res.add("rungc");
+            res.add("configinfo");
+            res.add("forceupdate");
+        } else if (arg == 1) {
+            res.add("user");
+            res.add("app");
+        } else if (arg == 2) {
+            res.add("low");
+            res.add("medium");
+            res.add("high");
+            res.add("fatal");
+            res.add("unknown");
+        }
         
         return res;
     }
