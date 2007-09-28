@@ -209,15 +209,22 @@ public final class ActionsEditorDialog extends StandardDialog implements
     
     /** Saves this (new|edited) actions. */
     private void saveSettings() {
-        if (checkDuplicateName(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName())) {
-                JOptionPane.showMessageDialog(this,
-                        "Another action already has this name, please changes it",
-                        "Duplicates",
-                        JOptionPane.WARNING_MESSAGE);
-                tabbedPane.setSelectedIndex(0);
-                ((GeneralTabPanel) tabbedPane.getComponentAt(0)).requestNameFocus();
-                return;
-        }
+        if (((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName().isEmpty()) {
+            showError("Empty name", "The action name must not be empty");
+            tabbedPane.setSelectedIndex(0);
+            ((GeneralTabPanel) tabbedPane.getComponentAt(0)).requestNameFocus();
+            return;
+        } else if (((GeneralTabPanel) tabbedPane.getComponentAt(0)).getTrigger() == null) {
+            showError("No trigger", "The action must have a trigger");
+            tabbedPane.setSelectedIndex(0);
+            ((GeneralTabPanel) tabbedPane.getComponentAt(0)).requestTriggerFocus();
+            return;
+        } else if (checkDuplicateName(((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName())) {
+            showError("Duplicates", "Another action already has this name, you will ened to choose another");
+            tabbedPane.setSelectedIndex(0);
+            ((GeneralTabPanel) tabbedPane.getComponentAt(0)).requestNameFocus();
+            return;
+        } 
         if (action == null) {
             action = new Action(parent.getSelectedGroup(),
                     ((GeneralTabPanel) tabbedPane.getComponentAt(0)).getName(),
@@ -286,8 +293,8 @@ public final class ActionsEditorDialog extends StandardDialog implements
         }
     }
     
-    /** 
-     * Checks for duplicate action name. 
+    /**
+     * Checks for duplicate action name.
      *
      * @param name Name to check for duplicate actions
      */
@@ -295,12 +302,17 @@ public final class ActionsEditorDialog extends StandardDialog implements
         final List<Action> actions = ActionManager.getGroups().get(group);
         
         for (Action loopAction : actions) {
-            if (loopAction.getName().equals(name) 
+            if (loopAction.getName().equals(name)
             && !loopAction.equals(action)) {
                 return true;
             }
         }
         
         return false;
+    }
+    
+    /** Display an error message. */
+    private void showError(final String title, final String message) {
+        JOptionPane.showMessageDialog(this, message, title, JOptionPane.WARNING_MESSAGE);
     }
 }

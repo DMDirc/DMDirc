@@ -284,4 +284,9 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     public void requestNameFocus() {
         name.requestFocus();
     }
+    
+    /** Requests focus on the trigger component. */
+    public void requestTriggerFocus() {
+        trigger.requestFocus();
+    }
 }
