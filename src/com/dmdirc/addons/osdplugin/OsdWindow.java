@@ -24,12 +24,16 @@ package com.dmdirc.addons.osdplugin;
 
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.swing.MainFrame;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
+import com.dmdirc.ui.swing.components.ColourChooser;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -39,9 +43,13 @@ import java.util.TimerTask;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  * The OSD Window is an always-on-top window designed to convey information
@@ -49,7 +57,7 @@ import javax.swing.border.LineBorder;
  * @author chris
  */
 public final class OsdWindow extends JDialog implements MouseListener,
-        MouseMotionListener {
+        MouseMotionListener, ChangeListener, ActionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -57,6 +65,12 @@ public final class OsdWindow extends JDialog implements MouseListener,
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 2;
+    
+    /** OSD Label. */
+    private final JLabel label;
+    
+    /** OSD Panel. */
+    private final JPanel panel;
 
     /**
      * Creates a new instance of OsdWindow.
@@ -80,7 +94,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
         setLocation(IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "locationX", 20),
                 IdentityManager.getGlobalConfig().getOptionInt("plugin-OSD", "locationY", 20));
         
-        final JPanel panel = new JPanel();
+        panel = new JPanel();
         panel.setBorder(new LineBorder(Color.BLACK));
         panel.setBackground(IdentityManager.getGlobalConfig().getOptionColour("plugin-OSD",
                 "bgcolour", Color.decode("#2222aa")));
@@ -88,7 +102,7 @@ public final class OsdWindow extends JDialog implements MouseListener,
         setContentPane(panel);
         setLayout(new BorderLayout());
         
-        final JLabel label = new JLabel(text);
+        label = new JLabel(text);
         label.setForeground(IdentityManager.getGlobalConfig().getOptionColour("plugin-OSD",
                 "fgcolour", Color.decode("#ffffff")));
         label.setFont(label.getFont().deriveFont(
@@ -144,6 +158,26 @@ public final class OsdWindow extends JDialog implements MouseListener,
     /** {@inheritDoc} */
     public void mouseMoved(final MouseEvent e) {
         // Do nothing
+    }
+
+    /** {@inheritDoc} */
+    public void stateChanged(final ChangeEvent e) {
+        final float size = (((SpinnerNumberModel) ((JSpinner) e.getSource()).
+                getModel()).getNumber()).floatValue();
+        label.setFont(label.getFont().deriveFont(size));
+        setSize(new Dimension(500, (int) size + LARGE_BORDER));
+    }
+
+    /** {@inheritDoc} */
+    public void actionPerformed(final ActionEvent e) {
+        if ("backgroundColour".equals(e.getActionCommand())) {
+            panel.setBackground(ColourManager.parseColour(
+                    ((ColourChooser) e.getSource()).getColour()));
+        }
+        if ("foregroundColour".equals(e.getActionCommand())) {
+            label.setForeground(ColourManager.parseColour(
+                    ((ColourChooser) e.getSource()).getColour()));
+        }
     }
     
 }

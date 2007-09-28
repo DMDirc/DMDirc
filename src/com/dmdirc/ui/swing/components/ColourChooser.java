@@ -35,6 +35,7 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.event.EventListenerList;
 
 /**
  * Colour chooser widget.
@@ -66,6 +67,12 @@ public final class ColourChooser extends JPanel implements ActionListener {
     /** The value of this component. */
     private String value;
     
+    /** Event listeners. */
+    private EventListenerList listeners;
+    
+    /** Action command. */
+    private String command;
+    
     /** Creates a new instance of ColourChooser. */
     public ColourChooser() {
         this("ffffff", true, true);
@@ -84,6 +91,8 @@ public final class ColourChooser extends JPanel implements ActionListener {
         showIRC = ircColours;
         showHex = hexColours;
         value = initialColour;
+        listeners = new EventListenerList();
+        command = "";
         
         editButton = new JButton("Edit");
         editButton.setMargin(new Insets(0, 2, 0, 2));
@@ -94,10 +103,10 @@ public final class ColourChooser extends JPanel implements ActionListener {
         previewPanel.setPreferredSize(new Dimension(40, 10));
         previewPanel.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY));
         
-        this.setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
+        setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
         
-        this.add(editButton, BorderLayout.LINE_END);
-        this.add(previewPanel, BorderLayout.CENTER);
+        add(editButton, BorderLayout.LINE_END);
+        add(previewPanel, BorderLayout.CENTER);
         
         updateColour(initialColour);
     }
@@ -150,7 +159,54 @@ public final class ColourChooser extends JPanel implements ActionListener {
         } else {
             value = e.getActionCommand();
             updateColour(e.getActionCommand());
+            fireActionPerformed();
             cpd.dispose();
+        }
+    }
+    
+    /**
+     * Sets this colour choosers action command.
+     *
+     * @param command New action command
+     */
+    public void setActionCommand(final String command) {
+        this.command = command;
+    }
+    
+    /**
+     * Adds a ActionListener to the listener list.
+     *
+     * @param listener Listener to add
+     */
+    public void addActionListener(final ActionListener listener) {
+        synchronized (listeners) {
+            if (listener == null) {
+                return;
+            }
+            listeners.add(ActionListener.class, listener);
+        }
+    }
+    
+    /**
+     * Removes a ActionListener from the listener list.
+     *
+     * @param listener Listener to remove
+     */
+    public void removeActionListener(final ActionListener listener) {
+        listeners.remove(ActionListener.class, listener);
+    }
+    
+    /**
+     * Fires the action performed method on all listeners.
+     */
+    protected void fireActionPerformed() {
+        final Object[] listenerList = listeners.getListenerList();
+        for (int i = 0; i < listenerList.length; i += 2) {
+            if (listenerList[i] == ActionListener.class) {
+                ((ActionListener) listenerList[i + 1]).actionPerformed(
+                        new ActionEvent((Object) this, 
+                        ActionEvent.ACTION_PERFORMED, command));
+            }
         }
     }
 }
