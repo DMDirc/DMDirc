@@ -32,6 +32,8 @@ import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.MainWindow;
@@ -88,6 +90,8 @@ import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 
 /**
  * The main application frame.
@@ -158,6 +162,9 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** Frame manager position. */
     private FramemanagerPosition position;
     
+    /** Plugins list. */
+    private final Map<JMenuItem, String> pluginList;
+    
     /**
      * Creates new form MainFrame.
      *
@@ -168,6 +175,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         
         windowListFrameManager = new WindowMenuFrameManager();
         mainFrameManager = new MainFrameManager();
+        
+        pluginList = new HashMap<JMenuItem, String>();
         
         initComponents(statusBar);
         initKeyHooks();
@@ -638,9 +647,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         menuItem.addActionListener(this);
         fileMenu.add(menuItem);
         
-        
         populateWindowMenu(new HashMap<FrameContainer, JMenuItem>());
-        
         
         helpMenu.setMnemonic('h');
         helpMenu.setText("Help");
@@ -670,12 +677,45 @@ public final class MainFrame extends JFrame implements WindowListener,
         menuItem.addActionListener(this);
         pluginsMenu.add(menuItem);
         
+        final JMenu configureMenu = new JMenu("Configure plugins");
+        configureMenu.setMnemonic('c');
+        pluginsMenu.add(configureMenu);
+        configureMenu.addMenuListener(new MenuListener() {
+            public void menuSelected(final MenuEvent e) {
+                populateConfigurePluginsMenu(configureMenu);
+            }
+            
+            public void menuDeselected(final MenuEvent e) {
+                //Ignore
+            }
+            
+            public void menuCanceled(final MenuEvent e) {
+                //Ignore
+            }
+        });
+        
         menuBar.add(fileMenu);
         menuBar.add(settingsMenu);
         menuBar.add(windowsMenu);
         menuBar.add(helpMenu);
         
         setJMenuBar(menuBar);
+    }
+    
+    /** Populated the configure plugin menu. */
+    private void populateConfigurePluginsMenu(final JMenu menu) {
+        final Plugin[] plugins = PluginManager.getPluginManager().getPlugins();
+        pluginList.clear();
+        
+        for (Plugin plugin : plugins) {
+            if (plugin.isConfigurable()) {
+                final JMenuItem mi = new JMenuItem(plugin.toString());
+                mi.setActionCommand("configurePlugin");
+                mi.addActionListener(this);
+                menu.add(mi);
+                pluginList.put(mi, plugin.getClass().getName());
+            }
+        }
     }
     
     /**
@@ -816,6 +856,9 @@ public final class MainFrame extends JFrame implements WindowListener,
                     server.getParser().sendLine("JOIN :#DMDirc");
                 }
             }
+        } else if (e.getActionCommand().equals("configurePlugin")) {
+            PluginManager.getPluginManager().getPlugin(pluginList.get(
+                    e.getSource())).showConfig();
         }
     }
 }
