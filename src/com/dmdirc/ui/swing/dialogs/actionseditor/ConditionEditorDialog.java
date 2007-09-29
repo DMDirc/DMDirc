@@ -261,9 +261,9 @@ public final class ConditionEditorDialog extends StandardDialog implements
     private void populateComparisons() {
         ((DefaultComboBoxModel) comparisons.getModel()).removeAllElements();
         
-        if (arguments.getSelectedItem() != null) {
+        if (components.getSelectedItem() != null) {
             for (ActionComparison comp : ActionManager.getCompatibleComparisons(
-                    arguments.getSelectedItem().getClass())) {
+                    ((ActionComponent)components.getSelectedItem()).getType())) {
                 ((DefaultComboBoxModel) comparisons.getModel()).addElement(comp);
             }
         }
