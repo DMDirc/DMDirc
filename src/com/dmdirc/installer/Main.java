@@ -72,7 +72,7 @@ public final class Main implements Wizard {
 	 * Called when the wizard is cancelled.
 	 */
 	public void wizardCancelled() {	
-		if (wizardDialog.getCurrentStep() != 2
+		if (wizardDialog.getCurrentStep() != 3
 			&& JOptionPane.showConfirmDialog(wizardDialog, 
 				"Are you sure you want to cancel?",
 				"Cancel confirmation", JOptionPane.YES_NO_OPTION, 
