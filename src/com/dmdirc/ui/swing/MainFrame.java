@@ -606,9 +606,9 @@ public final class MainFrame extends JFrame implements WindowListener,
         toggleStateMenuItem = new JMenuItem();
         
         settingsMenu.setText("Settings");
-        settingsMenu.setMnemonic('s');
+        settingsMenu.setMnemonic('e');
         
-        fileMenu.setMnemonic('f');
+        fileMenu.setMnemonic('s');
         fileMenu.setText("Server");
         
         miAddServer.setText("New Server...");
