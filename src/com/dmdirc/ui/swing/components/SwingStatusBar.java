@@ -160,7 +160,8 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     
     /** {@inheritDoc} */
     public void errorAdded(final ProgramError error) {
-        if (error.getLevel().moreImportant(errorLevel)) {
+        if (!ErrorListDialog.getErrorListDialog().isVisible()
+        && error.getLevel().moreImportant(errorLevel)) {
             errorLevel = error.getLevel();
             iconLabel.setIcon(getIcon(error));
         }
