@@ -27,6 +27,7 @@ import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.AdditionalTabTargets;
@@ -100,6 +101,10 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             for (Identity source : origin.getConfigManager().getSources()) {
                 sendLine(origin, isSilent, "commandOutput", source.getTarget() + " - " + source);
             }
+        } else if (command.equals("globalconfiginfo")) {
+            for (Identity source : IdentityManager.getGlobalConfig().getSources()) {
+                sendLine(origin, isSilent, "commandOutput", source.getTarget() + " - " + source);
+            }            
         } else if (command.equals("forceupdate")) {
             new Thread(new UpdateChecker(), "Forced update checker").start();
         } else {
