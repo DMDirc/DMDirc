@@ -706,6 +706,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     private void populateConfigurePluginsMenu(final JMenu menu) {
         final Plugin[] plugins = PluginManager.getPluginManager().getPlugins();
         pluginList.clear();
+        menu.removeAll();
         
         for (Plugin plugin : plugins) {
             if (plugin.isConfigurable()) {
