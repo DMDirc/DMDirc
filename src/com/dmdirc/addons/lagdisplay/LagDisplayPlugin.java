@@ -33,6 +33,8 @@ import com.dmdirc.ui.interfaces.Window;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -47,6 +49,9 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin {
     
     /** The panel we use in the status bar. */
     private final JPanel panel = new JPanel();
+    
+    /** A cache of ping times. */
+    private final Map<Server, String> pings = new HashMap<Server, String>();
     
     /** The label we use to show lag. */
     private final JLabel label = new JLabel("Unknown");
@@ -82,7 +87,7 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin {
     
     /** {@inheritDoc} */
     public String getVersion() {
-        return "0.1";
+        return "0.2";
     }
     
     /** {@inheritDoc} */
@@ -113,22 +118,28 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin {
     public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
         if (type.equals(CoreActionType.SERVER_GOTPING)) {
             final Window active = Main.getUI().getMainWindow().getActiveFrame();
+            final String value = formatTime(arguments[1]);
+            
+            pings.put(((Server) arguments[0]), value);
+            
             if (((Server) arguments[0]).ownsFrame(active)) {
-                label.setText(formatTime(arguments[1]));
+                label.setText(value);
             }
         } else if (type.equals(CoreActionType.SERVER_NOPING)) {
             final Window active = Main.getUI().getMainWindow().getActiveFrame();
+            final String value = formatTime(arguments[1]) + "+";
+            
+            pings.put(((Server) arguments[0]), value);
+            
             if (((Server) arguments[0]).ownsFrame(active)) {
-                label.setText(formatTime(arguments[1]) + "+");
+                label.setText(value);
             }
         } else if (type.equals(CoreActionType.CLIENT_FRAME_CHANGED)) {
             final FrameContainer source = (FrameContainer) arguments[0];
-            if (source.getServer() == null
-                    || source.getServer().getParser() == null
-                    || !source.getServer().getParser().isReady()) {
+            if (source.getServer() == null || !pings.containsKey(source.getServer())) {
                 label.setText("Unknown");
             } else {
-                label.setText(formatTime(source.getServer().getParser().getServerLag()));
+                label.setText(pings.get(source.getServer()));
             }
         }
     }
