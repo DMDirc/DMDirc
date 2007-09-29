@@ -1,0 +1,113 @@
+/*
+ * Copyright (c) 2006-2007 Chris Smith, Shane Mc Cormack, Gregory Holmes
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+package com.dmdirc.addons.audio;
+
+import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.commandparser.commands.GlobalCommand;
+import com.dmdirc.plugins.Plugin;
+import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.interfaces.InputWindow;
+import java.io.File;
+import java.io.IOException;
+
+/**
+ * The Audio Command allows playing of audio files.
+ *
+ * @author Shane "Dataforce" Mc Cormack
+ * @version $Id: AudioCommand.java 969 2007-04-30 18:38:20Z ShaneMcC $
+ */
+public final class AudioCommand extends GlobalCommand {
+
+	/**
+	 * Creates a new instance of LoggingCommand.
+	 */
+	public AudioCommand() {
+		super();
+		CommandManager.registerCommand(this);
+	}
+		
+	/**
+	 * Executes this command.
+	 *
+	 * @param origin The frame in which this command was issued
+	 * @param server The server object that this command is associated with
+	 * @param isSilent Whether this command is silenced or not
+	 * @param args The user supplied arguments
+	 */
+	public void execute(final InputWindow origin, final boolean isSilent, final String... args) {
+		final String filename = implodeArgs(args);
+		final File file = new File(filename);
+		if (file.exists()) {
+			if (AudioPlayer.isValid(file)) {
+				new AudioPlayer(file).start();
+			} else {
+				sendLine(origin, isSilent, "commandError", "Invalid file type");
+			}
+		} else {
+			sendLine(origin, isSilent, "commandError", "File does not exist");
+		}
+	}
+
+	/**
+	 * Returns this command's name.
+	 *
+	 * @return The name of this command
+	 */
+	public String getName() { return "audio"; }
+	
+	/**
+	 * Returns whether or not this command should be shown in help messages.
+	 *
+	 * @return True iff the command should be shown, false otherwise
+	 */
+	public boolean showInHelp() { return true; }
+	
+	/**
+	 * Indicates whether this command is polyadic or not.
+	 *
+	 * @return True iff this command is polyadic, false otherwise
+	 */
+	public boolean isPolyadic() { return true; }
+	
+	/**
+	 * Returns the arity of this command.
+	 *
+	 * @return This command's arity
+	 */
+	public int getArity() { return 0; }
+	
+	/**
+	 * Returns a string representing the help message for this command.
+	 *
+	 * @return the help message for this command
+	 */
+	public String getHelp() { return this.getName() + " <file>"; }
+	
+	/**
+	 * Get SVN Version information.
+	 *
+	 * @return SVN Version String
+	 */
+	public static String getSvnInfo() { return "$Id: AudioCommand.java 969 2007-04-30 18:38:20Z ShaneMcC $"; }	
+}
+
