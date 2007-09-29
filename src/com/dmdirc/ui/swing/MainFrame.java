@@ -709,7 +709,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         menu.removeAll();
         
         for (Plugin plugin : plugins) {
-            if (plugin.isConfigurable()) {
+            if (plugin.isConfigurable() && plugin.isActive()) {
                 final JMenuItem mi = new JMenuItem(plugin.toString());
                 mi.setActionCommand("configurePlugin");
                 mi.addActionListener(this);
