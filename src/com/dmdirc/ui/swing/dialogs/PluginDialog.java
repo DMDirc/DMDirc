@@ -151,6 +151,7 @@ public final class PluginDialog extends StandardDialog implements
                 + blurbLabel.getFont().getSize() + "pt;'>You can get "
                 + "more plugins from the <a href=\"http://addons.dmdirc.com/\">"
                 + "Addons site</a></center></html>", this);
+        infoLabel.addHyperlinkListener(this);
         
         populateList();
     }
