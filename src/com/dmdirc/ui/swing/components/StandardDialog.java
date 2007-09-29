@@ -69,7 +69,7 @@ public class StandardDialog extends JDialog  {
      * Sets the specified button up as the OK button.
      * @param button The target button
      */
-    private void setOkButton(final JButton button) {
+    protected void setOkButton(final JButton button) {
         okButton = button;
         button.setText("OK");
         button.setDefaultCapable(false);
@@ -79,7 +79,7 @@ public class StandardDialog extends JDialog  {
      * Sets the specified button up as the Cancel button.
      * @param button The target button
      */
-    private void setCancelButton(final JButton button) {
+    protected void setCancelButton(final JButton button) {
         cancelButton = button;
         button.setText("Cancel");
         button.setDefaultCapable(false);

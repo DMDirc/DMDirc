@@ -39,4 +39,9 @@ public interface Wizard {
      * Called when the wizard finishes. 
      */
     void wizardFinished();
+    
+    /**
+     * Called when the wizard is cancelled.
+     */
+    void wizardCancelled();
 }

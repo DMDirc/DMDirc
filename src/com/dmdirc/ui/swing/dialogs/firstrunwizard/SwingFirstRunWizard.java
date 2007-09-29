@@ -92,6 +92,11 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
     }
     
     /** {@inheritDoc} */
+    public void wizardCancelled() {
+        wizardDialog.dispose();
+    }
+    
+    /** {@inheritDoc} */
     public void extractPlugins(final ResourceManager resourceManager) {
         extractCorePlugins(resourceManager.getResourceManager());
     }

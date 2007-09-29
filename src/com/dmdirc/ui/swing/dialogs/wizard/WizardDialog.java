@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs.wizard;
 import com.dmdirc.Main;
 import com.dmdirc.ui.swing.MainFrame;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.components.StandardDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -46,7 +47,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
@@ -54,7 +54,7 @@ import javax.swing.JSeparator;
 /**
  * Basic wizard container.
  */
-public final class WizardDialog extends JFrame implements ActionListener,
+public final class WizardDialog extends StandardDialog implements ActionListener,
         Serializable {
     
     /**
@@ -97,7 +97,7 @@ public final class WizardDialog extends JFrame implements ActionListener,
      */
     public WizardDialog(final String title, final List<Step> steps,
             final Wizard wizard, final boolean modal) {
-        super();
+        super(null, modal);
         hasMainframe = true;
         
         this.title = title;
@@ -116,7 +116,7 @@ public final class WizardDialog extends JFrame implements ActionListener,
      */
     public WizardDialog(final String title, final List<Step> steps,
             final Wizard wizard) {
-        super();
+        super(null, false);
         hasMainframe = false;
         
         this.title = title;
@@ -160,8 +160,12 @@ public final class WizardDialog extends JFrame implements ActionListener,
         buttonsPanel = new JPanel();
         progressLabel = new JLabel();
         
+        orderButtons(new JButton(), new JButton());
+        next = new JButton();
+        setOkButton(next);
+        
         prev = new JButton("<< Previous");
-        next = new JButton("Next >>");
+        next.setText("Next >>");
         
         prev.setPreferredSize(new Dimension(110, 30));
         next.setPreferredSize(new Dimension(110, 30));
@@ -171,6 +175,7 @@ public final class WizardDialog extends JFrame implements ActionListener,
         next.setMargin(new Insets(next.getMargin().top, 0,
                 next.getMargin().bottom, 0));
         
+        getCancelButton().addActionListener(this);
         prev.addActionListener(this);
         next.addActionListener(this);
         
@@ -232,6 +237,8 @@ public final class WizardDialog extends JFrame implements ActionListener,
             nextStep();
         } else if (e.getSource() == prev) {
             prevStep();
+        } else if (e.getSource() == getCancelButton()) {
+            wizard.wizardCancelled();
         }
     }
     
@@ -308,6 +315,15 @@ public final class WizardDialog extends JFrame implements ActionListener,
      */
     public Step getStep(final int stepNumber) {
         return steps.get(stepNumber);
+    }
+    
+    /**
+     * Returns the current step.
+     *
+     * @return Current step number
+     */
+    public int getCurrentStep() {
+        return currentStep;
     }
     
     /** Updates the progress label. */

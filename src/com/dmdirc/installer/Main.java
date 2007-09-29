@@ -32,8 +32,9 @@ import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
 
 import java.awt.Dimension;
 import java.util.ArrayList;
-
 import java.util.List;
+
+import javax.swing.JOptionPane;
 
 /**
  * Main installer window
@@ -66,6 +67,19 @@ public final class Main implements Wizard {
 		myInstaller = null;
 		if (temp != null) { temp.interrupt(); }
 	}
+	
+	/**
+	 * Called when the wizard is cancelled.
+	 */
+	public void wizardCancelled() {	
+		if (wizardDialog.getCurrentStep() != 2
+			&& JOptionPane.showConfirmDialog(wizardDialog, 
+				"Are you sure you want to cancel?",
+				"Cancel confirmation", JOptionPane.YES_NO_OPTION, 
+				JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+			                wizardDialog.dispose();
+		}
+        }
 
 	/**
 	 * Creates and Displays the Installer wizard.
@@ -151,7 +165,6 @@ public final class Main implements Wizard {
 	 * Run the installer
 	 */
 	public static void main (String[] args) {
-		System.out.println("");
 		setupCLIParser();
 		cli.parseArgs(args, false);
 		getWizardDialog().display();
