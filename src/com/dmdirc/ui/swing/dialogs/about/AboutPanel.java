@@ -67,6 +67,7 @@ public final class AboutPanel extends JPanel implements HyperlinkListener {
                 + "</center></html>", this);
         about.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
+        about.addHyperlinkListener(this);
         
         setLayout(new BorderLayout());
         

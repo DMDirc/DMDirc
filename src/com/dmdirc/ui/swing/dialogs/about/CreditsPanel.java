@@ -73,6 +73,7 @@ public final class CreditsPanel extends JPanel implements HyperlinkListener {
                 + "</div></html>", this);
         about.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
+        about.addHyperlinkListener(this);
         
         setLayout(new BorderLayout());
         
