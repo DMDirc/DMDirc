@@ -190,7 +190,6 @@ public final class ErrorManager implements Serializable {
             }
             
             tries++;
-            System.out.println(response);
         } while((response.isEmpty() || !response.get(response.size() - 1).
                 equalsIgnoreCase("Error report submitted. Thank you.")) 
                 || tries >= 5);
