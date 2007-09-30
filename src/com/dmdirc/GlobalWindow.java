@@ -54,6 +54,8 @@ public class GlobalWindow extends WritableFrameContainer {
         window.getInputHandler().setTabCompleter(tabCompleter);
         window.setFrameIcon(icon);        
         window.open();
+        
+        Main.getUI().getMainWindow().getFrameManager().addWindow(this);
     }
 
     public InputWindow getFrame() {
@@ -66,6 +68,7 @@ public class GlobalWindow extends WritableFrameContainer {
 
     public void close() {
         window.setVisible(false);
+        Main.getUI().getMainWindow().getFrameManager().delWindow(this);
     }
 
     public Server getServer() {
