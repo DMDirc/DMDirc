@@ -85,34 +85,34 @@ public interface FrameManager {
     void clearNotification(FrameContainer source);
     
     /**
-     * Adds a new server instance to this frame manager.
+     * Adds a window to this frame manager.
      * 
      * @param server The server to be added
      */
-    void addServer(Server server);
+    void addWindow(FrameContainer window);
     
     /**
-     * Removes a server instance from this frame manager.
+     * Removes a window from this frame manager.
      * 
      * @param server The server to be removed
      */
-    void delServer(Server server);   
+    void delWindow(FrameContainer window);   
     
     /**
-     * Adds a new custom window to this frame manager.
+     * Adds a new window to this frame manager.
      * 
-     * @param server The server to which the window belongs, or null
+     * @param parent The parent to which the window belongs, or null
      * @param window The custom window to be added
      */
-    void addCustom(Server server, FrameContainer window);
+    void addWindow(FrameContainer parent, FrameContainer window);
     
     /**
-     * Removes a custom window from this frame manager.
+     * Removes a window from this frame manager.
      * 
-     * @param server The server to which the window belongs, or null
+     * @param parent The parent to which the window belongs, or null
      * @param window The custom window to be removed
      */
-    void delCustom(Server server, FrameContainer window);
+    void delWindow(FrameContainer parent, FrameContainer window);
     
     /**
      * Informs the frame manager that the specified window has had its icon

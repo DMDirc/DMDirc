@@ -72,7 +72,7 @@ public final class ServerManager {
      */
     public void registerServer(final Server server) {
         servers.add(server);
-        Main.getUI().getMainWindow().getFrameManager().addServer(server);
+        Main.getUI().getMainWindow().getFrameManager().addWindow(server);
     }
     
     /**
@@ -85,7 +85,7 @@ public final class ServerManager {
         if (!closing) {
             servers.remove(server);
         }
-        Main.getUI().getMainWindow().getFrameManager().delServer(server);
+        Main.getUI().getMainWindow().getFrameManager().delWindow(server);
     }
     
     /**

@@ -66,7 +66,7 @@ public class HistoryWindow extends FrameContainer {
 		myWindow.setFrameIcon(icon);
 		myWindow.setVisible(true);
 		
-		Main.getUI().getFrameManager().addCustom(server, this);
+		Main.getUI().getFrameManager().addWindow(server, this);
 		
 		final Stack<String> lines = reader.getLines(IdentityManager.getGlobalConfig().getOptionInt("plugin-Logging", "history.lines", 50000));
 		while (lines.size() > 0) {
@@ -88,7 +88,7 @@ public class HistoryWindow extends FrameContainer {
 	public void close() {
 		myWindow.setVisible(false);
 		Main.getUI().getMainWindow().delChild(myWindow);
-                Main.getUI().getFrameManager().delCustom(server, this);
+                Main.getUI().getFrameManager().delWindow(server, this);
 	}
 	
 	/** {@inheritDoc} */

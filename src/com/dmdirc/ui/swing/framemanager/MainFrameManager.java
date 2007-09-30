@@ -23,7 +23,6 @@
 package com.dmdirc.ui.swing.framemanager;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.swing.framemanager.buttonbar.ButtonBar;
@@ -122,27 +121,27 @@ public final class MainFrameManager implements FrameManager, Serializable {
     }
     
     /** {@inheritDoc} */
-    public void addServer(final Server server) {
-        frameManager.addServer(server);
-        windowMenuFrameManager.addServer(server);
+    public void addWindow(final FrameContainer window) {
+        frameManager.addWindow(window);
+        windowMenuFrameManager.addWindow(window);
     }
     
     /** {@inheritDoc} */
-    public void delServer(final Server server) {
-        frameManager.delServer(server);
-        windowMenuFrameManager.delServer(server);
+    public void delWindow(final FrameContainer window) {
+        frameManager.delWindow(window);
+        windowMenuFrameManager.delWindow(window);
     }
         
     /** {@inheritDoc} */
-    public void addCustom(final Server server, final FrameContainer window) {
-        frameManager.addCustom(server, window);
-        windowMenuFrameManager.addCustom(server, window);
+    public void addWindow(final FrameContainer parent, final FrameContainer window) {
+        frameManager.addWindow(parent, window);
+        windowMenuFrameManager.addWindow(parent, window);
     }
     
     /** {@inheritDoc} */
-    public void delCustom(final Server server, final FrameContainer window) {
-        frameManager.delCustom(server, window);
-        windowMenuFrameManager.delCustom(server, window);
+    public void delWindow(final FrameContainer parent, final FrameContainer window) {
+        frameManager.delWindow(parent, window);
+        windowMenuFrameManager.delWindow(parent, window);
     }
     
     /** {@inheritDoc} */

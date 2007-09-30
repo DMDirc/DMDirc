@@ -24,7 +24,6 @@ package com.dmdirc.ui.swing.framemanager;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
-import com.dmdirc.Server;
 import com.dmdirc.ui.interfaces.FrameManager;
 
 import java.awt.Color;
@@ -48,27 +47,27 @@ public final class DummyFrameManager implements FrameManager {
     }
     
     /** {@inheritDoc} */
-    public void addServer(final Server server) {
+    public void addWindow(final FrameContainer window) {
         Main.getUI().getStatusBar()
-                .setMessage("DummyFrameManager: addServer: " + server);
+                .setMessage("DummyFrameManager: addServer: " + window);
     }
     
     /** {@inheritDoc} */
-    public void delServer(final Server server) {
+    public void delWindow(final FrameContainer window) {
         Main.getUI().getStatusBar()
-                .setMessage("DummyFrameManager: delServer: " + server);
+                .setMessage("DummyFrameManager: delServer: " + window);
     }
     
     /** {@inheritDoc} */
-    public void addCustom(final Server server, final FrameContainer window) {
+    public void addWindow(final FrameContainer parent, final FrameContainer window) {
         Main.getUI().getStatusBar()
-                .setMessage("DummyFrameManager: addCustom: " + window + "@" + server);
+                .setMessage("DummyFrameManager: addCustom: " + window + "@" + parent);
     }
     
     /** {@inheritDoc} */
-    public void delCustom(final Server server, final FrameContainer window) {
+    public void delWindow(final FrameContainer parent, final FrameContainer window) {
         Main.getUI().getStatusBar()
-                .setMessage("DummyFrameManager: delCustom: " + window + "@" + server);
+                .setMessage("DummyFrameManager: delCustom: " + window + "@" + parent);
     }
     
     /** {@inheritDoc} */

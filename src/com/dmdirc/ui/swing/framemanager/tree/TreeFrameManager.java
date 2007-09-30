@@ -23,7 +23,6 @@
 package com.dmdirc.ui.swing.framemanager.tree;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
@@ -44,7 +43,9 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
@@ -127,6 +128,9 @@ public final class TreeFrameManager implements FrameManager,
      */
     private DefaultMutableTreeNode popupNode;
     
+    /** Parent node. */
+    private final List<FrameContainer> parents;
+    
     /**
      * creates a new instance of the TreeFrameManager.
      */
@@ -138,6 +142,7 @@ public final class TreeFrameManager implements FrameManager,
         root = new DefaultMutableTreeNode("DMDirc");
         model = new TreeViewModel(root);
         tree = new JTree(model);
+        parents = new ArrayList<FrameContainer>();
         
         final TreeViewTreeCellRenderer renderer = new TreeViewTreeCellRenderer(this);
         
@@ -283,13 +288,14 @@ public final class TreeFrameManager implements FrameManager,
     }
     
     /** {@inheritDoc} */
-    public void addServer(final Server server) {
+    public void addWindow(final FrameContainer window) {
+        parents.add(window);
         final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-        nodes.put(server, node);
-        node.setUserObject(server);
+        nodes.put(window, node);
+        node.setUserObject(window);
         model.insertNodeInto(node, root);
         if (root.getChildCount() == 1) {
-            selected = server;
+            selected = window;
         }
         tree.expandPath(new TreePath(node.getPath()).getParentPath());
         final Rectangle view = tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
@@ -297,32 +303,33 @@ public final class TreeFrameManager implements FrameManager,
     }
     
     /** {@inheritDoc} */
-    public void delServer(final Server server) {
-        if (nodes != null && nodes.get(server) != null) {
-            final DefaultMutableTreeNode node = nodes.get(server);
+    public void delWindow(final FrameContainer window) {
+        parents.remove(window);
+        if (nodes != null && nodes.get(window) != null) {
+            final DefaultMutableTreeNode node = nodes.get(window);
             if (node.getLevel() == 0) {
                 Logger.appError(ErrorLevel.MEDIUM,
                         "delServer triggered for root node" + node.toString(),
                         new IllegalArgumentException());
             } else {
-                model.removeNodeFromParent(nodes.get(server));
+                model.removeNodeFromParent(nodes.get(window));
             }
         }
     }
     
     /** {@inheritDoc} */
-    public void addCustom(final Server server, final FrameContainer window) {
+    public void addWindow(final FrameContainer parent, final FrameContainer window) {
         final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(window, node);
         node.setUserObject(window);
-        model.insertNodeInto(node, nodes.get(server));
+        model.insertNodeInto(node, nodes.get(parent));
         tree.expandPath(new TreePath(node.getPath()).getParentPath());
         final Rectangle view = tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
         tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
     }
     
     /** {@inheritDoc} */
-    public void delCustom(final Server server, final FrameContainer window) {
+    public void delWindow(final FrameContainer parent, final FrameContainer window) {
         if (nodes != null && nodes.get(window) != null) {
             if (nodes.get(window).getLevel() == 0) {
                 Logger.appError(ErrorLevel.MEDIUM,
@@ -553,7 +560,7 @@ public final class TreeFrameManager implements FrameManager,
         
         thisNode = node;
         
-        if (thisNode.getUserObject() instanceof Server) {
+        if (parents.contains(thisNode.getUserObject())) {
             if (thisNode.getParent().getIndex(thisNode) == 0) {
                 //first server - last child of parent's last child
                 nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
@@ -591,7 +598,7 @@ public final class TreeFrameManager implements FrameManager,
         
         thisNode = node;
         
-        if (thisNode.getUserObject() instanceof Server) {
+        if (parents.contains(thisNode.getUserObject())) {
             if (thisNode.getChildCount() > 0) {
                 //server has frames, use first
                 nextNode = (DefaultMutableTreeNode) thisNode.getFirstChild();

@@ -111,7 +111,7 @@ public final class Main {
         getUI().getMainWindow();
         
         if (!IdentityManager.getGlobalConfig().hasOption("general", "firstRun")
-                || IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun", false)) {
+        || IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun", false)) {
             IdentityManager.getConfigIdentity().setOption("general", "firstRun", "false");
             IdentityManager.getConfigIdentity().setOption("general", "addonrevision", ADDON_REVISION);
             getUI().showFirstRunWizard();

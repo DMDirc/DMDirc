@@ -452,7 +452,7 @@ public final class Server extends WritableFrameContainer implements
      */
     public void addRaw() {
         raw = new Raw(this);
-        Main.getUI().getMainWindow().getFrameManager().addCustom(this, raw);
+        Main.getUI().getMainWindow().getFrameManager().addWindow(this, raw);
         raw.registerCallbacks();
     }
     
@@ -641,7 +641,7 @@ public final class Server extends WritableFrameContainer implements
     private void closeChannels() {
         for (Channel channel : channels.values()) {
             channel.closeWindow(false);
-            Main.getUI().getMainWindow().getFrameManager().delCustom(this, channel);
+            Main.getUI().getMainWindow().getFrameManager().delWindow(this, channel);
         }
         channels.clear();
     }
@@ -661,7 +661,7 @@ public final class Server extends WritableFrameContainer implements
     private void closeQueries() {
         for (Query query : queries.values()) {
             query.close(false);
-            Main.getUI().getMainWindow().getFrameManager().delCustom(this, query);
+            Main.getUI().getMainWindow().getFrameManager().delWindow(this, query);
         }
         queries.clear();
     }
@@ -671,7 +671,7 @@ public final class Server extends WritableFrameContainer implements
      * closed).
      */
     public void delRaw() {
-        Main.getUI().getMainWindow().getFrameManager().delCustom(this, raw);
+        Main.getUI().getMainWindow().getFrameManager().delWindow(this, raw);
         raw = null;
     }
     
@@ -682,7 +682,7 @@ public final class Server extends WritableFrameContainer implements
      */
     public void delChannel(final String chan) {
         tabCompleter.removeEntry(chan);
-        Main.getUI().getMainWindow().getFrameManager().delCustom(
+        Main.getUI().getMainWindow().getFrameManager().delWindow(
                 this, channels.get(parser.toLowerCase(chan)));
         channels.remove(parser.toLowerCase(chan));
     }
@@ -697,7 +697,7 @@ public final class Server extends WritableFrameContainer implements
         
         tabCompleter.addEntry(chan.getName());
         channels.put(parser.toLowerCase(chan.getName()), newChan);
-        Main.getUI().getMainWindow().getFrameManager().addCustom(this, newChan);
+        Main.getUI().getMainWindow().getFrameManager().addWindow(this, newChan);
         
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -716,7 +716,7 @@ public final class Server extends WritableFrameContainer implements
         
         tabCompleter.addEntry(ClientInfo.parseHost(host));
         queries.put(parser.toLowerCase(ClientInfo.parseHost(host)), newQuery);
-        Main.getUI().getMainWindow().getFrameManager().addCustom(this, newQuery);
+        Main.getUI().getMainWindow().getFrameManager().addWindow(this, newQuery);
     }
     
     /**
@@ -726,7 +726,7 @@ public final class Server extends WritableFrameContainer implements
      */
     public void delQuery(final String host) {
         tabCompleter.removeEntry(ClientInfo.parseHost(host));
-        Main.getUI().getMainWindow().getFrameManager().delCustom(this,
+        Main.getUI().getMainWindow().getFrameManager().delWindow(this,
                 queries.get(parser.toLowerCase(ClientInfo.parseHost(host))));
         queries.remove(parser.toLowerCase(ClientInfo.parseHost(host)));
     }

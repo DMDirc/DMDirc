@@ -24,7 +24,6 @@ package com.dmdirc.ui.swing.framemanager.buttonbar;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
-import com.dmdirc.Server;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
@@ -70,8 +69,8 @@ public final class ButtonBar implements FrameManager, ActionListener,
      */
     private static final long serialVersionUID = 1;
     
-    /** A map of servers to their respective windows. */
-    private final Map<Server, List<FrameContainer>> windows;
+    /** A map of parent containers to their respective windows. */
+    private final Map<FrameContainer, List<FrameContainer>> windows;
     
     /** A map of containers to the buttons we're using for them. */
     private final Map<FrameContainer, JToggleButton> buttons;
@@ -99,7 +98,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
     
     /** Creates a new instance of DummyFrameManager. */
     public ButtonBar() {
-        windows = new HashMap<Server, List<FrameContainer>>();
+        windows = new HashMap<FrameContainer, List<FrameContainer>>();
         buttons = new HashMap<FrameContainer, JToggleButton>();
         position = FramemanagerPosition.getPosition(
                 IdentityManager.getGlobalConfig().getOption("ui", "framemanagerPosition"));
@@ -138,7 +137,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
         constraints.insets.set(UIUtilities.SMALL_BORDER,
                 UIUtilities.SMALL_BORDER, 0, 0);
         
-        for (Map.Entry<Server, List<FrameContainer>> entry : windows.entrySet()) {
+        for (Map.Entry<FrameContainer, List<FrameContainer>> entry : windows.entrySet()) {
             buttons.get(entry.getKey()).setPreferredSize(new Dimension(buttonWidth, 25));
             buttons.get(entry.getKey()).setMinimumSize(new Dimension(buttonWidth, 25));
             panel.add(buttons.get(entry.getKey()), constraints);
@@ -230,31 +229,31 @@ public final class ButtonBar implements FrameManager, ActionListener,
     }
     
     /** {@inheritDoc} */
-    public void addServer(final Server server) {
-        windows.put(server, new ArrayList<FrameContainer>());
-        addButton(server);
-        
-        relayout();
-    }
-    
-    /** {@inheritDoc} */
-    public void delServer(final Server server) {
-        windows.remove(server);
-        
-        relayout();
-    }
-        
-    /** {@inheritDoc} */
-    public void addCustom(final Server server, final FrameContainer window) {
-        windows.get(server).add(window);
+    public void addWindow(final FrameContainer window) {
+        windows.put(window, new ArrayList<FrameContainer>());
         addButton(window);
         
         relayout();
     }
     
     /** {@inheritDoc} */
-    public void delCustom(final Server server, final FrameContainer window) {
-        windows.get(server).remove(window);
+    public void delWindow(final FrameContainer window) {
+        windows.remove(window);
+        
+        relayout();
+    }
+        
+    /** {@inheritDoc} */
+    public void addWindow(final FrameContainer parent, final FrameContainer window) {
+        windows.get(parent).add(window);
+        addButton(window);
+        
+        relayout();
+    }
+    
+    /** {@inheritDoc} */
+    public void delWindow(final FrameContainer parent, final FrameContainer window) {
+        windows.get(parent).remove(window);
         
         relayout();
     }

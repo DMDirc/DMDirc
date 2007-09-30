@@ -24,7 +24,6 @@ package com.dmdirc.ui.swing.framemanager.windowmenu;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
-import com.dmdirc.Server;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.FrameContainerComparator;
@@ -106,23 +105,23 @@ public final class WindowMenuFrameManager implements FrameManager,
     }
     
     /** {@inheritDoc} */
-    public void addServer(final Server server) {
-        addFrameContainer(server);
-    }
-    
-    /** {@inheritDoc} */
-    public void delServer(final Server server) {
-        removeFramecontainer(server);
-    }
-    
-    /** {@inheritDoc} */
-    public void addCustom(final Server server, final FrameContainer window) {
+    public void addWindow(final FrameContainer window) {
         addFrameContainer(window);
     }
     
     /** {@inheritDoc} */
-    public void delCustom(final Server server, final FrameContainer window) {
+    public void delWindow(final FrameContainer window) {
         removeFramecontainer(window);
+    }
+    
+    /** {@inheritDoc} */
+    public void addWindow(final FrameContainer parent, final FrameContainer window) {
+        addFrameContainer(parent);
+    }
+    
+    /** {@inheritDoc} */
+    public void delWindow(final FrameContainer parent, final FrameContainer window) {
+        removeFramecontainer(parent);
     }
     
     /** {@inheritDoc} */
