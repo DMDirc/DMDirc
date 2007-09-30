@@ -116,12 +116,12 @@ public final class WindowMenuFrameManager implements FrameManager,
     
     /** {@inheritDoc} */
     public void addWindow(final FrameContainer parent, final FrameContainer window) {
-        addFrameContainer(parent);
+        addFrameContainer(window);
     }
     
     /** {@inheritDoc} */
     public void delWindow(final FrameContainer parent, final FrameContainer window) {
-        removeFramecontainer(parent);
+        removeFramecontainer(window);
     }
     
     /** {@inheritDoc} */
