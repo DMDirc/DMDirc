@@ -47,7 +47,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4;
     
     /** Temporary map for lookup stats. */
     private static final Map<String, Integer> stats = new TreeMap<String, Integer>();
@@ -119,7 +119,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
             }
         }
         
-        throw new IndexOutOfBoundsException("Config option not found: " + domain + "." + option);
+        throw new IllegalArgumentException("Config option not found: " + domain + "." + option);
     }
     
     /**
@@ -142,28 +142,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
         
         return fallback;
     }
-    
-    /**
-     * Records the lookup request for the specified domain & option.
-     *
-     * @param domain The domain that is being looked up
-     * @param option The option that is being looked up
-     */
-    private void doStats(final String domain, final String option) {
-        final String key = domain + "." + option;
-        
-        stats.put(key, 1 + (stats.containsKey(key) ? stats.get(key) : 0));
-    }
-    
-    /**
-     * Retrieves the statistic map.
-     *
-     * @return A map of config options to lookup counts
-     */
-    public static Map<String, Integer> getStats() {
-        return stats;
-    }
-    
+       
     /**
      * Retrieves a colour representation of the specified option.
      *
@@ -186,11 +165,22 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
      *
      * @param domain The domain of the option
      * @param option The name of the option
+     * @return The boolean representation of the option
+     */
+    public boolean getOptionBool(final String domain, final String option) {
+        return Boolean.parseBoolean(getOption(domain, option));
+    }
+    
+    /**
+     * Retrieves a boolean representation of the specified option.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
      * @param fallback The value to use if the config isn't value
      * @return The boolean representation of the option
      */
-    public boolean getOptionBool(final String domain, final String option, final boolean fallback) {        
-        return Boolean.parseBoolean(getOption(domain, option));
+    public boolean getOptionBool(final String domain, final String option, final boolean fallback) {
+        return hasOption(domain, option) ? Boolean.parseBoolean(getOption(domain, option)) : fallback;
     }
     
     /**
@@ -376,6 +366,27 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     public List<Identity> getSources() {
         return sources;
     }
+    
+    /**
+     * Records the lookup request for the specified domain & option.
+     *
+     * @param domain The domain that is being looked up
+     * @param option The option that is being looked up
+     */
+    private void doStats(final String domain, final String option) {
+        final String key = domain + "." + option;
+        
+        stats.put(key, 1 + (stats.containsKey(key) ? stats.get(key) : 0));
+    }
+    
+    /**
+     * Retrieves the statistic map.
+     *
+     * @return A map of config options to lookup counts
+     */
+    public static Map<String, Integer> getStats() {
+        return stats;
+    }    
     
     /**
      * Adds a change listener for the specified domain.
