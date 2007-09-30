@@ -260,23 +260,6 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     }
     
     /**
-     * Returns the scope of the specified option.
-     *
-     * @param domain The domain of the option
-     * @param option The name of the option
-     * @return The scope of the option
-     */
-    public ConfigTarget getOptionScope(final String domain, final String option) {
-        for (Identity source : sources) {
-            if (source.hasOption(domain, option)) {
-                return source.getTarget();
-            }
-        }
-        
-        throw new IndexOutOfBoundsException("Config option not found: " + domain + "." + option);
-    }
-    
-    /**
      * Determines if this manager has the specified option.
      * @param domain The domain of the option
      * @param option The name of the option
