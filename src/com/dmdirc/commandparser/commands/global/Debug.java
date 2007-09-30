@@ -44,94 +44,204 @@ import java.util.Map;
  */
 public class Debug extends GlobalCommand implements IntelligentCommand {
     
+    /**
+     * Creates a new instance of Debug.
+     */
     public Debug() {
         CommandManager.registerCommand(this);
     }
     
-    public void execute(InputWindow origin, boolean isSilent, String... args) {
-        final String command = args[0].toLowerCase();
-        
-        if (command.equals("error")) {
-            ErrorLevel el = ErrorLevel.HIGH;
-            if (args.length > 2) {
-                String level = args[2];
-                
-                if (level.equals("low")) {
-                    el = ErrorLevel.LOW;
-                } else if (level.equals("medium")) {
-                    el = ErrorLevel.MEDIUM;
-                } else if (level.equals("fatal")) {
-                    el = ErrorLevel.FATAL;
-                } else if (level.equals("unknown")) {
-                    el = ErrorLevel.UNKNOWN;
-                }
-            }
-
-            if (args.length > 1 && args[1].equals("user")) {
-                Logger.userError(el, "Debug error message");
-            } else {
-                Logger.appError(el, "Debug error message", new Exception());
-            }
-        } else if (command.equals("fakeupdate")) {
-            new UpdateChecker().doUpdateAvailable("outofdate dummy 1337 0 http://www.example.com/");
-        } else if (command.equals("showraw") && origin != null && origin.getContainer() != null
-                && origin.getContainer().getServer() != null) {
-            origin.getContainer().getServer().addRaw();
-        } else if (command.equals("colourspam") && origin != null) {
-            for (int i = 0; i < 100; i++) {
-                sendLine(origin, isSilent, "commandOutput", ((char) 3) + "5Colour! "
-                        + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
-                        + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
-                        + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
-                        + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! ");
-            }
-        } else if (command.equals("configstats")) {
-            for (Map.Entry<String, Integer> entry : ConfigManager.getStats().entrySet()) {
-                sendLine(origin, isSilent, "commandOutput",
-                        entry.getKey() + " - " + entry.getValue());
-            }
-        } else if (command.equals("meminfo")) {
-            sendLine(origin, isSilent, "commandOutput", "Total Memory: " + Runtime.getRuntime().totalMemory());
-            sendLine(origin, isSilent, "commandOutput", "Free Memory: " + Runtime.getRuntime().freeMemory());
-            sendLine(origin, isSilent, "commandOutput", "Used Memory: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));
-        } else if (command.equals("rungc")) {
-            System.gc();
-            sendLine(origin, isSilent, "commandOutput", "Invoked garbage collector.");
-        } else if (command.equals("configinfo") && origin != null) {
-            for (Identity source : origin.getConfigManager().getSources()) {
-                sendLine(origin, isSilent, "commandOutput", source.getTarget() + " - " + source);
-            }
-        } else if (command.equals("globalconfiginfo")) {
-            for (Identity source : IdentityManager.getGlobalConfig().getSources()) {
-                sendLine(origin, isSilent, "commandOutput", source.getTarget() + " - " + source);
-            }            
-        } else if (command.equals("forceupdate")) {
-            new Thread(new UpdateChecker(), "Forced update checker").start();
+    /** {@inheritDoc} */
+    public void execute(final InputWindow origin, final boolean isSilent, final String ... args) {
+        if (args.length == 0) {
+            showUsage(origin, isSilent, "debug", "<debug command> [options]");
+        } else if ("error".equals(args[0])) {
+            doError(args);
+        } else if ("fakeupdate".equals(args[0])) {
+            doFakeUpdate();
+        } else if ("showraw".equals(args[0])) {
+            doShowRaw(origin, isSilent);
+        } else if ("configstats".equals(args[0])) {
+            doConfigStats(origin, isSilent);
+        } else if ("configinfo".equals(args[0])) {
+            doConfigInfo(origin, isSilent);
+        } else if ("globalconfiginfo".equals(args[0])) {
+            doGlobalConfigInfo(origin, isSilent);
+        } else if ("colourspam".equals(args[0])) {
+            doColourSpam(origin, isSilent);
+        } else if ("meminfo".equals(args[0])) {
+            doMemInfo(origin, isSilent);
+        } else if ("rungc".equals(args[0])) {
+            doGarbage(origin, isSilent);
+        } else if ("forceupdate".equals(args[0])) {
+            doForceUpdate();
         } else {
             sendLine(origin, isSilent, "commandError", "Unknown debug action.");
         }
     }
     
+    /**
+     * Generates a fake error.
+     *
+     * @param args The arguments that were passed to the command
+     */
+    private void doError(final String ... args) {
+        ErrorLevel el = ErrorLevel.HIGH;
+        if (args.length > 2) {
+            String level = args[2];
+            
+            if (level.equals("low")) {
+                el = ErrorLevel.LOW;
+            } else if (level.equals("medium")) {
+                el = ErrorLevel.MEDIUM;
+            } else if (level.equals("fatal")) {
+                el = ErrorLevel.FATAL;
+            } else if (level.equals("unknown")) {
+                el = ErrorLevel.UNKNOWN;
+            }
+        }
+        
+        if (args.length > 1 && args[1].equals("user")) {
+            Logger.userError(el, "Debug error message");
+        } else {
+            Logger.appError(el, "Debug error message", new Exception());
+        }
+    }
+    
+    /**
+     * Fakes an available update.
+     */
+    private void doFakeUpdate() {
+        new UpdateChecker().doUpdateAvailable("outofdate dummy 1337 0 http://www.example.com/");
+    }
+    
+    /**
+     * Attempts to show the server's raw window.
+     *
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     */
+    private void doShowRaw(final InputWindow origin, final boolean isSilent) {
+        if (origin == null || origin.getContainer() == null
+                || origin.getContainer().getServer() == null) {
+            sendLine(origin, isSilent, "commandError", "Cannot show raw window here.");
+        } else {
+            origin.getContainer().getServer().addRaw();
+        }
+    }
+    
+    /**
+     * Shows stats related to the config system.
+     *
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     */
+    private void doConfigStats(final InputWindow origin, final boolean isSilent) {
+        for (Map.Entry<String, Integer> entry : ConfigManager.getStats().entrySet()) {
+            sendLine(origin, isSilent, "commandOutput",
+                    entry.getKey() + " - " + entry.getValue());
+        }
+    }
+    
+    /**
+     * Shows memory usage information.
+     *
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     */
+    private void doMemInfo(final InputWindow origin, final boolean isSilent) {
+        sendLine(origin, isSilent, "commandOutput", "Total Memory: "
+                + Runtime.getRuntime().totalMemory());
+        sendLine(origin, isSilent, "commandOutput", "Free Memory: "
+                + Runtime.getRuntime().freeMemory());
+        sendLine(origin, isSilent, "commandOutput", "Used Memory: "
+                + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));
+    }
+    
+    /**
+     * Outputs 100 lines containing various colours.
+     *
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     */
+    private void doColourSpam(final InputWindow origin, final boolean isSilent) {
+        for (int i = 0; i < 100; i++) {
+            sendLine(origin, isSilent, "commandOutput", ((char) 3) + "5Colour! "
+                    + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
+                    + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
+                    + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
+                    + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! ");
+        }
+    }
+    
+    /**
+     * Manually runs the garbage collector.
+     *
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     */
+    private void doGarbage(final InputWindow origin, final boolean isSilent) {
+        System.gc();
+        sendLine(origin, isSilent, "commandOutput", "Invoked garbage collector.");
+    }
+    
+    /**
+     * Shows information about the config manager.
+     *
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     */
+    private void doConfigInfo(final InputWindow origin, final boolean isSilent) {
+        for (Identity source : origin.getConfigManager().getSources()) {
+            sendLine(origin, isSilent, "commandOutput", source.getTarget() + " - " + source);
+        }
+    }
+    
+    /**
+     * Shows information about the global config manager.
+     *
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     */
+    private void doGlobalConfigInfo(final InputWindow origin, final boolean isSilent) {
+        for (Identity source : IdentityManager.getGlobalConfig().getSources()) {
+            sendLine(origin, isSilent, "commandOutput", source.getTarget() + " - " + source);
+        }
+    }
+    
+    /**
+     * Forces the update checker to check for updates.
+     */
+    private void doForceUpdate() {
+        new Thread(new UpdateChecker(), "Forced update checker").start();
+    }
+    
+    /** {@inheritDoc} */
     public String getName() {
         return "debug";
     }
     
+    /** {@inheritDoc} */
     public boolean showInHelp() {
         return false;
     }
     
+    /** {@inheritDoc} */
     public boolean isPolyadic() {
         return true;
     }
     
+    /** {@inheritDoc} */
     public int getArity() {
         return 0;
     }
     
+    /** {@inheritDoc} */
     public String getHelp() {
         return null;
     }
     
+    /** {@inheritDoc} */
     public AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
@@ -146,11 +256,12 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             res.add("meminfo");
             res.add("rungc");
             res.add("configinfo");
+            res.add("globalconfiginfo");
             res.add("forceupdate");
-        } else if (arg == 1) {
+        } else if (arg == 1 && "error".equals(previousArgs.get(0))) {
             res.add("user");
             res.add("app");
-        } else if (arg == 2) {
+        } else if (arg == 2 && "error".equals(previousArgs.get(0))) {
             res.add("low");
             res.add("medium");
             res.add("high");
