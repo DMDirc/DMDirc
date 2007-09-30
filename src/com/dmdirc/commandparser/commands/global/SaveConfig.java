@@ -48,7 +48,7 @@ public final class SaveConfig extends GlobalCommand {
             final String... args) {
         IdentityManager.save();
         
-        sendLine(origin, isSilent, "commandOutput", "Configuration file saved.");
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "Configuration file saved.");
     }
     
     

@@ -70,7 +70,7 @@ public final class NewServer extends GlobalCommand {
             try {
                 port = Integer.parseInt(parts[1]);
             } catch (NumberFormatException ex) {
-                origin.addLine("commandError", "Invalid port specified");
+                origin.addLine(FORMAT_ERROR, "Invalid port specified");
                 return;
             }
         } else {

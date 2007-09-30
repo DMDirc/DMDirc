@@ -59,7 +59,7 @@ public final class TimerCommand extends GlobalCommand {
             }
             
             new TimedCommand(repetitions, interval, command, origin);
-            sendLine(origin, isSilent, "commandOutput", "Command scheduled.");
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "Command scheduled.");
         }
     }
     

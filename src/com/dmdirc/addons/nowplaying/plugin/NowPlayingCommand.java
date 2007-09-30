@@ -67,22 +67,22 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
                 final MediaSource source = parent.getSource(sourceName);
                 
                 if (source == null) {
-                    sendLine(origin, isSilent, "commandError", "Source not found.");
+                    sendLine(origin, isSilent, FORMAT_ERROR, "Source not found.");
                 } else {
                     if (source.isRunning()) {
                         target.sendAction("is playing " + source.getInformation());
                     } else {
-                        sendLine(origin, isSilent, "commandError", "Source is not running.");
+                        sendLine(origin, isSilent, FORMAT_ERROR, "Source is not running.");
                     }
                 }
             } else {
-                sendLine(origin, isSilent, "commandError", "You must specify a source when using --source.");
+                sendLine(origin, isSilent, FORMAT_ERROR, "You must specify a source when using --source.");
             }
         } else {
             if (parent.hasRunningSource()) {
                 target.sendAction("is playing " + parent.getBestSource().getInformation());
             } else {
-                sendLine(origin, isSilent, "commandError", "No running media sources available.");
+                sendLine(origin, isSilent, FORMAT_ERROR, "No running media sources available.");
             }
         }
     }
@@ -97,7 +97,7 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
         final List<MediaSource> sources = parent.getSources();
         
         if (sources.isEmpty()) {
-            sendLine(origin, isSilent, "commandError", "No media sources available.");
+            sendLine(origin, isSilent, FORMAT_ERROR, "No media sources available.");
         } else {
             String status;
             
@@ -111,7 +111,7 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
                 } else {
                     status = "not running";
                 }
-                sendLine(origin, isSilent, "commandOutput", source.getName() + ": " + status);
+                sendLine(origin, isSilent, FORMAT_OUTPUT, source.getName() + ": " + status);
             }
         }
     }

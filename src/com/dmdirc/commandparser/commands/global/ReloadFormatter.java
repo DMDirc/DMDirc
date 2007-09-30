@@ -46,7 +46,7 @@ public final class ReloadFormatter extends GlobalCommand {
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
         Formatter.reload();
-        sendLine(origin, isSilent, "commandOutput", "Formatter reloaded.");
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "Formatter reloaded.");
     }
     
     

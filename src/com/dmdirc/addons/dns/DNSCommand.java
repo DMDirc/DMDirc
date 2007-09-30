@@ -44,13 +44,13 @@ public final class DNSCommand extends GlobalCommand {
     /** {@inheritDoc} */
     public void execute(final InputWindow origin, final boolean isSilent,
             final String... args) {
-        sendLine(origin, isSilent, "commandOutput", "Resolving: " + args[0]);
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "Resolving: " + args[0]);
         new Timer("DNS Command Timer").schedule(new TimerTask() {
             public void run() {
                 if (args[0].matches("\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b")) {
-                    sendLine(origin, isSilent, "commandOutput", "Resolved: " + args[0] + ": " + DNSPlugin.getHostname(args[0]));
+                    sendLine(origin, isSilent, FORMAT_OUTPUT, "Resolved: " + args[0] + ": " + DNSPlugin.getHostname(args[0]));
                 } else {
-                    sendLine(origin, isSilent, "commandOutput", "Resolved: " + args[0] + ": " + DNSPlugin.getIPs(args[0]));
+                    sendLine(origin, isSilent, FORMAT_OUTPUT, "Resolved: " + args[0] + ": " + DNSPlugin.getIPs(args[0]));
                 }
             }
         }, 0);

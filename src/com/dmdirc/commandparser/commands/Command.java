@@ -30,6 +30,12 @@ import com.dmdirc.ui.interfaces.InputWindow;
  * @author chris
  */
 public abstract class Command implements Comparable<Command> {
+    
+    /** The format name used for command output. */
+    protected static final String FORMAT_OUTPUT = "commandOutput";
+    
+    /** The format name used for command errors. */
+    protected static final String FORMAT_ERROR = "commandError";
             
     /**
      * Returns the signature of this command. For polyadic commands, the signature

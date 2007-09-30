@@ -62,22 +62,22 @@ public final class Ignore extends ServerCommand {
                 final String list = identity.getOption("network", "ignorelist");
                 
                 if (!list.isEmpty()) {
-                    sendLine(origin, isSilent, "commandOutput", "Ignore list:");
+                    sendLine(origin, isSilent, FORMAT_OUTPUT, "Ignore list:");
                     
                     int i = 0;
                     for (String line : list.split("\n")) {
                         if (!line.isEmpty()) {
                             i++;
-                            sendLine(origin, isSilent, "commandOutput", i + ". " + line);
+                            sendLine(origin, isSilent, FORMAT_OUTPUT, i + ". " + line);
                         }
                     }
                     
                 } else {
-                    sendLine(origin, isSilent, "commandError", "No ignore list entries for this network.");
+                    sendLine(origin, isSilent, FORMAT_ERROR, "No ignore list entries for this network.");
                 }
                 
             } else {
-                sendLine(origin, isSilent, "commandError", "No ignore list entries for this network.");
+                sendLine(origin, isSilent, FORMAT_ERROR, "No ignore list entries for this network.");
             }
             
         } else if (args[0].toLowerCase().equals("add") && args.length > 1) {
@@ -92,7 +92,7 @@ public final class Ignore extends ServerCommand {
             
             identity.setOption("network", "ignorelist", list);
             
-            sendLine(origin, isSilent, "commandOutput", "Added " + host + " to the ignore list.");
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "Added " + host + " to the ignore list.");
             
         } else if (args[0].toLowerCase().equals("remove") && args.length > 1) {
             
@@ -119,9 +119,9 @@ public final class Ignore extends ServerCommand {
             
             if (found) {
                 identity.setOption("network", "ignorelist", newlist.toString());
-                sendLine(origin, isSilent, "commandOutput", "Removed " + host + " from the ignore list.");
+                sendLine(origin, isSilent, FORMAT_OUTPUT, "Removed " + host + " from the ignore list.");
             } else {
-                sendLine(origin, isSilent, "commandError", "Host '" + host + "' not found.");
+                sendLine(origin, isSilent, FORMAT_ERROR, "Host '" + host + "' not found.");
             }
             
         } else {

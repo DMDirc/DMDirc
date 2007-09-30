@@ -69,7 +69,7 @@ public final class ChangeServer extends ServerCommand {
             try {
                 port = Integer.parseInt(parts[1]);
             } catch (NumberFormatException ex) {
-                sendLine(origin, isSilent, "commandError", "Invalid port specified");
+                sendLine(origin, isSilent, FORMAT_ERROR, "Invalid port specified");
                 return;
             }
         } else {

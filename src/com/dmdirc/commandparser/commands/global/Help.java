@@ -60,27 +60,27 @@ public final class Help extends ServerCommand {
      */
     public void execute(final InputWindow origin, final Server server,
             final boolean isSilent, final String... args) {
-        sendLine(origin, isSilent, "commandOutput", "-- Global commands ----------------------------------");
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "-- Global commands ----------------------------------");
         showCommands(CommandManager.getGlobalCommands(), origin, isSilent);
         
         if (origin instanceof ServerWindow || origin instanceof ChannelWindow
                 || origin instanceof QueryWindow) {
-            sendLine(origin, isSilent, "commandOutput", "-- Server commands ----------------------------------");
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "-- Server commands ----------------------------------");
             showCommands(CommandManager.getServerCommands(), origin, isSilent);
         }
         
             if (origin instanceof ChannelWindow) {
-            sendLine(origin, isSilent, "commandOutput", "-- Channel commands ---------------------------------");
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "-- Channel commands ---------------------------------");
             showCommands(CommandManager.getChannelCommands(), origin, isSilent);
         }
         
         if (origin instanceof QueryWindow) {
-            sendLine(origin, isSilent, "commandOutput", "-- Query commands -----------------------------------");
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "-- Query commands -----------------------------------");
             showCommands(CommandManager.getQueryCommands(), origin, isSilent);
             
         }
         
-        sendLine(origin, isSilent, "commandOutput", "-----------------------------------------------------");
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "-----------------------------------------------------");
     }
     
     /**
@@ -94,7 +94,7 @@ public final class Help extends ServerCommand {
         Collections.sort(commands);
         for (Command com : commands) {
             if (com.showInHelp()) {
-                sendLine(origin, isSilent, "commandOutput", com.getHelp());
+                sendLine(origin, isSilent, FORMAT_OUTPUT, com.getHelp());
             }
         }
     }

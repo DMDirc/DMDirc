@@ -76,7 +76,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         } else if ("forceupdate".equals(args[0])) {
             doForceUpdate();
         } else {
-            sendLine(origin, isSilent, "commandError", "Unknown debug action.");
+            sendLine(origin, isSilent, FORMAT_ERROR, "Unknown debug action.");
         }
     }
     
@@ -124,7 +124,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     private void doShowRaw(final InputWindow origin, final boolean isSilent) {
         if (origin == null || origin.getContainer() == null
                 || origin.getContainer().getServer() == null) {
-            sendLine(origin, isSilent, "commandError", "Cannot show raw window here.");
+            sendLine(origin, isSilent, FORMAT_ERROR, "Cannot show raw window here.");
         } else {
             origin.getContainer().getServer().addRaw();
         }
@@ -138,7 +138,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      */
     private void doConfigStats(final InputWindow origin, final boolean isSilent) {
         for (Map.Entry<String, Integer> entry : ConfigManager.getStats().entrySet()) {
-            sendLine(origin, isSilent, "commandOutput",
+            sendLine(origin, isSilent, FORMAT_OUTPUT,
                     entry.getKey() + " - " + entry.getValue());
         }
     }
@@ -150,11 +150,11 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param isSilent Whether this command has been silenced or not
      */
     private void doMemInfo(final InputWindow origin, final boolean isSilent) {
-        sendLine(origin, isSilent, "commandOutput", "Total Memory: "
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "Total Memory: "
                 + Runtime.getRuntime().totalMemory());
-        sendLine(origin, isSilent, "commandOutput", "Free Memory: "
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "Free Memory: "
                 + Runtime.getRuntime().freeMemory());
-        sendLine(origin, isSilent, "commandOutput", "Used Memory: "
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "Used Memory: "
                 + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()));
     }
     
@@ -166,7 +166,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      */
     private void doColourSpam(final InputWindow origin, final boolean isSilent) {
         for (int i = 0; i < 100; i++) {
-            sendLine(origin, isSilent, "commandOutput", ((char) 3) + "5Colour! "
+            sendLine(origin, isSilent, FORMAT_OUTPUT, ((char) 3) + "5Colour! "
                     + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
                     + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
                     + ((char) 3) + "6Colour! " + ((char) 3) + "7Colour! "
@@ -182,7 +182,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      */
     private void doGarbage(final InputWindow origin, final boolean isSilent) {
         System.gc();
-        sendLine(origin, isSilent, "commandOutput", "Invoked garbage collector.");
+        sendLine(origin, isSilent, FORMAT_OUTPUT, "Invoked garbage collector.");
     }
     
     /**
@@ -193,7 +193,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      */
     private void doConfigInfo(final InputWindow origin, final boolean isSilent) {
         for (Identity source : origin.getConfigManager().getSources()) {
-            sendLine(origin, isSilent, "commandOutput", source.getTarget() + " - " + source);
+            sendLine(origin, isSilent, FORMAT_OUTPUT, source.getTarget() + " - " + source);
         }
     }
     
@@ -205,7 +205,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      */
     private void doGlobalConfigInfo(final InputWindow origin, final boolean isSilent) {
         for (Identity source : IdentityManager.getGlobalConfig().getSources()) {
-            sendLine(origin, isSilent, "commandOutput", source.getTarget() + " - " + source);
+            sendLine(origin, isSilent, FORMAT_OUTPUT, source.getTarget() + " - " + source);
         }
     }
     

@@ -61,10 +61,10 @@ public final class AudioCommand extends GlobalCommand {
 			if (AudioPlayer.isValid(file)) {
 				new AudioPlayer(file).start();
 			} else {
-				sendLine(origin, isSilent, "commandError", "Invalid file type");
+				sendLine(origin, isSilent, FORMAT_ERROR, "Invalid file type");
 			}
 		} else {
-			sendLine(origin, isSilent, "commandError", "File does not exist");
+			sendLine(origin, isSilent, FORMAT_ERROR, "File does not exist");
 		}
 	}
 

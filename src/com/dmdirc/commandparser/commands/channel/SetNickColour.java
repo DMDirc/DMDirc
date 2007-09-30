@@ -81,7 +81,7 @@ public final class SetNickColour extends ChannelCommand {
         offset++;
         
         if (target == null) {
-            sendLine(origin, isSilent, "commandError", "No such nickname (" + args[offset - 1] + ")!");
+            sendLine(origin, isSilent, FORMAT_ERROR, "No such nickname (" + args[offset - 1] + ")!");
         } else if (args.length <= offset) {
             // We're removing the colour
             if (nicklist) {
@@ -95,7 +95,7 @@ public final class SetNickColour extends ChannelCommand {
             // We're setting the colour
             final Color newColour = ColourManager.parseColour(args[offset], null);
             if (newColour == null) {
-                sendLine(origin, isSilent, "commandError", "Invalid colour specified.");
+                sendLine(origin, isSilent, FORMAT_ERROR, "Invalid colour specified.");
                 return;
             }
             if (nicklist) {

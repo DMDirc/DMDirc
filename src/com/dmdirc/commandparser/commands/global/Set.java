@@ -87,7 +87,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
             output.append(", ");
         }
         
-        sendLine(origin, isSilent, "commandOutput", output.substring(0, output.length() - 2));
+        sendLine(origin, isSilent, FORMAT_OUTPUT, output.substring(0, output.length() - 2));
     }
     
     /**
@@ -114,9 +114,9 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
         }
         
         if (found) {
-            sendLine(origin, isSilent, "commandOutput", output.substring(0, output.length() - 2));
+            sendLine(origin, isSilent, FORMAT_OUTPUT, output.substring(0, output.length() - 2));
         } else {
-            sendLine(origin, isSilent, "commandError", 
+            sendLine(origin, isSilent, FORMAT_ERROR, 
                     "There are no options in the domain '" + domain + "'.");
         }
     }
@@ -132,10 +132,10 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
     private void doShowOption(final InputWindow origin,
             final boolean isSilent, final String domain, final String option) {
         if (IdentityManager.getGlobalConfig().hasOption(domain, option)) {
-            sendLine(origin, isSilent, "commandOutput", "The current value of " + domain + "." + option
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "The current value of " + domain + "." + option
                     + " is: " + IdentityManager.getGlobalConfig().getOption(domain, option));
         } else {
-            sendLine(origin, isSilent, "commandError", "Option not found: " + domain + "." + option);
+            sendLine(origin, isSilent, FORMAT_ERROR, "Option not found: " + domain + "." + option);
         }
     }
     
@@ -153,7 +153,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
             final String newvalue) {
         IdentityManager.getConfigIdentity().setOption(domain, option, newvalue);
         
-        sendLine(origin, isSilent, "commandOutput", domain + "." + option + " has been set to: " + newvalue);
+        sendLine(origin, isSilent, FORMAT_OUTPUT, domain + "." + option + " has been set to: " + newvalue);
     }
     
     /**
@@ -168,7 +168,7 @@ public final class Set extends GlobalCommand implements IntelligentCommand {
             final boolean isSilent, final String domain, final String option) {
         IdentityManager.getConfigIdentity().unsetOption(domain, option);
         
-        sendLine(origin, isSilent, "commandOutput", domain + "." + option + " has been unset.");
+        sendLine(origin, isSilent, FORMAT_OUTPUT, domain + "." + option + " has been unset.");
     }
     
     /** {@inheritDoc} */

@@ -54,10 +54,10 @@ public final class Echo extends GlobalCommand {
         if (args.length > 0 && args[0].equalsIgnoreCase("--active")) {
             final Window frame = Main.getUI().getMainWindow().getActiveFrame();
             if (frame instanceof InputWindow) {
-                ((InputWindow) frame).addLine("commandOutput", implodeArgs(1, args));
+                ((InputWindow) frame).addLine(FORMAT_OUTPUT, implodeArgs(1, args));
             }
         } else {
-            sendLine(origin, isSilent, "commandOutput", implodeArgs(args));
+            sendLine(origin, isSilent, FORMAT_OUTPUT, implodeArgs(args));
         }
     }
     

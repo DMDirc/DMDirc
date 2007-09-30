@@ -55,7 +55,7 @@ public final class DcopCommand extends ServerCommand {
             final boolean isSilent, final String... args) {
         final List<String> res = DcopPlugin.getDcopResult("dcop " + implodeArgs(args));
         for (String line : res) {
-            sendLine(origin, isSilent, "commandOutput", line);
+            sendLine(origin, isSilent, FORMAT_OUTPUT, line);
         }
     }
     
