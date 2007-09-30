@@ -134,7 +134,7 @@ public final class TreeFrameManager implements FrameManager,
     /**
      * creates a new instance of the TreeFrameManager.
      */
-    public TreeFrameManager() {        
+    public TreeFrameManager() {
         nodes = new Hashtable<FrameContainer, DefaultMutableTreeNode>();
         nodeColours = new Hashtable<FrameContainer, Color>();
         popup = new JPopupMenu();
@@ -564,14 +564,17 @@ public final class TreeFrameManager implements FrameManager,
             if (thisNode.getParent().getIndex(thisNode) == 0) {
                 //first server - last child of parent's last child
                 nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
-                        thisNode.getParent()).getLastChild();
+                thisNode.getParent()).getLastChild();
                 if (nextNode.getChildCount() > 0) {
                     nextNode = (DefaultMutableTreeNode) nextNode.getLastChild();
                 }
             } else {
                 //other servers - last child of previous sibling
-                nextNode = (DefaultMutableTreeNode)
-                        (thisNode.getPreviousSibling()).getLastChild();
+                nextNode = thisNode.getPreviousSibling();
+                if (nextNode.getChildCount() > 0) {
+                    nextNode = (DefaultMutableTreeNode)
+                    (thisNode.getPreviousSibling()).getLastChild();
+                }
             }
         } else {
             if (thisNode.getParent().getIndex(thisNode) == 0) {
@@ -603,12 +606,11 @@ public final class TreeFrameManager implements FrameManager,
                 //server has frames, use first
                 nextNode = (DefaultMutableTreeNode) thisNode.getFirstChild();
             } else {
-                //server has no frames, use next server
-                nextNode = ((DefaultMutableTreeNode) thisNode.getParent()).getNextSibling();
+                nextNode = thisNode.getNextSibling();
                 //no next server, use first
                 if (nextNode == null) {
                     nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
-                            thisNode.getParent()).getFirstChild();
+                    thisNode.getParent()).getFirstChild();
                 }
             }
         } else {
@@ -618,7 +620,7 @@ public final class TreeFrameManager implements FrameManager,
                 //parent doesnt have a next sibling, get the first child of the grandparent
                 if (nextNode == null) {
                     nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
-                            thisNode.getParent().getParent()).getFirstChild();
+                    thisNode.getParent().getParent()).getFirstChild();
                 }
             } else {
                 //other frames - get the next sibling
@@ -628,9 +630,9 @@ public final class TreeFrameManager implements FrameManager,
         
         return nextNode;
     }
-
+    
     /** {@inheritDoc} */
-    public void configChanged(final String domain, final String key, 
+    public void configChanged(final String domain, final String key,
             final String oldValue, final String newValue) {
         tree.setBackground(IdentityManager.getGlobalConfig().getOptionColour("treeview", "backgroundcolour",
                 IdentityManager.getGlobalConfig().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
