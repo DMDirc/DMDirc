@@ -85,9 +85,9 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 	public boolean onLoad() {
 		// Set defaults
 		Properties defaults = new Properties();
-		defaults.setProperty(MY_DOMAIN + "channel.shownone", "true");
-		defaults.setProperty(MY_DOMAIN + "channel.noneprefix", "None:");
-		defaults.setProperty(MY_DOMAIN + "client.showname", "false");
+		defaults.setProperty(MY_DOMAIN + ".channel.shownone", "true");
+		defaults.setProperty(MY_DOMAIN + ".channel.noneprefix", "None:");
+		defaults.setProperty(MY_DOMAIN + ".client.showname", "false");
 		defaults.setProperty("identity.name", "WindowStatus Plugin Defaults");
 		IdentityManager.addIdentity(new Identity(defaults));
 		

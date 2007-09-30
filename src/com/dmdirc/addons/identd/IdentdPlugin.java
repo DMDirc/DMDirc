@@ -62,17 +62,17 @@ public class IdentdPlugin extends Plugin implements EventPlugin, PreferencesInte
 	public boolean onLoad() {
 		// Set defaults
 		Properties defaults = new Properties();
-		defaults.setProperty(getDomain() + "general.useUsername", "false");
-		defaults.setProperty(getDomain() + "general.useNickname", "false");
-		defaults.setProperty(getDomain() + "general.useCustomName", "false");
-		defaults.setProperty(getDomain() + "general.customName", "DMDirc-user");
+		defaults.setProperty(getDomain() + ".general.useUsername", "false");
+		defaults.setProperty(getDomain() + ".general.useNickname", "false");
+		defaults.setProperty(getDomain() + ".general.useCustomName", "false");
+		defaults.setProperty(getDomain() + ".general.customName", "DMDirc-user");
 		
-		defaults.setProperty(getDomain() + "advanced.alwaysOn", "false");
-		defaults.setProperty(getDomain() + "advanced.port", "113");
-		defaults.setProperty(getDomain() + "advanced.useCustomSystem", "false");
-		defaults.setProperty(getDomain() + "advanced.customSystem", "OTHER");
-		defaults.setProperty(getDomain() + "advanced.isHiddenUser", "false");
-		defaults.setProperty(getDomain() + "advanced.isNoUser", "false");
+		defaults.setProperty(getDomain() + ".advanced.alwaysOn", "false");
+		defaults.setProperty(getDomain() + ".advanced.port", "113");
+		defaults.setProperty(getDomain() + ".advanced.useCustomSystem", "false");
+		defaults.setProperty(getDomain() + ".advanced.customSystem", "OTHER");
+		defaults.setProperty(getDomain() + ".advanced.isHiddenUser", "false");
+		defaults.setProperty(getDomain() + ".advanced.isNoUser", "false");
 
 		defaults.setProperty("identity.name", "Identd Plugin Defaults");
 		IdentityManager.addIdentity(new Identity(defaults));
