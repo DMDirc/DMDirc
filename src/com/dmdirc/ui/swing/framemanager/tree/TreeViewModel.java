@@ -151,7 +151,7 @@ public class TreeViewModel extends DefaultTreeModel {
 	} else if (object instanceof Query) {
 	    return 4;
 	} else {
-	    return 5;
+	    return 0;
 	}
     }
 }
