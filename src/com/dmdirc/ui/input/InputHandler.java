@@ -29,6 +29,9 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.input.tabstyles.BashStyle;
+import com.dmdirc.ui.input.tabstyles.TabCompletionResult;
+import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.swing.components.ColourPickerDialog;
@@ -83,15 +86,6 @@ public final class InputHandler implements KeyListener, ActionListener {
     /** The lowest entry we've used in the buffer. */
     private int bufferMinimum;
     
-    /** The last position the user tab-completed at. */
-    private int lastPosition = -1;
-    
-    /** The number of times the user has tab-completed the same position. */
-    private int tabCount = 0;
-    
-    /** The last word that was tab completed. */
-    private String lastWord = "";
-    
     /** The buffer itself. */
     private String[] buffer;
     
@@ -110,9 +104,13 @@ public final class InputHandler implements KeyListener, ActionListener {
     /** Colour picker dialog. */
     private ColourPickerDialog colourPicker;
     
+    /** The tab completion style. */
+    private TabCompletionStyle style;
+    
     /**
      * Creates a new instance of InputHandler. Adds listeners to the target
      * that we need to operate.
+     * 
      * @param thisTarget The text field this input handler is dealing with.
      * @param thisCommandParser The command parser to use for this text field.
      * @param thisParentWindow The window that owns this input handler
@@ -131,6 +129,9 @@ public final class InputHandler implements KeyListener, ActionListener {
         bufferMinimum = 0;
         bufferMaximum = 0;
         
+        style = new BashStyle();
+        style.setContext(tabCompleter, parentWindow);
+        
         target.addKeyListener(this);
         target.addActionListener(this);
         target.setFocusTraversalKeysEnabled(false);
@@ -138,14 +139,17 @@ public final class InputHandler implements KeyListener, ActionListener {
     
     /**
      * Sets this input handler's tab completer.
+     * 
      * @param newTabCompleter The new tab completer
      */
     public void setTabCompleter(final TabCompleter newTabCompleter) {
         tabCompleter = newTabCompleter;
+        style.setContext(tabCompleter, parentWindow);
     }
     
     /**
      * Called when the user types a normal character.
+     * 
      * @param keyEvent The event that was fired
      */
     public void keyTyped(final KeyEvent keyEvent) {
@@ -155,6 +159,7 @@ public final class InputHandler implements KeyListener, ActionListener {
     /**
      * Called when the user presses down any key. Handles the insertion of
      * control codes, tab completion, and scrolling the back buffer.
+     * 
      * @param keyEvent The event that was fired
      */
     public void keyPressed(final KeyEvent keyEvent) {
@@ -185,6 +190,7 @@ public final class InputHandler implements KeyListener, ActionListener {
     /**
      * Handles the pressing of a key while the control key is pressed.
      * Inserts control chars as appropriate.
+     * 
      * @param keyEvent The key event that triggered this event.
      */
     private void handleControlKey(final KeyEvent keyEvent) {
@@ -314,8 +320,6 @@ public final class InputHandler implements KeyListener, ActionListener {
             int lastArg = signature.length() + 2;
             final List<String> previousArgs = new ArrayList<String>();
             
-            //final String word = text.substring(start, end);
-            
             for (int i = lastArg; i < start; i++) {
                 if (text.charAt(i) == ' ') {
                     args++;
@@ -324,7 +328,8 @@ public final class InputHandler implements KeyListener, ActionListener {
                 }
             }
             
-            final AdditionalTabTargets results = ((IntelligentCommand) command).getSuggestions(args, previousArgs);
+            final AdditionalTabTargets results = 
+                    ((IntelligentCommand) command).getSuggestions(args, previousArgs);
             
             doNormalTabCompletion(text, start, end, results);
         } else {
@@ -341,41 +346,12 @@ public final class InputHandler implements KeyListener, ActionListener {
      * @param additional A list of additional strings to use
      */
     private void doNormalTabCompletion(final String text, final int start,
-            final int end, final AdditionalTabTargets additional) {
-        final String word = text.substring(start, end);
+            final int end, final AdditionalTabTargets additional) {        
+        final TabCompletionResult res = style.getResult(text, start, end, additional);
         
-        if (start == lastPosition && word.equals(lastWord)) {
-            tabCount++;
-        } else {
-            lastPosition = start;
-            lastWord = word;
-            tabCount = 1;
-        }
-        
-        final TabCompleterResult res = tabCompleter.complete(word, additional);
-        
-        if (res.getResultCount() == 0) {
-            // TODO: Beep, or something
-        } else if (res.getResultCount() == 1) {
-            // One result, just replace it
-            final String result = res.getResults().get(0);
-            target.setText(text.substring(0, start) + result + text.substring(end));
-            target.setCaretPosition(start + result.length());
-        } else {
-            // Multiple results
-            final String sub = res.getBestSubstring();
-            if (sub.equalsIgnoreCase(word)) {
-                final String style = IdentityManager.getGlobalConfig().getOption("tabcompletion", "style", "bash");
-                
-                // TODO: Other possible actions (mIRC-style etc)
-                
-                if (style.equalsIgnoreCase("bash") && tabCount >= 2) {
-                    parentWindow.addLine("tabCompletion", res.toString());
-                }
-            } else {
-                target.setText(text.substring(0, start) + sub + text.substring(end));
-                target.setCaretPosition(start + sub.length());
-            }
+        if (res != null) {
+            target.setText(res.getText());
+            target.setCaretPosition(res.getPosition());
         }
     }
     
