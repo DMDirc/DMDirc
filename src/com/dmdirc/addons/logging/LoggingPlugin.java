@@ -166,18 +166,18 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 		preferencesPanel.addCategory("Advanced", "Advanced configuration for Logging plugin. You shouldn't need to edit this unless you know what you are doing.");
 		
 		preferencesPanel.addTextfieldOption("General", "general.directory", "Directory: ", "Directory for log files", IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.directory"));
-		preferencesPanel.addCheckboxOption("General", "general.networkfolders", "Separate logs by network: ", "Should the files be stored in a sub-dir with the networks name", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.networkfolders", false));
-		preferencesPanel.addCheckboxOption("General", "general.addtime", "Timestamp logs: ", "Should a timestamp be added to the log files", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.addtime", false));
+		preferencesPanel.addCheckboxOption("General", "general.networkfolders", "Separate logs by network: ", "Should the files be stored in a sub-dir with the networks name", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.networkfolders"));
+		preferencesPanel.addCheckboxOption("General", "general.addtime", "Timestamp logs: ", "Should a timestamp be added to the log files", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.addtime"));
 		preferencesPanel.addTextfieldOption("General", "general.timestamp", "Timestamp format: ", "The String to pass to 'SimpleDateFormat' to format the timestamp", IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.timestamp"));
-		preferencesPanel.addCheckboxOption("General", "general.stripcodes", "Strip Control Codes: ", "Remove known irc control codes from lines before saving", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.stripcodes", false));
-		preferencesPanel.addCheckboxOption("General", "general.channelmodeprefix", "Show channel mode prefix: ", "Show the @,+ etc next to nicknames", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.channelmodeprefix", false));
+		preferencesPanel.addCheckboxOption("General", "general.stripcodes", "Strip Control Codes: ", "Remove known irc control codes from lines before saving", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.stripcodes"));
+		preferencesPanel.addCheckboxOption("General", "general.channelmodeprefix", "Show channel mode prefix: ", "Show the @,+ etc next to nicknames", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.channelmodeprefix"));
 		
-		preferencesPanel.addCheckboxOption("Back Buffer", "backbuffer.autobackbuffer", "Automatically display: ", "Automatically display the backbuffer when a channel is joined", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer", false));
+		preferencesPanel.addCheckboxOption("Back Buffer", "backbuffer.autobackbuffer", "Automatically display: ", "Automatically display the backbuffer when a channel is joined", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer"));
 		preferencesPanel.addColourOption("Back Buffer", "backbuffer.colour", "Colour to use for display: ", "Colour used when displaying the backbuffer", IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "backbuffer.colour"), true, true);
 		preferencesPanel.addSpinnerOption("Back Buffer", "backbuffer.lines", "Number of lines to show: ", "Number of lines used when displaying backbuffer", IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "backbuffer.lines", 0));
-		preferencesPanel.addCheckboxOption("Back Buffer", "backbuffer.timestamp", "Show Formatter-Timestamp: ", "Should the line be added to the frame with the timestamp from the formatter aswell as the file contents", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.timestamp", false));
+		preferencesPanel.addCheckboxOption("Back Buffer", "backbuffer.timestamp", "Show Formatter-Timestamp: ", "Should the line be added to the frame with the timestamp from the formatter aswell as the file contents", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.timestamp"));
 		
-		preferencesPanel.addCheckboxOption("Advanced", "advanced.filenamehash", "Add Filename hash: ", "Add the MD5 hash of the channel/client name to the filename. (This is used to allow channels with similar names (ie a _ not a  -) to be logged separately)", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash", false));
+		preferencesPanel.addCheckboxOption("Advanced", "advanced.filenamehash", "Add Filename hash: ", "Add the MD5 hash of the channel/client name to the filename. (This is used to allow channels with similar names (ie a _ not a  -) to be logged separately)", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash"));
 		
 		preferencesPanel.display();
 	}
@@ -362,7 +362,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 					}
 					
 					// Backbuffer Display goes here!
-					if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer", false)) {
+					if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
 						showBackBuffer(query.getFrame(), getLogFile(client));
 					}
 					
@@ -375,7 +375,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 					channel = ((Channel)arguments[0]).getChannelInfo();
 					
 					// Backbuffer Display goes here!
-					if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer", false)) {
+					if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.autobackbuffer")) {
 						showBackBuffer(((Channel)arguments[0]).getFrame(), getLogFile(channel));
 					}
 					
@@ -514,7 +514,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	private void showBackBuffer(final Window frame, final String filename) {
 		final int numLines = IdentityManager.getGlobalConfig().getOptionInt(MY_DOMAIN, "backbuffer.lines", 0);
 		final String colour = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "backbuffer.colour");
-		final boolean showTimestamp = IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.timestamp", false);
+		final boolean showTimestamp = IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.timestamp");
 		if (frame == null) {
 			Logger.userError(ErrorLevel.LOW, "Given a null frame");
 		}
@@ -588,11 +588,11 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	 */
 	private boolean appendLine(final String filename, final String line) {
 		String finalLine = line;
-		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.addtime", false)) {
+		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.addtime")) {
 			final DateFormat dateFormat = new SimpleDateFormat(IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "general.timestamp"));
 			finalLine = dateFormat.format(new Date()) + " " + finalLine;
 		}
-		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.stripcodes", false)) {
+		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.stripcodes")) {
 			finalLine = Styliser.stipControlCodes(finalLine);
 		}
 		//System.out.println("[Adding] "+filename+" => "+finalLine);
@@ -635,7 +635,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 			final ChannelInfo channel = (ChannelInfo) obj;
 			result = addNetworkDir(result, channel.getParser().getNetworkName());
 			result = result + sanitise(channel.getName().toLowerCase());
-			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash", false)) {
+			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
 				result = result + '.' + md5(channel.getName());
 			}
 			result = result + ".log";
@@ -643,7 +643,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 			final ClientInfo client = (ClientInfo) obj;
 			result = addNetworkDir(result, client.getParser().getNetworkName());
 			result = result + sanitise(client.getNickname().toLowerCase());
-			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash", false)) {
+			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
 				result = result + '.' + md5(client.getNickname());
 			}
 			result = result + ".log";
@@ -651,13 +651,13 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 			final IRCParser parser = (IRCParser) obj;
 			result = addNetworkDir(result, parser.getNetworkName());
 			result = result + "log";
-			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash", false)) {
+			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
 				result = result + '.' + md5("log");
 			}
 			result = result + ".log";
 		} else {
 			result = result + sanitise(obj.toString().toLowerCase());
-			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash", false)) {
+			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "advanced.filenamehash")) {
 				result = result + '.' + md5(obj.toString());
 			}
 			result = result + ".log";
@@ -727,14 +727,14 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 			}
 		} else {
 			if (overrideNick.isEmpty()) {
-				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.channelmodeprefix", false)) {
+				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.channelmodeprefix")) {
 					result = channelClient.toString();
 				} else {
 					result = channelClient.getNickname();
 				}
 			} else {
 				result = overrideNick;
-				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.channelmodeprefix", false)) {
+				if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.channelmodeprefix")) {
 					result = channelClient.getImportantModePrefix() + result;
 				}
 			}
@@ -753,7 +753,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 	 */
 	private String addNetworkDir(final String input, final String networkName) {
 		String result = input;
-		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.networkfolders", false)) {
+		if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "general.networkfolders")) {
 			result = result + sanitise(networkName.toLowerCase()) + System.getProperty("file.separator");
 			// Check dir exists
 			final File dir = new File(result);
