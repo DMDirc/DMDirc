@@ -70,7 +70,7 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
                     sendLine(origin, isSilent, FORMAT_ERROR, "Source not found.");
                 } else {
                     if (source.isRunning()) {
-                        target.sendAction("is playing " + source.getInformation());
+                        target.sendAction("is playing " + getInformation(source));
                     } else {
                         sendLine(origin, isSilent, FORMAT_ERROR, "Source is not running.");
                     }
@@ -80,7 +80,7 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
             }
         } else {
             if (parent.hasRunningSource()) {
-                target.sendAction("is playing " + parent.getBestSource().getInformation());
+                target.sendAction("is playing " + getInformation(parent.getBestSource()));
             } else {
                 sendLine(origin, isSilent, FORMAT_ERROR, "No running media sources available.");
             }
@@ -104,16 +104,38 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
             for (MediaSource source : sources) {
                 if (source.isRunning()) {
                     if (source.isPlaying()) {
-                        status = "playing: " + source.getInformation();
+                        status = "playing: " + getInformation(source);
                     } else {
-                        status = "paused: " + source.getInformation();
+                        status = "paused: " + getInformation(source);
                     }
                 } else {
                     status = "not running";
                 }
-                sendLine(origin, isSilent, FORMAT_OUTPUT, source.getName() + ": " + status);
+                sendLine(origin, isSilent, FORMAT_OUTPUT, source.getAppName() + ": " + status);
             }
         }
+    }
+    
+    /**
+     * Returns a formatted information string from the requested soruce.
+     *
+     * @param source MediaSource to query
+     *
+     * @return Formatted information string
+     */ 
+    private String getInformation(final MediaSource source) {
+        //TODO grab format for specified source
+        String artist = source.getArtist();
+        String title = source.getTitle();
+        
+        if (artist == null) {
+            artist = "n/a";
+        }
+        if (title == null) {
+            title = "n/a";
+        }
+        
+        return artist + " - " + title;
     }
     
     /** {@inheritDoc}. */
@@ -142,7 +164,8 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
     }
     
     /** {@inheritDoc} */
-    public AdditionalTabTargets getSuggestions(int arg, List<String> previousArgs) {
+    public AdditionalTabTargets getSuggestions(final int arg, 
+            final List<String> previousArgs) {
         final AdditionalTabTargets res = new AdditionalTabTargets();
         
         res.setIncludeNormal(false);
@@ -153,7 +176,7 @@ public final class NowPlayingCommand extends ChatCommand implements IntelligentC
         } else if (arg == 1 && previousArgs.get(0).equalsIgnoreCase("--source")) {
             for (MediaSource source : parent.getSources()) {
                 if (source.isRunning()) {
-                    res.add(source.getName());
+                    res.add(source.getAppName());
                 }
             }
         }

@@ -193,8 +193,8 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
      * @param source The media source to be tested
      */
     private void addSourceToOrder(final MediaSource source) {
-        if (!order.contains(source.getName())) {
-            order.add(source.getName());
+        if (!order.contains(source.getAppName())) {
+            order.add(source.getAppName());
         }
     }
     
@@ -264,7 +264,7 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
      */
     public MediaSource getSource(final String name) {
         for (final MediaSource source : sources) {
-            if (source.getName().equalsIgnoreCase(name)) {
+            if (source.getAppName().equalsIgnoreCase(name)) {
                 return source;
             }
         }

@@ -39,24 +39,57 @@ public class AmarokSource implements MediaSource {
     
     /** {@inheritDoc} */
     public boolean isRunning() {
-        return DcopPlugin.getDcopResult("dcop amarok player isPlaying").size() > 0;
+        return DcopPlugin.getDcopResult(
+                "dcop amarok player isPlaying").size() > 0;
     }
     
     /** {@inheritDoc} */
     public boolean isPlaying() {
-        final String result = DcopPlugin.getDcopResult("dcop amarok player isPlaying").get(0);
+        final String result = DcopPlugin.getDcopResult(
+                "dcop amarok player isPlaying").get(0);
         
         return Boolean.parseBoolean(result);
     }
     
     /** {@inheritDoc} */
-    public String getInformation() {
-        return DcopPlugin.getDcopResult("dcop amarok player nowPlaying").get(0);
+    public String getAppName() {
+        return "Amarok";
     }
     
     /** {@inheritDoc} */
-    public String getName() {
-        return "Amarok";
+    public String getArtist() {
+        return DcopPlugin.getDcopResult("dcop amarok player artist").get(0);
+    }
+    
+    /** {@inheritDoc} */
+    public String getTitle() {
+        return DcopPlugin.getDcopResult("dcop amarok player title").get(0);
+    }
+    
+    /** {@inheritDoc} */
+    public String getAlbum() {
+        return DcopPlugin.getDcopResult("dcop amarok player album").get(0);
+    }
+    
+    /** {@inheritDoc} */
+    public String getLength() {
+        return DcopPlugin.getDcopResult("dcop amarok player totalTime").get(0);
+    }
+    
+    /** {@inheritDoc} */
+    public String getTime() {
+        return DcopPlugin.getDcopResult(
+                "dcop amarok player currentTime").get(0);
+    }
+    
+    /** {@inheritDoc} */
+    public String getFormat() {
+        return DcopPlugin.getDcopResult("dcop amarok player type").get(0);
+    }
+    
+    /** {@inheritDoc} */
+    public String getBitrate() {
+        return DcopPlugin.getDcopResult("dcop amarok player bitrate").get(0);
     }
     
 }

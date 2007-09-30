@@ -44,19 +44,85 @@ public class NoatunSource implements MediaSource {
     
     /** {@inheritDoc} */
     public boolean isPlaying() {
-        final String result = DcopPlugin.getDcopResult("dcop noatun Noatun state").get(0);
+        final String result = DcopPlugin.getDcopResult(
+                "dcop noatun Noatun state").get(0);
         
         return "2".equals(result.trim());
     }
     
     /** {@inheritDoc} */
-    public String getInformation() {
-        return DcopPlugin.getDcopResult("dcop noatun Noatun title").get(0);
+    public String getAppName() {
+        return "Noatun";
     }
     
     /** {@inheritDoc} */
-    public String getName() {
-        return "Noatun";
+    public String getArtist() {
+        final String result = DcopPlugin.getDcopResult(
+                "dcop noatun Noatun title").get(0);
+        if (result.indexOf(" - ") == -1) {
+            return "";
+        }
+        return result.substring(0, result.indexOf(" - "));
+    }
+
+    /** {@inheritDoc} */
+    public String getTitle() {
+        final String result = DcopPlugin.getDcopResult(
+                "dcop noatun Noatun title").get(0);
+        if (result.indexOf(" - ") == -1) {
+            return "";
+        }
+        return result.substring(result.indexOf(" - ") + 3, result.length());
+    }
+
+    /** {@inheritDoc} */
+    public String getAlbum() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    public String getLength() {
+        return DcopPlugin.getDcopResult(
+                "dcop noatun Noatun lengthString").get(0);
+    }
+
+    /** {@inheritDoc} */
+    public String getTime() {
+        return duration(Integer.parseInt(DcopPlugin.getDcopResult(
+                "dcop noatun Noatun position").get(0)) /1000);
+    }
+
+    /** {@inheritDoc} */
+    public String getFormat() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    public String getBitrate() {
+        return null;
+    }
+    
+    /**
+     * Get the duration in seconds as a string.
+     *
+     * @param secondsInput to get duration for
+     *
+     * @return Duration as a string
+     */
+    private String duration(final long secondsInput) {
+        final StringBuilder result = new StringBuilder();
+        final long hours = secondsInput / 3600;
+        final long minutes = secondsInput / 60 % 60;
+        final long seconds = secondsInput % 60;
+        
+        if (hours > 0) { 
+            result.append(hours).append(":");
+        }
+        
+        result.append(minutes).append(":");
+        result.append(seconds).append(":");
+        
+        return result.toString();
     }
     
 }

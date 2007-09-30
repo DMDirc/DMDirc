@@ -67,11 +67,11 @@ public class MediaSourceComparator implements Comparator<MediaSource>, Serializa
      * @param source The media source to be tested
      */
     private int getPosition(final MediaSource source) {
-        if (!order.contains(source.getName())) {
-            order.add(source.getName());
+        if (!order.contains(source.getAppName())) {
+            order.add(source.getAppName());
         }
         
-        return order.indexOf(source.getName());
+        return order.indexOf(source.getAppName());
     }
     
 }

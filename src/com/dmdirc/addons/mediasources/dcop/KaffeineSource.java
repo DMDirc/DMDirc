@@ -50,14 +50,71 @@ public class KaffeineSource implements MediaSource {
     }
     
     /** {@inheritDoc} */
-    public String getInformation() {
-        return DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface artist").get(0) + " - "
-                + DcopPlugin.getDcopResult("dcop kaffeine KaffeineIface title").get(0);
+    public String getAppName() {
+        return "Kaffeine";
     }
     
     /** {@inheritDoc} */
-    public String getName() {
-        return "Kaffeine";
+    public String getArtist() {
+        return DcopPlugin.getDcopResult(
+                "dcop kaffeine KaffeineIface artist").get(0);
+    }
+
+    /** {@inheritDoc} */
+    public String getTitle() {
+        return DcopPlugin.getDcopResult(
+                "dcop kaffeine KaffeineIface title").get(0);
+    }
+
+    /** {@inheritDoc} */
+    public String getAlbum() {
+        return DcopPlugin.getDcopResult(
+                "dcop kaffeine KaffeineIface album").get(0);
+    }
+
+    /** {@inheritDoc} */
+    public String getLength() {
+        return duration(Integer.parseInt(DcopPlugin.getDcopResult(
+                "dcop kaffeine KaffeineIface getLength").get(0)) /1000);
+    }
+
+    /** {@inheritDoc} */
+    public String getTime() {
+        return duration(Integer.parseInt(DcopPlugin.getDcopResult(
+                "dcop kaffeine KaffeineIface getTimePos").get(0)) /1000);
+    }
+
+    /** {@inheritDoc} */
+    public String getFormat() {
+        return null;
+    }
+
+    /** {@inheritDoc} */
+    public String getBitrate() {
+        return null;
+    }
+    
+    /**
+     * Get the duration in seconds as a string.
+     *
+     * @param secondsInput to get duration for
+     *
+     * @return Duration as a string
+     */
+    private String duration(final long secondsInput) {
+        final StringBuilder result = new StringBuilder();
+        final long hours = secondsInput / 3600;
+        final long minutes = secondsInput / 60 % 60;
+        final long seconds = secondsInput % 60;
+        
+        if (hours > 0) { 
+            result.append(hours).append(":");
+        }
+        
+        result.append(minutes).append(":");
+        result.append(seconds).append(":");
+        
+        return result.toString();
     }
     
 }
