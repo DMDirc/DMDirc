@@ -496,7 +496,7 @@ public final class InputHandler implements KeyListener, ActionListener {
      * @param hex show hex colours in the colour picker
      */
     private void showColourPicker(final boolean irc, final boolean hex) {
-        if (IdentityManager.getGlobalConfig().getOptionBool("general", "showcolourdialog")) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("general", "showcolourdialog", false)) {
             colourPicker = new ColourPickerDialog(irc, hex);
             colourPicker.addActionListener(new ActionListener() {
                 public void actionPerformed(final ActionEvent actionEvent) {

@@ -393,7 +393,7 @@ public final class Channel extends MessageTarget implements
      * to send a who request.
      */
     public void checkWho() {
-        if (onChannel && configManager.getOptionBool("channel", "sendwho")) {
+        if (onChannel && configManager.getOptionBool("channel", "sendwho", false)) {
             server.getParser().sendLine("WHO :" + channelInfo.getName());
         }
     }
@@ -656,7 +656,7 @@ public final class Channel extends MessageTarget implements
             final ChannelClientInfo cSetByClient, final String sHost,
             final String sMode) {
         
-        if (configManager.getOptionBool("channel", "splitusermodes")) {
+        if (configManager.getOptionBool("channel", "splitusermodes", false)) {
             final String sourceModes = getModes(cSetByClient);
             final String[] sourceHost = getDetails(cSetByClient);
             final String targetModes = cChangedClient.getImportantModePrefix();
@@ -717,7 +717,7 @@ public final class Channel extends MessageTarget implements
      * if there are no (known) modes.
      */
     private String getModes(final ChannelClientInfo channelClient) {
-        if (channelClient == null || !configManager.getOptionBool("channel", "showmodeprefix")) {
+        if (channelClient == null || !configManager.getOptionBool("channel", "showmodeprefix", false)) {
             return "";
         } else {
             return channelClient.getImportantModePrefix();
@@ -742,7 +742,7 @@ public final class Channel extends MessageTarget implements
         res[1] = client.getClient().getIdent();
         res[2] = client.getClient().getHost();
         
-        if (configManager.getOptionBool("ui", "shownickcoloursintext")) {
+        if (configManager.getOptionBool("ui", "shownickcoloursintext", false)) {
             final Map map = client.getMap();
             String prefix = null;
             Color colour;

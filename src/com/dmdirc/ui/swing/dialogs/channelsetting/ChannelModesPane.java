@@ -116,7 +116,7 @@ public final class ChannelModesPane extends JPanel {
             String text;
             String tooltip;
             
-            if (channel.getConfigManager().getOptionBool("server", "friendlymodes")
+            if (channel.getConfigManager().getOptionBool("server", "friendlymodes", false)
             && channel.getConfigManager().hasOption("server", "mode" + mode)) {
                 text = channel.getConfigManager().getOption("server", "mode" + mode);
             } else {
@@ -143,7 +143,7 @@ public final class ChannelModesPane extends JPanel {
             }
             
             modeCheckBoxes.put(mode, checkBox);
-            if (channel.getConfigManager().getOptionBool("server", "enablemode" + modeChar)) {
+            if (channel.getConfigManager().getOptionBool("server", "enablemode" + modeChar, false)) {
                 checkBox.setEnabled(true);
             } else if (!channel.getServer().getParser().isUserSettable(modeChar)) {
                 checkBox.setEnabled(false);

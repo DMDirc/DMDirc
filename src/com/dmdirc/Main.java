@@ -111,7 +111,7 @@ public final class Main {
         getUI().getMainWindow();
         
         if (!IdentityManager.getGlobalConfig().hasOption("general", "firstRun")
-                || IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun")) {
+                || IdentityManager.getGlobalConfig().getOptionBool("general", "firstRun", false)) {
             IdentityManager.getConfigIdentity().setOption("general", "firstRun", "false");
             IdentityManager.getConfigIdentity().setOption("general", "addonrevision", ADDON_REVISION);
             getUI().showFirstRunWizard();
@@ -126,7 +126,7 @@ public final class Main {
         
         clp.processArguments();
         
-        if (IdentityManager.getGlobalConfig().getOptionBool("general", "showglobalwindow")) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("general", "showglobalwindow", false)) {
             new GlobalWindow();
         }
         

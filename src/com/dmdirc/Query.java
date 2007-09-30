@@ -89,7 +89,7 @@ public final class Query extends MessageTarget implements
         
         window.setFrameIcon(icon);
         
-        if (!server.getConfigManager().getOptionBool("general", "hidequeries")) {
+        if (!server.getConfigManager().getOptionBool("general", "hidequeries", false)) {
             window.open();
         }
         

@@ -198,7 +198,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 					String mode = client.getImportantModePrefix();
 					
 					if (mode.isEmpty()) {
-						if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "channel.shownone")) {
+						if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "channel.shownone", false)) {
 							if (IdentityManager.getGlobalConfig().hasOption(MY_DOMAIN, "channel.noneprefix")) {
 								mode = IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "channel.noneprefix");
 							} else {
@@ -233,7 +233,7 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 			final Query frame = (Query)current;
 			
 			textString.append(frame.getHost());
-			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "client.showname")) {
+			if (IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "client.showname", false)) {
 				final ClientInfo client = frame.getServer().getParser().getClientInfo(frame.getHost());
 				if (client != null) {
 					final String realname = client.getRealName();
@@ -261,10 +261,10 @@ public final class WindowStatusPlugin extends Plugin implements EventPlugin, Pre
 		preferencesPanel.addCategory("Channel", "Configuration for Window Status plugin when showing a channel window.");
 		preferencesPanel.addCategory("Client", "Configuration for Window Status plugin when showing a client window.");
 		
-		preferencesPanel.addCheckboxOption("Channel", "channel.shownone", "Show 'none' count: ", "Should the count for uses with no state be shown?", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "channel.shownone"));
+		preferencesPanel.addCheckboxOption("Channel", "channel.shownone", "Show 'none' count: ", "Should the count for uses with no state be shown?", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "channel.shownone", false));
 		preferencesPanel.addTextfieldOption("Channel", "channel.noneprefix", "Prefix used before 'none' count: ", "The Prefix to use when showing the 'none' count", IdentityManager.getGlobalConfig().getOption(MY_DOMAIN, "channel.noneprefix"));
 		
-		preferencesPanel.addCheckboxOption("Client", "client.showname", "Show Client realname if known: ", "Should the realname for clients be shown if known?", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "client.showname"));
+		preferencesPanel.addCheckboxOption("Client", "client.showname", "Show Client realname if known: ", "Should the realname for clients be shown if known?", IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "client.showname", false));
 		preferencesPanel.display();
 	}
 	

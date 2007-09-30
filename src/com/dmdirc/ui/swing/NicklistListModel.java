@@ -89,8 +89,8 @@ public final class NicklistListModel extends AbstractListModel {
      * method changes
      */
     public void sort() {
-        final boolean sortByMode = IdentityManager.getGlobalConfig().getOptionBool("ui", "sortByMode");
-        final boolean sortByCase = IdentityManager.getGlobalConfig().getOptionBool("ui", "sortByCase");
+        final boolean sortByMode = IdentityManager.getGlobalConfig().getOptionBool("ui", "sortByMode", false);
+        final boolean sortByCase = IdentityManager.getGlobalConfig().getOptionBool("ui", "sortByCase", false);
         
         synchronized (nicknames) {
             Collections.sort(nicknames,

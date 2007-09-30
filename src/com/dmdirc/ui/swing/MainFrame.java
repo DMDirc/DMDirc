@@ -364,7 +364,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /** {@inheritDoc}. */
     public String getTitlePrefix() {
-        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "showversion")) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "showversion", false)) {
             return "DMDirc " + Main.VERSION;
         } else {
             return "DMDirc";
@@ -794,7 +794,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /** {@inheritDoc}. */
     public void quit() {
-        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "confirmQuit") &&
+        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "confirmQuit", false) &&
                 JOptionPane.showConfirmDialog(this,
                 "You are about to quit DMDirc, are you sure?",
                 "Quit confirm", JOptionPane.YES_NO_OPTION,

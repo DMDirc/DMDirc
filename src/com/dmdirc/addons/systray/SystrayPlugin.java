@@ -186,7 +186,7 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     public void processEvent(final ActionType type, final StringBuffer format,
             final Object... arguments) {
         if (type == CoreActionType.CLIENT_MINIMISED
-                && IdentityManager.getGlobalConfig().getOptionBool("plugin-systray", "autominimise")) {
+                && IdentityManager.getGlobalConfig().getOptionBool("plugin-systray", "autominimise", false)) {
             Main.getUI().getMainWindow().setVisible(false);
         }
     }

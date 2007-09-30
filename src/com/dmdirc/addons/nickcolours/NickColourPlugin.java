@@ -96,12 +96,12 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
         final String nickOption = "color:"
                 + client.getClient().getParser().toLowerCase(network + ":" + client.getNickname());
         
-        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "useowncolour")
+        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "useowncolour", false)
                 && client.getClient().equals(myself)) {
             final Color color = ColourManager.parseColour(
                     IdentityManager.getGlobalConfig().getOption(DOMAIN, "owncolour"));
             putColour(map, color, color);
-        }  else if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "userandomcolour")) {
+        }  else if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "userandomcolour", false)) {
             putColour(map, getColour(client.getNickname()), getColour(client.getNickname()));
         }
         
@@ -130,11 +130,11 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
      */
     @SuppressWarnings("unchecked")
     private void putColour(final Map map, final Color textColour, final Color nickColour) {
-        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "settext") && textColour != null) {
+        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "settext", false) && textColour != null) {
             map.put(ChannelClientProperty.TEXT_FOREGROUND, textColour);
         }
         
-        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "setnicklist") && nickColour != null) {
+        if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "setnicklist", false) && nickColour != null) {
             map.put(ChannelClientProperty.NICKLIST_FOREGROUND, nickColour);
         }
     }
@@ -232,24 +232,24 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
         
         preferencesPanel.addCheckboxOption("General", "showintext",
                 "Show colours in text area: ", "Colour nicknames in main text area?",
-                IdentityManager.getGlobalConfig().getOptionBool("ui", "shownickcoloursintext"));
+                IdentityManager.getGlobalConfig().getOptionBool("ui", "shownickcoloursintext", false));
         preferencesPanel.addCheckboxOption("General", "showinlist",
                 "Show colours in nick list: ", "Colour nicknames in channel user lists?",
-                IdentityManager.getGlobalConfig().getOptionBool("ui", "shownickcoloursinnicklist"));
+                IdentityManager.getGlobalConfig().getOptionBool("ui", "shownickcoloursinnicklist", false));
         
         preferencesPanel.addCheckboxOption("General", "settext",
                 "Set colours in text area: ", "Should the plugin set the text colour of nicks?",
-                IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "settext"));
+                IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "settext", false));
         preferencesPanel.addCheckboxOption("General", "setnicklist",
                 "Set colours in nick list: ", "Should the plugin set the nicklist colour of nicks?",
-                IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "setnicklist"));
+                IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "setnicklist", false));
         
         preferencesPanel.addCheckboxOption("General", "userandomcolour",
                 "Enable Random Colour: ", "Use a pseudo-random colour for each person?",
-                IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "userandomcolour"));
+                IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "userandomcolour", false));
         preferencesPanel.addCheckboxOption("General", "useowncolour",
                 "Use colour for own nick: ", "Always use the same colour for own nick?",
-                IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "useowncolour"));
+                IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "useowncolour", false));
         preferencesPanel.addColourOption("General", "owncolour",
                 "Colour to use for own nick: ", "Colour used for own nick",
                 IdentityManager.getGlobalConfig().getOption(DOMAIN, "owncolour", "1"), true, true);

@@ -83,8 +83,8 @@ public final class Logger {
             final boolean sendable) {
         final ProgramError error = createError(level, message, exception);
         final boolean report = 
-                IdentityManager.getGlobalConfig().getOptionBool("general", "submitErrors")
-                & !IdentityManager.getGlobalConfig().getOptionBool("temp", "noerrorreporting");
+                IdentityManager.getGlobalConfig().getOptionBool("general", "submitErrors", false)
+                & !IdentityManager.getGlobalConfig().getOptionBool("temp", "noerrorreporting", false);
         
         if (!sendable) {
             error.setReportStatus(ErrorReportStatus.NOT_APPLICABLE);

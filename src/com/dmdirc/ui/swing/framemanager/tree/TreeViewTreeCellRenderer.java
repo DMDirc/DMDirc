@@ -94,7 +94,7 @@ public class TreeViewTreeCellRenderer extends JLabel implements
                 "treeviewActiveBackground", manager.getTree().getBackground());
         activeForeground = config.getOptionColour("ui",
                 "treeviewActiveForeground", manager.getTree().getForeground());
-        activeBold = config.getOptionBool("ui", "treeviewActiveBold");
+        activeBold = config.getOptionBool("ui", "treeviewActiveBold", false);
         
         config.addChangeListener("ui", this);
     }
@@ -173,7 +173,7 @@ public class TreeViewTreeCellRenderer extends JLabel implements
                 activeForeground = config.getOptionColour("ui",
                     "treeviewActiveForeground", getForeground());
             } else if ("treeviewActiveBold".equals(key)) {
-                activeBold = config.getOptionBool("ui", "treeviewActiveBold");
+                activeBold = config.getOptionBool("ui", "treeviewActiveBold", false);
             }
         }
     }

@@ -296,7 +296,7 @@ public final class Server extends WritableFrameContainer implements
             parser.setBindIP(configManager.getOption("general", "bindip"));
         }
         
-        if (raw == null && IdentityManager.getGlobalConfig().getOptionBool("general", "showrawwindow")) {
+        if (raw == null && IdentityManager.getGlobalConfig().getOptionBool("general", "showrawwindow", false)) {
             addRaw();
         } else if (raw != null) {
             raw.registerCallbacks();
@@ -623,13 +623,13 @@ public final class Server extends WritableFrameContainer implements
         if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
             parser.disconnect(reason);
             
-            if (configManager.getOptionBool("general", "closechannelsonquit")) {
+            if (configManager.getOptionBool("general", "closechannelsonquit", false)) {
                 closeChannels();
             } else {
                 clearChannels();
             }
             
-            if (configManager.getOptionBool("general", "closequeriesonquit")) {
+            if (configManager.getOptionBool("general", "closequeriesonquit", false)) {
                 closeQueries();
             }
         }
@@ -1086,15 +1086,15 @@ public final class Server extends WritableFrameContainer implements
         
         myState = STATE.TRANSIENTLY_DISCONNECTED;
         
-        if (configManager.getOptionBool("general", "closechannelsondisconnect")) {
+        if (configManager.getOptionBool("general", "closechannelsondisconnect", false)) {
             closeChannels();
         }
         
-        if (configManager.getOptionBool("general", "closequeriesondisconnect")) {
+        if (configManager.getOptionBool("general", "closequeriesondisconnect", false)) {
             closeQueries();
         }
         
-        if (configManager.getOptionBool("general", "reconnectondisconnect")) {
+        if (configManager.getOptionBool("general", "reconnectondisconnect", false)) {
             doDelayedReconnect();
         }
     }
@@ -1133,7 +1133,7 @@ public final class Server extends WritableFrameContainer implements
         
         handleNotification("connectError", server, description);
         
-        if (configManager.getOptionBool("general", "reconnectonconnectfailure")) {
+        if (configManager.getOptionBool("general", "reconnectonconnectfailure", false)) {
             doDelayedReconnect();
         }
     }

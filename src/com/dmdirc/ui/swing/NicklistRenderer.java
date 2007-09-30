@@ -70,7 +70,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
         
         altBackgroundColour = config.getOptionColour("nicklist",
                 "altBackgroundColour", getBackground());
-        showColours = config.getOptionBool("ui", "shownickcoloursinnicklist");
+        showColours = config.getOptionBool("ui", "shownickcoloursinnicklist", false);
     }
     
     /** {@inheritDoc} */
@@ -109,7 +109,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
                     "altBackgroundColour", getBackground());
         }
         if ("ui".equals(domain) && "shownickcoloursinnicklist".equals(key)) {
-            showColours = config.getOptionBool("ui", "shownickcoloursinnicklist");
+            showColours = config.getOptionBool("ui", "shownickcoloursinnicklist", false);
         }
     }
     

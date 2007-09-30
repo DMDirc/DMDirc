@@ -85,7 +85,7 @@ public final class ParamModePanel extends JPanel implements ActionListener {
         
         text = "Mode " + mode + ": ";
         
-        if (configManager.getOptionBool("server", "friendlymodes")
+        if (configManager.getOptionBool("server", "friendlymodes", false)
         && configManager.hasOption("server", "mode" + mode)) {
             text = configManager.getOption("server", "mode" + mode) + ": ";
         }

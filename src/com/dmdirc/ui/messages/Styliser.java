@@ -422,7 +422,7 @@ public final class Styliser {
      * @param attribs The attributes to be modified.
      */
     private static void toggleLink(final SimpleAttributeSet attribs) {
-        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "stylelinks")) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "stylelinks", false)) {
             if (attribs.getAttribute(IRCTextAttribute.HYPERLINK) == null) {
                 // Add the hyperlink style
                 

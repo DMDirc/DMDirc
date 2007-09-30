@@ -140,7 +140,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     public Frame(final FrameContainer owner) {
         super();
         final ConfigManager config = owner.getConfigManager();
-        final Boolean pref = config.getOptionBool("ui", "maximisewindows");
+        final Boolean pref = config.getOptionBool("ui", "maximisewindows", false);
         frameBufferSize = config.getOptionInt("ui", "frameBufferSize", 
                 Integer.MAX_VALUE);
         parent = owner;
@@ -451,7 +451,7 @@ public abstract class Frame extends JInternalFrame implements Window,
      * Not needed for this class. {@inheritDoc}
      */
     public void mouseReleased(final MouseEvent mouseEvent) {
-        if (getConfigManager().getOptionBool("ui", "quickCopy")
+        if (getConfigManager().getOptionBool("ui", "quickCopy", false)
         && mouseEvent.getSource() == getTextPane()) {
             getTextPane().copy();
             getTextPane().clearSelection();
@@ -551,7 +551,7 @@ public abstract class Frame extends JInternalFrame implements Window,
                 getTextPane().setScrollBarPosition(textPane.getNumLines());
             }
         }
-        if (!getConfigManager().getOptionBool("ui", "quickCopy")
+        if (!getConfigManager().getOptionBool("ui", "quickCopy", false)
         && (event.getModifiers() & KeyEvent.CTRL_MASK) !=  0
                 && event.getKeyCode() == KeyEvent.VK_C) {
             getTextPane().copy();

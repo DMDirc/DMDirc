@@ -147,7 +147,7 @@ public final class ChannelListModesPane extends JPanel implements
         for (char mode : listModesArray) {
             String modeText = mode + " list";
             if (channel.getConfigManager().
-                    getOptionBool("server", "friendlymodes")
+                    getOptionBool("server", "friendlymodes", false)
                     && channel.getConfigManager().hasOption("server", "mode" + mode)) {
                 modeText =
                         channel.getConfigManager().

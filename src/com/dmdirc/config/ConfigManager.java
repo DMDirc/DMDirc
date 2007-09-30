@@ -186,13 +186,10 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
      *
      * @param domain The domain of the option
      * @param option The name of the option
+     * @param fallback The value to use if the config isn't value
      * @return The boolean representation of the option
      */
-    public boolean getOptionBool(final String domain, final String option) {
-        if (!hasOption(domain, option)) {
-            return false;
-        }
-        
+    public boolean getOptionBool(final String domain, final String option, final boolean fallback) {        
         return Boolean.parseBoolean(getOption(domain, option));
     }
     

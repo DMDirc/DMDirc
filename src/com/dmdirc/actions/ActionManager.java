@@ -71,7 +71,7 @@ public final class ActionManager {
     
     /** Indicates whether or not user actions should be killed (not processed). */
     private static boolean killSwitch
-            = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch");
+            = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch", false);
     
     /** Creates a new instance of ActionManager. */
     private ActionManager() {
@@ -91,7 +91,7 @@ public final class ActionManager {
         
         IdentityManager.getGlobalConfig().addChangeListener("actions", "killswitch",new ConfigChangeListener() {
             public void configChanged(String domain, String key, String oldValue, String newValue) {
-                killSwitch = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch");
+                killSwitch = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch", false);
             }
         });
     }

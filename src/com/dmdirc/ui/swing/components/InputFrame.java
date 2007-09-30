@@ -128,7 +128,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
     
     /** {@inheritDoc} */
     public void open() {
-        if (getConfigManager().getOptionBool("ui", "awayindicator")
+        if (getConfigManager().getOptionBool("ui", "awayindicator", false)
                 && getContainer().getServer() != null) {
             awayLabel.setVisible(getContainer().getServer().isAway());
         }
@@ -314,7 +314,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
     /** {@inheritDoc} */
     public void keyPressed(final KeyEvent event) {
         if (event.getSource() == getTextPane()
-        && (getConfigManager().getOptionBool("ui", "quickCopy")
+        && (getConfigManager().getOptionBool("ui", "quickCopy", false)
         || (event.getModifiers() & KeyEvent.CTRL_MASK) ==  0)) {
             event.setSource(getInputField());
             getInputField().requestFocus();

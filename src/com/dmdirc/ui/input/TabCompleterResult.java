@@ -101,7 +101,7 @@ public final class TabCompleterResult {
         }
         
         final boolean caseSensitive = IdentityManager.getGlobalConfig()
-                .getOptionBool("tabcompletion", "casesensitive");
+                .getOptionBool("tabcompletion", "casesensitive", false);
         
         String res = results.get(0);
         for (String entry : results) {

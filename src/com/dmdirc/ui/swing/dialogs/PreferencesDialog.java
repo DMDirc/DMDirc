@@ -116,25 +116,25 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         
         preferencesPanel.addCheckboxOption(tabName, "ui.confirmQuit",
                 "Confirm quit", "Do you want to confirm closing the client",
-                config.getOptionBool(   "ui", "confirmQuit"));
+                config.getOptionBool(   "ui", "confirmQuit", false));
         preferencesPanel.addCheckboxOption(tabName, "channel.splitusermodes",
                 "Split user modes: ", "Show individual mode lines for each mode change that affects a user (e.g. op, devoice)",
-                config.getOptionBool("channel", "splitusermodes"));
+                config.getOptionBool("channel", "splitusermodes", false));
         preferencesPanel.addCheckboxOption(tabName, "channel.sendwho",
                 "Send channel WHOs: ", "Request information (away state, hostname, etc) on channel users automatically",
-                config.getOptionBool("channel", "sendwho"));
+                config.getOptionBool("channel", "sendwho", false));
         preferencesPanel.addSpinnerOption(tabName, "general.whotime",
                 "Who request interval (ms): ", "How often to send WHO requests for a channel",
                 config.getOptionInt("general", "whotime", 600000),
                 10000, Integer.MAX_VALUE, 10000);
         preferencesPanel.addCheckboxOption(tabName, "channel.showmodeprefix",
                 "Show mode prefix: ", "Prefix users' names with their mode in channels",
-                config.getOptionBool("channel", "showmodeprefix"));
+                config.getOptionBool("channel", "showmodeprefix", false));
         preferencesPanel.addCheckboxOption(tabName, "server.friendlymodes",
                 "Friendly modes: ", "Show friendly mode names",
-                config.getOptionBool("server", "friendlymodes"));
+                config.getOptionBool("server", "friendlymodes", false));
         preferencesPanel.addCheckboxOption(tabName, "general.hidequeries",
-                "Hide queries : ", "", config.getOptionBool("general", "hidequeries"));
+                "Hide queries : ", "", config.getOptionBool("general", "hidequeries", false));
         preferencesPanel.addTextfieldOption(tabName, "general.commandchar",
                 "Command character: ", "Character used to indicate a command",
                 config.getOption("general", "commandchar"));
@@ -143,7 +143,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                 config.getOption("general", "silencechar"));
         preferencesPanel.addCheckboxOption(tabName, "ui.awayindicator",
                 "Away indicator: ", "Shows an away indicator in the input field.",
-                config.getOptionBool("ui", "awayindicator"));
+                config.getOptionBool("ui", "awayindicator", false));
         preferencesPanel.addSpinnerOption(tabName, "ui.pasteProtectionLimit",
                 "Paste protection trigger: ", "Confirm pasting of text that contains more than this many lines",
                 config.getOptionInt("ui", "pasteProtectionLimit", 1), 0, Integer.MAX_VALUE, 1);
@@ -158,32 +158,32 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         
         preferencesPanel.addCheckboxOption(tabName, "general.closechannelsonquit",
                 "Close channels on quit: ", "Close channel windows when you quit the server",
-                config.getOptionBool("general", "closechannelsonquit"));
+                config.getOptionBool("general", "closechannelsonquit", false));
         preferencesPanel.addCheckboxOption(tabName, "general.closechannelsondisconnect",
                 "Close channels on disconnect: ", "Close channel windows when the server is disconnected",
-                config.getOptionBool("general", "closechannelsondisconnect"));
+                config.getOptionBool("general", "closechannelsondisconnect", false));
         preferencesPanel.addCheckboxOption(tabName, "general.closequeriesonquit",
                 "Close queries on quit: ", "Close query windows when you quit the server",
-                config.getOptionBool("general", "closequeriesonquit"));
+                config.getOptionBool("general", "closequeriesonquit", false));
         preferencesPanel.addCheckboxOption(tabName, "general.closequeriesondisconnect",
                 "Close queries on disconnect: ", "Close query windows when the server is disconnected",
-                config.getOptionBool("general", "closequeriesondisconnect"));
+                config.getOptionBool("general", "closequeriesondisconnect", false));
         preferencesPanel.addSpinnerOption(tabName, "server.pingtimeout",
                 "Server timeout (ms): ", "How long to wait for a server to reply to a PING request before disconnecting",
                 config.getOptionInt("server", "pingtimeout", 60000),
                 5000, Integer.MAX_VALUE, 5000);
         preferencesPanel.addCheckboxOption(tabName, "general.reconnectonconnectfailure",
                 "Reconnect on failure: ", "Attempt to reconnect if there's an error when connecting",
-                config.getOptionBool("general", "reconnectonconnectfailure"));
+                config.getOptionBool("general", "reconnectonconnectfailure", false));
         preferencesPanel.addCheckboxOption(tabName, "general.reconnectondisconnect",
                 "Reconnect on disconnect: ", "Reconnect automatically if the server is disconnected",
-                config.getOptionBool("general", "reconnectondisconnect"));
+                config.getOptionBool("general", "reconnectondisconnect", false));
         preferencesPanel.addSpinnerOption(tabName, "general.reconnectdelay",
                 "Reconnect delay: ", "How long to wait before attempting to reconnect to a server",
                 config.getOptionInt("general", "reconnectdelay", 30), 0, Integer.MAX_VALUE, 1);
         preferencesPanel.addCheckboxOption(tabName, "general.rejoinchannels",
                 "Rejoin open channels: ", "Rejoin open channels when reconnecting to a server",
-                config.getOptionBool("general", "rejoinchannels"));
+                config.getOptionBool("general", "rejoinchannels", false));
     }
     
     /**
@@ -290,22 +290,22 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                 config.hasOption("ui", "inputforegroundcolour"), true, true);
         preferencesPanel.addCheckboxOption(tabName, "general.showcolourdialog",
                 "Show colour dialog: ", "Show colour picker dialog when inserting colour control codes",
-                config.getOptionBool("general", "showcolourdialog"));
+                config.getOptionBool("general", "showcolourdialog", false));
         preferencesPanel.addComboboxOption(tabName, "ui.lookandfeel",
                 "Look and feel: ", "The Java Look and Feel to use", lafs,
                 config.getOption("ui", "lookandfeel", sysLafName), false);
         preferencesPanel.addCheckboxOption(tabName, "ui.antialias",
                 "System anti-alias: ", "Anti-alias all fonts",
-                config.getOptionBool("ui", "antialias"));
+                config.getOptionBool("ui", "antialias", false));
         preferencesPanel.addCheckboxOption(tabName, "ui.maximisewindows",
                 "Auto-Maximise windows: ", "Automatically maximise newly opened windows",
-                config.getOptionBool("ui", "maximisewindows"));
+                config.getOptionBool("ui", "maximisewindows", false));
         preferencesPanel.addCheckboxOption(tabName, "ui.showintext",
                 "Show colours in text area: ", "Show nickname colours in text areas",
-                config.getOptionBool("ui", "shownickcoloursintext"));
+                config.getOptionBool("ui", "shownickcoloursintext", false));
         preferencesPanel.addCheckboxOption(tabName, "ui.showinlist",
                 "Show colours in nick list: ", "Show nickname colours in the nicklist",
-                config.getOptionBool("ui", "shownickcoloursinnicklist"));
+                config.getOptionBool("ui", "shownickcoloursinnicklist", false));
         preferencesPanel.addComboboxOption(tabName, "ui.framemanager",
                 "Frame manager: ", "Which frame manager should be used",
                 new String[]{"treeview", "buttonbar", },
@@ -316,7 +316,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                 config.getOption("ui", "framemanagerPosition", "left"), false);
         preferencesPanel.addCheckboxOption(tabName, "ui.stylelinks",
                 "Style links: ", "Style links in the textpane",
-                config.getOptionBool("ui", "stylelinks"));
+                config.getOptionBool("ui", "stylelinks", false));
     }
     
     /** Initialises the themes tab. */
@@ -369,10 +369,10 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                 config.hasOption("nicklist", "altBackgroundColour"), true, true);
         preferencesPanel.addCheckboxOption(tabName, "ui.sortByMode",
                 "Nicklist sort by mode: ", "Sort nicklist by user mode",
-                config.getOptionBool("ui", "sortByMode"));
+                config.getOptionBool("ui", "sortByMode", false));
         preferencesPanel.addCheckboxOption(tabName, "ui.sortByCase",
                 "Nicklist sort by case: ", "Sort nicklist by user mode",
-                config.getOptionBool("ui", "sortByCase"));
+                config.getOptionBool("ui", "sortByCase", false));
     }
     
     /**
@@ -398,13 +398,13 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                 config.hasOption("ui", "treeviewRolloverColour"), true, true);
         preferencesPanel.addCheckboxOption(tabName, "treeview.sortwindows",
                 "Sort windows: ", "Sort windows of servers in the treeview",
-                config.getOptionBool("treeview", "sortwindows"));
+                config.getOptionBool("treeview", "sortwindows", false));
         preferencesPanel.addCheckboxOption(tabName, "treeview.sortservers",
                 "Sort servers: ", "Sort servers in the treeview",
-                config.getOptionBool("treeview", "sortservers"));
+                config.getOptionBool("treeview", "sortservers", false));
         preferencesPanel.addCheckboxOption(tabName, "ui.treeviewActiveBold",
                 "Active node bold: ", "Show the active node in bold",
-                config.getOptionBool("ui", "treeviewActiveBold"));
+                config.getOptionBool("ui", "treeviewActiveBold", false));
         preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewActiveForeground",
                 "Active node foreground: ", "Foreground colour of the active node",
                 config.getOption("ui", "treeviewActiveForeground",
@@ -429,22 +429,22 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                 config.getOption("general", "browser", ""));
         preferencesPanel.addCheckboxOption(tabName, "browser.uselaunchdelay",
                 "Use browser delay: ", "Enable delay between browser launches (to prevent mistakenly double clicking)",
-                config.getOptionBool("browser", "uselaunchdelay"));
+                config.getOptionBool("browser", "uselaunchdelay", false));
         preferencesPanel.addSpinnerOption(tabName, "browser.launchdelay",
                 "Browser launch delay (ms): ", "Minimum time between opening of URLs",
                 config.getOptionInt("browser", "launchdelay", 500), 0, Integer.MAX_VALUE, 1);
         preferencesPanel.addCheckboxOption(tabName, "general.autoSubmitErrors",
                 "Automatically submit errors: ", "Automatically submit client errors to the developers",
-                config.getOptionBool("general", "autoSubmitErrors"));
+                config.getOptionBool("general", "autoSubmitErrors", false));
         preferencesPanel.addCheckboxOption(tabName, "tabcompletion.casesensitive",
                 "Case-sensitive tab completion: ", "Respect case when tab completing",
-                config.getOptionBool("tabcompletion", "casesensitive"));
+                config.getOptionBool("tabcompletion", "casesensitive", false));
         preferencesPanel.addCheckboxOption(tabName, "ui.quickCopy",
                 "Quick Copy: ", "Automatically copy text that's selected in windows when the mouse button is released",
-                config.getOptionBool("ui", "quickCopy"));
+                config.getOptionBool("ui", "quickCopy", false));
         preferencesPanel.addCheckboxOption(tabName, "ui.showversion",
                 "Show version: ", "Show DMDirc version in the titlebar",
-                config.getOptionBool("ui", "showversion"));
+                config.getOptionBool("ui", "showversion", false));
         preferencesPanel.addSpinnerOption(tabName, "ui.frameBufferSize",
                 "Frame buffer size: ", "Sets the maximum number of lines in the frame buffer.",
                 config.getOptionInt("ui", "frameBufferSize", Integer.MAX_VALUE),

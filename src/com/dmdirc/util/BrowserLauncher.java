@@ -75,7 +75,7 @@ public final class BrowserLauncher {
         final Date oldLaunch = lastLaunch;
         lastLaunch = new Date();
         
-        if (IdentityManager.getGlobalConfig().getOptionBool("browser", "uselaunchdelay")
+        if (IdentityManager.getGlobalConfig().getOptionBool("browser", "uselaunchdelay", false)
                 && oldLaunch != null) {
             final Long diff = lastLaunch.getTime() - oldLaunch.getTime();
             

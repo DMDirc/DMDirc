@@ -92,7 +92,7 @@ public final class ServerFrame extends InputFrame implements ServerWindow,
      */
     @Override
     public void setAwayIndicator(final boolean newAwayState) {
-        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "awayindicator")) {
+        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "awayindicator", false)) {
             if (newAwayState) {
                 inputPanel.add(awayLabel, BorderLayout.LINE_START);
                 awayLabel.setVisible(true);
