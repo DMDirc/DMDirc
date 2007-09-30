@@ -30,6 +30,7 @@ import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.tabstyles.BashStyle;
+import com.dmdirc.ui.input.tabstyles.MircStyle;
 import com.dmdirc.ui.input.tabstyles.TabCompletionResult;
 import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -110,7 +111,7 @@ public final class InputHandler implements KeyListener, ActionListener {
     /**
      * Creates a new instance of InputHandler. Adds listeners to the target
      * that we need to operate.
-     * 
+     *
      * @param thisTarget The text field this input handler is dealing with.
      * @param thisCommandParser The command parser to use for this text field.
      * @param thisParentWindow The window that owns this input handler
@@ -129,7 +130,12 @@ public final class InputHandler implements KeyListener, ActionListener {
         bufferMinimum = 0;
         bufferMaximum = 0;
         
-        style = new BashStyle();
+        if ("bash".equals(parentWindow.getConfigManager().getOption("tabcompletion", "style", "bash"))) {
+            style = new BashStyle();
+        } else {
+            style = new MircStyle();
+        }
+        
         style.setContext(tabCompleter, parentWindow);
         
         target.addKeyListener(this);
@@ -139,7 +145,7 @@ public final class InputHandler implements KeyListener, ActionListener {
     
     /**
      * Sets this input handler's tab completer.
-     * 
+     *
      * @param newTabCompleter The new tab completer
      */
     public void setTabCompleter(final TabCompleter newTabCompleter) {
@@ -149,7 +155,7 @@ public final class InputHandler implements KeyListener, ActionListener {
     
     /**
      * Called when the user types a normal character.
-     * 
+     *
      * @param keyEvent The event that was fired
      */
     public void keyTyped(final KeyEvent keyEvent) {
@@ -159,7 +165,7 @@ public final class InputHandler implements KeyListener, ActionListener {
     /**
      * Called when the user presses down any key. Handles the insertion of
      * control codes, tab completion, and scrolling the back buffer.
-     * 
+     *
      * @param keyEvent The event that was fired
      */
     public void keyPressed(final KeyEvent keyEvent) {
@@ -190,51 +196,51 @@ public final class InputHandler implements KeyListener, ActionListener {
     /**
      * Handles the pressing of a key while the control key is pressed.
      * Inserts control chars as appropriate.
-     * 
+     *
      * @param keyEvent The key event that triggered this event.
      */
     private void handleControlKey(final KeyEvent keyEvent) {
         switch (keyEvent.getKeyCode()) {
-            case KeyEvent.VK_B:
-                addControlCode(Styliser.CODE_BOLD, POSITION_END);
-                break;
-                
-            case KeyEvent.VK_U:
-                addControlCode(Styliser.CODE_UNDERLINE, POSITION_END);
-                break;
-                
-            case KeyEvent.VK_O:
-                addControlCode(Styliser.CODE_STOP, POSITION_END);
-                break;
-                
-            case KeyEvent.VK_I:
-                addControlCode(Styliser.CODE_ITALIC, POSITION_END);
-                break;
-                
-            case KeyEvent.VK_F:
-                if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) != 0) {
-                    addControlCode(Styliser.CODE_FIXED, POSITION_END);
-                }
-                break;
-                
-            case KeyEvent.VK_K:
-                if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) == 0) {
-                    addControlCode(Styliser.CODE_COLOUR, POSITION_START);
-                    showColourPicker(true, false);
-                } else {
-                    addControlCode(Styliser.CODE_HEXCOLOUR, POSITION_START);
-                    showColourPicker(false, true);
-                }
-                break;
-                
-            case KeyEvent.VK_ENTER:
-                commandParser.parseCommandCtrl(parentWindow, target.getText());
-                addToBuffer(target.getText());
-                break;
-                
-            default:
-                /* Do nothing. */
-                break;
+        case KeyEvent.VK_B:
+            addControlCode(Styliser.CODE_BOLD, POSITION_END);
+            break;
+            
+        case KeyEvent.VK_U:
+            addControlCode(Styliser.CODE_UNDERLINE, POSITION_END);
+            break;
+            
+        case KeyEvent.VK_O:
+            addControlCode(Styliser.CODE_STOP, POSITION_END);
+            break;
+            
+        case KeyEvent.VK_I:
+            addControlCode(Styliser.CODE_ITALIC, POSITION_END);
+            break;
+            
+        case KeyEvent.VK_F:
+            if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) != 0) {
+                addControlCode(Styliser.CODE_FIXED, POSITION_END);
+            }
+            break;
+            
+        case KeyEvent.VK_K:
+            if ((keyEvent.getModifiers() & KeyEvent.SHIFT_MASK) == 0) {
+                addControlCode(Styliser.CODE_COLOUR, POSITION_START);
+                showColourPicker(true, false);
+            } else {
+                addControlCode(Styliser.CODE_HEXCOLOUR, POSITION_START);
+                showColourPicker(false, true);
+            }
+            break;
+            
+        case KeyEvent.VK_ENTER:
+            commandParser.parseCommandCtrl(parentWindow, target.getText());
+            addToBuffer(target.getText());
+            break;
+            
+        default:
+            /* Do nothing. */
+            break;
         }
     }
     
@@ -328,7 +334,7 @@ public final class InputHandler implements KeyListener, ActionListener {
                 }
             }
             
-            final AdditionalTabTargets results = 
+            final AdditionalTabTargets results =
                     ((IntelligentCommand) command).getSuggestions(args, previousArgs);
             
             doNormalTabCompletion(text, start, end, results);
@@ -346,7 +352,7 @@ public final class InputHandler implements KeyListener, ActionListener {
      * @param additional A list of additional strings to use
      */
     private void doNormalTabCompletion(final String text, final int start,
-            final int end, final AdditionalTabTargets additional) {        
+            final int end, final AdditionalTabTargets additional) {
         final TabCompletionResult res = style.getResult(text, start, end, additional);
         
         if (res != null) {
