@@ -75,8 +75,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.SwingUtilities;
-
 /**
  * The Server class represents the client's view of a server. It maintains
  * a list of all channels, queries, etc, and handles parser callbacks pertaining
@@ -326,7 +324,7 @@ public final class Server extends WritableFrameContainer implements
     
     /**
      * Retrieves the MyInfo object used for the IRC Parser.
-     * 
+     *
      * @return The MyInfo object for our profile
      */
     private MyInfo getMyInfo() {
@@ -627,13 +625,9 @@ public final class Server extends WritableFrameContainer implements
         ServerManager.getServerManager().unregisterServer(this);
         
         if (window != null) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    window.setVisible(false);
-                    Main.getUI().getMainWindow().delChild(window);
-                    window = null; //NOPMD
-                }
-            });
+            window.setVisible(false);
+            Main.getUI().getMainWindow().delChild(window);
+            window = null; //NOPMD
         }
         
         // Ditch the parser
@@ -746,11 +740,7 @@ public final class Server extends WritableFrameContainer implements
         channels.put(parser.toLowerCase(chan.getName()), newChan);
         Main.getUI().getMainWindow().getFrameManager().addWindow(this, newChan);
         
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                newChan.show();
-            }
-        });
+        newChan.show();
     }
     
     /**
@@ -1002,7 +992,7 @@ public final class Server extends WritableFrameContainer implements
                 newNick = alts[offset];
             }
         }
-                
+        
         parser.setNickname(newNick);
     }
     

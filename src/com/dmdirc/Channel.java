@@ -60,8 +60,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Map;
 
-import javax.swing.SwingUtilities;
-
 /**
  * The Channel class represents the client's view of the channel. It handles
  * callbacks for channel events from the parser, maintains the corresponding
@@ -131,19 +129,9 @@ public final class Channel extends MessageTarget implements
         tabCompleter.addEntries(CommandManager.getChannelCommandNames());
         tabCompleter.addEntries(CommandManager.getChatCommandNames());
         
-        try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                public void run() {
-                    window = Main.getUI().getChannel(Channel.this);
-                    window.setFrameIcon(icon);
-                    window.getInputHandler().setTabCompleter(tabCompleter);
-                }
-            });
-        } catch (InvocationTargetException ex) {
-            Logger.appError(ErrorLevel.FATAL, "Unable to load channel", ex.getCause());
-        } catch (InterruptedException ex) {
-            Logger.appError(ErrorLevel.FATAL, "Unable to load channel", ex);
-        }
+        window = Main.getUI().getChannel(Channel.this);
+        window.setFrameIcon(icon);
+        window.getInputHandler().setTabCompleter(tabCompleter);
         
         registerCallbacks();
         
@@ -303,19 +291,12 @@ public final class Channel extends MessageTarget implements
             temp = temp + " - " + Styliser.stipControlCodes(channelInfo.getTopic());
         }
         
-        // Needs to be final for AIC
-        final String title = temp;
+        window.setTitle(temp);
         
-        SwingUtilities.invokeLater(new Runnable() {
-            
-            public void run() {
-                window.setTitle(title);
-                
-                if (window.isMaximum() && window.equals(Main.getUI().getMainWindow().getActiveFrame())) {
-                    Main.getUI().getMainWindow().setTitle(Main.getUI().getMainWindow().getTitlePrefix() + " - " + title);
-                }
-            }
-        });
+        if (window.isMaximum() && window.equals(Main.getUI().getMainWindow().getActiveFrame())) {
+            Main.getUI().getMainWindow().setTitle(
+                    Main.getUI().getMainWindow().getTitlePrefix() + " - " + temp);
+        }
     }
     
     /**
@@ -378,14 +359,10 @@ public final class Channel extends MessageTarget implements
             server.delChannel(channelInfo.getName());
         }
         
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                window.setVisible(false);
-                Main.getUI().getMainWindow().delChild(window);
-                window = null;
-                server = null;
-            }
-        });
+        window.setVisible(false);
+        Main.getUI().getMainWindow().delChild(window);
+        window = null;
+        server = null;
     }
     
     /**
@@ -502,7 +479,7 @@ public final class Channel extends MessageTarget implements
         final String host = client.getHost();
         final String modes = cChannelClient.getImportantModePrefix();
         
-        String type = "";
+        String type;
         
         if (nick.equals(tParser.getMyself().getNickname())) {
             if (sReason.isEmpty()) {
@@ -541,15 +518,7 @@ public final class Channel extends MessageTarget implements
         final String victimident = cKickedClient.getClient().getIdent();
         final String victimhost = cKickedClient.getClient().getHost();
         
-        String type = "";
-        
-        if (sReason.isEmpty()) {
-            type = "channelKick";
-        } else {
-            type = "channelKickReason";
-        }
-        
-        final StringBuffer buff = new StringBuffer(type);
+        final StringBuffer buff = new StringBuffer(sReason.isEmpty() ? "channelKick" : "channelKickReason");
         
         ActionManager.processEvent(CoreActionType.CHANNEL_KICK, buff, this,
                 cKickedByClient, cKickedClient, sReason);
@@ -573,15 +542,7 @@ public final class Channel extends MessageTarget implements
         final String source = cChannelClient.getNickname();
         final String modes = cChannelClient.getImportantModePrefix();
         
-        String type = "";
-        
-        if (sReason.isEmpty()) {
-            type = "channelQuit";
-        } else {
-            type = "channelQuitReason";
-        }
-        
-        final StringBuffer buff = new StringBuffer(type);
+        final StringBuffer buff = new StringBuffer(sReason.isEmpty() ? "channelQuit" : "channelQuitReason");
         
         ActionManager.processEvent(CoreActionType.CHANNEL_QUIT, buff, this, cChannelClient, sReason);
         
