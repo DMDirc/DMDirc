@@ -241,20 +241,22 @@ public final class Server extends WritableFrameContainer implements
      */
     public void connect(final String server, final int port, final String password,
             final boolean ssl, final Identity profile) {
-        if (myState == STATE.RECONNECT_WAIT) {
-            reconnectTimer.cancel();
-        } else if (myState == STATE.CLOSING) {
-            Logger.appError(ErrorLevel.MEDIUM,
-                    "Connect attempt while not expecting one",
-                    new UnsupportedOperationException("Current state: " + myState));
-            return;
-        } else if (myState == STATE.CONNECTED || myState == STATE.CONNECTING) {
-            disconnect(configManager.getOption("general", "quitmessage"));
+        synchronized(myState) {
+            if (myState == STATE.RECONNECT_WAIT) {
+                reconnectTimer.cancel();
+            } else if (myState == STATE.CLOSING) {
+                Logger.appError(ErrorLevel.MEDIUM,
+                        "Connect attempt while not expecting one",
+                        new UnsupportedOperationException("Current state: " + myState));
+                return;
+            } else if (myState == STATE.CONNECTED || myState == STATE.CONNECTING) {
+                disconnect(configManager.getOption("general", "quitmessage"));
+            }
+            
+            ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
+            
+            myState = Server.STATE.CONNECTING;
         }
-        
-        ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
-        
-        myState = Server.STATE.CONNECTING;
         
         if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
             Logger.appError(ErrorLevel.MEDIUM,
@@ -333,8 +335,10 @@ public final class Server extends WritableFrameContainer implements
      * @param reason The quit reason to send
      */
     public void reconnect(final String reason) {
-        if (myState == STATE.CLOSING) {
-            return;
+        synchronized(myState) {
+            if (myState == STATE.CLOSING) {
+                return;
+            }
         }
         
         disconnect(reason);
@@ -350,8 +354,10 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public void sendLine(final String line) {
-        if (parser != null && myState == STATE.CONNECTED) {
-            parser.sendLine(window.getTranscoder().encode(line));
+        synchronized(myState) {
+            if (parser != null && myState == STATE.CONNECTED) {
+                parser.sendLine(window.getTranscoder().encode(line));
+            }
         }
     }
     
@@ -609,16 +615,18 @@ public final class Server extends WritableFrameContainer implements
      * @param reason disconnect reason
      */
     public void disconnect(final String reason) {
-        switch (myState) {
-        case CLOSING:
-        case DISCONNECTED:
-        case TRANSIENTLY_DISCONNECTED:
-            return;
-        case RECONNECT_WAIT:
-            reconnectTimer.cancel();
+        synchronized(myState) {
+            switch (myState) {
+            case CLOSING:
+            case DISCONNECTED:
+            case TRANSIENTLY_DISCONNECTED:
+                return;
+            case RECONNECT_WAIT:
+                reconnectTimer.cancel();
+            }
+            
+            myState = STATE.DISCONNECTED;
         }
-        
-        myState = STATE.DISCONNECTED;
         
         if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
             parser.disconnect(reason);
@@ -1079,12 +1087,14 @@ public final class Server extends WritableFrameContainer implements
     public void onSocketClosed(final IRCParser tParser) {
         handleNotification("socketClosed", this.server);
         
-        if (myState == STATE.CLOSING || myState == STATE.DISCONNECTED) {
-            // This has been triggered via .disconect()
-            return;
+        synchronized(myState) {
+            if (myState == STATE.CLOSING || myState == STATE.DISCONNECTED) {
+                // This has been triggered via .disconect()
+                return;
+            }
+            
+            myState = STATE.TRANSIENTLY_DISCONNECTED;
         }
-        
-        myState = STATE.TRANSIENTLY_DISCONNECTED;
         
         if (configManager.getOptionBool("general", "closechannelsondisconnect", false)) {
             closeChannels();
@@ -1101,14 +1111,16 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public void onConnectError(final IRCParser tParser, final ParserError errorInfo) {
-        if (myState != STATE.CONNECTING) {
-            Logger.appError(ErrorLevel.MEDIUM,
-                    "Connection error while not expecting a connection attempt",
-                    new UnsupportedOperationException("Current state: " + myState));
-            return;
+        synchronized(myState) {
+            if (myState != STATE.CONNECTING) {
+                Logger.appError(ErrorLevel.MEDIUM,
+                        "Connection error while not expecting a connection attempt",
+                        new UnsupportedOperationException("Current state: " + myState));
+                return;
+            }
+            
+            myState = STATE.TRANSIENTLY_DISCONNECTED;
         }
-        
-        myState = STATE.TRANSIENTLY_DISCONNECTED;
         
         String description = "";
         
@@ -1149,9 +1161,11 @@ public final class Server extends WritableFrameContainer implements
         reconnectTimer = new Timer("Server Reconnect Timer");
         reconnectTimer.schedule(new TimerTask() {
             public void run() {
-                if (myState == STATE.RECONNECT_WAIT) {
-                    myState = STATE.TRANSIENTLY_DISCONNECTED;
-                    reconnect();
+                synchronized(myState) {
+                    if (myState == STATE.RECONNECT_WAIT) {
+                        myState = STATE.TRANSIENTLY_DISCONNECTED;
+                        reconnect();
+                    }
                 }
             }
         }, delay * 1000);
@@ -1190,8 +1204,20 @@ public final class Server extends WritableFrameContainer implements
     
     /** {@inheritDoc} */
     public void onPost005(final IRCParser tParser) {
-        ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
-        myState = STATE.CONNECTED;
+        synchronized(myState) {
+            if (myState != STATE.CONNECTING) {
+                Logger.appError(ErrorLevel.HIGH,
+                        "Received post005 when not connecting",
+                        new UnsupportedOperationException("Current state: " + myState
+                        + "\nMy parser: " + parser.hashCode() + " Callback parser: "
+                        + tParser.hashCode()));
+                tParser.disconnect("Error");
+                return;
+            }
+            
+            ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
+            myState = STATE.CONNECTED;
+        }
         
         if (configManager.hasOption("general", "rejoinchannels")) {
             for (Channel chan : channels.values()) {
