@@ -38,29 +38,6 @@ import com.dmdirc.parser.MyInfo;
 import com.dmdirc.parser.ParserError;
 import com.dmdirc.parser.ServerInfo;
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
-import com.dmdirc.parser.callbacks.interfaces.IAwayState;
-import com.dmdirc.parser.callbacks.interfaces.IAwayStateOther;
-import com.dmdirc.parser.callbacks.interfaces.IChannelSelfJoin;
-import com.dmdirc.parser.callbacks.interfaces.IConnectError;
-import com.dmdirc.parser.callbacks.interfaces.IErrorInfo;
-import com.dmdirc.parser.callbacks.interfaces.IGotNetwork;
-import com.dmdirc.parser.callbacks.interfaces.IMOTDEnd;
-import com.dmdirc.parser.callbacks.interfaces.IMOTDLine;
-import com.dmdirc.parser.callbacks.interfaces.IMOTDStart;
-import com.dmdirc.parser.callbacks.interfaces.INickInUse;
-import com.dmdirc.parser.callbacks.interfaces.INoticeAuth;
-import com.dmdirc.parser.callbacks.interfaces.INumeric;
-import com.dmdirc.parser.callbacks.interfaces.IPingFailed;
-import com.dmdirc.parser.callbacks.interfaces.IPingSuccess;
-import com.dmdirc.parser.callbacks.interfaces.IPost005;
-import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
-import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCP;
-import com.dmdirc.parser.callbacks.interfaces.IPrivateCTCPReply;
-import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
-import com.dmdirc.parser.callbacks.interfaces.IPrivateNotice;
-import com.dmdirc.parser.callbacks.interfaces.ISocketClosed;
-import com.dmdirc.parser.callbacks.interfaces.IUnknownNotice;
-import com.dmdirc.parser.callbacks.interfaces.IUserModeChanged;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
@@ -82,12 +59,7 @@ import java.util.TimerTask;
  *
  * @author chris
  */
-public final class Server extends WritableFrameContainer implements
-        IChannelSelfJoin, IPrivateMessage, IPrivateAction, IErrorInfo,
-        IPrivateCTCP, IPrivateCTCPReply, ISocketClosed, IPrivateNotice,
-        IMOTDStart, IMOTDLine, IMOTDEnd, INumeric, IGotNetwork, IPingFailed,
-        IPingSuccess, IAwayState, IConnectError, IAwayStateOther, INickInUse,
-        IPost005, INoticeAuth, IUnknownNotice, IUserModeChanged, Serializable {
+public final class Server extends WritableFrameContainer implements Serializable {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -95,17 +67,7 @@ public final class Server extends WritableFrameContainer implements
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
-    /** The callbacks that should be registered for server instances. */
-    private static final String[] CALLBACKS = {
-        "OnChannelSelfJoin", "OnErrorInfo", "OnPrivateMessage", "OnPingSuccess",
-        "OnPrivateAction", "OnPrivateCTCP", "OnPrivateNotice", "OnConnectError",
-        "OnPrivateCTCPReply", "OnSocketClosed", "OnGotNetwork", "OnNumeric",
-        "OnMOTDStart", "OnMOTDLine", "OnMOTDEnd", "OnPingFailed", "OnAwayState",
-        "OnAwayStateOther", "OnNickInUse", "OnPost005", "OnNoticeAuth",
-        "OnUserModeChanged", "OnUnknownNotice"
-    };
-    
+       
     /** The name of the general domain. */
     private static final String DOMAIN_GENERAL = "general".intern();
     /** The name of the profile domain. */
@@ -174,6 +136,9 @@ public final class Server extends WritableFrameContainer implements
     private boolean away;
     /** Our reason for being away, if any. */
     private String awayMessage;
+    
+    /** Our event handler. */
+    private final ServerEventHandler eventHandler = new ServerEventHandler(this);
     
     /**
      * Creates a new instance of Server.
@@ -350,13 +315,7 @@ public final class Server extends WritableFrameContainer implements
             raw.registerCallbacks();
         }
         
-        try {
-            for (String callback : CALLBACKS) {
-                parser.getCallbackManager().addCallback(callback, this);
-            }
-        } catch (CallbackNotFoundException ex) {
-            Logger.appError(ErrorLevel.FATAL, "Unable to register server event handlers", ex);
-        }
+        eventHandler.registerCallbacks();
         
         for (Query query : queries.values()) {
             query.reregister();
@@ -605,7 +564,7 @@ public final class Server extends WritableFrameContainer implements
     public void close(final String reason) {
         if (parser != null) {
             // Unregister parser callbacks
-            parser.getCallbackManager().delAllCallback(this);
+            parser.getCallbackManager().delAllCallback(eventHandler);
         }
         
         // Disconnect from the server
