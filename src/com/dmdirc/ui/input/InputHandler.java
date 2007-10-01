@@ -36,6 +36,7 @@ import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.swing.components.ColourPickerDialog;
+import java.awt.Toolkit;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -250,7 +251,7 @@ public final class InputHandler implements KeyListener, ActionListener {
      */
     private void doBufferUp() {
         if (bufferPosition == bufferMinimum) {
-            // TODO: Beep, or something.
+            Toolkit.getDefaultToolkit().beep();
         } else {
             bufferPosition = normalise(bufferPosition - 1);
             retrieveBuffer();
@@ -266,7 +267,7 @@ public final class InputHandler implements KeyListener, ActionListener {
             bufferPosition = normalise(bufferPosition + 1);
             retrieveBuffer();
         } else if (target.getText().isEmpty()) {
-            // Beep or something
+            Toolkit.getDefaultToolkit().beep();
         } else {
             addToBuffer(target.getText());
         }
@@ -397,7 +398,7 @@ public final class InputHandler implements KeyListener, ActionListener {
      * @param position The position of the caret after a selection is altered
      */
     private void addControlCode(final int code, final int position) {
-        final String insert = "" + (char) code;
+        final String insert = String.valueOf((char) code);
         final int selectionEnd = target.getSelectionEnd();
         final int selectionStart = target.getSelectionStart();
         if (selectionStart < selectionEnd) {
@@ -430,7 +431,7 @@ public final class InputHandler implements KeyListener, ActionListener {
     }
     
     /**
-     * Normalises the input so that it is in the range 0 <= x < bufferSize.
+     * Normalises the input so that it is in the range 0 &lt;= x &lt; bufferSize.
      * @param input The number to normalise
      * @return The normalised number
      */
@@ -486,7 +487,8 @@ public final class InputHandler implements KeyListener, ActionListener {
                     colourPicker.dispose();
                     colourPicker = null;
                 } });
-                colourPicker.setLocation((int) target.getLocationOnScreen().getX(), (int) target.getLocationOnScreen().getY() - colourPicker.getHeight());
+                colourPicker.setLocation((int) target.getLocationOnScreen().getX(),
+                        (int) target.getLocationOnScreen().getY() - colourPicker.getHeight());
                 colourPicker.setVisible(true);
         }
     }
