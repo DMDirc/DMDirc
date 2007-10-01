@@ -828,7 +828,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         if (e.getActionCommand().equals("About")) {
             AboutDialog.showAboutDialog();
         } else if (e.getActionCommand().equals("Profile")) {
-            ProfileEditorDialog.showActionsManagerDialog();
+            ProfileEditorDialog.showProfileEditorDialog();
         } else if (e.getActionCommand().equals("Exit")) {
             quit();
         } else if (e.getActionCommand().equals("ManagePlugins")) {

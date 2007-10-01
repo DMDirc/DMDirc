@@ -87,7 +87,7 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
         }
         
         if (firstRun && ((StepTwo) wizardDialog.getStep(1)).getProfileManagerState()) {
-            ProfileEditorDialog.showActionsManagerDialog();
+            ProfileEditorDialog.showProfileEditorDialog();
         }
     }
     

@@ -134,8 +134,8 @@ public final class SwingController implements UIController {
     }
     
     /** {@inheritDoc} */
-    public UpdaterDialog getUpdaterDialog(final List<Update> updates) {
-        return new SwingUpdaterDialog(updates);
+    public SwingUpdaterDialog getUpdaterDialog(final List<Update> updates) {
+        return SwingUpdaterDialog.getSwingUpdaterDialog(updates);
     }
     
     /** {@inheritDoc} */

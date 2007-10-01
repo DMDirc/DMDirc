@@ -73,19 +73,11 @@ public final class NewServerDialog extends StandardDialog {
     /** The maximum port number. */
     private static final int MAX_PORT = 65535;
     
-    /**
-     * A previously created instance of NewServerDialog.
-     */
-    private static NewServerDialog me = new NewServerDialog();;
+    /** A previously created instance of NewServerDialog. */
+    private static NewServerDialog me;
     
     /** checkbox. */
     private JCheckBox newServerWindowCheck;
-    
-    /** checkbox. */
-    private JCheckBox rememberPasswordCheck;
-    
-    /** checkbox. */
-    private JCheckBox autoConnectCheck;
     
     /** checkbox. */
     private JCheckBox sslCheck;
@@ -132,10 +124,8 @@ public final class NewServerDialog extends StandardDialog {
         initComponents();
         
         layoutComponents();
-        
-        serverField.setText(IdentityManager.getGlobalConfig().getOption("general", "server"));
-        portField.setText(IdentityManager.getGlobalConfig().getOption("general", "port"));
-        passwordField.setText(IdentityManager.getGlobalConfig().getOption("general", "password"));
+               
+        update();
         
         addCallbacks();
     }
@@ -143,14 +133,12 @@ public final class NewServerDialog extends StandardDialog {
     /**
      * Creates the new server dialog if one doesn't exist, and displays it.
      */
-    public static  void showNewServerDialog() {
-        synchronized (me) {
-            me.update();
-            
-            me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
-            me.setVisible(true);
-            me.requestFocus();
-        }
+    public static synchronized void showNewServerDialog() {
+        me = getNewServerDialog();
+        
+        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setVisible(true);
+        me.requestFocus();
     }
     
     /**
@@ -158,31 +146,35 @@ public final class NewServerDialog extends StandardDialog {
      *
      * @return The current NewServerDialog instance
      */
-    public static NewServerDialog getNewServerDialog() {
-        synchronized (me) {
-            return me;
+    public static synchronized NewServerDialog getNewServerDialog() {
+        if (me == null) {
+            me = new NewServerDialog();
+        } else {
+            me.update();
         }
+        
+        return me;
     }
     
     /** Updates the values to defaults. */
     private void update() {
-        serverField.setText("blueyonder.uk.quakenet.org");
-        portField.setText("7000");
-        passwordField.setText("");
+        serverField.setText(IdentityManager.getGlobalConfig().getOption("general", "server"));
+        portField.setText(IdentityManager.getGlobalConfig().getOption("general", "port"));
+        passwordField.setText(IdentityManager.getGlobalConfig().getOption("general", "password"));
         sslCheck.setSelected(false);
         newServerWindowCheck.setEnabled(false);
         
-        me.serverField.requestFocus();
+        serverField.requestFocus();
         
         if (ServerManager.getServerManager().numServers() == 0
                 || Main.getUI().getMainWindow().getActiveFrame() == null) {
-            me.newServerWindowCheck.setSelected(true);
-            me.newServerWindowCheck.setEnabled(false);
+            newServerWindowCheck.setSelected(true);
+            newServerWindowCheck.setEnabled(false);
         } else {
-            me.newServerWindowCheck.setEnabled(true);
+            newServerWindowCheck.setEnabled(true);
         }
         
-        me.populateProfiles();
+        populateProfiles();
     }
     
     /**
@@ -191,7 +183,8 @@ public final class NewServerDialog extends StandardDialog {
     private void addCallbacks() {
         getCancelButton().addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
-                NewServerDialog.this.setVisible(false);
+                NewServerDialog.this.dispose();
+                me = null;
             }
         });
         getOkButton().addActionListener(new ActionListener() {
@@ -209,7 +202,8 @@ public final class NewServerDialog extends StandardDialog {
                     return;
                 }
                 
-                NewServerDialog.this.setVisible(false);
+                NewServerDialog.this.dispose();
+                me = null;
                 
                 final Identity profile =
                         (Identity) identityField.getSelectedItem();
@@ -235,7 +229,7 @@ public final class NewServerDialog extends StandardDialog {
         });
         editProfileButton.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
-                ProfileEditorDialog.showActionsManagerDialog();
+                ProfileEditorDialog.showProfileEditorDialog();
             }
         });
     }
@@ -255,8 +249,6 @@ public final class NewServerDialog extends StandardDialog {
         passwordField = new JPasswordField();
         newServerWindowCheck = new JCheckBox();
         newServerWindowCheck.setSelected(true);
-        rememberPasswordCheck = new JCheckBox();
-        autoConnectCheck = new JCheckBox();
         sslCheck = new JCheckBox();
         identityLabel = new JLabel();
         identityField = new JComboBox();

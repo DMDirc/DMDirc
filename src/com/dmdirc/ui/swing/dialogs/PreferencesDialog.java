@@ -60,7 +60,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     private final ConfigManager config = IdentityManager.getGlobalConfig();
     
     /** A previously created instance of PreferencesDialog. */
-    private static PreferencesDialog me = new PreferencesDialog();
+    private static PreferencesDialog me;
     
     /** preferences panel. */
     private SwingPreferencesPanel preferencesPanel;
@@ -75,14 +75,17 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
      * Creates a new instance of PreferencesDialog.
      */
     private PreferencesDialog() {
+        initComponents();
+        
         IdentityManager.getGlobalConfig().addChangeListener("ui", this);
     }
     
     /** Creates the dialog if one doesn't exist, and displays it. */
-    public static  void showPreferencesDialog() {
-        synchronized (me) {
+    public static synchronized void showPreferencesDialog() {
+        if (me == null) {
+            new PreferencesDialog();
+        } else {
             me.initComponents();
-            me.preferencesPanel.requestFocus();
         }
     }
     
@@ -484,12 +487,15 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
             }
         }
         preferencesPanel = null;
+        IdentityManager.getGlobalConfig().removeListener(this);
+        me = null;
     }
     
     
     /** {@inheritDoc} */
     public void configCancelled() {
-        //Ignore
+        IdentityManager.getGlobalConfig().removeListener(this);
+        me = null;
     }
     
     /** {@inheritDoc} */

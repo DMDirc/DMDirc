@@ -103,20 +103,30 @@ public final class PluginDialog extends StandardDialog implements
         
         pluginList.setSelectedIndex(0);
         selectedPlugin = 0;
-        
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
-        setVisible(true);
     }
     
     /** Creates the dialog if one doesn't exist, and displays it. */
     public static synchronized void showPluginDialog() {
+        me = getPluginDialog();
+        
+        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setVisible(true);
+        me.requestFocus();
+    }
+    
+    /**
+     * Returns the current instance of the PluginDialog.
+     *
+     * @return The current PluginDialog instance
+     */
+    public static synchronized PluginDialog getPluginDialog() {
         if (me == null) {
             me = new PluginDialog();
         } else {
-            me.setVisible(true);
-            me.requestFocus();
             me.populateList();
         }
+        
+        return me;
     }
     
     /** Initialises the components. */
@@ -237,7 +247,8 @@ public final class PluginDialog extends StandardDialog implements
      */
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == myOkButton) {
-            this.dispose();
+            dispose();
+            me = null;
         } else if (e.getSource() == configureButton && selectedPlugin >= 0) {
             final Plugin plugin = (Plugin) pluginList.getSelectedValue();
             if (plugin.isConfigurable()) {

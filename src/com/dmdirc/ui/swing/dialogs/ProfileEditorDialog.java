@@ -69,7 +69,7 @@ public final class ProfileEditorDialog extends StandardDialog implements
     private static final long serialVersionUID = 3;
     
     /** Previously created instance of ProfileEditorDialog. */
-    private static ProfileEditorDialog me = new ProfileEditorDialog();
+    private static ProfileEditorDialog me;
     
     /** Component panel. */
     private JPanel panel;
@@ -120,17 +120,30 @@ public final class ProfileEditorDialog extends StandardDialog implements
         layoutComponents();
         
         addCallbacks();
-        
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
-        setVisible(true);
     }
     
     /** Creates the dialog if one doesn't exist, and displays it. */
-    public static void showActionsManagerDialog() {
-        synchronized (me) {
-            me.setVisible(true);
-            me.requestFocus();
+    public static synchronized void showProfileEditorDialog() {
+        me = getProfileEditorDialog();
+        
+        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setVisible(true);
+        me.requestFocus();
+    }
+    
+    /**
+     * Returns the current instance of the ProfileEditorDialog.
+     *
+     * @return The current ProfileEditorDialog instance
+     */
+    public static synchronized ProfileEditorDialog getProfileEditorDialog() {
+        if (me == null) {
+            me = new ProfileEditorDialog();
+        } else {
+            me.populateList();
         }
+        
+        return me;
     }
     
     /** Initialises the components of the dialog. */
@@ -411,13 +424,15 @@ public final class ProfileEditorDialog extends StandardDialog implements
             saveProfile(selectedProfile);
         }
         NewServerDialog.getNewServerDialog().populateProfiles();
-        this.dispose();
+        dispose();
+        me = null;
     }
     
     /** cancels the dialog */
     private void cancelDialog() {
         NewServerDialog.getNewServerDialog().populateProfiles();
         dispose();
+        me = null;
     }
     
     /** {@inheritDoc}. */

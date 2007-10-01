@@ -540,7 +540,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         }
         pack();
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
-        this.setVisible(true);
+        setVisible(true);
     }
     
     /**

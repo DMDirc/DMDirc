@@ -43,6 +43,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * The updater dialog informs the user of the new update that is available,
@@ -59,14 +60,24 @@ public final class SwingUpdaterDialog extends StandardDialog implements
      */
     private static final long serialVersionUID = 1;
     
+    /** Update table headers. */
+    private static final String[] HEADERS = new String[]{"Component", 
+    "Local version", "Remote version", "Status", };
+    
+    /** Previously created instance of SwingUpdaterDialog. */
+    private static SwingUpdaterDialog me;
+    
     /** List of updates. */
-    private final List<Update> updates;
+    private List<Update> updates;
+    
+    /** Update table. */
+    private JTable table;
     
     /**
      * Creates a new instance of the updater dialog.
      * @param updates A list of updates that are available.
      */
-    public SwingUpdaterDialog(final List<Update> updates) {
+    private SwingUpdaterDialog(final List<Update> updates) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
         
         this.updates = updates;
@@ -77,6 +88,26 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         getCancelButton().addActionListener(this);
         
         setTitle("Update available");
+    }
+    
+    /** Creates the dialog if one doesn't exist, and displays it. */
+    public static synchronized void showSwingUpdaterDialog(
+            final List<Update> updates) {
+        me = getSwingUpdaterDialog(updates);
+        me.display();
+    }
+    
+    public static synchronized SwingUpdaterDialog getSwingUpdaterDialog(
+            final List<Update> updates) {
+        if (me == null) {
+            me = new SwingUpdaterDialog(updates);
+        } else {
+            me.updates = updates;
+            ((DefaultTableModel) me.table.getModel()).setDataVector(
+                    me.getTableData(), HEADERS);
+        }
+        
+        return me;
     }
     
     /** Initialises the components. */
@@ -92,17 +123,8 @@ public final class SwingUpdaterDialog extends StandardDialog implements
                 LARGE_BORDER, SMALL_BORDER, LARGE_BORDER));
         add(header, BorderLayout.NORTH);
         
-        final String[][] tableData = new String[updates.size()][4];
         
-        for (int i = 0; i < updates.size(); i++) {
-            tableData[i][0] = updates.get(i).getComponent();
-            tableData[i][1] = updates.get(i).getLocalVersion();
-            tableData[i][2] = updates.get(i).getRemoteVersion();
-            tableData[i][3] = "Pending";
-        }
-        
-        final JTable table = new JTable(tableData,
-                new String[]{"Component", "Local version", "Remote version", "Status"}) {
+        table = new JTable(new DefaultTableModel(getTableData(), HEADERS)) {
             private static final long serialVersionUID = 1;
             
             public boolean isCellEditable(final int x, final int y) {
@@ -138,10 +160,29 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         pack();
     }
     
+    /**
+     * Returns the table data for updates
+     *
+     * @return Table of updates
+     */
+    private Object[][] getTableData() {
+        final String[][] tableData = new String[updates.size()][4];
+        
+        for (int i = 0; i < updates.size(); i++) {
+            tableData[i][0] = updates.get(i).getComponent();
+            tableData[i][1] = updates.get(i).getLocalVersion();
+            tableData[i][2] = updates.get(i).getRemoteVersion();
+            tableData[i][3] = "Pending";
+        }
+        
+        return tableData;
+    }
+    
     /** {@inheritDoc} */
     public void display() {
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         setVisible(true);
+        requestFocus();
     }
     
     /** {@inheritDoc} */
