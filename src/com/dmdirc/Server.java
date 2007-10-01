@@ -108,6 +108,16 @@ public final class Server extends WritableFrameContainer implements
         "OnUserModeChanged", "OnUnknownNotice"
     };
     
+    /** The name of the general domain. */
+    private static final String DOMAIN_GENERAL = "general".intern();
+    /** The name of the profile domain. */
+    private static final String DOMAIN_PROFILE = "profile".intern();
+    /** The name of the server domain. */
+    private static final String DOMAIN_SERVER = "server".intern();
+    
+    /** The name of the server notification target. */
+    private static final String NOTIFICATION_SERVER = "server".intern();
+    
     /** An enumeration of possible states for servers. */
     public static enum STATE {
         /** Indicates the client is in the process of connecting. */
@@ -197,8 +207,6 @@ public final class Server extends WritableFrameContainer implements
         
         this.server = server;
         
-        icon = IconManager.getIconManager().getIcon(ssl ? "secure-server" : "server");
-        
         ServerManager.getServerManager().registerServer(this);
         
         configManager = new ConfigManager("", "", server);
@@ -210,7 +218,7 @@ public final class Server extends WritableFrameContainer implements
         tabCompleter.addEntries(AliasWrapper.getAliasWrapper().getAliases());
         window.getInputHandler().setTabCompleter(tabCompleter);
         
-        window.setFrameIcon(icon);
+        updateIcon();
         
         window.open();
         
@@ -225,7 +233,7 @@ public final class Server extends WritableFrameContainer implements
                     channel.checkWho();
                 }
             }
-        }, 0, configManager.getOptionInt("general", "whotime", 60000));
+        }, 0, configManager.getOptionInt(DOMAIN_GENERAL, "whotime", 60000));
         
         connect(server, port, password, ssl, profile);
     }
@@ -250,7 +258,7 @@ public final class Server extends WritableFrameContainer implements
                         new UnsupportedOperationException("Current state: " + myState));
                 return;
             } else if (myState == STATE.CONNECTED || myState == STATE.CONNECTING) {
-                disconnect(configManager.getOption("general", "quitmessage"));
+                disconnect(configManager.getOption(DOMAIN_GENERAL, "quitmessage"));
             }
             
             ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
@@ -262,7 +270,7 @@ public final class Server extends WritableFrameContainer implements
             Logger.appError(ErrorLevel.MEDIUM,
                     "Parser was still connected when making a connection attempt",
                     new UnsupportedOperationException());
-            disconnect(configManager.getOption("general", "quitmessage"));
+            disconnect(configManager.getOption(DOMAIN_GENERAL, "quitmessage"));
         }
         
         this.server = server;
@@ -273,19 +281,11 @@ public final class Server extends WritableFrameContainer implements
         
         configManager = new ConfigManager("", "", server);
         
-        icon = IconManager.getIconManager().getIcon(ssl ? "secure-server" : "server");
-        window.setFrameIcon(icon);
-        Main.getUI().getMainWindow().getFrameManager().iconUpdated(this);
+        updateIcon();
         
         addLine("serverConnecting", server, port);
         
-        final MyInfo myInfo = new MyInfo();
-        myInfo.setNickname(profile.getOption("profile", "nickname"));
-        myInfo.setRealname(profile.getOption("profile", "realname"));
-        
-        if (profile.hasOption("profile", "ident")) {
-            myInfo.setUsername(profile.getOption("profile", "ident"));
-        }
+        final MyInfo myInfo = getMyInfo();
         
         final ServerInfo serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);
@@ -294,11 +294,59 @@ public final class Server extends WritableFrameContainer implements
         parser.setCreateFake(true);
         parser.setAddLastLine(true);
         
-        if (configManager.hasOption("general", "bindip")) {
-            parser.setBindIP(configManager.getOption("general", "bindip"));
+        if (configManager.hasOption(DOMAIN_GENERAL, "bindip")) {
+            parser.setBindIP(configManager.getOption(DOMAIN_GENERAL, "bindip"));
         }
         
-        if (raw == null && IdentityManager.getGlobalConfig().getOptionBool("general", "showrawwindow", false)) {
+        doCallbacks();
+        
+        away = false;
+        awayMessage = "";
+        window.setAwayIndicator(false);
+        
+        try {
+            new Thread(parser, "IRC Parser thread").start();
+        } catch (IllegalThreadStateException ex) {
+            Logger.appError(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
+        }
+        
+        updateIgnoreList();
+    }
+    
+    /**
+     * Updates this server's icon.
+     */
+    private void updateIcon() {
+        icon = IconManager.getIconManager().getIcon(ssl ? "secure-server" : "server");
+        if (window != null) {
+            window.setFrameIcon(icon);
+            Main.getUI().getMainWindow().getFrameManager().iconUpdated(this);
+        }
+    }
+    
+    /**
+     * Retrieves the MyInfo object used for the IRC Parser.
+     * 
+     * @return The MyInfo object for our profile
+     */
+    private MyInfo getMyInfo() {
+        final MyInfo myInfo = new MyInfo();
+        myInfo.setNickname(profile.getOption(DOMAIN_PROFILE, "nickname"));
+        myInfo.setRealname(profile.getOption(DOMAIN_PROFILE, "realname"));
+        
+        if (profile.hasOption(DOMAIN_PROFILE, "ident")) {
+            myInfo.setUsername(profile.getOption(DOMAIN_PROFILE, "ident"));
+        }
+        
+        return myInfo;
+    }
+    
+    /**
+     * Registers callbacks.
+     */
+    private void doCallbacks() {
+        if (raw == null && IdentityManager.getGlobalConfig()
+                .getOptionBool(DOMAIN_GENERAL, "showrawwindow", false)) {
             addRaw();
         } else if (raw != null) {
             raw.registerCallbacks();
@@ -315,18 +363,6 @@ public final class Server extends WritableFrameContainer implements
         for (Query query : queries.values()) {
             query.reregister();
         }
-        
-        away = false;
-        awayMessage = null;
-        window.setAwayIndicator(false);
-        
-        try {
-            new Thread(parser, "IRC Parser thread").start();
-        } catch (IllegalThreadStateException ex) {
-            Logger.appError(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
-        }
-        
-        updateIgnoreList();
     }
     
     /**
@@ -349,7 +385,7 @@ public final class Server extends WritableFrameContainer implements
      * Reconnects to the IRC server.
      */
     public void reconnect() {
-        reconnect(configManager.getOption("general", "reconnectmessage"));
+        reconnect(configManager.getOption(DOMAIN_GENERAL, "reconnectmessage"));
     }
     
     /** {@inheritDoc} */
@@ -595,18 +631,18 @@ public final class Server extends WritableFrameContainer implements
                 public void run() {
                     window.setVisible(false);
                     Main.getUI().getMainWindow().delChild(window);
-                    window = null;
+                    window = null; //NOPMD
                 }
             });
         }
         
         // Ditch the parser
-        parser = null;
+        parser = null; //NOPMD
     }
     
     /** {@inheritDoc} */
     public void close() {
-        close(configManager.getOption("general", "quitmessage"));
+        close(configManager.getOption(DOMAIN_GENERAL, "quitmessage"));
     }
     
     /**
@@ -623,6 +659,9 @@ public final class Server extends WritableFrameContainer implements
                 return;
             case RECONNECT_WAIT:
                 reconnectTimer.cancel();
+                break;
+            default:
+                break;
             }
             
             myState = STATE.DISCONNECTED;
@@ -631,13 +670,13 @@ public final class Server extends WritableFrameContainer implements
         if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
             parser.disconnect(reason);
             
-            if (configManager.getOptionBool("general", "closechannelsonquit", false)) {
+            if (configManager.getOptionBool(DOMAIN_GENERAL, "closechannelsonquit", false)) {
                 closeChannels();
             } else {
                 clearChannels();
             }
             
-            if (configManager.getOptionBool("general", "closequeriesonquit", false)) {
+            if (configManager.getOptionBool(DOMAIN_GENERAL, "closequeriesonquit", false)) {
                 closeQueries();
             }
         }
@@ -680,7 +719,7 @@ public final class Server extends WritableFrameContainer implements
      */
     public void delRaw() {
         Main.getUI().getMainWindow().getFrameManager().delWindow(this, raw);
-        raw = null;
+        raw = null; //NOPMD
     }
     
     /**
@@ -809,13 +848,13 @@ public final class Server extends WritableFrameContainer implements
      * @param args The arguments for the message
      */
     public void handleNotification(final String messageType, final Object... args) {
-        String target = configManager.getOption("notifications", messageType, "server");
+        String target = configManager.getOption("notifications", messageType, NOTIFICATION_SERVER);
         
         if (target.startsWith("group:")) {
-            target = configManager.getOption("notifications", target.substring(6), "server");
+            target = configManager.getOption("notifications", target.substring(6), NOTIFICATION_SERVER);
         }
         
-        if ("server".equals(target)) {
+        if (NOTIFICATION_SERVER.equals(target)) {
             addLine(messageType, args);
         } else if ("all".equals(target)) {
             addLineToAll(messageType, args);
@@ -842,7 +881,7 @@ public final class Server extends WritableFrameContainer implements
             }
             
             for (WritableFrameContainer container: containers) {
-                long time = container.getFrame().getCommandParser().getCommandTime(command);
+                final long time = container.getFrame().getCommandParser().getCommandTime(command);
                 if (time > besttime) {
                     besttime = time;
                     best = container;
@@ -944,13 +983,13 @@ public final class Server extends WritableFrameContainer implements
             return;
         }
         
-        String newNick = null;
+        String newNick = lastNick + (int) (Math.random() * 10);
         
-        if (profile.hasOption("profile", "altnicks")) {
-            final String[] alts = profile.getOption("profile", "altnicks").split("\n");
-            int offset = -1;
+        if (profile.hasOption(DOMAIN_PROFILE, "altnicks")) {
+            final String[] alts = profile.getOption(DOMAIN_PROFILE, "altnicks").split("\n");
+            int offset = 0;
             
-            if (!parser.equalsIgnoreCase(lastNick, profile.getOption("profile", "nickname"))) {
+            if (!parser.equalsIgnoreCase(lastNick, profile.getOption(DOMAIN_PROFILE, "nickname"))) {
                 for (String alt : alts) {
                     offset++;
                     if (parser.equalsIgnoreCase(alt, lastNick)) {
@@ -959,15 +998,11 @@ public final class Server extends WritableFrameContainer implements
                 }
             }
             
-            if (offset + 1 < alts.length) {
-                newNick = alts[offset + 1];
+            if (offset < alts.length && !alts[offset].isEmpty()) {
+                newNick = alts[offset];
             }
         }
-        
-        if (newNick == null || newNick.isEmpty()) {
-            newNick = lastNick + (int) (Math.random() * 10);
-        }
-        
+                
         parser.setNickname(newNick);
     }
     
@@ -1075,7 +1110,7 @@ public final class Server extends WritableFrameContainer implements
             ActionManager.processEvent(CoreActionType.SERVER_AWAY, null, this, awayMessage);
         } else {
             away = false;
-            awayMessage = null;
+            awayMessage = "";
             
             ActionManager.processEvent(CoreActionType.SERVER_BACK, null, this);
         }
@@ -1096,15 +1131,15 @@ public final class Server extends WritableFrameContainer implements
             myState = STATE.TRANSIENTLY_DISCONNECTED;
         }
         
-        if (configManager.getOptionBool("general", "closechannelsondisconnect", false)) {
+        if (configManager.getOptionBool(DOMAIN_GENERAL, "closechannelsondisconnect", false)) {
             closeChannels();
         }
         
-        if (configManager.getOptionBool("general", "closequeriesondisconnect", false)) {
+        if (configManager.getOptionBool(DOMAIN_GENERAL, "closequeriesondisconnect", false)) {
             closeQueries();
         }
         
-        if (configManager.getOptionBool("general", "reconnectondisconnect", false)) {
+        if (configManager.getOptionBool(DOMAIN_GENERAL, "reconnectondisconnect", false)) {
             doDelayedReconnect();
         }
     }
@@ -1122,22 +1157,22 @@ public final class Server extends WritableFrameContainer implements
             myState = STATE.TRANSIENTLY_DISCONNECTED;
         }
         
-        String description = "";
+        String description;
         
         if (errorInfo.getException() == null) {
             description = errorInfo.getData();
         } else {
-            final Exception ex = errorInfo.getException();
+            final Exception exception = errorInfo.getException();
             
-            if (ex instanceof java.net.UnknownHostException) {
+            if (exception instanceof java.net.UnknownHostException) {
                 description = "Unknown host (unable to resolve)";
-            } else if (ex instanceof java.net.NoRouteToHostException) {
+            } else if (exception instanceof java.net.NoRouteToHostException) {
                 description = "No route to host";
-            } else if (ex instanceof java.net.SocketException) {
-                description = ex.getMessage();
+            } else if (exception instanceof java.net.SocketException) {
+                description = exception.getMessage();
             } else {
-                Logger.appError(ErrorLevel.LOW, "Unknown socket error", ex);
-                description = "Unknown error: " + ex.getMessage();
+                Logger.appError(ErrorLevel.LOW, "Unknown socket error", exception);
+                description = "Unknown error: " + exception.getMessage();
             }
         }
         
@@ -1145,7 +1180,7 @@ public final class Server extends WritableFrameContainer implements
         
         handleNotification("connectError", server, description);
         
-        if (configManager.getOptionBool("general", "reconnectonconnectfailure", false)) {
+        if (configManager.getOptionBool(DOMAIN_GENERAL, "reconnectonconnectfailure", false)) {
             doDelayedReconnect();
         }
     }
@@ -1154,7 +1189,7 @@ public final class Server extends WritableFrameContainer implements
      * Schedules a reconnect attempt to be performed after a user-defiend delay.
      */
     private void doDelayedReconnect() {
-        final int delay = Math.max(1, configManager.getOptionInt("general", "reconnectdelay", 5));
+        final int delay = Math.max(1, configManager.getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5));
         
         handleNotification("connectRetry", server, delay);
         
@@ -1182,7 +1217,7 @@ public final class Server extends WritableFrameContainer implements
         ActionManager.processEvent(CoreActionType.SERVER_NOPING, null, this,
                 Long.valueOf(parser.getPingTime(false)));
         
-        if (parser.getPingTime(false) >= configManager.getOptionInt("server", "pingtimeout", 60000)) {
+        if (parser.getPingTime(false) >= configManager.getOptionInt(DOMAIN_SERVER, "pingtimeout", 60000)) {
             handleNotification("stonedServer", server);
             reconnect();
         }
@@ -1219,7 +1254,7 @@ public final class Server extends WritableFrameContainer implements
             myState = STATE.CONNECTED;
         }
         
-        if (configManager.hasOption("general", "rejoinchannels")) {
+        if (configManager.hasOption(DOMAIN_GENERAL, "rejoinchannels")) {
             for (Channel chan : channels.values()) {
                 chan.join();
             }
@@ -1235,7 +1270,7 @@ public final class Server extends WritableFrameContainer implements
         
         for (int i = 0; i < modes.length(); i++) {
             final char mode = modes.charAt(i);
-            if (!configManager.hasOption("server", "mode" + mode)) {
+            if (!configManager.hasOption(DOMAIN_SERVER, "mode" + mode)) {
                 Logger.appError(ErrorLevel.LOW, "No mode alias for mode +" + mode,
                         new Exception("No mode alias for mode +" + mode + "\n" // NOPMD
                         + "Network: " + parser.getNetworkName() + "\n"
