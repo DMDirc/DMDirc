@@ -76,129 +76,165 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
         }
     }
     
+    /**
+     * Checks that the specified parser is the same as the one the server is
+     * currently claiming to be using. If it isn't, we raise an exception to
+     * prevent further (erroneous) processing.
+     */
+    private void checkParser(final IRCParser parser) {
+       if (parser != owner.getParser()) {
+           throw new IllegalArgumentException("Event called from a parser that's not in use."
+                   + "\nActual parser: " + owner.getParser().hashCode()
+                   + "\nPassed parser: " + parser.hashCode());
+       }
+    }
+    
     /** {@inheritDoc} */
     public void onChannelSelfJoin(final IRCParser tParser, final ChannelInfo cChannel) {
-        owner.onChannelSelfJoin(tParser, cChannel);
+        checkParser(tParser);
+        owner.onChannelSelfJoin(cChannel);
     }
     
     /** {@inheritDoc} */
     public void onPrivateMessage(final IRCParser tParser, final String sMessage,
             final String sHost) {
-        owner.onPrivateMessage(tParser, sMessage, sHost);
+        checkParser(tParser);
+        owner.addQuery(sHost);
     }
     
     /** {@inheritDoc} */
     public void onPrivateAction(final IRCParser tParser, final String sMessage,
             final String sHost) {
-        owner.onPrivateAction(tParser, sMessage, sHost);
+        checkParser(tParser);
+        owner.addQuery(sHost);
     }
     
     /** {@inheritDoc} */
     public void onErrorInfo(final IRCParser tParser, final ParserError errorInfo) {
-        owner.onErrorInfo(tParser, errorInfo);
+        checkParser(tParser);
+        owner.onErrorInfo(errorInfo);
     }
     
     /** {@inheritDoc} */
     public void onPrivateCTCP(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
-        owner.onPrivateCTCP(tParser, sType, sMessage, sHost);
+        checkParser(tParser);
+        owner.onPrivateCTCP(sType, sMessage, sHost);
     }
     
     /** {@inheritDoc} */
     public void onPrivateCTCPReply(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
-        owner.onPrivateCTCPReply(tParser, sType, sMessage, sHost);
+        checkParser(tParser);
+        owner.onPrivateCTCPReply(sType, sMessage, sHost);
     }
     
     /** {@inheritDoc} */
     public void onSocketClosed(final IRCParser tParser) {
-        owner.onSocketClosed(tParser);
+        checkParser(tParser);
+        owner.onSocketClosed();
     }
     
     /** {@inheritDoc} */
     public void onPrivateNotice(final IRCParser tParser, final String sMessage,
             final String sHost) {
-        owner.onPrivateNotice(tParser, sMessage, sHost);
+        checkParser(tParser);
+        owner.onPrivateNotice(sMessage, sHost);
     }
     
     /** {@inheritDoc} */
     public void onMOTDStart(final IRCParser tParser, final String sData) {
-        owner.onMOTDStart(tParser, sData);
+        checkParser(tParser);
+        owner.onMOTDStart(sData);
     }
     
     /** {@inheritDoc} */
     public void onMOTDLine(final IRCParser tParser, final String sData) {
-        owner.onMOTDLine(tParser, sData);
+        checkParser(tParser);
+        owner.onMOTDLine(sData);
     }
     
     /** {@inheritDoc} */
     public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD) {
-        owner.onMOTDEnd(tParser, noMOTD);
+        checkParser(tParser);
+        owner.onMOTDEnd(noMOTD);
     }
     
     /** {@inheritDoc} */
     public void onNumeric(final IRCParser tParser, final int numeric,
             final String[] token) {
-        owner.onNumeric(tParser, numeric, token);
+        checkParser(tParser);
+        owner.onNumeric(numeric, token);
     }
     
     /** {@inheritDoc} */
     public void onGotNetwork(final IRCParser tParser, final String networkName,
             final String ircdVersion, final String ircdType) {
-        owner.onGotNetwork(tParser, networkName, ircdVersion, ircdType);
+        checkParser(tParser);
+        owner.onGotNetwork(networkName, ircdVersion, ircdType);
     }
     
     /** {@inheritDoc} */
     public void onPingFailed(final IRCParser tParser) {
-        owner.onPingFailed(tParser);
+        checkParser(tParser);
+        owner.onPingFailed();
     }
     
     /** {@inheritDoc} */
     public void onPingSuccess(final IRCParser tParser) {
-        owner.onPingSuccess(tParser);
+        checkParser(tParser);
+        owner.onPingSuccess();
     }
     
     /** {@inheritDoc} */
     public void onAwayState(final IRCParser tParser, final boolean currentState,
             final String reason) {
-        owner.onAwayState(tParser, currentState, reason);
+        checkParser(tParser);
+        owner.onAwayState(currentState, reason);
     }
     
     /** {@inheritDoc} */
     public void onConnectError(final IRCParser tParser, final ParserError errorInfo) {
-        owner.onConnectError(tParser, errorInfo);
+        checkParser(tParser);
+        owner.onConnectError(errorInfo);
     }
     
     /** {@inheritDoc} */
     public void onAwayStateOther(final IRCParser tParser, final ClientInfo client,
             final boolean state) {
-        owner.onAwayStateOther(tParser, client, state);
+        checkParser(tParser);
+        owner.onAwayStateOther(client, state);
     }
     
     /** {@inheritDoc} */
     public void onNickInUse(final IRCParser tParser, final String nickname) {
-        owner.onNickInUse(tParser, nickname);
+        owner.onNickInUse(nickname);
+        checkParser(tParser);
     }
     
     /** {@inheritDoc} */
     public void onPost005(final IRCParser tParser) {
-        owner.onPost005(tParser);
+        checkParser(tParser);
+        owner.onPost005();
     }
     
     /** {@inheritDoc} */
     public void onNoticeAuth(final IRCParser tParser, final String sData) {
-        owner.onNoticeAuth(tParser, sData);
+        checkParser(tParser);
+        owner.onNoticeAuth(sData);
     }
     
     /** {@inheritDoc} */
     public void onUnknownNotice(final IRCParser tParser, final String sMessage,
             final String sTarget, final String sHost) {
-        owner.onUnknownNotice(tParser, sMessage, sTarget, sHost);
+        checkParser(tParser);
+        owner.onUnknownNotice(sMessage, sTarget, sHost);
     }
     
     /** {@inheritDoc} */
     public void onUserModeChanged(final IRCParser tParser,
             final ClientInfo cClient, final String sSetBy, final String sModes) {
-        owner.onUserModeChanged(tParser, cClient, sSetBy, sModes);
+        checkParser(tParser);
+        owner.onUserModeChanged(cClient, sSetBy, sModes);
     }
 }

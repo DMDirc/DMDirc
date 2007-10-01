@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
@@ -67,7 +68,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-       
+    
     /** The name of the general domain. */
     private static final String DOMAIN_GENERAL = "general".intern();
     /** The name of the profile domain. */
@@ -703,16 +704,18 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /**
-     * Adds a query query to this server.
+     * Adds a query to this server.
      *
      * @param host host of the remote client being queried
      */
     public void addQuery(final String host) {
-        final Query newQuery = new Query(this, host);
-        
-        tabCompleter.addEntry(ClientInfo.parseHost(host));
-        queries.put(parser.toLowerCase(ClientInfo.parseHost(host)), newQuery);
-        Main.getUI().getMainWindow().getFrameManager().addWindow(this, newQuery);
+        if (!queries.containsKey(parser.toLowerCase(ClientInfo.parseHost(host)))) {
+            final Query newQuery = new Query(this, host);
+            
+            tabCompleter.addEntry(ClientInfo.parseHost(host));
+            queries.put(parser.toLowerCase(ClientInfo.parseHost(host)), newQuery);
+            Main.getUI().getMainWindow().getFrameManager().addWindow(this, newQuery);
+        }
     }
     
     /**
@@ -845,7 +848,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onChannelSelfJoin(final IRCParser tParser, final ChannelInfo cChannel) {
+    public void onChannelSelfJoin(final ChannelInfo cChannel) {
         if (hasChannel(cChannel.getName())) {
             getChannel(cChannel.getName()).setChannelInfo(cChannel);
             getChannel(cChannel.getName()).selfJoin();
@@ -853,25 +856,9 @@ public final class Server extends WritableFrameContainer implements Serializable
             addChannel(cChannel);
         }
     }
-    
+       
     /** {@inheritDoc} */
-    public void onPrivateMessage(final IRCParser tParser, final String sMessage,
-            final String sHost) {
-        if (!queries.containsKey(parser.toLowerCase(ClientInfo.parseHost(sHost)))) {
-            addQuery(sHost);
-        }
-    }
-    
-    /** {@inheritDoc} */
-    public void onPrivateAction(final IRCParser tParser, final String sMessage,
-            final String sHost) {
-        if (!queries.containsKey(parser.toLowerCase(ClientInfo.parseHost(sHost)))) {
-            addQuery(sHost);
-        }
-    }
-    
-    /** {@inheritDoc} */
-    public void onPrivateCTCP(final IRCParser tParser, final String sType,
+    public void onPrivateCTCP(final String sType,
             final String sMessage, final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
         
@@ -900,9 +887,9 @@ public final class Server extends WritableFrameContainer implements Serializable
             parser.sendCTCPReply(source, "CLIENTINFO", "VERSION PING CLIENTINFO");
         }
     }
-    
+        
     /** {@inheritDoc} */
-    public void onPrivateCTCPReply(final IRCParser tParser, final String sType,
+    public void onPrivateCTCPReply(final String sType,
             final String sMessage, final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
         
@@ -913,7 +900,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onPrivateNotice(final IRCParser tParser, final String sMessage,
+    public void onPrivateNotice(final String sMessage,
             final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
         
@@ -924,8 +911,8 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onNickInUse(final IRCParser tParser, final String nickname) {
-        final String lastNick = tParser.getMyNickname();
+    public void onNickInUse(final String nickname) {
+        final String lastNick = parser.getMyNickname();
         
         // If our last nick is still valid, ignore the in use message
         if (!parser.equalsIgnoreCase(lastNick, nickname)) {
@@ -956,7 +943,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onGotNetwork(final IRCParser tParser, final String networkName,
+    public void onGotNetwork(final String networkName,
             final String ircdVersion, final String ircdType) {
         configManager = new ConfigManager(ircdType, networkName, this.server);
         
@@ -964,7 +951,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onMOTDStart(final IRCParser tParser, final String sData) {
+    public void onMOTDStart(final String sData) {
         final StringBuffer buffer = new StringBuffer("motdStart");
         
         ActionManager.processEvent(CoreActionType.SERVER_MOTDSTART, buffer, this, sData);
@@ -973,7 +960,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onMOTDLine(final IRCParser tParser, final String sData) {
+    public void onMOTDLine(final String sData) {
         final StringBuffer buffer = new StringBuffer("motdLine");
         
         ActionManager.processEvent(CoreActionType.SERVER_MOTDLINE, buffer, this, sData);
@@ -982,7 +969,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD) {
+    public void onMOTDEnd(final boolean noMOTD) {
         final StringBuffer buffer = new StringBuffer("motdEnd");
         
         ActionManager.processEvent(CoreActionType.SERVER_MOTDEND, buffer, this);
@@ -991,9 +978,8 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onNumeric(final IRCParser tParser, final int numeric,
-            final String[] token) {
-        final String withIrcd = "numeric_" + tParser.getIRCD(true) + "_" + numeric;
+    public void onNumeric(final int numeric, final String[] token) {
+        final String withIrcd = "numeric_" + parser.getIRCD(true) + "_" + numeric;
         final String sansIrcd = "numeric_" + numeric;
         String target = null;
         
@@ -1014,7 +1000,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onNoticeAuth(final IRCParser tParser, final String sData) {
+    public void onNoticeAuth(final String sData) {
         handleNotification("authNotice", sData);
         
         ActionManager.processEvent(CoreActionType.SERVER_AUTHNOTICE, null, this,
@@ -1022,7 +1008,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onUnknownNotice(final IRCParser tParser, final String sMessage,
+    public void onUnknownNotice(final String sMessage,
             final String sTarget, final String sHost) {
         handleNotification("unknownNotice", sHost, sTarget, sMessage);
         
@@ -1031,7 +1017,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onUserModeChanged(final IRCParser tParser, final ClientInfo cClient,
+    public void onUserModeChanged(final ClientInfo cClient,
             final String sSetBy, final String sModes) {
         if (!cClient.equals(parser.getMyself())) {
             return;
@@ -1050,7 +1036,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onAwayState(final IRCParser tParser, final boolean currentState,
+    public void onAwayState(final boolean currentState,
             final String reason) {
         if (currentState) {
             away = true;
@@ -1068,7 +1054,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onSocketClosed(final IRCParser tParser) {
+    public void onSocketClosed() {
         handleNotification("socketClosed", this.server);
         
         synchronized(myState) {
@@ -1094,7 +1080,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onConnectError(final IRCParser tParser, final ParserError errorInfo) {
+    public void onConnectError(final ParserError errorInfo) {
         synchronized(myState) {
             if (myState != STATE.CONNECTING) {
                 Logger.appError(ErrorLevel.MEDIUM,
@@ -1158,7 +1144,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onPingFailed(final IRCParser tParser) {
+    public void onPingFailed() {
         Main.getUI().getStatusBar().setMessage("No ping reply from "
                 + this.server + " for over "
                 + Math.floor(parser.getPingTime(false) / 1000.0) + " seconds.", null, 10);
@@ -1173,29 +1159,26 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onPingSuccess(final IRCParser tParser) {
+    public void onPingSuccess() {
         ActionManager.processEvent(CoreActionType.SERVER_GOTPING, null, this,
                 Long.valueOf(parser.getServerLag()));
     }
     
     /** {@inheritDoc} */
-    public void onAwayStateOther(final IRCParser tParser,
-            final ClientInfo client, final boolean state) {
+    public void onAwayStateOther(final ClientInfo client, final boolean state) {
         for (Channel chan : channels.values()) {
-            chan.onAwayStateOther(tParser, client, state);
+            chan.onAwayStateOther(parser, client, state);
         }
     }
     
     /** {@inheritDoc} */
-    public void onPost005(final IRCParser tParser) {
+    public void onPost005() {
         synchronized(myState) {
             if (myState != STATE.CONNECTING) {
                 Logger.appError(ErrorLevel.HIGH,
                         "Received post005 when not connecting",
-                        new UnsupportedOperationException("Current state: " + myState
-                        + "\nMy parser: " + parser.hashCode() + " Callback parser: "
-                        + tParser.hashCode()));
-                tParser.disconnect("Error");
+                        new UnsupportedOperationException("Current state: " + myState));
+                parser.disconnect("Error");
                 return;
             }
             
@@ -1229,7 +1212,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onErrorInfo(final IRCParser tParser, final ParserError errorInfo) {
+    public void onErrorInfo(final ParserError errorInfo) {
         final ErrorLevel errorLevel = ErrorLevel.UNKNOWN;
         
         if (errorInfo.isException()) {
