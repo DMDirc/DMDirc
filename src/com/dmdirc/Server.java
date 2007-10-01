@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
-import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
@@ -38,7 +37,6 @@ import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.MyInfo;
 import com.dmdirc.parser.ParserError;
 import com.dmdirc.parser.ServerInfo;
-import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
@@ -79,22 +77,6 @@ public final class Server extends WritableFrameContainer implements Serializable
     /** The name of the server notification target. */
     private static final String NOTIFICATION_SERVER = "server".intern();
     
-    /** An enumeration of possible states for servers. */
-    public static enum STATE {
-        /** Indicates the client is in the process of connecting. */
-        CONNECTING,
-        /** Indicates the client has connected to the server. */
-        CONNECTED,
-        /** Indicates that we've been temporarily disconnected. */
-        TRANSIENTLY_DISCONNECTED,
-        /** Indicates that the user has told us to disconnect. */
-        DISCONNECTED,
-        /** Indicates we're waiting for the auto-reconnect timer to fire. */
-        RECONNECT_WAIT,
-        /** Indicates that the server frame and its children are closing. */
-        CLOSING,
-    };
-    
     /** Open channels that currently exist on the server. */
     private final Map<String, Channel> channels  = new Hashtable<String, Channel>();
     /** Open query windows on the server. */
@@ -107,19 +89,14 @@ public final class Server extends WritableFrameContainer implements Serializable
     /** The ServerWindow corresponding to this server. */
     private ServerWindow window;
     
-    /** The name of the server we're connecting to. */
-    private String server;
-    /** The port we're connecting to. */
-    private int port;
-    /** The password we're using to connect. */
-    private String password;
-    /** Whether we're using SSL or not. */
-    private boolean ssl;
+    /** The details of the server we're connecting to. */
+    private ServerInfo serverInfo;
+    
     /** The profile we're using. */
     private transient Identity profile;
     
     /** The current state of this server. */
-    private STATE myState = STATE.DISCONNECTED;
+    private ServerState myState = ServerState.DISCONNECTED;
     /** The timer we're using to delay reconnects. */
     private Timer reconnectTimer;
     
@@ -169,7 +146,8 @@ public final class Server extends WritableFrameContainer implements Serializable
             final boolean ssl, final Identity profile, final List<String> autochannels) {
         super();
         
-        this.server = server;
+        serverInfo = new ServerInfo(server, port, password);
+        serverInfo.setSSL(ssl);
         
         ServerManager.getServerManager().registerServer(this);
         
@@ -214,21 +192,28 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void connect(final String server, final int port, final String password,
             final boolean ssl, final Identity profile) {
         synchronized(myState) {
-            if (myState == STATE.RECONNECT_WAIT) {
+            switch (myState) {
+            case RECONNECT_WAIT:
                 reconnectTimer.cancel();
-            } else if (myState == STATE.CLOSING) {
+                break;
+            case CLOSING:
                 Logger.appError(ErrorLevel.MEDIUM,
                         "Connect attempt while not expecting one",
                         new UnsupportedOperationException("Current state: " + myState));
                 return;
-            } else if (myState == STATE.CONNECTED || myState == STATE.CONNECTING) {
+            case CONNECTED:
+            case CONNECTING:
                 disconnect(configManager.getOption(DOMAIN_GENERAL, "quitmessage"));
+                break;
+            default:
+                // Do nothing
+                break;
             }
             
-            ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
-            
-            myState = Server.STATE.CONNECTING;
+            myState = ServerState.CONNECTING;
         }
+        
+        ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
         
         if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
             Logger.appError(ErrorLevel.MEDIUM,
@@ -237,10 +222,9 @@ public final class Server extends WritableFrameContainer implements Serializable
             disconnect(configManager.getOption(DOMAIN_GENERAL, "quitmessage"));
         }
         
-        this.server = server;
-        this.port = port;
-        this.password = password;
-        this.ssl = ssl;
+        serverInfo = new ServerInfo(server, port, password);
+        serverInfo.setSSL(ssl);
+        
         this.profile = profile;
         
         configManager = new ConfigManager("", "", server);
@@ -281,7 +265,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * Updates this server's icon.
      */
     private void updateIcon() {
-        icon = IconManager.getIconManager().getIcon(ssl ? "secure-server" : "server");
+        icon = IconManager.getIconManager().getIcon(serverInfo.getSSL() ? "secure-server" : "server");
         if (window != null) {
             window.setFrameIcon(icon);
             Main.getUI().getMainWindow().getFrameManager().iconUpdated(this);
@@ -330,13 +314,14 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void reconnect(final String reason) {
         synchronized(myState) {
-            if (myState == STATE.CLOSING) {
+            if (myState == ServerState.CLOSING) {
                 return;
             }
         }
         
         disconnect(reason);
-        connect(server, port, password, ssl, profile);
+        connect(serverInfo.getHost(), serverInfo.getPort(),
+                serverInfo.getPassword(), serverInfo.getSSL(), profile);
     }
     
     /**
@@ -349,7 +334,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     /** {@inheritDoc} */
     public void sendLine(final String line) {
         synchronized(myState) {
-            if (parser != null && myState == STATE.CONNECTED) {
+            if (parser != null && myState == ServerState.CONNECTED) {
                 parser.sendLine(window.getTranscoder().encode(line));
             }
         }
@@ -489,7 +474,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @return The name of this server
      */
     public String getName() {
-        return this.server;
+        return serverInfo.getHost();
     }
     
     /**
@@ -553,7 +538,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      *
      * @return This server's state
      */
-    public STATE getState() {
+    public ServerState getState() {
         return myState;
     }
     
@@ -571,7 +556,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         // Disconnect from the server
         disconnect(reason);
         
-        myState = STATE.CLOSING;
+        myState = ServerState.CLOSING;
         
         // Close all channel windows
         closeChannels();
@@ -618,7 +603,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                 break;
             }
             
-            myState = STATE.DISCONNECTED;
+            myState = ServerState.DISCONNECTED;
         }
         
         if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
@@ -693,14 +678,19 @@ public final class Server extends WritableFrameContainer implements Serializable
      *
      * @param chan channel to add
      */
-    private void addChannel(final ChannelInfo chan) {
-        final Channel newChan = new Channel(this, chan);
-        
-        tabCompleter.addEntry(chan.getName());
-        channels.put(parser.toLowerCase(chan.getName()), newChan);
-        Main.getUI().getMainWindow().getFrameManager().addWindow(this, newChan);
-        
-        newChan.show();
+    public void addChannel(final ChannelInfo chan) {
+        if (hasChannel(chan.getName())) {
+            getChannel(chan.getName()).setChannelInfo(chan);
+            getChannel(chan.getName()).selfJoin();
+        } else {
+            final Channel newChan = new Channel(this, chan);
+            
+            tabCompleter.addEntry(chan.getName());
+            channels.put(parser.toLowerCase(chan.getName()), newChan);
+            Main.getUI().getMainWindow().getFrameManager().addWindow(this, newChan);
+            
+            newChan.show();
+        }
     }
     
     /**
@@ -848,16 +838,6 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onChannelSelfJoin(final ChannelInfo cChannel) {
-        if (hasChannel(cChannel.getName())) {
-            getChannel(cChannel.getName()).setChannelInfo(cChannel);
-            getChannel(cChannel.getName()).selfJoin();
-        } else {
-            addChannel(cChannel);
-        }
-    }
-       
-    /** {@inheritDoc} */
     public void onPrivateCTCP(final String sType,
             final String sMessage, final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
@@ -887,7 +867,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             parser.sendCTCPReply(source, "CLIENTINFO", "VERSION PING CLIENTINFO");
         }
     }
-        
+    
     /** {@inheritDoc} */
     public void onPrivateCTCPReply(final String sType,
             final String sMessage, final String sHost) {
@@ -945,7 +925,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     /** {@inheritDoc} */
     public void onGotNetwork(final String networkName,
             final String ircdVersion, final String ircdType) {
-        configManager = new ConfigManager(ircdType, networkName, this.server);
+        configManager = new ConfigManager(ircdType, networkName, getName());
         
         updateIgnoreList();
     }
@@ -1036,8 +1016,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onAwayState(final boolean currentState,
-            final String reason) {
+    public void onAwayState(final boolean currentState, final String reason) {
         if (currentState) {
             away = true;
             awayMessage = reason;
@@ -1055,15 +1034,15 @@ public final class Server extends WritableFrameContainer implements Serializable
     
     /** {@inheritDoc} */
     public void onSocketClosed() {
-        handleNotification("socketClosed", this.server);
+        handleNotification("socketClosed", getName());
         
         synchronized(myState) {
-            if (myState == STATE.CLOSING || myState == STATE.DISCONNECTED) {
+            if (myState == ServerState.CLOSING || myState == ServerState.DISCONNECTED) {
                 // This has been triggered via .disconect()
                 return;
             }
             
-            myState = STATE.TRANSIENTLY_DISCONNECTED;
+            myState = ServerState.TRANSIENTLY_DISCONNECTED;
         }
         
         if (configManager.getOptionBool(DOMAIN_GENERAL, "closechannelsondisconnect", false)) {
@@ -1082,14 +1061,14 @@ public final class Server extends WritableFrameContainer implements Serializable
     /** {@inheritDoc} */
     public void onConnectError(final ParserError errorInfo) {
         synchronized(myState) {
-            if (myState != STATE.CONNECTING) {
+            if (myState != ServerState.CONNECTING) {
                 Logger.appError(ErrorLevel.MEDIUM,
                         "Connection error while not expecting a connection attempt",
                         new UnsupportedOperationException("Current state: " + myState));
                 return;
             }
             
-            myState = STATE.TRANSIENTLY_DISCONNECTED;
+            myState = ServerState.TRANSIENTLY_DISCONNECTED;
         }
         
         String description;
@@ -1113,7 +1092,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         
         ActionManager.processEvent(CoreActionType.SERVER_CONNECTERROR, null, this, description);
         
-        handleNotification("connectError", server, description);
+        handleNotification("connectError", getName(), description);
         
         if (configManager.getOptionBool(DOMAIN_GENERAL, "reconnectonconnectfailure", false)) {
             doDelayedReconnect();
@@ -1126,42 +1105,36 @@ public final class Server extends WritableFrameContainer implements Serializable
     private void doDelayedReconnect() {
         final int delay = Math.max(1, configManager.getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5));
         
-        handleNotification("connectRetry", server, delay);
+        handleNotification("connectRetry", getName(), delay);
         
         reconnectTimer = new Timer("Server Reconnect Timer");
         reconnectTimer.schedule(new TimerTask() {
             public void run() {
                 synchronized(myState) {
-                    if (myState == STATE.RECONNECT_WAIT) {
-                        myState = STATE.TRANSIENTLY_DISCONNECTED;
+                    if (myState == ServerState.RECONNECT_WAIT) {
+                        myState = ServerState.TRANSIENTLY_DISCONNECTED;
                         reconnect();
                     }
                 }
             }
         }, delay * 1000);
         
-        myState = STATE.RECONNECT_WAIT;
+        myState = ServerState.RECONNECT_WAIT;
     }
     
     /** {@inheritDoc} */
     public void onPingFailed() {
         Main.getUI().getStatusBar().setMessage("No ping reply from "
-                + this.server + " for over "
+                + getName() + " for over "
                 + Math.floor(parser.getPingTime(false) / 1000.0) + " seconds.", null, 10);
         
         ActionManager.processEvent(CoreActionType.SERVER_NOPING, null, this,
                 Long.valueOf(parser.getPingTime(false)));
         
         if (parser.getPingTime(false) >= configManager.getOptionInt(DOMAIN_SERVER, "pingtimeout", 60000)) {
-            handleNotification("stonedServer", server);
+            handleNotification("stonedServer", getName());
             reconnect();
         }
-    }
-    
-    /** {@inheritDoc} */
-    public void onPingSuccess() {
-        ActionManager.processEvent(CoreActionType.SERVER_GOTPING, null, this,
-                Long.valueOf(parser.getServerLag()));
     }
     
     /** {@inheritDoc} */
@@ -1174,17 +1147,10 @@ public final class Server extends WritableFrameContainer implements Serializable
     /** {@inheritDoc} */
     public void onPost005() {
         synchronized(myState) {
-            if (myState != STATE.CONNECTING) {
-                Logger.appError(ErrorLevel.HIGH,
-                        "Received post005 when not connecting",
-                        new UnsupportedOperationException("Current state: " + myState));
-                parser.disconnect("Error");
-                return;
-            }
-            
-            ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
-            myState = STATE.CONNECTED;
+            myState = ServerState.CONNECTED;
         }
+        
+        ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
         
         if (configManager.hasOption(DOMAIN_GENERAL, "rejoinchannels")) {
             for (Channel chan : channels.values()) {
@@ -1220,7 +1186,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         } else {
             Logger.appError(errorLevel, errorInfo.getData(),
                     new Exception("Parser exception.\n\n\tLast line:\t" //NOPMD
-                    + errorInfo.getLastLine() + "\n\tServer:\t" + server + "\n"));
+                    + errorInfo.getLastLine() + "\n\tServer:\t" + getName() + "\n"));
         }
     }
     
@@ -1230,7 +1196,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @return A string representation of this server (i.e., its name)
      */
     public String toString() {
-        return this.server;
+        return getName();
     }
     
     /**

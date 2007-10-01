@@ -22,6 +22,8 @@
 
 package com.dmdirc;
 
+import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelInfo;
@@ -82,17 +84,17 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
      * prevent further (erroneous) processing.
      */
     private void checkParser(final IRCParser parser) {
-       if (parser != owner.getParser()) {
-           throw new IllegalArgumentException("Event called from a parser that's not in use."
-                   + "\nActual parser: " + owner.getParser().hashCode()
-                   + "\nPassed parser: " + parser.hashCode());
-       }
+        if (parser != owner.getParser()) {
+            throw new IllegalArgumentException("Event called from a parser that's not in use."
+                    + "\nActual parser: " + owner.getParser().hashCode()
+                    + "\nPassed parser: " + parser.hashCode());
+        }
     }
     
     /** {@inheritDoc} */
     public void onChannelSelfJoin(final IRCParser tParser, final ChannelInfo cChannel) {
         checkParser(tParser);
-        owner.onChannelSelfJoin(cChannel);
+        owner.addChannel(cChannel);
     }
     
     /** {@inheritDoc} */
@@ -183,7 +185,9 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     /** {@inheritDoc} */
     public void onPingSuccess(final IRCParser tParser) {
         checkParser(tParser);
-        owner.onPingSuccess();
+        
+        ActionManager.processEvent(CoreActionType.SERVER_GOTPING, null, owner,
+                Long.valueOf(tParser.getServerLag()));
     }
     
     /** {@inheritDoc} */

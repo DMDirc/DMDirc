@@ -24,6 +24,7 @@ package com.dmdirc.ui.swing;
 
 
 import com.dmdirc.Server;
+import com.dmdirc.ServerState;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.parsers.ServerCommandParser;
 import com.dmdirc.config.IdentityManager;
@@ -157,7 +158,7 @@ public final class ServerFrame extends InputFrame implements ServerWindow,
 
     /** {@inheritDoc}. */
     public void popupMenuWillBecomeVisible(final PopupMenuEvent e) {
-        if (getContainer().getServer().getState().equals(Server.STATE.CONNECTED)) {
+        if (getContainer().getServer().getState().equals(ServerState.CONNECTED)) {
             settingsMI.setEnabled(true);
         } else {
             settingsMI.setEnabled(false);
