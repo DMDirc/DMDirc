@@ -196,4 +196,13 @@ public final class SwingUpdaterDialog extends StandardDialog implements
         dispose();
         //}
     }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
+    }
 }

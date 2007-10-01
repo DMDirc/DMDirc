@@ -64,7 +64,7 @@ public final class ActionsManagerDialog extends StandardDialog
     private static final long serialVersionUID = 3;
     
     /** Previously created instance of ActionsManagerDialog. */
-    private static ActionsManagerDialog me = new ActionsManagerDialog();
+    private static ActionsManagerDialog me;
     
     /** Height of the buttons, in pixels. */
     private static final int BUTTON_HEIGHT = 25;
@@ -96,17 +96,30 @@ public final class ActionsManagerDialog extends StandardDialog
         setTitle("Action Manager");
         setResizable(false);
         setSize(new Dimension(770, 300));
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
-        setVisible(true);
     }
     
     /** Creates the dialog if one doesn't exist, and displays it. */
-    public static  void showActionsManagerDialog() {
-        synchronized (me) {
+    public static synchronized void showActionsManagerDialog() {
+        me = getActionsManagerDialog();
+        
+        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setVisible(true);
+        me.requestFocus();
+    }
+    
+    /**
+     * Returns the current instance of the ActionsManagerDialog.
+     *
+     * @return The current ActionsManagerDialog instance
+     */
+    public static synchronized ActionsManagerDialog getActionsManagerDialog() {
+        if (me == null) {
+            me = new ActionsManagerDialog();
+        } else {
             me.loadGroups();
-            me.setVisible(true);
-            me.requestFocus();
         }
+        
+        return me;
     }
     
     /** Initialiases the components for this dialog. */
@@ -248,7 +261,7 @@ public final class ActionsManagerDialog extends StandardDialog
         Arrays.sort(keys);
         
         for (Object group : keys) {
-            groups.addTab((String) group, new ActionsGroupPanel(this, 
+            groups.addTab((String) group, new ActionsGroupPanel(this,
                     actionGroups.get(group), (String) group));
         }
         
@@ -368,6 +381,15 @@ public final class ActionsManagerDialog extends StandardDialog
     /** {@inheritDoc} */
     public void stateChanged(final ChangeEvent e) {
         setEditState(false);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
     }
     
 }

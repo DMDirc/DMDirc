@@ -58,18 +58,28 @@ public final class AboutDialog extends StandardDialog implements
     private AboutDialog() {
         super((MainFrame) Main.getUI().getMainWindow(), false);
         initComponents();
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
-        setVisible(true);
     }
     
     /** Creates the dialog if one doesn't exist, and displays it. */
     public static synchronized void showAboutDialog() {
+        me = getAboutDialog();
+        
+        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setVisible(true);
+        me.requestFocus();
+    }
+    
+    /**
+     * Returns the current instance of the AboutDialog.
+     *
+     * @return The current AboutDialog instance
+     */
+    public static synchronized AboutDialog getAboutDialog() {
         if (me == null) {
             me = new AboutDialog();
-        } else {
-            me.setVisible(true);
-            me.requestFocus();
         }
+        
+        return me;
     }
     
     /** Initialises the main UI components. */
@@ -123,6 +133,7 @@ public final class AboutDialog extends StandardDialog implements
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
         dispose();
+        me = null;
     }
     
 }

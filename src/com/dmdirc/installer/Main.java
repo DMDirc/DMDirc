@@ -108,7 +108,7 @@ public final class Main implements Wizard {
 			releaseName = " "+cli.getParam("-release").getStringValue();
 		}
 		
-		setWizardDialog(new WizardDialog("DMDirc"+releaseName+" Installer", steps, this));
+		setWizardDialog(WizardDialog.getWizardDialog("DMDirc"+releaseName+" Installer", steps, this, false, null));
 		wizardDialog.setPreferredSize(new Dimension(400, 350));
 	}
 	

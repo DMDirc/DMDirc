@@ -29,6 +29,7 @@ import com.dmdirc.ui.swing.components.StandardDialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
@@ -64,6 +65,9 @@ public final class WizardDialog extends StandardDialog implements ActionListener
      */
     private static final long serialVersionUID = 1;
     
+    /** Previously created instance of WizardDialog. */
+    private static WizardDialog me;
+    
     /** Step panel list. */
     private final List<Step> steps;
     /** Wizard title. */
@@ -71,8 +75,8 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     /** Wizard. */
     private final transient Wizard wizard;
     
-    /** Does this wizard use mainframe. */
-    private final boolean hasMainframe;
+    /** Parent component. */
+    private final Component parent;
     
     /** Button panel. */
     private JPanel buttonsPanel;
@@ -94,36 +98,40 @@ public final class WizardDialog extends StandardDialog implements ActionListener
      * @param steps Steps for the wizard
      * @param wizard Wizard to inform of changes
      * @param modal Whether the wizard should be modal
+     * @param parent Parent component
      */
-    public WizardDialog(final String title, final List<Step> steps,
-            final Wizard wizard, final boolean modal) {
+    private WizardDialog(final String title, final List<Step> steps,
+            final Wizard wizard, final boolean modal, final Component parent) {
         super(null, modal);
-        hasMainframe = true;
         
         this.title = title;
         this.steps = new ArrayList<Step>(steps);
         this.wizard = wizard;
+        this.parent = parent;
+        
         initComponents();
         layoutComponents();
     }
     
     /**
-     * Creates a new instance of WizardFrame that doesn't require a mainframe.
+     * Returns the current instance of the WizardDialog.
      *
      * @param title Title for the wizard
      * @param steps Steps for the wizard
      * @param wizard Wizard to inform of changes
+     * @param modal Whether the wizard should be modal
+     * @param parent Parent component
+     *
+     * @return The current WizardDialog instance
      */
-    public WizardDialog(final String title, final List<Step> steps,
-            final Wizard wizard) {
-        super(null, false);
-        hasMainframe = false;
+    public static synchronized WizardDialog getWizardDialog(final String title, 
+            final List<Step> steps, final Wizard wizard, final boolean modal, 
+            final Component parent) {
+        if (me == null) {
+            me = new WizardDialog(title, steps, wizard, modal, parent);
+        }
         
-        this.title = title;
-        this.steps = new ArrayList<Step>(steps);
-        this.wizard = wizard;
-        initComponents();
-        layoutComponents();
+        return me;
     }
     
     /** Initialises the components. */
@@ -213,8 +221,8 @@ public final class WizardDialog extends StandardDialog implements ActionListener
             setTitle(title);
             setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             pack();
-            if (hasMainframe) {
-                setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+            if (parent == null) {
+                setLocationRelativeTo(parent);
             } else {
                 // Position wizard center-screen on the correct monitor of a
                 // multi-monitor system. (See MainFrame constructor for more info)
@@ -329,6 +337,15 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     /** Updates the progress label. */
     private void updateProgressLabel() {
         progressLabel.setText("Step " + (currentStep + 1) + " of " + steps.size());
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
     }
     
 }

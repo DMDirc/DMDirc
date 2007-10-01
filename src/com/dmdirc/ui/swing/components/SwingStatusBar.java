@@ -219,7 +219,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     public void mouseClicked(final MouseEvent mouseEvent) {
         if (mouseEvent.getButton() == MouseEvent.BUTTON1
                 && mouseEvent.getSource() == iconLabel) {
-            ErrorListDialog.getErrorListDialog().setVisible(true);
+            ErrorListDialog.showErrorListDialog();
             clearError();
         }
     }

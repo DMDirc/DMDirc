@@ -184,7 +184,6 @@ public final class NewServerDialog extends StandardDialog {
         getCancelButton().addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
                 NewServerDialog.this.dispose();
-                me = null;
             }
         });
         getOkButton().addActionListener(new ActionListener() {
@@ -203,7 +202,6 @@ public final class NewServerDialog extends StandardDialog {
                 }
                 
                 NewServerDialog.this.dispose();
-                me = null;
                 
                 final Identity profile =
                         (Identity) identityField.getSelectedItem();
@@ -461,6 +459,15 @@ public final class NewServerDialog extends StandardDialog {
             return portInt > MIN_PORT && portInt <= MAX_PORT;
         } catch (NumberFormatException e) {
             return false;
+        }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
         }
     }
     

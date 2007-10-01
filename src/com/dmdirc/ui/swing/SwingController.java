@@ -49,7 +49,7 @@ import com.dmdirc.ui.swing.components.SwingStatusBar;
 import com.dmdirc.ui.swing.dialogs.SwingUpdaterDialog;
 import com.dmdirc.ui.swing.dialogs.channelsetting.ChannelSettingsDialog;
 import com.dmdirc.ui.swing.dialogs.error.ErrorListDialog;
-import com.dmdirc.ui.swing.dialogs.firstrunwizard.SwingFirstRunWizard;
+import com.dmdirc.ui.swing.dialogs.wizard.firstrun.SwingFirstRunWizard;
 import com.dmdirc.ui.swing.dialogs.serversetting.ServerSettingsDialog;
 import com.dmdirc.updater.Update;
 

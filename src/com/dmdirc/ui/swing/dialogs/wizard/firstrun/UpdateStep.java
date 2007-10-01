@@ -20,9 +20,8 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.firstrunwizard;
+package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
-import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.components.TextLabel;
@@ -32,12 +31,11 @@ import java.awt.GridBagLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.JCheckBox;
 
 /**
  * Queries the user for which core actions they wish to extract.
  */
-public final class StepTwo extends Step {
+public final class UpdateStep extends StepOne {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -46,27 +44,26 @@ public final class StepTwo extends Step {
      */
     private static final long serialVersionUID = 1;
     
-    /** Profile manager checkbox. */
-    private final JCheckBox profile;
-    
     /**
      * Creates a new instance of StepOne.
      */
-    public StepTwo() {
+    public UpdateStep() {
         super();
-        
+    }
+    
+    protected void initComponents() {
         final GridBagConstraints constraints = new GridBagConstraints();
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createEmptyBorder(LARGE_BORDER, LARGE_BORDER,
                 SMALL_BORDER, LARGE_BORDER));
         
-        profile = new JCheckBox("Launch profile manager?");
+        TextLabel infoLabel;
         
-        final TextLabel infoLabel = new TextLabel("DMDirc uses a set of 'profiles' to determine"
-                + " your nickname, realname, etc when connecting to a server. "
-                + "If you would like the wizard to open the profile manager "
-                + "for you, tick the box below.", this);
-        infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 
+        infoLabel = new TextLabel("This version of DMDirc contains an update to "
+                + " the core plugins and actions.\n\nWould you like to extract the"
+                + " core plugins to update them? Note that older plugins may not"
+                + " function correctly with this version of DMDirc.", this);
+        infoLabel.setBorder(BorderFactory.createEmptyBorder(0, 0,
                 SMALL_BORDER, 0));
         
         constraints.weightx = 1.0;
@@ -76,20 +73,23 @@ public final class StepTwo extends Step {
         add(infoLabel, constraints);
         
         constraints.gridy = 1;
-        add(profile, constraints);
+        add(plugins, constraints);
+        
+        infoLabel = new TextLabel("Would you like to extract the default actions"
+                + " to update them? Any changes you have made to the default"
+                + " actions will be lost.", this);
+        infoLabel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
+                SMALL_BORDER, 0));
+        
+        constraints.gridy = 2;
+        add(infoLabel, constraints);
+        
+        constraints.gridy = 3;
+        add(actions, constraints);
         
         constraints.weighty = 1.0;
-        constraints.gridy = 2;
+        constraints.gridy = 4;
         add(Box.createVerticalGlue(), constraints);
-    }
-    
-    /**
-     * Returns the state of the profile manager checkbox.
-     *
-     * @return Profile manager checkbox state
-     */
-    public boolean getProfileManagerState() {
-        return profile.isSelected();
     }
     
 }

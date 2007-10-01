@@ -20,50 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.firstrunwizard;
-
-import com.dmdirc.ui.swing.dialogs.wizard.Step;
-
-import javax.swing.JCheckBox;
-
 /**
- * Queries the user for which core actions they wish to extract.
+ * First run wizard.
  */
-public abstract class StepOne extends Step {
-    
-    /** Plugins checkbox. */
-    protected final JCheckBox plugins;
-    /** Actions checkbox. */
-    protected final JCheckBox actions;
-    
-    /** Creates a new instance of StepOne. */
-    public StepOne() {
-        super();
-        
-        plugins = new JCheckBox("Install core plugins?");
-        actions = new JCheckBox("Install core actions?");
-        
-        initComponents();
-    }
-    
-    protected abstract void initComponents();
-    
-    /**
-     * Returns the state of the plugins checkbox.
-     *
-     * @return Plugins checkbox state
-     */
-    public final boolean getPluginsState() {
-        return plugins.isSelected();
-    }
-
-    /**
-     * Returns the state of the actions checkbox.
-     *
-     * @return Actions checkbox state
-     */
-    public final boolean getActionsState() {
-        return actions.isSelected();
-    }
-    
-}
+package com.dmdirc.ui.swing.dialogs.wizard.firstrun;

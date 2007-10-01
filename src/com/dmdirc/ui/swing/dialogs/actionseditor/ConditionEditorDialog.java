@@ -48,6 +48,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
@@ -139,12 +140,7 @@ public final class ConditionEditorDialog extends StandardDialog implements
         initComponents();
         addListeners();
         layoutComponents();
-        
-        //setSize(new Dimension(770, 300));
-        
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
-        
-        setVisible(true);
+        populateArguments();
     }
     
     /**
@@ -157,8 +153,9 @@ public final class ConditionEditorDialog extends StandardDialog implements
     public static synchronized void showConditionEditorDialog(
             final ConditionsTabPanel parent, final ActionType trigger,
             final ActionCondition condition) {
-        me = new ConditionEditorDialog(parent, trigger, condition);
-        me.populateArguments();
+        me = getConditionEditorDialog(parent, trigger, condition);
+        
+        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
         me.requestFocus();
         me.arguments.requestFocus();
@@ -167,10 +164,41 @@ public final class ConditionEditorDialog extends StandardDialog implements
     /**
      * Creates the dialog if one doesn't exist, and displays it.
      *
+     * @param parent parent conditions panel.
+     * @param trigger Conditions trigger
+     * @param condition condition to be edited (or null)
+     *
      * @return Currently instatiated ConditionEditorDialog (or null if none)
      */
-    public static synchronized ConditionEditorDialog getConditionEditorDialog() {
+    public static synchronized ConditionEditorDialog getConditionEditorDialog(
+            final ConditionsTabPanel parent, final ActionType trigger,
+            final ActionCondition condition) {
+        if (me == null) {
+            me = new ConditionEditorDialog(parent, trigger, condition);
+        } else if (JOptionPane.showConfirmDialog(parent, 
+                "This will discard any changed you have made to existing " 
+                + "condition, are you sure you want to edit a new action?", 
+                "Discard changes", JOptionPane.YES_NO_OPTION, 
+                JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+            me.dispose();
+            me = new ConditionEditorDialog(parent, trigger, condition);
+        }
+        
         return me;
+    }
+    
+    /**
+     * Checks if there is an existing condition editor dialog open.
+     */
+    public static boolean isConditionEditorDialogOpen() {
+        return me == null;
+    }
+    
+    /** Closes the existing condition editor dialog. */
+    public static void disposeDialog() {
+        if (me != null) {
+            me.dispose();
+        }
     }
     
     /** Initialises the components. */
@@ -448,6 +476,15 @@ public final class ConditionEditorDialog extends StandardDialog implements
     /** {@inheritDoc} */
     public void focusLost(final FocusEvent e) {
         //Ignore
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
     }
     
 }

@@ -106,21 +106,32 @@ public final class ServerSettingsDialog extends StandardDialog
         
         performPanel = new PerformPanel(server);
         
-        settingsPanel = new SettingsPanel(IdentityManager.getNetworkConfig(
-                server.getNetwork()), "These settings are specific to this "
-                + "network, any settings specified here will overwrite global "
-                + "settings");
+        if (!server.getNetwork().isEmpty()) {
+            settingsPanel = new SettingsPanel(IdentityManager.getNetworkConfig(
+                    server.getNetwork()), "These settings are specific to this "
+                    + "network, any settings specified here will overwrite global "
+                    + "settings");
+        } else if (!server.getName().isEmpty()) {
+            settingsPanel = new SettingsPanel(IdentityManager.getNetworkConfig(
+                    server.getName()), "These settings are specific to this "
+                    + "network, any settings specified here will overwrite global "
+                    + "settings");
+        }
         
-        addSettings();
+        if (settingsPanel != null) {
+            addSettings();
+        }
         
         tabbedPane.add("Ignore list", ignoreList);
         tabbedPane.add("Perform", performPanel);
-        tabbedPane.add("settings", settingsPanel);
+        if (settingsPanel != null) {
+            tabbedPane.add("settings", settingsPanel);
+        }
         
-        this.setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
         
-        this.add(tabbedPane, BorderLayout.CENTER);
-        this.add(buttonsPanel, BorderLayout.PAGE_END);
+        add(tabbedPane, BorderLayout.CENTER);
+        add(buttonsPanel, BorderLayout.PAGE_END);
         
         tabbedPane.setSelectedIndex(server.getConfigManager().
                 getOptionInt("dialogstate", "serversettingsdialog", 0));
@@ -184,7 +195,7 @@ public final class ServerSettingsDialog extends StandardDialog
         settingsPanel.save();
         performPanel.savePerforms();
         ignoreList.saveList();
-
+        
         final Identity identity = IdentityManager.getNetworkConfig(server.getNetwork());
         identity.setOption("dialogstate", "serversettingsdialog",
                 String.valueOf(tabbedPane.getSelectedIndex()));
@@ -194,10 +205,9 @@ public final class ServerSettingsDialog extends StandardDialog
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == getOkButton()) {
             saveSettings();
-            this.dispose();
+            dispose();
         } else if (e.getSource() == getCancelButton()) {
-            this.dispose();
+            dispose();
         }
     }
-    
 }

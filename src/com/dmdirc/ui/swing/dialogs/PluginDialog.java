@@ -248,7 +248,6 @@ public final class PluginDialog extends StandardDialog implements
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == myOkButton) {
             dispose();
-            me = null;
         } else if (e.getSource() == configureButton && selectedPlugin >= 0) {
             final Plugin plugin = (Plugin) pluginList.getSelectedValue();
             if (plugin.isConfigurable()) {
@@ -294,6 +293,15 @@ public final class PluginDialog extends StandardDialog implements
     public void hyperlinkUpdate(final HyperlinkEvent e) {
         if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
             BrowserLauncher.openURL(e.getURL());
+        }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
         }
     }
     

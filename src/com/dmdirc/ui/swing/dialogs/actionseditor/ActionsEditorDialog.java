@@ -94,10 +94,7 @@ public final class ActionsEditorDialog extends StandardDialog implements
         
         setSize(new Dimension(770, 300));
         
-        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
-        
         setResizable(false);
-        setVisible(true);
     }
     
     /**
@@ -121,12 +118,37 @@ public final class ActionsEditorDialog extends StandardDialog implements
     public static synchronized void showActionsEditorDialog(
             final ActionsManagerDialog parent, final Action action,
             final String group) {
-        if (me != null) {
-            me.dispose();
-        }
-        me = new ActionsEditorDialog(parent, action, group);
+        me = getActionsEditorDialog(parent, action, group);
+        
+        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         me.setVisible(true);
         me.requestFocus();
+    }
+    
+    /**
+     * Returns the current instance of the ActionsEditorDialog.
+     *
+     * @param parent parent dialog
+     * @param action actions to be edited
+     * @param group group name
+     *
+     * @return The current ActionsEditorDialog instance
+     */
+    public static synchronized ActionsEditorDialog getActionsEditorDialog(
+            final ActionsManagerDialog parent, final Action action,
+            final String group) {
+        if (me == null) {
+            me = new ActionsEditorDialog(parent, action, group);
+        } else if (JOptionPane.showConfirmDialog(parent, 
+                "This will discard any changed you have made to existing " 
+                + "action, are you sure you want to edit a new action?", 
+                "Discard changes", JOptionPane.YES_NO_OPTION, 
+                JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+            me.dispose();
+            me = new ActionsEditorDialog(parent, action, group);
+        }
+        
+        return me;
     }
     
     /** Initialises the components. */
@@ -181,13 +203,13 @@ public final class ActionsEditorDialog extends StandardDialog implements
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent event) {
         if (event.getSource() == getOkButton()) {
-            if (ConditionEditorDialog.getConditionEditorDialog() != null) {
-                ConditionEditorDialog.getConditionEditorDialog().dispose();
+            if (ConditionEditorDialog.isConditionEditorDialogOpen()) {
+                ConditionEditorDialog.disposeDialog();
             }
             saveSettings();
         } else if (event.getSource() == getCancelButton()) {
-            if (ConditionEditorDialog.getConditionEditorDialog() != null) {
-                ConditionEditorDialog.getConditionEditorDialog().dispose();
+            if (ConditionEditorDialog.isConditionEditorDialogOpen()) {
+                ConditionEditorDialog.disposeDialog();
             }
             dispose();
         }
@@ -314,5 +336,14 @@ public final class ActionsEditorDialog extends StandardDialog implements
     /** Display an error message. */
     private void showError(final String title, final String message) {
         JOptionPane.showMessageDialog(this, message, title, JOptionPane.WARNING_MESSAGE);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
     }
 }

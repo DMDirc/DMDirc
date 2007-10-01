@@ -65,7 +65,7 @@ public final class ErrorListDialog extends StandardDialog implements
     private static final long serialVersionUID = 4;
     
     /** Previously instantiated instance of ErrorListDialog. */
-    private static ErrorListDialog me = new ErrorListDialog();
+    private static ErrorListDialog me;
     
     /** Error manager. */
     private final ErrorManager errorManager;
@@ -107,8 +107,6 @@ public final class ErrorListDialog extends StandardDialog implements
         initListeners();
         
         pack();
-        
-        setLocationRelativeTo(getParent());
     }
     
     /**
@@ -116,10 +114,25 @@ public final class ErrorListDialog extends StandardDialog implements
      *
      * @return Instance of ErrorListDialog
      */
-    public static ErrorListDialog getErrorListDialog() {
-        synchronized (me) {
-            return me;
+    public static synchronized void showErrorListDialog() {
+        me = getErrorListDialog();
+        
+        me.setLocationRelativeTo(me.getParent());
+        me.setVisible(true);
+        me.requestFocus();
+    }
+    
+    /**
+     * Returns the current instance of the ErrorListDialog.
+     *
+     * @return The current PluginDErrorListDialogialog instance
+     */
+    public static synchronized ErrorListDialog getErrorListDialog() {
+        if (me == null) {
+            me = new ErrorListDialog();
         }
+        
+        return me;
     }
     
     /** Initialises the components. */
@@ -257,7 +270,7 @@ public final class ErrorListDialog extends StandardDialog implements
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == getCancelButton()) {
-            dispose();
+            setVisible(false);
         } else if (e.getSource() == deleteButton) {
             ErrorManager.getErrorManager().deleteError(tableModel.getError(
                     table.getRowSorter().convertRowIndexToModel(
@@ -314,4 +327,12 @@ public final class ErrorListDialog extends StandardDialog implements
         }
     }
     
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
+    }
 }

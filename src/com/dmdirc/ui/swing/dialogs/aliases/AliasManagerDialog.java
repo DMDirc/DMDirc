@@ -70,7 +70,7 @@ public final class AliasManagerDialog extends StandardDialog implements
     private static final long serialVersionUID = 3;
     
     /** Previously instantiated instance of AliasManagerDialog. */
-    private static AliasManagerDialog me = new AliasManagerDialog();
+    private static AliasManagerDialog me;
     
     /** Table scrollpane. */
     private JScrollPane scrollPane;
@@ -109,8 +109,15 @@ public final class AliasManagerDialog extends StandardDialog implements
         initListeners();
         
         pack();
+    }
+    
+    /** Creates the dialog if one doesn't exist, and displays it. */
+    public static synchronized void showAliasManagerDialog() {
+        me = getAliasManagerDialog();
         
-        setLocationRelativeTo(getParent());
+        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setVisible(true);
+        me.requestFocus();
     }
     
     /**
@@ -118,11 +125,12 @@ public final class AliasManagerDialog extends StandardDialog implements
      *
      * @return Instance of AliasManagerDialog
      */
-    public static AliasManagerDialog getAliasManagerDialog() {
-        synchronized (me) {
-            me.updateTableData();
-            return me;
+    public static synchronized AliasManagerDialog getAliasManagerDialog() {
+        if (me == null) {
+            me = new AliasManagerDialog();
         }
+        
+        return me;
     }
     
     /** Initialises the components. */
@@ -133,7 +141,7 @@ public final class AliasManagerDialog extends StandardDialog implements
         
         scrollPane = new JScrollPane();
         
-        tableModel = new AliasTableModel();
+        tableModel = new AliasTableModel(getTableData());
         table = new PackingTable(tableModel, false, scrollPane) {
             private static final long serialVersionUID = 1;
             public TableCellRenderer getCellRenderer(final int row, final int column) {
@@ -448,5 +456,14 @@ public final class AliasManagerDialog extends StandardDialog implements
         }
         
         return false;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
     }
 }

@@ -425,14 +425,12 @@ public final class ProfileEditorDialog extends StandardDialog implements
         }
         NewServerDialog.getNewServerDialog().populateProfiles();
         dispose();
-        me = null;
     }
     
     /** cancels the dialog */
     private void cancelDialog() {
         NewServerDialog.getNewServerDialog().populateProfiles();
         dispose();
-        me = null;
     }
     
     /** {@inheritDoc}. */
@@ -527,5 +525,14 @@ public final class ProfileEditorDialog extends StandardDialog implements
             }
         }
         altNick.repaint();
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
     }
 }

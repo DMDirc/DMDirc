@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.dialogs.firstrunwizard;
+package com.dmdirc.ui.swing.dialogs.wizard.firstrun;
 
 import com.dmdirc.Main;
 import com.dmdirc.actions.ActionManager;
@@ -29,6 +29,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.resourcemanager.ResourceManager;
 import com.dmdirc.ui.interfaces.FirstRunWizard;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.dialogs.ProfileEditorDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.Wizard;
@@ -168,7 +169,9 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
             steps.add(new UpdateStep());
         }
         
-        wizardDialog = new WizardDialog(firstRun ? "Setup wizard" : "Migration wizard", steps, this, true);
+        wizardDialog = WizardDialog.getWizardDialog(firstRun ? "Setup wizard" :
+            "Migration wizard", steps, this, true,
+                (MainFrame) Main.getUI().getMainWindow());
         
         wizardDialog.setPreferredSize(new Dimension(400, 350));
         

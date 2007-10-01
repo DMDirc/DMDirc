@@ -836,7 +836,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         } else if (e.getActionCommand().equals("Actions")) {
             ActionsManagerDialog.showActionsManagerDialog();
         } else if (e.getActionCommand().equals("Aliases")) {
-            AliasManagerDialog.getAliasManagerDialog().setVisible(true);
+            AliasManagerDialog.showAliasManagerDialog();
         } else if (e.getActionCommand().equals("Minimise")) {
             ((Frame) Main.getUI().getMainWindow().getActiveFrame()).minimise();
         } else if (e.getActionCommand().equals("Close")) {

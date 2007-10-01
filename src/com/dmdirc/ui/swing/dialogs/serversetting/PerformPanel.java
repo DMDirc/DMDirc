@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -93,9 +94,16 @@ public final class PerformPanel extends JPanel implements ActionListener {
                 SMALL_BORDER, SMALL_BORDER));
         setLayout(new BorderLayout(SMALL_BORDER, SMALL_BORDER));
         
-        target = new JComboBox(
-                new Object[]{"Network perform (" + server.getNetwork() + ")",
-                "Server perform (" + server.getName() + ")",});
+        final DefaultComboBoxModel model = new DefaultComboBoxModel();
+        target = new JComboBox(model);
+        
+        if (!server.getNetwork().isEmpty()) {
+            model.addElement("Network perform (" + server.getNetwork() + ")");
+        }
+        if (!server.getName().isEmpty()) {
+            model.addElement("Server perform (" + server.getName() + ")");
+        }
+        
         add(target, BorderLayout.NORTH);
         
         textarea = new JTextArea();
