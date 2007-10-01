@@ -162,6 +162,10 @@ public final class SettingsPanel extends JPanel {
     public void addOption(final String optionName,
             final String displayName,
             final OptionType type) {
+        if (config == null) {
+            return;
+        }
+        
         if (optionName.indexOf('.') == -1) {
             return;
         }
