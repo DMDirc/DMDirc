@@ -28,6 +28,7 @@ import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
+import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.input.tabstyles.BashStyle;
 import com.dmdirc.ui.input.tabstyles.MircStyle;
@@ -36,12 +37,12 @@ import com.dmdirc.ui.input.tabstyles.TabCompletionStyle;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.messages.Styliser;
 import com.dmdirc.ui.swing.components.ColourPickerDialog;
-import java.awt.Toolkit;
 
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +56,8 @@ import javax.swing.JTextField;
  *
  * @author chris
  */
-public final class InputHandler implements KeyListener, ActionListener {
+public final class InputHandler extends KeyAdapter implements ActionListener,
+        ConfigChangeListener {
     
     /**
      * Indicates that the caret should be moved to the end of a selection when
@@ -131,17 +133,25 @@ public final class InputHandler implements KeyListener, ActionListener {
         bufferMinimum = 0;
         bufferMaximum = 0;
         
+        setStyle();
+        
+        target.addKeyListener(this);
+        target.addActionListener(this);
+        target.setFocusTraversalKeysEnabled(false);
+        
+        parentWindow.getConfigManager().addChangeListener("tabcompletion", "style", this);
+    }
+    
+    /**
+     * Sets this inputhandler's tab completion style.
+     */
+    private void setStyle() {
         if ("bash".equals(parentWindow.getConfigManager().getOption("tabcompletion", "style", "bash"))) {
             style = new BashStyle();
         } else {
             style = new MircStyle();
         }
-        
         style.setContext(tabCompleter, parentWindow);
-        
-        target.addKeyListener(this);
-        target.addActionListener(this);
-        target.setFocusTraversalKeysEnabled(false);
     }
     
     /**
@@ -154,14 +164,6 @@ public final class InputHandler implements KeyListener, ActionListener {
         style.setContext(tabCompleter, parentWindow);
     }
     
-    /**
-     * Called when the user types a normal character.
-     *
-     * @param keyEvent The event that was fired
-     */
-    public void keyTyped(final KeyEvent keyEvent) {
-        //Ignore.
-    }
     
     /**
      * Called when the user presses down any key. Handles the insertion of
@@ -169,6 +171,7 @@ public final class InputHandler implements KeyListener, ActionListener {
      *
      * @param keyEvent The event that was fired
      */
+    @Override
     public void keyPressed(final KeyEvent keyEvent) {
         if (colourPicker != null) {
             colourPicker.dispose();
@@ -363,14 +366,6 @@ public final class InputHandler implements KeyListener, ActionListener {
     }
     
     /**
-     * Called when the user releases any key.
-     * @param keyEvent The event that was fired
-     */
-    public void keyReleased(final KeyEvent keyEvent) {
-        //Ignore.
-    }
-    
-    /**
      * Called when the user presses return in the text area. The line they
      * typed is added to the buffer for future use.
      * @param actionEvent The event that was fired
@@ -491,5 +486,11 @@ public final class InputHandler implements KeyListener, ActionListener {
                         (int) target.getLocationOnScreen().getY() - colourPicker.getHeight());
                 colourPicker.setVisible(true);
         }
+    }
+    
+    /** {@inheritDoc} */
+    public void configChanged(final String domain, final String key,
+            final String oldValue, final String newValue) {
+        setStyle();
     }
 }
