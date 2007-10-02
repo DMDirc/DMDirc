@@ -155,6 +155,8 @@ public final class Server extends WritableFrameContainer implements Serializable
         
         window = Main.getUI().getServer(this);
         
+        Main.getUI().getFrameManager().addWindow(this);
+        
         window.setTitle(server + ":" + port);
         
         tabCompleter.addEntries(AliasWrapper.getAliasWrapper().getAliases());
@@ -434,7 +436,6 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void addRaw() {
         raw = new Raw(this);
-        Main.getUI().getMainWindow().getFrameManager().addWindow(this, raw);
         raw.registerCallbacks();
     }
     
@@ -683,9 +684,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             final Channel newChan = new Channel(this, chan);
             
             tabCompleter.addEntry(chan.getName());
-            channels.put(parser.toLowerCase(chan.getName()), newChan);
-            Main.getUI().getMainWindow().getFrameManager().addWindow(this, newChan);
-            
+            channels.put(parser.toLowerCase(chan.getName()), newChan);            
             newChan.show();
         }
     }
@@ -701,7 +700,6 @@ public final class Server extends WritableFrameContainer implements Serializable
             
             tabCompleter.addEntry(ClientInfo.parseHost(host));
             queries.put(parser.toLowerCase(ClientInfo.parseHost(host)), newQuery);
-            Main.getUI().getMainWindow().getFrameManager().addWindow(this, newQuery);
         }
     }
     

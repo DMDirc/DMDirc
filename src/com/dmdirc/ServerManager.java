@@ -72,7 +72,6 @@ public final class ServerManager {
      */
     public void registerServer(final Server server) {
         servers.add(server);
-        Main.getUI().getMainWindow().getFrameManager().addWindow(server);
     }
     
     /**

@@ -233,10 +233,17 @@ public final class PasteDialog extends StandardDialog implements ActionListener,
                     + parent.getContainer().getNumLines(textField.getText())
                     + " lines.");
             pack();
-            setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
         } else if (getCancelButton().equals(actionEvent.getSource())) {
             dispose();
         }
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void validate() {
+        super.validate();
+        
+        setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
     }
     
     /** {@inheritDoc} */

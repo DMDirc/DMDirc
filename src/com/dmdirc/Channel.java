@@ -130,6 +130,7 @@ public final class Channel extends MessageTarget implements
         tabCompleter.addEntries(CommandManager.getChatCommandNames());
         
         window = Main.getUI().getChannel(Channel.this);
+        Main.getUI().getFrameManager().addWindow(server, this);
         window.setFrameIcon(icon);
         window.getInputHandler().setTabCompleter(tabCompleter);
         

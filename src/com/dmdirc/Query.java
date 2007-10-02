@@ -84,6 +84,7 @@ public final class Query extends MessageTarget implements
         icon = IconManager.getIconManager().getIcon("query");
         
         window = Main.getUI().getQuery(this);
+        Main.getUI().getFrameManager().addWindow(server, this);
         
         ActionManager.processEvent(CoreActionType.QUERY_OPENED, null, this);
         

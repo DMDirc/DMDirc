@@ -28,8 +28,8 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
-import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.components.TreeScroller;
+import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -42,6 +42,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -52,7 +53,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
-import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -99,16 +99,11 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     /** close menu item used in popup menus. */
     private final JMenuItem closeMenuItem;
     
-    /** Parent JComponent. */
-    private JComponent parent;
-    
     /** node under right click operation. */
     private DefaultMutableTreeNode popupNode;
-
     
-    /**
-     * creates a new instance of the TreeFrameManager.
-     */
+    
+    /** creates a new instance of the TreeFrameManager. */
     public TreeFrameManager() {
         nodes = new Hashtable<FrameContainer, DefaultMutableTreeNode>();
         nodeColours = new Hashtable<FrameContainer, Color>();
@@ -172,6 +167,9 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
             final TreeNode[] treePath = ((DefaultTreeModel) tree.getModel()).
                     getPathToRoot(nodes.get(source));
             if (treePath == null || treePath.length == 0) {
+                Logger.appError(ErrorLevel.MEDIUM, "Unknown node selected", 
+                        new IllegalArgumentException("Unknown node selected: " 
+                        + source));
                 return;
             }
             tree.setSelectionPath(new TreePath(treePath));
@@ -182,11 +180,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     public void showNotification(final FrameContainer source, final Color colour) {
         if (nodeColours != null) {
             nodeColours.put(source, colour);
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    tree.repaint();
-                }
-            });
+            tree.repaint();
         }
     }
     
@@ -196,11 +190,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      */
     public void showRollover(final DefaultMutableTreeNode node) {
         rolloverNode = node;
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                tree.repaint();
-            }
-        });
+        tree.repaint();
     }
     
     /**
@@ -244,8 +234,6 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
                 IdentityManager.getGlobalConfig().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
         tree.setForeground(IdentityManager.getGlobalConfig().getOptionColour("treeview", "foregroundcolour",
                 IdentityManager.getGlobalConfig().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
-        
-        this.parent = parent;
     }
     
     /** {@inheritDoc} */
@@ -303,19 +291,6 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     }
     
     /**
-     * Returns the maximum size a node can be without causing scrolling.
-     *
-     * @return Maximum node width
-     */
-    public int getNodeWidth() {
-        if (parent == null) {
-            return 0;
-        } else {
-            return parent.getWidth() - 25;
-        }
-    }
-    
-    /**
      * Returns the tree for this frame manager.
      *
      * @return Tree for the manager
@@ -347,15 +322,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         if (event.getButton() == MouseEvent.BUTTON1) {
             final TreePath selectedPath = tree.getPathForLocation(event.getX(), event.getY());
             if (selectedPath != null) {
-                final DefaultMutableTreeNode node =
-                        (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
-                final Object nodeInfo = node.getUserObject();
-                if (nodeInfo instanceof FrameContainer) {
-                    ((FrameContainer) nodeInfo).activateFrame();
-                } else {
-                    Logger.appError(ErrorLevel.MEDIUM, "Unknown node type.",
-                            new IllegalArgumentException("Node: " + nodeInfo.getClass()));
-                }
+                tree.setSelectionPath(selectedPath);
             }
         }
         processMouseEvent(event);
@@ -383,7 +350,6 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      */
     public void mouseExited(final MouseEvent event) {
         tree.repaint();
-        //Do nothing
     }
     
     /**
@@ -418,8 +384,9 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      * @param event mouse event.
      */
     public void mouseDragged(final MouseEvent event) {
-        final DefaultMutableTreeNode node = getNodeForLocation(event.getX(), event.getY());
-        this.showRollover(node);
+        final DefaultMutableTreeNode node = getNodeForLocation(
+                event.getX(), event.getY());
+        showRollover(node);
         if (node != null) {
             ((FrameContainer) node.getUserObject()).activateFrame();
         }
@@ -432,8 +399,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      * @param event mouse event.
      */
     public void mouseMoved(final MouseEvent event) {
-        final DefaultMutableTreeNode node = getNodeForLocation(event.getX(), event.getY());
-        this.showRollover(node);
+        showRollover(getNodeForLocation(event.getX(), event.getY()));
     }
     
     /**
@@ -448,11 +414,8 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     private DefaultMutableTreeNode getNodeForLocation(final int x, final int y) {
         DefaultMutableTreeNode node = null;
         final TreePath selectedPath = tree.getPathForLocation(x, y);
-        if (selectedPath == null) {
-            this.showRollover(null);
-        } else {
+        if (selectedPath != null) {
             node = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
-            this.showRollover((DefaultMutableTreeNode) selectedPath.getLastPathComponent());
         }
         return node;
     }
