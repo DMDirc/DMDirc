@@ -47,19 +47,18 @@ public final class Logger {
     }
     
     /**
-     * Called to assert that a condition is true. If the condition fails, a
-     * high severity application error is logged.
+     * Called to assert that a set of conditions are true. If any condition
+     * fails, an error is thrown. This method fails-fast, and the conditions
+     * are guarenteed to be tested in the order that they're specified in.
      * 
-     * @param condition The condition to be tested
-     * 
-     * @return True if the condition failed, false otherwise
+     * @param conditions The condition to be tested
      */
-    public static boolean doAssertion(final boolean condition) {
-        if (!condition) {
-            appError(ErrorLevel.HIGH, "Assertion failed", new AssertionError());
+    public static void doAssertion(final boolean ... conditions) {
+        for (int i = 0; i < conditions.length; i++) {
+            if (!conditions[i]) {
+                throw new AssertionError("Assert failed: condition " + i + ".");
+            }
         }
-        
-        return !condition;
     }
     
     /**

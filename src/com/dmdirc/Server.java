@@ -217,9 +217,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         
         ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
         
-        if (Logger.doAssertion(parser == null || parser.getSocketState() != parser.STATE_OPEN)) {
-            disconnect(configManager.getOption(DOMAIN_GENERAL, "quitmessage"));
-        }
+        Logger.doAssertion(parser == null || parser.getSocketState() != parser.STATE_OPEN);
         
         serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);
@@ -1052,9 +1050,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     /** {@inheritDoc} */
     public void onConnectError(final ParserError errorInfo) {
         synchronized(myState) {
-            if (Logger.doAssertion(myState == ServerState.CONNECTING)) {
-                return;
-            }
+            Logger.doAssertion(myState == ServerState.CONNECTING);
             
             myState = ServerState.TRANSIENTLY_DISCONNECTED;
         }
