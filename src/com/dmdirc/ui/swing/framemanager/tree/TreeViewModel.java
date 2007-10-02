@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.framemanager.tree;
 
 import com.dmdirc.Channel;
+import com.dmdirc.GlobalWindow;
 import com.dmdirc.Query;
 import com.dmdirc.Raw;
 import com.dmdirc.Server;
@@ -142,7 +143,9 @@ public class TreeViewModel extends DefaultTreeModel {
      * @return Position of the object
      */
     private int getPosition(final Object object) {
-	if (object instanceof Server) {
+        if (object instanceof GlobalWindow) {
+            return 0;
+        } else if (object instanceof Server) {
 	    return 1;
 	} else if (object instanceof Raw) {
 	    return 2;
@@ -151,7 +154,7 @@ public class TreeViewModel extends DefaultTreeModel {
 	} else if (object instanceof Query) {
 	    return 4;
 	} else {
-	    return 0;
+	    return 5;
 	}
     }
 }

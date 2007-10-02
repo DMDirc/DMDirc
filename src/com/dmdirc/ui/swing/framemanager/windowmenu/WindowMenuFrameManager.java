@@ -26,7 +26,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.swing.MainFrame;
-import com.dmdirc.ui.swing.components.FrameContainerComparator;
+import com.dmdirc.FrameContainerComparator;
 
 import java.awt.Color;
 import java.awt.Font;

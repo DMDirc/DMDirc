@@ -20,13 +20,8 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.components;
+package com.dmdirc;
 
-import com.dmdirc.Channel;
-import com.dmdirc.FrameContainer;
-import com.dmdirc.Query;
-import com.dmdirc.Raw;
-import com.dmdirc.Server;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -114,17 +109,19 @@ public final class FrameContainerComparator implements Comparator<FrameContainer
      * @return Position of the frame container
      */
     private int getPosition(final FrameContainer item) {
-        if (item instanceof Server) {
-            return 1;
-        } else if (item instanceof Raw) {
-            return 2;
-        } else if (item instanceof Channel) {
-            return 3;
-        } else if (item instanceof Query) {
-            return 4;
-        } else {
-            return 5;
-        }
+        if (item instanceof GlobalWindow) {
+            return 0;
+        } else if (item instanceof Server) {
+	    return 1;
+	} else if (item instanceof Raw) {
+	    return 2;
+	} else if (item instanceof Channel) {
+	    return 3;
+	} else if (item instanceof Query) {
+	    return 4;
+	} else {
+	    return 5;
+	}
     }
     
 }
