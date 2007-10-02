@@ -53,9 +53,10 @@ public class GlobalWindow extends WritableFrameContainer {
         window.setTitle("(Global)");
         window.getInputHandler().setTabCompleter(tabCompleter);
         window.setFrameIcon(icon);        
-        window.open();
         
         Main.getUI().getMainWindow().getFrameManager().addWindow(this);
+        
+        window.open();
     }
 
     public InputWindow getFrame() {
