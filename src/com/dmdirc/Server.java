@@ -215,10 +215,9 @@ public final class Server extends WritableFrameContainer implements Serializable
         
         ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
         
-        if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
-            Logger.appError(ErrorLevel.MEDIUM,
-                    "Parser was still connected when making a connection attempt",
-                    new UnsupportedOperationException());
+        if (Logger.doAssertion(parser != null
+                && parser.getSocketState() == parser.STATE_OPEN,
+                "Parser was still connected when making a connection attempt")) {
             disconnect(configManager.getOption(DOMAIN_GENERAL, "quitmessage"));
         }
         
@@ -838,8 +837,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onPrivateCTCP(final String sType,
-            final String sMessage, final String sHost) {
+    public void onPrivateCTCP(final String sType, final String sMessage, final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
         
         ActionManager.processEvent(CoreActionType.SERVER_CTCP, null, this,
@@ -869,8 +867,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onPrivateCTCPReply(final String sType,
-            final String sMessage, final String sHost) {
+    public void onPrivateCTCPReply(final String sType, final String sMessage, final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
         
         ActionManager.processEvent(CoreActionType.SERVER_CTCPR, null, this,
@@ -880,8 +877,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onPrivateNotice(final String sMessage,
-            final String sHost) {
+    public void onPrivateNotice(final String sMessage, final String sHost) {
         final String[] parts = ClientInfo.parseHostFull(sHost);
         
         ActionManager.processEvent(CoreActionType.SERVER_NOTICE, null, this,
@@ -923,8 +919,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
-    public void onGotNetwork(final String networkName,
-            final String ircdVersion, final String ircdType) {
+    public void onGotNetwork(final String networkName, final String ircdType) {
         configManager = new ConfigManager(ircdType, networkName, getName());
         
         updateIgnoreList();
@@ -1061,10 +1056,9 @@ public final class Server extends WritableFrameContainer implements Serializable
     /** {@inheritDoc} */
     public void onConnectError(final ParserError errorInfo) {
         synchronized(myState) {
-            if (myState != ServerState.CONNECTING) {
-                Logger.appError(ErrorLevel.MEDIUM,
-                        "Connection error while not expecting a connection attempt",
-                        new UnsupportedOperationException("Current state: " + myState));
+            if (Logger.doAssertion(myState != ServerState.CONNECTING,
+                    "Connection error while not expecting a connection attempt"
+                    + "\nCurrent state: " + myState)) {
                 return;
             }
             
@@ -1126,7 +1120,8 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void onPingFailed() {
         Main.getUI().getStatusBar().setMessage("No ping reply from "
                 + getName() + " for over "
-                + Math.floor(parser.getPingTime(false) / 1000.0) + " seconds.", null, 10);
+                + ((int) (Math.floor(parser.getPingTime(false) / 1000.0)))
+                + " seconds.", null, 10);
         
         ActionManager.processEvent(CoreActionType.SERVER_NOPING, null, this,
                 Long.valueOf(parser.getPingTime(false)));
@@ -1136,14 +1131,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             reconnect();
         }
     }
-    
-    /** {@inheritDoc} */
-    public void onAwayStateOther(final ClientInfo client, final boolean state) {
-        for (Channel chan : channels.values()) {
-            chan.onAwayStateOther(parser, client, state);
-        }
-    }
-    
+        
     /** {@inheritDoc} */
     public void onPost005() {
         synchronized(myState) {
@@ -1176,20 +1164,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
         }
     }
-    
-    /** {@inheritDoc} */
-    public void onErrorInfo(final ParserError errorInfo) {
-        final ErrorLevel errorLevel = ErrorLevel.UNKNOWN;
-        
-        if (errorInfo.isException()) {
-            Logger.appError(errorLevel, errorInfo.getData(), errorInfo.getException());
-        } else {
-            Logger.appError(errorLevel, errorInfo.getData(),
-                    new Exception("Parser exception.\n\n\tLast line:\t" //NOPMD
-                    + errorInfo.getLastLine() + "\n\tServer:\t" + getName() + "\n"));
-        }
-    }
-    
+       
     /**
      * Returns this server's name.
      *

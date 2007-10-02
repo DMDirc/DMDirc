@@ -47,6 +47,23 @@ public final class Logger {
     }
     
     /**
+     * Called to assert that a condition is true. If the condition fails, a
+     * high severity application error is logged.
+     * 
+     * @param condition The condition to be tested
+     * @param message A brief description of the (potential) error
+     * 
+     * @return True if the condition failed, false otherwise
+     */
+    public static boolean doAssertion(final boolean condition, final String message) {
+        if (condition) {
+            appError(ErrorLevel.HIGH, "Assertion failed", new AssertionError(message));
+        }
+        
+        return !condition;
+    }
+    
+    /**
      * Called when a user correctable error occurs.
      *
      * @param level Severity of the error

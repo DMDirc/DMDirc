@@ -114,7 +114,16 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     /** {@inheritDoc} */
     public void onErrorInfo(final IRCParser tParser, final ParserError errorInfo) {
         checkParser(tParser);
-        owner.onErrorInfo(errorInfo);
+        
+        final ErrorLevel errorLevel = ErrorLevel.UNKNOWN;
+        
+        if (errorInfo.isException()) {
+            Logger.appError(errorLevel, errorInfo.getData(), errorInfo.getException());
+        } else {
+            Logger.appError(errorLevel, errorInfo.getData(),
+                    new Exception("Parser exception.\n\n\tLast line:\t" //NOPMD
+                    + errorInfo.getLastLine() + "\n\tServer:\t" + owner.getName() + "\n"));
+        }
     }
     
     /** {@inheritDoc} */
@@ -173,7 +182,7 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     public void onGotNetwork(final IRCParser tParser, final String networkName,
             final String ircdVersion, final String ircdType) {
         checkParser(tParser);
-        owner.onGotNetwork(networkName, ircdVersion, ircdType);
+        owner.onGotNetwork(networkName, ircdType);
     }
     
     /** {@inheritDoc} */
@@ -207,7 +216,11 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     public void onAwayStateOther(final IRCParser tParser, final ClientInfo client,
             final boolean state) {
         checkParser(tParser);
-        owner.onAwayStateOther(client, state);
+        
+        // Just proxy it
+        for (String chan : owner.getChannels()) {
+            owner.getChannel(chan).onAwayStateOther(tParser, client, state);
+        }
     }
     
     /** {@inheritDoc} */
