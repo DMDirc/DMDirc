@@ -174,11 +174,12 @@ public final class SwingController implements UIController {
         try {
             UIUtilities.initUISettings();
             
-            final String lnfName = UIUtilities.getLookAndFeel(
-                    IdentityManager.getGlobalConfig().getOption("ui", "lookandfeel"));
-            
-            if (IdentityManager.getGlobalConfig().hasOption("ui", "lookandfeel") && !lnfName.isEmpty()) {
-                UIManager.setLookAndFeel(lnfName);
+            if (IdentityManager.getGlobalConfig().hasOption("ui", "lookandfeel")) {
+                final String lnfName = UIUtilities.getLookAndFeel(
+                        IdentityManager.getGlobalConfig().getOption("ui", "lookandfeel"));
+                if (!lnfName.isEmpty()) {
+                    UIManager.setLookAndFeel(lnfName);
+                }
             }
             
             //These are likely to change lots, and i cant test them - Greboid
