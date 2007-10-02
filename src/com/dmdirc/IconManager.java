@@ -47,22 +47,17 @@ import javax.swing.ImageIcon;
 public final class IconManager implements ConfigChangeListener {
     
     /** Previously created IconManager instance. */
-    private static IconManager me;
-    
-    /** The config manager used for the global config. */
-    private final ConfigManager manager;
-    
+    private static final IconManager me = new IconManager();
+        
     private final Map<String, Icon> icons;
     private final Map<String, Image> images;
     
     /** Creates a new instance of IconManager. */
-    private IconManager() {
-        manager = IdentityManager.getGlobalConfig();
-        
+    private IconManager() {        
         icons = new HashMap<String, Icon>();
         images = new HashMap<String, Image>();
         
-        manager.addChangeListener("icon", this);
+        IdentityManager.getGlobalConfig().addChangeListener("icon", this);
     }
     
     /**
@@ -70,11 +65,7 @@ public final class IconManager implements ConfigChangeListener {
      *
      * @return Instance of IconManager
      */
-    public static synchronized IconManager getIconManager() {
-        if (me == null) {
-            me = new IconManager();
-        }
-        
+    public static IconManager getIconManager() {
         return me;
     }
     

@@ -60,7 +60,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
     /**
      * Creates a new instance of NicklistRenderer.
      *
-     * @param newConfig ConfigManager for the associated channel
+     * @param config ConfigManager for the associated channel
      */
     public NicklistRenderer(final ConfigManager config) {
         super();

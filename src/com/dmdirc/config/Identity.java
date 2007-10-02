@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 /**
  * An identity is a group of settings that are applied to a connection, server,
@@ -59,6 +58,9 @@ public class Identity implements Serializable, Comparable<Identity> {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
+    
+    /** The domain used for identity settings. */
+    private static final String DOMAIN = "identity".intern();
     
     /** The target for this identity. */
     protected final ConfigTarget myTarget;
@@ -81,7 +83,7 @@ public class Identity implements Serializable, Comparable<Identity> {
      *
      * @param properties The properties to use for this identity
      */
-    public Identity(final Properties properties) {
+    public Identity(final Properties properties) {        
         this(properties, null);
     }
     
@@ -94,6 +96,8 @@ public class Identity implements Serializable, Comparable<Identity> {
      * @param target The target of this identity
      */
     public Identity(final Properties properties, final ConfigTarget target) {
+        Logger.doAssertion(properties != null);
+        
         this.properties = properties;
         
         if (target == null) {
@@ -114,7 +118,7 @@ public class Identity implements Serializable, Comparable<Identity> {
      * @throws IOException Input/output exception
      */
     public Identity(final File file, final boolean forceDefault) throws IOException,
-            InvalidIdentityFileException {
+            InvalidIdentityFileException {        
         this(new FileInputStream(file), forceDefault);
         this.file = file;
     }
@@ -136,19 +140,19 @@ public class Identity implements Serializable, Comparable<Identity> {
         
         myTarget = new ConfigTarget();
         
-        if (!properties.containsKey("identity.name") && !forceDefault) {
+        if (!properties.containsKey(DOMAIN + ".name") && !forceDefault) {
             throw new InvalidIdentityFileException("No name specified");
         }
         
-        if (hasOption("identity", "ircd")) {
-            myTarget.setIrcd(getOption("identity", "ircd"));
-        } else if (hasOption("identity", "network")) {
-            myTarget.setNetwork(getOption("identity", "network"));
-        } else if (hasOption("identity", "server")) {
-            myTarget.setServer(getOption("identity", "server"));
-        } else if (hasOption("identity", "channel")) {
-            myTarget.setChannel(getOption("identity", "channel"));
-        } else if (hasOption("identity", "globaldefault")) {
+        if (hasOption(DOMAIN, "ircd")) {
+            myTarget.setIrcd(getOption(DOMAIN, "ircd"));
+        } else if (hasOption(DOMAIN, "network")) {
+            myTarget.setNetwork(getOption(DOMAIN, "network"));
+        } else if (hasOption(DOMAIN, "server")) {
+            myTarget.setServer(getOption(DOMAIN, "server"));
+        } else if (hasOption(DOMAIN, "channel")) {
+            myTarget.setChannel(getOption(DOMAIN, "channel"));
+        } else if (hasOption(DOMAIN, "globaldefault")) {
             myTarget.setGlobalDefault();
         } else if (forceDefault && !isProfile()) {
             myTarget.setGlobal();
@@ -176,8 +180,8 @@ public class Identity implements Serializable, Comparable<Identity> {
      * @return The name of this identity
      */
     public String getName() {
-        if (hasOption("identity", "name")) {
-            return getOption("identity", "name");
+        if (hasOption(DOMAIN, "name")) {
+            return getOption(DOMAIN, "name");
         } else {
             return "Unnamed";
         }
@@ -286,8 +290,6 @@ public class Identity implements Serializable, Comparable<Identity> {
      * @param option name of the option
      */
     public void unsetOption(final String domain, final String option) {
-        final String value = getOption(domain, option);
-        
         properties.remove(domain + "." + option);
         needSave = true;
         
@@ -390,6 +392,7 @@ public class Identity implements Serializable, Comparable<Identity> {
      *
      * @return A string representation of this object
      */
+    @Override
     public String toString() {
         return getName();
     }
@@ -430,7 +433,8 @@ public class Identity implements Serializable, Comparable<Identity> {
      * @return A new identity containing the specified properties
      */
     protected static Identity createIdentity(final Properties properties) {
-        if (!properties.containsKey("identity.name") || properties.getProperty("identity.name").isEmpty()) {
+        if (!properties.containsKey(DOMAIN + ".name")
+                || properties.getProperty(DOMAIN + ".name").isEmpty()) {
             Logger.appError(ErrorLevel.LOW, "createIdentity caleld with invalid identity",
                     new InvalidIdentityFileException("identity.name is not set"));
             return null;
@@ -438,7 +442,7 @@ public class Identity implements Serializable, Comparable<Identity> {
         
         final String fs = System.getProperty("file.separator");
         final String location = Main.getConfigDir() + "identities" + fs;
-        final String name = properties.getProperty("identity.name");
+        final String name = properties.getProperty(DOMAIN + ".name");
         
         final File file = new File(location + name);
         
@@ -480,8 +484,8 @@ public class Identity implements Serializable, Comparable<Identity> {
      */
     public static Identity buildIdentity(final ConfigTarget target) {
         final Properties properties = new Properties();
-        properties.setProperty("identity.name", target.getData());
-        properties.setProperty("identity." + target.getTypeName(), target.getData());
+        properties.setProperty(DOMAIN + ".name", target.getData());
+        properties.setProperty(DOMAIN + "." + target.getTypeName(), target.getData());
         
         return createIdentity(properties);
     }
@@ -495,7 +499,7 @@ public class Identity implements Serializable, Comparable<Identity> {
      */
     public static Identity buildProfile(final String name) {
         final Properties properties = new Properties();
-        properties.setProperty("identity.name", name);
+        properties.setProperty(DOMAIN + ".name", name);
         properties.setProperty("profile.nickname", "DMDircUser");
         properties.setProperty("profile.realname", "DMDircUser");
         

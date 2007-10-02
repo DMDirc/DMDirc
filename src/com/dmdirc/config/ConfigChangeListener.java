@@ -38,8 +38,6 @@ public interface ConfigChangeListener {
      *
      * @param domain The domain that was altered
      * @param key The key that was altered
-     * @param oldValue The previous value of the setting
-     * @param newValue The new value of the setting
      */
     void configChanged(String domain, String key);
 

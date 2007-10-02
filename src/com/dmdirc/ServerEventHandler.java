@@ -168,7 +168,7 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     /** {@inheritDoc} */
     public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD) {
         checkParser(tParser);
-        owner.onMOTDEnd(noMOTD);
+        owner.onMOTDEnd();
     }
     
     /** {@inheritDoc} */

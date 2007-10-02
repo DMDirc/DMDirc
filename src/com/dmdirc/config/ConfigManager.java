@@ -292,7 +292,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
      * @param identity The identity to be checked
      */
     public void checkIdentity(final Identity identity) {
-        String comp = "";
+        String comp;
         
         switch (identity.getTarget().getType()) {
         case ConfigTarget.TYPE_IRCD:
@@ -308,7 +308,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
             comp = channel;
             break;
         case ConfigTarget.TYPE_PROFILE:
-            // We don't want profiles'
+            // We don't want profiles
             comp = null;
             break;
         default:

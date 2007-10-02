@@ -830,16 +830,22 @@ public final class Server extends WritableFrameContainer implements Serializable
         }
     }
     
-    /** {@inheritDoc} */
-    public void onPrivateCTCP(final String sType, final String sMessage, final String sHost) {
-        final String[] parts = ClientInfo.parseHostFull(sHost);
+    /**
+     * Called when a private CTCP is received.
+     * 
+     * @param type The type of the CTCP
+     * @param message The body (if any) of the CTCP
+     * @param host The host of the user that sent the CTCP
+     */
+    public void onPrivateCTCP(final String type, final String message, final String host) {
+        final String[] parts = ClientInfo.parseHostFull(host);
         
         ActionManager.processEvent(CoreActionType.SERVER_CTCP, null, this,
-                parser.getClientInfoOrFake(sHost), sType, sMessage);
+                parser.getClientInfoOrFake(host), type, message);
         
-        handleNotification("privateCTCP", parts[0], parts[1], parts[2], sType, sMessage);
+        handleNotification("privateCTCP", parts[0], parts[1], parts[2], type, message);
         
-        sendCTCPReply(parts[0], sType, sMessage);
+        sendCTCPReply(parts[0], type, message);
     }
     
     /**
@@ -860,27 +866,43 @@ public final class Server extends WritableFrameContainer implements Serializable
         }
     }
     
-    /** {@inheritDoc} */
-    public void onPrivateCTCPReply(final String sType, final String sMessage, final String sHost) {
-        final String[] parts = ClientInfo.parseHostFull(sHost);
+    /**
+     * Called when a private CTCP reply is received.
+     * 
+     * @param type The type of CTCPR
+     * @param message The body of the CTCPR
+     * @param host The host of the user who is sending the CTCPR
+     */
+    public void onPrivateCTCPReply(final String type, final String message, final String host) {
+        final String[] parts = ClientInfo.parseHostFull(host);
         
         ActionManager.processEvent(CoreActionType.SERVER_CTCPR, null, this,
-                parser.getClientInfoOrFake(sHost), sType, sMessage);
+                parser.getClientInfoOrFake(host), type, message);
         
-        handleNotification("privateCTCPreply", parts[0], parts[1], parts[2], sType, sMessage);
+        handleNotification("privateCTCPreply", parts[0], parts[1], parts[2], type, message);
     }
     
-    /** {@inheritDoc} */
-    public void onPrivateNotice(final String sMessage, final String sHost) {
-        final String[] parts = ClientInfo.parseHostFull(sHost);
+    /**
+     * Called when a private notice is received.
+     * 
+     * @param message The message content of the notice
+     * @param host The host of the user who sent the notice
+     */
+    public void onPrivateNotice(final String message, final String host) {
+        final String[] parts = ClientInfo.parseHostFull(host);
         
         ActionManager.processEvent(CoreActionType.SERVER_NOTICE, null, this,
-                parser.getClientInfoOrFake(sHost), sMessage);
+                parser.getClientInfoOrFake(host), message);
         
-        handleNotification("privateNotice", parts[0], parts[1], parts[2], sMessage);
+        handleNotification("privateNotice", parts[0], parts[1], parts[2], message);
     }
     
-    /** {@inheritDoc} */
+    /**
+     * Called when the server says that the nickname we're trying to use is
+     * already in use.
+     * 
+     * @param nickname The nickname that we were trying to use
+     */
     public void onNickInUse(final String nickname) {
         final String lastNick = parser.getMyNickname();
         
@@ -912,33 +934,49 @@ public final class Server extends WritableFrameContainer implements Serializable
         parser.setNickname(newNick);
     }
     
-    /** {@inheritDoc} */
+    /**
+     * Called when the parser has determined the network name and IRCd type
+     * of our server.
+     * 
+     * @param networkName The name of the network we're connected to
+     * @param ircdType The type of IRCd that we're connected to
+     */
     public void onGotNetwork(final String networkName, final String ircdType) {
         configManager = new ConfigManager(ircdType, networkName, getName());
         
         updateIgnoreList();
     }
     
-    /** {@inheritDoc} */
-    public void onMOTDStart(final String sData) {
+    /** 
+     * Called when we start receiving the server's MOTD.
+     * 
+     * @param data The data sent by the server
+     */
+    public void onMOTDStart(final String data) {
         final StringBuffer buffer = new StringBuffer("motdStart");
         
-        ActionManager.processEvent(CoreActionType.SERVER_MOTDSTART, buffer, this, sData);
+        ActionManager.processEvent(CoreActionType.SERVER_MOTDSTART, buffer, this, data);
         
-        addLine(buffer, sData);
+        addLine(buffer, data);
     }
     
-    /** {@inheritDoc} */
-    public void onMOTDLine(final String sData) {
+    /** 
+     * Called when we receive a single line of the server's MOTD.
+     * 
+     * @param data The data sent by the server
+     */
+    public void onMOTDLine(final String data) {
         final StringBuffer buffer = new StringBuffer("motdLine");
         
-        ActionManager.processEvent(CoreActionType.SERVER_MOTDLINE, buffer, this, sData);
+        ActionManager.processEvent(CoreActionType.SERVER_MOTDLINE, buffer, this, data);
         
-        addLine(buffer, sData);
+        addLine(buffer, data);
     }
     
-    /** {@inheritDoc} */
-    public void onMOTDEnd(final boolean noMOTD) {
+    /** 
+     * Called when the server has finished sending the MOTD.
+     */
+    public void onMOTDEnd() {
         final StringBuffer buffer = new StringBuffer("motdEnd");
         
         ActionManager.processEvent(CoreActionType.SERVER_MOTDEND, buffer, this);
@@ -946,8 +984,13 @@ public final class Server extends WritableFrameContainer implements Serializable
         addLine(buffer, "End of server's MOTD.");
     }
     
-    /** {@inheritDoc} */
-    public void onNumeric(final int numeric, final String[] token) {
+    /**
+     * Called when the server sends a numeric event.
+     * 
+     * @param numeric The numeric code for the event
+     * @param tokens The (tokenised) arguments of the event
+     */
+    public void onNumeric(final int numeric, final String[] tokens) {
         final String withIrcd = "numeric_" + parser.getIRCD(true) + "_" + numeric;
         final String sansIrcd = "numeric_" + numeric;
         String target = null;
@@ -961,50 +1004,69 @@ public final class Server extends WritableFrameContainer implements Serializable
         }
         
         if (target != null) {
-            handleNotification(target, (Object[]) token);
+            handleNotification(target, (Object[]) tokens);
         }
         
         ActionManager.processEvent(CoreActionType.SERVER_NUMERIC, null, this,
-                Integer.valueOf(numeric), token);
+                Integer.valueOf(numeric), tokens);
     }
     
-    /** {@inheritDoc} */
-    public void onNoticeAuth(final String sData) {
-        handleNotification("authNotice", sData);
+    /**
+     * Called when we receive an auth notice.
+     * 
+     * @param data The content of the notice 
+     */
+    public void onNoticeAuth(final String data) {
+        handleNotification("authNotice", data);
         
         ActionManager.processEvent(CoreActionType.SERVER_AUTHNOTICE, null, this,
-                sData);
+                data);
     }
     
-    /** {@inheritDoc} */
-    public void onUnknownNotice(final String sMessage,
-            final String sTarget, final String sHost) {
-        handleNotification("unknownNotice", sHost, sTarget, sMessage);
+    /**
+     * Called when we receive an unknown notice.
+     * 
+     * @param message The content of the notice 
+     * @param target The destination of this notice (such as $*)
+     * @param host The host of the user that sent the notice
+     */
+    public void onUnknownNotice(final String message,
+            final String target, final String host) {
+        handleNotification("unknownNotice", host, target, message);
         
         ActionManager.processEvent(CoreActionType.SERVER_UNKNOWNNOTICE, null, this,
-                sHost, sTarget, sMessage);
+                host, target, message);
     }
     
-    /** {@inheritDoc} */
-    public void onUserModeChanged(final ClientInfo cClient,
-            final String sSetBy, final String sModes) {
-        if (!cClient.equals(parser.getMyself())) {
-            return;
-        }
+    /**
+     * Called when we receive a user mode change.
+     * 
+     * @param client The updated client object for the victim (us)
+     * @param setBy The host of the user that performed the change
+     * @param modes The modes that were changed
+     */
+    public void onUserModeChanged(final ClientInfo client,
+            final String setBy, final String modes) {
+        Logger.doAssertion(client == parser.getMyself());
         
-        final ClientInfo setter = parser.getClientInfoOrFake(sSetBy);
-        final String[] setterParts = ClientInfo.parseHostFull(sSetBy);
+        final ClientInfo setter = parser.getClientInfoOrFake(setBy);
+        final String[] setterParts = ClientInfo.parseHostFull(setBy);
         
         final StringBuffer format = new StringBuffer("userModeChanged");
         
         ActionManager.processEvent(CoreActionType.SERVER_USERMODES, format,
-                this, setter, sModes);
+                this, setter, modes);
         
         addLine(format, setterParts[0], setterParts[1], setterParts[2],
-                sModes);
+                modes);
     }
     
-    /** {@inheritDoc} */
+    /**
+     * Called when our away state changes.
+     * 
+     * @param currentState The new aray state
+     * @param reason Our away reason, if applicable
+     */
     public void onAwayState(final boolean currentState, final String reason) {
         if (currentState) {
             away = true;
@@ -1021,7 +1083,9 @@ public final class Server extends WritableFrameContainer implements Serializable
         window.setAwayIndicator(away);
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * Called when the socket has been closed.
+     */
     public void onSocketClosed() {
         handleNotification("socketClosed", getName());
         
@@ -1047,7 +1111,11 @@ public final class Server extends WritableFrameContainer implements Serializable
         }
     }
     
-    /** {@inheritDoc} */
+    /** 
+     * Called when an error was encountered while connecting.
+     * 
+     * @param errorInfo The parser's error information
+     */
     public void onConnectError(final ParserError errorInfo) {
         synchronized(myState) {
             Logger.doAssertion(myState == ServerState.CONNECTING);
@@ -1106,7 +1174,9 @@ public final class Server extends WritableFrameContainer implements Serializable
         myState = ServerState.RECONNECT_WAIT;
     }
     
-    /** {@inheritDoc} */
+    /**
+     * Called when we fail to receive a ping reply within a set period of time.
+     */
     public void onPingFailed() {
         Main.getUI().getStatusBar().setMessage("No ping reply from "
                 + getName() + " for over "
@@ -1122,7 +1192,9 @@ public final class Server extends WritableFrameContainer implements Serializable
         }
     }
         
-    /** {@inheritDoc} */
+    /**
+     * Called after the parser receives the 005 headers from the server.
+     */
     public void onPost005() {
         synchronized(myState) {
             myState = ServerState.CONNECTED;

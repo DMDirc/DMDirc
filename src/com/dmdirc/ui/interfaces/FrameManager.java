@@ -23,7 +23,6 @@
 package com.dmdirc.ui.interfaces;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Server;
 
 import java.awt.Color;
 
@@ -87,14 +86,14 @@ public interface FrameManager {
     /**
      * Adds a window to this frame manager.
      * 
-     * @param server The server to be added
+     * @param window The server to be added
      */
     void addWindow(FrameContainer window);
     
     /**
      * Removes a window from this frame manager.
      * 
-     * @param server The server to be removed
+     * @param window The server to be removed
      */
     void delWindow(FrameContainer window);   
     

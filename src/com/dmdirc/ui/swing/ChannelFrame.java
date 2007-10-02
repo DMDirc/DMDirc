@@ -280,8 +280,7 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
      */
     public void processMouseEvent(final MouseEvent e) {
         if (e.getSource() == nickList && nickList.getMousePosition() != null) {
-            boolean showMenu = false;
-            showMenu = checkShowNicklistMenu();
+            boolean showMenu = checkShowNicklistMenu();
             if (!showMenu) {
                 showMenu = selectNickUnderCursor();
             }
