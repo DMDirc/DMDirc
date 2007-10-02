@@ -22,11 +22,9 @@
 
 package com.dmdirc.ui.swing.framemanager.tree;
 
-import com.dmdirc.Channel;
+import com.dmdirc.FrameContainer;
+import com.dmdirc.FrameContainerComparator;
 import com.dmdirc.GlobalWindow;
-import com.dmdirc.Query;
-import com.dmdirc.Raw;
-import com.dmdirc.Server;
 import com.dmdirc.config.IdentityManager;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -45,28 +43,35 @@ public class TreeViewModel extends DefaultTreeModel {
      */
     private static final long serialVersionUID = 1;
     
+    /** Frame container comparator. */
+    private final FrameContainerComparator comparator;
+    
     /**
      * Creates a tree in which any node can have children.
      *
      * @param root a TreeNode object that is the root of the tree.
      */
     public TreeViewModel(final TreeNode root) {
-	super(root);
+	this(root, false);
     }
     
     /**
      * Creates a tree specifying whether any node can have children,
      * or whether only certain nodes can have children.
+     *
      * @param asksAllowsChildren true = ask whether child can have chilren,
      * false all nodes can have chilren.
      * @param root a root TreeNode.
      */
     public TreeViewModel(final TreeNode root, final boolean asksAllowsChildren) {
 	super(root, asksAllowsChildren);
+        
+        comparator = new FrameContainerComparator();
     }
     
     /**
      * Inserts a new node into the tree and fires the appropriate events.
+     *
      * @param newChild child to be added.
      * @param parent parent child is to be added too.
      */
@@ -83,13 +88,17 @@ public class TreeViewModel extends DefaultTreeModel {
      *
      * @param newChild new node to be inserted.
      * @param parent node the new node will be inserted into.
+     *
      * @return index where new node is to be inserted.
      */
     private int getIndex(final DefaultMutableTreeNode newChild,
 	    final DefaultMutableTreeNode parent) {
-	
-	if (parent.equals(root)
-	&& !IdentityManager.getGlobalConfig().getOptionBool("treeview", "sortservers", false)) {
+	if (newChild.getUserObject() instanceof GlobalWindow) {
+            return 0;
+        }
+        
+	if (parent.equals(root) && !IdentityManager.getGlobalConfig().
+                getOptionBool("treeview", "sortservers", false)) {
 	    return parent.getChildCount();
 	}
 	
@@ -112,51 +121,34 @@ public class TreeViewModel extends DefaultTreeModel {
     /**
      * Compares the types of the specified nodes' objects to see if the new
      * node should be sorted before the other.
+     *
      * @param newChild The new child to be tested
      * @param child The existing child that it's being tested against
+     *
      * @return True iff newChild should be sorted before child
      */
     private boolean sortBefore(final DefaultMutableTreeNode newChild,
 	    final DefaultMutableTreeNode child) {
 	
-	return getPosition(newChild.getUserObject())
-	< getPosition(child.getUserObject());
+	return comparator.compare(
+                (FrameContainer) newChild.getUserObject(), 
+                (FrameContainer) child.getUserObject()) <= -1;
     }
     
     /**
      * Compares the types of the specified nodes' objects to see if the new
      * node should be sorted after the other.
+     *
      * @param newChild The new child to be tested
      * @param child The existing child that it's being tested against
+     *
      * @return True iff newChild should be sorted before child
      */
     private boolean sortAfter(final DefaultMutableTreeNode newChild,
 	    final DefaultMutableTreeNode child) {
 	
-	return getPosition(newChild.getUserObject())
-	> getPosition(child.getUserObject());
-    }
-    
-    /**
-     * Returns an integer corresponding to the expected order of an object.
-     * @param object The object to be tested
-     * @return Position of the object
-     */
-    private int getPosition(final Object object) {
-        if (object instanceof GlobalWindow) {
-            return 0;
-        } else if (object instanceof Server) {
-	    return 1;
-	} else if (object instanceof Raw) {
-	    return 2;
-	} else if (object instanceof Channel) {
-	    return 3;
-	} else if (object instanceof Query) {
-	    return 4;
-	} else {
-	    return 5;
-	}
+	return comparator.compare(
+                (FrameContainer) newChild.getUserObject(), 
+                (FrameContainer) child.getUserObject()) >= 1;
     }
 }
-
-
