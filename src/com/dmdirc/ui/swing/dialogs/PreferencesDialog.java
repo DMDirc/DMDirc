@@ -397,26 +397,30 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                 config.hasOption("treeview", "foregroundcolour"), true, true);
         preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewRolloverColour",
                 "Rollover colour: ", "Rollover colour to use",
-                config.getOption("ui", "treeviewRolloverColour", "f0f0f0"),
+                config.getOption("ui", "treeviewRolloverColour",
+                config.getOption("treeview", "backgroundcolour", 
+                config.getOption("ui", "backgroundcolour", "f0f0f0"))),
                 config.hasOption("ui", "treeviewRolloverColour"), true, true);
         preferencesPanel.addCheckboxOption(tabName, "treeview.sortwindows",
                 "Sort windows: ", "Sort windows of servers in the treeview",
-                config.getOptionBool("treeview", "sortwindows", false));
+                config.getOptionBool("treeview", "sortwindows"));
         preferencesPanel.addCheckboxOption(tabName, "treeview.sortservers",
                 "Sort servers: ", "Sort servers in the treeview",
-                config.getOptionBool("treeview", "sortservers", false));
+                config.getOptionBool("treeview", "sortservers"));
         preferencesPanel.addCheckboxOption(tabName, "ui.treeviewActiveBold",
                 "Active node bold: ", "Show the active node in bold",
-                config.getOptionBool("ui", "treeviewActiveBold", false));
+                config.getOptionBool("ui", "treeviewActiveBold"));
         preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewActiveForeground",
                 "Active node foreground: ", "Foreground colour of the active node",
                 config.getOption("ui", "treeviewActiveForeground",
-                config.getOption("ui", "foregroundcolour", "")),
+                config.getOption("treeview", "foregroundcolour", 
+                config.getOption("ui", "foregroundcolour", ""))),
                 config.hasOption("ui", "treeviewActiveForeground"), true, true);
         preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewActiveBackground",
                 "Active node background: ", "Background colour of the active node",
                 config.getOption("ui", "treeviewActiveBackground",
-                config.getOption("ui", "backgroundcolour", "")),
+                config.getOption("treeview", "backgroundcolour", 
+                config.getOption("ui", "backgroundcolour", ""))),
                 config.hasOption("ui", "treeviewActiveBackground"), true, true);
     }
     

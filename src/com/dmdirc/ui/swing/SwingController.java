@@ -42,7 +42,6 @@ import com.dmdirc.ui.interfaces.QueryWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
 import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.UIController;
-import com.dmdirc.ui.interfaces.UpdaterDialog;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
 import com.dmdirc.ui.swing.components.SwingStatusBar;
@@ -146,7 +145,7 @@ public final class SwingController implements UIController {
     /** {@inheritDoc} */
     public void showMigrationWizard() {
         new SwingFirstRunWizard(false).display();
-    }    
+    }
     
     /** {@inheritDoc} */
     public void showChannelSettingsDialog(final Channel channel) {
@@ -174,11 +173,12 @@ public final class SwingController implements UIController {
         try {
             UIUtilities.initUISettings();
             
-            final String lnfName = UIUtilities.getLookAndFeel(
-                    IdentityManager.getGlobalConfig().getOption("ui", "lookandfeel"));
-            
-            if (IdentityManager.getGlobalConfig().hasOption("ui", "lookandfeel") && !lnfName.isEmpty()) {
-                UIManager.setLookAndFeel(lnfName);
+            if (IdentityManager.getGlobalConfig().hasOption("ui", "lookandfeel")) {
+                final String lnfName = UIUtilities.getLookAndFeel(
+                        IdentityManager.getGlobalConfig().getOption("ui", "lookandfeel"));
+                if (!lnfName.isEmpty()) {
+                    UIManager.setLookAndFeel(lnfName);
+                }
             }
             
             //These are likely to change lots, and i cant test them - Greboid
