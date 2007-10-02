@@ -28,6 +28,7 @@ import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.Window;
+
 import java.util.Stack;
 
 /**
@@ -36,63 +37,65 @@ import java.util.Stack;
  * @author Chris
  */
 public class HistoryWindow extends FrameContainer {
-	
-	/** The title of our window. */
-	private final String title;
-	
-	/** The server we're associated with. */
-	private final Server server;
-	
-	/** The window we're using. */
-	private final Window myWindow;
-	
-	/**
-	 * Creates a new HistoryWindow.
-	 * 
-	 * @param title The title of the window
-	 * @param reader The reader to use to get the history
-	 * @param server The server we're associated with
-	 */
-	public HistoryWindow(final String title, final ReverseFileReader reader, final Server server) {
-		super();
-		
-		this.title = title;
-		this.server = server;
-		
-		icon = IconManager.getIconManager().getIcon("raw");
-		
-		myWindow = Main.getUI().getWindow(this);
-		myWindow.setTitle(title);
-		myWindow.setFrameIcon(icon);
-		myWindow.setVisible(true);
-		
-		Main.getUI().getFrameManager().addWindow(server, this);
-		
-		final Stack<String> lines = reader.getLines(IdentityManager.getGlobalConfig().getOptionInt("plugin-Logging", "history.lines", 50000));
-		while (lines.size() > 0) {
-			myWindow.addLine(lines.pop(), false);
-		}
-	}
-	
-	/** {@inheritDoc} */
-	public Window getFrame() {
-		return myWindow;
-	}
-	
-	/** {@inheritDoc} */
-	public String toString() {
-		return title;
-	}
-	
-	/** {@inheritDoc} */
-	public void close() {
-		myWindow.setVisible(false);
-		Main.getUI().getMainWindow().delChild(myWindow);
-                Main.getUI().getFrameManager().delWindow(server, this);
-	}
-	
-	/** {@inheritDoc} */
-	public Server getServer() {
-		return server;
-	}
+    
+    /** The title of our window. */
+    private final String title;
+    
+    /** The server we're associated with. */
+    private final Server server;
+    
+    /** The window we're using. */
+    private final Window myWindow;
+    
+    /**
+     * Creates a new HistoryWindow.
+     *
+     * @param title The title of the window
+     * @param reader The reader to use to get the history
+     * @param server The server we're associated with
+     */
+    public HistoryWindow(final String title, final ReverseFileReader reader, final Server server) {
+        super();
+        
+        this.title = title;
+        this.server = server;
+        
+        icon = IconManager.getIconManager().getIcon("raw");
+        
+        myWindow = Main.getUI().getWindow(this);
+        
+        Main.getUI().getFrameManager().addWindow(server, this);
+        
+        myWindow.setTitle(title);
+        myWindow.setFrameIcon(icon);
+        myWindow.setVisible(true);
+        
+        final Stack<String> lines = reader.getLines(
+                IdentityManager.getGlobalConfig().getOptionInt("plugin-Logging", "history.lines", 50000));
+        while (lines.size() > 0) {
+            myWindow.addLine(lines.pop(), false);
+        }
+    }
+    
+    /** {@inheritDoc} */
+    public Window getFrame() {
+        return myWindow;
+    }
+    
+    /** {@inheritDoc} */
+    public String toString() {
+        return title;
+    }
+    
+    /** {@inheritDoc} */
+    public void close() {
+        myWindow.setVisible(false);
+        Main.getUI().getMainWindow().delChild(myWindow);
+        Main.getUI().getFrameManager().delWindow(server, this);
+    }
+    
+    /** {@inheritDoc} */
+    public Server getServer() {
+        return server;
+    }
 }
