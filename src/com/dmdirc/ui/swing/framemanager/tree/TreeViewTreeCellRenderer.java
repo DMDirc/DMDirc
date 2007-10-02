@@ -156,8 +156,7 @@ public class TreeViewTreeCellRenderer extends JLabel implements
     }
     
     /** {@inheritDoc} */
-    public void configChanged(final String domain, final String key,
-            final String oldValue, final String newValue) {
+    public void configChanged(final String domain, final String key) {
         if ("ui".equals(domain)) {
             if ("treeviewRolloverColour".equals(key)) {
                 rolloverColour = config.getOptionColour("ui",

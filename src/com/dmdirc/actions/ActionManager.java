@@ -89,8 +89,9 @@ public final class ActionManager {
         registerWrapper(AliasWrapper.getAliasWrapper());
         registerWrapper(PerformWrapper.getPerformWrapper());
         
-        IdentityManager.getGlobalConfig().addChangeListener("actions", "killswitch",new ConfigChangeListener() {
-            public void configChanged(String domain, String key, String oldValue, String newValue) {
+        IdentityManager.getGlobalConfig().addChangeListener("actions", "killswitch",
+                new ConfigChangeListener() {
+            public void configChanged(final String domain, final String key) {
                 killSwitch = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch", false);
             }
         });
@@ -134,7 +135,7 @@ public final class ActionManager {
     public static void registerActionComponents(final ActionComponent[] comps) {
         for (ActionComponent comp : comps) {
             Logger.doAssertion(comp != null);
-
+            
             actionComponents.add(comp);
         }
     }
@@ -147,7 +148,7 @@ public final class ActionManager {
     public static void registerActionComparisons(final ActionComparison[] comps) {
         for (ActionComparison comp : comps) {
             Logger.doAssertion(comp != null);
-
+            
             actionComparisons.add(comp);
         }
     }
@@ -245,7 +246,7 @@ public final class ActionManager {
      * @param dir The directory to scan.
      */
     private static void loadActions(final File dir) {
-       Logger.doAssertion(dir != null, dir.isDirectory());
+        Logger.doAssertion(dir != null, dir.isDirectory());
         
         for (File file : dir.listFiles()) {
             new Action(dir.getName(), file.getName());

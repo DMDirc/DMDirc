@@ -41,6 +41,6 @@ public interface ConfigChangeListener {
      * @param oldValue The previous value of the setting
      * @param newValue The new value of the setting
      */
-    void configChanged(String domain, String key, String oldValue, String newValue);
+    void configChanged(String domain, String key);
 
 }

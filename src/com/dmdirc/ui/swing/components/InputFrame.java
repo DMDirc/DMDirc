@@ -450,9 +450,8 @@ public abstract class InputFrame extends Frame implements InputWindow,
     
     /** {@inheritDoc} */
     @Override
-    public void configChanged(final String domain, final String key,
-            final String oldValue, final String newValue) {
-        super.configChanged(domain, key, oldValue, newValue);
+    public void configChanged(final String domain, final String key) {
+        super.configChanged(domain, key);
         
         if ("ui".equals(domain) && getInputField() != null && getConfigManager() != null) {
             if ("inputbackgroundcolour".equals(key) || "backgroundcolour".equals(key)) {

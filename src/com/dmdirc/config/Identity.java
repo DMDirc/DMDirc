@@ -233,7 +233,7 @@ public class Identity implements Serializable, Comparable<Identity> {
             needSave = true;
             
             for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
-                listener.configChanged(domain, option, oldValue, value);
+                listener.configChanged(domain, option);
             }
         }
     }
@@ -292,7 +292,7 @@ public class Identity implements Serializable, Comparable<Identity> {
         needSave = true;
         
         for (ConfigChangeListener listener : new ArrayList<ConfigChangeListener>(listeners)) {
-            listener.configChanged(domain, option, value, null);
+            listener.configChanged(domain, option);
         }
     }
     

@@ -162,8 +162,7 @@ public final class IconManager implements ConfigChangeListener {
     }
 
     /** {@inheritDoc} */
-    public void configChanged(final String domain, final String key, 
-            final String oldValue, final String newValue) {
+    public void configChanged(final String domain, final String key) {
         if ("icon".equals(domain)) {
             if (images.containsKey(key)) {
                 images.remove(key);

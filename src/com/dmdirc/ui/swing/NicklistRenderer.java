@@ -102,8 +102,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
     }
     
     /** {@inheritDoc} */
-    public void configChanged(final String domain, final String key,
-            final String oldValue, final String newValue) {
+    public void configChanged(final String domain, final String key) {
         if ("nicklist".equals(domain) && "altBackgroundColour".equals(key)) {
             altBackgroundColour = config.getOptionColour("nicklist", 
                     "altBackgroundColour", getBackground());

@@ -341,9 +341,8 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
     
     /** {@inheritDoc} */
     @Override
-    public void configChanged(final String domain, final String key,
-            final String oldValue, final String newValue) {
-        super.configChanged(domain, key, oldValue, newValue);
+    public void configChanged(final String domain, final String key) {
+        super.configChanged(domain, key);
         
         if ("ui".equals(domain)) {
             if ("nicklistbackgroundcolour".equals(key) || "backgroundcolour".equals(key)) {

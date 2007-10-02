@@ -337,7 +337,7 @@ public final class CommandManager {
         
         // Set up a listener for config changes
         final ConfigChangeListener listener = new ConfigChangeListener() {
-            public void configChanged(String domain, String key, String oldValue, String newValue) {
+            public void configChanged(String domain, String key) {
                 commandChar = IdentityManager.getGlobalConfig()
                         .getOption("general", "commandchar").charAt(0);
                 silenceChar = IdentityManager.getGlobalConfig()

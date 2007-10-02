@@ -421,8 +421,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     }
     
     /** {@inheritDoc} */
-    public void configChanged(final String domain, final String key,
-            final String oldValue, final String newValue) {
+    public void configChanged(final String domain, final String key) {
         final List<ConfigChangeListener> targets
                 = new ArrayList<ConfigChangeListener>();
         
@@ -435,7 +434,7 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
         }
         
         for (ConfigChangeListener listener : targets) {
-            listener.configChanged(domain, key, oldValue, newValue);
+            listener.configChanged(domain, key);
         }
     }
 }

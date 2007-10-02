@@ -399,8 +399,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     }
     
     /** {@inheritDoc} */
-    public void configChanged(final String domain, final String key,
-            final String oldValue, final String newValue) {
+    public void configChanged(final String domain, final String key) {
         tree.setBackground(IdentityManager.getGlobalConfig().getOptionColour("treeview", "backgroundcolour",
                 IdentityManager.getGlobalConfig().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
         tree.setForeground(IdentityManager.getGlobalConfig().getOptionColour("treeview", "foregroundcolour",

@@ -499,8 +499,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     }
     
     /** {@inheritDoc} */
-    public void configChanged(final String domain, final String key,
-            final String oldValue, final String newValue) {
+    public void configChanged(final String domain, final String key) {
         if ("ui".equals(domain) && ("lookandfeel".equals(key)
         || "framemanager".equals(key) || "framemanagerPosition".equals(key))
         && !restartNeeded) {
