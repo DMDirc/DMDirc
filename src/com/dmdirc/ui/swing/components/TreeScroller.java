@@ -73,12 +73,12 @@ public class TreeScroller implements MouseWheelListener {
         DefaultMutableTreeNode thisNode;
         DefaultMutableTreeNode nextNode;
         
-        if (rootNode == null || !rootVisible) {
+        if (rootNode == null) {
             //no root node or root node not visible
             return;
         }
         
-        if (rootNode.getChildCount() == 0) {
+        if (rootNode.getChildCount() == 0 && !rootVisible) {
             //root node has no children
             return;
         }

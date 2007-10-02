@@ -146,7 +146,7 @@ public class TreeViewTreeCellRenderer extends JLabel implements
             setIcon(defaultIcon);
         }
         
-        if (nodeObject.equals(manager.getSelected())) {
+        if (sel) {
             if (activeBold) {
                 setFont(getFont().deriveFont(Font.BOLD));
             }

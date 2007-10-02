@@ -42,9 +42,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
@@ -58,14 +56,16 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 /**
  * Manages open windows in the application in a tree style view.
  */
-public final class TreeFrameManager implements FrameManager, MouseListener, 
-        ActionListener, MouseMotionListener, AdjustmentListener, Serializable, 
+public final class TreeFrameManager implements FrameManager, MouseListener,
+        ActionListener, MouseMotionListener, AdjustmentListener, Serializable,
         ConfigChangeListener, TreeSelectionListener {
     
     /**
@@ -73,64 +73,38 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
-    /**
-     * display tree.
-     */
+    /** display tree. */
     private final JTree tree;
     
-    /**
-     * root node.
-     */
+    /** root node. */
     private final DefaultMutableTreeNode root;
     
-    /**
-     * data model.
-     */
+    /** data model. */
     private final TreeViewModel model;
     
-    /**
-     * node storage, used for adding and deleting nodes correctly.
-     */
+    /** node storage, used for adding and deleting nodes correctly. */
     private final Map<FrameContainer, DefaultMutableTreeNode> nodes;
     
-    /**
-     * stores colour associated with a node, cheap hack till i rewrite the model.
-     */
+    /** Node -> Colour mapping. */
     private final Map<FrameContainer, Color> nodeColours;
     
-    /**
-     * stores background colour associated with a node,
-     * cheap hack till i rewrite the model.
-     */
+    /** Current rollover node. */
     private DefaultMutableTreeNode rolloverNode;
     
-    /**
-     * popup menu for menu items on nodes.
-     */
+    /** popup menu for menu items on nodes. */
     private final JPopupMenu popup;
     
-    /**
-     * close menu item used in popup menus.
-     */
+    /** close menu item used in popup menus. */
     private final JMenuItem closeMenuItem;
-    
-    /**
-     * The object that is currently selected.
-     */
-    private transient FrameContainer selected;
     
     /** Parent JComponent. */
     private JComponent parent;
     
-    /**
-     *node under right click operation.
-     */
+    /** node under right click operation. */
     private DefaultMutableTreeNode popupNode;
-    
-    /** Parent node. */
-    private final List<FrameContainer> parents;
+
     
     /**
      * creates a new instance of the TreeFrameManager.
@@ -143,7 +117,6 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         root = new DefaultMutableTreeNode("DMDirc");
         model = new TreeViewModel(root);
         tree = new JTree(model);
-        parents = new ArrayList<FrameContainer>();
         
         final TreeViewTreeCellRenderer renderer = new TreeViewTreeCellRenderer(this);
         
@@ -195,28 +168,14 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     
     /** {@inheritDoc} */
     public void setSelected(final FrameContainer source) {
-        selected = source;
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                tree.repaint();
+        if (source != null) {
+            final TreeNode[] treePath = ((DefaultTreeModel) tree.getModel()).
+                    getPathToRoot(nodes.get(source));
+            if (treePath == null || treePath.length == 0) {
+                return;
             }
-        });
-    }
-    
-    /**
-     * Retrieves the currently selected object.
-     * @return The object that is currently selected.
-     */
-    public FrameContainer getSelected() {
-        return selected;
-    }
-    
-    /**
-     * Retrieves the currently selected node.
-     * @return The node that is currently selected.
-     */
-    public DefaultMutableTreeNode getSelectedNode() {
-        return nodes.get(selected);
+            tree.setSelectionPath(new TreePath(treePath));
+        }
     }
     
     /** {@inheritDoc} */
@@ -291,14 +250,10 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     
     /** {@inheritDoc} */
     public void addWindow(final FrameContainer window) {
-        parents.add(window);
         final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(window, node);
         node.setUserObject(window);
         model.insertNodeInto(node, root);
-        if (root.getChildCount() == 1) {
-            selected = window;
-        }
         tree.expandPath(new TreePath(node.getPath()).getParentPath());
         final Rectangle view = tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
         tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
@@ -306,7 +261,6 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     
     /** {@inheritDoc} */
     public void delWindow(final FrameContainer window) {
-        parents.remove(window);
         if (nodes != null && nodes.get(window) != null) {
             final DefaultMutableTreeNode node = nodes.get(window);
             if (node.getLevel() == 0) {
@@ -513,7 +467,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         
         tree.repaint();
     }
-
+    
     /** {@inheritDoc} */
     public void valueChanged(final TreeSelectionEvent e) {
         ((FrameContainer )((DefaultMutableTreeNode) e.getPath().
