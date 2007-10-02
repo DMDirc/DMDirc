@@ -42,7 +42,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -87,9 +86,6 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     /** node storage, used for adding and deleting nodes correctly. */
     private final Map<FrameContainer, DefaultMutableTreeNode> nodes;
     
-    /** Node -> Colour mapping. */
-    private final Map<FrameContainer, Color> nodeColours;
-    
     /** Current rollover node. */
     private DefaultMutableTreeNode rolloverNode;
     
@@ -106,7 +102,6 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     /** creates a new instance of the TreeFrameManager. */
     public TreeFrameManager() {
         nodes = new Hashtable<FrameContainer, DefaultMutableTreeNode>();
-        nodeColours = new Hashtable<FrameContainer, Color>();
         popup = new JPopupMenu();
         closeMenuItem = new JMenuItem("Close window");
         root = new DefaultMutableTreeNode("DMDirc");
@@ -167,8 +162,8 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
             final TreeNode[] treePath = ((DefaultTreeModel) tree.getModel()).
                     getPathToRoot(nodes.get(source));
             if (treePath == null || treePath.length == 0) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unknown node selected", 
-                        new IllegalArgumentException("Unknown node selected: " 
+                Logger.appError(ErrorLevel.MEDIUM, "Unknown node selected",
+                        new IllegalArgumentException("Unknown node selected: "
                         + source));
                 return;
             }
@@ -178,10 +173,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     
     /** {@inheritDoc} */
     public void showNotification(final FrameContainer source, final Color colour) {
-        if (nodeColours != null) {
-            nodeColours.put(source, colour);
-            tree.repaint();
-        }
+        tree.repaint();
     }
     
     /**
@@ -203,21 +195,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     
     /** {@inheritDoc} */
     public void clearNotification(final FrameContainer source) {
-        if (nodeColours != null && nodeColours.containsKey(source)) {
-            nodeColours.remove(source);
-        }
-    }
-    
-    /**
-     * retrieves the colour of a specific node.
-     * @param source node to check colour of.
-     * @return colour of the node.
-     */
-    public Color getNodeColour(final FrameContainer source) {
-        if (nodeColours != null && nodeColours.containsKey(source)) {
-            return nodeColours.get(source);
-        }
-        return null;
+        tree.repaint();
     }
     
     /** {@inheritDoc} */
@@ -287,7 +265,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     
     /** {@inheritDoc} */
     public void iconUpdated(final FrameContainer window) {
-        // Do nothing
+        tree.repaint();
     }
     
     /**
