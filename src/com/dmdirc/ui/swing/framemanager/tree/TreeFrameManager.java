@@ -29,6 +29,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.components.TreeScroller;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -40,8 +41,6 @@ import java.awt.event.AdjustmentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -56,6 +55,8 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
@@ -63,9 +64,9 @@ import javax.swing.tree.TreeSelectionModel;
 /**
  * Manages open windows in the application in a tree style view.
  */
-public final class TreeFrameManager implements FrameManager,
-        MouseListener, ActionListener, MouseMotionListener, MouseWheelListener,
-        AdjustmentListener, Serializable, ConfigChangeListener {
+public final class TreeFrameManager implements FrameManager, MouseListener, 
+        ActionListener, MouseMotionListener, AdjustmentListener, Serializable, 
+        ConfigChangeListener, TreeSelectionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -174,7 +175,8 @@ public final class TreeFrameManager implements FrameManager,
         
         tree.addMouseListener(this);
         tree.addMouseMotionListener(this);
-        tree.addMouseWheelListener(this);
+        tree.addTreeSelectionListener(this);
+        new TreeScroller(tree);
         
         IdentityManager.getGlobalConfig().addChangeListener("treeview", this);
         IdentityManager.getGlobalConfig().addChangeListener("ui", "backgroundcolour", this);
@@ -501,136 +503,6 @@ public final class TreeFrameManager implements FrameManager,
         return node;
     }
     
-    /**
-     * Invoked when the mouse wheel is rotated.
-     * @param event mouse event.
-     */
-    public void mouseWheelMoved(final MouseWheelEvent event) {
-        //get the number of notches (used only for direction)
-        if (event.getWheelRotation() < 0) {
-            changeFocus(true);
-        } else {
-            changeFocus(false);
-        }
-    }
-    
-    /**
-     * Activates the node above or below the active node in the tree.
-     *
-     * @param direction true = up, false = down.
-     */
-    private void changeFocus(final boolean direction) {
-        DefaultMutableTreeNode thisNode, nextNode;
-        
-        if (getSelectedNode() == null) {
-            //no selected node, get the root node
-            thisNode = root;
-            //are there any servers to select?
-            if (thisNode.getChildCount() > 0) {
-                thisNode = (DefaultMutableTreeNode) thisNode.getChildAt(0);
-            } else {
-                //then wait till there are
-                return;
-            }
-        } else {
-            //use the selected node to start from
-            thisNode = getSelectedNode();
-        }
-        //are we going up or down?
-        if (direction) {
-            //up
-            nextNode = changeFocusUp(thisNode);
-        } else {
-            //down
-            nextNode = changeFocusDown(thisNode);
-        }
-        //activate the nodes frame
-        ((FrameContainer) nextNode.getUserObject()).activateFrame();
-    }
-    
-    /**
-     * Changes the tree focus up.
-     *
-     * @param node Start node
-     *
-     * @return next node
-     */
-    private DefaultMutableTreeNode changeFocusUp(final DefaultMutableTreeNode node) {
-        DefaultMutableTreeNode thisNode, nextNode;
-        
-        thisNode = node;
-        
-        if (parents.contains(thisNode.getUserObject())) {
-            if (thisNode.getParent().getIndex(thisNode) == 0) {
-                //first server - last child of parent's last child
-                nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
-                thisNode.getParent()).getLastChild();
-                if (nextNode.getChildCount() > 0) {
-                    nextNode = (DefaultMutableTreeNode) nextNode.getLastChild();
-                }
-            } else {
-                //other servers - last child of previous sibling
-                nextNode = thisNode.getPreviousSibling();
-                if (nextNode.getChildCount() > 0) {
-                    nextNode = (DefaultMutableTreeNode)
-                    (thisNode.getPreviousSibling()).getLastChild();
-                }
-            }
-        } else {
-            if (thisNode.getParent().getIndex(thisNode) == 0) {
-                //first frame - parent
-                nextNode = (DefaultMutableTreeNode) thisNode.getParent();
-            } else {
-                //other frame - previous sibling
-                nextNode = thisNode.getPreviousSibling();
-            }
-        }
-        
-        return nextNode;
-    }
-    
-    /**
-     * Changes the tree focus down.
-     *
-     * @param node Start node
-     *
-     * @return next node
-     */
-    private DefaultMutableTreeNode changeFocusDown(final DefaultMutableTreeNode node) {
-        DefaultMutableTreeNode thisNode, nextNode;
-        
-        thisNode = node;
-        
-        if (parents.contains(thisNode.getUserObject())) {
-            if (thisNode.getChildCount() > 0) {
-                //server has frames, use first
-                nextNode = (DefaultMutableTreeNode) thisNode.getFirstChild();
-            } else {
-                nextNode = thisNode.getNextSibling();
-                //no next server, use first
-                if (nextNode == null) {
-                    nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
-                    thisNode.getParent()).getFirstChild();
-                }
-            }
-        } else {
-            if (thisNode.getParent().getIndex(thisNode) == thisNode.getParent().getChildCount() - 1) {
-                //last frame - get the parents next sibling
-                nextNode = ((DefaultMutableTreeNode) thisNode.getParent()).getNextSibling();
-                //parent doesnt have a next sibling, get the first child of the grandparent
-                if (nextNode == null) {
-                    nextNode = (DefaultMutableTreeNode) ((DefaultMutableTreeNode)
-                    thisNode.getParent().getParent()).getFirstChild();
-                }
-            } else {
-                //other frames - get the next sibling
-                nextNode = thisNode.getNextSibling();
-            }
-        }
-        
-        return nextNode;
-    }
-    
     /** {@inheritDoc} */
     public void configChanged(final String domain, final String key,
             final String oldValue, final String newValue) {
@@ -640,6 +512,12 @@ public final class TreeFrameManager implements FrameManager,
                 IdentityManager.getGlobalConfig().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
         
         tree.repaint();
+    }
+
+    /** {@inheritDoc} */
+    public void valueChanged(final TreeSelectionEvent e) {
+        ((FrameContainer )((DefaultMutableTreeNode) e.getPath().
+                getLastPathComponent()).getUserObject()).activateFrame();
     }
     
 }

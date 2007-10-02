@@ -161,6 +161,8 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         panels = new ArrayList<JPanel>();
         
         initComponents();
+        
+        new TreeScroller(tabList);
     }
     
     /**
