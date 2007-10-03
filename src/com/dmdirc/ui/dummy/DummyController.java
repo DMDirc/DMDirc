@@ -40,6 +40,7 @@ import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.interfaces.UpdaterDialog;
 import com.dmdirc.ui.interfaces.Window;
+import com.dmdirc.ui.swing.framemanager.DummyFrameManager;
 import com.dmdirc.updater.Update;
 
 import java.util.List;
@@ -71,7 +72,7 @@ public final class DummyController implements UIController {
     
     /** {@inheritDoc} */
     public FrameManager getFrameManager() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new DummyFrameManager();
     }
     
     /** {@inheritDoc} */
