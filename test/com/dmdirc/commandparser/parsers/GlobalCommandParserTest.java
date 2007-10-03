@@ -5,9 +5,8 @@
  * Created on 16 June 2007, 22:50
  */
 
-package com.dmdirc.commandparser;
+package com.dmdirc.commandparser.parsers;
 
-import com.dmdirc.Config;
 import com.dmdirc.config.IdentityManager;
 import junit.framework.TestCase;
 import org.junit.AfterClass;
@@ -36,6 +35,7 @@ public class GlobalCommandParserTest extends TestCase {
 
     @Before
     public void setUp() throws Exception {
+        IdentityManager.load();
     }
 
     @Test

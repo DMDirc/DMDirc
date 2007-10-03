@@ -7,7 +7,6 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.Config;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import java.io.File;
