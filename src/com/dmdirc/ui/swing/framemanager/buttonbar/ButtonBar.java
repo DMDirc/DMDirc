@@ -23,6 +23,7 @@
 package com.dmdirc.ui.swing.framemanager.buttonbar;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.FrameContainerComparator;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.FrameManager;
@@ -143,7 +144,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
             panel.add(buttons.get(entry.getKey()), constraints);
             increment(constraints);
             
-            Collections.sort(entry.getValue(), new ButtonComparator());
+            Collections.sort(entry.getValue(), new FrameContainerComparator());
             
             for (FrameContainer child : entry.getValue()) {
                 buttons.get(child).setPreferredSize(new Dimension(buttonWidth, 25));

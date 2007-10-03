@@ -42,6 +42,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -98,6 +99,9 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     /** node under right click operation. */
     private DefaultMutableTreeNode popupNode;
     
+    /** notification colour cache. */
+    private final Map<FrameContainer, Color> notificationColours;
+    
     
     /** creates a new instance of the TreeFrameManager. */
     public TreeFrameManager() {
@@ -109,6 +113,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         tree = new JTree(model);
         
         final TreeViewTreeCellRenderer renderer = new TreeViewTreeCellRenderer(this);
+        notificationColours = new HashMap<FrameContainer, Color>();
         
         closeMenuItem.setActionCommand("Close");
         popup.add(closeMenuItem);
@@ -173,6 +178,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     
     /** {@inheritDoc} */
     public void showNotification(final FrameContainer source, final Color colour) {
+        notificationColours.put(source, colour);
         tree.repaint();
     }
     
@@ -195,6 +201,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     
     /** {@inheritDoc} */
     public void clearNotification(final FrameContainer source) {
+        notificationColours.remove(source);
         tree.repaint();
     }
     
@@ -208,10 +215,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         parent.setLayout(new BorderLayout());
         parent.add(scrollPane);
         
-        tree.setBackground(IdentityManager.getGlobalConfig().getOptionColour("treeview", "backgroundcolour",
-                IdentityManager.getGlobalConfig().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
-        tree.setForeground(IdentityManager.getGlobalConfig().getOptionColour("treeview", "foregroundcolour",
-                IdentityManager.getGlobalConfig().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
+        setColours();
     }
     
     /** {@inheritDoc} */
@@ -275,6 +279,17 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      */
     public JTree getTree() {
         return tree;
+    }
+    
+    /**
+     * Returns the notificaton colour for a given framecontainer.
+     *
+     * @param frame Framecontainer to get the notification colour for
+     *
+     * @return Notification colour or null
+     */
+    public Color getNotificationColour(final FrameContainer frame) {
+        return notificationColours.get(frame);
     }
     
     /** {@inheritDoc} */
@@ -398,12 +413,19 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         return node;
     }
     
-    /** {@inheritDoc} */
-    public void configChanged(final String domain, final String key) {
+    /** Sets treeview colours. */
+    private void setColours() {
         tree.setBackground(IdentityManager.getGlobalConfig().getOptionColour("treeview", "backgroundcolour",
                 IdentityManager.getGlobalConfig().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
         tree.setForeground(IdentityManager.getGlobalConfig().getOptionColour("treeview", "foregroundcolour",
                 IdentityManager.getGlobalConfig().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
+        
+        tree.repaint();
+    }
+    
+    /** {@inheritDoc} */
+    public void configChanged(final String domain, final String key) {
+        setColours();
         
         tree.repaint();
     }

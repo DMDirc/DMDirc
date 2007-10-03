@@ -92,6 +92,7 @@ public class TreeViewTreeCellRenderer extends JLabel implements
         setColours();
         
         config.addChangeListener("ui", this);
+        config.addChangeListener("treeview", this);
     }
     
     /**
@@ -131,7 +132,10 @@ public class TreeViewTreeCellRenderer extends JLabel implements
         final Object nodeObject = node.getUserObject();
         
         if (nodeObject instanceof FrameContainer) {
-            setForeground(((FrameContainer) nodeObject).getNotification());
+            final Color colour = manager.getNotificationColour((FrameContainer) nodeObject);
+            if (colour != null) {
+              setForeground(colour);
+            }
             setIcon(((FrameContainer) nodeObject).getIcon());
         } else {
             setIcon(defaultIcon);
@@ -172,7 +176,7 @@ public class TreeViewTreeCellRenderer extends JLabel implements
     
     /** {@inheritDoc} */
     public void configChanged(final String domain, final String key) {
-        if ("ui".equals(domain) &&
+        if (("ui".equals(domain) || "treeview".equals(domain)) &&
                 ("treeviewRolloverColour".equals(key) ||
                 "treeviewActiveBackground".equals(key) ||
                 "treeviewActiveForeground".equals(key) ||
