@@ -231,19 +231,19 @@ public final class IdentityManager {
         
         for (Identity identity : identities) {
             switch (identity.getTarget().getType()) {
-            case ConfigTarget.TYPE_IRCD:
+            case IRCD:
                 comp = ircd;
                 break;
-            case ConfigTarget.TYPE_NETWORK:
+            case NETWORK:
                 comp = network;
                 break;
-            case ConfigTarget.TYPE_SERVER:
+            case SERVER:
                 comp = server;
                 break;
-            case ConfigTarget.TYPE_CHANNEL:
+            case CHANNEL:
                 comp = channel;
                 break;
-            case ConfigTarget.TYPE_PROFILE:
+            case PROFILE:
                 comp = null;
                 break;
             default:
@@ -301,7 +301,7 @@ public final class IdentityManager {
         final String myTarget = (channel + "@" + network).toLowerCase();
         
         for (Identity identity : identities) {
-            if (identity.getTarget().getType() == ConfigTarget.TYPE_CHANNEL
+            if (identity.getTarget().getType() == ConfigTarget.TYPE.CHANNEL
                     && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                 return identity;
             }
@@ -326,7 +326,7 @@ public final class IdentityManager {
         final String myTarget = network.toLowerCase();
         
         for (Identity identity : identities) {
-            if (identity.getTarget().getType() == ConfigTarget.TYPE_NETWORK
+            if (identity.getTarget().getType() == ConfigTarget.TYPE.NETWORK
                     && identity.getTarget().getData().equalsIgnoreCase(myTarget)) {
                 return identity;
             }

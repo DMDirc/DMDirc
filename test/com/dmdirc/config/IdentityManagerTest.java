@@ -29,9 +29,9 @@ public class IdentityManagerTest extends TestCase {
         final ConfigManager gcm = IdentityManager.getGlobalConfig();
         
         for (Identity identity : gcm.getSources()) {
-            assertTrue(identity.getTarget().getType() == ConfigTarget.TYPE_GLOBAL
-                    || identity.getTarget().getType() == ConfigTarget.TYPE_GLOBALDEFAULT
-                    || identity.getTarget().getType() == ConfigTarget.TYPE_THEME);
+            assertTrue(identity.getTarget().getType() == ConfigTarget.TYPE.GLOBAL
+                    || identity.getTarget().getType() == ConfigTarget.TYPE.GLOBALDEFAULT
+                    || identity.getTarget().getType() == ConfigTarget.TYPE.THEME);
         }
     }
     

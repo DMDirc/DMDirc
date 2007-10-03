@@ -295,19 +295,19 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
         String comp;
         
         switch (identity.getTarget().getType()) {
-        case ConfigTarget.TYPE_IRCD:
+        case IRCD:
             comp = ircd;
             break;
-        case ConfigTarget.TYPE_NETWORK:
+        case NETWORK:
             comp = network;
             break;
-        case ConfigTarget.TYPE_SERVER:
+        case SERVER:
             comp = server;
             break;
-        case ConfigTarget.TYPE_CHANNEL:
+        case CHANNEL:
             comp = channel;
             break;
-        case ConfigTarget.TYPE_PROFILE:
+        case PROFILE:
             // We don't want profiles
             comp = null;
             break;

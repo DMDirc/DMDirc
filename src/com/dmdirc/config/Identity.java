@@ -318,7 +318,7 @@ public class Identity implements Serializable, Comparable<Identity> {
      */
     public void save() {
         if (needSave && file != null) {
-            if (myTarget.getType() == ConfigTarget.TYPE_GLOBAL) {
+            if (myTarget.getType() == ConfigTarget.TYPE.GLOBAL) {
                 // If we're the global config, unset useless settings that are
                 // covered by global defaults.
                 

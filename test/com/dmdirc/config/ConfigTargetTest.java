@@ -26,14 +26,14 @@ public class ConfigTargetTest extends TestCase {
     public void testDefault() {
         final ConfigTarget target = new ConfigTarget();
         
-        assertEquals(target.getType(), ConfigTarget.TYPE_GLOBAL);
+        assertEquals(target.getType(), ConfigTarget.TYPE.GLOBAL);
     }
     
     public void testSetGlobal() {
         final ConfigTarget target = new ConfigTarget();
         target.setGlobal();
         
-        assertEquals(target.getType(), ConfigTarget.TYPE_GLOBAL);
+        assertEquals(target.getType(), ConfigTarget.TYPE.GLOBAL);
         assertEquals(target.getTypeName(), "global");
     }
     
@@ -41,7 +41,7 @@ public class ConfigTargetTest extends TestCase {
         final ConfigTarget target = new ConfigTarget();
         target.setGlobalDefault();
         
-        assertEquals(target.getType(), ConfigTarget.TYPE_GLOBALDEFAULT);
+        assertEquals(target.getType(), ConfigTarget.TYPE.GLOBALDEFAULT);
         assertEquals(target.getTypeName(), "globaldefault");
     }
     
@@ -49,7 +49,7 @@ public class ConfigTargetTest extends TestCase {
         final ConfigTarget target = new ConfigTarget();
         target.setTheme();
         
-        assertEquals(target.getType(), ConfigTarget.TYPE_THEME);
+        assertEquals(target.getType(), ConfigTarget.TYPE.THEME);
         assertEquals(target.getTypeName(), "theme");
     }
     
@@ -57,7 +57,7 @@ public class ConfigTargetTest extends TestCase {
         final ConfigTarget target = new ConfigTarget();
         target.setProfile();
         
-        assertEquals(target.getType(), ConfigTarget.TYPE_PROFILE);
+        assertEquals(target.getType(), ConfigTarget.TYPE.PROFILE);
         assertEquals(target.getTypeName(), "profile");
     }
     
@@ -65,7 +65,7 @@ public class ConfigTargetTest extends TestCase {
         final ConfigTarget target = new ConfigTarget();
         target.setIrcd("ircd_name");
         
-        assertEquals(target.getType(), ConfigTarget.TYPE_IRCD);
+        assertEquals(target.getType(), ConfigTarget.TYPE.IRCD);
         assertEquals(target.getTypeName(), "ircd");
         assertEquals(target.getData(), "ircd_name");
     }
@@ -74,7 +74,7 @@ public class ConfigTargetTest extends TestCase {
         final ConfigTarget target = new ConfigTarget();
         target.setNetwork("net_name");
         
-        assertEquals(target.getType(), ConfigTarget.TYPE_NETWORK);
+        assertEquals(target.getType(), ConfigTarget.TYPE.NETWORK);
         assertEquals(target.getTypeName(), "network");
         assertEquals(target.getData(), "net_name");        
     }
@@ -83,7 +83,7 @@ public class ConfigTargetTest extends TestCase {
         final ConfigTarget target = new ConfigTarget();
         target.setServer("server_name");
         
-        assertEquals(target.getType(), ConfigTarget.TYPE_SERVER);
+        assertEquals(target.getType(), ConfigTarget.TYPE.SERVER);
         assertEquals(target.getTypeName(), "server");
         assertEquals(target.getData(), "server_name");        
     }
@@ -92,7 +92,7 @@ public class ConfigTargetTest extends TestCase {
         final ConfigTarget target = new ConfigTarget();
         target.setChannel("channel_name");
         
-        assertEquals(target.getType(), ConfigTarget.TYPE_CHANNEL);
+        assertEquals(target.getType(), ConfigTarget.TYPE.CHANNEL);
         assertEquals(target.getTypeName(), "channel");
         assertEquals(target.getData(), "channel_name");        
     }

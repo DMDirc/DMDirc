@@ -28,29 +28,15 @@ import java.io.Serializable;
  * Represents the target of a particular config source.
  * <p>
  * Note: this class has a natural ordering that is inconsistent with equals.
- * 
+ *
  * @author chris
  */
 public final class ConfigTarget implements Comparable, Serializable {
     
-    // TODO: Convert this lot to an enum.
-    
-    /** Indicates that the target is the global default config. */
-    public static final int TYPE_GLOBALDEFAULT = 0;
-    /** Indicates that the target is a global config source. */
-    public static final int TYPE_GLOBAL = 1;
-    /** Indicates that the target is a theme. */
-    public static final int TYPE_THEME = 2;
-    /** Indicates that the target is a profile. */
-    public static final int TYPE_PROFILE = 3;    
-    /** Indicates that the target targets an ircd. */
-    public static final int TYPE_IRCD = 4;
-    /** Indicates that the target targets a network. */
-    public static final int TYPE_NETWORK = 5;
-    /** Indicates that the target targets a server. */
-    public static final int TYPE_SERVER = 6;
-    /** Indicates that the target targets a channel. */
-    public static final int TYPE_CHANNEL = 7;
+    /** The possible target types. */
+    public static enum TYPE {
+        GLOBALDEFAULT, GLOBAL, THEME, PROFILE, IRCD, NETWORK, SERVER, CHANNEL,
+    };
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -60,7 +46,8 @@ public final class ConfigTarget implements Comparable, Serializable {
     private static final long serialVersionUID = 2;
     
     /** The type of this target. */
-    private int type = 1;
+    private TYPE type = ConfigTarget.TYPE.GLOBAL;
+    
     /** The data of this target. */
     private String data;
     
@@ -71,99 +58,99 @@ public final class ConfigTarget implements Comparable, Serializable {
     
     /** Sets this target to be a global config source. */
     public void setGlobal() {
-        type = TYPE_GLOBAL;
+        type = TYPE.GLOBAL;
         data = "";
     }
     
     /** Sets this target to be a global default source. */
     public void setGlobalDefault() {
-        type = TYPE_GLOBALDEFAULT;
+        type = TYPE.GLOBALDEFAULT;
         data = "";
     }
     
     /** Sets this target to be a theme source. */
     public void setTheme() {
-        type = TYPE_THEME;
+        type = TYPE.THEME;
         data = "";
     }
     
     /** Sets this target to be a profile source. */
     public void setProfile() {
-        type = TYPE_PROFILE;
+        type = TYPE.PROFILE;
         data = "";
     }
     
     /**
      * Sets this target to target an ircd.
-     * 
+     *
      * @param ircd The ircd to target
      */
     public void setIrcd(final String ircd) {
-        type = TYPE_IRCD;
+        type = TYPE.IRCD;
         data = ircd;
     }
     
     /**
      * Sets this target to target a network.
-     * 
+     *
      * @param network The network to target
      */
     public void setNetwork(final String network) {
-        type = TYPE_NETWORK;
+        type = TYPE.NETWORK;
         data = network;
     }
     
     /**
      * Sets this target to target a server.
-     * 
+     *
      * @param server The server to target
      */
     public void setServer(final String server) {
-        type = TYPE_SERVER;
+        type = TYPE.SERVER;
         data = server;
     }
     
     /**
      * Sets this target to target a channel.
-     * 
+     *
      * @param channel The channel to target, in the form of channel@network
      */
     public void setChannel(final String channel) {
-        type = TYPE_CHANNEL;
+        type = TYPE.CHANNEL;
         data = channel;
     }
     
     /**
      * Retrieves the type of this target.
-     * 
+     *
      * @return This target's type
      */
-    public int getType() {
+    public TYPE getType() {
         return type;
     }
     
     /**
      * Returns a string representation of the type of this target.
-     * 
+     *
      * @return A string describing this target's type
      */
     public String getTypeName() {
         switch(type) {
-        case TYPE_GLOBALDEFAULT:
+        case GLOBALDEFAULT:
             return "globaldefault";
-        case TYPE_GLOBAL:
+        case GLOBAL:
             return "global";
-        case TYPE_THEME:
+        case THEME:
             return "theme";
-        case TYPE_PROFILE:
+        case PROFILE:
             return "profile";
-        case TYPE_IRCD:
+        case IRCD:
             return "ircd";
-        case TYPE_NETWORK:
+        case NETWORK:
             return "network";
-        case TYPE_SERVER:
+        case SERVER:
             return "server";
-        case TYPE_CHANNEL:
+        case CHANNEL:
             return "channel";
         default:
             return "Unknown";
@@ -172,7 +159,7 @@ public final class ConfigTarget implements Comparable, Serializable {
     
     /**
      * Retrieves the data associated with this target.
-     * 
+     *
      * @return This target's data
      */
     public String getData() {
@@ -182,7 +169,7 @@ public final class ConfigTarget implements Comparable, Serializable {
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
-        return type + data.hashCode();
+        return type.ordinal() + data.hashCode();
     }
     
     /** {@inheritDoc} */
@@ -198,37 +185,37 @@ public final class ConfigTarget implements Comparable, Serializable {
     
     /**
      * Compares this target to another to determine which is more specific.
-     * 
+     *
      * @param target The target to compare to
      * @return a negative integer if this config is less specific, 0 if they're
      * equal, or a positive integer if this is more specific
      */
     public int compareTo(final Object target) {
-        return type - ((ConfigTarget) target).getType();
+        return type.compareTo(((ConfigTarget) target).getType());
     }
     
     /**
      * Returns a string representation of this object.
-     * 
+     *
      * @return A string representation of this object
      */
     public String toString() {
         switch (type) {
-        case TYPE_GLOBALDEFAULT:
+        case GLOBALDEFAULT:
             return "Global defaults";
-        case TYPE_GLOBAL:
+        case GLOBAL:
             return "Global config";
-        case TYPE_THEME:
+        case THEME:
             return "Theme";
-        case TYPE_PROFILE:
+        case PROFILE:
             return "Profile";
-        case TYPE_IRCD:
+        case IRCD:
             return "Ircd specific: " + data;
-        case TYPE_NETWORK:
+        case NETWORK:
             return "Network specific: " + data;
-        case TYPE_SERVER:
+        case SERVER:
             return "Server specific: " + data;
-        case TYPE_CHANNEL:
+        case CHANNEL:
             return "Channel specific: " + data;
         default:
             return "Unknown";
