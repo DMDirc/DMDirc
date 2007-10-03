@@ -356,16 +356,16 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         final String tabName = "Nicklist";
         preferencesPanel.addCategory("GUI", tabName, "");
         
-        preferencesPanel.addOptionalColourOption(tabName, "nicklist.backgroundcolour",
+        preferencesPanel.addOptionalColourOption(tabName, "ui.nicklistbackgroundcolour",
                 "Nicklist background colour: ", "Background colour to use for the nicklist",
-                config.getOption("nicklist", "backgroundcolour",
+                config.getOption("ui", "nicklistbackgroundcolour",
                 config.getOption("ui", "backgroundcolour", "")),
-                config.hasOption("nicklist", "backgroundcolour"), true, true);
-        preferencesPanel.addOptionalColourOption(tabName, "nicklist.foregroundcolour",
+                config.hasOption("ui", "nicklistbackgroundcolour"), true, true);
+        preferencesPanel.addOptionalColourOption(tabName, "ui.nicklistforegroundcolour",
                 "Nicklist foreground colour: ", "Foreground colour to use for the nicklist",
-                config.getOption("nicklist", "foregroundcolour",
+                config.getOption("ui", "nicklistforegroundcolour",
                 config.getOption("ui", "foregroundcolour", "")),
-                config.hasOption("nicklist", "foregroundcolour"), true, true);
+                config.hasOption("ui", "nicklistforegroundcolour"), true, true);
         preferencesPanel.addOptionalColourOption(tabName, "nicklist.altBackgroundColour",
                 "Alternate nicklist colour: ", "Alternate background colour to use",
                 config.getOption("nicklist", "altBackgroundColour", "f0f0f0"),
