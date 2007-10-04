@@ -43,11 +43,11 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollBar;
@@ -73,7 +73,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** display tree. */
     private final JTree tree;
@@ -86,6 +86,9 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     
     /** node storage, used for adding and deleting nodes correctly. */
     private final Map<FrameContainer, DefaultMutableTreeNode> nodes;
+    
+    /** Label storage. */
+    private final Map<DefaultMutableTreeNode, JLabel> labels;
     
     /** Current rollover node. */
     private DefaultMutableTreeNode rolloverNode;
@@ -105,12 +108,14 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     
     /** creates a new instance of the TreeFrameManager. */
     public TreeFrameManager() {
-        nodes = new Hashtable<FrameContainer, DefaultMutableTreeNode>();
+        nodes = new HashMap<FrameContainer, DefaultMutableTreeNode>();
+        labels = new HashMap<DefaultMutableTreeNode, JLabel>();
         popup = new JPopupMenu();
         closeMenuItem = new JMenuItem("Close window");
         root = new DefaultMutableTreeNode("DMDirc");
         model = new TreeViewModel(root);
         tree = new JTree(model);
+        labels.put(root, new JLabel());
         
         final TreeViewTreeCellRenderer renderer = new TreeViewTreeCellRenderer(this);
         notificationColours = new HashMap<FrameContainer, Color>();
@@ -222,6 +227,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     public void addWindow(final FrameContainer window) {
         final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(window, node);
+        labels.put(node, new JLabel());
         node.setUserObject(window);
         model.insertNodeInto(node, root);
         tree.expandPath(new TreePath(node.getPath()).getParentPath());
@@ -240,6 +246,8 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
             } else {
                 model.removeNodeFromParent(nodes.get(window));
             }
+            nodes.remove(window);
+            labels.remove(node);
         }
     }
     
@@ -247,6 +255,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     public void addWindow(final FrameContainer parent, final FrameContainer window) {
         final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(window, node);
+        labels.put(node, new JLabel());
         node.setUserObject(window);
         model.insertNodeInto(node, nodes.get(parent));
         tree.expandPath(new TreePath(node.getPath()).getParentPath());
@@ -264,6 +273,8 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
             } else {
                 model.removeNodeFromParent(nodes.get(window));
             }
+            labels.remove(nodes.get(window));
+            nodes.remove(window);
         }
     }
     
@@ -411,6 +422,17 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
             node = (DefaultMutableTreeNode) selectedPath.getLastPathComponent();
         }
         return node;
+    }
+    
+    /** 
+     * Returns the label for a specified node.
+     *
+     * @param node Node to get label for
+     *
+     * @return Label for node
+     */
+    public JLabel getLabelforNode(final DefaultMutableTreeNode node) {
+        return labels.get(node);
     }
     
     /** Sets treeview colours. */

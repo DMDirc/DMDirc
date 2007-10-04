@@ -45,15 +45,15 @@ import javax.swing.tree.TreeCellRenderer;
 /**
  * Displays a node in a tree according to its type.
  */
-public class TreeViewTreeCellRenderer extends JLabel implements
-        TreeCellRenderer, ConfigChangeListener {
+public class TreeViewTreeCellRenderer implements TreeCellRenderer, 
+        ConfigChangeListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** The default icon to use for unknown frames. */
     private final Icon defaultIcon;
@@ -82,8 +82,6 @@ public class TreeViewTreeCellRenderer extends JLabel implements
      * @param manager Parent TreeFrameManager
      */
     public TreeViewTreeCellRenderer(final TreeFrameManager manager) {
-        super();
-        
         this.manager = manager;
         
         defaultIcon = IconManager.getIconManager().getIcon("icon");
@@ -113,20 +111,21 @@ public class TreeViewTreeCellRenderer extends JLabel implements
             final boolean leaf, final int row, final boolean hasFocus) {
         
         final DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
+        final JLabel label = manager.getLabelforNode(node);
         
-        setText(node.toString());
+        label.setText(node.toString());
         
-        setBackground(tree.getBackground());
-        setForeground(tree.getForeground());
-        setOpaque(true);
-        setToolTipText(null);
-        setBorder(BorderFactory.createEmptyBorder(1, 0, 2, 0));
+        label.setBackground(tree.getBackground());
+        label.setForeground(tree.getForeground());
+        label.setOpaque(true);
+        label.setToolTipText(null);
+        label.setBorder(BorderFactory.createEmptyBorder(1, 0, 2, 0));
         
-        setPreferredSize(new Dimension(100000, getFont().getSize()
+        label.setPreferredSize(new Dimension(100000, label.getFont().getSize()
         + SMALL_BORDER));
         
         if (tree.getMousePosition() != null && manager.getRollover() == value) {
-            setBackground(rolloverColour);
+            label.setBackground(rolloverColour);
         }
         
         final Object nodeObject = node.getUserObject();
@@ -134,24 +133,26 @@ public class TreeViewTreeCellRenderer extends JLabel implements
         if (nodeObject instanceof FrameContainer) {
             final Color colour = manager.getNotificationColour((FrameContainer) nodeObject);
             if (colour != null) {
-              setForeground(colour);
+              label.setForeground(colour);
             }
-            setIcon(((FrameContainer) nodeObject).getIcon());
+            label.setIcon(((FrameContainer) nodeObject).getIcon());
         } else {
-            setIcon(defaultIcon);
+            label.setIcon(defaultIcon);
         }
         
         if (sel) {
             if (activeBold) {
-                setFont(getFont().deriveFont(Font.BOLD));
+                label.setFont(label.getFont().deriveFont(Font.BOLD));
+            } else {
+                label.setFont(label.getFont().deriveFont(Font.PLAIN));
             }
-            setBackground(activeBackground);
-            setForeground(activeForeground);
+            label.setBackground(activeBackground);
+            label.setForeground(activeForeground);
         } else {
-            setFont(getFont().deriveFont(Font.PLAIN));
+            label.setFont(label.getFont().deriveFont(Font.PLAIN));
         }
         
-        return this;
+        return label;
     }
     
     /** Sets the colours for the renderer. */
@@ -172,6 +173,8 @@ public class TreeViewTreeCellRenderer extends JLabel implements
                 config.getOptionColour("ui", "foregroundcolour", 
                 manager.getTree().getForeground())));
         activeBold = config.getOptionBool("ui", "treeviewActiveBold", false);
+        
+        manager.getTree().repaint();
     }
     
     /** {@inheritDoc} */
