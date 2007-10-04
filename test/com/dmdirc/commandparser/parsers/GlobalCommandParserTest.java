@@ -23,31 +23,12 @@
 package com.dmdirc.commandparser.parsers;
 
 import com.dmdirc.config.IdentityManager;
-import junit.framework.TestCase;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author chris
- */
-public class GlobalCommandParserTest extends TestCase {
+public class GlobalCommandParserTest {
     
-    public GlobalCommandParserTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        IdentityManager.load();
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     @Before
     public void setUp() throws Exception {
         IdentityManager.load();

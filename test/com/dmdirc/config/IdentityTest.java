@@ -22,35 +22,32 @@
 
 package com.dmdirc.config;
 
-import com.dmdirc.config.ConfigTarget;
-import com.dmdirc.config.Identity;
 import java.util.Properties;
-import junit.framework.*;
 
-/**
- *
- * @author chris
- */
-public class IdentityTest extends TestCase {
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class IdentityTest {
     
     private Identity myIdent;
     private ConfigTarget target;
     
-    public IdentityTest(String testName) {
-        super(testName);
-    }
-    
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         target = new ConfigTarget();
         target.setChannel("#unittest@unittest");
         
         myIdent = Identity.buildIdentity(target);
     }
     
-    protected void tearDown() throws Exception {
+    @After
+    public void tearDown() throws Exception {
         myIdent = null;
     }    
     
+    @Test
     public void testGetProperties() {
         myIdent.setOption("domain", "option", "value");
         final Properties props = myIdent.getProperties();
@@ -60,12 +57,14 @@ public class IdentityTest extends TestCase {
         myIdent.unsetOption("domain", "option");
     }
 
+    @Test
     public void testGetName() {
         final Properties props = myIdent.getProperties();
         
         assertEquals(props.getProperty("identity.name"), myIdent.getName());
     }
 
+    @Test
     public void testIsProfile() {
         assertFalse(myIdent.isProfile());
         
@@ -78,6 +77,7 @@ public class IdentityTest extends TestCase {
         myIdent.unsetOption("profile", "realname");
     }
 
+    @Test
     public void testHasOption() {
         assertFalse(myIdent.hasOption("has", "option"));
         
@@ -88,6 +88,7 @@ public class IdentityTest extends TestCase {
         myIdent.unsetOption("has", "option");
     }
 
+    @Test
     public void testGetOption() {
         myIdent.setOption("domain", "option", "value");
         final Properties props = myIdent.getProperties();
@@ -97,6 +98,7 @@ public class IdentityTest extends TestCase {
         myIdent.unsetOption("domain", "option");
     }
 
+    @Test
     public void testSetOption() {
         final int count = myIdent.getProperties().size();
         
@@ -107,6 +109,7 @@ public class IdentityTest extends TestCase {
         myIdent.unsetOption("foo", "bar");
     }
 
+    @Test
     public void testRemoveOption() {
         final Properties props = myIdent.getProperties();
         final int count = props.size();
@@ -117,6 +120,7 @@ public class IdentityTest extends TestCase {
         assertEquals(count, props.size());
     }
 
+    @Test
     public void testSave() {
         myIdent.setOption("foo", "bar", "baz!");
         
@@ -131,21 +135,15 @@ public class IdentityTest extends TestCase {
         myIdent.save();
     }
 
+    @Test
     public void testGetTarget() {
         assertEquals(target.getData(), myIdent.getTarget().getData());
         assertEquals(target.getType(), myIdent.getTarget().getType());
     }
 
+    @Test
     public void testToString() {
         assertEquals(myIdent.getOption("identity", "name"), myIdent.getName());
-    }
-
-    public void testCompareTo() {
-        // TODO add your test code.
-    }
-
-    public void testBuildIdentity() {
-        // TODO add your test code.
     }
     
 }

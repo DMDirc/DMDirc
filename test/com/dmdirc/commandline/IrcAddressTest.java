@@ -22,16 +22,12 @@
 
 package com.dmdirc.commandline;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import junit.framework.*;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class IrcAddressTest extends TestCase {
+public class IrcAddressTest {
     
-    public IrcAddressTest(String testName) {
-        super(testName);
-    }
-    
+    @Test
     public void testBasic() {
         try {
             final IrcAddress address = new IrcAddress("irc://servername");
@@ -44,6 +40,7 @@ public class IrcAddressTest extends TestCase {
         }
     }
     
+    @Test
     public void testPasswordSSL() {
         try {
             final IrcAddress address = new IrcAddress("ircs://password@servername");
@@ -56,6 +53,7 @@ public class IrcAddressTest extends TestCase {
         }
     }
     
+    @Test
     public void testPortSSL() {
         try {
             final IrcAddress address = new IrcAddress("ircs://servername:+7000/");
@@ -68,6 +66,7 @@ public class IrcAddressTest extends TestCase {
         }
     }
     
+    @Test
     public void testComplex() {
         try {
             final IrcAddress address = new IrcAddress("ircs://password@servername:+7000/c1,c2,c3");

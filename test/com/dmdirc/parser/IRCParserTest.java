@@ -24,18 +24,11 @@ package com.dmdirc.parser;
 
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IAwayState;
-import junit.framework.TestCase;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author Chris
- */
-public class IRCParserTest extends TestCase {
-    
-    public IRCParserTest() {
-    }
+public class IRCParserTest {
     
     @Test
     public void testIssue042() {

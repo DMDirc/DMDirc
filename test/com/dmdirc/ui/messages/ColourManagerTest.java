@@ -23,20 +23,21 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.config.IdentityManager;
-import junit.framework.*;
+
 import java.awt.Color;
 
-/**
- *
- * @author chris
- */
-public class ColourManagerTest extends TestCase {
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class ColourManagerTest {
     
-    public ColourManagerTest(String testName) {
-        super(testName);
+    @Before
+    public void setUp() throws Exception {
         IdentityManager.load();
     }
-    
+
+    @Test
     public void testGetColourInt() {
         int spec = 4;
         
@@ -44,7 +45,8 @@ public class ColourManagerTest extends TestCase {
         Color result = ColourManager.getColour(spec);
         assertEquals(expResult, result);
     }
-    
+
+    @Test
     public void testGetColourHex() {
         String spec = "FFFFFF";
         

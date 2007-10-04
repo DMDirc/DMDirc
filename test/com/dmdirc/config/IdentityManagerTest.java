@@ -22,24 +22,18 @@
 
 package com.dmdirc.config;
 
-import junit.framework.TestCase;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-/**
- *
- * @author chris
- */
-public class IdentityManagerTest extends TestCase {
-    
-    public IdentityManagerTest(String testName) {
-        super(testName);
-    }
+public class IdentityManagerTest {
 
-    protected void setUp() throws Exception {
-        super.setUp();
-        
+    @Before
+    public void setUp() throws Exception {        
         IdentityManager.load();
     }
 
+    @Test
     public void testGetGlobalConfig() {
         final ConfigManager gcm = IdentityManager.getGlobalConfig();
         

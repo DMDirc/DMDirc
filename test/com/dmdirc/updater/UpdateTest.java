@@ -22,33 +22,15 @@
 
 package com.dmdirc.updater;
 
-import junit.framework.TestCase;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author chris
- */
-public class UpdateTest extends TestCase {
+public class UpdateTest {
     
     private final String subject = "outofdate component rversion lversion url";
     
     private Update update;
-    
-    public UpdateTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
 
     @Before
     public void setUp() throws Exception {

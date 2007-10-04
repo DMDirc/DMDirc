@@ -22,28 +22,19 @@
 
 package com.dmdirc.config;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-/**
- *
- * @author chris
- */
-public class ConfigTargetTest extends TestCase {
+public class ConfigTargetTest {
     
-    public ConfigTargetTest(String testName) {
-        super(testName);
-    }
-    
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-    
+    @Test
     public void testDefault() {
         final ConfigTarget target = new ConfigTarget();
         
         assertEquals(target.getType(), ConfigTarget.TYPE.GLOBAL);
     }
-    
+
+    @Test
     public void testSetGlobal() {
         final ConfigTarget target = new ConfigTarget();
         target.setGlobal();
@@ -52,6 +43,7 @@ public class ConfigTargetTest extends TestCase {
         assertEquals(target.getTypeName(), "global");
     }
     
+    @Test
     public void testSetGlobalDefault() {
         final ConfigTarget target = new ConfigTarget();
         target.setGlobalDefault();
@@ -60,6 +52,7 @@ public class ConfigTargetTest extends TestCase {
         assertEquals(target.getTypeName(), "globaldefault");
     }
     
+    @Test
     public void testSetTheme() {
         final ConfigTarget target = new ConfigTarget();
         target.setTheme();
@@ -68,6 +61,7 @@ public class ConfigTargetTest extends TestCase {
         assertEquals(target.getTypeName(), "theme");
     }
     
+    @Test
     public void testSetProfile() {
         final ConfigTarget target = new ConfigTarget();
         target.setProfile();
@@ -76,6 +70,7 @@ public class ConfigTargetTest extends TestCase {
         assertEquals(target.getTypeName(), "profile");
     }
     
+    @Test
     public void testSetIrcd() {
         final ConfigTarget target = new ConfigTarget();
         target.setIrcd("ircd_name");
@@ -85,6 +80,7 @@ public class ConfigTargetTest extends TestCase {
         assertEquals(target.getData(), "ircd_name");
     }
     
+    @Test
     public void testSetNetwork() {
         final ConfigTarget target = new ConfigTarget();
         target.setNetwork("net_name");
@@ -94,6 +90,7 @@ public class ConfigTargetTest extends TestCase {
         assertEquals(target.getData(), "net_name");        
     }
     
+    @Test
     public void testSetServer() {
         final ConfigTarget target = new ConfigTarget();
         target.setServer("server_name");
@@ -103,6 +100,7 @@ public class ConfigTargetTest extends TestCase {
         assertEquals(target.getData(), "server_name");        
     }
     
+    @Test
     public void testSetChannel() {
         final ConfigTarget target = new ConfigTarget();
         target.setChannel("channel_name");

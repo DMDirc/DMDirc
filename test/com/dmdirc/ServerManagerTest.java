@@ -24,34 +24,17 @@ package com.dmdirc;
 
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.dummy.DummyController;
-import junit.framework.TestCase;
-import org.junit.AfterClass;
+
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author chris
- */
-public class ServerManagerTest extends TestCase {
-    
-    public ServerManagerTest() {
-        Main.setUI(new DummyController());
-        IdentityManager.load();
-    }
-    
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-    
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-    
+public class ServerManagerTest {
+        
     @Before
     public void setUp() throws Exception {
+        Main.setUI(new DummyController());
+        IdentityManager.load();
     }
     
     @Test

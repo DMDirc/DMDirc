@@ -22,18 +22,12 @@
 
 package com.dmdirc.ui.messages;
 
-import junit.framework.*;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-/**
- *
- * @author chris
- */
-public class StyliserTest extends TestCase {
+public class StyliserTest {
     
-    public StyliserTest(String testName) {
-        super(testName);
-    }
-        
+    @Test
     public void testStripControlCodes1() {
         String input = "This"+((char) 2)+" is "+((char) 17)+"a test";
         
@@ -42,14 +36,16 @@ public class StyliserTest extends TestCase {
         assertEquals(expResult, result);
     }
     
+    @Test
     public void testStripControlCodes2() {
         String input = "This is "+((char) 3)+"5a "+((char) 4)+"FF0000test";
         
         String expResult = "This is a test";
         String result = Styliser.stipControlCodes(input);
         assertEquals(expResult, result);
-    }    
+    }
     
+    @Test
     public void testReadUntilControl1() {
         String input = "This"+((char) 2)+" is "+((char) 17)+"a test";
         String expResult = "This";
@@ -57,6 +53,7 @@ public class StyliserTest extends TestCase {
         assertEquals(expResult, result);
     }
     
+    @Test
     public void testReadUntilControl2() {
         String input = "This"+((char) 17)+" is "+((char) 17)+"a test";
         String expResult = "This";
@@ -64,6 +61,7 @@ public class StyliserTest extends TestCase {
         assertEquals(expResult, result);
     }
     
+    @Test
     public void testReadUntilControl3() {
         String input = ((char) 31)+" is "+((char) 17)+"a test";
         String expResult = "";

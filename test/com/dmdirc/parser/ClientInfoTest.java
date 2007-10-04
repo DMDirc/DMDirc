@@ -24,18 +24,13 @@ package com.dmdirc.parser;
 
 import java.util.HashMap;
 import java.util.Map;
-import junit.framework.TestCase;
 
-/**
- *
- * @author chris
- */
-public class ClientInfoTest extends TestCase {
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class ClientInfoTest {
     
-    public ClientInfoTest(String testName) {
-        super(testName);
-    }
-    
+    @Test
     public void testMap() {
         final ClientInfo ci = new ClientInfo(null, "nick!ident@host");
         final Map map = new HashMap();
@@ -44,6 +39,7 @@ public class ClientInfoTest extends TestCase {
         assertEquals(map, ci.getMap());
     }
     
+    @Test
     public void testFake() {
         final ClientInfo ci = new ClientInfo(null, "nick!ident@host");
         assertFalse(ci.isFake());
@@ -53,6 +49,7 @@ public class ClientInfoTest extends TestCase {
         assertFalse(ci.isFake());
     }
     
+    @Test
     public void testParseHost() {
         final String string1 = ":nick!ident@host";
         final String string2 = "nick";
@@ -63,6 +60,7 @@ public class ClientInfoTest extends TestCase {
         assertEquals("nick", ClientInfo.parseHost(string3));
     }
     
+    @Test
     public void testParseHostFull() {
         final String string1 = ":nick!ident@host";
         final String string2 = "nick";
@@ -77,6 +75,7 @@ public class ClientInfoTest extends TestCase {
         assertEquals("host", ClientInfo.parseHostFull(string3)[2]);
     }
     
+    @Test
     public void testSetUserBits() {
         final ClientInfo ci = new ClientInfo(null, "nick!ident@host");
         ci.setUserBits("nick2!ident2@host2", false);
@@ -89,14 +88,16 @@ public class ClientInfoTest extends TestCase {
         
         assertEquals("nick3", ci.getNickname());
         assertEquals("ident2", ci.getIdent());
-        assertEquals("host3", ci.getHost());        
+        assertEquals("host3", ci.getHost());
     }
     
+    @Test
     public void testToString() {
         final ClientInfo ci = new ClientInfo(null, "nick!ident@host");
         assertEquals("nick!ident@host", ci.toString());
     }
     
+    @Test
     public void testAwayState() {
         final ClientInfo ci = new ClientInfo(null, "nick!ident@host");
         assertFalse(ci.getAwayState());
@@ -104,6 +105,7 @@ public class ClientInfoTest extends TestCase {
         assertTrue(ci.getAwayState());
     }
     
+    @Test
     public void testAwayReason() {
         final ClientInfo ci = new ClientInfo(null, "nick!ident@host");
         ci.setAwayState(true);
@@ -113,13 +115,14 @@ public class ClientInfoTest extends TestCase {
         ci.setAwayState(false);
         assertEquals("", ci.getAwayReason());
     }
-        
+    
+    @Test
     public void testRealName() {
         final ClientInfo ci = new ClientInfo(null, "nick!ident@host");
         ci.setRealName("abc def");
         assertEquals("abc def", ci.getRealName());
         ci.setRealName("abc 123 def");
-        assertEquals("abc 123 def", ci.getRealName());        
+        assertEquals("abc 123 def", ci.getRealName());
     }
-        
+    
 }

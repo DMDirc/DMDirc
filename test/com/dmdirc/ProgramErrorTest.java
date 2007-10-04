@@ -29,55 +29,58 @@ import com.dmdirc.logger.ProgramError;
 import java.util.Arrays;
 import java.util.Date;
 
-import junit.framework.*;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-/**
- * Tests the ProgramError class
- */
-public class ProgramErrorTest extends TestCase {
+public class ProgramErrorTest {
     
     private ErrorLevel level;
     private String message;
     private String[] trace;
     private Date date;
     
-    public ProgramErrorTest(String testName) {
-        super(testName);
-    }
-    
-    protected void setUp() throws Exception {
+
+    @Before
+    public void setUp() throws Exception {
         level = ErrorLevel.HIGH;
         message = "Test error";
         trace = new String[]{"line 1", "line 2", };
         date = new Date(System.currentTimeMillis());
     }
     
+    @Test
     public void testGetLevel() {
         final ProgramError inst = new ProgramError(0, level, message, trace, date);
         assertEquals("Level check failed.", level, inst.getLevel());
     }
     
+    @Test
     public void testGetMessage() {
         final ProgramError inst = new ProgramError(0, level, message, trace, date);
         assertEquals("Message check failed.", message, inst.getMessage());
     }
     
+    @Test
     public void testGetTrace() {
         final ProgramError inst = new ProgramError(0, level, message, trace, date);
         assertTrue("Trace check failed", Arrays.equals(trace, inst.getTrace())); //NOPMD
     }
     
+    @Test
     public void testGetDate() {
         final ProgramError inst = new ProgramError(0, level, message, trace, date);
         assertTrue("Date check after failed.", inst.getDate().after(new Date(date.getTime() - 1)));
         assertTrue("Date check before failed.", inst.getDate().before(new Date(date.getTime() + 1)));
     }
     
+    @Test
     public void testGetStatus() {
         final ProgramError inst = new ProgramError(0, level, message, trace, date);
         assertEquals("Get status check failed.", ErrorReportStatus.WAITING, inst.getReportStatus());
     }
     
+    @Test
     public void testSetStatus() {
         final ProgramError inst = new ProgramError(0, level, message, trace, date);
         assertEquals("Get status check failed.", ErrorReportStatus.WAITING, inst.getReportStatus());

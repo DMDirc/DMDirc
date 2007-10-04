@@ -23,14 +23,13 @@
 package com.dmdirc;
 
 import com.dmdirc.ui.interfaces.InputWindow;
-import junit.framework.*;
 
-public class WritableFrameContainerTest extends TestCase {
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class WritableFrameContainerTest {
     
-    public WritableFrameContainerTest(String testName) {
-        super(testName);
-    }
-    
+    @Test
     public void testGetNumLines() {
         final WritableFrameContainer container10 = new BasicWritableFrameContainer(10);
         

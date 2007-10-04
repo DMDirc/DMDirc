@@ -22,18 +22,12 @@
 
 package com.dmdirc.parser;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-/**
- *
- * @author chris
- */
-public class ServerInfoTest extends TestCase {
+public class ServerInfoTest {
     
-    public ServerInfoTest(String testName) {
-        super(testName);
-    }
-    
+    @Test
     public void testHost() {
         final ServerInfo si = new ServerInfo("host0", 5, "");
         assertEquals("host0", si.getHost());
@@ -41,6 +35,7 @@ public class ServerInfoTest extends TestCase {
         assertEquals("host1", si.getHost());
     }
     
+    @Test
     public void testPort() {
         final ServerInfo si = new ServerInfo("host0", 5, "");
         assertEquals(5, si.getPort());
@@ -48,6 +43,7 @@ public class ServerInfoTest extends TestCase {
         assertEquals(65530, si.getPort());
     }
     
+    @Test
     public void testPassword() {
         final ServerInfo si = new ServerInfo("host0", 5, "pass1");
         assertEquals("pass1", si.getPassword());
@@ -55,6 +51,7 @@ public class ServerInfoTest extends TestCase {
         assertEquals("pass2", si.getPassword());
     }
     
+    @Test
     public void testSSL() {
         final ServerInfo si = new ServerInfo("host0", 5, "pass1");
         assertFalse(si.getSSL());
@@ -62,6 +59,7 @@ public class ServerInfoTest extends TestCase {
         assertTrue(si.getSSL());
     }
     
+    @Test
     public void testUseSocks() {
         final ServerInfo si = new ServerInfo("host0", 5, "pass1");
         assertFalse(si.getUseSocks());
@@ -69,12 +67,14 @@ public class ServerInfoTest extends TestCase {
         assertTrue(si.getUseSocks());
     }
     
+    @Test
     public void testProxyHost() {
         final ServerInfo si = new ServerInfo("host0", 5, "pass1");
         si.setProxyHost("foo");
         assertEquals("foo", si.getProxyHost());
     }
     
+    @Test
     public void testProxyPort() {
         final ServerInfo si = new ServerInfo("host0", 5, "pass1");
         si.setProxyPort(1024);

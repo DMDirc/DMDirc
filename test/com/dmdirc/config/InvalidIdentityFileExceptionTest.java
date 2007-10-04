@@ -22,18 +22,12 @@
 
 package com.dmdirc.config;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-/**
- *
- * @author chris
- */
-public class InvalidIdentityFileExceptionTest extends TestCase {
-    
-    public InvalidIdentityFileExceptionTest(String testName) {
-        super(testName);
-    }
+public class InvalidIdentityFileExceptionTest {
 
+    @Test
     public void testMessage() {
         final InvalidIdentityFileException ex = new InvalidIdentityFileException("message here");
         
