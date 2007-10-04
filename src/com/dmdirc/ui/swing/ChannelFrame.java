@@ -307,13 +307,15 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
      */
     private boolean checkShowNicklistMenu() {
         boolean showMenu = false;
-        for (int i = 0; i < nickList.getModel().getSize(); i++) {
-            if (nickList.getCellBounds(i, i) != null
-                    && nickList.getMousePosition() != null
-                    && nickList.getCellBounds(i, i).contains(nickList.getMousePosition())
-                    && nickList.isSelectedIndex(i)) {
-                showMenu = true;
-                break;
+        final Point mousePos = nickList.getMousePosition();
+        if (mousePos != null) {
+            for (int i = 0; i < nickList.getModel().getSize(); i++) {
+                if (nickList.getCellBounds(i, i) != null
+                        && nickList.getCellBounds(i, i).contains(mousePos)
+                        && nickList.isSelectedIndex(i)) {
+                    showMenu = true;
+                    break;
+                }
             }
         }
         return showMenu;
@@ -326,11 +328,11 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
      */
     private boolean selectNickUnderCursor() {
         boolean suceeded = false;
-        if (nickList.getMousePosition() != null) {
+        final Point mousePos = nickList.getMousePosition();
+        if (mousePos != null) {
             for (int i = 0; i < nickList.getModel().getSize(); i++) {
-                if (nickList.getCellBounds(i, i) != null 
-                        && nickList.getMousePosition() != null
-                        && nickList.getCellBounds(i, i).contains(nickList.getMousePosition())) {
+                if (nickList.getCellBounds(i, i) != null
+                        && nickList.getCellBounds(i, i).contains(mousePos)) {
                     nickList.setSelectedIndex(i);
                     suceeded = true;
                     break;
