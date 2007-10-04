@@ -79,6 +79,7 @@ ui.inputbuffersize=50
 ui.showversion=true
 ui.quickCopy=false
 ui.pasteProtectionLimit=1
+ui.stylelinks=true
         
 ui.treeviewActiveBold=true
 treeview.sortwindows=true
