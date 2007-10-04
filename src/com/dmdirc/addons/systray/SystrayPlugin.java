@@ -55,10 +55,7 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     private PopupCommand command;
     
     /** The tray icon we're currently using. */
-    private TrayIcon icon;
-    
-    /** The menu to use for the tray icon. */
-    private final PopupMenu menu;
+    private final TrayIcon icon;
     
     /** Creates a new system tray plugin. */
     public SystrayPlugin() {
@@ -66,12 +63,17 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
         final MenuItem show = new MenuItem("Show/hide");
         final MenuItem quit = new MenuItem("Quit");
         
-        menu = new PopupMenu();
+        final PopupMenu menu = new PopupMenu();
         menu.add(show);
         menu.add(quit);
         
         show.addActionListener(this);
         quit.addActionListener(this);
+        
+        icon = new TrayIcon(IconManager.getIconManager().getImage("logo"), 
+                "DMDirc", menu);
+        icon.setImageAutoSize(true);
+        icon.addMouseListener(this);
     }
     
     /**
@@ -110,11 +112,7 @@ public final class SystrayPlugin extends Plugin implements ActionListener,
     }
     
     /** {@inheritDoc} */
-    public void onActivate() {
-        icon = new TrayIcon(IconManager.getIconManager().getImage("logo"), "DMDirc", menu);
-        icon.setImageAutoSize(true);
-        icon.addMouseListener(this);
-        
+    public void onActivate() {        
         try {
             SystemTray.getSystemTray().add(icon);
             command = new PopupCommand(this);
