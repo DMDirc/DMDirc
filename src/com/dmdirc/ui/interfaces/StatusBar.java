@@ -80,4 +80,11 @@ public interface StatusBar {
      */
     void removeComponent(final Component component);
     
+    /**
+     * Returns true if the status bar is visible.
+     *
+     * @return true iff the status bar is visible
+     */
+    boolean isVisible();
+    
 }

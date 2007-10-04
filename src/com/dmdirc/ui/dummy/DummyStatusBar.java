@@ -72,4 +72,9 @@ public final class DummyStatusBar implements StatusBar {
         // Do nothing
     }
 
+    /** {@inheritDoc} */
+    public boolean isVisible() {
+        return true;
+    }
+
 }

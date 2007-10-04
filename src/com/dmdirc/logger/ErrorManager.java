@@ -147,11 +147,10 @@ public final class ErrorManager implements Serializable {
      *
      * @param error error to be sent
      */
-    @SuppressWarnings("PMD.SystemPrintln")
     public static void sendError(final ProgramError error) {
         new Timer("ErrorManager Timer").schedule(new TimerTask() {
             public void run() {
-                sendErrorInternal(error);
+                getErrorManager().sendErrorInternal(error);
             }
         }, 0);
     }
@@ -161,8 +160,7 @@ public final class ErrorManager implements Serializable {
      *
      * @param error ProgramError to be sent
      */
-    @SuppressWarnings("PMD.SystemPrintln")
-    private static void sendErrorInternal(final ProgramError error) {
+    private void sendErrorInternal(final ProgramError error) {
         final Map<String, String> postData = new HashMap<String, String>();
         List<String> response = new ArrayList<String>();
         int tries = 0;
@@ -191,7 +189,7 @@ public final class ErrorManager implements Serializable {
             
             tries++;
         } while((response.isEmpty() || !response.get(response.size() - 1).
-                equalsIgnoreCase("Error report submitted. Thank you.")) 
+                equalsIgnoreCase("Error report submitted. Thank you."))
                 || tries >= 5);
         
         checkResponses(error, response);
@@ -253,11 +251,21 @@ public final class ErrorManager implements Serializable {
      * @param error Error that occurred
      */
     protected void fireErrorAdded(final ProgramError error) {
+        int firedListeners = 0;
         final Object[] listeners = errorListeners.getListenerList();
         for (int i = 0; i < listeners.length; i += 2) {
             if (listeners[i] == ErrorListener.class) {
-                ((ErrorListener) listeners[i + 1]).errorAdded(error);
+                final ErrorListener thisListener = ((ErrorListener) listeners[i + 1]);
+                if (thisListener.isReady()) {
+                    thisListener.errorAdded(error);
+                    firedListeners++;
+                }
             }
+        }
+        
+        if (firedListeners == 0) {
+            System.err.println("An error has occurred: " + error.getLevel()
+            + ": " + error.getMessage());
         }
     }
     
@@ -267,11 +275,20 @@ public final class ErrorManager implements Serializable {
      * @param error Error that occurred
      */
     protected void fireFatalError(final ProgramError error) {
+        int firedListeners = 0;
         final Object[] listeners = errorListeners.getListenerList();
         for (int i = 0; i < listeners.length; i += 2) {
             if (listeners[i] == ErrorListener.class) {
-                ((ErrorListener) listeners[i + 1]).fatalError(error);
+                final ErrorListener thisListener = ((ErrorListener) listeners[i + 1]);
+                if (thisListener.isReady()) {
+                    thisListener.fatalError(error);
+                    firedListeners++;
+                }
             }
+        }
+         
+        if (firedListeners == 0) {
+            System.err.println("A fatal has occurred: " + error.getMessage());
         }
     }
     

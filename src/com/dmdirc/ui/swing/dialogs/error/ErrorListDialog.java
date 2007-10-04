@@ -341,4 +341,9 @@ public final class ErrorListDialog extends StandardDialog implements
             me = null;
         }
     }
+
+    /** {@inheritDoc} */
+    public boolean isReady() {
+        return Main.getUI().getStatusBar().isVisible();
+    }
 }

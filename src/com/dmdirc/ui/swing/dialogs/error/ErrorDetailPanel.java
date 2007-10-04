@@ -223,5 +223,10 @@ public final class ErrorDetailPanel extends JPanel implements ErrorListener {
             errorStatus.setText(error.getFixedStatus().toString());
         }
     }
+
+    /** {@inheritDoc} */
+    public boolean isReady() {
+        return isVisible();
+    }
     
 }

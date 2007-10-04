@@ -269,4 +269,9 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         constraints.setWidth(constraints.getWidth());
         this.setVisible(true);
     }
+    
+    /** {@inheritDoc} */
+    public boolean isReady() {
+        return isValid();
+    }
 }

@@ -57,4 +57,11 @@ public interface ErrorListener extends EventListener {
      * @param error Error that has been altered
      */
     void errorStatusChanged(final ProgramError error);
+    
+    /**
+     * Returns true if the error listener is ready to receive errors
+     *
+     * @return true iif the error listener is ready for errors
+     */
+    boolean isReady();
 }
