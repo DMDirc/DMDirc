@@ -23,6 +23,8 @@
 package com.dmdirc.commandparser;
 
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.logger.ErrorLevel;
+import com.dmdirc.logger.Logger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +55,8 @@ public class PopupManager {
      */
     public static Map<String, String> getMenuItems(final PopupType menuType,
             final ConfigManager configManager, final Object ... arguments) {
+        Logger.doAssertion(menuType != null, configManager != null);
+        
         final Map<String, String> res = new HashMap<String, String>();
         
         int dividerCount = 0;
@@ -63,11 +67,15 @@ public class PopupManager {
             for (String command : commands) {
                 if ("-".equals(command)) {
                     res.put("divider" + (++dividerCount), "-");
-                } else {
+                } else if (command.indexOf('-') > 0) {
                     final String name = command.substring(0, command.indexOf(':'));
                     final String value = command.substring(command.indexOf(':'));
                     
                     res.put(name, String.format(value, arguments));
+                } else if (!command.isEmpty()) {
+                    Logger.userError(ErrorLevel.LOW, "Invalid command in "
+                            + "popup menu configuration. Menu: " + domain
+                            + ", Command: " + command);
                 }
             }
         }
