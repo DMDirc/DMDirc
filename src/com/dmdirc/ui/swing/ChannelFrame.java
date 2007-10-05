@@ -24,11 +24,8 @@ package com.dmdirc.ui.swing;
 
 import com.dmdirc.Channel;
 import com.dmdirc.Main;
-import com.dmdirc.commandparser.commands.ChannelCommand;
 import com.dmdirc.commandparser.parsers.ChannelCommandParser;
-import com.dmdirc.commandparser.commands.Command;
 import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.ui.input.InputHandler;
 import com.dmdirc.ui.interfaces.ChannelWindow;
@@ -223,21 +220,6 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
      */
     public void actionPerformed(final ActionEvent actionEvent) {
         super.actionPerformed(actionEvent);
-        if (commands.containsKey(actionEvent.getActionCommand())) {
-            final Command command = commands.get(actionEvent.getActionCommand());
-            for (Object nickname : nickList.getSelectedValues()) {
-                if (command instanceof ChannelCommand) {
-                    ((ChannelCommand) commands.get(actionEvent.getActionCommand())).
-                            execute(this, getContainer().getServer(),
-                            (Channel) this.getContainer(), false,
-                            ((ChannelClientInfo) nickname).getNickname());
-                } else if (command instanceof ServerCommand) {
-                    ((ServerCommand) commands.get(actionEvent.getActionCommand())).
-                            execute(this, getContainer().getServer(), false,
-                            ((ChannelClientInfo) nickname).getNickname());
-                }
-            }
-        }
         if (actionEvent.getSource() == settingsMI) {
             ChannelSettingsDialog.getChannelSettingDialog((Channel) getContainer()).setVisible(true);
         }
@@ -289,8 +271,9 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
             if (showMenu) {
                 if (e.isPopupTrigger()) {
                     final Point point = getMousePosition();
-                    popuplateNicklistPopup();
-                    nicklistPopup.show(this, (int) point.getX(), (int) point.getY());
+                    popuplateNicklistPopup(((ChannelClientInfo) nickList.
+                            getSelectedValue()).getNickname());
+                    nickPopup.show(this, (int) point.getX(), (int) point.getY());
                 }
             } else {
                 nickList.clearSelection();

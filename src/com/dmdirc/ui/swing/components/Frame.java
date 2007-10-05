@@ -26,10 +26,6 @@ import com.dmdirc.util.BrowserLauncher;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.util.StringTranscoder;
-import com.dmdirc.commandparser.commands.ChannelCommand;
-import com.dmdirc.commandparser.commands.Command;
-import com.dmdirc.commandparser.CommandManager;
-import com.dmdirc.commandparser.commands.ServerCommand;
 import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
@@ -63,12 +59,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.text.AttributedCharacterIterator;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -123,11 +114,11 @@ public abstract class Frame extends JInternalFrame implements Window,
     /** String transcoder. */
     private StringTranscoder transcoder;
     
-    /** Command map. */
-    protected final Map<String, Command> commands;
+    /** Channel popup menu. */
+    protected JPopupMenu channelPopup;
     
-    /** nicklist popup menu. */
-    protected JPopupMenu nicklistPopup;
+    /** URL popup menu. */
+    protected JPopupMenu urlPopup;
     
     /** Frame buffer size. */
     private int frameBufferSize;
@@ -144,7 +135,6 @@ public abstract class Frame extends JInternalFrame implements Window,
         frameBufferSize = config.getOptionInt("ui", "frameBufferSize", 
                 Integer.MAX_VALUE);
         parent = owner;
-        commands = new HashMap<String, Command>();
         
         setFrameIcon(Main.getUI().getMainWindow().getIcon());
         
@@ -259,8 +249,8 @@ public abstract class Frame extends JInternalFrame implements Window,
         popup.setOpaque(true);
         popup.setLightWeightPopupEnabled(true);
         
-        nicklistPopup = new JPopupMenu();
-        popuplateNicklistPopup();
+        channelPopup = new JPopupMenu();
+        urlPopup = new JPopupMenu();
         
         searchBar = new SearchBar(this);
         searchBar.setVisible(false);
@@ -588,11 +578,7 @@ public abstract class Frame extends JInternalFrame implements Window,
     
     /** {@inheritDoc} */
     public void nickNameClicked(final String nickname, final MouseEvent e) {
-        if (e.isPopupTrigger()) {
-            final Point point = getMousePosition();
-            popuplateNicklistPopup();
-            nicklistPopup.show(this, (int) point.getX(), (int) point.getY());
-        }
+        //Ignore
     }
     
     /**
@@ -619,40 +605,6 @@ public abstract class Frame extends JInternalFrame implements Window,
             setIcon(true);
         } catch (PropertyVetoException ex) {
             Logger.userError(ErrorLevel.LOW, "Unable to minimise frame");
-        }
-    }
-    
-    /** Popuplates the nicklist popup. */
-    protected final void popuplateNicklistPopup() {
-        nicklistPopup.removeAll();
-        commands.clear();
-        
-        final List<Command> commandList = CommandManager.getNicklistCommands();
-        final List<Command> serverCommands = new ArrayList<Command>();
-        final List<Command> channelCommands = new ArrayList<Command>();
-        for (Command command : commandList) {
-            if (command instanceof ServerCommand) {
-                serverCommands.add(command);
-            } else if (command instanceof ChannelCommand) {
-                channelCommands.add(command);
-            }
-        }
-        for (Command command : serverCommands) {
-            commands.put(command.getName(), command);
-            final JMenuItem mi = new JMenuItem(command.getName().substring(0, 1).
-                    toUpperCase(Locale.getDefault()) + command.getName().substring(1));
-            mi.setActionCommand(command.getName());
-            mi.addActionListener(this);
-            nicklistPopup.add(mi);
-        }
-        nicklistPopup.addSeparator();
-        for (Command command : channelCommands) {
-            commands.put(command.getName(), command);
-            final JMenuItem mi = new JMenuItem(command.getName().substring(0, 1).
-                    toUpperCase(Locale.getDefault()) + command.getName().substring(1));
-            mi.setActionCommand(command.getName());
-            mi.addActionListener(this);
-            nicklistPopup.add(mi);
         }
     }
     

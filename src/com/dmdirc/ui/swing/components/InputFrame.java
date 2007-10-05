@@ -23,6 +23,8 @@
 package com.dmdirc.ui.swing.components;
 
 import com.dmdirc.WritableFrameContainer;
+import com.dmdirc.commandparser.PopupManager;
+import com.dmdirc.commandparser.PopupType;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -34,6 +36,7 @@ import com.dmdirc.ui.swing.actions.CutAction;
 import com.dmdirc.ui.swing.actions.InputFramePasteAction;
 import com.dmdirc.ui.swing.dialogs.paste.PasteDialog;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+import com.dmdirc.ui.swing.actions.CommandAction;
 
 import java.awt.AWTException;
 import java.awt.BorderLayout;
@@ -50,9 +53,12 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
@@ -94,6 +100,9 @@ public abstract class InputFrame extends Frame implements InputWindow,
     
     /** Robot for the frame. */
     private Robot robot;
+     
+    /** Nick popup menu. */
+    protected JPopupMenu nickPopup;
     
     /**
      * Creates a new instance of InputFrame.
@@ -149,6 +158,7 @@ public abstract class InputFrame extends Frame implements InputWindow,
         getInputField().addMouseListener(this);
         
         initPopupMenu();
+        nickPopup = new JPopupMenu();
         
         awayLabel = new JLabel();
         awayLabel.setText("(away)");
@@ -463,6 +473,38 @@ public abstract class InputFrame extends Frame implements InputWindow,
                 getInputField().setCaretColor(getConfigManager().getOptionColour("ui", "inputforegroundcolour",
                         getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
                 
+            }
+        }
+    }
+    
+    /** {@inheritDoc} */
+    public void nickNameClicked(final String nickname, final MouseEvent e) {
+        if (e.isPopupTrigger()) {
+            final Point point = getMousePosition();
+            popuplateNicklistPopup(nickname);
+            nickPopup.show(this, (int) point.getX(), (int) point.getY());
+        }
+    }
+    
+    /** 
+     * Popuplates the nicklist popup. 
+     *
+     * @param nickname Nickname for the popup
+     */
+    protected final void popuplateNicklistPopup(final String nickname) {
+        nickPopup.removeAll();
+        
+        final Map<String, String> popups = PopupManager.getMenuItems(
+                PopupType.CHAN_NICKLIST, getConfigManager(), nickname);
+        
+        JMenuItem mi;
+        for (Entry<String, String> entry : popups.entrySet()) {
+            if (entry.getValue().equals("-")) {
+                nickPopup.addSeparator();
+            } else {
+                mi = new JMenuItem(new CommandAction(getCommandParser(), this, 
+                        entry.getKey(), entry.getValue()));
+                nickPopup.add(mi);
             }
         }
     }
