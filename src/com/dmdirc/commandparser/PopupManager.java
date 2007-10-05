@@ -25,7 +25,8 @@ package com.dmdirc.commandparser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import java.util.HashMap;
+
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -57,7 +58,7 @@ public class PopupManager {
             final ConfigManager configManager, final Object ... arguments) {
         Logger.doAssertion(menuType != null, configManager != null);
         
-        final Map<String, String> res = new HashMap<String, String>();
+        final Map<String, String> res = new LinkedHashMap<String, String>();
         
         int dividerCount = 0;
         
@@ -69,7 +70,7 @@ public class PopupManager {
                     res.put("divider" + (++dividerCount), "-");
                 } else if (command.indexOf(':') > 0) {
                     final String name = command.substring(0, command.indexOf(':'));
-                    final String value = command.substring(command.indexOf(':'));
+                    final String value = command.substring(command.indexOf(':') + 1);
                     
                     res.put(name, String.format(value, arguments));
                 } else if (!command.isEmpty()) {
