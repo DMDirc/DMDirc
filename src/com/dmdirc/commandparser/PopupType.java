@@ -36,14 +36,7 @@ public enum PopupType {
      * Expected arguments: the nickname of the user who was clicked on.
      */
     CHAN_NICKLIST("nick", "chan-nick", "chan-nick-list"),
-    
-    /**
-     * The menu that appears when right clicking on a nickname in normal channel text.
-     * 
-     * Expected arguments: the nickname of the user who was clicked on.
-     */
-    CHAN_NICKTEXT("nick", "chan-nick", "chan-nick-text"),
-    
+        
     /**
      * The menu that appears when right clicking in a channel window.
      * 
