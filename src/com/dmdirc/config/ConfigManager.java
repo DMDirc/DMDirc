@@ -242,7 +242,8 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
     }
     
     /**
-     * Returns the name of all the options in the specified domain.
+     * Returns the name of all the options in the specified domain. If the
+     * domain doesn't exist, an empty list is returned.
      *
      * @param domain The domain to search
      * @return A list of options in the specified domain

@@ -30,14 +30,33 @@ package com.dmdirc.commandparser;
  */
 public enum PopupType {
     
-    /** The menu that appears when right clicking in a channel's nicklist. */
-    CHAN_NICKLIST("chan-nick-list", "chan-nick", "nick"),
-    /** The menu that appears when right clicking on a nickname in normal channel text. */
-    CHAN_NICKTEXT("chan-nick-text", "chan-nick", "nick", "chan"),
-    /** The menu that appears when right clicking in a channel window. */
+    /**
+     * The menu that appears when right clicking in a channel's nicklist.
+     * 
+     * Expected arguments: the nickname of the user who was clicked on.
+     */
+    CHAN_NICKLIST("nick", "chan-nick", "chan-nick-list"),
+    
+    /**
+     * The menu that appears when right clicking on a nickname in normal channel text.
+     * 
+     * Expected arguments: the nickname of the user who was clicked on.
+     */
+    CHAN_NICKTEXT("nick", "chan-nick", "chan-nick-text"),
+    
+    /**
+     * The menu that appears when right clicking in a channel window.
+     * 
+     * Expected arguments: none.
+     */
     CHAN_CHAN("chan"),
-    /** The menu that appears when right clicking in a query window. */
-    QUERY_QUERY("query", "nick");
+    
+    /**
+     * The menu that appears when right clicking in a query window.
+     * 
+     * Expected arguments: the nickname of the user who the query is with.
+     */
+    QUERY_QUERY("nick", "query");
     
     private final String[] domains;
     

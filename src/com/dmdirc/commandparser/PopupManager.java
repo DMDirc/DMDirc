@@ -24,6 +24,7 @@ package com.dmdirc.commandparser;
 
 import com.dmdirc.config.ConfigManager;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,20 +43,31 @@ public class PopupManager {
     
     /**
      * Retrieves a map of the menu items that should be in a certain menu type.
+     * If the command is equal to "-", the entry should be treated as a divider.
      *
      * @param menuType The type of menu that is being built
      * @param configManager The config manager for the current context
+     * @param arguments Any arguments appropriate for the menuType
+     * 
      * @return A map of "friendly names" to commands (without command characters)
      */
     public static Map<String, String> getMenuItems(final PopupType menuType,
-            final ConfigManager configManager) {
+            final ConfigManager configManager, final Object ... arguments) {
         final Map<String, String> res = new HashMap<String, String>();
         
+        int dividerCount = 0;
+        
         for (String domain : menuType.getDomains()) {
-            for (String option : configManager.getOptions(domain)) {
-                final String command = configManager.getOption(domain, option);
-                if (!command.isEmpty()) {
-                    res.put(option, command);
+            final List<String> commands = configManager.getOptionList("popups", domain);
+            
+            for (String command : commands) {
+                if ("-".equals(command)) {
+                    res.put("divider" + (++dividerCount), "-");
+                } else {
+                    final String name = command.substring(0, command.indexOf(':'));
+                    final String value = command.substring(command.indexOf(':'));
+                    
+                    res.put(name, String.format(value, arguments));
                 }
             }
         }
