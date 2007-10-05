@@ -67,7 +67,7 @@ public class PopupManager {
             for (String command : commands) {
                 if ("-".equals(command)) {
                     res.put("divider" + (++dividerCount), "-");
-                } else if (command.indexOf('-') > 0) {
+                } else if (command.indexOf(':') > 0) {
                     final String name = command.substring(0, command.indexOf(':'));
                     final String value = command.substring(command.indexOf(':'));
                     
