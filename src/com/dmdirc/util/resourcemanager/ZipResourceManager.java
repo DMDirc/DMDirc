@@ -20,8 +20,9 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.resourcemanager;
+package com.dmdirc.util.resourcemanager;
 
+import com.dmdirc.util.resourcemanager.ResourceManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 

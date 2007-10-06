@@ -25,7 +25,7 @@ package com.dmdirc.commandline;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.config.IdentityManager;
-import com.dmdirc.resourcemanager.ResourceManager;
+import com.dmdirc.util.resourcemanager.ResourceManager;
 
 import java.util.ArrayList;
 import java.util.List;

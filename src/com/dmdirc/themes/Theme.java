@@ -26,7 +26,7 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.config.InvalidIdentityFileException;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.resourcemanager.ZipResourceManager;
+import com.dmdirc.util.resourcemanager.ZipResourceManager;
 import com.dmdirc.ui.messages.Formatter;
 
 import java.io.File;

@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui.interfaces;
 
-import com.dmdirc.resourcemanager.ResourceManager;
+import com.dmdirc.util.resourcemanager.ResourceManager;
 
 /**
  * First run wizard interface.

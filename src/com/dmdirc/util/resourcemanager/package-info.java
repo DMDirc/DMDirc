@@ -23,4 +23,4 @@
 /**
  * Provides an interface for getting resources in a variety of ways.
  */
-package com.dmdirc.resourcemanager;
+package com.dmdirc.util.resourcemanager;
