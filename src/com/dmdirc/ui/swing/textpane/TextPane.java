@@ -268,10 +268,8 @@ public final class TextPane extends JComponent implements AdjustmentListener,
     /** Sets the scrollbar to the maximum position. */
     public void setScrollBarMax() {
         final int lines = document.getNumLines() - 1;
-        if (lines <= 1) {
-            scrollBar.setEnabled(false);
-        } else {
-            scrollBar.setEnabled(true);
+        if (lines == 0) {
+            canvas.repaint();
         }
         scrollBar.setMaximum(lines);
         if (!scrollBar.getValueIsAdjusting()
