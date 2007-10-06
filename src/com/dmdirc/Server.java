@@ -29,6 +29,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.Identity;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.InviteListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.parser.ChannelInfo;
@@ -50,6 +51,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import javax.swing.event.EventListenerList;
 
 /**
  * The Server class represents the client's view of a server. It maintains
@@ -110,13 +113,17 @@ public final class Server extends WritableFrameContainer implements Serializable
     /** The config manager for this server. */
     private ConfigManager configManager;
     
-    /** Whether we're marked as away or not. */
-    private boolean away;
     /** Our reason for being away, if any. */
-    private String awayMessage;
+    private String awayMessage = "";
     
     /** Our event handler. */
     private final ServerEventHandler eventHandler = new ServerEventHandler(this);
+    
+    /** A list of outstanding invites. */
+    private final List<Invite> invites = new ArrayList<Invite>();
+    
+    /** A list of listeners for this server's events. */
+    private final EventListenerList listeners = new EventListenerList();
     
     /**
      * Creates a new instance of Server.
@@ -245,8 +252,8 @@ public final class Server extends WritableFrameContainer implements Serializable
         
         doCallbacks();
         
-        away = false;
         awayMessage = "";
+        invites.clear();
         window.setAwayIndicator(false);
         
         try {
@@ -497,7 +504,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @return True if the client is marked as away, false otherwise
      */
     public boolean isAway() {
-        return away;
+        return !awayMessage.isEmpty();
     }
     
     /**
@@ -682,7 +689,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             final Channel newChan = new Channel(this, chan);
             
             tabCompleter.addEntry(chan.getName());
-            channels.put(parser.toLowerCase(chan.getName()), newChan);            
+            channels.put(parser.toLowerCase(chan.getName()), newChan);
             newChan.show();
         }
     }
@@ -832,7 +839,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     
     /**
      * Called when a private CTCP is received.
-     * 
+     *
      * @param type The type of the CTCP
      * @param message The body (if any) of the CTCP
      * @param host The host of the user that sent the CTCP
@@ -868,7 +875,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     
     /**
      * Called when a private CTCP reply is received.
-     * 
+     *
      * @param type The type of CTCPR
      * @param message The body of the CTCPR
      * @param host The host of the user who is sending the CTCPR
@@ -884,7 +891,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     
     /**
      * Called when a private notice is received.
-     * 
+     *
      * @param message The message content of the notice
      * @param host The host of the user who sent the notice
      */
@@ -900,7 +907,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     /**
      * Called when the server says that the nickname we're trying to use is
      * already in use.
-     * 
+     *
      * @param nickname The nickname that we were trying to use
      */
     public void onNickInUse(final String nickname) {
@@ -937,7 +944,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     /**
      * Called when the parser has determined the network name and IRCd type
      * of our server.
-     * 
+     *
      * @param networkName The name of the network we're connected to
      * @param ircdType The type of IRCd that we're connected to
      */
@@ -947,9 +954,9 @@ public final class Server extends WritableFrameContainer implements Serializable
         updateIgnoreList();
     }
     
-    /** 
+    /**
      * Called when we start receiving the server's MOTD.
-     * 
+     *
      * @param data The data sent by the server
      */
     public void onMOTDStart(final String data) {
@@ -960,9 +967,9 @@ public final class Server extends WritableFrameContainer implements Serializable
         addLine(buffer, data);
     }
     
-    /** 
+    /**
      * Called when we receive a single line of the server's MOTD.
-     * 
+     *
      * @param data The data sent by the server
      */
     public void onMOTDLine(final String data) {
@@ -973,7 +980,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         addLine(buffer, data);
     }
     
-    /** 
+    /**
      * Called when the server has finished sending the MOTD.
      */
     public void onMOTDEnd() {
@@ -986,7 +993,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     
     /**
      * Called when the server sends a numeric event.
-     * 
+     *
      * @param numeric The numeric code for the event
      * @param tokens The (tokenised) arguments of the event
      */
@@ -1013,8 +1020,8 @@ public final class Server extends WritableFrameContainer implements Serializable
     
     /**
      * Called when we receive an auth notice.
-     * 
-     * @param data The content of the notice 
+     *
+     * @param data The content of the notice
      */
     public void onNoticeAuth(final String data) {
         handleNotification("authNotice", data);
@@ -1025,8 +1032,8 @@ public final class Server extends WritableFrameContainer implements Serializable
     
     /**
      * Called when we receive an unknown notice.
-     * 
-     * @param message The content of the notice 
+     *
+     * @param message The content of the notice
      * @param target The destination of this notice (such as $*)
      * @param host The host of the user that sent the notice
      */
@@ -1040,7 +1047,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     
     /**
      * Called when we receive a user mode change.
-     * 
+     *
      * @param client The updated client object for the victim (us)
      * @param setBy The host of the user that performed the change
      * @param modes The modes that were changed
@@ -1063,27 +1070,25 @@ public final class Server extends WritableFrameContainer implements Serializable
     
     /**
      * Called when our away state changes.
-     * 
+     *
      * @param currentState The new aray state
      * @param reason Our away reason, if applicable
      */
     public void onAwayState(final boolean currentState, final String reason) {
         if (currentState) {
-            away = true;
             awayMessage = reason;
             
             ActionManager.processEvent(CoreActionType.SERVER_AWAY, null, this, awayMessage);
         } else {
-            away = false;
             awayMessage = "";
             
             ActionManager.processEvent(CoreActionType.SERVER_BACK, null, this);
         }
         
-        window.setAwayIndicator(away);
+        window.setAwayIndicator(isAway());
     }
     
-    /** 
+    /**
      * Called when the socket has been closed.
      */
     public void onSocketClosed() {
@@ -1111,9 +1116,9 @@ public final class Server extends WritableFrameContainer implements Serializable
         }
     }
     
-    /** 
+    /**
      * Called when an error was encountered while connecting.
-     * 
+     *
      * @param errorInfo The parser's error information
      */
     public void onConnectError(final ParserError errorInfo) {
@@ -1191,7 +1196,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             reconnect();
         }
     }
-        
+    
     /**
      * Called after the parser receives the 005 headers from the server.
      */
@@ -1226,7 +1231,57 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
         }
     }
-       
+    
+    /**
+     * Adds an invite listener to this server.
+     *
+     * @param listener The listener to be added
+     */
+    public void addInviteListener(final InviteListener listener) {
+        listeners.add(InviteListener.class, listener);
+    }
+    
+    /**
+     * Removes an invite listener from this server.
+     *
+     * @param listener The listener to be removed
+     */
+    public void removeInviteListener(final InviteListener listener) {
+        listeners.remove(InviteListener.class, listener);
+    }
+    
+    /**
+     * Adds an invite to this server, and fires the appropriate listeners.
+     * 
+     * @param invite The invite to be added
+     */
+    public void addInvite(final Invite invite) {
+        invites.add(invite);
+        
+        final Object[] listenerList = listeners.getListenerList();
+        for (int i = 0; i < listenerList.length; i += 2) {
+            if (listenerList[i] == InviteListener.class) {
+                ((InviteListener) listenerList[i + 1]).inviteReceived(this, invite);
+            }
+        }
+    }
+
+    /**
+     * Removes an invite from this server, and fires the appropriate listeners.
+     * 
+     * @param invite The invite to be removed
+     */    
+    public void removeInvite(final Invite invite) {
+        invites.remove(invite);
+        
+        final Object[] listenerList = listeners.getListenerList();
+        for (int i = 0; i < listenerList.length; i += 2) {
+            if (listenerList[i] == InviteListener.class) {
+                ((InviteListener) listenerList[i + 1]).inviteReceived(this, invite);
+            }
+        }
+    }
+    
     /**
      * Returns this server's name.
      *

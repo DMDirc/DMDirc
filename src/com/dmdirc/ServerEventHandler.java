@@ -43,7 +43,7 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
         ISocketClosed, IPrivateNotice, IMOTDStart, IMOTDLine, IMOTDEnd,
         INumeric, IGotNetwork, IPingFailed, IPingSuccess, IAwayState,
         IConnectError, IAwayStateOther, INickInUse, IPost005, INoticeAuth,
-        IUnknownNotice, IUserModeChanged {
+        IUnknownNotice, IUserModeChanged, IInvite {
     
     private static final String CALLBACK_PREFIX = "com.dmdirc.parser.callbacks.interfaces.I";
     
@@ -253,5 +253,13 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
             final ClientInfo cClient, final String sSetBy, final String sModes) {
         checkParser(tParser);
         owner.onUserModeChanged(cClient, sSetBy, sModes);
+    }
+
+    /** {@inheritDoc} */
+    public void onInvite(final IRCParser tParser, final String userHost,
+            final String channel) {
+        checkParser(tParser);
+        
+        owner.addInvite(new Invite(owner, channel, userHost));
     }
 }
