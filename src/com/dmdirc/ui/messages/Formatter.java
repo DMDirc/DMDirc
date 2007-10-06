@@ -250,9 +250,9 @@ public final class Formatter {
         //    4: User host
         //    5: Channel name
         defaultProperties.setProperty("channelJoin", colour + "3* %2$s (%3$s@%4$s) has joined %5$s" + stop + ".");
-        defaultProperties.setProperty("channelPart", colour + "3* %1$s%2$s (%3$s@%4$s) has left %5$s." + stop + "");
+        defaultProperties.setProperty("channelPart", colour + "3* %1$s%2$s (%3$s@%4$s) has left %5$s" + stop + ".");
         defaultProperties.setProperty("channelQuit", colour + "2* %1$s%2$s (%3$s@%4$s) has quit IRC.");
-        defaultProperties.setProperty("channelSelfJoin", colour + "3* You are now talking in %5$s." + stop + "");
+        defaultProperties.setProperty("channelSelfJoin", colour + "3* You are now talking in %5$s" + stop + ".");
         defaultProperties.setProperty("channelSelfPart", colour + "3* You have left the channel.");
         
         // Type: Channel Event with content
@@ -302,7 +302,7 @@ public final class Formatter {
         //    2: User responsible
         //    3: Time last changed
         //    4: Channel name
-        defaultProperties.setProperty("channelJoinTopic", colour + "3* The topic for %4$s is '%1$s" + stop + "'.\n" + colour + "3* Topic was set by %2$s.");
+        defaultProperties.setProperty("channelJoinTopic", colour + "3* The topic for %4$s is '%1$s" + stop + "'.\n" + colour + "3* Topic was set by %2$s at %3$tR on %3$tA, %3$tB %3$te %3$tY.");
         
         // Type: Channel mode discovery
         //     1: Channel modes
