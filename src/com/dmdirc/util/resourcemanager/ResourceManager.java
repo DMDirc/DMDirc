@@ -22,9 +22,6 @@
 
 package com.dmdirc.util.resourcemanager;
 
-import com.dmdirc.util.resourcemanager.ZipResourceManager;
-import com.dmdirc.resourcemanager.*;
-import com.dmdirc.util.resourcemanager.FileResourceManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 
