@@ -27,6 +27,7 @@ import com.dmdirc.IconManager;
 import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.messages.ColourManager;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.Color;
@@ -88,13 +89,7 @@ public class TreeViewTreeCellRenderer extends JLabel implements
         defaultIcon = IconManager.getIconManager().getIcon("icon");
         config = IdentityManager.getGlobalConfig();
         
-        rolloverColour = config.getOptionColour("ui",
-                "treeviewRolloverColour", manager.getTree().getBackground());
-        activeBackground = config.getOptionColour("ui",
-                "treeviewActiveBackground", manager.getTree().getBackground());
-        activeForeground = config.getOptionColour("ui",
-                "treeviewActiveForeground", manager.getTree().getForeground());
-        activeBold = config.getOptionBool("ui", "treeviewActiveBold");
+        setColours();
         
         config.addChangeListener("ui", this);
     }
@@ -159,22 +154,37 @@ public class TreeViewTreeCellRenderer extends JLabel implements
         return this;
     }
     
+    /** Sets the colours for the renderer. */
+    private void setColours() {
+        rolloverColour = config.getOptionColour(
+                "ui", "treeviewRolloverColour", 
+                config.getOptionColour("treeview", "backgroundcolour",
+                config.getOptionColour("ui", "backgroundcolour", 
+                ColourManager.parseColour("f0f0f0"))));
+        activeBackground = config.getOptionColour(
+                "ui", "treeviewActiveBackground", 
+                config.getOptionColour("treeview", "backgroundcolour",
+                config.getOptionColour("ui","backgroundcolour", 
+                manager.getTree().getBackground())));
+        activeForeground = config.getOptionColour(
+                "ui", "treeviewActiveForeground", 
+                config.getOptionColour("treeview", "foregroundcolour",
+                config.getOptionColour("ui", "foregroundcolour", 
+                manager.getTree().getForeground())));
+        activeBold = config.getOptionBool("ui", "treeviewActiveBold");
+    }
+    
     /** {@inheritDoc} */
     public void configChanged(final String domain, final String key,
             final String oldValue, final String newValue) {
-        if ("ui".equals(domain)) {
-            if ("treeviewRolloverColour".equals(key)) {
-                rolloverColour = config.getOptionColour("ui",
-                    "treeviewRolloverColour", getBackground());
-            } else if ("treeviewActiveBackground".equals(key)) {
-                activeBackground = config.getOptionColour("ui",
-                    "treeviewActiveBackground", getBackground());
-            } else if ("treeviewActiveForeground".equals(key)) {
-                activeForeground = config.getOptionColour("ui",
-                    "treeviewActiveForeground", getForeground());
-            } else if ("treeviewActiveBold".equals(key)) {
-                activeBold = config.getOptionBool("ui", "treeviewActiveBold");
-            }
+        if ("ui".equals(domain) &&
+                ("treeviewRolloverColour".equals(key) ||
+                "treeviewActiveBackground".equals(key) ||
+                "treeviewActiveForeground".equals(key) ||
+                "treeviewActiveBold".equals(key) ||
+                "backgroundcolour".equals(key) ||
+                "foregroundcolour".equals(key))) {
+            setColours();
         }
     }
 }

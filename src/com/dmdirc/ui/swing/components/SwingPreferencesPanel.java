@@ -461,8 +461,10 @@ public final class SwingPreferencesPanel extends StandardDialog implements
      */
     public void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
-            IdentityManager.getConfigIdentity().setOption("dialogstate", owner.getClass().getName(),
-                    tabList.getSelectionPath().getLastPathComponent().toString());
+            if (tabList.getSelectionPath() != null) {
+                IdentityManager.getConfigIdentity().setOption("dialogstate", owner.getClass().getName(),
+                        tabList.getSelectionPath().getLastPathComponent().toString());
+            }
             saveOptions();
             dispose();
         } else if (getCancelButton().equals(actionEvent.getSource())) {
@@ -537,6 +539,8 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                 tabList.setSelectionPath(tabList.getNextMatch(
                         tabName, 0, Position.Bias.Forward));
             }
+        } else {
+            tabList.setSelectionPath(tabList.getPathForRow(0));
         }
         pack();
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());

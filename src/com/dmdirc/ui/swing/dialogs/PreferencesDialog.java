@@ -353,16 +353,16 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         final String tabName = "Nicklist";
         preferencesPanel.addCategory("GUI", tabName, "");
         
-        preferencesPanel.addOptionalColourOption(tabName, "nicklist.backgroundcolour",
+        preferencesPanel.addOptionalColourOption(tabName, "ui.nicklistbackgroundcolour",
                 "Nicklist background colour: ", "Background colour to use for the nicklist",
-                config.getOption("nicklist", "backgroundcolour",
+                config.getOption("ui", "nicklistbackgroundcolour",
                 config.getOption("ui", "backgroundcolour", "")),
-                config.hasOption("nicklist", "backgroundcolour"), true, true);
-        preferencesPanel.addOptionalColourOption(tabName, "nicklist.foregroundcolour",
+                config.hasOption("ui", "nicklistbackgroundcolour"), true, true);
+        preferencesPanel.addOptionalColourOption(tabName, "ui.nicklistforegroundcolour",
                 "Nicklist foreground colour: ", "Foreground colour to use for the nicklist",
-                config.getOption("nicklist", "foregroundcolour",
+                config.getOption("ui", "nicklistforegroundcolour",
                 config.getOption("ui", "foregroundcolour", "")),
-                config.hasOption("nicklist", "foregroundcolour"), true, true);
+                config.hasOption("ui", "nicklistforegroundcolour"), true, true);
         preferencesPanel.addOptionalColourOption(tabName, "nicklist.altBackgroundColour",
                 "Alternate nicklist colour: ", "Alternate background colour to use",
                 config.getOption("nicklist", "altBackgroundColour", "f0f0f0"),
@@ -394,7 +394,9 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                 config.hasOption("treeview", "foregroundcolour"), true, true);
         preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewRolloverColour",
                 "Rollover colour: ", "Rollover colour to use",
-                config.getOption("ui", "treeviewRolloverColour", "f0f0f0"),
+                config.getOption("ui", "treeviewRolloverColour",
+                config.getOption("treeview", "backgroundcolour", 
+                config.getOption("ui", "backgroundcolour", "f0f0f0"))),
                 config.hasOption("ui", "treeviewRolloverColour"), true, true);
         preferencesPanel.addCheckboxOption(tabName, "treeview.sortwindows",
                 "Sort windows: ", "Sort windows of servers in the treeview",
@@ -408,12 +410,14 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
         preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewActiveForeground",
                 "Active node foreground: ", "Foreground colour of the active node",
                 config.getOption("ui", "treeviewActiveForeground",
-                config.getOption("ui", "foregroundcolour", "")),
+                config.getOption("treeview", "foregroundcolour", 
+                config.getOption("ui", "foregroundcolour", ""))),
                 config.hasOption("ui", "treeviewActiveForeground"), true, true);
         preferencesPanel.addOptionalColourOption(tabName, "ui.treeviewActiveBackground",
                 "Active node background: ", "Background colour of the active node",
                 config.getOption("ui", "treeviewActiveBackground",
-                config.getOption("ui", "backgroundcolour", "")),
+                config.getOption("treeview", "backgroundcolour", 
+                config.getOption("ui", "backgroundcolour", ""))),
                 config.hasOption("ui", "treeviewActiveBackground"), true, true);
     }
     

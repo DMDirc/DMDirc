@@ -105,7 +105,9 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
                 getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
         
         getConfigManager().addChangeListener("ui", "nicklistforegroundcolour", this);
+        getConfigManager().addChangeListener("ui", "foregroundcolour", this);
         getConfigManager().addChangeListener("ui", "nicklistbackgroundcolour", this);
+        getConfigManager().addChangeListener("ui", "backgroundcolour", this);
         getConfigManager().addChangeListener("nicklist", "altBackgroundColour", this);
         
         commandParser = new ChannelCommandParser(((Channel) getContainer()).
@@ -306,13 +308,15 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
      */
     private boolean checkShowNicklistMenu() {
         boolean showMenu = false;
-        for (int i = 0; i < nickList.getModel().getSize(); i++) {
-            if (nickList.getCellBounds(i, i) != null
-                    && nickList.getMousePosition() != null
-                    && nickList.getCellBounds(i, i).contains(nickList.getMousePosition())
-                    && nickList.isSelectedIndex(i)) {
-                showMenu = true;
-                break;
+        final Point mousePos = nickList.getMousePosition();
+        if (mousePos != null) {
+            for (int i = 0; i < nickList.getModel().getSize(); i++) {
+                if (nickList.getCellBounds(i, i) != null
+                        && nickList.getCellBounds(i, i).contains(mousePos)
+                        && nickList.isSelectedIndex(i)) {
+                    showMenu = true;
+                    break;
+                }
             }
         }
         return showMenu;
@@ -325,11 +329,11 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
      */
     private boolean selectNickUnderCursor() {
         boolean suceeded = false;
-        if (nickList.getMousePosition() != null) {
+        final Point mousePos = nickList.getMousePosition();
+        if (mousePos != null) {
             for (int i = 0; i < nickList.getModel().getSize(); i++) {
-                if (nickList.getCellBounds(i, i) != null 
-                        && nickList.getMousePosition() != null
-                        && nickList.getCellBounds(i, i).contains(nickList.getMousePosition())) {
+                if (nickList.getCellBounds(i, i) != null
+                        && nickList.getCellBounds(i, i).contains(mousePos)) {
                     nickList.setSelectedIndex(i);
                     suceeded = true;
                     break;
@@ -345,15 +349,16 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
             final String oldValue, final String newValue) {
         super.configChanged(domain, key, oldValue, newValue);
         
-        if ("ui".equals(domain)) {
-            if ("nicklistbackgroundcolour".equals(key) || "backgroundcolour".equals(key)) {
-                nickList.setBackground(getConfigManager().getOptionColour("ui", "nicklistbackgroundcolour",
-                        getConfigManager().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
-            } else if ("nicklistforegroundcolour".equals(key) || "foregroundcolour".equals(key)) {
-                nickList.setForeground(getConfigManager().getOptionColour("ui", "nicklistforegroundcolour",
-                        getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
-            }
-        } else if ("nicklist".equals(domain) && "altBackgroundColour".equals(key)) {
+        if (("ui".equals(domain) || "nicklist".equals(domain)) &&
+                ("altBackgroundColour".equals(key) ||
+                "nicklistbackgroundcolour".equals(key) ||
+                "backgroundcolour".equals(key) ||
+                "nicklistforegroundcolour".equals(key) ||
+                "foregroundcolour".equals(key))) {
+            nickList.setBackground(getConfigManager().getOptionColour("ui", "nicklistbackgroundcolour",
+                    getConfigManager().getOptionColour("ui", "backgroundcolour", Color.WHITE)));
+            nickList.setForeground(getConfigManager().getOptionColour("ui", "nicklistforegroundcolour",
+                    getConfigManager().getOptionColour("ui", "foregroundcolour", Color.BLACK)));
             nickList.repaint();
         }
     }

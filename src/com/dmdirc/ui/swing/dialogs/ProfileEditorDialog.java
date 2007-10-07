@@ -432,6 +432,10 @@ public final class ProfileEditorDialog extends StandardDialog implements
                 renameButton.setEnabled(true);
                 deleteButton.setEnabled(true);
             } else {
+                if (selectedProfile != -1) {
+                    saveProfile(selectedProfile);
+                    clearProfile();
+                }
                 renameButton.setEnabled(false);
                 deleteButton.setEnabled(false);
             }

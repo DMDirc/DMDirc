@@ -65,11 +65,13 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
     public NicklistRenderer(final ConfigManager config) {
         super();
         this.config = config;
-        config.addChangeListener("ui", "shownickcoloursinnicklist", this);
-        config.addChangeListener("nicklist", "altBackgroundColour", this);
+        config.addChangeListener("ui", this);
+        config.addChangeListener("nicklist", this);
         
         altBackgroundColour = config.getOptionColour("nicklist",
-                "altBackgroundColour", getBackground());
+                    "altBackgroundColour", config.getOptionColour("ui",
+                    "nicklistbackgroundcolour", config.getOptionColour("ui",
+                    "backgroundcolour", Color.WHITE)));
         showColours = config.getOptionBool("ui", "shownickcoloursinnicklist");
     }
     
@@ -104,9 +106,17 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
     /** {@inheritDoc} */
     public void configChanged(final String domain, final String key,
             final String oldValue, final String newValue) {
-        if ("nicklist".equals(domain) && "altBackgroundColour".equals(key)) {
-            altBackgroundColour = config.getOptionColour("nicklist", 
-                    "altBackgroundColour", getBackground());
+        if (("ui".equals(domain) || "nicklist".equals(domain)) &&
+                ("altBackgroundColour".equals(key) ||
+                "nicklistbackgroundcolour".equals(key) ||
+                "backgroundcolour".equals(key) ||
+                "nicklistforegroundcolour".equals(key) ||
+                "foregroundcolour".equals(key) ||
+                "altBackgroundColour".equals(key))) {
+            altBackgroundColour = config.getOptionColour("nicklist",
+                    "altBackgroundColour", config.getOptionColour("ui",
+                    "nicklistbackgroundcolour", config.getOptionColour("ui",
+                    "backgroundcolour", Color.WHITE)));
         }
         if ("ui".equals(domain) && "shownickcoloursinnicklist".equals(key)) {
             showColours = config.getOptionBool("ui", "shownickcoloursinnicklist");

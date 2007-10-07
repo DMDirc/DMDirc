@@ -41,12 +41,14 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.event.EventListenerList;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * Lists substitutions for use in actions.
  */
 public final class SubstitutionsPanel extends JPanel implements MouseListener,
-        ActionListener {
+        ActionListener, ListSelectionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -85,12 +87,14 @@ public final class SubstitutionsPanel extends JPanel implements MouseListener,
         listeners = new EventListenerList();
         
         add = new JButton("Insert Substitution");
+        add.setEnabled(false);
         add.addActionListener(this);
         
         list = new JList(new DefaultListModel());
         list.setCellRenderer(new ActionSubstititionRenderer());
         list.setDragEnabled(true);
         list.addMouseListener(this);
+        list.addListSelectionListener(this);
         populateList();
         
         layoutComponents();
@@ -218,6 +222,17 @@ public final class SubstitutionsPanel extends JPanel implements MouseListener,
         for (int i = 0; i < listenersList.length; i += 2) {
             if (listenersList[i] == SubstitutionsPanelListener.class) {
                 ((SubstitutionsPanelListener) listenersList[i + 1]).substitutionInsert(substitution);
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    public void valueChanged(final ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            if (list.getSelectedIndex() == -1) {
+                add.setEnabled(false);
+            } else {
+                add.setEnabled(true);
             }
         }
     }

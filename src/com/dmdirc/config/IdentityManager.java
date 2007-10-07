@@ -245,7 +245,7 @@ public final class IdentityManager {
                 break;
             }
             
-            if (comp != null && (comp.equalsIgnoreCase(identity.getTarget().getData()) || comp.isEmpty())) {
+            if (comp != null && comp.equalsIgnoreCase(identity.getTarget().getData())) {
                 sources.add(identity);
             }
         }

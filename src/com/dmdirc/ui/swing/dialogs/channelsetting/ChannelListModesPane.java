@@ -142,6 +142,15 @@ public final class ChannelListModesPane extends JPanel implements
     
     /** Updates the list mode menu. */
     private void updateMenu() {
+        if (listModesArray.length == 0) {
+            listModesMenu.setEnabled(false);
+            addListModeButton.setEnabled(false);
+            return;
+        } else {
+            listModesMenu.setEnabled(true);
+            addListModeButton.setEnabled(true);
+        }
+        
         final DefaultComboBoxModel model =
                 (DefaultComboBoxModel) listModesMenu.getModel();
         for (char mode : listModesArray) {

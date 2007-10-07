@@ -660,7 +660,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         helpMenu.add(menuItem);
         
         menuItem = new JMenuItem();
-        menuItem.setMnemonic('a');
+        menuItem.setMnemonic('j');
         menuItem.setText("Join #DMDirc");
         menuItem.setActionCommand("JoinDevChat");
         menuItem.addActionListener(this);
