@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JEditorPane;
+import javax.swing.UIManager;
 
 /**
  * Dyamnic text label with hyperlink support.
@@ -70,6 +71,7 @@ public class HTMLLabel extends JEditorPane implements PropertyChangeListener {
         setEditable(false);
         setHighlighter(null);
         setBackground(comp.getBackground());
+        setFont(UIManager.getFont("TextField.font"));
         addPropertyChangeListener("UI", this);
     }
 

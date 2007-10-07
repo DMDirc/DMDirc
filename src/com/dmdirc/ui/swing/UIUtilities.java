@@ -34,6 +34,7 @@ import java.awt.Font;
 import java.awt.Insets;
 
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import javax.swing.Spring;
 import javax.swing.SpringLayout;
@@ -186,67 +187,13 @@ public final class UIUtilities {
                     + "system look and feel", ex);
         }
         
-        final FontUIResource font = new FontUIResource("Dialog", Font.PLAIN , 12);
-        
-        UIManager.put("TableHeader.font", font);
-        UIManager.put("ToggleButton.font", font);
-        UIManager.put("ScrollPane.font", font);
-        UIManager.put("Spinner.font", font);
-        UIManager.put("RadioButtonMenuItem.font", font);
-        UIManager.put("Slider.font", font);
-        UIManager.put("OptionPane.font", font);
-        UIManager.put("ToolBar.font", font);
-        UIManager.put("CheckBoxMenuItem.font", font);
-        UIManager.put("Table.font", font);
-        UIManager.put("MenuBar.font", font);
-        UIManager.put("PopupMenu.font", font);
-        UIManager.put("DesktopIcon.font", font);
-        UIManager.put("TextPane.font", font);
-        UIManager.put("ProgressBar.font", font);
-        UIManager.put("FormattedTextField.font", font);
-        UIManager.put("ColorChooser.font", font);
-        UIManager.put("Viewport.font", font);
-        UIManager.put("ToolTip.font", font);
-        UIManager.put("Label.font", font);
-        UIManager.put("TextField.font", font);
-        UIManager.put("PasswordField.font", font);
-        UIManager.put("Button.font", font);
-        UIManager.put("RadioButton.font", font);
-        UIManager.put("CheckBox.font", font);
-        UIManager.put("ComboBox.font", font);
-        UIManager.put("Menu.font", font);
-        UIManager.put("List.font", font);
-        UIManager.put("MenuItem.font", font);
-        UIManager.put("Panel.font", font);
-        UIManager.put("TitledBorder.font", font);
-        UIManager.put("TabbedPane.font", font);
-        UIManager.put("Tree.font", font);
-        UIManager.put("InternalFrame.titleFont", font);
-        UIManager.put("EditorPane.font", font);
-        UIManager.put("TextArea.font", font);
-        
-        UIManager.put("CheckBoxMenuItem.acceleratorFont",
-                font.deriveFont((float) font.getSize() - 2));
-        UIManager.put("Menu.acceleratorFont",
-                font.deriveFont((float) font.getSize() - 2));
-        UIManager.put("MenuItem.acceleratorFont",
-                font.deriveFont((float) font.getSize() - 2));
+        UIManager.put("swing.useSystemFontSettings", true);
         
         UIManager.put("swing.boldMetal", false);
         UIManager.put("InternalFrame.useTaskBar", false);
         UIManager.put("SplitPaneDivider.border", BorderFactory.createEmptyBorder());
-        UIManager.put("TabbedPane.contentBorderInsets", new Insets(1, 1, 1, 1));
         UIManager.put("Tree.scrollsOnExpand", true);
         UIManager.put("Tree.scrollsHorizontallyAndVertically", true);
-        
-        UIManager.put("Tree.dropCellBackground", Color.WHITE);
-        UIManager.put("Tree.selectionBackground", Color.WHITE);
-        UIManager.put("Tree.textBackground", Color.WHITE);
-        UIManager.put("Tree.selectionBorderColor", Color.WHITE);
-        UIManager.put("Tree.drawsFocusBorder", false);
-        UIManager.put("Tree.drawHorizontalLines", true);
-        UIManager.put("Tree.drawVerticalLines", true);
-        UIManager.put("Tree.background", Color.WHITE);
     }
     
     /**

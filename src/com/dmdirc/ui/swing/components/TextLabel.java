@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 
 /**
  * Dyamnic text label.
@@ -72,6 +73,7 @@ public class TextLabel extends JTextArea implements PropertyChangeListener {
         setLineWrap(true);
         setHighlighter(null);
         setBackground(comp.getBackground());
+        setFont(UIManager.getFont("TextField.font"));
         addPropertyChangeListener("UI", this);
     }
 
