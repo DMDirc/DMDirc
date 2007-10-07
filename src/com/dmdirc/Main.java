@@ -48,17 +48,17 @@ public final class Main {
     /**
      * Stores the current textual program version.
      */
-    public static final String VERSION = "0.5.1SVN";
+    public static final String VERSION = "0.5.1";
     
     /**
      * Stores the release date of this version.
      */
-    public static final int RELEASE_DATE = 0;
+    public static final int RELEASE_DATE = 20071007;
     
     /**
      * Stores the update channel that this version came from, if any.
      */
-    public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.NONE;
+    public static final UpdateChannel UPDATE_CHANNEL = UpdateChannel.STABLE;
     
     /**
      * A revision number for actions and core plugins. If this is increased,
