@@ -266,6 +266,9 @@ public final class ErrorManager implements Serializable {
         if (firedListeners == 0) {
             System.err.println("An error has occurred: " + error.getLevel()
             + ": " + error.getMessage());
+            for (String line : error.getTrace()) {
+                System.err.println("\t" + line);
+            }
         }
     }
     
@@ -289,6 +292,9 @@ public final class ErrorManager implements Serializable {
          
         if (firedListeners == 0) {
             System.err.println("A fatal has occurred: " + error.getMessage());
+            for (String line : error.getTrace()) {
+                System.err.println("\t" + line);
+            }
         }
     }
     

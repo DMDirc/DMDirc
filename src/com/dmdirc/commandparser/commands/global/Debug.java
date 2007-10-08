@@ -280,8 +280,15 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     }
     
     /** Reverse value comparator for a map entry. */
-    private static class ValueComparator implements 
+    private static class ValueComparator implements
             Comparator<Entry<String, Integer>>, Serializable {
+        
+        /**
+         * A version number for this class. It should be changed whenever the
+         * class structure is changed (or anything else that would prevent
+         * serialized objects being unserialized with the new class).
+         */
+        private static final long serialVersionUID = 1;
         
         /** Instantiates a new ValueComparator. */
         public ValueComparator() {

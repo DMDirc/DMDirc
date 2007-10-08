@@ -104,7 +104,7 @@ public final class ActionManager {
      */
     public static void registerWrapper(final ActionWrapper wrapper) {
         Logger.doAssertion(wrapper != null && wrapper.getGroupName() != null
-                 && wrapper.getGroupName().isEmpty());
+                 && !wrapper.getGroupName().isEmpty());
         
         actionWrappers.add(wrapper);
     }
