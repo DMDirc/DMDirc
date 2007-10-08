@@ -68,6 +68,7 @@ import javax.swing.text.Position;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
@@ -82,7 +83,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
      * class structure is changed (or anything else that would prevent
      * serialized objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 7;
+    private static final long serialVersionUID = 8;
     
     /** All text fields in the dialog, used to apply settings. */
     private final Map<String, JTextField> textFields;
@@ -464,8 +465,11 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     public void actionPerformed(final ActionEvent actionEvent) {
         if (getOkButton().equals(actionEvent.getSource())) {
             if (tabList.getSelectionPath() != null) {
-                IdentityManager.getConfigIdentity().setOption("dialogstate", owner.getClass().getName(),
-                        tabList.getSelectionPath().getLastPathComponent().toString());
+                final String node = tabList.getSelectionPath().toString();
+                IdentityManager.getConfigIdentity().setOption("dialogstate",
+                        owner.getClass().getName().replaceAll("\\.", "-"),
+                        node.substring(7, node.length() - 1).
+                        replaceAll(", ", "->"));
             }
             saveOptions();
             dispose();
@@ -529,20 +533,27 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                         SMALL_BORDER, LARGE_BORDER, LARGE_BORDER);
             }
         }
-        if (IdentityManager.getGlobalConfig().hasOption("dialogstate",
-                owner.getClass().getName())) {
-            final String tabName = IdentityManager.getGlobalConfig().
-                    getOption("dialogstate", owner.getClass().getName());
-            
-            if (tabName == null || tabName.isEmpty()) {
-                cardLayout.first(mainPanel);
-                tabList.setSelectionPath(tabList.getPathForRow(0));
-            } else {
-                tabList.setSelectionPath(tabList.getNextMatch(
-                        tabName, 0, Position.Bias.Forward));
+        
+        final String[] tabName = IdentityManager.getGlobalConfig().
+                getOption("dialogstate", owner.getClass().getName().
+                replaceAll("\\.", "-"), "").split("->");
+        TreePath path = new TreePath(tabList.getModel().getRoot());
+        
+        for (String string : tabName) {
+            final TreePath treePath = tabList.getNextMatch(string, 0,
+                    Position.Bias.Forward);
+            if (treePath != null) {
+                final TreeNode node = (TreeNode) treePath.getLastPathComponent();
+                if (node != null) {
+                    path = path.pathByAddingChild(node);
+                }
             }
-        } else {
+        }
+        
+        if (path == null || path.getPathCount() <= 1) {
             tabList.setSelectionPath(tabList.getPathForRow(0));
+        } else {
+            tabList.setSelectionPath(path);
         }
         pack();
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
