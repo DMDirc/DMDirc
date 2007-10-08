@@ -133,7 +133,15 @@ public final class AboutDialog extends StandardDialog implements
     /** {@inheritDoc}. */
     public void actionPerformed(final ActionEvent e) {
         dispose();
-        me = null;
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
+        }
     }
     
 }

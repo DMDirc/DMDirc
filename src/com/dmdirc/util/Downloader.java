@@ -106,6 +106,8 @@ public class Downloader {
             }
         } while (line != null);
         
+        in.close();
+        
         return res;
     }
     

@@ -279,7 +279,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     }
     
     /** Reverse value comparator for a map entry. */
-    private class ValueComparator implements Comparator<Entry<String, Integer>> {
+    private static class ValueComparator implements Comparator<Entry<String, Integer>> {
         
         /** Instantiates a new ValueComparator. */
         public ValueComparator() {

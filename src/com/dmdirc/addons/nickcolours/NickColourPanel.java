@@ -60,7 +60,7 @@ public class NickColourPanel extends JPanel implements ActionListener {
     private final JTable table;
     
     /** The plugin we're associated with. */
-    private final NickColourPlugin plugin;
+    private final transient NickColourPlugin plugin;
     
     /** The table headings. */
     private final String[] headers = {"Network", "Nickname", "Text colour", "Nicklist colour"};

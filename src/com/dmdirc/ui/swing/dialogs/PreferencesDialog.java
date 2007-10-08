@@ -490,16 +490,13 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
                         + entry.getKey(), new IllegalArgumentException("Invalid setting: " + entry.getKey()));
             }
         }
-        preferencesPanel = null;
-        IdentityManager.getGlobalConfig().removeListener(this);
-        me = null;
+        dispose();
     }
     
     
     /** {@inheritDoc} */
     public void configCancelled() {
-        IdentityManager.getGlobalConfig().removeListener(this);
-        me = null;
+        dispose();
     }
     
     /** {@inheritDoc} */
@@ -514,5 +511,14 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
             restartNeeded = true;
         }
         
+    }
+    
+    /** {@inheritDoc} */
+    public void dispose() {
+        synchronized (me) {
+            preferencesPanel = null;
+            IdentityManager.getGlobalConfig().removeListener(this);
+            me = null;
+        }
     }
 }

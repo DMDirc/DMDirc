@@ -29,6 +29,7 @@ import com.dmdirc.Server;
 import com.dmdirc.ServerManager;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -97,7 +98,7 @@ import javax.swing.event.MenuListener;
  * The main application frame.
  */
 public final class MainFrame extends JFrame implements WindowListener,
-        ActionListener, MainWindow {
+        ActionListener, MainWindow, ConfigChangeListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -164,6 +165,9 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /** Plugins list. */
     private final Map<JMenuItem, String> pluginList;
+    
+    /** Show version? */
+    private boolean showVersion;
     
     /**
      * Creates new form MainFrame.
@@ -232,6 +236,11 @@ public final class MainFrame extends JFrame implements WindowListener,
         addWindowListener(this);
         
         checkWindowState();
+        
+        showVersion = IdentityManager.getGlobalConfig().getOptionBool(
+                "ui", "showversion", false);
+        IdentityManager.getGlobalConfig().addChangeListener("ui", 
+                "showversion", this);
     }
     
     /** {@inheritDoc}. */
@@ -364,7 +373,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     
     /** {@inheritDoc}. */
     public String getTitlePrefix() {
-        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "showversion", false)) {
+        if (showVersion) {
             return "DMDirc " + Main.VERSION;
         } else {
             return "DMDirc";
@@ -861,5 +870,11 @@ public final class MainFrame extends JFrame implements WindowListener,
             PluginManager.getPluginManager().getPlugin(pluginList.get(
                     e.getSource())).showConfig();
         }
+    }
+
+    /** {@inheritDoc} */
+    public void configChanged(final String domain, final String key) {
+        showVersion = IdentityManager.getGlobalConfig().getOptionBool(
+                "ui", "showversion", false);
     }
 }
