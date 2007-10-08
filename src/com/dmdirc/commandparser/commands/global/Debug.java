@@ -33,9 +33,12 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.updater.UpdateChecker;
+import java.util.Comparator;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeSet;
 
 /**
  * Provides various handy ways to test or debug the client.
@@ -137,7 +140,10 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
      * @param isSilent Whether this command has been silenced or not
      */
     private void doConfigStats(final InputWindow origin, final boolean isSilent) {
-        for (Map.Entry<String, Integer> entry : ConfigManager.getStats().entrySet()) {
+        final TreeSet<Entry<String, Integer>> sortedStats =
+                new TreeSet<Entry<String, Integer>>(new ValueComparator());
+        sortedStats.addAll(ConfigManager.getStats().entrySet());
+        for (Map.Entry<String, Integer> entry : sortedStats) {
             sendLine(origin, isSilent, FORMAT_OUTPUT,
                     entry.getKey() + " - " + entry.getValue());
         }
@@ -270,6 +276,27 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         }
         
         return res;
+    }
+    
+    /** Reverse value comparator for a map entry. */
+    private class ValueComparator implements Comparator<Entry<String, Integer>> {
+        
+        /** Instantiates a new ValueComparator. */
+        public ValueComparator() {
+            super();
+        }
+        
+        /** {@inheritDoc} */
+        public int compare(final Entry<String, Integer> o1,
+                final Entry<String, Integer> o2) {
+            int returnValue = o1.getValue().compareTo(o2.getValue()) * -1;
+            
+            if (returnValue == 0) {
+                returnValue = o1.getKey().compareToIgnoreCase(o2.getKey());
+            }
+            
+            return returnValue;
+        }
     }
     
 }
