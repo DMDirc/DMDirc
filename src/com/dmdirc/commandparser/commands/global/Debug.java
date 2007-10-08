@@ -33,6 +33,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.updater.UpdateChecker;
+import java.io.Serializable;
 import java.util.Comparator;
 
 import java.util.List;
@@ -279,7 +280,8 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
     }
     
     /** Reverse value comparator for a map entry. */
-    private static class ValueComparator implements Comparator<Entry<String, Integer>> {
+    private static class ValueComparator implements 
+            Comparator<Entry<String, Integer>>, Serializable {
         
         /** Instantiates a new ValueComparator. */
         public ValueComparator() {

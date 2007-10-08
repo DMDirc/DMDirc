@@ -182,7 +182,7 @@ public final class IdentityManager {
      * @param identity The identity to be removed
      */
     public static void removeIdentity(final Identity identity) {
-        Logger.doAssertion(identity != null, identities.contains(identity));
+        Logger.doAssertion(identity != null && identities.contains(identity));
         
         identities.remove(identity);
     }
@@ -296,7 +296,8 @@ public final class IdentityManager {
      */
     public static Identity getChannelConfig(final String network,
             final String channel) {
-        Logger.doAssertion(network != null, channel != null, !network.isEmpty(), !channel.isEmpty());
+        Logger.doAssertion(network != null && !network.isEmpty()
+               && channel != null && !channel.isEmpty());
         
         final String myTarget = (channel + "@" + network).toLowerCase();
         
@@ -321,7 +322,7 @@ public final class IdentityManager {
      * @return A config source for the network
      */
     public static Identity getNetworkConfig(final String network) {
-        Logger.doAssertion(network != null, !network.isEmpty());
+        Logger.doAssertion(network != null && !network.isEmpty());
         
         final String myTarget = network.toLowerCase();
         
