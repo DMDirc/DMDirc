@@ -23,6 +23,7 @@
 package com.dmdirc.ui.messages;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -66,7 +67,7 @@ public final class Styliser {
     public static final char CODE_UNDERLINE = 31;
     
     /** Internal chars. */
-    private static final String INTERNAL_CHARS = CODE_HYPERLINK + "" + CODE_CHANNEL;
+    private static final String INTERNAL_CHARS = String.valueOf(CODE_HYPERLINK) + CODE_CHANNEL;
     
     /** Regexp to match characters which shouldn't be used in channel links. */
     private static final String RESERVED_CHARS = "[^\\s" + CODE_BOLD + CODE_COLOUR
@@ -94,10 +95,21 @@ public final class Styliser {
     
     /** Regular expression for intelligent handling of trailing punctuation. */
     private static final String URL_INT4 = "(" + CODE_HYPERLINK
-            + "[^" + CODE_HYPERLINK + "]+?)([\\.,]?)" + CODE_HYPERLINK;    
+            + "[^" + CODE_HYPERLINK + "]+?)([\\.,]?)" + CODE_HYPERLINK;
     
     /** The regular expression to use for marking up channels. */
     private static final String URL_CHANNEL = "(?i)(?<![^\\s])([#&]" + RESERVED_CHARS + "+)";
+    
+    /** Whether or not we should style links. */
+    private static boolean styleLinks = IdentityManager.getGlobalConfig().getOptionBool("ui", "stylelinks");
+    
+    static {
+        IdentityManager.getGlobalConfig().addChangeListener("ui", "stylelinks",new ConfigChangeListener() {
+            public void configChanged(final String domain, final String key) {
+                Styliser.styleLinks = IdentityManager.getGlobalConfig().getOptionBool("ui", "stylelinks");
+            }
+        });
+    }
     
     /** Creates a new instance of Styliser. */
     private Styliser() {
@@ -128,21 +140,7 @@ public final class Styliser {
                 int offset = styledDoc.getLength();
                 int position = 0;
                 
-                String target = string.replaceAll(INTERNAL_CHARS, "");;
-                
-                if (target.matches(".*" + URL_REGEXP + ".*")) {
-                    target = target.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
-                    String target2 = "";
-                    
-                    for (int j = 0; j < 5 && !target.equals(target2); j++) {
-                        target2 = target;
-                        target = target
-                                .replaceAll(URL_INT1, "$1" + CODE_HYPERLINK + "$2")
-                                .replaceAll(URL_INT2, "$1" + CODE_HYPERLINK + "$2")
-                                .replaceAll(URL_INT3, "$1" + CODE_HYPERLINK + "$2")
-                                .replaceAll(URL_INT4, "$1" + CODE_HYPERLINK + "$2");
-                    }
-                }
+                String target = doLinks(string.replaceAll(INTERNAL_CHARS, ""));
                 
                 target = target.replaceAll(URL_CHANNEL, CODE_CHANNEL + "$0" + CODE_CHANNEL);
                 
@@ -169,6 +167,33 @@ public final class Styliser {
             }
         }
         return styledDoc;
+    }
+    
+    /**
+     * Applies the hyperlink styles and intelligent linking regexps to the
+     * target.
+     *
+     * @param string The string to be linked
+     * @return A copy of the string with hyperlinks marked up
+     */
+    private static String doLinks(final String string) {
+        String target = string;
+        
+        if (target.matches(".*" + URL_REGEXP + ".*")) {
+            target = target.replaceAll(URL_REGEXP, CODE_HYPERLINK + "$0" + CODE_HYPERLINK);
+            String target2 = "";
+            
+            for (int j = 0; j < 5 && !target.equals(target2); j++) {
+                target2 = target;
+                target = target
+                        .replaceAll(URL_INT1, "$1" + CODE_HYPERLINK + "$2")
+                        .replaceAll(URL_INT2, "$1" + CODE_HYPERLINK + "$2")
+                        .replaceAll(URL_INT3, "$1" + CODE_HYPERLINK + "$2")
+                        .replaceAll(URL_INT4, "$1" + CODE_HYPERLINK + "$2");
+            }
+        }
+        
+        return target;
     }
     
     /**
@@ -422,7 +447,7 @@ public final class Styliser {
      * @param attribs The attributes to be modified.
      */
     private static void toggleLink(final SimpleAttributeSet attribs) {
-        if (IdentityManager.getGlobalConfig().getOptionBool("ui", "stylelinks", false)) {
+        if (styleLinks) {
             if (attribs.getAttribute(IRCTextAttribute.HYPERLINK) == null) {
                 // Add the hyperlink style
                 
