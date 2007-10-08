@@ -4,25 +4,23 @@
 identity.name = InspIRCd mode aliases
 identity.ircd = inspircd
 
-server.modeC = Disables CTCP to channels
-server.modeG = Blocks censored words
-server.modeJ = Automatic rejoin prevention
-server.modeK = Disables /KNOCK on a channel
-server.modeL = Adds redirect when channel is full
-server.modeM = Only registered users may speak
+server.modeC = No channel CTCPs
+server.modeG = No censored words
+server.modeJ = No auto-rejoin
+server.modeK = No /knock
+server.modeL = Overflow redirect
 server.modeN = No nick changes
-server.modeO = Opers only can join channel
-server.modeP = block all caps lines
-server.modeQ = Disables KICK on a channel
-server.modeR = Only registered users may join
-server.modeS = Strips colours from messages
-server.modeT = Disables sending NOTICEs to a channel
-server.modeV = Disables INVITE on a channel
-server.modea = Gives protected status to a user
-server.modec = Blocks messages containing colour codes
-server.modef = Prevents message and notice floods
-server.modeg = Censored word
+server.modeP = No all-uppercase lines
+server.modeQ = No /kick
+server.modeS = Strip all colours
+server.modeT = No channel notices
+server.modeV = No /invite
+server.modef = Prevent message and notice floods
 server.modej = Prevents join floods
 server.moder = Registered channel
-server.modeq = Gives channel founder status
 server.modez = SSL Users only
+
+server.modeg = Censored word
+
+server.modea = Protected
+server.modeq = Channel founder
