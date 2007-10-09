@@ -134,13 +134,12 @@ public final class Styliser {
                     chars[j] = '?';
                 }
             }
-            strings[i] = new String(chars);
-            final String string = strings[i];
+
             try {
                 int offset = styledDoc.getLength();
                 int position = 0;
                 
-                String target = doLinks(string.replaceAll(INTERNAL_CHARS, ""));
+                String target = doLinks(new String(chars).replaceAll(INTERNAL_CHARS, ""));
                 
                 target = target.replaceAll(URL_CHANNEL, CODE_CHANNEL + "$0" + CODE_CHANNEL);
                 
