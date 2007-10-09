@@ -175,7 +175,7 @@ public final class Styliser {
      * @param string The string to be linked
      * @return A copy of the string with hyperlinks marked up
      */
-    private static String doLinks(final String string) {
+    static String doLinks(final String string) {
         String target = string;
         
         if (target.matches(".*" + URL_REGEXP + ".*")) {

@@ -76,4 +76,28 @@ public class StyliserTest {
         assertEquals(expResult, result);
     }
     
+    @Test
+    public void testLinking() {
+        final char h = Styliser.CODE_HYPERLINK;
+        
+        final String[][] tests = {
+            {"no links here!", "no links here!"},
+            {"www.google.com", "~www.google.com~"},
+            {"http://www.google.com", "~http://www.google.com~"},
+            {"www.google.com www.google.com", "~www.google.com~ ~www.google.com~"},
+            {"http://www.google.com:80/test#flub", "~http://www.google.com:80/test#flub~"},
+            {"(www.google.com)", "(~www.google.com~)"},
+            {"(foo: www.google.com)", "(foo: ~www.google.com~)"},
+            {"(foo: 'www.google.com')", "(foo: '~www.google.com~')"},
+            {"foo: www.google.com, bar", "foo: ~www.google.com~, bar"},
+            {"\"foo\" www.google.com \"www.google.com\"",
+                     "\"foo\" ~www.google.com~ \"~www.google.com~\"",
+            },
+        };
+        
+        for (String[] testcase : tests) {
+            assertEquals(testcase[1], Styliser.doLinks(testcase[0]).replace(h, '~'));
+        }
+    }
+    
 }
