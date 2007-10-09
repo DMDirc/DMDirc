@@ -22,10 +22,17 @@
 
 package com.dmdirc.ui.messages;
 
+import com.dmdirc.config.IdentityManager;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class StyliserTest {
+    
+    @Before
+    public void setUp() {
+        IdentityManager.load();
+    }
     
     @Test
     public void testStripControlCodes1() {
