@@ -82,15 +82,15 @@ public final class Styliser {
             + "+|(?<![a-z0-9:])www\\." + URL_CHARS + "+)";
     
     /** Regular expression for intelligent handling of closing brackets. */
-    private static final String URL_INT1 = "(\\([^\\)]*?" + CODE_HYPERLINK
+    private static final String URL_INT1 = "(\\([^\\)" + CODE_HYPERLINK + "]*?" + CODE_HYPERLINK
             + "[^" + CODE_HYPERLINK + "]+)(\\)['\";:!,\\.\\)]*)" + CODE_HYPERLINK;
     
     /** Regular expression for intelligent handling of double quotes. */
-    private static final String URL_INT2 = "(\"[^\"]*?" + CODE_HYPERLINK
+    private static final String URL_INT2 = "(\"[^\"" + CODE_HYPERLINK + "]*?" + CODE_HYPERLINK
             + "[^" + CODE_HYPERLINK + "]+)(\"[\"';:!,\\.\\)]?)" + CODE_HYPERLINK;
     
     /** Regular expression for intelligent handling of single quotes. */
-    private static final String URL_INT3 = "('[^']*?" + CODE_HYPERLINK
+    private static final String URL_INT3 = "('[^'" + CODE_HYPERLINK + "]*?" + CODE_HYPERLINK
             + "[^" + CODE_HYPERLINK + "]+)('[\"';:!,\\.\\)]?)" + CODE_HYPERLINK;
     
     /** Regular expression for intelligent handling of trailing punctuation. */
