@@ -25,7 +25,6 @@ package com.dmdirc.ui.swing.dialogs.channelsetting;
 import com.dmdirc.Channel;
 import com.dmdirc.parser.ChannelListModeItem;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
-
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -37,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -53,37 +51,32 @@ import javax.swing.event.ListSelectionListener;
 /**
  * List modes panel.
  */
-public final class ChannelListModesPane extends JPanel implements
-        ActionListener, ListSelectionListener  {
-    
+public final class ChannelListModesPane extends JPanel implements ActionListener,
+        ListSelectionListener {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
-    
+    private static final long serialVersionUID = 3;
     /** Channel. */
     private final Channel channel;
-    
     /** Combox box used to switch between list modes. */
     private final JComboBox listModesMenu;
-    
     /** Arraylist of jpanels containing the listmodes. */
     private final List<JList> listModesPanels;
-    
     /** JPanel used to show listmodespanels in. */
     private final JScrollPane listModesPanel;
-    
     /** Add list mode button. */
     private final JButton addListModeButton;
-    
     /** Remove list mode button. */
     private final JButton removeListModeButton;
-    
     /** list modes available on this server. */
     private final char[] listModesArray;
-    
+    /** Modes on creation. */
+    private final Map<Character, List<ChannelListModeItem>> existingListItems;
+
     /**
      * Creates a new instance of ChannelListModePane.
      *
@@ -91,55 +84,61 @@ public final class ChannelListModesPane extends JPanel implements
      */
     public ChannelListModesPane(final Channel channel) {
         super();
-        
+
         this.channel = channel;
-        
+
         listModesPanel = new JScrollPane();
-        listModesPanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createEmptyBorder(SMALL_BORDER, 0,
-                SMALL_BORDER, 0),
-                listModesPanel.getBorder()));
+        listModesPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
+                0, SMALL_BORDER, 0), listModesPanel.getBorder()));
         listModesPanels = new ArrayList<JList>();
         listModesArray =
                 channel.getServer().getParser().getListChanModes().toCharArray();
+        existingListItems =
+                new HashMap<Character, List<ChannelListModeItem>>();
         listModesMenu =
                 new JComboBox(new DefaultComboBoxModel());
         addListModeButton = new JButton("Add");
         removeListModeButton = new JButton("Remove");
         removeListModeButton.setEnabled(false);
-        
+
         initListModesPanel();
         initListeners();
-        
+
         setVisible(true);
     }
-    
+
     /** Updates the panel. */
     public void update() {
         final boolean visible = listModesPanel.isVisible();
-        
+
         if (visible) {
             listModesPanel.setVisible(false);
         }
-        
-        for (int i = 0; i < listModesArray.length; i++) {
+
+        existingListItems.clear();
+
+        for (int i = 0; i < listModesArray.length;
+                i++) {
             final char mode = listModesArray[i];
+            existingListItems.put(mode,
+                    new ArrayList<ChannelListModeItem>(channel.getChannelInfo().
+                    getListModeParam(mode)));
             final ArrayList<ChannelListModeItem> listItems =
                     channel.getChannelInfo().getListModeParam(mode);
             final DefaultListModel model =
                     (DefaultListModel) listModesPanels.get(i).getModel();
-            
+
             model.removeAllElements();
             for (ChannelListModeItem listItem : listItems) {
                 model.addElement(listItem);
             }
         }
-        
+
         if (visible) {
             listModesPanel.setVisible(true);
         }
     }
-    
+
     /** Updates the list mode menu. */
     private void updateMenu() {
         if (listModesArray.length == 0) {
@@ -150,25 +149,26 @@ public final class ChannelListModesPane extends JPanel implements
             listModesMenu.setEnabled(true);
             addListModeButton.setEnabled(true);
         }
-        
+
         final DefaultComboBoxModel model =
                 (DefaultComboBoxModel) listModesMenu.getModel();
         for (char mode : listModesArray) {
             String modeText = mode + " list";
             if (channel.getConfigManager().
-                    getOptionBool("server", "friendlymodes", false)
-                    && channel.getConfigManager().hasOption("server", "mode" + mode)) {
+                    getOptionBool("server", "friendlymodes", false) &&
+                    channel.getConfigManager().hasOption("server", "mode" + mode)) {
                 modeText =
                         channel.getConfigManager().
                         getOption("server", "mode" + mode) + " list";
             }
             model.addElement(modeText);
-            
-            final JList list = new JList(new DefaultListModel());
+
+            final JList list =
+                    new JList(new DefaultListModel());
             list.setVisibleRowCount(15);
             list.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             list.addListSelectionListener(this);
-            
+
             listModesPanels.add(list);
         }
         if (listModesPanels.isEmpty()) {
@@ -178,17 +178,17 @@ public final class ChannelListModesPane extends JPanel implements
         }
         listModesPanel.setVisible(true);
     }
-    
+
     /** Initialises the list modes panel. */
     private void initListModesPanel() {
         final GridBagConstraints constraints = new GridBagConstraints();
-        
+
         updateMenu();
-        
+
         setLayout(new GridBagLayout());
         setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER));
-        
+
         constraints.weightx = 1.0;
         constraints.weighty = 0.0;
         constraints.fill = GridBagConstraints.BOTH;
@@ -196,69 +196,73 @@ public final class ChannelListModesPane extends JPanel implements
         constraints.gridy = 1;
         constraints.gridwidth = 2;
         add(listModesMenu, constraints);
-        
+
         constraints.gridy = 2;
         constraints.weighty = 1.0;
         add(listModesPanel, constraints);
-        
+
         constraints.weightx = 0.5;
         constraints.weighty = 0.0;
         constraints.gridy = 3;
         constraints.gridwidth = 1;
         add(addListModeButton, constraints);
-        
+
         constraints.gridx = 2;
         constraints.insets = new Insets(0, SMALL_BORDER, 0, 0);
         add(removeListModeButton, constraints);
-        
+
         update();
     }
-    
+
     /** Initialises listeners for this dialog. */
     private void initListeners() {
         addListModeButton.addActionListener(this);
         removeListModeButton.addActionListener(this);
         listModesMenu.addActionListener(this);
     }
-    
+
     /** Sends the list modes to the server. */
     public void save() {
-        final Map<String, Character> currentModes
-                = new HashMap<String, Character>();
-        final Map<String, Character> newModes
-                = new HashMap<String, Character>();
-        
-        for (int i = 0; i < listModesArray.length; i++) {
+        final Map<String, Character> currentModes =
+                new HashMap<String, Character>();
+        final Map<String, Character> newModes =
+                new HashMap<String, Character>();
+
+        for (int i = 0; i < listModesArray.length;
+                i++) {
             final char mode = listModesArray[i];
-            final ArrayList<ChannelListModeItem> listItems =
-                    channel.getChannelInfo().getListModeParam(mode);
             final Enumeration<?> values =
                     ((DefaultListModel) listModesPanels.get(i).getModel()).elements();
-            
+            final List<ChannelListModeItem> listItems =
+                    existingListItems.get(mode);
+
             for (ChannelListModeItem listItem : listItems) {
                 currentModes.put(listItem.toString(), mode);
             }
-            
+
             while (values.hasMoreElements()) {
-                newModes.put(values.nextElement().toString(), mode);
+                final String value = values.nextElement().toString();
+                newModes.put(value, mode);
             }
         }
-        
+
         for (Entry<String, Character> entry : newModes.entrySet()) {
             if (currentModes.containsKey(entry.getKey())) {
                 currentModes.remove(entry.getKey());
             } else {
-                channel.getChannelInfo().alterMode(true, entry.getValue(), entry.getKey());
+                channel.getChannelInfo().
+                        alterMode(true, entry.getValue(), entry.getKey());
             }
         }
-        
+
         for (Entry<String, Character> entry : currentModes.entrySet()) {
-            channel.getChannelInfo().alterMode(false, entry.getValue(), entry.getKey());
+            channel.getChannelInfo().
+                    alterMode(false, entry.getValue(), entry.getKey());
         }
-        
+
         channel.getChannelInfo().sendModes();
     }
-    
+
     /** Adds a list mode. */
     private void addListMode() {
         final int selectedIndex = listModesMenu.getSelectedIndex();
@@ -280,7 +284,7 @@ public final class ChannelListModesPane extends JPanel implements
                     System.currentTimeMillis() / 1000));
         }
     }
-    
+
     /** Removes a list mode. */
     private void removeListMode() {
         final int selectedIndex = listModesMenu.getSelectedIndex();
@@ -289,8 +293,9 @@ public final class ChannelListModesPane extends JPanel implements
             ((DefaultListModel) list.getModel()).removeElement(mode);
         }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void actionPerformed(final ActionEvent event) {
         if (listModesMenu.equals(event.getSource())) {
             listModesPanel.setVisible(false);
@@ -302,11 +307,13 @@ public final class ChannelListModesPane extends JPanel implements
             removeListMode();
         }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void valueChanged(final ListSelectionEvent event) {
         if (!event.getValueIsAdjusting()) {
-            final int selected = ((JList) event.getSource()).getSelectedIndex();
+            final int selected =
+                    ((JList) event.getSource()).getSelectedIndex();
             if (selected == -1) {
                 removeListModeButton.setEnabled(false);
             } else {
