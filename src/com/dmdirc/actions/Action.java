@@ -295,7 +295,20 @@ public class Action implements Serializable {
         }
         
         if (properties.containsKey("condition" + condition + "-component")) {
-            component = ActionManager.getActionComponent(properties.getProperty("condition" + condition + "-component"));
+            final String componentName = properties.getProperty("condition" + condition + "-component");
+            
+            if (componentName.indexOf('.') == -1) {
+            component = ActionManager.getActionComponent(componentName);
+            } else {
+                try {
+                    component = new ActionComponentChain(triggers[0].getType().getArgTypes()[arg],
+                            componentName);
+                } catch (IllegalArgumentException iae) {
+                    error(iae.getMessage());
+                    return false;
+                }
+            }
+            
             if (component == null) {
                 error("Invalid component for condition " + condition);
                 return false;
