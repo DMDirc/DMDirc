@@ -65,9 +65,6 @@ public final class WizardDialog extends StandardDialog implements ActionListener
      */
     private static final long serialVersionUID = 1;
     
-    /** Previously created instance of WizardDialog. */
-    private static WizardDialog me;
-    
     /** Step panel list. */
     private final List<Step> steps;
     /** Wizard title. */
@@ -100,7 +97,7 @@ public final class WizardDialog extends StandardDialog implements ActionListener
      * @param modal Whether the wizard should be modal
      * @param parent Parent component
      */
-    private WizardDialog(final String title, final List<Step> steps,
+    public WizardDialog(final String title, final List<Step> steps,
             final Wizard wizard, final boolean modal, final Component parent) {
         super(null, modal);
         
@@ -111,27 +108,6 @@ public final class WizardDialog extends StandardDialog implements ActionListener
         
         initComponents();
         layoutComponents();
-    }
-    
-    /**
-     * Returns the current instance of the WizardDialog.
-     *
-     * @param title Title for the wizard
-     * @param steps Steps for the wizard
-     * @param wizard Wizard to inform of changes
-     * @param modal Whether the wizard should be modal
-     * @param parent Parent component
-     *
-     * @return The current WizardDialog instance
-     */
-    public static synchronized WizardDialog getWizardDialog(final String title, 
-            final List<Step> steps, final Wizard wizard, final boolean modal, 
-            final Component parent) {
-        if (me == null) {
-            me = new WizardDialog(title, steps, wizard, modal, parent);
-        }
-        
-        return me;
     }
     
     /** Initialises the components. */
@@ -337,15 +313,5 @@ public final class WizardDialog extends StandardDialog implements ActionListener
     /** Updates the progress label. */
     private void updateProgressLabel() {
         progressLabel.setText("Step " + (currentStep + 1) + " of " + steps.size());
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void dispose() {
-        synchronized (me) {
-            super.dispose();
-            me = null;
-        }
-    }
-    
+    }    
 }

@@ -149,12 +149,12 @@ public final class SwingController implements UIController {
     
     /** {@inheritDoc} */
     public void showChannelSettingsDialog(final Channel channel) {
-        ChannelSettingsDialog.getChannelSettingDialog(channel).setVisible(true);
+        ChannelSettingsDialog.showChannelSettingsDialog(channel);
     }
     
     /** {@inheritDoc} */
     public void showServerSettingsDialog(final Server server) {
-        new ServerSettingsDialog(server).setVisible(true);
+        ServerSettingsDialog.showServerSettingsDialog(server);
     }
     
     /** {@inheritDoc} */

@@ -152,7 +152,7 @@ public final class ServerFrame extends InputFrame implements ServerWindow,
     public void actionPerformed(final ActionEvent actionEvent) {
         super.actionPerformed(actionEvent);
         if (actionEvent.getSource() == settingsMI) {
-            new ServerSettingsDialog(getContainer().getServer()).setVisible(true);
+            ServerSettingsDialog.showServerSettingsDialog(getContainer().getServer());
         }
     }
 

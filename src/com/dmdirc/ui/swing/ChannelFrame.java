@@ -221,7 +221,7 @@ public final class ChannelFrame extends InputFrame implements MouseListener,
     public void actionPerformed(final ActionEvent actionEvent) {
         super.actionPerformed(actionEvent);
         if (actionEvent.getSource() == settingsMI) {
-            ChannelSettingsDialog.getChannelSettingDialog((Channel) getContainer()).setVisible(true);
+            ChannelSettingsDialog.showChannelSettingsDialog((Channel) getContainer());
         }
     }
     

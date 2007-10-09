@@ -47,22 +47,20 @@ import javax.swing.JTabbedPane;
 /**
  * Allows the user to modify server settings and the ignore list.
  */
-public final class ServerSettingsDialog extends StandardDialog
-        implements ActionListener {
-    
+public final class ServerSettingsDialog extends StandardDialog implements ActionListener {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
-    
+    private static final long serialVersionUID = 2;
+    /** Server settings dialogs, semi singleton use. */
+    private static ServerSettingsDialog me;
     /** Parent server. */
     private final Server server;
-    
     /** Buttons panel. */
     private JPanel buttonsPanel;
-    
     /** Ignore list panel. */
     private IgnoreListPanel ignoreList;
     /** Perform panel. */
@@ -71,143 +69,223 @@ public final class ServerSettingsDialog extends StandardDialog
     private SettingsPanel settingsPanel;
     /** The tabbed pane. */
     private JTabbedPane tabbedPane;
-    
+
     /**
      * Creates a new instance of ServerSettingsDialog.
      *
      * @param server The server object that we're editing settings for
      */
-    public ServerSettingsDialog(final Server server) {
+    private ServerSettingsDialog(final Server server) {
         super((MainFrame) Main.getUI().getMainWindow(), false);
-        
+
         this.server = server;
-        
+
         setTitle("Server settings");
         setPreferredSize(new Dimension(400, 400));
         setResizable(false);
-        
+
         initComponents();
         initListeners();
         pack();
         setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
     }
-    
+
+    /**
+     * Creates the dialog if one doesn't exist, and displays it.
+     *
+     * @param server The server object that we're editing settings for
+     */
+    public static synchronized void showServerSettingsDialog(final Server server) {
+        me = getServerSettingsDialog(server);
+
+        me.setLocationRelativeTo((MainFrame) Main.getUI().getMainWindow());
+        me.setVisible(true);
+        me.requestFocus();
+    }
+
+    /**
+     * Returns the current instance of the ServerSettingsDialog.
+     *
+     * @param server The server object that we're editing settings for
+     *
+     * @return The current ServerSettingsDialog instance
+     */
+    public static synchronized ServerSettingsDialog getServerSettingsDialog(final Server server) {
+        if (me == null) {
+            me =    new ServerSettingsDialog(server);
+        }
+
+        me.pack();
+
+        return me;
+    }
+
     /** Initialises the main UI components. */
     private void initComponents() {
         orderButtons(new JButton(), new JButton());
         initButtonsPanel();
-        
+
         tabbedPane = new JTabbedPane();
-        
+
         tabbedPane.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, 0, SMALL_BORDER));
-        
-        ignoreList = new IgnoreListPanel(server);
-        
-        performPanel = new PerformPanel(server);
-        
+
+        ignoreList =
+                new IgnoreListPanel(server);
+
+        performPanel =
+                new PerformPanel(server);
+
         if (!server.getNetwork().isEmpty()) {
-            settingsPanel = new SettingsPanel(IdentityManager.getNetworkConfig(
-                    server.getNetwork()), "These settings are specific to this "
-                    + "network, any settings specified here will overwrite global "
-                    + "settings");
+            settingsPanel =
+                    new SettingsPanel(IdentityManager.getNetworkConfig(server.getNetwork()),
+                    "network, any settings specified here will overwrite global " +
+                    "settings");
         } else if (!server.getName().isEmpty()) {
-            settingsPanel = new SettingsPanel(IdentityManager.getNetworkConfig(
-                    server.getName()), "These settings are specific to this "
-                    + "network, any settings specified here will overwrite global "
-                    + "settings");
+            settingsPanel =
+                    new SettingsPanel(IdentityManager.getNetworkConfig(server.getName()),
+                    "network, any settings specified here will overwrite global " +
+                    "settings");
         }
-        
+
         if (settingsPanel != null) {
             addSettings();
         }
-        
+
         tabbedPane.add("Ignore list", ignoreList);
         tabbedPane.add("Perform", performPanel);
         if (settingsPanel != null) {
             tabbedPane.add("settings", settingsPanel);
         }
-        
+
         setLayout(new BorderLayout());
-        
+
         add(tabbedPane, BorderLayout.CENTER);
         add(buttonsPanel, BorderLayout.PAGE_END);
-        
+
         tabbedPane.setSelectedIndex(server.getConfigManager().
                 getOptionInt("dialogstate", "serversettingsdialog", 0));
     }
-    
+
     /** Adds the settings to the panel. */
     private void addSettings() {
-        settingsPanel.addOption("channel.splitusermodes", "Split user modes", OptionType.CHECKBOX);
-        settingsPanel.addOption("channel.sendwho", "Send WHO", OptionType.CHECKBOX);
-        settingsPanel.addOption("channel.showmodeprefix", "Show mode prefix", OptionType.CHECKBOX);
-        
-        settingsPanel.addOption("general.cyclemessage", "Cycle message", OptionType.TEXTFIELD);
-        settingsPanel.addOption("general.kickmessage", "Kick message", OptionType.TEXTFIELD);
-        settingsPanel.addOption("general.partmessage", "Part message", OptionType.TEXTFIELD);
-        
-        settingsPanel.addOption("ui.backgroundcolour", "Background colour", OptionType.COLOUR);
-        settingsPanel.addOption("ui.foregroundcolour", "Foreground colour", OptionType.COLOUR);
-        settingsPanel.addOption("ui.frameBufferSize", "Textpane buffer limit", OptionType.SPINNER);
-        settingsPanel.addOption("ui.inputBufferSize", "Input buffer size", OptionType.SPINNER);
-        settingsPanel.addOption("ui.inputbackgroundcolour", "Input field background colour", OptionType.COLOUR);
-        settingsPanel.addOption("ui.inputforegroundcolour", "Input field foreground colour", OptionType.COLOUR);
-        settingsPanel.addOption("ui.nicklistbackgroundcolour", "Nicklist background colour", OptionType.COLOUR);
-        settingsPanel.addOption("ui.nicklistforegroundcolour", "Nicklist foreground colour", OptionType.COLOUR);
-        settingsPanel.addOption("ui.shownickcoloursinnicklist", "Show coloured nicks in nicklist", OptionType.CHECKBOX);
-        settingsPanel.addOption("ui.shownickcoloursintext", "Show coloured nicks in textpane", OptionType.CHECKBOX);
-        
-        settingsPanel.addOption("general.closechannelsonquit", "Close channels on quit", OptionType.CHECKBOX);
-        settingsPanel.addOption("general.closechannelsondisconnect", "Close channels on disconnect", OptionType.CHECKBOX);
-        settingsPanel.addOption("general.closequeriesonquit", "Close queries on quit", OptionType.CHECKBOX);
-        settingsPanel.addOption("general.closequeriesondisconnect", "Close queries on disconnect", OptionType.CHECKBOX);
-        settingsPanel.addOption("general.quitmessage", "Quit message", OptionType.TEXTFIELD);
-        settingsPanel.addOption("general.reconnectmessage", "Reconnect message", OptionType.TEXTFIELD);
-        settingsPanel.addOption("general.rejoinchannels", "Rejoin channels on reconnect", OptionType.CHECKBOX);
-        
-        settingsPanel.addOption("general.friendlymodes", "Show friendly modes", OptionType.CHECKBOX);
-        settingsPanel.addOption("general.pingtimeout", "Ping timeout", OptionType.SPINNER);
+        settingsPanel.addOption("channel.splitusermodes", "Split user modes",
+                OptionType.CHECKBOX);
+        settingsPanel.addOption("channel.sendwho", "Send WHO",
+                OptionType.CHECKBOX);
+        settingsPanel.addOption("channel.showmodeprefix", "Show mode prefix",
+                OptionType.CHECKBOX);
+
+        settingsPanel.addOption("general.cyclemessage", "Cycle message",
+                OptionType.TEXTFIELD);
+        settingsPanel.addOption("general.kickmessage", "Kick message",
+                OptionType.TEXTFIELD);
+        settingsPanel.addOption("general.partmessage", "Part message",
+                OptionType.TEXTFIELD);
+
+        settingsPanel.addOption("ui.backgroundcolour", "Background colour",
+                OptionType.COLOUR);
+        settingsPanel.addOption("ui.foregroundcolour", "Foreground colour",
+                OptionType.COLOUR);
+        settingsPanel.addOption("ui.frameBufferSize", "Textpane buffer limit",
+                OptionType.SPINNER);
+        settingsPanel.addOption("ui.inputBufferSize", "Input buffer size",
+                OptionType.SPINNER);
+        settingsPanel.addOption("ui.inputbackgroundcolour",
+                "Input field background colour",
+                OptionType.COLOUR);
+        settingsPanel.addOption("ui.inputforegroundcolour",
+                "Input field foreground colour",
+                OptionType.COLOUR);
+        settingsPanel.addOption("ui.nicklistbackgroundcolour",
+                "Nicklist background colour",
+                OptionType.COLOUR);
+        settingsPanel.addOption("ui.nicklistforegroundcolour",
+                "Nicklist foreground colour",
+                OptionType.COLOUR);
+        settingsPanel.addOption("ui.shownickcoloursinnicklist",
+                "Show coloured nicks in nicklist",
+                OptionType.CHECKBOX);
+        settingsPanel.addOption("ui.shownickcoloursintext",
+                "Show coloured nicks in textpane",
+                OptionType.CHECKBOX);
+
+        settingsPanel.addOption("general.closechannelsonquit",
+                "Close channels on quit",
+                OptionType.CHECKBOX);
+        settingsPanel.addOption("general.closechannelsondisconnect",
+                "Close channels on disconnect",
+                OptionType.CHECKBOX);
+        settingsPanel.addOption("general.closequeriesonquit",
+                "Close queries on quit",
+                OptionType.CHECKBOX);
+        settingsPanel.addOption("general.closequeriesondisconnect",
+                "Close queries on disconnect",
+                OptionType.CHECKBOX);
+        settingsPanel.addOption("general.quitmessage", "Quit message",
+                OptionType.TEXTFIELD);
+        settingsPanel.addOption("general.reconnectmessage", "Reconnect message",
+                OptionType.TEXTFIELD);
+        settingsPanel.addOption("general.rejoinchannels",
+                "Rejoin channels on reconnect",
+                OptionType.CHECKBOX);
+
+        settingsPanel.addOption("general.friendlymodes", "Show friendly modes",
+                OptionType.CHECKBOX);
+        settingsPanel.addOption("general.pingtimeout", "Ping timeout",
+                OptionType.SPINNER);
     }
-    
+
     /** Initialises the button panel. */
     private void initButtonsPanel() {
         buttonsPanel = new JPanel();
-        
+
         buttonsPanel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
                 SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-        
-        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.LINE_AXIS));
+
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel,
+                BoxLayout.LINE_AXIS));
         buttonsPanel.add(Box.createHorizontalGlue());
         buttonsPanel.add(getLeftButton());
         buttonsPanel.add(Box.createHorizontalStrut(SMALL_BORDER));
         buttonsPanel.add(getRightButton());
     }
-    
+
     /** Initialises listeners for this dialog. */
     private void initListeners() {
         getOkButton().addActionListener(this);
         getCancelButton().addActionListener(this);
     }
-    
+
     /** Saves the settings from this dialog. */
     public void saveSettings() {
         settingsPanel.save();
         performPanel.savePerforms();
         ignoreList.saveList();
-        
-        final Identity identity = IdentityManager.getNetworkConfig(server.getNetwork());
+
+        final Identity identity =
+                IdentityManager.getNetworkConfig(server.getNetwork());
         identity.setOption("dialogstate", "serversettingsdialog",
                 String.valueOf(tabbedPane.getSelectedIndex()));
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == getOkButton()) {
             saveSettings();
             dispose();
         } else if (e.getSource() == getCancelButton()) {
             dispose();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void dispose() {
+        synchronized (me) {
+            super.dispose();
+            me = null;
         }
     }
 }

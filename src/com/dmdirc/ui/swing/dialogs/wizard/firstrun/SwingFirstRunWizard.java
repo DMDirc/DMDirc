@@ -169,7 +169,7 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
             steps.add(new UpdateStep());
         }
         
-        wizardDialog = WizardDialog.getWizardDialog(firstRun ? "Setup wizard" :
+        wizardDialog = new WizardDialog(firstRun ? "Setup wizard" :
             "Migration wizard", steps, this, true,
                 (MainFrame) Main.getUI().getMainWindow());
         
