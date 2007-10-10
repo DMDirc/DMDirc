@@ -83,7 +83,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     /** Creates the dialog if one doesn't exist, and displays it. */
     public static synchronized void showPreferencesDialog() {
         if (me == null) {
-            new PreferencesDialog();
+            me = new PreferencesDialog();
         } else {
             me.initComponents();
         }
