@@ -93,8 +93,10 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
     private void colourClient(final String network, final ChannelClientInfo client) {
         final Map map = client.getMap();
         final ClientInfo myself = client.getClient().getParser().getMyself();
-        final String nickOption = "color:"
+        final String nickOption1 = "color:"
                 + client.getClient().getParser().toLowerCase(network + ":" + client.getNickname());
+        final String nickOption2 = "color:"
+                + client.getClient().getParser().toLowerCase("*:" + client.getNickname());
         
         if (IdentityManager.getGlobalConfig().getOptionBool(DOMAIN, "useowncolour", false)
                 && client.getClient().equals(myself)) {
@@ -105,8 +107,15 @@ public final class NickColourPlugin extends Plugin implements EventPlugin, Prefe
             putColour(map, getColour(client.getNickname()), getColour(client.getNickname()));
         }
         
-        if (IdentityManager.getGlobalConfig().hasOption(DOMAIN, nickOption)) {
-            final String[] parts = getParts(nickOption);
+        String[] parts = null;
+                
+        if (IdentityManager.getGlobalConfig().hasOption(DOMAIN, nickOption1)) {
+            parts = getParts(nickOption1);
+        } else if (IdentityManager.getGlobalConfig().hasOption(DOMAIN, nickOption2)) {
+            parts = getParts(nickOption2);
+        }
+        
+        if (parts != null) {
             Color textColor = null;
             Color nickColor = null;
             
