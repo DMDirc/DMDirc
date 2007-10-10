@@ -24,38 +24,60 @@ package com.dmdirc.ui.swing.components;
 
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 
 /**
  * Utility class to provide mouse wheel scrolling to a JTree.
  */
 public class TreeScroller implements MouseWheelListener {
-    
+
     /** Tree to scroll. */
-    private final JTree tree;
+    private final DefaultTreeModel model;
+    /** Tree to scroll. */
+    private final TreeSelectionModel selectionModel;
     /** Root visible. */
     private final boolean rootVisible;
     /** Root node. */
     private final DefaultMutableTreeNode rootNode;
-    
-    /** 
+
+    /**
      * Creates a new instance of TreeScroller.
      *
      * @param tree Tree to scroll over
      */
     public TreeScroller(final JTree tree) {
-        this.tree = tree;
-        
+        this.model = (DefaultTreeModel) tree.getModel();
+        this.selectionModel = tree.getSelectionModel();
+
         rootVisible = tree.isRootVisible();
-        rootNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
-        
+        rootNode =
+                (DefaultMutableTreeNode) tree.getModel().getRoot();
+
         tree.addMouseWheelListener(this);
     }
-    
+
+    /**
+     * Creates a new instance of TreeScroller.
+     *
+     * @param model Tree model to scroll over
+     * @param selectionModel Tree selection model to scroll over
+     */
+    public TreeScroller(final DefaultTreeModel model,
+            final TreeSelectionModel selectionModel) {
+        this.model = model;
+        this.selectionModel = selectionModel;
+
+        rootVisible = false;
+        rootNode = (DefaultMutableTreeNode) model.getRoot();
+    }
+
     /** {@inheritDoc} */
+    @Override
     public void mouseWheelMoved(final MouseWheelEvent e) {
         if (e.getWheelRotation() < 0) {
             changeFocus(true);
@@ -63,45 +85,47 @@ public class TreeScroller implements MouseWheelListener {
             changeFocus(false);
         }
     }
-    
+
     /**
      * Activates the node above or below the active node in the tree.
      *
      * @param direction true = up, false = down.
      */
-    private void changeFocus(final boolean direction) {
+    public void changeFocus(final boolean direction) {
         DefaultMutableTreeNode thisNode;
         DefaultMutableTreeNode nextNode;
-        
+
         if (rootNode == null) {
             //no root node or root node not visible
             return;
         }
-        
+
         if (rootNode.getChildCount() == 0 && !rootVisible) {
             //root node has no children
             return;
         }
-        
-        if (tree.getSelectionModel().isSelectionEmpty() && rootVisible) {
+
+        if (selectionModel.isSelectionEmpty() && rootVisible) {
             //no selected node, start from the root node
             thisNode = rootNode;
-        } else if (tree.getSelectionModel().isSelectionEmpty()) {
+        } else if (selectionModel.isSelectionEmpty()) {
             //no selected node, get the root node
             thisNode = rootNode;
             //are there any children to select?
             if (thisNode.getChildCount() > 0) {
-                thisNode = (DefaultMutableTreeNode) thisNode.getChildAt(0);
+                thisNode =
+                        (DefaultMutableTreeNode) thisNode.getChildAt(0);
             } else {
                 //then wait till there are
                 return;
             }
         } else {
             //use the selected node to start from
-            thisNode = (DefaultMutableTreeNode) tree.getSelectionModel().
+            thisNode =
+                    (DefaultMutableTreeNode) selectionModel.
                     getSelectionPath().getLastPathComponent();
         }
-        
+
         //are we going up or down?
         if (direction) {
             //up
@@ -110,9 +134,9 @@ public class TreeScroller implements MouseWheelListener {
             //down
             nextNode = changeFocusDown(thisNode);
         }
-        tree.setSelectionPath(new TreePath(((DefaultTreeModel) tree.getModel()).getPathToRoot(nextNode)));
+        selectionModel.setSelectionPath(new TreePath(model.getPathToRoot(nextNode)));
     }
-    
+
     /**
      * Changes the tree focus up.
      *
@@ -122,17 +146,16 @@ public class TreeScroller implements MouseWheelListener {
      */
     private DefaultMutableTreeNode changeFocusUp(final DefaultMutableTreeNode node) {
         DefaultMutableTreeNode nextNode;
-        
+
         nextNode = node.getPreviousNode();
-        
-        if (nextNode == null || (nextNode == tree.getModel().getRoot()
-        && !tree.isRootVisible())) {
+
+        if (nextNode == null || (nextNode == model.getRoot() && !rootVisible)) {
             nextNode = rootNode.getLastLeaf();
         }
-        
+
         return nextNode;
     }
-    
+
     /**
      * Changes the tree focus down.
      *
@@ -144,14 +167,14 @@ public class TreeScroller implements MouseWheelListener {
         DefaultMutableTreeNode nextNode;
 
         nextNode = node.getNextNode();
-        
-        if (nextNode == null && !tree.isRootVisible()) {
-            nextNode = (DefaultMutableTreeNode) rootNode.getFirstChild();
+
+        if (nextNode == null && !rootVisible) {
+            nextNode =
+                    (DefaultMutableTreeNode) rootNode.getFirstChild();
         } else if (nextNode == null) {
-            nextNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
+            nextNode = (DefaultMutableTreeNode) model.getRoot();
         }
-        
+
         return nextNode;
     }
-    
 }
