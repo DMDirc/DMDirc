@@ -33,130 +33,225 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.JComponent;
 
 /**
  * Instantiates and manages the active frame managers.
  */
-public final class MainFrameManager implements FrameManager, Serializable {
-    
+public final class MainFrameManager implements FrameManager,
+        Serializable {
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
-    
-    /** Active frame manager. */
-    private transient FrameManager frameManager;
-    
-    /** Window menu frame manager. */
-    private final WindowMenuFrameManager windowMenuFrameManager;
-    
+    private static final long serialVersionUID = 2;
+    /** Frame manager list. */
+    private final List<FrameManager> frameManagers =
+            new ArrayList<FrameManager>();
+    /** Main frame manager. */
+    private FrameManager mainFrameManager;
+
     /** Creates a new instance of MainFrameManager. */
     public MainFrameManager() {
-        final String manager = IdentityManager.getGlobalConfig().getOption("ui", "framemanager", "treeview");
-        
+        final String manager =
+                IdentityManager.getGlobalConfig().
+                getOption("ui", "framemanager", "treeview");
+
         if (manager.equalsIgnoreCase("buttonbar")) {
-            frameManager = new ButtonBar();
+            mainFrameManager =
+                    new ButtonBar();
         } else {
-            frameManager = new TreeFrameManager();
+            mainFrameManager =
+                    new TreeFrameManager();
         }
-        
-        windowMenuFrameManager = new WindowMenuFrameManager();
+
+        frameManagers.add(new WindowMenuFrameManager());
+        frameManagers.add(mainFrameManager);
     }
-    
-    /** 
-     * Reads the object from the stream. 
+
+    /**
+     * Reads the object from the stream.
      *
      * @param stream Stream to read the object from
      *
      * @throws IOException on error reading object
      * @throws ClassNotFoundException on error loading object class
      */
-    private void readObject(final ObjectInputStream stream)
-    throws IOException, ClassNotFoundException {
+    private void readObject(final ObjectInputStream stream) throws IOException,
+            ClassNotFoundException {
         stream.defaultReadObject();
-        final String manager = IdentityManager.getGlobalConfig().getOption("ui", "framemanager", "treeview");
-        
+        final String manager =
+                IdentityManager.getGlobalConfig().
+                getOption("ui", "framemanager", "treeview");
+
         if (manager.equalsIgnoreCase("buttonbar")) {
-            frameManager = new ButtonBar();
+            frameManagers.add(new ButtonBar());
         } else {
-            frameManager = new TreeFrameManager();
+            frameManagers.add(new TreeFrameManager());
+        }
+
+        frameManagers.add(new WindowMenuFrameManager());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setParent(final JComponent parent) {
+        synchronized (frameManagers) {
+            final Iterator<FrameManager> it = frameManagers.iterator();
+            while (it.hasNext()) {
+                it.next().setParent(parent);
+            }
         }
     }
-    
+
     /** {@inheritDoc} */
-    public void setParent(final JComponent parent) {
-        frameManager.setParent(parent);
-    }
-    
-    /** {@inheritDoc} */
+    @Override
     public boolean canPositionVertically() {
-        return frameManager.canPositionVertically();
+        return mainFrameManager.canPositionVertically();
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public boolean canPositionHorizontally() {
-        return frameManager.canPositionHorizontally();
+        return mainFrameManager.canPositionHorizontally();
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void setSelected(final FrameContainer source) {
-        frameManager.setSelected(source);
-        windowMenuFrameManager.setSelected(source);
+        synchronized (frameManagers) {
+            final Iterator<FrameManager> it = frameManagers.iterator();
+            while (it.hasNext()) {
+                it.next().setSelected(source);
+            }
+        }
     }
-    
+
     /** {@inheritDoc} */
-    public void showNotification(final FrameContainer source, final Color colour) {
-        frameManager.showNotification(source, colour);
-        windowMenuFrameManager.showNotification(source, colour);
+    @Override
+    public void showNotification(final FrameContainer source,
+            final Color colour) {
+        synchronized (frameManagers) {
+            final Iterator<FrameManager> it = frameManagers.iterator();
+            while (it.hasNext()) {
+                it.next().showNotification(source, colour);
+            }
+        }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void clearNotification(final FrameContainer source) {
-        frameManager.clearNotification(source);
-        windowMenuFrameManager.clearNotification(source);
+        synchronized (frameManagers) {
+            final Iterator<FrameManager> it = frameManagers.iterator();
+            while (it.hasNext()) {
+                it.next().clearNotification(source);
+            }
+        }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void addWindow(final FrameContainer window) {
-        frameManager.addWindow(window);
-        windowMenuFrameManager.addWindow(window);
+        synchronized (frameManagers) {
+            final Iterator<FrameManager> it = frameManagers.iterator();
+            while (it.hasNext()) {
+                it.next().addWindow(window);
+            }
+        }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void delWindow(final FrameContainer window) {
-        frameManager.delWindow(window);
-        windowMenuFrameManager.delWindow(window);
+        synchronized (frameManagers) {
+            final Iterator<FrameManager> it = frameManagers.iterator();
+            while (it.hasNext()) {
+                it.next().delWindow(window);
+            }
+        }
     }
-        
+
     /** {@inheritDoc} */
-    public void addWindow(final FrameContainer parent, final FrameContainer window) {
-        frameManager.addWindow(parent, window);
-        windowMenuFrameManager.addWindow(parent, window);
+    @Override
+    public void addWindow(final FrameContainer parent,
+            final FrameContainer window) {
+        synchronized (frameManagers) {
+            final Iterator<FrameManager> it = frameManagers.iterator();
+            while (it.hasNext()) {
+                it.next().addWindow(parent, window);
+            }
+        }
     }
-    
+
     /** {@inheritDoc} */
-    public void delWindow(final FrameContainer parent, final FrameContainer window) {
-        frameManager.delWindow(parent, window);
-        windowMenuFrameManager.delWindow(parent, window);
+    @Override
+    public void delWindow(final FrameContainer parent,
+            final FrameContainer window) {
+        synchronized (frameManagers) {
+            final Iterator<FrameManager> it = frameManagers.iterator();
+            while (it.hasNext()) {
+                it.next().delWindow(parent, window);
+            }
+        }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void iconUpdated(final FrameContainer window) {
-        frameManager.iconUpdated(window);
-        windowMenuFrameManager.iconUpdated(window);
-    }    
-    
+        synchronized (frameManagers) {
+            final Iterator<FrameManager> it = frameManagers.iterator();
+            while (it.hasNext()) {
+                it.next().iconUpdated(window);
+            }
+        }
+    }
+
     /**
      * Returns the active frame manager.
      *
      * @return Active frame manage
      */
     public FrameManager getActiveFrameManager() {
-        return frameManager;
+        return mainFrameManager;
     }
-    
+
+    /**
+     * Sets the main frame manager.
+     *
+     * @param mainFrameManager New main frame manager
+     */
+    public void setMainFrameManager(final FrameManager mainFrameManager) {
+        this.mainFrameManager = mainFrameManager;
+    }
+
+    /**
+     * Adds a frame manager to the list.
+     *
+     * @param frameManager Frame manager to add
+     */
+    public void addFrameManager(final FrameManager frameManager) {
+        synchronized (frameManagers) {
+            if (!frameManagers.contains(frameManager)) {
+                frameManagers.add(frameManager);
+            }
+        }
+    }
+
+    /**
+     * Removes a frame manager to the list.
+     *
+     * @param frameManager Frame manager to remove
+     */
+    public void removeFrameManager(final FrameManager frameManager) {
+        synchronized (frameManagers) {
+            frameManagers.remove(frameManager);
+        }
+    }
 }
