@@ -225,14 +225,16 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     
     /** {@inheritDoc} */
     public void addWindow(final FrameContainer window) {
-        final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
-        nodes.put(window, node);
-        labels.put(node, new JLabel());
-        node.setUserObject(window);
-        model.insertNodeInto(node, root);
-        tree.expandPath(new TreePath(node.getPath()).getParentPath());
-        final Rectangle view = tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
-        tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
+        addWindow(root, window);
+    }
+    
+    public void addWindow(final FrameContainer parent, final FrameContainer window) {
+        addWindow(nodes.get(parent), window);
+    }
+    
+    /** {@inheritDoc} */
+    public void delWindow(final FrameContainer parent, final FrameContainer window) {
+        delWindow(window);
     }
     
     /** {@inheritDoc} */
@@ -251,31 +253,21 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         }
     }
     
-    /** {@inheritDoc} */
-    public void addWindow(final FrameContainer parent, final FrameContainer window) {
+    /** 
+     * Adds a window to the frame container
+     * 
+     * @param parent Parent node
+     * @param window Window to add
+     */
+    public void addWindow(final DefaultMutableTreeNode parent, final FrameContainer window) {
         final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(window, node);
         labels.put(node, new JLabel());
         node.setUserObject(window);
-        model.insertNodeInto(node, nodes.get(parent));
+        model.insertNodeInto(node, parent);
         tree.expandPath(new TreePath(node.getPath()).getParentPath());
         final Rectangle view = tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
         tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
-    }
-    
-    /** {@inheritDoc} */
-    public void delWindow(final FrameContainer parent, final FrameContainer window) {
-        if (nodes != null && nodes.get(window) != null) {
-            if (nodes.get(window).getLevel() == 0) {
-                Logger.appError(ErrorLevel.MEDIUM,
-                        "delServer triggered for root node",
-                        new IllegalArgumentException());
-            } else {
-                model.removeNodeFromParent(nodes.get(window));
-            }
-            labels.remove(nodes.get(window));
-            nodes.remove(window);
-        }
     }
     
     /** {@inheritDoc} */

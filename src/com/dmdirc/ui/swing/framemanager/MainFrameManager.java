@@ -26,6 +26,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.swing.framemanager.buttonbar.ButtonBar;
+import com.dmdirc.ui.swing.framemanager.ctrltab.CtrlTabFrameManager;
 import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
 import com.dmdirc.ui.swing.framemanager.windowmenu.WindowMenuFrameManager;
 
@@ -56,6 +57,8 @@ public final class MainFrameManager implements FrameManager,
             new ArrayList<FrameManager>();
     /** Main frame manager. */
     private FrameManager mainFrameManager;
+    /** Ctrl Tab Frame manager. */
+    private CtrlTabFrameManager ctrlTabFrameManager;
 
     /** Creates a new instance of MainFrameManager. */
     public MainFrameManager() {
@@ -71,7 +74,9 @@ public final class MainFrameManager implements FrameManager,
                     new TreeFrameManager();
         }
 
+        ctrlTabFrameManager = new CtrlTabFrameManager();
         frameManagers.add(new WindowMenuFrameManager());
+        frameManagers.add(ctrlTabFrameManager);
         frameManagers.add(mainFrameManager);
     }
 
@@ -220,6 +225,15 @@ public final class MainFrameManager implements FrameManager,
      */
     public FrameManager getActiveFrameManager() {
         return mainFrameManager;
+    }
+    
+    /**
+     * Returns the ctrl tab frame manager.
+     *
+     * @return Ctrl tab frame manager
+     */
+    public CtrlTabFrameManager getCtrlTabFrameManager() {
+        return ctrlTabFrameManager;
     }
 
     /**

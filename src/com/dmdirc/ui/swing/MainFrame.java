@@ -88,6 +88,7 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.MenuEvent;
@@ -109,10 +110,10 @@ public final class MainFrame extends JFrame implements WindowListener,
     private static final int FRAME_OPENING_OFFSET = 30;
     /** Whether the internal frames are maximised or not. */
     private boolean maximised;
-    /** The current number of pixels to displace new frames in the X 
+    /** The current number of pixels to displace new frames in the X
      * direction. */
     private int xOffset;
-    /** The current number of pixels to displace new frames in the Y 
+    /** The current number of pixels to displace new frames in the Y
      * direction. */
     private int yOffset;
     /** The main application icon. */
@@ -186,6 +187,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         setVisible(true);
 
         miAddServer.addActionListener(new ActionListener() {
+
             /** {@inheritDoc} */
             @Override
             public void actionPerformed(final ActionEvent actionEvent) {
@@ -195,6 +197,7 @@ public final class MainFrame extends JFrame implements WindowListener,
 
         miPreferences.addActionListener(new ActionListener() {
 
+            /** {@inheritDoc} */
             @Override
             public void actionPerformed(final ActionEvent actionEvent) {
                 PreferencesDialog.showPreferencesDialog();
@@ -202,6 +205,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         });
 
         toggleStateMenuItem.addActionListener(new ActionListener() {
+
             /** {@inheritDoc} */
             @Override
             public void actionPerformed(final ActionEvent actionEvent) {
@@ -625,6 +629,32 @@ public final class MainFrame extends JFrame implements WindowListener,
                     put(KeyStroke.getKeyStroke(keyStroke.getKeyCode(), 0),
                     KeyEvent.getKeyText(keyStroke.getKeyCode()) + "Action");
         }
+
+        SwingUtilities.getUIActionMap(desktopPane).
+                put("selectNextFrame",
+                new AbstractAction("selectNextFrame") {
+
+            private static final long serialVersionUID = 1;
+
+            /** {@inheritDoc} */
+            @Override
+            public void actionPerformed(final ActionEvent evt) {
+                mainFrameManager.getCtrlTabFrameManager().scrollDown();
+            }
+        });
+
+        SwingUtilities.getUIActionMap(desktopPane).
+                put("selectPreviousFrame",
+                new AbstractAction("selectPreviousFrame") {
+
+            private static final long serialVersionUID = 1;
+
+            /** {@inheritDoc} */
+            @Override
+            public void actionPerformed(final ActionEvent evt) {
+                mainFrameManager.getCtrlTabFrameManager().scrollUp();
+            }
+        });
     }
 
     /** Initialises the menu bar. */
@@ -740,9 +770,9 @@ public final class MainFrame extends JFrame implements WindowListener,
         setJMenuBar(menuBar);
     }
 
-    /** 
+    /**
      * Populated the configure plugin menu.
-     * 
+     *
      * @param menu Menu to populate
      */
     private void populateConfigurePluginsMenu(final JMenu menu) {
