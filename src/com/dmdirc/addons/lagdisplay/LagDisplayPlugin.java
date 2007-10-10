@@ -27,6 +27,8 @@ import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
+import com.dmdirc.config.ConfigChangeListener;
+import com.dmdirc.config.IdentityManager;
 import com.dmdirc.plugins.EventPlugin;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.ui.interfaces.Window;
@@ -45,7 +47,8 @@ import javax.swing.SwingConstants;
  * Displays the current server's lag in the status bar.
  * @author chris
  */
-public final class LagDisplayPlugin extends Plugin implements EventPlugin {
+public final class LagDisplayPlugin extends Plugin implements EventPlugin,
+        ConfigChangeListener {
     
     /** The panel we use in the status bar. */
     private final JPanel panel = new JPanel();
@@ -56,9 +59,15 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin {
     /** The label we use to show lag. */
     private final JLabel label = new JLabel("Unknown");
     
+    /** Whether or not we're using our alternate ping method. */
+    private volatile boolean useAlternate = false;
+    
     /** Creates a new instance of LagDisplayPlugin. */
     public LagDisplayPlugin() {
         super();
+        
+        IdentityManager.getGlobalConfig().addChangeListener("plugin-Lagdisplay", this);
+        configChanged(null, null);
         
         panel.setLayout(new BorderLayout());
         panel.setPreferredSize(new Dimension(70, 25));
@@ -116,7 +125,7 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin {
     
     /** {@inheritDoc} */
     public void processEvent(final ActionType type, final StringBuffer format, final Object... arguments) {
-        if (type.equals(CoreActionType.SERVER_GOTPING)) {
+        if (!useAlternate && type.equals(CoreActionType.SERVER_GOTPING)) {
             final Window active = Main.getUI().getMainWindow().getActiveFrame();
             final String value = formatTime(arguments[1]);
             
@@ -125,7 +134,7 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin {
             if (((Server) arguments[0]).ownsFrame(active)) {
                 label.setText(value);
             }
-        } else if (type.equals(CoreActionType.SERVER_NOPING)) {
+        } else if (!useAlternate && type.equals(CoreActionType.SERVER_NOPING)) {
             final Window active = Main.getUI().getMainWindow().getActiveFrame();
             final String value = formatTime(arguments[1]) + "+";
             
@@ -157,5 +166,11 @@ public final class LagDisplayPlugin extends Plugin implements EventPlugin {
         } else {
             return time + "ms";
         }
+    }
+
+    /** {@inheritDoc} */
+    public void configChanged(final String domain, final String key) {
+        useAlternate = IdentityManager.getGlobalConfig().getOptionBool("plugin-Lagdisplay",
+                "usealternate", false);
     }
 }
