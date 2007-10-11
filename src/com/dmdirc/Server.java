@@ -38,6 +38,7 @@ import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.MyInfo;
 import com.dmdirc.parser.ParserError;
 import com.dmdirc.parser.ServerInfo;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.ServerWindow;
@@ -660,7 +661,7 @@ public final class Server extends WritableFrameContainer implements Serializable
      * closed).
      */
     public void delRaw() {
-        Main.getUI().getMainWindow().getFrameManager().delWindow(this, raw);
+        WindowManager.removeWindow(raw.getFrame());
         raw = null; //NOPMD
     }
     
@@ -671,8 +672,8 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void delChannel(final String chan) {
         tabCompleter.removeEntry(chan);
-        Main.getUI().getMainWindow().getFrameManager().delWindow(
-                this, channels.get(parser.toLowerCase(chan)));
+        WindowManager.removeWindow(
+                channels.get(parser.toLowerCase(chan)).getFrame());
         channels.remove(parser.toLowerCase(chan));
     }
     
@@ -715,8 +716,8 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void delQuery(final String host) {
         tabCompleter.removeEntry(ClientInfo.parseHost(host));
-        Main.getUI().getMainWindow().getFrameManager().delWindow(this,
-                queries.get(parser.toLowerCase(ClientInfo.parseHost(host))));
+        WindowManager.removeWindow(
+                queries.get(parser.toLowerCase(ClientInfo.parseHost(host))).getFrame());
         queries.remove(parser.toLowerCase(ClientInfo.parseHost(host)));
     }
     

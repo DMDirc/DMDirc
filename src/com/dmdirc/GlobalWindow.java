@@ -26,6 +26,7 @@ import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 
@@ -54,7 +55,7 @@ public class GlobalWindow extends WritableFrameContainer {
         window.getInputHandler().setTabCompleter(tabCompleter);
         window.setFrameIcon(icon);        
         
-        Main.getUI().getMainWindow().getFrameManager().addWindow(this);
+        WindowManager.addWindow(window);
         
         window.open();
     }
@@ -69,7 +70,7 @@ public class GlobalWindow extends WritableFrameContainer {
 
     public void close() {
         window.setVisible(false);
-        Main.getUI().getMainWindow().getFrameManager().delWindow(this);
+        WindowManager.removeWindow(window);
     }
 
     public Server getServer() {

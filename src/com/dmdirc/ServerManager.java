@@ -22,6 +22,7 @@
 
 package com.dmdirc;
 
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.util.ArrayList;
@@ -84,7 +85,8 @@ public final class ServerManager {
         if (!closing) {
             servers.remove(server);
         }
-        Main.getUI().getMainWindow().getFrameManager().delWindow(server);
+        
+        WindowManager.removeWindow(server.getFrame());
     }
     
     /**

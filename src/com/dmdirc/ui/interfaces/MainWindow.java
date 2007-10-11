@@ -55,7 +55,9 @@ public interface MainWindow {
      * Retrieves the frame manager that's currently in use.
      *
      * @return The current frame manager
+     * @deprecated Frame Managers should interface via WindowManager.
      */
+    @Deprecated
     FrameManager getFrameManager();
     
     /**

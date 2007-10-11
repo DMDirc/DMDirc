@@ -72,6 +72,7 @@ public final class DummyMainWindow implements MainWindow {
     }
     
     /** {@inheritDoc} */
+    @Deprecated
     public FrameManager getFrameManager() {
         return new DummyFrameManager();
     }
