@@ -28,6 +28,7 @@ import com.dmdirc.parser.IRCParser;
 import com.dmdirc.parser.callbacks.CallbackNotFoundException;
 import com.dmdirc.parser.callbacks.interfaces.IDataIn;
 import com.dmdirc.parser.callbacks.interfaces.IDataOut;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 
 import java.io.Serializable;
@@ -66,7 +67,7 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
         icon = IconManager.getIconManager().getIcon("raw");
         
         window = Main.getUI().getInputWindow(this, newServer.getFrame().getCommandParser());
-        Main.getUI().getFrameManager().addWindow(server, this);
+        WindowManager.addWindow(server.getFrame(), window);
         window.setTitle("(Raw log)");
         window.getInputHandler().setTabCompleter(server.getTabCompleter());
         window.setFrameIcon(icon);

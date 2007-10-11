@@ -59,6 +59,7 @@ public interface UIController {
      *
      * @return This UI's frame manager
      */
+    @Deprecated
     FrameManager getFrameManager();
     
     /**

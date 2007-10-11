@@ -27,6 +27,7 @@ import com.dmdirc.IconManager;
 import com.dmdirc.Main;
 import com.dmdirc.Server;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.Window;
 
 import java.util.Stack;
@@ -64,7 +65,7 @@ public class HistoryWindow extends FrameContainer {
         
         myWindow = Main.getUI().getWindow(this);
         
-        Main.getUI().getFrameManager().addWindow(server, this);
+        WindowManager.addWindow(server.getFrame(), myWindow);
         
         myWindow.setTitle(title);
         myWindow.setFrameIcon(icon);
@@ -91,7 +92,7 @@ public class HistoryWindow extends FrameContainer {
     public void close() {
         myWindow.setVisible(false);
         Main.getUI().getMainWindow().delChild(myWindow);
-        Main.getUI().getFrameManager().delWindow(server, this);
+        WindowManager.removeWindow(myWindow);
     }
     
     /** {@inheritDoc} */

@@ -163,7 +163,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         
         window = Main.getUI().getServer(this);
         
-        Main.getUI().getFrameManager().addWindow(this);
+        WindowManager.addWindow(window);
         
         window.setTitle(server + ":" + port);
         
@@ -527,6 +527,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
+    @Override
     public InputWindow getFrame() {
         return window;
     }
@@ -584,6 +585,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /** {@inheritDoc} */
+    @Override
     public void close() {
         close(configManager.getOption(DOMAIN_GENERAL, "quitmessage"));
     }
@@ -630,9 +632,10 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     private void closeChannels() {
         for (Channel channel : channels.values()) {
+            WindowManager.removeWindow(channel.getFrame());
             channel.closeWindow(false);
-            Main.getUI().getMainWindow().getFrameManager().delWindow(this, channel);
         }
+        
         channels.clear();
     }
     
@@ -650,9 +653,10 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     private void closeQueries() {
         for (Query query : queries.values()) {
+            WindowManager.removeWindow(query.getFrame());
             query.close(false);
-            Main.getUI().getMainWindow().getFrameManager().delWindow(this, query);
         }
+        
         queries.clear();
     }
     

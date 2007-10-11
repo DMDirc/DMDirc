@@ -35,6 +35,7 @@ import com.dmdirc.parser.callbacks.interfaces.INickChanged;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateAction;
 import com.dmdirc.parser.callbacks.interfaces.IPrivateMessage;
 import com.dmdirc.parser.callbacks.interfaces.IQuit;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.QueryWindow;
@@ -84,7 +85,7 @@ public final class Query extends MessageTarget implements
         icon = IconManager.getIconManager().getIcon("query");
         
         window = Main.getUI().getQuery(this);
-        Main.getUI().getFrameManager().addWindow(server, this);
+        WindowManager.addWindow(server.getFrame(), window);
         
         ActionManager.processEvent(CoreActionType.QUERY_OPENED, null, this);
         

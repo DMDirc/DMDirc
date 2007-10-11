@@ -47,6 +47,7 @@ import com.dmdirc.parser.callbacks.interfaces.IChannelPart;
 import com.dmdirc.parser.callbacks.interfaces.IChannelQuit;
 import com.dmdirc.parser.callbacks.interfaces.IChannelTopic;
 import com.dmdirc.parser.callbacks.interfaces.IChannelUserModeChanged;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.input.TabCompleter;
 import com.dmdirc.ui.interfaces.ChannelWindow;
 import com.dmdirc.ui.interfaces.InputWindow;
@@ -130,7 +131,7 @@ public final class Channel extends MessageTarget implements
         tabCompleter.addEntries(CommandManager.getChatCommandNames());
         
         window = Main.getUI().getChannel(Channel.this);
-        Main.getUI().getFrameManager().addWindow(server, this);
+        WindowManager.addWindow(server.getFrame(), window);
         window.setFrameIcon(icon);
         window.getInputHandler().setTabCompleter(tabCompleter);
         
