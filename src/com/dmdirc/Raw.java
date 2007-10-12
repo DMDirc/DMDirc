@@ -94,10 +94,10 @@ public final class Raw extends WritableFrameContainer implements IDataIn,
         
         window.setVisible(false);
         Main.getUI().getMainWindow().delChild(window);
-        window = null;
         
         server.delRaw();
         
+        window = null;
         server = null;
     }
     
