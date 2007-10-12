@@ -39,7 +39,17 @@ public class ImageButton extends JButton {
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
+    
+    /**
+     * Creates a new instance of ImageButton.
+     *
+     * @param actionCommand Action command for the button
+     * @param icon Normal icon for the button
+     */
+    public ImageButton(final String actionCommand, final Icon icon) {
+        this(actionCommand, icon, icon);
+    }
     
     /**
      * Creates a new instance of ImageButton.
@@ -73,5 +83,16 @@ public class ImageButton extends JButton {
         setMargin(new Insets(0, 0, 0, 0));
         setPreferredSize(new Dimension(16, 0));
         setActionCommand(actionCommand);
+    }
+    
+    /**
+     * Sets all the image buttons icons
+     * 
+     * @param icon New icon
+     */
+    public void setIcons(final Icon icon) {
+        setIcon(icon);
+        setRolloverIcon(icon);
+        setPressedIcon(icon);
     }
 }

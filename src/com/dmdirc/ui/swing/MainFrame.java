@@ -44,10 +44,10 @@ import com.dmdirc.ui.swing.components.SwingStatusBar;
 import com.dmdirc.ui.swing.dialogs.NewServerDialog;
 import com.dmdirc.ui.swing.dialogs.PluginDialog;
 import com.dmdirc.ui.swing.dialogs.PreferencesDialog;
-import com.dmdirc.ui.swing.dialogs.ProfileEditorDialog;
 import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
 import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsManagerDialog;
 import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;
+import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.ui.swing.framemanager.MainFrameManager;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -915,7 +915,7 @@ public final class MainFrame extends JFrame implements WindowListener,
         if (e.getActionCommand().equals("About")) {
             AboutDialog.showAboutDialog();
         } else if (e.getActionCommand().equals("Profile")) {
-            ProfileEditorDialog.showProfileEditorDialog();
+            ProfileManagerDialog.showProfileManagerDialog();
         } else if (e.getActionCommand().equals("Exit")) {
             quit();
         } else if (e.getActionCommand().equals("ManagePlugins")) {
