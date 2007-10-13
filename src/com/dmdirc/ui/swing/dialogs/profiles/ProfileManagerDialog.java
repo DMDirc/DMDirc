@@ -270,7 +270,7 @@ public final class ProfileManagerDialog extends StandardDialog implements Action
             profileList.setSelectedIndex(model.indexOf(profile));
         } else if (e.getSource().equals(deleteButton)) {
             if (JOptionPane.showConfirmDialog(this,
-                    "Are you sure you want to delete this nick?",
+                    "Are you sure you want to delete this profile?",
                     "Delete Confirmaton", JOptionPane.YES_NO_OPTION) ==
                     JOptionPane.YES_OPTION) {
                 model.remove((Profile) profileList.getSelectedValue());

@@ -478,7 +478,7 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
             }
         } else if (e.getSource() == delButton) {
             if (JOptionPane.showConfirmDialog(this,
-                    "Are you sure you want to delete this profile?",
+                    "Are you sure you want to delete this nickname?",
                     "Delete Confirmaton", JOptionPane.YES_NO_OPTION) ==
                     JOptionPane.YES_OPTION) {
                 ((DefaultListModel) altNicknames.getModel()).removeElementAt(altNicknames.getSelectedIndex());
