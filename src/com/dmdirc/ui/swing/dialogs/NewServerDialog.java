@@ -31,6 +31,7 @@ import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.messages.ColourManager;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.StandardDialog;
+import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -227,7 +228,7 @@ public final class NewServerDialog extends StandardDialog {
         });
         editProfileButton.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent actionEvent) {
-                ProfileEditorDialog.showProfileEditorDialog();
+                ProfileManagerDialog.showProfileManagerDialog();
             }
         });
     }

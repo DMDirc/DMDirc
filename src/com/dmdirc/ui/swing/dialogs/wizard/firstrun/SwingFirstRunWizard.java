@@ -29,7 +29,7 @@ import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.interfaces.FirstRunWizard;
 import com.dmdirc.ui.swing.MainFrame;
-import com.dmdirc.ui.swing.dialogs.ProfileEditorDialog;
+import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import com.dmdirc.ui.swing.dialogs.wizard.Wizard;
 import com.dmdirc.ui.swing.dialogs.wizard.WizardDialog;
@@ -88,7 +88,7 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
         }
         
         if (firstRun && ((StepTwo) wizardDialog.getStep(1)).getProfileManagerState()) {
-            ProfileEditorDialog.showProfileEditorDialog();
+            ProfileManagerDialog.showProfileManagerDialog();
         }
     }
     
