@@ -68,7 +68,7 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
      */
     private static final long serialVersionUID = 1;
     /** Invalid filename characters. */
-    private static final String FILENAME_REGEX = ".*[\\a\\f\\n\\r\\t\\v#&/\\\\s].*";
+    private static final String FILENAME_REGEX = ".*[\\a\\f\\n\\r\\t\\v#&/\\\\\\s].*";
     /** Invalid nickname characters. */
     private static final String NICKNAME_REGEX = ".*[\\a\\f\\n\\r\\t\\v\\s].*";
     /** Invalid ident characters. */
@@ -339,10 +339,7 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
      */
     private ValidationResult checkAltNicknames() {
         if (altNicknames.getModel().getSize() == 0) {
-            altNicknamesError.setIcons(errorIcon);
-            addButton.requestFocus();
-            altNicknamesError.setToolTipText("You must specify at least one alternate nickname.");
-            return ValidationResult.FAIL;
+            return ValidationResult.PASS;
         }
 
         ValidationResult returnValue =
