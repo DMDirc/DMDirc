@@ -68,11 +68,11 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
      */
     private static final long serialVersionUID = 1;
     /** Invalid filename characters. */
-    private static final String FILENAME_REGEX = ".*[\\a\\f\\n\\r\\t\\v#&/\\\\\\s].*";
+    private static final String FILENAME_REGEX = ".*[^\\w ].*";
     /** Invalid nickname characters. */
-    private static final String NICKNAME_REGEX = ".*[\\a\\f\\n\\r\\t\\v\\s].*";
+    private static final String NICKNAME_REGEX = ".*[\\a\\v\\s].*";
     /** Invalid ident characters. */
-    private static final String IDENT_REGEX = ".*[\\a\\f\\n\\r\\t\\v\\s].*";
+    private static final String IDENT_REGEX = ".*[\\a\\v\\s].*";
     /** Displayed profile. */
     private Profile profile;
     /** Name text field. */
@@ -447,9 +447,10 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
         if (nameText.isEmpty() || nameText.matches(FILENAME_REGEX)) {
             nameError.setIcons(errorIcon);
             name.requestFocus();
-            returnValue =
-                    ValidationResult.FAIL;
-            nameError.setToolTipText("The profile name cannot be blank.");
+            returnValue = ValidationResult.FAIL;
+            nameError.setToolTipText("The profile name "
+                    + (nameText.isEmpty() ? "must not be blank." :
+                        "may only contain letters, numbers, underscores and spaces."));
         }
 
         return returnValue;

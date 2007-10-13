@@ -29,7 +29,6 @@ import com.dmdirc.ui.messages.ColourManager;
 import java.awt.Color;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -188,14 +187,34 @@ public final class ConfigManager implements Serializable, ConfigChangeListener {
      *
      * @param domain The domain of the option
      * @param option The name of the option
+     * @param trimEmpty Whether or not to trim empty lines
      * @return The list representation of the option
      */
-    public List<String> getOptionList(final String domain, final String option) {
-        if (!hasOption(domain, option)) {
-            return new ArrayList<String>();
+    public List<String> getOptionList(final String domain, final String option,
+            final boolean trimEmpty) {
+        final List<String> res = new ArrayList<String>();
+        
+        if (hasOption(domain, option)) {
+            for (String line : getOption(domain, option).split("\n")) {
+                if (!line.isEmpty() || !trimEmpty) {
+                    res.add(line);
+                }
+            }
         }
         
-        return Arrays.asList(getOption(domain, option).split("\n"));
+        return res;
+    }
+
+    /**
+     * Retrieves a list representation of the specified option, trimming empty
+     * lines by default.
+     *
+     * @param domain The domain of the option
+     * @param option The name of the option
+     * @return The list representation of the option
+     */    
+    public List<String> getOptionList(final String domain, final String option) {
+        return getOptionList(domain, option, true);
     }
     
     /**
