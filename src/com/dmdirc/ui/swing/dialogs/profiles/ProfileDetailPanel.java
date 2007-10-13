@@ -360,7 +360,8 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
                 altNicknamesError.setIcons(warningIcon);
                 returnValue =
                         ValidationResult.WARNING;
-                altNicknamesError.setToolTipText("Some servers may not accept this nickname.");
+                altNicknamesError.setToolTipText("Some servers may not allow nicknames this "
+                    + (altNickname.length() <= 1 ? "short" : "long") + ".");
             }
         }
 
@@ -429,7 +430,8 @@ public class ProfileDetailPanel extends JPanel implements ActionListener,
             nicknameError.setIcons(warningIcon);
             returnValue =
                     ValidationResult.WARNING;
-            nicknameError.setToolTipText("Some servers may not accept this nickname.");
+            nicknameError.setToolTipText("Some servers may not allow nicknames this "
+                    + (nicknameText.length() <= 1 ? "short" : "long") + ".");
         }
 
         return returnValue;
