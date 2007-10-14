@@ -22,7 +22,6 @@
 
 package com.dmdirc.ui.messages;
 
-import com.dmdirc.FrameContainer;
 import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
@@ -101,12 +100,15 @@ public final class Styliser {
     private static final String URL_CHANNEL = "(?i)(?<![^\\s])([#&]" + RESERVED_CHARS + "+)";
     
     /** Whether or not we should style links. */
-    private static boolean styleLinks = IdentityManager.getGlobalConfig().getOptionBool("ui", "stylelinks");
+    private static boolean styleLinks
+            = IdentityManager.getGlobalConfig().getOptionBool("ui", "stylelinks");
     
     static {
-        IdentityManager.getGlobalConfig().addChangeListener("ui", "stylelinks",new ConfigChangeListener() {
+        IdentityManager.getGlobalConfig().addChangeListener("ui", "stylelinks",
+                new ConfigChangeListener() {
             public void configChanged(final String domain, final String key) {
-                Styliser.styleLinks = IdentityManager.getGlobalConfig().getOptionBool("ui", "stylelinks");
+                Styliser.styleLinks
+                        = IdentityManager.getGlobalConfig().getOptionBool("ui", "stylelinks");
             }
         });
     }
@@ -119,11 +121,10 @@ public final class Styliser {
      * Stylises the specified string.
      *
      * @param strings The line to be stylised
-     * @param context The context of the string to be styled
      *
      * @return StyledDocument for the inputted strings
      */
-    public static StyledDocument getStyledString(final String[] strings, final FrameContainer context) {
+    public static StyledDocument getStyledString(final String[] strings) {
         final StyledDocument styledDoc = new DefaultStyledDocument();
         
         for (int i = 0; i < strings.length; i++) {
@@ -289,7 +290,8 @@ public final class Styliser {
             toggleLink(attribs);
             
             if (attribs.getAttribute(IRCTextAttribute.HYPERLINK) == null) {
-                attribs.addAttribute(IRCTextAttribute.HYPERLINK, readUntilControl(string.substring(1)));
+                attribs.addAttribute(IRCTextAttribute.HYPERLINK,
+                        readUntilControl(string.substring(1)));
             } else {
                 attribs.removeAttribute(IRCTextAttribute.HYPERLINK);
             }
@@ -299,7 +301,8 @@ public final class Styliser {
         // Channel links
         if (string.charAt(0) == CODE_CHANNEL) {
             if (attribs.getAttribute(IRCTextAttribute.CHANNEL) == null) {
-                attribs.addAttribute(IRCTextAttribute.CHANNEL, readUntilControl(string.substring(1)));
+                attribs.addAttribute(IRCTextAttribute.CHANNEL,
+                        readUntilControl(string.substring(1)));
             } else {
                 attribs.removeAttribute(IRCTextAttribute.CHANNEL);
             }
@@ -310,7 +313,8 @@ public final class Styliser {
         // Nickname links
         if (string.charAt(0) == CODE_NICKNAME) {
             if (attribs.getAttribute(IRCTextAttribute.NICKNAME) == null) {
-                attribs.addAttribute(IRCTextAttribute.NICKNAME, readUntilControl(string.substring(1)));
+                attribs.addAttribute(IRCTextAttribute.NICKNAME,
+                        readUntilControl(string.substring(1)));
             } else {
                 attribs.removeAttribute(IRCTextAttribute.NICKNAME);
             }
@@ -389,7 +393,8 @@ public final class Styliser {
                     count++;
                     setBackground(attribs, string.substring(count, count + 6).toUpperCase());
                     if (isStart) {
-                        setDefaultBackground(attribs, string.substring(count, count + 6).toUpperCase());
+                        setDefaultBackground(attribs, 
+                                string.substring(count, count + 6).toUpperCase());
                     }
                     count += 6;
                 }

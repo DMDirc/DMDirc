@@ -695,13 +695,14 @@ public final class Channel extends MessageTarget implements
     private String[] getDetails(final ChannelClientInfo client) {
         if (client == null) {
             // WTF?
-            Logger.appError(ErrorLevel.HIGH, "Channel.getDetails called with null ChannelClientInfo",
+            Logger.appError(ErrorLevel.HIGH,
+                    "Channel.getDetails called with null ChannelClientInfo",
                     new UnsupportedOperationException());
             return new String[]{"null", "null", "nullity.dmdirc.com"};
         }
         
         final String[] res = new String[3];
-        res[0] = client.getNickname();
+        res[0] = Styliser.CODE_NICKNAME + client.getNickname() + Styliser.CODE_NICKNAME;
         res[1] = client.getClient().getIdent();
         res[2] = client.getClient().getHost();
         
