@@ -38,27 +38,23 @@ import com.dmdirc.util.resourcemanager.ResourceManager;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-/**
- * First run wizard, used to initially setup the client for the user.
- */
+/** First run wizard, used to initially setup the client for the user. */
 public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
-    
+
     /** Wizard dialog. */
     private WizardDialog wizardDialog;
-    
     /** First run or update. */
     private boolean firstRun = true;
-    
+
     /** Instatiate the wizard. */
     public SwingFirstRunWizard() {
     }
-    
+
     /**
      * Instantiate the wizard.
      *
@@ -67,89 +63,91 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
     public SwingFirstRunWizard(final boolean firstRun) {
         this.firstRun = firstRun;
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void stepChanged(final int oldStep, final int newStep) {
         //Ignore
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void wizardFinished() {
-        final ResourceManager resourceManager =
-                ResourceManager.getResourceManager();
-        if (resourceManager == null) {
+        if (ResourceManager.getResourceManager() == null) {
             return;
         }
         if (((StepOne) wizardDialog.getStep(0)).getPluginsState()) {
-            extractPlugins(resourceManager);
+            extractPlugins();
         }
         if (((StepOne) wizardDialog.getStep(0)).getActionsState()) {
-            extractActions(resourceManager);
+            extractActions();
         }
-        
-        if (firstRun && ((StepTwo) wizardDialog.getStep(1)).getProfileManagerState()) {
+
+        if (firstRun &&
+                ((StepTwo) wizardDialog.getStep(1)).getProfileManagerState()) {
             ProfileManagerDialog.showProfileManagerDialog();
         }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void wizardCancelled() {
         wizardDialog.dispose();
     }
-    
+
     /** {@inheritDoc} */
-    public void extractPlugins(final ResourceManager resourceManager) {
-        extractCorePlugins(resourceManager.getResourceManager());
+    @Override
+    public void extractPlugins() {
+        extractCorePlugins();
     }
-    
-    /**
-     * Extracts the core plugins.
-     *
-     * @param resourceManager ResourceManager to use
-     */
-    public static void extractCorePlugins(final ResourceManager resourceManager) {
+
+    /** Extracts the core plugins. */
+    public static void extractCorePlugins() {
         //Copy plugins
         try {
-            resourceManager.extractResources("com/dmdirc/addons",
+            ResourceManager.getResourceManager().
+                    extractResources("com/dmdirc/addons",
                     Main.getConfigDir() + "plugins");
             PluginManager.getPluginManager().reloadAllPlugins();
         } catch (IOException ex) {
             Logger.userError(ErrorLevel.LOW, "Failed to extract plugins");
         }
     }
-    
+
     /** {@inheritDoc} */
-    public void extractActions(final ResourceManager resourceManager) {
-        extractCoreActions(resourceManager.getResourceManager());
+    @Override
+    public void extractActions() {
+        extractCoreActions();
     }
-    
-    /**
-     * Extracts the core actions.
-     *
-     * @param resourceManager ResourceManager to use
-     */
-    public static void extractCoreActions(final ResourceManager resourceManager) {
+
+    /** Extracts the core actions. */
+    public static void extractCoreActions() {
         //Copy actions
         final Map<String, byte[]> resources =
-                resourceManager.getResourcesStartingWithAsBytes(
-                "com/dmdirc/actions/defaults");
+                ResourceManager.getResourceManager().
+                getResourcesStartingWithAsBytes("com/dmdirc/actions/defaults");
         for (Entry<String, byte[]> resource : resources.entrySet()) {
             try {
-                final String resourceName = Main.getConfigDir() + "actions"
-                        + resource.getKey().substring(27, resource.getKey().length());
-                final File newDir = new File(
-                        resourceName.substring(0, resourceName.lastIndexOf('/')) + "/");
-                
+                final String resourceName =
+                        Main.getConfigDir() + "actions" +
+                        resource.getKey().
+                        substring(27, resource.getKey().length());
+                final File newDir =
+                        new File(resourceName.substring(0,
+                        resourceName.lastIndexOf('/')) + "/");
+
                 if (!newDir.exists()) {
                     newDir.mkdirs();
                 }
-                
-                final File newFile = new File(newDir,
+
+                final File newFile =
+                        new File(newDir,
                         resourceName.substring(resourceName.lastIndexOf('/') + 1,
                         resourceName.length()));
-                
+
                 if (!newFile.isDirectory()) {
-                    resourceManager.resourceToFile(resource.getValue(), newFile);
+                    ResourceManager.getResourceManager().
+                            resourceToFile(resource.getValue(), newFile);
                 }
             } catch (IOException ex) {
                 Logger.userError(ErrorLevel.LOW, "Failed to extract actions");
@@ -157,24 +155,26 @@ public final class SwingFirstRunWizard implements Wizard, FirstRunWizard {
         }
         ActionManager.loadActions();
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void display() {
-        final List<Step> steps = new ArrayList<Step>();
-        
+        final List<Step> steps =
+                new ArrayList<Step>();
+
         if (firstRun) {
             steps.add(new SetupStep());
             steps.add(new StepTwo());
         } else {
             steps.add(new UpdateStep());
         }
-        
-        wizardDialog = new WizardDialog(firstRun ? "Setup wizard" :
-            "Migration wizard", steps, this, true,
-                (MainFrame) Main.getUI().getMainWindow());
-        
+
+        wizardDialog =
+                new WizardDialog(firstRun ? "Setup wizard" : "Migration wizard",
+                steps, this, true, (MainFrame) Main.getUI().getMainWindow());
+
         wizardDialog.setPreferredSize(new Dimension(400, 350));
-        
+
         wizardDialog.display();
     }
 }

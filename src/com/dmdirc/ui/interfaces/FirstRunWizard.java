@@ -22,26 +22,14 @@
 
 package com.dmdirc.ui.interfaces;
 
-import com.dmdirc.util.resourcemanager.ResourceManager;
-
-/**
- * First run wizard interface.
- */
+/** First run wizard interface. */
 public interface FirstRunWizard {
     
-    /**
-     * Extracts the core plugins.
-     *
-     * @param resourceManager ResourceManager to use
-     */
-    void extractPlugins(final ResourceManager resourceManager);
+    /** Extracts the core plugins. */
+    void extractPlugins();
     
-    /**
-     * Extracts the core actions.
-     *
-     * @param resourceManager ResourceManager to use
-     */
-    void extractActions(final ResourceManager resourceManager);
+    /** Extracts the core actions. */
+    void extractActions();
     
     /** Displays the First run wizard. */
     void display();    
