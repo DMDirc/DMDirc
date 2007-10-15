@@ -142,6 +142,8 @@ public abstract class InputFrame extends Frame implements InputWindow,
             awayLabel.setVisible(getContainer().getServer().isAway());
         }
         super.open();
+        
+        inputField.requestFocus();
     }
     
     /**
