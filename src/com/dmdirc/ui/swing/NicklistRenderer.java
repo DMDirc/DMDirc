@@ -118,7 +118,7 @@ public final class NicklistRenderer extends DefaultListCellRenderer implements
                     "backgroundcolour", Color.WHITE)));
         }
         if ("ui".equals(domain) && "shownickcoloursinnicklist".equals(key)) {
-            showColours = config.getOptionBool("ui", "shownickcoloursinnicklist");
+            showColours = config.getOptionBool("ui", "shownickcoloursinnicklist", false);
         }
     }
     
