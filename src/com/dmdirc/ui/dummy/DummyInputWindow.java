@@ -49,6 +49,8 @@ public final class DummyInputWindow implements InputWindow {
     private boolean visible;
     /** are we maximised? */
     private boolean maximised;
+    /** Our container. */
+    private final FrameContainer container;
     
     /** 
      * Instantiates a new DummyInputWindow.
@@ -58,7 +60,7 @@ public final class DummyInputWindow implements InputWindow {
      */
     public DummyInputWindow(final WritableFrameContainer owner, 
             final CommandParser commandParser) {
-        //Do nothing.
+        container = owner;
     }
     
     /** {@inheritDoc} */
@@ -103,7 +105,7 @@ public final class DummyInputWindow implements InputWindow {
     
     /** {@inheritDoc} */
     public FrameContainer getContainer() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return container;
     }
     
     /** {@inheritDoc} */
