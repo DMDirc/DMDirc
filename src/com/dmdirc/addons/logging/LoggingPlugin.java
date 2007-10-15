@@ -847,7 +847,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 			return false;
 		}
 		
-		new HistoryWindow("History of " + target.getContainer().toString(), reader, target.getContainer().getServer());
+		new HistoryWindow("History", reader, target);
 		
 		return true;
 	}

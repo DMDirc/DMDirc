@@ -57,7 +57,6 @@ import com.dmdirc.ui.messages.Styliser;
 
 import java.awt.Color;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Map;
 

@@ -86,7 +86,12 @@ public class WindowManager {
     public static void removeWindow(final Window window) {
         Logger.doAssertion(window != null);
         Logger.doAssertion(childWindows.containsKey(window));
-        Logger.doAssertion(childWindows.get(window).isEmpty());
+        
+        if (!childWindows.get(window).isEmpty()) {
+            for (Window child : new ArrayList<Window>(childWindows.get(window))) {
+                removeWindow(child);
+            }
+        }
         
         childWindows.remove(window);
         

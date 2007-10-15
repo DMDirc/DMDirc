@@ -41,31 +41,31 @@ public class HistoryWindow extends FrameContainer {
     
     /** The title of our window. */
     private final String title;
-    
-    /** The server we're associated with. */
-    private final Server server;
-    
+       
     /** The window we're using. */
     private final Window myWindow;
+    
+    /** Our parent window. */
+    private final Window parent;
     
     /**
      * Creates a new HistoryWindow.
      *
      * @param title The title of the window
      * @param reader The reader to use to get the history
-     * @param server The server we're associated with
+     * @param parent The window this history window was opened from
      */
-    public HistoryWindow(final String title, final ReverseFileReader reader, final Server server) {
+    public HistoryWindow(final String title, final ReverseFileReader reader, final Window parent) {
         super();
         
         this.title = title;
-        this.server = server;
+        this.parent = parent;
         
         icon = IconManager.getIconManager().getIcon("raw");
         
         myWindow = Main.getUI().getWindow(this);
         
-        WindowManager.addWindow(server.getFrame(), myWindow);
+        WindowManager.addWindow(parent, myWindow);
         
         myWindow.setTitle(title);
         myWindow.setFrameIcon(icon);
@@ -97,6 +97,6 @@ public class HistoryWindow extends FrameContainer {
     
     /** {@inheritDoc} */
     public Server getServer() {
-        return server;
+        return parent.getContainer().getServer();
     }
 }
