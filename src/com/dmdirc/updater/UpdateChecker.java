@@ -29,16 +29,10 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.util.Downloader;
 
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -54,7 +48,7 @@ import javax.swing.JLabel;
  *
  * @author chris
  */
-public final class UpdateChecker implements Runnable, MouseListener {
+public final class UpdateChecker extends MouseAdapter implements Runnable {
     
     /** The label used to indicate that there's an update available. */
     private static JLabel label;
@@ -70,20 +64,18 @@ public final class UpdateChecker implements Runnable, MouseListener {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void run() {
         Main.getUI().getStatusBar().setMessage("Checking for updates...");
         
         updates.clear();
         
-        URL url;
-        URLConnection urlConn;
-        DataOutputStream printout;
-        BufferedReader printin;
         try {
             final String content = "component=client&channel="
                     + Main.UPDATE_CHANNEL + "&date=" + Main.RELEASE_DATE;
             
-            final List<String> response = Downloader.getPage("http://www.dmdirc.com/update.php", content);
+            final List<String> response
+                    = Downloader.getPage("http://www.dmdirc.com/update.php", content);
             
             for (String line : response) {
                 checkLine(line);
@@ -95,7 +87,8 @@ public final class UpdateChecker implements Runnable, MouseListener {
         } catch (MalformedURLException ex) {
             Logger.appError(ErrorLevel.LOW, "Error when checking for updates", ex);
         } catch (IOException ex) {
-            Logger.userError(ErrorLevel.LOW, "I/O error when checking for updates: " + ex.getMessage());
+            Logger.userError(ErrorLevel.LOW, 
+                    "I/O error when checking for updates: " + ex.getMessage());
         }
     }
     
@@ -137,22 +130,20 @@ public final class UpdateChecker implements Runnable, MouseListener {
      * frequency specified in the config.
      */
     public static void init() {
-        final int last = IdentityManager.getGlobalConfig().getOptionInt("updater", "lastcheck", 0);
-        final int freq = IdentityManager.getGlobalConfig().getOptionInt("updater", "frequency", 86400);
+        final int last
+                = IdentityManager.getGlobalConfig().getOptionInt("updater", "lastcheck", 0);
+        final int freq
+                = IdentityManager.getGlobalConfig().getOptionInt("updater", "frequency", 86400);
         final int timestamp = (int) (new Date().getTime() / 1000);
         int time = 0;
         
         if (last + freq > timestamp) {
             time = last + freq - timestamp;
         }
-        
-        /*
-        final List<Update> temp = new ArrayList<Update>();
-        temp.add(new Update("outofdate teststuff 20073005 20060101 http://www.example.com/"));
-        new SwingUpdaterDialog(temp);
-         */
-        
+                
         new Timer("Update Checker Timer").schedule(new TimerTask() {
+            /** {@inheritDoc} */
+            @Override
             public void run() {
                 new Thread(new UpdateChecker(), "UpdateChecker thread").start();
             }
@@ -160,30 +151,11 @@ public final class UpdateChecker implements Runnable, MouseListener {
     }
     
     /** {@inheritDoc} */
+    @Override
     public void mouseClicked(final MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             Main.getUI().getUpdaterDialog(updates).display();
         }
-    }
-    
-    /** {@inheritDoc} */
-    public void mousePressed(final MouseEvent e) {
-        // Do nothing
-    }
-    
-    /** {@inheritDoc} */
-    public void mouseReleased(final MouseEvent e) {
-        // Do nothing
-    }
-    
-    /** {@inheritDoc} */
-    public void mouseEntered(final MouseEvent e) {
-        // Do nothing
-    }
-    
-    /** {@inheritDoc} */
-    public void mouseExited(final MouseEvent e) {
-        // Do nothing
     }
     
 }
