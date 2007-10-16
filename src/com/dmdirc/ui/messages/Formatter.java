@@ -61,7 +61,7 @@ public final class Formatter {
     /**
      * A cache of types needed by the various formatters.
      */
-    private static Map<String, Character[]> typeCache;
+    private static final Map<String, Character[]> typeCache = new HashMap<String, Character[]>();
     
     /**
      * Creates a new instance of Formatter.
@@ -78,6 +78,8 @@ public final class Formatter {
      */
     public static String formatMessage(final String messageType,
             final Object... arguments) {
+        Logger.doAssertion(messageType != null);
+        
         if (properties == null) {
             initialise();
         }
@@ -112,6 +114,8 @@ public final class Formatter {
      * @return A new set of arguments of appropriate types
      */
     private static Object[] castArguments(final String format, final Object[] args) {
+        Logger.doAssertion(format != null);
+        
         if (!typeCache.containsKey(format)) {
             analyseFormat(format, args);
         }
@@ -434,7 +438,7 @@ public final class Formatter {
      * properties object.
      */
     private static void initialise() {
-        typeCache = new HashMap<String, Character[]>();
+        typeCache.clear();
         
         if (defaultProperties == null) {
             loadDefaults();
