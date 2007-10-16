@@ -171,13 +171,10 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         if (source != null) {
             final TreeNode[] treePath = ((DefaultTreeModel) tree.getModel()).
                     getPathToRoot(nodes.get(source));
-            if (treePath == null || treePath.length == 0) {
-                Logger.appError(ErrorLevel.MEDIUM, "Unknown node selected",
-                        new IllegalArgumentException("Unknown node selected: "
-                        + source));
-                return;
+            if (treePath != null || treePath.length > 0) {
+                tree.setSelectionPath(new TreePath(treePath));
             }
-            tree.setSelectionPath(new TreePath(treePath));
+            
         }
     }
     
