@@ -50,7 +50,7 @@ notifications.numeric_319=group:whois
 notifications.numeric_330=group:whois
 notifications.numeric_343=group:whois
 
-notifications.numeric_401=server
+notifications.numeric_401=lastcommand:(whois|msg|notice|ctcp|invite) %4$s( .*?)?
 notifications.numeric_404=channel:%4$s
 notifications.numeric_421=server
 notifications.numeric_433=server
