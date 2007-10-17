@@ -25,6 +25,7 @@ package com.dmdirc.ui.swing.dialogs.channelsetting;
 import com.dmdirc.Channel;
 import com.dmdirc.parser.ChannelListModeItem;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -36,11 +37,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -48,9 +51,7 @@ import javax.swing.JScrollPane;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-/**
- * List modes panel.
- */
+/** List modes panel. */
 public final class ChannelListModesPane extends JPanel implements ActionListener,
         ListSelectionListener {
 
@@ -59,7 +60,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4;
     /** Channel. */
     private final Channel channel;
     /** Combox box used to switch between list modes. */
@@ -76,6 +77,8 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
     private final char[] listModesArray;
     /** Modes on creation. */
     private final Map<Character, List<ChannelListModeItem>> existingListItems;
+    /** Mode count label. */
+    private final JLabel modeCount;
 
     /**
      * Creates a new instance of ChannelListModePane.
@@ -88,8 +91,6 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         this.channel = channel;
 
         listModesPanel = new JScrollPane();
-        listModesPanel.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                0, SMALL_BORDER, 0), listModesPanel.getBorder()));
         listModesPanels = new ArrayList<JList>();
         listModesArray =
                 channel.getServer().getParser().getListChanModes().toCharArray();
@@ -100,6 +101,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         addListModeButton = new JButton("Add");
         removeListModeButton = new JButton("Remove");
         removeListModeButton.setEnabled(false);
+        modeCount = new JLabel();
 
         initListModesPanel();
         initListeners();
@@ -165,6 +167,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
 
             final JList list =
                     new JList(new DefaultListModel());
+            list.setCellRenderer(new ListModeCellRenderer());
             list.setVisibleRowCount(15);
             list.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             list.addListSelectionListener(this);
@@ -176,6 +179,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         } else {
             listModesPanel.setViewportView(listModesPanels.get(0));
         }
+        updateModeCount();
         listModesPanel.setVisible(true);
     }
 
@@ -199,19 +203,30 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
 
         constraints.gridy = 2;
         constraints.weighty = 1.0;
+        constraints.insets = new Insets(SMALL_BORDER, 0, 0, 0);
         add(listModesPanel, constraints);
 
-        constraints.weightx = 0.5;
-        constraints.weighty = 0.0;
         constraints.gridy = 3;
+        constraints.weighty = 0.0;
+        constraints.fill = GridBagConstraints.NONE;
+        constraints.anchor = GridBagConstraints.CENTER;
+        add(modeCount, constraints);
+
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.weightx = 0.5;
+        constraints.gridy = 4;
         constraints.gridwidth = 1;
+        constraints.insets =
+                new Insets(SMALL_BORDER, SMALL_BORDER, 0, 0);
         add(addListModeButton, constraints);
 
         constraints.gridx = 2;
-        constraints.insets = new Insets(0, SMALL_BORDER, 0, 0);
+        constraints.insets =
+                new Insets(SMALL_BORDER, SMALL_BORDER, 0, 0);
         add(removeListModeButton, constraints);
 
         update();
+        updateModeCount();
     }
 
     /** Initialises listeners for this dialog. */
@@ -223,10 +238,10 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
 
     /** Sends the list modes to the server. */
     public void save() {
-        final Map<String, Character> currentModes =
-                new HashMap<String, Character>();
-        final Map<String, Character> newModes =
-                new HashMap<String, Character>();
+        final Map<ChannelListModeItem, Character> currentModes =
+                new HashMap<ChannelListModeItem, Character>();
+        final Map<ChannelListModeItem, Character> newModes =
+                new HashMap<ChannelListModeItem, Character>();
 
         for (int i = 0; i < listModesArray.length;
                 i++) {
@@ -237,27 +252,27 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
                     existingListItems.get(mode);
 
             for (ChannelListModeItem listItem : listItems) {
-                currentModes.put(listItem.toString(), mode);
+                currentModes.put(listItem, mode);
             }
 
             while (values.hasMoreElements()) {
-                final String value = values.nextElement().toString();
+                final ChannelListModeItem value = (ChannelListModeItem) values.nextElement();
                 newModes.put(value, mode);
             }
         }
 
-        for (Entry<String, Character> entry : newModes.entrySet()) {
+        for (Entry<ChannelListModeItem, Character> entry : newModes.entrySet()) {
             if (currentModes.containsKey(entry.getKey())) {
                 currentModes.remove(entry.getKey());
             } else {
                 channel.getChannelInfo().
-                        alterMode(true, entry.getValue(), entry.getKey());
+                        alterMode(true, entry.getValue(), entry.getKey().getItem());
             }
         }
 
-        for (Entry<String, Character> entry : currentModes.entrySet()) {
+        for (Entry<ChannelListModeItem, Character> entry : currentModes.entrySet()) {
             channel.getChannelInfo().
-                    alterMode(false, entry.getValue(), entry.getKey());
+                    alterMode(false, entry.getValue(), entry.getKey().getItem());
         }
 
         channel.getChannelInfo().sendModes();
@@ -283,6 +298,7 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
             model.addElement(new ChannelListModeItem(modeMask, "",
                     System.currentTimeMillis() / 1000));
         }
+        updateModeCount();
     }
 
     /** Removes a list mode. */
@@ -292,14 +308,16 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
         for (Object mode : list.getSelectedValues()) {
             ((DefaultListModel) list.getModel()).removeElement(mode);
         }
+        updateModeCount();
     }
 
     /** {@inheritDoc} */
     @Override
     public void actionPerformed(final ActionEvent event) {
         if (listModesMenu.equals(event.getSource())) {
+            final int selectedIndex = listModesMenu.getSelectedIndex();
             listModesPanel.setVisible(false);
-            listModesPanel.setViewportView(listModesPanels.get(listModesMenu.getSelectedIndex()));
+            listModesPanel.setViewportView(listModesPanels.get(selectedIndex));
             listModesPanel.setVisible(true);
         } else if (addListModeButton.equals(event.getSource())) {
             addListMode();
@@ -319,6 +337,26 @@ public final class ChannelListModesPane extends JPanel implements ActionListener
             } else {
                 removeListModeButton.setEnabled(true);
             }
+        }
+    }
+
+    /** Updates the mode count label. */
+    private void updateModeCount() {
+        if (listModesPanels.isEmpty()) {
+            modeCount.setText(null);
+            return;
+        }
+        final int selected = listModesMenu.getSelectedIndex();
+        final int maxModes =
+                channel.getServer().getParser().
+                getMaxListModes(listModesArray[selected]);
+        if (maxModes == -1) {
+            modeCount.setText("" + listModesPanels.get(selected).getModel().getSize());
+        } else {
+            modeCount.setText(listModesPanels.get(selected).getModel().getSize() +
+                    " of " +
+                    channel.getServer().getParser().
+                    getMaxListModes(listModesArray[selected]));
         }
     }
 }

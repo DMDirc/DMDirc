@@ -161,6 +161,8 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         constraints.gridx = 2;
         constraints.insets.set(0, 0, SMALL_BORDER, SMALL_BORDER);
         getContentPane().add(getRightButton(), constraints);
+        
+        initTopicTab();
 
         initIrcTab();
 
@@ -171,31 +173,19 @@ public final class ChannelSettingsDialog extends StandardDialog implements Actio
         tabbedPane.setSelectedIndex(channel.getConfigManager().
                 getOptionInt("dialogstate", "channelsettingsdialog", 0));
     }
+    
+    /** Initialises the Topic tab. */
+    private void initTopicTab() {
+        topicModesPane =
+                new TopicModesPane(channel, this);
+        tabbedPane.addTab("Topic", topicModesPane);
+    }
 
     /** Initialises the IRC Settings tab. */
     private void initIrcTab() {
-        final GridBagConstraints constraints = new GridBagConstraints();
-        final JPanel settingsPanel =
-                new JPanel(new GridBagLayout());
-
-        tabbedPane.addTab("IRC Settings", settingsPanel);
-
-        settingsPanel.setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER, SMALL_BORDER));
-
         channelModesPane =
                 new ChannelModesPane(channel);
-        topicModesPane =
-                new TopicModesPane(channel, this);
-
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.fill = GridBagConstraints.BOTH;
-        constraints.weightx = 1.0;
-        constraints.weighty = 1.0;
-        settingsPanel.add(channelModesPane, constraints);
-        constraints.gridy = 1;
-        settingsPanel.add(topicModesPane, constraints);
+        tabbedPane.addTab("IRC Settings", channelModesPane);
     }
 
     /** Initialises the IRC Settings tab. */

@@ -134,10 +134,8 @@ public final class TopicModesPane extends JPanel implements KeyListener,
         topicText = new JTextArea(100, 4);
         
         setLayout(new GridBagLayout());
-        setBorder(BorderFactory.createCompoundBorder(BorderFactory.createTitledBorder(BorderFactory.createEtchedBorder(),
-                "Channel Topic"),
-                BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
-                SMALL_BORDER, SMALL_BORDER)));
+        setBorder(BorderFactory.createEmptyBorder(SMALL_BORDER, SMALL_BORDER,
+                SMALL_BORDER, SMALL_BORDER));
         
         topicText.setText(channel.getChannelInfo().getTopic());
         topicText.setLineWrap(true);
@@ -150,12 +148,14 @@ public final class TopicModesPane extends JPanel implements KeyListener,
         constraints.fill = GridBagConstraints.BOTH;
         constraints.anchor = GridBagConstraints.NORTH;
         constraints.weightx = 1.0;
+        constraints.weighty = 1.0;
         constraints.gridy = 1;
         add(scrollPane, constraints);
         
         topicChanged();
         
         constraints.gridy = 2;
+        constraints.weighty = 0.0;
         add(topicLengthLabel, constraints);
         
         topicWho.setSize(30, 0);
