@@ -23,6 +23,7 @@
 package com.dmdirc;
 
 import com.dmdirc.actions.ActionManager;
+import com.dmdirc.actions.ActionType;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.actions.wrappers.AliasWrapper;
 import com.dmdirc.commandparser.CommandManager;
@@ -784,6 +785,34 @@ public final class Server extends WritableFrameContainer implements Serializable
         }
         
         addLine(messageType, args);
+    }
+    
+    /**
+     * Processes and displays a notification.
+     * 
+     * @param messageType The name of the formatter to be used for the message
+     * @param actionType The action type to be used
+     * @param args The arguments for the message
+     */
+    public void doNotification(final String messageType,
+            final ActionType actionType, final Object... args) {
+        final List<Object> messageArgs = new ArrayList<Object>();
+        final StringBuffer buffer = new StringBuffer(messageType);
+        
+        for (Object arg : args) {
+            if (arg instanceof ClientInfo) {
+                final ClientInfo clientInfo = (ClientInfo) arg;
+                messageArgs.add(clientInfo.getNickname());
+                messageArgs.add(clientInfo.getIdent());
+                messageArgs.add(clientInfo.getHost());
+            } else {
+                messageArgs.add(arg);
+            }
+        }
+        
+        ActionManager.processEvent(actionType, buffer, args);
+        
+        handleNotification(messageType, messageArgs.toArray());
     }
     
     /**

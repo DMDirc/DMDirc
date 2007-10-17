@@ -95,6 +95,9 @@ public enum CoreActionType implements ActionType {
     /** Missed server ping reply. */
     SERVER_NOPING(ServerEvents.SERVER_PING, "Missed server ping reply"),
     
+    /** Invite received. */
+    SERVER_INVITERECEIVED(ServerEvents.SERVER_INVITE, "Invite received"),
+    
     /** Channel window opened. */
     CHANNEL_OPENED(ChannelEvents.CHANNEL_EVENT, "Channel window opened"),
     /** Channel window closed. */

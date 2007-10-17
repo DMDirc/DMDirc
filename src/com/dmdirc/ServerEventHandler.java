@@ -92,12 +92,14 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onChannelSelfJoin(final IRCParser tParser, final ChannelInfo cChannel) {
         checkParser(tParser);
         owner.addChannel(cChannel);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onPrivateMessage(final IRCParser tParser, final String sMessage,
             final String sHost) {
         checkParser(tParser);
@@ -105,6 +107,7 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onPrivateAction(final IRCParser tParser, final String sMessage,
             final String sHost) {
         checkParser(tParser);
@@ -112,6 +115,7 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onErrorInfo(final IRCParser tParser, final ParserError errorInfo) {
         checkParser(tParser);
         
@@ -127,6 +131,7 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onPrivateCTCP(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
         checkParser(tParser);
@@ -134,6 +139,7 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onPrivateCTCPReply(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
         checkParser(tParser);
@@ -141,12 +147,14 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onSocketClosed(final IRCParser tParser) {
         checkParser(tParser);
         owner.onSocketClosed();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onPrivateNotice(final IRCParser tParser, final String sMessage,
             final String sHost) {
         checkParser(tParser);
@@ -154,24 +162,28 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onMOTDStart(final IRCParser tParser, final String sData) {
         checkParser(tParser);
         owner.onMOTDStart(sData);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onMOTDLine(final IRCParser tParser, final String sData) {
         checkParser(tParser);
         owner.onMOTDLine(sData);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onMOTDEnd(final IRCParser tParser, final boolean noMOTD) {
         checkParser(tParser);
         owner.onMOTDEnd();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onNumeric(final IRCParser tParser, final int numeric,
             final String[] token) {
         checkParser(tParser);
@@ -179,6 +191,7 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onGotNetwork(final IRCParser tParser, final String networkName,
             final String ircdVersion, final String ircdType) {
         checkParser(tParser);
@@ -186,12 +199,14 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onPingFailed(final IRCParser tParser) {
         checkParser(tParser);
         owner.onPingFailed();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onPingSuccess(final IRCParser tParser) {
         checkParser(tParser);
         
@@ -200,6 +215,7 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onAwayState(final IRCParser tParser, final boolean currentState,
             final String reason) {
         checkParser(tParser);
@@ -207,12 +223,14 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onConnectError(final IRCParser tParser, final ParserError errorInfo) {
         checkParser(tParser);
         owner.onConnectError(errorInfo);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onAwayStateOther(final IRCParser tParser, final ClientInfo client,
             final boolean state) {
         checkParser(tParser);
@@ -224,24 +242,28 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onNickInUse(final IRCParser tParser, final String nickname) {
         owner.onNickInUse(nickname);
         checkParser(tParser);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onPost005(final IRCParser tParser) {
         checkParser(tParser);
         owner.onPost005();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onNoticeAuth(final IRCParser tParser, final String sData) {
         checkParser(tParser);
         owner.onNoticeAuth(sData);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onUnknownNotice(final IRCParser tParser, final String sMessage,
             final String sTarget, final String sHost) {
         checkParser(tParser);
@@ -249,6 +271,7 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     }
     
     /** {@inheritDoc} */
+    @Override
     public void onUserModeChanged(final IRCParser tParser,
             final ClientInfo cClient, final String sSetBy, final String sModes) {
         checkParser(tParser);
@@ -256,10 +279,14 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     }
 
     /** {@inheritDoc} */
+    @Override
     public void onInvite(final IRCParser tParser, final String userHost,
             final String channel) {
         checkParser(tParser);
         
         owner.addInvite(new Invite(owner, channel, userHost));
+        owner.doNotification("inviteReceived",
+                CoreActionType.SERVER_INVITERECEIVED, 
+                owner, tParser.getClientInfoOrFake(userHost), channel);
     }
 }

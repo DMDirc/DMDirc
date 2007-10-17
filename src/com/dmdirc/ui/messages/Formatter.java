@@ -389,6 +389,14 @@ public final class Formatter {
         //    3: Arguments
         defaultProperties.setProperty("commandUsage", colour + "7Usage: %1$s%2$s %3$s");
         
+        // Type: New server events
+        //    1: Server
+        //    2: Source nickname
+        //    3: Source ident
+        //    4: Source host
+        //    5: Message/data
+        defaultProperties.setProperty("inviteReceived", colour + "2* You have been invited to %5$s by %2$s.");
+        
         // Type: Numerical data
         defaultProperties.setProperty("numeric_301", "%4$s is away: %5$s");
         defaultProperties.setProperty("numeric_307", "%4$s %5$s.");

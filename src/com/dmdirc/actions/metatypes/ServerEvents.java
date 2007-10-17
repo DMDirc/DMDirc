@@ -45,6 +45,8 @@ public enum ServerEvents implements ActionMetaType {
     SERVER_CTCP_EVENT(new String[]{"server", "user", "type", "content"}, Server.class, ClientInfo.class, String.class, String.class),
     /** Server event with argument. */
     SERVER_UNKNOWN_EVENT(new String[]{"server", "source", "target", "message"}, Server.class, String.class, String.class, String.class),
+    /** Server invite event. */
+    SERVER_INVITE(new String[]{"server", "source", "channel"}, Server.class, ClientInfo.class, String.class),
     /** Server event type. */
     SERVER_EVENT(new String[]{"server"}, Server.class);
     
