@@ -22,5 +22,8 @@ server.modez = SSL Users only
 
 server.modeg = Censored word
 
+server.modeu = Auditorium mode
+server.modeF = Flood limit
+
 server.modea = Protected
 server.modeq = Channel founder
