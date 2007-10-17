@@ -171,7 +171,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         if (source != null) {
             final TreeNode[] treePath = ((DefaultTreeModel) tree.getModel()).
                     getPathToRoot(nodes.get(source));
-            if (treePath != null || treePath.length > 0) {
+            if (treePath != null && treePath.length > 0) {
                 tree.setSelectionPath(new TreePath(treePath));
             }
             

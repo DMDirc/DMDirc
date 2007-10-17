@@ -40,7 +40,7 @@ import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.interfaces.UpdaterDialog;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.ui.swing.framemanager.DummyFrameManager;
+import com.dmdirc.ui.dummy.DummyFrameManager;
 import com.dmdirc.updater.Update;
 
 import java.util.List;

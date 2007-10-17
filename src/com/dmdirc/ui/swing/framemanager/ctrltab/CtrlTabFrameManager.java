@@ -23,19 +23,25 @@
 package com.dmdirc.ui.swing.framemanager.ctrltab;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
+import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.TreeScroller;
 import com.dmdirc.ui.swing.framemanager.tree.TreeViewModel;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.AbstractAction;
 import javax.swing.JComponent;
+import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -47,15 +53,15 @@ import javax.swing.tree.TreeSelectionModel;
 /**
  * Manages the ctrl tab window list.
  */
-public final class CtrlTabFrameManager implements FrameManager,
-        Serializable, TreeSelectionListener {
+public final class CtrlTabFrameManager implements FrameManager, Serializable,
+        TreeSelectionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     /** Node storage, used for adding and deleting nodes correctly. */
     private final Map<FrameContainer, DefaultMutableTreeNode> nodes;
     /** Label storage. */
@@ -69,16 +75,45 @@ public final class CtrlTabFrameManager implements FrameManager,
     /** Tree Scroller. */
     private final TreeScroller treeScroller;
 
-    /** Creates a new instance of WindowMenuFrameManager. */
-    public CtrlTabFrameManager() {
+    /** 
+     * Creates a new instance of WindowMenuFrameManager.
+     * 
+     * @param desktopPane DesktopPane to register with
+     */
+    public CtrlTabFrameManager(final JDesktopPane desktopPane) {
         nodes = new HashMap<FrameContainer, DefaultMutableTreeNode>();
         labels =new HashMap<DefaultMutableTreeNode, JLabel>();
         root = new DefaultMutableTreeNode("DMDirc");
         model = new TreeViewModel(root);
         selectionModel = new DefaultTreeSelectionModel();
-        treeScroller =
-                new TreeScroller(model, selectionModel);
+        treeScroller = new TreeScroller(model, selectionModel);
         selectionModel.addTreeSelectionListener(this);
+
+        SwingUtilities.getUIActionMap(desktopPane).
+                put("selectNextFrame",
+                new AbstractAction("selectNextFrame") {
+
+            private static final long serialVersionUID = 1;
+
+            /** {@inheritDoc} */
+            @Override
+            public void actionPerformed(final ActionEvent evt) {
+                scrollDown();
+            }
+        });
+
+        SwingUtilities.getUIActionMap(desktopPane).
+                put("selectPreviousFrame",
+                new AbstractAction("selectPreviousFrame") {
+
+            private static final long serialVersionUID = 1;
+
+            /** {@inheritDoc} */
+            @Override
+            public void actionPerformed(final ActionEvent evt) {
+                scrollUp();
+            }
+        });
     }
 
     /** {@inheritDoc} */
@@ -110,8 +145,7 @@ public final class CtrlTabFrameManager implements FrameManager,
 
     /** {@inheritDoc} */
     @Override
-    public void showNotification(final FrameContainer source,
-            final Color colour) {
+    public void showNotification(final FrameContainer source, final Color colour) {
         //Ignore
     }
 
@@ -165,8 +199,7 @@ public final class CtrlTabFrameManager implements FrameManager,
      */
     public void addWindow(final DefaultMutableTreeNode parent,
             final FrameContainer window) {
-        final DefaultMutableTreeNode node =
-                new DefaultMutableTreeNode();
+        final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
         nodes.put(window, node);
         labels.put(node, new JLabel());
         node.setUserObject(window);

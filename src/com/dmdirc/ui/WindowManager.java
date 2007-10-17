@@ -41,10 +41,6 @@ public class WindowManager {
     
     private final static List<FrameManager> frameManagers = new ArrayList<FrameManager>();
     
-    static {
-        frameManagers.add(Main.getUI().getMainWindow().getFrameManager());
-    }
-    
     private WindowManager() {
         // Shouldn't be instansiated
     }

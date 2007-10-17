@@ -126,15 +126,15 @@ public final class GeneralTabPanel extends JPanel implements ActionListener {
     /** Populates the other triggers list with compatible types. */
     private void populateOtherTriggers() {
         ((DefaultListModel) otherTriggers.getModel()).clear();
-        if (trigger.getSelectedIndex() == 0) {
+        if (trigger.getSelectedItem() == null) {
             otherTriggers.setEnabled(false);
         } else {
             for (ActionType thisType
                     : ActionManager.getCompatibleTypes((ActionType) trigger.getSelectedItem())) {
                         ((DefaultListModel) otherTriggers.getModel()).addElement(thisType);
                     }
+            owner.setType((ActionType) trigger.getSelectedItem());
         }
-        owner.setType((ActionType) trigger.getSelectedItem());
         otherTriggers.repaint();
     }
     

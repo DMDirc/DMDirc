@@ -35,6 +35,7 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.plugins.Plugin;
 import com.dmdirc.plugins.PluginManager;
+import com.dmdirc.ui.WindowManager;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.MainWindow;
@@ -48,7 +49,10 @@ import com.dmdirc.ui.swing.dialogs.about.AboutDialog;
 import com.dmdirc.ui.swing.dialogs.actionseditor.ActionsManagerDialog;
 import com.dmdirc.ui.swing.dialogs.aliases.AliasManagerDialog;
 import com.dmdirc.ui.swing.dialogs.profiles.ProfileManagerDialog;
-import com.dmdirc.ui.swing.framemanager.MainFrameManager;
+import com.dmdirc.ui.swing.framemanager.buttonbar.ButtonBar;
+import com.dmdirc.ui.swing.framemanager.ctrltab.CtrlTabFrameManager;
+import com.dmdirc.ui.swing.framemanager.tree.TreeFrameManager;
+import com.dmdirc.ui.swing.framemanager.windowmenu.WindowMenuFrameManager;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
 import java.awt.BorderLayout;
@@ -88,7 +92,6 @@ import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.event.MenuEvent;
@@ -105,7 +108,7 @@ public final class MainFrame extends JFrame implements WindowListener,
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 8;
+    private static final long serialVersionUID = 9;
     /** The number of pixels each new internal frame is offset by. */
     private static final int FRAME_OPENING_OFFSET = 30;
     /** Whether the internal frames are maximised or not. */
@@ -119,7 +122,7 @@ public final class MainFrame extends JFrame implements WindowListener,
     /** The main application icon. */
     private final ImageIcon imageIcon;
     /** The frame manager that's being used. */
-    private final MainFrameManager mainFrameManager;
+    private FrameManager mainFrameManager;
     /** Dekstop pane. */
     private JDesktopPane desktopPane;
     /** Plugin menu item. */
@@ -149,12 +152,9 @@ public final class MainFrame extends JFrame implements WindowListener,
     protected MainFrame(final SwingStatusBar statusBar) {
         super();
 
-        mainFrameManager =
-                new MainFrameManager();
-
         pluginList =
                 new HashMap<JMenuItem, String>();
-
+        
         initComponents(statusBar);
         initKeyHooks();
 
@@ -163,8 +163,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         imageIcon =
                 new ImageIcon(IconManager.getIconManager().getImage("icon"));
         setIconImage(imageIcon.getImage());
-
-        mainFrameManager.setParent(frameManagerPanel);
 
         // Get the Location of the mouse pointer
         final PointerInfo myPointerInfo = MouseInfo.getPointerInfo();
@@ -382,6 +380,15 @@ public final class MainFrame extends JFrame implements WindowListener,
     public boolean getMaximised() {
         return maximised;
     }
+    
+    /**
+     * Returns the desktop pane for the frame.
+     * 
+     * @return JDesktopPane for the frame
+     */
+    public JDesktopPane getDesktopPane() {
+        return desktopPane;
+    }
 
     /**
      * Checks the current state of the internal frames, and configures the
@@ -447,6 +454,27 @@ public final class MainFrame extends JFrame implements WindowListener,
         //ignore
     }
 
+    /** Initialiases the frame managers. */
+    private void initFrameManagers() {
+        final String manager =
+                IdentityManager.getGlobalConfig().
+                getOption("ui", "framemanager", "treeview");
+
+        final FrameManager frameManager;
+        if (manager.equalsIgnoreCase("buttonbar")) {
+            frameManager = new ButtonBar();
+            WindowManager.addFrameManager(frameManager);
+        } else {
+            frameManager = new TreeFrameManager();
+            WindowManager.addFrameManager(frameManager);
+        }
+        mainFrameManager = frameManager;
+        frameManager.setParent(frameManagerPanel);
+
+        WindowManager.addFrameManager(new CtrlTabFrameManager(desktopPane));
+        WindowManager.addFrameManager(new WindowMenuFrameManager());
+    }
+
     /**
      * Initialises the components for this frame.
      *
@@ -458,6 +486,8 @@ public final class MainFrame extends JFrame implements WindowListener,
         frameManagerPanel = new JPanel();
         desktopPane = new JDesktopPane();
         desktopPane.setBackground(new Color(238, 238, 238));
+        
+        initFrameManagers();
 
         initSplitPane(mainSplitPane);
 
@@ -630,32 +660,6 @@ public final class MainFrame extends JFrame implements WindowListener,
                     put(KeyStroke.getKeyStroke(keyStroke.getKeyCode(), 0),
                     KeyEvent.getKeyText(keyStroke.getKeyCode()) + "Action");
         }
-
-        SwingUtilities.getUIActionMap(desktopPane).
-                put("selectNextFrame",
-                new AbstractAction("selectNextFrame") {
-
-            private static final long serialVersionUID = 1;
-
-            /** {@inheritDoc} */
-            @Override
-            public void actionPerformed(final ActionEvent evt) {
-                mainFrameManager.getCtrlTabFrameManager().scrollDown();
-            }
-        });
-
-        SwingUtilities.getUIActionMap(desktopPane).
-                put("selectPreviousFrame",
-                new AbstractAction("selectPreviousFrame") {
-
-            private static final long serialVersionUID = 1;
-
-            /** {@inheritDoc} */
-            @Override
-            public void actionPerformed(final ActionEvent evt) {
-                mainFrameManager.getCtrlTabFrameManager().scrollUp();
-            }
-        });
     }
 
     /** Initialises the menu bar. */

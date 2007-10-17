@@ -25,7 +25,7 @@ package com.dmdirc.ui.dummy;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.MainWindow;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.ui.swing.framemanager.DummyFrameManager;
+import com.dmdirc.ui.dummy.DummyFrameManager;
 
 import java.util.ArrayList;
 import java.util.List;

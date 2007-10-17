@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package com.dmdirc.ui.swing.framemanager;
+package com.dmdirc.ui.dummy;
 
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
