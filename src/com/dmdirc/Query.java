@@ -301,10 +301,12 @@ public final class Query extends MessageTarget implements
      * @param shouldRemove Whether or not we should remove the window from the server.
      */
     public void close(final boolean shouldRemove) {
-        server.getParser().getCallbackManager().delCallback("onPrivateAction", this);
-        server.getParser().getCallbackManager().delCallback("onPrivateMessage", this);
-        server.getParser().getCallbackManager().delCallback("onNickChanged", this);
-        server.getParser().getCallbackManager().delCallback("onQuit", this);
+        if (server.getParser() != null) {
+            server.getParser().getCallbackManager().delCallback("onPrivateAction", this);
+            server.getParser().getCallbackManager().delCallback("onPrivateMessage", this);
+            server.getParser().getCallbackManager().delCallback("onNickChanged", this);
+            server.getParser().getCallbackManager().delCallback("onQuit", this);
+        }
         
         ActionManager.processEvent(CoreActionType.QUERY_CLOSED, null, this);
         
