@@ -824,10 +824,12 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param args The arguments for the message
      */
     public void handleNotification(final String messageType, final Object... args) {
-        String target = configManager.getOption("notifications", messageType, NOTIFICATION_SERVER);
+        String target = configManager.getOption("notifications", messageType,
+                NOTIFICATION_SERVER);
         
         if (target.startsWith("group:")) {
-            target = configManager.getOption("notifications", target.substring(6), NOTIFICATION_SERVER);
+            target = configManager.getOption("notifications", target.substring(6),
+                    NOTIFICATION_SERVER);
         }
         
         if (NOTIFICATION_SERVER.equals(target)) {
@@ -865,6 +867,17 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
             
             best.addLine(messageType, args);
+        } else if (target.startsWith("channel:")) {
+           final String channel = String.format(target.substring(8), args);
+           
+           if (hasChannel(channel)) {
+               getChannel(channel).addLine(messageType, args);
+           } else {
+               addLine(messageType, args);
+               Logger.userError(ErrorLevel.LOW, 
+                       "Invalid notification target for type " + messageType
+                       + ": channel " + channel + " doesn't exist");
+           }
         } else if (!"none".equals(target)) {
             Logger.userError(ErrorLevel.MEDIUM,
                     "Invalid notification target for type " + messageType + ": " + target);
