@@ -124,7 +124,7 @@ public abstract class FrameContainer {
                 ((NotificationListener) listenerList[i + 1])
                         .notificationCleared(getFrame());
              }
-        }        
+        }
     }
 
     /**
@@ -255,4 +255,21 @@ public abstract class FrameContainer {
         }
     }
 
+    /**
+     * Adds a notification listener for this frame container.
+     *
+     * @param listener The listener to be added
+     */
+    public void addNotificationListener(final NotificationListener listener) {
+        listeners.add(NotificationListener.class, listener);
+    }
+
+    /**
+     * Removes a notification listener from this frame container.
+     *
+     * @param listener The listener to be removed
+     */
+    public void removeNotificationListener(final NotificationListener listener) {
+        listeners.remove(NotificationListener.class, listener);
+    }
 }
