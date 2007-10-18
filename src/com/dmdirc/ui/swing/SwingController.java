@@ -34,7 +34,6 @@ import com.dmdirc.config.IdentityManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.ChannelWindow;
-import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.interfaces.PreferencesPanel;
@@ -93,11 +92,6 @@ public final class SwingController implements UIController {
         }
         
         return statusBar;
-    }
-    
-    /** {@inheritDoc} */
-    public FrameManager getFrameManager() {
-        return getMainWindow().getFrameManager();
     }
     
     /** {@inheritDoc} */

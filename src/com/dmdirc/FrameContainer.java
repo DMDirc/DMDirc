@@ -23,7 +23,9 @@
 package com.dmdirc;
 
 import com.dmdirc.config.ConfigManager;
+import com.dmdirc.interfaces.IconChangeListener;
 import com.dmdirc.interfaces.NotificationListener;
+import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.Window;
@@ -214,7 +216,15 @@ public abstract class FrameContainer {
                 Logger.userError(ErrorLevel.LOW, "Unable to maximise window");
             }
         }
-        Main.getUI().getMainWindow().getFrameManager().setSelected(this);
+        
+        final Object[] listenerList = listeners.getListenerList();
+        for (int i = 0; i < listenerList.length; i += 2) {
+            if (listenerList[i] == SelectionListener.class) {
+                ((SelectionListener) listenerList[i + 1])
+                            .selectionChanged(getFrame());
+            }
+        }        
+        
         clearNotification();
 
         if (getServer() != null) {
@@ -254,6 +264,21 @@ public abstract class FrameContainer {
             getFrame().addLine(type, args);
         }
     }
+    
+    /**
+     * Informs icon change listeners that this container's icon has changed.
+     * 
+     * @param newIcon This container's new icon
+     */
+    protected void iconUpdated(final Icon newIcon) {
+        final Object[] listenerList = listeners.getListenerList();
+        for (int i = 0; i < listenerList.length; i += 2) {
+            if (listenerList[i] == IconChangeListener.class) {
+                ((IconChangeListener) listenerList[i + 1])
+                            .iconChanged(getFrame(), newIcon);
+            }
+        }        
+    }
 
     /**
      * Adds a notification listener for this frame container.
@@ -272,4 +297,40 @@ public abstract class FrameContainer {
     public void removeNotificationListener(final NotificationListener listener) {
         listeners.remove(NotificationListener.class, listener);
     }
+    
+    /**
+     * Adds a selection listener for this frame container.
+     *
+     * @param listener The listener to be added
+     */
+    public void addSelectionListener(final SelectionListener listener) {
+        listeners.add(SelectionListener.class, listener);
+    }
+
+    /**
+     * Removes a selection listener from this frame container.
+     *
+     * @param listener The listener to be removed
+     */
+    public void removeSelectionListener(final SelectionListener listener) {
+        listeners.remove(SelectionListener.class, listener);
+    }    
+    
+    /**
+     * Adds an icon change listener for this frame container.
+     *
+     * @param listener The listener to be added
+     */
+    public void addIconChangeListener(final IconChangeListener listener) {
+        listeners.add(IconChangeListener.class, listener);
+    }
+
+    /**
+     * Removes an icon change listener from this frame container.
+     *
+     * @param listener The listener to be removed
+     */
+    public void removeIconChangeListener(final IconChangeListener listener) {
+        listeners.remove(IconChangeListener.class, listener);
+    }       
 }

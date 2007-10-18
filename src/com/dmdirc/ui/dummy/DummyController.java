@@ -29,7 +29,6 @@ import com.dmdirc.Server;
 import com.dmdirc.WritableFrameContainer;
 import com.dmdirc.commandparser.parsers.CommandParser;
 import com.dmdirc.ui.interfaces.ChannelWindow;
-import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.InputWindow;
 import com.dmdirc.ui.interfaces.MainWindow;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
@@ -40,7 +39,6 @@ import com.dmdirc.ui.interfaces.StatusBar;
 import com.dmdirc.ui.interfaces.UIController;
 import com.dmdirc.ui.interfaces.UpdaterDialog;
 import com.dmdirc.ui.interfaces.Window;
-import com.dmdirc.ui.dummy.DummyFrameManager;
 import com.dmdirc.updater.Update;
 
 import java.util.List;
@@ -69,12 +67,7 @@ public final class DummyController implements UIController {
     public StatusBar getStatusBar() {
         return new DummyStatusBar();
     }
-    
-    /** {@inheritDoc} */
-    public FrameManager getFrameManager() {
-        return new DummyFrameManager();
-    }
-    
+       
     /** {@inheritDoc} */
     public ChannelWindow getChannel(final Channel channel) {
         return new DummyChannelWindow(channel);

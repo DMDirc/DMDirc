@@ -55,14 +55,6 @@ public interface UIController {
     StatusBar getStatusBar();
     
     /**
-     * Retrieves the frame manager used by this UI.
-     *
-     * @return This UI's frame manager
-     */
-    @Deprecated
-    FrameManager getFrameManager();
-    
-    /**
      * Creates a channel window for the specified channel.
      *
      * @param channel The channel that is requesting a window be made

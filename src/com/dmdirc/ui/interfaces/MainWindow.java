@@ -50,16 +50,7 @@ public interface MainWindow {
      * @param frame The frame to be activated
      */
     void setActiveFrame(final Window frame);
-    
-    /**
-     * Retrieves the frame manager that's currently in use.
-     *
-     * @return The current frame manager
-     * @deprecated Frame Managers should interface via WindowManager.
-     */
-    @Deprecated
-    FrameManager getFrameManager();
-    
+        
     /**
      * Retrieves the application icon.
      *

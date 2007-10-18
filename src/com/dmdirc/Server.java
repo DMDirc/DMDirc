@@ -270,7 +270,8 @@ public final class Server extends WritableFrameContainer implements Serializable
                 serverInfo.getSSL() ? "secure-server" : "server");
         if (window != null) {
             window.setFrameIcon(icon);
-            Main.getUI().getMainWindow().getFrameManager().iconUpdated(this);
+            
+            iconUpdated(icon);
         }
     }
     

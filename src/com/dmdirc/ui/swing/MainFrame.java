@@ -284,13 +284,6 @@ public final class MainFrame extends JFrame implements WindowListener,
         }
     }
 
-    /** {@inheritDoc}. */
-    @Override
-    @Deprecated
-    public FrameManager getFrameManager() {
-        return mainFrameManager;
-    }
-
     /**
      * Returns the size of the frame manager.
      *
