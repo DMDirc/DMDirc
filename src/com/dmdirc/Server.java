@@ -124,9 +124,6 @@ public final class Server extends WritableFrameContainer implements Serializable
     /** A list of outstanding invites. */
     private final List<Invite> invites = new ArrayList<Invite>();
     
-    /** A list of listeners for this server's events. */
-    private final EventListenerList listeners = new EventListenerList();
-    
     /**
      * Creates a new instance of Server.
      *

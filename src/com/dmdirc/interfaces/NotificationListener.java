@@ -22,32 +22,31 @@
 
 package com.dmdirc.interfaces;
 
-import com.dmdirc.Invite;
-import com.dmdirc.Server;
+import com.dmdirc.ui.interfaces.Window;
 
+import java.awt.Color;
 import java.util.EventListener;
 
 /**
  * Defines the methods that should be implemented by classes which wish to
- * receive information about invites.
- * 
+ * receive information about notification changes.
+ *
  * @author Chris
  */
-public interface InviteListener extends EventListener {
-    
+public interface NotificationListener extends EventListener {
+
     /**
-     * Called when a new invite has been received.
-     * 
-     * @param server The server the invite was received by
-     * @param invite The invite that was received
+     * Called when the notification colour has been changed.
+     *
+     * @param window The window whose notification has changed
+     * @param colour The new colour of the notification
      */
-    void inviteReceived(final Server server, final Invite invite);
-    
+    void notificationSet(final Window window, final Color colour);
+
     /**
-     * Called when an invite has expired or has been used.
-     * 
-     * @param server The server the invite was initially received by
-     * @param invite The invite that has expired
+     * Called when a notification has been cleared.
+     *
+     * @param window The window whose notification has been cleared
      */
-    void inviteExpired(final Server server, final Invite invite);
+    void notificationCleared(final Window window);
 }
