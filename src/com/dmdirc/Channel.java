@@ -25,6 +25,7 @@ package com.dmdirc;
 import com.dmdirc.actions.ActionManager;
 import com.dmdirc.actions.CoreActionType;
 import com.dmdirc.commandparser.CommandManager;
+import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.ConfigManager;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
@@ -71,7 +72,7 @@ public final class Channel extends MessageTarget implements
         IChannelMessage, IChannelGotNames, IChannelTopic, IChannelJoin,
         IChannelPart, IChannelKick, IChannelQuit, IChannelAction,
         IChannelNickChanged, IChannelModeChanged, IChannelUserModeChanged,
-        IChannelCTCP, IAwayStateOther, Serializable {
+        IChannelCTCP, IAwayStateOther, ConfigChangeListener, Serializable {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -108,6 +109,12 @@ public final class Channel extends MessageTarget implements
     /** Whether we're in this channel or not. */
     private boolean onChannel;
     
+    /** Whether we should send WHO requests for this channel. */
+    private volatile boolean sendWho;
+    
+    /** Whether we should show mode prefixes in text. */
+    private volatile boolean showModePrefix;
+    
     /**
      * Creates a new instance of Channel.
      * @param newServer The server object that this channel belongs to
@@ -122,6 +129,11 @@ public final class Channel extends MessageTarget implements
         
         configManager = new ConfigManager(server.getIrcd(), server.getNetwork(),
                 server.getName(), channelInfo.getName());
+        
+        configManager.addChangeListener("channel", this);
+        
+        sendWho = configManager.getOptionBool("channel", "sendwho", false);
+        showModePrefix = configManager.getOptionBool("channel", "showmodeprefix", false);
         
         icon = IconManager.getIconManager().getIcon("channel");
         
@@ -679,7 +691,7 @@ public final class Channel extends MessageTarget implements
      * if there are no (known) modes.
      */
     private String getModes(final ChannelClientInfo channelClient) {
-        if (channelClient == null || !configManager.getOptionBool("channel", "showmodeprefix", false)) {
+        if (channelClient == null || !showModePrefix) {
             return "";
         } else {
             return channelClient.getImportantModePrefix();
@@ -729,9 +741,21 @@ public final class Channel extends MessageTarget implements
     
     /**
      * Returns this channel's name.
+     * 
      * @return A string representation of this channel (i.e., its name)
      */
+    @Override
     public String toString() {
         return channelInfo.getName();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void configChanged(final String domain, final String key) {
+        if ("sendwho".equals(key)) {
+            sendWho = configManager.getOptionBool("channel", "sendwho", false);
+        } else if ("showmodeprefix".equals(key)) {
+            showModePrefix = configManager.getOptionBool("channel", "showmodeprefix", false);
+        }
     }
 }
