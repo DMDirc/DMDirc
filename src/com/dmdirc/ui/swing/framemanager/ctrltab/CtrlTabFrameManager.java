@@ -23,11 +23,9 @@
 package com.dmdirc.ui.swing.framemanager.ctrltab;
 
 import com.dmdirc.FrameContainer;
-import com.dmdirc.Main;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
-import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.TreeScroller;
 import com.dmdirc.ui.swing.framemanager.tree.TreeViewModel;
 

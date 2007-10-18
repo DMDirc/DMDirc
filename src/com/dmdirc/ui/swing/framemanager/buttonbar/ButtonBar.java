@@ -26,6 +26,7 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.FrameContainerComparator;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.Window;
@@ -61,14 +62,14 @@ import javax.swing.SwingConstants;
  * @author chris
  */
 public final class ButtonBar implements FrameManager, ActionListener,
-        ComponentListener, Serializable {
+        ComponentListener, Serializable, NotificationListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 1;
+    private static final long serialVersionUID = 2;
     
     /** A map of parent containers to their respective windows. */
     private final Map<FrameContainer, List<FrameContainer>> windows;
@@ -235,6 +236,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
         addButton(window);
         
         relayout();
+        window.addNotificationListener(this);
     }
     
     /** {@inheritDoc} */
@@ -242,6 +244,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
         windows.remove(window);
         
         relayout();
+        window.removeNotificationListener(this);
     }
         
     /** {@inheritDoc} */
@@ -250,6 +253,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
         addButton(window);
         
         relayout();
+        window.addNotificationListener(this);
     }
     
     /** {@inheritDoc} */
@@ -257,6 +261,7 @@ public final class ButtonBar implements FrameManager, ActionListener,
         windows.get(parent).remove(window);
         
         relayout();
+        window.removeNotificationListener(this);
     }
     
     /** {@inheritDoc} */
@@ -325,4 +330,18 @@ public final class ButtonBar implements FrameManager, ActionListener,
         // Do nothing
     }
     
+    
+    /** {@inheritDoc} */
+    @Override
+    public void notificationSet(final Window window, final Color colour) {
+        if (buttons.containsKey(window)) {
+            buttons.get(window.getContainer()).setForeground(colour);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void notificationCleared(final Window window) {
+        notificationSet(window, window.getContainer().getNotification());
+    }
 }

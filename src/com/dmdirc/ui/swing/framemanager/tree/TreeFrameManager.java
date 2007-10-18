@@ -25,9 +25,11 @@ package com.dmdirc.ui.swing.framemanager.tree;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.NotificationListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
+import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.TreeScroller;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 
@@ -66,14 +68,14 @@ import javax.swing.tree.TreeSelectionModel;
  */
 public final class TreeFrameManager implements FrameManager, MouseListener,
         ActionListener, MouseMotionListener, AdjustmentListener, Serializable,
-        ConfigChangeListener, TreeSelectionListener {
+        ConfigChangeListener, TreeSelectionListener, NotificationListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 3;
+    private static final long serialVersionUID = 4;
     
     /** display tree. */
     private final JTree tree;
@@ -247,6 +249,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
             }
             nodes.remove(window);
             labels.remove(node);
+            window.removeNotificationListener(this);
         }
     }
     
@@ -265,6 +268,7 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         tree.expandPath(new TreePath(node.getPath()).getParentPath());
         final Rectangle view = tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
         tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
+        window.addNotificationListener(this);
     }
     
     /** {@inheritDoc} */
@@ -446,5 +450,18 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         ((FrameContainer )((DefaultMutableTreeNode) e.getPath().
                 getLastPathComponent()).getUserObject()).activateFrame();
     }
-    
+
+    /** {@inheritDoc} */
+    @Override
+    public void notificationSet(final Window window, final Color colour) {
+        notificationColours.put(window.getContainer(), colour);
+        tree.repaint();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void notificationCleared(final Window window) {
+        notificationColours.remove(window.getContainer());
+        tree.repaint();
+    }
 }
