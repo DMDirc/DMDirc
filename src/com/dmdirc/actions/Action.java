@@ -22,22 +22,14 @@
 
 package com.dmdirc.actions;
 
-import com.dmdirc.Main;
-import com.dmdirc.ServerManager;
-import com.dmdirc.WritableFrameContainer;
-import com.dmdirc.commandparser.parsers.CommandParser;
-import com.dmdirc.commandparser.parsers.GlobalCommandParser;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
-import com.dmdirc.ui.interfaces.InputWindow;
-import com.dmdirc.ui.interfaces.Window;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -47,7 +39,7 @@ import java.util.Properties;
  *
  * @author chris
  */
-public class Action implements Serializable {
+public class Action extends ActionModel implements Serializable {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -55,31 +47,13 @@ public class Action implements Serializable {
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
-    /** The group this action belongs to. */
-    private String group;
-    
-    /** The name of this action. */
-    private String name;
-    
+       
     /** The file containing this action. */
     private File file;
     
     /** The properties read for this action. */
     private Properties properties;
-    
-    /** The ActionTypes that trigger this action. */
-    private ActionType[] triggers;
-    
-    /** The commands to execute if this action is triggered. */
-    private String[] response;
-    
-    /** The change that should be made to the format string, if any. */
-    private String newFormat = null;
-    
-    /** The conditions for this action. */
-    private List<ActionCondition> conditions = new ArrayList<ActionCondition>();
-    
+        
     /**
      * Creates a new instance of Action. The group and name specified must
      * be the group and name of a valid action already saved to disk.
@@ -88,8 +62,7 @@ public class Action implements Serializable {
      * @param name The name of the action
      */
     public Action(final String group, final String name) {
-        this.group = group;
-        this.name = name;
+        super(group, name);
         
         final String fs = System.getProperty("file.separator");
         final String location = ActionManager.getDirectory() + group + fs + name;
@@ -124,12 +97,7 @@ public class Action implements Serializable {
     public Action(final String group, final String name,
             final ActionType[] triggers, final String[] response,
             final List<ActionCondition> conditions, final String newFormat) {
-        this.group = group;
-        this.name = name;
-        this.triggers = triggers.clone();
-        this.response = response.clone();
-        this.conditions = conditions;
-        this.newFormat = newFormat;
+        super(group, name, triggers, response, conditions, newFormat);
         
         final String fs = System.getProperty("file.separator");
         final String dir = ActionManager.getDirectory() + group + fs;
@@ -364,23 +332,29 @@ public class Action implements Serializable {
      * Renames this action to the specified new name.
      *
      * @param newName The new name for this action
+     * @deprecated Use setName instead
      */
+    @Deprecated
     public void rename(final String newName) {
+        setName(newName);
+    }
+    
+    /** {@inheritDoc} */
+    @Override
+    public void setName(final String newName) {
+        super.setName(newName);
+        
         file.delete();
         
         file = new File(file.getParent() + System.getProperty("file.separator") + newName);
-        name = newName;
         
         save();
-    }
+    }    
     
-    /**
-     * Sets the group of this action.
-     *
-     * @param newGroup The new group for this action
-     */
+    /** {@inheritDoc} */
+    @Override
     public void setGroup(final String newGroup) {
-        group = newGroup;
+        super.setGroup(newGroup);
         
         final String fs = System.getProperty("file.separator");
         final String location = ActionManager.getDirectory() + group + fs + name;
@@ -398,149 +372,13 @@ public class Action implements Serializable {
         file.delete();
     }
     
-    /**
-     * Retrieves a list of this action's conditions.
-     *
-     * @return A list of this action's conditions
-     */
-    public List<ActionCondition> getConditions() {
-        return conditions;
-    }
-    
-    /**
-     * Sets this action's conditions.
-     *
-     * @param conditions A list of conditions to use
-     */
-    public void setConditions(final List<ActionCondition> conditions) {
-        this.conditions = conditions;
-    }
-    
-    /**
-     * Retrieves this action's triggers.
-     *
-     * @return The triggers used by this action
-     */
-    public ActionType[] getTriggers() {
-        return triggers.clone();
-    }
-    
-    /**
-     * Sets this action's triggers.
-     *
-     * @param triggers The new triggers to use
-     */
-    public void setTriggers(final ActionType[] triggers) {
-        this.triggers = triggers.clone();
-        
-        ActionManager.unregisterAction(this);
-        ActionManager.registerAction(this);
-    }
-    
-    /**
-     * Retrieves this action's new format setting.
-     *
-     * @return The format that this action will use, or null if no change
-     */
-    public String getNewFormat() {
-        return newFormat;
-    }
-    
-    /**
-     * Sets this action's new format setting.
-     *
-     * @param newFormat The new 'new format' setting
-     */
-    public void setNewFormat(final String newFormat) {
-        this.newFormat = newFormat;
-    }
-    
-    /**
-     * Retrieves this action's response.
-     *
-     * @return The commands that will be executed if this action is triggered
-     */
-    public String[] getResponse() {
-        return response.clone();
-    }
-    
-    /**
-     * Sets this action's response.
-     *
-     * @param response The new response to use
-     */
-    public void setResponse(final String[] response) {
-        this.response = response.clone();
-    }
-    
-    /**
-     * Retrieves this action's group name.
-     *
-     * @return This action's group name
-     */
-    public String getGroup() {
-        return group;
-    }
-    
-    /**
-     * Retrieves this action's name.
-     *
-     * @return This action's name
-     */
-    public String getName() {
-        return name;
-    }
-    
-    /**
-     * Triggers this action.
-     *
-     * @param format The format of the message that's going to be displayed.
-     * @param arguments The arguments from the action that caused this trigger.
-     */
-    public void trigger(final StringBuffer format, final Object ... arguments) {
-        final ActionSubstitutor sub = new ActionSubstitutor(triggers[0]);
-        
-        for (ActionCondition condition : conditions) {
-            if (!condition.test(sub, arguments)) {
-                return;
-            }
-        }
-        
-        final Window active = Main.getUI().getMainWindow().getActiveFrame();
-        InputWindow cw;
-        CommandParser cp = null;
-        
-        if (arguments.length > 0 && arguments[0] instanceof WritableFrameContainer) {
-            cw = ((WritableFrameContainer) arguments[0]).getFrame();
-        } else if (active instanceof InputWindow) {
-            cw = (InputWindow) Main.getUI().getMainWindow().getActiveFrame();
-        } else if (ServerManager.getServerManager().numServers() > 0) {
-            cw = ServerManager.getServerManager().getServers().get(0).getFrame();
-        } else {
-            cw = null;
-            cp = GlobalCommandParser.getGlobalCommandParser();
-        }
-        
-        if (cw != null) {
-            cp = cw.getCommandParser();
-        }
-        
-        for (String command : response) {
-            cp.parseCommand(cw, new ActionSubstitutor(triggers[0]).doSubstitution(command, arguments));
-        }
-        
-        if (newFormat != null && format != null) {
-            format.setLength(0);
-            format.append(newFormat);
-        }
-    }
-    
     /** {@inheritDoc} */
+    @Override
     public String toString() {
-        return "[name=" + group + "/" + name + ", triggers="
-                + Arrays.toString(triggers) + ", response="
-                + Arrays.toString(response) + ", "
-                + conditions + ", format='" + newFormat + "']";
+        final String parent = super.toString();
+        
+        return parent.substring(0, parent.length() - 1)
+                + ",file=" + file + "]";
     }
     
 }

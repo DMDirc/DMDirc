@@ -72,7 +72,7 @@ public final class ActionManager {
     /** Indicates whether or not user actions should be killed (not processed). */
     private static boolean killSwitch
             = IdentityManager.getGlobalConfig().getOptionBool("actions", "killswitch", false);
-    
+   
     /** Creates a new instance of ActionManager. */
     private ActionManager() {
         // Shouldn't be instansiated
@@ -299,6 +299,17 @@ public final class ActionManager {
                 map.getValue().remove(action);
             }
         }
+    }
+    
+    /**
+     * Reregisters the specified action. Should be used when the action's
+     * triggers change.
+     * 
+     * @param action The action to be reregistered
+     */
+    public static void reregisterAction(final Action action) {
+        unregisterAction(action);
+        reregisterAction(action);
     }
     
     /**
