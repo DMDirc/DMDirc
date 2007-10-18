@@ -338,6 +338,7 @@ public final class Formatter {
         defaultProperties.setProperty("queryQuitReason", colour + "2* %1$s has quit IRC (%4$s" + stop + ").");
         defaultProperties.setProperty("queryMessageHighlight", colour + "4<%1$s> %4$s");
         defaultProperties.setProperty("queryActionHighlight", colour + "6* %1$s %4$s");
+        defaultProperties.setProperty("inviteReceived", colour + "2* You have been invited to %4$s by %1$s.");
         
         // Type: Private event
         //    1: User nickname
@@ -388,14 +389,6 @@ public final class Formatter {
         //    2: Command name
         //    3: Arguments
         defaultProperties.setProperty("commandUsage", colour + "7Usage: %1$s%2$s %3$s");
-        
-        // Type: New server events
-        //    1: Server
-        //    2: Source nickname
-        //    3: Source ident
-        //    4: Source host
-        //    5: Message/data
-        defaultProperties.setProperty("inviteReceived", colour + "2* You have been invited to %5$s by %2$s.");
         
         // Type: Numerical data
         defaultProperties.setProperty("numeric_301", "%4$s is away: %5$s");

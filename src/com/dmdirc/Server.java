@@ -54,8 +54,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import javax.swing.event.EventListenerList;
-
 /**
  * The Server class represents the client's view of a server. It maintains
  * a list of all channels, queries, etc, and handles parser callbacks pertaining
@@ -268,7 +266,8 @@ public final class Server extends WritableFrameContainer implements Serializable
      * Updates this server's icon.
      */
     private void updateIcon() {
-        icon = IconManager.getIconManager().getIcon(serverInfo.getSSL() ? "secure-server" : "server");
+        icon = IconManager.getIconManager().getIcon(
+                serverInfo.getSSL() ? "secure-server" : "server");
         if (window != null) {
             window.setFrameIcon(icon);
             Main.getUI().getMainWindow().getFrameManager().iconUpdated(this);
@@ -794,9 +793,14 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void doNotification(final String messageType,
             final ActionType actionType, final Object... args) {
         final List<Object> messageArgs = new ArrayList<Object>();
+        final List<Object> actionArgs = new ArrayList<Object>();
         final StringBuffer buffer = new StringBuffer(messageType);
         
+        actionArgs.add(this);
+        
         for (Object arg : args) {
+            actionArgs.add(arg);
+            
             if (arg instanceof ClientInfo) {
                 final ClientInfo clientInfo = (ClientInfo) arg;
                 messageArgs.add(clientInfo.getNickname());
@@ -807,7 +811,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
         }
         
-        ActionManager.processEvent(actionType, buffer, args);
+        ActionManager.processEvent(actionType, buffer, actionArgs.toArray());
         
         handleNotification(messageType, messageArgs.toArray());
     }
@@ -847,7 +851,8 @@ public final class Server extends WritableFrameContainer implements Serializable
             WritableFrameContainer best = this;
             long besttime = 0;
             
-            final List<WritableFrameContainer> containers = new ArrayList<WritableFrameContainer>();
+            final List<WritableFrameContainer> containers
+                    = new ArrayList<WritableFrameContainer>();
             containers.addAll(channels.values());
             containers.addAll(queries.values());
             
@@ -856,7 +861,8 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
             
             for (WritableFrameContainer container: containers) {
-                final long time = container.getFrame().getCommandParser().getCommandTime(command);
+                final long time
+                        = container.getFrame().getCommandParser().getCommandTime(command);
                 if (time > besttime) {
                     besttime = time;
                     best = container;
@@ -882,24 +888,6 @@ public final class Server extends WritableFrameContainer implements Serializable
     }
     
     /**
-     * Called when a private CTCP is received.
-     *
-     * @param type The type of the CTCP
-     * @param message The body (if any) of the CTCP
-     * @param host The host of the user that sent the CTCP
-     */
-    public void onPrivateCTCP(final String type, final String message, final String host) {
-        final String[] parts = ClientInfo.parseHostFull(host);
-        
-        ActionManager.processEvent(CoreActionType.SERVER_CTCP, null, this,
-                parser.getClientInfoOrFake(host), type, message);
-        
-        handleNotification("privateCTCP", parts[0], parts[1], parts[2], type, message);
-        
-        sendCTCPReply(parts[0], type, message);
-    }
-    
-    /**
      * Replies to an incoming CTCP message.
      *
      * @param source The source of the message
@@ -915,37 +903,6 @@ public final class Server extends WritableFrameContainer implements Serializable
         } else if (type.equalsIgnoreCase("CLIENTINFO")) {
             parser.sendCTCPReply(source, "CLIENTINFO", "VERSION PING CLIENTINFO");
         }
-    }
-    
-    /**
-     * Called when a private CTCP reply is received.
-     *
-     * @param type The type of CTCPR
-     * @param message The body of the CTCPR
-     * @param host The host of the user who is sending the CTCPR
-     */
-    public void onPrivateCTCPReply(final String type, final String message, final String host) {
-        final String[] parts = ClientInfo.parseHostFull(host);
-        
-        ActionManager.processEvent(CoreActionType.SERVER_CTCPR, null, this,
-                parser.getClientInfoOrFake(host), type, message);
-        
-        handleNotification("privateCTCPreply", parts[0], parts[1], parts[2], type, message);
-    }
-    
-    /**
-     * Called when a private notice is received.
-     *
-     * @param message The message content of the notice
-     * @param host The host of the user who sent the notice
-     */
-    public void onPrivateNotice(final String message, final String host) {
-        final String[] parts = ClientInfo.parseHostFull(host);
-        
-        ActionManager.processEvent(CoreActionType.SERVER_NOTICE, null, this,
-                parser.getClientInfoOrFake(host), message);
-        
-        handleNotification("privateNotice", parts[0], parts[1], parts[2], message);
     }
     
     /**
@@ -968,7 +925,8 @@ public final class Server extends WritableFrameContainer implements Serializable
             final String[] alts = profile.getOption(DOMAIN_PROFILE, "altnicks").split("\n");
             int offset = 0;
             
-            if (!parser.equalsIgnoreCase(lastNick, profile.getOption(DOMAIN_PROFILE, "nickname"))) {
+            if (!parser.equalsIgnoreCase(lastNick,
+                    profile.getOption(DOMAIN_PROFILE, "nickname"))) {
                 for (String alt : alts) {
                     offset++;
                     if (parser.equalsIgnoreCase(alt, lastNick)) {
@@ -996,32 +954,6 @@ public final class Server extends WritableFrameContainer implements Serializable
         configManager = new ConfigManager(ircdType, networkName, getName());
         
         updateIgnoreList();
-    }
-    
-    /**
-     * Called when we start receiving the server's MOTD.
-     *
-     * @param data The data sent by the server
-     */
-    public void onMOTDStart(final String data) {
-        final StringBuffer buffer = new StringBuffer("motdStart");
-        
-        ActionManager.processEvent(CoreActionType.SERVER_MOTDSTART, buffer, this, data);
-        
-        addLine(buffer, data);
-    }
-    
-    /**
-     * Called when we receive a single line of the server's MOTD.
-     *
-     * @param data The data sent by the server
-     */
-    public void onMOTDLine(final String data) {
-        final StringBuffer buffer = new StringBuffer("motdLine");
-        
-        ActionManager.processEvent(CoreActionType.SERVER_MOTDLINE, buffer, this, data);
-        
-        addLine(buffer, data);
     }
     
     /**
@@ -1061,57 +993,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         ActionManager.processEvent(CoreActionType.SERVER_NUMERIC, null, this,
                 Integer.valueOf(numeric), tokens);
     }
-    
-    /**
-     * Called when we receive an auth notice.
-     *
-     * @param data The content of the notice
-     */
-    public void onNoticeAuth(final String data) {
-        handleNotification("authNotice", data);
-        
-        ActionManager.processEvent(CoreActionType.SERVER_AUTHNOTICE, null, this,
-                data);
-    }
-    
-    /**
-     * Called when we receive an unknown notice.
-     *
-     * @param message The content of the notice
-     * @param target The destination of this notice (such as $*)
-     * @param host The host of the user that sent the notice
-     */
-    public void onUnknownNotice(final String message,
-            final String target, final String host) {
-        handleNotification("unknownNotice", host, target, message);
-        
-        ActionManager.processEvent(CoreActionType.SERVER_UNKNOWNNOTICE, null, this,
-                host, target, message);
-    }
-    
-    /**
-     * Called when we receive a user mode change.
-     *
-     * @param client The updated client object for the victim (us)
-     * @param setBy The host of the user that performed the change
-     * @param modes The modes that were changed
-     */
-    public void onUserModeChanged(final ClientInfo client,
-            final String setBy, final String modes) {
-        Logger.doAssertion(client == parser.getMyself());
-        
-        final ClientInfo setter = parser.getClientInfoOrFake(setBy);
-        final String[] setterParts = ClientInfo.parseHostFull(setBy);
-        
-        final StringBuffer format = new StringBuffer("userModeChanged");
-        
-        ActionManager.processEvent(CoreActionType.SERVER_USERMODES, format,
-                this, setter, modes);
-        
-        addLine(format, setterParts[0], setterParts[1], setterParts[2],
-                modes);
-    }
-    
+              
     /**
      * Called when our away state changes.
      *
@@ -1204,7 +1086,8 @@ public final class Server extends WritableFrameContainer implements Serializable
      * Schedules a reconnect attempt to be performed after a user-defiend delay.
      */
     private void doDelayedReconnect() {
-        final int delay = Math.max(1, configManager.getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5));
+        final int delay = Math.max(1,
+                configManager.getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5));
         
         handleNotification("connectRetry", getName(), delay);
         
@@ -1235,7 +1118,8 @@ public final class Server extends WritableFrameContainer implements Serializable
         ActionManager.processEvent(CoreActionType.SERVER_NOPING, null, this,
                 Long.valueOf(parser.getPingTime(false)));
         
-        if (parser.getPingTime(false) >= configManager.getOptionInt(DOMAIN_SERVER, "pingtimeout", 60000)) {
+        if (parser.getPingTime(false) >=
+                configManager.getOptionInt(DOMAIN_SERVER, "pingtimeout", 60000)) {
             handleNotification("stonedServer", getName());
             reconnect();
         }
@@ -1271,7 +1155,8 @@ public final class Server extends WritableFrameContainer implements Serializable
                 Logger.appError(ErrorLevel.LOW, "No mode alias for mode +" + mode,
                         new Exception("No mode alias for mode +" + mode + "\n" // NOPMD
                         + "Network: " + parser.getNetworkName() + "\n"
-                        + "IRCd: " + parser.getIRCD(false) + " (" + parser.getIRCD(true) + ")\n\n"));
+                        + "IRCd: " + parser.getIRCD(false)
+                        + " (" + parser.getIRCD(true) + ")\n\n"));
             }
         }
     }

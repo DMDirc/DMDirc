@@ -135,7 +135,11 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     public void onPrivateCTCP(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
         checkParser(tParser);
-        owner.onPrivateCTCP(sType, sMessage, sHost);
+
+        owner.doNotification("privateCTCP", CoreActionType.SERVER_CTCP,
+                tParser.getClientInfoOrFake(sHost), sType, sMessage);        
+        
+        owner.sendCTCPReply(ClientInfo.parseHost(sHost), sType, sMessage);
     }
     
     /** {@inheritDoc} */
@@ -143,7 +147,9 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     public void onPrivateCTCPReply(final IRCParser tParser, final String sType,
             final String sMessage, final String sHost) {
         checkParser(tParser);
-        owner.onPrivateCTCPReply(sType, sMessage, sHost);
+        
+        owner.doNotification("privateCTCPreply", CoreActionType.SERVER_CTCPR,
+                tParser.getClientInfoOrFake(sHost), sType, sMessage);
     }
     
     /** {@inheritDoc} */
@@ -158,21 +164,25 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     public void onPrivateNotice(final IRCParser tParser, final String sMessage,
             final String sHost) {
         checkParser(tParser);
-        owner.onPrivateNotice(sMessage, sHost);
+        
+        owner.doNotification("privateNotice", CoreActionType.SERVER_NOTICE,
+                tParser.getClientInfoOrFake(sHost), sMessage);
     }
     
     /** {@inheritDoc} */
     @Override
     public void onMOTDStart(final IRCParser tParser, final String sData) {
         checkParser(tParser);
-        owner.onMOTDStart(sData);
+        
+        owner.doNotification("motdStart", CoreActionType.SERVER_MOTDSTART, sData);
     }
     
     /** {@inheritDoc} */
     @Override
     public void onMOTDLine(final IRCParser tParser, final String sData) {
         checkParser(tParser);
-        owner.onMOTDLine(sData);
+        
+        owner.doNotification("motdLine", CoreActionType.SERVER_MOTDLINE, sData);
     }
     
     /** {@inheritDoc} */
@@ -259,7 +269,8 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     @Override
     public void onNoticeAuth(final IRCParser tParser, final String sData) {
         checkParser(tParser);
-        owner.onNoticeAuth(sData);
+        
+        owner.doNotification("authNotice", CoreActionType.SERVER_AUTHNOTICE, sData);
     }
     
     /** {@inheritDoc} */
@@ -267,7 +278,9 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     public void onUnknownNotice(final IRCParser tParser, final String sMessage,
             final String sTarget, final String sHost) {
         checkParser(tParser);
-        owner.onUnknownNotice(sMessage, sTarget, sHost);
+
+        owner.doNotification("unknownNotice", CoreActionType.SERVER_UNKNOWNNOTICE,
+                sHost, sTarget, sMessage);
     }
     
     /** {@inheritDoc} */
@@ -275,7 +288,9 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
     public void onUserModeChanged(final IRCParser tParser,
             final ClientInfo cClient, final String sSetBy, final String sModes) {
         checkParser(tParser);
-        owner.onUserModeChanged(cClient, sSetBy, sModes);
+        
+        owner.doNotification("userModeChanged", CoreActionType.SERVER_USERMODES,
+                tParser.getClientInfoOrFake(sSetBy), sModes);
     }
 
     /** {@inheritDoc} */
@@ -287,6 +302,6 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
         owner.addInvite(new Invite(owner, channel, userHost));
         owner.doNotification("inviteReceived",
                 CoreActionType.SERVER_INVITERECEIVED, 
-                owner, tParser.getClientInfoOrFake(userHost), channel);
+                tParser.getClientInfoOrFake(userHost), channel);
     }
 }
