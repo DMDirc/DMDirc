@@ -788,6 +788,10 @@ public final class MainFrame extends JFrame implements WindowListener,
                 pluginList.put(mi, plugin.getClass().getName());
             }
         }
+        
+        if (menu.getItemCount() == 0) {
+            menu.setEnabled(false);
+        }
     }
 
     /**
