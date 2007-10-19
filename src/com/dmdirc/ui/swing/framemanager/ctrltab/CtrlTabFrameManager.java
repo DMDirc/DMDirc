@@ -23,9 +23,11 @@
 package com.dmdirc.ui.swing.framemanager.ctrltab;
 
 import com.dmdirc.FrameContainer;
+import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
+import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.TreeScroller;
 import com.dmdirc.ui.swing.framemanager.tree.TreeViewModel;
 
@@ -52,14 +54,14 @@ import javax.swing.tree.TreeSelectionModel;
  * Manages the ctrl tab window list.
  */
 public final class CtrlTabFrameManager implements FrameManager, Serializable,
-        TreeSelectionListener {
+        TreeSelectionListener, SelectionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     /** Node storage, used for adding and deleting nodes correctly. */
     private final Map<FrameContainer, DefaultMutableTreeNode> nodes;
     /** Label storage. */
@@ -186,6 +188,7 @@ public final class CtrlTabFrameManager implements FrameManager, Serializable,
             }
             nodes.remove(window);
             labels.remove(node);
+            window.removeSelectionListener(this);
         }
     }
 
@@ -202,6 +205,7 @@ public final class CtrlTabFrameManager implements FrameManager, Serializable,
         labels.put(node, new JLabel());
         node.setUserObject(window);
         model.insertNodeInto(node, parent);
+        window.addSelectionListener(this);
     }
 
     /** {@inheritDoc} */
@@ -225,5 +229,14 @@ public final class CtrlTabFrameManager implements FrameManager, Serializable,
     public void valueChanged(final TreeSelectionEvent e) {
         ((FrameContainer) ((DefaultMutableTreeNode) e.getPath().
                 getLastPathComponent()).getUserObject()).activateFrame();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectionChanged(final Window window) {
+        final TreeNode[] path = model.getPathToRoot(nodes.get(window.getContainer()));
+        if (path != null && path.length > 0) {
+            selectionModel.setSelectionPath(new TreePath(path));
+        }
     }
 }

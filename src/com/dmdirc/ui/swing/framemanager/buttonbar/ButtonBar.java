@@ -26,7 +26,9 @@ import com.dmdirc.FrameContainer;
 import com.dmdirc.FrameContainerComparator;
 import com.dmdirc.Main;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.IconChangeListener;
 import com.dmdirc.interfaces.NotificationListener;
+import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.FramemanagerPosition;
 import com.dmdirc.ui.interfaces.Window;
@@ -50,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
@@ -62,14 +65,15 @@ import javax.swing.SwingConstants;
  * @author chris
  */
 public final class ButtonBar implements FrameManager, ActionListener,
-        ComponentListener, Serializable, NotificationListener {
+        ComponentListener, Serializable, NotificationListener,
+        SelectionListener, IconChangeListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 2;
+    private static final long serialVersionUID = 3;
     
     /** A map of parent containers to their respective windows. */
     private final Map<FrameContainer, List<FrameContainer>> windows;
@@ -237,6 +241,8 @@ public final class ButtonBar implements FrameManager, ActionListener,
         
         relayout();
         window.addNotificationListener(this);
+        window.addSelectionListener(this);
+        window.addIconChangeListener(this);
     }
     
     /** {@inheritDoc} */
@@ -245,6 +251,8 @@ public final class ButtonBar implements FrameManager, ActionListener,
         
         relayout();
         window.removeNotificationListener(this);
+        window.removeIconChangeListener(this);
+        window.removeSelectionListener(this);
     }
         
     /** {@inheritDoc} */
@@ -254,6 +262,8 @@ public final class ButtonBar implements FrameManager, ActionListener,
         
         relayout();
         window.addNotificationListener(this);
+        window.addSelectionListener(this);
+        window.addIconChangeListener(this);
     }
     
     /** {@inheritDoc} */
@@ -262,6 +272,8 @@ public final class ButtonBar implements FrameManager, ActionListener,
         
         relayout();
         window.removeNotificationListener(this);
+        window.removeIconChangeListener(this);
+        window.removeSelectionListener(this);
     }
     
     /** {@inheritDoc} */
@@ -343,5 +355,25 @@ public final class ButtonBar implements FrameManager, ActionListener,
     @Override
     public void notificationCleared(final Window window) {
         notificationSet(window, window.getContainer().getNotification());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectionChanged(final Window window) {
+        if (selected != null && buttons.containsKey(selected)) {
+            buttons.get(selected).setSelected(false);
+        }
+        
+        selected = window.getContainer();
+        
+        if (buttons.containsKey(window.getContainer())) {
+            buttons.get(window.getContainer()).setSelected(true);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void iconChanged(final Window window, final Icon icon) {
+        buttons.get(window.getContainer()).setIcon(window.getContainer().getIcon());
     }
 }

@@ -25,7 +25,9 @@ package com.dmdirc.ui.swing.framemanager.tree;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.config.ConfigChangeListener;
 import com.dmdirc.config.IdentityManager;
+import com.dmdirc.interfaces.IconChangeListener;
 import com.dmdirc.interfaces.NotificationListener;
+import com.dmdirc.interfaces.SelectionListener;
 import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
@@ -48,6 +50,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -68,14 +71,15 @@ import javax.swing.tree.TreeSelectionModel;
  */
 public final class TreeFrameManager implements FrameManager, MouseListener,
         ActionListener, MouseMotionListener, AdjustmentListener, Serializable,
-        ConfigChangeListener, TreeSelectionListener, NotificationListener {
+        ConfigChangeListener, TreeSelectionListener, NotificationListener,
+        IconChangeListener, SelectionListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
-    private static final long serialVersionUID = 4;
+    private static final long serialVersionUID = 5;
     
     /** display tree. */
     private final JTree tree;
@@ -250,6 +254,8 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
             nodes.remove(window);
             labels.remove(node);
             window.removeNotificationListener(this);
+            window.removeSelectionListener(this);
+            window.removeIconChangeListener(this);
         }
     }
     
@@ -269,6 +275,8 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
         final Rectangle view = tree.getRowBounds(tree.getRowForPath(new TreePath(node.getPath())));
         tree.scrollRectToVisible(new Rectangle(0, (int) view.getY(), 0, 0));
         window.addNotificationListener(this);
+        window.addSelectionListener(this);
+        window.addIconChangeListener(this);
     }
     
     /** {@inheritDoc} */
@@ -463,5 +471,24 @@ public final class TreeFrameManager implements FrameManager, MouseListener,
     public void notificationCleared(final Window window) {
         notificationColours.remove(window.getContainer());
         tree.repaint();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void iconChanged(final Window window, final Icon icon) {
+        tree.repaint();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectionChanged(final Window window) {
+        if (window != null) {
+            final TreeNode[] treePath = ((DefaultTreeModel) tree.getModel()).
+                    getPathToRoot(nodes.get(window.getContainer()));
+            if (treePath != null && treePath.length > 0) {
+                tree.setSelectionPath(new TreePath(treePath));
+            }
+            
+        }
     }
 }
