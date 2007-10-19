@@ -335,7 +335,7 @@ public final class Formatter {
         defaultProperties.setProperty("querySelfMessage", "<%1$s> %4$s");
         defaultProperties.setProperty("querySelfAction", colour + "6* %1$s %4$s");
         defaultProperties.setProperty("queryNickChanged", colour + "3* %1$s is now know as %4$s" + stop + ".");
-        defaultProperties.setProperty("userModeChanged", colour + "3 %1$s sets user mode: %4$s" + stop + ".");
+        defaultProperties.setProperty("userModeChanged", colour + "3* %1$s sets user mode: %4$s" + stop + ".");
         defaultProperties.setProperty("queryQuitReason", colour + "2* %1$s has quit IRC (%4$s" + stop + ").");
         defaultProperties.setProperty("queryMessageHighlight", colour + "4<%1$s> %4$s");
         defaultProperties.setProperty("queryActionHighlight", colour + "6* %1$s %4$s");
@@ -381,6 +381,11 @@ public final class Formatter {
         defaultProperties.setProperty("commandError", colour + "7%1$s");
         defaultProperties.setProperty("actionTooLong", "Warning: action too long to be sent");
         defaultProperties.setProperty("tabCompletion", colour + "14Multiple possibilities: %1$s");
+        
+        // Type: Binary Miscellaneous
+        //    1: Miscellaneous data
+        //    2: Miscellaneous data
+        defaultProperties.setProperty("selfNickChange", colour + "3* You are now know as %2$s" + stop + ".");
         
         // Type: Unknown target events
         //    1: Source

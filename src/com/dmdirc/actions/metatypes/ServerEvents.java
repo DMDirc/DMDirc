@@ -39,6 +39,8 @@ public enum ServerEvents implements ActionMetaType {
     SERVER_NUMERIC(new String[]{"server", "numeric", "arguments"}, Server.class, Integer.class, String[].class),
     /** Server event with argument. */
     SERVER_EVENT_WITH_ARG(new String[]{"server", "message"}, Server.class, String.class),
+    /** Server nick change. */
+    SERVER_NICKCHANGE(new String[]{"server", "old nickname", "new nickname"}, Server.class, String.class, String.class),
     /** Server event, with source and argument. */
     SERVER_SOURCED_EVENT_WITH_ARG(new String[]{"server", "user", "message"}, Server.class, ClientInfo.class, String.class),
     /** Server CTCP event. */

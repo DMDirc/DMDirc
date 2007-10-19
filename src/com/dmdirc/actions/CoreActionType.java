@@ -105,6 +105,9 @@ public enum CoreActionType implements ActionType {
     /** Walldesync. */
     SERVER_WALLDESYNC(ServerEvents.SERVER_EVENT_WITH_ARG, "Walldesync received"),        
     
+    /** Nick change. */
+    SERVER_NICKCHANGE(ServerEvents.SERVER_NICKCHANGE, "My nickname changed"),
+    
     /** Channel window opened. */
     CHANNEL_OPENED(ChannelEvents.CHANNEL_EVENT, "Channel window opened"),
     /** Channel window closed. */

@@ -38,12 +38,13 @@ import com.dmdirc.parser.callbacks.interfaces.*;
  *
  * @author chris
  */
-public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessage,
-        IPrivateAction, IErrorInfo, IPrivateCTCP, IPrivateCTCPReply,
-        ISocketClosed, IPrivateNotice, IMOTDStart, IMOTDLine, IMOTDEnd,
-        INumeric, IGotNetwork, IPingFailed, IPingSuccess, IAwayState,
+public final class ServerEventHandler implements IChannelSelfJoin,
+        IPrivateMessage, IPrivateAction, IErrorInfo, IPrivateCTCP,
+        IPrivateCTCPReply, ISocketClosed, IPrivateNotice, IMOTDStart, IMOTDLine,
+        IMOTDEnd, INumeric, IGotNetwork, IPingFailed, IPingSuccess, IAwayState,
         IConnectError, IAwayStateOther, INickInUse, IPost005, INoticeAuth,
-        IUnknownNotice, IUserModeChanged, IInvite, IWallop, IWalluser, IWallDesync {
+        IUnknownNotice, IUserModeChanged, IInvite, IWallop, IWalluser,
+        IWallDesync, INickChanged {
     
     private static final String CALLBACK_PREFIX = "com.dmdirc.parser.callbacks.interfaces.I";
     
@@ -334,5 +335,17 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
         
         owner.doNotification("walldesync", CoreActionType.SERVER_WALLDESYNC, 
                 tParser.getClientInfoOrFake(sHost), sMessage);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onNickChanged(final IRCParser tParser, final ClientInfo cClient,
+            final String sOldNick) {
+        checkParser(tParser);
+        
+        if (cClient.equals(tParser.getMyself())) {
+            owner.doNotification("selfNickChange", CoreActionType.SERVER_NICKCHANGE,
+                    sOldNick, cClient.getNickname());
+        }
     }
 }
