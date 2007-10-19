@@ -30,17 +30,17 @@ import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.TreeScroller;
 import com.dmdirc.ui.swing.framemanager.tree.TreeViewModel;
-
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -53,8 +53,9 @@ import javax.swing.tree.TreeSelectionModel;
 /**
  * Manages the ctrl tab window list.
  */
-public final class CtrlTabFrameManager implements FrameManager, Serializable,
-        TreeSelectionListener, SelectionListener {
+public final class CtrlTabFrameManager implements FrameManager,
+        Serializable, TreeSelectionListener,
+        SelectionListener {
 
     /**
      * A version number for this class. It should be changed whenever the class
@@ -75,9 +76,9 @@ public final class CtrlTabFrameManager implements FrameManager, Serializable,
     /** Tree Scroller. */
     private final TreeScroller treeScroller;
 
-    /** 
+    /**
      * Creates a new instance of WindowMenuFrameManager.
-     * 
+     *
      * @param desktopPane DesktopPane to register with
      */
     public CtrlTabFrameManager(final JDesktopPane desktopPane) {
@@ -86,8 +87,14 @@ public final class CtrlTabFrameManager implements FrameManager, Serializable,
         root = new DefaultMutableTreeNode("DMDirc");
         model = new TreeViewModel(root);
         selectionModel = new DefaultTreeSelectionModel();
-        treeScroller = new TreeScroller(model, selectionModel);
+        treeScroller =
+                new TreeScroller(model, selectionModel);
         selectionModel.addTreeSelectionListener(this);
+
+        SwingUtilities.getUIInputMap(desktopPane,
+                JDesktopPane.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).
+                put(KeyStroke.getKeyStroke("ctrl shift pressed TAB"),
+                "selectPreviousFrame");
 
         SwingUtilities.getUIActionMap(desktopPane).
                 put("selectNextFrame",
@@ -145,7 +152,8 @@ public final class CtrlTabFrameManager implements FrameManager, Serializable,
 
     /** {@inheritDoc} */
     @Override
-    public void showNotification(final FrameContainer source, final Color colour) {
+    public void showNotification(final FrameContainer source,
+            final Color colour) {
         //Ignore
     }
 
@@ -200,7 +208,8 @@ public final class CtrlTabFrameManager implements FrameManager, Serializable,
      */
     public void addWindow(final DefaultMutableTreeNode parent,
             final FrameContainer window) {
-        final DefaultMutableTreeNode node = new DefaultMutableTreeNode();
+        final DefaultMutableTreeNode node =
+                new DefaultMutableTreeNode();
         nodes.put(window, node);
         labels.put(node, new JLabel());
         node.setUserObject(window);
@@ -234,7 +243,8 @@ public final class CtrlTabFrameManager implements FrameManager, Serializable,
     /** {@inheritDoc} */
     @Override
     public void selectionChanged(final Window window) {
-        final TreeNode[] path = model.getPathToRoot(nodes.get(window.getContainer()));
+        final TreeNode[] path =
+                model.getPathToRoot(nodes.get(window.getContainer()));
         if (path != null && path.length > 0) {
             selectionModel.setSelectionPath(new TreePath(path));
         }

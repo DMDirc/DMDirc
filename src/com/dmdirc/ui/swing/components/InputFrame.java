@@ -306,8 +306,6 @@ public abstract class InputFrame extends Frame implements InputWindow,
      * Activates the input field on frame focus. {@inheritDoc}
      */
     public void internalFrameActivated(final InternalFrameEvent event) {
-        getInputField().requestFocus();
-        
         super.internalFrameActivated(event);
     }
     
