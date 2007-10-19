@@ -2,33 +2,33 @@ identity.name = DMDirc default settings
 identity.globaldefault = true
 
 general.submitErrors=true
-        
+
 general.commandchar=/
 general.silencechar=.
-        
+
 general.reconnectmessage=Reconnecting
 general.closemessage=DMDirc exiting
 general.quitmessage=Using DMDirc
 general.partmessage=Using DMDirc
 general.cyclemessage=Cycling
 general.kickmessage=Bye!
-        
+
 general.hidequeries=false
-        
+
 general.closechannelsonquit=false
 general.closequeriesonquit=false
-        
+
 general.closechannelsondisconnect=false
 general.closequeriesondisconnect=false
-        
+
 general.reconnectonconnectfailure=true
 general.reconnectondisconnect=true
 general.reconnectdelay=5
-        
+
 general.server=blueyonder.uk.quakenet.org
 general.port=7000
 general.password=
-        
+
 notifications.authNotice=server
 notifications.unknownNotice=server
 notifications.connectError=server
@@ -42,7 +42,7 @@ notifications.privateCTCPreply=lastcommand:ctcp %1$s %4$S
 notifications.wallusers=server
 notifications.wallops=server
 notifications.walldesync=server
-        
+
 notifications.numeric_301=group:whois
 notifications.numeric_307=group:whois
 notifications.numeric_311=group:whois
@@ -73,7 +73,7 @@ notifications.numeric_671=group:whois
 notifications.numeric_705=server
 
 notifications.whois=lastcommand:whois %4$s( %4$s)?
-        
+
 ui.backgroundcolour=0
 ui.foregroundcolour=1
 ui.framemanagerPosition=left
@@ -85,29 +85,29 @@ ui.showversion=true
 ui.quickCopy=false
 ui.pasteProtectionLimit=1
 ui.stylelinks=true
-        
+
 ui.treeviewActiveBold=true
 treeview.sortwindows=true
 treeview.sortservers=true
-        
+
 channel.splitusermodes=false
 channel.sendwho=false
 channel.showmodeprefix=true
 general.whotime=60000
-        
+
 tabcompletion.casesensitive=false
-        
+
 logging.dateFormat=EEE, d MMM yyyy HH:mm:ss Z
 logging.programLogging=true
 logging.debugLogging=true
 logging.debugLoggingSysOut=true
-        
+
 server.friendlymodes=true
 server.pingtimeout=60000
-        
+
 updater.frequency=86400
 updater.lastcheck=0
-        
+
 actions.textcolour=12
 actions.eventcolour=3
 actions.highlightcolour=4

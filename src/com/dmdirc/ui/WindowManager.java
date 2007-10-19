@@ -22,7 +22,7 @@
 
 package com.dmdirc.ui;
 
-import com.dmdirc.Main;
+import com.dmdirc.CustomWindow;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
@@ -35,11 +35,14 @@ import java.util.Map.Entry;
 
 public class WindowManager {
     
-    private final static List<Window> rootWindows = new ArrayList<Window>();
+    private final static List<Window> rootWindows
+            = new ArrayList<Window>();
     
-    private final static Map<Window, List<Window>> childWindows = new HashMap<Window, List<Window>>();
+    private final static Map<Window, List<Window>> childWindows
+            = new HashMap<Window, List<Window>>();
     
-    private final static List<FrameManager> frameManagers = new ArrayList<FrameManager>();
+    private final static List<FrameManager> frameManagers
+            = new ArrayList<FrameManager>();
     
     private WindowManager() {
         // Shouldn't be instansiated
@@ -102,6 +105,30 @@ public class WindowManager {
             
             fireDeleteWindow(parent, window);
         }
+    }
+    
+    public static Window findCustomWindow(final String name) {
+        Logger.doAssertion(name != null);
+        
+        return findCustomWindow(rootWindows, name);
+    }
+    
+    public static Window findCustomWindow(final Window parent, final String name) {
+        Logger.doAssertion(parent != null, name != null);
+        Logger.doAssertion(childWindows.containsKey(parent));
+        
+        return findCustomWindow(childWindows.get(parent), name);
+    }
+    
+    private static Window findCustomWindow(final List<Window> windows, final String name) {
+        for (Window window : windows) {
+            if (window.getContainer() instanceof CustomWindow
+                    && ((CustomWindow) window.getContainer()).getName().equals(name)) {
+                return window;
+            }
+        }
+        
+        return null;
     }
     
     private static Window getParent(final Window window) {

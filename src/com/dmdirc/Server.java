@@ -840,6 +840,16 @@ public final class Server extends WritableFrameContainer implements Serializable
             addLineToAll(messageType, args);
         } else if ("active".equals(target)) {
             addLineToActive(messageType, args);
+        } else if (target.startsWith("window:")) {
+            final String windowName = target.substring(7);
+            
+            Window targetWindow = WindowManager.findCustomWindow(getFrame(), windowName);
+            
+            if (targetWindow == null) {
+                targetWindow = new CustomWindow(windowName, windowName, getFrame()).getFrame();
+            }
+            
+            targetWindow.addLine(messageType, args);
         } else if (target.startsWith("lastcommand:")) {
             final Object[] escapedargs = new Object[args.length];
             
