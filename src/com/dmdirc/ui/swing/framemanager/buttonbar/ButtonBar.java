@@ -374,6 +374,6 @@ public final class ButtonBar implements FrameManager, ActionListener,
     /** {@inheritDoc} */
     @Override
     public void iconChanged(final Window window, final Icon icon) {
-        buttons.get(window.getContainer()).setIcon(window.getContainer().getIcon());
+        buttons.get(window.getContainer()).setIcon(icon);
     }
 }

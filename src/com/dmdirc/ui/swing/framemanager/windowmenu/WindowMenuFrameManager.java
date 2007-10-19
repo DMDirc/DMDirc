@@ -25,8 +25,11 @@ package com.dmdirc.ui.swing.framemanager.windowmenu;
 import com.dmdirc.FrameContainer;
 import com.dmdirc.Main;
 import com.dmdirc.ui.interfaces.FrameManager;
+import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.FrameContainerComparator;
+import com.dmdirc.interfaces.IconChangeListener;
+import com.dmdirc.interfaces.SelectionListener;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -38,6 +41,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import javax.swing.Icon;
 
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
@@ -46,7 +50,7 @@ import javax.swing.JMenuItem;
  * Manages the window menu window list.
  */
 public final class WindowMenuFrameManager implements FrameManager,
-        ActionListener, Serializable {
+        ActionListener, Serializable, SelectionListener, IconChangeListener {
     
     /**
      * A version number for this class. It should be changed whenever the class
@@ -146,6 +150,8 @@ public final class WindowMenuFrameManager implements FrameManager,
             newMap.putAll(menuItemMap);
         }
         ((MainFrame) Main.getUI().getMainWindow()).populateWindowMenu(newMap);
+        window.addIconChangeListener(this);
+        window.addSelectionListener(this);
     }
     
     /**
@@ -161,6 +167,8 @@ public final class WindowMenuFrameManager implements FrameManager,
             newMap.putAll(menuItemMap);
         }
         ((MainFrame) Main.getUI().getMainWindow()).populateWindowMenu(newMap);
+        window.removeIconChangeListener(this);
+        window.removeSelectionListener(this);
     }
     
     /** {@inheritDoc} */
@@ -171,6 +179,30 @@ public final class WindowMenuFrameManager implements FrameManager,
                     entry.getKey().activateFrame();
                 }
             }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void selectionChanged(final Window window) {
+        synchronized (menuItemMap) {
+            for (Entry<FrameContainer, JMenuItem> entry : new ArrayList<
+                    Entry<FrameContainer, JMenuItem>>(menuItemMap.entrySet())) {
+                final JMenuItem mi = entry.getValue();
+                if (entry.getKey() == window.getContainer()) {
+                    mi.setFont(mi.getFont().deriveFont(Font.BOLD));
+                } else {
+                    mi.setFont(mi.getFont().deriveFont(Font.PLAIN));
+                }
+            }
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void iconChanged(final Window window, final Icon icon) {
+        if (menuItemMap.get(window.getContainer()) != null) {
+            menuItemMap.get(window.getContainer()).setIcon(icon);
         }
     }
     
