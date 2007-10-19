@@ -61,7 +61,8 @@ public final class Formatter {
     /**
      * A cache of types needed by the various formatters.
      */
-    private static final Map<String, Character[]> typeCache = new HashMap<String, Character[]>();
+    private static final Map<String, Character[]> typeCache
+            = new HashMap<String, Character[]>();
     
     /**
      * Creates a new instance of Formatter.
@@ -339,6 +340,9 @@ public final class Formatter {
         defaultProperties.setProperty("queryMessageHighlight", colour + "4<%1$s> %4$s");
         defaultProperties.setProperty("queryActionHighlight", colour + "6* %1$s %4$s");
         defaultProperties.setProperty("inviteReceived", colour + "2* You have been invited to %4$s by %1$s.");
+        defaultProperties.setProperty("walluser", colour + "5!%1$s! %4$s");
+        defaultProperties.setProperty("wallop", colour + "5$%1$s$ %4$s");
+        defaultProperties.setProperty("walldesync", colour + "5/%1$s/ %4$s");
         
         // Type: Private event
         //    1: User nickname

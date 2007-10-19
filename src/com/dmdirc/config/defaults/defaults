@@ -38,6 +38,9 @@ notifications.stonedServer=all
 notifications.privateNotice=all
 notifications.privateCTCP=server
 notifications.privateCTCPreply=lastcommand:ctcp %1$s %4$S
+notifications.wallusers=server
+notifications.wallops=server
+notifications.walldesync=server
         
 notifications.numeric_301=group:whois
 notifications.numeric_307=group:whois

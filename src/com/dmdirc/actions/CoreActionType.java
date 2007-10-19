@@ -98,6 +98,13 @@ public enum CoreActionType implements ActionType {
     /** Invite received. */
     SERVER_INVITERECEIVED(ServerEvents.SERVER_INVITE, "Invite received"),
     
+    /** Wallops. */
+    SERVER_WALLOPS(ServerEvents.SERVER_EVENT_WITH_ARG, "Wallop received"),
+    /** Wallusers. */
+    SERVER_WALLUSERS(ServerEvents.SERVER_EVENT_WITH_ARG, "Walluser received"),    
+    /** Walldesync. */
+    SERVER_WALLDESYNC(ServerEvents.SERVER_EVENT_WITH_ARG, "Walldesync received"),        
+    
     /** Channel window opened. */
     CHANNEL_OPENED(ChannelEvents.CHANNEL_EVENT, "Channel window opened"),
     /** Channel window closed. */

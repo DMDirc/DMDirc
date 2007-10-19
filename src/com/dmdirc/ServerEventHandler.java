@@ -43,7 +43,7 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
         ISocketClosed, IPrivateNotice, IMOTDStart, IMOTDLine, IMOTDEnd,
         INumeric, IGotNetwork, IPingFailed, IPingSuccess, IAwayState,
         IConnectError, IAwayStateOther, INickInUse, IPost005, INoticeAuth,
-        IUnknownNotice, IUserModeChanged, IInvite {
+        IUnknownNotice, IUserModeChanged, IInvite, IWallop, IWalluser, IWallDesync {
     
     private static final String CALLBACK_PREFIX = "com.dmdirc.parser.callbacks.interfaces.I";
     
@@ -303,5 +303,36 @@ public final class ServerEventHandler implements IChannelSelfJoin, IPrivateMessa
         owner.doNotification("inviteReceived",
                 CoreActionType.SERVER_INVITERECEIVED, 
                 tParser.getClientInfoOrFake(userHost), channel);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void onWallop(final IRCParser tParser, final String sMessage, 
+            final String sHost) {
+        checkParser(tParser);
+        
+        owner.doNotification("wallop", CoreActionType.SERVER_WALLOPS, 
+                tParser.getClientInfoOrFake(sHost), sMessage);
+        
+    }
+
+    /** {@inheritDoc} */
+    @Override    
+    public void onWalluser(final IRCParser tParser, final String sMessage, 
+            final String sHost) {
+        checkParser(tParser);
+
+        owner.doNotification("walluser", CoreActionType.SERVER_WALLUSERS, 
+                tParser.getClientInfoOrFake(sHost), sMessage);
+    }
+
+    /** {@inheritDoc} */
+    @Override    
+    public void onWallDesync(final IRCParser tParser, final String sMessage, 
+            final String sHost) {
+        checkParser(tParser);
+        
+        owner.doNotification("walldesync", CoreActionType.SERVER_WALLDESYNC, 
+                tParser.getClientInfoOrFake(sHost), sMessage);
     }
 }
