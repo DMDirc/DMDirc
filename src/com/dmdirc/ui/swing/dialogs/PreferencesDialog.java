@@ -34,11 +34,16 @@ import com.dmdirc.themes.ThemeManager;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.swing.MainFrame;
 import com.dmdirc.ui.swing.components.SwingPreferencesPanel;
+import java.awt.Component;
+import java.util.AbstractMap.SimpleImmutableEntry;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 
 import javax.swing.UIManager;
@@ -222,37 +227,53 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     private void initNotificationsTab() {
         final String tabName = "Notifications";
         preferencesPanel.addCategory("Messages", tabName, "");
-        final String[] windowOptions
-                = new String[] {"all", "active", "server", };
+        final DefaultComboBoxModel windowOptions = new DefaultComboBoxModel(
+                new Entry[] {
+                    new SimpleImmutableEntry<String, String>("All", "all"),
+                    new SimpleImmutableEntry<String, String>("Active", "active"), 
+                    new SimpleImmutableEntry<String, String>("Server", "server"), 
+                    new SimpleImmutableEntry<String, String>("None", "none  "), });
+        final DefaultComboBoxModel windowOptions2 = new DefaultComboBoxModel(
+                new Entry[] {
+                    new SimpleImmutableEntry<String, String>("All", "all"),
+                    new SimpleImmutableEntry<String, String>("Active", "active"), 
+                    new SimpleImmutableEntry<String, String>("Server", "server"), 
+                    new SimpleImmutableEntry<String, String>("Source of command", 
+                            "lastcommand:whois %4$s( %4$s)"),
+                    new SimpleImmutableEntry<String, String>("None", "none  "), });
         
         preferencesPanel.addComboboxOption(tabName, "notifications.socketClosed",
                 "Socket closed: ", "Where to display socket closed notifications",
-                windowOptions,
+                windowOptions, new MapEntryRenderer(),
                 config.getOption("notifications", "socketClosed"), false);
         preferencesPanel.addComboboxOption(tabName, "notifications.privateNotice",
                 "Private notice: ", "Where to display private notice notifications",
-                windowOptions,
+                windowOptions, new MapEntryRenderer(),
                 config.getOption("notifications", "privateNotice"), false);
         preferencesPanel.addComboboxOption(tabName, "notifications.privateCTCP",
                 "CTCP request: ", "Where to display CTCP request notifications",
-                windowOptions,
+                windowOptions, new MapEntryRenderer(),
                 config.getOption("notifications", "privateCTCP"), false);
         preferencesPanel.addComboboxOption(tabName, "notifications.privateCTCPreply",
                 "CTCP reply: ", "Where to display CTCP reply notifications",
-                windowOptions,
+                windowOptions, new MapEntryRenderer(),
                 config.getOption("notifications", "privateCTCPreply"), false);
         preferencesPanel.addComboboxOption(tabName, "notifications.connectError",
                 "Connect error: ", "Where to display connect error notifications",
-                windowOptions,
+                windowOptions, new MapEntryRenderer(),
                 config.getOption("notifications", "connectError"), false);
         preferencesPanel.addComboboxOption(tabName, "notifications.connectRetry",
                 "Connect retry: ", "Where to display connect retry notifications",
-                windowOptions,
+                windowOptions, new MapEntryRenderer(),
                 config.getOption("notifications", "connectRetry"), false);
         preferencesPanel.addComboboxOption(tabName, "notifications.stonedServer",
-                "Stoned server: ", "Where to display stone server notifications",
-                windowOptions,
+                "Stoned server: ", "Where to display stoned server notifications",
+                windowOptions, new MapEntryRenderer(),
                 config.getOption("notifications", "stonedServer"), false);
+        preferencesPanel.addComboboxOption(tabName, "notifications.whois",
+                "Whois output: ", "Where to display whois command output",
+                windowOptions2, new MapEntryRenderer(),
+                config.getOption("notifications", "whois"), false);
     }
     
     /**
@@ -459,6 +480,7 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void configClosed(final Properties properties) {
         final Identity identity = IdentityManager.getConfigIdentity();
         for (Map.Entry<Object, Object> entry : properties.entrySet()) {
@@ -495,11 +517,13 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
     
     
     /** {@inheritDoc} */
+    @Override
     public void configCancelled() {
         dispose();
     }
     
     /** {@inheritDoc} */
+    @Override
     public void configChanged(final String domain, final String key) {
         if ("ui".equals(domain) && ("lookandfeel".equals(key)
         || "framemanager".equals(key) || "framemanagerPosition".equals(key))
@@ -520,5 +544,35 @@ public final class PreferencesDialog implements PreferencesInterface, ConfigChan
             IdentityManager.getGlobalConfig().removeListener(this);
             me = null;
         }
+    }
+    
+    private class MapEntryRenderer extends DefaultListCellRenderer {
+        
+        /**
+        * A version number for this class. It should be changed whenever the class
+        * structure is changed (or anything else that would prevent serialized
+        * objects being unserialized with the new class).
+        */
+        private static final long serialVersionUID = 1;
+        
+        /** {@inheritDoc} */
+        @Override
+        public Component getListCellRendererComponent(final JList list,
+                final Object value, final int index, final boolean isSelected,
+                final boolean hasFocus) {
+        
+            super.getListCellRendererComponent(list, value, index, isSelected, hasFocus);
+        
+            if (value == null) {
+                setText("Any");
+            } else if (value instanceof Entry) {
+                setText((String) ((Entry) value).getKey());
+            } else {
+                setText(value.toString());
+            }
+        
+            return this;
+        }
+        
     }
 }

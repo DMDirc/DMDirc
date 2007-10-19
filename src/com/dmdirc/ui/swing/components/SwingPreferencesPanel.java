@@ -46,10 +46,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -59,6 +61,7 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.JTree;
+import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SpringLayout;
 import javax.swing.WindowConstants;
@@ -299,8 +302,23 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                 checkBoxes.put(optionName, (JCheckBox) option);
                 break;
             case COMBOBOX:
-                option = new JComboBox((String[]) args[0]);
-                ((JComboBox) option).setSelectedItem(args[1]);
+                if (args[0] instanceof String[]) {
+                    option = new JComboBox((String[]) args[0]);
+                    ((JComboBox) option).setSelectedItem(args[1]);
+                } else {
+                    System.out.println(args[1]);
+                    final DefaultComboBoxModel model = (DefaultComboBoxModel) args[0];
+                    option = new JComboBox(model);
+                    ((JComboBox) option).setRenderer((ListCellRenderer) args[3]);
+                    for (int i = 0; i < model.getSize(); i++) {
+                        final Object entry = model.getElementAt(i);
+                        if (((Entry) entry).getValue().equals(args[1])) {
+                            System.out.println("match");
+                            ((JComboBox) option).setSelectedItem(entry);
+                            break;
+                        }
+                    }
+                }
                 comboBoxes.put(optionName, (JComboBox) option);
                 ((JComboBox) option).setEditable((Boolean) args[2]);
                 break;
@@ -413,6 +431,26 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                 OptionType.COMBOBOX, options, defaultValue, editable);
     }
     
+    /**
+     * Adds an option to the specified category.
+     *
+     * @param category category option is to be added to
+     * @param name config name for the option
+     * @param displayName displayable name for the option
+     * @param helpText Help text to be displayed for the option
+     * @param options Combo box model
+     * @param renderer Combo box renderer
+     * @param defaultValue default value
+     * @param editable editable combo box
+     */
+    public void addComboboxOption(final String category, final String name,
+            final String displayName, final String helpText,
+            final DefaultComboBoxModel options, final ListCellRenderer renderer,
+            final String defaultValue, final boolean editable) {
+        addComponent(categories.get(category), name, displayName, helpText,
+                OptionType.COMBOBOX, options, defaultValue, editable, renderer);
+    }
+    
     /** {@inheritDoc} */
     public void addSpinnerOption(final String category, final String name,
             final String displayName, final String helpText,
@@ -501,8 +539,13 @@ public final class SwingPreferencesPanel extends StandardDialog implements
         }
         for (String option : comboBoxes.keySet()) {
             if (comboBoxes.get(option).getSelectedItem() != null) {
-                properties.setProperty(option, (String) comboBoxes.get(option)
-                .getSelectedItem());
+                if (comboBoxes.get(option).getSelectedItem() instanceof String) {
+                    properties.setProperty(option, (String) comboBoxes.get(option)
+                    .getSelectedItem());
+                } else {
+                    properties.setProperty(option, (String) ((Entry) comboBoxes.get(option)
+                    .getSelectedItem()).getValue());
+                }
             }
         }
         for (String option : spinners.keySet()) {
