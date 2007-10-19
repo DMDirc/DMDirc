@@ -43,6 +43,11 @@ notifications.wallusers=server
 notifications.wallops=server
 notifications.walldesync=server
 
+notifications.numeric_006=group:map
+notifications.numeric_007=group:map
+notifications.numeric_015=group:map
+notifications.numeric_017=group:map
+
 notifications.numeric_301=group:whois
 notifications.numeric_307=group:whois
 notifications.numeric_311=group:whois
@@ -72,6 +77,7 @@ notifications.numeric_671=group:whois
 
 notifications.numeric_705=server
 
+notifications.map=window:Network Map
 notifications.whois=lastcommand:whois %4$s( %4$s)?
 
 ui.backgroundcolour=0

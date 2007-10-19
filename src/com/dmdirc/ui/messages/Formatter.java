@@ -400,6 +400,11 @@ public final class Formatter {
         defaultProperties.setProperty("commandUsage", colour + "7Usage: %1$s%2$s %3$s");
         
         // Type: Numerical data
+        defaultProperties.setProperty("numeric_006", fixed + "%4$s");
+        defaultProperties.setProperty("numeric_007", fixed + "%4$s");
+        defaultProperties.setProperty("numeric_015", fixed + "%4$s");
+        defaultProperties.setProperty("numeric_017", fixed + "%4$s");
+        
         defaultProperties.setProperty("numeric_301", "%4$s is away: %5$s");
         defaultProperties.setProperty("numeric_307", "%4$s %5$s.");
         defaultProperties.setProperty("numeric_311", "-\n%4$s is %5$s@%6$s (%8$s" + stop + ").");

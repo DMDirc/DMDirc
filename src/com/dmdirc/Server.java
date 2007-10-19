@@ -985,8 +985,16 @@ public final class Server extends WritableFrameContainer implements Serializable
      * @param tokens The (tokenised) arguments of the event
      */
     public void onNumeric(final int numeric, final String[] tokens) {
-        final String withIrcd = "numeric_" + parser.getIRCD(true) + "_" + numeric;
-        final String sansIrcd = "numeric_" + numeric;
+        String snumeric = String.valueOf(numeric);
+        
+        if (numeric < 10) {
+            snumeric = "00" + snumeric;
+        } else if (numeric < 100) {
+            snumeric = "0" + snumeric;
+        }
+        
+        final String withIrcd = "numeric_" + parser.getIRCD(true) + "_" + snumeric;
+        final String sansIrcd = "numeric_" + snumeric;
         String target = null;
         
         if (Formatter.hasFormat(withIrcd)) {
