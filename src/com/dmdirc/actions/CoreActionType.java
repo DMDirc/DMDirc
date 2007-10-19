@@ -99,11 +99,11 @@ public enum CoreActionType implements ActionType {
     SERVER_INVITERECEIVED(ServerEvents.SERVER_INVITE, "Invite received"),
     
     /** Wallops. */
-    SERVER_WALLOPS(ServerEvents.SERVER_EVENT_WITH_ARG, "Wallop received"),
+    SERVER_WALLOPS(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "Wallop received"),
     /** Wallusers. */
-    SERVER_WALLUSERS(ServerEvents.SERVER_EVENT_WITH_ARG, "Walluser received"),    
+    SERVER_WALLUSERS(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "Walluser received"),    
     /** Walldesync. */
-    SERVER_WALLDESYNC(ServerEvents.SERVER_EVENT_WITH_ARG, "Walldesync received"),        
+    SERVER_WALLDESYNC(ServerEvents.SERVER_SOURCED_EVENT_WITH_ARG, "Walldesync received"),        
     
     /** Nick change. */
     SERVER_NICKCHANGE(ServerEvents.SERVER_NICKCHANGE, "My nickname changed"),
