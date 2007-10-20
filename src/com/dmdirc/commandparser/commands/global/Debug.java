@@ -22,6 +22,7 @@
 
 package com.dmdirc.commandparser.commands.global;
 
+import com.dmdirc.Server;
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
 import com.dmdirc.commandparser.commands.IntelligentCommand;
@@ -79,6 +80,8 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             doGarbage(origin, isSilent);
         } else if ("forceupdate".equals(args[0])) {
             doForceUpdate();
+        } else if ("serverinfo".equals(args[0])) {
+            doServerInfo(origin, isSilent);
         } else {
             sendLine(origin, isSilent, FORMAT_ERROR, "Unknown debug action.");
         }
@@ -223,6 +226,32 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
         new Thread(new UpdateChecker(), "Forced update checker").start();
     }
     
+    /**
+     * Shows information about the current server.
+     * 
+     * @param origin The window this command was executed in
+     * @param isSilent Whether this command has been silenced or not
+     */
+    private void doServerInfo(final InputWindow origin, final boolean isSilent) {
+        if (origin.getContainer().getServer() == null) {
+            sendLine(origin, isSilent, FORMAT_ERROR, "This window isn't connected to a server");
+        } else {
+            final Server server = origin.getContainer().getServer();
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "Server name: " + server.getName());
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "Actual name: "
+                    + server.getParser().getServerName());
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "Network: " + server.getNetwork());
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "IRCd: "
+                    + server.getParser().getIRCD(false) + " - "
+                    + server.getParser().getIRCD(true));
+            sendLine(origin, isSilent, FORMAT_OUTPUT, "Modes: "
+                    + server.getParser().getBoolChanModes() + " "
+                    + server.getParser().getListChanModes() + " "
+                    + server.getParser().getSetOnlyChanModes() + " "
+                    + server.getParser().getSetUnsetChanModes());
+        }
+    }
+    
     /** {@inheritDoc} */
     public String getName() {
         return "debug";
@@ -265,6 +294,7 @@ public class Debug extends GlobalCommand implements IntelligentCommand {
             res.add("configinfo");
             res.add("globalconfiginfo");
             res.add("forceupdate");
+            res.add("serverinfo");
         } else if (arg == 1 && "error".equals(previousArgs.get(0))) {
             res.add("user");
             res.add("app");
