@@ -38,6 +38,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -109,11 +110,7 @@ public final class ErrorListDialog extends StandardDialog implements
         pack();
     }
     
-    /**
-     * Returns the instance of ErrorListDialog.
-     *
-     * @return Instance of ErrorListDialog
-     */
+    /** Returns the instance of ErrorListDialog. */
     public static synchronized void showErrorListDialog() {
         me = getErrorListDialog();
         
@@ -145,10 +142,14 @@ public final class ErrorListDialog extends StandardDialog implements
                 errorManager.getErrorList().values()));
         table = new PackingTable(tableModel, false, scrollPane) {
             private static final long serialVersionUID = 1;
+            /** {@inheritDoc} */
+            @Override
             public TableCellRenderer getCellRenderer(final int row, final int column) {
                 switch (column) {
                     case 1:
                         return new DateCellRenderer();
+                    case 2:
+                        return new ErrorLevelIconCellRenderer();
                     default:
                         return super.getCellRenderer(row, column);
                 }
@@ -245,6 +246,7 @@ public final class ErrorListDialog extends StandardDialog implements
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void valueChanged(final ListSelectionEvent e) {
         if (!e.getValueIsAdjusting()) {
             if (table.getSelectedRow() > -1) {
@@ -268,6 +270,7 @@ public final class ErrorListDialog extends StandardDialog implements
     }
     
     /** {@inheritDoc}. */
+    @Override
     public void actionPerformed(final ActionEvent e) {
         if (e.getSource() == getCancelButton()) {
             setVisible(false);
@@ -276,7 +279,7 @@ public final class ErrorListDialog extends StandardDialog implements
                     table.getRowSorter().convertRowIndexToModel(
                     table.getSelectedRow())));
         } else if (e.getSource() == sendButton) {
-            ErrorManager.getErrorManager().sendError(tableModel.getError(
+            ErrorManager.sendError(tableModel.getError(
                     table.getRowSorter().convertRowIndexToModel(
                     table.getSelectedRow())));
         } else if (e.getSource() == deleteAllButton) {
@@ -289,6 +292,7 @@ public final class ErrorListDialog extends StandardDialog implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void errorAdded(final ProgramError error) {
         synchronized (tableModel) {
             final int selectedRow = table.getSelectedRow();
@@ -299,11 +303,13 @@ public final class ErrorListDialog extends StandardDialog implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void fatalError(final ProgramError error) {
         new FatalErrorDialog(error);
     }
     
     /** {@inheritDoc} */
+    @Override
     public void errorDeleted(final ProgramError error) {
         synchronized (tableModel) {
             int selectedRow = table.getSelectedRow();
@@ -323,6 +329,7 @@ public final class ErrorListDialog extends StandardDialog implements
     }
     
     /** {@inheritDoc} */
+    @Override
     public void errorStatusChanged(final ProgramError error) {
         synchronized (tableModel) {
             final int errorRow = tableModel.indexOf(error);
@@ -343,6 +350,7 @@ public final class ErrorListDialog extends StandardDialog implements
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isReady() {
         return Main.getUI().getStatusBar().isVisible();
     }

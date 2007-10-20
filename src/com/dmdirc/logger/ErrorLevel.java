@@ -22,37 +22,51 @@
 
 package com.dmdirc.logger;
 
-/**
- * Specific error levels allowed by Logger.
- */
+import com.dmdirc.IconManager;
+
+import javax.swing.Icon;
+
+/** Specific error levels allowed by Logger. */
 public enum ErrorLevel {
     /** Fatal error. */
-    FATAL("Fatal"),
+    FATAL("Fatal", IconManager.getIconManager().getIcon("error")),
     /** High priority error. */
-    HIGH("High"),
+    HIGH("High", IconManager.getIconManager().getIcon("error")),
     /** Medium priority error. */
-    MEDIUM("Medium"),
+    MEDIUM("Medium", IconManager.getIconManager().getIcon("warning")),
     /** Low priority error. */
-    LOW("Low"),
+    LOW("Low", IconManager.getIconManager().getIcon("info")),
     /** Unknown priority error. */
-    UNKNOWN("Unknown");
+    UNKNOWN("Unknown", IconManager.getIconManager().getIcon("info"));
     
-    /** toString value of the item. */
+    /** Error level string. */
     private String value;
+    /** Error level icon. */
+    private Icon icon;
     
     /** 
      * Instantiates the enum. 
      *
      * @param value toString value
      */
-    ErrorLevel(final String value) {
+    ErrorLevel(final String value, final Icon icon) {
         this.value = value;
+        this.icon = icon;
     }
     
     /** {@inheritDoc} */
     @Override
     public String toString() {
         return value;
+    }
+    
+    /**
+     * Error levels icon.
+     * 
+     * @return Error levels icon
+     */
+    public Icon getIcon() {
+        return icon;
     }
     
     /**

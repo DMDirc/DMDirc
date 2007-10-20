@@ -306,14 +306,12 @@ public final class SwingPreferencesPanel extends StandardDialog implements
                     option = new JComboBox((String[]) args[0]);
                     ((JComboBox) option).setSelectedItem(args[1]);
                 } else {
-                    System.out.println(args[1]);
                     final DefaultComboBoxModel model = (DefaultComboBoxModel) args[0];
                     option = new JComboBox(model);
                     ((JComboBox) option).setRenderer((ListCellRenderer) args[3]);
                     for (int i = 0; i < model.getSize(); i++) {
                         final Object entry = model.getElementAt(i);
                         if (((Entry) entry).getValue().equals(args[1])) {
-                            System.out.println("match");
                             ((JComboBox) option).setSelectedItem(entry);
                             break;
                         }

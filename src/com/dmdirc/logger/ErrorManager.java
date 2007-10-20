@@ -143,6 +143,15 @@ public final class ErrorManager implements Serializable {
     }
     
     /**
+     * Returns the list of program errors.
+     * 
+     * @return Program error list
+     */
+    public List<ProgramError> getErrors() {
+        return new ArrayList<ProgramError>(errors.values());
+    }
+    
+    /**
      * Sends an error to the developers.
      *
      * @param error error to be sent

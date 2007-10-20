@@ -38,6 +38,7 @@ import java.awt.Dimension;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -100,7 +101,6 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         messageLabel.addMouseListener(this);
         iconLabel.addMouseListener(this);
         ErrorManager.getErrorManager().addErrorListener(this);
-        clearError();
         
         setLayout(new SpringLayout());
         
@@ -110,7 +110,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         setPreferredSize(new Dimension(Short.MAX_VALUE, 25));
         setMaximumSize(new Dimension(Short.MAX_VALUE, 25));
         
-        layoutBar();
+        checkErrors();
     }
     
     /** {@inheritDoc} */
@@ -160,24 +160,7 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     
     /** {@inheritDoc} */
     public void errorAdded(final ProgramError error) {
-        if (!ErrorListDialog.getErrorListDialog().isVisible()
-        && error.getLevel().moreImportant(errorLevel)) {
-            errorLevel = error.getLevel();
-            iconLabel.setIcon(getIcon(error));
-        }
-    }
-    
-    private Icon getIcon(final ProgramError error) {
-        switch (error.getLevel()) {
-            case HIGH:
-                return IconManager.getIconManager().getIcon("error");
-            case MEDIUM:
-                return IconManager.getIconManager().getIcon("warning");
-            case LOW:
-                return IconManager.getIconManager().getIcon("info");
-            default:
-                return IconManager.getIconManager().getIcon("info");
-        }
+        checkErrors();
     }
     
     /** {@inheritDoc} */
@@ -187,12 +170,30 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
     
     /** {@inheritDoc} */
     public void errorDeleted(final ProgramError error) {
-        //Ignore
+        checkErrors();
     }
     
     /** {@inheritDoc} */
     public void errorStatusChanged(final ProgramError error) {
         //Ignore
+    }
+    
+    /** Checks all the errors for the most significant error. */
+    private void checkErrors() {
+        clearError();
+        final List<ProgramError> errors = ErrorManager.getErrorManager().getErrors();
+        if (errors.size() > 0) {
+            for (ProgramError error : errors) {
+                if (error.getLevel().moreImportant(errorLevel)) {
+                    errorLevel = error.getLevel();
+                    iconLabel.setIcon(errorLevel.getIcon());
+                }
+            } 
+            iconLabel.setVisible(true);
+        } else {
+            iconLabel.setVisible(false);
+        }
+        layoutBar();
     }
     
     /** {@inheritDoc} */
@@ -220,7 +221,6 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
         if (mouseEvent.getButton() == MouseEvent.BUTTON1
                 && mouseEvent.getSource() == iconLabel) {
             ErrorListDialog.showErrorListDialog();
-            clearError();
         }
     }
     
@@ -262,11 +262,17 @@ public final class SwingStatusBar extends JPanel implements MouseListener,
             constraints.setWidth(constraints.getWidth());
         }
         
-        layout.putConstraint(SpringLayout.EAST, getComponent(numComponents),
+        if (getComponent(numComponents).isVisible()) {
+            layout.putConstraint(SpringLayout.EAST, getComponent(numComponents),
+                    Spring.constant(0), SpringLayout.EAST, this);
+            constraints = layout.getConstraints(getComponent(numComponents));
+            constraints.setHeight(Spring.constant(20));
+            constraints.setWidth(constraints.getWidth());
+        } else {
+            layout.putConstraint(SpringLayout.EAST, getComponent(numComponents - 1),
                 Spring.constant(0), SpringLayout.EAST, this);
-        constraints = layout.getConstraints(getComponent(numComponents));
-        constraints.setHeight(Spring.constant(20));
-        constraints.setWidth(constraints.getWidth());
+        }
+        
         this.setVisible(true);
     }
     
