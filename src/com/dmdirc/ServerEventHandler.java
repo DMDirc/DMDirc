@@ -41,7 +41,7 @@ import com.dmdirc.parser.callbacks.interfaces.*;
 public final class ServerEventHandler implements IChannelSelfJoin,
         IPrivateMessage, IPrivateAction, IErrorInfo, IPrivateCTCP,
         IPrivateCTCPReply, ISocketClosed, IPrivateNotice, IMOTDStart, IMOTDLine,
-        IMOTDEnd, INumeric, IGotNetwork, IPingFailed, IPingSuccess, IAwayState,
+        IMOTDEnd, INumeric, IPingFailed, IPingSuccess, IAwayState,
         IConnectError, IAwayStateOther, INickInUse, IPost005, INoticeAuth,
         IUnknownNotice, IUserModeChanged, IInvite, IWallop, IWalluser,
         IWallDesync, INickChanged {
@@ -199,14 +199,6 @@ public final class ServerEventHandler implements IChannelSelfJoin,
             final String[] token) {
         checkParser(tParser);
         owner.onNumeric(numeric, token);
-    }
-    
-    /** {@inheritDoc} */
-    @Override
-    public void onGotNetwork(final IRCParser tParser, final String networkName,
-            final String ircdVersion, final String ircdType) {
-        checkParser(tParser);
-        owner.onGotNetwork(networkName, ircdType);
     }
     
     /** {@inheritDoc} */

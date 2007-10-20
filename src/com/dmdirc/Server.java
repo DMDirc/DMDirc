@@ -62,66 +62,66 @@ import java.util.TimerTask;
  * @author chris
  */
 public final class Server extends WritableFrameContainer implements Serializable {
-    
+
     /**
      * A version number for this class. It should be changed whenever the class
      * structure is changed (or anything else that would prevent serialized
      * objects being unserialized with the new class).
      */
     private static final long serialVersionUID = 1;
-    
+
     /** The name of the general domain. */
     private static final String DOMAIN_GENERAL = "general".intern();
     /** The name of the profile domain. */
     private static final String DOMAIN_PROFILE = "profile".intern();
     /** The name of the server domain. */
     private static final String DOMAIN_SERVER = "server".intern();
-    
+
     /** The name of the server notification target. */
     private static final String NOTIFICATION_SERVER = "server".intern();
-    
+
     /** Open channels that currently exist on the server. */
     private final Map<String, Channel> channels  = new Hashtable<String, Channel>();
     /** Open query windows on the server. */
     private final Map<String, Query> queries = new Hashtable<String, Query>();
-    
+
     /** The IRC Parser instance handling this server. */
     private transient IRCParser parser;
     /** The raw frame used for this server instance. */
     private Raw raw;
     /** The ServerWindow corresponding to this server. */
     private ServerWindow window;
-    
+
     /** The details of the server we're connecting to. */
     private ServerInfo serverInfo;
-    
+
     /** The profile we're using. */
     private transient Identity profile;
-    
+
     /** The current state of this server. */
     private ServerState myState = ServerState.DISCONNECTED;
     /** The timer we're using to delay reconnects. */
     private Timer reconnectTimer;
-    
+
     /** Channels we're meant to auto-join. */
     private final List<String> autochannels;
-    
+
     /** The tabcompleter used for this server. */
     private final TabCompleter tabCompleter = new TabCompleter();
     /** The last activated internal frame for this server. */
     private FrameContainer activeFrame = this;
     /** The config manager for this server. */
     private ConfigManager configManager;
-    
+
     /** Our reason for being away, if any. */
     private String awayMessage = "";
-    
+
     /** Our event handler. */
     private final ServerEventHandler eventHandler = new ServerEventHandler(this);
-    
+
     /** A list of outstanding invites. */
     private final List<Invite> invites = new ArrayList<Invite>();
-    
+
     /**
      * Creates a new instance of Server.
      *
@@ -135,7 +135,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             final boolean ssl, final Identity profile) {
         this(server, port, password, ssl, profile, new ArrayList<String>());
     }
-    
+
     /**
      * Creates a new instance of Server.
      *
@@ -149,43 +149,44 @@ public final class Server extends WritableFrameContainer implements Serializable
     public Server(final String server, final int port, final String password,
             final boolean ssl, final Identity profile, final List<String> autochannels) {
         super();
-        
+
         serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);
-        
+
         ServerManager.getServerManager().registerServer(this);
-        
+
         configManager = new ConfigManager("", "", server);
-        
+
         window = Main.getUI().getServer(this);
-        
+
         WindowManager.addWindow(window);
-        
+
         window.setTitle(server + ":" + port);
-        
+
         tabCompleter.addEntries(AliasWrapper.getAliasWrapper().getAliases());
         window.getInputHandler().setTabCompleter(tabCompleter);
-        
+
         updateIcon();
-        
+
         window.open();
-        
+
         tabCompleter.addEntries(CommandManager.getServerCommandNames());
         tabCompleter.addEntries(CommandManager.getGlobalCommandNames());
-        
+
         this.autochannels = autochannels;
-        
+
         new Timer("Server Who Timer").scheduleAtFixedRate(new TimerTask() {
+            @Override
             public void run() {
                 for (Channel channel : channels.values()) {
                     channel.checkWho();
                 }
             }
         }, 0, configManager.getOptionInt(DOMAIN_GENERAL, "whotime", 60000));
-        
+
         connect(server, port, password, ssl, profile);
     }
-    
+
     /**
      * Connects to a new server with the specified details.
      *
@@ -215,53 +216,51 @@ public final class Server extends WritableFrameContainer implements Serializable
                 // Do nothing
                 break;
             }
-            
+
             myState = ServerState.CONNECTING;
         }
-        
+
         ActionManager.processEvent(CoreActionType.SERVER_CONNECTING, null, this);
-        
-        Logger.doAssertion(parser == null || parser.getSocketState() != parser.STATE_OPEN);
-        
+
+        Logger.doAssertion(parser == null || parser.getSocketState() != IRCParser.STATE_OPEN);
+
         serverInfo = new ServerInfo(server, port, password);
         serverInfo.setSSL(ssl);
-        
+
         this.profile = profile;
-        
+
         configManager = new ConfigManager("", "", server);
-        
+
         updateIcon();
-        
+
         addLine("serverConnecting", server, port);
-        
+
         final MyInfo myInfo = getMyInfo();
-        
-        final ServerInfo serverInfo = new ServerInfo(server, port, password);
-        serverInfo.setSSL(ssl);
+
         parser = new IRCParser(myInfo, serverInfo);
         parser.setRemoveAfterCallback(true);
         parser.setCreateFake(true);
         parser.setAddLastLine(true);
-        
+
         if (configManager.hasOption(DOMAIN_GENERAL, "bindip")) {
             parser.setBindIP(configManager.getOption(DOMAIN_GENERAL, "bindip"));
         }
-        
+
         doCallbacks();
-        
+
         awayMessage = "";
         invites.clear();
         window.setAwayIndicator(false);
-        
+
         try {
             new Thread(parser, "IRC Parser thread").start();
         } catch (IllegalThreadStateException ex) {
             Logger.appError(ErrorLevel.FATAL, "Unable to start IRC Parser", ex);
         }
-        
+
         updateIgnoreList();
     }
-    
+
     /**
      * Updates this server's icon.
      */
@@ -270,11 +269,11 @@ public final class Server extends WritableFrameContainer implements Serializable
                 serverInfo.getSSL() ? "secure-server" : "server");
         if (window != null) {
             window.setFrameIcon(icon);
-            
+
             iconUpdated(icon);
         }
     }
-    
+
     /**
      * Retrieves the MyInfo object used for the IRC Parser.
      *
@@ -284,14 +283,14 @@ public final class Server extends WritableFrameContainer implements Serializable
         final MyInfo myInfo = new MyInfo();
         myInfo.setNickname(profile.getOption(DOMAIN_PROFILE, "nickname"));
         myInfo.setRealname(profile.getOption(DOMAIN_PROFILE, "realname"));
-        
+
         if (profile.hasOption(DOMAIN_PROFILE, "ident")) {
             myInfo.setUsername(profile.getOption(DOMAIN_PROFILE, "ident"));
         }
-        
+
         return myInfo;
     }
-    
+
     /**
      * Registers callbacks.
      */
@@ -302,14 +301,14 @@ public final class Server extends WritableFrameContainer implements Serializable
         } else if (raw != null) {
             raw.registerCallbacks();
         }
-        
+
         eventHandler.registerCallbacks();
-        
+
         for (Query query : queries.values()) {
             query.reregister();
         }
     }
-    
+
     /**
      * Reconnects to the IRC server with a specified reason.
      *
@@ -321,20 +320,21 @@ public final class Server extends WritableFrameContainer implements Serializable
                 return;
             }
         }
-        
+
         disconnect(reason);
         connect(serverInfo.getHost(), serverInfo.getPort(),
                 serverInfo.getPassword(), serverInfo.getSSL(), profile);
     }
-    
+
     /**
      * Reconnects to the IRC server.
      */
     public void reconnect() {
         reconnect(configManager.getOption(DOMAIN_GENERAL, "reconnectmessage"));
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public void sendLine(final String line) {
         synchronized(myState) {
             if (parser != null && myState == ServerState.CONNECTED) {
@@ -342,12 +342,13 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
         }
     }
-    
+
     /** {@inheritDoc} */
+    @Override
     public int getMaxLineLength() {
-        return parser.MAX_LINELENGTH;
+        return IRCParser.MAX_LINELENGTH;
     }
-    
+
     /**
      * Updates the ignore list for this server.
      */
@@ -355,16 +356,16 @@ public final class Server extends WritableFrameContainer implements Serializable
         if (parser == null || parser.getIgnoreList() == null) {
             return;
         }
-        
+
         parser.getIgnoreList().clear();
-        
+
         if (configManager.hasOption("network", "ignorelist")) {
             for (String line : configManager.getOption("network", "ignorelist").split("\n")) {
                 parser.getIgnoreList().add(line);
             }
         }
     }
-    
+
     /**
      * Determines whether the server knows of the specified channel.
      *
@@ -374,7 +375,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public boolean hasChannel(final String channel) {
         return parser != null && channels.containsKey(parser.toLowerCase(channel));
     }
-    
+
     /**
      * Retrieves the specified channel belonging to this server.
      *
@@ -384,7 +385,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public Channel getChannel(final String channel) {
         return channels.get(parser.toLowerCase(channel));
     }
-    
+
     /**
      * Retrieves a list of channel names belonging to this server.
      *
@@ -392,14 +393,14 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public List<String> getChannels() {
         final ArrayList<String> res = new ArrayList<String>();
-        
+
         for (String channel : channels.keySet()) {
             res.add(channel);
         }
-        
+
         return res;
     }
-    
+
     /**
      * Determines whether the server knows of the specified query.
      *
@@ -409,7 +410,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public boolean hasQuery(final String query) {
         return queries.containsKey(parser.toLowerCase(query));
     }
-    
+
     /**
      * Retrieves the specified query belonging to this server.
      *
@@ -419,7 +420,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public Query getQuery(final String query) {
         return queries.get(parser.toLowerCase(query));
     }
-    
+
     /**
      * Retrieves a list of queries belonging to this server.
      *
@@ -427,14 +428,14 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public List<String> getQueries() {
         final ArrayList<String> res = new ArrayList<String>();
-        
+
         for (String query : queries.keySet()) {
             res.add(query);
         }
-        
+
         return res;
     }
-    
+
     /**
      * Adds a raw window to this server.
      */
@@ -442,7 +443,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         raw = new Raw(this);
         raw.registerCallbacks();
     }
-    
+
     /**
      * Retrieves the raw window associated with this server.
      *
@@ -451,7 +452,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public Raw getRaw() {
         return raw;
     }
-    
+
     /**
      * Retrieves the parser used for this connection.
      *
@@ -460,7 +461,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public IRCParser getParser() {
         return parser;
     }
-    
+
     /**
      * Retrieves the profile that's in use for this server.
      *
@@ -469,7 +470,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public Identity getProfile() {
         return profile;
     }
-    
+
     /**
      * Retrieves the name of this server.
      *
@@ -478,16 +479,66 @@ public final class Server extends WritableFrameContainer implements Serializable
     public String getName() {
         return serverInfo.getHost();
     }
-    
+
     /**
-     * Retrieves the name of this server's network.
+     * Retrieves the name of this server's network. The network name is
+     * determined using the following rules:
+     *
+     *  1. If the server includes its network name in the 005 information, we
+     *     use that
+     *  2. If the server's name ends in biz, com, info, net or org, we use the
+     *     second level domain (e.g., foo.com)
+     *  3. If the server's name contains more than two dots, we drop everything
+     *     up to and including the first part, and use the remainder
+     *  4. In all other cases, we use the full server name
      *
      * @return The name of this server's network
      */
     public String getNetwork() {
-        return parser.getNetworkName();
+        if (parser.getNetworkName().isEmpty()) {
+            return getNetworkFromServerName(parser.getServerName());
+        } else {
+            return parser.getNetworkName();
+        }
     }
-    
+
+    /**
+     * Caclaultes a network name from the specified server name. This method
+     * implements parts 2-4 of the procedure documented at getNetwork().
+     *
+     * @param serverName The server name to parse
+     * @return A network name for the specified server
+     */
+    protected static String getNetworkFromServerName(final String serverName) {
+        final String[] parts = serverName.split("\\.");
+        final String[] tlds = {"biz", "com", "info", "net", "org"};
+        boolean isTLD = false;
+
+        for (String tld : tlds) {
+            if (serverName.endsWith("." + tld)) {
+                isTLD = true;
+            }
+        }
+
+        if (isTLD && parts.length > 2) {
+            return parts[parts.length - 2] + "." + parts[parts.length - 1];
+        } else if (parts.length > 2) {
+            final StringBuilder network = new StringBuilder();
+
+            for (int i = 1; i < parts.length; i++) {
+                if (network.length() > 0) {
+                    network.append('.');
+                }
+
+                network.append(parts[i]);
+            }
+
+            return network.toString();
+        } else {
+            return serverName;
+        }
+    }
+
     /**
      * Retrieves the name of this server's IRCd.
      *
@@ -496,7 +547,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public String getIrcd() {
         return parser.getIRCD(true);
     }
-    
+
     /**
      * Returns the current away status.
      *
@@ -505,7 +556,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public boolean isAway() {
         return !awayMessage.isEmpty();
     }
-    
+
     /**
      * Gets the current away message.
      *
@@ -514,7 +565,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public String getAwayMessage() {
         return awayMessage;
     }
-    
+
     /**
      * Returns the tab completer for this connection.
      *
@@ -523,19 +574,19 @@ public final class Server extends WritableFrameContainer implements Serializable
     public TabCompleter getTabCompleter() {
         return tabCompleter;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public InputWindow getFrame() {
         return window;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public ConfigManager getConfigManager() {
         return configManager;
     }
-    
+
     /**
      * Retrieves the current state for this server.
      *
@@ -544,7 +595,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public ServerState getState() {
         return myState;
     }
-    
+
     /**
      * Closes this server connection and associated windows.
      *
@@ -555,12 +606,12 @@ public final class Server extends WritableFrameContainer implements Serializable
             // Unregister parser callbacks
             parser.getCallbackManager().delAllCallback(eventHandler);
         }
-        
+
         // Disconnect from the server
         disconnect(reason);
-        
+
         myState = ServerState.CLOSING;
-        
+
         // Close all channel windows
         closeChannels();
         // Close all query windows
@@ -571,23 +622,23 @@ public final class Server extends WritableFrameContainer implements Serializable
         }
         // Unregister ourselves with the server manager
         ServerManager.getServerManager().unregisterServer(this);
-        
+
         if (window != null) {
             window.setVisible(false);
             Main.getUI().getMainWindow().delChild(window);
             window = null; //NOPMD
         }
-        
+
         // Ditch the parser
         parser = null; //NOPMD
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void close() {
         close(configManager.getOption(DOMAIN_GENERAL, "quitmessage"));
     }
-    
+
     /**
      * Disconnects from the server.
      *
@@ -606,25 +657,25 @@ public final class Server extends WritableFrameContainer implements Serializable
             default:
                 break;
             }
-            
+
             myState = ServerState.DISCONNECTED;
         }
-        
-        if (parser != null && parser.getSocketState() == parser.STATE_OPEN) {
+
+        if (parser != null && parser.getSocketState() == IRCParser.STATE_OPEN) {
             parser.disconnect(reason);
-            
+
             if (configManager.getOptionBool(DOMAIN_GENERAL, "closechannelsonquit", false)) {
                 closeChannels();
             } else {
                 clearChannels();
             }
-            
+
             if (configManager.getOptionBool(DOMAIN_GENERAL, "closequeriesonquit", false)) {
                 closeQueries();
             }
         }
     }
-    
+
     /**
      * Closes all open channel windows associated with this server.
      */
@@ -633,10 +684,10 @@ public final class Server extends WritableFrameContainer implements Serializable
             WindowManager.removeWindow(channel.getFrame());
             channel.closeWindow(false);
         }
-        
+
         channels.clear();
     }
-    
+
     /**
      * Clears the nicklist of all open channels.
      */
@@ -645,7 +696,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             channel.resetWindow();
         }
     }
-    
+
     /**
      * Closes all open query windows associated with this server.
      */
@@ -654,10 +705,10 @@ public final class Server extends WritableFrameContainer implements Serializable
             WindowManager.removeWindow(query.getFrame());
             query.close(false);
         }
-        
+
         queries.clear();
     }
-    
+
     /**
      * Removes our reference to the raw object (presumably after it has been
      * closed).
@@ -666,7 +717,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         WindowManager.removeWindow(raw.getFrame());
         raw = null; //NOPMD
     }
-    
+
     /**
      * Removes a specific channel and window from this server.
      *
@@ -678,7 +729,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                 channels.get(parser.toLowerCase(chan)).getFrame());
         channels.remove(parser.toLowerCase(chan));
     }
-    
+
     /**
      * Adds a specific channel and window to this server.
      *
@@ -690,13 +741,13 @@ public final class Server extends WritableFrameContainer implements Serializable
             getChannel(chan.getName()).selfJoin();
         } else {
             final Channel newChan = new Channel(this, chan);
-            
+
             tabCompleter.addEntry(chan.getName());
             channels.put(parser.toLowerCase(chan.getName()), newChan);
             newChan.show();
         }
     }
-    
+
     /**
      * Adds a query to this server.
      *
@@ -705,12 +756,12 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void addQuery(final String host) {
         if (!queries.containsKey(parser.toLowerCase(ClientInfo.parseHost(host)))) {
             final Query newQuery = new Query(this, host);
-            
+
             tabCompleter.addEntry(ClientInfo.parseHost(host));
             queries.put(parser.toLowerCase(ClientInfo.parseHost(host)), newQuery);
         }
     }
-    
+
     /**
      * Deletes a query from this server.
      *
@@ -722,7 +773,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                 queries.get(parser.toLowerCase(ClientInfo.parseHost(host))).getFrame());
         queries.remove(parser.toLowerCase(ClientInfo.parseHost(host)));
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean ownsFrame(final Window target) {
@@ -740,7 +791,7 @@ public final class Server extends WritableFrameContainer implements Serializable
         }
         return false;
     }
-    
+
     /**
      * Sets the specified frame as the most-recently activated.
      *
@@ -749,7 +800,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void setActiveFrame(final FrameContainer source) {
         activeFrame = source;
     }
-    
+
     /**
      * Passes the arguments to the most recently activated frame for this
      * server. If the frame isn't know, or isn't visible, use this frame
@@ -762,10 +813,10 @@ public final class Server extends WritableFrameContainer implements Serializable
         if (activeFrame == null || !activeFrame.getFrame().isVisible()) {
             activeFrame = this;
         }
-        
+
         activeFrame.getFrame().addLine(messageType, args);
     }
-    
+
     /**
      * Passes the arguments to all frames for this server.
      *
@@ -776,17 +827,17 @@ public final class Server extends WritableFrameContainer implements Serializable
         for (Channel channel : channels.values()) {
             channel.getFrame().addLine(messageType, args);
         }
-        
+
         for (Query query : queries.values()) {
             query.getFrame().addLine(messageType, args);
         }
-        
+
         addLine(messageType, args);
     }
-    
+
     /**
      * Processes and displays a notification.
-     * 
+     *
      * @param messageType The name of the formatter to be used for the message
      * @param actionType The action type to be used
      * @param args The arguments for the message
@@ -796,12 +847,12 @@ public final class Server extends WritableFrameContainer implements Serializable
         final List<Object> messageArgs = new ArrayList<Object>();
         final List<Object> actionArgs = new ArrayList<Object>();
         final StringBuffer buffer = new StringBuffer(messageType);
-        
+
         actionArgs.add(this);
-        
+
         for (Object arg : args) {
             actionArgs.add(arg);
-            
+
             if (arg instanceof ClientInfo) {
                 final ClientInfo clientInfo = (ClientInfo) arg;
                 messageArgs.add(clientInfo.getNickname());
@@ -811,12 +862,12 @@ public final class Server extends WritableFrameContainer implements Serializable
                 messageArgs.add(arg);
             }
         }
-        
+
         ActionManager.processEvent(actionType, buffer, actionArgs.toArray());
-        
+
         handleNotification(messageType, messageArgs.toArray());
     }
-    
+
     /**
      * Handles general server notifications (i.e., ones note tied to a
      * specific window). The user can select where the notifications should
@@ -828,12 +879,12 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void handleNotification(final String messageType, final Object... args) {
         String target = configManager.getOption("notifications", messageType,
                 NOTIFICATION_SERVER);
-        
+
         if (target.startsWith("group:")) {
             target = configManager.getOption("notifications", target.substring(6),
                     NOTIFICATION_SERVER);
         }
-        
+
         if (NOTIFICATION_SERVER.equals(target)) {
             addLine(messageType, args);
         } else if ("all".equals(target)) {
@@ -842,35 +893,35 @@ public final class Server extends WritableFrameContainer implements Serializable
             addLineToActive(messageType, args);
         } else if (target.startsWith("window:")) {
             final String windowName = target.substring(7);
-            
+
             Window targetWindow = WindowManager.findCustomWindow(getFrame(), windowName);
-            
+
             if (targetWindow == null) {
                 targetWindow = new CustomWindow(windowName, windowName, getFrame()).getFrame();
             }
-            
+
             targetWindow.addLine(messageType, args);
         } else if (target.startsWith("lastcommand:")) {
             final Object[] escapedargs = new Object[args.length];
-            
+
             for (int i = 0; i < args.length; i++) {
                 escapedargs[i] = "\\Q" + args[i] + "\\E";
             }
-            
+
             final String command = String.format(target.substring(12), escapedargs);
-            
+
             WritableFrameContainer best = this;
             long besttime = 0;
-            
+
             final List<WritableFrameContainer> containers
                     = new ArrayList<WritableFrameContainer>();
             containers.addAll(channels.values());
             containers.addAll(queries.values());
-            
+
             if (raw != null) {
                 containers.add(raw);
             }
-            
+
             for (WritableFrameContainer container: containers) {
                 final long time
                         = container.getFrame().getCommandParser().getCommandTime(command);
@@ -879,16 +930,16 @@ public final class Server extends WritableFrameContainer implements Serializable
                     best = container;
                 }
             }
-            
+
             best.addLine(messageType, args);
         } else if (target.startsWith("channel:")) {
            final String channel = String.format(target.substring(8), args);
-           
+
            if (hasChannel(channel)) {
                getChannel(channel).addLine(messageType, args);
            } else {
                addLine(messageType, args);
-               Logger.userError(ErrorLevel.LOW, 
+               Logger.userError(ErrorLevel.LOW,
                        "Invalid notification target for type " + messageType
                        + ": channel " + channel + " doesn't exist");
            }
@@ -897,7 +948,7 @@ public final class Server extends WritableFrameContainer implements Serializable
                     "Invalid notification target for type " + messageType + ": " + target);
         }
     }
-    
+
     /**
      * Replies to an incoming CTCP message.
      *
@@ -915,7 +966,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             parser.sendCTCPReply(source, "CLIENTINFO", "VERSION PING CLIENTINFO");
         }
     }
-    
+
     /**
      * Called when the server says that the nickname we're trying to use is
      * already in use.
@@ -924,18 +975,18 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void onNickInUse(final String nickname) {
         final String lastNick = parser.getMyNickname();
-        
+
         // If our last nick is still valid, ignore the in use message
         if (!parser.equalsIgnoreCase(lastNick, nickname)) {
             return;
         }
-        
+
         String newNick = lastNick + (int) (Math.random() * 10);
-        
+
         if (profile.hasOption(DOMAIN_PROFILE, "altnicks")) {
             final String[] alts = profile.getOption(DOMAIN_PROFILE, "altnicks").split("\n");
             int offset = 0;
-            
+
             if (!parser.equalsIgnoreCase(lastNick,
                     profile.getOption(DOMAIN_PROFILE, "nickname"))) {
                 for (String alt : alts) {
@@ -945,39 +996,26 @@ public final class Server extends WritableFrameContainer implements Serializable
                     }
                 }
             }
-            
+
             if (offset < alts.length && !alts[offset].isEmpty()) {
                 newNick = alts[offset];
             }
         }
-        
+
         parser.setNickname(newNick);
     }
-    
-    /**
-     * Called when the parser has determined the network name and IRCd type
-     * of our server.
-     *
-     * @param networkName The name of the network we're connected to
-     * @param ircdType The type of IRCd that we're connected to
-     */
-    public void onGotNetwork(final String networkName, final String ircdType) {
-        configManager = new ConfigManager(ircdType, networkName, getName());
-        
-        updateIgnoreList();
-    }
-    
+
     /**
      * Called when the server has finished sending the MOTD.
      */
     public void onMOTDEnd() {
         final StringBuffer buffer = new StringBuffer("motdEnd");
-        
+
         ActionManager.processEvent(CoreActionType.SERVER_MOTDEND, buffer, this);
-        
+
         addLine(buffer, "End of server's MOTD.");
     }
-    
+
     /**
      * Called when the server sends a numeric event.
      *
@@ -986,17 +1024,17 @@ public final class Server extends WritableFrameContainer implements Serializable
      */
     public void onNumeric(final int numeric, final String[] tokens) {
         String snumeric = String.valueOf(numeric);
-        
+
         if (numeric < 10) {
             snumeric = "00" + snumeric;
         } else if (numeric < 100) {
             snumeric = "0" + snumeric;
         }
-        
+
         final String withIrcd = "numeric_" + parser.getIRCD(true) + "_" + snumeric;
         final String sansIrcd = "numeric_" + snumeric;
         String target = null;
-        
+
         if (Formatter.hasFormat(withIrcd)) {
             target = withIrcd;
         } else if (Formatter.hasFormat(sansIrcd)) {
@@ -1004,15 +1042,15 @@ public final class Server extends WritableFrameContainer implements Serializable
         } else if (Formatter.hasFormat("numeric_unknown")) {
             target = "numeric_unknown";
         }
-        
+
         if (target != null) {
             handleNotification(target, (Object[]) tokens);
         }
-        
+
         ActionManager.processEvent(CoreActionType.SERVER_NUMERIC, null, this,
                 Integer.valueOf(numeric), tokens);
     }
-              
+
     /**
      * Called when our away state changes.
      *
@@ -1022,45 +1060,45 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void onAwayState(final boolean currentState, final String reason) {
         if (currentState) {
             awayMessage = reason;
-            
+
             ActionManager.processEvent(CoreActionType.SERVER_AWAY, null, this, awayMessage);
         } else {
             awayMessage = "";
-            
+
             ActionManager.processEvent(CoreActionType.SERVER_BACK, null, this);
         }
-        
+
         window.setAwayIndicator(isAway());
     }
-    
+
     /**
      * Called when the socket has been closed.
      */
     public void onSocketClosed() {
         handleNotification("socketClosed", getName());
-        
+
         synchronized(myState) {
             if (myState == ServerState.CLOSING || myState == ServerState.DISCONNECTED) {
                 // This has been triggered via .disconect()
                 return;
             }
-            
+
             myState = ServerState.TRANSIENTLY_DISCONNECTED;
         }
-        
+
         if (configManager.getOptionBool(DOMAIN_GENERAL, "closechannelsondisconnect", false)) {
             closeChannels();
         }
-        
+
         if (configManager.getOptionBool(DOMAIN_GENERAL, "closequeriesondisconnect", false)) {
             closeQueries();
         }
-        
+
         if (configManager.getOptionBool(DOMAIN_GENERAL, "reconnectondisconnect", false)) {
             doDelayedReconnect();
         }
     }
-    
+
     /**
      * Called when an error was encountered while connecting.
      *
@@ -1069,17 +1107,17 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void onConnectError(final ParserError errorInfo) {
         synchronized(myState) {
             Logger.doAssertion(myState == ServerState.CONNECTING);
-            
+
             myState = ServerState.TRANSIENTLY_DISCONNECTED;
         }
-        
+
         String description;
-        
+
         if (errorInfo.getException() == null) {
             description = errorInfo.getData();
         } else {
             final Exception exception = errorInfo.getException();
-            
+
             if (exception instanceof java.net.UnknownHostException) {
                 description = "Unknown host (unable to resolve)";
             } else if (exception instanceof java.net.NoRouteToHostException) {
@@ -1091,27 +1129,28 @@ public final class Server extends WritableFrameContainer implements Serializable
                 description = "Unknown error: " + exception.getMessage();
             }
         }
-        
+
         ActionManager.processEvent(CoreActionType.SERVER_CONNECTERROR, null, this, description);
-        
+
         handleNotification("connectError", getName(), description);
-        
+
         if (configManager.getOptionBool(DOMAIN_GENERAL, "reconnectonconnectfailure", false)) {
             doDelayedReconnect();
         }
     }
-    
+
     /**
      * Schedules a reconnect attempt to be performed after a user-defiend delay.
      */
     private void doDelayedReconnect() {
         final int delay = Math.max(1,
                 configManager.getOptionInt(DOMAIN_GENERAL, "reconnectdelay", 5));
-        
+
         handleNotification("connectRetry", getName(), delay);
-        
+
         reconnectTimer = new Timer("Server Reconnect Timer");
         reconnectTimer.schedule(new TimerTask() {
+            @Override
             public void run() {
                 synchronized(myState) {
                     if (myState == ServerState.RECONNECT_WAIT) {
@@ -1121,10 +1160,10 @@ public final class Server extends WritableFrameContainer implements Serializable
                 }
             }
         }, delay * 1000);
-        
+
         myState = ServerState.RECONNECT_WAIT;
     }
-    
+
     /**
      * Called when we fail to receive a ping reply within a set period of time.
      */
@@ -1133,17 +1172,17 @@ public final class Server extends WritableFrameContainer implements Serializable
                 + getName() + " for over "
                 + ((int) (Math.floor(parser.getPingTime(false) / 1000.0)))
                 + " seconds.", null, 10);
-        
+
         ActionManager.processEvent(CoreActionType.SERVER_NOPING, null, this,
                 Long.valueOf(parser.getPingTime(false)));
-        
+
         if (parser.getPingTime(false) >=
                 configManager.getOptionInt(DOMAIN_SERVER, "pingtimeout", 60000)) {
             handleNotification("stonedServer", getName());
             reconnect();
         }
     }
-    
+
     /**
      * Called after the parser receives the 005 headers from the server.
      */
@@ -1151,23 +1190,26 @@ public final class Server extends WritableFrameContainer implements Serializable
         synchronized(myState) {
             myState = ServerState.CONNECTED;
         }
-        
+
+        configManager = new ConfigManager(parser.getIRCD(true), getNetwork(), getName());
+        updateIgnoreList();
+
         ActionManager.processEvent(CoreActionType.SERVER_CONNECTED, null, this);
-        
+
         if (configManager.hasOption(DOMAIN_GENERAL, "rejoinchannels")) {
             for (Channel chan : channels.values()) {
                 chan.join();
             }
         }
-        
+
         for (String channel : autochannels) {
             parser.joinChannel(channel);
         }
-        
+
         // Check we have mode aliases
         final String modes = parser.getBoolChanModes() + parser.getListChanModes()
                 + parser.getSetOnlyChanModes() + parser.getSetUnsetChanModes();
-        
+
         for (int i = 0; i < modes.length(); i++) {
             final char mode = modes.charAt(i);
             if (!configManager.hasOption(DOMAIN_SERVER, "mode" + mode)) {
@@ -1179,7 +1221,7 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
         }
     }
-    
+
     /**
      * Adds an invite listener to this server.
      *
@@ -1188,7 +1230,7 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void addInviteListener(final InviteListener listener) {
         listeners.add(InviteListener.class, listener);
     }
-    
+
     /**
      * Removes an invite listener from this server.
      *
@@ -1197,15 +1239,15 @@ public final class Server extends WritableFrameContainer implements Serializable
     public void removeInviteListener(final InviteListener listener) {
         listeners.remove(InviteListener.class, listener);
     }
-    
+
     /**
      * Adds an invite to this server, and fires the appropriate listeners.
-     * 
+     *
      * @param invite The invite to be added
      */
     public void addInvite(final Invite invite) {
         invites.add(invite);
-        
+
         final Object[] listenerList = listeners.getListenerList();
         for (int i = 0; i < listenerList.length; i += 2) {
             if (listenerList[i] == InviteListener.class) {
@@ -1216,12 +1258,12 @@ public final class Server extends WritableFrameContainer implements Serializable
 
     /**
      * Removes an invite from this server, and fires the appropriate listeners.
-     * 
+     *
      * @param invite The invite to be removed
-     */    
+     */
     public void removeInvite(final Invite invite) {
         invites.remove(invite);
-        
+
         final Object[] listenerList = listeners.getListenerList();
         for (int i = 0; i < listenerList.length; i += 2) {
             if (listenerList[i] == InviteListener.class) {
@@ -1229,21 +1271,23 @@ public final class Server extends WritableFrameContainer implements Serializable
             }
         }
     }
-    
+
     /**
      * Returns this server's name.
      *
      * @return A string representation of this server (i.e., its name)
      */
+    @Override
     public String toString() {
         return getName();
     }
-    
+
     /**
      * Returns the server instance associated with this frame.
      *
      * @return the associated server connection
      */
+    @Override
     public Server getServer() {
         return this;
     }
