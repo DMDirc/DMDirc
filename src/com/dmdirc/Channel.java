@@ -360,10 +360,12 @@ public final class Channel extends MessageTarget implements
      * @param shouldRemove Whether we should remove the window from the server
      */
     public void closeWindow(final boolean shouldRemove) {
-        final CallbackManager callbackManager = server.getParser().getCallbackManager();
+        if (server.getParser() != null) {
+            final CallbackManager callbackManager = server.getParser().getCallbackManager();
         
-        for (String callback : CALLBACKS) {
-            callbackManager.delCallback(callback, this);
+            for (String callback : CALLBACKS) {
+                callbackManager.delCallback(callback, this);
+            }
         }
         
         ActionManager.processEvent(CoreActionType.CHANNEL_CLOSED, null, this);
