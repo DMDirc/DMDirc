@@ -380,7 +380,7 @@ public final class ActionManager {
      */
     public static void makeGroup(final String group) {
         Logger.doAssertion(group != null && !group.isEmpty()
-               && groups.containsKey(group));
+               && !groups.containsKey(group));
         
         if (new File(getDirectory() + group).mkdir()) {
             groups.put(group, new ArrayList<Action>());
