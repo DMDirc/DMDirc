@@ -140,6 +140,13 @@ public final class UpdateChecker extends MouseAdapter implements Runnable {
         if (last + freq > timestamp) {
             time = last + freq - timestamp;
         }
+        
+        if (time > freq || time < 0) {
+            Logger.userError(ErrorLevel.LOW, "Attempted to schedule update check "
+                    + (time < 0 ? "in the past" : "too far in the future")
+                    + ", rescheduling.");
+            time = 1;
+        }
                 
         new Timer("Update Checker Timer").schedule(new TimerTask() {
             /** {@inheritDoc} */
