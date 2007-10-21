@@ -198,8 +198,10 @@ public final class ActionsGroupPanel extends JPanel
         if (e.getClickCount() == 2) {
             final int row = table.rowAtPoint(e.getPoint());
             
-            ActionsEditorDialog.showActionsEditorDialog(parent,
-                    actions.get(row), group);
+            if (row != -1) {
+                ActionsEditorDialog.showActionsEditorDialog(parent,
+                        actions.get(row), group);
+            }
         }
     }
     
