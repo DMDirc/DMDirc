@@ -517,6 +517,7 @@ public final class LoggingPlugin extends Plugin implements EventPlugin, Preferen
 		final boolean showTimestamp = IdentityManager.getGlobalConfig().getOptionBool(MY_DOMAIN, "backbuffer.timestamp");
 		if (frame == null) {
 			Logger.userError(ErrorLevel.LOW, "Given a null frame");
+            return;
 		}
 		
 		File testFile = new File(filename);

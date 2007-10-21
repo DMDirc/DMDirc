@@ -69,7 +69,7 @@ public class ThemeManager {
             }
         }
         
-        if (dir == null || dir.listFiles() == null) {
+        if (dir.listFiles() == null) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to load themes");
         } else {
             for (File file : dir.listFiles()) {

@@ -30,7 +30,6 @@ import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.input.AdditionalTabTargets;
 import com.dmdirc.ui.interfaces.InputWindow;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**

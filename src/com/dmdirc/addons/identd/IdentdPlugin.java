@@ -152,7 +152,7 @@ public class IdentdPlugin extends Plugin implements EventPlugin, PreferencesInte
 			}
 		} else if (type == CoreActionType.SERVER_CONNECTED || type == CoreActionType.SERVER_CONNECTERROR) {
 			synchronized (servers) {
-				servers.remove((Server) arguments[0]);
+				servers.remove(arguments[0]);
 			
 				if (servers.size() == 0) {
 					if (!IdentityManager.getGlobalConfig().getOptionBool(getDomain(), "advanced.alwaysOn")) {

@@ -22,8 +22,6 @@
 
 package com.dmdirc.ui.swing.dialogs.wizard;
 
-import com.dmdirc.Main;
-import com.dmdirc.ui.swing.MainFrame;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
 import com.dmdirc.ui.swing.components.StandardDialog;
 

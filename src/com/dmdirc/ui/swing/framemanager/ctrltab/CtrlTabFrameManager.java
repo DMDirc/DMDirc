@@ -30,12 +30,13 @@ import com.dmdirc.ui.interfaces.FrameManager;
 import com.dmdirc.ui.interfaces.Window;
 import com.dmdirc.ui.swing.components.TreeScroller;
 import com.dmdirc.ui.swing.framemanager.tree.TreeViewModel;
+
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JDesktopPane;

@@ -31,15 +31,15 @@ import com.dmdirc.ui.swing.components.StandardDialog;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel;
 import com.dmdirc.ui.swing.components.expandingsettings.SettingsPanel.OptionType;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.BorderFactory;
+
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.WindowConstants;
 

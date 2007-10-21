@@ -86,7 +86,7 @@ public final class SearchBar extends JPanel implements ActionListener,
         UP,
         /** Move down through the document. */
         DOWN,
-    };
+    }
     
     /** Line to search from. */
     private int line;

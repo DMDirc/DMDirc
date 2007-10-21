@@ -80,7 +80,7 @@ class TextPaneCanvas extends JPanel implements MouseInputListener,
         DRAG,
         /** Mouse released.*/
         RELEASE,
-    };
+    }
     
     /** position of the scrollbar. */
     private int scrollBarPosition;

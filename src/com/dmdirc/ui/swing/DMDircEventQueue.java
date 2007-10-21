@@ -61,7 +61,7 @@ public final class DMDircEventQueue extends EventQueue {
             return;
         }
         
-        if (me == null || me.getComponent() == null) {
+        if (me.getComponent() == null) {
             return;
         }
         

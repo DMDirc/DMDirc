@@ -28,7 +28,6 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.DataLine;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * The AudioPlayer handles the playing of the audio

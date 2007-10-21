@@ -62,7 +62,7 @@ public class PackingTable extends JTable {
      */
     public PackingTable(final Object[][] rows, final Object[] cols,
             final boolean editable, final JScrollPane scrollPane) {
-        this((TableModel) new DefaultTableModel(rows, cols), editable, scrollPane);
+        this(new DefaultTableModel(rows, cols), editable, scrollPane);
     }
     
     /**

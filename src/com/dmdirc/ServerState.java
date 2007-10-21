@@ -36,4 +36,4 @@ public enum ServerState {
     RECONNECT_WAIT,
     /** Indicates that the server frame and its children are closing. */
     CLOSING,
-};
+}

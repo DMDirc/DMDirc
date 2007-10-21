@@ -110,7 +110,7 @@ public final class IdentityManager {
             }
         }
         
-        if (dir == null || dir.listFiles() == null) {
+        if (dir.listFiles() == null) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to load user identity files");
         } else {
             for (File file : dir.listFiles()) {

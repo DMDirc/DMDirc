@@ -23,7 +23,6 @@
 package com.dmdirc.installer;
 
 import com.dmdirc.installer.cliparser.CLIParser;
-import com.dmdirc.ui.swing.dialogs.wizard.TextStep;
 
 import java.io.PrintWriter;
 import java.io.IOException;

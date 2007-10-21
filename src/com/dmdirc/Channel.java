@@ -385,7 +385,7 @@ public final class Channel extends MessageTarget implements
      * to send a who request.
      */
     public void checkWho() {
-        if (onChannel && configManager.getOptionBool("channel", "sendwho", false)) {
+        if (onChannel && sendWho) {
             server.getParser().sendLine("WHO :" + channelInfo.getName());
         }
     }

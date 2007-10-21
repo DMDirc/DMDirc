@@ -23,12 +23,9 @@
 package com.dmdirc.ui.dummy;
 
 import com.dmdirc.ui.interfaces.StatusBar;
-import com.dmdirc.ui.interfaces.StatusErrorNotifier;
 import com.dmdirc.ui.interfaces.StatusMessageNotifier;
 
 import java.awt.Component;
-
-import javax.swing.Icon;
 
 /**
  * Dummy status bar, used for testing.

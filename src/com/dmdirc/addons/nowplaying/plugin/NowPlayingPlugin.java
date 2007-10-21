@@ -206,7 +206,7 @@ public class NowPlayingPlugin extends Plugin implements EventPlugin,
      */
     private void removePlugin(final Plugin target) {
         if (target instanceof MediaSource) {
-            sources.remove((MediaSource) target);
+            sources.remove(target);
         }
         
         if (target instanceof MediaSourceManager) {

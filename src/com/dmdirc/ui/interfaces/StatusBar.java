@@ -24,8 +24,6 @@ package com.dmdirc.ui.interfaces;
 
 import java.awt.Component;
 
-import javax.swing.Icon;
-
 /**
  * Status bar interface.
  */

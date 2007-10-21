@@ -28,7 +28,6 @@ import com.dmdirc.logger.ErrorLevel;
 import com.dmdirc.logger.Logger;
 import com.dmdirc.ui.interfaces.PreferencesInterface;
 import com.dmdirc.ui.interfaces.PreferencesPanel;
-import com.dmdirc.ui.interfaces.PreferencesPanel.OptionType;
 import com.dmdirc.ui.swing.MainFrame;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;
@@ -568,7 +567,7 @@ public final class SwingPreferencesPanel extends StandardDialog implements
     /** {@inheritDoc} */
     public void display() {
         for (JPanel panel : categories.values()) {
-            if (!panels.contains((JPanel) panel.getComponent(1))) {
+            if (!panels.contains(panel.getComponent(1))) {
                 layoutGrid((JPanel) panel.getComponent(1), ((JPanel) panel
                         .getComponent(1)).getComponentCount() / 2, 2, SMALL_BORDER,
                         SMALL_BORDER, LARGE_BORDER, LARGE_BORDER);

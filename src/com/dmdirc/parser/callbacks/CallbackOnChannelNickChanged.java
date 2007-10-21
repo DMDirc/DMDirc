@@ -24,7 +24,6 @@
 
 package com.dmdirc.parser.callbacks;
 
-import com.dmdirc.parser.ClientInfo;
 import com.dmdirc.parser.ChannelClientInfo;
 import com.dmdirc.parser.ChannelInfo;
 import com.dmdirc.parser.IRCParser;

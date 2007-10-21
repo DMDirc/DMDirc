@@ -414,15 +414,15 @@ public final class CommandManager {
      */
     public static Command getCommand(final String name) {
         if (getGlobalCommandByName(name) != null) {
-            return (Command) getGlobalCommandByName(name);
+            return getGlobalCommandByName(name);
         } else if (getServerCommandByName(name) != null) {
-            return (Command) getServerCommandByName(name);
+            return getServerCommandByName(name);
         } else if (getChannelCommandByName(name) != null) {
-            return (Command) getChannelCommandByName(name);
+            return getChannelCommandByName(name);
         } else if (getChatCommandByName(name) != null) {
-            return (Command) getChatCommandByName(name);
+            return getChatCommandByName(name);
         } else {
-            return (Command) getChannelCommandByName(name);
+            return getChannelCommandByName(name);
         }
     }
     

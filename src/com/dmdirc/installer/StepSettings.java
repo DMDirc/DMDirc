@@ -23,7 +23,6 @@
 package com.dmdirc.installer;
 
 import com.dmdirc.installer.Installer.ShortcutType;
-import com.dmdirc.installer.WindowsInstaller;
 import com.dmdirc.ui.swing.dialogs.wizard.Step;
 import static com.dmdirc.ui.swing.UIUtilities.LARGE_BORDER;
 import static com.dmdirc.ui.swing.UIUtilities.SMALL_BORDER;

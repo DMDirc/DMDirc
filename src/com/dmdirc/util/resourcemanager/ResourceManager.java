@@ -50,7 +50,7 @@ public abstract class ResourceManager {
         JAR,
         /** No resource manager. */
         NONE,
-    };
+    }
     
     /**
      * Returns an appropriate instance of ResourceManager.

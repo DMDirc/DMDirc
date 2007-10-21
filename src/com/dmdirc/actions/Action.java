@@ -118,9 +118,7 @@ public class Action extends ActionModel implements Serializable {
         // Read the triggers
         if (properties.containsKey("trigger")) {
             final String[] triggerStrings = properties.getProperty("trigger").split("\\|");
-            
-            Class[] args = null;
-            
+                        
             triggers = new ActionType[triggerStrings.length];
             
             for (int i = 0; i < triggerStrings.length; i++) {
@@ -130,13 +128,9 @@ public class Action extends ActionModel implements Serializable {
                     error("Invalid trigger specified");
                     return;
                 } else {
-                    if (i == 0) {
-                        args = triggers[i].getType().getArgTypes();
-                    } else {
-                        if (!triggers[i].getType().equals(triggers[0].getType())) {
-                            error("Triggers are not compatible");
-                            return;
-                        }
+                    if (i != 0 && !triggers[i].getType().equals(triggers[0].getType())) {
+                        error("Triggers are not compatible");
+                        return;
                     }
                 }
             }

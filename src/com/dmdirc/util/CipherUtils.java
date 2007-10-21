@@ -112,9 +112,8 @@ public final class CipherUtils {
             Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
         } catch (UnsupportedEncodingException e) {
             Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
-        } catch (IOException e) {
-            Logger.userError(ErrorLevel.LOW, "Unable to decrypt string: " + e.getMessage());
         }
+
         return null;
     }
     

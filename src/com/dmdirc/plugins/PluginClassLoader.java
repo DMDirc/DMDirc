@@ -23,13 +23,10 @@
  */
 package com.dmdirc.plugins;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
-
-import java.util.Hashtable;
 
 public class PluginClassLoader extends ClassLoader {
 	/** Directory where plugins are stored. */

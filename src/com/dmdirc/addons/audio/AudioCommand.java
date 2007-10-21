@@ -24,11 +24,9 @@ package com.dmdirc.addons.audio;
 
 import com.dmdirc.commandparser.CommandManager;
 import com.dmdirc.commandparser.commands.GlobalCommand;
-import com.dmdirc.plugins.Plugin;
-import com.dmdirc.plugins.PluginManager;
 import com.dmdirc.ui.interfaces.InputWindow;
+
 import java.io.File;
-import java.io.IOException;
 
 /**
  * The Audio Command allows playing of audio files.

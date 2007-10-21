@@ -23,7 +23,6 @@
 package com.dmdirc;
 
 import com.dmdirc.config.ConfigChangeListener;
-import com.dmdirc.config.ConfigManager;
 import com.dmdirc.config.IdentityManager;
 
 import java.awt.Image;
@@ -94,7 +93,7 @@ public final class IconManager implements ConfigChangeListener {
      */
     public Image getImage(final String type) {
         if (!images.containsKey(type)) {
-            images.put(type, Toolkit.getDefaultToolkit().getDefaultToolkit().createImage(getIconURL(type)));
+            images.put(type, Toolkit.getDefaultToolkit().createImage(getIconURL(type)));
         }
         return images.get(type);
     }

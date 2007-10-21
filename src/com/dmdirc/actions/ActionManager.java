@@ -194,7 +194,7 @@ public final class ActionManager {
             }
         }
         
-        if (dir == null || dir.listFiles() == null) {
+        if (dir.listFiles() == null) {
             Logger.userError(ErrorLevel.MEDIUM, "Unable to load user action files");
         } else {
             for (File file : dir.listFiles()) {

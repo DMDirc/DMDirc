@@ -36,7 +36,7 @@ public final class ConfigTarget implements Comparable, Serializable {
     /** The possible target types. */
     public static enum TYPE {
         GLOBALDEFAULT, GLOBAL, THEME, PROFILE, IRCD, NETWORK, SERVER, CHANNEL,
-    };
+    }
     
     /**
      * A version number for this class. It should be changed whenever the class
